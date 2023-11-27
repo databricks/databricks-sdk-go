@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 )
@@ -101,7 +102,7 @@ func (a *experimentsImpl) GetHistory(ctx context.Context, request GetHistoryRequ
 
 func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
 	var getExperimentPermissionLevelsResponse GetExperimentPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v/permissionLevels", request.ExperimentId)
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v/permissionLevels", strings.TrimSuffix(fmt.Sprint(request.ExperimentId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getExperimentPermissionLevelsResponse)
@@ -110,7 +111,7 @@ func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetEx
 
 func (a *experimentsImpl) GetPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error) {
 	var experimentPermissions ExperimentPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", strings.TrimSuffix(fmt.Sprint(request.ExperimentId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &experimentPermissions)
@@ -248,7 +249,7 @@ func (a *experimentsImpl) SetExperimentTag(ctx context.Context, request SetExper
 
 func (a *experimentsImpl) SetPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
 	var experimentPermissions ExperimentPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", strings.TrimSuffix(fmt.Sprint(request.ExperimentId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -276,7 +277,7 @@ func (a *experimentsImpl) UpdateExperiment(ctx context.Context, request UpdateEx
 
 func (a *experimentsImpl) UpdatePermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
 	var experimentPermissions ExperimentPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", strings.TrimSuffix(fmt.Sprint(request.ExperimentId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -454,7 +455,7 @@ func (a *modelRegistryImpl) GetModelVersionDownloadUri(ctx context.Context, requ
 
 func (a *modelRegistryImpl) GetPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error) {
 	var getRegisteredModelPermissionLevelsResponse GetRegisteredModelPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v/permissionLevels", request.RegisteredModelId)
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v/permissionLevels", strings.TrimSuffix(fmt.Sprint(request.RegisteredModelId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getRegisteredModelPermissionLevelsResponse)
@@ -463,7 +464,7 @@ func (a *modelRegistryImpl) GetPermissionLevels(ctx context.Context, request Get
 
 func (a *modelRegistryImpl) GetPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
 	var registeredModelPermissions RegisteredModelPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", strings.TrimSuffix(fmt.Sprint(request.RegisteredModelId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &registeredModelPermissions)
@@ -555,7 +556,7 @@ func (a *modelRegistryImpl) SetModelVersionTag(ctx context.Context, request SetM
 
 func (a *modelRegistryImpl) SetPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
 	var registeredModelPermissions RegisteredModelPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", strings.TrimSuffix(fmt.Sprint(request.RegisteredModelId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -613,7 +614,7 @@ func (a *modelRegistryImpl) UpdateModelVersion(ctx context.Context, request Upda
 
 func (a *modelRegistryImpl) UpdatePermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
 	var registeredModelPermissions RegisteredModelPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", strings.TrimSuffix(fmt.Sprint(request.RegisteredModelId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

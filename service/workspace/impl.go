@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 )
@@ -26,7 +27,7 @@ func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentia
 }
 
 func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteGitCredentialRequest) error {
-	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
+	path := fmt.Sprintf("/api/2.0/git-credentials/%v", strings.TrimSuffix(fmt.Sprint(request.CredentialId), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -34,7 +35,7 @@ func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteGitCreden
 
 func (a *gitCredentialsImpl) Get(ctx context.Context, request GetGitCredentialRequest) (*CredentialInfo, error) {
 	var credentialInfo CredentialInfo
-	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
+	path := fmt.Sprintf("/api/2.0/git-credentials/%v", strings.TrimSuffix(fmt.Sprint(request.CredentialId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &credentialInfo)
@@ -51,7 +52,7 @@ func (a *gitCredentialsImpl) List(ctx context.Context) (*GetCredentialsResponse,
 }
 
 func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentials) error {
-	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
+	path := fmt.Sprintf("/api/2.0/git-credentials/%v", strings.TrimSuffix(fmt.Sprint(request.CredentialId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -75,7 +76,7 @@ func (a *reposImpl) Create(ctx context.Context, request CreateRepo) (*RepoInfo, 
 }
 
 func (a *reposImpl) Delete(ctx context.Context, request DeleteRepoRequest) error {
-	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
+	path := fmt.Sprintf("/api/2.0/repos/%v", strings.TrimSuffix(fmt.Sprint(request.RepoId), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -83,7 +84,7 @@ func (a *reposImpl) Delete(ctx context.Context, request DeleteRepoRequest) error
 
 func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*RepoInfo, error) {
 	var repoInfo RepoInfo
-	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
+	path := fmt.Sprintf("/api/2.0/repos/%v", strings.TrimSuffix(fmt.Sprint(request.RepoId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &repoInfo)
@@ -92,7 +93,7 @@ func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*RepoInfo,
 
 func (a *reposImpl) GetPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
 	var getRepoPermissionLevelsResponse GetRepoPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/repos/%v/permissionLevels", request.RepoId)
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v/permissionLevels", strings.TrimSuffix(fmt.Sprint(request.RepoId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getRepoPermissionLevelsResponse)
@@ -101,7 +102,7 @@ func (a *reposImpl) GetPermissionLevels(ctx context.Context, request GetRepoPerm
 
 func (a *reposImpl) GetPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", strings.TrimSuffix(fmt.Sprint(request.RepoId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &repoPermissions)
@@ -119,7 +120,7 @@ func (a *reposImpl) List(ctx context.Context, request ListReposRequest) (*ListRe
 
 func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", strings.TrimSuffix(fmt.Sprint(request.RepoId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -128,7 +129,7 @@ func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsR
 }
 
 func (a *reposImpl) Update(ctx context.Context, request UpdateRepo) error {
-	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
+	path := fmt.Sprintf("/api/2.0/repos/%v", strings.TrimSuffix(fmt.Sprint(request.RepoId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -138,7 +139,7 @@ func (a *reposImpl) Update(ctx context.Context, request UpdateRepo) error {
 
 func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", strings.TrimSuffix(fmt.Sprint(request.RepoId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -275,7 +276,7 @@ func (a *workspaceImpl) Export(ctx context.Context, request ExportRequest) (*Exp
 
 func (a *workspaceImpl) GetPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
 	var getWorkspaceObjectPermissionLevelsResponse GetWorkspaceObjectPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", strings.TrimSuffix(fmt.Sprint(request.WorkspaceObjectType), "/"), strings.TrimSuffix(fmt.Sprint(request.WorkspaceObjectId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getWorkspaceObjectPermissionLevelsResponse)
@@ -284,7 +285,7 @@ func (a *workspaceImpl) GetPermissionLevels(ctx context.Context, request GetWork
 
 func (a *workspaceImpl) GetPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", strings.TrimSuffix(fmt.Sprint(request.WorkspaceObjectType), "/"), strings.TrimSuffix(fmt.Sprint(request.WorkspaceObjectId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &workspaceObjectPermissions)
@@ -329,7 +330,7 @@ func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
 
 func (a *workspaceImpl) SetPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", strings.TrimSuffix(fmt.Sprint(request.WorkspaceObjectType), "/"), strings.TrimSuffix(fmt.Sprint(request.WorkspaceObjectId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -339,7 +340,7 @@ func (a *workspaceImpl) SetPermissions(ctx context.Context, request WorkspaceObj
 
 func (a *workspaceImpl) UpdatePermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", strings.TrimSuffix(fmt.Sprint(request.WorkspaceObjectType), "/"), strings.TrimSuffix(fmt.Sprint(request.WorkspaceObjectId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

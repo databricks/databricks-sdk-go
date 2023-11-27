@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 )
@@ -54,7 +55,7 @@ func (a *clusterPoliciesImpl) Get(ctx context.Context, request GetClusterPolicyR
 
 func (a *clusterPoliciesImpl) GetPermissionLevels(ctx context.Context, request GetClusterPolicyPermissionLevelsRequest) (*GetClusterPolicyPermissionLevelsResponse, error) {
 	var getClusterPolicyPermissionLevelsResponse GetClusterPolicyPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v/permissionLevels", request.ClusterPolicyId)
+	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v/permissionLevels", strings.TrimSuffix(fmt.Sprint(request.ClusterPolicyId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getClusterPolicyPermissionLevelsResponse)
@@ -63,7 +64,7 @@ func (a *clusterPoliciesImpl) GetPermissionLevels(ctx context.Context, request G
 
 func (a *clusterPoliciesImpl) GetPermissions(ctx context.Context, request GetClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", request.ClusterPolicyId)
+	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", strings.TrimSuffix(fmt.Sprint(request.ClusterPolicyId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &clusterPolicyPermissions)
@@ -81,7 +82,7 @@ func (a *clusterPoliciesImpl) List(ctx context.Context, request ListClusterPolic
 
 func (a *clusterPoliciesImpl) SetPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", request.ClusterPolicyId)
+	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", strings.TrimSuffix(fmt.Sprint(request.ClusterPolicyId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -91,7 +92,7 @@ func (a *clusterPoliciesImpl) SetPermissions(ctx context.Context, request Cluste
 
 func (a *clusterPoliciesImpl) UpdatePermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", request.ClusterPolicyId)
+	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", strings.TrimSuffix(fmt.Sprint(request.ClusterPolicyId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -162,7 +163,7 @@ func (a *clustersImpl) Get(ctx context.Context, request GetClusterRequest) (*Clu
 
 func (a *clustersImpl) GetPermissionLevels(ctx context.Context, request GetClusterPermissionLevelsRequest) (*GetClusterPermissionLevelsResponse, error) {
 	var getClusterPermissionLevelsResponse GetClusterPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v/permissionLevels", request.ClusterId)
+	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v/permissionLevels", strings.TrimSuffix(fmt.Sprint(request.ClusterId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getClusterPermissionLevelsResponse)
@@ -171,7 +172,7 @@ func (a *clustersImpl) GetPermissionLevels(ctx context.Context, request GetClust
 
 func (a *clustersImpl) GetPermissions(ctx context.Context, request GetClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
+	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", strings.TrimSuffix(fmt.Sprint(request.ClusterId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &clusterPermissions)
@@ -243,7 +244,7 @@ func (a *clustersImpl) Restart(ctx context.Context, request RestartCluster) erro
 
 func (a *clustersImpl) SetPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
+	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", strings.TrimSuffix(fmt.Sprint(request.ClusterId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -280,7 +281,7 @@ func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 
 func (a *clustersImpl) UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
+	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", strings.TrimSuffix(fmt.Sprint(request.ClusterId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -365,7 +366,7 @@ func (a *globalInitScriptsImpl) Create(ctx context.Context, request GlobalInitSc
 }
 
 func (a *globalInitScriptsImpl) Delete(ctx context.Context, request DeleteGlobalInitScriptRequest) error {
-	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
+	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", strings.TrimSuffix(fmt.Sprint(request.ScriptId), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -373,7 +374,7 @@ func (a *globalInitScriptsImpl) Delete(ctx context.Context, request DeleteGlobal
 
 func (a *globalInitScriptsImpl) Get(ctx context.Context, request GetGlobalInitScriptRequest) (*GlobalInitScriptDetailsWithContent, error) {
 	var globalInitScriptDetailsWithContent GlobalInitScriptDetailsWithContent
-	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
+	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", strings.TrimSuffix(fmt.Sprint(request.ScriptId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &globalInitScriptDetailsWithContent)
@@ -390,7 +391,7 @@ func (a *globalInitScriptsImpl) List(ctx context.Context) (*ListGlobalInitScript
 }
 
 func (a *globalInitScriptsImpl) Update(ctx context.Context, request GlobalInitScriptUpdateRequest) error {
-	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
+	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", strings.TrimSuffix(fmt.Sprint(request.ScriptId), "/"))
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
@@ -441,7 +442,7 @@ func (a *instancePoolsImpl) Get(ctx context.Context, request GetInstancePoolRequ
 
 func (a *instancePoolsImpl) GetPermissionLevels(ctx context.Context, request GetInstancePoolPermissionLevelsRequest) (*GetInstancePoolPermissionLevelsResponse, error) {
 	var getInstancePoolPermissionLevelsResponse GetInstancePoolPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v/permissionLevels", request.InstancePoolId)
+	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v/permissionLevels", strings.TrimSuffix(fmt.Sprint(request.InstancePoolId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getInstancePoolPermissionLevelsResponse)
@@ -450,7 +451,7 @@ func (a *instancePoolsImpl) GetPermissionLevels(ctx context.Context, request Get
 
 func (a *instancePoolsImpl) GetPermissions(ctx context.Context, request GetInstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", request.InstancePoolId)
+	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", strings.TrimSuffix(fmt.Sprint(request.InstancePoolId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &instancePoolPermissions)
@@ -468,7 +469,7 @@ func (a *instancePoolsImpl) List(ctx context.Context) (*ListInstancePools, error
 
 func (a *instancePoolsImpl) SetPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", request.InstancePoolId)
+	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", strings.TrimSuffix(fmt.Sprint(request.InstancePoolId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -478,7 +479,7 @@ func (a *instancePoolsImpl) SetPermissions(ctx context.Context, request Instance
 
 func (a *instancePoolsImpl) UpdatePermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", request.InstancePoolId)
+	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", strings.TrimSuffix(fmt.Sprint(request.InstancePoolId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -575,7 +576,7 @@ type policyFamiliesImpl struct {
 
 func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error) {
 	var policyFamily PolicyFamily
-	path := fmt.Sprintf("/api/2.0/policy-families/%v", request.PolicyFamilyId)
+	path := fmt.Sprintf("/api/2.0/policy-families/%v", strings.TrimSuffix(fmt.Sprint(request.PolicyFamilyId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &policyFamily)

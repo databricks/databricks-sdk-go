@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 )
@@ -92,7 +93,7 @@ func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, 
 }
 
 func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteAccountGroupRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -100,7 +101,7 @@ func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteAccountGro
 
 func (a *accountGroupsImpl) Get(ctx context.Context, request GetAccountGroupRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &group)
@@ -117,7 +118,7 @@ func (a *accountGroupsImpl) List(ctx context.Context, request ListAccountGroupsR
 }
 
 func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -126,7 +127,7 @@ func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) er
 }
 
 func (a *accountGroupsImpl) Update(ctx context.Context, request Group) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -150,7 +151,7 @@ func (a *accountServicePrincipalsImpl) Create(ctx context.Context, request Servi
 }
 
 func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -158,7 +159,7 @@ func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request Delet
 
 func (a *accountServicePrincipalsImpl) Get(ctx context.Context, request GetAccountServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &servicePrincipal)
@@ -175,7 +176,7 @@ func (a *accountServicePrincipalsImpl) List(ctx context.Context, request ListAcc
 }
 
 func (a *accountServicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -184,7 +185,7 @@ func (a *accountServicePrincipalsImpl) Patch(ctx context.Context, request Partia
 }
 
 func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -208,7 +209,7 @@ func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, err
 }
 
 func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteAccountUserRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -216,7 +217,7 @@ func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteAccountUser
 
 func (a *accountUsersImpl) Get(ctx context.Context, request GetAccountUserRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &user)
@@ -233,7 +234,7 @@ func (a *accountUsersImpl) List(ctx context.Context, request ListAccountUsersReq
 }
 
 func (a *accountUsersImpl) Patch(ctx context.Context, request PartialUpdate) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -242,7 +243,7 @@ func (a *accountUsersImpl) Patch(ctx context.Context, request PartialUpdate) err
 }
 
 func (a *accountUsersImpl) Update(ctx context.Context, request User) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -280,7 +281,7 @@ func (a *groupsImpl) Create(ctx context.Context, request Group) (*Group, error) 
 }
 
 func (a *groupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -288,7 +289,7 @@ func (a *groupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) err
 
 func (a *groupsImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &group)
@@ -305,7 +306,7 @@ func (a *groupsImpl) List(ctx context.Context, request ListGroupsRequest) (*List
 }
 
 func (a *groupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -314,7 +315,7 @@ func (a *groupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 }
 
 func (a *groupsImpl) Update(ctx context.Context, request Group) error {
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -329,7 +330,7 @@ type permissionsImpl struct {
 
 func (a *permissionsImpl) Get(ctx context.Context, request GetPermissionRequest) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", strings.TrimSuffix(fmt.Sprint(request.RequestObjectType), "/"), strings.TrimSuffix(fmt.Sprint(request.RequestObjectId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &objectPermissions)
@@ -338,7 +339,7 @@ func (a *permissionsImpl) Get(ctx context.Context, request GetPermissionRequest)
 
 func (a *permissionsImpl) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
 	var getPermissionLevelsResponse GetPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.RequestObjectType, request.RequestObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", strings.TrimSuffix(fmt.Sprint(request.RequestObjectType), "/"), strings.TrimSuffix(fmt.Sprint(request.RequestObjectId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getPermissionLevelsResponse)
@@ -347,7 +348,7 @@ func (a *permissionsImpl) GetPermissionLevels(ctx context.Context, request GetPe
 
 func (a *permissionsImpl) Set(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", strings.TrimSuffix(fmt.Sprint(request.RequestObjectType), "/"), strings.TrimSuffix(fmt.Sprint(request.RequestObjectId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -357,7 +358,7 @@ func (a *permissionsImpl) Set(ctx context.Context, request PermissionsRequest) (
 
 func (a *permissionsImpl) Update(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", strings.TrimSuffix(fmt.Sprint(request.RequestObjectType), "/"), strings.TrimSuffix(fmt.Sprint(request.RequestObjectId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -381,7 +382,7 @@ func (a *servicePrincipalsImpl) Create(ctx context.Context, request ServicePrinc
 }
 
 func (a *servicePrincipalsImpl) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -389,7 +390,7 @@ func (a *servicePrincipalsImpl) Delete(ctx context.Context, request DeleteServic
 
 func (a *servicePrincipalsImpl) Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &servicePrincipal)
@@ -406,7 +407,7 @@ func (a *servicePrincipalsImpl) List(ctx context.Context, request ListServicePri
 }
 
 func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -415,7 +416,7 @@ func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate
 }
 
 func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -439,7 +440,7 @@ func (a *usersImpl) Create(ctx context.Context, request User) (*User, error) {
 }
 
 func (a *usersImpl) Delete(ctx context.Context, request DeleteUserRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -447,7 +448,7 @@ func (a *usersImpl) Delete(ctx context.Context, request DeleteUserRequest) error
 
 func (a *usersImpl) Get(ctx context.Context, request GetUserRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &user)
@@ -482,7 +483,7 @@ func (a *usersImpl) List(ctx context.Context, request ListUsersRequest) (*ListUs
 }
 
 func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) error {
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -501,7 +502,7 @@ func (a *usersImpl) SetPermissions(ctx context.Context, request PasswordPermissi
 }
 
 func (a *usersImpl) Update(ctx context.Context, request User) error {
-	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -525,7 +526,7 @@ type workspaceAssignmentImpl struct {
 }
 
 func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.WorkspaceId), "/"), strings.TrimSuffix(fmt.Sprint(request.PrincipalId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -534,7 +535,7 @@ func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWork
 
 func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error) {
 	var workspacePermissions WorkspacePermissions
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/permissions", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/permissions", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.WorkspaceId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &workspacePermissions)
@@ -543,7 +544,7 @@ func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetWorkspaceA
 
 func (a *workspaceAssignmentImpl) List(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error) {
 	var permissionAssignments PermissionAssignments
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.WorkspaceId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &permissionAssignments)
@@ -551,7 +552,7 @@ func (a *workspaceAssignmentImpl) List(ctx context.Context, request ListWorkspac
 }
 
 func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWorkspaceAssignments) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.WorkspaceId), "/"), strings.TrimSuffix(fmt.Sprint(request.PrincipalId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

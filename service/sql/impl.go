@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 )
@@ -26,7 +27,7 @@ func (a *alertsImpl) Create(ctx context.Context, request CreateAlert) (*Alert, e
 }
 
 func (a *alertsImpl) Delete(ctx context.Context, request DeleteAlertRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", strings.TrimSuffix(fmt.Sprint(request.AlertId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -35,7 +36,7 @@ func (a *alertsImpl) Delete(ctx context.Context, request DeleteAlertRequest) err
 
 func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, error) {
 	var alert Alert
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", strings.TrimSuffix(fmt.Sprint(request.AlertId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &alert)
@@ -52,7 +53,7 @@ func (a *alertsImpl) List(ctx context.Context) ([]Alert, error) {
 }
 
 func (a *alertsImpl) Update(ctx context.Context, request EditAlert) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", strings.TrimSuffix(fmt.Sprint(request.AlertId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -76,7 +77,7 @@ func (a *dashboardWidgetsImpl) Create(ctx context.Context, request CreateWidget)
 }
 
 func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -85,7 +86,7 @@ func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboa
 
 func (a *dashboardWidgetsImpl) Update(ctx context.Context, request CreateWidget) (*Widget, error) {
 	var widget Widget
-	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -109,7 +110,7 @@ func (a *dashboardsImpl) Create(ctx context.Context, request CreateDashboardRequ
 }
 
 func (a *dashboardsImpl) Delete(ctx context.Context, request DeleteDashboardRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", strings.TrimSuffix(fmt.Sprint(request.DashboardId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -118,7 +119,7 @@ func (a *dashboardsImpl) Delete(ctx context.Context, request DeleteDashboardRequ
 
 func (a *dashboardsImpl) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
 	var dashboard Dashboard
-	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", strings.TrimSuffix(fmt.Sprint(request.DashboardId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &dashboard)
@@ -135,7 +136,7 @@ func (a *dashboardsImpl) List(ctx context.Context, request ListDashboardsRequest
 }
 
 func (a *dashboardsImpl) Restore(ctx context.Context, request RestoreDashboardRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/trash/%v", request.DashboardId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/trash/%v", strings.TrimSuffix(fmt.Sprint(request.DashboardId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
@@ -163,7 +164,7 @@ type dbsqlPermissionsImpl struct {
 
 func (a *dbsqlPermissionsImpl) Get(ctx context.Context, request GetDbsqlPermissionRequest) (*GetResponse, error) {
 	var getResponse GetResponse
-	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", strings.TrimSuffix(fmt.Sprint(request.ObjectType), "/"), strings.TrimSuffix(fmt.Sprint(request.ObjectId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getResponse)
@@ -172,7 +173,7 @@ func (a *dbsqlPermissionsImpl) Get(ctx context.Context, request GetDbsqlPermissi
 
 func (a *dbsqlPermissionsImpl) Set(ctx context.Context, request SetRequest) (*SetResponse, error) {
 	var setResponse SetResponse
-	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", strings.TrimSuffix(fmt.Sprint(request.ObjectType), "/"), strings.TrimSuffix(fmt.Sprint(request.ObjectId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -182,7 +183,7 @@ func (a *dbsqlPermissionsImpl) Set(ctx context.Context, request SetRequest) (*Se
 
 func (a *dbsqlPermissionsImpl) TransferOwnership(ctx context.Context, request TransferOwnershipRequest) (*Success, error) {
 	var success Success
-	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v/transfer", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v/transfer", strings.TrimSuffix(fmt.Sprint(request.ObjectType), "/"), strings.TrimSuffix(fmt.Sprint(request.ObjectId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -206,7 +207,7 @@ func (a *queriesImpl) Create(ctx context.Context, request QueryPostContent) (*Qu
 }
 
 func (a *queriesImpl) Delete(ctx context.Context, request DeleteQueryRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", strings.TrimSuffix(fmt.Sprint(request.QueryId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -215,7 +216,7 @@ func (a *queriesImpl) Delete(ctx context.Context, request DeleteQueryRequest) er
 
 func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query, error) {
 	var query Query
-	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", strings.TrimSuffix(fmt.Sprint(request.QueryId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &query)
@@ -232,7 +233,7 @@ func (a *queriesImpl) List(ctx context.Context, request ListQueriesRequest) (*Qu
 }
 
 func (a *queriesImpl) Restore(ctx context.Context, request RestoreQueryRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/queries/trash/%v", request.QueryId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/queries/trash/%v", strings.TrimSuffix(fmt.Sprint(request.QueryId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
@@ -241,7 +242,7 @@ func (a *queriesImpl) Restore(ctx context.Context, request RestoreQueryRequest) 
 
 func (a *queriesImpl) Update(ctx context.Context, request QueryEditContent) (*Query, error) {
 	var query Query
-	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
+	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", strings.TrimSuffix(fmt.Sprint(request.QueryId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -279,7 +280,7 @@ func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateQuer
 }
 
 func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteQueryVisualizationRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -288,7 +289,7 @@ func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteQuer
 
 func (a *queryVisualizationsImpl) Update(ctx context.Context, request Visualization) (*Visualization, error) {
 	var visualization Visualization
-	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -302,7 +303,7 @@ type statementExecutionImpl struct {
 }
 
 func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request CancelExecutionRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/statements/%v/cancel", request.StatementId)
+	path := fmt.Sprintf("/api/2.0/sql/statements/%v/cancel", strings.TrimSuffix(fmt.Sprint(request.StatementId), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
 	return err
@@ -320,7 +321,7 @@ func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request E
 
 func (a *statementExecutionImpl) GetStatement(ctx context.Context, request GetStatementRequest) (*GetStatementResponse, error) {
 	var getStatementResponse GetStatementResponse
-	path := fmt.Sprintf("/api/2.0/sql/statements/%v", request.StatementId)
+	path := fmt.Sprintf("/api/2.0/sql/statements/%v", strings.TrimSuffix(fmt.Sprint(request.StatementId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getStatementResponse)
@@ -329,7 +330,7 @@ func (a *statementExecutionImpl) GetStatement(ctx context.Context, request GetSt
 
 func (a *statementExecutionImpl) GetStatementResultChunkN(ctx context.Context, request GetStatementResultChunkNRequest) (*ResultData, error) {
 	var resultData ResultData
-	path := fmt.Sprintf("/api/2.0/sql/statements/%v/result/chunks/%v", request.StatementId, request.ChunkIndex)
+	path := fmt.Sprintf("/api/2.0/sql/statements/%v/result/chunks/%v", strings.TrimSuffix(fmt.Sprint(request.StatementId), "/"), strings.TrimSuffix(fmt.Sprint(request.ChunkIndex), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &resultData)
@@ -352,7 +353,7 @@ func (a *warehousesImpl) Create(ctx context.Context, request CreateWarehouseRequ
 }
 
 func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -360,7 +361,7 @@ func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequ
 }
 
 func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -370,7 +371,7 @@ func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest)
 
 func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error) {
 	var getWarehouseResponse GetWarehouseResponse
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getWarehouseResponse)
@@ -379,7 +380,7 @@ func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (
 
 func (a *warehousesImpl) GetPermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error) {
 	var getWarehousePermissionLevelsResponse GetWarehousePermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v/permissionLevels", request.WarehouseId)
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v/permissionLevels", strings.TrimSuffix(fmt.Sprint(request.WarehouseId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getWarehousePermissionLevelsResponse)
@@ -388,7 +389,7 @@ func (a *warehousesImpl) GetPermissionLevels(ctx context.Context, request GetWar
 
 func (a *warehousesImpl) GetPermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error) {
 	var warehousePermissions WarehousePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", strings.TrimSuffix(fmt.Sprint(request.WarehouseId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &warehousePermissions)
@@ -415,7 +416,7 @@ func (a *warehousesImpl) List(ctx context.Context, request ListWarehousesRequest
 
 func (a *warehousesImpl) SetPermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
 	var warehousePermissions WarehousePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", strings.TrimSuffix(fmt.Sprint(request.WarehouseId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -433,7 +434,7 @@ func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, reques
 }
 
 func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/start", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/start", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
@@ -441,7 +442,7 @@ func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) error 
 }
 
 func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", request.Id)
+	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", strings.TrimSuffix(fmt.Sprint(request.Id), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
@@ -450,7 +451,7 @@ func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
 
 func (a *warehousesImpl) UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
 	var warehousePermissions WarehousePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", strings.TrimSuffix(fmt.Sprint(request.WarehouseId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 )
@@ -26,7 +27,7 @@ func (a *credentialsImpl) Create(ctx context.Context, request CreateCredentialRe
 }
 
 func (a *credentialsImpl) Delete(ctx context.Context, request DeleteCredentialRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), request.CredentialsId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.CredentialsId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -35,7 +36,7 @@ func (a *credentialsImpl) Delete(ctx context.Context, request DeleteCredentialRe
 
 func (a *credentialsImpl) Get(ctx context.Context, request GetCredentialRequest) (*Credential, error) {
 	var credential Credential
-	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), request.CredentialsId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.CredentialsId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &credential)
@@ -67,7 +68,7 @@ func (a *encryptionKeysImpl) Create(ctx context.Context, request CreateCustomerM
 }
 
 func (a *encryptionKeysImpl) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), request.CustomerManagedKeyId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.CustomerManagedKeyId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -76,7 +77,7 @@ func (a *encryptionKeysImpl) Delete(ctx context.Context, request DeleteEncryptio
 
 func (a *encryptionKeysImpl) Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error) {
 	var customerManagedKey CustomerManagedKey
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), request.CustomerManagedKeyId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.CustomerManagedKeyId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &customerManagedKey)
@@ -108,7 +109,7 @@ func (a *networksImpl) Create(ctx context.Context, request CreateNetworkRequest)
 }
 
 func (a *networksImpl) Delete(ctx context.Context, request DeleteNetworkRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), request.NetworkId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.NetworkId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -117,7 +118,7 @@ func (a *networksImpl) Delete(ctx context.Context, request DeleteNetworkRequest)
 
 func (a *networksImpl) Get(ctx context.Context, request GetNetworkRequest) (*Network, error) {
 	var network Network
-	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), request.NetworkId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.NetworkId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &network)
@@ -149,7 +150,7 @@ func (a *privateAccessImpl) Create(ctx context.Context, request UpsertPrivateAcc
 }
 
 func (a *privateAccessImpl) Delete(ctx context.Context, request DeletePrivateAccesRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.PrivateAccessSettingsId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -158,7 +159,7 @@ func (a *privateAccessImpl) Delete(ctx context.Context, request DeletePrivateAcc
 
 func (a *privateAccessImpl) Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error) {
 	var privateAccessSettings PrivateAccessSettings
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.PrivateAccessSettingsId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &privateAccessSettings)
@@ -175,7 +176,7 @@ func (a *privateAccessImpl) List(ctx context.Context) ([]PrivateAccessSettings, 
 }
 
 func (a *privateAccessImpl) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.PrivateAccessSettingsId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -199,7 +200,7 @@ func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigura
 }
 
 func (a *storageImpl) Delete(ctx context.Context, request DeleteStorageRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), request.StorageConfigurationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.StorageConfigurationId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -208,7 +209,7 @@ func (a *storageImpl) Delete(ctx context.Context, request DeleteStorageRequest) 
 
 func (a *storageImpl) Get(ctx context.Context, request GetStorageRequest) (*StorageConfiguration, error) {
 	var storageConfiguration StorageConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), request.StorageConfigurationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.StorageConfigurationId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &storageConfiguration)
@@ -240,7 +241,7 @@ func (a *vpcEndpointsImpl) Create(ctx context.Context, request CreateVpcEndpoint
 }
 
 func (a *vpcEndpointsImpl) Delete(ctx context.Context, request DeleteVpcEndpointRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), request.VpcEndpointId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.VpcEndpointId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -249,7 +250,7 @@ func (a *vpcEndpointsImpl) Delete(ctx context.Context, request DeleteVpcEndpoint
 
 func (a *vpcEndpointsImpl) Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
 	var vpcEndpoint VpcEndpoint
-	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), request.VpcEndpointId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.VpcEndpointId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &vpcEndpoint)
@@ -281,7 +282,7 @@ func (a *workspacesImpl) Create(ctx context.Context, request CreateWorkspaceRequ
 }
 
 func (a *workspacesImpl) Delete(ctx context.Context, request DeleteWorkspaceRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.WorkspaceId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -290,7 +291,7 @@ func (a *workspacesImpl) Delete(ctx context.Context, request DeleteWorkspaceRequ
 
 func (a *workspacesImpl) Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
 	var workspace Workspace
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.WorkspaceId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &workspace)
@@ -307,7 +308,7 @@ func (a *workspacesImpl) List(ctx context.Context) ([]Workspace, error) {
 }
 
 func (a *workspacesImpl) Update(ctx context.Context, request UpdateWorkspaceRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.WorkspaceId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

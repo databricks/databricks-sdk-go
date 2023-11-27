@@ -429,7 +429,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		Named:               Named{methodName, description},
 		Service:             svc,
 		Verb:                strings.ToUpper(verb),
-		Path:                strings.TrimSuffix(path, "/"),
+		Path:                path,
 		Request:             request,
 		PathParts:           svc.paramPath(path, request, params),
 		Response:            response,

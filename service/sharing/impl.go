@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 
@@ -28,7 +29,7 @@ func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoom) (*
 }
 
 func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", strings.TrimSuffix(fmt.Sprint(request.NameArg), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -37,7 +38,7 @@ func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequ
 
 func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (*CleanRoomInfo, error) {
 	var cleanRoomInfo CleanRoomInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", strings.TrimSuffix(fmt.Sprint(request.NameArg), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cleanRoomInfo)
@@ -55,7 +56,7 @@ func (a *cleanRoomsImpl) List(ctx context.Context, request ListCleanRoomsRequest
 
 func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoom) (*CleanRoomInfo, error) {
 	var cleanRoomInfo CleanRoomInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", strings.TrimSuffix(fmt.Sprint(request.NameArg), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -79,7 +80,7 @@ func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*Pr
 }
 
 func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -88,7 +89,7 @@ func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderReques
 
 func (a *providersImpl) Get(ctx context.Context, request GetProviderRequest) (*ProviderInfo, error) {
 	var providerInfo ProviderInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &providerInfo)
@@ -106,7 +107,7 @@ func (a *providersImpl) List(ctx context.Context, request ListProvidersRequest) 
 
 func (a *providersImpl) ListShares(ctx context.Context, request ListSharesRequest) (*ListProviderSharesResponse, error) {
 	var listProviderSharesResponse ListProviderSharesResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v/shares", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v/shares", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listProviderSharesResponse)
@@ -115,7 +116,7 @@ func (a *providersImpl) ListShares(ctx context.Context, request ListSharesReques
 
 func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) (*ProviderInfo, error) {
 	var providerInfo ProviderInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -129,7 +130,7 @@ type recipientActivationImpl struct {
 }
 
 func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation_info/%v", request.ActivationUrl)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation_info/%v", strings.TrimSuffix(fmt.Sprint(request.ActivationUrl), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, nil)
@@ -138,7 +139,7 @@ func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, requ
 
 func (a *recipientActivationImpl) RetrieveToken(ctx context.Context, request RetrieveTokenRequest) (*RetrieveTokenResponse, error) {
 	var retrieveTokenResponse RetrieveTokenResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation/%v", request.ActivationUrl)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation/%v", strings.TrimSuffix(fmt.Sprint(request.ActivationUrl), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &retrieveTokenResponse)
@@ -161,7 +162,7 @@ func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*
 }
 
 func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -170,7 +171,7 @@ func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequ
 
 func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (*RecipientInfo, error) {
 	var recipientInfo RecipientInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &recipientInfo)
@@ -188,7 +189,7 @@ func (a *recipientsImpl) List(ctx context.Context, request ListRecipientsRequest
 
 func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipientToken) (*RecipientInfo, error) {
 	var recipientInfo RecipientInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/rotate-token", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/rotate-token", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -198,7 +199,7 @@ func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipien
 
 func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error) {
 	var getRecipientSharePermissionsResponse GetRecipientSharePermissionsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/share-permissions", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/share-permissions", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getRecipientSharePermissionsResponse)
@@ -206,7 +207,7 @@ func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePerm
 }
 
 func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -230,7 +231,7 @@ func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*ShareInf
 }
 
 func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -239,7 +240,7 @@ func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) err
 
 func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareInfo, error) {
 	var shareInfo ShareInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &shareInfo)
@@ -257,7 +258,7 @@ func (a *sharesImpl) List(ctx context.Context) (*ListSharesResponse, error) {
 
 func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*catalog.PermissionsList, error) {
 	var permissionsList catalog.PermissionsList
-	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &permissionsList)
@@ -266,7 +267,7 @@ func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissi
 
 func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInfo, error) {
 	var shareInfo ShareInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -275,7 +276,7 @@ func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInf
 }
 
 func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", strings.TrimSuffix(fmt.Sprint(request.Name), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

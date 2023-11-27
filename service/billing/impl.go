@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 )
@@ -41,7 +42,7 @@ func (a *budgetsImpl) Create(ctx context.Context, request WrappedBudget) (*Wrapp
 }
 
 func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.BudgetId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -50,7 +51,7 @@ func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetRequest) e
 
 func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetRequest) (*WrappedBudgetWithStatus, error) {
 	var wrappedBudgetWithStatus WrappedBudgetWithStatus
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.BudgetId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &wrappedBudgetWithStatus)
@@ -67,7 +68,7 @@ func (a *budgetsImpl) List(ctx context.Context) (*BudgetList, error) {
 }
 
 func (a *budgetsImpl) Update(ctx context.Context, request WrappedBudget) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.BudgetId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -92,7 +93,7 @@ func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDe
 
 func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest) (*WrappedLogDeliveryConfiguration, error) {
 	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.LogDeliveryConfigurationId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &wrappedLogDeliveryConfiguration)
@@ -109,7 +110,7 @@ func (a *logDeliveryImpl) List(ctx context.Context, request ListLogDeliveryReque
 }
 
 func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.LogDeliveryConfigurationId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
