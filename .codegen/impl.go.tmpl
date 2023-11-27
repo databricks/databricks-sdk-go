@@ -23,7 +23,7 @@ type {{.CamelName}}Impl struct {
 func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
 	{{- template "response-var" . }}
 	path := {{if .PathParts -}}
-		fmt.Sprintf("{{range  .PathParts}}{{.Prefix}}{{if or .Field .IsAccountId}}%v{{end}}{{ end }}"{{ range .PathParts }}{{if .Field}}, strings.TrimSuffix(fmt.Sprint(request.{{.Field.PascalName}}), "/"){{ else if .IsAccountId }}, a.client.ConfiguredAccountID(){{end}}{{ end }})
+		fmt.Sprintf("{{range  .PathParts}}{{.Prefix}}{{if or .Field .IsAccountId}}%v{{end}}{{ end }}"{{ range .PathParts }}{{if .Field}}, strings.TrimPrefix(fmt.Sprint(request.{{.Field.PascalName}}), "/"){{ else if .IsAccountId }}, a.client.ConfiguredAccountID(){{end}}{{ end }})
 	{{- else}}"{{.Path}}"{{end}}
 	{{ template "make-header" . }}
 	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, headers, {{ template "request-param" . }}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})

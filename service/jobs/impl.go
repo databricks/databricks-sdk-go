@@ -82,7 +82,7 @@ func (a *jobsImpl) Get(ctx context.Context, request GetJobRequest) (*Job, error)
 
 func (a *jobsImpl) GetPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error) {
 	var getJobPermissionLevelsResponse GetJobPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v/permissionLevels", strings.TrimSuffix(fmt.Sprint(request.JobId), "/"))
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v/permissionLevels", strings.TrimPrefix(fmt.Sprint(request.JobId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getJobPermissionLevelsResponse)
@@ -91,7 +91,7 @@ func (a *jobsImpl) GetPermissionLevels(ctx context.Context, request GetJobPermis
 
 func (a *jobsImpl) GetPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error) {
 	var jobPermissions JobPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", strings.TrimSuffix(fmt.Sprint(request.JobId), "/"))
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", strings.TrimPrefix(fmt.Sprint(request.JobId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &jobPermissions)
@@ -165,7 +165,7 @@ func (a *jobsImpl) RunNow(ctx context.Context, request RunNow) (*RunNowResponse,
 
 func (a *jobsImpl) SetPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
 	var jobPermissions JobPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", strings.TrimSuffix(fmt.Sprint(request.JobId), "/"))
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", strings.TrimPrefix(fmt.Sprint(request.JobId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -194,7 +194,7 @@ func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) error {
 
 func (a *jobsImpl) UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
 	var jobPermissions JobPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", strings.TrimSuffix(fmt.Sprint(request.JobId), "/"))
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", strings.TrimPrefix(fmt.Sprint(request.JobId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

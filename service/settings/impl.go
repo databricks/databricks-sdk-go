@@ -27,7 +27,7 @@ func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpA
 }
 
 func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.IpAccessListId), "/"))
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), strings.TrimPrefix(fmt.Sprint(request.IpAccessListId), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -35,7 +35,7 @@ func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAcc
 
 func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpAccessListRequest) (*GetIpAccessListResponse, error) {
 	var getIpAccessListResponse GetIpAccessListResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.IpAccessListId), "/"))
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), strings.TrimPrefix(fmt.Sprint(request.IpAccessListId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getIpAccessListResponse)
@@ -52,7 +52,7 @@ func (a *accountIpAccessListsImpl) List(ctx context.Context) (*GetIpAccessListsR
 }
 
 func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.IpAccessListId), "/"))
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), strings.TrimPrefix(fmt.Sprint(request.IpAccessListId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -61,7 +61,7 @@ func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceI
 }
 
 func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.IpAccessListId), "/"))
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), strings.TrimPrefix(fmt.Sprint(request.IpAccessListId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -166,7 +166,7 @@ func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessLi
 }
 
 func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessListRequest) error {
-	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", strings.TrimSuffix(fmt.Sprint(request.IpAccessListId), "/"))
+	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", strings.TrimPrefix(fmt.Sprint(request.IpAccessListId), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -174,7 +174,7 @@ func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessLi
 
 func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error) {
 	var fetchIpAccessListResponse FetchIpAccessListResponse
-	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", strings.TrimSuffix(fmt.Sprint(request.IpAccessListId), "/"))
+	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", strings.TrimPrefix(fmt.Sprint(request.IpAccessListId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &fetchIpAccessListResponse)
@@ -191,7 +191,7 @@ func (a *ipAccessListsImpl) List(ctx context.Context) (*ListIpAccessListResponse
 }
 
 func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
-	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", strings.TrimSuffix(fmt.Sprint(request.IpAccessListId), "/"))
+	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", strings.TrimPrefix(fmt.Sprint(request.IpAccessListId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -200,7 +200,7 @@ func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccess
 }
 
 func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
-	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", strings.TrimSuffix(fmt.Sprint(request.IpAccessListId), "/"))
+	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", strings.TrimPrefix(fmt.Sprint(request.IpAccessListId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -225,7 +225,7 @@ func (a *networkConnectivityImpl) CreateNetworkConnectivityConfiguration(ctx con
 
 func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
 	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"))
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), strings.TrimPrefix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -234,7 +234,7 @@ func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context,
 }
 
 func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"))
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), strings.TrimPrefix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -243,7 +243,7 @@ func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx con
 
 func (a *networkConnectivityImpl) DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
 	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"), strings.TrimSuffix(fmt.Sprint(request.PrivateEndpointRuleId), "/"))
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), strings.TrimPrefix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"), strings.TrimPrefix(fmt.Sprint(request.PrivateEndpointRuleId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &nccAzurePrivateEndpointRule)
@@ -252,7 +252,7 @@ func (a *networkConnectivityImpl) DeletePrivateEndpointRule(ctx context.Context,
 
 func (a *networkConnectivityImpl) GetNetworkConnectivityConfiguration(ctx context.Context, request GetNetworkConnectivityConfigurationRequest) (*NetworkConnectivityConfiguration, error) {
 	var networkConnectivityConfiguration NetworkConnectivityConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"))
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), strings.TrimPrefix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &networkConnectivityConfiguration)
@@ -261,7 +261,7 @@ func (a *networkConnectivityImpl) GetNetworkConnectivityConfiguration(ctx contex
 
 func (a *networkConnectivityImpl) GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
 	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"), strings.TrimSuffix(fmt.Sprint(request.PrivateEndpointRuleId), "/"))
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), strings.TrimPrefix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"), strings.TrimPrefix(fmt.Sprint(request.PrivateEndpointRuleId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &nccAzurePrivateEndpointRule)
@@ -279,7 +279,7 @@ func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurations(ctx cont
 
 func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
 	var listNccAzurePrivateEndpointRulesResponse ListNccAzurePrivateEndpointRulesResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), strings.TrimSuffix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"))
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), strings.TrimPrefix(fmt.Sprint(request.NetworkConnectivityConfigId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listNccAzurePrivateEndpointRulesResponse)
@@ -335,7 +335,7 @@ func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request Create
 }
 
 func (a *tokenManagementImpl) Delete(ctx context.Context, request DeleteTokenManagementRequest) error {
-	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", strings.TrimSuffix(fmt.Sprint(request.TokenId), "/"))
+	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", strings.TrimPrefix(fmt.Sprint(request.TokenId), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -343,7 +343,7 @@ func (a *tokenManagementImpl) Delete(ctx context.Context, request DeleteTokenMan
 
 func (a *tokenManagementImpl) Get(ctx context.Context, request GetTokenManagementRequest) (*TokenInfo, error) {
 	var tokenInfo TokenInfo
-	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", strings.TrimSuffix(fmt.Sprint(request.TokenId), "/"))
+	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", strings.TrimPrefix(fmt.Sprint(request.TokenId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &tokenInfo)

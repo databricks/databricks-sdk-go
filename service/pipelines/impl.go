@@ -27,7 +27,7 @@ func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*Cr
 }
 
 func (a *pipelinesImpl) Delete(ctx context.Context, request DeletePipelineRequest) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -36,7 +36,7 @@ func (a *pipelinesImpl) Delete(ctx context.Context, request DeletePipelineReques
 
 func (a *pipelinesImpl) Get(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
 	var getPipelineResponse GetPipelineResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getPipelineResponse)
@@ -45,7 +45,7 @@ func (a *pipelinesImpl) Get(ctx context.Context, request GetPipelineRequest) (*G
 
 func (a *pipelinesImpl) GetPermissionLevels(ctx context.Context, request GetPipelinePermissionLevelsRequest) (*GetPipelinePermissionLevelsResponse, error) {
 	var getPipelinePermissionLevelsResponse GetPipelinePermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v/permissionLevels", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v/permissionLevels", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getPipelinePermissionLevelsResponse)
@@ -54,7 +54,7 @@ func (a *pipelinesImpl) GetPermissionLevels(ctx context.Context, request GetPipe
 
 func (a *pipelinesImpl) GetPermissions(ctx context.Context, request GetPipelinePermissionsRequest) (*PipelinePermissions, error) {
 	var pipelinePermissions PipelinePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &pipelinePermissions)
@@ -63,7 +63,7 @@ func (a *pipelinesImpl) GetPermissions(ctx context.Context, request GetPipelineP
 
 func (a *pipelinesImpl) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
 	var getUpdateResponse GetUpdateResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates/%v", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"), strings.TrimSuffix(fmt.Sprint(request.UpdateId), "/"))
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates/%v", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"), strings.TrimPrefix(fmt.Sprint(request.UpdateId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getUpdateResponse)
@@ -72,7 +72,7 @@ func (a *pipelinesImpl) GetUpdate(ctx context.Context, request GetUpdateRequest)
 
 func (a *pipelinesImpl) ListPipelineEvents(ctx context.Context, request ListPipelineEventsRequest) (*ListPipelineEventsResponse, error) {
 	var listPipelineEventsResponse ListPipelineEventsResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/events", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/events", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listPipelineEventsResponse)
@@ -90,7 +90,7 @@ func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelines
 
 func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
 	var listUpdatesResponse ListUpdatesResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listUpdatesResponse)
@@ -98,7 +98,7 @@ func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequ
 }
 
 func (a *pipelinesImpl) Reset(ctx context.Context, request ResetRequest) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/reset", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/reset", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
@@ -107,7 +107,7 @@ func (a *pipelinesImpl) Reset(ctx context.Context, request ResetRequest) error {
 
 func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
 	var pipelinePermissions PipelinePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -117,7 +117,7 @@ func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePerm
 
 func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error) {
 	var startUpdateResponse StartUpdateResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -126,7 +126,7 @@ func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*
 }
 
 func (a *pipelinesImpl) Stop(ctx context.Context, request StopRequest) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
@@ -134,7 +134,7 @@ func (a *pipelinesImpl) Stop(ctx context.Context, request StopRequest) error {
 }
 
 func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -144,7 +144,7 @@ func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error 
 
 func (a *pipelinesImpl) UpdatePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
 	var pipelinePermissions PipelinePermissions
-	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", strings.TrimSuffix(fmt.Sprint(request.PipelineId), "/"))
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", strings.TrimPrefix(fmt.Sprint(request.PipelineId), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

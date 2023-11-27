@@ -114,7 +114,7 @@ type filesImpl struct {
 }
 
 func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
-	path := fmt.Sprintf("/api/2.0/fs/files/%v", strings.TrimSuffix(fmt.Sprint(request.FilePath), "/"))
+	path := fmt.Sprintf("/api/2.0/fs/files/%v", strings.TrimPrefix(fmt.Sprint(request.FilePath), "/"))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -122,7 +122,7 @@ func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error
 
 func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
 	var downloadResponse io.ReadCloser
-	path := fmt.Sprintf("/api/2.0/fs/files/%v", strings.TrimSuffix(fmt.Sprint(request.FilePath), "/"))
+	path := fmt.Sprintf("/api/2.0/fs/files/%v", strings.TrimPrefix(fmt.Sprint(request.FilePath), "/"))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/octet-stream"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &downloadResponse)
@@ -139,7 +139,7 @@ func (a *filesImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*F
 }
 
 func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
-	path := fmt.Sprintf("/api/2.0/fs/files/%v", strings.TrimSuffix(fmt.Sprint(request.FilePath), "/"))
+	path := fmt.Sprintf("/api/2.0/fs/files/%v", strings.TrimPrefix(fmt.Sprint(request.FilePath), "/"))
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/octet-stream"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request.Contents, nil)
