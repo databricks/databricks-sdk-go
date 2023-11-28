@@ -13,6 +13,9 @@ import (
 	"golang.org/x/oauth2"
 )
 
+var errInvalidToken = errors.New("invalid token")
+var errInvalidTokenExpiry = errors.New("invalid token expiry")
+
 // well-known URL for Azure Instance Metadata Service (IMDS)
 // https://learn.microsoft.com/en-us/azure-stack/user/instance-metadata-service
 var instanceMetadataPrefix = "http://169.254.169.254/metadata"
@@ -89,16 +92,14 @@ type msiToken struct {
 	ExpiresOn    json.Number `json:"expires_on"`
 }
 
-var ErrInvalidToken = errors.New("invalid token")
-var ErrInvalidTokenExpiry = errors.New("invalid token expiry")
-
 func (token msiToken) Token() (*oauth2.Token, error) {
 	if token.AccessToken == "" {
-		return nil, fmt.Errorf("token parse: %w", ErrInvalidToken)
+		return nil, fmt.Errorf("token parse: %w", errInvalidToken)
 	}
 	epoch, err := token.ExpiresOn.Int64()
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrInvalidTokenExpiry, err)
+		// go 1.19 doesn't support multiple error unwraps
+		return nil, fmt.Errorf("%w: %s", errInvalidTokenExpiry, err)
 	}
 	return &oauth2.Token{
 		TokenType:    token.TokenType,

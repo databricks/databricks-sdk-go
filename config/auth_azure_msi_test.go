@@ -129,5 +129,5 @@ func TestMsiInvalidTokenExpiry(t *testing.T) {
 			},
 		},
 	})
-	require.ErrorIs(t, err, ErrInvalidTokenExpiry)
+	require.ErrorIs(t, err, errInvalidTokenExpiry)
 }

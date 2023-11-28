@@ -20,6 +20,9 @@ const MetadataServiceVersion = "1"
 const MetadataServiceVersionHeader = "X-Databricks-Metadata-Version"
 const MetadataServiceHostHeader = "X-Databricks-Host"
 
+var errMetadataServiceMalformed = errors.New("invalid auth server URL")
+var errMetadataServiceNotLocalhost = errors.New("only localhost URLs are allowed")
+
 // Credentials provider that fetches a token from a locally running HTTP server
 //
 // The credentials provider will perform a GET request to the configured URL.
@@ -45,20 +48,18 @@ func (c MetadataServiceCredentials) Name() string {
 	return "metadata-service"
 }
 
-var ErrMetadataServiceMalformed = errors.New("invalid auth server URL") // TODO: check if VSCode depends on the error message
-var ErrMetadataServiceNotLocalhost = errors.New("invalid auth server URL")
-
 func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
 	if cfg.MetadataServiceURL == "" || cfg.Host == "" {
 		return nil, nil
 	}
 	parsedMetadataServiceURL, err := url.Parse(cfg.MetadataServiceURL)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrMetadataServiceMalformed, err)
+		// go 1.19 doesn't allow multiple error unwraping
+		return nil, fmt.Errorf("%w: %s", errMetadataServiceMalformed, err)
 	}
 	// only allow localhost URLs
 	if parsedMetadataServiceURL.Hostname() != "localhost" && parsedMetadataServiceURL.Hostname() != "127.0.0.1" {
-		return nil, fmt.Errorf("%w: %s", ErrMetadataServiceNotLocalhost, cfg.MetadataServiceURL)
+		return nil, fmt.Errorf("%w: %s", errMetadataServiceNotLocalhost, cfg.MetadataServiceURL)
 	}
 	ms := metadataService{
 		metadataServiceURL: parsedMetadataServiceURL,

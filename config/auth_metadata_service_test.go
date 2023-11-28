@@ -58,7 +58,7 @@ func TestAuthServerNotLocalhost(t *testing.T) {
 		MetadataServiceURL: "http://otherhost/metadata/token",
 		HTTPTransport:      fixtures.Failures,
 	})
-	require.ErrorIs(t, err, ErrMetadataServiceNotLocalhost)
+	require.ErrorIs(t, err, errMetadataServiceNotLocalhost)
 }
 
 func TestAuthServerMalformed(t *testing.T) {
@@ -67,7 +67,7 @@ func TestAuthServerMalformed(t *testing.T) {
 		MetadataServiceURL: "#$%^&*",
 		HTTPTransport:      fixtures.Failures,
 	})
-	require.ErrorIs(t, err, ErrMetadataServiceMalformed)
+	require.ErrorIs(t, err, errMetadataServiceMalformed)
 }
 
 func TestAuthServerNoContent(t *testing.T) {
@@ -80,7 +80,7 @@ func TestAuthServerNoContent(t *testing.T) {
 			},
 		},
 	})
-	require.ErrorIs(t, err, ErrInvalidToken)
+	require.ErrorIs(t, err, errInvalidToken)
 }
 
 func TestAuthServerFailures(t *testing.T) {
