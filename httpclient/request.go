@@ -34,21 +34,18 @@ func newRequestBody(data any) (requestBody, error) {
 	switch v := data.(type) {
 	case io.Reader:
 		return requestBody{
-			Reader:      v,
-			ContentType: "application/octet-stream",
-			DebugBytes:  []byte("<io.Reader>"),
+			Reader:     v,
+			DebugBytes: []byte("<io.Reader>"),
 		}, nil
 	case string:
 		return requestBody{
-			Reader:      strings.NewReader(v),
-			ContentType: "application/octet-stream",
-			DebugBytes:  []byte(v),
+			Reader:     strings.NewReader(v),
+			DebugBytes: []byte(v),
 		}, nil
 	case []byte:
 		return requestBody{
-			Reader:      bytes.NewReader(v),
-			ContentType: "application/octet-stream",
-			DebugBytes:  v,
+			Reader:     bytes.NewReader(v),
+			DebugBytes: v,
 		}, nil
 	default:
 		bs, err := json.Marshal(data)
