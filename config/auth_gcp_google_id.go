@@ -24,7 +24,10 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (f
 	if cfg.GoogleServiceAccount == "" || !cfg.IsGcp() {
 		return nil, nil
 	}
-	inner, err := c.idTokenSource(ctx, cfg.Host, cfg.GoogleServiceAccount, c.opts...)
+	opts := append(c.opts, option.WithHTTPClient(&http.Client{
+		Transport: cfg.refreshClient,
+	}))
+	inner, err := c.idTokenSource(ctx, cfg.Host, cfg.GoogleServiceAccount, opts...)
 	if err != nil {
 		return nil, err
 	}
