@@ -22,13 +22,13 @@ func (e *tokenError) Error() string {
 	return e.message
 }
 
-func (e *tokenError) Unwrap() []error {
+func (e *tokenError) Unwrap() error {
 	sdkErr, ok := apierr.ByStatusCode(e.err.StatusCode)
 	if ok {
 		// this is how we distinguish between bad requests and permission denies
-		return []error{e.err, sdkErr}
+		return sdkErr
 	}
-	return []error{e.err}
+	return e.err
 }
 
 func (c *Config) mapAzureError(defaultErr *httpclient.HttpError) error {
