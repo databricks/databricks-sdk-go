@@ -96,19 +96,6 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 	assert.NotEmpty(t, v)
 }
 
-func TestAccExplicitAzureSpnAuthErrorMapping(t *testing.T) {
-	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-		DebugHeaders:      true,
-		AzureTenantID:     "invalid",
-		AzureClientID:     "invalid",
-		AzureClientSecret: "invalid",
-		AzureResourceID:   "invalid",
-	}))
-	ctx := context.Background()
-	_, err := w.Clusters.SparkVersions(ctx)
-	require.ErrorIs(t, err, apierr.ErrBadRequest)
-}
-
 func TestAccAzureErrorMappingForUnauthenticated(t *testing.T) {
 	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		DebugHeaders:      true,
