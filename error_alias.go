@@ -29,6 +29,8 @@ var (
 	ErrDeadlineExceeded = apierr.ErrDeadlineExceeded
 	// supplied value for a parameter was invalid
 	ErrInvalidParameterValue = apierr.ErrInvalidParameterValue
+	// operation was performed on a resource that does not exist
+	ErrResourceDoesNotExist = apierr.ErrResourceDoesNotExist
 	// the operation was aborted, typically due to a concurrency issue such as a sequencer check failure
 	ErrAborted = apierr.ErrAborted
 	// operation was rejected due a conflict with an existing resource
