@@ -30,7 +30,7 @@ func (c AzureCliCredentials) Name() string {
 
 // implementing azureHostResolver for ensureWorkspaceUrl to work
 func (c AzureCliCredentials) tokenSourceFor(
-	ctx context.Context, cfg *Config, env azureEnvironment, resource string) oauth2.TokenSource {
+	ctx context.Context, cfg *Config, _, resource string) oauth2.TokenSource {
 	return &azureCliTokenSource{resource: resource}
 }
 
@@ -44,11 +44,7 @@ func (c AzureCliCredentials) tokenSourceFor(
 // If the user can't access the service management endpoint, we assume they are in case 2 and do not pass the service
 // management token. Otherwise, we always pass the service management token.
 func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner oauth2.TokenSource) (func(*http.Request) error, error) {
-	env, err := cfg.GetAzureEnvironment()
-	if err != nil {
-		return nil, err
-	}
-	ts := &azureCliTokenSource{env.ServiceManagementEndpoint, ""}
+	ts := &azureCliTokenSource{cfg.Environment().AzureServiceManagementEndpoint(), ""}
 	t, err := ts.Token()
 	if err != nil {
 		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
@@ -63,7 +59,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		return nil, nil
 	}
 	// Eagerly get a token to fail fast in case the user is not logged in with the Azure CLI.
-	ts := &azureCliTokenSource{cfg.getAzureLoginAppID(), cfg.AzureResourceID}
+	ts := &azureCliTokenSource{cfg.Environment().azureApplicationID, cfg.AzureResourceID}
 	t, err := ts.Token()
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {

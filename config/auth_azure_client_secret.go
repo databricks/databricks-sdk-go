@@ -21,11 +21,11 @@ func (c AzureClientSecretCredentials) Name() string {
 }
 
 func (c AzureClientSecretCredentials) tokenSourceFor(
-	ctx context.Context, cfg *Config, env azureEnvironment, resource string) oauth2.TokenSource {
+	ctx context.Context, cfg *Config, aadEndpoint, resource string) oauth2.TokenSource {
 	return (&clientcredentials.Config{
 		ClientID:     cfg.AzureClientID,
 		ClientSecret: cfg.AzureClientSecret,
-		TokenURL:     fmt.Sprintf("%s%s/oauth2/token", env.ActiveDirectoryEndpoint, cfg.AzureTenantID),
+		TokenURL:     fmt.Sprintf("%s%s/oauth2/token", aadEndpoint, cfg.AzureTenantID),
 		EndpointParams: url.Values{
 			"resource": []string{resource},
 		},
@@ -43,18 +43,17 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	if !cfg.IsAzure() {
 		return nil, nil
 	}
-	env, err := cfg.GetAzureEnvironment()
-	if err != nil {
-		return nil, err
-	}
 	ctx = httpclient.DefaultClient.InContextForOAuth2(ctx)
-	err = cfg.azureEnsureWorkspaceUrl(ctx, c)
+	err := cfg.azureEnsureWorkspaceUrl(ctx, c)
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	logger.Infof(ctx, "Generating AAD token for Service Principal (%s)", cfg.AzureClientID)
 	refreshCtx := context.Background()
-	inner := azureReuseTokenSource(nil, c.tokenSourceFor(refreshCtx, cfg, env, cfg.getAzureLoginAppID()))
-	management := azureReuseTokenSource(nil, c.tokenSourceFor(refreshCtx, cfg, env, env.ServiceManagementEndpoint))
+	env := cfg.Environment()
+	aadEndpoint := env.AzureActiveDirectoryEndpoint()
+	managementEndpoint := env.AzureServiceManagementEndpoint()
+	inner := azureReuseTokenSource(nil, c.tokenSourceFor(refreshCtx, cfg, aadEndpoint, env.azureApplicationID))
+	management := azureReuseTokenSource(nil, c.tokenSourceFor(refreshCtx, cfg, aadEndpoint, managementEndpoint))
 	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken)), nil
 }
