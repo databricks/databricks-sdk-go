@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -88,13 +89,16 @@ type msiToken struct {
 	ExpiresOn    json.Number `json:"expires_on"`
 }
 
+var ErrInvalidToken = errors.New("invalid token")
+var ErrInvalidTokenExpiry = errors.New("invalid token expiry")
+
 func (token msiToken) Token() (*oauth2.Token, error) {
 	if token.AccessToken == "" {
-		return nil, fmt.Errorf("token parse: invalid token")
+		return nil, fmt.Errorf("token parse: %w", ErrInvalidToken)
 	}
 	epoch, err := token.ExpiresOn.Int64()
 	if err != nil {
-		return nil, fmt.Errorf("token expires on: %w", err)
+		return nil, fmt.Errorf("%w: %w", ErrInvalidTokenExpiry, err)
 	}
 	return &oauth2.Token{
 		TokenType:    token.TokenType,

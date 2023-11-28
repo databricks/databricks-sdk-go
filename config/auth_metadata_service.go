@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -44,17 +45,20 @@ func (c MetadataServiceCredentials) Name() string {
 	return "metadata-service"
 }
 
+var ErrMetadataServiceMalformed = errors.New("invalid auth server URL") // TODO: check if VSCode depends on the error message
+var ErrMetadataServiceNotLocalhost = errors.New("invalid auth server URL")
+
 func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
 	if cfg.MetadataServiceURL == "" || cfg.Host == "" {
 		return nil, nil
 	}
 	parsedMetadataServiceURL, err := url.Parse(cfg.MetadataServiceURL)
 	if err != nil {
-		return nil, fmt.Errorf("invalid auth server URL: %w", err)
+		return nil, fmt.Errorf("%w: %w", ErrMetadataServiceMalformed, err)
 	}
 	// only allow localhost URLs
 	if parsedMetadataServiceURL.Hostname() != "localhost" && parsedMetadataServiceURL.Hostname() != "127.0.0.1" {
-		return nil, fmt.Errorf("invalid auth server URL: %s", cfg.MetadataServiceURL)
+		return nil, fmt.Errorf("%w: %s", ErrMetadataServiceNotLocalhost, cfg.MetadataServiceURL)
 	}
 	ms := metadataService{
 		metadataServiceURL: parsedMetadataServiceURL,

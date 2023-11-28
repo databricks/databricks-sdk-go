@@ -20,6 +20,11 @@ func (e *wrapError) Unwrap() error {
 	return e.wrap
 }
 
+func ByStatusCode(statusCode int) (error, bool) {
+	err, ok := statusCodeMapping[statusCode]
+	return err, ok
+}
+
 // Unwrap error for easier client code checking
 //
 // See https://pkg.go.dev/errors#example-Unwrap
@@ -28,7 +33,7 @@ func (apiError *APIError) Unwrap() error {
 	if ok {
 		return byErrorCode
 	}
-	byStatusCode, ok := statusCodeMapping[apiError.StatusCode]
+	byStatusCode, ok := ByStatusCode(apiError.StatusCode)
 	if ok {
 		return byStatusCode
 	}

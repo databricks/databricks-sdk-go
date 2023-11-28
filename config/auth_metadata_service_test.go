@@ -1,110 +1,95 @@
 package config
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/httpclient"
+	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/stretchr/testify/require"
 )
 
-func getTestServer(host string, token string) *httptest.Server {
-	counter := 0
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get(MetadataServiceVersionHeader) != MetadataServiceVersion {
-			w.WriteHeader(http.StatusBadRequest)
-		}
-		if r.Header.Get(MetadataServiceHostHeader) != host {
-			w.WriteHeader(http.StatusNotFound)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(azureMsiToken{
-			AccessToken: fmt.Sprintf("%s-%d", token, counter),
-			ExpiresOn:   json.Number(fmt.Sprintf("%d", time.Now().Add(1*time.Second).Unix())),
-			TokenType:   "Bearer",
-		})
-
-		counter++
-	}))
-	return ts
-}
-
 func TestAuthServerCheckHost(t *testing.T) {
-	host := "ZZZ"
-	token := "XXX"
-
-	ts := getTestServer(host, token)
-	defer ts.Close()
-
-	sc := MetadataServiceCredentials{}
-	config := &Config{
+	assertHeaders(t, &Config{
 		Host:               "YYY",
-		MetadataServiceURL: ts.URL,
-	}
-	_, err := sc.Configure(context.Background(), config)
-	require.Empty(t, err)
-}
-
-func TestAuthServerAuthorize(t *testing.T) {
-	host := "ZZZ"
-	token := "XXX"
-
-	ts := getTestServer(host, token)
-	defer ts.Close()
-
-	sc := MetadataServiceCredentials{}
-	authProvider, err := sc.Configure(context.Background(), &Config{
-		MetadataServiceURL: ts.URL,
-		Host:               host,
+		MetadataServiceURL: "http://localhost:1234/metadata/token",
+		HTTPTransport: fixtures.MappingTransport{
+			"GET /metadata/token": {
+				ExpectedHeaders: map[string]string{
+					"X-Databricks-Host":             "https://YYY",
+					"X-Databricks-Metadata-Version": "1",
+				},
+				Response: someValidToken("abc"),
+			},
+		},
+	}, map[string]string{
+		"Authorization": "Bearer abc",
 	})
-	require.NoError(t, err)
-	require.NotEmpty(t, authProvider)
-
-	req := &http.Request{
-		Header: http.Header{},
-	}
-
-	err = authProvider(req)
-	require.NoError(t, err)
-
-	require.Equal(t, fmt.Sprintf("Bearer %s-1", token), req.Header.Get("Authorization"))
 }
 
 func TestAuthServerRefresh(t *testing.T) {
-	host := "ZZZ"
-	token := "XXX"
-
-	ts := getTestServer(host, token)
-	defer ts.Close()
-
-	sc := MetadataServiceCredentials{}
-	authProvider, err := sc.Configure(context.Background(), &Config{
-		MetadataServiceURL: ts.URL,
-		Host:               host,
+	assertHeaders(t, &Config{
+		Host:               "YYY",
+		MetadataServiceURL: "http://localhost:1234/metadata/token",
+		HTTPTransport: fixtures.SliceTransport{
+			{
+				Method:   "GET",
+				Resource: "/metadata/token",
+				Response: map[string]any{
+					"token_type":   "Bearer",
+					"access_token": "abc",
+					"expires_on":   time.Now().Add(1 * time.Second).Unix(),
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/metadata/token",
+				Response: someValidToken("bcd"),
+			},
+		},
+	}, map[string]string{
+		"Authorization": "Bearer bcd",
 	})
-	require.NoError(t, err)
-	require.NotEmpty(t, authProvider)
+}
 
-	req := &http.Request{
-		Header: http.Header{},
-	}
+func TestAuthServerNotLocalhost(t *testing.T) {
+	_, err := authenticateRequest(&Config{
+		Host:               "YYY",
+		MetadataServiceURL: "http://otherhost/metadata/token",
+		HTTPTransport:      fixtures.Failures,
+	})
+	require.ErrorIs(t, err, ErrMetadataServiceNotLocalhost)
+}
 
-	err = authProvider(req)
-	require.NoError(t, err)
+func TestAuthServerMalformed(t *testing.T) {
+	_, err := authenticateRequest(&Config{
+		Host:               "YYY",
+		MetadataServiceURL: "#$%^&*",
+		HTTPTransport:      fixtures.Failures,
+	})
+	require.ErrorIs(t, err, ErrMetadataServiceMalformed)
+}
 
-	require.Equal(t, fmt.Sprintf("Bearer %s-1", token), req.Header.Get("Authorization"))
+func TestAuthServerNoContent(t *testing.T) {
+	_, err := authenticateRequest(&Config{
+		Host:               "YYY",
+		MetadataServiceURL: "http://localhost:1234/metadata/token",
+		HTTPTransport: fixtures.MappingTransport{
+			"GET /metadata/token": {
+				Response: ``,
+			},
+		},
+	})
+	require.ErrorIs(t, err, ErrInvalidToken)
+}
 
-	req = &http.Request{
-		Header: http.Header{},
-	}
-	err = authProvider(req)
-	require.NoError(t, err)
-
-	require.Equal(t, fmt.Sprintf("Bearer %s-2", token), req.Header.Get("Authorization"))
+func TestAuthServerFailures(t *testing.T) {
+	_, err := authenticateRequest(&Config{
+		Host:               "YYY",
+		MetadataServiceURL: "http://localhost:1234/metadata/token",
+		HTTPTransport:      fixtures.Failures,
+	})
+	var httpError *httpclient.HttpError
+	require.ErrorAs(t, err, &httpError)
+	require.Equal(t, 418, httpError.StatusCode)
 }
