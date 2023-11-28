@@ -167,7 +167,13 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 	{{ if not .Request }}request := struct{}{}{{end}}
 	{{if eq .Pagination.Increment 1 -}}
 	request.{{.Pagination.Offset.PascalName}} = 1 // start iterating from the first page
-	{{end}}
+	{{else if contains .Path "/scim/v2/" -}}
+	request.{{.Pagination.Offset.PascalName}} = 1 // SCIM offset starts from 1
+	{{end}}{{if and .Pagination.Limit (contains .Path "/scim/v2/") -}}
+	if request.{{.Pagination.Limit.PascalName}} == 0 {
+		request.{{.Pagination.Limit.PascalName}} = 100
+	}
+	{{- end}}
 	getNextPage := func(ctx context.Context, req {{ template "paginated-request-type" . }}) (*{{ .Response.PascalName }}, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.impl.{{.PascalName}}(ctx{{if .Request}}, req{{end}})
