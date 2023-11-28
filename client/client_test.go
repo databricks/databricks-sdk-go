@@ -12,6 +12,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -218,4 +219,31 @@ func TestHttpTransport(t *testing.T) {
 	err = client.Do(context.Background(), "GET", "/a", nil, nil, bytes.Buffer{})
 	require.NoError(t, err)
 	require.True(t, calledMock)
+}
+
+func TestDoRemovesDoubleSlashesFromFilesAPI(t *testing.T) {
+	i := 0
+	expectedPaths := []string{
+		"/api/2.0/fs/files/Volumes/abc/def/ghi",
+		"/api/2.0/anotherservice//test",
+	}
+	c, err := New(&config.Config{
+		Host:       "some",
+		Token:      "token",
+		ConfigFile: "/dev/null",
+		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			assert.Equal(t, expectedPaths[i], r.URL.Path)
+			i++
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	require.NoError(t, err)
+	err = c.Do(context.Background(), "GET", "/api/2.0/fs/files//Volumes/abc/def/ghi", nil, map[string]any{}, nil)
+	require.NoError(t, err)
+	err = c.Do(context.Background(), "GET", "/api/2.0/anotherservice//test", nil, map[string]any{}, nil)
+	require.NoError(t, err)
 }
