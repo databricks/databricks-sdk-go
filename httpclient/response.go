@@ -61,11 +61,14 @@ func WithResponseUnmarshal(response any) DoOption {
 			}
 			switch response.(type) {
 			case *bytes.Buffer, *io.ReadCloser, *[]byte:
-				r.Header.Set("Accept", "application/octet-stream")
+				// don't send Accept header for raw types, even though we have
+				// openapi/code/method.go:440#IsResponseByteStream() setting the
+				// Accept header explicitly.
+				return nil
 			default:
 				r.Header.Set("Accept", "application/json")
+				return nil
 			}
-			return nil
 		},
 		out: func(body *responseBody) error {
 			if response == nil {
