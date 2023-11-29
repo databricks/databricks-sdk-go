@@ -19,6 +19,7 @@ var (
 	ErrTemporarilyUnavailable = errors.New("the service is currently unavailable")
 	ErrDeadlineExceeded       = errors.New("the deadline expired before the operation could complete")
 	ErrInvalidParameterValue  = inheritErr(ErrBadRequest, "supplied value for a parameter was invalid")
+	ErrResourceDoesNotExist   = inheritErr(ErrNotFound, "operation was performed on a resource that does not exist")
 	ErrAborted                = inheritErr(ErrResourceConflict, "the operation was aborted, typically due to a concurrency issue such as a sequencer check failure")
 	ErrAlreadyExists          = inheritErr(ErrResourceConflict, "operation was rejected due a conflict with an existing resource")
 	ErrResourceAlreadyExists  = inheritErr(ErrResourceConflict, "operation was rejected due a conflict with an existing resource")
@@ -43,6 +44,7 @@ var (
 
 	errorCodeMapping = map[string]error{
 		"INVALID_PARAMETER_VALUE": ErrInvalidParameterValue,
+		"RESOURCE_DOES_NOT_EXIST": ErrResourceDoesNotExist,
 		"ABORTED":                 ErrAborted,
 		"ALREADY_EXISTS":          ErrAlreadyExists,
 		"RESOURCE_ALREADY_EXISTS": ErrResourceAlreadyExists,

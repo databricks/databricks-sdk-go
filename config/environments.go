@@ -74,7 +74,8 @@ var envs = []DatabricksEnvironment{
 func (c *Config) Environment() DatabricksEnvironment {
 	if c.Host == "" && c.AzureResourceID != "" {
 		// azure resource ID can also be used in lieu of host by some
-		// of the clients, like Terraform
+		// of the clients, like Terraform. However, in this case, the workspace
+		// is assumed to be a production workspace.
 		azureEnv := strings.ToUpper(c.AzureEnvironment)
 		if azureEnv == "" {
 			azureEnv = "PUBLIC"
@@ -84,6 +85,9 @@ func (c *Config) Environment() DatabricksEnvironment {
 				continue
 			}
 			if v.azureEnvironment.Name != azureEnv {
+				continue
+			}
+			if strings.HasPrefix(v.dnsZone, ".dev") || strings.HasPrefix(v.dnsZone, ".staging") {
 				continue
 			}
 			return v

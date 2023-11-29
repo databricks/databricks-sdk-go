@@ -1,5 +1,54 @@
 # Version changelog
 
+## 0.26.0
+
+Major changes:
+
+* There has been a major overhaul of error handling. Users can now compare errors in API responses to the well-known error responses defined in the `apierr` package and reexported in the `databricks` package. Users can check whether a specific error was returned, for example `errors.Is(err, databricks.ErrResourceAlreadyExists)`, rather than converting the error to `*APIError` to check the status code and error code. This change is backwards-compatible; users do not need to modify existing error-handling code when upgrading the SDK. See [#682](https://github.com/databricks/databricks-sdk-go/pull/682) and [#703](https://github.com/databricks/databricks-sdk-go/pull/703) for the changes and https://github.com/databricks/databricks-sdk-go/blob/main/error_alias.go for the full set of errors.
+
+Bug fixes:
+
+* Handle "no configuration file found at" error during databricks-cli authentication ([#707](https://github.com/databricks/databricks-sdk-go/pull/707)).
+* Introduce `DatabricksEnvironment` and fix Azure MSI auth from ACR, where IMDS doesn't give host environment information ([#700](https://github.com/databricks/databricks-sdk-go/pull/700)).
+* Fix SCIM Pagination default parameters in the Go SDK ([#717](https://github.com/databricks/databricks-sdk-go/pull/717)).
+
+Other changes:
+
+* Update `slog` example with the correct interface ([#694](https://github.com/databricks/databricks-sdk-go/pull/694)).
+* Fixed typo in error message for unknown azure environment ([#701](https://github.com/databricks/databricks-sdk-go/pull/701)).
+* Allow injection of HTTP transport to enable HTTP replayer pattern ([#697](https://github.com/databricks/databricks-sdk-go/pull/697)).
+* Decouple HTTP retries and error mapping mechanics from `DatabricksClient` into `httpclient.ApiClient` ([#699](https://github.com/databricks/databricks-sdk-go/pull/699), [#702](https://github.com/databricks/databricks-sdk-go/pull/702), [#712](https://github.com/databricks/databricks-sdk-go/pull/712)).
+* Port `qa.HTTPFixtures` to faster transport-level stubs ([#708](https://github.com/databricks/databricks-sdk-go/pull/708)).
+
+API Changes:
+
+ * Removed `EnableOptimization` method for [w.Metastores](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MetastoresAPI) workspace-level service.
+ * Added `PipelineId` field for [catalog.TableInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TableInfo).
+ * Added `EnablePredictiveOptimization` field for [catalog.UpdateCatalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateCatalog) and [catalog.UpdateSchema](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateSchema).
+ * Removed [catalog.UpdatePredictiveOptimization](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdatePredictiveOptimization) and [catalog.UpdatePredictiveOptimizationResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdatePredictiveOptimizationResponse).
+ * Added `Description` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob) and [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+ * Added `ListNetworkConnectivityConfigurations` and `ListPrivateEndpointRules` method for [a.NetworkConnectivity](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NetworkConnectivityAPI) account-level service.
+ * Added [settings.ListNccAzurePrivateEndpointRulesResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ListNccAzurePrivateEndpointRulesResponse), [settings.ListNetworkConnectivityConfigurationsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ListNetworkConnectivityConfigurationsRequest), [settings.ListNetworkConnectivityConfigurationsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ListNetworkConnectivityConfigurationsResponse), and [settings.ListPrivateEndpointRulesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ListPrivateEndpointRulesRequest).
+ * Added `StringSharedAs` field for [sharing.SharedDataObject](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#SharedDataObject).
+
+Internal changes:
+
+* Added `contains` method in OpenAPI Generator ([#690](https://github.com/databricks/databricks-sdk-go/pull/690)).
+* Skip recipients tests in Azure ([#692](https://github.com/databricks/databricks-sdk-go/pull/692)).
+* Allow Files API tests to run in UC environments ([#695](https://github.com/databricks/databricks-sdk-go/pull/695)).
+* More cleanup in Unity Catalog integration test ([#719](https://github.com/databricks/databricks-sdk-go/pull/719)).
+
+OpenAPI SHA: 22f09783eb8a84d52026f856be3b2068f9498db3, Date: 2023-11-23
+Dependency updates:
+
+ * Bump golang.org/x/oauth2 from 0.13.0 to 0.14.0 ([#689](https://github.com/databricks/databricks-sdk-go/pull/689)).
+ * Bump google.golang.org/api from 0.150.0 to 0.151.0 ([#698](https://github.com/databricks/databricks-sdk-go/pull/698)).
+ * Bump the OpenAPI Spec ([#706](https://github.com/databricks/databricks-sdk-go/pull/706)).
+ * Bump golang.org/x/oauth2 from 0.14.0 to 0.15.0 ([#715](https://github.com/databricks/databricks-sdk-go/pull/715)).
+ * Bump golang.org/x/time from 0.4.0 to 0.5.0 ([#714](https://github.com/databricks/databricks-sdk-go/pull/714)).
+ * Bump google.golang.org/api from 0.151.0 to 0.152.0 ([#716](https://github.com/databricks/databricks-sdk-go/pull/716)).
+
+
 ## 0.25.0
 
 * Make sure path parameters are first in order in RequiredFields ([#669](https://github.com/databricks/databricks-sdk-go/pull/669)).

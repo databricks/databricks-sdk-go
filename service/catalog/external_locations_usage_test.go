@@ -44,6 +44,17 @@ func ExampleExternalLocationsAPI_Create_volumes() {
 	}
 	logger.Infof(ctx, "found %v", externalLocation)
 
+	// cleanup
+
+	err = w.StorageCredentials.DeleteByName(ctx, storageCredential.Name)
+	if err != nil {
+		panic(err)
+	}
+	err = w.ExternalLocations.DeleteByName(ctx, externalLocation.Name)
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func ExampleExternalLocationsAPI_Create_externalLocationsOnAws() {
