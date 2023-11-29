@@ -46,6 +46,10 @@ func TestUcAccVolumes(t *testing.T) {
 		Comment: "created via SDK",
 	})
 	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := w.StorageCredentials.DeleteByName(ctx, storageCredential.Name)
+		require.NoError(t, err)
+	})
 
 	externalLocation, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
 		Name:           RandomName("location-"),
@@ -54,6 +58,10 @@ func TestUcAccVolumes(t *testing.T) {
 		Url:            "s3://" + GetEnvOrSkipTest(t, "TEST_BUCKET") + "/" + RandomName("somepath-"),
 	})
 	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := w.ExternalLocations.DeleteByName(ctx, externalLocation.Name)
+		require.NoError(t, err)
+	})
 
 	createdVolume, err := w.Volumes.Create(ctx, catalog.CreateVolumeRequestContent{
 		CatalogName:     createdCatalog.Name,
