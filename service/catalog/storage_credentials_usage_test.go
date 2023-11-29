@@ -33,6 +33,13 @@ func ExampleStorageCredentialsAPI_Create_volumes() {
 	}
 	logger.Infof(ctx, "found %v", storageCredential)
 
+	// cleanup
+
+	err = w.StorageCredentials.DeleteByName(ctx, storageCredential.Name)
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func ExampleStorageCredentialsAPI_Create_storageCredentialsOnAws() {

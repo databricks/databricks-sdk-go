@@ -75,6 +75,14 @@ func ExampleVolumesAPI_Create_volumes() {
 
 	// cleanup
 
+	err = w.StorageCredentials.DeleteByName(ctx, storageCredential.Name)
+	if err != nil {
+		panic(err)
+	}
+	err = w.ExternalLocations.DeleteByName(ctx, externalLocation.Name)
+	if err != nil {
+		panic(err)
+	}
 	err = w.Schemas.DeleteByFullName(ctx, createdSchema.FullName)
 	if err != nil {
 		panic(err)
@@ -209,6 +217,14 @@ func ExampleVolumesAPI_Read_volumes() {
 
 	// cleanup
 
+	err = w.StorageCredentials.DeleteByName(ctx, storageCredential.Name)
+	if err != nil {
+		panic(err)
+	}
+	err = w.ExternalLocations.DeleteByName(ctx, externalLocation.Name)
+	if err != nil {
+		panic(err)
+	}
 	err = w.Schemas.DeleteByFullName(ctx, createdSchema.FullName)
 	if err != nil {
 		panic(err)
@@ -302,6 +318,14 @@ func ExampleVolumesAPI_Update_volumes() {
 
 	// cleanup
 
+	err = w.StorageCredentials.DeleteByName(ctx, storageCredential.Name)
+	if err != nil {
+		panic(err)
+	}
+	err = w.ExternalLocations.DeleteByName(ctx, externalLocation.Name)
+	if err != nil {
+		panic(err)
+	}
 	err = w.Schemas.DeleteByFullName(ctx, createdSchema.FullName)
 	if err != nil {
 		panic(err)
