@@ -1,5 +1,17 @@
 # Version changelog
 
+## 0.26.1
+
+Minor changes:
+* Support overriding DatabricksEnvironment ([#723](https://github.com/databricks/databricks-sdk-go/pull/723)).
+* Detect `Accept` header in `httpclient.WithResponseUnmarshal` ([#710](https://github.com/databricks/databricks-sdk-go/pull/710)).
+* Detect `Content-Type` header in `newRequestBody` for `httpclient` ([#711](https://github.com/databricks/databricks-sdk-go/pull/711)).
+
+Bug fixes:
+* Retry request on `REQUEST_LIMIT_EXCEEDED` error returned by the SCIM API ([#721](https://github.com/databricks/databricks-sdk-go/pull/721)).
+* Match retry logic of pre-refactor SDK ([#722](https://github.com/databricks/databricks-sdk-go/pull/722)).
+
+
 ## 0.26.0
 
 Major changes:
