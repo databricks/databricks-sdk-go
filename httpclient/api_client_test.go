@@ -140,6 +140,41 @@ func TestSimpleRequestRetried(t *testing.T) {
 	require.True(t, retried[0], "request was not retried")
 }
 
+func TestSimpleRequestNotRetried(t *testing.T) {
+	type Dummy struct {
+		Foo int `json:"foo"`
+	}
+	var tried, retried bool
+	transportErr := &url.Error{
+		Op:  "open",
+		URL: "/a/b",
+		Err: fmt.Errorf("some other reason"),
+	}
+
+	c := NewApiClient(ClientConfig{
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			if !tried {
+				tried = true
+				return nil, transportErr
+			}
+			retried = true
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{"foo": 2}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	var resp Dummy
+	err := c.Do(context.Background(), "PATCH", "/a",
+		WithRequestData(Dummy{1}),
+		WithResponseUnmarshal(&resp))
+	require.Error(t, err)
+	require.ErrorIs(t, err, transportErr)
+	require.True(t, tried, "request was not tried")
+	require.False(t, retried, "request was retried")
+}
+
 func TestHaltAttemptForLimit(t *testing.T) {
 	ctx := context.Background()
 	c := &ApiClient{
