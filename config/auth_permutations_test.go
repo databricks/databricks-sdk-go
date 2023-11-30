@@ -116,9 +116,9 @@ func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*Config,
 	if client.IsAzure() {
 		client.DatabricksEnvironments = append(client.DatabricksEnvironments, DatabricksEnvironment{
 			Cloud:              CloudAzure,
-			dnsZone:            cf.Host,
-			azureApplicationID: "abc",
-			azureEnvironment:   &publicCloud,
+			DnsZone:            cf.Host,
+			AzureApplicationID: "abc",
+			AzureEnvironment:   &PublicCloud,
 		})
 	}
 	err := client.Authenticate(&http.Request{Header: http.Header{}})

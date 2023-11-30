@@ -53,7 +53,7 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	env := cfg.Environment()
 	aadEndpoint := env.AzureActiveDirectoryEndpoint()
 	managementEndpoint := env.AzureServiceManagementEndpoint()
-	inner := azureReuseTokenSource(nil, c.tokenSourceFor(refreshCtx, cfg, aadEndpoint, env.azureApplicationID))
+	inner := azureReuseTokenSource(nil, c.tokenSourceFor(refreshCtx, cfg, aadEndpoint, env.AzureApplicationID))
 	management := azureReuseTokenSource(nil, c.tokenSourceFor(refreshCtx, cfg, aadEndpoint, managementEndpoint))
 	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken)), nil
 }

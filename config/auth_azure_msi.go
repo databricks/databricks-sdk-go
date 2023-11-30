@@ -41,7 +41,7 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	}
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
 	inner := azureReuseTokenSource(nil, azureMsiTokenSource{
-		resource: env.azureApplicationID,
+		resource: env.AzureApplicationID,
 		clientId: cfg.AzureClientID,
 	})
 	management := azureReuseTokenSource(nil, azureMsiTokenSource{

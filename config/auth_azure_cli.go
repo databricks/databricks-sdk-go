@@ -59,7 +59,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		return nil, nil
 	}
 	// Eagerly get a token to fail fast in case the user is not logged in with the Azure CLI.
-	ts := &azureCliTokenSource{cfg.Environment().azureApplicationID, cfg.AzureResourceID}
+	ts := &azureCliTokenSource{cfg.Environment().AzureApplicationID, cfg.AzureResourceID}
 	t, err := ts.Token()
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {
