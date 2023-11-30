@@ -118,7 +118,7 @@ func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*Config,
 			Cloud:              CloudAzure,
 			DnsZone:            cf.Host,
 			AzureApplicationID: "abc",
-			AzureEnvironment:   &PublicCloud,
+			AzureEnvironment:   &AzurePublicCloud,
 		}
 	}
 	err := client.Authenticate(&http.Request{Header: http.Header{}})

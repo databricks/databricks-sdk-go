@@ -18,21 +18,21 @@ type azureEnvironment struct {
 
 // based on github.com/Azure/go-autorest/autorest/azure/azureEnvironments.go
 var (
-	PublicCloud = azureEnvironment{
+	AzurePublicCloud = azureEnvironment{
 		Name:                      "PUBLIC",
 		ServiceManagementEndpoint: "https://management.core.windows.net/",
 		ResourceManagerEndpoint:   "https://management.azure.com/",
 		ActiveDirectoryEndpoint:   "https://login.microsoftonline.com/",
 	}
 
-	UsGovernmentCloud = azureEnvironment{
+	AzureUsGovernmentCloud = azureEnvironment{
 		Name:                      "USGOVERNMENT",
 		ServiceManagementEndpoint: "https://management.core.usgovcloudapi.net/",
 		ResourceManagerEndpoint:   "https://management.usgovcloudapi.net/",
 		ActiveDirectoryEndpoint:   "https://login.microsoftonline.us/",
 	}
 
-	ChinaCloud = azureEnvironment{
+	AzureChinaCloud = azureEnvironment{
 		Name:                      "CHINA",
 		ServiceManagementEndpoint: "https://management.core.chinacloudapi.cn/",
 		ResourceManagerEndpoint:   "https://management.chinacloudapi.cn/",
