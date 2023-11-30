@@ -2,9 +2,12 @@ package httpclient
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 type HttpError struct {
@@ -46,6 +49,27 @@ func DefaultErrorRetriable(ctx context.Context, err error) bool {
 			return true
 		}
 		if some.StatusCode == 504 {
+			return true
+		}
+	}
+	return false
+}
+
+var urlErrorTransientErrorMessages = []string{
+	"connection reset by peer",
+	"TLS handshake timeout",
+	"connection refused",
+	"Unexpected error",
+	"i/o timeout",
+}
+
+func isRetriableUrlError(err error) bool {
+	var urlError *url.Error
+	if !errors.As(err, &urlError) {
+		return false
+	}
+	for _, msg := range urlErrorTransientErrorMessages {
+		if strings.Contains(err.Error(), msg) {
 			return true
 		}
 	}
