@@ -69,12 +69,10 @@ var envs = []DatabricksEnvironment{
 }
 
 func (c *Config) Environment() DatabricksEnvironment {
-	// Under test, use the provided environment if specified. Tests may configure the client with different hostnames,
+	// Use the provided environment if specified. Tests may configure the client with different hostnames,
 	// like localhost, which are not resolvable to a known environment, while needing to mock a specific environment.
-	if c.isTesting {
-		if len(c.DatabricksEnvironments) > 0 {
-			return c.DatabricksEnvironments[0]
-		}
+	if c.DatabricksEnvironment != nil {
+		return *c.DatabricksEnvironment
 	}
 	if c.Host == "" && c.AzureResourceID != "" {
 		// azure resource ID can also be used in lieu of host by some
@@ -98,7 +96,7 @@ func (c *Config) Environment() DatabricksEnvironment {
 		}
 	}
 	hostname := c.CanonicalHostName()
-	for _, e := range append(c.DatabricksEnvironments, envs...) {
+	for _, e := range envs {
 		if strings.HasSuffix(hostname, e.DnsZone) {
 			return e
 		}

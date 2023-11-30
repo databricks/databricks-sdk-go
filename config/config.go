@@ -113,11 +113,8 @@ type Config struct {
 	// HTTPTransport can be overriden for unit testing and together with tooling like https://github.com/google/go-replayers
 	HTTPTransport http.RoundTripper
 
-	// Additional environments for use when resolving the current environment.
-	//
-	// When isTesting is true, if non-empty, the first value from this slice is returned from Environment(),
-	// regardless of the hostname.
-	DatabricksEnvironments []DatabricksEnvironment
+	// Environment override to return when resolving the current environment.
+	DatabricksEnvironment *DatabricksEnvironment
 
 	Loaders []Loader
 
