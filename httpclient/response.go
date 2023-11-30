@@ -55,6 +55,21 @@ func WithResponseHeader(key string, value *string) DoOption {
 
 func WithResponseUnmarshal(response any) DoOption {
 	return DoOption{
+		in: func(r *http.Request) error {
+			if r.Header.Get("Accept") != "" {
+				return nil
+			}
+			switch response.(type) {
+			case *bytes.Buffer, *io.ReadCloser, *[]byte:
+				// don't send Accept header for raw types, even though we have
+				// openapi/code/method.go:440#IsResponseByteStream() setting the
+				// Accept header explicitly.
+				return nil
+			default:
+				r.Header.Set("Accept", "application/json")
+				return nil
+			}
+		},
 		out: func(body *responseBody) error {
 			if response == nil {
 				return nil
