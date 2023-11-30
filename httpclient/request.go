@@ -25,8 +25,9 @@ import (
 // Request bodies are never closed by the client, hence only accepting
 // io.Reader.
 type requestBody struct {
-	Reader     io.Reader
-	DebugBytes []byte
+	Reader      io.Reader
+	ContentType string
+	DebugBytes  []byte
 }
 
 func newRequestBody(data any) (requestBody, error) {
@@ -52,8 +53,9 @@ func newRequestBody(data any) (requestBody, error) {
 			return requestBody{}, fmt.Errorf("request marshal failure: %w", err)
 		}
 		return requestBody{
-			Reader:     bytes.NewReader(bs),
-			DebugBytes: bs,
+			Reader:      bytes.NewReader(bs),
+			ContentType: "application/json",
+			DebugBytes:  bs,
 		}, nil
 	}
 }
