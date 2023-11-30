@@ -6,7 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOverriddenEnvironmentIsReturnedInTesting(t *testing.T) {
+func TestDefaultEnvironmentIsReturned(t *testing.T) {
+	c := &Config{}
+	assert.Equal(t, ".cloud.databricks.com", c.Environment().DnsZone)
+}
+
+func TestOverriddenEnvironmentIsReturned(t *testing.T) {
 	c := &Config{
 		Host: "something.else",
 		DatabricksEnvironment: &DatabricksEnvironment{
@@ -14,28 +19,5 @@ func TestOverriddenEnvironmentIsReturnedInTesting(t *testing.T) {
 			DnsZone: "holla",
 		},
 	}
-	c.WithTesting()
 	assert.Equal(t, "holla", c.Environment().DnsZone)
-}
-
-func TestOverriddenEnvironmentOverrides(t *testing.T) {
-	c := &Config{
-		Host: "my.workspace.holla",
-		DatabricksEnvironment: &DatabricksEnvironment{
-			Cloud:   CloudAzure,
-			DnsZone: "holla",
-		},
-	}
-	assert.Equal(t, "holla", c.Environment().DnsZone)
-}
-
-func TestEnvironmentFallback(t *testing.T) {
-	c := &Config{
-		Host: "a.dev.databricks.com",
-		DatabricksEnvironment: &DatabricksEnvironment{
-			Cloud:   CloudAzure,
-			DnsZone: "holla",
-		},
-	}
-	assert.Equal(t, ".dev.databricks.com", c.Environment().DnsZone)
 }
