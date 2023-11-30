@@ -123,7 +123,7 @@ func (f *AlertOptionsEmptyResultState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AlertOptionsEmptyResultState) Set(v string) error {
 	switch v {
-	case `ok`, `triggered`, `unknown`:
+	case ``, `ok`, `triggered`, `unknown`:
 		*f = AlertOptionsEmptyResultState(v)
 		return nil
 	default:
@@ -204,7 +204,7 @@ func (f *AlertState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AlertState) Set(v string) error {
 	switch v {
-	case `ok`, `triggered`, `unknown`:
+	case ``, `ok`, `triggered`, `unknown`:
 		*f = AlertState(v)
 		return nil
 	default:
@@ -300,7 +300,7 @@ func (f *ChannelName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ChannelName) Set(v string) error {
 	switch v {
-	case `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_PREVIOUS`, `CHANNEL_NAME_UNSPECIFIED`:
+	case ``, `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_PREVIOUS`, `CHANNEL_NAME_UNSPECIFIED`:
 		*f = ChannelName(v)
 		return nil
 	default:
@@ -393,7 +393,7 @@ func (f *ColumnInfoTypeName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ColumnInfoTypeName) Set(v string) error {
 	switch v {
-	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TIMESTAMP`, `USER_DEFINED_TYPE`:
+	case ``, `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TIMESTAMP`, `USER_DEFINED_TYPE`:
 		*f = ColumnInfoTypeName(v)
 		return nil
 	default:
@@ -579,7 +579,7 @@ func (f *CreateWarehouseRequestWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CreateWarehouseRequestWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case ``, `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
 		*f = CreateWarehouseRequestWarehouseType(v)
 		return nil
 	default:
@@ -814,7 +814,7 @@ func (f *Disposition) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Disposition) Set(v string) error {
 	switch v {
-	case `EXTERNAL_LINKS`, `INLINE`:
+	case ``, `EXTERNAL_LINKS`, `INLINE`:
 		*f = Disposition(v)
 		return nil
 	default:
@@ -944,7 +944,7 @@ func (f *EditWarehouseRequestWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EditWarehouseRequestWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case ``, `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
 		*f = EditWarehouseRequestWarehouseType(v)
 		return nil
 	default:
@@ -1104,7 +1104,7 @@ func (f *EndpointInfoWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointInfoWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case ``, `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
 		*f = EndpointInfoWarehouseType(v)
 		return nil
 	default:
@@ -1317,7 +1317,7 @@ func (f *ExecuteStatementRequestOnWaitTimeout) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ExecuteStatementRequestOnWaitTimeout) Set(v string) error {
 	switch v {
-	case `CANCEL`, `CONTINUE`:
+	case ``, `CANCEL`, `CONTINUE`:
 		*f = ExecuteStatementRequestOnWaitTimeout(v)
 		return nil
 	default:
@@ -1413,7 +1413,7 @@ func (f *Format) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Format) Set(v string) error {
 	switch v {
-	case `ARROW_STREAM`, `CSV`, `JSON_ARRAY`:
+	case ``, `ARROW_STREAM`, `CSV`, `JSON_ARRAY`:
 		*f = Format(v)
 		return nil
 	default:
@@ -1636,7 +1636,7 @@ func (f *GetWarehouseResponseWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GetWarehouseResponseWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case ``, `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
 		*f = GetWarehouseResponseWarehouseType(v)
 		return nil
 	default:
@@ -1704,7 +1704,7 @@ func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Set(v string) error {
 	switch v {
-	case `DATA_ACCESS_CONTROL`, `NONE`, `PASSTHROUGH`:
+	case ``, `DATA_ACCESS_CONTROL`, `NONE`, `PASSTHROUGH`:
 		*f = GetWorkspaceWarehouseConfigResponseSecurityPolicy(v)
 		return nil
 	default:
@@ -1753,7 +1753,7 @@ func (f *ListOrder) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ListOrder) Set(v string) error {
 	switch v {
-	case `created_at`, `name`:
+	case ``, `created_at`, `name`:
 		*f = ListOrder(v)
 		return nil
 	default:
@@ -1904,7 +1904,7 @@ func (f *ObjectType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ObjectType) Set(v string) error {
 	switch v {
-	case `alert`, `dashboard`, `data_source`, `query`:
+	case ``, `alert`, `dashboard`, `data_source`, `query`:
 		*f = ObjectType(v)
 		return nil
 	default:
@@ -1936,7 +1936,7 @@ func (f *ObjectTypePlural) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ObjectTypePlural) Set(v string) error {
 	switch v {
-	case `alerts`, `dashboards`, `data_sources`, `queries`:
+	case ``, `alerts`, `dashboards`, `data_sources`, `queries`:
 		*f = ObjectTypePlural(v)
 		return nil
 	default:
@@ -1986,7 +1986,7 @@ func (f *OwnableObjectType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *OwnableObjectType) Set(v string) error {
 	switch v {
-	case `alert`, `dashboard`, `query`:
+	case ``, `alert`, `dashboard`, `query`:
 		*f = OwnableObjectType(v)
 		return nil
 	default:
@@ -2038,7 +2038,7 @@ func (f *ParameterType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ParameterType) Set(v string) error {
 	switch v {
-	case `datetime`, `number`, `text`:
+	case ``, `datetime`, `number`, `text`:
 		*f = ParameterType(v)
 		return nil
 	default:
@@ -2072,7 +2072,7 @@ func (f *PermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`:
+	case ``, `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`:
 		*f = PermissionLevel(v)
 		return nil
 	default:
@@ -2108,7 +2108,7 @@ func (f *PlansState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PlansState) Set(v string) error {
 	switch v {
-	case `EMPTY`, `EXISTS`, `IGNORED_LARGE_PLANS_SIZE`, `IGNORED_SMALL_DURATION`, `IGNORED_SPARK_PLAN_TYPE`, `UNKNOWN`:
+	case ``, `EMPTY`, `EXISTS`, `IGNORED_LARGE_PLANS_SIZE`, `IGNORED_SMALL_DURATION`, `IGNORED_SPARK_PLAN_TYPE`, `UNKNOWN`:
 		*f = PlansState(v)
 		return nil
 	default:
@@ -2505,7 +2505,7 @@ func (f *QueryStatementType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *QueryStatementType) Set(v string) error {
 	switch v {
-	case `ALTER`, `ANALYZE`, `COPY`, `CREATE`, `DELETE`, `DESCRIBE`, `DROP`, `EXPLAIN`, `GRANT`, `INSERT`, `MERGE`, `OPTIMIZE`, `OTHER`, `REFRESH`, `REPLACE`, `REVOKE`, `SELECT`, `SET`, `SHOW`, `TRUNCATE`, `UPDATE`, `USE`:
+	case ``, `ALTER`, `ANALYZE`, `COPY`, `CREATE`, `DELETE`, `DESCRIBE`, `DROP`, `EXPLAIN`, `GRANT`, `INSERT`, `MERGE`, `OPTIMIZE`, `OTHER`, `REFRESH`, `REPLACE`, `REVOKE`, `SELECT`, `SET`, `SHOW`, `TRUNCATE`, `UPDATE`, `USE`:
 		*f = QueryStatementType(v)
 		return nil
 	default:
@@ -2547,7 +2547,7 @@ func (f *QueryStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *QueryStatus) Set(v string) error {
 	switch v {
-	case `CANCELED`, `FAILED`, `FINISHED`, `QUEUED`, `RUNNING`:
+	case ``, `CANCELED`, `FAILED`, `FINISHED`, `QUEUED`, `RUNNING`:
 		*f = QueryStatus(v)
 		return nil
 	default:
@@ -2681,7 +2681,7 @@ func (f *RunAsRole) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunAsRole) Set(v string) error {
 	switch v {
-	case `owner`, `viewer`:
+	case ``, `owner`, `viewer`:
 		*f = RunAsRole(v)
 		return nil
 	default:
@@ -2748,7 +2748,7 @@ func (f *ServiceErrorCode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ServiceErrorCode) Set(v string) error {
 	switch v {
-	case `ABORTED`, `ALREADY_EXISTS`, `BAD_REQUEST`, `CANCELLED`, `DEADLINE_EXCEEDED`, `INTERNAL_ERROR`, `IO_ERROR`, `NOT_FOUND`, `RESOURCE_EXHAUSTED`, `SERVICE_UNDER_MAINTENANCE`, `TEMPORARILY_UNAVAILABLE`, `UNAUTHENTICATED`, `UNKNOWN`, `WORKSPACE_TEMPORARILY_UNAVAILABLE`:
+	case ``, `ABORTED`, `ALREADY_EXISTS`, `BAD_REQUEST`, `CANCELLED`, `DEADLINE_EXCEEDED`, `INTERNAL_ERROR`, `IO_ERROR`, `NOT_FOUND`, `RESOURCE_EXHAUSTED`, `SERVICE_UNDER_MAINTENANCE`, `TEMPORARILY_UNAVAILABLE`, `UNAUTHENTICATED`, `UNKNOWN`, `WORKSPACE_TEMPORARILY_UNAVAILABLE`:
 		*f = ServiceErrorCode(v)
 		return nil
 	default:
@@ -2844,7 +2844,7 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Set(v string) error {
 	switch v {
-	case `DATA_ACCESS_CONTROL`, `NONE`, `PASSTHROUGH`:
+	case ``, `DATA_ACCESS_CONTROL`, `NONE`, `PASSTHROUGH`:
 		*f = SetWorkspaceWarehouseConfigRequestSecurityPolicy(v)
 		return nil
 	default:
@@ -2874,7 +2874,7 @@ func (f *SpotInstancePolicy) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SpotInstancePolicy) Set(v string) error {
 	switch v {
-	case `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
+	case ``, `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
 		*f = SpotInstancePolicy(v)
 		return nil
 	default:
@@ -2916,7 +2916,7 @@ func (f *State) String() string {
 // Set raw string value and validate it against allowed values
 func (f *State) Set(v string) error {
 	switch v {
-	case `DELETED`, `DELETING`, `RUNNING`, `STARTING`, `STOPPED`, `STOPPING`:
+	case ``, `DELETED`, `DELETING`, `RUNNING`, `STARTING`, `STOPPED`, `STOPPING`:
 		*f = State(v)
 		return nil
 	default:
@@ -2990,7 +2990,7 @@ func (f *StatementState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *StatementState) Set(v string) error {
 	switch v {
-	case `CANCELED`, `CLOSED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCEEDED`:
+	case ``, `CANCELED`, `CLOSED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCEEDED`:
 		*f = StatementState(v)
 		return nil
 	default:
@@ -3036,7 +3036,7 @@ func (f *Status) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Status) Set(v string) error {
 	switch v {
-	case `DEGRADED`, `FAILED`, `HEALTHY`, `STATUS_UNSPECIFIED`:
+	case ``, `DEGRADED`, `FAILED`, `HEALTHY`, `STATUS_UNSPECIFIED`:
 		*f = Status(v)
 		return nil
 	default:
@@ -3071,7 +3071,7 @@ func (f *SuccessMessage) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SuccessMessage) Set(v string) error {
 	switch v {
-	case `Success`:
+	case ``, `Success`:
 		*f = SuccessMessage(v)
 		return nil
 	default:
@@ -3263,7 +3263,7 @@ func (f *TerminationReasonCode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationReasonCode) Set(v string) error {
 	switch v {
-	case `ABUSE_DETECTED`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_SHUTDOWN`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `DATABASE_CONNECTION_FAILURE`, `DBFS_COMPONENT_UNHEALTHY`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `EXECUTION_COMPONENT_UNHEALTHY`, `GCP_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_UNREACHABLE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_SPARK_IMAGE`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `STORAGE_DOWNLOAD_FAILURE`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`:
+	case ``, `ABUSE_DETECTED`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_SHUTDOWN`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `DATABASE_CONNECTION_FAILURE`, `DBFS_COMPONENT_UNHEALTHY`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `EXECUTION_COMPONENT_UNHEALTHY`, `GCP_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_UNREACHABLE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_SPARK_IMAGE`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `STORAGE_DOWNLOAD_FAILURE`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`:
 		*f = TerminationReasonCode(v)
 		return nil
 	default:
@@ -3295,7 +3295,7 @@ func (f *TerminationReasonType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationReasonType) Set(v string) error {
 	switch v {
-	case `CLIENT_ERROR`, `CLOUD_FAILURE`, `SERVICE_FAULT`, `SUCCESS`:
+	case ``, `CLIENT_ERROR`, `CLOUD_FAILURE`, `SERVICE_FAULT`, `SUCCESS`:
 		*f = TerminationReasonType(v)
 		return nil
 	default:
@@ -3493,7 +3493,7 @@ func (f *WarehousePermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WarehousePermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_MANAGE`, `CAN_USE`, `IS_OWNER`:
+	case ``, `CAN_MANAGE`, `CAN_USE`, `IS_OWNER`:
 		*f = WarehousePermissionLevel(v)
 		return nil
 	default:
@@ -3581,7 +3581,7 @@ func (f *WarehouseTypePairWarehouseType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WarehouseTypePairWarehouseType) Set(v string) error {
 	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+	case ``, `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
 		*f = WarehouseTypePairWarehouseType(v)
 		return nil
 	default:

@@ -26,7 +26,7 @@ func (f *AuthenticationType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AuthenticationType) Set(v string) error {
 	switch v {
-	case `DATABRICKS`, `TOKEN`:
+	case ``, `DATABRICKS`, `TOKEN`:
 		*f = AuthenticationType(v)
 		return nil
 	default:
@@ -325,7 +325,7 @@ func (f *ColumnTypeName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ColumnTypeName) Set(v string) error {
 	switch v {
-	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`:
+	case ``, `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`:
 		*f = ColumnTypeName(v)
 		return nil
 	default:
@@ -658,7 +658,7 @@ func (f *PartitionValueOp) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PartitionValueOp) Set(v string) error {
 	switch v {
-	case `EQUAL`, `LIKE`:
+	case ``, `EQUAL`, `LIKE`:
 		*f = PartitionValueOp(v)
 		return nil
 	default:
@@ -763,7 +763,7 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case ``, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
@@ -1132,7 +1132,7 @@ func (f *SharedDataObjectHistoryDataSharingStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SharedDataObjectHistoryDataSharingStatus) Set(v string) error {
 	switch v {
-	case `DISABLED`, `ENABLED`:
+	case ``, `DISABLED`, `ENABLED`:
 		*f = SharedDataObjectHistoryDataSharingStatus(v)
 		return nil
 	default:
@@ -1160,7 +1160,7 @@ func (f *SharedDataObjectStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SharedDataObjectStatus) Set(v string) error {
 	switch v {
-	case `ACTIVE`, `PERMISSION_DENIED`:
+	case ``, `ACTIVE`, `PERMISSION_DENIED`:
 		*f = SharedDataObjectStatus(v)
 		return nil
 	default:
@@ -1197,7 +1197,7 @@ func (f *SharedDataObjectUpdateAction) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SharedDataObjectUpdateAction) Set(v string) error {
 	switch v {
-	case `ADD`, `REMOVE`, `UPDATE`:
+	case ``, `ADD`, `REMOVE`, `UPDATE`:
 		*f = SharedDataObjectUpdateAction(v)
 		return nil
 	default:

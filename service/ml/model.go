@@ -102,7 +102,7 @@ func (f *ActivityAction) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ActivityAction) Set(v string) error {
 	switch v {
-	case `APPROVE_TRANSITION_REQUEST`, `CANCEL_TRANSITION_REQUEST`, `REJECT_TRANSITION_REQUEST`:
+	case ``, `APPROVE_TRANSITION_REQUEST`, `CANCEL_TRANSITION_REQUEST`, `REJECT_TRANSITION_REQUEST`:
 		*f = ActivityAction(v)
 		return nil
 	default:
@@ -159,7 +159,7 @@ func (f *ActivityType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ActivityType) Set(v string) error {
 	switch v {
-	case `APPLIED_TRANSITION`, `APPROVED_REQUEST`, `CANCELLED_REQUEST`, `NEW_COMMENT`, `REJECTED_REQUEST`, `REQUESTED_TRANSITION`, `SYSTEM_TRANSITION`:
+	case ``, `APPLIED_TRANSITION`, `APPROVED_REQUEST`, `CANCELLED_REQUEST`, `NEW_COMMENT`, `REJECTED_REQUEST`, `REQUESTED_TRANSITION`, `SYSTEM_TRANSITION`:
 		*f = ActivityType(v)
 		return nil
 	default:
@@ -229,7 +229,7 @@ func (f *CommentActivityAction) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CommentActivityAction) Set(v string) error {
 	switch v {
-	case `DELETE_COMMENT`, `EDIT_COMMENT`:
+	case ``, `DELETE_COMMENT`, `EDIT_COMMENT`:
 		*f = CommentActivityAction(v)
 		return nil
 	default:
@@ -692,7 +692,7 @@ func (f *DeleteTransitionRequestStage) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DeleteTransitionRequestStage) Set(v string) error {
 	switch v {
-	case `Archived`, `None`, `Production`, `Staging`:
+	case ``, `Archived`, `None`, `Production`, `Staging`:
 		*f = DeleteTransitionRequestStage(v)
 		return nil
 	default:
@@ -829,7 +829,7 @@ func (f *ExperimentPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ExperimentPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`:
+	case ``, `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`:
 		*f = ExperimentPermissionLevel(v)
 		return nil
 	default:
@@ -1710,7 +1710,7 @@ func (f *ModelVersionStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ModelVersionStatus) Set(v string) error {
 	switch v {
-	case `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
+	case ``, `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
 		*f = ModelVersionStatus(v)
 		return nil
 	default:
@@ -1779,7 +1779,7 @@ func (f *PermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`:
+	case ``, `CAN_EDIT`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`:
 		*f = PermissionLevel(v)
 		return nil
 	default:
@@ -1876,7 +1876,7 @@ func (f *RegisteredModelPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RegisteredModelPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`:
+	case ``, `CAN_EDIT`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`:
 		*f = RegisteredModelPermissionLevel(v)
 		return nil
 	default:
@@ -2033,7 +2033,7 @@ func (f *RegistryWebhookEvent) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RegistryWebhookEvent) Set(v string) error {
 	switch v {
-	case `COMMENT_CREATED`, `MODEL_VERSION_CREATED`, `MODEL_VERSION_TAG_SET`, `MODEL_VERSION_TRANSITIONED_STAGE`, `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`, `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`, `MODEL_VERSION_TRANSITIONED_TO_STAGING`, `REGISTERED_MODEL_CREATED`, `TRANSITION_REQUEST_CREATED`, `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`, `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`, `TRANSITION_REQUEST_TO_STAGING_CREATED`:
+	case ``, `COMMENT_CREATED`, `MODEL_VERSION_CREATED`, `MODEL_VERSION_TAG_SET`, `MODEL_VERSION_TRANSITIONED_STAGE`, `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`, `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`, `MODEL_VERSION_TRANSITIONED_TO_STAGING`, `REGISTERED_MODEL_CREATED`, `TRANSITION_REQUEST_CREATED`, `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`, `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`, `TRANSITION_REQUEST_TO_STAGING_CREATED`:
 		*f = RegistryWebhookEvent(v)
 		return nil
 	default:
@@ -2074,7 +2074,7 @@ func (f *RegistryWebhookStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RegistryWebhookStatus) Set(v string) error {
 	switch v {
-	case `ACTIVE`, `DISABLED`, `TEST_MODE`:
+	case ``, `ACTIVE`, `DISABLED`, `TEST_MODE`:
 		*f = RegistryWebhookStatus(v)
 		return nil
 	default:
@@ -2265,7 +2265,7 @@ func (f *RunInfoStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunInfoStatus) Set(v string) error {
 	switch v {
-	case `FAILED`, `FINISHED`, `KILLED`, `RUNNING`, `SCHEDULED`:
+	case ``, `FAILED`, `FINISHED`, `KILLED`, `RUNNING`, `SCHEDULED`:
 		*f = RunInfoStatus(v)
 		return nil
 	default:
@@ -2364,7 +2364,7 @@ func (f *SearchExperimentsViewType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SearchExperimentsViewType) Set(v string) error {
 	switch v {
-	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
+	case ``, `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
 		*f = SearchExperimentsViewType(v)
 		return nil
 	default:
@@ -2541,7 +2541,7 @@ func (f *SearchRunsRunViewType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SearchRunsRunViewType) Set(v string) error {
 	switch v {
-	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
+	case ``, `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
 		*f = SearchRunsRunViewType(v)
 		return nil
 	default:
@@ -2652,7 +2652,7 @@ func (f *Stage) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Stage) Set(v string) error {
 	switch v {
-	case `Archived`, `None`, `Production`, `Staging`:
+	case ``, `Archived`, `None`, `Production`, `Staging`:
 		*f = Stage(v)
 		return nil
 	default:
@@ -2692,7 +2692,7 @@ func (f *Status) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Status) Set(v string) error {
 	switch v {
-	case `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
+	case ``, `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
 		*f = Status(v)
 		return nil
 	default:
@@ -2984,7 +2984,7 @@ func (f *UpdateRunStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UpdateRunStatus) Set(v string) error {
 	switch v {
-	case `FAILED`, `FINISHED`, `KILLED`, `RUNNING`, `SCHEDULED`:
+	case ``, `FAILED`, `FINISHED`, `KILLED`, `RUNNING`, `SCHEDULED`:
 		*f = UpdateRunStatus(v)
 		return nil
 	default:

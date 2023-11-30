@@ -33,7 +33,7 @@ func (f *AclPermission) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AclPermission) Set(v string) error {
 	switch v {
-	case `MANAGE`, `READ`, `WRITE`:
+	case ``, `MANAGE`, `READ`, `WRITE`:
 		*f = AclPermission(v)
 		return nil
 	default:
@@ -243,7 +243,7 @@ func (f *ExportFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ExportFormat) Set(v string) error {
 	switch v {
-	case `AUTO`, `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
+	case ``, `AUTO`, `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
 		*f = ExportFormat(v)
 		return nil
 	default:
@@ -471,7 +471,7 @@ func (f *ImportFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ImportFormat) Set(v string) error {
 	switch v {
-	case `AUTO`, `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
+	case ``, `AUTO`, `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
 		*f = ImportFormat(v)
 		return nil
 	default:
@@ -504,7 +504,7 @@ func (f *Language) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Language) Set(v string) error {
 	switch v {
-	case `PYTHON`, `R`, `SCALA`, `SQL`:
+	case ``, `PYTHON`, `R`, `SCALA`, `SQL`:
 		*f = Language(v)
 		return nil
 	default:
@@ -674,7 +674,7 @@ func (f *ObjectType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ObjectType) Set(v string) error {
 	switch v {
-	case `DIRECTORY`, `FILE`, `LIBRARY`, `NOTEBOOK`, `REPO`:
+	case ``, `DIRECTORY`, `FILE`, `LIBRARY`, `NOTEBOOK`, `REPO`:
 		*f = ObjectType(v)
 		return nil
 	default:
@@ -830,7 +830,7 @@ func (f *RepoPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RepoPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`, `CAN_RUN`:
+	case ``, `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`, `CAN_RUN`:
 		*f = RepoPermissionLevel(v)
 		return nil
 	default:
@@ -897,7 +897,7 @@ func (f *ScopeBackendType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ScopeBackendType) Set(v string) error {
 	switch v {
-	case `AZURE_KEYVAULT`, `DATABRICKS`:
+	case ``, `AZURE_KEYVAULT`, `DATABRICKS`:
 		*f = ScopeBackendType(v)
 		return nil
 	default:
@@ -1088,7 +1088,7 @@ func (f *WorkspaceObjectPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WorkspaceObjectPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`, `CAN_RUN`:
+	case ``, `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`, `CAN_RUN`:
 		*f = WorkspaceObjectPermissionLevel(v)
 		return nil
 	default:

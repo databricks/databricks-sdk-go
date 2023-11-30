@@ -246,7 +246,7 @@ func (f *GetSortOrder) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GetSortOrder) Set(v string) error {
 	switch v {
-	case `ascending`, `descending`:
+	case ``, `ascending`, `descending`:
 		*f = GetSortOrder(v)
 		return nil
 	default:
@@ -322,7 +322,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -355,7 +355,7 @@ func (f *GroupSchema) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GroupSchema) Set(v string) error {
 	switch v {
-	case `urn:ietf:params:scim:schemas:core:2.0:Group`:
+	case ``, `urn:ietf:params:scim:schemas:core:2.0:Group`:
 		*f = GroupSchema(v)
 		return nil
 	default:
@@ -541,7 +541,7 @@ func (f *ListResponseSchema) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ListResponseSchema) Set(v string) error {
 	switch v {
-	case `urn:ietf:params:scim:api:messages:2.0:ListResponse`:
+	case ``, `urn:ietf:params:scim:api:messages:2.0:ListResponse`:
 		*f = ListResponseSchema(v)
 		return nil
 	default:
@@ -626,7 +626,7 @@ func (f *ListSortOrder) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ListSortOrder) Set(v string) error {
 	switch v {
-	case `ascending`, `descending`:
+	case ``, `ascending`, `descending`:
 		*f = ListSortOrder(v)
 		return nil
 	default:
@@ -825,7 +825,7 @@ func (f *PasswordPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PasswordPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_USE`:
+	case ``, `CAN_USE`:
 		*f = PasswordPermissionLevel(v)
 		return nil
 	default:
@@ -912,7 +912,7 @@ func (f *PatchOp) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PatchOp) Set(v string) error {
 	switch v {
-	case `add`, `remove`, `replace`:
+	case ``, `add`, `remove`, `replace`:
 		*f = PatchOp(v)
 		return nil
 	default:
@@ -937,7 +937,7 @@ func (f *PatchSchema) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PatchSchema) Set(v string) error {
 	switch v {
-	case `urn:ietf:params:scim:api:messages:2.0:PatchOp`:
+	case ``, `urn:ietf:params:scim:api:messages:2.0:PatchOp`:
 		*f = PatchSchema(v)
 		return nil
 	default:
@@ -1033,7 +1033,7 @@ func (f *PermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_ATTACH_TO`, `CAN_BIND`, `CAN_EDIT`, `CAN_EDIT_METADATA`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_RUN`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`, `CAN_RESTART`, `CAN_RUN`, `CAN_USE`, `CAN_VIEW`, `CAN_VIEW_METADATA`, `IS_OWNER`:
+	case ``, `CAN_ATTACH_TO`, `CAN_BIND`, `CAN_EDIT`, `CAN_EDIT_METADATA`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_RUN`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`, `CAN_RESTART`, `CAN_RUN`, `CAN_USE`, `CAN_VIEW`, `CAN_VIEW_METADATA`, `IS_OWNER`:
 		*f = PermissionLevel(v)
 		return nil
 	default:
@@ -1179,7 +1179,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
@@ -1208,7 +1208,7 @@ func (f *ServicePrincipalSchema) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ServicePrincipalSchema) Set(v string) error {
 	switch v {
-	case `urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal`:
+	case ``, `urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal`:
 		*f = ServicePrincipalSchema(v)
 		return nil
 	default:
@@ -1293,7 +1293,7 @@ func (f *UserSchema) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UserSchema) Set(v string) error {
 	switch v {
-	case `urn:ietf:params:scim:schemas:core:2.0:User`:
+	case ``, `urn:ietf:params:scim:schemas:core:2.0:User`:
 		*f = UserSchema(v)
 		return nil
 	default:
@@ -1322,7 +1322,7 @@ func (f *WorkspacePermission) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WorkspacePermission) Set(v string) error {
 	switch v {
-	case `ADMIN`, `UNKNOWN`, `USER`:
+	case ``, `ADMIN`, `UNKNOWN`, `USER`:
 		*f = WorkspacePermission(v)
 		return nil
 	default:

@@ -223,7 +223,7 @@ func (f *EventLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EventLevel) Set(v string) error {
 	switch v {
-	case `ERROR`, `INFO`, `METRICS`, `WARN`:
+	case ``, `ERROR`, `INFO`, `METRICS`, `WARN`:
 		*f = EventLevel(v)
 		return nil
 	default:
@@ -332,7 +332,7 @@ func (f *GetPipelineResponseHealth) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GetPipelineResponseHealth) Set(v string) error {
 	switch v {
-	case `HEALTHY`, `UNHEALTHY`:
+	case ``, `HEALTHY`, `UNHEALTHY`:
 		*f = GetPipelineResponseHealth(v)
 		return nil
 	default:
@@ -526,7 +526,7 @@ func (f *MaturityLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MaturityLevel) Set(v string) error {
 	switch v {
-	case `DEPRECATED`, `EVOLVING`, `STABLE`:
+	case ``, `DEPRECATED`, `EVOLVING`, `STABLE`:
 		*f = MaturityLevel(v)
 		return nil
 	default:
@@ -851,7 +851,7 @@ func (f *PipelinePermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PipelinePermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`, `IS_OWNER`:
+	case ``, `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`, `IS_OWNER`:
 		*f = PipelinePermissionLevel(v)
 		return nil
 	default:
@@ -986,7 +986,7 @@ func (f *PipelineState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PipelineState) Set(v string) error {
 	switch v {
-	case `DELETED`, `DEPLOYING`, `FAILED`, `IDLE`, `RECOVERING`, `RESETTING`, `RUNNING`, `STARTING`, `STOPPING`:
+	case ``, `DELETED`, `DEPLOYING`, `FAILED`, `IDLE`, `RECOVERING`, `RESETTING`, `RUNNING`, `STARTING`, `STOPPING`:
 		*f = PipelineState(v)
 		return nil
 	default:
@@ -1146,7 +1146,7 @@ func (f *StartUpdateCause) String() string {
 // Set raw string value and validate it against allowed values
 func (f *StartUpdateCause) Set(v string) error {
 	switch v {
-	case `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
+	case ``, `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
 		*f = StartUpdateCause(v)
 		return nil
 	default:
@@ -1241,7 +1241,7 @@ func (f *UpdateInfoCause) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UpdateInfoCause) Set(v string) error {
 	switch v {
-	case `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
+	case ``, `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
 		*f = UpdateInfoCause(v)
 		return nil
 	default:
@@ -1287,7 +1287,7 @@ func (f *UpdateInfoState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UpdateInfoState) Set(v string) error {
 	switch v {
-	case `CANCELED`, `COMPLETED`, `CREATED`, `FAILED`, `INITIALIZING`, `QUEUED`, `RESETTING`, `RUNNING`, `SETTING_UP_TABLES`, `STOPPING`, `WAITING_FOR_RESOURCES`:
+	case ``, `CANCELED`, `COMPLETED`, `CREATED`, `FAILED`, `INITIALIZING`, `QUEUED`, `RESETTING`, `RUNNING`, `SETTING_UP_TABLES`, `STOPPING`, `WAITING_FOR_RESOURCES`:
 		*f = UpdateInfoState(v)
 		return nil
 	default:
@@ -1350,7 +1350,7 @@ func (f *UpdateStateInfoState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UpdateStateInfoState) Set(v string) error {
 	switch v {
-	case `CANCELED`, `COMPLETED`, `CREATED`, `FAILED`, `INITIALIZING`, `QUEUED`, `RESETTING`, `RUNNING`, `SETTING_UP_TABLES`, `STOPPING`, `WAITING_FOR_RESOURCES`:
+	case ``, `CANCELED`, `COMPLETED`, `CREATED`, `FAILED`, `INITIALIZING`, `QUEUED`, `RESETTING`, `RUNNING`, `SETTING_UP_TABLES`, `STOPPING`, `WAITING_FOR_RESOURCES`:
 		*f = UpdateStateInfoState(v)
 		return nil
 	default:

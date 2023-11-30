@@ -304,7 +304,7 @@ func (f *ConditionTaskOp) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConditionTaskOp) Set(v string) error {
 	switch v {
-	case `EQUAL_TO`, `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL`, `NOT_EQUAL`:
+	case ``, `EQUAL_TO`, `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL`, `NOT_EQUAL`:
 		*f = ConditionTaskOp(v)
 		return nil
 	default:
@@ -455,7 +455,7 @@ func (f *CreateJobEditMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CreateJobEditMode) Set(v string) error {
 	switch v {
-	case `EDITABLE`, `UI_LOCKED`:
+	case ``, `EDITABLE`, `UI_LOCKED`:
 		*f = CreateJobEditMode(v)
 		return nil
 	default:
@@ -622,7 +622,7 @@ func (f *Format) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Format) Set(v string) error {
 	switch v {
-	case `MULTI_TASK`, `SINGLE_TASK`:
+	case ``, `MULTI_TASK`, `SINGLE_TASK`:
 		*f = Format(v)
 		return nil
 	default:
@@ -712,7 +712,7 @@ func (f *GitProvider) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GitProvider) Set(v string) error {
 	switch v {
-	case `awsCodeCommit`, `azureDevOpsServices`, `bitbucketCloud`, `bitbucketServer`, `gitHub`, `gitHubEnterprise`, `gitLab`, `gitLabEnterpriseEdition`:
+	case ``, `awsCodeCommit`, `azureDevOpsServices`, `bitbucketCloud`, `bitbucketServer`, `gitHub`, `gitHubEnterprise`, `gitLab`, `gitLabEnterpriseEdition`:
 		*f = GitProvider(v)
 		return nil
 	default:
@@ -919,7 +919,7 @@ func (f *JobDeploymentKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *JobDeploymentKind) Set(v string) error {
 	switch v {
-	case `BUNDLE`:
+	case ``, `BUNDLE`:
 		*f = JobDeploymentKind(v)
 		return nil
 	default:
@@ -1052,7 +1052,7 @@ func (f *JobPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *JobPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_MANAGE`, `CAN_MANAGE_RUN`, `CAN_VIEW`, `IS_OWNER`:
+	case ``, `CAN_MANAGE`, `CAN_MANAGE_RUN`, `CAN_VIEW`, `IS_OWNER`:
 		*f = JobPermissionLevel(v)
 		return nil
 	default:
@@ -1260,7 +1260,7 @@ func (f *JobSettingsEditMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *JobSettingsEditMode) Set(v string) error {
 	switch v {
-	case `EDITABLE`, `UI_LOCKED`:
+	case ``, `EDITABLE`, `UI_LOCKED`:
 		*f = JobSettingsEditMode(v)
 		return nil
 	default:
@@ -1319,7 +1319,7 @@ func (f *JobSourceDirtyState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *JobSourceDirtyState) Set(v string) error {
 	switch v {
-	case `DISCONNECTED`, `NOT_SYNCED`:
+	case ``, `DISCONNECTED`, `NOT_SYNCED`:
 		*f = JobSourceDirtyState(v)
 		return nil
 	default:
@@ -1346,7 +1346,7 @@ func (f *JobsHealthMetric) String() string {
 // Set raw string value and validate it against allowed values
 func (f *JobsHealthMetric) Set(v string) error {
 	switch v {
-	case `RUN_DURATION_SECONDS`:
+	case ``, `RUN_DURATION_SECONDS`:
 		*f = JobsHealthMetric(v)
 		return nil
 	default:
@@ -1373,7 +1373,7 @@ func (f *JobsHealthOperator) String() string {
 // Set raw string value and validate it against allowed values
 func (f *JobsHealthOperator) Set(v string) error {
 	switch v {
-	case `GREATER_THAN`:
+	case ``, `GREATER_THAN`:
 		*f = JobsHealthOperator(v)
 		return nil
 	default:
@@ -1563,7 +1563,7 @@ func (f *ListRunsRunType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ListRunsRunType) Set(v string) error {
 	switch v {
-	case `JOB_RUN`, `SUBMIT_RUN`, `WORKFLOW_RUN`:
+	case ``, `JOB_RUN`, `SUBMIT_RUN`, `WORKFLOW_RUN`:
 		*f = ListRunsRunType(v)
 		return nil
 	default:
@@ -1650,7 +1650,7 @@ func (f *PauseStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PauseStatus) Set(v string) error {
 	switch v {
-	case `PAUSED`, `UNPAUSED`:
+	case ``, `PAUSED`, `UNPAUSED`:
 		*f = PauseStatus(v)
 		return nil
 	default:
@@ -1770,7 +1770,7 @@ func (f *RepairHistoryItemType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RepairHistoryItemType) Set(v string) error {
 	switch v {
-	case `ORIGINAL`, `REPAIR`:
+	case ``, `ORIGINAL`, `REPAIR`:
 		*f = RepairHistoryItemType(v)
 		return nil
 	default:
@@ -2164,7 +2164,7 @@ func (f *RunConditionTaskOp) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunConditionTaskOp) Set(v string) error {
 	switch v {
-	case `EQUAL_TO`, `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL`, `NOT_EQUAL`:
+	case ``, `EQUAL_TO`, `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL`, `NOT_EQUAL`:
 		*f = RunConditionTaskOp(v)
 		return nil
 	default:
@@ -2215,7 +2215,7 @@ func (f *RunIf) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunIf) Set(v string) error {
 	switch v {
-	case `ALL_DONE`, `ALL_FAILED`, `ALL_SUCCESS`, `AT_LEAST_ONE_FAILED`, `AT_LEAST_ONE_SUCCESS`, `NONE_FAILED`:
+	case ``, `ALL_DONE`, `ALL_FAILED`, `ALL_SUCCESS`, `AT_LEAST_ONE_FAILED`, `AT_LEAST_ONE_SUCCESS`, `NONE_FAILED`:
 		*f = RunIf(v)
 		return nil
 	default:
@@ -2308,7 +2308,7 @@ func (f *RunLifeCycleState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunLifeCycleState) Set(v string) error {
 	switch v {
-	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `QUEUED`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
+	case ``, `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `QUEUED`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
 		*f = RunLifeCycleState(v)
 		return nil
 	default:
@@ -2638,7 +2638,7 @@ func (f *RunResultState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunResultState) Set(v string) error {
 	switch v {
-	case `CANCELED`, `EXCLUDED`, `FAILED`, `MAXIMUM_CONCURRENT_RUNS_REACHED`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `TIMEDOUT`, `UPSTREAM_CANCELED`, `UPSTREAM_FAILED`:
+	case ``, `CANCELED`, `EXCLUDED`, `FAILED`, `MAXIMUM_CONCURRENT_RUNS_REACHED`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `TIMEDOUT`, `UPSTREAM_CANCELED`, `UPSTREAM_FAILED`:
 		*f = RunResultState(v)
 		return nil
 	default:
@@ -2847,7 +2847,7 @@ func (f *RunType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunType) Set(v string) error {
 	switch v {
-	case `JOB_RUN`, `SUBMIT_RUN`, `WORKFLOW_RUN`:
+	case ``, `JOB_RUN`, `SUBMIT_RUN`, `WORKFLOW_RUN`:
 		*f = RunType(v)
 		return nil
 	default:
@@ -2874,7 +2874,7 @@ func (f *Source) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Source) Set(v string) error {
 	switch v {
-	case `GIT`, `WORKSPACE`:
+	case ``, `GIT`, `WORKSPACE`:
 		*f = Source(v)
 		return nil
 	default:
@@ -3001,7 +3001,7 @@ func (f *SqlAlertState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SqlAlertState) Set(v string) error {
 	switch v {
-	case `OK`, `TRIGGERED`, `UNKNOWN`:
+	case ``, `OK`, `TRIGGERED`, `UNKNOWN`:
 		*f = SqlAlertState(v)
 		return nil
 	default:
@@ -3079,7 +3079,7 @@ func (f *SqlDashboardWidgetOutputStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SqlDashboardWidgetOutputStatus) Set(v string) error {
 	switch v {
-	case `CANCELLED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCESS`:
+	case ``, `CANCELLED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCESS`:
 		*f = SqlDashboardWidgetOutputStatus(v)
 		return nil
 	default:
@@ -3684,7 +3684,7 @@ func (f *TriggerType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TriggerType) Set(v string) error {
 	switch v {
-	case `FILE_ARRIVAL`, `ONE_TIME`, `PERIODIC`, `RETRY`, `RUN_JOB_TASK`:
+	case ``, `FILE_ARRIVAL`, `ONE_TIME`, `PERIODIC`, `RETRY`, `RUN_JOB_TASK`:
 		*f = TriggerType(v)
 		return nil
 	default:
@@ -3756,7 +3756,7 @@ func (f *ViewType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ViewType) Set(v string) error {
 	switch v {
-	case `DASHBOARD`, `NOTEBOOK`:
+	case ``, `DASHBOARD`, `NOTEBOOK`:
 		*f = ViewType(v)
 		return nil
 	default:
@@ -3790,7 +3790,7 @@ func (f *ViewsToExport) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ViewsToExport) Set(v string) error {
 	switch v {
-	case `ALL`, `CODE`, `DASHBOARDS`:
+	case ``, `ALL`, `CODE`, `DASHBOARDS`:
 		*f = ViewsToExport(v)
 		return nil
 	default:

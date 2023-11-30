@@ -108,7 +108,7 @@ func (f *ArtifactType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ArtifactType) Set(v string) error {
 	switch v {
-	case `INIT_SCRIPT`, `LIBRARY_JAR`, `LIBRARY_MAVEN`:
+	case ``, `INIT_SCRIPT`, `LIBRARY_JAR`, `LIBRARY_MAVEN`:
 		*f = ArtifactType(v)
 		return nil
 	default:
@@ -287,7 +287,7 @@ func (f *CatalogInfoSecurableKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CatalogInfoSecurableKind) Set(v string) error {
 	switch v {
-	case `CATALOG_DELTASHARING`, `CATALOG_FOREIGN_BIGQUERY`, `CATALOG_FOREIGN_DATABRICKS`, `CATALOG_FOREIGN_MYSQL`, `CATALOG_FOREIGN_POSTGRESQL`, `CATALOG_FOREIGN_REDSHIFT`, `CATALOG_FOREIGN_SNOWFLAKE`, `CATALOG_FOREIGN_SQLDW`, `CATALOG_FOREIGN_SQLSERVER`, `CATALOG_INTERNAL`, `CATALOG_ONLINE`, `CATALOG_ONLINE_INDEX`, `CATALOG_STANDARD`, `CATALOG_SYSTEM`, `CATALOG_SYSTEM_DELTASHARING`:
+	case ``, `CATALOG_DELTASHARING`, `CATALOG_FOREIGN_BIGQUERY`, `CATALOG_FOREIGN_DATABRICKS`, `CATALOG_FOREIGN_MYSQL`, `CATALOG_FOREIGN_POSTGRESQL`, `CATALOG_FOREIGN_REDSHIFT`, `CATALOG_FOREIGN_SNOWFLAKE`, `CATALOG_FOREIGN_SQLDW`, `CATALOG_FOREIGN_SQLSERVER`, `CATALOG_INTERNAL`, `CATALOG_ONLINE`, `CATALOG_ONLINE_INDEX`, `CATALOG_STANDARD`, `CATALOG_SYSTEM`, `CATALOG_SYSTEM_DELTASHARING`:
 		*f = CatalogInfoSecurableKind(v)
 		return nil
 	default:
@@ -317,7 +317,7 @@ func (f *CatalogType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CatalogType) Set(v string) error {
 	switch v {
-	case `DELTASHARING_CATALOG`, `MANAGED_CATALOG`, `SYSTEM_CATALOG`:
+	case ``, `DELTASHARING_CATALOG`, `MANAGED_CATALOG`, `SYSTEM_CATALOG`:
 		*f = CatalogType(v)
 		return nil
 	default:
@@ -440,7 +440,7 @@ func (f *ColumnTypeName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ColumnTypeName) Set(v string) error {
 	switch v {
-	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`:
+	case ``, `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`:
 		*f = ColumnTypeName(v)
 		return nil
 	default:
@@ -534,7 +534,7 @@ func (f *ConnectionInfoSecurableKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionInfoSecurableKind) Set(v string) error {
 	switch v {
-	case `CONNECTION_BIGQUERY`, `CONNECTION_DATABRICKS`, `CONNECTION_MYSQL`, `CONNECTION_ONLINE_CATALOG`, `CONNECTION_POSTGRESQL`, `CONNECTION_REDSHIFT`, `CONNECTION_SNOWFLAKE`, `CONNECTION_SQLDW`, `CONNECTION_SQLSERVER`:
+	case ``, `CONNECTION_BIGQUERY`, `CONNECTION_DATABRICKS`, `CONNECTION_MYSQL`, `CONNECTION_ONLINE_CATALOG`, `CONNECTION_POSTGRESQL`, `CONNECTION_REDSHIFT`, `CONNECTION_SNOWFLAKE`, `CONNECTION_SQLDW`, `CONNECTION_SQLSERVER`:
 		*f = ConnectionInfoSecurableKind(v)
 		return nil
 	default:
@@ -572,7 +572,7 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `DATABRICKS`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
+	case ``, `DATABRICKS`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
 		*f = ConnectionType(v)
 		return nil
 	default:
@@ -745,7 +745,7 @@ func (f *CreateFunctionParameterStyle) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CreateFunctionParameterStyle) Set(v string) error {
 	switch v {
-	case `S`:
+	case ``, `S`:
 		*f = CreateFunctionParameterStyle(v)
 		return nil
 	default:
@@ -781,7 +781,7 @@ func (f *CreateFunctionRoutineBody) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CreateFunctionRoutineBody) Set(v string) error {
 	switch v {
-	case `EXTERNAL`, `SQL`:
+	case ``, `EXTERNAL`, `SQL`:
 		*f = CreateFunctionRoutineBody(v)
 		return nil
 	default:
@@ -807,7 +807,7 @@ func (f *CreateFunctionSecurityType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CreateFunctionSecurityType) Set(v string) error {
 	switch v {
-	case `DEFINER`:
+	case ``, `DEFINER`:
 		*f = CreateFunctionSecurityType(v)
 		return nil
 	default:
@@ -837,7 +837,7 @@ func (f *CreateFunctionSqlDataAccess) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CreateFunctionSqlDataAccess) Set(v string) error {
 	switch v {
-	case `CONTAINS_SQL`, `NO_SQL`, `READS_SQL_DATA`:
+	case ``, `CONTAINS_SQL`, `NO_SQL`, `READS_SQL_DATA`:
 		*f = CreateFunctionSqlDataAccess(v)
 		return nil
 	default:
@@ -1004,7 +1004,7 @@ func (f *CredentialType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CredentialType) Set(v string) error {
 	switch v {
-	case `USERNAME_PASSWORD`:
+	case ``, `USERNAME_PASSWORD`:
 		*f = CredentialType(v)
 		return nil
 	default:
@@ -1052,7 +1052,7 @@ func (f *DataSourceFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DataSourceFormat) Set(v string) error {
 	switch v {
-	case `AVRO`, `CSV`, `DELTA`, `DELTASHARING`, `JSON`, `ORC`, `PARQUET`, `TEXT`, `UNITY_CATALOG`:
+	case ``, `AVRO`, `CSV`, `DELTA`, `DELTASHARING`, `JSON`, `ORC`, `PARQUET`, `TEXT`, `UNITY_CATALOG`:
 		*f = DataSourceFormat(v)
 		return nil
 	default:
@@ -1329,7 +1329,7 @@ func (f *DisableSchemaName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DisableSchemaName) Set(v string) error {
 	switch v {
-	case `access`, `billing`, `lineage`, `operational_data`:
+	case ``, `access`, `billing`, `lineage`, `operational_data`:
 		*f = DisableSchemaName(v)
 		return nil
 	default:
@@ -1386,7 +1386,7 @@ func (f *EffectivePredictiveOptimizationFlagInheritedFromType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Set(v string) error {
 	switch v {
-	case `CATALOG`, `SCHEMA`:
+	case ``, `CATALOG`, `SCHEMA`:
 		*f = EffectivePredictiveOptimizationFlagInheritedFromType(v)
 		return nil
 	default:
@@ -1458,7 +1458,7 @@ func (f *EnablePredictiveOptimization) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EnablePredictiveOptimization) Set(v string) error {
 	switch v {
-	case `DISABLE`, `ENABLE`, `INHERIT`:
+	case ``, `DISABLE`, `ENABLE`, `INHERIT`:
 		*f = EnablePredictiveOptimization(v)
 		return nil
 	default:
@@ -1497,7 +1497,7 @@ func (f *EnableSchemaName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EnableSchemaName) Set(v string) error {
 	switch v {
-	case `access`, `billing`, `lineage`, `operational_data`:
+	case ``, `access`, `billing`, `lineage`, `operational_data`:
 		*f = EnableSchemaName(v)
 		return nil
 	default:
@@ -1665,7 +1665,7 @@ func (f *FunctionInfoParameterStyle) String() string {
 // Set raw string value and validate it against allowed values
 func (f *FunctionInfoParameterStyle) Set(v string) error {
 	switch v {
-	case `S`:
+	case ``, `S`:
 		*f = FunctionInfoParameterStyle(v)
 		return nil
 	default:
@@ -1696,7 +1696,7 @@ func (f *FunctionInfoRoutineBody) String() string {
 // Set raw string value and validate it against allowed values
 func (f *FunctionInfoRoutineBody) Set(v string) error {
 	switch v {
-	case `EXTERNAL`, `SQL`:
+	case ``, `EXTERNAL`, `SQL`:
 		*f = FunctionInfoRoutineBody(v)
 		return nil
 	default:
@@ -1722,7 +1722,7 @@ func (f *FunctionInfoSecurityType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *FunctionInfoSecurityType) Set(v string) error {
 	switch v {
-	case `DEFINER`:
+	case ``, `DEFINER`:
 		*f = FunctionInfoSecurityType(v)
 		return nil
 	default:
@@ -1752,7 +1752,7 @@ func (f *FunctionInfoSqlDataAccess) String() string {
 // Set raw string value and validate it against allowed values
 func (f *FunctionInfoSqlDataAccess) Set(v string) error {
 	switch v {
-	case `CONTAINS_SQL`, `NO_SQL`, `READS_SQL_DATA`:
+	case ``, `CONTAINS_SQL`, `NO_SQL`, `READS_SQL_DATA`:
 		*f = FunctionInfoSqlDataAccess(v)
 		return nil
 	default:
@@ -1821,7 +1821,7 @@ func (f *FunctionParameterMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *FunctionParameterMode) Set(v string) error {
 	switch v {
-	case `IN`:
+	case ``, `IN`:
 		*f = FunctionParameterMode(v)
 		return nil
 	default:
@@ -1849,7 +1849,7 @@ func (f *FunctionParameterType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *FunctionParameterType) Set(v string) error {
 	switch v {
-	case `COLUMN`, `PARAM`:
+	case ``, `COLUMN`, `PARAM`:
 		*f = FunctionParameterType(v)
 		return nil
 	default:
@@ -2044,7 +2044,7 @@ func (f *GetMetastoreSummaryResponseDeltaSharingScope) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GetMetastoreSummaryResponseDeltaSharingScope) Set(v string) error {
 	switch v {
-	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
+	case ``, `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
 		*f = GetMetastoreSummaryResponseDeltaSharingScope(v)
 		return nil
 	default:
@@ -2123,7 +2123,7 @@ func (f *IsolationMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IsolationMode) Set(v string) error {
 	switch v {
-	case `ISOLATED`, `OPEN`:
+	case ``, `ISOLATED`, `OPEN`:
 		*f = IsolationMode(v)
 		return nil
 	default:
@@ -2409,7 +2409,7 @@ func (f *MatchType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MatchType) Set(v string) error {
 	switch v {
-	case `PREFIX_MATCH`:
+	case ``, `PREFIX_MATCH`:
 		*f = MatchType(v)
 		return nil
 	default:
@@ -2508,7 +2508,7 @@ func (f *MetastoreInfoDeltaSharingScope) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MetastoreInfoDeltaSharingScope) Set(v string) error {
 	switch v {
-	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
+	case ``, `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
 		*f = MetastoreInfoDeltaSharingScope(v)
 		return nil
 	default:
@@ -2598,7 +2598,7 @@ func (f *ModelVersionInfoStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ModelVersionInfoStatus) Set(v string) error {
 	switch v {
-	case `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
+	case ``, `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
 		*f = ModelVersionInfoStatus(v)
 		return nil
 	default:
@@ -2739,7 +2739,7 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case ``, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
@@ -2797,7 +2797,7 @@ func (f *ProvisioningInfoState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ProvisioningInfoState) Set(v string) error {
 	switch v {
-	case `ACTIVE`, `DELETING`, `FAILED`, `PROVISIONING`, `STATE_UNSPECIFIED`:
+	case ``, `ACTIVE`, `DELETING`, `FAILED`, `PROVISIONING`, `STATE_UNSPECIFIED`:
 		*f = ProvisioningInfoState(v)
 		return nil
 	default:
@@ -2965,7 +2965,7 @@ func (f *SecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableType) Set(v string) error {
 	switch v {
-	case `catalog`, `connection`, `external_location`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `storage_credential`, `table`, `volume`:
+	case ``, `catalog`, `connection`, `external_location`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `storage_credential`, `table`, `volume`:
 		*f = SecurableType(v)
 		return nil
 	default:
@@ -3028,7 +3028,7 @@ func (f *SseEncryptionDetailsAlgorithm) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SseEncryptionDetailsAlgorithm) Set(v string) error {
 	switch v {
-	case `AWS_SSE_KMS`, `AWS_SSE_S3`:
+	case ``, `AWS_SSE_KMS`, `AWS_SSE_S3`:
 		*f = SseEncryptionDetailsAlgorithm(v)
 		return nil
 	default:
@@ -3125,7 +3125,7 @@ func (f *SystemSchemaInfoState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SystemSchemaInfoState) Set(v string) error {
 	switch v {
-	case `AVAILABLE`, `DISABLE_INITIALIZED`, `ENABLE_COMPLETED`, `ENABLE_INITIALIZED`, `UNAVAILABLE`:
+	case ``, `AVAILABLE`, `DISABLE_INITIALIZED`, `ENABLE_COMPLETED`, `ENABLE_INITIALIZED`, `UNAVAILABLE`:
 		*f = SystemSchemaInfoState(v)
 		return nil
 	default:
@@ -3293,7 +3293,7 @@ func (f *TableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TableType) Set(v string) error {
 	switch v {
-	case `EXTERNAL`, `MANAGED`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
+	case ``, `EXTERNAL`, `MANAGED`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
 		*f = TableType(v)
 		return nil
 	default:
@@ -3480,7 +3480,7 @@ func (f *UpdateMetastoreDeltaSharingScope) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UpdateMetastoreDeltaSharingScope) Set(v string) error {
 	switch v {
-	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
+	case ``, `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
 		*f = UpdateMetastoreDeltaSharingScope(v)
 		return nil
 	default:
@@ -3746,7 +3746,7 @@ func (f *ValidationResultOperation) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ValidationResultOperation) Set(v string) error {
 	switch v {
-	case `DELETE`, `LIST`, `READ`, `WRITE`:
+	case ``, `DELETE`, `LIST`, `READ`, `WRITE`:
 		*f = ValidationResultOperation(v)
 		return nil
 	default:
@@ -3776,7 +3776,7 @@ func (f *ValidationResultResult) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ValidationResultResult) Set(v string) error {
 	switch v {
-	case `FAIL`, `PASS`, `SKIP`:
+	case ``, `FAIL`, `PASS`, `SKIP`:
 		*f = ValidationResultResult(v)
 		return nil
 	default:
@@ -3848,7 +3848,7 @@ func (f *VolumeType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *VolumeType) Set(v string) error {
 	switch v {
-	case `EXTERNAL`, `MANAGED`:
+	case ``, `EXTERNAL`, `MANAGED`:
 		*f = VolumeType(v)
 		return nil
 	default:
@@ -3891,7 +3891,7 @@ func (f *WorkspaceBindingBindingType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WorkspaceBindingBindingType) Set(v string) error {
 	switch v {
-	case `BINDING_TYPE_READ_ONLY`, `BINDING_TYPE_READ_WRITE`:
+	case ``, `BINDING_TYPE_READ_ONLY`, `BINDING_TYPE_READ_WRITE`:
 		*f = WorkspaceBindingBindingType(v)
 		return nil
 	default:

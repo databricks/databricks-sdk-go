@@ -124,7 +124,7 @@ func (f *CreatePrivateEndpointRuleRequestGroupId) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CreatePrivateEndpointRuleRequestGroupId) Set(v string) error {
 	switch v {
-	case `blob`, `dfs`, `mysqlServer`, `sqlServer`:
+	case ``, `blob`, `dfs`, `mysqlServer`, `sqlServer`:
 		*f = CreatePrivateEndpointRuleRequestGroupId(v)
 		return nil
 	default:
@@ -557,7 +557,7 @@ func (f *ListType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ListType) Set(v string) error {
 	switch v {
-	case `ALLOW`, `BLOCK`:
+	case ``, `ALLOW`, `BLOCK`:
 		*f = ListType(v)
 		return nil
 	default:
@@ -650,7 +650,7 @@ func (f *NccAzurePrivateEndpointRuleConnectionState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *NccAzurePrivateEndpointRuleConnectionState) Set(v string) error {
 	switch v {
-	case `DISCONNECTED`, `ESTABLISHED`, `INIT`, `PENDING`, `REJECTED`:
+	case ``, `DISCONNECTED`, `ESTABLISHED`, `INIT`, `PENDING`, `REJECTED`:
 		*f = NccAzurePrivateEndpointRuleConnectionState(v)
 		return nil
 	default:
@@ -684,7 +684,7 @@ func (f *NccAzurePrivateEndpointRuleGroupId) String() string {
 // Set raw string value and validate it against allowed values
 func (f *NccAzurePrivateEndpointRuleGroupId) Set(v string) error {
 	switch v {
-	case `blob`, `dfs`, `mysqlServer`, `sqlServer`:
+	case ``, `blob`, `dfs`, `mysqlServer`, `sqlServer`:
 		*f = NccAzurePrivateEndpointRuleGroupId(v)
 		return nil
 	default:
@@ -827,7 +827,7 @@ func (f *PersonalComputeMessageEnum) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PersonalComputeMessageEnum) Set(v string) error {
 	switch v {
-	case `DELEGATE`, `ON`:
+	case ``, `DELEGATE`, `ON`:
 		*f = PersonalComputeMessageEnum(v)
 		return nil
 	default:
@@ -1079,7 +1079,7 @@ func (f *TokenPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TokenPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_USE`:
+	case ``, `CAN_USE`:
 		*f = TokenPermissionLevel(v)
 		return nil
 	default:
@@ -1144,7 +1144,7 @@ func (f *TokenType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TokenType) Set(v string) error {
 	switch v {
-	case `AZURE_ACTIVE_DIRECTORY_TOKEN`:
+	case ``, `AZURE_ACTIVE_DIRECTORY_TOKEN`:
 		*f = TokenType(v)
 		return nil
 	default:
