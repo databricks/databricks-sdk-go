@@ -113,8 +113,8 @@ type Config struct {
 	// HTTPTransport can be overriden for unit testing and together with tooling like https://github.com/google/go-replayers
 	HTTPTransport http.RoundTripper
 
-	// Metadata about the environment, where Databricks is deployed. Reserved for internal use.
-	DatabricksEnvironments []DatabricksEnvironment
+	// Environment override to return when resolving the current environment.
+	DatabricksEnvironment *DatabricksEnvironment
 
 	Loaders []Loader
 

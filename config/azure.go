@@ -18,21 +18,21 @@ type azureEnvironment struct {
 
 // based on github.com/Azure/go-autorest/autorest/azure/azureEnvironments.go
 var (
-	publicCloud = azureEnvironment{
+	AzurePublicCloud = azureEnvironment{
 		Name:                      "PUBLIC",
 		ServiceManagementEndpoint: "https://management.core.windows.net/",
 		ResourceManagerEndpoint:   "https://management.azure.com/",
 		ActiveDirectoryEndpoint:   "https://login.microsoftonline.com/",
 	}
 
-	usGovernmentCloud = azureEnvironment{
+	AzureUsGovernmentCloud = azureEnvironment{
 		Name:                      "USGOVERNMENT",
 		ServiceManagementEndpoint: "https://management.core.usgovcloudapi.net/",
 		ResourceManagerEndpoint:   "https://management.usgovcloudapi.net/",
 		ActiveDirectoryEndpoint:   "https://login.microsoftonline.us/",
 	}
 
-	chinaCloud = azureEnvironment{
+	AzureChinaCloud = azureEnvironment{
 		Name:                      "CHINA",
 		ServiceManagementEndpoint: "https://management.core.chinacloudapi.cn/",
 		ResourceManagerEndpoint:   "https://management.chinacloudapi.cn/",
@@ -48,7 +48,7 @@ func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResol
 	if c.AzureResourceID == "" || c.Host != "" {
 		return nil
 	}
-	azureEnv := c.Environment().azureEnvironment
+	azureEnv := c.Environment().AzureEnvironment
 	// azure resource ID can also be used in lieu of host by some of the clients, like Terraform
 	management := ahr.tokenSourceFor(ctx, c, azureEnv.ActiveDirectoryEndpoint, azureEnv.ResourceManagerEndpoint)
 	var workspaceMetadata struct {
