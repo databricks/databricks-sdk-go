@@ -65,16 +65,6 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 			},
 			TransientErrors: []string{
 				"REQUEST_LIMIT_EXCEEDED", // This is temporary workaround for SCIM API returning 500.  Remove when it's fixed
-				"com.databricks.backend.manager.util.UnknownWorkerEnvironmentException",
-				"does not have any associated worker environments",
-				"There is no worker environment with id",
-				"Unknown worker environment",
-				"ClusterNotReadyException",
-				"connection reset by peer",
-				"TLS handshake timeout",
-				"connection refused",
-				"Unexpected error",
-				"i/o timeout",
 			},
 			ErrorMapper: apierr.GetAPIError,
 			ErrorRetriable: func(ctx context.Context, err error) bool {

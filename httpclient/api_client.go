@@ -178,8 +178,7 @@ func (c *ApiClient) isRetriable(ctx context.Context, err error) bool {
 	}); ok {
 		skipRetryOnIO = skippable.SkipRetryOnIO()
 	}
-	_, isIO := err.(*url.Error)
-	if isIO && !skipRetryOnIO {
+	if isRetriableUrlError(err) && !skipRetryOnIO {
 		// all IO errors are retriable
 		logger.Debugf(ctx, "Attempting retry because of IO error: %s", err)
 		return true
