@@ -16,6 +16,7 @@ func TestAuthServerCheckHost(t *testing.T) {
 		HTTPTransport: fixtures.MappingTransport{
 			"GET /metadata/token": {
 				ExpectedHeaders: map[string]string{
+					"Accept":                        "application/json",
 					"X-Databricks-Host":             "https://YYY",
 					"X-Databricks-Metadata-Version": "1",
 				},

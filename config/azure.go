@@ -25,7 +25,10 @@ func (e *tokenError) Error() string {
 func (e *tokenError) Unwrap() error {
 	sdkErr, ok := apierr.ByStatusCode(e.err.StatusCode)
 	if ok {
-		// this is how we distinguish between bad requests and permission denies
+		// this is how we distinguish between bad requests and permission denies:
+		// if clients sets a wrong AAD tenant ID, client code would expect to handle
+		// apierr.ErrBadRequest - no matter if it's our API or AAD's API, same for
+		// apierr.ErrUnauthorized.
 		return sdkErr
 	}
 	return e.err
@@ -69,8 +72,10 @@ func (c *Config) mapAzureActiveDirectoryError(defaultErr *httpclient.HttpError) 
 	if err != nil {
 		return defaultErr
 	}
-	// remove rather explicit error description, as we're adding a link
-	// in the error rendering interface
+	// remove Trace ID / Correlation ID from error description, as we're adding
+	// aadError.ErrorURI to the message - The most useful portion of info to
+	// resolve the issue. If user is looking at debug logs -  Trace ID and
+	// Correlation ID will appear there anyway (in pretty-printed JSON).
 	msg, _, ok := strings.Cut(aadError.ErrorDescription, ". Trace ID")
 	if ok {
 		aadError.ErrorDescription = msg

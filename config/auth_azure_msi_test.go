@@ -50,6 +50,7 @@ func TestMsiHappyFlow(t *testing.T) {
 		HTTPTransport: fixtures.MappingTransport{
 			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F": {
 				ExpectedHeaders: map[string]string{
+					"Accept":   "application/json",
 					"Metadata": "true",
 				},
 				Response: someValidToken("bcd"),
@@ -61,12 +62,14 @@ func TestMsiHappyFlow(t *testing.T) {
 			},
 			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&resource=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d": {
 				ExpectedHeaders: map[string]string{
+					"Accept":   "application/json",
 					"Metadata": "true",
 				},
 				Response: someValidToken("cde"),
 			},
 			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.core.windows.net%2F": {
 				ExpectedHeaders: map[string]string{
+					"Accept":   "application/json",
 					"Metadata": "true",
 				},
 				Response: someValidToken("def"),
