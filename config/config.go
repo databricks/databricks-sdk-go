@@ -3,11 +3,14 @@ package config
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
+	"time"
 
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -121,6 +124,13 @@ type Config struct {
 	// marker for configuration resolving
 	resolved bool
 
+	// internal client used in for authentication purposes:
+	//  - Databricks Metadata Service: request/refresh tokens from parent processes, like Databricks VSCode extension
+	//	- Azure Active Directory (AAD): request/refresh OAuth tokens
+	//  - Azure Instance Metadata Service (IMDS): request/refresh OAuth tokens for Azure Managed Identity
+	//  - Azure Resource Manager (ARM): resolve host if only Azure Databricks Resource ID provided
+	refreshClient *httpclient.ApiClient
+
 	// marker for testing fixture
 	isTesting bool
 
@@ -211,6 +221,15 @@ func (c *Config) EnsureResolved() error {
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("validate: %w", err))
 	}
+	c.refreshClient = httpclient.NewApiClient(httpclient.ClientConfig{
+		DebugHeaders:       c.DebugHeaders,
+		DebugTruncateBytes: c.DebugTruncateBytes,
+		InsecureSkipVerify: c.InsecureSkipVerify,
+		RetryTimeout:       time.Duration(c.RetryTimeoutSeconds) * time.Second,
+		HTTPTimeout:        time.Duration(c.HTTPTimeoutSeconds) * time.Second,
+		Transport:          c.HTTPTransport,
+		ErrorMapper:        c.refreshTokenErrorMapper,
+	})
 	c.resolved = true
 	return nil
 }
@@ -247,6 +266,7 @@ func (c *Config) authenticateIfNeeded(ctx context.Context) error {
 		c.Credentials = &DefaultCredentials{}
 	}
 	c.fixHostIfNeeded()
+	ctx = c.refreshClient.InContextForOAuth2(ctx)
 	visitor, err := c.Credentials.Configure(ctx, c)
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: %w", c.Credentials.Name(), err))
@@ -285,4 +305,22 @@ func (c *Config) fixHostIfNeeded() error {
 	// Store sanitized version of c.Host.
 	c.Host = parsedHost.String()
 	return nil
+}
+
+func (c *Config) refreshTokenErrorMapper(ctx context.Context, resp *http.Response, body io.ReadCloser) error {
+	defaultErr := httpclient.DefaultErrorMapper(ctx, resp, body)
+	if defaultErr == nil {
+		return nil
+	}
+	err, ok := defaultErr.(*httpclient.HttpError)
+	if !ok {
+		return err
+	}
+	if c.IsAzure() {
+		return c.mapAzureError(err)
+	}
+	return &tokenError{
+		message: err.Message,
+		err:     err,
+	}
 }

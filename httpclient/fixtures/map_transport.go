@@ -16,9 +16,13 @@ func (fixtures MappingTransport) RoundTrip(req *http.Request) (*http.Response, e
 	key := fmt.Sprintf("%s %s", req.Method, resourceFromRequest(req))
 	f, ok := fixtures[key]
 	if ok {
-		err := f.AssertRequest(req)
+		err := f.AssertHeaders(req)
 		if err != nil {
-			return nil, fmt.Errorf("expected: %w", err)
+			return nil, fmt.Errorf("headers: %w", err)
+		}
+		err = f.AssertRequest(req)
+		if err != nil {
+			return nil, fmt.Errorf("body: %w", err)
 		}
 		return f.Reply(req)
 	}

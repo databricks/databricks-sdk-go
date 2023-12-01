@@ -22,7 +22,7 @@ func (fixtures SliceTransport) SkipRetryOnIO() bool {
 
 func (fixtures SliceTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	resource := resourceFromRequest(req)
-	for _, f := range fixtures {
+	for i, f := range fixtures {
 		if !f.Match(req.Method, resource) {
 			continue
 		}
@@ -32,6 +32,10 @@ func (fixtures SliceTransport) RoundTrip(req *http.Request) (*http.Response, err
 		err := f.AssertRequest(req)
 		if err != nil {
 			return nil, fmt.Errorf("expected: %w", err)
+		}
+		// Reset the request if it is already used
+		if !f.ReuseRequest {
+			fixtures[i] = HTTPFixture{}
 		}
 		return f.Reply(req)
 	}

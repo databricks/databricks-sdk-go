@@ -24,6 +24,7 @@ func (r *HttpError) Error() string {
 	return fmt.Sprintf("http %d: %s", r.StatusCode, r.Message)
 }
 
+// DefaultErrorMapper returns *HttpError
 func DefaultErrorMapper(ctx context.Context, resp *http.Response, body io.ReadCloser) error {
 	if resp.StatusCode < 400 {
 		return nil
@@ -43,12 +44,12 @@ func DefaultErrorMapper(ctx context.Context, resp *http.Response, body io.ReadCl
 }
 
 func DefaultErrorRetriable(ctx context.Context, err error) bool {
-	switch some := err.(type) {
-	case *HttpError:
-		if some.StatusCode == 429 {
+	var httpError *HttpError
+	if errors.As(err, &httpError) {
+		if httpError.StatusCode == 429 {
 			return true
 		}
-		if some.StatusCode == 504 {
+		if httpError.StatusCode == 504 {
 			return true
 		}
 	}

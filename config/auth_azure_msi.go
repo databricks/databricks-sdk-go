@@ -3,8 +3,8 @@ package config
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"time"
 
@@ -12,6 +12,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
+
+var errInvalidToken = errors.New("invalid token")
+var errInvalidTokenExpiry = errors.New("invalid token expiry")
 
 // well-known URL for Azure Instance Metadata Service (IMDS)
 // https://learn.microsoft.com/en-us/azure-stack/user/instance-metadata-service
@@ -32,7 +35,6 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		return nil, nil
 	}
 	env := cfg.Environment()
-	ctx = httpclient.DefaultClient.InContextForOAuth2(ctx)
 	if !cfg.IsAccountClient() {
 		err := cfg.azureEnsureWorkspaceUrl(ctx, c)
 		if err != nil {
@@ -40,26 +42,22 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		}
 	}
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
-	inner := azureReuseTokenSource(nil, azureMsiTokenSource{
-		resource: env.AzureApplicationID,
-		clientId: cfg.AzureClientID,
-	})
-	management := azureReuseTokenSource(nil, azureMsiTokenSource{
-		resource: env.AzureServiceManagementEndpoint(),
-		clientId: cfg.AzureClientID,
-	})
+	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureApplicationID))
+	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureServiceManagementEndpoint()))
 	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken)), nil
 }
 
 // implementing azureHostResolver for ensureWorkspaceUrl to work
 func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, cfg *Config, _, resource string) oauth2.TokenSource {
 	return azureMsiTokenSource{
-		resource: resource,
+		client:   cfg.refreshClient,
 		clientId: cfg.AzureClientID,
+		resource: resource,
 	}
 }
 
 type azureMsiTokenSource struct {
+	client   *httpclient.ApiClient
 	resource string
 	clientId string
 }
@@ -67,59 +65,46 @@ type azureMsiTokenSource struct {
 func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), azureMsiTimeout)
 	defer cancel()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet,
-		fmt.Sprintf("%s/identity/oauth2/token", instanceMetadataPrefix), nil)
+	query := map[string]string{
+		"api-version": "2018-02-01",
+		"resource":    s.resource,
+	}
+	if s.clientId != "" {
+		query["client_id"] = s.clientId
+	}
+	var inner msiToken
+	err := s.client.Do(ctx, http.MethodGet,
+		fmt.Sprintf("%s/identity/oauth2/token", instanceMetadataPrefix),
+		httpclient.WithRequestHeader("Metadata", "true"),
+		httpclient.WithRequestData(query),
+		httpclient.WithResponseUnmarshal(&inner),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("token request: %w", err)
 	}
-	query := req.URL.Query()
-	query.Add("api-version", "2018-02-01")
-	query.Add("resource", s.resource)
-	if s.clientId != "" {
-		query.Add("client_id", s.clientId)
-	}
-	req.URL.RawQuery = query.Encode()
-	req.Header.Add("Metadata", "true")
-	return makeMsiRequest(req)
+	return inner.Token()
 }
 
-func makeMsiRequest(req *http.Request) (*oauth2.Token, error) {
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("token response: %w", err)
-	}
-	defer res.Body.Close()
-	if res.StatusCode == http.StatusNotFound {
-		return nil, nil
-	}
-	raw, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, fmt.Errorf("token read: %w", err)
-	}
-	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("token error: %s", raw)
-	}
-	var token azureMsiToken
-	err = json.Unmarshal(raw, &token)
-	if err != nil {
-		return nil, fmt.Errorf("token parse: %w", err)
-	}
+type msiToken struct {
+	TokenType    string      `json:"token_type"`
+	AccessToken  string      `json:"access_token,omitempty"`
+	RefreshToken string      `json:"refresh_token,omitempty"`
+	ExpiresOn    json.Number `json:"expires_on"`
+}
+
+func (token msiToken) Token() (*oauth2.Token, error) {
 	if token.AccessToken == "" {
-		return nil, fmt.Errorf("token parse: invalid token")
+		return nil, fmt.Errorf("token parse: %w", errInvalidToken)
 	}
 	epoch, err := token.ExpiresOn.Int64()
 	if err != nil {
-		return nil, fmt.Errorf("token expires on: %w", err)
+		// go 1.19 doesn't support multiple error unwraps
+		return nil, fmt.Errorf("%w: %s", errInvalidTokenExpiry, err)
 	}
 	return &oauth2.Token{
-		TokenType:   token.TokenType,
-		AccessToken: token.AccessToken,
-		Expiry:      time.Unix(epoch, 0),
+		TokenType:    token.TokenType,
+		AccessToken:  token.AccessToken,
+		RefreshToken: token.RefreshToken,
+		Expiry:       time.Unix(epoch, 0),
 	}, nil
-}
-
-type azureMsiToken struct {
-	AccessToken string      `json:"access_token"`
-	TokenType   string      `json:"token_type"`
-	ExpiresOn   json.Number `json:"expires_on"`
 }

@@ -21,6 +21,7 @@ type HTTPFixture struct {
 	Response        any
 	Status          int
 	ExpectedRequest any
+	ExpectedHeaders map[string]string
 	PassFile        string
 }
 
@@ -29,6 +30,25 @@ func (f HTTPFixture) Match(method, resource string) bool {
 		return true
 	}
 	return method == f.Method && resource == f.Resource
+}
+
+func (f HTTPFixture) AssertHeaders(req *http.Request) error {
+	if f.ExpectedHeaders == nil {
+		return nil
+	}
+	actualHeaders := map[string]string{}
+	for k := range req.Header {
+		actualHeaders[k] = req.Header.Get(k)
+	}
+	// remove user agent from comparison, as it'll make fixtures too difficult
+	// to maintain in the long term
+	delete(actualHeaders, "User-Agent")
+	if !reflect.DeepEqual(f.ExpectedHeaders, actualHeaders) {
+		expectedJSON, _ := json.MarshalIndent(f.ExpectedHeaders, "", "  ")
+		actualJSON, _ := json.MarshalIndent(actualHeaders, "", "  ")
+		return fmt.Errorf("want %s, got %s", expectedJSON, actualJSON)
+	}
+	return nil
 }
 
 func (f HTTPFixture) AssertRequest(req *http.Request) error {

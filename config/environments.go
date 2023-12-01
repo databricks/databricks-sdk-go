@@ -90,6 +90,9 @@ func (c *Config) Environment() DatabricksEnvironment {
 				continue
 			}
 			if strings.HasPrefix(v.DnsZone, ".dev") || strings.HasPrefix(v.DnsZone, ".staging") {
+				// we can't support host-less Azure CLI auth for dev & staging environments, as users will get errors like
+				// ... `The user or administrator has not consented to use the application with ID '...' named
+				// 'Microsoft Azure CLI'.`.
 				continue
 			}
 			return v

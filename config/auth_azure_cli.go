@@ -11,7 +11,6 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -73,7 +72,6 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		}
 		return nil, err
 	}
-	ctx = httpclient.DefaultClient.InContextForOAuth2(ctx)
 	err = cfg.azureEnsureWorkspaceUrl(ctx, c)
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
