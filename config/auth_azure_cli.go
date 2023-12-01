@@ -30,7 +30,7 @@ func (c AzureCliCredentials) Name() string {
 // implementing azureHostResolver for ensureWorkspaceUrl to work
 func (c AzureCliCredentials) tokenSourceFor(
 	ctx context.Context, cfg *Config, _, resource string) oauth2.TokenSource {
-	return &azureCliTokenSource{resource: resource}
+	return NewAzureCliTokenSource(resource)
 }
 
 // There are three scenarios:
@@ -82,6 +82,13 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	}
 	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
 	return visitor, nil
+}
+
+// NewAzureCliTokenSource returns [oauth2.TokenSource] for a passwordless authentication via Azure CLI (`az login`)
+func NewAzureCliTokenSource(resource string) oauth2.TokenSource {
+	return &azureCliTokenSource{
+		resource: resource,
+	}
 }
 
 type azureCliTokenSource struct {
