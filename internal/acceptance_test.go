@@ -132,3 +132,11 @@ func TestAccErrNotWorkspaceClient(t *testing.T) {
 	_, err := databricks.NewWorkspaceClient()
 	assert.ErrorIs(t, err, databricks.ErrNotWorkspaceClient)
 }
+
+// Confirm that we can access the account IP access lists using MSI credentials.
+func TestAccAccountsMsiCredentials(t *testing.T) {
+	t.Log(GetEnvOrSkipTest(t, "ARM_USE_MSI"))
+	ctx, a := accountTest(t)
+	_, err := a.IpAccessLists.ListAll(ctx)
+	require.NoError(t, err)
+}
