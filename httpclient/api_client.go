@@ -328,6 +328,9 @@ func (c *ApiClient) RoundTrip(request *http.Request) (*http.Response, error) {
 			// DO NOT DECODE BODY, because it may contain sensitive payload,
 			// like Azure Service Principal in a multipart/form-data body.
 			DebugBytes: []byte("<http.RoundTripper>"),
+		}, func(r *http.Request) error {
+			r.Header = request.Header
+			return nil
 		}))
 	if err != nil {
 		return nil, err

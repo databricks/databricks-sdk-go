@@ -18,6 +18,7 @@ var redactKeys = map[string]bool{
 	"content":       true,
 	"access_token":  true,
 	"refresh_token": true,
+	"id_token":      true,
 	"token":         true,
 	"password":      true,
 }
