@@ -38,6 +38,8 @@ func newResponseBody(data any, header http.Header, statusCode int, status string
 			ReadCloser: io.NopCloser(bytes.NewReader(v)),
 			DebugBytes: v,
 			Header:     header,
+			StatusCode: statusCode,
+			Status:     status,
 		}, nil
 	default:
 		return responseBody{}, errors.New("newResponseBody can only be called with io.ReadCloser or []byte")
