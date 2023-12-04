@@ -49,10 +49,15 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 
 // implementing azureHostResolver for ensureWorkspaceUrl to work
 func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, cfg *Config, _, resource string) oauth2.TokenSource {
-	return azureMsiTokenSource{
-		client:   cfg.refreshClient,
-		clientId: cfg.AzureClientID,
+	return NewAzureMsiTokenSource(cfg.refreshClient, resource, cfg.AzureClientID)
+}
+
+// NewAzureMsiTokenSource returns [oauth2.TokenSource] for a passwordless authentication via Azure Managed identity
+func NewAzureMsiTokenSource(client *httpclient.ApiClient, resource, clientId string) oauth2.TokenSource {
+	return &azureMsiTokenSource{
+		client:   client,
 		resource: resource,
+		clientId: clientId,
 	}
 }
 
