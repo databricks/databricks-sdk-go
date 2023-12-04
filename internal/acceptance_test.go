@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"os"
 	"os/exec"
 	"testing"
 
@@ -10,16 +9,20 @@ import (
 	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/internal/env"
+	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccDefaultCredentials(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	if os.Getenv("DATABRICKS_ACCOUNT_ID") != "" {
-		skipf(t)("Skipping workspace test on account level")
+func init() {
+	logger.DefaultLogger = &logger.SimpleLogger{
+		Level: logger.LevelDebug,
 	}
+}
+
+func TestAccDefaultCredentials(t *testing.T) {
+	workspaceTest(t)
 	w := databricks.Must(databricks.NewWorkspaceClient())
 	ctx := context.Background()
 	versions, err := w.Clusters.SparkVersions(ctx)
@@ -36,10 +39,7 @@ func TestAccDefaultCredentials(t *testing.T) {
 // TODO: add CredentialProviderChain
 
 func TestAccExplicitDatabricksCfg(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	if os.Getenv("DATABRICKS_ACCOUNT_ID") != "" {
-		skipf(t)("Skipping workspace test on account level")
-	}
+	workspaceTest(t)
 	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		Profile: GetEnvOrSkipTest(t, "DATABRICKS_CONFIG_PROFILE"),
 	}))
@@ -97,6 +97,7 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 }
 
 func TestAccAzureErrorMappingForUnauthenticated(t *testing.T) {
+	workspaceTest(t)
 	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		DebugHeaders:      true,
 		AzureTenantID:     GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
@@ -110,6 +111,7 @@ func TestAccAzureErrorMappingForUnauthenticated(t *testing.T) {
 }
 
 func TestAccExplicitAzureSpnAuth(t *testing.T) {
+	workspaceTest(t)
 	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		AzureTenantID:     GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
 		AzureClientID:     GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),

@@ -131,6 +131,9 @@ type Config struct {
 	//  - Azure Resource Manager (ARM): resolve host if only Azure Databricks Resource ID provided
 	refreshClient *httpclient.ApiClient
 
+	// internal background context used for authentication purposes together with refreshClient
+	refreshCtx context.Context
+
 	// marker for testing fixture
 	isTesting bool
 
@@ -151,7 +154,7 @@ func (c *Config) Authenticate(r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	err = c.authenticateIfNeeded(r.Context())
+	err = c.authenticateIfNeeded()
 	if err != nil {
 		return err
 	}
@@ -209,8 +212,9 @@ func (c *Config) EnsureResolved() error {
 			ConfigFile,
 		}
 	}
+	ctx := context.Background()
 	for _, loader := range c.Loaders {
-		logger.Tracef(context.Background(), "Loading config via %s", loader.Name())
+		logger.Tracef(ctx, "Loading config via %s", loader.Name())
 		err := loader.Configure(c)
 		if err != nil {
 
@@ -221,6 +225,7 @@ func (c *Config) EnsureResolved() error {
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("validate: %w", err))
 	}
+	c.refreshCtx = ctx
 	c.refreshClient = httpclient.NewApiClient(httpclient.ClientConfig{
 		DebugHeaders:       c.DebugHeaders,
 		DebugTruncateBytes: c.DebugTruncateBytes,
@@ -253,7 +258,7 @@ func (c *Config) wrapDebug(err error) error {
 }
 
 // authenticateIfNeeded lazily authenticates across authorizers or returns error
-func (c *Config) authenticateIfNeeded(ctx context.Context) error {
+func (c *Config) authenticateIfNeeded() error {
 	if c.auth != nil {
 		return nil
 	}
@@ -266,7 +271,7 @@ func (c *Config) authenticateIfNeeded(ctx context.Context) error {
 		c.Credentials = &DefaultCredentials{}
 	}
 	c.fixHostIfNeeded()
-	ctx = c.refreshClient.InContextForOAuth2(ctx)
+	ctx := c.refreshClient.InContextForOAuth2(c.refreshCtx)
 	visitor, err := c.Credentials.Configure(ctx, c)
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: %w", c.Credentials.Name(), err))
