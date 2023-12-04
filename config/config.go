@@ -229,6 +229,13 @@ func (c *Config) EnsureResolved() error {
 		HTTPTimeout:        time.Duration(c.HTTPTimeoutSeconds) * time.Second,
 		Transport:          c.HTTPTransport,
 		ErrorMapper:        c.refreshTokenErrorMapper,
+		TransientErrors: []string{
+			"throttled",
+			"too many requests",
+			"429",
+			"request limit exceeded",
+			"rate limit",
+		},
 	})
 	c.resolved = true
 	return nil
