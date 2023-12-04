@@ -1,6 +1,7 @@
 package config
 
 import (
+	"net/url"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
@@ -17,6 +18,13 @@ func TestM2mHappyFlow(t *testing.T) {
 					AuthorizationEndpoint: "https://localhost:1234/dummy/auth",
 					TokenEndpoint:         "https://localhost:1234/dummy/token",
 				},
+			},
+			"POST /dummy/token": {
+				ExpectedRequest: url.Values{
+					"grant_type": []string{"client_credentials"},
+					"scope":      []string{"all-apis"},
+				},
+				Response: `...`,
 			},
 		},
 	}, map[string]string{
