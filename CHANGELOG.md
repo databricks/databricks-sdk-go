@@ -1,5 +1,16 @@
 # Version changelog
 
+## 0.26.2
+
+This is a bugfix release, including a fix correcting issues with OAuth flows, due to a bug with the propagation of the response status in `httpclient`'s `RoundTrip()` implementation. This fixes the `failed during request visitor: token: oauth2: cannot fetch token: Response: {...}` error.
+
+All fixes:
+
+* Migrate Azure MSI & Metadata Service token sources to `httpclient` and add 100% test coverage ([#709](https://github.com/databricks/databricks-sdk-go/pull/709)).
+* Added `config.NewAzureCliTokenSource` and `config.NewAzureMsiTokenSource` constructors ([#727](https://github.com/databricks/databricks-sdk-go/pull/727)).
+* Use per-config refresh context for OAuth tokens ([#728](https://github.com/databricks/databricks-sdk-go/pull/728)).
+
+
 ## 0.26.1
 
 Minor changes:
