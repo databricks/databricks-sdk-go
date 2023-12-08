@@ -247,3 +247,30 @@ func TestDoRemovesDoubleSlashesFromFilesAPI(t *testing.T) {
 	err = c.Do(context.Background(), "GET", "/api/2.0/anotherservice//test", nil, map[string]any{}, nil)
 	require.NoError(t, err)
 }
+
+func TestRetryOn503(t *testing.T) {
+	var requested bool
+	c, err := New(&config.Config{
+		Host:       "some",
+		Token:      "token",
+		ConfigFile: "/dev/null",
+		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			if !requested {
+				requested = true
+				return &http.Response{
+					StatusCode: 503,
+					Body:       io.NopCloser(strings.NewReader(`{}`)),
+					Request:    r,
+				}, nil
+			}
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	require.NoError(t, err)
+	err = c.Do(context.Background(), "GET", "/a/b", nil, map[string]any{}, nil)
+	require.NoError(t, err)
+}
