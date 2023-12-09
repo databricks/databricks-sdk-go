@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"reflect"
 	"strings"
@@ -59,6 +60,15 @@ func (f HTTPFixture) AssertRequest(req *http.Request) error {
 	_, err := actualRequestBuf.ReadFrom(req.Body)
 	if err != nil {
 		return fmt.Errorf("read body: %w", err)
+	}
+	qs, ok := f.ExpectedRequest.(url.Values)
+	if ok {
+		expectedQS := qs.Encode()
+		actualQS := actualRequestBuf.String()
+		if expectedQS != actualQS {
+			return fmt.Errorf("want %s, got %s", expectedQS, actualQS)
+		}
+		return nil
 	}
 	// do pretty-priting, so that it's easier to debug failures
 	expectedRequestJSON, err := json.MarshalIndent(f.ExpectedRequest, "", "  ")
