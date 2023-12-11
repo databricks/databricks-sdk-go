@@ -2,15 +2,14 @@ package config
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -55,26 +54,11 @@ func oidcEndpoints(ctx context.Context, cfg *Config) (*oauthAuthorizationServer,
 		}, nil
 	}
 	oidc := fmt.Sprintf("%s/oidc/.well-known/oauth-authorization-server", prefix)
-	oidcResponse, err := http.Get(oidc)
-	if err != nil {
-		return nil, fmt.Errorf("fetch .well-known: %w", err)
-	}
-	if oidcResponse.StatusCode != 200 {
-		logger.Warnf(ctx, "Failure getting OIDC response. Response status: %s", oidcResponse.Status)
-		return nil, errOAuthNotSupported
-	}
-	if oidcResponse.Body == nil {
-		return nil, fmt.Errorf("fetch .well-known: empty body")
-	}
-	defer oidcResponse.Body.Close()
-	raw, err := io.ReadAll(oidcResponse.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read .well-known: %w", err)
-	}
 	var oauthEndpoints oauthAuthorizationServer
-	err = json.Unmarshal(raw, &oauthEndpoints)
+	err := cfg.refreshClient.Do(ctx, "GET", oidc,
+		httpclient.WithResponseUnmarshal(&oauthEndpoints))
 	if err != nil {
-		return nil, fmt.Errorf("parse .well-known: %w", err)
+		return nil, errOAuthNotSupported
 	}
 	return &oauthEndpoints, nil
 }

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/databricks/databricks-sdk-go/openapi/code"
 )
@@ -34,6 +35,19 @@ func bodyStub(req *http.Request) (string, error) {
 	expectedRequest := ""
 	if actualRequestJSON.Len() == 0 {
 		return "", nil
+	}
+	contentType := req.Header.Get("Content-Type")
+	if contentType == "application/x-www-form-urlencoded" {
+		values, err := url.ParseQuery(actualRequestJSON.String())
+		if err != nil {
+			return "", fmt.Errorf("form: %w", err)
+		}
+		expectedRequest += "ExpectedRequest: url.Values{\n"
+		for k, v := range values {
+			expectedRequest += fmt.Sprintf("\t\t\t\"%s\": %#v,\n", k, v)
+		}
+		expectedRequest += "\t\t},\n\t\t"
+		return expectedRequest, nil
 	}
 	err = json.Unmarshal(actualRequestJSON.Bytes(), &receivedRequest)
 	if err != nil {
