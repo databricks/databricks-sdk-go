@@ -108,6 +108,7 @@ type PipelinesService interface {
 	// Updates the permissions on a pipeline. Pipelines can inherit permissions
 	// from their root object.
 	UpdatePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

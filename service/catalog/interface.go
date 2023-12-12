@@ -43,7 +43,8 @@ type AccountMetastoreAssignmentsService interface {
 	// Updates an assignment to a metastore for a workspace. Currently, only the
 	// default catalog may be updated.
 	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -78,7 +79,8 @@ type AccountMetastoresService interface {
 	//
 	// Updates an existing Unity Catalog metastore.
 	Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -122,7 +124,8 @@ type AccountStorageCredentialsService interface {
 	// owner of the storage credential. If the caller is a metastore admin, only
 	// the __owner__ credential can be changed.
 	Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -145,7 +148,8 @@ type ArtifactAllowlistsService interface {
 	// metastore admin or have the **MANAGE ALLOWLIST** privilege on the
 	// metastore.
 	Update(ctx context.Context, request SetArtifactAllowlist) (*ArtifactAllowlistInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -195,7 +199,8 @@ type CatalogsService interface {
 	// either the owner of the catalog, or a metastore admin (when changing the
 	// owner field of the catalog).
 	Update(ctx context.Context, request UpdateCatalog) (*CatalogInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -242,7 +247,8 @@ type ConnectionsService interface {
 	//
 	// Updates the connection that matches the supplied name.
 	Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -298,7 +304,8 @@ type ExternalLocationsService interface {
 	// owner of the external location, or be a metastore admin. In the second
 	// case, the admin can only update the name of the external location.
 	Update(ctx context.Context, request UpdateExternalLocation) (*ExternalLocationInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -365,7 +372,8 @@ type FunctionsService interface {
 	// has the **USE_CATALOG** privilege on its parent catalog as well as the
 	// **USE_SCHEMA** privilege on the function's parent schema.
 	Update(ctx context.Context, request UpdateFunction) (*FunctionInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -396,7 +404,8 @@ type GrantsService interface {
 	//
 	// Updates the permissions for a securable.
 	Update(ctx context.Context, request UpdatePermissions) (*PermissionsList, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -486,7 +495,8 @@ type MetastoresService interface {
 	// account admin to update __metastore_id__; otherwise, the caller can be a
 	// Workspace admin.
 	UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -561,7 +571,8 @@ type ModelVersionsService interface {
 	//
 	// Currently only the comment of the model version can be updated.
 	Update(ctx context.Context, request UpdateModelVersionRequest) (*ModelVersionInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -684,7 +695,8 @@ type RegisteredModelsService interface {
 	// Currently only the name, the owner or the comment of the registered model
 	// can be updated.
 	Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -735,7 +747,8 @@ type SchemasService interface {
 	// be updated, the caller must be a metastore admin or have the
 	// **CREATE_SCHEMA** privilege on the parent catalog.
 	Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -804,7 +817,8 @@ type StorageCredentialsService interface {
 	// have the **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the
 	// storage credential.
 	Validate(ctx context.Context, request ValidateStorageCredential) (*ValidateStorageCredentialResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -832,7 +846,8 @@ type SystemSchemasService interface {
 	//
 	// Use ListAll() to get all SystemSchemaInfo instances
 	List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -878,7 +893,8 @@ type TableConstraintsService interface {
 	// catalog, the **USE_SCHEMA** privilege on the table's schema, and be the
 	// owner of the table.
 	Delete(ctx context.Context, request DeleteTableConstraintRequest) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -952,7 +968,8 @@ type TablesService interface {
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
 	Update(ctx context.Context, request UpdateTableRequest) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -1040,7 +1057,8 @@ type VolumesService interface {
 	// Currently only the name, the owner or the comment of the volume could be
 	// updated.
 	Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -1087,6 +1105,7 @@ type WorkspaceBindingsService interface {
 	// Updates workspace bindings of the securable. The caller must be a
 	// metastore admin or an owner of the securable.
 	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

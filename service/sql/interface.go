@@ -43,7 +43,8 @@ type AlertsService interface {
 	//
 	// Updates an alert.
 	Update(ctx context.Context, request EditAlert) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -60,7 +61,8 @@ type DashboardWidgetsService interface {
 
 	// Update existing widget.
 	Update(ctx context.Context, request CreateWidget) (*Widget, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -99,7 +101,8 @@ type DashboardsService interface {
 	// A restored dashboard appears in list views and searches and can be
 	// shared.
 	Restore(ctx context.Context, request RestoreDashboardRequest) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -122,7 +125,8 @@ type DataSourcesService interface {
 	// However, you need only a SQL warehouse's `id` to create new queries
 	// against it.
 	List(ctx context.Context) ([]DataSource, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -158,7 +162,8 @@ type DbsqlPermissionsService interface {
 	// Transfers ownership of a dashboard, query, or alert to an active user.
 	// Requires an admin API key.
 	TransferOwnership(ctx context.Context, request TransferOwnershipRequest) (*Success, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -215,7 +220,8 @@ type QueriesService interface {
 	//
 	// **Note**: You cannot undo this operation.
 	Update(ctx context.Context, request QueryEditContent) (*Query, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -230,7 +236,8 @@ type QueryHistoryService interface {
 	//
 	// Use ListAll() to get all QueryInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListQueryHistoryRequest) (*ListQueriesResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -247,7 +254,8 @@ type QueryVisualizationsService interface {
 
 	// Edit existing visualization.
 	Update(ctx context.Context, request Visualization) (*Visualization, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -391,7 +399,8 @@ type StatementExecutionService interface {
 	// the `next_chunk_index` and `next_chunk_internal_link` fields for simple
 	// iteration through the result set.
 	GetStatementResultChunkN(ctx context.Context, request GetStatementResultChunkNRequest) (*ResultData, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -471,6 +480,7 @@ type WarehousesService interface {
 	// Updates the permissions on a SQL warehouse. SQL warehouses can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

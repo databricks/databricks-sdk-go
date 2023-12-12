@@ -136,7 +136,8 @@ type DbfsService interface {
 	// If `offset + length` exceeds the number of bytes in a file, it reads the
 	// contents until the end of file.",
 	Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -163,6 +164,7 @@ type FilesService interface {
 	//
 	// Uploads a file of up to 2 GiB.
 	Upload(ctx context.Context, request UploadRequest) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

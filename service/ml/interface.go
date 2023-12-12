@@ -268,7 +268,8 @@ type ExperimentsService interface {
 	//
 	// Updates run metadata.
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -501,6 +502,7 @@ type ModelRegistryService interface {
 	//
 	// Updates a registry webhook.
 	UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

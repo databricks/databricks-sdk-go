@@ -42,7 +42,8 @@ type AppsService interface {
 	//
 	// Get deployment events for an application
 	GetEvents(ctx context.Context, request GetEventsRequest) (*ListAppEventsResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -140,6 +141,7 @@ type ServingEndpointsService interface {
 	// Updates the permissions on a serving endpoint. Serving endpoints can
 	// inherit permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

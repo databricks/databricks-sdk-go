@@ -46,7 +46,8 @@ type GitCredentialsService interface {
 	//
 	// Updates the specified Git credential.
 	Update(ctx context.Context, request UpdateCredentials) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -115,7 +116,8 @@ type ReposService interface {
 	// Updates the permissions on a repo. Repos can inherit permissions from
 	// their root object.
 	UpdatePermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -285,7 +287,8 @@ type SecretsService interface {
 	// length is invalid. Throws `PERMISSION_DENIED` if the user does not have
 	// permission to make this API call.
 	PutSecret(ctx context.Context, request PutSecret) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -377,6 +380,7 @@ type WorkspaceService interface {
 	// Updates the permissions on a workspace object. Workspace objects can
 	// inherit permissions from their parent objects or root object.
 	UpdatePermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

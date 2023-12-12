@@ -103,10 +103,12 @@ type AccountIpAccessListsService interface {
 	//
 	// It can take a few minutes for the changes to take effect.
 	Update(ctx context.Context, request UpdateIpAccessList) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
+<<<<<<< HEAD
 // Network policy is a set of rules that defines what can be accessed from your
 // Databricks network. E.g.: You can choose to block your SQL UDF to access
 // internet from your Databricks serverless clusters.
@@ -135,6 +137,8 @@ type AccountNetworkPolicyService interface {
 	Client() client.DatabricksClientInterface
 }
 
+=======
+>>>>>>> 5215102 (regenerate)
 // The Personal Compute enablement setting lets you control which users can use
 // the Personal Compute default policy to create compute resources. By default
 // all users in all workspaces have access (ON), but you can change the setting
@@ -160,7 +164,8 @@ type AccountSettingsService interface {
 	//
 	// Updates the value of the Personal Compute setting.
 	UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -173,7 +178,8 @@ type CredentialsManagerService interface {
 	// Exchange tokens with an Identity Provider to get a new access token. It
 	// allowes specifying scopes to determine token permissions.
 	ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -277,7 +283,8 @@ type IpAccessListsService interface {
 	// resulting IP access list has no effect until you enable the feature. See
 	// :method:workspaceconf/setStatus.
 	Update(ctx context.Context, request UpdateIpAccessList) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -360,7 +367,8 @@ type NetworkConnectivityService interface {
 	//
 	// Use ListPrivateEndpointRulesAll() to get all NccAzurePrivateEndpointRule instances, which will iterate over every result page.
 	ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -404,7 +412,8 @@ type SettingsService interface {
 	// concurrently, PATCH will fail with 409 and the request will need to be
 	// retried by using the fresh etag in the 409 response.
 	UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -457,7 +466,8 @@ type TokenManagementService interface {
 	// Updates the permissions on all tokens. Tokens can inherit permissions
 	// from their root object.
 	UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -487,7 +497,8 @@ type TokensService interface {
 	//
 	// Use ListAll() to get all TokenInfo instances
 	List(ctx context.Context) (*ListTokensResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -504,6 +515,7 @@ type WorkspaceConfService interface {
 	// Sets the configuration status for a workspace, including enabling or
 	// disabling it.
 	SetStatus(ctx context.Context, request WorkspaceConf) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

@@ -72,6 +72,7 @@ func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpA
 	return err
 }
 
+<<<<<<< HEAD
 // unexported type that holds implementations of just AccountNetworkPolicy API methods
 type accountNetworkPolicyImpl struct {
 	client *client.DatabricksClient
@@ -109,6 +110,8 @@ func (a *accountNetworkPolicyImpl) UpdateAccountNetworkPolicy(ctx context.Contex
 	return &accountNetworkPolicyMessage, err
 }
 
+=======
+>>>>>>> 5215102 (regenerate)
 // unexported type that holds implementations of just AccountSettings API methods
 type accountSettingsImpl struct {
 	client *client.DatabricksClient

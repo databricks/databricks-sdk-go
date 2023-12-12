@@ -85,7 +85,8 @@ type ClusterPoliciesService interface {
 	// Updates the permissions on a cluster policy. Cluster policies can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -282,7 +283,8 @@ type ClustersService interface {
 	// Updates the permissions on a cluster. Clusters can inherit permissions
 	// from their root object.
 	UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -330,7 +332,8 @@ type CommandExecutionService interface {
 	// If successful, it returns an ID for tracking the status of the command's
 	// execution.
 	Execute(ctx context.Context, request Command) (*Created, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -376,7 +379,8 @@ type GlobalInitScriptsService interface {
 	// Updates a global init script, specifying only the fields to change. All
 	// fields are optional. Unspecified fields retain their current value.
 	Update(ctx context.Context, request GlobalInitScriptUpdateRequest) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -450,7 +454,8 @@ type InstancePoolsService interface {
 	// Updates the permissions on an instance pool. Instance pools can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -504,7 +509,8 @@ type InstanceProfilesService interface {
 	//
 	// This API is only accessible to admin users.
 	Remove(ctx context.Context, request RemoveInstanceProfile) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -576,7 +582,8 @@ type LibrariesService interface {
 	// uninstalled until the cluster is restarted. Uninstalling libraries that
 	// are not installed on the cluster will have no impact but is not an error.
 	Uninstall(ctx context.Context, request UninstallLibraries) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -602,6 +609,7 @@ type PolicyFamiliesService interface {
 	//
 	// Use ListAll() to get all PolicyFamily instances, which will iterate over every result page.
 	List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

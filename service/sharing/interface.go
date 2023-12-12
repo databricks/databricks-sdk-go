@@ -64,7 +64,8 @@ type CleanRoomsService interface {
 	//
 	// Table removals through **update** do not require additional privileges.
 	Update(ctx context.Context, request UpdateCleanRoom) (*CleanRoomInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -119,7 +120,8 @@ type ProvidersService interface {
 	// the provider name, the caller must be both a metastore admin and the
 	// owner of the provider.
 	Update(ctx context.Context, request UpdateProvider) (*ProviderInfo, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -145,7 +147,8 @@ type RecipientActivationService interface {
 	// Retrieve access token with an activation url. This is a public API
 	// without any authentication.
 	RetrieveToken(ctx context.Context, request RetrieveTokenRequest) (*RetrieveTokenResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -219,7 +222,8 @@ type RecipientsService interface {
 	// be updated, the user must be both a metastore admin and the owner of the
 	// recipient.
 	Update(ctx context.Context, request UpdateRecipient) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -291,6 +295,7 @@ type SharesService interface {
 	// For new recipient grants, the user must also be the owner of the
 	// recipients. recipient revocations do not require additional privileges.
 	UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

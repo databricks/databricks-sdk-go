@@ -51,7 +51,8 @@ type CredentialsService interface {
 	// Gets all Databricks credential configurations associated with an account
 	// specified by ID.
 	List(ctx context.Context) ([]Credential, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -137,7 +138,8 @@ type EncryptionKeysService interface {
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
 	List(ctx context.Context) ([]CustomerManagedKey, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -177,7 +179,8 @@ type NetworksService interface {
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
 	List(ctx context.Context) ([]Network, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -259,7 +262,8 @@ type PrivateAccessService interface {
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -302,7 +306,8 @@ type StorageService interface {
 	// Gets a list of all Databricks storage configurations for your account,
 	// specified by ID.
 	List(ctx context.Context) ([]StorageConfiguration, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -360,7 +365,8 @@ type VpcEndpointsService interface {
 	//
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	List(ctx context.Context) ([]VpcEndpoint, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -553,6 +559,7 @@ type WorkspacesService interface {
 	// [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
 	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 	Update(ctx context.Context, request UpdateWorkspaceRequest) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

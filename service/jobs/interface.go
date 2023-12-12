@@ -152,6 +152,7 @@ type JobsService interface {
 	// Updates the permissions on a job. Jobs can inherit permissions from their
 	// root object.
 	UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }

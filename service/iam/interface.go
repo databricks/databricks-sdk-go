@@ -33,7 +33,8 @@ type AccountAccessControlService interface {
 	// version of the rule set before modifying it. This pattern helps prevent
 	// conflicts between concurrent updates.
 	UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -63,7 +64,8 @@ type AccountAccessControlProxyService interface {
 	// read the current version of the rule set before modifying it. This
 	// pattern helps prevent conflicts between concurrent updates.
 	UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -108,7 +110,8 @@ type AccountGroupsService interface {
 	//
 	// Updates the details of a group by replacing the entire group entity.
 	Update(ctx context.Context, request Group) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -155,7 +158,8 @@ type AccountServicePrincipalsService interface {
 	//
 	// This action replaces the existing service principal with the same name.
 	Update(ctx context.Context, request ServicePrincipal) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -206,7 +210,8 @@ type AccountUsersService interface {
 	//
 	// Replaces a user's information with the data supplied in request.
 	Update(ctx context.Context, request User) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -218,7 +223,8 @@ type CurrentUserService interface {
 	//
 	// Get details about the current method caller's identity.
 	Me(ctx context.Context) (*User, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -263,7 +269,8 @@ type GroupsService interface {
 	//
 	// Updates the details of a group by replacing the entire group entity.
 	Update(ctx context.Context, request Group) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -338,7 +345,8 @@ type PermissionsService interface {
 	// Updates the permissions on an object. Objects can inherit permissions
 	// from their parent objects or root object.
 	Update(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -386,7 +394,8 @@ type ServicePrincipalsService interface {
 	//
 	// This action replaces the existing service principal with the same name.
 	Update(ctx context.Context, request ServicePrincipal) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -460,7 +469,8 @@ type UsersService interface {
 	// Updates the permissions on all passwords. Passwords can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
@@ -493,6 +503,7 @@ type WorkspaceAssignmentService interface {
 	// Creates or updates the workspace permissions assignment in a given
 	// account and workspace for the specified principal.
 	Update(ctx context.Context, request UpdateWorkspaceAssignments) error
-	// Returns an instance of DatabricksClient
+
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
