@@ -10,11 +10,32 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 var b64 = base64.StdEncoding
+
+type ImplWithClient interface {
+	Client() *client.DatabricksClient
+}
+
+func (a *gitCredentialsImpl) Client() *client.DatabricksClient {
+	return a.client
+}
+
+func (a *reposImpl) Client() *client.DatabricksClient {
+	return a.client
+}
+
+func (a *secretsImpl) Client() *client.DatabricksClient {
+	return a.client
+}
+
+func (a *workspaceImpl) Client() *client.DatabricksClient {
+	return a.client
+}
 
 // PythonNotebookOverwrite crafts Python import notebook request
 // also by trimming the code specified in the second argument
@@ -163,14 +184,14 @@ func (a *WorkspaceAPI) Upload(ctx context.Context, path string, r io.Reader, opt
 	if err != nil {
 		return fmt.Errorf("write close: %w", err)
 	}
-	impl, ok := a.impl.(*workspaceImpl)
+	impl, ok := a.impl.(ImplWithClient)
 	if !ok {
 		return fmt.Errorf("wrong impl: %v", a.impl)
 	}
 	headers := map[string]string{
 		"Content-Type": w.FormDataContentType(),
 	}
-	return impl.client.Do(ctx, "POST", "/api/2.0/workspace/import", headers, buf.Bytes(), nil)
+	return impl.Client().Do(ctx, "POST", "/api/2.0/workspace/import", headers, buf.Bytes(), nil)
 }
 
 // WriteFile is identical to [os.WriteFile] but for Workspace File.
@@ -198,7 +219,7 @@ func DownloadFormat(f ExportFormat) func(q map[string]any) {
 //
 // Returns [bytes.Buffer] of the path contents.
 func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...DownloadOption) (io.ReadCloser, error) {
-	impl, ok := a.impl.(*workspaceImpl)
+	impl, ok := a.impl.(ImplWithClient)
 	if !ok {
 		return nil, fmt.Errorf("wrong impl: %v", a.impl)
 	}
@@ -208,7 +229,7 @@ func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...Downlo
 		v(query)
 	}
 	headers := map[string]string{"Content-Type": "application/json"}
-	err := impl.client.Do(ctx, "GET", "/api/2.0/workspace/export", headers, query, &buf)
+	err := impl.Client().Do(ctx, "GET", "/api/2.0/workspace/export", headers, query, &buf)
 	if err != nil {
 		return nil, err
 	}
