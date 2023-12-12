@@ -15,6 +15,10 @@ type jobsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *jobsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {
 	path := "/api/2.1/jobs/runs/cancel-all"
 	headers := make(map[string]string)

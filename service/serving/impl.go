@@ -15,6 +15,10 @@ type appsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *appsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *appsImpl) Create(ctx context.Context, request DeployAppRequest) (*DeploymentStatus, error) {
 	var deploymentStatus DeploymentStatus
 	path := "/api/2.0/preview/apps/deployments"
@@ -73,6 +77,10 @@ func (a *appsImpl) GetEvents(ctx context.Context, request GetEventsRequest) (*Li
 // unexported type that holds implementations of just ServingEndpoints API methods
 type servingEndpointsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *servingEndpointsImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *servingEndpointsImpl) BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error) {

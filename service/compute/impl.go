@@ -15,6 +15,10 @@ type clusterPoliciesImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *clusterPoliciesImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *clusterPoliciesImpl) Create(ctx context.Context, request CreatePolicy) (*CreatePolicyResponse, error) {
 	var createPolicyResponse CreatePolicyResponse
 	path := "/api/2.0/policies/clusters/create"
@@ -102,6 +106,10 @@ func (a *clusterPoliciesImpl) UpdatePermissions(ctx context.Context, request Clu
 // unexported type that holds implementations of just Clusters API methods
 type clustersImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *clustersImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *clustersImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
@@ -293,6 +301,10 @@ type commandExecutionImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *commandExecutionImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *commandExecutionImpl) Cancel(ctx context.Context, request CancelCommand) error {
 	path := "/api/1.2/commands/cancel"
 	headers := make(map[string]string)
@@ -354,6 +366,10 @@ type globalInitScriptsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *globalInitScriptsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *globalInitScriptsImpl) Create(ctx context.Context, request GlobalInitScriptCreateRequest) (*CreateResponse, error) {
 	var createResponse CreateResponse
 	path := "/api/2.0/global-init-scripts"
@@ -400,6 +416,10 @@ func (a *globalInitScriptsImpl) Update(ctx context.Context, request GlobalInitSc
 // unexported type that holds implementations of just InstancePools API methods
 type instancePoolsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *instancePoolsImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *instancePoolsImpl) Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error) {
@@ -491,6 +511,10 @@ type instanceProfilesImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *instanceProfilesImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *instanceProfilesImpl) Add(ctx context.Context, request AddInstanceProfile) error {
 	path := "/api/2.0/instance-profiles/add"
 	headers := make(map[string]string)
@@ -532,6 +556,10 @@ type librariesImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *librariesImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *librariesImpl) AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {
 	var listAllClusterLibraryStatusesResponse ListAllClusterLibraryStatusesResponse
 	path := "/api/2.0/libraries/all-cluster-statuses"
@@ -571,6 +599,10 @@ func (a *librariesImpl) Uninstall(ctx context.Context, request UninstallLibrarie
 // unexported type that holds implementations of just PolicyFamilies API methods
 type policyFamiliesImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *policyFamiliesImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error) {

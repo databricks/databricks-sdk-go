@@ -4,6 +4,8 @@ package files
 
 import (
 	"context"
+
+	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // DBFS API makes it simple to interact with various data sources without having
@@ -134,6 +136,8 @@ type DbfsService interface {
 	// If `offset + length` exceeds the number of bytes in a file, it reads the
 	// contents until the end of file.",
 	Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // The Files API allows you to read, write, and delete files and directories in
@@ -159,4 +163,6 @@ type FilesService interface {
 	//
 	// Uploads a file of up to 2 GiB.
 	Upload(ctx context.Context, request UploadRequest) error
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }

@@ -15,6 +15,10 @@ type experimentsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *experimentsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *experimentsImpl) CreateExperiment(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error) {
 	var createExperimentResponse CreateExperimentResponse
 	path := "/api/2.0/mlflow/experiments/create"
@@ -297,6 +301,10 @@ func (a *experimentsImpl) UpdateRun(ctx context.Context, request UpdateRun) (*Up
 // unexported type that holds implementations of just ModelRegistry API methods
 type modelRegistryImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *modelRegistryImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *modelRegistryImpl) ApproveTransitionRequest(ctx context.Context, request ApproveTransitionRequest) (*ApproveTransitionRequestResponse, error) {

@@ -4,6 +4,8 @@ package pipelines
 
 import (
 	"context"
+
+	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // The Delta Live Tables API allows you to create, edit, delete, start, and view
@@ -106,4 +108,6 @@ type PipelinesService interface {
 	// Updates the permissions on a pipeline. Pipelines can inherit permissions
 	// from their root object.
 	UpdatePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }

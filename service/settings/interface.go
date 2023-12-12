@@ -4,6 +4,8 @@ package settings
 
 import (
 	"context"
+
+	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // The Accounts IP Access List API enables account admins to configure IP access
@@ -101,6 +103,36 @@ type AccountIpAccessListsService interface {
 	//
 	// It can take a few minutes for the changes to take effect.
 	Update(ctx context.Context, request UpdateIpAccessList) error
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
+}
+
+// Network policy is a set of rules that defines what can be accessed from your
+// Databricks network. E.g.: You can choose to block your SQL UDF to access
+// internet from your Databricks serverless clusters.
+//
+// There is only one instance of this setting per account. Since this setting
+// has a default value, this setting is present on all accounts even though it's
+// never set on a given account. Deletion reverts the value of the setting back
+// to the default value.
+type AccountNetworkPolicyService interface {
+
+	// Delete Account Network Policy.
+	//
+	// Reverts back all the account network policies back to default.
+	DeleteAccountNetworkPolicy(ctx context.Context, request DeleteAccountNetworkPolicyRequest) (*DeleteAccountNetworkPolicyResponse, error)
+
+	// Get Account Network Policy.
+	//
+	// Gets the value of Account level Network Policy.
+	ReadAccountNetworkPolicy(ctx context.Context, request ReadAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error)
+
+	// Update Account Network Policy.
+	//
+	// Updates the policy content of Account level Network Policy.
+	UpdateAccountNetworkPolicy(ctx context.Context, request UpdateAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // The Personal Compute enablement setting lets you control which users can use
@@ -128,6 +160,8 @@ type AccountSettingsService interface {
 	//
 	// Updates the value of the Personal Compute setting.
 	UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // Credentials manager interacts with with Identity Providers to to perform
@@ -139,6 +173,8 @@ type CredentialsManagerService interface {
 	// Exchange tokens with an Identity Provider to get a new access token. It
 	// allowes specifying scopes to determine token permissions.
 	ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // IP Access List enables admins to configure IP access lists.
@@ -241,6 +277,8 @@ type IpAccessListsService interface {
 	// resulting IP access list has no effect until you enable the feature. See
 	// :method:workspaceconf/setStatus.
 	Update(ctx context.Context, request UpdateIpAccessList) error
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // These APIs provide configurations for the network connectivity of your
@@ -322,6 +360,8 @@ type NetworkConnectivityService interface {
 	//
 	// Use ListPrivateEndpointRulesAll() to get all NccAzurePrivateEndpointRule instances, which will iterate over every result page.
 	ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // The default namespace setting API allows users to configure the default
@@ -364,6 +404,8 @@ type SettingsService interface {
 	// concurrently, PATCH will fail with 409 and the request will need to be
 	// retried by using the fresh etag in the 409 response.
 	UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // Enables administrators to get all tokens and delete tokens for other users.
@@ -415,6 +457,8 @@ type TokenManagementService interface {
 	// Updates the permissions on all tokens. Tokens can inherit permissions
 	// from their root object.
 	UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // The Token API allows you to create, list, and revoke tokens that can be used
@@ -443,6 +487,8 @@ type TokensService interface {
 	//
 	// Use ListAll() to get all TokenInfo instances
 	List(ctx context.Context) (*ListTokensResponse, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // This API allows updating known workspace settings for advanced users.
@@ -458,4 +504,6 @@ type WorkspaceConfService interface {
 	// Sets the configuration status for a workspace, including enabling or
 	// disabling it.
 	SetStatus(ctx context.Context, request WorkspaceConf) error
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }

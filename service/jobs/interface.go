@@ -4,6 +4,8 @@ package jobs
 
 import (
 	"context"
+
+	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // The Jobs API allows you to create, edit, and delete jobs.
@@ -150,4 +152,6 @@ type JobsService interface {
 	// Updates the permissions on a job. Jobs can inherit permissions from their
 	// root object.
 	UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }

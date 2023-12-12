@@ -15,6 +15,10 @@ type alertsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *alertsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *alertsImpl) Create(ctx context.Context, request CreateAlert) (*Alert, error) {
 	var alert Alert
 	path := "/api/2.0/preview/sql/alerts"
@@ -65,6 +69,10 @@ type dashboardWidgetsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *dashboardWidgetsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *dashboardWidgetsImpl) Create(ctx context.Context, request CreateWidget) (*Widget, error) {
 	var widget Widget
 	path := "/api/2.0/preview/sql/widgets"
@@ -96,6 +104,10 @@ func (a *dashboardWidgetsImpl) Update(ctx context.Context, request CreateWidget)
 // unexported type that holds implementations of just Dashboards API methods
 type dashboardsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *dashboardsImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *dashboardsImpl) Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error) {
@@ -147,6 +159,10 @@ type dataSourcesImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *dataSourcesImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *dataSourcesImpl) List(ctx context.Context) ([]DataSource, error) {
 	var dataSourceList []DataSource
 	path := "/api/2.0/preview/sql/data_sources"
@@ -159,6 +175,10 @@ func (a *dataSourcesImpl) List(ctx context.Context) ([]DataSource, error) {
 // unexported type that holds implementations of just DbsqlPermissions API methods
 type dbsqlPermissionsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *dbsqlPermissionsImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *dbsqlPermissionsImpl) Get(ctx context.Context, request GetDbsqlPermissionRequest) (*GetResponse, error) {
@@ -193,6 +213,10 @@ func (a *dbsqlPermissionsImpl) TransferOwnership(ctx context.Context, request Tr
 // unexported type that holds implementations of just Queries API methods
 type queriesImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *queriesImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *queriesImpl) Create(ctx context.Context, request QueryPostContent) (*Query, error) {
@@ -254,6 +278,10 @@ type queryHistoryImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *queryHistoryImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryRequest) (*ListQueriesResponse, error) {
 	var listQueriesResponse ListQueriesResponse
 	path := "/api/2.0/sql/history/queries"
@@ -266,6 +294,10 @@ func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryReq
 // unexported type that holds implementations of just QueryVisualizations API methods
 type queryVisualizationsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *queryVisualizationsImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateQueryVisualizationRequest) (*Visualization, error) {
@@ -299,6 +331,10 @@ func (a *queryVisualizationsImpl) Update(ctx context.Context, request Visualizat
 // unexported type that holds implementations of just StatementExecution API methods
 type statementExecutionImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *statementExecutionImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request CancelExecutionRequest) error {
@@ -339,6 +375,10 @@ func (a *statementExecutionImpl) GetStatementResultChunkN(ctx context.Context, r
 // unexported type that holds implementations of just Warehouses API methods
 type warehousesImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *warehousesImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *warehousesImpl) Create(ctx context.Context, request CreateWarehouseRequest) (*CreateWarehouseResponse, error) {

@@ -15,6 +15,10 @@ type pipelinesImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *pipelinesImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
 	var createPipelineResponse CreatePipelineResponse
 	path := "/api/2.0/pipelines"

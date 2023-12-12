@@ -4,6 +4,8 @@ package catalog
 
 import (
 	"context"
+
+	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // These APIs manage metastore assignments to a workspace.
@@ -41,6 +43,8 @@ type AccountMetastoreAssignmentsService interface {
 	// Updates an assignment to a metastore for a workspace. Currently, only the
 	// default catalog may be updated.
 	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // These APIs manage Unity Catalog metastores for an account. A metastore
@@ -74,6 +78,8 @@ type AccountMetastoresService interface {
 	//
 	// Updates an existing Unity Catalog metastore.
 	Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // These APIs manage storage credentials for a particular metastore.
@@ -116,6 +122,8 @@ type AccountStorageCredentialsService interface {
 	// owner of the storage credential. If the caller is a metastore admin, only
 	// the __owner__ credential can be changed.
 	Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // In Databricks Runtime 13.3 and above, you can add libraries and init scripts
@@ -137,6 +145,8 @@ type ArtifactAllowlistsService interface {
 	// metastore admin or have the **MANAGE ALLOWLIST** privilege on the
 	// metastore.
 	Update(ctx context.Context, request SetArtifactAllowlist) (*ArtifactAllowlistInfo, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // A catalog is the first layer of Unity Catalog’s three-level namespace.
@@ -185,6 +195,8 @@ type CatalogsService interface {
 	// either the owner of the catalog, or a metastore admin (when changing the
 	// owner field of the catalog).
 	Update(ctx context.Context, request UpdateCatalog) (*CatalogInfo, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // Connections allow for creating a connection to an external data source.
@@ -230,6 +242,8 @@ type ConnectionsService interface {
 	//
 	// Updates the connection that matches the supplied name.
 	Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // An external location is an object that combines a cloud storage path with a
@@ -284,6 +298,8 @@ type ExternalLocationsService interface {
 	// owner of the external location, or be a metastore admin. In the second
 	// case, the admin can only update the name of the external location.
 	Update(ctx context.Context, request UpdateExternalLocation) (*ExternalLocationInfo, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // Functions implement User-Defined Functions (UDFs) in Unity Catalog.
@@ -349,6 +365,8 @@ type FunctionsService interface {
 	// has the **USE_CATALOG** privilege on its parent catalog as well as the
 	// **USE_SCHEMA** privilege on the function's parent schema.
 	Update(ctx context.Context, request UpdateFunction) (*FunctionInfo, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // In Unity Catalog, data is secure by default. Initially, users have no access
@@ -378,6 +396,8 @@ type GrantsService interface {
 	//
 	// Updates the permissions for a securable.
 	Update(ctx context.Context, request UpdatePermissions) (*PermissionsList, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // A metastore is the top-level container of objects in Unity Catalog. It stores
@@ -466,6 +486,8 @@ type MetastoresService interface {
 	// account admin to update __metastore_id__; otherwise, the caller can be a
 	// Workspace admin.
 	UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // Databricks provides a hosted version of MLflow Model Registry in Unity
@@ -539,6 +561,8 @@ type ModelVersionsService interface {
 	//
 	// Currently only the comment of the model version can be updated.
 	Update(ctx context.Context, request UpdateModelVersionRequest) (*ModelVersionInfo, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // Databricks provides a hosted version of MLflow Model Registry in Unity
@@ -660,6 +684,8 @@ type RegisteredModelsService interface {
 	// Currently only the name, the owner or the comment of the registered model
 	// can be updated.
 	Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // A schema (also called a database) is the second layer of Unity Catalog’s
@@ -709,6 +735,8 @@ type SchemasService interface {
 	// be updated, the caller must be a metastore admin or have the
 	// **CREATE_SCHEMA** privilege on the parent catalog.
 	Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // A storage credential represents an authentication and authorization mechanism
@@ -776,6 +804,8 @@ type StorageCredentialsService interface {
 	// have the **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the
 	// storage credential.
 	Validate(ctx context.Context, request ValidateStorageCredential) (*ValidateStorageCredentialResponse, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // A system schema is a schema that lives within the system catalog. A system
@@ -802,6 +832,8 @@ type SystemSchemasService interface {
 	//
 	// Use ListAll() to get all SystemSchemaInfo instances
 	List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // Primary key and foreign key constraints encode relationships between fields
@@ -846,6 +878,8 @@ type TableConstraintsService interface {
 	// catalog, the **USE_SCHEMA** privilege on the table's schema, and be the
 	// owner of the table.
 	Delete(ctx context.Context, request DeleteTableConstraintRequest) error
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // A table resides in the third layer of Unity Catalog’s three-level
@@ -918,6 +952,8 @@ type TablesService interface {
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
 	Update(ctx context.Context, request UpdateTableRequest) error
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // Volumes are a Unity Catalog (UC) capability for accessing, storing,
@@ -1004,6 +1040,8 @@ type VolumesService interface {
 	// Currently only the name, the owner or the comment of the volume could be
 	// updated.
 	Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // A securable in Databricks can be configured as __OPEN__ or __ISOLATED__. An
@@ -1049,4 +1087,6 @@ type WorkspaceBindingsService interface {
 	// Updates workspace bindings of the securable. The caller must be a
 	// metastore admin or an owner of the securable.
 	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }

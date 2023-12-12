@@ -16,6 +16,10 @@ type billableUsageImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *billableUsageImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *billableUsageImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
 	var downloadResponse io.ReadCloser
 	path := fmt.Sprintf("/api/2.0/accounts/%v/usage/download", a.client.ConfiguredAccountID())
@@ -28,6 +32,10 @@ func (a *billableUsageImpl) Download(ctx context.Context, request DownloadReques
 // unexported type that holds implementations of just Budgets API methods
 type budgetsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *budgetsImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *budgetsImpl) Create(ctx context.Context, request WrappedBudget) (*WrappedBudgetWithStatus, error) {
@@ -78,6 +86,10 @@ func (a *budgetsImpl) Update(ctx context.Context, request WrappedBudget) error {
 // unexported type that holds implementations of just LogDelivery API methods
 type logDeliveryImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *logDeliveryImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {

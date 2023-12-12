@@ -4,6 +4,8 @@ package billing
 
 import (
 	"context"
+
+	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // This API allows you to download billable usage logs for the specified account
@@ -24,6 +26,8 @@ type BillableUsageService interface {
 	//
 	// [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // These APIs manage budget configuration including notifications for exceeding
@@ -59,6 +63,8 @@ type BudgetsService interface {
 	// Modifies a budget in this account. Budget properties are completely
 	// overwritten.
 	Update(ctx context.Context, request WrappedBudget) error
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }
 
 // These APIs manage log delivery configurations for this account. The two
@@ -176,4 +182,6 @@ type LogDeliveryService interface {
 	// configuration if this would violate the delivery configuration limits
 	// described under [Create log delivery](:method:LogDelivery/Create).
 	PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error
+	// Returns an instance of DatabricksClient
+	Client() client.DatabricksClientInterface
 }

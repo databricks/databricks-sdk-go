@@ -15,6 +15,10 @@ type accountMetastoreAssignmentsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *accountMetastoreAssignmentsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
 	headers := make(map[string]string)
@@ -62,6 +66,10 @@ func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request Ac
 // unexported type that holds implementations of just AccountMetastores API methods
 type accountMetastoresImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *accountMetastoresImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsMetastoreInfo, error) {
@@ -115,6 +123,10 @@ type accountStorageCredentialsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *accountStorageCredentialsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsStorageCredentialInfo, error) {
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
@@ -166,6 +178,10 @@ type artifactAllowlistsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *artifactAllowlistsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *artifactAllowlistsImpl) Get(ctx context.Context, request GetArtifactAllowlistRequest) (*ArtifactAllowlistInfo, error) {
 	var artifactAllowlistInfo ArtifactAllowlistInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/artifact-allowlists/%v", request.ArtifactType)
@@ -188,6 +204,10 @@ func (a *artifactAllowlistsImpl) Update(ctx context.Context, request SetArtifact
 // unexported type that holds implementations of just Catalogs API methods
 type catalogsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *catalogsImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*CatalogInfo, error) {
@@ -241,6 +261,10 @@ type connectionsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *connectionsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *connectionsImpl) Create(ctx context.Context, request CreateConnection) (*ConnectionInfo, error) {
 	var connectionInfo ConnectionInfo
 	path := "/api/2.1/unity-catalog/connections"
@@ -290,6 +314,10 @@ func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) 
 // unexported type that holds implementations of just ExternalLocations API methods
 type externalLocationsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *externalLocationsImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExternalLocation) (*ExternalLocationInfo, error) {
@@ -343,6 +371,10 @@ type functionsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *functionsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *functionsImpl) Create(ctx context.Context, request CreateFunctionRequest) (*FunctionInfo, error) {
 	var functionInfo FunctionInfo
 	path := "/api/2.1/unity-catalog/functions"
@@ -394,6 +426,10 @@ type grantsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *grantsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *grantsImpl) Get(ctx context.Context, request GetGrantRequest) (*PermissionsList, error) {
 	var permissionsList PermissionsList
 	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
@@ -425,6 +461,10 @@ func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*Pe
 // unexported type that holds implementations of just Metastores API methods
 type metastoresImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *metastoresImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssignment) error {
@@ -522,6 +562,10 @@ type modelVersionsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *modelVersionsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersionRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
 	headers := make(map[string]string)
@@ -569,6 +613,10 @@ func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersi
 // unexported type that holds implementations of just RegisteredModels API methods
 type registeredModelsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *registeredModelsImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *registeredModelsImpl) Create(ctx context.Context, request CreateRegisteredModelRequest) (*RegisteredModelInfo, error) {
@@ -638,6 +686,10 @@ type schemasImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *schemasImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*SchemaInfo, error) {
 	var schemaInfo SchemaInfo
 	path := "/api/2.1/unity-catalog/schemas"
@@ -687,6 +739,10 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*Schema
 // unexported type that holds implementations of just StorageCredentials API methods
 type storageCredentialsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *storageCredentialsImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error) {
@@ -750,6 +806,10 @@ type systemSchemasImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *systemSchemasImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", request.MetastoreId, request.SchemaName)
 	headers := make(map[string]string)
@@ -780,6 +840,10 @@ type tableConstraintsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *tableConstraintsImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *tableConstraintsImpl) Create(ctx context.Context, request CreateTableConstraint) (*TableConstraint, error) {
 	var tableConstraint TableConstraint
 	path := "/api/2.1/unity-catalog/constraints"
@@ -801,6 +865,10 @@ func (a *tableConstraintsImpl) Delete(ctx context.Context, request DeleteTableCo
 // unexported type that holds implementations of just Tables API methods
 type tablesImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *tablesImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) error {
@@ -852,6 +920,10 @@ type volumesImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *volumesImpl) Client() client.DatabricksClientInterface {
+	return a.client
+}
+
 func (a *volumesImpl) Create(ctx context.Context, request CreateVolumeRequestContent) (*VolumeInfo, error) {
 	var volumeInfo VolumeInfo
 	path := "/api/2.1/unity-catalog/volumes"
@@ -900,6 +972,10 @@ func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestCon
 // unexported type that holds implementations of just WorkspaceBindings API methods
 type workspaceBindingsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *workspaceBindingsImpl) Client() client.DatabricksClientInterface {
+	return a.client
 }
 
 func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error) {
