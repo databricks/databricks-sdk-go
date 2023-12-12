@@ -1215,8 +1215,6 @@ type UpdateCleanRoom struct {
 	CatalogUpdates []CleanRoomCatalogUpdate `json:"catalog_updates,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Name of the clean room.
-	Name string `json:"name,omitempty"`
 	// The name of the clean room.
 	NameArg string `json:"-" url:"-"`
 	// Username of current owner of clean room.
@@ -1236,8 +1234,10 @@ func (s UpdateCleanRoom) MarshalJSON() ([]byte, error) {
 type UpdateProvider struct {
 	// Description about the provider.
 	Comment string `json:"comment,omitempty"`
-	// The name of the Provider.
-	Name string `json:"name,omitempty" url:"-"`
+	// Name of the provider.
+	Name string `json:"-" url:"-"`
+	// New name for the provider.
+	NewName string `json:"new_name,omitempty"`
 	// Username of Provider owner.
 	Owner string `json:"owner,omitempty"`
 	// This field is required when the __authentication_type__ is **TOKEN** or
@@ -1260,8 +1260,10 @@ type UpdateRecipient struct {
 	Comment string `json:"comment,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
-	// Name of Recipient.
-	Name string `json:"name,omitempty" url:"-"`
+	// Name of the recipient.
+	Name string `json:"-" url:"-"`
+	// New name for the recipient.
+	NewName string `json:"new_name,omitempty"`
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
 	// Recipient properties as map of string key-value pairs. When provided in
@@ -1284,8 +1286,10 @@ func (s UpdateRecipient) MarshalJSON() ([]byte, error) {
 type UpdateShare struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Name of the share.
-	Name string `json:"name,omitempty" url:"-"`
+	// The name of the share.
+	Name string `json:"-" url:"-"`
+	// New name for the share.
+	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of share.
 	Owner string `json:"owner,omitempty"`
 	// Array of shared data object updates.

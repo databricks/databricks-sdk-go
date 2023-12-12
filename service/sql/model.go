@@ -221,7 +221,8 @@ func (f *AlertState) Type() string {
 // structure is used both within a manifest, and when fetching individual chunk
 // data or links.
 type BaseChunkInfo struct {
-	// The number of bytes in the result chunk.
+	// The number of bytes in the result chunk. This field is not available when
+	// using `INLINE` disposition.
 	ByteCount int64 `json:"byte_count,omitempty"`
 	// The position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`
@@ -1359,7 +1360,8 @@ func (s ExecuteStatementResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ExternalLink struct {
-	// The number of bytes in the result chunk.
+	// The number of bytes in the result chunk. This field is not available when
+	// using `INLINE` disposition.
 	ByteCount int64 `json:"byte_count,omitempty"`
 	// The position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`
@@ -2229,6 +2231,8 @@ func (s QueryEditContent) MarshalJSON() ([]byte, error) {
 // A filter to limit query history results. This field is optional.
 type QueryFilter struct {
 	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty" url:"query_start_time_range,omitempty"`
+	// A list of statement IDs.
+	StatementIds []string `json:"statement_ids,omitempty" url:"statement_ids,omitempty"`
 
 	Statuses []QueryStatus `json:"statuses,omitempty" url:"statuses,omitempty"`
 	// A list of user IDs who ran the queries.
@@ -2584,7 +2588,8 @@ type RestoreQueryRequest struct {
 // prepares the API to return multiple links in a single response. Currently
 // only a single link is returned.)
 type ResultData struct {
-	// The number of bytes in the result chunk.
+	// The number of bytes in the result chunk. This field is not available when
+	// using `INLINE` disposition.
 	ByteCount int64 `json:"byte_count,omitempty"`
 	// The position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`

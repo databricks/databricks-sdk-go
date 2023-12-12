@@ -183,32 +183,28 @@ type CreateWorkspaceRequest struct {
 	// length of 127 characters, and cannot be empty.
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// The deployment name defines part of the subdomain for the workspace. The
-	// workspace URL for web application and REST APIs is
+	// workspace URL for the web application and REST APIs is
 	// `<workspace-deployment-name>.cloud.databricks.com`. For example, if the
 	// deployment name is `abcsales`, your workspace URL will be
 	// `https://abcsales.cloud.databricks.com`. Hyphens are allowed. This
 	// property supports only the set of characters that are allowed in a
 	// subdomain.
 	//
-	// If your account has a non-empty deployment name prefix at workspace
-	// creation time, the workspace deployment name changes so that the
-	// beginning has the account prefix and a hyphen. For example, if your
-	// account's deployment prefix is `acme` and the workspace deployment name
-	// is `workspace-1`, the `deployment_name` field becomes `acme-workspace-1`
-	// and that is the value that is returned in JSON responses for the
-	// `deployment_name` field. The workspace URL is
-	// `acme-workspace-1.cloud.databricks.com`.
+	// To set this value, you must have a deployment name prefix. Contact your
+	// Databricks account team to add an account deployment name prefix to your
+	// account.
 	//
-	// If your account has a non-empty deployment name prefix and you set
-	// `deployment_name` to the reserved keyword `EMPTY`, `deployment_name` is
-	// just the account prefix only. For example, if your account's deployment
-	// prefix is `acme` and the workspace deployment name is `EMPTY`,
-	// `deployment_name` becomes `acme` only and the workspace URL is
-	// `acme.cloud.databricks.com`.
+	// Workspace deployment names follow the account prefix and a hyphen. For
+	// example, if your account's deployment prefix is `acme` and the workspace
+	// deployment name is `workspace-1`, the JSON response for the
+	// `deployment_name` field becomes `acme-workspace-1`. The workspace URL
+	// would be `acme-workspace-1.cloud.databricks.com`.
 	//
-	// Contact your Databricks representatives to add an account deployment name
-	// prefix to your account. If you do not have a deployment name prefix, the
-	// special deployment name value `EMPTY` is invalid.
+	// You can also set the `deployment_name` to the reserved keyword `EMPTY` if
+	// you want the deployment name to only include the deployment prefix. For
+	// example, if your account's deployment prefix is `acme` and the workspace
+	// deployment name is `EMPTY`, the `deployment_name` becomes `acme` only and
+	// the workspace URL is `acme.cloud.databricks.com`.
 	//
 	// This value must be unique across all non-deleted deployments across all
 	// AWS regions.
@@ -265,7 +261,7 @@ type CreateWorkspaceRequest struct {
 	// types.
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
-	// PrivateLink].
+	// PrivateLink].",
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
@@ -1244,7 +1240,7 @@ type Workspace struct {
 	// to control plane connection), or both connection types.
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
-	// PrivateLink].
+	// PrivateLink].",
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html

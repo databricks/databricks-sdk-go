@@ -10,6 +10,16 @@ import (
 
 // all definitions in this file are in alphabetical order
 
+type Ai21LabsConfig struct {
+	// The Databricks secret key reference for an AI21Labs API key.
+	Ai21labsApiKey string `json:"ai21labs_api_key"`
+}
+
+type AnthropicConfig struct {
+	// The Databricks secret key reference for an Anthropic API key.
+	AnthropicApiKey string `json:"anthropic_api_key"`
+}
+
 type AppEvents struct {
 	EventName string `json:"event_name,omitempty"`
 
@@ -77,6 +87,106 @@ func (s AppServiceStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type AutoCaptureConfigInput struct {
+	// The name of the catalog in Unity Catalog. NOTE: On update, you cannot
+	// change the catalog name if it was already set.
+	CatalogName string `json:"catalog_name,omitempty"`
+	// If inference tables are enabled or not. NOTE: If you have already
+	// disabled payload logging once, you cannot enable again.
+	Enabled bool `json:"enabled,omitempty"`
+	// The name of the schema in Unity Catalog. NOTE: On update, you cannot
+	// change the schema name if it was already set.
+	SchemaName string `json:"schema_name,omitempty"`
+	// The prefix of the table in Unity Catalog. NOTE: On update, you cannot
+	// change the prefix name if it was already set.
+	TableNamePrefix string `json:"table_name_prefix,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AutoCaptureConfigInput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AutoCaptureConfigInput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AutoCaptureConfigOutput struct {
+	// The name of the catalog in Unity Catalog.
+	CatalogName string `json:"catalog_name,omitempty"`
+	// If inference tables are enabled or not.
+	Enabled bool `json:"enabled,omitempty"`
+	// The name of the schema in Unity Catalog.
+	SchemaName string `json:"schema_name,omitempty"`
+
+	State *AutoCaptureState `json:"state,omitempty"`
+	// The prefix of the table in Unity Catalog.
+	TableNamePrefix string `json:"table_name_prefix,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AutoCaptureConfigOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AutoCaptureConfigOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AutoCaptureState struct {
+	PayloadTable *PayloadTable `json:"payload_table,omitempty"`
+}
+
+type AwsBedrockConfig struct {
+	// The Databricks secret key reference for an AWS Access Key ID with
+	// permissions to interact with Bedrock services.
+	AwsAccessKeyId string `json:"aws_access_key_id"`
+	// The AWS region to use. Bedrock has to be enabled there.
+	AwsRegion string `json:"aws_region"`
+	// The Databricks secret key reference for an AWS Secret Access Key paired
+	// with the access key ID, with permissions to interact with Bedrock
+	// services.
+	AwsSecretAccessKey string `json:"aws_secret_access_key"`
+	// The underlying provider in AWS Bedrock. Supported values (case
+	// insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
+	BedrockProvider AwsBedrockConfigBedrockProvider `json:"bedrock_provider"`
+}
+
+// The underlying provider in AWS Bedrock. Supported values (case insensitive)
+// include: Anthropic, Cohere, AI21Labs, Amazon.
+type AwsBedrockConfigBedrockProvider string
+
+const AwsBedrockConfigBedrockProviderAi21labs AwsBedrockConfigBedrockProvider = `ai21labs`
+
+const AwsBedrockConfigBedrockProviderAmazon AwsBedrockConfigBedrockProvider = `amazon`
+
+const AwsBedrockConfigBedrockProviderAnthropic AwsBedrockConfigBedrockProvider = `anthropic`
+
+const AwsBedrockConfigBedrockProviderCohere AwsBedrockConfigBedrockProvider = `cohere`
+
+// String representation for [fmt.Print]
+func (f *AwsBedrockConfigBedrockProvider) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AwsBedrockConfigBedrockProvider) Set(v string) error {
+	switch v {
+	case `ai21labs`, `amazon`, `anthropic`, `cohere`:
+		*f = AwsBedrockConfigBedrockProvider(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ai21labs", "amazon", "anthropic", "cohere"`, v)
+	}
+}
+
+// Type always returns AwsBedrockConfigBedrockProvider to satisfy [pflag.Value] interface
+func (f *AwsBedrockConfigBedrockProvider) Type() string {
+	return "AwsBedrockConfigBedrockProvider"
+}
+
 // Retrieve the logs associated with building the model's environment for a
 // given serving endpoint's served model.
 type BuildLogsRequest struct {
@@ -89,8 +199,60 @@ type BuildLogsRequest struct {
 }
 
 type BuildLogsResponse struct {
-	// The logs associated with building the served model's environment.
+	// The logs associated with building the served entity's environment.
 	Logs string `json:"logs"`
+}
+
+type ChatMessage struct {
+	// The content of the message.
+	Content string `json:"content,omitempty"`
+	// The role of the message. One of [system, user, assistant].
+	Role ChatMessageRole `json:"role,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ChatMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ChatMessage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The role of the message. One of [system, user, assistant].
+type ChatMessageRole string
+
+const ChatMessageRoleAssistant ChatMessageRole = `assistant`
+
+const ChatMessageRoleSystem ChatMessageRole = `system`
+
+const ChatMessageRoleUser ChatMessageRole = `user`
+
+// String representation for [fmt.Print]
+func (f *ChatMessageRole) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ChatMessageRole) Set(v string) error {
+	switch v {
+	case `assistant`, `system`, `user`:
+		*f = ChatMessageRole(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "assistant", "system", "user"`, v)
+	}
+}
+
+// Type always returns ChatMessageRole to satisfy [pflag.Value] interface
+func (f *ChatMessageRole) Type() string {
+	return "ChatMessageRole"
+}
+
+type CohereConfig struct {
+	// The Databricks secret key reference for a Cohere API key.
+	CohereApiKey string `json:"cohere_api_key"`
 }
 
 type CreateServingEndpoint struct {
@@ -100,9 +262,22 @@ type CreateServingEndpoint struct {
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
 	Name string `json:"name"`
+	// Rate limits to be applied to the serving endpoint. NOTE: only external
+	// and foundation model endpoints are supported as of now.
+	RateLimits []RateLimit `json:"rate_limits,omitempty"`
 	// Tags to be attached to the serving endpoint and automatically propagated
 	// to billing logs.
 	Tags []EndpointTag `json:"tags,omitempty"`
+}
+
+type DatabricksModelServingConfig struct {
+	// The Databricks secret key reference for a Databricks API token that
+	// corresponds to a user or service principal with Can Query access to the
+	// model serving endpoint pointed to by this external model.
+	DatabricksApiToken string `json:"databricks_api_token"`
+	// The URL of the Databricks workspace containing the model serving endpoint
+	// pointed to by this external model.
+	DatabricksWorkspaceUrl string `json:"databricks_workspace_url"`
 }
 
 type DataframeSplitInput struct {
@@ -199,21 +374,77 @@ func (f *DeploymentStatusState) Type() string {
 	return "DeploymentStatusState"
 }
 
+type EmbeddingsV1ResponseEmbeddingElement struct {
+	Embedding []float64 `json:"embedding,omitempty"`
+	// The index of the embedding in the response.
+	Index int `json:"index,omitempty"`
+	// This will always be 'embedding'.
+	Object EmbeddingsV1ResponseEmbeddingElementObject `json:"object,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EmbeddingsV1ResponseEmbeddingElement) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EmbeddingsV1ResponseEmbeddingElement) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// This will always be 'embedding'.
+type EmbeddingsV1ResponseEmbeddingElementObject string
+
+const EmbeddingsV1ResponseEmbeddingElementObjectEmbedding EmbeddingsV1ResponseEmbeddingElementObject = `embedding`
+
+// String representation for [fmt.Print]
+func (f *EmbeddingsV1ResponseEmbeddingElementObject) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EmbeddingsV1ResponseEmbeddingElementObject) Set(v string) error {
+	switch v {
+	case `embedding`:
+		*f = EmbeddingsV1ResponseEmbeddingElementObject(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "embedding"`, v)
+	}
+}
+
+// Type always returns EmbeddingsV1ResponseEmbeddingElementObject to satisfy [pflag.Value] interface
+func (f *EmbeddingsV1ResponseEmbeddingElementObject) Type() string {
+	return "EmbeddingsV1ResponseEmbeddingElementObject"
+}
+
 type EndpointCoreConfigInput struct {
+	// Configuration for Inference Tables which automatically logs requests and
+	// responses to Unity Catalog.
+	AutoCaptureConfig *AutoCaptureConfigInput `json:"auto_capture_config,omitempty"`
 	// The name of the serving endpoint to update. This field is required.
 	Name string `json:"-" url:"-"`
-	// A list of served models for the endpoint to serve. A serving endpoint can
-	// have up to 10 served models.
-	ServedModels []ServedModelInput `json:"served_models"`
+	// A list of served entities for the endpoint to serve. A serving endpoint
+	// can have up to 10 served entities.
+	ServedEntities []ServedEntityInput `json:"served_entities"`
+	// (Deprecated, use served_entities instead) A list of served models for the
+	// endpoint to serve. A serving endpoint can have up to 10 served models.
+	ServedModels []ServedModelInput `json:"served_models,omitempty"`
 	// The traffic config defining how invocations to the serving endpoint
 	// should be routed.
 	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
 }
 
 type EndpointCoreConfigOutput struct {
+	// Configuration for Inference Tables which automatically logs requests and
+	// responses to Unity Catalog.
+	AutoCaptureConfig *AutoCaptureConfigOutput `json:"auto_capture_config,omitempty"`
 	// The config version that the serving endpoint is currently serving.
 	ConfigVersion int `json:"config_version,omitempty"`
-	// The list of served models under the serving endpoint config.
+	// The list of served entities under the serving endpoint config.
+	ServedEntities []ServedEntityOutput `json:"served_entities,omitempty"`
+	// (Deprecated, use served_entities instead) The list of served models under
+	// the serving endpoint config.
 	ServedModels []ServedModelOutput `json:"served_models,omitempty"`
 	// The traffic configuration associated with the serving endpoint config.
 	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
@@ -230,15 +461,21 @@ func (s EndpointCoreConfigOutput) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointCoreConfigSummary struct {
-	// The list of served models under the serving endpoint config.
+	// The list of served entities under the serving endpoint config.
+	ServedEntities []ServedEntitySpec `json:"served_entities,omitempty"`
+	// (Deprecated, use served_entities instead) The list of served models under
+	// the serving endpoint config.
 	ServedModels []ServedModelSpec `json:"served_models,omitempty"`
 }
 
 type EndpointPendingConfig struct {
 	// The config version that the serving endpoint is currently serving.
 	ConfigVersion int `json:"config_version,omitempty"`
-	// The list of served models belonging to the last issued update to the
+	// The list of served entities belonging to the last issued update to the
 	// serving endpoint.
+	ServedEntities []ServedEntityOutput `json:"served_entities,omitempty"`
+	// (Deprecated, use served_entities instead) The list of served models
+	// belonging to the last issued update to the serving endpoint.
 	ServedModels []ServedModelOutput `json:"served_models,omitempty"`
 	// The timestamp when the update to the pending config started.
 	StartTime int64 `json:"start_time,omitempty"`
@@ -265,9 +502,9 @@ type EndpointState struct {
 	// or fails."
 	ConfigUpdate EndpointStateConfigUpdate `json:"config_update,omitempty"`
 	// The state of an endpoint, indicating whether or not the endpoint is
-	// queryable. An endpoint is READY if all of the served models in its active
-	// configuration are ready. If any of the actively served models are in a
-	// non-ready state, the endpoint state will be NOT_READY.
+	// queryable. An endpoint is READY if all of the served entities in its
+	// active configuration are ready. If any of the actively served entities
+	// are in a non-ready state, the endpoint state will be NOT_READY.
 	Ready EndpointStateReady `json:"ready,omitempty"`
 }
 
@@ -306,8 +543,8 @@ func (f *EndpointStateConfigUpdate) Type() string {
 }
 
 // The state of an endpoint, indicating whether or not the endpoint is
-// queryable. An endpoint is READY if all of the served models in its active
-// configuration are ready. If any of the actively served models are in a
+// queryable. An endpoint is READY if all of the served entities in its active
+// configuration are ready. If any of the actively served entities are in a
 // non-ready state, the endpoint state will be NOT_READY.
 type EndpointStateReady string
 
@@ -358,6 +595,116 @@ type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
 	// required.
 	Name string `json:"-" url:"-"`
+}
+
+type ExternalModel struct {
+	// The config for the external model, which must match the provider.
+	Config ExternalModelConfig `json:"config"`
+	// The name of the external model.
+	Name string `json:"name"`
+	// The name of the provider for the external model. Currently, the supported
+	// providers are 'ai21labs', 'anthropic', 'aws-bedrock', 'cohere',
+	// 'databricks-model-serving', 'openai', and 'palm'.",
+	Provider ExternalModelProvider `json:"provider"`
+	// The task type of the external model.
+	Task string `json:"task"`
+}
+
+type ExternalModelConfig struct {
+	// AI21Labs Config
+	Ai21labsConfig *Ai21LabsConfig `json:"ai21labs_config,omitempty"`
+	// Anthropic Config
+	AnthropicConfig *AnthropicConfig `json:"anthropic_config,omitempty"`
+	// AWS Bedrock Config
+	AwsBedrockConfig *AwsBedrockConfig `json:"aws_bedrock_config,omitempty"`
+	// Cohere Config
+	CohereConfig *CohereConfig `json:"cohere_config,omitempty"`
+	// Databricks Model Serving Config
+	DatabricksModelServingConfig *DatabricksModelServingConfig `json:"databricks_model_serving_config,omitempty"`
+	// OpenAI Config
+	OpenaiConfig *OpenAiConfig `json:"openai_config,omitempty"`
+	// PaLM Config
+	PalmConfig *PaLmConfig `json:"palm_config,omitempty"`
+}
+
+// The name of the provider for the external model. Currently, the supported
+// providers are 'ai21labs', 'anthropic', 'aws-bedrock', 'cohere',
+// 'databricks-model-serving', 'openai', and 'palm'.",
+type ExternalModelProvider string
+
+const ExternalModelProviderAi21labs ExternalModelProvider = `ai21labs`
+
+const ExternalModelProviderAnthropic ExternalModelProvider = `anthropic`
+
+const ExternalModelProviderAwsBedrock ExternalModelProvider = `aws-bedrock`
+
+const ExternalModelProviderCohere ExternalModelProvider = `cohere`
+
+const ExternalModelProviderDatabricksModelServing ExternalModelProvider = `databricks-model-serving`
+
+const ExternalModelProviderOpenai ExternalModelProvider = `openai`
+
+const ExternalModelProviderPalm ExternalModelProvider = `palm`
+
+// String representation for [fmt.Print]
+func (f *ExternalModelProvider) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ExternalModelProvider) Set(v string) error {
+	switch v {
+	case `ai21labs`, `anthropic`, `aws-bedrock`, `cohere`, `databricks-model-serving`, `openai`, `palm`:
+		*f = ExternalModelProvider(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ai21labs", "anthropic", "aws-bedrock", "cohere", "databricks-model-serving", "openai", "palm"`, v)
+	}
+}
+
+// Type always returns ExternalModelProvider to satisfy [pflag.Value] interface
+func (f *ExternalModelProvider) Type() string {
+	return "ExternalModelProvider"
+}
+
+type ExternalModelUsageElement struct {
+	// The number of tokens in the chat/completions response.
+	CompletionTokens int `json:"completion_tokens,omitempty"`
+	// The number of tokens in the prompt.
+	PromptTokens int `json:"prompt_tokens,omitempty"`
+	// The total number of tokens in the prompt and response.
+	TotalTokens int `json:"total_tokens,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExternalModelUsageElement) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalModelUsageElement) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type FoundationModel struct {
+	// The description of the foundation model.
+	Description string `json:"description,omitempty"`
+	// The display name of the foundation model.
+	DisplayName string `json:"display_name,omitempty"`
+	// The URL to the documentation of the foundation model.
+	Docs string `json:"docs,omitempty"`
+	// The name of the foundation model.
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *FoundationModel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FoundationModel) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get deployment status for an application
@@ -471,6 +818,47 @@ type LogsRequest struct {
 	ServedModelName string `json:"-" url:"-"`
 }
 
+type OpenAiConfig struct {
+	// This is the base URL for the OpenAI API (default:
+	// "https://api.openai.com/v1"). For Azure OpenAI, this field is required,
+	// and is the base URL for the Azure OpenAI API service provided by Azure.
+	OpenaiApiBase string `json:"openai_api_base,omitempty"`
+	// The Databricks secret key reference for an OpenAI or Azure OpenAI API
+	// key.
+	OpenaiApiKey string `json:"openai_api_key"`
+	// This is an optional field to specify the type of OpenAI API to use. For
+	// Azure OpenAI, this field is required, and adjust this parameter to
+	// represent the preferred security access validation protocol. For access
+	// token validation, use azure. For authentication using Azure Active
+	// Directory (Azure AD) use, azuread.
+	OpenaiApiType string `json:"openai_api_type,omitempty"`
+	// This is an optional field to specify the OpenAI API version. For Azure
+	// OpenAI, this field is required, and is the version of the Azure OpenAI
+	// service to utilize, specified by a date.
+	OpenaiApiVersion string `json:"openai_api_version,omitempty"`
+	// This field is only required for Azure OpenAI and is the name of the
+	// deployment resource for the Azure OpenAI service.
+	OpenaiDeploymentName string `json:"openai_deployment_name,omitempty"`
+	// This is an optional field to specify the organization in OpenAI or Azure
+	// OpenAI.
+	OpenaiOrganization string `json:"openai_organization,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *OpenAiConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OpenAiConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PaLmConfig struct {
+	// The Databricks secret key reference for a PaLM API key.
+	PalmApiKey string `json:"palm_api_key"`
+}
+
 type PatchServingEndpointTags struct {
 	// List of endpoint tags to add
 	AddTags []EndpointTag `json:"add_tags,omitempty"`
@@ -481,22 +869,237 @@ type PatchServingEndpointTags struct {
 	Name string `json:"-" url:"-"`
 }
 
+type PayloadTable struct {
+	// The name of the payload table.
+	Name string `json:"name,omitempty"`
+	// The status of the payload table.
+	Status string `json:"status,omitempty"`
+	// The status message of the payload table.
+	StatusMessage string `json:"status_message,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PayloadTable) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PayloadTable) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Update the rate limits of a serving endpoint
+type PutRequest struct {
+	// The name of the serving endpoint whose rate limits are being updated.
+	// This field is required.
+	Name string `json:"-" url:"-"`
+	// The list of endpoint rate limits.
+	RateLimits []RateLimit `json:"rate_limits,omitempty"`
+}
+
+type PutResponse struct {
+	// The list of endpoint rate limits.
+	RateLimits []RateLimit `json:"rate_limits,omitempty"`
+}
+
 type QueryEndpointInput struct {
 	// Pandas Dataframe input in the records orientation.
 	DataframeRecords []any `json:"dataframe_records,omitempty"`
 	// Pandas Dataframe input in the split orientation.
 	DataframeSplit *DataframeSplitInput `json:"dataframe_split,omitempty"`
+	// The extra parameters field used ONLY for __completions, chat,__ and
+	// __embeddings external & foundation model__ serving endpoints. This is a
+	// map of strings and should only be used with other external/foundation
+	// model query fields.
+	ExtraParams map[string]string `json:"extra_params,omitempty"`
+	// The input string (or array of strings) field used ONLY for __embeddings
+	// external & foundation model__ serving endpoints and is the only field
+	// (along with extra_params if needed) used by embeddings queries.
+	Input any `json:"input,omitempty"`
 	// Tensor-based input in columnar format.
 	Inputs any `json:"inputs,omitempty"`
 	// Tensor-based input in row format.
 	Instances []any `json:"instances,omitempty"`
+	// The max tokens field used ONLY for __completions__ and __chat external &
+	// foundation model__ serving endpoints. This is an integer and should only
+	// be used with other chat/completions query fields.
+	MaxTokens int `json:"max_tokens,omitempty"`
+	// The messages field used ONLY for __chat external & foundation model__
+	// serving endpoints. This is a map of strings and should only be used with
+	// other chat query fields.
+	Messages []ChatMessage `json:"messages,omitempty"`
+	// The n (number of candidates) field used ONLY for __completions__ and
+	// __chat external & foundation model__ serving endpoints. This is an
+	// integer between 1 and 5 with a default of 1 and should only be used with
+	// other chat/completions query fields.
+	N int `json:"n,omitempty"`
 	// The name of the serving endpoint. This field is required.
 	Name string `json:"-" url:"-"`
+	// The prompt string (or array of strings) field used ONLY for __completions
+	// external & foundation model__ serving endpoints and should only be used
+	// with other completions query fields.
+	Prompt any `json:"prompt,omitempty"`
+	// The stop sequences field used ONLY for __completions__ and __chat
+	// external & foundation model__ serving endpoints. This is a list of
+	// strings and should only be used with other chat/completions query fields.
+	Stop []string `json:"stop,omitempty"`
+	// The stream field used ONLY for __completions__ and __chat external &
+	// foundation model__ serving endpoints. This is a boolean defaulting to
+	// false and should only be used with other chat/completions query fields.
+	Stream bool `json:"stream,omitempty"`
+	// The temperature field used ONLY for __completions__ and __chat external &
+	// foundation model__ serving endpoints. This is a float between 0.0 and 2.0
+	// with a default of 1.0 and should only be used with other chat/completions
+	// query fields.
+	Temperature float64 `json:"temperature,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryEndpointInput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryEndpointInput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type QueryEndpointResponse struct {
+	// The list of choices returned by the __chat or completions
+	// external/foundation model__ serving endpoint.
+	Choices []V1ResponseChoiceElement `json:"choices,omitempty"`
+	// The timestamp in seconds when the query was created in Unix time returned
+	// by a __completions or chat external/foundation model__ serving endpoint.
+	Created int64 `json:"created,omitempty"`
+	// The list of the embeddings returned by the __embeddings
+	// external/foundation model__ serving endpoint.
+	Data []EmbeddingsV1ResponseEmbeddingElement `json:"data,omitempty"`
+	// The ID of the query that may be returned by a __completions or chat
+	// external/foundation model__ serving endpoint.
+	Id string `json:"id,omitempty"`
+	// The name of the __external/foundation model__ used for querying. This is
+	// the name of the model that was specified in the endpoint config.
+	Model string `json:"model,omitempty"`
+	// The type of object returned by the __external/foundation model__ serving
+	// endpoint, one of [text_completion, chat.completion, list (of
+	// embeddings)].
+	Object QueryEndpointResponseObject `json:"object,omitempty"`
 	// The predictions returned by the serving endpoint.
-	Predictions []any `json:"predictions"`
+	Predictions []any `json:"predictions,omitempty"`
+	// The usage object that may be returned by the __external/foundation
+	// model__ serving endpoint. This contains information about the number of
+	// tokens used in the prompt and response.
+	Usage *ExternalModelUsageElement `json:"usage,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryEndpointResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryEndpointResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The type of object returned by the __external/foundation model__ serving
+// endpoint, one of [text_completion, chat.completion, list (of embeddings)].
+type QueryEndpointResponseObject string
+
+const QueryEndpointResponseObjectChatCompletion QueryEndpointResponseObject = `chat.completion`
+
+const QueryEndpointResponseObjectList QueryEndpointResponseObject = `list`
+
+const QueryEndpointResponseObjectTextCompletion QueryEndpointResponseObject = `text_completion`
+
+// String representation for [fmt.Print]
+func (f *QueryEndpointResponseObject) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *QueryEndpointResponseObject) Set(v string) error {
+	switch v {
+	case `chat.completion`, `list`, `text_completion`:
+		*f = QueryEndpointResponseObject(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "chat.completion", "list", "text_completion"`, v)
+	}
+}
+
+// Type always returns QueryEndpointResponseObject to satisfy [pflag.Value] interface
+func (f *QueryEndpointResponseObject) Type() string {
+	return "QueryEndpointResponseObject"
+}
+
+type RateLimit struct {
+	// Used to specify how many calls are allowed for a key within the
+	// renewal_period.
+	Calls int `json:"calls"`
+	// Key field for a serving endpoint rate limit. Currently, only 'user' and
+	// 'endpoint' are supported, with 'endpoint' being the default if not
+	// specified.
+	Key RateLimitKey `json:"key,omitempty"`
+	// Renewal period field for a serving endpoint rate limit. Currently, only
+	// 'minute' is supported.
+	RenewalPeriod RateLimitRenewalPeriod `json:"renewal_period"`
+}
+
+// Key field for a serving endpoint rate limit. Currently, only 'user' and
+// 'endpoint' are supported, with 'endpoint' being the default if not specified.
+type RateLimitKey string
+
+const RateLimitKeyEndpoint RateLimitKey = `endpoint`
+
+const RateLimitKeyUser RateLimitKey = `user`
+
+// String representation for [fmt.Print]
+func (f *RateLimitKey) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RateLimitKey) Set(v string) error {
+	switch v {
+	case `endpoint`, `user`:
+		*f = RateLimitKey(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "endpoint", "user"`, v)
+	}
+}
+
+// Type always returns RateLimitKey to satisfy [pflag.Value] interface
+func (f *RateLimitKey) Type() string {
+	return "RateLimitKey"
+}
+
+// Renewal period field for a serving endpoint rate limit. Currently, only
+// 'minute' is supported.
+type RateLimitRenewalPeriod string
+
+const RateLimitRenewalPeriodMinute RateLimitRenewalPeriod = `minute`
+
+// String representation for [fmt.Print]
+func (f *RateLimitRenewalPeriod) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RateLimitRenewalPeriod) Set(v string) error {
+	switch v {
+	case `minute`:
+		*f = RateLimitRenewalPeriod(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "minute"`, v)
+	}
+}
+
+// Type always returns RateLimitRenewalPeriod to satisfy [pflag.Value] interface
+func (f *RateLimitRenewalPeriod) Type() string {
+	return "RateLimitRenewalPeriod"
 }
 
 type Route struct {
@@ -505,6 +1108,175 @@ type Route struct {
 	// The percentage of endpoint traffic to send to this route. It must be an
 	// integer between 0 and 100 inclusive.
 	TrafficPercentage int `json:"traffic_percentage"`
+}
+
+type ServedEntityInput struct {
+	// The name of the entity to be served. The entity may be a model in the
+	// Databricks Model Registry, a model in the Unity Catalog (UC), or a
+	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full
+	// name of the object should be given in the form of
+	// __catalog_name__.__schema_name__.__model_name__.
+	EntityName string `json:"entity_name,omitempty"`
+	// The version of the model in Databricks Model Registry to be served or
+	// empty if the entity is a FEATURE_SPEC.
+	EntityVersion string `json:"entity_version,omitempty"`
+	// An object containing a set of optional, user-specified environment
+	// variable key-value pairs used for serving this entity. Note: this is an
+	// experimental feature and subject to change. Example entity environment
+	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
+	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
+	// "{{secrets/my_scope2/my_key2}}"}`
+	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
+	// The external model to be served. NOTE: Only one of external_model and
+	// (entity_name, entity_version, workload_size, workload_type, and
+	// scale_to_zero_enabled) can be specified with the latter set being used
+	// for custom model serving for a Databricks registered model. When an
+	// external_model is present, the served entities list can only have one
+	// served_entity object. For an existing endpoint with external_model, it
+	// can not be updated to an endpoint without external_model. If the endpoint
+	// is created without external_model, users cannot update it to add
+	// external_model later.
+	ExternalModel *ExternalModel `json:"external_model,omitempty"`
+	// ARN of the instance profile that the served entity uses to access AWS
+	// resources.
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The name of a served entity. It must be unique across an endpoint. A
+	// served entity name can consist of alphanumeric characters, dashes, and
+	// underscores. If not specified for an external model, this field defaults
+	// to external_model.name, with '.' and ':' replaced with '-', and if not
+	// specified for other entities, it defaults to
+	// <entity-name>-<entity-version>.
+	Name string `json:"name,omitempty"`
+	// Whether the compute resources for the served entity should scale down to
+	// zero.
+	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
+	// The workload size of the served entity. The workload size corresponds to
+	// a range of provisioned concurrency that the compute autoscales between. A
+	// single unit of provisioned concurrency can process one request at a time.
+	// Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
+	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
+	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
+	// the provisioned concurrency for each workload size is 0.
+	WorkloadSize string `json:"workload_size,omitempty"`
+	// The workload type of the served entity. The workload type selects which
+	// type of compute to use in the endpoint. The default value for this
+	// parameter is "CPU". For deep learning workloads, GPU acceleration is
+	// available by selecting workload types like GPU_SMALL and others. See the
+	// available [GPU types].
+	//
+	// [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
+	WorkloadType string `json:"workload_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ServedEntityInput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ServedEntityInput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ServedEntityOutput struct {
+	// The creation timestamp of the served entity in Unix time.
+	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
+	// The email of the user who created the served entity.
+	Creator string `json:"creator,omitempty"`
+	// The name of the entity served. The entity may be a model in the
+	// Databricks Model Registry, a model in the Unity Catalog (UC), or a
+	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full
+	// name of the object is given in the form of
+	// __catalog_name__.__schema_name__.__model_name__.
+	EntityName string `json:"entity_name,omitempty"`
+	// The version of the served entity in Databricks Model Registry or empty if
+	// the entity is a FEATURE_SPEC.
+	EntityVersion string `json:"entity_version,omitempty"`
+	// An object containing a set of optional, user-specified environment
+	// variable key-value pairs used for serving this entity. Note: this is an
+	// experimental feature and subject to change. Example entity environment
+	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
+	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
+	// "{{secrets/my_scope2/my_key2}}"}`
+	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
+	// The external model that is served. NOTE: Only one of external_model,
+	// foundation_model, and (entity_name, entity_version, workload_size,
+	// workload_type, and scale_to_zero_enabled) is returned based on the
+	// endpoint type.
+	ExternalModel *ExternalModel `json:"external_model,omitempty"`
+	// The foundation model that is served. NOTE: Only one of foundation_model,
+	// external_model, and (entity_name, entity_version, workload_size,
+	// workload_type, and scale_to_zero_enabled) is returned based on the
+	// endpoint type.
+	FoundationModel *FoundationModel `json:"foundation_model,omitempty"`
+	// ARN of the instance profile that the served entity uses to access AWS
+	// resources.
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The name of the served entity.
+	Name string `json:"name,omitempty"`
+	// Whether the compute resources for the served entity should scale down to
+	// zero.
+	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
+	// Information corresponding to the state of the served entity.
+	State *ServedModelState `json:"state,omitempty"`
+	// The workload size of the served entity. The workload size corresponds to
+	// a range of provisioned concurrency that the compute autoscales between. A
+	// single unit of provisioned concurrency can process one request at a time.
+	// Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
+	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
+	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
+	// the provisioned concurrency for each workload size will be 0.
+	WorkloadSize string `json:"workload_size,omitempty"`
+	// The workload type of the served entity. The workload type selects which
+	// type of compute to use in the endpoint. The default value for this
+	// parameter is "CPU". For deep learning workloads, GPU acceleration is
+	// available by selecting workload types like GPU_SMALL and others. See the
+	// available [GPU types].
+	//
+	// [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
+	WorkloadType string `json:"workload_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ServedEntityOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ServedEntityOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ServedEntitySpec struct {
+	// The name of the entity served. The entity may be a model in the
+	// Databricks Model Registry, a model in the Unity Catalog (UC), or a
+	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full
+	// name of the object is given in the form of
+	// __catalog_name__.__schema_name__.__model_name__.
+	EntityName string `json:"entity_name,omitempty"`
+	// The version of the served entity in Databricks Model Registry or empty if
+	// the entity is a FEATURE_SPEC.
+	EntityVersion string `json:"entity_version,omitempty"`
+	// The external model that is served. NOTE: Only one of external_model,
+	// foundation_model, and (entity_name, entity_version) is returned based on
+	// the endpoint type.
+	ExternalModel *ExternalModel `json:"external_model,omitempty"`
+	// The foundation model that is served. NOTE: Only one of foundation_model,
+	// external_model, and (entity_name, entity_version) is returned based on
+	// the endpoint type.
+	FoundationModel *FoundationModel `json:"foundation_model,omitempty"`
+	// The name of the served entity.
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ServedEntitySpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ServedEntitySpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ServedModelInput struct {
@@ -540,13 +1312,15 @@ type ServedModelInput struct {
 	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
 	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
 	// the provisioned concurrency for each workload size will be 0.
-	WorkloadSize string `json:"workload_size"`
+	WorkloadSize ServedModelInputWorkloadSize `json:"workload_size"`
 	// The workload type of the served model. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
 	// parameter is "CPU". For deep learning workloads, GPU acceleration is
-	// available by selecting workload types like GPU_SMALL and others. See
-	// documentation for all options.
-	WorkloadType string `json:"workload_type,omitempty"`
+	// available by selecting workload types like GPU_SMALL and others. See the
+	// available [GPU types].
+	//
+	// [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
+	WorkloadType ServedModelInputWorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -557,6 +1331,82 @@ func (s *ServedModelInput) UnmarshalJSON(b []byte) error {
 
 func (s ServedModelInput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The workload size of the served model. The workload size corresponds to a
+// range of provisioned concurrency that the compute will autoscale between. A
+// single unit of provisioned concurrency can process one request at a time.
+// Valid workload sizes are "Small" (4 - 4 provisioned concurrency), "Medium" (8
+// - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
+// If scale-to-zero is enabled, the lower bound of the provisioned concurrency
+// for each workload size will be 0.
+type ServedModelInputWorkloadSize string
+
+const ServedModelInputWorkloadSizeLarge ServedModelInputWorkloadSize = `Large`
+
+const ServedModelInputWorkloadSizeMedium ServedModelInputWorkloadSize = `Medium`
+
+const ServedModelInputWorkloadSizeSmall ServedModelInputWorkloadSize = `Small`
+
+// String representation for [fmt.Print]
+func (f *ServedModelInputWorkloadSize) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ServedModelInputWorkloadSize) Set(v string) error {
+	switch v {
+	case `Large`, `Medium`, `Small`:
+		*f = ServedModelInputWorkloadSize(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "Large", "Medium", "Small"`, v)
+	}
+}
+
+// Type always returns ServedModelInputWorkloadSize to satisfy [pflag.Value] interface
+func (f *ServedModelInputWorkloadSize) Type() string {
+	return "ServedModelInputWorkloadSize"
+}
+
+// The workload type of the served model. The workload type selects which type
+// of compute to use in the endpoint. The default value for this parameter is
+// "CPU". For deep learning workloads, GPU acceleration is available by
+// selecting workload types like GPU_SMALL and others. See the available [GPU
+// types].
+//
+// [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
+type ServedModelInputWorkloadType string
+
+const ServedModelInputWorkloadTypeCpu ServedModelInputWorkloadType = `CPU`
+
+const ServedModelInputWorkloadTypeGpuLarge ServedModelInputWorkloadType = `GPU_LARGE`
+
+const ServedModelInputWorkloadTypeGpuMedium ServedModelInputWorkloadType = `GPU_MEDIUM`
+
+const ServedModelInputWorkloadTypeGpuSmall ServedModelInputWorkloadType = `GPU_SMALL`
+
+const ServedModelInputWorkloadTypeMultigpuMedium ServedModelInputWorkloadType = `MULTIGPU_MEDIUM`
+
+// String representation for [fmt.Print]
+func (f *ServedModelInputWorkloadType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ServedModelInputWorkloadType) Set(v string) error {
+	switch v {
+	case `CPU`, `GPU_LARGE`, `GPU_MEDIUM`, `GPU_SMALL`, `MULTIGPU_MEDIUM`:
+		*f = ServedModelInputWorkloadType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CPU", "GPU_LARGE", "GPU_MEDIUM", "GPU_SMALL", "MULTIGPU_MEDIUM"`, v)
+	}
+}
+
+// Type always returns ServedModelInputWorkloadType to satisfy [pflag.Value] interface
+func (f *ServedModelInputWorkloadType) Type() string {
+	return "ServedModelInputWorkloadType"
 }
 
 type ServedModelOutput struct {
@@ -598,8 +1448,10 @@ type ServedModelOutput struct {
 	// The workload type of the served model. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
 	// parameter is "CPU". For deep learning workloads, GPU acceleration is
-	// available by selecting workload types like GPU_SMALL and others. See
-	// documentation for all options.
+	// available by selecting workload types like GPU_SMALL and others. See the
+	// available [GPU types].
+	//
+	// [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
 	WorkloadType string `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -635,20 +1487,20 @@ func (s ServedModelSpec) MarshalJSON() ([]byte, error) {
 }
 
 type ServedModelState struct {
-	// The state of the served model deployment. DEPLOYMENT_CREATING indicates
-	// that the served model is not ready yet because the deployment is still
+	// The state of the served entity deployment. DEPLOYMENT_CREATING indicates
+	// that the served entity is not ready yet because the deployment is still
 	// being created (i.e container image is building, model server is deploying
 	// for the first time, etc.). DEPLOYMENT_RECOVERING indicates that the
-	// served model was previously in a ready state but no longer is and is
-	// attempting to recover. DEPLOYMENT_READY indicates that the served model
+	// served entity was previously in a ready state but no longer is and is
+	// attempting to recover. DEPLOYMENT_READY indicates that the served entity
 	// is ready to receive traffic. DEPLOYMENT_FAILED indicates that there was
-	// an error trying to bring up the served model (e.g container image build
+	// an error trying to bring up the served entity (e.g container image build
 	// failed, the model server failed to start due to a model loading error,
 	// etc.) DEPLOYMENT_ABORTED indicates that the deployment was terminated
-	// likely due to a failure in bringing up another served model under the
+	// likely due to a failure in bringing up another served entity under the
 	// same endpoint and config version.
 	Deployment ServedModelStateDeployment `json:"deployment,omitempty"`
-	// More information about the state of the served model, if available.
+	// More information about the state of the served entity, if available.
 	DeploymentStateMessage string `json:"deployment_state_message,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -662,28 +1514,28 @@ func (s ServedModelState) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The state of the served model deployment. DEPLOYMENT_CREATING indicates that
-// the served model is not ready yet because the deployment is still being
+// The state of the served entity deployment. DEPLOYMENT_CREATING indicates that
+// the served entity is not ready yet because the deployment is still being
 // created (i.e container image is building, model server is deploying for the
-// first time, etc.). DEPLOYMENT_RECOVERING indicates that the served model was
+// first time, etc.). DEPLOYMENT_RECOVERING indicates that the served entity was
 // previously in a ready state but no longer is and is attempting to recover.
-// DEPLOYMENT_READY indicates that the served model is ready to receive traffic.
-// DEPLOYMENT_FAILED indicates that there was an error trying to bring up the
-// served model (e.g container image build failed, the model server failed to
-// start due to a model loading error, etc.) DEPLOYMENT_ABORTED indicates that
-// the deployment was terminated likely due to a failure in bringing up another
-// served model under the same endpoint and config version.
+// DEPLOYMENT_READY indicates that the served entity is ready to receive
+// traffic. DEPLOYMENT_FAILED indicates that there was an error trying to bring
+// up the served entity (e.g container image build failed, the model server
+// failed to start due to a model loading error, etc.) DEPLOYMENT_ABORTED
+// indicates that the deployment was terminated likely due to a failure in
+// bringing up another served entity under the same endpoint and config version.
 type ServedModelStateDeployment string
 
-const ServedModelStateDeploymentDeploymentAborted ServedModelStateDeployment = `DEPLOYMENT_ABORTED`
+const ServedModelStateDeploymentAborted ServedModelStateDeployment = `DEPLOYMENT_ABORTED`
 
-const ServedModelStateDeploymentDeploymentCreating ServedModelStateDeployment = `DEPLOYMENT_CREATING`
+const ServedModelStateDeploymentCreating ServedModelStateDeployment = `DEPLOYMENT_CREATING`
 
-const ServedModelStateDeploymentDeploymentFailed ServedModelStateDeployment = `DEPLOYMENT_FAILED`
+const ServedModelStateDeploymentFailed ServedModelStateDeployment = `DEPLOYMENT_FAILED`
 
-const ServedModelStateDeploymentDeploymentReady ServedModelStateDeployment = `DEPLOYMENT_READY`
+const ServedModelStateDeploymentReady ServedModelStateDeployment = `DEPLOYMENT_READY`
 
-const ServedModelStateDeploymentDeploymentRecovering ServedModelStateDeployment = `DEPLOYMENT_RECOVERING`
+const ServedModelStateDeploymentRecovering ServedModelStateDeployment = `DEPLOYMENT_RECOVERING`
 
 // String representation for [fmt.Print]
 func (f *ServedModelStateDeployment) String() string {
@@ -730,6 +1582,8 @@ type ServingEndpoint struct {
 	State *EndpointState `json:"state,omitempty"`
 	// Tags attached to the serving endpoint.
 	Tags []EndpointTag `json:"tags,omitempty"`
+	// The task type of the serving endpoint.
+	Task string `json:"task,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -809,6 +1663,8 @@ type ServingEndpointDetailed struct {
 	State *EndpointState `json:"state,omitempty"`
 	// Tags attached to the serving endpoint.
 	Tags []EndpointTag `json:"tags,omitempty"`
+	// The task type of the serving endpoint.
+	Task string `json:"task,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -940,6 +1796,29 @@ type ServingEndpointPermissionsRequest struct {
 }
 
 type TrafficConfig struct {
-	// The list of routes that define traffic to each served model.
+	// The list of routes that define traffic to each served entity.
 	Routes []Route `json:"routes,omitempty"`
+}
+
+type V1ResponseChoiceElement struct {
+	// The finish reason returned by the endpoint.
+	FinishReason string `json:"finishReason,omitempty"`
+	// The index of the choice in the __chat or completions__ response.
+	Index int `json:"index,omitempty"`
+	// The logprobs returned only by the __completions__ endpoint.
+	Logprobs int `json:"logprobs,omitempty"`
+	// The message response from the __chat__ endpoint.
+	Message *ChatMessage `json:"message,omitempty"`
+	// The text response from the __completions__ endpoint.
+	Text string `json:"text,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *V1ResponseChoiceElement) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s V1ResponseChoiceElement) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

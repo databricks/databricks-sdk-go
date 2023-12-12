@@ -181,16 +181,6 @@ type AccountClient struct {
 	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 	NetworkConnectivity *settings.NetworkConnectivityAPI
 
-	// Network policy is a set of rules that defines what can be accessed from
-	// your Databricks network. E.g.: You can choose to block your SQL UDF to
-	// access internet from your Databricks serverless clusters.
-	//
-	// There is only one instance of this setting per account. Since this
-	// setting has a default value, this setting is present on all accounts even
-	// though it's never set on a given account. Deletion reverts the value of
-	// the setting back to the default value.
-	NetworkPolicy *settings.AccountNetworkPolicyAPI
-
 	// These APIs manage network configurations for customer-managed VPCs
 	// (optional). Its ID is used when creating a new workspace if you use
 	// customer-managed VPCs.
@@ -329,7 +319,6 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		MetastoreAssignments:    catalog.NewAccountMetastoreAssignments(apiClient),
 		Metastores:              catalog.NewAccountMetastores(apiClient),
 		NetworkConnectivity:     settings.NewNetworkConnectivity(apiClient),
-		NetworkPolicy:           settings.NewAccountNetworkPolicy(apiClient),
 		Networks:                provisioning.NewNetworks(apiClient),
 		OAuthPublishedApps:      oauth2.NewOAuthPublishedApps(apiClient),
 		PrivateAccess:           provisioning.NewPrivateAccess(apiClient),

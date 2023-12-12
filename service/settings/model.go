@@ -10,23 +10,6 @@ import (
 
 // all definitions in this file are in alphabetical order
 
-type AccountNetworkPolicyMessage struct {
-	// Whether or not serverless UDF can access the internet. When false, access
-	// to the internet will be blocked from serverless clusters. Trusted traffic
-	// required by clusters for basic functionality will not be affected.
-	ServerlessInternetAccessEnabled bool `json:"serverless_internet_access_enabled,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *AccountNetworkPolicyMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AccountNetworkPolicyMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type CreateIpAccessList struct {
 	// Array of IP addresses or CIDR values to be added to the IP access list.
 	IpAddresses []string `json:"ip_addresses"`
@@ -215,29 +198,6 @@ func (s DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
 type DeleteAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list.
 	IpAccessListId string `json:"-" url:"-"`
-}
-
-// Delete Account Network Policy
-type DeleteAccountNetworkPolicyRequest struct {
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// delete pattern to perform setting deletions in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag"`
-}
-
-type DeleteAccountNetworkPolicyResponse struct {
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// update pattern to perform setting updates in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// PATCH request to identify the setting version you are updating.
-	Etag string `json:"etag"`
 }
 
 // Delete the default namespace setting
@@ -889,18 +849,6 @@ func (s PublicTokenInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get Account Network Policy
-type ReadAccountNetworkPolicyRequest struct {
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// delete pattern to perform setting deletions in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag"`
-}
-
 // Get the default namespace setting
 type ReadDefaultWorkspaceNamespaceRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -1155,25 +1103,6 @@ func (f *TokenType) Set(v string) error {
 // Type always returns TokenType to satisfy [pflag.Value] interface
 func (f *TokenType) Type() string {
 	return "TokenType"
-}
-
-// Update Account Network Policy
-type UpdateAccountNetworkPolicyRequest struct {
-	// This should always be set to true for Settings RPCs. Added for AIP
-	// compliance.
-	AllowMissing bool `json:"allow_missing,omitempty"`
-
-	Setting *AccountNetworkPolicyMessage `json:"setting,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateAccountNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateAccountNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Update the default namespace setting

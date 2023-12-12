@@ -90,8 +90,6 @@
 //
 // - [settings.NetworkConnectivityAPI]: These APIs provide configurations for the network connectivity of your workspaces for serverless compute resources.
 //
-// - [settings.AccountNetworkPolicyAPI]: Network policy is a set of rules that defines what can be accessed from your Databricks network.
-//
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //
 // - [oauth2.OAuthPublishedAppsAPI]: These APIs enable administrators to view all the available published OAuth applications in Databricks.
@@ -247,7 +245,6 @@ var (
 	_ *ml.ModelRegistryAPI                    = nil
 	_ *catalog.ModelVersionsAPI               = nil
 	_ *settings.NetworkConnectivityAPI        = nil
-	_ *settings.AccountNetworkPolicyAPI       = nil
 	_ *provisioning.NetworksAPI               = nil
 	_ *oauth2.OAuthPublishedAppsAPI           = nil
 	_ *iam.PermissionsAPI                     = nil
