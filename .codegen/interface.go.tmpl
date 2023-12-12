@@ -20,7 +20,7 @@ type {{.PascalName}}Service interface {
     {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }}
 	{{end -}}
 
-	// Returns an instance of DatabricksClient
+	// Returns an instance of [client.DatabricksClient].
 	Client() client.DatabricksClientInterface
 }
 
