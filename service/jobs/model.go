@@ -58,8 +58,6 @@ type BaseRun struct {
 	// A snapshot of the job’s cluster specification when this run was
 	// created.
 	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
-	// The continuous trigger that triggered this run.
-	Continuous *Continuous `json:"continuous,omitempty"`
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
@@ -2010,8 +2008,6 @@ type Run struct {
 	// A snapshot of the job’s cluster specification when this run was
 	// created.
 	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
-	// The continuous trigger that triggered this run.
-	Continuous *Continuous `json:"continuous,omitempty"`
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
@@ -2247,7 +2243,7 @@ type RunJobTask struct {
 	// ID of the job to trigger.
 	JobId int `json:"job_id"`
 	// Job-level parameters used to trigger the job.
-	JobParameters any `json:"job_parameters,omitempty"`
+	JobParameters map[string]string `json:"job_parameters,omitempty"`
 }
 
 // A value indicating the run's lifecycle state. The possible values are: *
@@ -3361,6 +3357,13 @@ type SubmitTask struct {
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
 	// If python_wheel_task, indicates that this job must execute a PythonWheel.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
+	// An optional value indicating the condition that determines whether the
+	// task should be run once its dependencies have been completed. When
+	// omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of
+	// possible values.
+	RunIf RunIf `json:"run_if,omitempty"`
+	// If run_job_task, indicates that this job must execute another job.
+	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
 	// If spark_jar_task, indicates that this task must run a JAR.
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// If spark_python_task, indicates that this task must run a Python file.

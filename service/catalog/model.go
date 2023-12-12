@@ -330,6 +330,15 @@ func (f *CatalogType) Type() string {
 	return "CatalogType"
 }
 
+type CloudflareApiToken struct {
+	// The Cloudflare access key id of the token.
+	AccessKeyId string `json:"access_key_id"`
+	// The account id associated with the API token.
+	AccountId string `json:"account_id"`
+	// The secret access token generated for the access key id
+	SecretAccessKey string `json:"secret_access_key"`
+}
+
 type ColumnInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -934,6 +943,8 @@ type CreateStorageCredential struct {
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The Cloudflare API token configuration.
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
@@ -3048,6 +3059,8 @@ type StorageCredentialInfo struct {
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The Cloudflare API token configuration.
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// Time at which this Credential was created, in epoch milliseconds.
@@ -3323,8 +3336,10 @@ type UpdateCatalog struct {
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
-	// Name of catalog.
-	Name string `json:"name,omitempty" url:"-"`
+	// The name of the catalog.
+	Name string `json:"-" url:"-"`
+	// New name for the catalog.
+	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of catalog.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
@@ -3343,9 +3358,11 @@ func (s UpdateCatalog) MarshalJSON() ([]byte, error) {
 
 type UpdateConnection struct {
 	// Name of the connection.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 	// Name of the connection.
 	NameArg string `json:"-" url:"-"`
+	// New name for the connection.
+	NewName string `json:"new_name,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Options map[string]string `json:"options"`
 	// Username of current owner of the connection.
@@ -3375,7 +3392,9 @@ type UpdateExternalLocation struct {
 	// or mounts.
 	Force bool `json:"force,omitempty"`
 	// Name of the external location.
-	Name string `json:"name,omitempty" url:"-"`
+	Name string `json:"-" url:"-"`
+	// New name for the external location.
+	NewName string `json:"new_name,omitempty"`
 	// The owner of the external location.
 	Owner string `json:"owner,omitempty"`
 	// Indicates whether the external location is read-only.
@@ -3427,6 +3446,8 @@ type UpdateMetastore struct {
 	Id string `json:"-" url:"-"`
 	// The user-specified name of the metastore.
 	Name string `json:"name,omitempty"`
+	// New name for the metastore.
+	NewName string `json:"new_name,omitempty"`
 	// The owner of the metastore.
 	Owner string `json:"owner,omitempty"`
 	// Privilege model version of the metastore, of the form `major.minor`
@@ -3528,6 +3549,8 @@ type UpdateRegisteredModelRequest struct {
 	FullName string `json:"-" url:"-"`
 	// The name of the registered model
 	Name string `json:"name,omitempty"`
+	// New name for the registered model.
+	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the registered model
 	Owner string `json:"owner,omitempty"`
 
@@ -3552,6 +3575,8 @@ type UpdateSchema struct {
 	FullName string `json:"-" url:"-"`
 	// Name of schema, relative to parent catalog.
 	Name string `json:"name,omitempty"`
+	// New name for the schema.
+	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of schema.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
@@ -3575,6 +3600,8 @@ type UpdateStorageCredential struct {
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The Cloudflare API token configuration.
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
@@ -3582,8 +3609,10 @@ type UpdateStorageCredential struct {
 	// Force update even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"force,omitempty"`
-	// The credential name. The name must be unique within the metastore.
-	Name string `json:"name,omitempty" url:"-"`
+	// Name of the storage credential.
+	Name string `json:"-" url:"-"`
+	// New name for the storage credential.
+	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of credential.
 	Owner string `json:"owner,omitempty"`
 	// Whether the storage credential is only usable for read operations.
@@ -3628,6 +3657,8 @@ type UpdateVolumeRequestContent struct {
 	FullNameArg string `json:"-" url:"-"`
 	// The name of the volume
 	Name string `json:"name,omitempty"`
+	// New name for the volume.
+	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the volume
 	Owner string `json:"owner,omitempty"`
 
@@ -3669,6 +3700,8 @@ type ValidateStorageCredential struct {
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The Cloudflare API token configuration.
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// The Databricks created GCP service account configuration.
 	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate.

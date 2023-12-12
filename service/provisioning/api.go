@@ -509,7 +509,7 @@ func (a *PrivateAccessAPI) Create(ctx context.Context, request UpsertPrivateAcce
 // is accessed over [AWS PrivateLink].
 //
 // Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink].
+// PrivateLink].",
 //
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
@@ -523,7 +523,7 @@ func (a *PrivateAccessAPI) Delete(ctx context.Context, request DeletePrivateAcce
 // is accessed over [AWS PrivateLink].
 //
 // Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink].
+// PrivateLink].",
 //
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
@@ -539,7 +539,7 @@ func (a *PrivateAccessAPI) DeleteByPrivateAccessSettingsId(ctx context.Context, 
 // accessed over [AWS PrivateLink].
 //
 // Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink].
+// PrivateLink].",
 //
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
@@ -553,7 +553,7 @@ func (a *PrivateAccessAPI) Get(ctx context.Context, request GetPrivateAccesReque
 // accessed over [AWS PrivateLink].
 //
 // Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink].
+// PrivateLink].",
 //
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
