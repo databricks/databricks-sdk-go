@@ -16,6 +16,12 @@ import (
 )
 
 func New(cfg *config.Config) (*DatabricksClient, error) {
+	if skippable, ok := cfg.HTTPTransport.(interface {
+		SkipRetryOnIO() bool
+	}); ok && skippable.SkipRetryOnIO() {
+		cfg.Loaders = []config.Loader{noopLoader{}}
+		cfg.Credentials = noopAuth{}
+	}
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -113,4 +119,18 @@ func orDefault(configured, _default int) int {
 		return _default
 	}
 	return configured
+}
+
+// noopLoader skips configuration loading
+type noopLoader struct{}
+
+func (noopLoader) Name() string                       { return "noop" }
+func (noopLoader) Configure(cfg *config.Config) error { return nil }
+
+// noopAuth skips authentication
+type noopAuth struct{}
+
+func (noopAuth) Name() string { return "noop" }
+func (noopAuth) Configure(context.Context, *config.Config) (func(*http.Request) error, error) {
+	return nil, nil
 }

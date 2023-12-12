@@ -208,11 +208,14 @@ func TestSimpleRequestAPIError(t *testing.T) {
 
 func TestHttpTransport(t *testing.T) {
 	calledMock := false
-	cfg := config.NewMockConfig(func(r *http.Request) error { return nil })
-	cfg.HTTPTransport = hc(func(r *http.Request) (*http.Response, error) {
-		calledMock = true
-		return &http.Response{Request: r}, nil
-	})
+	cfg := &config.Config{
+		Host:  "localhost",
+		Token: "...",
+		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			calledMock = true
+			return &http.Response{Request: r}, nil
+		}),
+	}
 	client, err := New(cfg)
 	require.NoError(t, err)
 
