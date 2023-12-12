@@ -7,33 +7,39 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
+	"net/http"
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
-	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 var b64 = base64.StdEncoding
 
+type DatabricksClientInterface interface {
+	Do(ctx context.Context, method, path string,
+		headers map[string]string, request, response any,
+		visitors ...func(*http.Request) error) error
+}
+
 type ImplWithClient interface {
-	Client() *client.DatabricksClient
+	Client() DatabricksClientInterface
 }
 
-func (a *gitCredentialsImpl) Client() *client.DatabricksClient {
+func (a *gitCredentialsImpl) Client() DatabricksClientInterface {
 	return a.client
 }
 
-func (a *reposImpl) Client() *client.DatabricksClient {
+func (a *reposImpl) Client() DatabricksClientInterface {
 	return a.client
 }
 
-func (a *secretsImpl) Client() *client.DatabricksClient {
+func (a *secretsImpl) Client() DatabricksClientInterface {
 	return a.client
 }
 
-func (a *workspaceImpl) Client() *client.DatabricksClient {
+func (a *workspaceImpl) Client() DatabricksClientInterface {
 	return a.client
 }
 
