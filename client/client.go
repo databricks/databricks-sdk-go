@@ -132,5 +132,5 @@ type noopAuth struct{}
 
 func (noopAuth) Name() string { return "noop" }
 func (noopAuth) Configure(context.Context, *config.Config) (func(*http.Request) error, error) {
-	return nil, nil
+	return func(r *http.Request) error { return nil }, nil
 }
