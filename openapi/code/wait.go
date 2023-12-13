@@ -2,8 +2,7 @@ package code
 
 import (
 	"fmt"
-
-	"golang.org/x/exp/slices"
+	"sort"
 )
 
 // Wait represents a long-running operation, that requires multiple RPC calls
@@ -56,8 +55,8 @@ func (w *Wait) Binding() (binding []Binding) {
 		}
 		// ensure generated code is deterministic
 		// Java SDK relies on bind parameter order.
-		slices.SortFunc(binding, func(a, b Binding) bool {
-			return a.PollField.Name < b.PollField.Name
+		sort.Slice(binding, func(a, b int) bool {
+			return binding[a].PollField.Name < binding[b].PollField.Name
 		})
 	} else {
 		responseBind := true

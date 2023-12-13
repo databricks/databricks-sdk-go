@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/openapi"
-	"golang.org/x/exp/slices"
 )
 
 // Service represents specific Databricks API
@@ -36,9 +35,7 @@ func (svc *Service) Methods() (methods []*Method) {
 	for _, v := range svc.methods {
 		methods = append(methods, v)
 	}
-	slices.SortFunc(methods, func(a, b *Method) bool {
-		return a.CamelName() < b.CamelName()
-	})
+	pascalNameSort(methods)
 	return methods
 }
 
@@ -469,9 +466,7 @@ func (svc *Service) Waits() (waits []*Wait) {
 		waits = append(waits, wait)
 		seen[wait.Name] = true
 	}
-	slices.SortFunc(waits, func(a, b *Wait) bool {
-		return a.Name < b.Name
-	})
+	pascalNameSort(waits)
 	return waits
 }
 
