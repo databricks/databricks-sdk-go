@@ -1,31 +1,12 @@
 package config
 
 import (
-	"context"
 	"fmt"
 	"net/http"
-	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/retries"
 	"golang.org/x/oauth2"
 )
-
-func retriableTokenSource(ctx context.Context, ts oauth2.TokenSource) (*oauth2.Token, error) {
-	return retries.Poll(ctx, 1*time.Minute, func() (*oauth2.Token, *retries.Err) {
-		token, err := ts.Token()
-		if err == nil {
-			return token, nil
-		}
-		var retryKeywords = []string{"throttled", "too many requests", "429", "request limit exceeded", "rate limit"}
-		for _, retryKeyword := range retryKeywords {
-			if strings.Contains(err.Error(), retryKeyword) {
-				return nil, retries.Continue(err)
-			}
-		}
-		return nil, retries.Halt(err)
-	})
-}
 
 // serviceToServiceVisitor returns a visitor that sets the Authorization header to the token from the auth token source
 // and the provided secondary header to the token from the secondary token source.
@@ -33,13 +14,13 @@ func serviceToServiceVisitor(auth, secondary oauth2.TokenSource, secondaryHeader
 	refreshableAuth := oauth2.ReuseTokenSource(nil, auth)
 	refreshableSecondary := oauth2.ReuseTokenSource(nil, secondary)
 	return func(r *http.Request) error {
-		inner, err := retriableTokenSource(r.Context(), refreshableAuth)
+		inner, err := refreshableAuth.Token()
 		if err != nil {
 			return fmt.Errorf("inner token: %w", err)
 		}
 		inner.SetAuthHeader(r)
 
-		cloud, err := retriableTokenSource(r.Context(), refreshableSecondary)
+		cloud, err := refreshableSecondary.Token()
 		if err != nil {
 			return fmt.Errorf("cloud token: %w", err)
 		}
@@ -52,7 +33,7 @@ func serviceToServiceVisitor(auth, secondary oauth2.TokenSource, secondaryHeader
 func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
 	refreshableAuth := oauth2.ReuseTokenSource(nil, inner)
 	return func(r *http.Request) error {
-		inner, err := retriableTokenSource(r.Context(), refreshableAuth)
+		inner, err := refreshableAuth.Token()
 		if err != nil {
 			return fmt.Errorf("inner token: %w", err)
 		}
