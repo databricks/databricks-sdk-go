@@ -1,0 +1,23 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package mocks
+
+import (
+    "github.com/databricks/databricks-sdk-go"
+	{{range .Packages}}
+	"github.com/databricks/databricks-sdk-go/internal/mocks/service/{{.Name}}"{{end}}
+)
+
+// NewWorkspaceClient creates new mocked version of Databricks SDK client for Workspaces
+// which can be used for testing.
+func NewWorkspaceClient(t interface {
+	mock.TestingT
+	Cleanup(func())
+}, cfg *config.Config) (*databricks.WorkspaceClient, error) {
+	return &databricks.WorkspaceClient{
+		Config: cfg,
+		{{range .Services}}{{if not .IsAccounts}}
+		{{.Name}}: {{.Package.Name}}.NewMock{{.Name}}APIInterface(t),
+		{{- end}}{{end}}
+	}, nil
+}

@@ -1167,6 +1167,7 @@ func (a *SecretsAPI) PutSecret(ctx context.Context, request PutSecret) error {
 }
 
 type WorkspaceAPIInterface interface {
+	workspaceAPIUtilities
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
 	WithImpl(impl WorkspaceService) WorkspaceAPIInterface

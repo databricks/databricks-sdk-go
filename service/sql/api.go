@@ -1257,6 +1257,7 @@ func (a *QueryVisualizationsAPI) Update(ctx context.Context, request Visualizati
 }
 
 type StatementExecutionAPIInterface interface {
+	statementExecutionAPIUtilities
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
 	WithImpl(impl StatementExecutionService) StatementExecutionAPIInterface

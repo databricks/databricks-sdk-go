@@ -638,6 +638,66 @@ func (_c *MockCommandExecutionAPIInterface_Impl_Call) RunAndReturn(run func() co
 	return _c
 }
 
+// Start provides a mock function with given fields: ctx, clusterID, language
+func (_m *MockCommandExecutionAPIInterface) Start(ctx context.Context, clusterID string, language compute.Language) (*compute.CommandExecutorV2, error) {
+	ret := _m.Called(ctx, clusterID, language)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Start")
+	}
+
+	var r0 *compute.CommandExecutorV2
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, compute.Language) (*compute.CommandExecutorV2, error)); ok {
+		return rf(ctx, clusterID, language)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, compute.Language) *compute.CommandExecutorV2); ok {
+		r0 = rf(ctx, clusterID, language)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*compute.CommandExecutorV2)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, compute.Language) error); ok {
+		r1 = rf(ctx, clusterID, language)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockCommandExecutionAPIInterface_Start_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Start'
+type MockCommandExecutionAPIInterface_Start_Call struct {
+	*mock.Call
+}
+
+// Start is a helper method to define mock.On call
+//   - ctx context.Context
+//   - clusterID string
+//   - language compute.Language
+func (_e *MockCommandExecutionAPIInterface_Expecter) Start(ctx interface{}, clusterID interface{}, language interface{}) *MockCommandExecutionAPIInterface_Start_Call {
+	return &MockCommandExecutionAPIInterface_Start_Call{Call: _e.mock.On("Start", ctx, clusterID, language)}
+}
+
+func (_c *MockCommandExecutionAPIInterface_Start_Call) Run(run func(ctx context.Context, clusterID string, language compute.Language)) *MockCommandExecutionAPIInterface_Start_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(compute.Language))
+	})
+	return _c
+}
+
+func (_c *MockCommandExecutionAPIInterface_Start_Call) Return(_a0 *compute.CommandExecutorV2, _a1 error) *MockCommandExecutionAPIInterface_Start_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockCommandExecutionAPIInterface_Start_Call) RunAndReturn(run func(context.Context, string, compute.Language) (*compute.CommandExecutorV2, error)) *MockCommandExecutionAPIInterface_Start_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // WaitCommandStatusCommandExecutionCancelled provides a mock function with given fields: ctx, clusterId, commandId, contextId, timeout, callback
 func (_m *MockCommandExecutionAPIInterface) WaitCommandStatusCommandExecutionCancelled(ctx context.Context, clusterId string, commandId string, contextId string, timeout time.Duration, callback func(*compute.CommandStatusResponse)) (*compute.CommandStatusResponse, error) {
 	ret := _m.Called(ctx, clusterId, commandId, contextId, timeout, callback)

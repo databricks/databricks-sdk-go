@@ -361,6 +361,7 @@ func (a *ClusterPoliciesAPI) UpdatePermissions(ctx context.Context, request Clus
 }
 
 type ClustersAPIInterface interface {
+	clustersAPIUtilities
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
 	WithImpl(impl ClustersService) ClustersAPIInterface
@@ -1544,6 +1545,7 @@ func (a *ClustersAPI) UpdatePermissions(ctx context.Context, request ClusterPerm
 }
 
 type CommandExecutionAPIInterface interface {
+	commandExecutionAPIUtilities
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
 	WithImpl(impl CommandExecutionService) CommandExecutionAPIInterface
@@ -2787,6 +2789,7 @@ func (a *InstanceProfilesAPI) RemoveByInstanceProfileArn(ctx context.Context, in
 }
 
 type LibrariesAPIInterface interface {
+	librariesAPIUtilities
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
 	WithImpl(impl LibrariesService) LibrariesAPIInterface

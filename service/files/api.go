@@ -12,6 +12,7 @@ import (
 )
 
 type DbfsAPIInterface interface {
+	dbfsAPIUtilities
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
 	WithImpl(impl DbfsService) DbfsAPIInterface

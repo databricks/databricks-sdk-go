@@ -4,6 +4,7 @@ package workspace
 
 import (
 	context "context"
+	io "io"
 
 	listing "github.com/databricks/databricks-sdk-go/listing"
 	mock "github.com/stretchr/testify/mock"
@@ -67,6 +68,80 @@ func (_c *MockWorkspaceAPIInterface_Delete_Call) Return(_a0 error) *MockWorkspac
 }
 
 func (_c *MockWorkspaceAPIInterface_Delete_Call) RunAndReturn(run func(context.Context, workspace.Delete) error) *MockWorkspaceAPIInterface_Delete_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Download provides a mock function with given fields: ctx, path, opts
+func (_m *MockWorkspaceAPIInterface) Download(ctx context.Context, path string, opts ...func(map[string]interface{})) (io.ReadCloser, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, path)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Download")
+	}
+
+	var r0 io.ReadCloser
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, ...func(map[string]interface{})) (io.ReadCloser, error)); ok {
+		return rf(ctx, path, opts...)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, ...func(map[string]interface{})) io.ReadCloser); ok {
+		r0 = rf(ctx, path, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(io.ReadCloser)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, ...func(map[string]interface{})) error); ok {
+		r1 = rf(ctx, path, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWorkspaceAPIInterface_Download_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Download'
+type MockWorkspaceAPIInterface_Download_Call struct {
+	*mock.Call
+}
+
+// Download is a helper method to define mock.On call
+//   - ctx context.Context
+//   - path string
+//   - opts ...func(map[string]interface{})
+func (_e *MockWorkspaceAPIInterface_Expecter) Download(ctx interface{}, path interface{}, opts ...interface{}) *MockWorkspaceAPIInterface_Download_Call {
+	return &MockWorkspaceAPIInterface_Download_Call{Call: _e.mock.On("Download",
+		append([]interface{}{ctx, path}, opts...)...)}
+}
+
+func (_c *MockWorkspaceAPIInterface_Download_Call) Run(run func(ctx context.Context, path string, opts ...func(map[string]interface{}))) *MockWorkspaceAPIInterface_Download_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := make([]func(map[string]interface{}), len(args)-2)
+		for i, a := range args[2:] {
+			if a != nil {
+				variadicArgs[i] = a.(func(map[string]interface{}))
+			}
+		}
+		run(args[0].(context.Context), args[1].(string), variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceAPIInterface_Download_Call) Return(_a0 io.ReadCloser, _a1 error) *MockWorkspaceAPIInterface_Download_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWorkspaceAPIInterface_Download_Call) RunAndReturn(run func(context.Context, string, ...func(map[string]interface{})) (io.ReadCloser, error)) *MockWorkspaceAPIInterface_Download_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -900,6 +975,124 @@ func (_c *MockWorkspaceAPIInterface_ObjectInfoPathToObjectIdMap_Call) RunAndRetu
 	return _c
 }
 
+// ReadFile provides a mock function with given fields: ctx, name
+func (_m *MockWorkspaceAPIInterface) ReadFile(ctx context.Context, name string) ([]byte, error) {
+	ret := _m.Called(ctx, name)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ReadFile")
+	}
+
+	var r0 []byte
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) ([]byte, error)); ok {
+		return rf(ctx, name)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) []byte); ok {
+		r0 = rf(ctx, name)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]byte)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, name)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWorkspaceAPIInterface_ReadFile_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadFile'
+type MockWorkspaceAPIInterface_ReadFile_Call struct {
+	*mock.Call
+}
+
+// ReadFile is a helper method to define mock.On call
+//   - ctx context.Context
+//   - name string
+func (_e *MockWorkspaceAPIInterface_Expecter) ReadFile(ctx interface{}, name interface{}) *MockWorkspaceAPIInterface_ReadFile_Call {
+	return &MockWorkspaceAPIInterface_ReadFile_Call{Call: _e.mock.On("ReadFile", ctx, name)}
+}
+
+func (_c *MockWorkspaceAPIInterface_ReadFile_Call) Run(run func(ctx context.Context, name string)) *MockWorkspaceAPIInterface_ReadFile_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceAPIInterface_ReadFile_Call) Return(_a0 []byte, _a1 error) *MockWorkspaceAPIInterface_ReadFile_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWorkspaceAPIInterface_ReadFile_Call) RunAndReturn(run func(context.Context, string) ([]byte, error)) *MockWorkspaceAPIInterface_ReadFile_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RecursiveList provides a mock function with given fields: ctx, path
+func (_m *MockWorkspaceAPIInterface) RecursiveList(ctx context.Context, path string) ([]workspace.ObjectInfo, error) {
+	ret := _m.Called(ctx, path)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RecursiveList")
+	}
+
+	var r0 []workspace.ObjectInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) ([]workspace.ObjectInfo, error)); ok {
+		return rf(ctx, path)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) []workspace.ObjectInfo); ok {
+		r0 = rf(ctx, path)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]workspace.ObjectInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, path)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWorkspaceAPIInterface_RecursiveList_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RecursiveList'
+type MockWorkspaceAPIInterface_RecursiveList_Call struct {
+	*mock.Call
+}
+
+// RecursiveList is a helper method to define mock.On call
+//   - ctx context.Context
+//   - path string
+func (_e *MockWorkspaceAPIInterface_Expecter) RecursiveList(ctx interface{}, path interface{}) *MockWorkspaceAPIInterface_RecursiveList_Call {
+	return &MockWorkspaceAPIInterface_RecursiveList_Call{Call: _e.mock.On("RecursiveList", ctx, path)}
+}
+
+func (_c *MockWorkspaceAPIInterface_RecursiveList_Call) Run(run func(ctx context.Context, path string)) *MockWorkspaceAPIInterface_RecursiveList_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceAPIInterface_RecursiveList_Call) Return(_a0 []workspace.ObjectInfo, _a1 error) *MockWorkspaceAPIInterface_RecursiveList_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWorkspaceAPIInterface_RecursiveList_Call) RunAndReturn(run func(context.Context, string) ([]workspace.ObjectInfo, error)) *MockWorkspaceAPIInterface_RecursiveList_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SetPermissions provides a mock function with given fields: ctx, request
 func (_m *MockWorkspaceAPIInterface) SetPermissions(ctx context.Context, request workspace.WorkspaceObjectPermissionsRequest) (*workspace.WorkspaceObjectPermissions, error) {
 	ret := _m.Called(ctx, request)
@@ -1018,6 +1211,69 @@ func (_c *MockWorkspaceAPIInterface_UpdatePermissions_Call) RunAndReturn(run fun
 	return _c
 }
 
+// Upload provides a mock function with given fields: ctx, path, r, opts
+func (_m *MockWorkspaceAPIInterface) Upload(ctx context.Context, path string, r io.Reader, opts ...func(*workspace.Import)) error {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, path, r)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Upload")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, io.Reader, ...func(*workspace.Import)) error); ok {
+		r0 = rf(ctx, path, r, opts...)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockWorkspaceAPIInterface_Upload_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Upload'
+type MockWorkspaceAPIInterface_Upload_Call struct {
+	*mock.Call
+}
+
+// Upload is a helper method to define mock.On call
+//   - ctx context.Context
+//   - path string
+//   - r io.Reader
+//   - opts ...func(*workspace.Import)
+func (_e *MockWorkspaceAPIInterface_Expecter) Upload(ctx interface{}, path interface{}, r interface{}, opts ...interface{}) *MockWorkspaceAPIInterface_Upload_Call {
+	return &MockWorkspaceAPIInterface_Upload_Call{Call: _e.mock.On("Upload",
+		append([]interface{}{ctx, path, r}, opts...)...)}
+}
+
+func (_c *MockWorkspaceAPIInterface_Upload_Call) Run(run func(ctx context.Context, path string, r io.Reader, opts ...func(*workspace.Import))) *MockWorkspaceAPIInterface_Upload_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := make([]func(*workspace.Import), len(args)-3)
+		for i, a := range args[3:] {
+			if a != nil {
+				variadicArgs[i] = a.(func(*workspace.Import))
+			}
+		}
+		run(args[0].(context.Context), args[1].(string), args[2].(io.Reader), variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceAPIInterface_Upload_Call) Return(_a0 error) *MockWorkspaceAPIInterface_Upload_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockWorkspaceAPIInterface_Upload_Call) RunAndReturn(run func(context.Context, string, io.Reader, ...func(*workspace.Import)) error) *MockWorkspaceAPIInterface_Upload_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // WithImpl provides a mock function with given fields: impl
 func (_m *MockWorkspaceAPIInterface) WithImpl(impl workspace.WorkspaceService) workspace.WorkspaceAPIInterface {
 	ret := _m.Called(impl)
@@ -1062,6 +1318,54 @@ func (_c *MockWorkspaceAPIInterface_WithImpl_Call) Return(_a0 workspace.Workspac
 }
 
 func (_c *MockWorkspaceAPIInterface_WithImpl_Call) RunAndReturn(run func(workspace.WorkspaceService) workspace.WorkspaceAPIInterface) *MockWorkspaceAPIInterface_WithImpl_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// WriteFile provides a mock function with given fields: ctx, name, data
+func (_m *MockWorkspaceAPIInterface) WriteFile(ctx context.Context, name string, data []byte) error {
+	ret := _m.Called(ctx, name, data)
+
+	if len(ret) == 0 {
+		panic("no return value specified for WriteFile")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, []byte) error); ok {
+		r0 = rf(ctx, name, data)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockWorkspaceAPIInterface_WriteFile_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WriteFile'
+type MockWorkspaceAPIInterface_WriteFile_Call struct {
+	*mock.Call
+}
+
+// WriteFile is a helper method to define mock.On call
+//   - ctx context.Context
+//   - name string
+//   - data []byte
+func (_e *MockWorkspaceAPIInterface_Expecter) WriteFile(ctx interface{}, name interface{}, data interface{}) *MockWorkspaceAPIInterface_WriteFile_Call {
+	return &MockWorkspaceAPIInterface_WriteFile_Call{Call: _e.mock.On("WriteFile", ctx, name, data)}
+}
+
+func (_c *MockWorkspaceAPIInterface_WriteFile_Call) Run(run func(ctx context.Context, name string, data []byte)) *MockWorkspaceAPIInterface_WriteFile_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].([]byte))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceAPIInterface_WriteFile_Call) Return(_a0 error) *MockWorkspaceAPIInterface_WriteFile_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockWorkspaceAPIInterface_WriteFile_Call) RunAndReturn(run func(context.Context, string, []byte) error) *MockWorkspaceAPIInterface_WriteFile_Call {
 	_c.Call.Return(run)
 	return _c
 }

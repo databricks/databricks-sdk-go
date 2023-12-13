@@ -69,6 +69,65 @@ func (_c *MockStatementExecutionAPIInterface_CancelExecution_Call) RunAndReturn(
 	return _c
 }
 
+// ExecuteAndWait provides a mock function with given fields: ctx, request
+func (_m *MockStatementExecutionAPIInterface) ExecuteAndWait(ctx context.Context, request sql.ExecuteStatementRequest) (*sql.ExecuteStatementResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ExecuteAndWait")
+	}
+
+	var r0 *sql.ExecuteStatementResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ExecuteStatementRequest) (*sql.ExecuteStatementResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ExecuteStatementRequest) *sql.ExecuteStatementResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*sql.ExecuteStatementResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, sql.ExecuteStatementRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockStatementExecutionAPIInterface_ExecuteAndWait_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExecuteAndWait'
+type MockStatementExecutionAPIInterface_ExecuteAndWait_Call struct {
+	*mock.Call
+}
+
+// ExecuteAndWait is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sql.ExecuteStatementRequest
+func (_e *MockStatementExecutionAPIInterface_Expecter) ExecuteAndWait(ctx interface{}, request interface{}) *MockStatementExecutionAPIInterface_ExecuteAndWait_Call {
+	return &MockStatementExecutionAPIInterface_ExecuteAndWait_Call{Call: _e.mock.On("ExecuteAndWait", ctx, request)}
+}
+
+func (_c *MockStatementExecutionAPIInterface_ExecuteAndWait_Call) Run(run func(ctx context.Context, request sql.ExecuteStatementRequest)) *MockStatementExecutionAPIInterface_ExecuteAndWait_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sql.ExecuteStatementRequest))
+	})
+	return _c
+}
+
+func (_c *MockStatementExecutionAPIInterface_ExecuteAndWait_Call) Return(_a0 *sql.ExecuteStatementResponse, _a1 error) *MockStatementExecutionAPIInterface_ExecuteAndWait_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockStatementExecutionAPIInterface_ExecuteAndWait_Call) RunAndReturn(run func(context.Context, sql.ExecuteStatementRequest) (*sql.ExecuteStatementResponse, error)) *MockStatementExecutionAPIInterface_ExecuteAndWait_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ExecuteStatement provides a mock function with given fields: ctx, request
 func (_m *MockStatementExecutionAPIInterface) ExecuteStatement(ctx context.Context, request sql.ExecuteStatementRequest) (*sql.ExecuteStatementResponse, error) {
 	ret := _m.Called(ctx, request)

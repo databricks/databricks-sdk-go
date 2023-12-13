@@ -13,7 +13,7 @@ type WorkspaceClient struct {
 
 	{{range .Services}}{{if not .IsAccounts}}
 	{{.Comment "    // " 80}}
-	{{.Name}} *{{.Package.Name}}.{{.Name}}API
+	{{.Name}} {{.Package.Name}}.{{.Name}}APIInterface
 	{{end}}{{end}}
 }
 

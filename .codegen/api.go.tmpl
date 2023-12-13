@@ -12,9 +12,22 @@ import (
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
+{{ $extendedInterface :=
+	list
+		"Clusters"
+		"CommandExecution"
+		"Dbfs"
+		"Libraries"
+		"StatementExecution"
+		"Workspace"
+}}
 {{range .Services}}
 
 type {{.PascalName}}APIInterface interface {
+	{{if (in $extendedInterface .PascalName) }}
+		{{.CamelName}}APIUtilities
+	{{end -}}
+
 	// WithImpl could be used to override low-level API implementations for unit 
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
 	WithImpl(impl {{.PascalName}}Service) {{.PascalName}}APIInterface

@@ -744,6 +744,66 @@ func (_c *MockDbfsAPIInterface_Move_Call) RunAndReturn(run func(context.Context,
 	return _c
 }
 
+// Open provides a mock function with given fields: ctx, path, mode
+func (_m *MockDbfsAPIInterface) Open(ctx context.Context, path string, mode files.FileMode) (files.Handle, error) {
+	ret := _m.Called(ctx, path, mode)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Open")
+	}
+
+	var r0 files.Handle
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, files.FileMode) (files.Handle, error)); ok {
+		return rf(ctx, path, mode)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, files.FileMode) files.Handle); ok {
+		r0 = rf(ctx, path, mode)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(files.Handle)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, files.FileMode) error); ok {
+		r1 = rf(ctx, path, mode)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDbfsAPIInterface_Open_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Open'
+type MockDbfsAPIInterface_Open_Call struct {
+	*mock.Call
+}
+
+// Open is a helper method to define mock.On call
+//   - ctx context.Context
+//   - path string
+//   - mode files.FileMode
+func (_e *MockDbfsAPIInterface_Expecter) Open(ctx interface{}, path interface{}, mode interface{}) *MockDbfsAPIInterface_Open_Call {
+	return &MockDbfsAPIInterface_Open_Call{Call: _e.mock.On("Open", ctx, path, mode)}
+}
+
+func (_c *MockDbfsAPIInterface_Open_Call) Run(run func(ctx context.Context, path string, mode files.FileMode)) *MockDbfsAPIInterface_Open_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(files.FileMode))
+	})
+	return _c
+}
+
+func (_c *MockDbfsAPIInterface_Open_Call) Return(_a0 files.Handle, _a1 error) *MockDbfsAPIInterface_Open_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDbfsAPIInterface_Open_Call) RunAndReturn(run func(context.Context, string, files.FileMode) (files.Handle, error)) *MockDbfsAPIInterface_Open_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Put provides a mock function with given fields: ctx, request
 func (_m *MockDbfsAPIInterface) Put(ctx context.Context, request files.Put) error {
 	ret := _m.Called(ctx, request)
@@ -850,6 +910,124 @@ func (_c *MockDbfsAPIInterface_Read_Call) RunAndReturn(run func(context.Context,
 	return _c
 }
 
+// ReadFile provides a mock function with given fields: ctx, name
+func (_m *MockDbfsAPIInterface) ReadFile(ctx context.Context, name string) ([]byte, error) {
+	ret := _m.Called(ctx, name)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ReadFile")
+	}
+
+	var r0 []byte
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) ([]byte, error)); ok {
+		return rf(ctx, name)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) []byte); ok {
+		r0 = rf(ctx, name)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]byte)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, name)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDbfsAPIInterface_ReadFile_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadFile'
+type MockDbfsAPIInterface_ReadFile_Call struct {
+	*mock.Call
+}
+
+// ReadFile is a helper method to define mock.On call
+//   - ctx context.Context
+//   - name string
+func (_e *MockDbfsAPIInterface_Expecter) ReadFile(ctx interface{}, name interface{}) *MockDbfsAPIInterface_ReadFile_Call {
+	return &MockDbfsAPIInterface_ReadFile_Call{Call: _e.mock.On("ReadFile", ctx, name)}
+}
+
+func (_c *MockDbfsAPIInterface_ReadFile_Call) Run(run func(ctx context.Context, name string)) *MockDbfsAPIInterface_ReadFile_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockDbfsAPIInterface_ReadFile_Call) Return(_a0 []byte, _a1 error) *MockDbfsAPIInterface_ReadFile_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDbfsAPIInterface_ReadFile_Call) RunAndReturn(run func(context.Context, string) ([]byte, error)) *MockDbfsAPIInterface_ReadFile_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RecursiveList provides a mock function with given fields: ctx, path
+func (_m *MockDbfsAPIInterface) RecursiveList(ctx context.Context, path string) ([]files.FileInfo, error) {
+	ret := _m.Called(ctx, path)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RecursiveList")
+	}
+
+	var r0 []files.FileInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) ([]files.FileInfo, error)); ok {
+		return rf(ctx, path)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) []files.FileInfo); ok {
+		r0 = rf(ctx, path)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]files.FileInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, path)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDbfsAPIInterface_RecursiveList_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RecursiveList'
+type MockDbfsAPIInterface_RecursiveList_Call struct {
+	*mock.Call
+}
+
+// RecursiveList is a helper method to define mock.On call
+//   - ctx context.Context
+//   - path string
+func (_e *MockDbfsAPIInterface_Expecter) RecursiveList(ctx interface{}, path interface{}) *MockDbfsAPIInterface_RecursiveList_Call {
+	return &MockDbfsAPIInterface_RecursiveList_Call{Call: _e.mock.On("RecursiveList", ctx, path)}
+}
+
+func (_c *MockDbfsAPIInterface_RecursiveList_Call) Run(run func(ctx context.Context, path string)) *MockDbfsAPIInterface_RecursiveList_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockDbfsAPIInterface_RecursiveList_Call) Return(_a0 []files.FileInfo, _a1 error) *MockDbfsAPIInterface_RecursiveList_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDbfsAPIInterface_RecursiveList_Call) RunAndReturn(run func(context.Context, string) ([]files.FileInfo, error)) *MockDbfsAPIInterface_RecursiveList_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // WithImpl provides a mock function with given fields: impl
 func (_m *MockDbfsAPIInterface) WithImpl(impl files.DbfsService) files.DbfsAPIInterface {
 	ret := _m.Called(impl)
@@ -894,6 +1072,54 @@ func (_c *MockDbfsAPIInterface_WithImpl_Call) Return(_a0 files.DbfsAPIInterface)
 }
 
 func (_c *MockDbfsAPIInterface_WithImpl_Call) RunAndReturn(run func(files.DbfsService) files.DbfsAPIInterface) *MockDbfsAPIInterface_WithImpl_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// WriteFile provides a mock function with given fields: ctx, name, data
+func (_m *MockDbfsAPIInterface) WriteFile(ctx context.Context, name string, data []byte) error {
+	ret := _m.Called(ctx, name, data)
+
+	if len(ret) == 0 {
+		panic("no return value specified for WriteFile")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, []byte) error); ok {
+		r0 = rf(ctx, name, data)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockDbfsAPIInterface_WriteFile_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WriteFile'
+type MockDbfsAPIInterface_WriteFile_Call struct {
+	*mock.Call
+}
+
+// WriteFile is a helper method to define mock.On call
+//   - ctx context.Context
+//   - name string
+//   - data []byte
+func (_e *MockDbfsAPIInterface_Expecter) WriteFile(ctx interface{}, name interface{}, data interface{}) *MockDbfsAPIInterface_WriteFile_Call {
+	return &MockDbfsAPIInterface_WriteFile_Call{Call: _e.mock.On("WriteFile", ctx, name, data)}
+}
+
+func (_c *MockDbfsAPIInterface_WriteFile_Call) Run(run func(ctx context.Context, name string, data []byte)) *MockDbfsAPIInterface_WriteFile_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].([]byte))
+	})
+	return _c
+}
+
+func (_c *MockDbfsAPIInterface_WriteFile_Call) Return(_a0 error) *MockDbfsAPIInterface_WriteFile_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockDbfsAPIInterface_WriteFile_Call) RunAndReturn(run func(context.Context, string, []byte) error) *MockDbfsAPIInterface_WriteFile_Call {
 	_c.Call.Return(run)
 	return _c
 }

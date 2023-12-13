@@ -655,6 +655,53 @@ func (_c *MockClustersAPIInterface_EditAndWait_Call) RunAndReturn(run func(conte
 	return _c
 }
 
+// EnsureClusterIsRunning provides a mock function with given fields: ctx, clusterId
+func (_m *MockClustersAPIInterface) EnsureClusterIsRunning(ctx context.Context, clusterId string) error {
+	ret := _m.Called(ctx, clusterId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for EnsureClusterIsRunning")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, clusterId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockClustersAPIInterface_EnsureClusterIsRunning_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EnsureClusterIsRunning'
+type MockClustersAPIInterface_EnsureClusterIsRunning_Call struct {
+	*mock.Call
+}
+
+// EnsureClusterIsRunning is a helper method to define mock.On call
+//   - ctx context.Context
+//   - clusterId string
+func (_e *MockClustersAPIInterface_Expecter) EnsureClusterIsRunning(ctx interface{}, clusterId interface{}) *MockClustersAPIInterface_EnsureClusterIsRunning_Call {
+	return &MockClustersAPIInterface_EnsureClusterIsRunning_Call{Call: _e.mock.On("EnsureClusterIsRunning", ctx, clusterId)}
+}
+
+func (_c *MockClustersAPIInterface_EnsureClusterIsRunning_Call) Run(run func(ctx context.Context, clusterId string)) *MockClustersAPIInterface_EnsureClusterIsRunning_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockClustersAPIInterface_EnsureClusterIsRunning_Call) Return(_a0 error) *MockClustersAPIInterface_EnsureClusterIsRunning_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClustersAPIInterface_EnsureClusterIsRunning_Call) RunAndReturn(run func(context.Context, string) error) *MockClustersAPIInterface_EnsureClusterIsRunning_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Events provides a mock function with given fields: ctx, request
 func (_m *MockClustersAPIInterface) Events(ctx context.Context, request compute.GetEvents) *listing.PaginatingIterator[compute.GetEvents, *compute.GetEventsResponse, compute.ClusterEvent] {
 	ret := _m.Called(ctx, request)
@@ -936,6 +983,80 @@ func (_c *MockClustersAPIInterface_GetByClusterName_Call) Return(_a0 *compute.Cl
 }
 
 func (_c *MockClustersAPIInterface_GetByClusterName_Call) RunAndReturn(run func(context.Context, string) (*compute.ClusterDetails, error)) *MockClustersAPIInterface_GetByClusterName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetOrCreateRunningCluster provides a mock function with given fields: ctx, name, custom
+func (_m *MockClustersAPIInterface) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...compute.CreateCluster) (*compute.ClusterDetails, error) {
+	_va := make([]interface{}, len(custom))
+	for _i := range custom {
+		_va[_i] = custom[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, name)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetOrCreateRunningCluster")
+	}
+
+	var r0 *compute.ClusterDetails
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, ...compute.CreateCluster) (*compute.ClusterDetails, error)); ok {
+		return rf(ctx, name, custom...)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, ...compute.CreateCluster) *compute.ClusterDetails); ok {
+		r0 = rf(ctx, name, custom...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*compute.ClusterDetails)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, ...compute.CreateCluster) error); ok {
+		r1 = rf(ctx, name, custom...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockClustersAPIInterface_GetOrCreateRunningCluster_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetOrCreateRunningCluster'
+type MockClustersAPIInterface_GetOrCreateRunningCluster_Call struct {
+	*mock.Call
+}
+
+// GetOrCreateRunningCluster is a helper method to define mock.On call
+//   - ctx context.Context
+//   - name string
+//   - custom ...compute.CreateCluster
+func (_e *MockClustersAPIInterface_Expecter) GetOrCreateRunningCluster(ctx interface{}, name interface{}, custom ...interface{}) *MockClustersAPIInterface_GetOrCreateRunningCluster_Call {
+	return &MockClustersAPIInterface_GetOrCreateRunningCluster_Call{Call: _e.mock.On("GetOrCreateRunningCluster",
+		append([]interface{}{ctx, name}, custom...)...)}
+}
+
+func (_c *MockClustersAPIInterface_GetOrCreateRunningCluster_Call) Run(run func(ctx context.Context, name string, custom ...compute.CreateCluster)) *MockClustersAPIInterface_GetOrCreateRunningCluster_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := make([]compute.CreateCluster, len(args)-2)
+		for i, a := range args[2:] {
+			if a != nil {
+				variadicArgs[i] = a.(compute.CreateCluster)
+			}
+		}
+		run(args[0].(context.Context), args[1].(string), variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *MockClustersAPIInterface_GetOrCreateRunningCluster_Call) Return(c *compute.ClusterDetails, err error) *MockClustersAPIInterface_GetOrCreateRunningCluster_Call {
+	_c.Call.Return(c, err)
+	return _c
+}
+
+func (_c *MockClustersAPIInterface_GetOrCreateRunningCluster_Call) RunAndReturn(run func(context.Context, string, ...compute.CreateCluster) (*compute.ClusterDetails, error)) *MockClustersAPIInterface_GetOrCreateRunningCluster_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1956,6 +2077,120 @@ func (_c *MockClustersAPIInterface_RestartAndWait_Call) Return(_a0 *compute.Clus
 }
 
 func (_c *MockClustersAPIInterface_RestartAndWait_Call) RunAndReturn(run func(context.Context, compute.RestartCluster, ...retries.Option[compute.ClusterDetails]) (*compute.ClusterDetails, error)) *MockClustersAPIInterface_RestartAndWait_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SelectNodeType provides a mock function with given fields: ctx, r
+func (_m *MockClustersAPIInterface) SelectNodeType(ctx context.Context, r compute.NodeTypeRequest) (string, error) {
+	ret := _m.Called(ctx, r)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SelectNodeType")
+	}
+
+	var r0 string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, compute.NodeTypeRequest) (string, error)); ok {
+		return rf(ctx, r)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, compute.NodeTypeRequest) string); ok {
+		r0 = rf(ctx, r)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, compute.NodeTypeRequest) error); ok {
+		r1 = rf(ctx, r)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockClustersAPIInterface_SelectNodeType_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SelectNodeType'
+type MockClustersAPIInterface_SelectNodeType_Call struct {
+	*mock.Call
+}
+
+// SelectNodeType is a helper method to define mock.On call
+//   - ctx context.Context
+//   - r compute.NodeTypeRequest
+func (_e *MockClustersAPIInterface_Expecter) SelectNodeType(ctx interface{}, r interface{}) *MockClustersAPIInterface_SelectNodeType_Call {
+	return &MockClustersAPIInterface_SelectNodeType_Call{Call: _e.mock.On("SelectNodeType", ctx, r)}
+}
+
+func (_c *MockClustersAPIInterface_SelectNodeType_Call) Run(run func(ctx context.Context, r compute.NodeTypeRequest)) *MockClustersAPIInterface_SelectNodeType_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(compute.NodeTypeRequest))
+	})
+	return _c
+}
+
+func (_c *MockClustersAPIInterface_SelectNodeType_Call) Return(_a0 string, _a1 error) *MockClustersAPIInterface_SelectNodeType_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockClustersAPIInterface_SelectNodeType_Call) RunAndReturn(run func(context.Context, compute.NodeTypeRequest) (string, error)) *MockClustersAPIInterface_SelectNodeType_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SelectSparkVersion provides a mock function with given fields: ctx, r
+func (_m *MockClustersAPIInterface) SelectSparkVersion(ctx context.Context, r compute.SparkVersionRequest) (string, error) {
+	ret := _m.Called(ctx, r)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SelectSparkVersion")
+	}
+
+	var r0 string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, compute.SparkVersionRequest) (string, error)); ok {
+		return rf(ctx, r)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, compute.SparkVersionRequest) string); ok {
+		r0 = rf(ctx, r)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, compute.SparkVersionRequest) error); ok {
+		r1 = rf(ctx, r)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockClustersAPIInterface_SelectSparkVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SelectSparkVersion'
+type MockClustersAPIInterface_SelectSparkVersion_Call struct {
+	*mock.Call
+}
+
+// SelectSparkVersion is a helper method to define mock.On call
+//   - ctx context.Context
+//   - r compute.SparkVersionRequest
+func (_e *MockClustersAPIInterface_Expecter) SelectSparkVersion(ctx interface{}, r interface{}) *MockClustersAPIInterface_SelectSparkVersion_Call {
+	return &MockClustersAPIInterface_SelectSparkVersion_Call{Call: _e.mock.On("SelectSparkVersion", ctx, r)}
+}
+
+func (_c *MockClustersAPIInterface_SelectSparkVersion_Call) Run(run func(ctx context.Context, r compute.SparkVersionRequest)) *MockClustersAPIInterface_SelectSparkVersion_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(compute.SparkVersionRequest))
+	})
+	return _c
+}
+
+func (_c *MockClustersAPIInterface_SelectSparkVersion_Call) Return(_a0 string, _a1 error) *MockClustersAPIInterface_SelectSparkVersion_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockClustersAPIInterface_SelectSparkVersion_Call) RunAndReturn(run func(context.Context, compute.SparkVersionRequest) (string, error)) *MockClustersAPIInterface_SelectSparkVersion_Call {
 	_c.Call.Return(run)
 	return _c
 }
