@@ -4,8 +4,6 @@ package ml
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // Experiments are the primary unit of organization in MLflow; all MLflow runs
@@ -268,9 +266,6 @@ type ExperimentsService interface {
 	//
 	// Updates run metadata.
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // Note: This API reference documents APIs for the Workspace Model Registry.
@@ -502,7 +497,4 @@ type ModelRegistryService interface {
 	//
 	// Updates a registry webhook.
 	UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) error
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }

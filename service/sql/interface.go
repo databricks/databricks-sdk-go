@@ -4,8 +4,6 @@ package sql
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // The alerts API can be used to perform CRUD operations on alerts. An alert is
@@ -43,9 +41,6 @@ type AlertsService interface {
 	//
 	// Updates an alert.
 	Update(ctx context.Context, request EditAlert) error
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // This is an evolving API that facilitates the addition and removal of widgets
@@ -61,9 +56,6 @@ type DashboardWidgetsService interface {
 
 	// Update existing widget.
 	Update(ctx context.Context, request CreateWidget) (*Widget, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // In general, there is little need to modify dashboards using the API. However,
@@ -101,9 +93,6 @@ type DashboardsService interface {
 	// A restored dashboard appears in list views and searches and can be
 	// shared.
 	Restore(ctx context.Context, request RestoreDashboardRequest) error
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // This API is provided to assist you in making new query objects. When creating
@@ -125,9 +114,6 @@ type DataSourcesService interface {
 	// However, you need only a SQL warehouse's `id` to create new queries
 	// against it.
 	List(ctx context.Context) ([]DataSource, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // The SQL Permissions API is similar to the endpoints of the
@@ -162,9 +148,6 @@ type DbsqlPermissionsService interface {
 	// Transfers ownership of a dashboard, query, or alert to an active user.
 	// Requires an admin API key.
 	TransferOwnership(ctx context.Context, request TransferOwnershipRequest) (*Success, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // These endpoints are used for CRUD operations on query definitions. Query
@@ -220,9 +203,6 @@ type QueriesService interface {
 	//
 	// **Note**: You cannot undo this operation.
 	Update(ctx context.Context, request QueryEditContent) (*Query, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // Access the history of queries through SQL warehouses.
@@ -236,9 +216,6 @@ type QueryHistoryService interface {
 	//
 	// Use ListAll() to get all QueryInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListQueryHistoryRequest) (*ListQueriesResponse, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // This is an evolving API that facilitates the addition and removal of
@@ -254,9 +231,6 @@ type QueryVisualizationsService interface {
 
 	// Edit existing visualization.
 	Update(ctx context.Context, request Visualization) (*Visualization, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // The Databricks SQL Statement Execution API can be used to execute SQL
@@ -399,9 +373,6 @@ type StatementExecutionService interface {
 	// the `next_chunk_index` and `next_chunk_internal_link` fields for simple
 	// iteration through the result set.
 	GetStatementResultChunkN(ctx context.Context, request GetStatementResultChunkNRequest) (*ResultData, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // A SQL warehouse is a compute resource that lets you run SQL commands on data
@@ -480,7 +451,4 @@ type WarehousesService interface {
 	// Updates the permissions on a SQL warehouse. SQL warehouses can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }

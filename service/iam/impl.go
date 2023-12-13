@@ -15,10 +15,6 @@ type accountAccessControlImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountAccessControlImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *accountAccessControlImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
 	var getAssignableRolesForResourceResponse GetAssignableRolesForResourceResponse
 	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/assignable-roles", a.client.ConfiguredAccountID())
@@ -52,10 +48,6 @@ type accountAccessControlProxyImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountAccessControlProxyImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *accountAccessControlProxyImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
 	var getAssignableRolesForResourceResponse GetAssignableRolesForResourceResponse
 	path := "/api/2.0/preview/accounts/access-control/assignable-roles"
@@ -87,10 +79,6 @@ func (a *accountAccessControlProxyImpl) UpdateRuleSet(ctx context.Context, reque
 // unexported type that holds implementations of just AccountGroups API methods
 type accountGroupsImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *accountGroupsImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
@@ -151,10 +139,6 @@ type accountServicePrincipalsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountServicePrincipalsImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *accountServicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
@@ -211,10 +195,6 @@ func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request Servi
 // unexported type that holds implementations of just AccountUsers API methods
 type accountUsersImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *accountUsersImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, error) {
@@ -275,10 +255,6 @@ type currentUserImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *currentUserImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
 	var user User
 	path := "/api/2.0/preview/scim/v2/Me"
@@ -291,10 +267,6 @@ func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
 // unexported type that holds implementations of just Groups API methods
 type groupsImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *groupsImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *groupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
@@ -355,10 +327,6 @@ type permissionsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *permissionsImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *permissionsImpl) Get(ctx context.Context, request GetPermissionRequest) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
@@ -400,10 +368,6 @@ func (a *permissionsImpl) Update(ctx context.Context, request PermissionsRequest
 // unexported type that holds implementations of just ServicePrincipals API methods
 type servicePrincipalsImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *servicePrincipalsImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *servicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
@@ -462,10 +426,6 @@ func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrinc
 // unexported type that holds implementations of just Users API methods
 type usersImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *usersImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *usersImpl) Create(ctx context.Context, request User) (*User, error) {
@@ -562,10 +522,6 @@ func (a *usersImpl) UpdatePermissions(ctx context.Context, request PasswordPermi
 // unexported type that holds implementations of just WorkspaceAssignment API methods
 type workspaceAssignmentImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *workspaceAssignmentImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {

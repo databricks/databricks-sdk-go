@@ -4,8 +4,6 @@ package compute
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // You can use cluster policies to control users' ability to configure clusters
@@ -85,9 +83,6 @@ type ClusterPoliciesService interface {
 	// Updates the permissions on a cluster policy. Cluster policies can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // The Clusters API allows you to create, start, edit, list, terminate, and
@@ -283,9 +278,6 @@ type ClustersService interface {
 	// Updates the permissions on a cluster. Clusters can inherit permissions
 	// from their root object.
 	UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // This API allows execution of Python, Scala, SQL, or R commands on running
@@ -332,9 +324,6 @@ type CommandExecutionService interface {
 	// If successful, it returns an ID for tracking the status of the command's
 	// execution.
 	Execute(ctx context.Context, request Command) (*Created, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // The Global Init Scripts API enables Workspace administrators to configure
@@ -379,9 +368,6 @@ type GlobalInitScriptsService interface {
 	// Updates a global init script, specifying only the fields to change. All
 	// fields are optional. Unspecified fields retain their current value.
 	Update(ctx context.Context, request GlobalInitScriptUpdateRequest) error
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // Instance Pools API are used to create, edit, delete and list instance pools
@@ -454,9 +440,6 @@ type InstancePoolsService interface {
 	// Updates the permissions on an instance pool. Instance pools can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // The Instance Profiles API allows admins to add, list, and remove instance
@@ -509,9 +492,6 @@ type InstanceProfilesService interface {
 	//
 	// This API is only accessible to admin users.
 	Remove(ctx context.Context, request RemoveInstanceProfile) error
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // The Libraries API allows you to install and uninstall libraries and get the
@@ -582,9 +562,6 @@ type LibrariesService interface {
 	// uninstalled until the cluster is restarted. Uninstalling libraries that
 	// are not installed on the cluster will have no impact but is not an error.
 	Uninstall(ctx context.Context, request UninstallLibraries) error
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // View available policy families. A policy family contains a policy definition
@@ -609,7 +586,4 @@ type PolicyFamiliesService interface {
 	//
 	// Use ListAll() to get all PolicyFamily instances, which will iterate over every result page.
 	List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }

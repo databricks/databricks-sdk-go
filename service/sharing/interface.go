@@ -5,7 +5,6 @@ package sharing
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
@@ -64,9 +63,6 @@ type CleanRoomsService interface {
 	//
 	// Table removals through **update** do not require additional privileges.
 	Update(ctx context.Context, request UpdateCleanRoom) (*CleanRoomInfo, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // A data provider is an object representing the organization in the real world
@@ -120,9 +116,6 @@ type ProvidersService interface {
 	// the provider name, the caller must be both a metastore admin and the
 	// owner of the provider.
 	Update(ctx context.Context, request UpdateProvider) (*ProviderInfo, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // The Recipient Activation API is only applicable in the open sharing model
@@ -147,9 +140,6 @@ type RecipientActivationService interface {
 	// Retrieve access token with an activation url. This is a public API
 	// without any authentication.
 	RetrieveToken(ctx context.Context, request RetrieveTokenRequest) (*RetrieveTokenResponse, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // A recipient is an object you create using :method:recipients/create to
@@ -222,9 +212,6 @@ type RecipientsService interface {
 	// be updated, the user must be both a metastore admin and the owner of the
 	// recipient.
 	Update(ctx context.Context, request UpdateRecipient) error
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // A share is a container instantiated with :method:shares/create. Once created
@@ -295,7 +282,4 @@ type SharesService interface {
 	// For new recipient grants, the user must also be the owner of the
 	// recipients. recipient revocations do not require additional privileges.
 	UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }

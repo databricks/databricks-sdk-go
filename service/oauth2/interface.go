@@ -4,8 +4,6 @@ package oauth2
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // These APIs enable administrators to manage custom oauth app integrations,
@@ -45,9 +43,6 @@ type CustomAppIntegrationService interface {
 	// Updates an existing custom OAuth App Integration. You can retrieve the
 	// custom oauth app integration via :method:CustomAppIntegration/get.
 	Update(ctx context.Context, request UpdateCustomAppIntegration) error
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // These APIs enable administrators to view all the available published OAuth
@@ -62,9 +57,6 @@ type OAuthPublishedAppsService interface {
 	//
 	// Use ListAll() to get all PublishedAppOutput instances, which will iterate over every result page.
 	List(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // These APIs enable administrators to manage published oauth app integrations,
@@ -104,9 +96,6 @@ type PublishedAppIntegrationService interface {
 	// Updates an existing published OAuth App Integration. You can retrieve the
 	// published oauth app integration via :method:PublishedAppIntegration/get.
 	Update(ctx context.Context, request UpdatePublishedAppIntegration) error
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // These APIs enable administrators to manage service principal secrets.
@@ -142,7 +131,4 @@ type ServicePrincipalSecretsService interface {
 	//
 	// Use ListAll() to get all SecretInfo instances
 	List(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }

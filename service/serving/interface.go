@@ -4,8 +4,6 @@ package serving
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // Lakehouse Apps run directly on a customer’s Databricks instance, integrate
@@ -42,9 +40,6 @@ type AppsService interface {
 	//
 	// Get deployment events for an application
 	GetEvents(ctx context.Context, request GetEventsRequest) (*ListAppEventsResponse, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }
 
 // The Serving Endpoints API allows you to create, update, and delete model
@@ -141,7 +136,4 @@ type ServingEndpointsService interface {
 	// Updates the permissions on a serving endpoint. Serving endpoints can
 	// inherit permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
-
-	// Returns an instance of [client.DatabricksClient].
-	Client() client.DatabricksClientInterface
 }

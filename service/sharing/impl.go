@@ -17,10 +17,6 @@ type cleanRoomsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *cleanRoomsImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoom) (*CleanRoomInfo, error) {
 	var cleanRoomInfo CleanRoomInfo
 	path := "/api/2.1/unity-catalog/clean-rooms"
@@ -70,10 +66,6 @@ func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoom) (*
 // unexported type that holds implementations of just Providers API methods
 type providersImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *providersImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*ProviderInfo, error) {
@@ -136,10 +128,6 @@ type recipientActivationImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *recipientActivationImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation_info/%v", request.ActivationUrl)
 	headers := make(map[string]string)
@@ -160,10 +148,6 @@ func (a *recipientActivationImpl) RetrieveToken(ctx context.Context, request Ret
 // unexported type that holds implementations of just Recipients API methods
 type recipientsImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *recipientsImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*RecipientInfo, error) {
@@ -233,10 +217,6 @@ func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) er
 // unexported type that holds implementations of just Shares API methods
 type sharesImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *sharesImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*ShareInfo, error) {

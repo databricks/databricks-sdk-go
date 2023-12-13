@@ -15,10 +15,6 @@ type customAppIntegrationImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *customAppIntegrationImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCustomAppIntegration) (*CreateCustomAppIntegrationOutput, error) {
 	var createCustomAppIntegrationOutput CreateCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations", a.client.ConfiguredAccountID())
@@ -69,10 +65,6 @@ type oAuthPublishedAppsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *oAuthPublishedAppsImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *oAuthPublishedAppsImpl) List(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
 	var getPublishedAppsOutput GetPublishedAppsOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-apps/", a.client.ConfiguredAccountID())
@@ -85,10 +77,6 @@ func (a *oAuthPublishedAppsImpl) List(ctx context.Context, request ListOAuthPubl
 // unexported type that holds implementations of just PublishedAppIntegration API methods
 type publishedAppIntegrationImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *publishedAppIntegrationImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request CreatePublishedAppIntegration) (*CreatePublishedAppIntegrationOutput, error) {
@@ -139,10 +127,6 @@ func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request Update
 // unexported type that holds implementations of just ServicePrincipalSecrets API methods
 type servicePrincipalSecretsImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *servicePrincipalSecretsImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error) {

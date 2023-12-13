@@ -18,10 +18,6 @@ type {{.CamelName}}Impl struct {
 	client *client.DatabricksClient
 }
 
-func (a *{{.CamelName}}Impl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 {{range .Methods}}
 func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
 	{{- template "response-var" . }}

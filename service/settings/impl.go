@@ -15,10 +15,6 @@ type accountIpAccessListsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountIpAccessListsImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
 	var createIpAccessListResponse CreateIpAccessListResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
@@ -117,10 +113,6 @@ type accountSettingsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountSettingsImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *accountSettingsImpl) DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
 	var deletePersonalComputeSettingResponse DeletePersonalComputeSettingResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
@@ -154,10 +146,6 @@ type credentialsManagerImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *credentialsManagerImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
 	var exchangeTokenResponse ExchangeTokenResponse
 	path := "/api/2.0/credentials-manager/exchange-tokens/token"
@@ -171,10 +159,6 @@ func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request Exch
 // unexported type that holds implementations of just IpAccessLists API methods
 type ipAccessListsImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *ipAccessListsImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
@@ -233,10 +217,6 @@ func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessLi
 // unexported type that holds implementations of just NetworkConnectivity API methods
 type networkConnectivityImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *networkConnectivityImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *networkConnectivityImpl) CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error) {
@@ -317,10 +297,6 @@ type settingsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *settingsImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *settingsImpl) DeleteDefaultWorkspaceNamespace(ctx context.Context, request DeleteDefaultWorkspaceNamespaceRequest) (*DeleteDefaultWorkspaceNamespaceResponse, error) {
 	var deleteDefaultWorkspaceNamespaceResponse DeleteDefaultWorkspaceNamespaceResponse
 	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
@@ -352,10 +328,6 @@ func (a *settingsImpl) UpdateDefaultWorkspaceNamespace(ctx context.Context, requ
 // unexported type that holds implementations of just TokenManagement API methods
 type tokenManagementImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *tokenManagementImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request CreateOboTokenRequest) (*CreateOboTokenResponse, error) {
@@ -436,10 +408,6 @@ type tokensImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *tokensImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *tokensImpl) Create(ctx context.Context, request CreateTokenRequest) (*CreateTokenResponse, error) {
 	var createTokenResponse CreateTokenResponse
 	path := "/api/2.0/token/create"
@@ -471,10 +439,6 @@ func (a *tokensImpl) List(ctx context.Context) (*ListTokensResponse, error) {
 // unexported type that holds implementations of just WorkspaceConf API methods
 type workspaceConfImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *workspaceConfImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*map[string]string, error) {

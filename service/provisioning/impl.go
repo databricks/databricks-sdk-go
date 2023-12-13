@@ -15,10 +15,6 @@ type credentialsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *credentialsImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *credentialsImpl) Create(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
 	var credential Credential
 	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials", a.client.ConfiguredAccountID())
@@ -58,10 +54,6 @@ func (a *credentialsImpl) List(ctx context.Context) ([]Credential, error) {
 // unexported type that holds implementations of just EncryptionKeys API methods
 type encryptionKeysImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *encryptionKeysImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *encryptionKeysImpl) Create(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
@@ -105,10 +97,6 @@ type networksImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *networksImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *networksImpl) Create(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
 	var network Network
 	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", a.client.ConfiguredAccountID())
@@ -148,10 +136,6 @@ func (a *networksImpl) List(ctx context.Context) ([]Network, error) {
 // unexported type that holds implementations of just PrivateAccess API methods
 type privateAccessImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *privateAccessImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *privateAccessImpl) Create(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
@@ -204,10 +188,6 @@ type storageImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *storageImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
 	var storageConfiguration StorageConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", a.client.ConfiguredAccountID())
@@ -249,10 +229,6 @@ type vpcEndpointsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *vpcEndpointsImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *vpcEndpointsImpl) Create(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
 	var vpcEndpoint VpcEndpoint
 	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", a.client.ConfiguredAccountID())
@@ -292,10 +268,6 @@ func (a *vpcEndpointsImpl) List(ctx context.Context) ([]VpcEndpoint, error) {
 // unexported type that holds implementations of just Workspaces API methods
 type workspacesImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *workspacesImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *workspacesImpl) Create(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {

@@ -16,10 +16,6 @@ type dbfsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *dbfsImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) error {
 	path := "/api/2.0/dbfs/add-block"
 	headers := make(map[string]string)
@@ -114,10 +110,6 @@ func (a *dbfsImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResp
 // unexported type that holds implementations of just Files API methods
 type filesImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *filesImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {

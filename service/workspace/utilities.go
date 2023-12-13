@@ -163,10 +163,14 @@ func (a *WorkspaceAPI) Upload(ctx context.Context, path string, r io.Reader, opt
 	if err != nil {
 		return fmt.Errorf("write close: %w", err)
 	}
+	impl, ok := a.impl.(*workspaceImpl)
+	if !ok {
+		return fmt.Errorf("wrong impl: %v", a.impl)
+	}
 	headers := map[string]string{
 		"Content-Type": w.FormDataContentType(),
 	}
-	return a.impl.Client().Do(ctx, "POST", "/api/2.0/workspace/import", headers, buf.Bytes(), nil)
+	return impl.client.Do(ctx, "POST", "/api/2.0/workspace/import", headers, buf.Bytes(), nil)
 }
 
 // WriteFile is identical to [os.WriteFile] but for Workspace File.
@@ -194,13 +198,17 @@ func DownloadFormat(f ExportFormat) func(q map[string]any) {
 //
 // Returns [bytes.Buffer] of the path contents.
 func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...DownloadOption) (io.ReadCloser, error) {
+	impl, ok := a.impl.(*workspaceImpl)
+	if !ok {
+		return nil, fmt.Errorf("wrong impl: %v", a.impl)
+	}
 	var buf bytes.Buffer
 	query := map[string]any{"path": path, "direct_download": true}
 	for _, v := range opts {
 		v(query)
 	}
 	headers := map[string]string{"Content-Type": "application/json"}
-	err := a.impl.Client().Do(ctx, "GET", "/api/2.0/workspace/export", headers, query, &buf)
+	err := impl.client.Do(ctx, "GET", "/api/2.0/workspace/export", headers, query, &buf)
 	if err != nil {
 		return nil, err
 	}

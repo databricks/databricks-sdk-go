@@ -84,12 +84,6 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 	}, nil
 }
 
-type DatabricksClientInterface interface {
-	Do(ctx context.Context, method, path string,
-		headers map[string]string, request, response any,
-		visitors ...func(*http.Request) error) error
-}
-
 type DatabricksClient struct {
 	Config *config.Config
 	client *httpclient.ApiClient

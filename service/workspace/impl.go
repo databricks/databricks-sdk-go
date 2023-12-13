@@ -15,10 +15,6 @@ type gitCredentialsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *gitCredentialsImpl) Client() client.DatabricksClientInterface {
-	return a.client
-}
-
 func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentials) (*CreateCredentialsResponse, error) {
 	var createCredentialsResponse CreateCredentialsResponse
 	path := "/api/2.0/git-credentials"
@@ -66,10 +62,6 @@ func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentia
 // unexported type that holds implementations of just Repos API methods
 type reposImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *reposImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *reposImpl) Create(ctx context.Context, request CreateRepo) (*RepoInfo, error) {
@@ -157,10 +149,6 @@ func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissio
 // unexported type that holds implementations of just Secrets API methods
 type secretsImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *secretsImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) error {
@@ -265,10 +253,6 @@ func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) error {
 // unexported type that holds implementations of just Workspace API methods
 type workspaceImpl struct {
 	client *client.DatabricksClient
-}
-
-func (a *workspaceImpl) Client() client.DatabricksClientInterface {
-	return a.client
 }
 
 func (a *workspaceImpl) Delete(ctx context.Context, request Delete) error {
