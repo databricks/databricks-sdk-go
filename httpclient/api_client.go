@@ -66,7 +66,6 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 	cfg.DebugTruncateBytes = orDefault(cfg.DebugTruncateBytes, 96)
 	cfg.RetryTimeout = time.Duration(orDefault(int(cfg.RetryTimeout), int(5*time.Minute)))
 	cfg.HTTPTimeout = time.Duration(orDefault(int(cfg.HTTPTimeout), int(30*time.Second)))
-	rateLimiter := rate.NewLimiter(rate.Limit(orDefault(cfg.RateLimitPerSecond, 15)), 1)
 	if cfg.ErrorMapper == nil {
 		// default generic error mapper
 		cfg.ErrorMapper = DefaultErrorMapper
@@ -75,12 +74,21 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 		// by default, we just retry on HTTP 429/504
 		cfg.ErrorRetriable = DefaultErrorRetriable
 	}
+	transport := cfg.httpTransport()
+	rateLimit := rate.Limit(orDefault(cfg.RateLimitPerSecond, 15))
+	// depend on the HTTP fixture interface to prevent any coupling
+	if skippable, ok := transport.(interface {
+		SkipRetryOnIO() bool
+	}); ok && skippable.SkipRetryOnIO() {
+		rateLimit = rate.Inf
+		cfg.RetryTimeout = 0
+	}
 	return &ApiClient{
 		config:      cfg,
-		rateLimiter: rateLimiter,
+		rateLimiter: rate.NewLimiter(rateLimit, 1),
 		httpClient: &http.Client{
 			Timeout:   cfg.HTTPTimeout,
-			Transport: cfg.httpTransport(),
+			Transport: transport,
 		},
 	}
 }
@@ -163,14 +171,7 @@ func (c *ApiClient) isRetriable(ctx context.Context, err error) bool {
 	if c.config.ErrorRetriable(ctx, err) {
 		return true
 	}
-	var skipRetryOnIO bool
-	// depend on the HTTP fixture interface to prevent any coupling
-	if skippable, ok := c.httpClient.Transport.(interface {
-		SkipRetryOnIO() bool
-	}); ok {
-		skipRetryOnIO = skippable.SkipRetryOnIO()
-	}
-	if isRetriableUrlError(err) && !skipRetryOnIO {
+	if isRetriableUrlError(err) {
 		// all IO errors are retriable
 		logger.Debugf(ctx, "Attempting retry because of IO error: %s", err)
 		return true
