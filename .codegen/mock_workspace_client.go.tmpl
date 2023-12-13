@@ -5,7 +5,7 @@ package mocks
 import (
     "github.com/databricks/databricks-sdk-go"
 	{{range .Packages}}
-	"github.com/databricks/databricks-sdk-go/internal/mocks/service/{{.Name}}"{{end}}
+	"github.com/databricks/databricks-sdk-go/mocks/service/{{.Name}}"{{end}}
 )
 
 // NewWorkspaceClient creates new mocked version of Databricks SDK client for Workspaces
@@ -13,11 +13,21 @@ import (
 func NewWorkspaceClient(t interface {
 	mock.TestingT
 	Cleanup(func())
-}, cfg *config.Config) (*databricks.WorkspaceClient, error) {
+}, cfg *config.Config) (*databricks.WorkspaceClient) {
 	return &databricks.WorkspaceClient{
 		Config: cfg,
 		{{range .Services}}{{if not .IsAccounts}}
 		{{.Name}}: {{.Package.Name}}.NewMock{{.Name}}APIInterface(t),
 		{{- end}}{{end}}
-	}, nil
+	}
 }
+
+{{range .Services}}{{if not .IsAccounts}}
+func GetMock{{.Name}}API(c *databricks.WorkspaceClient) *{{.Package.Name}}.Mock{{.Name}}APIInterface {
+	api, ok := c.{{.Name}}.(*{{.Package.Name}}.Mock{{.Name}}APIInterface)
+	if !ok {
+		panic("Invalid API interface type")
+	}
+	return api
+}
+{{- end}}{{end}}
