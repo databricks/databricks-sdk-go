@@ -10,9 +10,9 @@ import (
 
 // all definitions in this file are in alphabetical order
 
+// Details required to configure a block list or allow list.
 type CreateIpAccessList struct {
-	// Array of IP addresses or CIDR values to be added to the IP access list.
-	IpAddresses []string `json:"ip_addresses"`
+	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
 	Label string `json:"label"`
 	// Type of IP access list. Valid values are as follows and are
@@ -24,7 +24,9 @@ type CreateIpAccessList struct {
 	ListType ListType `json:"list_type"`
 }
 
+// An IP access list was successfully created.
 type CreateIpAccessListResponse struct {
+	// Definition of an IP Access list
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
@@ -196,7 +198,6 @@ func (s DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
 
 // Delete access list
 type DeleteAccountIpAccessListRequest struct {
-	// The ID for the corresponding IP access list.
 	IpAccessListId string `json:"-" url:"-"`
 }
 
@@ -225,7 +226,6 @@ type DeleteDefaultWorkspaceNamespaceResponse struct {
 
 // Delete access list
 type DeleteIpAccessListRequest struct {
-	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" url:"-"`
 }
 
@@ -309,26 +309,28 @@ type ExchangeTokenResponse struct {
 	Values []ExchangeToken `json:"values,omitempty"`
 }
 
+// An IP access list was successfully returned.
 type FetchIpAccessListResponse struct {
+	// Definition of an IP Access list
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
 // Get IP access list
 type GetAccountIpAccessListRequest struct {
-	// The ID for the corresponding IP access list.
 	IpAccessListId string `json:"-" url:"-"`
 }
 
 // Get access list
 type GetIpAccessListRequest struct {
-	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" url:"-"`
 }
 
 type GetIpAccessListResponse struct {
+	// Definition of an IP Access list
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
+// IP access lists were successfully returned.
 type GetIpAccessListsResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
@@ -363,6 +365,7 @@ type GetTokenPermissionLevelsResponse struct {
 	PermissionLevels []TokenPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+// Definition of an IP Access list
 type IpAccessListInfo struct {
 	// Total number of IP or CIDR values.
 	AddressCount int `json:"address_count,omitempty"`
@@ -372,7 +375,7 @@ type IpAccessListInfo struct {
 	CreatedBy int64 `json:"created_by,omitempty"`
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled,omitempty"`
-	// Array of IP addresses or CIDR values to be added to the IP access list.
+
 	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
 	Label string `json:"label,omitempty"`
@@ -401,6 +404,7 @@ func (s IpAccessListInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// IP access lists were successfully returned.
 type ListIpAccessListResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
@@ -873,17 +877,16 @@ type ReadPersonalComputeSettingRequest struct {
 	Etag string `json:"-" url:"etag"`
 }
 
+// Details required to replace an IP access list.
 type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled"`
-	// The ID for the corresponding IP access list to modify.
+
 	IpAccessListId string `json:"-" url:"-"`
-	// Array of IP addresses or CIDR values to be added to the IP access list.
-	IpAddresses []string `json:"ip_addresses"`
+
+	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
 	Label string `json:"label"`
-	// Universally unique identifier (UUID) of the IP access list.
-	ListId string `json:"list_id,omitempty"`
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
 	//
@@ -891,16 +894,6 @@ type ReplaceIpAccessList struct {
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
 	ListType ListType `json:"list_type"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ReplaceIpAccessList) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ReplaceIpAccessList) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type RevokeTokenRequest struct {
@@ -1140,24 +1133,23 @@ func (s UpdateDefaultWorkspaceNamespaceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Details required to update an IP access list.
 type UpdateIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
-	Enabled bool `json:"enabled"`
-	// The ID for the corresponding IP access list to modify.
+	Enabled bool `json:"enabled,omitempty"`
+
 	IpAccessListId string `json:"-" url:"-"`
-	// Array of IP addresses or CIDR values to be added to the IP access list.
-	IpAddresses []string `json:"ip_addresses"`
+
+	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
-	Label string `json:"label"`
-	// Universally unique identifier (UUID) of the IP access list.
-	ListId string `json:"list_id,omitempty"`
+	Label string `json:"label,omitempty"`
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
 	//
 	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
-	ListType ListType `json:"list_type"`
+	ListType ListType `json:"list_type,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
