@@ -3,8 +3,10 @@ package common
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 // Represents a response.
@@ -29,7 +31,7 @@ type ResponseWrapper struct {
 	RequestBody RequestBody
 }
 
-func NewResponseWrapper(data any, response *http.Response, req RequestBody) (ResponseWrapper, error) {
+func makeResponseWrapper(data any, response *http.Response, req RequestBody) (ResponseWrapper, error) {
 	switch v := data.(type) {
 	case io.ReadCloser:
 		return ResponseWrapper{
@@ -48,4 +50,37 @@ func NewResponseWrapper(data any, response *http.Response, req RequestBody) (Res
 	default:
 		return ResponseWrapper{}, errors.New("newResponseBody can only be called with io.ReadCloser or []byte")
 	}
+}
+
+// NewResponseWrapper creates a new ResponseWrapper from an http.Response.
+//
+// If the response is nil, or the response body is nil, this will return an
+// error.
+//
+// If the response is a streaming response, the response body will be returned
+// as-is. Otherwise, the response body will be read into memory and returned
+// as a byte slice. Streaming responses are identified by the "Accept" request
+// header being set to anything other than "application/json" and the
+// "Content-Type" header being set to "application/json".
+func NewResponseWrapper(r *http.Response, req RequestBody) (ResponseWrapper, error) {
+	if r == nil {
+		return ResponseWrapper{}, fmt.Errorf("nil response")
+	}
+	if r.Request == nil {
+		return ResponseWrapper{}, fmt.Errorf("nil request")
+	}
+	// JSON media types might have more information after `application/json`, like
+	// `application/json;odata.metadata=minimal;odata...=...`.
+	// See https://www.rfc-editor.org/rfc/rfc9110#section-8.3.1
+	isJSON := strings.HasPrefix(r.Header.Get("Content-Type"), "application/json")
+	streamResponse := r.Request.Header.Get("Accept") != "application/json" && !isJSON
+	if streamResponse {
+		return makeResponseWrapper(r.Body, r, req)
+	}
+	defer r.Body.Close()
+	bs, err := io.ReadAll(r.Body)
+	if err != nil {
+		return ResponseWrapper{}, fmt.Errorf("response body: %w", err)
+	}
+	return makeResponseWrapper(bs, r, req)
 }

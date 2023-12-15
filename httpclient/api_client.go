@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -140,29 +139,6 @@ func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOptio
 	return nil
 }
 
-func (c *ApiClient) fromResponse(r *http.Response, req common.RequestBody) (common.ResponseWrapper, error) {
-	if r == nil {
-		return common.ResponseWrapper{}, fmt.Errorf("nil response")
-	}
-	if r.Request == nil {
-		return common.ResponseWrapper{}, fmt.Errorf("nil request")
-	}
-	// JSON media types might have more information after `application/json`, like
-	// `application/json;odata.metadata=minimal;odata...=...`.
-	// See https://www.rfc-editor.org/rfc/rfc9110#section-8.3.1
-	isJSON := strings.HasPrefix(r.Header.Get("Content-Type"), "application/json")
-	streamResponse := r.Request.Header.Get("Accept") != "application/json" && !isJSON
-	if streamResponse {
-		return common.NewResponseWrapper(r.Body, r, req)
-	}
-	defer r.Body.Close()
-	bs, err := io.ReadAll(r.Body)
-	if err != nil {
-		return common.ResponseWrapper{}, fmt.Errorf("response body: %w", err)
-	}
-	return common.NewResponseWrapper(bs, r, req)
-}
-
 func (c *ApiClient) isRetriable(ctx context.Context, err error) bool {
 	if c.config.ErrorRetriable(ctx, err) {
 		return true
@@ -246,21 +222,21 @@ func (c *ApiClient) attempt(
 		}
 
 		// By this point, the request body has certainly been consumed.
-		responseBody, responseBodyErr := c.fromResponse(response, requestBody)
-		if responseBodyErr != nil {
-			return c.failRequest(ctx, "failed while reading response", responseBodyErr)
+		responseWrapper, err := common.NewResponseWrapper(response, requestBody)
+		if err != nil {
+			return c.failRequest(ctx, "failed while reading response", err)
 		}
 
-		mappedError := c.config.ErrorMapper(ctx, responseBody)
-		defer c.recordRequestLog(ctx, request, response, mappedError, requestBody.DebugBytes, responseBody.DebugBytes)
+		err = c.config.ErrorMapper(ctx, responseWrapper)
+		defer c.recordRequestLog(ctx, request, response, err, requestBody.DebugBytes, responseWrapper.DebugBytes)
 
-		if mappedError == nil {
-			return &responseBody, nil
+		if err == nil {
+			return &responseWrapper, nil
 		}
 
 		// proactively release the connections in HTTP connection pool
 		c.httpClient.CloseIdleConnections()
-		return c.handleError(ctx, mappedError, requestBody)
+		return c.handleError(ctx, err, requestBody)
 	}
 }
 
