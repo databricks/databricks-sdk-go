@@ -151,14 +151,14 @@ func (c *ApiClient) fromResponse(r *http.Response) (responseBody, error) {
 	isJSON := strings.HasPrefix(r.Header.Get("Content-Type"), "application/json")
 	streamResponse := r.Request.Header.Get("Accept") != "application/json" && !isJSON
 	if streamResponse {
-		return newResponseBody(r.Body, r.Header, r.StatusCode, r.Status)
+		return newResponseBody(r.Body, r)
 	}
 	defer r.Body.Close()
 	bs, err := io.ReadAll(r.Body)
 	if err != nil {
 		return responseBody{}, fmt.Errorf("response body: %w", err)
 	}
-	return newResponseBody(bs, r.Header, r.StatusCode, r.Status)
+	return newResponseBody(bs, r)
 }
 
 func (c *ApiClient) redactedDump(prefix string, body []byte) (res string) {
@@ -338,13 +338,7 @@ func (c *ApiClient) RoundTrip(request *http.Request) (*http.Response, error) {
 	}
 	// here we assume only successful responses, as HTTP 4XX and 5XX are mapped
 	// to Go's error implementations.
-	return &http.Response{
-		Request:    request,
-		Status:     resp.Status,
-		StatusCode: resp.StatusCode,
-		Header:     resp.Header,
-		Body:       resp.ReadCloser,
-	}, nil
+	return resp.Response, nil
 }
 
 // InContextForOAuth2 returns a context with a custom *http.Client to be used

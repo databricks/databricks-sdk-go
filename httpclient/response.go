@@ -18,28 +18,22 @@ import (
 type responseBody struct {
 	ReadCloser io.ReadCloser
 	DebugBytes []byte
-	Header     http.Header
-	Status     string
-	StatusCode int
+	Response   *http.Response
 }
 
-func newResponseBody(data any, header http.Header, statusCode int, status string) (responseBody, error) {
+func newResponseBody(data any, response *http.Response) (responseBody, error) {
 	switch v := data.(type) {
 	case io.ReadCloser:
 		return responseBody{
 			ReadCloser: v,
 			DebugBytes: []byte("<io.ReadCloser>"),
-			Header:     header,
-			StatusCode: statusCode,
-			Status:     status,
+			Response:   response,
 		}, nil
 	case []byte:
 		return responseBody{
 			ReadCloser: io.NopCloser(bytes.NewReader(v)),
 			DebugBytes: v,
-			Header:     header,
-			StatusCode: statusCode,
-			Status:     status,
+			Response:   response,
 		}, nil
 	default:
 		return responseBody{}, errors.New("newResponseBody can only be called with io.ReadCloser or []byte")
@@ -49,7 +43,7 @@ func newResponseBody(data any, header http.Header, statusCode int, status string
 func WithResponseHeader(key string, value *string) DoOption {
 	return DoOption{
 		out: func(body *responseBody) error {
-			*value = body.Header.Get(key)
+			*value = body.Response.Header.Get(key)
 			return nil
 		},
 	}

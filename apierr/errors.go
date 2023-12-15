@@ -219,3 +219,11 @@ func parseUnknownError(status string, body []byte, err error) (errorBody APIErro
 	errorBody.Message = strings.Trim(messageMatches[1], " .")
 	return
 }
+
+func makeError(response *http.Response, message string) error {
+	requestMetadata := map[string]string{
+		"host":   response.Request.Host,
+		"path":   response.Request.URL.Path,
+		"method": response.Request.Method,
+	}
+}
