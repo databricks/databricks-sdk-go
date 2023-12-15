@@ -7,11 +7,14 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"runtime"
 	"strings"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/databricks/databricks-sdk-go/version"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -252,6 +255,11 @@ func TestDoRemovesDoubleSlashesFromFilesAPI(t *testing.T) {
 }
 
 func TestNonJSONResponseIncludedInError(t *testing.T) {
+	cicdHeader := ""
+	if useragent.CiCdProvider() != "" {
+		cicdHeader = fmt.Sprintf(" cicd/%s", useragent.CiCdProvider())
+	}
+	goVersion := strings.TrimPrefix(runtime.Version(), "go")
 	type testCase struct {
 		statusCode   int
 		status       string
@@ -267,7 +275,7 @@ GET /a
 > * Host: 
 > * Accept: application/json
 > * Authorization: Bearer token
-> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/darwin auth/pat` + cicdHeader + `
 < HTTP/2.0 Bad Request
 < <html><body>hello</body></html>
 ` + "```",
@@ -281,7 +289,7 @@ GET /a
 > * Host: 
 > * Accept: application/json
 > * Authorization: Bearer token
-> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/darwin auth/pat` + cicdHeader + `
 < HTTP/2.0 Internal Server Error
 < <html><body>hello</body></html>
 ` + "```",
@@ -295,7 +303,7 @@ GET /a
 > * Host: 
 > * Accept: application/json
 > * Authorization: Bearer token
-> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/darwin auth/pat` + cicdHeader + `
 < HTTP/2.0 OK
 < <html><body>hello</body></html>
 ` + "```",

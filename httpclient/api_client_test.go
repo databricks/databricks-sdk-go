@@ -420,7 +420,7 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 
 	require.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
 <  
-< [non-JSON document of 15 bytes]. <io.ReadCloser>`, bufLogger.String())
+< <Streaming response>`, bufLogger.String())
 }
 
 func TestStreamRequestFromFileWithReset(t *testing.T) {
