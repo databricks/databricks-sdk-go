@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"slices"
 	"strings"
+
+	"golang.org/x/exp/slices"
 )
 
 type RoundTripStringer struct {
