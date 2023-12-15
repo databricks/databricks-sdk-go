@@ -275,7 +275,7 @@ GET /a
 > * Host: 
 > * Accept: application/json
 > * Authorization: REDACTED
-> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/darwin auth/pat` + cicdHeader + `
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/` + runtime.GOOS + ` auth/pat` + cicdHeader + `
 < HTTP/2.0 Bad Request
 < <html><body>hello</body></html>
 ` + "```",
@@ -289,7 +289,7 @@ GET /a
 > * Host: 
 > * Accept: application/json
 > * Authorization: REDACTED
-> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/darwin auth/pat` + cicdHeader + `
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/` + runtime.GOOS + ` auth/pat` + cicdHeader + `
 < HTTP/2.0 Internal Server Error
 < <html><body>hello</body></html>
 ` + "```",
@@ -303,7 +303,7 @@ GET /a
 > * Host: 
 > * Accept: application/json
 > * Authorization: REDACTED
-> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/darwin auth/pat` + cicdHeader + `
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/` + runtime.GOOS + ` auth/pat` + cicdHeader + `
 < HTTP/2.0 OK
 < <html><body>hello</body></html>
 ` + "```",
