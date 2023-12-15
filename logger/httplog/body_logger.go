@@ -117,9 +117,12 @@ func (b bodyLogger) redactedDump(prefix string, body []byte) string {
 		truncated := onlyNBytes(string(body), b.debugTruncateBytes)
 		splitByNewlines := strings.Split(truncated, "\n")
 		sb := strings.Builder{}
-		for _, line := range splitByNewlines {
+		for i, line := range splitByNewlines {
+			if i != 0 {
+				sb.WriteString("\n")
+			}
 			line = strings.Trim(line, "\r")
-			sb.WriteString(fmt.Sprintf("%s%s\n", prefix, line))
+			sb.WriteString(fmt.Sprintf("%s%s", prefix, line))
 		}
 		return sb.String()
 	}

@@ -259,19 +259,46 @@ func TestNonJSONResponseIncludedInError(t *testing.T) {
 	}
 	cases := []testCase{
 		{
-			statusCode:   400,
-			status:       "Bad Request",
-			errorMessage: "unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\nGET /a\n> * Host: \n> * Accept: application/json\n> * Authorization: Bearer token\n> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat\n<  Bad Request\n< <html><body>hello</body></html>\n",
+			statusCode: 400,
+			status:     "Bad Request",
+			errorMessage: `unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
+` + "```" + `
+GET /a
+> * Host: 
+> * Accept: application/json
+> * Authorization: Bearer token
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat
+< HTTP/2.0 Bad Request
+< <html><body>hello</body></html>
+` + "```",
 		},
 		{
-			statusCode:   500,
-			status:       "Internal Server Error",
-			errorMessage: "unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\nGET /a\n> * Host: \n> * Accept: application/json\n> * Authorization: Bearer token\n> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat\n<  Internal Server Error\n< <html><body>hello</body></html>\n",
+			statusCode: 500,
+			status:     "Internal Server Error",
+			errorMessage: `unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
+` + "```" + `
+GET /a
+> * Host: 
+> * Accept: application/json
+> * Authorization: Bearer token
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat
+< HTTP/2.0 Internal Server Error
+< <html><body>hello</body></html>
+` + "```",
 		},
 		{
-			statusCode:   200,
-			status:       "OK",
-			errorMessage: "unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\nGET /a\n> * Host: \n> * Accept: application/json\n> * Authorization: Bearer token\n> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat\n<  OK\n< <html><body>hello</body></html>\n",
+			statusCode: 200,
+			status:     "OK",
+			errorMessage: `unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
+` + "```" + `
+GET /a
+> * Host: 
+> * Accept: application/json
+> * Authorization: Bearer token
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat
+< HTTP/2.0 OK
+< <html><body>hello</body></html>
+` + "```",
 		},
 	}
 	for _, tc := range cases {
@@ -289,10 +316,10 @@ func testNonJSONResponseIncludedInError(t *testing.T, statusCode int, status, er
 		ConfigFile: "/dev/null",
 		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
-				StatusCode: statusCode,
-				Status:     status,
-				Body:       io.NopCloser(strings.NewReader(`<html><body>hello</body></html>`)),
-				Request:    r,
+				Proto:   "HTTP/2.0",
+				Status:  status,
+				Body:    io.NopCloser(strings.NewReader(`<html><body>hello</body></html>`)),
+				Request: r,
 			}, nil
 		}),
 	})

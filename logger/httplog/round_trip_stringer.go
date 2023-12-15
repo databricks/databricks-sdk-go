@@ -23,10 +23,13 @@ func (r RoundTripStringer) writeHeaders(sb *strings.Builder, prefix string, head
 		headerKeys = append(headerKeys, k)
 	}
 	slices.Sort(headerKeys)
-	for _, k := range headerKeys {
+	for i, k := range headerKeys {
+		if i != 0 {
+			sb.WriteString("\n")
+		}
 		v := headers[k]
 		trunc := onlyNBytes(strings.Join(v, ""), r.DebugTruncateBytes)
-		sb.WriteString(fmt.Sprintf("> * %s: %s\n", k, escapeNewLines(trunc)))
+		sb.WriteString(fmt.Sprintf("> * %s: %s", k, escapeNewLines(trunc)))
 	}
 }
 
@@ -45,7 +48,10 @@ func (r RoundTripStringer) String() string {
 		sb.WriteString("> * Host: ")
 		sb.WriteString(escapeNewLines(request.Host))
 		sb.WriteString("\n")
-		r.writeHeaders(&sb, "> ", request.Header)
+		if len(request.Header) > 0 {
+			r.writeHeaders(&sb, "> ", request.Header)
+			sb.WriteString("\n")
+		}
 	}
 	if len(r.RequestBody) > 0 {
 		sb.WriteString(r.redactedDump("> ", r.RequestBody))
@@ -62,11 +68,12 @@ func (r RoundTripStringer) String() string {
 	} else {
 		sb.WriteString(fmt.Sprintf("Error: %s", r.Err))
 	}
-	sb.WriteString("\n")
-	if r.DebugHeaders {
+	if r.DebugHeaders && len(r.Response.Header) > 0 {
+		sb.WriteString("\n")
 		r.writeHeaders(&sb, "< ", r.Response.Header)
 	}
 	if len(r.ResponseBody) > 0 {
+		sb.WriteString("\n")
 		sb.WriteString(r.redactedDump("< ", r.ResponseBody))
 	}
 	return sb.String()
