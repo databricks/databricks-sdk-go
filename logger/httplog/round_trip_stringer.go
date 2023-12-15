@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 )
 
@@ -14,6 +15,19 @@ type RoundTripStringer struct {
 	ResponseBody       []byte
 	DebugHeaders       bool
 	DebugTruncateBytes int
+}
+
+func (r RoundTripStringer) writeHeaders(sb *strings.Builder, prefix string, headers http.Header) {
+	headerKeys := make([]string, 0, len(headers))
+	for k := range headers {
+		headerKeys = append(headerKeys, k)
+	}
+	slices.Sort(headerKeys)
+	for _, k := range headerKeys {
+		v := headers[k]
+		trunc := onlyNBytes(strings.Join(v, ""), r.DebugTruncateBytes)
+		sb.WriteString(fmt.Sprintf("> * %s: %s\n", k, escapeNewLines(trunc)))
+	}
 }
 
 func (r RoundTripStringer) String() string {
@@ -31,10 +45,7 @@ func (r RoundTripStringer) String() string {
 		sb.WriteString("> * Host: ")
 		sb.WriteString(escapeNewLines(request.Host))
 		sb.WriteString("\n")
-		for k, v := range request.Header {
-			trunc := onlyNBytes(strings.Join(v, ""), r.DebugTruncateBytes)
-			sb.WriteString(fmt.Sprintf("> * %s: %s\n", k, escapeNewLines(trunc)))
-		}
+		r.writeHeaders(&sb, "> ", request.Header)
 	}
 	if len(r.RequestBody) > 0 {
 		sb.WriteString(r.redactedDump("> ", r.RequestBody))
@@ -53,10 +64,7 @@ func (r RoundTripStringer) String() string {
 	}
 	sb.WriteString("\n")
 	if r.DebugHeaders {
-		for k, v := range r.Response.Header {
-			trunc := onlyNBytes(strings.Join(v, ""), r.DebugTruncateBytes)
-			sb.WriteString(fmt.Sprintf("< * %s: %s\n", k, escapeNewLines(trunc)))
-		}
+		r.writeHeaders(&sb, "< ", r.Response.Header)
 	}
 	if len(r.ResponseBody) > 0 {
 		sb.WriteString(r.redactedDump("< ", r.ResponseBody))

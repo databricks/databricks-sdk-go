@@ -261,17 +261,17 @@ func TestNonJSONResponseIncludedInError(t *testing.T) {
 		{
 			statusCode:   400,
 			status:       "Bad Request",
-			errorMessage: "unexpected response from server (Bad Request): invalid character '<' looking for beginning of value (original: <html><body>hello</body></html>)",
+			errorMessage: "unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\nGET /a\n> * Host: \n> * Accept: application/json\n> * Authorization: Bearer token\n> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat\n<  Bad Request\n< <html><body>hello</body></html>\n",
 		},
 		{
 			statusCode:   500,
 			status:       "Internal Server Error",
-			errorMessage: "unexpected response from server (Internal Server Error): invalid character '<' looking for beginning of value (original: <html><body>hello</body></html>)",
+			errorMessage: "unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\nGET /a\n> * Host: \n> * Accept: application/json\n> * Authorization: Bearer token\n> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat\n<  Internal Server Error\n< <html><body>hello</body></html>\n",
 		},
 		{
 			statusCode:   200,
 			status:       "OK",
-			errorMessage: `failed to unmarshal response body: invalid character '<' looking for beginning of value (original: <html><body>hello</body></html>)`,
+			errorMessage: "unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\nGET /a\n> * Host: \n> * Accept: application/json\n> * Authorization: Bearer token\n> * User-Agent: unknown/0.0.0 databricks-sdk-go/0.27.0 go/1.21.3 os/darwin auth/pat\n<  OK\n< <html><body>hello</body></html>\n",
 		},
 	}
 	for _, tc := range cases {
