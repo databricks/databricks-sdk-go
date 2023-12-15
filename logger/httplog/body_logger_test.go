@@ -79,6 +79,5 @@ func TestBodyLoggerNonJSONNewline(t *testing.T) {
 < 	<body>
 < 		Hello world!
 < 	</body>
-< </html>
-`)
+< </html>`)
 }
