@@ -212,8 +212,8 @@ func parseUnknownError(status string, body []byte, err error) (errorBody APIErro
 	messageMatches := messageRE.FindStringSubmatch(stringBody)
 	// No messages with <pre> </pre> format found so return a APIError
 	if len(messageMatches) < 2 {
-		errorBody.Message = fmt.Sprintf("Response from server (%s) %s: %v",
-			status, stringBody, err)
+		errorBody.Message = fmt.Sprintf("unexpected response from server (%s): %v (original: %s)",
+			status, err, stringBody)
 		return
 	}
 	errorBody.Message = strings.Trim(messageMatches[1], " .")

@@ -252,14 +252,45 @@ func TestDoRemovesDoubleSlashesFromFilesAPI(t *testing.T) {
 }
 
 func TestNonJSONResponseIncludedInError(t *testing.T) {
+	type testCase struct {
+		statusCode   int
+		status       string
+		errorMessage string
+	}
+	cases := []testCase{
+		{
+			statusCode:   400,
+			status:       "Bad Request",
+			errorMessage: "unexpected response from server (Bad Request): invalid character '<' looking for beginning of value (original: <html><body>hello</body></html>)",
+		},
+		{
+			statusCode:   500,
+			status:       "Internal Server Error",
+			errorMessage: "unexpected response from server (Internal Server Error): invalid character '<' looking for beginning of value (original: <html><body>hello</body></html>)",
+		},
+		{
+			statusCode:   200,
+			status:       "OK",
+			errorMessage: `failed to unmarshal response body: invalid character '<' looking for beginning of value (original: <html><body>hello</body></html>)`,
+		},
+	}
+	for _, tc := range cases {
+		tc := tc
+		t.Run(fmt.Sprintf("%d %s", tc.statusCode, tc.status), func(t *testing.T) {
+			testNonJSONResponseIncludedInError(t, tc.statusCode, tc.status, tc.errorMessage)
+		})
+	}
+}
+
+func testNonJSONResponseIncludedInError(t *testing.T, statusCode int, status, errorMessage string) {
 	c, err := New(&config.Config{
 		Host:       "some",
 		Token:      "token",
 		ConfigFile: "/dev/null",
 		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
-				StatusCode: 200,
-				Status:     "200 OK",
+				StatusCode: statusCode,
+				Status:     status,
 				Body:       io.NopCloser(strings.NewReader(`<html><body>hello</body></html>`)),
 				Request:    r,
 			}, nil
@@ -268,5 +299,5 @@ func TestNonJSONResponseIncludedInError(t *testing.T) {
 	require.NoError(t, err)
 	var m map[string]string
 	err = c.Do(context.Background(), "GET", "/a", nil, nil, &m)
-	require.EqualError(t, err, `failed to unmarshal response body: invalid character '<' looking for beginning of value (original: <html><body>hello</body></html>)`)
+	require.EqualError(t, err, errorMessage)
 }
