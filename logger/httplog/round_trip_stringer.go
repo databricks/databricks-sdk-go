@@ -10,12 +10,13 @@ import (
 )
 
 type RoundTripStringer struct {
-	Response           *http.Response
-	Err                error
-	RequestBody        []byte
-	ResponseBody       []byte
-	DebugHeaders       bool
-	DebugTruncateBytes int
+	Response                 *http.Response
+	Err                      error
+	RequestBody              []byte
+	ResponseBody             []byte
+	DebugHeaders             bool
+	DebugAuthorizationHeader bool
+	DebugTruncateBytes       int
 }
 
 func (r RoundTripStringer) writeHeaders(sb *strings.Builder, prefix string, headers http.Header) {
@@ -29,6 +30,9 @@ func (r RoundTripStringer) writeHeaders(sb *strings.Builder, prefix string, head
 			sb.WriteString("\n")
 		}
 		v := headers[k]
+		if k == "Authorization" && !r.DebugAuthorizationHeader {
+			v = []string{"REDACTED"}
+		}
 		trunc := onlyNBytes(strings.Join(v, ""), r.DebugTruncateBytes)
 		sb.WriteString(fmt.Sprintf("> * %s: %s", k, escapeNewLines(trunc)))
 	}

@@ -252,12 +252,13 @@ func (c *ApiClient) recordRequestLog(
 		return
 	}
 	message := httplog.RoundTripStringer{
-		Response:           response,
-		Err:                err,
-		RequestBody:        requestBody,
-		ResponseBody:       responseBody,
-		DebugHeaders:       c.config.DebugHeaders,
-		DebugTruncateBytes: c.config.DebugTruncateBytes,
+		Response:                 response,
+		Err:                      err,
+		RequestBody:              requestBody,
+		ResponseBody:             responseBody,
+		DebugHeaders:             c.config.DebugHeaders,
+		DebugTruncateBytes:       c.config.DebugTruncateBytes,
+		DebugAuthorizationHeader: true,
 	}.String()
 	logger.Debugf(ctx, message)
 }
