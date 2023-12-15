@@ -172,7 +172,7 @@ func parseErrorFromResponse(resp *http.Response, requestBody, responseBody []byt
 	var errorBody APIErrorBody
 	err := json.Unmarshal(responseBody, &errorBody)
 	if err != nil {
-		errorBody = ParseNonJSONError(resp, requestBody, responseBody, err)
+		errorBody = parseUnknownError(resp, requestBody, responseBody, err)
 	}
 	if errorBody.API12Error != "" {
 		// API 1.2 has different response format, let's adapt
@@ -198,7 +198,7 @@ func parseErrorFromResponse(resp *http.Response, requestBody, responseBody []byt
 	}
 }
 
-func ParseNonJSONError(resp *http.Response, requestBody, responseBody []byte, err error) (errorBody APIErrorBody) {
+func parseUnknownError(resp *http.Response, requestBody, responseBody []byte, err error) (errorBody APIErrorBody) {
 	// this is most likely HTML... since un-marshalling JSON failed
 	// Status parts first in case html message is not as expected
 	statusParts := strings.SplitN(resp.Status, " ", 2)
@@ -214,7 +214,7 @@ func ParseNonJSONError(resp *http.Response, requestBody, responseBody []byte, er
 	messageMatches := messageRE.FindStringSubmatch(stringBody)
 	// No messages with <pre> </pre> format found so return a APIError
 	if len(messageMatches) < 2 {
-		errorBody.Message = MakeUnexpectedError(resp, err, nil, responseBody).Error()
+		errorBody.Message = MakeUnexpectedError(resp, err, requestBody, responseBody).Error()
 		return
 	}
 	errorBody.Message = strings.Trim(messageMatches[1], " .")
