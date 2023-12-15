@@ -426,7 +426,7 @@ type EndpointCoreConfigInput struct {
 	Name string `json:"-" url:"-"`
 	// A list of served entities for the endpoint to serve. A serving endpoint
 	// can have up to 10 served entities.
-	ServedEntities []ServedEntityInput `json:"served_entities"`
+	ServedEntities []ServedEntityInput `json:"served_entities,omitempty"`
 	// (Deprecated, use served_entities instead) A list of served models for the
 	// endpoint to serve. A serving endpoint can have up to 10 served models.
 	ServedModels []ServedModelInput `json:"served_models,omitempty"`
