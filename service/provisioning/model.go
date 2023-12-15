@@ -38,6 +38,23 @@ func (s AwsKeyInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type AzureWorkspaceInfo struct {
+	// Azure Resource Group name
+	ResourceGroup string `json:"resource_group,omitempty"`
+	// Azure Subscription ID
+	SubscriptionId string `json:"subscription_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AzureWorkspaceInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AzureWorkspaceInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // The general workspace configurations that are specific to cloud providers.
 type CloudResourceContainer struct {
 	// The general workspace configurations that are specific to Google Cloud.
@@ -1174,6 +1191,8 @@ type Workspace struct {
 	AccountId string `json:"account_id,omitempty"`
 	// The AWS region of the workspace data plane (for example, `us-west-2`).
 	AwsRegion string `json:"aws_region,omitempty"`
+
+	AzureWorkspaceInfo *AzureWorkspaceInfo `json:"azure_workspace_info,omitempty"`
 	// The cloud name. This field always has the value `gcp`.
 	Cloud string `json:"cloud,omitempty"`
 	// The general workspace configurations that are specific to cloud
