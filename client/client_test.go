@@ -250,3 +250,23 @@ func TestDoRemovesDoubleSlashesFromFilesAPI(t *testing.T) {
 	err = c.Do(context.Background(), "GET", "/api/2.0/anotherservice//test", nil, map[string]any{}, nil)
 	require.NoError(t, err)
 }
+
+func TestNonJSONResponseIncludedInError(t *testing.T) {
+	c, err := New(&config.Config{
+		Host:       "some",
+		Token:      "token",
+		ConfigFile: "/dev/null",
+		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 200,
+				Status:     "200 OK",
+				Body:       io.NopCloser(strings.NewReader(`<html><body>hello</body></html>`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	require.NoError(t, err)
+	var m map[string]string
+	err = c.Do(context.Background(), "GET", "/a", nil, nil, &m)
+	require.EqualError(t, err, `failed to unmarshal response body: invalid character '<' looking for beginning of value (original: <html><body>hello</body></html>)`)
+}

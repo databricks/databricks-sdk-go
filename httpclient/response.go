@@ -98,7 +98,11 @@ func WithResponseUnmarshal(response any) DoOption {
 				_, err := raw.Write(bs)
 				return err
 			}
-			return json.Unmarshal(bs, &response)
+			err = json.Unmarshal(bs, &response)
+			if err != nil {
+				return fmt.Errorf("failed to unmarshal response body: %w (original: %s)", err, string(bs))
+			}
+			return nil
 		},
 	}
 }
