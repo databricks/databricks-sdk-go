@@ -1,5 +1,35 @@
 # Version changelog
 
+## 0.28.0
+
+* Consolidate usage of named sorting ([#736](https://github.com/databricks/databricks-sdk-go/pull/736)).
+* Remove redundant retries for token refreshes as they're already handled in `httpclient` ([#729](https://github.com/databricks/databricks-sdk-go/pull/729)).
+* Skip auth, config loading, and rate limits when fixture transport is present in the config ([#739](https://github.com/databricks/databricks-sdk-go/pull/739)).
+* Generate SDK to latest OpenAPI specification with bugfix ([#742](https://github.com/databricks/databricks-sdk-go/pull/742)).
+
+API Changes:
+
+ * Added `AzureWorkspaceInfo` field for [provisioning.Workspace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#Workspace).
+ * Added [provisioning.AzureWorkspaceInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#AzureWorkspaceInfo).
+ * Changed `UpdateConfig` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service with new required argument order.
+ * Changed `ServedEntities` field for [serving.EndpointCoreConfigInput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#EndpointCoreConfigInput) to no longer be required.
+ * Changed `Create` method for [a.AccountIpAccessLists](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountIpAccessListsAPI) account-level service with new required argument order.
+ * Changed `Replace` method for [a.AccountIpAccessLists](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountIpAccessListsAPI) account-level service with new required argument order.
+ * Changed `Update` method for [a.AccountIpAccessLists](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountIpAccessListsAPI) account-level service with new required argument order.
+ * Changed `Create` method for [w.IpAccessLists](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#IpAccessListsAPI) workspace-level service with new required argument order.
+ * Changed `Replace` method for [w.IpAccessLists](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#IpAccessListsAPI) workspace-level service with new required argument order.
+ * Changed `Update` method for [w.IpAccessLists](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#IpAccessListsAPI) workspace-level service with new required argument order.
+ * Changed `IpAddresses` field for [settings.CreateIpAccessList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CreateIpAccessList) to no longer be required.
+ * Changed `IpAddresses` field for [settings.ReplaceIpAccessList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ReplaceIpAccessList) to no longer be required.
+ * Removed `ListId` field for [settings.ReplaceIpAccessList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ReplaceIpAccessList).
+ * Changed `Enabled` field for [settings.UpdateIpAccessList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateIpAccessList) to no longer be required.
+ * Changed `IpAddresses` field for [settings.UpdateIpAccessList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateIpAccessList) to no longer be required.
+ * Changed `Label` field for [settings.UpdateIpAccessList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateIpAccessList) to no longer be required.
+ * Removed `ListId` field for [settings.UpdateIpAccessList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateIpAccessList).
+ * Changed `ListType` field for [settings.UpdateIpAccessList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateIpAccessList) to no longer be required.
+
+OpenAPI SHA: d3853c8dee5806d04da2ae8910f273ffb35719a5, Date: 2023-12-14
+
 ## 0.27.0
 
 
