@@ -1,4 +1,4 @@
-package httpclient
+package httplog
 
 import (
 	"encoding/json"

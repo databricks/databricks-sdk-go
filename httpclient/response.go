@@ -3,46 +3,17 @@ package httpclient
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/common"
 )
-
-// Represents a response body.
-//
-// Responses must always be closed. For non-streaming responses, they are closed
-// during deserialization in the client (see unmarshall()). For streaming
-// responses, they are returned to the caller, who is responsible for closing
-// them.
-type responseBody struct {
-	ReadCloser io.ReadCloser
-	DebugBytes []byte
-	Response   *http.Response
-}
-
-func newResponseBody(data any, response *http.Response) (responseBody, error) {
-	switch v := data.(type) {
-	case io.ReadCloser:
-		return responseBody{
-			ReadCloser: v,
-			DebugBytes: []byte("<io.ReadCloser>"),
-			Response:   response,
-		}, nil
-	case []byte:
-		return responseBody{
-			ReadCloser: io.NopCloser(bytes.NewReader(v)),
-			DebugBytes: v,
-			Response:   response,
-		}, nil
-	default:
-		return responseBody{}, errors.New("newResponseBody can only be called with io.ReadCloser or []byte")
-	}
-}
 
 func WithResponseHeader(key string, value *string) DoOption {
 	return DoOption{
-		out: func(body *responseBody) error {
+		out: func(body *common.ResponseWrapper) error {
 			*value = body.Response.Header.Get(key)
 			return nil
 		},
@@ -66,7 +37,7 @@ func WithResponseUnmarshal(response any) DoOption {
 				return nil
 			}
 		},
-		out: func(body *responseBody) error {
+		out: func(body *common.ResponseWrapper) error {
 			if response == nil {
 				return nil
 			}
@@ -94,7 +65,7 @@ func WithResponseUnmarshal(response any) DoOption {
 			}
 			err = json.Unmarshal(bs, &response)
 			if err != nil {
-				return fmt.Errorf("failed to unmarshal response body: %w (original: %s)", err, string(bs))
+				return apierr.MakeUnexpectedError(body.Response, err, body.RequestBody.DebugBytes, bs)
 			}
 			return nil
 		},

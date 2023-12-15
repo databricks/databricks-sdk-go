@@ -1,10 +1,11 @@
-package httpclient
+package httplog
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strings"
 )
 
 type bodyLogger struct {
@@ -111,9 +112,16 @@ func (b bodyLogger) redactedDump(prefix string, body []byte) string {
 	var tmp any
 	err := json.Unmarshal(body, &tmp)
 	if err != nil {
-		// Unable to unmarshal means the body isn't JSON.
-		return fmt.Sprintf("%s[non-JSON document of %d bytes]. %s", prefix, len(body),
-			onlyNBytes(string(body), b.debugTruncateBytes))
+		// Unable to unmarshal means the body isn't JSON. Split on newlines and
+		// truncate to maxBytes.
+		truncated := onlyNBytes(string(body), b.debugTruncateBytes)
+		splitByNewlines := strings.Split(truncated, "\n")
+		sb := strings.Builder{}
+		for _, line := range splitByNewlines {
+			line = strings.Trim(line, "\r")
+			sb.WriteString(fmt.Sprintf("%s%s\n", prefix, line))
+		}
+		return sb.String()
 	}
 
 	maxBytes := b.maxBytes

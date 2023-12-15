@@ -13,7 +13,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/logger/httplog"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/oauth2"
@@ -32,7 +34,7 @@ type ClientConfig struct {
 	DebugTruncateBytes int
 	RateLimitPerSecond int
 
-	ErrorMapper     func(ctx context.Context, resp *http.Response, body io.ReadCloser) error
+	ErrorMapper     func(ctx context.Context, resp common.ResponseWrapper) error
 	ErrorRetriable  func(ctx context.Context, err error) bool
 	TransientErrors []string
 
@@ -101,7 +103,7 @@ type ApiClient struct {
 
 type DoOption struct {
 	in   RequestVisitor
-	out  func(body *responseBody) error
+	out  func(body *common.ResponseWrapper) error
 	body any
 }
 
@@ -138,12 +140,12 @@ func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOptio
 	return nil
 }
 
-func (c *ApiClient) fromResponse(r *http.Response) (responseBody, error) {
+func (c *ApiClient) fromResponse(r *http.Response, req common.RequestBody) (common.ResponseWrapper, error) {
 	if r == nil {
-		return responseBody{}, fmt.Errorf("nil response")
+		return common.ResponseWrapper{}, fmt.Errorf("nil response")
 	}
 	if r.Request == nil {
-		return responseBody{}, fmt.Errorf("nil request")
+		return common.ResponseWrapper{}, fmt.Errorf("nil request")
 	}
 	// JSON media types might have more information after `application/json`, like
 	// `application/json;odata.metadata=minimal;odata...=...`.
@@ -151,20 +153,14 @@ func (c *ApiClient) fromResponse(r *http.Response) (responseBody, error) {
 	isJSON := strings.HasPrefix(r.Header.Get("Content-Type"), "application/json")
 	streamResponse := r.Request.Header.Get("Accept") != "application/json" && !isJSON
 	if streamResponse {
-		return newResponseBody(r.Body, r)
+		return common.NewResponseWrapper(r.Body, r, req)
 	}
 	defer r.Body.Close()
 	bs, err := io.ReadAll(r.Body)
 	if err != nil {
-		return responseBody{}, fmt.Errorf("response body: %w", err)
+		return common.ResponseWrapper{}, fmt.Errorf("response body: %w", err)
 	}
-	return newResponseBody(bs, r)
-}
-
-func (c *ApiClient) redactedDump(prefix string, body []byte) (res string) {
-	return bodyLogger{
-		debugTruncateBytes: c.config.DebugTruncateBytes,
-	}.redactedDump(prefix, body)
+	return common.NewResponseWrapper(bs, r, req)
 }
 
 func (c *ApiClient) isRetriable(ctx context.Context, err error) bool {
@@ -196,18 +192,18 @@ func (c *ApiClient) isRetriable(ctx context.Context, err error) bool {
 // Always returns nil for the first parameter as there is no meaningful response body to return in the error case.
 //
 // If it is certain that an error should not be retried, use failRequest() instead.
-func (c *ApiClient) handleError(ctx context.Context, err error, body requestBody) (*responseBody, *retries.Err) {
+func (c *ApiClient) handleError(ctx context.Context, err error, body common.RequestBody) (*common.ResponseWrapper, *retries.Err) {
 	if !c.isRetriable(ctx, err) {
 		return c.failRequest(ctx, "non-retriable error", err)
 	}
-	if resetErr := body.reset(); resetErr != nil {
+	if resetErr := body.Reset(); resetErr != nil {
 		return nil, retries.Halt(resetErr)
 	}
 	return nil, retries.Continue(err)
 }
 
 // Fails the request with a retries.Err to halt future retries.
-func (c *ApiClient) failRequest(ctx context.Context, msg string, err error) (*responseBody, *retries.Err) {
+func (c *ApiClient) failRequest(ctx context.Context, msg string, err error) (*common.ResponseWrapper, *retries.Err) {
 	logger.Debugf(ctx, "%s: %s", msg, err)
 	return nil, retries.Halt(err)
 }
@@ -216,10 +212,10 @@ func (c *ApiClient) attempt(
 	ctx context.Context,
 	method string,
 	requestURL string,
-	requestBody requestBody,
+	requestBody common.RequestBody,
 	visitors ...RequestVisitor,
-) func() (*responseBody, *retries.Err) {
-	return func() (*responseBody, *retries.Err) {
+) func() (*common.ResponseWrapper, *retries.Err) {
+	return func() (*common.ResponseWrapper, *retries.Err) {
 		err := c.rateLimiter.Wait(ctx)
 		if err != nil {
 			return c.failRequest(ctx, "failed in rate limiter", err)
@@ -250,12 +246,12 @@ func (c *ApiClient) attempt(
 		}
 
 		// By this point, the request body has certainly been consumed.
-		responseBody, responseBodyErr := c.fromResponse(response)
+		responseBody, responseBodyErr := c.fromResponse(response, requestBody)
 		if responseBodyErr != nil {
 			return c.failRequest(ctx, "failed while reading response", responseBodyErr)
 		}
 
-		mappedError := c.config.ErrorMapper(ctx, response, responseBody.ReadCloser)
+		mappedError := c.config.ErrorMapper(ctx, responseBody)
 		defer c.recordRequestLog(ctx, request, response, mappedError, requestBody.DebugBytes, responseBody.DebugBytes)
 
 		if mappedError == nil {
@@ -279,44 +275,13 @@ func (c *ApiClient) recordRequestLog(
 	if !logger.Get(ctx).Enabled(ctx, logger.LevelDebug) {
 		return
 	}
-	sb := strings.Builder{}
-	sb.WriteString(fmt.Sprintf("%s %s", request.Method,
-		escapeNewLines(request.URL.Path)))
-	if request.URL.RawQuery != "" {
-		sb.WriteString("?")
-		q, _ := url.QueryUnescape(request.URL.RawQuery)
-		sb.WriteString(q)
-	}
-	sb.WriteString("\n")
-	if c.config.DebugHeaders {
-		sb.WriteString("> * Host: ")
-		sb.WriteString(escapeNewLines(request.Host))
-		sb.WriteString("\n")
-		for k, v := range request.Header {
-			trunc := onlyNBytes(strings.Join(v, ""), c.config.DebugTruncateBytes)
-			sb.WriteString(fmt.Sprintf("> * %s: %s\n", k, escapeNewLines(trunc)))
-		}
-	}
-	if len(requestBody) > 0 {
-		sb.WriteString(c.redactedDump("> ", requestBody))
-		sb.WriteString("\n")
-	}
-	sb.WriteString("< ")
-	if response != nil {
-		sb.WriteString(fmt.Sprintf("%s %s", response.Proto, response.Status))
-		// Only display error on this line if the response body is empty.
-		// Otherwise the response body will include details about the error.
-		if len(responseBody) == 0 && err != nil {
-			sb.WriteString(fmt.Sprintf(" (Error: %s)", err))
-		}
-	} else {
-		sb.WriteString(fmt.Sprintf("Error: %s", err))
-	}
-	sb.WriteString("\n")
-	if len(responseBody) > 0 {
-		sb.WriteString(c.redactedDump("< ", responseBody))
-	}
-	logger.Debugf(ctx, sb.String()) // lgtm [go/log-injection] lgtm [go/clear-text-logging]
+	message := httplog.RoundTripStringer{
+		Response:     response,
+		Err:          err,
+		RequestBody:  requestBody,
+		ResponseBody: responseBody,
+	}.String()
+	logger.Debugf(ctx, message)
 }
 
 // RoundTrip implements http.RoundTripper to integrate with golang.org/x/oauth2
@@ -324,7 +289,7 @@ func (c *ApiClient) RoundTrip(request *http.Request) (*http.Response, error) {
 	ctx := request.Context()
 	requestURL := request.URL.String()
 	resp, err := retries.Poll(ctx, c.config.RetryTimeout,
-		c.attempt(ctx, request.Method, requestURL, requestBody{
+		c.attempt(ctx, request.Method, requestURL, common.RequestBody{
 			Reader: request.Body,
 			// DO NOT DECODE BODY, because it may contain sensitive payload,
 			// like Azure Service Principal in a multipart/form-data body.
@@ -356,7 +321,7 @@ func (c *ApiClient) perform(
 	requestURL string,
 	data interface{},
 	visitors ...RequestVisitor,
-) (*responseBody, error) {
+) (*common.ResponseWrapper, error) {
 	requestBody, err := makeRequestBody(method, &requestURL, data)
 	if err != nil {
 		return nil, fmt.Errorf("request marshal: %w", err)
@@ -379,11 +344,4 @@ func orDefault(configured, _default int) int {
 		return _default
 	}
 	return configured
-}
-
-// CWE-117 prevention
-func escapeNewLines(in string) string {
-	in = strings.Replace(in, "\n", "", -1)
-	in = strings.Replace(in, "\r", "", -1)
-	return in
 }
