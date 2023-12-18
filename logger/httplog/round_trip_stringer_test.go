@@ -55,8 +55,8 @@ func TestRequestAndResponseHaveHeadersAndBody(t *testing.T) {
 > * Foo: bar
 > request-hello
 < HTTP/1.1 200 OK
-> * Response-Bar: baz
-> * Response-Foo: bar
+< * Response-Bar: baz
+< * Response-Foo: bar
 < response-hello`, res)
 }
 
