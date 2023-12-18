@@ -135,7 +135,10 @@ func (c *Generator) Apply(ctx context.Context, batch *code.Batch, suite *roll.Su
 		}
 		filenames = append(filenames, pass.Filenames...)
 	}
-	render.Formatter(ctx, c.dir, filenames, c.Formatter)
+	err := render.Formatter(ctx, c.dir, filenames, c.Formatter)
+	if err != nil {
+		return err
+	}
 	sort.Strings(filenames)
 	sb := bytes.NewBuffer([]byte{})
 	for _, v := range filenames {
