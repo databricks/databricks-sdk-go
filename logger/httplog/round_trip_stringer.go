@@ -34,7 +34,7 @@ func (r RoundTripStringer) writeHeaders(sb *strings.Builder, prefix string, head
 			v = []string{"REDACTED"}
 		}
 		trunc := onlyNBytes(strings.Join(v, ""), r.DebugTruncateBytes)
-		sb.WriteString(fmt.Sprintf("> * %s: %s", k, escapeNewLines(trunc)))
+		sb.WriteString(fmt.Sprintf("%s* %s: %s", prefix, k, escapeNewLines(trunc)))
 	}
 }
 

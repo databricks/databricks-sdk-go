@@ -277,6 +277,7 @@ GET /a
 > * Authorization: REDACTED
 > * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/` + runtime.GOOS + ` auth/pat` + cicdHeader + `
 < HTTP/2.0 Bad Request
+< * Content-Type: text/html
 < <html><body>hello</body></html>
 ` + "```",
 		},
@@ -291,6 +292,7 @@ GET /a
 > * Authorization: REDACTED
 > * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/` + runtime.GOOS + ` auth/pat` + cicdHeader + `
 < HTTP/2.0 Internal Server Error
+< * Content-Type: text/html
 < <html><body>hello</body></html>
 ` + "```",
 		},
@@ -305,6 +307,7 @@ GET /a
 > * Authorization: REDACTED
 > * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/` + runtime.GOOS + ` auth/pat` + cicdHeader + `
 < HTTP/2.0 OK
+< * Content-Type: text/html
 < <html><body>hello</body></html>
 ` + "```",
 		},
@@ -328,6 +331,9 @@ func testNonJSONResponseIncludedInError(t *testing.T, statusCode int, status, er
 				Status:  status,
 				Body:    io.NopCloser(strings.NewReader(`<html><body>hello</body></html>`)),
 				Request: r,
+				Header: http.Header{
+					"Content-Type": []string{"text/html"},
+				},
 			}, nil
 		}),
 	})
