@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/databricks/databricks-sdk-go/common"
 )
 
 type HttpError struct {
@@ -25,20 +27,20 @@ func (r *HttpError) Error() string {
 }
 
 // DefaultErrorMapper returns *HttpError
-func DefaultErrorMapper(ctx context.Context, resp *http.Response, body io.ReadCloser) error {
-	if resp.StatusCode < 400 {
+func DefaultErrorMapper(ctx context.Context, resp common.ResponseWrapper) error {
+	if resp.Response.StatusCode < 400 {
 		return nil
 	}
-	raw, err := io.ReadAll(body)
+	raw, err := io.ReadAll(resp.ReadCloser)
 	if err != nil {
 		return &HttpError{
-			Response: resp,
+			Response: resp.Response,
 			Message:  "failed to read response",
 			err:      err,
 		}
 	}
 	return &HttpError{
-		Response: resp,
+		Response: resp.Response,
 		Message:  string(raw),
 	}
 }

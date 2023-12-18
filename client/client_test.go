@@ -7,11 +7,14 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"runtime"
 	"strings"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/databricks/databricks-sdk-go/version"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -249,4 +252,93 @@ func TestDoRemovesDoubleSlashesFromFilesAPI(t *testing.T) {
 	require.NoError(t, err)
 	err = c.Do(context.Background(), "GET", "/api/2.0/anotherservice//test", nil, map[string]any{}, nil)
 	require.NoError(t, err)
+}
+
+func TestNonJSONResponseIncludedInError(t *testing.T) {
+	cicdHeader := ""
+	if useragent.CiCdProvider() != "" {
+		cicdHeader = fmt.Sprintf(" cicd/%s", useragent.CiCdProvider())
+	}
+	goVersion := strings.TrimPrefix(runtime.Version(), "go")
+	type testCase struct {
+		statusCode   int
+		status       string
+		errorMessage string
+	}
+	cases := []testCase{
+		{
+			statusCode: 400,
+			status:     "Bad Request",
+			errorMessage: `unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
+` + "```" + `
+GET /a
+> * Host: 
+> * Accept: application/json
+> * Authorization: REDACTED
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/` + runtime.GOOS + ` auth/pat` + cicdHeader + `
+< HTTP/2.0 Bad Request
+< * Content-Type: text/html
+< <html><body>hello</body></html>
+` + "```",
+		},
+		{
+			statusCode: 500,
+			status:     "Internal Server Error",
+			errorMessage: `unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
+` + "```" + `
+GET /a
+> * Host: 
+> * Accept: application/json
+> * Authorization: REDACTED
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/` + runtime.GOOS + ` auth/pat` + cicdHeader + `
+< HTTP/2.0 Internal Server Error
+< * Content-Type: text/html
+< <html><body>hello</body></html>
+` + "```",
+		},
+		{
+			statusCode: 200,
+			status:     "OK",
+			errorMessage: `unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
+` + "```" + `
+GET /a
+> * Host: 
+> * Accept: application/json
+> * Authorization: REDACTED
+> * User-Agent: unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/` + runtime.GOOS + ` auth/pat` + cicdHeader + `
+< HTTP/2.0 OK
+< * Content-Type: text/html
+< <html><body>hello</body></html>
+` + "```",
+		},
+	}
+	for _, tc := range cases {
+		tc := tc
+		t.Run(fmt.Sprintf("%d %s", tc.statusCode, tc.status), func(t *testing.T) {
+			testNonJSONResponseIncludedInError(t, tc.statusCode, tc.status, tc.errorMessage)
+		})
+	}
+}
+
+func testNonJSONResponseIncludedInError(t *testing.T, statusCode int, status, errorMessage string) {
+	c, err := New(&config.Config{
+		Host:       "some",
+		Token:      "token",
+		ConfigFile: "/dev/null",
+		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				Proto:   "HTTP/2.0",
+				Status:  status,
+				Body:    io.NopCloser(strings.NewReader(`<html><body>hello</body></html>`)),
+				Request: r,
+				Header: http.Header{
+					"Content-Type": []string{"text/html"},
+				},
+			}, nil
+		}),
+	})
+	require.NoError(t, err)
+	var m map[string]string
+	err = c.Do(context.Background(), "GET", "/a", nil, nil, &m)
+	require.EqualError(t, err, errorMessage)
 }

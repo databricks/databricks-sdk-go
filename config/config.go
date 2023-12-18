@@ -3,13 +3,13 @@ package config
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
@@ -319,8 +319,8 @@ func (c *Config) fixHostIfNeeded() error {
 	return nil
 }
 
-func (c *Config) refreshTokenErrorMapper(ctx context.Context, resp *http.Response, body io.ReadCloser) error {
-	defaultErr := httpclient.DefaultErrorMapper(ctx, resp, body)
+func (c *Config) refreshTokenErrorMapper(ctx context.Context, resp common.ResponseWrapper) error {
+	defaultErr := httpclient.DefaultErrorMapper(ctx, resp)
 	if defaultErr == nil {
 		return nil
 	}
