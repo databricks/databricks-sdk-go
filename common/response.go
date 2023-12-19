@@ -41,6 +41,9 @@ func makeResponseWrapper(data any, response *http.Response, req RequestBody) (Re
 			RequestBody: req,
 		}, nil
 	case []byte:
+		// We need to set the response body to a new ReadCloser, because the
+		// original response body has already been read and closed.
+		response.Body = io.NopCloser(bytes.NewReader(v))
 		return ResponseWrapper{
 			ReadCloser:  io.NopCloser(bytes.NewReader(v)),
 			DebugBytes:  v,
