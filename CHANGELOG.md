@@ -1,5 +1,10 @@
 # Version changelog
 
+## 0.28.1
+
+This is a bugfix release that improves debuggability of unexpected errors ([#744](https://github.com/databricks/databricks-sdk-go/pull/744), [#750](https://github.com/databricks/databricks-sdk-go/pull/750)). When the SDK cannot deserialize a response from the Databricks REST API, the resulting error will include debugging information and instructions on how to submit a bug report to the SDK.
+
+
 ## 0.28.0
 
 * Consolidate usage of named sorting ([#736](https://github.com/databricks/databricks-sdk-go/pull/736)).
