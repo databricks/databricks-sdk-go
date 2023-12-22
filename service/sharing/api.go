@@ -13,12 +13,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-type CleanRoomsAPIInterface interface {
+type CleanRoomsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl CleanRoomsService) CleanRoomsAPIInterface
+	// Deprecated: use MockCleanRoomsInterface instead.
+	WithImpl(impl CleanRoomsService) CleanRoomsInterface
 
 	// Impl returns low-level CleanRooms API implementation
+	// Deprecated: use MockCleanRoomsInterface instead.
 	Impl() CleanRoomsService
 
 	// Create a clean room.
@@ -111,12 +113,14 @@ type CleanRoomsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *CleanRoomsAPI) WithImpl(impl CleanRoomsService) CleanRoomsAPIInterface {
+// Deprecated: use MockCleanRoomsInterface instead.
+func (a *CleanRoomsAPI) WithImpl(impl CleanRoomsService) CleanRoomsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level CleanRooms API implementation
+// Deprecated: use MockCleanRoomsInterface instead.
 func (a *CleanRoomsAPI) Impl() CleanRoomsService {
 	return a.impl
 }
@@ -230,12 +234,14 @@ func (a *CleanRoomsAPI) Update(ctx context.Context, request UpdateCleanRoom) (*C
 	return a.impl.Update(ctx, request)
 }
 
-type ProvidersAPIInterface interface {
+type ProvidersInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl ProvidersService) ProvidersAPIInterface
+	// Deprecated: use MockProvidersInterface instead.
+	WithImpl(impl ProvidersService) ProvidersInterface
 
 	// Impl returns low-level Providers API implementation
+	// Deprecated: use MockProvidersInterface instead.
 	Impl() ProvidersService
 
 	// Create an auth provider.
@@ -352,12 +358,14 @@ type ProvidersAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *ProvidersAPI) WithImpl(impl ProvidersService) ProvidersAPIInterface {
+// Deprecated: use MockProvidersInterface instead.
+func (a *ProvidersAPI) WithImpl(impl ProvidersService) ProvidersInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Providers API implementation
+// Deprecated: use MockProvidersInterface instead.
 func (a *ProvidersAPI) Impl() ProvidersService {
 	return a.impl
 }
@@ -530,12 +538,14 @@ func (a *ProvidersAPI) Update(ctx context.Context, request UpdateProvider) (*Pro
 	return a.impl.Update(ctx, request)
 }
 
-type RecipientActivationAPIInterface interface {
+type RecipientActivationInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl RecipientActivationService) RecipientActivationAPIInterface
+	// Deprecated: use MockRecipientActivationInterface instead.
+	WithImpl(impl RecipientActivationService) RecipientActivationInterface
 
 	// Impl returns low-level RecipientActivation API implementation
+	// Deprecated: use MockRecipientActivationInterface instead.
 	Impl() RecipientActivationService
 
 	// Get a share activation URL.
@@ -587,12 +597,14 @@ type RecipientActivationAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *RecipientActivationAPI) WithImpl(impl RecipientActivationService) RecipientActivationAPIInterface {
+// Deprecated: use MockRecipientActivationInterface instead.
+func (a *RecipientActivationAPI) WithImpl(impl RecipientActivationService) RecipientActivationInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level RecipientActivation API implementation
+// Deprecated: use MockRecipientActivationInterface instead.
 func (a *RecipientActivationAPI) Impl() RecipientActivationService {
 	return a.impl
 }
@@ -631,12 +643,14 @@ func (a *RecipientActivationAPI) RetrieveTokenByActivationUrl(ctx context.Contex
 	})
 }
 
-type RecipientsAPIInterface interface {
+type RecipientsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl RecipientsService) RecipientsAPIInterface
+	// Deprecated: use MockRecipientsInterface instead.
+	WithImpl(impl RecipientsService) RecipientsInterface
 
 	// Impl returns low-level Recipients API implementation
+	// Deprecated: use MockRecipientsInterface instead.
 	Impl() RecipientsService
 
 	// Create a share recipient.
@@ -761,12 +775,14 @@ type RecipientsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *RecipientsAPI) WithImpl(impl RecipientsService) RecipientsAPIInterface {
+// Deprecated: use MockRecipientsInterface instead.
+func (a *RecipientsAPI) WithImpl(impl RecipientsService) RecipientsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Recipients API implementation
+// Deprecated: use MockRecipientsInterface instead.
 func (a *RecipientsAPI) Impl() RecipientsService {
 	return a.impl
 }
@@ -918,12 +934,14 @@ func (a *RecipientsAPI) Update(ctx context.Context, request UpdateRecipient) err
 	return a.impl.Update(ctx, request)
 }
 
-type SharesAPIInterface interface {
+type SharesInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl SharesService) SharesAPIInterface
+	// Deprecated: use MockSharesInterface instead.
+	WithImpl(impl SharesService) SharesInterface
 
 	// Impl returns low-level Shares API implementation
+	// Deprecated: use MockSharesInterface instead.
 	Impl() SharesService
 
 	// Create a share.
@@ -1037,12 +1055,14 @@ type SharesAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *SharesAPI) WithImpl(impl SharesService) SharesAPIInterface {
+// Deprecated: use MockSharesInterface instead.
+func (a *SharesAPI) WithImpl(impl SharesService) SharesInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Shares API implementation
+// Deprecated: use MockSharesInterface instead.
 func (a *SharesAPI) Impl() SharesService {
 	return a.impl
 }

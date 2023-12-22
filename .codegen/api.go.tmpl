@@ -23,16 +23,18 @@ import (
 }}
 {{range .Services}}
 
-type {{.PascalName}}APIInterface interface {
+type {{.PascalName}}Interface interface {
 	{{if (in $extendedInterface .PascalName) }}
 		{{.CamelName}}APIUtilities
 	{{end -}}
 
 	// WithImpl could be used to override low-level API implementations for unit 
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl {{.PascalName}}Service) {{.PascalName}}APIInterface
+	// Deprecated: use Mock{{.PascalName}}Interface instead.
+	WithImpl(impl {{.PascalName}}Service) {{.PascalName}}Interface
 
 	// Impl returns low-level {{.PascalName}} API implementation
+	// Deprecated: use Mock{{.PascalName}}Interface instead.
 	Impl() {{.PascalName}}Service
 
 	{{range .Waits}}
@@ -115,12 +117,14 @@ type {{.PascalName}}API struct {
 
 // WithImpl could be used to override low-level API implementations for unit 
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *{{.PascalName}}API) WithImpl(impl {{.PascalName}}Service) {{.PascalName}}APIInterface {
+// Deprecated: use Mock{{.PascalName}}Interface instead.
+func (a *{{.PascalName}}API) WithImpl(impl {{.PascalName}}Service) {{.PascalName}}Interface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level {{.PascalName}} API implementation
+// Deprecated: use Mock{{.PascalName}}Interface instead.
 func (a *{{.PascalName}}API) Impl() {{.PascalName}}Service {
 	return a.impl
 }

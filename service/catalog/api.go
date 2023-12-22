@@ -12,12 +12,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-type AccountMetastoreAssignmentsAPIInterface interface {
+type AccountMetastoreAssignmentsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl AccountMetastoreAssignmentsService) AccountMetastoreAssignmentsAPIInterface
+	// Deprecated: use MockAccountMetastoreAssignmentsInterface instead.
+	WithImpl(impl AccountMetastoreAssignmentsService) AccountMetastoreAssignmentsInterface
 
 	// Impl returns low-level AccountMetastoreAssignments API implementation
+	// Deprecated: use MockAccountMetastoreAssignmentsInterface instead.
 	Impl() AccountMetastoreAssignmentsService
 
 	// Assigns a workspace to a metastore.
@@ -99,12 +101,14 @@ type AccountMetastoreAssignmentsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *AccountMetastoreAssignmentsAPI) WithImpl(impl AccountMetastoreAssignmentsService) AccountMetastoreAssignmentsAPIInterface {
+// Deprecated: use MockAccountMetastoreAssignmentsInterface instead.
+func (a *AccountMetastoreAssignmentsAPI) WithImpl(impl AccountMetastoreAssignmentsService) AccountMetastoreAssignmentsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level AccountMetastoreAssignments API implementation
+// Deprecated: use MockAccountMetastoreAssignmentsInterface instead.
 func (a *AccountMetastoreAssignmentsAPI) Impl() AccountMetastoreAssignmentsService {
 	return a.impl
 }
@@ -210,12 +214,14 @@ func (a *AccountMetastoreAssignmentsAPI) Update(ctx context.Context, request Acc
 	return a.impl.Update(ctx, request)
 }
 
-type AccountMetastoresAPIInterface interface {
+type AccountMetastoresInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl AccountMetastoresService) AccountMetastoresAPIInterface
+	// Deprecated: use MockAccountMetastoresInterface instead.
+	WithImpl(impl AccountMetastoresService) AccountMetastoresInterface
 
 	// Impl returns low-level AccountMetastores API implementation
+	// Deprecated: use MockAccountMetastoresInterface instead.
 	Impl() AccountMetastoresService
 
 	// Create metastore.
@@ -281,12 +287,14 @@ type AccountMetastoresAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *AccountMetastoresAPI) WithImpl(impl AccountMetastoresService) AccountMetastoresAPIInterface {
+// Deprecated: use MockAccountMetastoresInterface instead.
+func (a *AccountMetastoresAPI) WithImpl(impl AccountMetastoresService) AccountMetastoresInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level AccountMetastores API implementation
+// Deprecated: use MockAccountMetastoresInterface instead.
 func (a *AccountMetastoresAPI) Impl() AccountMetastoresService {
 	return a.impl
 }
@@ -371,12 +379,14 @@ func (a *AccountMetastoresAPI) Update(ctx context.Context, request AccountsUpdat
 	return a.impl.Update(ctx, request)
 }
 
-type AccountStorageCredentialsAPIInterface interface {
+type AccountStorageCredentialsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl AccountStorageCredentialsService) AccountStorageCredentialsAPIInterface
+	// Deprecated: use MockAccountStorageCredentialsInterface instead.
+	WithImpl(impl AccountStorageCredentialsService) AccountStorageCredentialsInterface
 
 	// Impl returns low-level AccountStorageCredentials API implementation
+	// Deprecated: use MockAccountStorageCredentialsInterface instead.
 	Impl() AccountStorageCredentialsService
 
 	// Create a storage credential.
@@ -472,12 +482,14 @@ type AccountStorageCredentialsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *AccountStorageCredentialsAPI) WithImpl(impl AccountStorageCredentialsService) AccountStorageCredentialsAPIInterface {
+// Deprecated: use MockAccountStorageCredentialsInterface instead.
+func (a *AccountStorageCredentialsAPI) WithImpl(impl AccountStorageCredentialsService) AccountStorageCredentialsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level AccountStorageCredentials API implementation
+// Deprecated: use MockAccountStorageCredentialsInterface instead.
 func (a *AccountStorageCredentialsAPI) Impl() AccountStorageCredentialsService {
 	return a.impl
 }
@@ -616,12 +628,14 @@ func (a *AccountStorageCredentialsAPI) Update(ctx context.Context, request Accou
 	return a.impl.Update(ctx, request)
 }
 
-type ArtifactAllowlistsAPIInterface interface {
+type ArtifactAllowlistsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl ArtifactAllowlistsService) ArtifactAllowlistsAPIInterface
+	// Deprecated: use MockArtifactAllowlistsInterface instead.
+	WithImpl(impl ArtifactAllowlistsService) ArtifactAllowlistsInterface
 
 	// Impl returns low-level ArtifactAllowlists API implementation
+	// Deprecated: use MockArtifactAllowlistsInterface instead.
 	Impl() ArtifactAllowlistsService
 
 	// Get an artifact allowlist.
@@ -663,12 +677,14 @@ type ArtifactAllowlistsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *ArtifactAllowlistsAPI) WithImpl(impl ArtifactAllowlistsService) ArtifactAllowlistsAPIInterface {
+// Deprecated: use MockArtifactAllowlistsInterface instead.
+func (a *ArtifactAllowlistsAPI) WithImpl(impl ArtifactAllowlistsService) ArtifactAllowlistsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level ArtifactAllowlists API implementation
+// Deprecated: use MockArtifactAllowlistsInterface instead.
 func (a *ArtifactAllowlistsAPI) Impl() ArtifactAllowlistsService {
 	return a.impl
 }
@@ -700,12 +716,14 @@ func (a *ArtifactAllowlistsAPI) Update(ctx context.Context, request SetArtifactA
 	return a.impl.Update(ctx, request)
 }
 
-type CatalogsAPIInterface interface {
+type CatalogsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl CatalogsService) CatalogsAPIInterface
+	// Deprecated: use MockCatalogsInterface instead.
+	WithImpl(impl CatalogsService) CatalogsInterface
 
 	// Impl returns low-level Catalogs API implementation
+	// Deprecated: use MockCatalogsInterface instead.
 	Impl() CatalogsService
 
 	// Create a catalog.
@@ -794,12 +812,14 @@ type CatalogsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *CatalogsAPI) WithImpl(impl CatalogsService) CatalogsAPIInterface {
+// Deprecated: use MockCatalogsInterface instead.
+func (a *CatalogsAPI) WithImpl(impl CatalogsService) CatalogsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Catalogs API implementation
+// Deprecated: use MockCatalogsInterface instead.
 func (a *CatalogsAPI) Impl() CatalogsService {
 	return a.impl
 }
@@ -901,12 +921,14 @@ func (a *CatalogsAPI) Update(ctx context.Context, request UpdateCatalog) (*Catal
 	return a.impl.Update(ctx, request)
 }
 
-type ConnectionsAPIInterface interface {
+type ConnectionsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl ConnectionsService) ConnectionsAPIInterface
+	// Deprecated: use MockConnectionsInterface instead.
+	WithImpl(impl ConnectionsService) ConnectionsInterface
 
 	// Impl returns low-level Connections API implementation
+	// Deprecated: use MockConnectionsInterface instead.
 	Impl() ConnectionsService
 
 	// Create a connection.
@@ -1003,12 +1025,14 @@ type ConnectionsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *ConnectionsAPI) WithImpl(impl ConnectionsService) ConnectionsAPIInterface {
+// Deprecated: use MockConnectionsInterface instead.
+func (a *ConnectionsAPI) WithImpl(impl ConnectionsService) ConnectionsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Connections API implementation
+// Deprecated: use MockConnectionsInterface instead.
 func (a *ConnectionsAPI) Impl() ConnectionsService {
 	return a.impl
 }
@@ -1150,12 +1174,14 @@ func (a *ConnectionsAPI) Update(ctx context.Context, request UpdateConnection) (
 	return a.impl.Update(ctx, request)
 }
 
-type ExternalLocationsAPIInterface interface {
+type ExternalLocationsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl ExternalLocationsService) ExternalLocationsAPIInterface
+	// Deprecated: use MockExternalLocationsInterface instead.
+	WithImpl(impl ExternalLocationsService) ExternalLocationsInterface
 
 	// Impl returns low-level ExternalLocations API implementation
+	// Deprecated: use MockExternalLocationsInterface instead.
 	Impl() ExternalLocationsService
 
 	// Create an external location.
@@ -1250,12 +1276,14 @@ type ExternalLocationsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *ExternalLocationsAPI) WithImpl(impl ExternalLocationsService) ExternalLocationsAPIInterface {
+// Deprecated: use MockExternalLocationsInterface instead.
+func (a *ExternalLocationsAPI) WithImpl(impl ExternalLocationsService) ExternalLocationsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level ExternalLocations API implementation
+// Deprecated: use MockExternalLocationsInterface instead.
 func (a *ExternalLocationsAPI) Impl() ExternalLocationsService {
 	return a.impl
 }
@@ -1358,12 +1386,14 @@ func (a *ExternalLocationsAPI) Update(ctx context.Context, request UpdateExterna
 	return a.impl.Update(ctx, request)
 }
 
-type FunctionsAPIInterface interface {
+type FunctionsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl FunctionsService) FunctionsAPIInterface
+	// Deprecated: use MockFunctionsInterface instead.
+	WithImpl(impl FunctionsService) FunctionsInterface
 
 	// Impl returns low-level Functions API implementation
+	// Deprecated: use MockFunctionsInterface instead.
 	Impl() FunctionsService
 
 	// Create a function.
@@ -1489,12 +1519,14 @@ type FunctionsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *FunctionsAPI) WithImpl(impl FunctionsService) FunctionsAPIInterface {
+// Deprecated: use MockFunctionsInterface instead.
+func (a *FunctionsAPI) WithImpl(impl FunctionsService) FunctionsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Functions API implementation
+// Deprecated: use MockFunctionsInterface instead.
 func (a *FunctionsAPI) Impl() FunctionsService {
 	return a.impl
 }
@@ -1650,12 +1682,14 @@ func (a *FunctionsAPI) Update(ctx context.Context, request UpdateFunction) (*Fun
 	return a.impl.Update(ctx, request)
 }
 
-type GrantsAPIInterface interface {
+type GrantsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl GrantsService) GrantsAPIInterface
+	// Deprecated: use MockGrantsInterface instead.
+	WithImpl(impl GrantsService) GrantsInterface
 
 	// Impl returns low-level Grants API implementation
+	// Deprecated: use MockGrantsInterface instead.
 	Impl() GrantsService
 
 	// Get permissions.
@@ -1711,12 +1745,14 @@ type GrantsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *GrantsAPI) WithImpl(impl GrantsService) GrantsAPIInterface {
+// Deprecated: use MockGrantsInterface instead.
+func (a *GrantsAPI) WithImpl(impl GrantsService) GrantsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Grants API implementation
+// Deprecated: use MockGrantsInterface instead.
 func (a *GrantsAPI) Impl() GrantsService {
 	return a.impl
 }
@@ -1762,12 +1798,14 @@ func (a *GrantsAPI) Update(ctx context.Context, request UpdatePermissions) (*Per
 	return a.impl.Update(ctx, request)
 }
 
-type MetastoresAPIInterface interface {
+type MetastoresInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl MetastoresService) MetastoresAPIInterface
+	// Deprecated: use MockMetastoresInterface instead.
+	WithImpl(impl MetastoresService) MetastoresInterface
 
 	// Impl returns low-level Metastores API implementation
+	// Deprecated: use MockMetastoresInterface instead.
 	Impl() MetastoresService
 
 	// Create an assignment.
@@ -1912,12 +1950,14 @@ type MetastoresAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *MetastoresAPI) WithImpl(impl MetastoresService) MetastoresAPIInterface {
+// Deprecated: use MockMetastoresInterface instead.
+func (a *MetastoresAPI) WithImpl(impl MetastoresService) MetastoresInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Metastores API implementation
+// Deprecated: use MockMetastoresInterface instead.
 func (a *MetastoresAPI) Impl() MetastoresService {
 	return a.impl
 }
@@ -2118,12 +2158,14 @@ func (a *MetastoresAPI) UpdateAssignment(ctx context.Context, request UpdateMeta
 	return a.impl.UpdateAssignment(ctx, request)
 }
 
-type ModelVersionsAPIInterface interface {
+type ModelVersionsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl ModelVersionsService) ModelVersionsAPIInterface
+	// Deprecated: use MockModelVersionsInterface instead.
+	WithImpl(impl ModelVersionsService) ModelVersionsInterface
 
 	// Impl returns low-level ModelVersions API implementation
+	// Deprecated: use MockModelVersionsInterface instead.
 	Impl() ModelVersionsService
 
 	// Delete a Model Version.
@@ -2276,12 +2318,14 @@ type ModelVersionsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *ModelVersionsAPI) WithImpl(impl ModelVersionsService) ModelVersionsAPIInterface {
+// Deprecated: use MockModelVersionsInterface instead.
+func (a *ModelVersionsAPI) WithImpl(impl ModelVersionsService) ModelVersionsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level ModelVersions API implementation
+// Deprecated: use MockModelVersionsInterface instead.
 func (a *ModelVersionsAPI) Impl() ModelVersionsService {
 	return a.impl
 }
@@ -2465,12 +2509,14 @@ func (a *ModelVersionsAPI) Update(ctx context.Context, request UpdateModelVersio
 	return a.impl.Update(ctx, request)
 }
 
-type RegisteredModelsAPIInterface interface {
+type RegisteredModelsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl RegisteredModelsService) RegisteredModelsAPIInterface
+	// Deprecated: use MockRegisteredModelsInterface instead.
+	WithImpl(impl RegisteredModelsService) RegisteredModelsInterface
 
 	// Impl returns low-level RegisteredModels API implementation
+	// Deprecated: use MockRegisteredModelsInterface instead.
 	Impl() RegisteredModelsService
 
 	// Create a Registered Model.
@@ -2674,12 +2720,14 @@ type RegisteredModelsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *RegisteredModelsAPI) WithImpl(impl RegisteredModelsService) RegisteredModelsAPIInterface {
+// Deprecated: use MockRegisteredModelsInterface instead.
+func (a *RegisteredModelsAPI) WithImpl(impl RegisteredModelsService) RegisteredModelsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level RegisteredModels API implementation
+// Deprecated: use MockRegisteredModelsInterface instead.
 func (a *RegisteredModelsAPI) Impl() RegisteredModelsService {
 	return a.impl
 }
@@ -2925,12 +2973,14 @@ func (a *RegisteredModelsAPI) Update(ctx context.Context, request UpdateRegister
 	return a.impl.Update(ctx, request)
 }
 
-type SchemasAPIInterface interface {
+type SchemasInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl SchemasService) SchemasAPIInterface
+	// Deprecated: use MockSchemasInterface instead.
+	WithImpl(impl SchemasService) SchemasInterface
 
 	// Impl returns low-level Schemas API implementation
+	// Deprecated: use MockSchemasInterface instead.
 	Impl() SchemasService
 
 	// Create a schema.
@@ -3037,12 +3087,14 @@ type SchemasAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *SchemasAPI) WithImpl(impl SchemasService) SchemasAPIInterface {
+// Deprecated: use MockSchemasInterface instead.
+func (a *SchemasAPI) WithImpl(impl SchemasService) SchemasInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Schemas API implementation
+// Deprecated: use MockSchemasInterface instead.
 func (a *SchemasAPI) Impl() SchemasService {
 	return a.impl
 }
@@ -3199,12 +3251,14 @@ func (a *SchemasAPI) Update(ctx context.Context, request UpdateSchema) (*SchemaI
 	return a.impl.Update(ctx, request)
 }
 
-type StorageCredentialsAPIInterface interface {
+type StorageCredentialsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl StorageCredentialsService) StorageCredentialsAPIInterface
+	// Deprecated: use MockStorageCredentialsInterface instead.
+	WithImpl(impl StorageCredentialsService) StorageCredentialsInterface
 
 	// Impl returns low-level StorageCredentials API implementation
+	// Deprecated: use MockStorageCredentialsInterface instead.
 	Impl() StorageCredentialsService
 
 	// Create a storage credential.
@@ -3320,12 +3374,14 @@ type StorageCredentialsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *StorageCredentialsAPI) WithImpl(impl StorageCredentialsService) StorageCredentialsAPIInterface {
+// Deprecated: use MockStorageCredentialsInterface instead.
+func (a *StorageCredentialsAPI) WithImpl(impl StorageCredentialsService) StorageCredentialsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level StorageCredentials API implementation
+// Deprecated: use MockStorageCredentialsInterface instead.
 func (a *StorageCredentialsAPI) Impl() StorageCredentialsService {
 	return a.impl
 }
@@ -3467,12 +3523,14 @@ func (a *StorageCredentialsAPI) Validate(ctx context.Context, request ValidateSt
 	return a.impl.Validate(ctx, request)
 }
 
-type SystemSchemasAPIInterface interface {
+type SystemSchemasInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl SystemSchemasService) SystemSchemasAPIInterface
+	// Deprecated: use MockSystemSchemasInterface instead.
+	WithImpl(impl SystemSchemasService) SystemSchemasInterface
 
 	// Impl returns low-level SystemSchemas API implementation
+	// Deprecated: use MockSystemSchemasInterface instead.
 	Impl() SystemSchemasService
 
 	// Disable a system schema.
@@ -3535,12 +3593,14 @@ type SystemSchemasAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *SystemSchemasAPI) WithImpl(impl SystemSchemasService) SystemSchemasAPIInterface {
+// Deprecated: use MockSystemSchemasInterface instead.
+func (a *SystemSchemasAPI) WithImpl(impl SystemSchemasService) SystemSchemasInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level SystemSchemas API implementation
+// Deprecated: use MockSystemSchemasInterface instead.
 func (a *SystemSchemasAPI) Impl() SystemSchemasService {
 	return a.impl
 }
@@ -3617,12 +3677,14 @@ func (a *SystemSchemasAPI) ListByMetastoreId(ctx context.Context, metastoreId st
 	})
 }
 
-type TableConstraintsAPIInterface interface {
+type TableConstraintsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl TableConstraintsService) TableConstraintsAPIInterface
+	// Deprecated: use MockTableConstraintsInterface instead.
+	WithImpl(impl TableConstraintsService) TableConstraintsInterface
 
 	// Impl returns low-level TableConstraints API implementation
+	// Deprecated: use MockTableConstraintsInterface instead.
 	Impl() TableConstraintsService
 
 	// Create a table constraint.
@@ -3695,12 +3757,14 @@ type TableConstraintsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *TableConstraintsAPI) WithImpl(impl TableConstraintsService) TableConstraintsAPIInterface {
+// Deprecated: use MockTableConstraintsInterface instead.
+func (a *TableConstraintsAPI) WithImpl(impl TableConstraintsService) TableConstraintsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level TableConstraints API implementation
+// Deprecated: use MockTableConstraintsInterface instead.
 func (a *TableConstraintsAPI) Impl() TableConstraintsService {
 	return a.impl
 }
@@ -3753,12 +3817,14 @@ func (a *TableConstraintsAPI) DeleteByFullName(ctx context.Context, fullName str
 	})
 }
 
-type TablesAPIInterface interface {
+type TablesInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl TablesService) TablesAPIInterface
+	// Deprecated: use MockTablesInterface instead.
+	WithImpl(impl TablesService) TablesInterface
 
 	// Impl returns low-level Tables API implementation
+	// Deprecated: use MockTablesInterface instead.
 	Impl() TablesService
 
 	// Delete a table.
@@ -3909,12 +3975,14 @@ type TablesAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *TablesAPI) WithImpl(impl TablesService) TablesAPIInterface {
+// Deprecated: use MockTablesInterface instead.
+func (a *TablesAPI) WithImpl(impl TablesService) TablesInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Tables API implementation
+// Deprecated: use MockTablesInterface instead.
 func (a *TablesAPI) Impl() TablesService {
 	return a.impl
 }
@@ -4141,12 +4209,14 @@ func (a *TablesAPI) Update(ctx context.Context, request UpdateTableRequest) erro
 	return a.impl.Update(ctx, request)
 }
 
-type VolumesAPIInterface interface {
+type VolumesInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl VolumesService) VolumesAPIInterface
+	// Deprecated: use MockVolumesInterface instead.
+	WithImpl(impl VolumesService) VolumesInterface
 
 	// Impl returns low-level Volumes API implementation
+	// Deprecated: use MockVolumesInterface instead.
 	Impl() VolumesService
 
 	// Create a Volume.
@@ -4301,12 +4371,14 @@ type VolumesAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *VolumesAPI) WithImpl(impl VolumesService) VolumesAPIInterface {
+// Deprecated: use MockVolumesInterface instead.
+func (a *VolumesAPI) WithImpl(impl VolumesService) VolumesInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Volumes API implementation
+// Deprecated: use MockVolumesInterface instead.
 func (a *VolumesAPI) Impl() VolumesService {
 	return a.impl
 }
@@ -4508,12 +4580,14 @@ func (a *VolumesAPI) Update(ctx context.Context, request UpdateVolumeRequestCont
 	return a.impl.Update(ctx, request)
 }
 
-type WorkspaceBindingsAPIInterface interface {
+type WorkspaceBindingsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl WorkspaceBindingsService) WorkspaceBindingsAPIInterface
+	// Deprecated: use MockWorkspaceBindingsInterface instead.
+	WithImpl(impl WorkspaceBindingsService) WorkspaceBindingsInterface
 
 	// Impl returns low-level WorkspaceBindings API implementation
+	// Deprecated: use MockWorkspaceBindingsInterface instead.
 	Impl() WorkspaceBindingsService
 
 	// Get catalog workspace bindings.
@@ -4587,12 +4661,14 @@ type WorkspaceBindingsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *WorkspaceBindingsAPI) WithImpl(impl WorkspaceBindingsService) WorkspaceBindingsAPIInterface {
+// Deprecated: use MockWorkspaceBindingsInterface instead.
+func (a *WorkspaceBindingsAPI) WithImpl(impl WorkspaceBindingsService) WorkspaceBindingsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level WorkspaceBindings API implementation
+// Deprecated: use MockWorkspaceBindingsInterface instead.
 func (a *WorkspaceBindingsAPI) Impl() WorkspaceBindingsService {
 	return a.impl
 }

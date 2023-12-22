@@ -14,7 +14,7 @@ type AccountClient struct {
 
 	{{range .Services}}{{if .IsAccounts}}
 	{{.Comment "    // " 80}}
-	{{(.TrimPrefix "account").PascalName}} *{{.Package.Name}}.{{.Name}}API
+	{{(.TrimPrefix "account").PascalName}} {{.Package.Name}}.{{.Name}}Interface
     {{end}}{{end}}
 }
 

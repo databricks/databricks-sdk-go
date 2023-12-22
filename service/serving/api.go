@@ -14,12 +14,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-type AppsAPIInterface interface {
+type AppsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl AppsService) AppsAPIInterface
+	// Deprecated: use MockAppsInterface instead.
+	WithImpl(impl AppsService) AppsInterface
 
 	// Impl returns low-level Apps API implementation
+	// Deprecated: use MockAppsInterface instead.
 	Impl() AppsService
 
 	// Create and deploy an application.
@@ -92,12 +94,14 @@ type AppsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *AppsAPI) WithImpl(impl AppsService) AppsAPIInterface {
+// Deprecated: use MockAppsInterface instead.
+func (a *AppsAPI) WithImpl(impl AppsService) AppsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Apps API implementation
+// Deprecated: use MockAppsInterface instead.
 func (a *AppsAPI) Impl() AppsService {
 	return a.impl
 }
@@ -180,12 +184,14 @@ func (a *AppsAPI) GetEventsByName(ctx context.Context, name string) (*ListAppEve
 	})
 }
 
-type ServingEndpointsAPIInterface interface {
+type ServingEndpointsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl ServingEndpointsService) ServingEndpointsAPIInterface
+	// Deprecated: use MockServingEndpointsInterface instead.
+	WithImpl(impl ServingEndpointsService) ServingEndpointsInterface
 
 	// Impl returns low-level ServingEndpoints API implementation
+	// Deprecated: use MockServingEndpointsInterface instead.
 	Impl() ServingEndpointsService
 
 	// WaitGetServingEndpointNotUpdating repeatedly calls [ServingEndpointsAPI.Get] and waits to reach NOT_UPDATING state
@@ -360,12 +366,14 @@ type ServingEndpointsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *ServingEndpointsAPI) WithImpl(impl ServingEndpointsService) ServingEndpointsAPIInterface {
+// Deprecated: use MockServingEndpointsInterface instead.
+func (a *ServingEndpointsAPI) WithImpl(impl ServingEndpointsService) ServingEndpointsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level ServingEndpoints API implementation
+// Deprecated: use MockServingEndpointsInterface instead.
 func (a *ServingEndpointsAPI) Impl() ServingEndpointsService {
 	return a.impl
 }

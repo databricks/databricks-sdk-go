@@ -12,12 +12,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-type GitCredentialsAPIInterface interface {
+type GitCredentialsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl GitCredentialsService) GitCredentialsAPIInterface
+	// Deprecated: use MockGitCredentialsInterface instead.
+	WithImpl(impl GitCredentialsService) GitCredentialsInterface
 
 	// Impl returns low-level GitCredentials API implementation
+	// Deprecated: use MockGitCredentialsInterface instead.
 	Impl() GitCredentialsService
 
 	// Create a credential entry.
@@ -110,12 +112,14 @@ type GitCredentialsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *GitCredentialsAPI) WithImpl(impl GitCredentialsService) GitCredentialsAPIInterface {
+// Deprecated: use MockGitCredentialsInterface instead.
+func (a *GitCredentialsAPI) WithImpl(impl GitCredentialsService) GitCredentialsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level GitCredentials API implementation
+// Deprecated: use MockGitCredentialsInterface instead.
 func (a *GitCredentialsAPI) Impl() GitCredentialsService {
 	return a.impl
 }
@@ -258,12 +262,14 @@ func (a *GitCredentialsAPI) Update(ctx context.Context, request UpdateCredential
 	return a.impl.Update(ctx, request)
 }
 
-type ReposAPIInterface interface {
+type ReposInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl ReposService) ReposAPIInterface
+	// Deprecated: use MockReposInterface instead.
+	WithImpl(impl ReposService) ReposInterface
 
 	// Impl returns low-level Repos API implementation
+	// Deprecated: use MockReposInterface instead.
 	Impl() ReposService
 
 	// Create a repo.
@@ -394,12 +400,14 @@ type ReposAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *ReposAPI) WithImpl(impl ReposService) ReposAPIInterface {
+// Deprecated: use MockReposInterface instead.
+func (a *ReposAPI) WithImpl(impl ReposService) ReposInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Repos API implementation
+// Deprecated: use MockReposInterface instead.
 func (a *ReposAPI) Impl() ReposService {
 	return a.impl
 }
@@ -597,12 +605,14 @@ func (a *ReposAPI) UpdatePermissions(ctx context.Context, request RepoPermission
 	return a.impl.UpdatePermissions(ctx, request)
 }
 
-type SecretsAPIInterface interface {
+type SecretsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl SecretsService) SecretsAPIInterface
+	// Deprecated: use MockSecretsInterface instead.
+	WithImpl(impl SecretsService) SecretsInterface
 
 	// Impl returns low-level Secrets API implementation
+	// Deprecated: use MockSecretsInterface instead.
 	Impl() SecretsService
 
 	// Create a new secret scope.
@@ -852,12 +862,14 @@ type SecretsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *SecretsAPI) WithImpl(impl SecretsService) SecretsAPIInterface {
+// Deprecated: use MockSecretsInterface instead.
+func (a *SecretsAPI) WithImpl(impl SecretsService) SecretsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Secrets API implementation
+// Deprecated: use MockSecretsInterface instead.
 func (a *SecretsAPI) Impl() SecretsService {
 	return a.impl
 }
@@ -1166,13 +1178,15 @@ func (a *SecretsAPI) PutSecret(ctx context.Context, request PutSecret) error {
 	return a.impl.PutSecret(ctx, request)
 }
 
-type WorkspaceAPIInterface interface {
+type WorkspaceInterface interface {
 	workspaceAPIUtilities
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl WorkspaceService) WorkspaceAPIInterface
+	// Deprecated: use MockWorkspaceInterface instead.
+	WithImpl(impl WorkspaceService) WorkspaceInterface
 
 	// Impl returns low-level Workspace API implementation
+	// Deprecated: use MockWorkspaceInterface instead.
 	Impl() WorkspaceService
 
 	// Delete a workspace object.
@@ -1333,12 +1347,14 @@ type WorkspaceAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *WorkspaceAPI) WithImpl(impl WorkspaceService) WorkspaceAPIInterface {
+// Deprecated: use MockWorkspaceInterface instead.
+func (a *WorkspaceAPI) WithImpl(impl WorkspaceService) WorkspaceInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Workspace API implementation
+// Deprecated: use MockWorkspaceInterface instead.
 func (a *WorkspaceAPI) Impl() WorkspaceService {
 	return a.impl
 }

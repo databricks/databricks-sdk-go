@@ -244,6 +244,8 @@ func (s BaseChunkInfo) MarshalJSON() ([]byte, error) {
 
 // Cancel statement execution
 type CancelExecutionRequest struct {
+	// The statement ID is returned upon successfully submitting a SQL
+	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
 }
 
@@ -281,6 +283,7 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -611,7 +614,7 @@ func (s CreateWarehouseResponse) MarshalJSON() ([]byte, error) {
 type CreateWidget struct {
 	// Dashboard ID returned by :method:dashboards/create.
 	DashboardId string `json:"dashboard_id"`
-
+	// Widget ID returned by :method:dashboardwidgets/create
 	Id string `json:"-" url:"-"`
 
 	Options WidgetOptions `json:"options"`
@@ -758,6 +761,7 @@ type DeleteDashboardRequest struct {
 
 // Remove widget
 type DeleteDashboardWidgetRequest struct {
+	// Widget ID returned by :method:dashboardwidgets/create
 	Id string `json:"-" url:"-"`
 }
 
@@ -768,6 +772,7 @@ type DeleteQueryRequest struct {
 
 // Remove visualization
 type DeleteQueryVisualizationRequest struct {
+	// Widget ID returned by :method:queryvizualisations/create
 	Id string `json:"-" url:"-"`
 }
 
@@ -1471,6 +1476,8 @@ func (s GetResponse) MarshalJSON() ([]byte, error) {
 
 // Get status, manifest, and result first chunk
 type GetStatementRequest struct {
+	// The statement ID is returned upon successfully submitting a SQL
+	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
 }
 
@@ -1505,7 +1512,8 @@ func (s GetStatementResponse) MarshalJSON() ([]byte, error) {
 // Get result chunk by index
 type GetStatementResultChunkNRequest struct {
 	ChunkIndex int `json:"-" url:"-"`
-
+	// The statement ID is returned upon successfully submitting a SQL
+	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
 }
 

@@ -11,13 +11,15 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-type DbfsAPIInterface interface {
+type DbfsInterface interface {
 	dbfsAPIUtilities
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl DbfsService) DbfsAPIInterface
+	// Deprecated: use MockDbfsInterface instead.
+	WithImpl(impl DbfsService) DbfsInterface
 
 	// Impl returns low-level Dbfs API implementation
+	// Deprecated: use MockDbfsInterface instead.
 	Impl() DbfsService
 
 	// Append data block.
@@ -213,12 +215,14 @@ type DbfsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *DbfsAPI) WithImpl(impl DbfsService) DbfsAPIInterface {
+// Deprecated: use MockDbfsInterface instead.
+func (a *DbfsAPI) WithImpl(impl DbfsService) DbfsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Dbfs API implementation
+// Deprecated: use MockDbfsInterface instead.
 func (a *DbfsAPI) Impl() DbfsService {
 	return a.impl
 }
@@ -450,12 +454,14 @@ func (a *DbfsAPI) Read(ctx context.Context, request ReadDbfsRequest) (*ReadRespo
 	return a.impl.Read(ctx, request)
 }
 
-type FilesAPIInterface interface {
+type FilesInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl FilesService) FilesAPIInterface
+	// Deprecated: use MockFilesInterface instead.
+	WithImpl(impl FilesService) FilesInterface
 
 	// Impl returns low-level Files API implementation
+	// Deprecated: use MockFilesInterface instead.
 	Impl() FilesService
 
 	// Delete a file or directory.
@@ -507,12 +513,14 @@ type FilesAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *FilesAPI) WithImpl(impl FilesService) FilesAPIInterface {
+// Deprecated: use MockFilesInterface instead.
+func (a *FilesAPI) WithImpl(impl FilesService) FilesInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Files API implementation
+// Deprecated: use MockFilesInterface instead.
 func (a *FilesAPI) Impl() FilesService {
 	return a.impl
 }

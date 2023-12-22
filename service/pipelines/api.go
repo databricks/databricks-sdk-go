@@ -14,12 +14,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-type PipelinesAPIInterface interface {
+type PipelinesInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl PipelinesService) PipelinesAPIInterface
+	// Deprecated: use MockPipelinesInterface instead.
+	WithImpl(impl PipelinesService) PipelinesInterface
 
 	// Impl returns low-level Pipelines API implementation
+	// Deprecated: use MockPipelinesInterface instead.
 	Impl() PipelinesService
 
 	// WaitGetPipelineIdle repeatedly calls [PipelinesAPI.Get] and waits to reach IDLE state
@@ -227,12 +229,14 @@ type PipelinesAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *PipelinesAPI) WithImpl(impl PipelinesService) PipelinesAPIInterface {
+// Deprecated: use MockPipelinesInterface instead.
+func (a *PipelinesAPI) WithImpl(impl PipelinesService) PipelinesInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Pipelines API implementation
+// Deprecated: use MockPipelinesInterface instead.
 func (a *PipelinesAPI) Impl() PipelinesService {
 	return a.impl
 }

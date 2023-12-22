@@ -12,12 +12,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-type BillableUsageAPIInterface interface {
+type BillableUsageInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl BillableUsageService) BillableUsageAPIInterface
+	// Deprecated: use MockBillableUsageInterface instead.
+	WithImpl(impl BillableUsageService) BillableUsageInterface
 
 	// Impl returns low-level BillableUsage API implementation
+	// Deprecated: use MockBillableUsageInterface instead.
 	Impl() BillableUsageService
 
 	// Return billable usage logs.
@@ -53,12 +55,14 @@ type BillableUsageAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *BillableUsageAPI) WithImpl(impl BillableUsageService) BillableUsageAPIInterface {
+// Deprecated: use MockBillableUsageInterface instead.
+func (a *BillableUsageAPI) WithImpl(impl BillableUsageService) BillableUsageInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level BillableUsage API implementation
+// Deprecated: use MockBillableUsageInterface instead.
 func (a *BillableUsageAPI) Impl() BillableUsageService {
 	return a.impl
 }
@@ -79,12 +83,14 @@ func (a *BillableUsageAPI) Download(ctx context.Context, request DownloadRequest
 	return a.impl.Download(ctx, request)
 }
 
-type BudgetsAPIInterface interface {
+type BudgetsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl BudgetsService) BudgetsAPIInterface
+	// Deprecated: use MockBudgetsInterface instead.
+	WithImpl(impl BudgetsService) BudgetsInterface
 
 	// Impl returns low-level Budgets API implementation
+	// Deprecated: use MockBudgetsInterface instead.
 	Impl() BudgetsService
 
 	// Create a new budget.
@@ -173,12 +179,14 @@ type BudgetsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *BudgetsAPI) WithImpl(impl BudgetsService) BudgetsAPIInterface {
+// Deprecated: use MockBudgetsInterface instead.
+func (a *BudgetsAPI) WithImpl(impl BudgetsService) BudgetsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Budgets API implementation
+// Deprecated: use MockBudgetsInterface instead.
 func (a *BudgetsAPI) Impl() BudgetsService {
 	return a.impl
 }
@@ -321,12 +329,14 @@ func (a *BudgetsAPI) Update(ctx context.Context, request WrappedBudget) error {
 	return a.impl.Update(ctx, request)
 }
 
-type LogDeliveryAPIInterface interface {
+type LogDeliveryInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl LogDeliveryService) LogDeliveryAPIInterface
+	// Deprecated: use MockLogDeliveryInterface instead.
+	WithImpl(impl LogDeliveryService) LogDeliveryInterface
 
 	// Impl returns low-level LogDelivery API implementation
+	// Deprecated: use MockLogDeliveryInterface instead.
 	Impl() LogDeliveryService
 
 	// Create a new log delivery configuration.
@@ -491,12 +501,14 @@ type LogDeliveryAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *LogDeliveryAPI) WithImpl(impl LogDeliveryService) LogDeliveryAPIInterface {
+// Deprecated: use MockLogDeliveryInterface instead.
+func (a *LogDeliveryAPI) WithImpl(impl LogDeliveryService) LogDeliveryInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level LogDelivery API implementation
+// Deprecated: use MockLogDeliveryInterface instead.
 func (a *LogDeliveryAPI) Impl() LogDeliveryService {
 	return a.impl
 }

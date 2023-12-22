@@ -11,12 +11,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-type CustomAppIntegrationAPIInterface interface {
+type CustomAppIntegrationInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl CustomAppIntegrationService) CustomAppIntegrationAPIInterface
+	// Deprecated: use MockCustomAppIntegrationInterface instead.
+	WithImpl(impl CustomAppIntegrationService) CustomAppIntegrationInterface
 
 	// Impl returns low-level CustomAppIntegration API implementation
+	// Deprecated: use MockCustomAppIntegrationInterface instead.
 	Impl() CustomAppIntegrationService
 
 	// Create Custom OAuth App Integration.
@@ -91,12 +93,14 @@ type CustomAppIntegrationAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *CustomAppIntegrationAPI) WithImpl(impl CustomAppIntegrationService) CustomAppIntegrationAPIInterface {
+// Deprecated: use MockCustomAppIntegrationInterface instead.
+func (a *CustomAppIntegrationAPI) WithImpl(impl CustomAppIntegrationService) CustomAppIntegrationInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level CustomAppIntegration API implementation
+// Deprecated: use MockCustomAppIntegrationInterface instead.
 func (a *CustomAppIntegrationAPI) Impl() CustomAppIntegrationService {
 	return a.impl
 }
@@ -189,12 +193,14 @@ func (a *CustomAppIntegrationAPI) Update(ctx context.Context, request UpdateCust
 	return a.impl.Update(ctx, request)
 }
 
-type OAuthPublishedAppsAPIInterface interface {
+type OAuthPublishedAppsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl OAuthPublishedAppsService) OAuthPublishedAppsAPIInterface
+	// Deprecated: use MockOAuthPublishedAppsInterface instead.
+	WithImpl(impl OAuthPublishedAppsService) OAuthPublishedAppsInterface
 
 	// Impl returns low-level OAuthPublishedApps API implementation
+	// Deprecated: use MockOAuthPublishedAppsInterface instead.
 	Impl() OAuthPublishedAppsService
 
 	// Get all the published OAuth apps.
@@ -232,12 +238,14 @@ type OAuthPublishedAppsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *OAuthPublishedAppsAPI) WithImpl(impl OAuthPublishedAppsService) OAuthPublishedAppsAPIInterface {
+// Deprecated: use MockOAuthPublishedAppsInterface instead.
+func (a *OAuthPublishedAppsAPI) WithImpl(impl OAuthPublishedAppsService) OAuthPublishedAppsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level OAuthPublishedApps API implementation
+// Deprecated: use MockOAuthPublishedAppsInterface instead.
 func (a *OAuthPublishedAppsAPI) Impl() OAuthPublishedAppsService {
 	return a.impl
 }
@@ -282,12 +290,14 @@ func (a *OAuthPublishedAppsAPI) ListAll(ctx context.Context, request ListOAuthPu
 
 }
 
-type PublishedAppIntegrationAPIInterface interface {
+type PublishedAppIntegrationInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl PublishedAppIntegrationService) PublishedAppIntegrationAPIInterface
+	// Deprecated: use MockPublishedAppIntegrationInterface instead.
+	WithImpl(impl PublishedAppIntegrationService) PublishedAppIntegrationInterface
 
 	// Impl returns low-level PublishedAppIntegration API implementation
+	// Deprecated: use MockPublishedAppIntegrationInterface instead.
 	Impl() PublishedAppIntegrationService
 
 	// Create Published OAuth App Integration.
@@ -362,12 +372,14 @@ type PublishedAppIntegrationAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *PublishedAppIntegrationAPI) WithImpl(impl PublishedAppIntegrationService) PublishedAppIntegrationAPIInterface {
+// Deprecated: use MockPublishedAppIntegrationInterface instead.
+func (a *PublishedAppIntegrationAPI) WithImpl(impl PublishedAppIntegrationService) PublishedAppIntegrationInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level PublishedAppIntegration API implementation
+// Deprecated: use MockPublishedAppIntegrationInterface instead.
 func (a *PublishedAppIntegrationAPI) Impl() PublishedAppIntegrationService {
 	return a.impl
 }
@@ -460,12 +472,14 @@ func (a *PublishedAppIntegrationAPI) Update(ctx context.Context, request UpdateP
 	return a.impl.Update(ctx, request)
 }
 
-type ServicePrincipalSecretsAPIInterface interface {
+type ServicePrincipalSecretsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl ServicePrincipalSecretsService) ServicePrincipalSecretsAPIInterface
+	// Deprecated: use MockServicePrincipalSecretsInterface instead.
+	WithImpl(impl ServicePrincipalSecretsService) ServicePrincipalSecretsInterface
 
 	// Impl returns low-level ServicePrincipalSecrets API implementation
+	// Deprecated: use MockServicePrincipalSecretsInterface instead.
 	Impl() ServicePrincipalSecretsService
 
 	// Create service principal secret.
@@ -538,12 +552,14 @@ type ServicePrincipalSecretsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *ServicePrincipalSecretsAPI) WithImpl(impl ServicePrincipalSecretsService) ServicePrincipalSecretsAPIInterface {
+// Deprecated: use MockServicePrincipalSecretsInterface instead.
+func (a *ServicePrincipalSecretsAPI) WithImpl(impl ServicePrincipalSecretsService) ServicePrincipalSecretsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level ServicePrincipalSecrets API implementation
+// Deprecated: use MockServicePrincipalSecretsInterface instead.
 func (a *ServicePrincipalSecretsAPI) Impl() ServicePrincipalSecretsService {
 	return a.impl
 }

@@ -178,7 +178,7 @@
 package service
 
 import (
-	_ "github.com/databricks/databricks-sdk-go/mocks" // for mock support
+	_ "github.com/databricks/databricks-sdk-go/experimental/mocks" // for mock support
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/compute"

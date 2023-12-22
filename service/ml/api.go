@@ -11,12 +11,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-type ExperimentsAPIInterface interface {
+type ExperimentsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl ExperimentsService) ExperimentsAPIInterface
+	// Deprecated: use MockExperimentsInterface instead.
+	WithImpl(impl ExperimentsService) ExperimentsInterface
 
 	// Impl returns low-level Experiments API implementation
+	// Deprecated: use MockExperimentsInterface instead.
 	Impl() ExperimentsService
 
 	// Create experiment.
@@ -336,12 +338,14 @@ type ExperimentsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *ExperimentsAPI) WithImpl(impl ExperimentsService) ExperimentsAPIInterface {
+// Deprecated: use MockExperimentsInterface instead.
+func (a *ExperimentsAPI) WithImpl(impl ExperimentsService) ExperimentsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Experiments API implementation
+// Deprecated: use MockExperimentsInterface instead.
 func (a *ExperimentsAPI) Impl() ExperimentsService {
 	return a.impl
 }
@@ -822,12 +826,14 @@ func (a *ExperimentsAPI) UpdateRun(ctx context.Context, request UpdateRun) (*Upd
 	return a.impl.UpdateRun(ctx, request)
 }
 
-type ModelRegistryAPIInterface interface {
+type ModelRegistryInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl ModelRegistryService) ModelRegistryAPIInterface
+	// Deprecated: use MockModelRegistryInterface instead.
+	WithImpl(impl ModelRegistryService) ModelRegistryInterface
 
 	// Impl returns low-level ModelRegistry API implementation
+	// Deprecated: use MockModelRegistryInterface instead.
 	Impl() ModelRegistryService
 
 	// Approve transition request.
@@ -1130,12 +1136,14 @@ type ModelRegistryAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *ModelRegistryAPI) WithImpl(impl ModelRegistryService) ModelRegistryAPIInterface {
+// Deprecated: use MockModelRegistryInterface instead.
+func (a *ModelRegistryAPI) WithImpl(impl ModelRegistryService) ModelRegistryInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level ModelRegistry API implementation
+// Deprecated: use MockModelRegistryInterface instead.
 func (a *ModelRegistryAPI) Impl() ModelRegistryService {
 	return a.impl
 }

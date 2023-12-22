@@ -14,12 +14,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-type JobsAPIInterface interface {
+type JobsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl JobsService) JobsAPIInterface
+	// Deprecated: use MockJobsInterface instead.
+	WithImpl(impl JobsService) JobsInterface
 
 	// Impl returns low-level Jobs API implementation
+	// Deprecated: use MockJobsInterface instead.
 	Impl() JobsService
 
 	// WaitGetRunJobTerminatedOrSkipped repeatedly calls [JobsAPI.GetRun] and waits to reach TERMINATED or SKIPPED state
@@ -298,12 +300,14 @@ type JobsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *JobsAPI) WithImpl(impl JobsService) JobsAPIInterface {
+// Deprecated: use MockJobsInterface instead.
+func (a *JobsAPI) WithImpl(impl JobsService) JobsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Jobs API implementation
+// Deprecated: use MockJobsInterface instead.
 func (a *JobsAPI) Impl() JobsService {
 	return a.impl
 }

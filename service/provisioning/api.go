@@ -13,12 +13,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-type CredentialsAPIInterface interface {
+type CredentialsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl CredentialsService) CredentialsAPIInterface
+	// Deprecated: use MockCredentialsInterface instead.
+	WithImpl(impl CredentialsService) CredentialsInterface
 
 	// Impl returns low-level Credentials API implementation
+	// Deprecated: use MockCredentialsInterface instead.
 	Impl() CredentialsService
 
 	// Create credential configuration.
@@ -111,12 +113,14 @@ type CredentialsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *CredentialsAPI) WithImpl(impl CredentialsService) CredentialsAPIInterface {
+// Deprecated: use MockCredentialsInterface instead.
+func (a *CredentialsAPI) WithImpl(impl CredentialsService) CredentialsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Credentials API implementation
+// Deprecated: use MockCredentialsInterface instead.
 func (a *CredentialsAPI) Impl() CredentialsService {
 	return a.impl
 }
@@ -240,12 +244,14 @@ func (a *CredentialsAPI) GetByCredentialsName(ctx context.Context, name string) 
 	return &alternatives[0], nil
 }
 
-type EncryptionKeysAPIInterface interface {
+type EncryptionKeysInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl EncryptionKeysService) EncryptionKeysAPIInterface
+	// Deprecated: use MockEncryptionKeysInterface instead.
+	WithImpl(impl EncryptionKeysService) EncryptionKeysInterface
 
 	// Impl returns low-level EncryptionKeys API implementation
+	// Deprecated: use MockEncryptionKeysInterface instead.
 	Impl() EncryptionKeysService
 
 	// Create encryption key configuration.
@@ -369,12 +375,14 @@ type EncryptionKeysAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *EncryptionKeysAPI) WithImpl(impl EncryptionKeysService) EncryptionKeysAPIInterface {
+// Deprecated: use MockEncryptionKeysInterface instead.
+func (a *EncryptionKeysAPI) WithImpl(impl EncryptionKeysService) EncryptionKeysInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level EncryptionKeys API implementation
+// Deprecated: use MockEncryptionKeysInterface instead.
 func (a *EncryptionKeysAPI) Impl() EncryptionKeysService {
 	return a.impl
 }
@@ -483,12 +491,14 @@ func (a *EncryptionKeysAPI) List(ctx context.Context) ([]CustomerManagedKey, err
 	return a.impl.List(ctx)
 }
 
-type NetworksAPIInterface interface {
+type NetworksInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl NetworksService) NetworksAPIInterface
+	// Deprecated: use MockNetworksInterface instead.
+	WithImpl(impl NetworksService) NetworksInterface
 
 	// Impl returns low-level Networks API implementation
+	// Deprecated: use MockNetworksInterface instead.
 	Impl() NetworksService
 
 	// Create network configuration.
@@ -577,12 +587,14 @@ type NetworksAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *NetworksAPI) WithImpl(impl NetworksService) NetworksAPIInterface {
+// Deprecated: use MockNetworksInterface instead.
+func (a *NetworksAPI) WithImpl(impl NetworksService) NetworksInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Networks API implementation
+// Deprecated: use MockNetworksInterface instead.
 func (a *NetworksAPI) Impl() NetworksService {
 	return a.impl
 }
@@ -704,12 +716,14 @@ func (a *NetworksAPI) GetByNetworkName(ctx context.Context, name string) (*Netwo
 	return &alternatives[0], nil
 }
 
-type PrivateAccessAPIInterface interface {
+type PrivateAccessInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl PrivateAccessService) PrivateAccessAPIInterface
+	// Deprecated: use MockPrivateAccessInterface instead.
+	WithImpl(impl PrivateAccessService) PrivateAccessInterface
 
 	// Impl returns low-level PrivateAccess API implementation
+	// Deprecated: use MockPrivateAccessInterface instead.
 	Impl() PrivateAccessService
 
 	// Create private access settings.
@@ -846,12 +860,14 @@ type PrivateAccessAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *PrivateAccessAPI) WithImpl(impl PrivateAccessService) PrivateAccessAPIInterface {
+// Deprecated: use MockPrivateAccessInterface instead.
+func (a *PrivateAccessAPI) WithImpl(impl PrivateAccessService) PrivateAccessInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level PrivateAccess API implementation
+// Deprecated: use MockPrivateAccessInterface instead.
 func (a *PrivateAccessAPI) Impl() PrivateAccessService {
 	return a.impl
 }
@@ -1025,12 +1041,14 @@ func (a *PrivateAccessAPI) Replace(ctx context.Context, request UpsertPrivateAcc
 	return a.impl.Replace(ctx, request)
 }
 
-type StorageAPIInterface interface {
+type StorageInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl StorageService) StorageAPIInterface
+	// Deprecated: use MockStorageInterface instead.
+	WithImpl(impl StorageService) StorageInterface
 
 	// Impl returns low-level Storage API implementation
+	// Deprecated: use MockStorageInterface instead.
 	Impl() StorageService
 
 	// Create new storage configuration.
@@ -1116,12 +1134,14 @@ type StorageAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *StorageAPI) WithImpl(impl StorageService) StorageAPIInterface {
+// Deprecated: use MockStorageInterface instead.
+func (a *StorageAPI) WithImpl(impl StorageService) StorageInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Storage API implementation
+// Deprecated: use MockStorageInterface instead.
 func (a *StorageAPI) Impl() StorageService {
 	return a.impl
 }
@@ -1237,12 +1257,14 @@ func (a *StorageAPI) GetByStorageConfigurationName(ctx context.Context, name str
 	return &alternatives[0], nil
 }
 
-type VpcEndpointsAPIInterface interface {
+type VpcEndpointsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl VpcEndpointsService) VpcEndpointsAPIInterface
+	// Deprecated: use MockVpcEndpointsInterface instead.
+	WithImpl(impl VpcEndpointsService) VpcEndpointsInterface
 
 	// Impl returns low-level VpcEndpoints API implementation
+	// Deprecated: use MockVpcEndpointsInterface instead.
 	Impl() VpcEndpointsService
 
 	// Create VPC endpoint configuration.
@@ -1353,12 +1375,14 @@ type VpcEndpointsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *VpcEndpointsAPI) WithImpl(impl VpcEndpointsService) VpcEndpointsAPIInterface {
+// Deprecated: use MockVpcEndpointsInterface instead.
+func (a *VpcEndpointsAPI) WithImpl(impl VpcEndpointsService) VpcEndpointsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level VpcEndpoints API implementation
+// Deprecated: use MockVpcEndpointsInterface instead.
 func (a *VpcEndpointsAPI) Impl() VpcEndpointsService {
 	return a.impl
 }
@@ -1504,12 +1528,14 @@ func (a *VpcEndpointsAPI) GetByVpcEndpointName(ctx context.Context, name string)
 	return &alternatives[0], nil
 }
 
-type WorkspacesAPIInterface interface {
+type WorkspacesInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	WithImpl(impl WorkspacesService) WorkspacesAPIInterface
+	// Deprecated: use MockWorkspacesInterface instead.
+	WithImpl(impl WorkspacesService) WorkspacesInterface
 
 	// Impl returns low-level Workspaces API implementation
+	// Deprecated: use MockWorkspacesInterface instead.
 	Impl() WorkspacesService
 
 	// WaitGetWorkspaceRunning repeatedly calls [WorkspacesAPI.Get] and waits to reach RUNNING state
@@ -1776,12 +1802,14 @@ type WorkspacesAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *WorkspacesAPI) WithImpl(impl WorkspacesService) WorkspacesAPIInterface {
+// Deprecated: use MockWorkspacesInterface instead.
+func (a *WorkspacesAPI) WithImpl(impl WorkspacesService) WorkspacesInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Workspaces API implementation
+// Deprecated: use MockWorkspacesInterface instead.
 func (a *WorkspacesAPI) Impl() WorkspacesService {
 	return a.impl
 }
