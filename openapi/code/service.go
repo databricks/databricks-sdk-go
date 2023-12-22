@@ -103,8 +103,18 @@ func (svc *Service) HasPagination() bool {
 	return false
 }
 
+func (svc *Service) getDescription(param openapi.Parameter) string {
+	if param.Description != "" {
+		return param.Description
+	}
+	if param.Schema != nil {
+		return param.Schema.Description
+	}
+	return ""
+}
+
 func (svc *Service) paramToField(op *openapi.Operation, param openapi.Parameter) *Field {
-	named := Named{param.Name, param.Description}
+	named := Named{param.Name, svc.getDescription(param)}
 	return &Field{
 		Named:    named,
 		Required: param.Required,

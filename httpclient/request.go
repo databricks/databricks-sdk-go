@@ -1,81 +1,17 @@
 package httpclient
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"reflect"
 	"sort"
 	"strings"
 
+	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/google/go-querystring/query"
 	"golang.org/x/oauth2"
 )
-
-// Represents a request body.
-//
-// If the provided request data is an io.Reader, DebugBytes is set to
-// "<io.Reader>". Otherwise, DebugBytes is set to the marshaled JSON
-// representation of the request data, and ReadCloser is set to a new
-// io.ReadCloser that reads from DebugBytes.
-//
-// Request bodies are never closed by the client, hence only accepting
-// io.Reader.
-type requestBody struct {
-	Reader      io.Reader
-	ContentType string
-	DebugBytes  []byte
-}
-
-func newRequestBody(data any) (requestBody, error) {
-	switch v := data.(type) {
-	case io.Reader:
-		return requestBody{
-			Reader:     v,
-			DebugBytes: []byte("<io.Reader>"),
-		}, nil
-	case string:
-		return requestBody{
-			Reader:     strings.NewReader(v),
-			DebugBytes: []byte(v),
-		}, nil
-	case []byte:
-		return requestBody{
-			Reader:     bytes.NewReader(v),
-			DebugBytes: v,
-		}, nil
-	default:
-		bs, err := json.Marshal(data)
-		if err != nil {
-			return requestBody{}, fmt.Errorf("request marshal failure: %w", err)
-		}
-		return requestBody{
-			Reader:      bytes.NewReader(bs),
-			ContentType: "application/json",
-			DebugBytes:  bs,
-		}, nil
-	}
-}
-
-// Reset a request body to its initial state.
-//
-// This is used to retry requests with a body that has already been read.
-// If the request body is not resettable (i.e. not nil and of type other than
-// strings.Reader or bytes.Reader), this will return an error.
-func (r requestBody) reset() error {
-	if r.Reader == nil {
-		return nil
-	}
-	if v, ok := r.Reader.(io.Seeker); ok {
-		_, err := v.Seek(0, io.SeekStart)
-		return err
-	} else {
-		return fmt.Errorf("cannot reset reader of type %T", r.Reader)
-	}
-}
 
 // WithRequestHeader adds a request visitor, that sets a header on a request
 func WithRequestHeader(k, v string) DoOption {
@@ -173,17 +109,17 @@ func makeQueryString(data interface{}) (string, error) {
 	return "", fmt.Errorf("unsupported query string data: %#v", data)
 }
 
-func makeRequestBody(method string, requestURL *string, data interface{}) (requestBody, error) {
+func makeRequestBody(method string, requestURL *string, data interface{}) (common.RequestBody, error) {
 	if data == nil {
-		return requestBody{}, nil
+		return common.RequestBody{}, nil
 	}
 	if method == "GET" || method == "DELETE" {
 		qs, err := makeQueryString(data)
 		if err != nil {
-			return requestBody{}, err
+			return common.RequestBody{}, err
 		}
 		*requestURL += qs
-		return newRequestBody([]byte{})
+		return common.NewRequestBody([]byte{})
 	}
-	return newRequestBody(data)
+	return common.NewRequestBody(data)
 }

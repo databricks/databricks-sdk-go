@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
@@ -181,7 +182,7 @@ func TestHaltAttemptForLimit(t *testing.T) {
 		config:      ClientConfig{},
 		rateLimiter: &rate.Limiter{},
 	}
-	req, err := newRequestBody([]byte{})
+	req, err := common.NewRequestBody([]byte{})
 	require.NoError(t, err)
 	_, rerr := c.attempt(ctx, "GET", "foo", req)()
 	require.NotNil(t, rerr)
@@ -192,7 +193,7 @@ func TestHaltAttemptForLimit(t *testing.T) {
 func TestHaltAttemptForNewRequest(t *testing.T) {
 	ctx := context.Background()
 	c := NewApiClient(ClientConfig{})
-	req, err := newRequestBody([]byte{})
+	req, err := common.NewRequestBody([]byte{})
 	require.NoError(t, err)
 	_, rerr := c.attempt(ctx, "🥱", "/", req)()
 	require.NotNil(t, rerr)
@@ -203,7 +204,7 @@ func TestHaltAttemptForNewRequest(t *testing.T) {
 func TestHaltAttemptForVisitor(t *testing.T) {
 	ctx := context.Background()
 	c := NewApiClient(ClientConfig{})
-	req, err := newRequestBody([]byte{})
+	req, err := common.NewRequestBody([]byte{})
 	require.NoError(t, err)
 	_, rerr := c.attempt(ctx, "GET", "/", req,
 		func(r *http.Request) error {
@@ -419,7 +420,7 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 
 	require.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
 <  
-< [non-JSON document of 15 bytes]. <io.ReadCloser>`, bufLogger.String())
+< <Streaming response>`, bufLogger.String())
 }
 
 func TestStreamRequestFromFileWithReset(t *testing.T) {
