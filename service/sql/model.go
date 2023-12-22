@@ -139,7 +139,10 @@ func (f *AlertOptionsEmptyResultState) Type() string {
 type AlertQuery struct {
 	// The timestamp when this query was created.
 	CreatedAt string `json:"created_at,omitempty"`
-	// Data source ID.
+	// Data source ID maps to the ID of the data source used by the resource and
+	// is distinct from the warehouse ID. [Learn more].
+	//
+	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
@@ -716,7 +719,10 @@ func (s DashboardOptions) MarshalJSON() ([]byte, error) {
 
 // A JSON object representing a DBSQL data source / SQL warehouse.
 type DataSource struct {
-	// Data source ID.
+	// Data source ID maps to the ID of the data source used by the resource and
+	// is distinct from the warehouse ID. [Learn more].
+	//
+	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	Id string `json:"id,omitempty"`
 	// The string name of this data source / SQL warehouse as it appears in the
 	// Databricks SQL web application.
@@ -2137,7 +2143,10 @@ type Query struct {
 	CanEdit bool `json:"can_edit,omitempty"`
 	// The timestamp when this query was created.
 	CreatedAt string `json:"created_at,omitempty"`
-	// Data source ID.
+	// Data source ID maps to the ID of the data source used by the resource and
+	// is distinct from the warehouse ID. [Learn more].
+	//
+	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
@@ -2208,7 +2217,10 @@ func (s Query) MarshalJSON() ([]byte, error) {
 }
 
 type QueryEditContent struct {
-	// Data source ID.
+	// Data source ID maps to the ID of the data source used by the resource and
+	// is distinct from the warehouse ID. [Learn more].
+	//
+	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
@@ -2432,7 +2444,10 @@ func (s QueryOptions) MarshalJSON() ([]byte, error) {
 }
 
 type QueryPostContent struct {
-	// Data source ID.
+	// Data source ID maps to the ID of the data source used by the resource and
+	// is distinct from the warehouse ID. [Learn more].
+	//
+	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
