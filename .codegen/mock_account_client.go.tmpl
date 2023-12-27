@@ -1,30 +1,35 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package mocks
+package databricks
 
 import (
-	"github.com/databricks/databricks-sdk-go"
 	{{range .Packages}}
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/{{.Name}}"{{end}}
 )
 
-// NewAccountClient creates new mocked version of Databricks SDK client for Accounts
+type MockAccountClient struct {
+	AccountClient *AccountClient
+}
+
+// NewMockAccountClient creates new mocked version of Databricks SDK client for Accounts
 // which can be used for testing.
-func NewAccountClient(t interface {
+func NewMockAccountClient(t interface {
 	mock.TestingT
 	Cleanup(func())
-}, cfg *config.Config) (*databricks.AccountClient) {
-	return &databricks.AccountClient{
-		Config: cfg,
-		{{range .Services}}{{if .IsAccounts}}
-		{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.NewMock{{.Name}}Interface(t),
-		{{- end}}{{end}}
+}) (*MockAccountClient) {
+	return &MockAccountClient {
+		AccountClient: &AccountClient{
+			Config: nil,
+			{{range .Services}}{{if .IsAccounts}}
+			{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.NewMock{{.Name}}Interface(t),
+			{{- end}}{{end}}
+		},
 	}
 }
 
 {{range .Services}}{{if .IsAccounts}}
-func GetMock{{.Name}}API(c *databricks.AccountClient) *{{.Package.Name}}.Mock{{.Name}}Interface {
-	api, ok := c.{{(.TrimPrefix "account").PascalName}}.(*{{.Package.Name}}.Mock{{.Name}}Interface)
+func(m *MockAccountClient) GetMock{{.Name}}API() *{{.Package.Name}}.Mock{{.Name}}Interface {
+	api, ok := m.AccountClient.{{(.TrimPrefix "account").PascalName}}.(*{{.Package.Name}}.Mock{{.Name}}Interface)
 	if !ok {
 		panic("Invalid API interface type")
 	}

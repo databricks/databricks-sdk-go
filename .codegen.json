@@ -12,8 +12,8 @@
     ".codegen/service-pkg.go.tmpl": "service/pkg.go",
     ".codegen/error_mapping.go.tmpl": "apierr/error_mapping.go",
     ".codegen/error_alias.go.tmpl": "error_alias.go",
-    ".codegen/mock_workspace_client.go.tmpl": "experimental/mocks/mock_workspace_client.go",
-    ".codegen/mock_account_client.go.tmpl": "experimental/mocks/mock_account_client.go"
+    ".codegen/mock_workspace_client.go.tmpl": "mock_workspace_client.go",
+    ".codegen/mock_account_client.go.tmpl": "mock_account_client.go"
   },
   "examples": {
     ".codegen/examples_test.go.tmpl": "service/{{.Package}}/{{.SnakeName}}_usage_test.go"
