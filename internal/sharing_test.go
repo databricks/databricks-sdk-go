@@ -130,6 +130,7 @@ func TestUcAccRecipients(t *testing.T) {
 }
 
 func TestUcAccShares(t *testing.T) {
+	loadDebugEnvIfRunsFromIDE(t, "ucws")
 	ctx, w := ucwsTest(t)
 	if w.Config.IsGcp() {
 		skipf(t)("Statement Execution API not available on GCP, skipping")
@@ -196,8 +197,21 @@ func TestUcAccShares(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	_, err = w.Shares.GetByName(ctx, createdShare.Name)
+	updatedShareOwner := "account users"
+
+	shareInfo, err := w.Shares.GetByName(ctx, createdShare.Name)
 	require.NoError(t, err)
+	assert.NotEqual(t, shareInfo.Owner, updatedShareOwner)
+
+	_, err = w.Shares.Update(ctx, sharing.UpdateShare{
+		Name:  createdShare.Name,
+		Owner: updatedShareOwner,
+	})
+	require.NoError(t, err)
+
+	shareInfo, err = w.Shares.GetByName(ctx, createdShare.Name)
+	require.NoError(t, err)
+	assert.Equal(t, shareInfo.Owner, updatedShareOwner)
 
 	all, err := w.Shares.ListAll(ctx)
 	require.NoError(t, err)
