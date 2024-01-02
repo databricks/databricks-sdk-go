@@ -13,7 +13,7 @@ import (
 
 func TestMockWorkspaceClient(t *testing.T) {
 	ctx := context.Background()
-	w := databricks.NewMockWorkspaceClient(t)
+	w := NewMockWorkspaceClient(t)
 	mockClusters := w.GetMockClustersAPI()
 	mockClusters.EXPECT().ListAll(
 		ctx,
@@ -34,7 +34,7 @@ func TestMockWorkspaceClient(t *testing.T) {
 
 func TestAccountWorkspaceClient(t *testing.T) {
 	ctx := context.Background()
-	w := databricks.NewMockAccountClient(t)
+	w := NewMockAccountClient(t)
 	mockUsers := w.GetMockAccountUsersAPI()
 	mockUsers.EXPECT().ListAll(
 		ctx,

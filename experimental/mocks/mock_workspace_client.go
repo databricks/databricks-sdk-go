@@ -1,8 +1,11 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package databricks
+package mocks
 
 import (
+	"github.com/databricks/databricks-sdk-go"
+	"github.com/stretchr/testify/mock"
+
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/compute"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
@@ -15,11 +18,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sharing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sql"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/workspace"
-	"github.com/stretchr/testify/mock"
 )
 
 type MockWorkspaceClient struct {
-	WorkspaceClient *WorkspaceClient
+	WorkspaceClient *databricks.WorkspaceClient
 }
 
 // NewMockWorkspaceClient creates new mocked version of Databricks SDK client for Workspaces
@@ -29,7 +31,7 @@ func NewMockWorkspaceClient(t interface {
 	Cleanup(func())
 }) *MockWorkspaceClient {
 	return &MockWorkspaceClient{
-		WorkspaceClient: &WorkspaceClient{
+		WorkspaceClient: &databricks.WorkspaceClient{
 			Config: nil,
 
 			AccountAccessControlProxy: iam.NewMockAccountAccessControlProxyInterface(t),

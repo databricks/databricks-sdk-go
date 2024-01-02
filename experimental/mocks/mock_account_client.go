@@ -1,19 +1,21 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package databricks
+package mocks
 
 import (
+	"github.com/databricks/databricks-sdk-go"
+	"github.com/stretchr/testify/mock"
+
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/billing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
-	"github.com/stretchr/testify/mock"
 )
 
 type MockAccountClient struct {
-	AccountClient *AccountClient
+	AccountClient *databricks.AccountClient
 }
 
 // NewMockAccountClient creates new mocked version of Databricks SDK client for Accounts
@@ -23,7 +25,7 @@ func NewMockAccountClient(t interface {
 	Cleanup(func())
 }) *MockAccountClient {
 	return &MockAccountClient{
-		AccountClient: &AccountClient{
+		AccountClient: &databricks.AccountClient{
 			Config: nil,
 
 			AccessControl:           iam.NewMockAccountAccessControlInterface(t),
