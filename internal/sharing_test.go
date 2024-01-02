@@ -130,7 +130,6 @@ func TestUcAccRecipients(t *testing.T) {
 }
 
 func TestUcAccShares(t *testing.T) {
-	loadDebugEnvIfRunsFromIDE(t, "ucws")
 	ctx, w := ucwsTest(t)
 	if w.Config.IsGcp() {
 		skipf(t)("Statement Execution API not available on GCP, skipping")
