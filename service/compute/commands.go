@@ -17,6 +17,10 @@ type CommandExecutorV2 struct {
 	contextID    string
 }
 
+type commandExecutionAPIUtilities interface {
+	Start(ctx context.Context, clusterID string, language Language) (*CommandExecutorV2, error)
+}
+
 // Start the command execution context on a cluster and ensure it transitions to a running state
 func (a *CommandExecutionAPI) Start(ctx context.Context, clusterID string, language Language) (*CommandExecutorV2, error) {
 	executionImpl, ok := a.impl.(*commandExecutionImpl)

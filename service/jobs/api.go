@@ -14,6 +14,258 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
+type JobsInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockJobsInterface instead.
+	WithImpl(impl JobsService) JobsInterface
+
+	// Impl returns low-level Jobs API implementation
+	// Deprecated: use MockJobsInterface instead.
+	Impl() JobsService
+
+	// WaitGetRunJobTerminatedOrSkipped repeatedly calls [JobsAPI.GetRun] and waits to reach TERMINATED or SKIPPED state
+	WaitGetRunJobTerminatedOrSkipped(ctx context.Context, runId int64,
+		timeout time.Duration, callback func(*Run)) (*Run, error)
+
+	// Cancel all runs of a job.
+	//
+	// Cancels all active runs of a job. The runs are canceled asynchronously, so it
+	// doesn't prevent new runs from being started.
+	CancelAllRuns(ctx context.Context, request CancelAllRuns) error
+
+	// Cancel a run.
+	//
+	// Cancels a job run or a task run. The run is canceled asynchronously, so it
+	// may still be running when this request completes.
+	CancelRun(ctx context.Context, cancelRun CancelRun) (*WaitGetRunJobTerminatedOrSkipped[any], error)
+
+	// Calls [JobsAPIInterface.CancelRun] and waits to reach TERMINATED or SKIPPED state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[Run](60*time.Minute) functional option.
+	//
+	// Deprecated: use [JobsAPIInterface.CancelRun].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
+	CancelRunAndWait(ctx context.Context, cancelRun CancelRun, options ...retries.Option[Run]) (*Run, error)
+
+	// Cancel a run.
+	//
+	// Cancels a job run or a task run. The run is canceled asynchronously, so it
+	// may still be running when this request completes.
+	CancelRunByRunId(ctx context.Context, runId int64) error
+
+	CancelRunByRunIdAndWait(ctx context.Context, runId int64, options ...retries.Option[Run]) (*Run, error)
+
+	// Create a new job.
+	//
+	// Create a new job.
+	Create(ctx context.Context, request CreateJob) (*CreateResponse, error)
+
+	// Delete a job.
+	//
+	// Deletes a job.
+	Delete(ctx context.Context, request DeleteJob) error
+
+	// Delete a job.
+	//
+	// Deletes a job.
+	DeleteByJobId(ctx context.Context, jobId int64) error
+
+	// Delete a job run.
+	//
+	// Deletes a non-active run. Returns an error if the run is active.
+	DeleteRun(ctx context.Context, request DeleteRun) error
+
+	// Delete a job run.
+	//
+	// Deletes a non-active run. Returns an error if the run is active.
+	DeleteRunByRunId(ctx context.Context, runId int64) error
+
+	// Export and retrieve a job run.
+	//
+	// Export and retrieve the job run task.
+	ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error)
+
+	// Get a single job.
+	//
+	// Retrieves the details for a single job.
+	Get(ctx context.Context, request GetJobRequest) (*Job, error)
+
+	// Get a single job.
+	//
+	// Retrieves the details for a single job.
+	GetByJobId(ctx context.Context, jobId int64) (*Job, error)
+
+	// Get job permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error)
+
+	// Get job permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetPermissionLevelsByJobId(ctx context.Context, jobId string) (*GetJobPermissionLevelsResponse, error)
+
+	// Get job permissions.
+	//
+	// Gets the permissions of a job. Jobs can inherit permissions from their root
+	// object.
+	GetPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error)
+
+	// Get job permissions.
+	//
+	// Gets the permissions of a job. Jobs can inherit permissions from their root
+	// object.
+	GetPermissionsByJobId(ctx context.Context, jobId string) (*JobPermissions, error)
+
+	// Get a single job run.
+	//
+	// Retrieve the metadata of a run.
+	GetRun(ctx context.Context, request GetRunRequest) (*Run, error)
+
+	// Get the output for a single run.
+	//
+	// Retrieve the output and metadata of a single task run. When a notebook task
+	// returns a value through the `dbutils.notebook.exit()` call, you can use this
+	// endpoint to retrieve that value. Databricks restricts this API to returning
+	// the first 5 MB of the output. To return a larger result, you can store job
+	// results in a cloud storage service.
+	//
+	// This endpoint validates that the __run_id__ parameter is valid and returns an
+	// HTTP status code 400 if the __run_id__ parameter is invalid. Runs are
+	// automatically removed after 60 days. If you to want to reference them beyond
+	// 60 days, you must save old run results before they expire.
+	GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error)
+
+	// Get the output for a single run.
+	//
+	// Retrieve the output and metadata of a single task run. When a notebook task
+	// returns a value through the `dbutils.notebook.exit()` call, you can use this
+	// endpoint to retrieve that value. Databricks restricts this API to returning
+	// the first 5 MB of the output. To return a larger result, you can store job
+	// results in a cloud storage service.
+	//
+	// This endpoint validates that the __run_id__ parameter is valid and returns an
+	// HTTP status code 400 if the __run_id__ parameter is invalid. Runs are
+	// automatically removed after 60 days. If you to want to reference them beyond
+	// 60 days, you must save old run results before they expire.
+	GetRunOutputByRunId(ctx context.Context, runId int64) (*RunOutput, error)
+
+	// List jobs.
+	//
+	// Retrieves a list of jobs.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	List(ctx context.Context, request ListJobsRequest) *listing.PaginatingIterator[ListJobsRequest, *ListJobsResponse, BaseJob]
+
+	// List jobs.
+	//
+	// Retrieves a list of jobs.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJob, error)
+
+	// BaseJobSettingsNameToJobIdMap calls [JobsAPI.ListAll] and creates a map of results with [BaseJob].Settings.Name as key and [BaseJob].JobId as value.
+	//
+	// Returns an error if there's more than one [BaseJob] with the same .Settings.Name.
+	//
+	// Note: All [BaseJob] instances are loaded into memory before creating a map.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	BaseJobSettingsNameToJobIdMap(ctx context.Context, request ListJobsRequest) (map[string]int64, error)
+
+	// GetBySettingsName calls [JobsAPI.BaseJobSettingsNameToJobIdMap] and returns a single [BaseJob].
+	//
+	// Returns an error if there's more than one [BaseJob] with the same .Settings.Name.
+	//
+	// Note: All [BaseJob] instances are loaded into memory before returning matching by name.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	GetBySettingsName(ctx context.Context, name string) (*BaseJob, error)
+
+	// List job runs.
+	//
+	// List runs in descending order by start time.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListRuns(ctx context.Context, request ListRunsRequest) *listing.PaginatingIterator[ListRunsRequest, *ListRunsResponse, BaseRun]
+
+	// List job runs.
+	//
+	// List runs in descending order by start time.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListRunsAll(ctx context.Context, request ListRunsRequest) ([]BaseRun, error)
+
+	// Repair a job run.
+	//
+	// Re-run one or more tasks. Tasks are re-run as part of the original job run.
+	// They use the current job and task settings, and can be viewed in the history
+	// for the original job run.
+	RepairRun(ctx context.Context, repairRun RepairRun) (*WaitGetRunJobTerminatedOrSkipped[RepairRunResponse], error)
+
+	// Calls [JobsAPIInterface.RepairRun] and waits to reach TERMINATED or SKIPPED state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[Run](60*time.Minute) functional option.
+	//
+	// Deprecated: use [JobsAPIInterface.RepairRun].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
+	RepairRunAndWait(ctx context.Context, repairRun RepairRun, options ...retries.Option[Run]) (*Run, error)
+
+	// Overwrite all settings for a job.
+	//
+	// Overwrite all settings for the given job. Use the Update endpoint to update
+	// job settings partially.
+	Reset(ctx context.Context, request ResetJob) error
+
+	// Trigger a new job run.
+	//
+	// Run a job and return the `run_id` of the triggered run.
+	RunNow(ctx context.Context, runNow RunNow) (*WaitGetRunJobTerminatedOrSkipped[RunNowResponse], error)
+
+	// Calls [JobsAPIInterface.RunNow] and waits to reach TERMINATED or SKIPPED state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[Run](60*time.Minute) functional option.
+	//
+	// Deprecated: use [JobsAPIInterface.RunNow].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
+	RunNowAndWait(ctx context.Context, runNow RunNow, options ...retries.Option[Run]) (*Run, error)
+
+	// Set job permissions.
+	//
+	// Sets permissions on a job. Jobs can inherit permissions from their root
+	// object.
+	SetPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
+
+	// Create and trigger a one-time run.
+	//
+	// Submit a one-time run. This endpoint allows you to submit a workload directly
+	// without creating a job. Runs submitted using this endpoint don’t display in
+	// the UI. Use the `jobs/runs/get` API to check the run state after the job is
+	// submitted.
+	Submit(ctx context.Context, submitRun SubmitRun) (*WaitGetRunJobTerminatedOrSkipped[SubmitRunResponse], error)
+
+	// Calls [JobsAPIInterface.Submit] and waits to reach TERMINATED or SKIPPED state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[Run](60*time.Minute) functional option.
+	//
+	// Deprecated: use [JobsAPIInterface.Submit].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
+	SubmitAndWait(ctx context.Context, submitRun SubmitRun, options ...retries.Option[Run]) (*Run, error)
+
+	// Partially update a job.
+	//
+	// Add, update, or remove specific settings of an existing job. Use the ResetJob
+	// to overwrite all job settings.
+	Update(ctx context.Context, request UpdateJob) error
+
+	// Update job permissions.
+	//
+	// Updates the permissions on a job. Jobs can inherit permissions from their
+	// root object.
+	UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
+}
+
 func NewJobs(client *client.DatabricksClient) *JobsAPI {
 	return &JobsAPI{
 		impl: &jobsImpl{
@@ -48,12 +300,14 @@ type JobsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *JobsAPI) WithImpl(impl JobsService) *JobsAPI {
+// Deprecated: use MockJobsInterface instead.
+func (a *JobsAPI) WithImpl(impl JobsService) JobsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Jobs API implementation
+// Deprecated: use MockJobsInterface instead.
 func (a *JobsAPI) Impl() JobsService {
 	return a.impl
 }

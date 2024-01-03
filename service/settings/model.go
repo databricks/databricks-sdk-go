@@ -226,6 +226,7 @@ type DeleteDefaultWorkspaceNamespaceResponse struct {
 
 // Delete access list
 type DeleteIpAccessListRequest struct {
+	// The ID for the corresponding IP access list to modify
 	IpAccessListId string `json:"-" url:"-"`
 }
 
@@ -322,6 +323,7 @@ type GetAccountIpAccessListRequest struct {
 
 // Get access list
 type GetIpAccessListRequest struct {
+	// The ID for the corresponding IP access list to modify
 	IpAccessListId string `json:"-" url:"-"`
 }
 
@@ -881,7 +883,7 @@ type ReadPersonalComputeSettingRequest struct {
 type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled"`
-
+	// The ID for the corresponding IP access list to modify
 	IpAccessListId string `json:"-" url:"-"`
 
 	IpAddresses []string `json:"ip_addresses,omitempty"`
@@ -1137,7 +1139,7 @@ func (s UpdateDefaultWorkspaceNamespaceRequest) MarshalJSON() ([]byte, error) {
 type UpdateIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled,omitempty"`
-
+	// The ID for the corresponding IP access list to modify
 	IpAccessListId string `json:"-" url:"-"`
 
 	IpAddresses []string `json:"ip_addresses,omitempty"`

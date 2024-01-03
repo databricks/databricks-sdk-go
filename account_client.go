@@ -23,28 +23,28 @@ type AccountClient struct {
 	// only grant rules are supported. A grant rule specifies a role assigned to
 	// a set of principals. A list of rules attached to a resource is called a
 	// rule set.
-	AccessControl *iam.AccountAccessControlAPI
+	AccessControl iam.AccountAccessControlInterface
 
 	// This API allows you to download billable usage logs for the specified
 	// account and date range. This feature works with all account types.
-	BillableUsage *billing.BillableUsageAPI
+	BillableUsage billing.BillableUsageInterface
 
 	// These APIs manage budget configuration including notifications for
 	// exceeding a budget for a period. They can also retrieve the status of
 	// each budget.
-	Budgets *billing.BudgetsAPI
+	Budgets billing.BudgetsInterface
 
 	// These APIs manage credential configurations for this workspace.
 	// Databricks needs access to a cross-account service IAM role in your AWS
 	// account so that Databricks can deploy clusters in the appropriate VPC for
 	// the new workspace. A credential configuration encapsulates this role
 	// information, and its ID is used when creating a new workspace.
-	Credentials *provisioning.CredentialsAPI
+	Credentials provisioning.CredentialsInterface
 
 	// These APIs enable administrators to manage custom oauth app integrations,
 	// which is required for adding/using Custom OAuth App Integration like
 	// Tableau Cloud for Databricks in AWS cloud.
-	CustomAppIntegration *oauth2.CustomAppIntegrationAPI
+	CustomAppIntegration oauth2.CustomAppIntegrationInterface
 
 	// These APIs manage encryption key configurations for this workspace
 	// (optional). A key configuration encapsulates the AWS KMS key information
@@ -63,7 +63,7 @@ type AccountClient struct {
 	// version of the platform. If you have an older workspace, it might not be
 	// on the E2 version of the platform. If you are not sure, contact your
 	// Databricks representative.
-	EncryptionKeys *provisioning.EncryptionKeysAPI
+	EncryptionKeys provisioning.EncryptionKeysInterface
 
 	// Groups simplify identity management, making it easier to assign access to
 	// Databricks account, data, and other securable objects.
@@ -72,7 +72,7 @@ type AccountClient struct {
 	// policies in Unity Catalog to groups, instead of to users individually.
 	// All Databricks account identities can be assigned as members of groups,
 	// and members inherit permissions that are assigned to their group.
-	Groups *iam.AccountGroupsAPI
+	Groups iam.AccountGroupsInterface
 
 	// The Accounts IP Access List API enables account admins to configure IP
 	// access lists for access to the account console.
@@ -96,7 +96,7 @@ type AccountClient struct {
 	//
 	// After changes to the account-level IP access lists, it can take a few
 	// minutes for changes to take effect.
-	IpAccessLists *settings.AccountIpAccessListsAPI
+	IpAccessLists settings.AccountIpAccessListsInterface
 
 	// These APIs manage log delivery configurations for this account. The two
 	// supported log types for this API are _billable usage logs_ and _audit
@@ -161,14 +161,14 @@ type AccountClient struct {
 	// [Billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	// [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 	// [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html
-	LogDelivery *billing.LogDeliveryAPI
+	LogDelivery billing.LogDeliveryInterface
 
 	// These APIs manage metastore assignments to a workspace.
-	MetastoreAssignments *catalog.AccountMetastoreAssignmentsAPI
+	MetastoreAssignments catalog.AccountMetastoreAssignmentsInterface
 
 	// These APIs manage Unity Catalog metastores for an account. A metastore
 	// contains catalogs that can be associated with workspaces
-	Metastores *catalog.AccountMetastoresAPI
+	Metastores catalog.AccountMetastoresInterface
 
 	// These APIs provide configurations for the network connectivity of your
 	// workspaces for serverless compute resources. This API provides stable
@@ -179,26 +179,26 @@ type AccountClient struct {
 	// Private Link. See [configure serverless secure connectivity].
 	//
 	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
-	NetworkConnectivity *settings.NetworkConnectivityAPI
+	NetworkConnectivity settings.NetworkConnectivityInterface
 
 	// These APIs manage network configurations for customer-managed VPCs
 	// (optional). Its ID is used when creating a new workspace if you use
 	// customer-managed VPCs.
-	Networks *provisioning.NetworksAPI
+	Networks provisioning.NetworksInterface
 
 	// These APIs enable administrators to view all the available published
 	// OAuth applications in Databricks. Administrators can add the published
 	// OAuth applications to their account through the OAuth Published App
 	// Integration APIs.
-	OAuthPublishedApps *oauth2.OAuthPublishedAppsAPI
+	OAuthPublishedApps oauth2.OAuthPublishedAppsInterface
 
 	// These APIs manage private access settings for this account.
-	PrivateAccess *provisioning.PrivateAccessAPI
+	PrivateAccess provisioning.PrivateAccessInterface
 
 	// These APIs enable administrators to manage published oauth app
 	// integrations, which is required for adding/using Published OAuth App
 	// Integration like Tableau Desktop for Databricks in AWS cloud.
-	PublishedAppIntegration *oauth2.PublishedAppIntegrationAPI
+	PublishedAppIntegration oauth2.PublishedAppIntegrationInterface
 
 	// These APIs enable administrators to manage service principal secrets.
 	//
@@ -213,7 +213,7 @@ type AccountClient struct {
 	//
 	// [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
 	// [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
-	ServicePrincipalSecrets *oauth2.ServicePrincipalSecretsAPI
+	ServicePrincipalSecrets oauth2.ServicePrincipalSecretsInterface
 
 	// Identities for use with jobs, automated tools, and systems such as
 	// scripts, apps, and CI/CD platforms. Databricks recommends creating
@@ -222,7 +222,7 @@ type AccountClient struct {
 	// interactive users do not need any write, delete, or modify privileges in
 	// production. This eliminates the risk of a user overwriting production
 	// data by accident.
-	ServicePrincipals *iam.AccountServicePrincipalsAPI
+	ServicePrincipals iam.AccountServicePrincipalsInterface
 
 	// The Personal Compute enablement setting lets you control which users can
 	// use the Personal Compute default policy to create compute resources. By
@@ -234,7 +234,7 @@ type AccountClient struct {
 	// setting has a default value, this setting is present on all accounts even
 	// though it's never set on a given account. Deletion reverts the value of
 	// the setting back to the default value.
-	Settings *settings.AccountSettingsAPI
+	Settings settings.AccountSettingsInterface
 
 	// These APIs manage storage configurations for this workspace. A root
 	// storage S3 bucket in your account is required to store objects like
@@ -242,10 +242,10 @@ type AccountClient struct {
 	// root storage S3 bucket for storage of non-production DBFS data. A storage
 	// configuration encapsulates this bucket information, and its ID is used
 	// when creating a new workspace.
-	Storage *provisioning.StorageAPI
+	Storage provisioning.StorageInterface
 
 	// These APIs manage storage credentials for a particular metastore.
-	StorageCredentials *catalog.AccountStorageCredentialsAPI
+	StorageCredentials catalog.AccountStorageCredentialsInterface
 
 	// User identities recognized by Databricks and represented by email
 	// addresses.
@@ -259,14 +259,14 @@ type AccountClient struct {
 	// in your identity provider and that user’s account will also be removed
 	// from Databricks account. This ensures a consistent offboarding process
 	// and prevents unauthorized users from accessing sensitive data.
-	Users *iam.AccountUsersAPI
+	Users iam.AccountUsersInterface
 
 	// These APIs manage VPC endpoint configurations for this account.
-	VpcEndpoints *provisioning.VpcEndpointsAPI
+	VpcEndpoints provisioning.VpcEndpointsInterface
 
 	// The Workspace Permission Assignment API allows you to manage workspace
 	// permissions for principals in your account.
-	WorkspaceAssignment *iam.WorkspaceAssignmentAPI
+	WorkspaceAssignment iam.WorkspaceAssignmentInterface
 
 	// These APIs manage workspaces for this account. A Databricks workspace is
 	// an environment for accessing all of your Databricks assets. The workspace
@@ -277,7 +277,7 @@ type AccountClient struct {
 	// These endpoints are available if your account is on the E2 version of the
 	// platform or on a select custom plan that allows multiple workspaces per
 	// account.
-	Workspaces *provisioning.WorkspacesAPI
+	Workspaces provisioning.WorkspacesInterface
 }
 
 var ErrNotAccountClient = errors.New("invalid Databricks Account configuration")

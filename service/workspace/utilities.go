@@ -16,6 +16,47 @@ import (
 
 var b64 = base64.StdEncoding
 
+type workspaceAPIUtilities interface {
+	// Download a notebook or file from the workspace by path.
+	//
+	// By default, it acts as if workspace.DownloadFormat(workspace.ExportFormatSource) option is supplied. When using
+	// workspace.ExportFormatAuto, the `path` is imported or exported as either a workspace file or a notebook, depending
+	// on an analysis of the `item`’s extension and the file content header provided in the request.
+	//
+	// Returns [bytes.Buffer] of the path contents.
+	Download(ctx context.Context, path string, opts ...DownloadOption) (io.ReadCloser, error)
+
+	// Upload a workspace object (for example, a notebook or file) or the contents
+	// of an entire directory (`DBC` format).
+	//
+	// Errors:
+	//
+	//   - RESOURCE_ALREADY_EXISTS: if `path` already exists no `overwrite=True`.
+	//   - INVALID_PARAMETER_VALUE: if `format` and `content` values are not compatible.
+	//
+	// By default, workspace.UploadFormat(workspace.ImportFormatSource). If using
+	// workspace.UploadFormat(workspace.ImportFormatAuto) the `path` is imported or
+	// exported as either a workspace file or a notebook, depending on an analysis
+	// of the `path`’s extension and the header content provided in the request.
+	// In addition, if the `path` is imported as a notebook, then the `item`’s
+	// extension is automatically removed.
+	//
+	// workspace.UploadLanguage(...) is only required if source format.
+	Upload(ctx context.Context, path string, r io.Reader, opts ...UploadOption) error
+
+	// RecursiveList traverses the workspace tree and returns all non-directory
+	// objects under the path
+	RecursiveList(ctx context.Context, path string) ([]ObjectInfo, error)
+
+	// WriteFile is identical to [os.WriteFile] but for Workspace File.
+	// Keep in mind: It doesn't upload the notebook, but the file and does
+	// always overwrite it.
+	WriteFile(ctx context.Context, name string, data []byte) error
+
+	// ReadFile is identical to [os.ReadFile] but for workspace files.
+	ReadFile(ctx context.Context, name string) ([]byte, error)
+}
+
 // PythonNotebookOverwrite crafts Python import notebook request
 // also by trimming the code specified in the second argument
 func PythonNotebookOverwrite(path, content string) Import {

@@ -11,7 +11,9 @@
     ".codegen/accounts.go.tmpl": "account_client.go",
     ".codegen/service-pkg.go.tmpl": "service/pkg.go",
     ".codegen/error_mapping.go.tmpl": "apierr/error_mapping.go",
-    ".codegen/error_alias.go.tmpl": "error_alias.go"
+    ".codegen/error_alias.go.tmpl": "error_alias.go",
+    ".codegen/mock_workspace_client.go.tmpl": "experimental/mocks/mock_workspace_client.go",
+    ".codegen/mock_account_client.go.tmpl": "experimental/mocks/mock_account_client.go"
   },
   "examples": {
     ".codegen/examples_test.go.tmpl": "service/{{.Package}}/{{.SnakeName}}_usage_test.go"
@@ -22,6 +24,7 @@
   "toolchain": {
     "required": ["go"],
     "post_generate": [
+      "go run github.com/vektra/mockery/v2@b9df18e0f7b94f0bc11af3f379c8a9aea1e1e8da",
       "go test -short ./..."
     ]
   }

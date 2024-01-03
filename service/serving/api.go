@@ -14,6 +14,67 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
+type AppsInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockAppsInterface instead.
+	WithImpl(impl AppsService) AppsInterface
+
+	// Impl returns low-level Apps API implementation
+	// Deprecated: use MockAppsInterface instead.
+	Impl() AppsService
+
+	// Create and deploy an application.
+	//
+	// Creates and deploys an application.
+	Create(ctx context.Context, request DeployAppRequest) (*DeploymentStatus, error)
+
+	// Delete an application.
+	//
+	// Delete an application definition
+	DeleteApp(ctx context.Context, request DeleteAppRequest) (*DeleteAppResponse, error)
+
+	// Delete an application.
+	//
+	// Delete an application definition
+	DeleteAppByName(ctx context.Context, name string) (*DeleteAppResponse, error)
+
+	// Get definition for an application.
+	//
+	// Get an application definition
+	GetApp(ctx context.Context, request GetAppRequest) (*GetAppResponse, error)
+
+	// Get definition for an application.
+	//
+	// Get an application definition
+	GetAppByName(ctx context.Context, name string) (*GetAppResponse, error)
+
+	// Get deployment status for an application.
+	//
+	// Get deployment status for an application
+	GetAppDeploymentStatus(ctx context.Context, request GetAppDeploymentStatusRequest) (*DeploymentStatus, error)
+
+	// Get deployment status for an application.
+	//
+	// Get deployment status for an application
+	GetAppDeploymentStatusByDeploymentId(ctx context.Context, deploymentId string) (*DeploymentStatus, error)
+
+	// List all applications.
+	//
+	// List all available applications
+	GetApps(ctx context.Context) (*ListAppsResponse, error)
+
+	// Get deployment events for an application.
+	//
+	// Get deployment events for an application
+	GetEvents(ctx context.Context, request GetEventsRequest) (*ListAppEventsResponse, error)
+
+	// Get deployment events for an application.
+	//
+	// Get deployment events for an application
+	GetEventsByName(ctx context.Context, name string) (*ListAppEventsResponse, error)
+}
+
 func NewApps(client *client.DatabricksClient) *AppsAPI {
 	return &AppsAPI{
 		impl: &appsImpl{
@@ -33,12 +94,14 @@ type AppsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *AppsAPI) WithImpl(impl AppsService) *AppsAPI {
+// Deprecated: use MockAppsInterface instead.
+func (a *AppsAPI) WithImpl(impl AppsService) AppsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level Apps API implementation
+// Deprecated: use MockAppsInterface instead.
 func (a *AppsAPI) Impl() AppsService {
 	return a.impl
 }
@@ -121,6 +184,159 @@ func (a *AppsAPI) GetEventsByName(ctx context.Context, name string) (*ListAppEve
 	})
 }
 
+type ServingEndpointsInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockServingEndpointsInterface instead.
+	WithImpl(impl ServingEndpointsService) ServingEndpointsInterface
+
+	// Impl returns low-level ServingEndpoints API implementation
+	// Deprecated: use MockServingEndpointsInterface instead.
+	Impl() ServingEndpointsService
+
+	// WaitGetServingEndpointNotUpdating repeatedly calls [ServingEndpointsAPI.Get] and waits to reach NOT_UPDATING state
+	WaitGetServingEndpointNotUpdating(ctx context.Context, name string,
+		timeout time.Duration, callback func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error)
+
+	// Retrieve the logs associated with building the model's environment for a
+	// given serving endpoint's served model.
+	//
+	// Retrieves the build logs associated with the provided served model.
+	BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error)
+
+	// Retrieve the logs associated with building the model's environment for a
+	// given serving endpoint's served model.
+	//
+	// Retrieves the build logs associated with the provided served model.
+	BuildLogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*BuildLogsResponse, error)
+
+	// Create a new serving endpoint.
+	Create(ctx context.Context, createServingEndpoint CreateServingEndpoint) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error)
+
+	// Calls [ServingEndpointsAPIInterface.Create] and waits to reach NOT_UPDATING state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[ServingEndpointDetailed](60*time.Minute) functional option.
+	//
+	// Deprecated: use [ServingEndpointsAPIInterface.Create].Get() or [ServingEndpointsAPIInterface.WaitGetServingEndpointNotUpdating]
+	CreateAndWait(ctx context.Context, createServingEndpoint CreateServingEndpoint, options ...retries.Option[ServingEndpointDetailed]) (*ServingEndpointDetailed, error)
+
+	// Delete a serving endpoint.
+	Delete(ctx context.Context, request DeleteServingEndpointRequest) error
+
+	// Delete a serving endpoint.
+	DeleteByName(ctx context.Context, name string) error
+
+	// Retrieve the metrics associated with a serving endpoint.
+	//
+	// Retrieves the metrics associated with the provided serving endpoint in either
+	// Prometheus or OpenMetrics exposition format.
+	ExportMetrics(ctx context.Context, request ExportMetricsRequest) error
+
+	// Retrieve the metrics associated with a serving endpoint.
+	//
+	// Retrieves the metrics associated with the provided serving endpoint in either
+	// Prometheus or OpenMetrics exposition format.
+	ExportMetricsByName(ctx context.Context, name string) error
+
+	// Get a single serving endpoint.
+	//
+	// Retrieves the details for a single serving endpoint.
+	Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error)
+
+	// Get a single serving endpoint.
+	//
+	// Retrieves the details for a single serving endpoint.
+	GetByName(ctx context.Context, name string) (*ServingEndpointDetailed, error)
+
+	// Get serving endpoint permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error)
+
+	// Get serving endpoint permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetPermissionLevelsByServingEndpointId(ctx context.Context, servingEndpointId string) (*GetServingEndpointPermissionLevelsResponse, error)
+
+	// Get serving endpoint permissions.
+	//
+	// Gets the permissions of a serving endpoint. Serving endpoints can inherit
+	// permissions from their root object.
+	GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+
+	// Get serving endpoint permissions.
+	//
+	// Gets the permissions of a serving endpoint. Serving endpoints can inherit
+	// permissions from their root object.
+	GetPermissionsByServingEndpointId(ctx context.Context, servingEndpointId string) (*ServingEndpointPermissions, error)
+
+	// Retrieve all serving endpoints.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	List(ctx context.Context) *listing.PaginatingIterator[struct{}, *ListEndpointsResponse, ServingEndpoint]
+
+	// Retrieve all serving endpoints.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListAll(ctx context.Context) ([]ServingEndpoint, error)
+
+	// Retrieve the most recent log lines associated with a given serving endpoint's
+	// served model.
+	//
+	// Retrieves the service logs associated with the provided served model.
+	Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error)
+
+	// Retrieve the most recent log lines associated with a given serving endpoint's
+	// served model.
+	//
+	// Retrieves the service logs associated with the provided served model.
+	LogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*ServerLogsResponse, error)
+
+	// Patch the tags of a serving endpoint.
+	//
+	// Used to batch add and delete tags from a serving endpoint with a single API
+	// call.
+	Patch(ctx context.Context, request PatchServingEndpointTags) ([]EndpointTag, error)
+
+	// Update the rate limits of a serving endpoint.
+	//
+	// Used to update the rate limits of a serving endpoint. NOTE: only external and
+	// foundation model endpoints are supported as of now.
+	Put(ctx context.Context, request PutRequest) (*PutResponse, error)
+
+	// Query a serving endpoint with provided model input.
+	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
+
+	// Set serving endpoint permissions.
+	//
+	// Sets permissions on a serving endpoint. Serving endpoints can inherit
+	// permissions from their root object.
+	SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+
+	// Update a serving endpoint with a new config.
+	//
+	// Updates any combination of the serving endpoint's served entities, the
+	// compute configuration of those served entities, and the endpoint's traffic
+	// config. An endpoint that already has an update in progress can not be updated
+	// until the current update completes or fails.
+	UpdateConfig(ctx context.Context, endpointCoreConfigInput EndpointCoreConfigInput) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error)
+
+	// Calls [ServingEndpointsAPIInterface.UpdateConfig] and waits to reach NOT_UPDATING state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[ServingEndpointDetailed](60*time.Minute) functional option.
+	//
+	// Deprecated: use [ServingEndpointsAPIInterface.UpdateConfig].Get() or [ServingEndpointsAPIInterface.WaitGetServingEndpointNotUpdating]
+	UpdateConfigAndWait(ctx context.Context, endpointCoreConfigInput EndpointCoreConfigInput, options ...retries.Option[ServingEndpointDetailed]) (*ServingEndpointDetailed, error)
+
+	// Update serving endpoint permissions.
+	//
+	// Updates the permissions on a serving endpoint. Serving endpoints can inherit
+	// permissions from their root object.
+	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+}
+
 func NewServingEndpoints(client *client.DatabricksClient) *ServingEndpointsAPI {
 	return &ServingEndpointsAPI{
 		impl: &servingEndpointsImpl{
@@ -150,12 +366,14 @@ type ServingEndpointsAPI struct {
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *ServingEndpointsAPI) WithImpl(impl ServingEndpointsService) *ServingEndpointsAPI {
+// Deprecated: use MockServingEndpointsInterface instead.
+func (a *ServingEndpointsAPI) WithImpl(impl ServingEndpointsService) ServingEndpointsInterface {
 	a.impl = impl
 	return a
 }
 
 // Impl returns low-level ServingEndpoints API implementation
+// Deprecated: use MockServingEndpointsInterface instead.
 func (a *ServingEndpointsAPI) Impl() ServingEndpointsService {
 	return a.impl
 }

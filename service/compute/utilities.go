@@ -13,6 +13,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/retries"
 )
 
+type clustersAPIUtilities interface {
+	EnsureClusterIsRunning(ctx context.Context, clusterId string) error
+	GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *ClusterDetails, err error)
+	SelectSparkVersion(ctx context.Context, r SparkVersionRequest) (string, error)
+	SelectNodeType(ctx context.Context, r NodeTypeRequest) (string, error)
+}
+
 // getOrCreateClusterMutex guards "mounting" cluster creation to prevent multiple
 // redundant instances created at the same name. Compute package private property.
 // https://github.com/databricks/terraform-provider-databricks/issues/445

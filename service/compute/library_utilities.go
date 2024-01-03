@@ -135,6 +135,10 @@ type Update struct {
 	Uninstall []Library
 }
 
+type librariesAPIUtilities interface {
+	UpdateAndWait(ctx context.Context, update Update, options ...retries.Option[ClusterLibraryStatuses]) error
+}
+
 func (a *LibrariesAPI) UpdateAndWait(ctx context.Context, update Update,
 	options ...retries.Option[ClusterLibraryStatuses]) error {
 	ctx = useragent.InContext(ctx, "sdk-feature", "update-libraries")

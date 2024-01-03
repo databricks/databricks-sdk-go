@@ -82,16 +82,12 @@ func (s *Suite) parsePackages(filename, client string) error {
 	}
 	for _, f := range structType.Fields.List {
 		fieldName := f.Names[0].Name
-		starExpr, ok := f.Type.(*ast.StarExpr)
-		if !ok {
-			continue
-		}
-		selectorExpr, ok := starExpr.X.(*ast.SelectorExpr)
+		selectorExpr, ok := f.Type.(*ast.SelectorExpr)
 		if !ok {
 			continue
 		}
 		apiName := selectorExpr.Sel.Name
-		if !strings.HasSuffix(apiName, "API") {
+		if !strings.HasSuffix(apiName, "Interface") {
 			continue
 		}
 		s.ServiceToPackage[fieldName] = s.expectIdent(selectorExpr.X)
