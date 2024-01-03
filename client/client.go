@@ -31,13 +31,14 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 	return &DatabricksClient{
 		Config: cfg,
 		client: httpclient.NewApiClient(httpclient.ClientConfig{
-			RetryTimeout:       retryTimeout,
-			HTTPTimeout:        httpTimeout,
-			RateLimitPerSecond: orDefault(cfg.RateLimitPerSecond, 15),
-			DebugHeaders:       cfg.DebugHeaders,
-			DebugTruncateBytes: cfg.DebugTruncateBytes,
-			InsecureSkipVerify: cfg.InsecureSkipVerify,
-			Transport:          cfg.HTTPTransport,
+			RetryTimeout:             retryTimeout,
+			HTTPTimeout:              httpTimeout,
+			RateLimitPerSecond:       orDefault(cfg.RateLimitPerSecond, 15),
+			DebugHeaders:             cfg.DebugHeaders,
+			DebugAuthorizationHeader: cfg.DebugAuthorizationHeader,
+			DebugTruncateBytes:       cfg.DebugTruncateBytes,
+			InsecureSkipVerify:       cfg.InsecureSkipVerify,
+			Transport:                cfg.HTTPTransport,
 			Visitors: []httpclient.RequestVisitor{
 				cfg.Authenticate,
 				func(r *http.Request) error {

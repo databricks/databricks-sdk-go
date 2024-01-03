@@ -26,12 +26,13 @@ type RequestVisitor func(*http.Request) error
 type ClientConfig struct {
 	Visitors []RequestVisitor
 
-	RetryTimeout       time.Duration
-	HTTPTimeout        time.Duration
-	InsecureSkipVerify bool
-	DebugHeaders       bool
-	DebugTruncateBytes int
-	RateLimitPerSecond int
+	RetryTimeout             time.Duration
+	HTTPTimeout              time.Duration
+	InsecureSkipVerify       bool
+	DebugHeaders             bool
+	DebugAuthorizationHeader bool
+	DebugTruncateBytes       int
+	RateLimitPerSecond       int
 
 	ErrorMapper     func(ctx context.Context, resp common.ResponseWrapper) error
 	ErrorRetriable  func(ctx context.Context, err error) bool
@@ -257,8 +258,8 @@ func (c *ApiClient) recordRequestLog(
 		RequestBody:              requestBody,
 		ResponseBody:             responseBody,
 		DebugHeaders:             c.config.DebugHeaders,
+		DebugAuthorizationHeader: c.config.DebugAuthorizationHeader,
 		DebugTruncateBytes:       c.config.DebugTruncateBytes,
-		DebugAuthorizationHeader: true,
 	}.String()
 	logger.Debugf(ctx, message)
 }

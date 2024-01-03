@@ -14,6 +14,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 	"golang.org/x/time/rate"
@@ -545,4 +546,99 @@ func TestOAuth2Integration(t *testing.T) {
 	res, err := outer.Get("abc")
 	require.NoError(t, err)
 	require.Equal(t, 204, res.StatusCode)
+}
+
+type logEntry struct {
+	String string
+	Args   []interface{}
+}
+
+type inMemoryLogger struct {
+	logs map[logger.Level][]logEntry
+}
+
+func newInMemoryLogger() *inMemoryLogger {
+	return &inMemoryLogger{
+		logs: map[logger.Level][]logEntry{},
+	}
+}
+
+func (l *inMemoryLogger) Enabled(_ context.Context, level logger.Level) bool {
+	return true
+}
+
+func (l *inMemoryLogger) Tracef(_ context.Context, format string, v ...interface{}) {
+	l.logs[logger.LevelTrace] = append(l.logs[logger.LevelTrace], logEntry{format, v})
+}
+
+func (l *inMemoryLogger) Debugf(_ context.Context, format string, v ...interface{}) {
+	l.logs[logger.LevelDebug] = append(l.logs[logger.LevelDebug], logEntry{format, v})
+}
+
+func (l *inMemoryLogger) Infof(_ context.Context, format string, v ...interface{}) {
+	l.logs[logger.LevelInfo] = append(l.logs[logger.LevelInfo], logEntry{format, v})
+}
+
+func (l *inMemoryLogger) Warnf(_ context.Context, format string, v ...interface{}) {
+	l.logs[logger.LevelWarn] = append(l.logs[logger.LevelWarn], logEntry{format, v})
+}
+
+func (l *inMemoryLogger) Errorf(_ context.Context, format string, v ...interface{}) {
+	l.logs[logger.LevelError] = append(l.logs[logger.LevelError], logEntry{format, v})
+}
+
+func TestAuthorizationHeaderRedactedInLog(t *testing.T) {
+	c := NewApiClient(ClientConfig{
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{"foo": 2}`)),
+				Request:    r,
+			}, nil
+		}),
+		DebugHeaders:             true,
+		DebugAuthorizationHeader: false,
+	})
+	ctx := context.Background()
+	log := newInMemoryLogger()
+	ctx = logger.NewContext(ctx, log)
+	err := c.Do(ctx, "POST", "/c",
+		WithRequestHeader("Authorization", "Bearer secret-token"))
+	assert.NoError(t, err)
+	for _, logs := range log.logs {
+		for _, logMessage := range logs {
+			require.NotContains(t, logMessage.String, "Bearer secret-token")
+		}
+	}
+}
+
+func TestAuthorizationHeaderPresentInLog(t *testing.T) {
+	c := NewApiClient(ClientConfig{
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{"foo": 2}`)),
+				Request:    r,
+			}, nil
+		}),
+		DebugHeaders:             true,
+		DebugAuthorizationHeader: true,
+	})
+	ctx := context.Background()
+	log := newInMemoryLogger()
+	ctx = logger.NewContext(ctx, log)
+	err := c.Do(ctx, "POST", "/c",
+		WithRequestHeader("Authorization", "Bearer secret-token"))
+	assert.NoError(t, err)
+	containsToken := false
+out:
+	for _, logs := range log.logs {
+		for _, logMessage := range logs {
+			if strings.Contains(logMessage.String, "Bearer secret-token") {
+				containsToken = true
+				break out
+			}
+		}
+	}
+	assert.True(t, containsToken)
 }
