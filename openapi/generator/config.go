@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"sort"
 
 	"github.com/databricks/databricks-sdk-go/openapi/code"
@@ -135,7 +136,31 @@ func (c *Generator) Apply(ctx context.Context, batch *code.Batch, suite *roll.Su
 		}
 		filenames = append(filenames, pass.Filenames...)
 	}
-	err := render.Formatter(ctx, c.dir, filenames, c.Formatter)
+
+	mockDir := filepath.Join(c.dir, "experimental", "mocks", "service")
+	mockFilenames := []string{}
+	info, err := os.Stat(mockDir)
+	if err == nil && info.IsDir() {
+		err := filepath.Walk(mockDir, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if !info.IsDir() {
+				relPath, err := filepath.Rel(c.dir, path)
+				if err != nil {
+					return err
+				}
+				mockFilenames = append(mockFilenames, relPath)
+			}
+			return nil
+		})
+		if err != nil {
+			return fmt.Errorf("mocks: %w", err)
+		}
+		filenames = append(filenames, mockFilenames...)
+	}
+
+	err = render.Formatter(ctx, c.dir, filenames, c.Formatter)
 	if err != nil {
 		return err
 	}

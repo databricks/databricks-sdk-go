@@ -3,6 +3,7 @@
 package mocks
 
 import (
+	"fmt"
 	"github.com/databricks/databricks-sdk-go"
 	{{range .Packages}}
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/{{.Name}}"{{end}}
@@ -22,17 +23,17 @@ func NewMockWorkspaceClient(t interface {
 		WorkspaceClient: &databricks.WorkspaceClient{
 			Config: nil,
 			{{range .Services}}{{if not .IsAccounts}}
-			{{.Name}}: {{.Package.Name}}.NewMock{{.Name}}Interface(t),
+			{{.Name}}: {{ template "mock-interface-constructor" . }}(t),
 			{{- end}}{{end}}
 		},
 	}
 }
 
 {{range .Services}}{{if not .IsAccounts}}
-func(m *MockWorkspaceClient) GetMock{{.Name}}API() *{{.Package.Name}}.Mock{{.Name}}Interface {
-	api, ok := m.WorkspaceClient.{{.Name}}.(*{{.Package.Name}}.Mock{{.Name}}Interface)
+func(m *MockWorkspaceClient) GetMock{{.Name}}API() *{{ template "mock-interface-name" . }} {
+	api, ok := m.WorkspaceClient.{{.Name}}.(*{{ template "mock-interface-name" . }})
 	if !ok {
-		panic("Invalid API interface type")
+		panic(fmt.Sprintf("expected {{.Name}} to be *{{ template "mock-interface-name" . }}, actual was %T", m.WorkspaceClient.{{.Name}}))
 	}
 	return api
 }

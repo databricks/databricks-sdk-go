@@ -3,6 +3,7 @@
 package mocks
 
 import (
+	"fmt"
 	"github.com/databricks/databricks-sdk-go"
 	{{range .Packages}}
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/{{.Name}}"{{end}}
@@ -22,19 +23,26 @@ func NewMockAccountClient(t interface {
 		AccountClient: &databricks.AccountClient{
 			Config: nil,
 			{{range .Services}}{{if .IsAccounts}}
-			{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.NewMock{{.Name}}Interface(t),
+			{{(.TrimPrefix "account").PascalName}}: {{ template "mock-interface-constructor" . }}(t),
 			{{- end}}{{end}}
 		},
 	}
 }
 
 {{range .Services}}{{if .IsAccounts}}
-func(m *MockAccountClient) GetMock{{.Name}}API() *{{.Package.Name}}.Mock{{.Name}}Interface {
-	api, ok := m.AccountClient.{{(.TrimPrefix "account").PascalName}}.(*{{.Package.Name}}.Mock{{.Name}}Interface)
+func(m *MockAccountClient) GetMock{{.Name}}API() *{{ template "mock-interface-name" . }} {
+	api, ok := m.AccountClient.{{(.TrimPrefix "account").PascalName}}.(*{{ template "mock-interface-name" . }})
 	if !ok {
-		panic("Invalid API interface type")
+		panic(fmt.Sprintf("expected {{(.TrimPrefix "account").PascalName}} to be *{{ template "mock-interface-name" . }}, actual was %T", m.AccountClient.{{(.TrimPrefix "account").PascalName}}))
 	}
 	return api
 }
 
 {{end}}{{end}}
+
+{{define "mock-interface-constructor" -}}
+  {{.Package.Name}}.NewMock{{.PascalName}}Interface
+{{- end}}
+{{ define "mock-interface-name" -}}
+  {{.Package.Name}}.Mock{{.PascalName}}Interface
+{{- end}}
