@@ -596,8 +596,8 @@ func TestAuthorizationHeaderRedactedInLog(t *testing.T) {
 				Request:    r,
 			}, nil
 		}),
-		DebugHeaders:             true,
-		DebugAuthorizationHeader: false,
+		DebugHeaders:          true,
+		DebugSensitiveHeaders: false,
 	})
 	ctx := context.Background()
 	log := newInMemoryLogger()
@@ -621,8 +621,8 @@ func TestAuthorizationHeaderPresentInLog(t *testing.T) {
 				Request:    r,
 			}, nil
 		}),
-		DebugHeaders:             true,
-		DebugAuthorizationHeader: true,
+		DebugHeaders:          true,
+		DebugSensitiveHeaders: true,
 	})
 	ctx := context.Background()
 	log := newInMemoryLogger()

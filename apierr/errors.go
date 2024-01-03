@@ -223,13 +223,13 @@ func parseUnknownError(resp *http.Response, requestBody, responseBody []byte, er
 
 func MakeUnexpectedError(resp *http.Response, err error, requestBody, responseBody []byte) error {
 	rts := httplog.RoundTripStringer{
-		Response:                 resp,
-		Err:                      err,
-		RequestBody:              requestBody,
-		ResponseBody:             responseBody,
-		DebugHeaders:             true,
-		DebugTruncateBytes:       10 * 1024,
-		DebugAuthorizationHeader: false,
+		Response:              resp,
+		Err:                   err,
+		RequestBody:           requestBody,
+		ResponseBody:          responseBody,
+		DebugHeaders:          true,
+		DebugTruncateBytes:    10 * 1024,
+		DebugSensitiveHeaders: false,
 	}
 	return fmt.Errorf("unexpected error handling request: %w. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\n```\n%s\n```", err, rts.String())
 }

@@ -107,8 +107,8 @@ type Config struct {
 	// Debug HTTP headers of requests made by the provider. Default is false.
 	DebugHeaders bool `name:"debug_headers" env:"DATABRICKS_DEBUG_HEADERS" auth:"-"`
 
-	// If true, the unredacted Authorization header will be logged. Default is false.
-	DebugAuthorizationHeader bool `name:"debug_authorization_header" env:"DATABRICKS_DEBUG_AUTHORIZATION_HEADER" auth:"-"`
+	// If true, sensitive header values, like Authorization, will be logged. Default is false.
+	DebugSensitiveHeaders bool `name:"debug_sensitive_headers" env:"DATABRICKS_DEBUG_SENSITIVE_HEADERS" auth:"-"`
 
 	// Maximum number of requests per second made to Databricks REST API.
 	RateLimitPerSecond int `name:"rate_limit" env:"DATABRICKS_RATE_LIMIT" auth:"-"`
@@ -230,14 +230,14 @@ func (c *Config) EnsureResolved() error {
 	}
 	c.refreshCtx = ctx
 	c.refreshClient = httpclient.NewApiClient(httpclient.ClientConfig{
-		DebugHeaders:             c.DebugHeaders,
-		DebugAuthorizationHeader: c.DebugAuthorizationHeader,
-		DebugTruncateBytes:       c.DebugTruncateBytes,
-		InsecureSkipVerify:       c.InsecureSkipVerify,
-		RetryTimeout:             time.Duration(c.RetryTimeoutSeconds) * time.Second,
-		HTTPTimeout:              time.Duration(c.HTTPTimeoutSeconds) * time.Second,
-		Transport:                c.HTTPTransport,
-		ErrorMapper:              c.refreshTokenErrorMapper,
+		DebugHeaders:          c.DebugHeaders,
+		DebugSensitiveHeaders: c.DebugSensitiveHeaders,
+		DebugTruncateBytes:    c.DebugTruncateBytes,
+		InsecureSkipVerify:    c.InsecureSkipVerify,
+		RetryTimeout:          time.Duration(c.RetryTimeoutSeconds) * time.Second,
+		HTTPTimeout:           time.Duration(c.HTTPTimeoutSeconds) * time.Second,
+		Transport:             c.HTTPTransport,
+		ErrorMapper:           c.refreshTokenErrorMapper,
 		TransientErrors: []string{
 			"throttled",
 			"too many requests",
