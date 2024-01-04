@@ -343,20 +343,20 @@ func (_c *MockStorageCredentialsInterface_Impl_Call) RunAndReturn(run func() cat
 	return _c
 }
 
-// List provides a mock function with given fields: ctx
-func (_m *MockStorageCredentialsInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo] {
-	ret := _m.Called(ctx)
+// List provides a mock function with given fields: ctx, request
+func (_m *MockStorageCredentialsInterface) List(ctx context.Context, request catalog.ListStorageCredentialsRequest) *listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo] {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]); ok {
-		r0 = rf(ctx)
+	var r0 *listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListStorageCredentialsRequest) *listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo])
+			r0 = ret.Get(0).(*listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo])
 		}
 	}
 
@@ -370,30 +370,31 @@ type MockStorageCredentialsInterface_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockStorageCredentialsInterface_Expecter) List(ctx interface{}) *MockStorageCredentialsInterface_List_Call {
-	return &MockStorageCredentialsInterface_List_Call{Call: _e.mock.On("List", ctx)}
+//   - request catalog.ListStorageCredentialsRequest
+func (_e *MockStorageCredentialsInterface_Expecter) List(ctx interface{}, request interface{}) *MockStorageCredentialsInterface_List_Call {
+	return &MockStorageCredentialsInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
 }
 
-func (_c *MockStorageCredentialsInterface_List_Call) Run(run func(ctx context.Context)) *MockStorageCredentialsInterface_List_Call {
+func (_c *MockStorageCredentialsInterface_List_Call) Run(run func(ctx context.Context, request catalog.ListStorageCredentialsRequest)) *MockStorageCredentialsInterface_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListStorageCredentialsRequest))
 	})
 	return _c
 }
 
-func (_c *MockStorageCredentialsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]) *MockStorageCredentialsInterface_List_Call {
+func (_c *MockStorageCredentialsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]) *MockStorageCredentialsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockStorageCredentialsInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]) *MockStorageCredentialsInterface_List_Call {
+func (_c *MockStorageCredentialsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListStorageCredentialsRequest) *listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]) *MockStorageCredentialsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// ListAll provides a mock function with given fields: ctx
-func (_m *MockStorageCredentialsInterface) ListAll(ctx context.Context) ([]catalog.StorageCredentialInfo, error) {
-	ret := _m.Called(ctx)
+// ListAll provides a mock function with given fields: ctx, request
+func (_m *MockStorageCredentialsInterface) ListAll(ctx context.Context, request catalog.ListStorageCredentialsRequest) ([]catalog.StorageCredentialInfo, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
@@ -401,19 +402,19 @@ func (_m *MockStorageCredentialsInterface) ListAll(ctx context.Context) ([]catal
 
 	var r0 []catalog.StorageCredentialInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) ([]catalog.StorageCredentialInfo, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListStorageCredentialsRequest) ([]catalog.StorageCredentialInfo, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) []catalog.StorageCredentialInfo); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListStorageCredentialsRequest) []catalog.StorageCredentialInfo); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]catalog.StorageCredentialInfo)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListStorageCredentialsRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -428,13 +429,14 @@ type MockStorageCredentialsInterface_ListAll_Call struct {
 
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockStorageCredentialsInterface_Expecter) ListAll(ctx interface{}) *MockStorageCredentialsInterface_ListAll_Call {
-	return &MockStorageCredentialsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx)}
+//   - request catalog.ListStorageCredentialsRequest
+func (_e *MockStorageCredentialsInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockStorageCredentialsInterface_ListAll_Call {
+	return &MockStorageCredentialsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
 }
 
-func (_c *MockStorageCredentialsInterface_ListAll_Call) Run(run func(ctx context.Context)) *MockStorageCredentialsInterface_ListAll_Call {
+func (_c *MockStorageCredentialsInterface_ListAll_Call) Run(run func(ctx context.Context, request catalog.ListStorageCredentialsRequest)) *MockStorageCredentialsInterface_ListAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListStorageCredentialsRequest))
 	})
 	return _c
 }
@@ -444,14 +446,14 @@ func (_c *MockStorageCredentialsInterface_ListAll_Call) Return(_a0 []catalog.Sto
 	return _c
 }
 
-func (_c *MockStorageCredentialsInterface_ListAll_Call) RunAndReturn(run func(context.Context) ([]catalog.StorageCredentialInfo, error)) *MockStorageCredentialsInterface_ListAll_Call {
+func (_c *MockStorageCredentialsInterface_ListAll_Call) RunAndReturn(run func(context.Context, catalog.ListStorageCredentialsRequest) ([]catalog.StorageCredentialInfo, error)) *MockStorageCredentialsInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// StorageCredentialInfoNameToIdMap provides a mock function with given fields: ctx
-func (_m *MockStorageCredentialsInterface) StorageCredentialInfoNameToIdMap(ctx context.Context) (map[string]string, error) {
-	ret := _m.Called(ctx)
+// StorageCredentialInfoNameToIdMap provides a mock function with given fields: ctx, request
+func (_m *MockStorageCredentialsInterface) StorageCredentialInfoNameToIdMap(ctx context.Context, request catalog.ListStorageCredentialsRequest) (map[string]string, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for StorageCredentialInfoNameToIdMap")
@@ -459,19 +461,19 @@ func (_m *MockStorageCredentialsInterface) StorageCredentialInfoNameToIdMap(ctx 
 
 	var r0 map[string]string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) (map[string]string, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListStorageCredentialsRequest) (map[string]string, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) map[string]string); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListStorageCredentialsRequest) map[string]string); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(map[string]string)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListStorageCredentialsRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -486,13 +488,14 @@ type MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call struc
 
 // StorageCredentialInfoNameToIdMap is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockStorageCredentialsInterface_Expecter) StorageCredentialInfoNameToIdMap(ctx interface{}) *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call {
-	return &MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call{Call: _e.mock.On("StorageCredentialInfoNameToIdMap", ctx)}
+//   - request catalog.ListStorageCredentialsRequest
+func (_e *MockStorageCredentialsInterface_Expecter) StorageCredentialInfoNameToIdMap(ctx interface{}, request interface{}) *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call {
+	return &MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call{Call: _e.mock.On("StorageCredentialInfoNameToIdMap", ctx, request)}
 }
 
-func (_c *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call) Run(run func(ctx context.Context)) *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call {
+func (_c *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call) Run(run func(ctx context.Context, request catalog.ListStorageCredentialsRequest)) *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListStorageCredentialsRequest))
 	})
 	return _c
 }
@@ -502,7 +505,7 @@ func (_c *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call)
 	return _c
 }
 
-func (_c *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call) RunAndReturn(run func(context.Context) (map[string]string, error)) *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call {
+func (_c *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call) RunAndReturn(run func(context.Context, catalog.ListStorageCredentialsRequest) (map[string]string, error)) *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call {
 	_c.Call.Return(run)
 	return _c
 }

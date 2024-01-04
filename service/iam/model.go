@@ -1186,7 +1186,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
@@ -1292,6 +1292,8 @@ type UserSchema string
 
 const UserSchemaUrnIetfParamsScimSchemasCore20User UserSchema = `urn:ietf:params:scim:schemas:core:2.0:User`
 
+const UserSchemaUrnIetfParamsScimSchemasExtensionWorkspace20User UserSchema = `urn:ietf:params:scim:schemas:extension:workspace:2.0:User`
+
 // String representation for [fmt.Print]
 func (f *UserSchema) String() string {
 	return string(*f)
@@ -1300,11 +1302,11 @@ func (f *UserSchema) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UserSchema) Set(v string) error {
 	switch v {
-	case `urn:ietf:params:scim:schemas:core:2.0:User`:
+	case `urn:ietf:params:scim:schemas:core:2.0:User`, `urn:ietf:params:scim:schemas:extension:workspace:2.0:User`:
 		*f = UserSchema(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "urn:ietf:params:scim:schemas:core:2.0:User"`, v)
+		return fmt.Errorf(`value "%s" is not one of "urn:ietf:params:scim:schemas:core:2.0:User", "urn:ietf:params:scim:schemas:extension:workspace:2.0:User"`, v)
 	}
 }
 

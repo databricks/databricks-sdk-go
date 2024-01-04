@@ -151,7 +151,7 @@ func ExampleExternalLocationsAPI_ListAll_externalLocationsOnAws() {
 		panic(err)
 	}
 
-	all, err := w.ExternalLocations.ListAll(ctx)
+	all, err := w.ExternalLocations.ListAll(ctx, catalog.ListExternalLocationsRequest{})
 	if err != nil {
 		panic(err)
 	}

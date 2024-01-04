@@ -127,7 +127,7 @@ type CreateTokenRequest struct {
 	Comment string `json:"comment,omitempty"`
 	// The lifetime of the token, in seconds.
 	//
-	// If the ifetime is not specified, this token remains valid indefinitely.
+	// If the lifetime is not specified, this token remains valid indefinitely.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -198,6 +198,7 @@ func (s DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
 
 // Delete access list
 type DeleteAccountIpAccessListRequest struct {
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 }
 
@@ -226,7 +227,7 @@ type DeleteDefaultWorkspaceNamespaceResponse struct {
 
 // Delete access list
 type DeleteIpAccessListRequest struct {
-	// The ID for the corresponding IP access list to modify
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 }
 
@@ -318,12 +319,13 @@ type FetchIpAccessListResponse struct {
 
 // Get IP access list
 type GetAccountIpAccessListRequest struct {
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 }
 
 // Get access list
 type GetIpAccessListRequest struct {
-	// The ID for the corresponding IP access list to modify
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 }
 
@@ -477,6 +479,11 @@ func (s *ListPrivateEndpointRulesRequest) UnmarshalJSON(b []byte) error {
 
 func (s ListPrivateEndpointRulesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ListPublicTokensResponse struct {
+	// The information for each token.
+	TokenInfos []PublicTokenInfo `json:"token_infos,omitempty"`
 }
 
 // List all tokens
@@ -883,7 +890,7 @@ type ReadPersonalComputeSettingRequest struct {
 type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled"`
-	// The ID for the corresponding IP access list to modify
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 
 	IpAddresses []string `json:"ip_addresses,omitempty"`
@@ -1139,7 +1146,7 @@ func (s UpdateDefaultWorkspaceNamespaceRequest) MarshalJSON() ([]byte, error) {
 type UpdateIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled,omitempty"`
-	// The ID for the corresponding IP access list to modify
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 
 	IpAddresses []string `json:"ip_addresses,omitempty"`

@@ -10,6 +10,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/compute"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
@@ -19,6 +20,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sharing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sql"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/workspace"
 )
 
@@ -65,6 +67,7 @@ func NewMockWorkspaceClient(t interface {
 			InstanceProfiles:          compute.NewMockInstanceProfilesInterface(t),
 			IpAccessLists:             settings.NewMockIpAccessListsInterface(t),
 			Jobs:                      jobs.NewMockJobsInterface(t),
+			Lakeview:                  dashboards.NewMockLakeviewInterface(t),
 			Libraries:                 compute.NewMockLibrariesInterface(t),
 			Metastores:                catalog.NewMockMetastoresInterface(t),
 			ModelRegistry:             ml.NewMockModelRegistryInterface(t),
@@ -94,6 +97,8 @@ func NewMockWorkspaceClient(t interface {
 			TokenManagement:           settings.NewMockTokenManagementInterface(t),
 			Tokens:                    settings.NewMockTokensInterface(t),
 			Users:                     iam.NewMockUsersInterface(t),
+			VectorSearchEndpoints:     vectorsearch.NewMockVectorSearchEndpointsInterface(t),
+			VectorSearchIndexes:       vectorsearch.NewMockVectorSearchIndexesInterface(t),
 			Volumes:                   catalog.NewMockVolumesInterface(t),
 			Warehouses:                sql.NewMockWarehousesInterface(t),
 			Workspace:                 workspace.NewMockWorkspaceInterface(t),
@@ -335,6 +340,14 @@ func (m *MockWorkspaceClient) GetMockJobsAPI() *jobs.MockJobsInterface {
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockLakeviewAPI() *dashboards.MockLakeviewInterface {
+	api, ok := m.WorkspaceClient.Lakeview.(*dashboards.MockLakeviewInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Lakeview to be *dashboards.MockLakeviewInterface, actual was %T", m.WorkspaceClient.Lakeview))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockLibrariesAPI() *compute.MockLibrariesInterface {
 	api, ok := m.WorkspaceClient.Libraries.(*compute.MockLibrariesInterface)
 	if !ok {
@@ -563,6 +576,22 @@ func (m *MockWorkspaceClient) GetMockUsersAPI() *iam.MockUsersInterface {
 	api, ok := m.WorkspaceClient.Users.(*iam.MockUsersInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Users to be *iam.MockUsersInterface, actual was %T", m.WorkspaceClient.Users))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockVectorSearchEndpointsAPI() *vectorsearch.MockVectorSearchEndpointsInterface {
+	api, ok := m.WorkspaceClient.VectorSearchEndpoints.(*vectorsearch.MockVectorSearchEndpointsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected VectorSearchEndpoints to be *vectorsearch.MockVectorSearchEndpointsInterface, actual was %T", m.WorkspaceClient.VectorSearchEndpoints))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockVectorSearchIndexesAPI() *vectorsearch.MockVectorSearchIndexesInterface {
+	api, ok := m.WorkspaceClient.VectorSearchIndexes.(*vectorsearch.MockVectorSearchIndexesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected VectorSearchIndexes to be *vectorsearch.MockVectorSearchIndexesInterface, actual was %T", m.WorkspaceClient.VectorSearchIndexes))
 	}
 	return api
 }

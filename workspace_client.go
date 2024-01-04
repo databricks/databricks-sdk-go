@@ -10,6 +10,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/compute"
+	"github.com/databricks/databricks-sdk-go/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
@@ -19,6 +20,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
+	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
 
@@ -344,6 +346,11 @@ type WorkspaceClient struct {
 	// [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
 	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs jobs.JobsInterface
+
+	// These APIs provide specific management operations for Lakeview
+	// dashboards. Generic resource management can be done with Workspace API
+	// (import, export, get-status, list, delete).
+	Lakeview dashboards.LakeviewInterface
 
 	// The Libraries API allows you to install and uninstall libraries and get
 	// the status of libraries on a cluster.
@@ -830,6 +837,22 @@ type WorkspaceClient struct {
 	// process and prevents unauthorized users from accessing sensitive data.
 	Users iam.UsersInterface
 
+	// **Endpoint**: Represents the compute resources to host vector search
+	// indexes.
+	VectorSearchEndpoints vectorsearch.VectorSearchEndpointsInterface
+
+	// **Index**: An efficient representation of your embedding vectors that
+	// supports real-time and efficient approximate nearest neighbor (ANN)
+	// search queries.
+	//
+	// There are 2 types of Vector Search indexes: * **Delta Sync Index**: An
+	// index that automatically syncs with a source Delta Table, automatically
+	// and incrementally updating the index as the underlying data in the Delta
+	// Table changes. * **Direct Vector Access Index**: An index that supports
+	// direct read and write of vectors and metadata through our REST and SDK
+	// APIs. With this model, the user manages index updates.
+	VectorSearchIndexes vectorsearch.VectorSearchIndexesInterface
+
 	// Volumes are a Unity Catalog (UC) capability for accessing, storing,
 	// governing, organizing and processing files. Use cases include running
 	// machine learning on unstructured data such as image, audio, video, or PDF
@@ -936,6 +959,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		InstanceProfiles:          compute.NewInstanceProfiles(apiClient),
 		IpAccessLists:             settings.NewIpAccessLists(apiClient),
 		Jobs:                      jobs.NewJobs(apiClient),
+		Lakeview:                  dashboards.NewLakeview(apiClient),
 		Libraries:                 compute.NewLibraries(apiClient),
 		Metastores:                catalog.NewMetastores(apiClient),
 		ModelRegistry:             ml.NewModelRegistry(apiClient),
@@ -965,6 +989,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		TokenManagement:           settings.NewTokenManagement(apiClient),
 		Tokens:                    settings.NewTokens(apiClient),
 		Users:                     iam.NewUsers(apiClient),
+		VectorSearchEndpoints:     vectorsearch.NewVectorSearchEndpoints(apiClient),
+		VectorSearchIndexes:       vectorsearch.NewVectorSearchIndexes(apiClient),
 		Volumes:                   catalog.NewVolumes(apiClient),
 		Warehouses:                sql.NewWarehouses(apiClient),
 		Workspace:                 workspace.NewWorkspace(apiClient),

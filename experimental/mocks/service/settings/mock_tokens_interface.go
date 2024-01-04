@@ -178,23 +178,23 @@ func (_c *MockTokensInterface_DeleteByTokenId_Call) RunAndReturn(run func(contex
 }
 
 // GetByComment provides a mock function with given fields: ctx, name
-func (_m *MockTokensInterface) GetByComment(ctx context.Context, name string) (*settings.TokenInfo, error) {
+func (_m *MockTokensInterface) GetByComment(ctx context.Context, name string) (*settings.PublicTokenInfo, error) {
 	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByComment")
 	}
 
-	var r0 *settings.TokenInfo
+	var r0 *settings.PublicTokenInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*settings.TokenInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*settings.PublicTokenInfo, error)); ok {
 		return rf(ctx, name)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *settings.TokenInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *settings.PublicTokenInfo); ok {
 		r0 = rf(ctx, name)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.TokenInfo)
+			r0 = ret.Get(0).(*settings.PublicTokenInfo)
 		}
 	}
 
@@ -226,12 +226,12 @@ func (_c *MockTokensInterface_GetByComment_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockTokensInterface_GetByComment_Call) Return(_a0 *settings.TokenInfo, _a1 error) *MockTokensInterface_GetByComment_Call {
+func (_c *MockTokensInterface_GetByComment_Call) Return(_a0 *settings.PublicTokenInfo, _a1 error) *MockTokensInterface_GetByComment_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockTokensInterface_GetByComment_Call) RunAndReturn(run func(context.Context, string) (*settings.TokenInfo, error)) *MockTokensInterface_GetByComment_Call {
+func (_c *MockTokensInterface_GetByComment_Call) RunAndReturn(run func(context.Context, string) (*settings.PublicTokenInfo, error)) *MockTokensInterface_GetByComment_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -284,19 +284,19 @@ func (_c *MockTokensInterface_Impl_Call) RunAndReturn(run func() settings.Tokens
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockTokensInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *settings.ListTokensResponse, settings.TokenInfo] {
+func (_m *MockTokensInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *settings.ListTokensResponse, settings.TokenInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *settings.ListTokensResponse, settings.TokenInfo]); ok {
+	var r0 *listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo]
+	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *settings.ListTokensResponse, settings.TokenInfo])
+			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo])
 		}
 	}
 
@@ -321,34 +321,34 @@ func (_c *MockTokensInterface_List_Call) Run(run func(ctx context.Context)) *Moc
 	return _c
 }
 
-func (_c *MockTokensInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *settings.ListTokensResponse, settings.TokenInfo]) *MockTokensInterface_List_Call {
+func (_c *MockTokensInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo]) *MockTokensInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockTokensInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *settings.ListTokensResponse, settings.TokenInfo]) *MockTokensInterface_List_Call {
+func (_c *MockTokensInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo]) *MockTokensInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListAll provides a mock function with given fields: ctx
-func (_m *MockTokensInterface) ListAll(ctx context.Context) ([]settings.TokenInfo, error) {
+func (_m *MockTokensInterface) ListAll(ctx context.Context) ([]settings.PublicTokenInfo, error) {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
 	}
 
-	var r0 []settings.TokenInfo
+	var r0 []settings.PublicTokenInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) ([]settings.TokenInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context) ([]settings.PublicTokenInfo, error)); ok {
 		return rf(ctx)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) []settings.TokenInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context) []settings.PublicTokenInfo); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]settings.TokenInfo)
+			r0 = ret.Get(0).([]settings.PublicTokenInfo)
 		}
 	}
 
@@ -379,22 +379,22 @@ func (_c *MockTokensInterface_ListAll_Call) Run(run func(ctx context.Context)) *
 	return _c
 }
 
-func (_c *MockTokensInterface_ListAll_Call) Return(_a0 []settings.TokenInfo, _a1 error) *MockTokensInterface_ListAll_Call {
+func (_c *MockTokensInterface_ListAll_Call) Return(_a0 []settings.PublicTokenInfo, _a1 error) *MockTokensInterface_ListAll_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockTokensInterface_ListAll_Call) RunAndReturn(run func(context.Context) ([]settings.TokenInfo, error)) *MockTokensInterface_ListAll_Call {
+func (_c *MockTokensInterface_ListAll_Call) RunAndReturn(run func(context.Context) ([]settings.PublicTokenInfo, error)) *MockTokensInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// TokenInfoCommentToTokenIdMap provides a mock function with given fields: ctx
-func (_m *MockTokensInterface) TokenInfoCommentToTokenIdMap(ctx context.Context) (map[string]string, error) {
+// PublicTokenInfoCommentToTokenIdMap provides a mock function with given fields: ctx
+func (_m *MockTokensInterface) PublicTokenInfoCommentToTokenIdMap(ctx context.Context) (map[string]string, error) {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
-		panic("no return value specified for TokenInfoCommentToTokenIdMap")
+		panic("no return value specified for PublicTokenInfoCommentToTokenIdMap")
 	}
 
 	var r0 map[string]string
@@ -419,30 +419,30 @@ func (_m *MockTokensInterface) TokenInfoCommentToTokenIdMap(ctx context.Context)
 	return r0, r1
 }
 
-// MockTokensInterface_TokenInfoCommentToTokenIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'TokenInfoCommentToTokenIdMap'
-type MockTokensInterface_TokenInfoCommentToTokenIdMap_Call struct {
+// MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PublicTokenInfoCommentToTokenIdMap'
+type MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call struct {
 	*mock.Call
 }
 
-// TokenInfoCommentToTokenIdMap is a helper method to define mock.On call
+// PublicTokenInfoCommentToTokenIdMap is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockTokensInterface_Expecter) TokenInfoCommentToTokenIdMap(ctx interface{}) *MockTokensInterface_TokenInfoCommentToTokenIdMap_Call {
-	return &MockTokensInterface_TokenInfoCommentToTokenIdMap_Call{Call: _e.mock.On("TokenInfoCommentToTokenIdMap", ctx)}
+func (_e *MockTokensInterface_Expecter) PublicTokenInfoCommentToTokenIdMap(ctx interface{}) *MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call {
+	return &MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call{Call: _e.mock.On("PublicTokenInfoCommentToTokenIdMap", ctx)}
 }
 
-func (_c *MockTokensInterface_TokenInfoCommentToTokenIdMap_Call) Run(run func(ctx context.Context)) *MockTokensInterface_TokenInfoCommentToTokenIdMap_Call {
+func (_c *MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call) Run(run func(ctx context.Context)) *MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context))
 	})
 	return _c
 }
 
-func (_c *MockTokensInterface_TokenInfoCommentToTokenIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockTokensInterface_TokenInfoCommentToTokenIdMap_Call {
+func (_c *MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockTokensInterface_TokenInfoCommentToTokenIdMap_Call) RunAndReturn(run func(context.Context) (map[string]string, error)) *MockTokensInterface_TokenInfoCommentToTokenIdMap_Call {
+func (_c *MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call) RunAndReturn(run func(context.Context) (map[string]string, error)) *MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call {
 	_c.Call.Return(run)
 	return _c
 }

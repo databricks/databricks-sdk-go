@@ -212,10 +212,10 @@ type JobsInterface interface {
 	// Deprecated: use [JobsAPIInterface.RepairRun].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
 	RepairRunAndWait(ctx context.Context, repairRun RepairRun, options ...retries.Option[Run]) (*Run, error)
 
-	// Overwrite all settings for a job.
+	// Update all job settings (reset).
 	//
-	// Overwrite all settings for the given job. Use the Update endpoint to update
-	// job settings partially.
+	// Overwrite all settings for the given job. Use the [_Update_
+	// endpoint](:method:jobs/update) to update job settings partially.
 	Reset(ctx context.Context, request ResetJob) error
 
 	// Trigger a new job run.
@@ -253,10 +253,10 @@ type JobsInterface interface {
 	// Deprecated: use [JobsAPIInterface.Submit].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
 	SubmitAndWait(ctx context.Context, submitRun SubmitRun, options ...retries.Option[Run]) (*Run, error)
 
-	// Partially update a job.
+	// Update job settings partially.
 	//
-	// Add, update, or remove specific settings of an existing job. Use the ResetJob
-	// to overwrite all job settings.
+	// Add, update, or remove specific settings of an existing job. Use the [_Reset_
+	// endpoint](:method:jobs/reset) to overwrite all job settings.
 	Update(ctx context.Context, request UpdateJob) error
 
 	// Update job permissions.
@@ -758,10 +758,10 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 	return wait.Get()
 }
 
-// Overwrite all settings for a job.
+// Update all job settings (reset).
 //
-// Overwrite all settings for the given job. Use the Update endpoint to update
-// job settings partially.
+// Overwrite all settings for the given job. Use the [_Update_
+// endpoint](:method:jobs/update) to update job settings partially.
 func (a *JobsAPI) Reset(ctx context.Context, request ResetJob) error {
 	return a.impl.Reset(ctx, request)
 }
@@ -869,10 +869,10 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 	return wait.Get()
 }
 
-// Partially update a job.
+// Update job settings partially.
 //
-// Add, update, or remove specific settings of an existing job. Use the ResetJob
-// to overwrite all job settings.
+// Add, update, or remove specific settings of an existing job. Use the [_Reset_
+// endpoint](:method:jobs/reset) to overwrite all job settings.
 func (a *JobsAPI) Update(ctx context.Context, request UpdateJob) error {
 	return a.impl.Update(ctx, request)
 }
