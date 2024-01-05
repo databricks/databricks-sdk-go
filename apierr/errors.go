@@ -168,6 +168,11 @@ func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 }
 
 func parseErrorFromResponse(resp *http.Response, requestBody, responseBody []byte) *APIError {
+	if len(responseBody) == 0 {
+		return &APIError{
+			StatusCode: resp.StatusCode,
+		}
+	}
 	// try to read in nicely formatted API error response
 	var errorBody APIErrorBody
 	err := json.Unmarshal(responseBody, &errorBody)
