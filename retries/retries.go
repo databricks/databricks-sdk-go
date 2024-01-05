@@ -100,6 +100,13 @@ type RetryConfig struct {
 	shouldRetry func(error) bool
 }
 
+func (r RetryConfig) Timeout() time.Duration {
+	if r.timeout == 0 {
+		return 20 * time.Minute
+	}
+	return r.timeout
+}
+
 // WithTimeout sets the timeout for the retrier.
 func WithTimeout(timeout time.Duration) RetryOption {
 	return func(rc *RetryConfig) {
@@ -129,26 +136,35 @@ func WithRetryFunc(halt func(error) bool) RetryOption {
 	}
 }
 
-type retrier[T any] struct {
+// Retrier is a struct that can retry an operation until it succeeds or the timeout is reached.
+// The empty struct indicates that the retrier should run for 20 minutes and retry on any error.
+//
+// Example:
+//
+//	r := retries.New(retries.WithTimeout(5 * time.Minute), retries.OnError(apierr.ErrResourceConflict))
+//	err := r.Wait(ctx, func(ctx context.Context) error {
+//		return a.Workspaces.Delete(ctx, provisioning.DeleteWorkspaceRequest{
+//			WorkspaceId: workspace.WorkspaceId,
+//		})
+//	})
+type Retrier[T any] struct {
 	config RetryConfig
 }
 
 // New creates a new retrier with the given configuration. If no timeout is specified, the default is 20 minutes.
 // If no retry function is specified, the default is to retry on all errors.
-func New[T any](configOpts ...func(*RetryConfig)) *retrier[T] {
-	config := RetryConfig{
-		timeout: 20 * time.Minute,
-	}
+func New[T any](configOpts ...func(*RetryConfig)) Retrier[T] {
+	config := RetryConfig{}
 	for _, opt := range configOpts {
 		opt(&config)
 	}
-	return &retrier[T]{config}
+	return Retrier[T]{config}
 }
 
 // Wait runs the given function until it succeeds or the timeout is reached. On
 // success, it returns nil. On timeout, it returns an error wrapping the last
 // error returned by the function.
-func (r *retrier[T]) Wait(ctx context.Context, fn func(ctx context.Context) error) error {
+func (r Retrier[T]) Wait(ctx context.Context, fn func(ctx context.Context) error) error {
 	_, err := r.Run(ctx, func(ctx context.Context) (*T, error) {
 		return nil, fn(ctx)
 	})
@@ -157,8 +173,8 @@ func (r *retrier[T]) Wait(ctx context.Context, fn func(ctx context.Context) erro
 
 // Run runs the given function until it succeeds or the timeout is reached, returning the result.
 // On timeout, it returns an error wrapping the last error returned by the function.
-func (r *retrier[T]) Run(ctx context.Context, fn func(context.Context) (*T, error)) (*T, error) {
-	ctx, cancel := context.WithTimeout(ctx, r.config.timeout)
+func (r Retrier[T]) Run(ctx context.Context, fn func(context.Context) (*T, error)) (*T, error) {
+	ctx, cancel := context.WithTimeout(ctx, r.config.Timeout())
 	defer cancel()
 	var attempt int
 	var lastErr error
