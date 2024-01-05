@@ -46,6 +46,10 @@ func (e *Err) Error() string {
 	return e.Err.Error()
 }
 
+func (e *Err) Unwrap() error {
+	return e.Err
+}
+
 func Halt(err error) *Err {
 	return &Err{err, true}
 }
