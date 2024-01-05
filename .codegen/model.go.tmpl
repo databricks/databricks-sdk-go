@@ -45,7 +45,7 @@ func (f *{{.PascalName}}) String() string {
 // Set raw string value and validate it against allowed values
 func (f *{{.PascalName}}) Set(v string) error {
     switch v {
-    case {{range $i, $e := .Enum }}{{if $i}}, {{end}}`{{.Content}}`{{end}}:
+    case ``{{range $i, $e := .Enum }}, `{{.Content}}`{{end}}:
         *f = {{.PascalName}}(v)
         return nil
     default:

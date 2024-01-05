@@ -361,7 +361,7 @@ func (f *DeploymentStatusState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DeploymentStatusState) Set(v string) error {
 	switch v {
-	case `DEPLOYING`, `DEPLOYMENT_STATE_UNSPECIFIED`, `FAILURE`, `SUCCESS`:
+	case ``, `DEPLOYING`, `DEPLOYMENT_STATE_UNSPECIFIED`, `FAILURE`, `SUCCESS`:
 		*f = DeploymentStatusState(v)
 		return nil
 	default:
@@ -529,7 +529,7 @@ func (f *EndpointStateConfigUpdate) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointStateConfigUpdate) Set(v string) error {
 	switch v {
-	case `IN_PROGRESS`, `NOT_UPDATING`, `UPDATE_FAILED`:
+	case ``, `IN_PROGRESS`, `NOT_UPDATING`, `UPDATE_FAILED`:
 		*f = EndpointStateConfigUpdate(v)
 		return nil
 	default:
@@ -560,7 +560,7 @@ func (f *EndpointStateReady) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointStateReady) Set(v string) error {
 	switch v {
-	case `NOT_READY`, `READY`:
+	case ``, `NOT_READY`, `READY`:
 		*f = EndpointStateReady(v)
 		return nil
 	default:
@@ -1545,7 +1545,7 @@ func (f *ServedModelStateDeployment) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ServedModelStateDeployment) Set(v string) error {
 	switch v {
-	case `DEPLOYMENT_ABORTED`, `DEPLOYMENT_CREATING`, `DEPLOYMENT_FAILED`, `DEPLOYMENT_READY`, `DEPLOYMENT_RECOVERING`:
+	case ``, `DEPLOYMENT_ABORTED`, `DEPLOYMENT_CREATING`, `DEPLOYMENT_FAILED`, `DEPLOYMENT_READY`, `DEPLOYMENT_RECOVERING`:
 		*f = ServedModelStateDeployment(v)
 		return nil
 	default:
@@ -1694,7 +1694,7 @@ func (f *ServingEndpointDetailedPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ServingEndpointDetailedPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_MANAGE`, `CAN_QUERY`, `CAN_VIEW`:
+	case ``, `CAN_MANAGE`, `CAN_QUERY`, `CAN_VIEW`:
 		*f = ServingEndpointDetailedPermissionLevel(v)
 		return nil
 	default:
@@ -1742,7 +1742,7 @@ func (f *ServingEndpointPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ServingEndpointPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_MANAGE`, `CAN_QUERY`, `CAN_VIEW`:
+	case ``, `CAN_MANAGE`, `CAN_QUERY`, `CAN_VIEW`:
 		*f = ServingEndpointPermissionLevel(v)
 		return nil
 	default:

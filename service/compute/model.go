@@ -173,7 +173,7 @@ func (f *AwsAvailability) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AwsAvailability) Set(v string) error {
 	switch v {
-	case `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
+	case ``, `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
 		*f = AwsAvailability(v)
 		return nil
 	default:
@@ -241,7 +241,7 @@ func (f *AzureAvailability) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AzureAvailability) Set(v string) error {
 	switch v {
-	case `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
+	case ``, `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
 		*f = AzureAvailability(v)
 		return nil
 	default:
@@ -314,7 +314,7 @@ func (f *CloudProviderNodeStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CloudProviderNodeStatus) Set(v string) error {
 	switch v {
-	case `NotAvailableInRegion`, `NotEnabledOnSubscription`:
+	case ``, `NotAvailableInRegion`, `NotEnabledOnSubscription`:
 		*f = CloudProviderNodeStatus(v)
 		return nil
 	default:
@@ -812,7 +812,7 @@ func (f *ClusterPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ClusterPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_ATTACH_TO`, `CAN_MANAGE`, `CAN_RESTART`:
+	case ``, `CAN_ATTACH_TO`, `CAN_MANAGE`, `CAN_RESTART`:
 		*f = ClusterPermissionLevel(v)
 		return nil
 	default:
@@ -941,7 +941,7 @@ func (f *ClusterPolicyPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ClusterPolicyPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_USE`:
+	case ``, `CAN_USE`:
 		*f = ClusterPolicyPermissionLevel(v)
 		return nil
 	default:
@@ -1049,7 +1049,7 @@ func (f *ClusterSource) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ClusterSource) Set(v string) error {
 	switch v {
-	case `API`, `JOB`, `MODELS`, `PIPELINE`, `PIPELINE_MAINTENANCE`, `SQL`, `UI`:
+	case ``, `API`, `JOB`, `MODELS`, `PIPELINE`, `PIPELINE_MAINTENANCE`, `SQL`, `UI`:
 		*f = ClusterSource(v)
 		return nil
 	default:
@@ -1263,7 +1263,7 @@ func (f *CommandStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CommandStatus) Set(v string) error {
 	switch v {
-	case `Cancelled`, `Cancelling`, `Error`, `Finished`, `Queued`, `Running`:
+	case ``, `Cancelled`, `Cancelling`, `Error`, `Finished`, `Queued`, `Running`:
 		*f = CommandStatus(v)
 		return nil
 	default:
@@ -1321,7 +1321,7 @@ func (f *ComputeSpecKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ComputeSpecKind) Set(v string) error {
 	switch v {
-	case `SERVERLESS_PREVIEW`:
+	case ``, `SERVERLESS_PREVIEW`:
 		*f = ComputeSpecKind(v)
 		return nil
 	default:
@@ -1350,7 +1350,7 @@ func (f *ContextStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ContextStatus) Set(v string) error {
 	switch v {
-	case `Error`, `Pending`, `Running`:
+	case ``, `Error`, `Pending`, `Running`:
 		*f = ContextStatus(v)
 		return nil
 	default:
@@ -1777,7 +1777,7 @@ func (f *DataPlaneEventDetailsEventType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DataPlaneEventDetailsEventType) Set(v string) error {
 	switch v {
-	case `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`:
+	case ``, `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`:
 		*f = DataPlaneEventDetailsEventType(v)
 		return nil
 	default:
@@ -1842,7 +1842,7 @@ func (f *DataSecurityMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DataSecurityMode) Set(v string) error {
 	switch v {
-	case `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
+	case ``, `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
 		*f = DataSecurityMode(v)
 		return nil
 	default:
@@ -1962,7 +1962,7 @@ func (f *DiskTypeAzureDiskVolumeType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DiskTypeAzureDiskVolumeType) Set(v string) error {
 	switch v {
-	case `PREMIUM_LRS`, `STANDARD_LRS`:
+	case ``, `PREMIUM_LRS`, `STANDARD_LRS`:
 		*f = DiskTypeAzureDiskVolumeType(v)
 		return nil
 	default:
@@ -1989,7 +1989,7 @@ func (f *DiskTypeEbsVolumeType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DiskTypeEbsVolumeType) Set(v string) error {
 	switch v {
-	case `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
+	case ``, `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
 		*f = DiskTypeEbsVolumeType(v)
 		return nil
 	default:
@@ -2050,7 +2050,7 @@ func (f *EbsVolumeType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EbsVolumeType) Set(v string) error {
 	switch v {
-	case `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
+	case ``, `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
 		*f = EbsVolumeType(v)
 		return nil
 	default:
@@ -2389,7 +2389,7 @@ func (f *EventDetailsCause) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EventDetailsCause) Set(v string) error {
 	switch v {
-	case `AUTORECOVERY`, `AUTOSCALE`, `REPLACE_BAD_NODES`, `USER_REQUEST`:
+	case ``, `AUTORECOVERY`, `AUTOSCALE`, `REPLACE_BAD_NODES`, `USER_REQUEST`:
 		*f = EventDetailsCause(v)
 		return nil
 	default:
@@ -2462,7 +2462,7 @@ func (f *EventType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EventType) Set(v string) error {
 	switch v {
-	case `AUTOSCALING_STATS_REPORT`, `CREATING`, `DBFS_DOWN`, `DID_NOT_EXPAND_DISK`, `DRIVER_HEALTHY`, `DRIVER_NOT_RESPONDING`, `DRIVER_UNAVAILABLE`, `EDITED`, `EXPANDED_DISK`, `FAILED_TO_EXPAND_DISK`, `INIT_SCRIPTS_FINISHED`, `INIT_SCRIPTS_STARTED`, `METASTORE_DOWN`, `NODES_LOST`, `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`, `PINNED`, `RESIZING`, `RESTARTING`, `RUNNING`, `SPARK_EXCEPTION`, `STARTING`, `TERMINATING`, `UNPINNED`, `UPSIZE_COMPLETED`:
+	case ``, `AUTOSCALING_STATS_REPORT`, `CREATING`, `DBFS_DOWN`, `DID_NOT_EXPAND_DISK`, `DRIVER_HEALTHY`, `DRIVER_NOT_RESPONDING`, `DRIVER_UNAVAILABLE`, `EDITED`, `EXPANDED_DISK`, `FAILED_TO_EXPAND_DISK`, `INIT_SCRIPTS_FINISHED`, `INIT_SCRIPTS_STARTED`, `METASTORE_DOWN`, `NODES_LOST`, `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`, `PINNED`, `RESIZING`, `RESTARTING`, `RUNNING`, `SPARK_EXCEPTION`, `STARTING`, `TERMINATING`, `UNPINNED`, `UPSIZE_COMPLETED`:
 		*f = EventType(v)
 		return nil
 	default:
@@ -2525,7 +2525,7 @@ func (f *GcpAvailability) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GcpAvailability) Set(v string) error {
 	switch v {
-	case `ON_DEMAND_GCP`, `PREEMPTIBLE_GCP`, `PREEMPTIBLE_WITH_FALLBACK_GCP`:
+	case ``, `ON_DEMAND_GCP`, `PREEMPTIBLE_GCP`, `PREEMPTIBLE_WITH_FALLBACK_GCP`:
 		*f = GcpAvailability(v)
 		return nil
 	default:
@@ -2632,7 +2632,7 @@ func (f *GetEventsOrder) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GetEventsOrder) Set(v string) error {
 	switch v {
-	case `ASC`, `DESC`:
+	case ``, `ASC`, `DESC`:
 		*f = GetEventsOrder(v)
 		return nil
 	default:
@@ -2983,7 +2983,7 @@ func (f *InitScriptExecutionDetailsStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *InitScriptExecutionDetailsStatus) Set(v string) error {
 	switch v {
-	case `FAILED_EXECUTION`, `FAILED_FETCH`, `NOT_EXECUTED`, `SKIPPED`, `SUCCEEDED`, `UNKNOWN`:
+	case ``, `FAILED_EXECUTION`, `FAILED_FETCH`, `NOT_EXECUTED`, `SKIPPED`, `SUCCEEDED`, `UNKNOWN`:
 		*f = InitScriptExecutionDetailsStatus(v)
 		return nil
 	default:
@@ -3222,7 +3222,7 @@ func (f *InstancePoolAwsAttributesAvailability) String() string {
 // Set raw string value and validate it against allowed values
 func (f *InstancePoolAwsAttributesAvailability) Set(v string) error {
 	switch v {
-	case `ON_DEMAND`, `SPOT`:
+	case ``, `ON_DEMAND`, `SPOT`:
 		*f = InstancePoolAwsAttributesAvailability(v)
 		return nil
 	default:
@@ -3274,7 +3274,7 @@ func (f *InstancePoolAzureAttributesAvailability) String() string {
 // Set raw string value and validate it against allowed values
 func (f *InstancePoolAzureAttributesAvailability) Set(v string) error {
 	switch v {
-	case `ON_DEMAND_AZURE`, `SPOT_AZURE`:
+	case ``, `ON_DEMAND_AZURE`, `SPOT_AZURE`:
 		*f = InstancePoolAzureAttributesAvailability(v)
 		return nil
 	default:
@@ -3352,7 +3352,7 @@ func (f *InstancePoolPermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *InstancePoolPermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_ATTACH_TO`, `CAN_MANAGE`:
+	case ``, `CAN_ATTACH_TO`, `CAN_MANAGE`:
 		*f = InstancePoolPermissionLevel(v)
 		return nil
 	default:
@@ -3422,7 +3422,7 @@ func (f *InstancePoolState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *InstancePoolState) Set(v string) error {
 	switch v {
-	case `ACTIVE`, `DELETED`, `STOPPED`:
+	case ``, `ACTIVE`, `DELETED`, `STOPPED`:
 		*f = InstancePoolState(v)
 		return nil
 	default:
@@ -3511,7 +3511,7 @@ func (f *Language) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Language) Set(v string) error {
 	switch v {
-	case `python`, `scala`, `sql`:
+	case ``, `python`, `scala`, `sql`:
 		*f = Language(v)
 		return nil
 	default:
@@ -3610,7 +3610,7 @@ func (f *LibraryFullStatusStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *LibraryFullStatusStatus) Set(v string) error {
 	switch v {
-	case `FAILED`, `INSTALLED`, `INSTALLING`, `PENDING`, `RESOLVING`, `SKIPPED`, `UNINSTALL_ON_RESTART`:
+	case ``, `FAILED`, `INSTALLED`, `INSTALLING`, `PENDING`, `RESOLVING`, `SKIPPED`, `UNINSTALL_ON_RESTART`:
 		*f = LibraryFullStatusStatus(v)
 		return nil
 	default:
@@ -3753,7 +3753,7 @@ func (f *ListSortColumn) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ListSortColumn) Set(v string) error {
 	switch v {
-	case `POLICY_CREATION_TIME`, `POLICY_NAME`:
+	case ``, `POLICY_CREATION_TIME`, `POLICY_NAME`:
 		*f = ListSortColumn(v)
 		return nil
 	default:
@@ -3780,7 +3780,7 @@ func (f *ListSortOrder) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ListSortOrder) Set(v string) error {
 	switch v {
-	case `ASC`, `DESC`:
+	case ``, `ASC`, `DESC`:
 		*f = ListSortOrder(v)
 		return nil
 	default:
@@ -4153,7 +4153,7 @@ func (f *ResultType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ResultType) Set(v string) error {
 	switch v {
-	case `error`, `image`, `images`, `table`, `text`:
+	case ``, `error`, `image`, `images`, `table`, `text`:
 		*f = ResultType(v)
 		return nil
 	default:
@@ -4218,7 +4218,7 @@ func (f *RuntimeEngine) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RuntimeEngine) Set(v string) error {
 	switch v {
-	case `NULL`, `PHOTON`, `STANDARD`:
+	case ``, `NULL`, `PHOTON`, `STANDARD`:
 		*f = RuntimeEngine(v)
 		return nil
 	default:
@@ -4380,7 +4380,7 @@ func (f *State) String() string {
 // Set raw string value and validate it against allowed values
 func (f *State) Set(v string) error {
 	switch v {
-	case `ERROR`, `PENDING`, `RESIZING`, `RESTARTING`, `RUNNING`, `TERMINATED`, `TERMINATING`, `UNKNOWN`:
+	case ``, `ERROR`, `PENDING`, `RESIZING`, `RESTARTING`, `RUNNING`, `TERMINATED`, `TERMINATING`, `UNKNOWN`:
 		*f = State(v)
 		return nil
 	default:
@@ -4572,7 +4572,7 @@ func (f *TerminationReasonCode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationReasonCode) Set(v string) error {
 	switch v {
-	case `ABUSE_DETECTED`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_SHUTDOWN`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `DATABASE_CONNECTION_FAILURE`, `DBFS_COMPONENT_UNHEALTHY`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `EXECUTION_COMPONENT_UNHEALTHY`, `GCP_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_UNREACHABLE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_SPARK_IMAGE`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `STORAGE_DOWNLOAD_FAILURE`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`:
+	case ``, `ABUSE_DETECTED`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_SHUTDOWN`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `DATABASE_CONNECTION_FAILURE`, `DBFS_COMPONENT_UNHEALTHY`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `EXECUTION_COMPONENT_UNHEALTHY`, `GCP_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_UNREACHABLE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_SPARK_IMAGE`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `STORAGE_DOWNLOAD_FAILURE`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`:
 		*f = TerminationReasonCode(v)
 		return nil
 	default:
@@ -4604,7 +4604,7 @@ func (f *TerminationReasonType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationReasonType) Set(v string) error {
 	switch v {
-	case `CLIENT_ERROR`, `CLOUD_FAILURE`, `SERVICE_FAULT`, `SUCCESS`:
+	case ``, `CLIENT_ERROR`, `CLOUD_FAILURE`, `SERVICE_FAULT`, `SUCCESS`:
 		*f = TerminationReasonType(v)
 		return nil
 	default:

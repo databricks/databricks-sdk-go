@@ -271,7 +271,7 @@ func (f *DeliveryStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DeliveryStatus) Set(v string) error {
 	switch v {
-	case `CREATED`, `NOT_FOUND`, `SUCCEEDED`, `SYSTEM_FAILURE`, `USER_FAILURE`:
+	case ``, `CREATED`, `NOT_FOUND`, `SUCCEEDED`, `SYSTEM_FAILURE`, `USER_FAILURE`:
 		*f = DeliveryStatus(v)
 		return nil
 	default:
@@ -363,7 +363,7 @@ func (f *LogDeliveryConfigStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *LogDeliveryConfigStatus) Set(v string) error {
 	switch v {
-	case `DISABLED`, `ENABLED`:
+	case ``, `DISABLED`, `ENABLED`:
 		*f = LogDeliveryConfigStatus(v)
 		return nil
 	default:
@@ -529,7 +529,7 @@ func (f *LogType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *LogType) Set(v string) error {
 	switch v {
-	case `AUDIT_LOGS`, `BILLABLE_USAGE`:
+	case ``, `AUDIT_LOGS`, `BILLABLE_USAGE`:
 		*f = LogType(v)
 		return nil
 	default:
@@ -566,7 +566,7 @@ func (f *OutputFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (f *OutputFormat) Set(v string) error {
 	switch v {
-	case `CSV`, `JSON`:
+	case ``, `CSV`, `JSON`:
 		*f = OutputFormat(v)
 		return nil
 	default:

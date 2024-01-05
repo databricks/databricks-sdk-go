@@ -435,7 +435,7 @@ func (f *EndpointUseCase) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointUseCase) Set(v string) error {
 	switch v {
-	case `DATAPLANE_RELAY_ACCESS`, `WORKSPACE_ACCESS`:
+	case ``, `DATAPLANE_RELAY_ACCESS`, `WORKSPACE_ACCESS`:
 		*f = EndpointUseCase(v)
 		return nil
 	default:
@@ -470,7 +470,7 @@ func (f *ErrorType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ErrorType) Set(v string) error {
 	switch v {
-	case `credentials`, `networkAcl`, `securityGroup`, `subnet`, `vpc`:
+	case ``, `credentials`, `networkAcl`, `securityGroup`, `subnet`, `vpc`:
 		*f = ErrorType(v)
 		return nil
 	default:
@@ -674,7 +674,7 @@ func (f *GkeConfigConnectivityType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GkeConfigConnectivityType) Set(v string) error {
 	switch v {
-	case `PRIVATE_NODE_PUBLIC_MASTER`, `PUBLIC_NODE_PUBLIC_MASTER`:
+	case ``, `PRIVATE_NODE_PUBLIC_MASTER`, `PUBLIC_NODE_PUBLIC_MASTER`:
 		*f = GkeConfigConnectivityType(v)
 		return nil
 	default:
@@ -707,7 +707,7 @@ func (f *KeyUseCase) String() string {
 // Set raw string value and validate it against allowed values
 func (f *KeyUseCase) Set(v string) error {
 	switch v {
-	case `MANAGED_SERVICES`, `STORAGE`:
+	case ``, `MANAGED_SERVICES`, `STORAGE`:
 		*f = KeyUseCase(v)
 		return nil
 	default:
@@ -841,7 +841,7 @@ func (f *PricingTier) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PricingTier) Set(v string) error {
 	switch v {
-	case `COMMUNITY_EDITION`, `DEDICATED`, `ENTERPRISE`, `PREMIUM`, `STANDARD`, `UNKNOWN`:
+	case ``, `COMMUNITY_EDITION`, `DEDICATED`, `ENTERPRISE`, `PREMIUM`, `STANDARD`, `UNKNOWN`:
 		*f = PricingTier(v)
 		return nil
 	default:
@@ -874,7 +874,7 @@ func (f *PrivateAccessLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PrivateAccessLevel) Set(v string) error {
 	switch v {
-	case `ACCOUNT`, `ENDPOINT`:
+	case ``, `ACCOUNT`, `ENDPOINT`:
 		*f = PrivateAccessLevel(v)
 		return nil
 	default:
@@ -1145,7 +1145,7 @@ func (f *VpcStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *VpcStatus) Set(v string) error {
 	switch v {
-	case `BROKEN`, `UNATTACHED`, `VALID`, `WARNED`:
+	case ``, `BROKEN`, `UNATTACHED`, `VALID`, `WARNED`:
 		*f = VpcStatus(v)
 		return nil
 	default:
@@ -1173,7 +1173,7 @@ func (f *WarningType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WarningType) Set(v string) error {
 	switch v {
-	case `securityGroup`, `subnet`:
+	case ``, `securityGroup`, `subnet`:
 		*f = WarningType(v)
 		return nil
 	default:
@@ -1315,7 +1315,7 @@ func (f *WorkspaceStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WorkspaceStatus) Set(v string) error {
 	switch v {
-	case `BANNED`, `CANCELLING`, `FAILED`, `NOT_PROVISIONED`, `PROVISIONING`, `RUNNING`:
+	case ``, `BANNED`, `CANCELLING`, `FAILED`, `NOT_PROVISIONED`, `PROVISIONING`, `RUNNING`:
 		*f = WorkspaceStatus(v)
 		return nil
 	default:
