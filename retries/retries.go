@@ -67,7 +67,7 @@ var maxWait = 10 * time.Second
 var minJitter = 50 * time.Millisecond
 var maxJitter = 750 * time.Millisecond
 
-func Backoff(attempt int) time.Duration {
+func backoff(attempt int) time.Duration {
 	wait := time.Duration(attempt) * time.Second
 	if wait > maxWait {
 		wait = maxWait
@@ -98,6 +98,7 @@ type RetryOption func(*RetryConfig)
 type RetryConfig struct {
 	timeout     time.Duration
 	shouldRetry func(error) bool
+	backoff     func(int) time.Duration
 }
 
 func (r RetryConfig) Timeout() time.Duration {
@@ -105,6 +106,20 @@ func (r RetryConfig) Timeout() time.Duration {
 		return 20 * time.Minute
 	}
 	return r.timeout
+}
+
+func (r RetryConfig) Backoff(attempt int) time.Duration {
+	if r.backoff == nil {
+		return backoff(attempt)
+	}
+	return r.backoff(attempt)
+}
+
+func (r RetryConfig) ShouldRetry(err error) bool {
+	if r.shouldRetry == nil {
+		return err != nil
+	}
+	return r.shouldRetry(err)
 }
 
 // WithTimeout sets the timeout for the retrier.
@@ -137,7 +152,7 @@ func WithRetryFunc(halt func(error) bool) RetryOption {
 }
 
 // Retrier is a struct that can retry an operation until it succeeds or the timeout is reached.
-// The empty struct indicates that the retrier should run for 20 minutes and retry on any error.
+// The empty struct indicates that the retrier should run for 20 minutes and retry on any non-nil error.
 //
 // Example:
 //
@@ -153,7 +168,7 @@ type Retrier[T any] struct {
 
 // New creates a new retrier with the given configuration. If no timeout is specified, the default is 20 minutes.
 // If no retry function is specified, the default is to retry on all errors.
-func New[T any](configOpts ...func(*RetryConfig)) Retrier[T] {
+func New[T any](configOpts ...RetryOption) Retrier[T] {
 	config := RetryConfig{}
 	for _, opt := range configOpts {
 		opt(&config)
@@ -184,11 +199,11 @@ func (r Retrier[T]) Run(ctx context.Context, fn func(context.Context) (*T, error
 		if err == nil {
 			return entity, nil
 		}
-		if r.config.shouldRetry != nil && !r.config.shouldRetry(err) {
+		if !r.config.ShouldRetry(err) {
 			return nil, err
 		}
 		lastErr = err
-		wait := Backoff(attempt)
+		wait := r.config.Backoff(attempt)
 		timer := time.NewTimer(wait)
 		logger.Tracef(ctx, "%s. Sleeping %s",
 			strings.TrimSuffix(err.Error(), "."),
