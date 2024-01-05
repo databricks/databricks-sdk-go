@@ -127,10 +127,6 @@ type retrier[T any] struct {
 	config RetryConfig
 }
 
-func NewWaiter(configOpts ...func(*RetryConfig)) *retrier[struct{}] {
-	return New[struct{}](configOpts...)
-}
-
 func New[T any](configOpts ...func(*RetryConfig)) *retrier[T] {
 	config := RetryConfig{
 		timeout: 20 * time.Minute,

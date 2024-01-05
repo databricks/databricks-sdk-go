@@ -228,7 +228,7 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := retries.NewWaiter(retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
+		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
 			return a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 		})
 		require.NoError(t, err)
