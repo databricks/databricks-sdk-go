@@ -91,22 +91,26 @@ func (et *ErrTimedOut) Unwrap() error {
 	return et.err
 }
 
+// RetryOption is a function that sets part of the retry configuration for a retrier.
 type RetryOption func(*RetryConfig)
 
+// RetryConfig is the configuration for a retrier.
 type RetryConfig struct {
-	timeout    time.Duration
-	shouldHalt func(error) bool
+	timeout     time.Duration
+	shouldRetry func(error) bool
 }
 
+// WithTimeout sets the timeout for the retrier.
 func WithTimeout(timeout time.Duration) RetryOption {
 	return func(rc *RetryConfig) {
 		rc.timeout = timeout
 	}
 }
 
+// OnErrors sets the errors that should be retried.
 func OnErrors(on ...error) RetryOption {
 	return func(rc *RetryConfig) {
-		rc.shouldHalt = func(err error) bool {
+		rc.shouldRetry = func(err error) bool {
 			for _, e := range on {
 				if errors.Is(err, e) {
 					return true
@@ -117,9 +121,11 @@ func OnErrors(on ...error) RetryOption {
 	}
 }
 
-func WithHalt(halt func(error) bool) RetryOption {
+// WithRetryFunc sets the function that determines whether an error should halt the retrier.
+// If the function returns true, the retrier will continue. If it returns false, the retrier will halt.
+func WithRetryFunc(halt func(error) bool) RetryOption {
 	return func(rc *RetryConfig) {
-		rc.shouldHalt = halt
+		rc.shouldRetry = halt
 	}
 }
 
@@ -127,6 +133,8 @@ type retrier[T any] struct {
 	config RetryConfig
 }
 
+// New creates a new retrier with the given configuration. If no timeout is specified, the default is 20 minutes.
+// If no retry function is specified, the default is to retry on all errors.
 func New[T any](configOpts ...func(*RetryConfig)) *retrier[T] {
 	config := RetryConfig{
 		timeout: 20 * time.Minute,
@@ -137,6 +145,9 @@ func New[T any](configOpts ...func(*RetryConfig)) *retrier[T] {
 	return &retrier[T]{config}
 }
 
+// Wait runs the given function until it succeeds or the timeout is reached. On
+// success, it returns nil. On timeout, it returns an error wrapping the last
+// error returned by the function.
 func (r *retrier[T]) Wait(ctx context.Context, fn func(ctx context.Context) error) error {
 	_, err := r.Run(ctx, func(ctx context.Context) (*T, error) {
 		return nil, fn(ctx)
@@ -144,6 +155,8 @@ func (r *retrier[T]) Wait(ctx context.Context, fn func(ctx context.Context) erro
 	return err
 }
 
+// Run runs the given function until it succeeds or the timeout is reached, returning the result.
+// On timeout, it returns an error wrapping the last error returned by the function.
 func (r *retrier[T]) Run(ctx context.Context, fn func(context.Context) (*T, error)) (*T, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.config.timeout)
 	defer cancel()
@@ -155,7 +168,7 @@ func (r *retrier[T]) Run(ctx context.Context, fn func(context.Context) (*T, erro
 		if err == nil {
 			return entity, nil
 		}
-		if r.config.shouldHalt != nil && r.config.shouldHalt(err) {
+		if r.config.shouldRetry != nil && !r.config.shouldRetry(err) {
 			return nil, err
 		}
 		lastErr = err
@@ -174,16 +187,19 @@ func (r *retrier[T]) Run(ctx context.Context, fn func(context.Context) (*T, erro
 	}
 }
 
-func isHalt(err error) bool {
+func shouldRetry(err error) bool {
 	if err == nil {
-		return true
+		return false
 	}
 	e := err.(*Err)
-	return e == nil || e.Halt
+	if e == nil {
+		return false
+	}
+	return !e.Halt
 }
 
 func Wait(ctx context.Context, timeout time.Duration, fn func() *Err) error {
-	return New[struct{}](WithTimeout(timeout), WithHalt(isHalt)).Wait(ctx, func(_ context.Context) error {
+	return New[struct{}](WithTimeout(timeout), WithRetryFunc(shouldRetry)).Wait(ctx, func(_ context.Context) error {
 		err := fn()
 		if err != nil {
 			return err
@@ -193,7 +209,7 @@ func Wait(ctx context.Context, timeout time.Duration, fn func() *Err) error {
 }
 
 func Poll[T any](ctx context.Context, timeout time.Duration, fn func() (*T, *Err)) (*T, error) {
-	return New[T](WithTimeout(timeout), WithHalt(isHalt)).Run(ctx, func(_ context.Context) (*T, error) {
+	return New[T](WithTimeout(timeout), WithRetryFunc(shouldRetry)).Run(ctx, func(_ context.Context) (*T, error) {
 		res, err := fn()
 		if err != nil {
 			return res, err
