@@ -256,6 +256,12 @@ func TestMwsAccWorkspaces(t *testing.T) {
 		},
 	})
 	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
+			return a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+		})
+		require.NoError(t, err)
+	})
 
 	// this also takes a while
 	_, err = a.Workspaces.UpdateAndWait(ctx, provisioning.UpdateWorkspaceRequest{
