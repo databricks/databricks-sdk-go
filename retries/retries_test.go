@@ -3,10 +3,12 @@ package retries
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -118,4 +120,70 @@ func TestRetriesRunWithRetryFuncNoRetry(t *testing.T) {
 		return &res, nil
 	})
 	assert.Equal(t, err.Error(), "oh no")
+}
+
+func ExampleNew() {
+	// Default retries for 20 minutes on any error
+	New[int]()
+
+	// Override the timeout with NewTimeout
+	New[int](WithTimeout(5 * time.Minute))
+
+	// Retry on specific errors only with OnErrors
+	New[int](OnErrors(apierr.ErrResourceConflict))
+
+	// Customize retry logic with WithRetryFunc
+	retryCount := 3
+	New[int](WithRetryFunc(func(err error) bool {
+		if retryCount > 0 {
+			retryCount--
+			return true
+		}
+		return false
+	}))
+}
+
+func ExampleRetrier_Run() {
+	hasRun := false
+	e := errors.New("an error")
+	res, _ := New[string](WithTimeout(5*time.Minute), OnErrors(e)).Run(
+		context.Background(),
+		func(ctx context.Context) (*string, error) {
+			if !hasRun {
+				hasRun = true
+				fmt.Println("failed, retrying")
+				return nil, e
+			}
+			fmt.Println("succeeded")
+			res := "hello!"
+			return &res, nil
+		},
+	)
+	fmt.Println(*res)
+	// Output:
+	// failed, retrying
+	// succeeded
+	// hello!
+}
+
+func ExampleRetrier_Wait() {
+	hasRun := false
+	e := errors.New("an error")
+	err := New[string](WithTimeout(5*time.Minute), OnErrors(e)).Wait(
+		context.Background(),
+		func(ctx context.Context) error {
+			if !hasRun {
+				hasRun = true
+				fmt.Println("failed, retrying")
+				return e
+			}
+			fmt.Println("succeeded")
+			return nil
+		},
+	)
+	fmt.Println(err)
+	// Output:
+	// failed, retrying
+	// succeeded
+	// <nil>
 }

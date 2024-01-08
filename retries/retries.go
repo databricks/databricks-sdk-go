@@ -157,10 +157,11 @@ func WithRetryFunc(halt func(error) bool) RetryOption {
 
 // Retrier is a struct that can retry an operation until it succeeds or the timeout is reached.
 // The empty struct indicates that the retrier should run for 20 minutes and retry on any non-nil error.
+// The type parameter is the return type of the Run() method. When using the Wait() method, this can be struct{}.
 //
 // Example:
 //
-//	r := retries.New(retries.WithTimeout(5 * time.Minute), retries.OnError(apierr.ErrResourceConflict))
+//	r := retries.New[struct{}](retries.WithTimeout(5 * time.Minute), retries.OnErrors(apierr.ErrResourceConflict))
 //	err := r.Wait(ctx, func(ctx context.Context) error {
 //		return a.Workspaces.Delete(ctx, provisioning.DeleteWorkspaceRequest{
 //			WorkspaceId: workspace.WorkspaceId,
