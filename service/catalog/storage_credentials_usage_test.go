@@ -136,7 +136,7 @@ func ExampleStorageCredentialsAPI_ListAll_storageCredentialsOnAws() {
 		panic(err)
 	}
 
-	all, err := w.StorageCredentials.ListAll(ctx)
+	all, err := w.StorageCredentials.ListAll(ctx, catalog.ListStorageCredentialsRequest{})
 	if err != nil {
 		panic(err)
 	}

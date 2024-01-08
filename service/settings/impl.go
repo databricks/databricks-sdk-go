@@ -389,13 +389,13 @@ func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) err
 	return err
 }
 
-func (a *tokensImpl) List(ctx context.Context) (*ListTokensResponse, error) {
-	var listTokensResponse ListTokensResponse
+func (a *tokensImpl) List(ctx context.Context) (*ListPublicTokensResponse, error) {
+	var listPublicTokensResponse ListPublicTokensResponse
 	path := "/api/2.0/token/list"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listTokensResponse)
-	return &listTokensResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listPublicTokensResponse)
+	return &listPublicTokensResponse, err
 }
 
 // unexported type that holds implementations of just WorkspaceConf API methods

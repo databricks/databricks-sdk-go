@@ -343,20 +343,20 @@ func (_c *MockExternalLocationsInterface_Impl_Call) RunAndReturn(run func() cata
 	return _c
 }
 
-// List provides a mock function with given fields: ctx
-func (_m *MockExternalLocationsInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo] {
-	ret := _m.Called(ctx)
+// List provides a mock function with given fields: ctx, request
+func (_m *MockExternalLocationsInterface) List(ctx context.Context, request catalog.ListExternalLocationsRequest) *listing.PaginatingIterator[catalog.ListExternalLocationsRequest, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo] {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo]); ok {
-		r0 = rf(ctx)
+	var r0 *listing.PaginatingIterator[catalog.ListExternalLocationsRequest, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListExternalLocationsRequest) *listing.PaginatingIterator[catalog.ListExternalLocationsRequest, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo]); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo])
+			r0 = ret.Get(0).(*listing.PaginatingIterator[catalog.ListExternalLocationsRequest, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo])
 		}
 	}
 
@@ -370,30 +370,31 @@ type MockExternalLocationsInterface_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockExternalLocationsInterface_Expecter) List(ctx interface{}) *MockExternalLocationsInterface_List_Call {
-	return &MockExternalLocationsInterface_List_Call{Call: _e.mock.On("List", ctx)}
+//   - request catalog.ListExternalLocationsRequest
+func (_e *MockExternalLocationsInterface_Expecter) List(ctx interface{}, request interface{}) *MockExternalLocationsInterface_List_Call {
+	return &MockExternalLocationsInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
 }
 
-func (_c *MockExternalLocationsInterface_List_Call) Run(run func(ctx context.Context)) *MockExternalLocationsInterface_List_Call {
+func (_c *MockExternalLocationsInterface_List_Call) Run(run func(ctx context.Context, request catalog.ListExternalLocationsRequest)) *MockExternalLocationsInterface_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListExternalLocationsRequest))
 	})
 	return _c
 }
 
-func (_c *MockExternalLocationsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo]) *MockExternalLocationsInterface_List_Call {
+func (_c *MockExternalLocationsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[catalog.ListExternalLocationsRequest, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo]) *MockExternalLocationsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockExternalLocationsInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo]) *MockExternalLocationsInterface_List_Call {
+func (_c *MockExternalLocationsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListExternalLocationsRequest) *listing.PaginatingIterator[catalog.ListExternalLocationsRequest, *catalog.ListExternalLocationsResponse, catalog.ExternalLocationInfo]) *MockExternalLocationsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// ListAll provides a mock function with given fields: ctx
-func (_m *MockExternalLocationsInterface) ListAll(ctx context.Context) ([]catalog.ExternalLocationInfo, error) {
-	ret := _m.Called(ctx)
+// ListAll provides a mock function with given fields: ctx, request
+func (_m *MockExternalLocationsInterface) ListAll(ctx context.Context, request catalog.ListExternalLocationsRequest) ([]catalog.ExternalLocationInfo, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
@@ -401,19 +402,19 @@ func (_m *MockExternalLocationsInterface) ListAll(ctx context.Context) ([]catalo
 
 	var r0 []catalog.ExternalLocationInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) ([]catalog.ExternalLocationInfo, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListExternalLocationsRequest) ([]catalog.ExternalLocationInfo, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) []catalog.ExternalLocationInfo); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListExternalLocationsRequest) []catalog.ExternalLocationInfo); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]catalog.ExternalLocationInfo)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListExternalLocationsRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -428,13 +429,14 @@ type MockExternalLocationsInterface_ListAll_Call struct {
 
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockExternalLocationsInterface_Expecter) ListAll(ctx interface{}) *MockExternalLocationsInterface_ListAll_Call {
-	return &MockExternalLocationsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx)}
+//   - request catalog.ListExternalLocationsRequest
+func (_e *MockExternalLocationsInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockExternalLocationsInterface_ListAll_Call {
+	return &MockExternalLocationsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
 }
 
-func (_c *MockExternalLocationsInterface_ListAll_Call) Run(run func(ctx context.Context)) *MockExternalLocationsInterface_ListAll_Call {
+func (_c *MockExternalLocationsInterface_ListAll_Call) Run(run func(ctx context.Context, request catalog.ListExternalLocationsRequest)) *MockExternalLocationsInterface_ListAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListExternalLocationsRequest))
 	})
 	return _c
 }
@@ -444,7 +446,7 @@ func (_c *MockExternalLocationsInterface_ListAll_Call) Return(_a0 []catalog.Exte
 	return _c
 }
 
-func (_c *MockExternalLocationsInterface_ListAll_Call) RunAndReturn(run func(context.Context) ([]catalog.ExternalLocationInfo, error)) *MockExternalLocationsInterface_ListAll_Call {
+func (_c *MockExternalLocationsInterface_ListAll_Call) RunAndReturn(run func(context.Context, catalog.ListExternalLocationsRequest) ([]catalog.ExternalLocationInfo, error)) *MockExternalLocationsInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

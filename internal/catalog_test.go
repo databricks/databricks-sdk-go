@@ -212,7 +212,7 @@ func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotEqual(t, "", byName.Id)
 
-	all, err := w.StorageCredentials.ListAll(ctx)
+	all, err := w.StorageCredentials.ListAll(ctx, catalog.ListStorageCredentialsRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 }
@@ -256,7 +256,7 @@ func TestUcAccExternalLocationsOnAws(t *testing.T) {
 	_, err = w.ExternalLocations.GetByName(ctx, created.Name)
 	require.NoError(t, err)
 
-	all, err := w.ExternalLocations.ListAll(ctx)
+	all, err := w.ExternalLocations.ListAll(ctx, catalog.ListExternalLocationsRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 }

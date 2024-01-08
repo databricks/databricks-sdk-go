@@ -13,7 +13,7 @@ import (
 type AccessControl struct {
 	GroupName string `json:"group_name,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-	// `CAN_MANAGE`: Can manage the query
+	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	UserName string `json:"user_name,omitempty"`
@@ -286,6 +286,7 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -672,7 +673,7 @@ type Dashboard struct {
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-	// `CAN_MANAGE`: Can manage the query
+	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// URL slug. Usually mirrors the query name with dashes (`-`) instead of
 	// spaces. Appears in the URL for this query.
@@ -2066,9 +2067,12 @@ func (f *ParameterType) Type() string {
 	return "ParameterType"
 }
 
-// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-// `CAN_MANAGE`: Can manage the query
+// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`:
+// Can edit the query * `CAN_MANAGE`: Can manage the query
 type PermissionLevel string
+
+// Can edit the query
+const PermissionLevelCanEdit PermissionLevel = `CAN_EDIT`
 
 // Can manage the query
 const PermissionLevelCanManage PermissionLevel = `CAN_MANAGE`
@@ -2087,11 +2091,11 @@ func (f *PermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`:
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`:
 		*f = PermissionLevel(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_RUN", "CAN_VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_RUN", "CAN_VIEW"`, v)
 	}
 }
 
@@ -2185,7 +2189,7 @@ type Query struct {
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-	// `CAN_MANAGE`: Can manage the query
+	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// The text of the query to be run.
 	Query string `json:"query,omitempty"`

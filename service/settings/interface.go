@@ -441,8 +441,8 @@ type TokensService interface {
 	//
 	// Lists all the valid tokens for a user-workspace pair.
 	//
-	// Use ListAll() to get all TokenInfo instances
-	List(ctx context.Context) (*ListTokensResponse, error)
+	// Use ListAll() to get all PublicTokenInfo instances
+	List(ctx context.Context) (*ListPublicTokensResponse, error)
 }
 
 // This API allows updating known workspace settings for advanced users.

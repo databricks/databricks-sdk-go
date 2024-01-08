@@ -519,9 +519,14 @@ type IpAccessList struct {
 
 // List clean rooms
 type ListCleanRoomsRequest struct {
-	// Maximum number of clean rooms to return.
+	// Maximum number of clean rooms to return. If not set, all the clean rooms
+	// are returned (not recommended). - when set to a value greater than 0, the
+	// page length is the minimum of this value and a server configured value; -
+	// when set to 0, the page length is set to a server configured value
+	// (recommended); - when set to a value less than 0, an invalid parameter
+	// error is returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// Pagination token to go to next page based on previous query.
+	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -538,8 +543,9 @@ func (s ListCleanRoomsRequest) MarshalJSON() ([]byte, error) {
 type ListCleanRoomsResponse struct {
 	// An array of clean rooms. Remote details (central) are not included.
 	CleanRooms []CleanRoomInfo `json:"clean_rooms,omitempty"`
-	// Token to retrieve the next page of results. Absent if there are no more
-	// pages.
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
