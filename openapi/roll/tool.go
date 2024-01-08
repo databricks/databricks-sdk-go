@@ -685,6 +685,47 @@ func (s *Suite) expectLookup(se *ast.SelectorExpr) *lookup {
 	}
 }
 
+func (s *Suite) inlineRetryExpression(e *ast.CallExpr) *ast.CallExpr {
+	t, ok := e.Fun.(*ast.SelectorExpr)
+	if !ok {
+		return e
+	}
+	name := t.Sel.Name
+	if name != "Run" && name != "Wait" {
+		return e
+	}
+	retryConstructor, ok := t.X.(*ast.CallExpr)
+	if !ok {
+		return e
+	}
+	retryIndexExpr, ok := retryConstructor.Fun.(*ast.IndexExpr)
+	if !ok {
+		return e
+	}
+	retrySelector, ok := retryIndexExpr.X.(*ast.SelectorExpr)
+	if !ok {
+		return e
+	}
+	if retrySelector.X.(*ast.Ident).Name != "retries" {
+		return e
+	}
+
+	// inline the retry expression
+	retryFunc, ok := e.Args[1].(*ast.FuncLit)
+	if !ok {
+		s.explainAndPanic("function literal", e.Args[1])
+	}
+	retStmt, ok := retryFunc.Body.List[len(retryFunc.Body.List)-1].(*ast.ReturnStmt)
+	if !ok {
+		s.explainAndPanic("return statement", retryFunc.Body.List[len(retryFunc.Body.List)-1])
+	}
+	inlinedCallExpr, ok := retStmt.Results[0].(*ast.CallExpr)
+	if !ok {
+		s.explainAndPanic("call expression", retStmt.Results[0])
+	}
+	return inlinedCallExpr
+}
+
 func (s *Suite) expectCall(e ast.Expr) *call {
 	ce, ok := e.(*ast.CallExpr)
 	if !ok {
@@ -695,6 +736,8 @@ func (s *Suite) expectCall(e ast.Expr) *call {
 	c := &call{
 		id: s.counter,
 	}
+	// If the call is actually a retry, we inline the returned value here
+	ce = s.inlineRetryExpression(ce)
 	switch t := ce.Fun.(type) {
 	case *ast.Ident:
 		c.Name = t.Name
