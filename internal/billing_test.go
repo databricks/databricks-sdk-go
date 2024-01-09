@@ -10,11 +10,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMwsAccUsageDownload(t *testing.T) {
+func TestAccUsageDownload(t *testing.T) {
 	ctx, a := accountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
+
+	// The billing API can take multiple minutes to return the records.
+	a.Config.HTTPTimeoutSeconds = 300
+
 	resp, err := a.BillableUsage.Download(ctx, billing.DownloadRequest{
 		StartMonth: "2023-01",
 		EndMonth:   "2023-02",
