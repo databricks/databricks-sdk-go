@@ -1,5 +1,41 @@
 # Version changelog
 
+## 0.29.0
+
+* Extract API interfaces for all services and generate mock clients ([#740](https://github.com/databricks/databricks-sdk-go/pull/740)).
+* Handle empty response for errors ([#756](https://github.com/databricks/databricks-sdk-go/pull/756)).
+* Update SDK to OpenAPI spec + Fix tests ([#755](https://github.com/databricks/databricks-sdk-go/pull/755)).
+* Add utility to retry on specific errors ([#757](https://github.com/databricks/databricks-sdk-go/pull/757)).
+
+API Changes:
+
+ * Changed `List` method for [w.ExternalLocations](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ExternalLocationsAPI) workspace-level service to require request of [catalog.ListExternalLocationsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListExternalLocationsRequest).
+ * Changed `List` method for [w.StorageCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#StorageCredentialsAPI) workspace-level service to require request of [catalog.ListStorageCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListStorageCredentialsRequest).
+ * Added `NextPageToken` field for [catalog.ListExternalLocationsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListExternalLocationsResponse).
+ * Added `MaxResults` field for [catalog.ListFunctionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListFunctionsRequest).
+ * Added `PageToken` field for [catalog.ListFunctionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListFunctionsRequest).
+ * Added `NextPageToken` field for [catalog.ListFunctionsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListFunctionsResponse).
+ * Added `MaxResults` field for [catalog.ListSchemasRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListSchemasRequest).
+ * Added `PageToken` field for [catalog.ListSchemasRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListSchemasRequest).
+ * Added `NextPageToken` field for [catalog.ListSchemasResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListSchemasResponse).
+ * Added `NextPageToken` field for [catalog.ListStorageCredentialsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListStorageCredentialsResponse).
+ * Added `OmitColumns` field for [catalog.ListTablesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListTablesRequest).
+ * Added `OmitProperties` field for [catalog.ListTablesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListTablesRequest).
+ * Added [catalog.ListExternalLocationsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListExternalLocationsRequest).
+ * Added [catalog.ListStorageCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListStorageCredentialsRequest).
+ * Changed `List` method for [w.Tokens](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokensAPI) workspace-level service to return [settings.ListPublicTokensResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ListPublicTokensResponse).
+ * Added [settings.ListPublicTokensResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ListPublicTokensResponse).
+ * Added [dashboards](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards) package.
+ * Added [vectorsearch](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch) package.
+
+OpenAPI SHA: a7a9dc025bb80303e676bf3708942c6aa06689f1, Date: 2024-01-04
+Dependency updates:
+
+ * Bump google.golang.org/api from 0.153.0 to 0.154.0 ([#741](https://github.com/databricks/databricks-sdk-go/pull/741)).
+ * Bump golang.org/x/crypto from 0.14.0 to 0.17.0 in /examples/slog ([#747](https://github.com/databricks/databricks-sdk-go/pull/747)).
+ * Bump golang.org/x/crypto from 0.14.0 to 0.17.0 in /examples/zerolog ([#748](https://github.com/databricks/databricks-sdk-go/pull/748)).
+ * Bump golang.org/x/crypto from 0.16.0 to 0.17.0 ([#749](https://github.com/databricks/databricks-sdk-go/pull/749)).
+
 ## 0.28.1
 
 This is a bugfix release that improves debuggability of unexpected errors ([#744](https://github.com/databricks/databricks-sdk-go/pull/744), [#750](https://github.com/databricks/databricks-sdk-go/pull/750)). When the SDK cannot deserialize a response from the Databricks REST API, the resulting error will include debugging information and instructions on how to submit a bug report to the SDK.
