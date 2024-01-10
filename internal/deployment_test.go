@@ -234,19 +234,6 @@ func TestMwsAccWorkspaces(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	// TODO: Add DNS reachability utility
-	created, err := a.Workspaces.CreateAndWait(ctx, provisioning.CreateWorkspaceRequest{
-		WorkspaceName:          RandomName("go-sdk-"),
-		AwsRegion:              GetEnvOrSkipTest(t, "AWS_REGION"),
-		CredentialsId:          role.CredentialsId,
-		StorageConfigurationId: storage.StorageConfigurationId,
-	})
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		err := a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
-		require.NoError(t, err)
-	})
-
 	updateRole, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: RandomName("go-sdk-"),
 		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
@@ -258,8 +245,21 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
-			return a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+			return a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
 		})
+		require.NoError(t, err)
+	})
+
+	// TODO: Add DNS reachability utility
+	created, err := a.Workspaces.CreateAndWait(ctx, provisioning.CreateWorkspaceRequest{
+		WorkspaceName:          RandomName("go-sdk-"),
+		AwsRegion:              GetEnvOrSkipTest(t, "AWS_REGION"),
+		CredentialsId:          role.CredentialsId,
+		StorageConfigurationId: storage.StorageConfigurationId,
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
 		require.NoError(t, err)
 	})
 
