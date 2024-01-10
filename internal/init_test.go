@@ -57,6 +57,10 @@ func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	loadDebugEnvIfRunsFromIDE(t, "account")
 	cfg := &config.Config{
 		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
+		// Large timeout to support API calls that take long.
+		// For example, the /usage/download API can take more than
+		// 60 seconds to return a response.
+		HTTPTimeoutSeconds: 300,
 	}
 	err := cfg.EnsureResolved()
 	if err != nil {
