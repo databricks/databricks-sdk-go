@@ -6,6 +6,7 @@
 * Handle empty response for errors ([#756](https://github.com/databricks/databricks-sdk-go/pull/756)).
 * Update SDK to OpenAPI spec + Fix tests ([#755](https://github.com/databricks/databricks-sdk-go/pull/755)).
 * Add utility to retry on specific errors ([#757](https://github.com/databricks/databricks-sdk-go/pull/757)).
+* Integration test fixes for TestMwsAccWorkspaces ([#763](https://github.com/databricks/databricks-sdk-go/pull/763)) and TestMwsAccUsageDownload ([#764](https://github.com/databricks/databricks-sdk-go/pull/764))
 
 Note: This release contains breaking changes, please see below.
 
