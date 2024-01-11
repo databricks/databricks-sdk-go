@@ -106,6 +106,12 @@ func (apiError *APIError) IsRetriable(ctx context.Context) bool {
 	if apiError.IsTooManyRequests() {
 		return true
 	}
+	// Retry when the API is unavailable. This includes "No webapps are available
+	// to handle your request. Please try again later." from the API gateway.
+	// Reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503
+	if apiError.StatusCode == http.StatusServiceUnavailable {
+		return true
+	}
 	// Handle transient errors for retries
 	for _, substring := range transientErrorStringMatches {
 		if strings.Contains(apiError.Message, substring) {
