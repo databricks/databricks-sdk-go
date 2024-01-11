@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-
-	"github.com/databricks/databricks-sdk-go/openapi/code"
 )
 
 func resourceFromRequest(req *http.Request) string {
@@ -57,7 +55,7 @@ func bodyStub(req *http.Request) (string, error) {
 	// which is not something i'm willing to write on my weekend
 	expectedRequest += "ExpectedRequest: XXX {\n"
 	for key, value := range receivedRequest {
-		camel := (&code.Named{Name: key}).PascalName()
+		camel := pascalName(key)
 		expectedRequest += fmt.Sprintf("\t\t\t%s: %#v,\n", camel, value)
 	}
 	expectedRequest += "\t\t},\n"
