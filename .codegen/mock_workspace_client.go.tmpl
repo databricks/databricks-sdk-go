@@ -1,0 +1,41 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package mocks
+
+import (
+	"fmt"
+	"github.com/databricks/databricks-sdk-go"
+	{{range .Packages}}
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/{{.Name}}"{{end}}
+)
+
+type MockWorkspaceClient struct {
+	WorkspaceClient *databricks.WorkspaceClient
+}
+
+// NewMockWorkspaceClient creates new mocked version of Databricks SDK client for Workspaces
+// which can be used for testing.
+func NewMockWorkspaceClient(t interface {
+	mock.TestingT
+	Cleanup(func())
+}) (*MockWorkspaceClient) {
+	return &MockWorkspaceClient{
+		WorkspaceClient: &databricks.WorkspaceClient{
+			Config: nil,
+			{{range .Services}}{{if not .IsAccounts}}
+			{{.Name}}: {{ template "mock-interface-constructor" . }}(t),
+			{{- end}}{{end}}
+		},
+	}
+}
+
+{{range .Services}}{{if not .IsAccounts}}
+func(m *MockWorkspaceClient) GetMock{{.Name}}API() *{{ template "mock-interface-name" . }} {
+	api, ok := m.WorkspaceClient.{{.Name}}.(*{{ template "mock-interface-name" . }})
+	if !ok {
+		panic(fmt.Sprintf("expected {{.Name}} to be *{{ template "mock-interface-name" . }}, actual was %T", m.WorkspaceClient.{{.Name}}))
+	}
+	return api
+}
+
+{{end}}{{end}}

@@ -13,7 +13,7 @@ import (
 type AccessControl struct {
 	GroupName string `json:"group_name,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-	// `CAN_MANAGE`: Can manage the query
+	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	UserName string `json:"user_name,omitempty"`
@@ -139,7 +139,10 @@ func (f *AlertOptionsEmptyResultState) Type() string {
 type AlertQuery struct {
 	// The timestamp when this query was created.
 	CreatedAt string `json:"created_at,omitempty"`
-	// Data source ID.
+	// Data source ID maps to the ID of the data source used by the resource and
+	// is distinct from the warehouse ID. [Learn more].
+	//
+	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
@@ -221,7 +224,8 @@ func (f *AlertState) Type() string {
 // structure is used both within a manifest, and when fetching individual chunk
 // data or links.
 type BaseChunkInfo struct {
-	// The number of bytes in the result chunk.
+	// The number of bytes in the result chunk. This field is not available when
+	// using `INLINE` disposition.
 	ByteCount int64 `json:"byte_count,omitempty"`
 	// The position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`
@@ -243,6 +247,8 @@ func (s BaseChunkInfo) MarshalJSON() ([]byte, error) {
 
 // Cancel statement execution
 type CancelExecutionRequest struct {
+	// The statement ID is returned upon successfully submitting a SQL
+	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
 }
 
@@ -280,6 +286,7 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -610,7 +617,7 @@ func (s CreateWarehouseResponse) MarshalJSON() ([]byte, error) {
 type CreateWidget struct {
 	// Dashboard ID returned by :method:dashboards/create.
 	DashboardId string `json:"dashboard_id"`
-
+	// Widget ID returned by :method:dashboardwidgets/create
 	Id string `json:"-" url:"-"`
 
 	Options WidgetOptions `json:"options"`
@@ -666,7 +673,7 @@ type Dashboard struct {
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-	// `CAN_MANAGE`: Can manage the query
+	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// URL slug. Usually mirrors the query name with dashes (`-`) instead of
 	// spaces. Appears in the URL for this query.
@@ -712,7 +719,10 @@ func (s DashboardOptions) MarshalJSON() ([]byte, error) {
 
 // A JSON object representing a DBSQL data source / SQL warehouse.
 type DataSource struct {
-	// Data source ID.
+	// Data source ID maps to the ID of the data source used by the resource and
+	// is distinct from the warehouse ID. [Learn more].
+	//
+	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	Id string `json:"id,omitempty"`
 	// The string name of this data source / SQL warehouse as it appears in the
 	// Databricks SQL web application.
@@ -757,6 +767,7 @@ type DeleteDashboardRequest struct {
 
 // Remove widget
 type DeleteDashboardWidgetRequest struct {
+	// Widget ID returned by :method:dashboardwidgets/create
 	Id string `json:"-" url:"-"`
 }
 
@@ -767,6 +778,7 @@ type DeleteQueryRequest struct {
 
 // Remove visualization
 type DeleteQueryVisualizationRequest struct {
+	// Widget ID returned by :method:queryvizualisations/create
 	Id string `json:"-" url:"-"`
 }
 
@@ -1359,7 +1371,8 @@ func (s ExecuteStatementResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ExternalLink struct {
-	// The number of bytes in the result chunk.
+	// The number of bytes in the result chunk. This field is not available when
+	// using `INLINE` disposition.
 	ByteCount int64 `json:"byte_count,omitempty"`
 	// The position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`
@@ -1469,6 +1482,8 @@ func (s GetResponse) MarshalJSON() ([]byte, error) {
 
 // Get status, manifest, and result first chunk
 type GetStatementRequest struct {
+	// The statement ID is returned upon successfully submitting a SQL
+	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
 }
 
@@ -1503,7 +1518,8 @@ func (s GetStatementResponse) MarshalJSON() ([]byte, error) {
 // Get result chunk by index
 type GetStatementResultChunkNRequest struct {
 	ChunkIndex int `json:"-" url:"-"`
-
+	// The statement ID is returned upon successfully submitting a SQL
+	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
 }
 
@@ -2051,9 +2067,12 @@ func (f *ParameterType) Type() string {
 	return "ParameterType"
 }
 
-// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-// `CAN_MANAGE`: Can manage the query
+// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`:
+// Can edit the query * `CAN_MANAGE`: Can manage the query
 type PermissionLevel string
+
+// Can edit the query
+const PermissionLevelCanEdit PermissionLevel = `CAN_EDIT`
 
 // Can manage the query
 const PermissionLevelCanManage PermissionLevel = `CAN_MANAGE`
@@ -2072,11 +2091,11 @@ func (f *PermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`:
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`:
 		*f = PermissionLevel(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_RUN", "CAN_VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_RUN", "CAN_VIEW"`, v)
 	}
 }
 
@@ -2127,7 +2146,10 @@ type Query struct {
 	CanEdit bool `json:"can_edit,omitempty"`
 	// The timestamp when this query was created.
 	CreatedAt string `json:"created_at,omitempty"`
-	// Data source ID.
+	// Data source ID maps to the ID of the data source used by the resource and
+	// is distinct from the warehouse ID. [Learn more].
+	//
+	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
@@ -2167,7 +2189,7 @@ type Query struct {
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-	// `CAN_MANAGE`: Can manage the query
+	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// The text of the query to be run.
 	Query string `json:"query,omitempty"`
@@ -2198,7 +2220,10 @@ func (s Query) MarshalJSON() ([]byte, error) {
 }
 
 type QueryEditContent struct {
-	// Data source ID.
+	// Data source ID maps to the ID of the data source used by the resource and
+	// is distinct from the warehouse ID. [Learn more].
+	//
+	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
@@ -2229,6 +2254,8 @@ func (s QueryEditContent) MarshalJSON() ([]byte, error) {
 // A filter to limit query history results. This field is optional.
 type QueryFilter struct {
 	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty" url:"query_start_time_range,omitempty"`
+	// A list of statement IDs.
+	StatementIds []string `json:"statement_ids,omitempty" url:"statement_ids,omitempty"`
 
 	Statuses []QueryStatus `json:"statuses,omitempty" url:"statuses,omitempty"`
 	// A list of user IDs who ran the queries.
@@ -2420,7 +2447,10 @@ func (s QueryOptions) MarshalJSON() ([]byte, error) {
 }
 
 type QueryPostContent struct {
-	// Data source ID.
+	// Data source ID maps to the ID of the data source used by the resource and
+	// is distinct from the warehouse ID. [Learn more].
+	//
+	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
@@ -2584,7 +2614,8 @@ type RestoreQueryRequest struct {
 // prepares the API to return multiple links in a single response. Currently
 // only a single link is returned.)
 type ResultData struct {
-	// The number of bytes in the result chunk.
+	// The number of bytes in the result chunk. This field is not available when
+	// using `INLINE` disposition.
 	ByteCount int64 `json:"byte_count,omitempty"`
 	// The position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`

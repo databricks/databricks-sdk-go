@@ -36,9 +36,7 @@ func (pkg *Package) Services() (types []*Service) {
 	for _, v := range pkg.services {
 		types = append(types, v)
 	}
-	slices.SortFunc(types, func(a, b *Service) bool {
-		return a.PascalName() < b.PascalName()
-	})
+	pascalNameSort(types)
 	return types
 }
 
@@ -58,18 +56,14 @@ func (pkg *Package) Types() (types []*Entity) {
 	for _, v := range pkg.types {
 		types = append(types, v)
 	}
-	slices.SortFunc(types, func(a, b *Entity) bool {
-		return a.PascalName() < b.PascalName()
-	})
+	pascalNameSort(types)
 	return types
 }
 
 // EmptyTypes returns sorted list of types without fields
 func (pkg *Package) EmptyTypes() (types []*Named) {
 	types = append(types, pkg.emptyTypes...)
-	slices.SortFunc(types, func(a, b *Named) bool {
-		return a.PascalName() < b.PascalName()
-	})
+	pascalNameSort(types)
 	return types
 }
 
@@ -88,9 +82,7 @@ func (pkg *Package) ImportedEntities() (res []*Entity) {
 	for _, e := range pkg.extImports {
 		res = append(res, e)
 	}
-	slices.SortFunc(res, func(a, b *Entity) bool {
-		return a.FullName() < b.FullName()
-	})
+	fullNameSort(res)
 	return
 }
 

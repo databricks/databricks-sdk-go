@@ -330,6 +330,15 @@ func (f *CatalogType) Type() string {
 	return "CatalogType"
 }
 
+type CloudflareApiToken struct {
+	// The Cloudflare access key id of the token.
+	AccessKeyId string `json:"access_key_id"`
+	// The account id associated with the API token.
+	AccountId string `json:"account_id"`
+	// The secret access token generated for the access key id
+	SecretAccessKey string `json:"secret_access_key"`
+}
+
 type ColumnInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -934,6 +943,8 @@ type CreateStorageCredential struct {
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The Cloudflare API token configuration.
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
@@ -2163,22 +2174,92 @@ type ListConnectionsResponse struct {
 	Connections []ConnectionInfo `json:"connections,omitempty"`
 }
 
+// List external locations
+type ListExternalLocationsRequest struct {
+	// Maximum number of external locations to return. If not set, all the
+	// external locations are returned (not recommended). - when set to a value
+	// greater than 0, the page length is the minimum of this value and a server
+	// configured value; - when set to 0, the page length is set to a server
+	// configured value (recommended); - when set to a value less than 0, an
+	// invalid parameter error is returned;
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListExternalLocationsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListExternalLocationsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListExternalLocationsResponse struct {
 	// An array of external locations.
 	ExternalLocations []ExternalLocationInfo `json:"external_locations,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListExternalLocationsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListExternalLocationsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List functions
 type ListFunctionsRequest struct {
 	// Name of parent catalog for functions of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
+	// Maximum number of functions to return. If not set, all the functions are
+	// returned (not recommended). - when set to a value greater than 0, the
+	// page length is the minimum of this value and a server configured value; -
+	// when set to 0, the page length is set to a server configured value
+	// (recommended); - when set to a value less than 0, an invalid parameter
+	// error is returned;
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 	// Parent schema of functions.
 	SchemaName string `json:"-" url:"schema_name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListFunctionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListFunctionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListFunctionsResponse struct {
 	// An array of function information objects.
 	Functions []FunctionInfo `json:"functions,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListFunctionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListMetastoresResponse struct {
@@ -2191,9 +2272,15 @@ type ListModelVersionsRequest struct {
 	// The full three-level name of the registered model under which to list
 	// model versions
 	FullName string `json:"-" url:"-"`
-	// Max number of model versions to return
+	// Maximum number of model versions to return. If not set, the page length
+	// is set to a server configured value (100, as of 1/3/2024). - when set to
+	// a value greater than 0, the page length is the minimum of this value and
+	// a server configured value(1000, as of 1/3/2024); - when set to 0, the
+	// page length is set to a server configured value (100, as of 1/3/2024)
+	// (recommended); - when set to a value less than 0, an invalid parameter
+	// error is returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// Opaque token to send for the next page of results (pagination).
+	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -2209,7 +2296,9 @@ func (s ListModelVersionsRequest) MarshalJSON() ([]byte, error) {
 
 type ListModelVersionsResponse struct {
 	ModelVersions []ModelVersionInfo `json:"model_versions,omitempty"`
-	// Token to retrieve the next page of results
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -2272,24 +2361,100 @@ func (s ListRegisteredModelsResponse) MarshalJSON() ([]byte, error) {
 type ListSchemasRequest struct {
 	// Parent catalog for schemas of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
+	// Maximum number of schemas to return. If not set, all the schemas are
+	// returned (not recommended). - when set to a value greater than 0, the
+	// page length is the minimum of this value and a server configured value; -
+	// when set to 0, the page length is set to a server configured value
+	// (recommended); - when set to a value less than 0, an invalid parameter
+	// error is returned;
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSchemasRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSchemasRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListSchemasResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of schema information objects.
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSchemasResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSchemasResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List credentials
+type ListStorageCredentialsRequest struct {
+	// Maximum number of storage credentials to return. If not set, all the
+	// storage credentials are returned (not recommended). - when set to a value
+	// greater than 0, the page length is the minimum of this value and a server
+	// configured value; - when set to 0, the page length is set to a server
+	// configured value (recommended); - when set to a value less than 0, an
+	// invalid parameter error is returned;
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListStorageCredentialsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListStorageCredentialsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListStorageCredentialsResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListStorageCredentialsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List table summaries
 type ListSummariesRequest struct {
 	// Name of parent catalog for tables of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
-	// Maximum number of tables to return (page length). Defaults to 10000.
+	// Maximum number of summaries for tables to return. If not set, the page
+	// length is set to 10000. - when set to a value less than or equal 0, an
+	// invalid parameter error is returned; - when set to a value greater than 0
+	// and less than or equal 10000, the page length is set to that value; -
+	// when set to a value greater than 10000, an invalid parameter error is
+	// returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// Opaque token to send for the next page of results (pagination).
+	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// A sql LIKE pattern (% and _) for schema names. All schemas will be
 	// returned if not set or empty.
@@ -2321,7 +2486,9 @@ type ListSystemSchemasResponse struct {
 }
 
 type ListTableSummariesResponse struct {
-	// Opaque token for pagination. Omitted if there are no more results.
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of table summaries.
 	Tables []TableSummary `json:"tables,omitempty"`
@@ -2343,13 +2510,17 @@ type ListTablesRequest struct {
 	CatalogName string `json:"-" url:"catalog_name"`
 	// Whether delta metadata should be included in the response.
 	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
-	// Maximum number of tables to return (page length). If not set, all
-	// accessible tables in the schema are returned. If set to:
-	//
-	// * greater than 0, page length is the minimum of this value and a server
-	// configured value. * equal to 0, page length is set to a server configured
-	// value. * lesser than 0, invalid parameter error.
+	// Maximum number of tables to return. If not set, all the tables are
+	// returned (not recommended). - when set to a value greater than 0, the
+	// page length is the minimum of this value and a server configured value; -
+	// when set to 0, the page length is set to a server configured value
+	// (recommended); - when set to a value less than 0, an invalid parameter
+	// error is returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Whether to omit the columns of the table from the response or not.
+	OmitColumns bool `json:"-" url:"omit_columns,omitempty"`
+	// Whether to omit the properties of the table from the response or not.
+	OmitProperties bool `json:"-" url:"omit_properties,omitempty"`
 	// Opaque token to send for the next page of results (pagination).
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// Parent schema of tables.
@@ -2367,8 +2538,9 @@ func (s ListTablesRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListTablesResponse struct {
-	// Opaque token for pagination. Omitted if there are no more results.
-	// page_token should be set to this value for fetching the next page.
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of table information objects.
 	Tables []TableInfo `json:"tables,omitempty"`
@@ -3048,6 +3220,8 @@ type StorageCredentialInfo struct {
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The Cloudflare API token configuration.
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// Time at which this Credential was created, in epoch milliseconds.
@@ -3323,8 +3497,10 @@ type UpdateCatalog struct {
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
-	// Name of catalog.
-	Name string `json:"name,omitempty" url:"-"`
+	// The name of the catalog.
+	Name string `json:"-" url:"-"`
+	// New name for the catalog.
+	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of catalog.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
@@ -3343,9 +3519,11 @@ func (s UpdateCatalog) MarshalJSON() ([]byte, error) {
 
 type UpdateConnection struct {
 	// Name of the connection.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 	// Name of the connection.
 	NameArg string `json:"-" url:"-"`
+	// New name for the connection.
+	NewName string `json:"new_name,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Options map[string]string `json:"options"`
 	// Username of current owner of the connection.
@@ -3375,7 +3553,9 @@ type UpdateExternalLocation struct {
 	// or mounts.
 	Force bool `json:"force,omitempty"`
 	// Name of the external location.
-	Name string `json:"name,omitempty" url:"-"`
+	Name string `json:"-" url:"-"`
+	// New name for the external location.
+	NewName string `json:"new_name,omitempty"`
 	// The owner of the external location.
 	Owner string `json:"owner,omitempty"`
 	// Indicates whether the external location is read-only.
@@ -3427,6 +3607,8 @@ type UpdateMetastore struct {
 	Id string `json:"-" url:"-"`
 	// The user-specified name of the metastore.
 	Name string `json:"name,omitempty"`
+	// New name for the metastore.
+	NewName string `json:"new_name,omitempty"`
 	// The owner of the metastore.
 	Owner string `json:"owner,omitempty"`
 	// Privilege model version of the metastore, of the form `major.minor`
@@ -3528,6 +3710,8 @@ type UpdateRegisteredModelRequest struct {
 	FullName string `json:"-" url:"-"`
 	// The name of the registered model
 	Name string `json:"name,omitempty"`
+	// New name for the registered model.
+	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the registered model
 	Owner string `json:"owner,omitempty"`
 
@@ -3552,6 +3736,8 @@ type UpdateSchema struct {
 	FullName string `json:"-" url:"-"`
 	// Name of schema, relative to parent catalog.
 	Name string `json:"name,omitempty"`
+	// New name for the schema.
+	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of schema.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
@@ -3575,6 +3761,8 @@ type UpdateStorageCredential struct {
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The Cloudflare API token configuration.
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
@@ -3582,8 +3770,10 @@ type UpdateStorageCredential struct {
 	// Force update even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"force,omitempty"`
-	// The credential name. The name must be unique within the metastore.
-	Name string `json:"name,omitempty" url:"-"`
+	// Name of the storage credential.
+	Name string `json:"-" url:"-"`
+	// New name for the storage credential.
+	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of credential.
 	Owner string `json:"owner,omitempty"`
 	// Whether the storage credential is only usable for read operations.
@@ -3628,6 +3818,8 @@ type UpdateVolumeRequestContent struct {
 	FullNameArg string `json:"-" url:"-"`
 	// The name of the volume
 	Name string `json:"name,omitempty"`
+	// New name for the volume.
+	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the volume
 	Owner string `json:"owner,omitempty"`
 
@@ -3669,6 +3861,8 @@ type ValidateStorageCredential struct {
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The Cloudflare API token configuration.
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// The Databricks created GCP service account configuration.
 	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate.

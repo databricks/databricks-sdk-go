@@ -10,26 +10,9 @@ import (
 
 // all definitions in this file are in alphabetical order
 
-type AccountNetworkPolicyMessage struct {
-	// Whether or not serverless UDF can access the internet. When false, access
-	// to the internet will be blocked from serverless clusters. Trusted traffic
-	// required by clusters for basic functionality will not be affected.
-	ServerlessInternetAccessEnabled bool `json:"serverless_internet_access_enabled,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *AccountNetworkPolicyMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AccountNetworkPolicyMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
+// Details required to configure a block list or allow list.
 type CreateIpAccessList struct {
-	// Array of IP addresses or CIDR values to be added to the IP access list.
-	IpAddresses []string `json:"ip_addresses"`
+	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
 	Label string `json:"label"`
 	// Type of IP access list. Valid values are as follows and are
@@ -41,7 +24,9 @@ type CreateIpAccessList struct {
 	ListType ListType `json:"list_type"`
 }
 
+// An IP access list was successfully created.
 type CreateIpAccessListResponse struct {
+	// Definition of an IP Access list
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
@@ -142,7 +127,7 @@ type CreateTokenRequest struct {
 	Comment string `json:"comment,omitempty"`
 	// The lifetime of the token, in seconds.
 	//
-	// If the ifetime is not specified, this token remains valid indefinitely.
+	// If the lifetime is not specified, this token remains valid indefinitely.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -213,31 +198,8 @@ func (s DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
 
 // Delete access list
 type DeleteAccountIpAccessListRequest struct {
-	// The ID for the corresponding IP access list.
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
-}
-
-// Delete Account Network Policy
-type DeleteAccountNetworkPolicyRequest struct {
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// delete pattern to perform setting deletions in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag"`
-}
-
-type DeleteAccountNetworkPolicyResponse struct {
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// update pattern to perform setting updates in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// PATCH request to identify the setting version you are updating.
-	Etag string `json:"etag"`
 }
 
 // Delete the default namespace setting
@@ -265,7 +227,7 @@ type DeleteDefaultWorkspaceNamespaceResponse struct {
 
 // Delete access list
 type DeleteIpAccessListRequest struct {
-	// The ID for the corresponding IP access list to modify.
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 }
 
@@ -349,26 +311,30 @@ type ExchangeTokenResponse struct {
 	Values []ExchangeToken `json:"values,omitempty"`
 }
 
+// An IP access list was successfully returned.
 type FetchIpAccessListResponse struct {
+	// Definition of an IP Access list
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
 // Get IP access list
 type GetAccountIpAccessListRequest struct {
-	// The ID for the corresponding IP access list.
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 }
 
 // Get access list
 type GetIpAccessListRequest struct {
-	// The ID for the corresponding IP access list to modify.
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 }
 
 type GetIpAccessListResponse struct {
+	// Definition of an IP Access list
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
+// IP access lists were successfully returned.
 type GetIpAccessListsResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
@@ -403,6 +369,7 @@ type GetTokenPermissionLevelsResponse struct {
 	PermissionLevels []TokenPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+// Definition of an IP Access list
 type IpAccessListInfo struct {
 	// Total number of IP or CIDR values.
 	AddressCount int `json:"address_count,omitempty"`
@@ -412,7 +379,7 @@ type IpAccessListInfo struct {
 	CreatedBy int64 `json:"created_by,omitempty"`
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled,omitempty"`
-	// Array of IP addresses or CIDR values to be added to the IP access list.
+
 	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
 	Label string `json:"label,omitempty"`
@@ -441,6 +408,7 @@ func (s IpAccessListInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// IP access lists were successfully returned.
 type ListIpAccessListResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
@@ -511,6 +479,11 @@ func (s *ListPrivateEndpointRulesRequest) UnmarshalJSON(b []byte) error {
 
 func (s ListPrivateEndpointRulesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ListPublicTokensResponse struct {
+	// The information for each token.
+	TokenInfos []PublicTokenInfo `json:"token_infos,omitempty"`
 }
 
 // List all tokens
@@ -889,18 +862,6 @@ func (s PublicTokenInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get Account Network Policy
-type ReadAccountNetworkPolicyRequest struct {
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// delete pattern to perform setting deletions in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag"`
-}
-
 // Get the default namespace setting
 type ReadDefaultWorkspaceNamespaceRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -925,17 +886,16 @@ type ReadPersonalComputeSettingRequest struct {
 	Etag string `json:"-" url:"etag"`
 }
 
+// Details required to replace an IP access list.
 type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled"`
-	// The ID for the corresponding IP access list to modify.
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
-	// Array of IP addresses or CIDR values to be added to the IP access list.
-	IpAddresses []string `json:"ip_addresses"`
+
+	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
 	Label string `json:"label"`
-	// Universally unique identifier (UUID) of the IP access list.
-	ListId string `json:"list_id,omitempty"`
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
 	//
@@ -943,16 +903,6 @@ type ReplaceIpAccessList struct {
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
 	ListType ListType `json:"list_type"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ReplaceIpAccessList) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ReplaceIpAccessList) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type RevokeTokenRequest struct {
@@ -1157,25 +1107,6 @@ func (f *TokenType) Type() string {
 	return "TokenType"
 }
 
-// Update Account Network Policy
-type UpdateAccountNetworkPolicyRequest struct {
-	// This should always be set to true for Settings RPCs. Added for AIP
-	// compliance.
-	AllowMissing bool `json:"allow_missing,omitempty"`
-
-	Setting *AccountNetworkPolicyMessage `json:"setting,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateAccountNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateAccountNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 // Update the default namespace setting
 type UpdateDefaultWorkspaceNamespaceRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -1211,24 +1142,23 @@ func (s UpdateDefaultWorkspaceNamespaceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Details required to update an IP access list.
 type UpdateIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
-	Enabled bool `json:"enabled"`
-	// The ID for the corresponding IP access list to modify.
+	Enabled bool `json:"enabled,omitempty"`
+	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
-	// Array of IP addresses or CIDR values to be added to the IP access list.
-	IpAddresses []string `json:"ip_addresses"`
+
+	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
-	Label string `json:"label"`
-	// Universally unique identifier (UUID) of the IP access list.
-	ListId string `json:"list_id,omitempty"`
+	Label string `json:"label,omitempty"`
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
 	//
 	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
-	ListType ListType `json:"list_type"`
+	ListType ListType `json:"list_type,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

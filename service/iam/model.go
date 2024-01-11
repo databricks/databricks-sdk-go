@@ -206,8 +206,12 @@ type GetPermissionLevelsResponse struct {
 
 // Get object permissions
 type GetPermissionRequest struct {
+	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
-	// <needs content>
+	// The type of the request object. Can be one of the following:
+	// authorization, clusters, cluster-policies, directories, experiments,
+	// files, instance-pools, jobs, notebooks, pipelines, registered-models,
+	// repos, serving-endpoints, or sql-warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1081,9 +1085,12 @@ func (s PermissionsDescription) MarshalJSON() ([]byte, error) {
 
 type PermissionsRequest struct {
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
-
+	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
-	// <needs content>
+	// The type of the request object. Can be one of the following:
+	// authorization, clusters, cluster-policies, directories, experiments,
+	// files, instance-pools, jobs, notebooks, pipelines, registered-models,
+	// repos, serving-endpoints, or sql-warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1260,7 +1267,7 @@ type User struct {
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID. This is automatically set by Databricks. Any value
 	// provided by the client will be ignored.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
@@ -1285,6 +1292,8 @@ type UserSchema string
 
 const UserSchemaUrnIetfParamsScimSchemasCore20User UserSchema = `urn:ietf:params:scim:schemas:core:2.0:User`
 
+const UserSchemaUrnIetfParamsScimSchemasExtensionWorkspace20User UserSchema = `urn:ietf:params:scim:schemas:extension:workspace:2.0:User`
+
 // String representation for [fmt.Print]
 func (f *UserSchema) String() string {
 	return string(*f)
@@ -1293,11 +1302,11 @@ func (f *UserSchema) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UserSchema) Set(v string) error {
 	switch v {
-	case `urn:ietf:params:scim:schemas:core:2.0:User`:
+	case `urn:ietf:params:scim:schemas:core:2.0:User`, `urn:ietf:params:scim:schemas:extension:workspace:2.0:User`:
 		*f = UserSchema(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "urn:ietf:params:scim:schemas:core:2.0:User"`, v)
+		return fmt.Errorf(`value "%s" is not one of "urn:ietf:params:scim:schemas:core:2.0:User", "urn:ietf:params:scim:schemas:extension:workspace:2.0:User"`, v)
 	}
 }
 

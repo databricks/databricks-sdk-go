@@ -164,6 +164,16 @@ func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEn
 	return endpointTagList, err
 }
 
+func (a *servingEndpointsImpl) Put(ctx context.Context, request PutRequest) (*PutResponse, error) {
+	var putResponse PutResponse
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/rate-limits", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &putResponse)
+	return &putResponse, err
+}
+
 func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
 	var queryEndpointResponse QueryEndpointResponse
 	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)

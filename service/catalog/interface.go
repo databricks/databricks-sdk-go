@@ -272,11 +272,12 @@ type ExternalLocationsService interface {
 	// Gets an array of external locations (__ExternalLocationInfo__ objects)
 	// from the metastore. The caller must be a metastore admin, the owner of
 	// the external location, or a user that has some privilege on the external
-	// location. There is no guarantee of a specific ordering of the elements in
-	// the array.
+	// location. For unpaginated request, there is no guarantee of a specific
+	// ordering of the elements in the array. For paginated request, elements
+	// are ordered by their name.
 	//
-	// Use ListAll() to get all ExternalLocationInfo instances
-	List(ctx context.Context) (*ListExternalLocationsResponse, error)
+	// Use ListAll() to get all ExternalLocationInfo instances, which will iterate over every result page.
+	List(ctx context.Context, request ListExternalLocationsRequest) (*ListExternalLocationsResponse, error)
 
 	// Update an external location.
 	//
@@ -332,10 +333,11 @@ type FunctionsService interface {
 	// Otherwise, the user must have the **USE_CATALOG** privilege on the
 	// catalog and the **USE_SCHEMA** privilege on the schema, and the output
 	// list contains only functions for which either the user has the
-	// **EXECUTE** privilege or the user is the owner. There is no guarantee of
-	// a specific ordering of the elements in the array.
+	// **EXECUTE** privilege or the user is the owner. For unpaginated request,
+	// there is no guarantee of a specific ordering of the elements in the
+	// array. For paginated request, elements are ordered by their name.
 	//
-	// Use ListAll() to get all FunctionInfo instances
+	// Use ListAll() to get all FunctionInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error)
 
 	// Update a function.
@@ -695,10 +697,11 @@ type SchemasService interface {
 	// the metastore admin or the owner of the parent catalog, all schemas for
 	// the catalog will be retrieved. Otherwise, only schemas owned by the
 	// caller (or for which the caller has the **USE_SCHEMA** privilege) will be
-	// retrieved. There is no guarantee of a specific ordering of the elements
-	// in the array.
+	// retrieved. For unpaginated request, there is no guarantee of a specific
+	// ordering of the elements in the array. For paginated request, elements
+	// are ordered by their name.
 	//
-	// Use ListAll() to get all SchemaInfo instances
+	// Use ListAll() to get all SchemaInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error)
 
 	// Update a schema.
@@ -748,12 +751,13 @@ type StorageCredentialsService interface {
 	//
 	// Gets an array of storage credentials (as __StorageCredentialInfo__
 	// objects). The array is limited to only those storage credentials the
-	// caller has permission to access. If the caller is a metastore admin, all
-	// storage credentials will be retrieved. There is no guarantee of a
-	// specific ordering of the elements in the array.
+	// caller has permission to access. If the caller is a metastore admin,
+	// retrieval of credentials is unrestricted. For unpaginated request, there
+	// is no guarantee of a specific ordering of the elements in the array. For
+	// paginated request, elements are ordered by their name.
 	//
-	// Use ListAll() to get all StorageCredentialInfo instances
-	List(ctx context.Context) (*ListStorageCredentialsResponse, error)
+	// Use ListAll() to get all StorageCredentialInfo instances, which will iterate over every result page.
+	List(ctx context.Context, request ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error)
 
 	// Update a credential.
 	//
@@ -896,13 +900,13 @@ type TablesService interface {
 	// Gets an array of summaries for tables for a schema and catalog within the
 	// metastore. The table summaries returned are either:
 	//
-	// * summaries for all tables (within the current metastore and parent
-	// catalog and schema), when the user is a metastore admin, or: * summaries
-	// for all tables and schemas (within the current metastore and parent
-	// catalog) for which the user has ownership or the **SELECT** privilege on
-	// the table and ownership or **USE_SCHEMA** privilege on the schema,
-	// provided that the user also has ownership or the **USE_CATALOG**
-	// privilege on the parent catalog.
+	// * summaries for tables (within the current metastore and parent catalog
+	// and schema), when the user is a metastore admin, or: * summaries for
+	// tables and schemas (within the current metastore and parent catalog) for
+	// which the user has ownership or the **SELECT** privilege on the table and
+	// ownership or **USE_SCHEMA** privilege on the schema, provided that the
+	// user also has ownership or the **USE_CATALOG** privilege on the parent
+	// catalog.
 	//
 	// There is no guarantee of a specific ordering of the elements in the
 	// array.

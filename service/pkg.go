@@ -74,6 +74,8 @@
 //
 // - [jobs.JobsAPI]: The Jobs API allows you to create, edit, and delete jobs.
 //
+// - [dashboards.LakeviewAPI]: These APIs provide specific management operations for Lakeview dashboards.
+//
 // - [compute.LibrariesAPI]: The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster.
 //
 // - [billing.LogDeliveryAPI]: These APIs manage log delivery configurations for this account.
@@ -89,8 +91,6 @@
 // - [catalog.ModelVersionsAPI]: Databricks provides a hosted version of MLflow Model Registry in Unity Catalog.
 //
 // - [settings.NetworkConnectivityAPI]: These APIs provide configurations for the network connectivity of your workspaces for serverless compute resources.
-//
-// - [settings.AccountNetworkPolicyAPI]: Network policy is a set of rules that defines what can be accessed from your Databricks network.
 //
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //
@@ -162,6 +162,10 @@
 //
 // - [iam.AccountUsersAPI]: User identities recognized by Databricks and represented by email addresses.
 //
+// - [vectorsearch.VectorSearchEndpointsAPI]: **Endpoint**: Represents the compute resources to host vector search indexes.
+//
+// - [vectorsearch.VectorSearchIndexesAPI]: **Index**: An efficient representation of your embedding vectors that supports real-time and efficient approximate nearest neighbor (ANN) search queries.
+//
 // - [catalog.VolumesAPI]: Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing and processing files.
 //
 // - [provisioning.VpcEndpointsAPI]: These APIs manage VPC endpoint configurations for this account.
@@ -183,6 +187,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/compute"
+	"github.com/databricks/databricks-sdk-go/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
@@ -194,6 +199,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
+	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
 
@@ -239,6 +245,7 @@ var (
 	_ *settings.IpAccessListsAPI              = nil
 	_ *settings.AccountIpAccessListsAPI       = nil
 	_ *jobs.JobsAPI                           = nil
+	_ *dashboards.LakeviewAPI                 = nil
 	_ *compute.LibrariesAPI                   = nil
 	_ *billing.LogDeliveryAPI                 = nil
 	_ *catalog.AccountMetastoreAssignmentsAPI = nil
@@ -247,7 +254,6 @@ var (
 	_ *ml.ModelRegistryAPI                    = nil
 	_ *catalog.ModelVersionsAPI               = nil
 	_ *settings.NetworkConnectivityAPI        = nil
-	_ *settings.AccountNetworkPolicyAPI       = nil
 	_ *provisioning.NetworksAPI               = nil
 	_ *oauth2.OAuthPublishedAppsAPI           = nil
 	_ *iam.PermissionsAPI                     = nil
@@ -283,6 +289,8 @@ var (
 	_ *settings.TokensAPI                     = nil
 	_ *iam.UsersAPI                           = nil
 	_ *iam.AccountUsersAPI                    = nil
+	_ *vectorsearch.VectorSearchEndpointsAPI  = nil
+	_ *vectorsearch.VectorSearchIndexesAPI    = nil
 	_ *catalog.VolumesAPI                     = nil
 	_ *provisioning.VpcEndpointsAPI           = nil
 	_ *sql.WarehousesAPI                      = nil

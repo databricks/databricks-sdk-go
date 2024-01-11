@@ -319,12 +319,12 @@ func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLoca
 	return &externalLocationInfo, err
 }
 
-func (a *externalLocationsImpl) List(ctx context.Context) (*ListExternalLocationsResponse, error) {
+func (a *externalLocationsImpl) List(ctx context.Context, request ListExternalLocationsRequest) (*ListExternalLocationsResponse, error) {
 	var listExternalLocationsResponse ListExternalLocationsResponse
 	path := "/api/2.1/unity-catalog/external-locations"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listExternalLocationsResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listExternalLocationsResponse)
 	return &listExternalLocationsResponse, err
 }
 
@@ -716,12 +716,12 @@ func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCred
 	return &storageCredentialInfo, err
 }
 
-func (a *storageCredentialsImpl) List(ctx context.Context) (*ListStorageCredentialsResponse, error) {
+func (a *storageCredentialsImpl) List(ctx context.Context, request ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error) {
 	var listStorageCredentialsResponse ListStorageCredentialsResponse
 	path := "/api/2.1/unity-catalog/storage-credentials"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listStorageCredentialsResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listStorageCredentialsResponse)
 	return &listStorageCredentialsResponse, err
 }
 

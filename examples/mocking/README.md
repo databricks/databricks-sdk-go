@@ -41,10 +41,16 @@ mockDbfs.EXPECT().Create(gomock.Any(), gomock.Eq(dbfs.Create{
 
 ## Testing idioms with Databricks SDK for Go
 
-You can stub out the auth with the `databricks.NewMockConfig(nil)` helper function. Every service has a public `WithImpl()` method, that you can use to set the stubs for every service that is called in the unit tests.
+You can stub out the HTTP request flow with `httpclient/fixtures.MappingTransport` and `httpclient/fixtures.SliceTransport`. 
+
+Every service has a public `WithImpl()` method, that you can use to set the stubs for every service that is called in the unit tests.
 
 ```go
-w := workspaces.New(databricks.NewMockConfig(nil))
+w := workspaces.New(&databricks.Config{
+    HTTPTransport: fixtures.MappingTransport{
+        //...
+    }
+})
 w.Dbfs.WithImpl(mockDbfs)
 ```
 

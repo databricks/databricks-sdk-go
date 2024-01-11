@@ -28,6 +28,7 @@ func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpA
 func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
@@ -66,39 +67,6 @@ func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpA
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
 	return err
-}
-
-// unexported type that holds implementations of just AccountNetworkPolicy API methods
-type accountNetworkPolicyImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *accountNetworkPolicyImpl) DeleteAccountNetworkPolicy(ctx context.Context, request DeleteAccountNetworkPolicyRequest) (*DeleteAccountNetworkPolicyResponse, error) {
-	var deleteAccountNetworkPolicyResponse DeleteAccountNetworkPolicyResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/network_policy/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteAccountNetworkPolicyResponse)
-	return &deleteAccountNetworkPolicyResponse, err
-}
-
-func (a *accountNetworkPolicyImpl) ReadAccountNetworkPolicy(ctx context.Context, request ReadAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error) {
-	var accountNetworkPolicyMessage AccountNetworkPolicyMessage
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/network_policy/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &accountNetworkPolicyMessage)
-	return &accountNetworkPolicyMessage, err
-}
-
-func (a *accountNetworkPolicyImpl) UpdateAccountNetworkPolicy(ctx context.Context, request UpdateAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error) {
-	var accountNetworkPolicyMessage AccountNetworkPolicyMessage
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/network_policy/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &accountNetworkPolicyMessage)
-	return &accountNetworkPolicyMessage, err
 }
 
 // unexported type that holds implementations of just AccountSettings API methods
@@ -167,6 +135,7 @@ func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessLi
 func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessListRequest) error {
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
@@ -420,13 +389,13 @@ func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) err
 	return err
 }
 
-func (a *tokensImpl) List(ctx context.Context) (*ListTokensResponse, error) {
-	var listTokensResponse ListTokensResponse
+func (a *tokensImpl) List(ctx context.Context) (*ListPublicTokensResponse, error) {
+	var listPublicTokensResponse ListPublicTokensResponse
 	path := "/api/2.0/token/list"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listTokensResponse)
-	return &listTokensResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listPublicTokensResponse)
+	return &listPublicTokensResponse, err
 }
 
 // unexported type that holds implementations of just WorkspaceConf API methods

@@ -11,7 +11,9 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/logger/httplog"
 )
 
 var (
@@ -155,28 +157,33 @@ func GenericIOError(ue *url.Error) *APIError {
 }
 
 // GetAPIError inspects HTTP errors from the Databricks API for known transient errors.
-func GetAPIError(ctx context.Context, resp *http.Response, body io.ReadCloser) error {
-	if resp.StatusCode == 429 {
+func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
+	if resp.Response.StatusCode == 429 {
 		return TooManyRequests()
 	}
-	if resp.StatusCode >= 400 {
+	if resp.Response.StatusCode >= 400 {
 		// read in response body as it is actually an error
-		bodyBytes, err := io.ReadAll(body)
+		responseBodyBytes, err := io.ReadAll(resp.ReadCloser)
 		if err != nil {
-			return ReadError(resp.StatusCode, err)
+			return ReadError(resp.Response.StatusCode, err)
 		}
-		apiError := parseErrorFromResponse(resp, bodyBytes)
+		apiError := parseErrorFromResponse(resp.Response, resp.RequestBody.DebugBytes, responseBodyBytes)
 		return apiError
 	}
 	return nil
 }
 
-func parseErrorFromResponse(resp *http.Response, body []byte) *APIError {
+func parseErrorFromResponse(resp *http.Response, requestBody, responseBody []byte) *APIError {
+	if len(responseBody) == 0 {
+		return &APIError{
+			StatusCode: resp.StatusCode,
+		}
+	}
 	// try to read in nicely formatted API error response
 	var errorBody APIErrorBody
-	err := json.Unmarshal(body, &errorBody)
+	err := json.Unmarshal(responseBody, &errorBody)
 	if err != nil {
-		errorBody = parseUnknownError(resp.Status, body, err)
+		errorBody = parseUnknownError(resp, requestBody, responseBody, err)
 	}
 	if errorBody.API12Error != "" {
 		// API 1.2 has different response format, let's adapt
@@ -202,10 +209,10 @@ func parseErrorFromResponse(resp *http.Response, body []byte) *APIError {
 	}
 }
 
-func parseUnknownError(status string, body []byte, err error) (errorBody APIErrorBody) {
+func parseUnknownError(resp *http.Response, requestBody, responseBody []byte, err error) (errorBody APIErrorBody) {
 	// this is most likely HTML... since un-marshalling JSON failed
 	// Status parts first in case html message is not as expected
-	statusParts := strings.SplitN(status, " ", 2)
+	statusParts := strings.SplitN(resp.Status, " ", 2)
 	if len(statusParts) < 2 {
 		errorBody.ErrorCode = "UNKNOWN"
 	} else {
@@ -213,15 +220,27 @@ func parseUnknownError(status string, body []byte, err error) (errorBody APIErro
 			strings.ToUpper(strings.Trim(statusParts[1], " .")),
 			" ", "_")
 	}
-	stringBody := string(body)
+	stringBody := string(responseBody)
 	messageRE := regexp.MustCompile(`<pre>(.*)</pre>`)
 	messageMatches := messageRE.FindStringSubmatch(stringBody)
 	// No messages with <pre> </pre> format found so return a APIError
 	if len(messageMatches) < 2 {
-		errorBody.Message = fmt.Sprintf("Response from server (%s) %s: %v",
-			status, stringBody, err)
+		errorBody.Message = MakeUnexpectedError(resp, err, requestBody, responseBody).Error()
 		return
 	}
 	errorBody.Message = strings.Trim(messageMatches[1], " .")
 	return
+}
+
+func MakeUnexpectedError(resp *http.Response, err error, requestBody, responseBody []byte) error {
+	rts := httplog.RoundTripStringer{
+		Response:                 resp,
+		Err:                      err,
+		RequestBody:              requestBody,
+		ResponseBody:             responseBody,
+		DebugHeaders:             true,
+		DebugTruncateBytes:       10 * 1024,
+		DebugAuthorizationHeader: false,
+	}
+	return fmt.Errorf("unexpected error handling request: %w. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\n```\n%s\n```", err, rts.String())
 }

@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/openapi"
-	"golang.org/x/exp/slices"
 )
 
 type Batch struct {
@@ -73,9 +73,7 @@ func (b *Batch) Packages() (pkgs []*Package) {
 	}
 	// add some determinism into code generation for globally stable order in
 	// files like for workspaces/accounts clinets.
-	slices.SortFunc(pkgs, func(a, b *Package) bool {
-		return a.FullName() < b.FullName()
-	})
+	fullNameSort(pkgs)
 	return pkgs
 }
 
@@ -86,9 +84,7 @@ func (b *Batch) Types() (types []*Entity) {
 	}
 	// add some determinism into code generation for globally stable order in
 	// files like api.go and/or {{.Package.Name}}.py and clients.
-	slices.SortFunc(types, func(a, b *Entity) bool {
-		return a.FullName() < b.FullName()
-	})
+	fullNameSort(types)
 	return types
 }
 
@@ -116,11 +112,11 @@ func (b *Batch) Services() (services []*Service) {
 	}
 	// add some determinism into code generation for globally stable order in
 	// files like api.go and/or {{.Package.Name}}.py and clients.
-	slices.SortFunc(services, func(a, b *Service) bool {
+	sort.Slice(services, func(a, b int) bool {
 		// not using .FullName() here, as in "batch" context
 		// services have to be sorted globally, not only within a package.
 		// alternatively we may think on adding .ReverseFullName() to sort on.
-		return norm(a.Name) < norm(b.Name)
+		return norm(services[a].Name) < norm(services[b].Name)
 	})
 	return services
 }

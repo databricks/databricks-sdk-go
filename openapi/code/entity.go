@@ -2,9 +2,9 @@ package code
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/databricks/databricks-sdk-go/openapi"
-	"golang.org/x/exp/slices"
 )
 
 // Field of a Type (Entity)
@@ -182,8 +182,8 @@ func (e *Entity) RequiredFields() (fields []*Field) {
 
 	// Path fields should always be first in required arguments order.
 	// We use stable sort to male sure we preserve the path arguments order
-	slices.SortStableFunc(fields, func(a, b *Field) bool {
-		return a.IsPath && !b.IsPath
+	sort.SliceStable(fields, func(a, b int) bool {
+		return fields[a].IsPath && !fields[b].IsPath
 	})
 	return
 }
@@ -225,9 +225,7 @@ func (e *Entity) NonRequiredFields() (fields []*Field) {
 		v.Of = e
 		fields = append(fields, v)
 	}
-	slices.SortFunc(fields, func(a, b *Field) bool {
-		return a.CamelName() < b.CamelName()
-	})
+	pascalNameSort(fields)
 	return
 }
 
@@ -237,9 +235,7 @@ func (e *Entity) Fields() (fields []*Field) {
 		v.Of = e
 		fields = append(fields, v)
 	}
-	slices.SortFunc(fields, func(a, b *Field) bool {
-		return a.CamelName() < b.CamelName()
-	})
+	pascalNameSort(fields)
 	return fields
 }
 
@@ -268,8 +264,8 @@ func (e *Entity) Enum() (enum []EnumEntry) {
 	for _, v := range e.enum {
 		enum = append(enum, v)
 	}
-	slices.SortFunc(enum, func(a, b EnumEntry) bool {
-		return a.Name < b.Name
+	sort.Slice(enum, func(i, j int) bool {
+		return enum[i].Name < enum[j].Name
 	})
 	return enum
 }

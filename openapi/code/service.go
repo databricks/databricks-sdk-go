@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/openapi"
-	"golang.org/x/exp/slices"
 )
 
 // Service represents specific Databricks API
@@ -36,9 +35,7 @@ func (svc *Service) Methods() (methods []*Method) {
 	for _, v := range svc.methods {
 		methods = append(methods, v)
 	}
-	slices.SortFunc(methods, func(a, b *Method) bool {
-		return a.CamelName() < b.CamelName()
-	})
+	pascalNameSort(methods)
 	return methods
 }
 
@@ -106,8 +103,18 @@ func (svc *Service) HasPagination() bool {
 	return false
 }
 
+func (svc *Service) getDescription(param openapi.Parameter) string {
+	if param.Description != "" {
+		return param.Description
+	}
+	if param.Schema != nil {
+		return param.Schema.Description
+	}
+	return ""
+}
+
 func (svc *Service) paramToField(op *openapi.Operation, param openapi.Parameter) *Field {
-	named := Named{param.Name, param.Description}
+	named := Named{param.Name, svc.getDescription(param)}
 	return &Field{
 		Named:    named,
 		Required: param.Required,
@@ -469,9 +476,7 @@ func (svc *Service) Waits() (waits []*Wait) {
 		waits = append(waits, wait)
 		seen[wait.Name] = true
 	}
-	slices.SortFunc(waits, func(a, b *Wait) bool {
-		return a.Name < b.Name
-	})
+	pascalNameSort(waits)
 	return waits
 }
 

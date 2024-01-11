@@ -1,8 +1,11 @@
 package internal
 
 import (
+	"context"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -225,7 +228,25 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
+			return a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+		})
+		require.NoError(t, err)
+	})
+
+	updateRole, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
+		CredentialsName: RandomName("go-sdk-"),
+		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+			StsRole: &provisioning.CreateCredentialStsRole{
+				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
+			},
+		},
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
+			return a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
+		})
 		require.NoError(t, err)
 	})
 
@@ -241,23 +262,6 @@ func TestMwsAccWorkspaces(t *testing.T) {
 		err := a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
 		require.NoError(t, err)
 	})
-
-	updateRole, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
-		CredentialsName: RandomName("go-sdk-"),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
-			StsRole: &provisioning.CreateCredentialStsRole{
-				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
-			},
-		},
-	})
-	require.NoError(t, err)
-	// TODO: OpenAPI: add error retry to properly wait for things like
-	// 409 Conflict - INVALID_STATE: Unable to delete, credential is being used by an active workspace
-	defer a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
-	// t.Cleanup(func() {
-	// 	err := a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
-	// 	require.NoError(t, err)
-	// })
 
 	// this also takes a while
 	_, err = a.Workspaces.UpdateAndWait(ctx, provisioning.UpdateWorkspaceRequest{

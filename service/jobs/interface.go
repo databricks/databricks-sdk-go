@@ -114,10 +114,10 @@ type JobsService interface {
 	// history for the original job run.
 	RepairRun(ctx context.Context, request RepairRun) (*RepairRunResponse, error)
 
-	// Overwrite all settings for a job.
+	// Update all job settings (reset).
 	//
-	// Overwrite all settings for the given job. Use the Update endpoint to
-	// update job settings partially.
+	// Overwrite all settings for the given job. Use the [_Update_
+	// endpoint](:method:jobs/update) to update job settings partially.
 	Reset(ctx context.Context, request ResetJob) error
 
 	// Trigger a new job run.
@@ -139,10 +139,10 @@ type JobsService interface {
 	// state after the job is submitted.
 	Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error)
 
-	// Partially update a job.
+	// Update job settings partially.
 	//
 	// Add, update, or remove specific settings of an existing job. Use the
-	// ResetJob to overwrite all job settings.
+	// [_Reset_ endpoint](:method:jobs/reset) to overwrite all job settings.
 	Update(ctx context.Context, request UpdateJob) error
 
 	// Update job permissions.

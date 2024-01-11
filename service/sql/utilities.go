@@ -8,6 +8,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/retries"
 )
 
+type statementExecutionAPIUtilities interface {
+	ExecuteAndWait(ctx context.Context, request ExecuteStatementRequest) (*ExecuteStatementResponse, error)
+}
+
 // [EXPERIMENTAL] Execute a query and wait for results to be available
 func (a *StatementExecutionAPI) ExecuteAndWait(ctx context.Context, request ExecuteStatementRequest) (*ExecuteStatementResponse, error) {
 	immediateResponse, err := a.impl.ExecuteStatement(ctx, request)
