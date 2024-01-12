@@ -461,19 +461,19 @@ func (_c *MockBudgetsInterface_Impl_Call) RunAndReturn(run func() billing.Budget
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockBudgetsInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *billing.BudgetList, billing.BudgetWithStatus] {
+func (_m *MockBudgetsInterface) List(ctx context.Context) listing.Iterator[billing.BudgetWithStatus] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *billing.BudgetList, billing.BudgetWithStatus]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *billing.BudgetList, billing.BudgetWithStatus]); ok {
+	var r0 listing.Iterator[billing.BudgetWithStatus]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[billing.BudgetWithStatus]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *billing.BudgetList, billing.BudgetWithStatus])
+			r0 = ret.Get(0).(listing.Iterator[billing.BudgetWithStatus])
 		}
 	}
 
@@ -498,12 +498,12 @@ func (_c *MockBudgetsInterface_List_Call) Run(run func(ctx context.Context)) *Mo
 	return _c
 }
 
-func (_c *MockBudgetsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *billing.BudgetList, billing.BudgetWithStatus]) *MockBudgetsInterface_List_Call {
+func (_c *MockBudgetsInterface_List_Call) Return(_a0 listing.Iterator[billing.BudgetWithStatus]) *MockBudgetsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockBudgetsInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *billing.BudgetList, billing.BudgetWithStatus]) *MockBudgetsInterface_List_Call {
+func (_c *MockBudgetsInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[billing.BudgetWithStatus]) *MockBudgetsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

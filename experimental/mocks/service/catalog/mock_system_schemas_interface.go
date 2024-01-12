@@ -215,19 +215,19 @@ func (_c *MockSystemSchemasInterface_Impl_Call) RunAndReturn(run func() catalog.
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockSystemSchemasInterface) List(ctx context.Context, request catalog.ListSystemSchemasRequest) *listing.PaginatingIterator[catalog.ListSystemSchemasRequest, *catalog.ListSystemSchemasResponse, catalog.SystemSchemaInfo] {
+func (_m *MockSystemSchemasInterface) List(ctx context.Context, request catalog.ListSystemSchemasRequest) listing.Iterator[catalog.SystemSchemaInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[catalog.ListSystemSchemasRequest, *catalog.ListSystemSchemasResponse, catalog.SystemSchemaInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListSystemSchemasRequest) *listing.PaginatingIterator[catalog.ListSystemSchemasRequest, *catalog.ListSystemSchemasResponse, catalog.SystemSchemaInfo]); ok {
+	var r0 listing.Iterator[catalog.SystemSchemaInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListSystemSchemasRequest) listing.Iterator[catalog.SystemSchemaInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[catalog.ListSystemSchemasRequest, *catalog.ListSystemSchemasResponse, catalog.SystemSchemaInfo])
+			r0 = ret.Get(0).(listing.Iterator[catalog.SystemSchemaInfo])
 		}
 	}
 
@@ -253,12 +253,12 @@ func (_c *MockSystemSchemasInterface_List_Call) Run(run func(ctx context.Context
 	return _c
 }
 
-func (_c *MockSystemSchemasInterface_List_Call) Return(_a0 *listing.PaginatingIterator[catalog.ListSystemSchemasRequest, *catalog.ListSystemSchemasResponse, catalog.SystemSchemaInfo]) *MockSystemSchemasInterface_List_Call {
+func (_c *MockSystemSchemasInterface_List_Call) Return(_a0 listing.Iterator[catalog.SystemSchemaInfo]) *MockSystemSchemasInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSystemSchemasInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListSystemSchemasRequest) *listing.PaginatingIterator[catalog.ListSystemSchemasRequest, *catalog.ListSystemSchemasResponse, catalog.SystemSchemaInfo]) *MockSystemSchemasInterface_List_Call {
+func (_c *MockSystemSchemasInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListSystemSchemasRequest) listing.Iterator[catalog.SystemSchemaInfo]) *MockSystemSchemasInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

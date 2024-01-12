@@ -343,19 +343,19 @@ func (_c *MockRecipientsInterface_Impl_Call) RunAndReturn(run func() sharing.Rec
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockRecipientsInterface) List(ctx context.Context, request sharing.ListRecipientsRequest) *listing.PaginatingIterator[sharing.ListRecipientsRequest, *sharing.ListRecipientsResponse, sharing.RecipientInfo] {
+func (_m *MockRecipientsInterface) List(ctx context.Context, request sharing.ListRecipientsRequest) listing.Iterator[sharing.RecipientInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[sharing.ListRecipientsRequest, *sharing.ListRecipientsResponse, sharing.RecipientInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, sharing.ListRecipientsRequest) *listing.PaginatingIterator[sharing.ListRecipientsRequest, *sharing.ListRecipientsResponse, sharing.RecipientInfo]); ok {
+	var r0 listing.Iterator[sharing.RecipientInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, sharing.ListRecipientsRequest) listing.Iterator[sharing.RecipientInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[sharing.ListRecipientsRequest, *sharing.ListRecipientsResponse, sharing.RecipientInfo])
+			r0 = ret.Get(0).(listing.Iterator[sharing.RecipientInfo])
 		}
 	}
 
@@ -381,12 +381,12 @@ func (_c *MockRecipientsInterface_List_Call) Run(run func(ctx context.Context, r
 	return _c
 }
 
-func (_c *MockRecipientsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[sharing.ListRecipientsRequest, *sharing.ListRecipientsResponse, sharing.RecipientInfo]) *MockRecipientsInterface_List_Call {
+func (_c *MockRecipientsInterface_List_Call) Return(_a0 listing.Iterator[sharing.RecipientInfo]) *MockRecipientsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockRecipientsInterface_List_Call) RunAndReturn(run func(context.Context, sharing.ListRecipientsRequest) *listing.PaginatingIterator[sharing.ListRecipientsRequest, *sharing.ListRecipientsResponse, sharing.RecipientInfo]) *MockRecipientsInterface_List_Call {
+func (_c *MockRecipientsInterface_List_Call) RunAndReturn(run func(context.Context, sharing.ListRecipientsRequest) listing.Iterator[sharing.RecipientInfo]) *MockRecipientsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

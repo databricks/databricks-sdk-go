@@ -460,19 +460,19 @@ func (_c *MockGitCredentialsInterface_Impl_Call) RunAndReturn(run func() workspa
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockGitCredentialsInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *workspace.GetCredentialsResponse, workspace.CredentialInfo] {
+func (_m *MockGitCredentialsInterface) List(ctx context.Context) listing.Iterator[workspace.CredentialInfo] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *workspace.GetCredentialsResponse, workspace.CredentialInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *workspace.GetCredentialsResponse, workspace.CredentialInfo]); ok {
+	var r0 listing.Iterator[workspace.CredentialInfo]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[workspace.CredentialInfo]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *workspace.GetCredentialsResponse, workspace.CredentialInfo])
+			r0 = ret.Get(0).(listing.Iterator[workspace.CredentialInfo])
 		}
 	}
 
@@ -497,12 +497,12 @@ func (_c *MockGitCredentialsInterface_List_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *workspace.GetCredentialsResponse, workspace.CredentialInfo]) *MockGitCredentialsInterface_List_Call {
+func (_c *MockGitCredentialsInterface_List_Call) Return(_a0 listing.Iterator[workspace.CredentialInfo]) *MockGitCredentialsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *workspace.GetCredentialsResponse, workspace.CredentialInfo]) *MockGitCredentialsInterface_List_Call {
+func (_c *MockGitCredentialsInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[workspace.CredentialInfo]) *MockGitCredentialsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -344,19 +344,19 @@ func (_c *MockStorageCredentialsInterface_Impl_Call) RunAndReturn(run func() cat
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockStorageCredentialsInterface) List(ctx context.Context, request catalog.ListStorageCredentialsRequest) *listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo] {
+func (_m *MockStorageCredentialsInterface) List(ctx context.Context, request catalog.ListStorageCredentialsRequest) listing.Iterator[catalog.StorageCredentialInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListStorageCredentialsRequest) *listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]); ok {
+	var r0 listing.Iterator[catalog.StorageCredentialInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListStorageCredentialsRequest) listing.Iterator[catalog.StorageCredentialInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo])
+			r0 = ret.Get(0).(listing.Iterator[catalog.StorageCredentialInfo])
 		}
 	}
 
@@ -382,12 +382,12 @@ func (_c *MockStorageCredentialsInterface_List_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockStorageCredentialsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]) *MockStorageCredentialsInterface_List_Call {
+func (_c *MockStorageCredentialsInterface_List_Call) Return(_a0 listing.Iterator[catalog.StorageCredentialInfo]) *MockStorageCredentialsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockStorageCredentialsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListStorageCredentialsRequest) *listing.PaginatingIterator[catalog.ListStorageCredentialsRequest, *catalog.ListStorageCredentialsResponse, catalog.StorageCredentialInfo]) *MockStorageCredentialsInterface_List_Call {
+func (_c *MockStorageCredentialsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListStorageCredentialsRequest) listing.Iterator[catalog.StorageCredentialInfo]) *MockStorageCredentialsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

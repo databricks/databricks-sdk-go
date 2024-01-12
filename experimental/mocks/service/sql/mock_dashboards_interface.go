@@ -461,19 +461,19 @@ func (_c *MockDashboardsInterface_Impl_Call) RunAndReturn(run func() sql.Dashboa
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockDashboardsInterface) List(ctx context.Context, request sql.ListDashboardsRequest) *listing.DeduplicatingIterator[sql.Dashboard, string] {
+func (_m *MockDashboardsInterface) List(ctx context.Context, request sql.ListDashboardsRequest) listing.Iterator[sql.Dashboard] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.DeduplicatingIterator[sql.Dashboard, string]
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListDashboardsRequest) *listing.DeduplicatingIterator[sql.Dashboard, string]); ok {
+	var r0 listing.Iterator[sql.Dashboard]
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListDashboardsRequest) listing.Iterator[sql.Dashboard]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.DeduplicatingIterator[sql.Dashboard, string])
+			r0 = ret.Get(0).(listing.Iterator[sql.Dashboard])
 		}
 	}
 
@@ -499,12 +499,12 @@ func (_c *MockDashboardsInterface_List_Call) Run(run func(ctx context.Context, r
 	return _c
 }
 
-func (_c *MockDashboardsInterface_List_Call) Return(_a0 *listing.DeduplicatingIterator[sql.Dashboard, string]) *MockDashboardsInterface_List_Call {
+func (_c *MockDashboardsInterface_List_Call) Return(_a0 listing.Iterator[sql.Dashboard]) *MockDashboardsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockDashboardsInterface_List_Call) RunAndReturn(run func(context.Context, sql.ListDashboardsRequest) *listing.DeduplicatingIterator[sql.Dashboard, string]) *MockDashboardsInterface_List_Call {
+func (_c *MockDashboardsInterface_List_Call) RunAndReturn(run func(context.Context, sql.ListDashboardsRequest) listing.Iterator[sql.Dashboard]) *MockDashboardsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

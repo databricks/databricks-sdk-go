@@ -86,19 +86,19 @@ func (_c *MockLibrariesInterface_AllClusterStatuses_Call) RunAndReturn(run func(
 }
 
 // ClusterStatus provides a mock function with given fields: ctx, request
-func (_m *MockLibrariesInterface) ClusterStatus(ctx context.Context, request compute.ClusterStatusRequest) *listing.PaginatingIterator[compute.ClusterStatusRequest, *compute.ClusterLibraryStatuses, compute.LibraryFullStatus] {
+func (_m *MockLibrariesInterface) ClusterStatus(ctx context.Context, request compute.ClusterStatusRequest) listing.Iterator[compute.LibraryFullStatus] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ClusterStatus")
 	}
 
-	var r0 *listing.PaginatingIterator[compute.ClusterStatusRequest, *compute.ClusterLibraryStatuses, compute.LibraryFullStatus]
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ClusterStatusRequest) *listing.PaginatingIterator[compute.ClusterStatusRequest, *compute.ClusterLibraryStatuses, compute.LibraryFullStatus]); ok {
+	var r0 listing.Iterator[compute.LibraryFullStatus]
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ClusterStatusRequest) listing.Iterator[compute.LibraryFullStatus]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[compute.ClusterStatusRequest, *compute.ClusterLibraryStatuses, compute.LibraryFullStatus])
+			r0 = ret.Get(0).(listing.Iterator[compute.LibraryFullStatus])
 		}
 	}
 
@@ -124,12 +124,12 @@ func (_c *MockLibrariesInterface_ClusterStatus_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockLibrariesInterface_ClusterStatus_Call) Return(_a0 *listing.PaginatingIterator[compute.ClusterStatusRequest, *compute.ClusterLibraryStatuses, compute.LibraryFullStatus]) *MockLibrariesInterface_ClusterStatus_Call {
+func (_c *MockLibrariesInterface_ClusterStatus_Call) Return(_a0 listing.Iterator[compute.LibraryFullStatus]) *MockLibrariesInterface_ClusterStatus_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockLibrariesInterface_ClusterStatus_Call) RunAndReturn(run func(context.Context, compute.ClusterStatusRequest) *listing.PaginatingIterator[compute.ClusterStatusRequest, *compute.ClusterLibraryStatuses, compute.LibraryFullStatus]) *MockLibrariesInterface_ClusterStatus_Call {
+func (_c *MockLibrariesInterface_ClusterStatus_Call) RunAndReturn(run func(context.Context, compute.ClusterStatusRequest) listing.Iterator[compute.LibraryFullStatus]) *MockLibrariesInterface_ClusterStatus_Call {
 	_c.Call.Return(run)
 	return _c
 }

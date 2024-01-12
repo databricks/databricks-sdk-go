@@ -343,19 +343,19 @@ func (_c *MockPublishedAppIntegrationInterface_Impl_Call) RunAndReturn(run func(
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockPublishedAppIntegrationInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *oauth2.GetPublishedAppIntegrationsOutput, oauth2.GetPublishedAppIntegrationOutput] {
+func (_m *MockPublishedAppIntegrationInterface) List(ctx context.Context) listing.Iterator[oauth2.GetPublishedAppIntegrationOutput] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *oauth2.GetPublishedAppIntegrationsOutput, oauth2.GetPublishedAppIntegrationOutput]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *oauth2.GetPublishedAppIntegrationsOutput, oauth2.GetPublishedAppIntegrationOutput]); ok {
+	var r0 listing.Iterator[oauth2.GetPublishedAppIntegrationOutput]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[oauth2.GetPublishedAppIntegrationOutput]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *oauth2.GetPublishedAppIntegrationsOutput, oauth2.GetPublishedAppIntegrationOutput])
+			r0 = ret.Get(0).(listing.Iterator[oauth2.GetPublishedAppIntegrationOutput])
 		}
 	}
 
@@ -380,12 +380,12 @@ func (_c *MockPublishedAppIntegrationInterface_List_Call) Run(run func(ctx conte
 	return _c
 }
 
-func (_c *MockPublishedAppIntegrationInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *oauth2.GetPublishedAppIntegrationsOutput, oauth2.GetPublishedAppIntegrationOutput]) *MockPublishedAppIntegrationInterface_List_Call {
+func (_c *MockPublishedAppIntegrationInterface_List_Call) Return(_a0 listing.Iterator[oauth2.GetPublishedAppIntegrationOutput]) *MockPublishedAppIntegrationInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockPublishedAppIntegrationInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *oauth2.GetPublishedAppIntegrationsOutput, oauth2.GetPublishedAppIntegrationOutput]) *MockPublishedAppIntegrationInterface_List_Call {
+func (_c *MockPublishedAppIntegrationInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[oauth2.GetPublishedAppIntegrationOutput]) *MockPublishedAppIntegrationInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

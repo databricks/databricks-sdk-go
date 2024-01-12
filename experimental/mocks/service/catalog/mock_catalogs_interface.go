@@ -344,19 +344,19 @@ func (_c *MockCatalogsInterface_Impl_Call) RunAndReturn(run func() catalog.Catal
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockCatalogsInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListCatalogsResponse, catalog.CatalogInfo] {
+func (_m *MockCatalogsInterface) List(ctx context.Context) listing.Iterator[catalog.CatalogInfo] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *catalog.ListCatalogsResponse, catalog.CatalogInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListCatalogsResponse, catalog.CatalogInfo]); ok {
+	var r0 listing.Iterator[catalog.CatalogInfo]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[catalog.CatalogInfo]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *catalog.ListCatalogsResponse, catalog.CatalogInfo])
+			r0 = ret.Get(0).(listing.Iterator[catalog.CatalogInfo])
 		}
 	}
 
@@ -381,12 +381,12 @@ func (_c *MockCatalogsInterface_List_Call) Run(run func(ctx context.Context)) *M
 	return _c
 }
 
-func (_c *MockCatalogsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *catalog.ListCatalogsResponse, catalog.CatalogInfo]) *MockCatalogsInterface_List_Call {
+func (_c *MockCatalogsInterface_List_Call) Return(_a0 listing.Iterator[catalog.CatalogInfo]) *MockCatalogsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockCatalogsInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListCatalogsResponse, catalog.CatalogInfo]) *MockCatalogsInterface_List_Call {
+func (_c *MockCatalogsInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[catalog.CatalogInfo]) *MockCatalogsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

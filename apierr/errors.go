@@ -65,11 +65,7 @@ func (apiError *APIError) Error() string {
 
 // IsMissing tells if error is about missing resource
 func IsMissing(err error) bool {
-	var apiError *APIError
-	if errors.As(err, &apiError) {
-		return apiError.IsMissing()
-	}
-	return false
+	return errors.Is(err, ErrNotFound)
 }
 
 // GetErrorInfo returns all entries in the list of error details of type `ErrorInfo`.
@@ -93,12 +89,12 @@ func getDetailsByType(err error, errorDetailType string) []ErrorDetail {
 
 // IsMissing tells if it is missing resource
 func (apiError *APIError) IsMissing() bool {
-	return apiError.StatusCode == http.StatusNotFound
+	return errors.Is(apiError, ErrNotFound)
 }
 
 // IsTooManyRequests shows rate exceeded limits
 func (apiError *APIError) IsTooManyRequests() bool {
-	return apiError.StatusCode == http.StatusTooManyRequests
+	return errors.Is(apiError, ErrTooManyRequests)
 }
 
 // isRetriable returns true if error is retriable

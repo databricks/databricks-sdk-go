@@ -406,19 +406,19 @@ func (_c *MockModelVersionsInterface_Impl_Call) RunAndReturn(run func() catalog.
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockModelVersionsInterface) List(ctx context.Context, request catalog.ListModelVersionsRequest) *listing.PaginatingIterator[catalog.ListModelVersionsRequest, *catalog.ListModelVersionsResponse, catalog.ModelVersionInfo] {
+func (_m *MockModelVersionsInterface) List(ctx context.Context, request catalog.ListModelVersionsRequest) listing.Iterator[catalog.ModelVersionInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[catalog.ListModelVersionsRequest, *catalog.ListModelVersionsResponse, catalog.ModelVersionInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListModelVersionsRequest) *listing.PaginatingIterator[catalog.ListModelVersionsRequest, *catalog.ListModelVersionsResponse, catalog.ModelVersionInfo]); ok {
+	var r0 listing.Iterator[catalog.ModelVersionInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListModelVersionsRequest) listing.Iterator[catalog.ModelVersionInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[catalog.ListModelVersionsRequest, *catalog.ListModelVersionsResponse, catalog.ModelVersionInfo])
+			r0 = ret.Get(0).(listing.Iterator[catalog.ModelVersionInfo])
 		}
 	}
 
@@ -444,12 +444,12 @@ func (_c *MockModelVersionsInterface_List_Call) Run(run func(ctx context.Context
 	return _c
 }
 
-func (_c *MockModelVersionsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[catalog.ListModelVersionsRequest, *catalog.ListModelVersionsResponse, catalog.ModelVersionInfo]) *MockModelVersionsInterface_List_Call {
+func (_c *MockModelVersionsInterface_List_Call) Return(_a0 listing.Iterator[catalog.ModelVersionInfo]) *MockModelVersionsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockModelVersionsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListModelVersionsRequest) *listing.PaginatingIterator[catalog.ListModelVersionsRequest, *catalog.ListModelVersionsResponse, catalog.ModelVersionInfo]) *MockModelVersionsInterface_List_Call {
+func (_c *MockModelVersionsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListModelVersionsRequest) listing.Iterator[catalog.ModelVersionInfo]) *MockModelVersionsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

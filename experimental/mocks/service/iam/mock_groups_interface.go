@@ -461,19 +461,19 @@ func (_c *MockGroupsInterface_Impl_Call) RunAndReturn(run func() iam.GroupsServi
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockGroupsInterface) List(ctx context.Context, request iam.ListGroupsRequest) *listing.DeduplicatingIterator[iam.Group, string] {
+func (_m *MockGroupsInterface) List(ctx context.Context, request iam.ListGroupsRequest) listing.Iterator[iam.Group] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.DeduplicatingIterator[iam.Group, string]
-	if rf, ok := ret.Get(0).(func(context.Context, iam.ListGroupsRequest) *listing.DeduplicatingIterator[iam.Group, string]); ok {
+	var r0 listing.Iterator[iam.Group]
+	if rf, ok := ret.Get(0).(func(context.Context, iam.ListGroupsRequest) listing.Iterator[iam.Group]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.DeduplicatingIterator[iam.Group, string])
+			r0 = ret.Get(0).(listing.Iterator[iam.Group])
 		}
 	}
 
@@ -499,12 +499,12 @@ func (_c *MockGroupsInterface_List_Call) Run(run func(ctx context.Context, reque
 	return _c
 }
 
-func (_c *MockGroupsInterface_List_Call) Return(_a0 *listing.DeduplicatingIterator[iam.Group, string]) *MockGroupsInterface_List_Call {
+func (_c *MockGroupsInterface_List_Call) Return(_a0 listing.Iterator[iam.Group]) *MockGroupsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockGroupsInterface_List_Call) RunAndReturn(run func(context.Context, iam.ListGroupsRequest) *listing.DeduplicatingIterator[iam.Group, string]) *MockGroupsInterface_List_Call {
+func (_c *MockGroupsInterface_List_Call) RunAndReturn(run func(context.Context, iam.ListGroupsRequest) listing.Iterator[iam.Group]) *MockGroupsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -498,19 +498,19 @@ func (_c *MockRegisteredModelsInterface_Impl_Call) RunAndReturn(run func() catal
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockRegisteredModelsInterface) List(ctx context.Context, request catalog.ListRegisteredModelsRequest) *listing.PaginatingIterator[catalog.ListRegisteredModelsRequest, *catalog.ListRegisteredModelsResponse, catalog.RegisteredModelInfo] {
+func (_m *MockRegisteredModelsInterface) List(ctx context.Context, request catalog.ListRegisteredModelsRequest) listing.Iterator[catalog.RegisteredModelInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[catalog.ListRegisteredModelsRequest, *catalog.ListRegisteredModelsResponse, catalog.RegisteredModelInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListRegisteredModelsRequest) *listing.PaginatingIterator[catalog.ListRegisteredModelsRequest, *catalog.ListRegisteredModelsResponse, catalog.RegisteredModelInfo]); ok {
+	var r0 listing.Iterator[catalog.RegisteredModelInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListRegisteredModelsRequest) listing.Iterator[catalog.RegisteredModelInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[catalog.ListRegisteredModelsRequest, *catalog.ListRegisteredModelsResponse, catalog.RegisteredModelInfo])
+			r0 = ret.Get(0).(listing.Iterator[catalog.RegisteredModelInfo])
 		}
 	}
 
@@ -536,12 +536,12 @@ func (_c *MockRegisteredModelsInterface_List_Call) Run(run func(ctx context.Cont
 	return _c
 }
 
-func (_c *MockRegisteredModelsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[catalog.ListRegisteredModelsRequest, *catalog.ListRegisteredModelsResponse, catalog.RegisteredModelInfo]) *MockRegisteredModelsInterface_List_Call {
+func (_c *MockRegisteredModelsInterface_List_Call) Return(_a0 listing.Iterator[catalog.RegisteredModelInfo]) *MockRegisteredModelsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockRegisteredModelsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListRegisteredModelsRequest) *listing.PaginatingIterator[catalog.ListRegisteredModelsRequest, *catalog.ListRegisteredModelsResponse, catalog.RegisteredModelInfo]) *MockRegisteredModelsInterface_List_Call {
+func (_c *MockRegisteredModelsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListRegisteredModelsRequest) listing.Iterator[catalog.RegisteredModelInfo]) *MockRegisteredModelsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

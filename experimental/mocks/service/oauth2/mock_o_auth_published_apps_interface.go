@@ -72,19 +72,19 @@ func (_c *MockOAuthPublishedAppsInterface_Impl_Call) RunAndReturn(run func() oau
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockOAuthPublishedAppsInterface) List(ctx context.Context, request oauth2.ListOAuthPublishedAppsRequest) *listing.PaginatingIterator[oauth2.ListOAuthPublishedAppsRequest, *oauth2.GetPublishedAppsOutput, oauth2.PublishedAppOutput] {
+func (_m *MockOAuthPublishedAppsInterface) List(ctx context.Context, request oauth2.ListOAuthPublishedAppsRequest) listing.Iterator[oauth2.PublishedAppOutput] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[oauth2.ListOAuthPublishedAppsRequest, *oauth2.GetPublishedAppsOutput, oauth2.PublishedAppOutput]
-	if rf, ok := ret.Get(0).(func(context.Context, oauth2.ListOAuthPublishedAppsRequest) *listing.PaginatingIterator[oauth2.ListOAuthPublishedAppsRequest, *oauth2.GetPublishedAppsOutput, oauth2.PublishedAppOutput]); ok {
+	var r0 listing.Iterator[oauth2.PublishedAppOutput]
+	if rf, ok := ret.Get(0).(func(context.Context, oauth2.ListOAuthPublishedAppsRequest) listing.Iterator[oauth2.PublishedAppOutput]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[oauth2.ListOAuthPublishedAppsRequest, *oauth2.GetPublishedAppsOutput, oauth2.PublishedAppOutput])
+			r0 = ret.Get(0).(listing.Iterator[oauth2.PublishedAppOutput])
 		}
 	}
 
@@ -110,12 +110,12 @@ func (_c *MockOAuthPublishedAppsInterface_List_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockOAuthPublishedAppsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[oauth2.ListOAuthPublishedAppsRequest, *oauth2.GetPublishedAppsOutput, oauth2.PublishedAppOutput]) *MockOAuthPublishedAppsInterface_List_Call {
+func (_c *MockOAuthPublishedAppsInterface_List_Call) Return(_a0 listing.Iterator[oauth2.PublishedAppOutput]) *MockOAuthPublishedAppsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockOAuthPublishedAppsInterface_List_Call) RunAndReturn(run func(context.Context, oauth2.ListOAuthPublishedAppsRequest) *listing.PaginatingIterator[oauth2.ListOAuthPublishedAppsRequest, *oauth2.GetPublishedAppsOutput, oauth2.PublishedAppOutput]) *MockOAuthPublishedAppsInterface_List_Call {
+func (_c *MockOAuthPublishedAppsInterface_List_Call) RunAndReturn(run func(context.Context, oauth2.ListOAuthPublishedAppsRequest) listing.Iterator[oauth2.PublishedAppOutput]) *MockOAuthPublishedAppsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

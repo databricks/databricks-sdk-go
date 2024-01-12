@@ -640,19 +640,19 @@ func (_c *MockNetworkConnectivityInterface_Impl_Call) RunAndReturn(run func() se
 }
 
 // ListNetworkConnectivityConfigurations provides a mock function with given fields: ctx, request
-func (_m *MockNetworkConnectivityInterface) ListNetworkConnectivityConfigurations(ctx context.Context, request settings.ListNetworkConnectivityConfigurationsRequest) *listing.PaginatingIterator[settings.ListNetworkConnectivityConfigurationsRequest, *settings.ListNetworkConnectivityConfigurationsResponse, settings.NetworkConnectivityConfiguration] {
+func (_m *MockNetworkConnectivityInterface) ListNetworkConnectivityConfigurations(ctx context.Context, request settings.ListNetworkConnectivityConfigurationsRequest) listing.Iterator[settings.NetworkConnectivityConfiguration] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListNetworkConnectivityConfigurations")
 	}
 
-	var r0 *listing.PaginatingIterator[settings.ListNetworkConnectivityConfigurationsRequest, *settings.ListNetworkConnectivityConfigurationsResponse, settings.NetworkConnectivityConfiguration]
-	if rf, ok := ret.Get(0).(func(context.Context, settings.ListNetworkConnectivityConfigurationsRequest) *listing.PaginatingIterator[settings.ListNetworkConnectivityConfigurationsRequest, *settings.ListNetworkConnectivityConfigurationsResponse, settings.NetworkConnectivityConfiguration]); ok {
+	var r0 listing.Iterator[settings.NetworkConnectivityConfiguration]
+	if rf, ok := ret.Get(0).(func(context.Context, settings.ListNetworkConnectivityConfigurationsRequest) listing.Iterator[settings.NetworkConnectivityConfiguration]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[settings.ListNetworkConnectivityConfigurationsRequest, *settings.ListNetworkConnectivityConfigurationsResponse, settings.NetworkConnectivityConfiguration])
+			r0 = ret.Get(0).(listing.Iterator[settings.NetworkConnectivityConfiguration])
 		}
 	}
 
@@ -678,12 +678,12 @@ func (_c *MockNetworkConnectivityInterface_ListNetworkConnectivityConfigurations
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_ListNetworkConnectivityConfigurations_Call) Return(_a0 *listing.PaginatingIterator[settings.ListNetworkConnectivityConfigurationsRequest, *settings.ListNetworkConnectivityConfigurationsResponse, settings.NetworkConnectivityConfiguration]) *MockNetworkConnectivityInterface_ListNetworkConnectivityConfigurations_Call {
+func (_c *MockNetworkConnectivityInterface_ListNetworkConnectivityConfigurations_Call) Return(_a0 listing.Iterator[settings.NetworkConnectivityConfiguration]) *MockNetworkConnectivityInterface_ListNetworkConnectivityConfigurations_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_ListNetworkConnectivityConfigurations_Call) RunAndReturn(run func(context.Context, settings.ListNetworkConnectivityConfigurationsRequest) *listing.PaginatingIterator[settings.ListNetworkConnectivityConfigurationsRequest, *settings.ListNetworkConnectivityConfigurationsResponse, settings.NetworkConnectivityConfiguration]) *MockNetworkConnectivityInterface_ListNetworkConnectivityConfigurations_Call {
+func (_c *MockNetworkConnectivityInterface_ListNetworkConnectivityConfigurations_Call) RunAndReturn(run func(context.Context, settings.ListNetworkConnectivityConfigurationsRequest) listing.Iterator[settings.NetworkConnectivityConfiguration]) *MockNetworkConnectivityInterface_ListNetworkConnectivityConfigurations_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -748,19 +748,19 @@ func (_c *MockNetworkConnectivityInterface_ListNetworkConnectivityConfigurations
 }
 
 // ListPrivateEndpointRules provides a mock function with given fields: ctx, request
-func (_m *MockNetworkConnectivityInterface) ListPrivateEndpointRules(ctx context.Context, request settings.ListPrivateEndpointRulesRequest) *listing.PaginatingIterator[settings.ListPrivateEndpointRulesRequest, *settings.ListNccAzurePrivateEndpointRulesResponse, settings.NccAzurePrivateEndpointRule] {
+func (_m *MockNetworkConnectivityInterface) ListPrivateEndpointRules(ctx context.Context, request settings.ListPrivateEndpointRulesRequest) listing.Iterator[settings.NccAzurePrivateEndpointRule] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListPrivateEndpointRules")
 	}
 
-	var r0 *listing.PaginatingIterator[settings.ListPrivateEndpointRulesRequest, *settings.ListNccAzurePrivateEndpointRulesResponse, settings.NccAzurePrivateEndpointRule]
-	if rf, ok := ret.Get(0).(func(context.Context, settings.ListPrivateEndpointRulesRequest) *listing.PaginatingIterator[settings.ListPrivateEndpointRulesRequest, *settings.ListNccAzurePrivateEndpointRulesResponse, settings.NccAzurePrivateEndpointRule]); ok {
+	var r0 listing.Iterator[settings.NccAzurePrivateEndpointRule]
+	if rf, ok := ret.Get(0).(func(context.Context, settings.ListPrivateEndpointRulesRequest) listing.Iterator[settings.NccAzurePrivateEndpointRule]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[settings.ListPrivateEndpointRulesRequest, *settings.ListNccAzurePrivateEndpointRulesResponse, settings.NccAzurePrivateEndpointRule])
+			r0 = ret.Get(0).(listing.Iterator[settings.NccAzurePrivateEndpointRule])
 		}
 	}
 
@@ -786,12 +786,12 @@ func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call) Run(ru
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call) Return(_a0 *listing.PaginatingIterator[settings.ListPrivateEndpointRulesRequest, *settings.ListNccAzurePrivateEndpointRulesResponse, settings.NccAzurePrivateEndpointRule]) *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call {
+func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call) Return(_a0 listing.Iterator[settings.NccAzurePrivateEndpointRule]) *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call) RunAndReturn(run func(context.Context, settings.ListPrivateEndpointRulesRequest) *listing.PaginatingIterator[settings.ListPrivateEndpointRulesRequest, *settings.ListNccAzurePrivateEndpointRulesResponse, settings.NccAzurePrivateEndpointRule]) *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call {
+func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call) RunAndReturn(run func(context.Context, settings.ListPrivateEndpointRulesRequest) listing.Iterator[settings.NccAzurePrivateEndpointRule]) *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call {
 	_c.Call.Return(run)
 	return _c
 }

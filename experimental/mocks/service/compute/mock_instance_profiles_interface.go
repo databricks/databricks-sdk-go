@@ -167,19 +167,19 @@ func (_c *MockInstanceProfilesInterface_Impl_Call) RunAndReturn(run func() compu
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockInstanceProfilesInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *compute.ListInstanceProfilesResponse, compute.InstanceProfile] {
+func (_m *MockInstanceProfilesInterface) List(ctx context.Context) listing.Iterator[compute.InstanceProfile] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *compute.ListInstanceProfilesResponse, compute.InstanceProfile]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *compute.ListInstanceProfilesResponse, compute.InstanceProfile]); ok {
+	var r0 listing.Iterator[compute.InstanceProfile]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[compute.InstanceProfile]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *compute.ListInstanceProfilesResponse, compute.InstanceProfile])
+			r0 = ret.Get(0).(listing.Iterator[compute.InstanceProfile])
 		}
 	}
 
@@ -204,12 +204,12 @@ func (_c *MockInstanceProfilesInterface_List_Call) Run(run func(ctx context.Cont
 	return _c
 }
 
-func (_c *MockInstanceProfilesInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *compute.ListInstanceProfilesResponse, compute.InstanceProfile]) *MockInstanceProfilesInterface_List_Call {
+func (_c *MockInstanceProfilesInterface_List_Call) Return(_a0 listing.Iterator[compute.InstanceProfile]) *MockInstanceProfilesInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockInstanceProfilesInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *compute.ListInstanceProfilesResponse, compute.InstanceProfile]) *MockInstanceProfilesInterface_List_Call {
+func (_c *MockInstanceProfilesInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[compute.InstanceProfile]) *MockInstanceProfilesInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

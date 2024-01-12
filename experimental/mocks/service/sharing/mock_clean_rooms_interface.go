@@ -343,19 +343,19 @@ func (_c *MockCleanRoomsInterface_Impl_Call) RunAndReturn(run func() sharing.Cle
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockCleanRoomsInterface) List(ctx context.Context, request sharing.ListCleanRoomsRequest) *listing.PaginatingIterator[sharing.ListCleanRoomsRequest, *sharing.ListCleanRoomsResponse, sharing.CleanRoomInfo] {
+func (_m *MockCleanRoomsInterface) List(ctx context.Context, request sharing.ListCleanRoomsRequest) listing.Iterator[sharing.CleanRoomInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[sharing.ListCleanRoomsRequest, *sharing.ListCleanRoomsResponse, sharing.CleanRoomInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, sharing.ListCleanRoomsRequest) *listing.PaginatingIterator[sharing.ListCleanRoomsRequest, *sharing.ListCleanRoomsResponse, sharing.CleanRoomInfo]); ok {
+	var r0 listing.Iterator[sharing.CleanRoomInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, sharing.ListCleanRoomsRequest) listing.Iterator[sharing.CleanRoomInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[sharing.ListCleanRoomsRequest, *sharing.ListCleanRoomsResponse, sharing.CleanRoomInfo])
+			r0 = ret.Get(0).(listing.Iterator[sharing.CleanRoomInfo])
 		}
 	}
 
@@ -381,12 +381,12 @@ func (_c *MockCleanRoomsInterface_List_Call) Run(run func(ctx context.Context, r
 	return _c
 }
 
-func (_c *MockCleanRoomsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[sharing.ListCleanRoomsRequest, *sharing.ListCleanRoomsResponse, sharing.CleanRoomInfo]) *MockCleanRoomsInterface_List_Call {
+func (_c *MockCleanRoomsInterface_List_Call) Return(_a0 listing.Iterator[sharing.CleanRoomInfo]) *MockCleanRoomsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockCleanRoomsInterface_List_Call) RunAndReturn(run func(context.Context, sharing.ListCleanRoomsRequest) *listing.PaginatingIterator[sharing.ListCleanRoomsRequest, *sharing.ListCleanRoomsResponse, sharing.CleanRoomInfo]) *MockCleanRoomsInterface_List_Call {
+func (_c *MockCleanRoomsInterface_List_Call) RunAndReturn(run func(context.Context, sharing.ListCleanRoomsRequest) listing.Iterator[sharing.CleanRoomInfo]) *MockCleanRoomsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

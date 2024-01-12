@@ -191,19 +191,19 @@ func (_c *MockPolicyFamiliesInterface_Impl_Call) RunAndReturn(run func() compute
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockPolicyFamiliesInterface) List(ctx context.Context, request compute.ListPolicyFamiliesRequest) *listing.PaginatingIterator[compute.ListPolicyFamiliesRequest, *compute.ListPolicyFamiliesResponse, compute.PolicyFamily] {
+func (_m *MockPolicyFamiliesInterface) List(ctx context.Context, request compute.ListPolicyFamiliesRequest) listing.Iterator[compute.PolicyFamily] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[compute.ListPolicyFamiliesRequest, *compute.ListPolicyFamiliesResponse, compute.PolicyFamily]
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ListPolicyFamiliesRequest) *listing.PaginatingIterator[compute.ListPolicyFamiliesRequest, *compute.ListPolicyFamiliesResponse, compute.PolicyFamily]); ok {
+	var r0 listing.Iterator[compute.PolicyFamily]
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ListPolicyFamiliesRequest) listing.Iterator[compute.PolicyFamily]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[compute.ListPolicyFamiliesRequest, *compute.ListPolicyFamiliesResponse, compute.PolicyFamily])
+			r0 = ret.Get(0).(listing.Iterator[compute.PolicyFamily])
 		}
 	}
 
@@ -229,12 +229,12 @@ func (_c *MockPolicyFamiliesInterface_List_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockPolicyFamiliesInterface_List_Call) Return(_a0 *listing.PaginatingIterator[compute.ListPolicyFamiliesRequest, *compute.ListPolicyFamiliesResponse, compute.PolicyFamily]) *MockPolicyFamiliesInterface_List_Call {
+func (_c *MockPolicyFamiliesInterface_List_Call) Return(_a0 listing.Iterator[compute.PolicyFamily]) *MockPolicyFamiliesInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockPolicyFamiliesInterface_List_Call) RunAndReturn(run func(context.Context, compute.ListPolicyFamiliesRequest) *listing.PaginatingIterator[compute.ListPolicyFamiliesRequest, *compute.ListPolicyFamiliesResponse, compute.PolicyFamily]) *MockPolicyFamiliesInterface_List_Call {
+func (_c *MockPolicyFamiliesInterface_List_Call) RunAndReturn(run func(context.Context, compute.ListPolicyFamiliesRequest) listing.Iterator[compute.PolicyFamily]) *MockPolicyFamiliesInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

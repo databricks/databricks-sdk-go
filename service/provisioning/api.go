@@ -1766,7 +1766,7 @@ type WorkspacesInterface interface {
 	//
 	// [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
 	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-	Update(ctx context.Context, updateWorkspaceRequest UpdateWorkspaceRequest) (*WaitGetWorkspaceRunning[any], error)
+	Update(ctx context.Context, updateWorkspaceRequest UpdateWorkspaceRequest) (*WaitGetWorkspaceRunning[struct{}], error)
 
 	// Calls [WorkspacesAPIInterface.Update] and waits to reach RUNNING state
 	//
@@ -1847,7 +1847,7 @@ func (a *WorkspacesAPI) WaitGetWorkspaceRunning(ctx context.Context, workspaceId
 type WaitGetWorkspaceRunning[R any] struct {
 	Response    *R
 	WorkspaceId int64 `json:"workspace_id"`
-	poll        func(time.Duration, func(*Workspace)) (*Workspace, error)
+	Poll        func(time.Duration, func(*Workspace)) (*Workspace, error)
 	callback    func(*Workspace)
 	timeout     time.Duration
 }
@@ -1860,12 +1860,12 @@ func (w *WaitGetWorkspaceRunning[R]) OnProgress(callback func(*Workspace)) *Wait
 
 // Get the Workspace with the default timeout of 20 minutes.
 func (w *WaitGetWorkspaceRunning[R]) Get() (*Workspace, error) {
-	return w.poll(w.timeout, w.callback)
+	return w.Poll(w.timeout, w.callback)
 }
 
 // Get the Workspace with custom timeout.
 func (w *WaitGetWorkspaceRunning[R]) GetWithTimeout(timeout time.Duration) (*Workspace, error) {
-	return w.poll(timeout, w.callback)
+	return w.Poll(timeout, w.callback)
 }
 
 // Create a new workspace.
@@ -1887,7 +1887,7 @@ func (a *WorkspacesAPI) Create(ctx context.Context, createWorkspaceRequest Creat
 	return &WaitGetWorkspaceRunning[Workspace]{
 		Response:    workspace,
 		WorkspaceId: workspace.WorkspaceId,
-		poll: func(timeout time.Duration, callback func(*Workspace)) (*Workspace, error) {
+		Poll: func(timeout time.Duration, callback func(*Workspace)) (*Workspace, error) {
 			return a.WaitGetWorkspaceRunning(ctx, workspace.WorkspaceId, timeout, callback)
 		},
 		timeout:  20 * time.Minute,
@@ -2174,15 +2174,15 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 //
 // [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
 // [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-func (a *WorkspacesAPI) Update(ctx context.Context, updateWorkspaceRequest UpdateWorkspaceRequest) (*WaitGetWorkspaceRunning[any], error) {
+func (a *WorkspacesAPI) Update(ctx context.Context, updateWorkspaceRequest UpdateWorkspaceRequest) (*WaitGetWorkspaceRunning[struct{}], error) {
 	err := a.impl.Update(ctx, updateWorkspaceRequest)
 	if err != nil {
 		return nil, err
 	}
-	return &WaitGetWorkspaceRunning[any]{
+	return &WaitGetWorkspaceRunning[struct{}]{
 
 		WorkspaceId: updateWorkspaceRequest.WorkspaceId,
-		poll: func(timeout time.Duration, callback func(*Workspace)) (*Workspace, error) {
+		Poll: func(timeout time.Duration, callback func(*Workspace)) (*Workspace, error) {
 			return a.WaitGetWorkspaceRunning(ctx, updateWorkspaceRequest.WorkspaceId, timeout, callback)
 		},
 		timeout:  20 * time.Minute,

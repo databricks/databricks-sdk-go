@@ -46,7 +46,7 @@ type {{.PascalName}}Interface interface {
 	{{range .Methods}}
 	{{- $hasWaiter := and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
 	{{if not .Pagination}}{{.Comment "// " 80}}	
-	{{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[any]{{end}}, error){{else}}{{ template "response-type" .}}{{end}}
+	{{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}, error){{else}}{{ template "response-type" .}}{{end}}
 	{{end}}
 
 	{{if $hasWaiter}}
@@ -174,7 +174,7 @@ func (a *{{.Method.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{
 type {{.PascalName}}[R any] struct {
 	Response *R{{range .Binding}}
 	{{.PollField.PascalName}} {{template "type" .PollField.Entity}} `json:"{{.PollField.Name}}"`{{end}}
-	poll     func(time.Duration, func(*{{.Poll.Response.PascalName}})) (*{{.Poll.Response.PascalName}}, error)
+	Poll     func(time.Duration, func(*{{.Poll.Response.PascalName}})) (*{{.Poll.Response.PascalName}}, error)
 	callback func(*{{.Poll.Response.PascalName}})
 	timeout  time.Duration
 }
@@ -187,29 +187,29 @@ func (w *{{.PascalName}}[R]) OnProgress(callback func(*{{.Poll.Response.PascalNa
 
 // Get the {{.Poll.Response.PascalName}} with the default timeout of {{.Timeout}} minutes.
 func (w *{{.PascalName}}[R]) Get() (*{{.Poll.Response.PascalName}}, error) {
-	return w.poll(w.timeout, w.callback)
+	return w.Poll(w.timeout, w.callback)
 }
 
 // Get the {{.Poll.Response.PascalName}} with custom timeout.
 func (w *{{.PascalName}}[R]) GetWithTimeout(timeout time.Duration) (*{{.Poll.Response.PascalName}}, error) {
-	return w.poll(timeout, w.callback)
+	return w.Poll(timeout, w.callback)
 }
 {{end}}
 
 {{range .Methods}}
 {{- $hasWaiter := and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
 {{if not .Pagination}}{{.Comment "// " 80}}
-func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[any]{{end}}, error){{else}}{{ template "response-type" .}}{{end}} {
+func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}, error){{else}}{{ template "response-type" .}}{{end}} {
 	{{if $hasWaiter -}}
 	{{if .Response}}{{.Response.CamelName}}, {{end}}err := a.impl.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
 	if err != nil {
 		return nil, err
 	}
-	return &{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[any]{{end}}{
+	return &{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}{
 		{{with .Response}}Response: {{.CamelName}},
 		{{- end}}{{range .Wait.Binding}}
 		{{.PollField.PascalName}}: {{.Bind.Of.CamelName}}.{{.Bind.PascalName}},{{end}}
-		poll: func(timeout time.Duration, callback func(*{{.Wait.Poll.Response.PascalName}})) (*{{.Wait.Poll.Response.PascalName}}, error) {
+		Poll: func(timeout time.Duration, callback func(*{{.Wait.Poll.Response.PascalName}})) (*{{.Wait.Poll.Response.PascalName}}, error) {
 			return a.{{.Wait.PascalName}}(ctx{{range .Wait.Binding}}, {{.Bind.Of.CamelName}}.{{.Bind.PascalName}}{{end}}, timeout, callback)
 		},
 		timeout: {{.Wait.Timeout}}*time.Minute,
@@ -400,10 +400,8 @@ func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Conte
 {{- define "paginated-request-type" -}}
   {{if .Request}}{{.Request.PascalName}}{{else}}struct{}{{end}}
 {{- end -}}
+
+{{/* Note: we return the interface to make it possible to mock list responses more easily. */}}
 {{- define "paginated-return-type" -}}
-  {{ if .NeedsOffsetDedupe -}}
-  *listing.DeduplicatingIterator[{{ template "type" .Pagination.Entity }}, {{ template "type" .IdentifierField.Entity }}]
-  {{- else -}}
-  *listing.PaginatingIterator[{{ template "paginated-request-type" .}}, *{{ .Response.PascalName }}, {{ template "type" .Pagination.Entity }}]
-  {{- end -}}
+  listing.Iterator[{{ template "type" .Pagination.Entity }}]
 {{- end -}}

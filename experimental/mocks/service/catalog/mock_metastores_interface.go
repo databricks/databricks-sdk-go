@@ -508,19 +508,19 @@ func (_c *MockMetastoresInterface_Impl_Call) RunAndReturn(run func() catalog.Met
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockMetastoresInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListMetastoresResponse, catalog.MetastoreInfo] {
+func (_m *MockMetastoresInterface) List(ctx context.Context) listing.Iterator[catalog.MetastoreInfo] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *catalog.ListMetastoresResponse, catalog.MetastoreInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListMetastoresResponse, catalog.MetastoreInfo]); ok {
+	var r0 listing.Iterator[catalog.MetastoreInfo]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[catalog.MetastoreInfo]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *catalog.ListMetastoresResponse, catalog.MetastoreInfo])
+			r0 = ret.Get(0).(listing.Iterator[catalog.MetastoreInfo])
 		}
 	}
 
@@ -545,12 +545,12 @@ func (_c *MockMetastoresInterface_List_Call) Run(run func(ctx context.Context)) 
 	return _c
 }
 
-func (_c *MockMetastoresInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *catalog.ListMetastoresResponse, catalog.MetastoreInfo]) *MockMetastoresInterface_List_Call {
+func (_c *MockMetastoresInterface_List_Call) Return(_a0 listing.Iterator[catalog.MetastoreInfo]) *MockMetastoresInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockMetastoresInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListMetastoresResponse, catalog.MetastoreInfo]) *MockMetastoresInterface_List_Call {
+func (_c *MockMetastoresInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[catalog.MetastoreInfo]) *MockMetastoresInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

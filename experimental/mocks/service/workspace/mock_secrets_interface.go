@@ -425,19 +425,19 @@ func (_c *MockSecretsInterface_Impl_Call) RunAndReturn(run func() workspace.Secr
 }
 
 // ListAcls provides a mock function with given fields: ctx, request
-func (_m *MockSecretsInterface) ListAcls(ctx context.Context, request workspace.ListAclsRequest) *listing.PaginatingIterator[workspace.ListAclsRequest, *workspace.ListAclsResponse, workspace.AclItem] {
+func (_m *MockSecretsInterface) ListAcls(ctx context.Context, request workspace.ListAclsRequest) listing.Iterator[workspace.AclItem] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAcls")
 	}
 
-	var r0 *listing.PaginatingIterator[workspace.ListAclsRequest, *workspace.ListAclsResponse, workspace.AclItem]
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListAclsRequest) *listing.PaginatingIterator[workspace.ListAclsRequest, *workspace.ListAclsResponse, workspace.AclItem]); ok {
+	var r0 listing.Iterator[workspace.AclItem]
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListAclsRequest) listing.Iterator[workspace.AclItem]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[workspace.ListAclsRequest, *workspace.ListAclsResponse, workspace.AclItem])
+			r0 = ret.Get(0).(listing.Iterator[workspace.AclItem])
 		}
 	}
 
@@ -463,12 +463,12 @@ func (_c *MockSecretsInterface_ListAcls_Call) Run(run func(ctx context.Context, 
 	return _c
 }
 
-func (_c *MockSecretsInterface_ListAcls_Call) Return(_a0 *listing.PaginatingIterator[workspace.ListAclsRequest, *workspace.ListAclsResponse, workspace.AclItem]) *MockSecretsInterface_ListAcls_Call {
+func (_c *MockSecretsInterface_ListAcls_Call) Return(_a0 listing.Iterator[workspace.AclItem]) *MockSecretsInterface_ListAcls_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSecretsInterface_ListAcls_Call) RunAndReturn(run func(context.Context, workspace.ListAclsRequest) *listing.PaginatingIterator[workspace.ListAclsRequest, *workspace.ListAclsResponse, workspace.AclItem]) *MockSecretsInterface_ListAcls_Call {
+func (_c *MockSecretsInterface_ListAcls_Call) RunAndReturn(run func(context.Context, workspace.ListAclsRequest) listing.Iterator[workspace.AclItem]) *MockSecretsInterface_ListAcls_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -592,19 +592,19 @@ func (_c *MockSecretsInterface_ListAclsByScope_Call) RunAndReturn(run func(conte
 }
 
 // ListScopes provides a mock function with given fields: ctx
-func (_m *MockSecretsInterface) ListScopes(ctx context.Context) *listing.PaginatingIterator[struct{}, *workspace.ListScopesResponse, workspace.SecretScope] {
+func (_m *MockSecretsInterface) ListScopes(ctx context.Context) listing.Iterator[workspace.SecretScope] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListScopes")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *workspace.ListScopesResponse, workspace.SecretScope]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *workspace.ListScopesResponse, workspace.SecretScope]); ok {
+	var r0 listing.Iterator[workspace.SecretScope]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[workspace.SecretScope]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *workspace.ListScopesResponse, workspace.SecretScope])
+			r0 = ret.Get(0).(listing.Iterator[workspace.SecretScope])
 		}
 	}
 
@@ -629,12 +629,12 @@ func (_c *MockSecretsInterface_ListScopes_Call) Run(run func(ctx context.Context
 	return _c
 }
 
-func (_c *MockSecretsInterface_ListScopes_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *workspace.ListScopesResponse, workspace.SecretScope]) *MockSecretsInterface_ListScopes_Call {
+func (_c *MockSecretsInterface_ListScopes_Call) Return(_a0 listing.Iterator[workspace.SecretScope]) *MockSecretsInterface_ListScopes_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSecretsInterface_ListScopes_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *workspace.ListScopesResponse, workspace.SecretScope]) *MockSecretsInterface_ListScopes_Call {
+func (_c *MockSecretsInterface_ListScopes_Call) RunAndReturn(run func(context.Context) listing.Iterator[workspace.SecretScope]) *MockSecretsInterface_ListScopes_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -698,19 +698,19 @@ func (_c *MockSecretsInterface_ListScopesAll_Call) RunAndReturn(run func(context
 }
 
 // ListSecrets provides a mock function with given fields: ctx, request
-func (_m *MockSecretsInterface) ListSecrets(ctx context.Context, request workspace.ListSecretsRequest) *listing.PaginatingIterator[workspace.ListSecretsRequest, *workspace.ListSecretsResponse, workspace.SecretMetadata] {
+func (_m *MockSecretsInterface) ListSecrets(ctx context.Context, request workspace.ListSecretsRequest) listing.Iterator[workspace.SecretMetadata] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListSecrets")
 	}
 
-	var r0 *listing.PaginatingIterator[workspace.ListSecretsRequest, *workspace.ListSecretsResponse, workspace.SecretMetadata]
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListSecretsRequest) *listing.PaginatingIterator[workspace.ListSecretsRequest, *workspace.ListSecretsResponse, workspace.SecretMetadata]); ok {
+	var r0 listing.Iterator[workspace.SecretMetadata]
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListSecretsRequest) listing.Iterator[workspace.SecretMetadata]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[workspace.ListSecretsRequest, *workspace.ListSecretsResponse, workspace.SecretMetadata])
+			r0 = ret.Get(0).(listing.Iterator[workspace.SecretMetadata])
 		}
 	}
 
@@ -736,12 +736,12 @@ func (_c *MockSecretsInterface_ListSecrets_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockSecretsInterface_ListSecrets_Call) Return(_a0 *listing.PaginatingIterator[workspace.ListSecretsRequest, *workspace.ListSecretsResponse, workspace.SecretMetadata]) *MockSecretsInterface_ListSecrets_Call {
+func (_c *MockSecretsInterface_ListSecrets_Call) Return(_a0 listing.Iterator[workspace.SecretMetadata]) *MockSecretsInterface_ListSecrets_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSecretsInterface_ListSecrets_Call) RunAndReturn(run func(context.Context, workspace.ListSecretsRequest) *listing.PaginatingIterator[workspace.ListSecretsRequest, *workspace.ListSecretsResponse, workspace.SecretMetadata]) *MockSecretsInterface_ListSecrets_Call {
+func (_c *MockSecretsInterface_ListSecrets_Call) RunAndReturn(run func(context.Context, workspace.ListSecretsRequest) listing.Iterator[workspace.SecretMetadata]) *MockSecretsInterface_ListSecrets_Call {
 	_c.Call.Return(run)
 	return _c
 }

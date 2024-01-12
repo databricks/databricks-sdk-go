@@ -460,19 +460,19 @@ func (_c *MockAccountIpAccessListsInterface_IpAccessListInfoLabelToListIdMap_Cal
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockAccountIpAccessListsInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *settings.GetIpAccessListsResponse, settings.IpAccessListInfo] {
+func (_m *MockAccountIpAccessListsInterface) List(ctx context.Context) listing.Iterator[settings.IpAccessListInfo] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *settings.GetIpAccessListsResponse, settings.IpAccessListInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *settings.GetIpAccessListsResponse, settings.IpAccessListInfo]); ok {
+	var r0 listing.Iterator[settings.IpAccessListInfo]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[settings.IpAccessListInfo]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *settings.GetIpAccessListsResponse, settings.IpAccessListInfo])
+			r0 = ret.Get(0).(listing.Iterator[settings.IpAccessListInfo])
 		}
 	}
 
@@ -497,12 +497,12 @@ func (_c *MockAccountIpAccessListsInterface_List_Call) Run(run func(ctx context.
 	return _c
 }
 
-func (_c *MockAccountIpAccessListsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *settings.GetIpAccessListsResponse, settings.IpAccessListInfo]) *MockAccountIpAccessListsInterface_List_Call {
+func (_c *MockAccountIpAccessListsInterface_List_Call) Return(_a0 listing.Iterator[settings.IpAccessListInfo]) *MockAccountIpAccessListsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockAccountIpAccessListsInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *settings.GetIpAccessListsResponse, settings.IpAccessListInfo]) *MockAccountIpAccessListsInterface_List_Call {
+func (_c *MockAccountIpAccessListsInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[settings.IpAccessListInfo]) *MockAccountIpAccessListsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

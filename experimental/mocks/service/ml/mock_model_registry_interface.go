@@ -708,19 +708,19 @@ func (_c *MockModelRegistryInterface_DeleteWebhook_Call) RunAndReturn(run func(c
 }
 
 // GetLatestVersions provides a mock function with given fields: ctx, request
-func (_m *MockModelRegistryInterface) GetLatestVersions(ctx context.Context, request ml.GetLatestVersionsRequest) *listing.PaginatingIterator[ml.GetLatestVersionsRequest, *ml.GetLatestVersionsResponse, ml.ModelVersion] {
+func (_m *MockModelRegistryInterface) GetLatestVersions(ctx context.Context, request ml.GetLatestVersionsRequest) listing.Iterator[ml.ModelVersion] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetLatestVersions")
 	}
 
-	var r0 *listing.PaginatingIterator[ml.GetLatestVersionsRequest, *ml.GetLatestVersionsResponse, ml.ModelVersion]
-	if rf, ok := ret.Get(0).(func(context.Context, ml.GetLatestVersionsRequest) *listing.PaginatingIterator[ml.GetLatestVersionsRequest, *ml.GetLatestVersionsResponse, ml.ModelVersion]); ok {
+	var r0 listing.Iterator[ml.ModelVersion]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetLatestVersionsRequest) listing.Iterator[ml.ModelVersion]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[ml.GetLatestVersionsRequest, *ml.GetLatestVersionsResponse, ml.ModelVersion])
+			r0 = ret.Get(0).(listing.Iterator[ml.ModelVersion])
 		}
 	}
 
@@ -746,12 +746,12 @@ func (_c *MockModelRegistryInterface_GetLatestVersions_Call) Run(run func(ctx co
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_GetLatestVersions_Call) Return(_a0 *listing.PaginatingIterator[ml.GetLatestVersionsRequest, *ml.GetLatestVersionsResponse, ml.ModelVersion]) *MockModelRegistryInterface_GetLatestVersions_Call {
+func (_c *MockModelRegistryInterface_GetLatestVersions_Call) Return(_a0 listing.Iterator[ml.ModelVersion]) *MockModelRegistryInterface_GetLatestVersions_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_GetLatestVersions_Call) RunAndReturn(run func(context.Context, ml.GetLatestVersionsRequest) *listing.PaginatingIterator[ml.GetLatestVersionsRequest, *ml.GetLatestVersionsResponse, ml.ModelVersion]) *MockModelRegistryInterface_GetLatestVersions_Call {
+func (_c *MockModelRegistryInterface_GetLatestVersions_Call) RunAndReturn(run func(context.Context, ml.GetLatestVersionsRequest) listing.Iterator[ml.ModelVersion]) *MockModelRegistryInterface_GetLatestVersions_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1276,19 +1276,19 @@ func (_c *MockModelRegistryInterface_Impl_Call) RunAndReturn(run func() ml.Model
 }
 
 // ListModels provides a mock function with given fields: ctx, request
-func (_m *MockModelRegistryInterface) ListModels(ctx context.Context, request ml.ListModelsRequest) *listing.PaginatingIterator[ml.ListModelsRequest, *ml.ListModelsResponse, ml.Model] {
+func (_m *MockModelRegistryInterface) ListModels(ctx context.Context, request ml.ListModelsRequest) listing.Iterator[ml.Model] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListModels")
 	}
 
-	var r0 *listing.PaginatingIterator[ml.ListModelsRequest, *ml.ListModelsResponse, ml.Model]
-	if rf, ok := ret.Get(0).(func(context.Context, ml.ListModelsRequest) *listing.PaginatingIterator[ml.ListModelsRequest, *ml.ListModelsResponse, ml.Model]); ok {
+	var r0 listing.Iterator[ml.Model]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListModelsRequest) listing.Iterator[ml.Model]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[ml.ListModelsRequest, *ml.ListModelsResponse, ml.Model])
+			r0 = ret.Get(0).(listing.Iterator[ml.Model])
 		}
 	}
 
@@ -1314,12 +1314,12 @@ func (_c *MockModelRegistryInterface_ListModels_Call) Run(run func(ctx context.C
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_ListModels_Call) Return(_a0 *listing.PaginatingIterator[ml.ListModelsRequest, *ml.ListModelsResponse, ml.Model]) *MockModelRegistryInterface_ListModels_Call {
+func (_c *MockModelRegistryInterface_ListModels_Call) Return(_a0 listing.Iterator[ml.Model]) *MockModelRegistryInterface_ListModels_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_ListModels_Call) RunAndReturn(run func(context.Context, ml.ListModelsRequest) *listing.PaginatingIterator[ml.ListModelsRequest, *ml.ListModelsResponse, ml.Model]) *MockModelRegistryInterface_ListModels_Call {
+func (_c *MockModelRegistryInterface_ListModels_Call) RunAndReturn(run func(context.Context, ml.ListModelsRequest) listing.Iterator[ml.Model]) *MockModelRegistryInterface_ListModels_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1384,19 +1384,19 @@ func (_c *MockModelRegistryInterface_ListModelsAll_Call) RunAndReturn(run func(c
 }
 
 // ListTransitionRequests provides a mock function with given fields: ctx, request
-func (_m *MockModelRegistryInterface) ListTransitionRequests(ctx context.Context, request ml.ListTransitionRequestsRequest) *listing.PaginatingIterator[ml.ListTransitionRequestsRequest, *ml.ListTransitionRequestsResponse, ml.Activity] {
+func (_m *MockModelRegistryInterface) ListTransitionRequests(ctx context.Context, request ml.ListTransitionRequestsRequest) listing.Iterator[ml.Activity] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListTransitionRequests")
 	}
 
-	var r0 *listing.PaginatingIterator[ml.ListTransitionRequestsRequest, *ml.ListTransitionRequestsResponse, ml.Activity]
-	if rf, ok := ret.Get(0).(func(context.Context, ml.ListTransitionRequestsRequest) *listing.PaginatingIterator[ml.ListTransitionRequestsRequest, *ml.ListTransitionRequestsResponse, ml.Activity]); ok {
+	var r0 listing.Iterator[ml.Activity]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListTransitionRequestsRequest) listing.Iterator[ml.Activity]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[ml.ListTransitionRequestsRequest, *ml.ListTransitionRequestsResponse, ml.Activity])
+			r0 = ret.Get(0).(listing.Iterator[ml.Activity])
 		}
 	}
 
@@ -1422,12 +1422,12 @@ func (_c *MockModelRegistryInterface_ListTransitionRequests_Call) Run(run func(c
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_ListTransitionRequests_Call) Return(_a0 *listing.PaginatingIterator[ml.ListTransitionRequestsRequest, *ml.ListTransitionRequestsResponse, ml.Activity]) *MockModelRegistryInterface_ListTransitionRequests_Call {
+func (_c *MockModelRegistryInterface_ListTransitionRequests_Call) Return(_a0 listing.Iterator[ml.Activity]) *MockModelRegistryInterface_ListTransitionRequests_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_ListTransitionRequests_Call) RunAndReturn(run func(context.Context, ml.ListTransitionRequestsRequest) *listing.PaginatingIterator[ml.ListTransitionRequestsRequest, *ml.ListTransitionRequestsResponse, ml.Activity]) *MockModelRegistryInterface_ListTransitionRequests_Call {
+func (_c *MockModelRegistryInterface_ListTransitionRequests_Call) RunAndReturn(run func(context.Context, ml.ListTransitionRequestsRequest) listing.Iterator[ml.Activity]) *MockModelRegistryInterface_ListTransitionRequests_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1492,19 +1492,19 @@ func (_c *MockModelRegistryInterface_ListTransitionRequestsAll_Call) RunAndRetur
 }
 
 // ListWebhooks provides a mock function with given fields: ctx, request
-func (_m *MockModelRegistryInterface) ListWebhooks(ctx context.Context, request ml.ListWebhooksRequest) *listing.PaginatingIterator[ml.ListWebhooksRequest, *ml.ListRegistryWebhooks, ml.RegistryWebhook] {
+func (_m *MockModelRegistryInterface) ListWebhooks(ctx context.Context, request ml.ListWebhooksRequest) listing.Iterator[ml.RegistryWebhook] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListWebhooks")
 	}
 
-	var r0 *listing.PaginatingIterator[ml.ListWebhooksRequest, *ml.ListRegistryWebhooks, ml.RegistryWebhook]
-	if rf, ok := ret.Get(0).(func(context.Context, ml.ListWebhooksRequest) *listing.PaginatingIterator[ml.ListWebhooksRequest, *ml.ListRegistryWebhooks, ml.RegistryWebhook]); ok {
+	var r0 listing.Iterator[ml.RegistryWebhook]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListWebhooksRequest) listing.Iterator[ml.RegistryWebhook]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[ml.ListWebhooksRequest, *ml.ListRegistryWebhooks, ml.RegistryWebhook])
+			r0 = ret.Get(0).(listing.Iterator[ml.RegistryWebhook])
 		}
 	}
 
@@ -1530,12 +1530,12 @@ func (_c *MockModelRegistryInterface_ListWebhooks_Call) Run(run func(ctx context
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_ListWebhooks_Call) Return(_a0 *listing.PaginatingIterator[ml.ListWebhooksRequest, *ml.ListRegistryWebhooks, ml.RegistryWebhook]) *MockModelRegistryInterface_ListWebhooks_Call {
+func (_c *MockModelRegistryInterface_ListWebhooks_Call) Return(_a0 listing.Iterator[ml.RegistryWebhook]) *MockModelRegistryInterface_ListWebhooks_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_ListWebhooks_Call) RunAndReturn(run func(context.Context, ml.ListWebhooksRequest) *listing.PaginatingIterator[ml.ListWebhooksRequest, *ml.ListRegistryWebhooks, ml.RegistryWebhook]) *MockModelRegistryInterface_ListWebhooks_Call {
+func (_c *MockModelRegistryInterface_ListWebhooks_Call) RunAndReturn(run func(context.Context, ml.ListWebhooksRequest) listing.Iterator[ml.RegistryWebhook]) *MockModelRegistryInterface_ListWebhooks_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1718,19 +1718,19 @@ func (_c *MockModelRegistryInterface_RenameModel_Call) RunAndReturn(run func(con
 }
 
 // SearchModelVersions provides a mock function with given fields: ctx, request
-func (_m *MockModelRegistryInterface) SearchModelVersions(ctx context.Context, request ml.SearchModelVersionsRequest) *listing.PaginatingIterator[ml.SearchModelVersionsRequest, *ml.SearchModelVersionsResponse, ml.ModelVersion] {
+func (_m *MockModelRegistryInterface) SearchModelVersions(ctx context.Context, request ml.SearchModelVersionsRequest) listing.Iterator[ml.ModelVersion] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SearchModelVersions")
 	}
 
-	var r0 *listing.PaginatingIterator[ml.SearchModelVersionsRequest, *ml.SearchModelVersionsResponse, ml.ModelVersion]
-	if rf, ok := ret.Get(0).(func(context.Context, ml.SearchModelVersionsRequest) *listing.PaginatingIterator[ml.SearchModelVersionsRequest, *ml.SearchModelVersionsResponse, ml.ModelVersion]); ok {
+	var r0 listing.Iterator[ml.ModelVersion]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.SearchModelVersionsRequest) listing.Iterator[ml.ModelVersion]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[ml.SearchModelVersionsRequest, *ml.SearchModelVersionsResponse, ml.ModelVersion])
+			r0 = ret.Get(0).(listing.Iterator[ml.ModelVersion])
 		}
 	}
 
@@ -1756,12 +1756,12 @@ func (_c *MockModelRegistryInterface_SearchModelVersions_Call) Run(run func(ctx 
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_SearchModelVersions_Call) Return(_a0 *listing.PaginatingIterator[ml.SearchModelVersionsRequest, *ml.SearchModelVersionsResponse, ml.ModelVersion]) *MockModelRegistryInterface_SearchModelVersions_Call {
+func (_c *MockModelRegistryInterface_SearchModelVersions_Call) Return(_a0 listing.Iterator[ml.ModelVersion]) *MockModelRegistryInterface_SearchModelVersions_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_SearchModelVersions_Call) RunAndReturn(run func(context.Context, ml.SearchModelVersionsRequest) *listing.PaginatingIterator[ml.SearchModelVersionsRequest, *ml.SearchModelVersionsResponse, ml.ModelVersion]) *MockModelRegistryInterface_SearchModelVersions_Call {
+func (_c *MockModelRegistryInterface_SearchModelVersions_Call) RunAndReturn(run func(context.Context, ml.SearchModelVersionsRequest) listing.Iterator[ml.ModelVersion]) *MockModelRegistryInterface_SearchModelVersions_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1826,19 +1826,19 @@ func (_c *MockModelRegistryInterface_SearchModelVersionsAll_Call) RunAndReturn(r
 }
 
 // SearchModels provides a mock function with given fields: ctx, request
-func (_m *MockModelRegistryInterface) SearchModels(ctx context.Context, request ml.SearchModelsRequest) *listing.PaginatingIterator[ml.SearchModelsRequest, *ml.SearchModelsResponse, ml.Model] {
+func (_m *MockModelRegistryInterface) SearchModels(ctx context.Context, request ml.SearchModelsRequest) listing.Iterator[ml.Model] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SearchModels")
 	}
 
-	var r0 *listing.PaginatingIterator[ml.SearchModelsRequest, *ml.SearchModelsResponse, ml.Model]
-	if rf, ok := ret.Get(0).(func(context.Context, ml.SearchModelsRequest) *listing.PaginatingIterator[ml.SearchModelsRequest, *ml.SearchModelsResponse, ml.Model]); ok {
+	var r0 listing.Iterator[ml.Model]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.SearchModelsRequest) listing.Iterator[ml.Model]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[ml.SearchModelsRequest, *ml.SearchModelsResponse, ml.Model])
+			r0 = ret.Get(0).(listing.Iterator[ml.Model])
 		}
 	}
 
@@ -1864,12 +1864,12 @@ func (_c *MockModelRegistryInterface_SearchModels_Call) Run(run func(ctx context
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_SearchModels_Call) Return(_a0 *listing.PaginatingIterator[ml.SearchModelsRequest, *ml.SearchModelsResponse, ml.Model]) *MockModelRegistryInterface_SearchModels_Call {
+func (_c *MockModelRegistryInterface_SearchModels_Call) Return(_a0 listing.Iterator[ml.Model]) *MockModelRegistryInterface_SearchModels_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_SearchModels_Call) RunAndReturn(run func(context.Context, ml.SearchModelsRequest) *listing.PaginatingIterator[ml.SearchModelsRequest, *ml.SearchModelsResponse, ml.Model]) *MockModelRegistryInterface_SearchModels_Call {
+func (_c *MockModelRegistryInterface_SearchModels_Call) RunAndReturn(run func(context.Context, ml.SearchModelsRequest) listing.Iterator[ml.Model]) *MockModelRegistryInterface_SearchModels_Call {
 	_c.Call.Return(run)
 	return _c
 }

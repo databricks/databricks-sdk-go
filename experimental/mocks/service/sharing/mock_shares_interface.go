@@ -346,19 +346,19 @@ func (_c *MockSharesInterface_Impl_Call) RunAndReturn(run func() sharing.SharesS
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockSharesInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *sharing.ListSharesResponse, sharing.ShareInfo] {
+func (_m *MockSharesInterface) List(ctx context.Context) listing.Iterator[sharing.ShareInfo] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *sharing.ListSharesResponse, sharing.ShareInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *sharing.ListSharesResponse, sharing.ShareInfo]); ok {
+	var r0 listing.Iterator[sharing.ShareInfo]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[sharing.ShareInfo]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *sharing.ListSharesResponse, sharing.ShareInfo])
+			r0 = ret.Get(0).(listing.Iterator[sharing.ShareInfo])
 		}
 	}
 
@@ -383,12 +383,12 @@ func (_c *MockSharesInterface_List_Call) Run(run func(ctx context.Context)) *Moc
 	return _c
 }
 
-func (_c *MockSharesInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *sharing.ListSharesResponse, sharing.ShareInfo]) *MockSharesInterface_List_Call {
+func (_c *MockSharesInterface_List_Call) Return(_a0 listing.Iterator[sharing.ShareInfo]) *MockSharesInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSharesInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *sharing.ListSharesResponse, sharing.ShareInfo]) *MockSharesInterface_List_Call {
+func (_c *MockSharesInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[sharing.ShareInfo]) *MockSharesInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

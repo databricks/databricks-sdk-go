@@ -226,19 +226,19 @@ func (_c *MockServicePrincipalSecretsInterface_Impl_Call) RunAndReturn(run func(
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockServicePrincipalSecretsInterface) List(ctx context.Context, request oauth2.ListServicePrincipalSecretsRequest) *listing.PaginatingIterator[oauth2.ListServicePrincipalSecretsRequest, *oauth2.ListServicePrincipalSecretsResponse, oauth2.SecretInfo] {
+func (_m *MockServicePrincipalSecretsInterface) List(ctx context.Context, request oauth2.ListServicePrincipalSecretsRequest) listing.Iterator[oauth2.SecretInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[oauth2.ListServicePrincipalSecretsRequest, *oauth2.ListServicePrincipalSecretsResponse, oauth2.SecretInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, oauth2.ListServicePrincipalSecretsRequest) *listing.PaginatingIterator[oauth2.ListServicePrincipalSecretsRequest, *oauth2.ListServicePrincipalSecretsResponse, oauth2.SecretInfo]); ok {
+	var r0 listing.Iterator[oauth2.SecretInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, oauth2.ListServicePrincipalSecretsRequest) listing.Iterator[oauth2.SecretInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[oauth2.ListServicePrincipalSecretsRequest, *oauth2.ListServicePrincipalSecretsResponse, oauth2.SecretInfo])
+			r0 = ret.Get(0).(listing.Iterator[oauth2.SecretInfo])
 		}
 	}
 
@@ -264,12 +264,12 @@ func (_c *MockServicePrincipalSecretsInterface_List_Call) Run(run func(ctx conte
 	return _c
 }
 
-func (_c *MockServicePrincipalSecretsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[oauth2.ListServicePrincipalSecretsRequest, *oauth2.ListServicePrincipalSecretsResponse, oauth2.SecretInfo]) *MockServicePrincipalSecretsInterface_List_Call {
+func (_c *MockServicePrincipalSecretsInterface_List_Call) Return(_a0 listing.Iterator[oauth2.SecretInfo]) *MockServicePrincipalSecretsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockServicePrincipalSecretsInterface_List_Call) RunAndReturn(run func(context.Context, oauth2.ListServicePrincipalSecretsRequest) *listing.PaginatingIterator[oauth2.ListServicePrincipalSecretsRequest, *oauth2.ListServicePrincipalSecretsResponse, oauth2.SecretInfo]) *MockServicePrincipalSecretsInterface_List_Call {
+func (_c *MockServicePrincipalSecretsInterface_List_Call) RunAndReturn(run func(context.Context, oauth2.ListServicePrincipalSecretsRequest) listing.Iterator[oauth2.SecretInfo]) *MockServicePrincipalSecretsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -421,19 +421,19 @@ func (_c *MockVectorSearchEndpointsInterface_Impl_Call) RunAndReturn(run func() 
 }
 
 // ListEndpoints provides a mock function with given fields: ctx, request
-func (_m *MockVectorSearchEndpointsInterface) ListEndpoints(ctx context.Context, request vectorsearch.ListEndpointsRequest) *listing.PaginatingIterator[vectorsearch.ListEndpointsRequest, *vectorsearch.ListEndpointResponse, vectorsearch.EndpointInfo] {
+func (_m *MockVectorSearchEndpointsInterface) ListEndpoints(ctx context.Context, request vectorsearch.ListEndpointsRequest) listing.Iterator[vectorsearch.EndpointInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListEndpoints")
 	}
 
-	var r0 *listing.PaginatingIterator[vectorsearch.ListEndpointsRequest, *vectorsearch.ListEndpointResponse, vectorsearch.EndpointInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.ListEndpointsRequest) *listing.PaginatingIterator[vectorsearch.ListEndpointsRequest, *vectorsearch.ListEndpointResponse, vectorsearch.EndpointInfo]); ok {
+	var r0 listing.Iterator[vectorsearch.EndpointInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.ListEndpointsRequest) listing.Iterator[vectorsearch.EndpointInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[vectorsearch.ListEndpointsRequest, *vectorsearch.ListEndpointResponse, vectorsearch.EndpointInfo])
+			r0 = ret.Get(0).(listing.Iterator[vectorsearch.EndpointInfo])
 		}
 	}
 
@@ -459,12 +459,12 @@ func (_c *MockVectorSearchEndpointsInterface_ListEndpoints_Call) Run(run func(ct
 	return _c
 }
 
-func (_c *MockVectorSearchEndpointsInterface_ListEndpoints_Call) Return(_a0 *listing.PaginatingIterator[vectorsearch.ListEndpointsRequest, *vectorsearch.ListEndpointResponse, vectorsearch.EndpointInfo]) *MockVectorSearchEndpointsInterface_ListEndpoints_Call {
+func (_c *MockVectorSearchEndpointsInterface_ListEndpoints_Call) Return(_a0 listing.Iterator[vectorsearch.EndpointInfo]) *MockVectorSearchEndpointsInterface_ListEndpoints_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockVectorSearchEndpointsInterface_ListEndpoints_Call) RunAndReturn(run func(context.Context, vectorsearch.ListEndpointsRequest) *listing.PaginatingIterator[vectorsearch.ListEndpointsRequest, *vectorsearch.ListEndpointResponse, vectorsearch.EndpointInfo]) *MockVectorSearchEndpointsInterface_ListEndpoints_Call {
+func (_c *MockVectorSearchEndpointsInterface_ListEndpoints_Call) RunAndReturn(run func(context.Context, vectorsearch.ListEndpointsRequest) listing.Iterator[vectorsearch.EndpointInfo]) *MockVectorSearchEndpointsInterface_ListEndpoints_Call {
 	_c.Call.Return(run)
 	return _c
 }
