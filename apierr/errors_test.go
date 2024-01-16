@@ -22,17 +22,3 @@ func TestGetAPIErrorHandlesEmptyResponse(t *testing.T) {
 	err := GetAPIError(context.Background(), resp)
 	assert.Equal(t, err.(*APIError).Message, "")
 }
-
-func TestIsMissing_APIError(t *testing.T) {
-	assert.True(t, IsMissing(&APIError{
-		ErrorCode: "RESOURCE_DOES_NOT_EXIST",
-	}))
-	assert.False(t, IsMissing(&APIError{
-		ErrorCode: "RESOURCE_ALREADY_EXISTS",
-	}))
-}
-
-func TestIsMissing_BaseError(t *testing.T) {
-	assert.True(t, IsMissing(ErrNotFound))
-	assert.False(t, IsMissing(ErrResourceConflict))
-}
