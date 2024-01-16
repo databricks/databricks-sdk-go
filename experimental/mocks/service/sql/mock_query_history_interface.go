@@ -72,19 +72,19 @@ func (_c *MockQueryHistoryInterface_Impl_Call) RunAndReturn(run func() sql.Query
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockQueryHistoryInterface) List(ctx context.Context, request sql.ListQueryHistoryRequest) *listing.PaginatingIterator[sql.ListQueryHistoryRequest, *sql.ListQueriesResponse, sql.QueryInfo] {
+func (_m *MockQueryHistoryInterface) List(ctx context.Context, request sql.ListQueryHistoryRequest) listing.Iterator[sql.QueryInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[sql.ListQueryHistoryRequest, *sql.ListQueriesResponse, sql.QueryInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueryHistoryRequest) *listing.PaginatingIterator[sql.ListQueryHistoryRequest, *sql.ListQueriesResponse, sql.QueryInfo]); ok {
+	var r0 listing.Iterator[sql.QueryInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueryHistoryRequest) listing.Iterator[sql.QueryInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[sql.ListQueryHistoryRequest, *sql.ListQueriesResponse, sql.QueryInfo])
+			r0 = ret.Get(0).(listing.Iterator[sql.QueryInfo])
 		}
 	}
 
@@ -110,12 +110,12 @@ func (_c *MockQueryHistoryInterface_List_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockQueryHistoryInterface_List_Call) Return(_a0 *listing.PaginatingIterator[sql.ListQueryHistoryRequest, *sql.ListQueriesResponse, sql.QueryInfo]) *MockQueryHistoryInterface_List_Call {
+func (_c *MockQueryHistoryInterface_List_Call) Return(_a0 listing.Iterator[sql.QueryInfo]) *MockQueryHistoryInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockQueryHistoryInterface_List_Call) RunAndReturn(run func(context.Context, sql.ListQueryHistoryRequest) *listing.PaginatingIterator[sql.ListQueryHistoryRequest, *sql.ListQueriesResponse, sql.QueryInfo]) *MockQueryHistoryInterface_List_Call {
+func (_c *MockQueryHistoryInterface_List_Call) RunAndReturn(run func(context.Context, sql.ListQueryHistoryRequest) listing.Iterator[sql.QueryInfo]) *MockQueryHistoryInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

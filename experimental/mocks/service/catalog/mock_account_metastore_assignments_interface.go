@@ -333,19 +333,19 @@ func (_c *MockAccountMetastoreAssignmentsInterface_Impl_Call) RunAndReturn(run f
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockAccountMetastoreAssignmentsInterface) List(ctx context.Context, request catalog.ListAccountMetastoreAssignmentsRequest) *listing.PaginatingIterator[catalog.ListAccountMetastoreAssignmentsRequest, *catalog.ListAccountMetastoreAssignmentsResponse, int64] {
+func (_m *MockAccountMetastoreAssignmentsInterface) List(ctx context.Context, request catalog.ListAccountMetastoreAssignmentsRequest) listing.Iterator[int64] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[catalog.ListAccountMetastoreAssignmentsRequest, *catalog.ListAccountMetastoreAssignmentsResponse, int64]
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListAccountMetastoreAssignmentsRequest) *listing.PaginatingIterator[catalog.ListAccountMetastoreAssignmentsRequest, *catalog.ListAccountMetastoreAssignmentsResponse, int64]); ok {
+	var r0 listing.Iterator[int64]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListAccountMetastoreAssignmentsRequest) listing.Iterator[int64]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[catalog.ListAccountMetastoreAssignmentsRequest, *catalog.ListAccountMetastoreAssignmentsResponse, int64])
+			r0 = ret.Get(0).(listing.Iterator[int64])
 		}
 	}
 
@@ -371,12 +371,12 @@ func (_c *MockAccountMetastoreAssignmentsInterface_List_Call) Run(run func(ctx c
 	return _c
 }
 
-func (_c *MockAccountMetastoreAssignmentsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[catalog.ListAccountMetastoreAssignmentsRequest, *catalog.ListAccountMetastoreAssignmentsResponse, int64]) *MockAccountMetastoreAssignmentsInterface_List_Call {
+func (_c *MockAccountMetastoreAssignmentsInterface_List_Call) Return(_a0 listing.Iterator[int64]) *MockAccountMetastoreAssignmentsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockAccountMetastoreAssignmentsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListAccountMetastoreAssignmentsRequest) *listing.PaginatingIterator[catalog.ListAccountMetastoreAssignmentsRequest, *catalog.ListAccountMetastoreAssignmentsResponse, int64]) *MockAccountMetastoreAssignmentsInterface_List_Call {
+func (_c *MockAccountMetastoreAssignmentsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListAccountMetastoreAssignmentsRequest) listing.Iterator[int64]) *MockAccountMetastoreAssignmentsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

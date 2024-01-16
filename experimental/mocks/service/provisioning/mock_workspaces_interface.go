@@ -536,23 +536,23 @@ func (_c *MockWorkspacesInterface_List_Call) RunAndReturn(run func(context.Conte
 }
 
 // Update provides a mock function with given fields: ctx, updateWorkspaceRequest
-func (_m *MockWorkspacesInterface) Update(ctx context.Context, updateWorkspaceRequest provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[interface{}], error) {
+func (_m *MockWorkspacesInterface) Update(ctx context.Context, updateWorkspaceRequest provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[struct{}], error) {
 	ret := _m.Called(ctx, updateWorkspaceRequest)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 *provisioning.WaitGetWorkspaceRunning[interface{}]
+	var r0 *provisioning.WaitGetWorkspaceRunning[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[struct{}], error)); ok {
 		return rf(ctx, updateWorkspaceRequest)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.UpdateWorkspaceRequest) *provisioning.WaitGetWorkspaceRunning[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.UpdateWorkspaceRequest) *provisioning.WaitGetWorkspaceRunning[struct{}]); ok {
 		r0 = rf(ctx, updateWorkspaceRequest)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*provisioning.WaitGetWorkspaceRunning[interface{}])
+			r0 = ret.Get(0).(*provisioning.WaitGetWorkspaceRunning[struct{}])
 		}
 	}
 
@@ -584,12 +584,12 @@ func (_c *MockWorkspacesInterface_Update_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockWorkspacesInterface_Update_Call) Return(_a0 *provisioning.WaitGetWorkspaceRunning[interface{}], _a1 error) *MockWorkspacesInterface_Update_Call {
+func (_c *MockWorkspacesInterface_Update_Call) Return(_a0 *provisioning.WaitGetWorkspaceRunning[struct{}], _a1 error) *MockWorkspacesInterface_Update_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspacesInterface_Update_Call) RunAndReturn(run func(context.Context, provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[interface{}], error)) *MockWorkspacesInterface_Update_Call {
+func (_c *MockWorkspacesInterface_Update_Call) RunAndReturn(run func(context.Context, provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[struct{}], error)) *MockWorkspacesInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

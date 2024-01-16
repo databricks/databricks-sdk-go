@@ -225,3 +225,20 @@ func (i *DeduplicatingIterator[T, Id]) HasNext(ctx context.Context) bool {
 		}
 	}
 }
+
+// A simple iterator over a slice.
+type SliceIterator[T any] []T
+
+func (s *SliceIterator[T]) HasNext(_ context.Context) bool {
+	return len(*s) > 0
+}
+
+func (s *SliceIterator[T]) Next(_ context.Context) (T, error) {
+	var t T
+	if len(*s) == 0 {
+		return t, ErrNoMoreItems
+	}
+	v := (*s)[0]
+	*s = (*s)[1:]
+	return v, nil
+}

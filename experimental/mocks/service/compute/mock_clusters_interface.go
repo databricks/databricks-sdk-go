@@ -269,23 +269,23 @@ func (_c *MockClustersInterface_CreateAndWait_Call) RunAndReturn(run func(contex
 }
 
 // Delete provides a mock function with given fields: ctx, deleteCluster
-func (_m *MockClustersInterface) Delete(ctx context.Context, deleteCluster compute.DeleteCluster) (*compute.WaitGetClusterTerminated[interface{}], error) {
+func (_m *MockClustersInterface) Delete(ctx context.Context, deleteCluster compute.DeleteCluster) (*compute.WaitGetClusterTerminated[struct{}], error) {
 	ret := _m.Called(ctx, deleteCluster)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 *compute.WaitGetClusterTerminated[interface{}]
+	var r0 *compute.WaitGetClusterTerminated[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, compute.DeleteCluster) (*compute.WaitGetClusterTerminated[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.DeleteCluster) (*compute.WaitGetClusterTerminated[struct{}], error)); ok {
 		return rf(ctx, deleteCluster)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, compute.DeleteCluster) *compute.WaitGetClusterTerminated[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.DeleteCluster) *compute.WaitGetClusterTerminated[struct{}]); ok {
 		r0 = rf(ctx, deleteCluster)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*compute.WaitGetClusterTerminated[interface{}])
+			r0 = ret.Get(0).(*compute.WaitGetClusterTerminated[struct{}])
 		}
 	}
 
@@ -317,12 +317,12 @@ func (_c *MockClustersInterface_Delete_Call) Run(run func(ctx context.Context, d
 	return _c
 }
 
-func (_c *MockClustersInterface_Delete_Call) Return(_a0 *compute.WaitGetClusterTerminated[interface{}], _a1 error) *MockClustersInterface_Delete_Call {
+func (_c *MockClustersInterface_Delete_Call) Return(_a0 *compute.WaitGetClusterTerminated[struct{}], _a1 error) *MockClustersInterface_Delete_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockClustersInterface_Delete_Call) RunAndReturn(run func(context.Context, compute.DeleteCluster) (*compute.WaitGetClusterTerminated[interface{}], error)) *MockClustersInterface_Delete_Call {
+func (_c *MockClustersInterface_Delete_Call) RunAndReturn(run func(context.Context, compute.DeleteCluster) (*compute.WaitGetClusterTerminated[struct{}], error)) *MockClustersInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -523,23 +523,23 @@ func (_c *MockClustersInterface_DeleteByClusterIdAndWait_Call) RunAndReturn(run 
 }
 
 // Edit provides a mock function with given fields: ctx, editCluster
-func (_m *MockClustersInterface) Edit(ctx context.Context, editCluster compute.EditCluster) (*compute.WaitGetClusterRunning[interface{}], error) {
+func (_m *MockClustersInterface) Edit(ctx context.Context, editCluster compute.EditCluster) (*compute.WaitGetClusterRunning[struct{}], error) {
 	ret := _m.Called(ctx, editCluster)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Edit")
 	}
 
-	var r0 *compute.WaitGetClusterRunning[interface{}]
+	var r0 *compute.WaitGetClusterRunning[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, compute.EditCluster) (*compute.WaitGetClusterRunning[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.EditCluster) (*compute.WaitGetClusterRunning[struct{}], error)); ok {
 		return rf(ctx, editCluster)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, compute.EditCluster) *compute.WaitGetClusterRunning[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.EditCluster) *compute.WaitGetClusterRunning[struct{}]); ok {
 		r0 = rf(ctx, editCluster)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*compute.WaitGetClusterRunning[interface{}])
+			r0 = ret.Get(0).(*compute.WaitGetClusterRunning[struct{}])
 		}
 	}
 
@@ -571,12 +571,12 @@ func (_c *MockClustersInterface_Edit_Call) Run(run func(ctx context.Context, edi
 	return _c
 }
 
-func (_c *MockClustersInterface_Edit_Call) Return(_a0 *compute.WaitGetClusterRunning[interface{}], _a1 error) *MockClustersInterface_Edit_Call {
+func (_c *MockClustersInterface_Edit_Call) Return(_a0 *compute.WaitGetClusterRunning[struct{}], _a1 error) *MockClustersInterface_Edit_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockClustersInterface_Edit_Call) RunAndReturn(run func(context.Context, compute.EditCluster) (*compute.WaitGetClusterRunning[interface{}], error)) *MockClustersInterface_Edit_Call {
+func (_c *MockClustersInterface_Edit_Call) RunAndReturn(run func(context.Context, compute.EditCluster) (*compute.WaitGetClusterRunning[struct{}], error)) *MockClustersInterface_Edit_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -703,19 +703,19 @@ func (_c *MockClustersInterface_EnsureClusterIsRunning_Call) RunAndReturn(run fu
 }
 
 // Events provides a mock function with given fields: ctx, request
-func (_m *MockClustersInterface) Events(ctx context.Context, request compute.GetEvents) *listing.PaginatingIterator[compute.GetEvents, *compute.GetEventsResponse, compute.ClusterEvent] {
+func (_m *MockClustersInterface) Events(ctx context.Context, request compute.GetEvents) listing.Iterator[compute.ClusterEvent] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Events")
 	}
 
-	var r0 *listing.PaginatingIterator[compute.GetEvents, *compute.GetEventsResponse, compute.ClusterEvent]
-	if rf, ok := ret.Get(0).(func(context.Context, compute.GetEvents) *listing.PaginatingIterator[compute.GetEvents, *compute.GetEventsResponse, compute.ClusterEvent]); ok {
+	var r0 listing.Iterator[compute.ClusterEvent]
+	if rf, ok := ret.Get(0).(func(context.Context, compute.GetEvents) listing.Iterator[compute.ClusterEvent]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[compute.GetEvents, *compute.GetEventsResponse, compute.ClusterEvent])
+			r0 = ret.Get(0).(listing.Iterator[compute.ClusterEvent])
 		}
 	}
 
@@ -741,12 +741,12 @@ func (_c *MockClustersInterface_Events_Call) Run(run func(ctx context.Context, r
 	return _c
 }
 
-func (_c *MockClustersInterface_Events_Call) Return(_a0 *listing.PaginatingIterator[compute.GetEvents, *compute.GetEventsResponse, compute.ClusterEvent]) *MockClustersInterface_Events_Call {
+func (_c *MockClustersInterface_Events_Call) Return(_a0 listing.Iterator[compute.ClusterEvent]) *MockClustersInterface_Events_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockClustersInterface_Events_Call) RunAndReturn(run func(context.Context, compute.GetEvents) *listing.PaginatingIterator[compute.GetEvents, *compute.GetEventsResponse, compute.ClusterEvent]) *MockClustersInterface_Events_Call {
+func (_c *MockClustersInterface_Events_Call) RunAndReturn(run func(context.Context, compute.GetEvents) listing.Iterator[compute.ClusterEvent]) *MockClustersInterface_Events_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1345,19 +1345,19 @@ func (_c *MockClustersInterface_Impl_Call) RunAndReturn(run func() compute.Clust
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockClustersInterface) List(ctx context.Context, request compute.ListClustersRequest) *listing.PaginatingIterator[compute.ListClustersRequest, *compute.ListClustersResponse, compute.ClusterDetails] {
+func (_m *MockClustersInterface) List(ctx context.Context, request compute.ListClustersRequest) listing.Iterator[compute.ClusterDetails] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[compute.ListClustersRequest, *compute.ListClustersResponse, compute.ClusterDetails]
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ListClustersRequest) *listing.PaginatingIterator[compute.ListClustersRequest, *compute.ListClustersResponse, compute.ClusterDetails]); ok {
+	var r0 listing.Iterator[compute.ClusterDetails]
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ListClustersRequest) listing.Iterator[compute.ClusterDetails]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[compute.ListClustersRequest, *compute.ListClustersResponse, compute.ClusterDetails])
+			r0 = ret.Get(0).(listing.Iterator[compute.ClusterDetails])
 		}
 	}
 
@@ -1383,12 +1383,12 @@ func (_c *MockClustersInterface_List_Call) Run(run func(ctx context.Context, req
 	return _c
 }
 
-func (_c *MockClustersInterface_List_Call) Return(_a0 *listing.PaginatingIterator[compute.ListClustersRequest, *compute.ListClustersResponse, compute.ClusterDetails]) *MockClustersInterface_List_Call {
+func (_c *MockClustersInterface_List_Call) Return(_a0 listing.Iterator[compute.ClusterDetails]) *MockClustersInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockClustersInterface_List_Call) RunAndReturn(run func(context.Context, compute.ListClustersRequest) *listing.PaginatingIterator[compute.ListClustersRequest, *compute.ListClustersResponse, compute.ClusterDetails]) *MockClustersInterface_List_Call {
+func (_c *MockClustersInterface_List_Call) RunAndReturn(run func(context.Context, compute.ListClustersRequest) listing.Iterator[compute.ClusterDetails]) *MockClustersInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1816,23 +1816,23 @@ func (_c *MockClustersInterface_PinByClusterId_Call) RunAndReturn(run func(conte
 }
 
 // Resize provides a mock function with given fields: ctx, resizeCluster
-func (_m *MockClustersInterface) Resize(ctx context.Context, resizeCluster compute.ResizeCluster) (*compute.WaitGetClusterRunning[interface{}], error) {
+func (_m *MockClustersInterface) Resize(ctx context.Context, resizeCluster compute.ResizeCluster) (*compute.WaitGetClusterRunning[struct{}], error) {
 	ret := _m.Called(ctx, resizeCluster)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Resize")
 	}
 
-	var r0 *compute.WaitGetClusterRunning[interface{}]
+	var r0 *compute.WaitGetClusterRunning[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ResizeCluster) (*compute.WaitGetClusterRunning[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ResizeCluster) (*compute.WaitGetClusterRunning[struct{}], error)); ok {
 		return rf(ctx, resizeCluster)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ResizeCluster) *compute.WaitGetClusterRunning[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ResizeCluster) *compute.WaitGetClusterRunning[struct{}]); ok {
 		r0 = rf(ctx, resizeCluster)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*compute.WaitGetClusterRunning[interface{}])
+			r0 = ret.Get(0).(*compute.WaitGetClusterRunning[struct{}])
 		}
 	}
 
@@ -1864,12 +1864,12 @@ func (_c *MockClustersInterface_Resize_Call) Run(run func(ctx context.Context, r
 	return _c
 }
 
-func (_c *MockClustersInterface_Resize_Call) Return(_a0 *compute.WaitGetClusterRunning[interface{}], _a1 error) *MockClustersInterface_Resize_Call {
+func (_c *MockClustersInterface_Resize_Call) Return(_a0 *compute.WaitGetClusterRunning[struct{}], _a1 error) *MockClustersInterface_Resize_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockClustersInterface_Resize_Call) RunAndReturn(run func(context.Context, compute.ResizeCluster) (*compute.WaitGetClusterRunning[interface{}], error)) *MockClustersInterface_Resize_Call {
+func (_c *MockClustersInterface_Resize_Call) RunAndReturn(run func(context.Context, compute.ResizeCluster) (*compute.WaitGetClusterRunning[struct{}], error)) *MockClustersInterface_Resize_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1949,23 +1949,23 @@ func (_c *MockClustersInterface_ResizeAndWait_Call) RunAndReturn(run func(contex
 }
 
 // Restart provides a mock function with given fields: ctx, restartCluster
-func (_m *MockClustersInterface) Restart(ctx context.Context, restartCluster compute.RestartCluster) (*compute.WaitGetClusterRunning[interface{}], error) {
+func (_m *MockClustersInterface) Restart(ctx context.Context, restartCluster compute.RestartCluster) (*compute.WaitGetClusterRunning[struct{}], error) {
 	ret := _m.Called(ctx, restartCluster)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Restart")
 	}
 
-	var r0 *compute.WaitGetClusterRunning[interface{}]
+	var r0 *compute.WaitGetClusterRunning[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, compute.RestartCluster) (*compute.WaitGetClusterRunning[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.RestartCluster) (*compute.WaitGetClusterRunning[struct{}], error)); ok {
 		return rf(ctx, restartCluster)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, compute.RestartCluster) *compute.WaitGetClusterRunning[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.RestartCluster) *compute.WaitGetClusterRunning[struct{}]); ok {
 		r0 = rf(ctx, restartCluster)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*compute.WaitGetClusterRunning[interface{}])
+			r0 = ret.Get(0).(*compute.WaitGetClusterRunning[struct{}])
 		}
 	}
 
@@ -1997,12 +1997,12 @@ func (_c *MockClustersInterface_Restart_Call) Run(run func(ctx context.Context, 
 	return _c
 }
 
-func (_c *MockClustersInterface_Restart_Call) Return(_a0 *compute.WaitGetClusterRunning[interface{}], _a1 error) *MockClustersInterface_Restart_Call {
+func (_c *MockClustersInterface_Restart_Call) Return(_a0 *compute.WaitGetClusterRunning[struct{}], _a1 error) *MockClustersInterface_Restart_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockClustersInterface_Restart_Call) RunAndReturn(run func(context.Context, compute.RestartCluster) (*compute.WaitGetClusterRunning[interface{}], error)) *MockClustersInterface_Restart_Call {
+func (_c *MockClustersInterface_Restart_Call) RunAndReturn(run func(context.Context, compute.RestartCluster) (*compute.WaitGetClusterRunning[struct{}], error)) *MockClustersInterface_Restart_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2313,23 +2313,23 @@ func (_c *MockClustersInterface_SparkVersions_Call) RunAndReturn(run func(contex
 }
 
 // Start provides a mock function with given fields: ctx, startCluster
-func (_m *MockClustersInterface) Start(ctx context.Context, startCluster compute.StartCluster) (*compute.WaitGetClusterRunning[interface{}], error) {
+func (_m *MockClustersInterface) Start(ctx context.Context, startCluster compute.StartCluster) (*compute.WaitGetClusterRunning[struct{}], error) {
 	ret := _m.Called(ctx, startCluster)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Start")
 	}
 
-	var r0 *compute.WaitGetClusterRunning[interface{}]
+	var r0 *compute.WaitGetClusterRunning[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, compute.StartCluster) (*compute.WaitGetClusterRunning[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.StartCluster) (*compute.WaitGetClusterRunning[struct{}], error)); ok {
 		return rf(ctx, startCluster)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, compute.StartCluster) *compute.WaitGetClusterRunning[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.StartCluster) *compute.WaitGetClusterRunning[struct{}]); ok {
 		r0 = rf(ctx, startCluster)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*compute.WaitGetClusterRunning[interface{}])
+			r0 = ret.Get(0).(*compute.WaitGetClusterRunning[struct{}])
 		}
 	}
 
@@ -2361,12 +2361,12 @@ func (_c *MockClustersInterface_Start_Call) Run(run func(ctx context.Context, st
 	return _c
 }
 
-func (_c *MockClustersInterface_Start_Call) Return(_a0 *compute.WaitGetClusterRunning[interface{}], _a1 error) *MockClustersInterface_Start_Call {
+func (_c *MockClustersInterface_Start_Call) Return(_a0 *compute.WaitGetClusterRunning[struct{}], _a1 error) *MockClustersInterface_Start_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockClustersInterface_Start_Call) RunAndReturn(run func(context.Context, compute.StartCluster) (*compute.WaitGetClusterRunning[interface{}], error)) *MockClustersInterface_Start_Call {
+func (_c *MockClustersInterface_Start_Call) RunAndReturn(run func(context.Context, compute.StartCluster) (*compute.WaitGetClusterRunning[struct{}], error)) *MockClustersInterface_Start_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -402,19 +402,19 @@ func (_c *MockVectorSearchIndexesInterface_Impl_Call) RunAndReturn(run func() ve
 }
 
 // ListIndexes provides a mock function with given fields: ctx, request
-func (_m *MockVectorSearchIndexesInterface) ListIndexes(ctx context.Context, request vectorsearch.ListIndexesRequest) *listing.PaginatingIterator[vectorsearch.ListIndexesRequest, *vectorsearch.ListVectorIndexesResponse, vectorsearch.MiniVectorIndex] {
+func (_m *MockVectorSearchIndexesInterface) ListIndexes(ctx context.Context, request vectorsearch.ListIndexesRequest) listing.Iterator[vectorsearch.MiniVectorIndex] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListIndexes")
 	}
 
-	var r0 *listing.PaginatingIterator[vectorsearch.ListIndexesRequest, *vectorsearch.ListVectorIndexesResponse, vectorsearch.MiniVectorIndex]
-	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.ListIndexesRequest) *listing.PaginatingIterator[vectorsearch.ListIndexesRequest, *vectorsearch.ListVectorIndexesResponse, vectorsearch.MiniVectorIndex]); ok {
+	var r0 listing.Iterator[vectorsearch.MiniVectorIndex]
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.ListIndexesRequest) listing.Iterator[vectorsearch.MiniVectorIndex]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[vectorsearch.ListIndexesRequest, *vectorsearch.ListVectorIndexesResponse, vectorsearch.MiniVectorIndex])
+			r0 = ret.Get(0).(listing.Iterator[vectorsearch.MiniVectorIndex])
 		}
 	}
 
@@ -440,12 +440,12 @@ func (_c *MockVectorSearchIndexesInterface_ListIndexes_Call) Run(run func(ctx co
 	return _c
 }
 
-func (_c *MockVectorSearchIndexesInterface_ListIndexes_Call) Return(_a0 *listing.PaginatingIterator[vectorsearch.ListIndexesRequest, *vectorsearch.ListVectorIndexesResponse, vectorsearch.MiniVectorIndex]) *MockVectorSearchIndexesInterface_ListIndexes_Call {
+func (_c *MockVectorSearchIndexesInterface_ListIndexes_Call) Return(_a0 listing.Iterator[vectorsearch.MiniVectorIndex]) *MockVectorSearchIndexesInterface_ListIndexes_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockVectorSearchIndexesInterface_ListIndexes_Call) RunAndReturn(run func(context.Context, vectorsearch.ListIndexesRequest) *listing.PaginatingIterator[vectorsearch.ListIndexesRequest, *vectorsearch.ListVectorIndexesResponse, vectorsearch.MiniVectorIndex]) *MockVectorSearchIndexesInterface_ListIndexes_Call {
+func (_c *MockVectorSearchIndexesInterface_ListIndexes_Call) RunAndReturn(run func(context.Context, vectorsearch.ListIndexesRequest) listing.Iterator[vectorsearch.MiniVectorIndex]) *MockVectorSearchIndexesInterface_ListIndexes_Call {
 	_c.Call.Return(run)
 	return _c
 }

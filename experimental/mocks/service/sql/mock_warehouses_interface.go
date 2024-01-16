@@ -256,23 +256,23 @@ func (_c *MockWarehousesInterface_DeleteById_Call) RunAndReturn(run func(context
 }
 
 // Edit provides a mock function with given fields: ctx, editWarehouseRequest
-func (_m *MockWarehousesInterface) Edit(ctx context.Context, editWarehouseRequest sql.EditWarehouseRequest) (*sql.WaitGetWarehouseRunning[interface{}], error) {
+func (_m *MockWarehousesInterface) Edit(ctx context.Context, editWarehouseRequest sql.EditWarehouseRequest) (*sql.WaitGetWarehouseRunning[struct{}], error) {
 	ret := _m.Called(ctx, editWarehouseRequest)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Edit")
 	}
 
-	var r0 *sql.WaitGetWarehouseRunning[interface{}]
+	var r0 *sql.WaitGetWarehouseRunning[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.EditWarehouseRequest) (*sql.WaitGetWarehouseRunning[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.EditWarehouseRequest) (*sql.WaitGetWarehouseRunning[struct{}], error)); ok {
 		return rf(ctx, editWarehouseRequest)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.EditWarehouseRequest) *sql.WaitGetWarehouseRunning[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.EditWarehouseRequest) *sql.WaitGetWarehouseRunning[struct{}]); ok {
 		r0 = rf(ctx, editWarehouseRequest)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.WaitGetWarehouseRunning[interface{}])
+			r0 = ret.Get(0).(*sql.WaitGetWarehouseRunning[struct{}])
 		}
 	}
 
@@ -304,12 +304,12 @@ func (_c *MockWarehousesInterface_Edit_Call) Run(run func(ctx context.Context, e
 	return _c
 }
 
-func (_c *MockWarehousesInterface_Edit_Call) Return(_a0 *sql.WaitGetWarehouseRunning[interface{}], _a1 error) *MockWarehousesInterface_Edit_Call {
+func (_c *MockWarehousesInterface_Edit_Call) Return(_a0 *sql.WaitGetWarehouseRunning[struct{}], _a1 error) *MockWarehousesInterface_Edit_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWarehousesInterface_Edit_Call) RunAndReturn(run func(context.Context, sql.EditWarehouseRequest) (*sql.WaitGetWarehouseRunning[interface{}], error)) *MockWarehousesInterface_Edit_Call {
+func (_c *MockWarehousesInterface_Edit_Call) RunAndReturn(run func(context.Context, sql.EditWarehouseRequest) (*sql.WaitGetWarehouseRunning[struct{}], error)) *MockWarehousesInterface_Edit_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -966,19 +966,19 @@ func (_c *MockWarehousesInterface_Impl_Call) RunAndReturn(run func() sql.Warehou
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockWarehousesInterface) List(ctx context.Context, request sql.ListWarehousesRequest) *listing.PaginatingIterator[sql.ListWarehousesRequest, *sql.ListWarehousesResponse, sql.EndpointInfo] {
+func (_m *MockWarehousesInterface) List(ctx context.Context, request sql.ListWarehousesRequest) listing.Iterator[sql.EndpointInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[sql.ListWarehousesRequest, *sql.ListWarehousesResponse, sql.EndpointInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListWarehousesRequest) *listing.PaginatingIterator[sql.ListWarehousesRequest, *sql.ListWarehousesResponse, sql.EndpointInfo]); ok {
+	var r0 listing.Iterator[sql.EndpointInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListWarehousesRequest) listing.Iterator[sql.EndpointInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[sql.ListWarehousesRequest, *sql.ListWarehousesResponse, sql.EndpointInfo])
+			r0 = ret.Get(0).(listing.Iterator[sql.EndpointInfo])
 		}
 	}
 
@@ -1004,12 +1004,12 @@ func (_c *MockWarehousesInterface_List_Call) Run(run func(ctx context.Context, r
 	return _c
 }
 
-func (_c *MockWarehousesInterface_List_Call) Return(_a0 *listing.PaginatingIterator[sql.ListWarehousesRequest, *sql.ListWarehousesResponse, sql.EndpointInfo]) *MockWarehousesInterface_List_Call {
+func (_c *MockWarehousesInterface_List_Call) Return(_a0 listing.Iterator[sql.EndpointInfo]) *MockWarehousesInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockWarehousesInterface_List_Call) RunAndReturn(run func(context.Context, sql.ListWarehousesRequest) *listing.PaginatingIterator[sql.ListWarehousesRequest, *sql.ListWarehousesResponse, sql.EndpointInfo]) *MockWarehousesInterface_List_Call {
+func (_c *MockWarehousesInterface_List_Call) RunAndReturn(run func(context.Context, sql.ListWarehousesRequest) listing.Iterator[sql.EndpointInfo]) *MockWarehousesInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1180,23 +1180,23 @@ func (_c *MockWarehousesInterface_SetWorkspaceWarehouseConfig_Call) RunAndReturn
 }
 
 // Start provides a mock function with given fields: ctx, startRequest
-func (_m *MockWarehousesInterface) Start(ctx context.Context, startRequest sql.StartRequest) (*sql.WaitGetWarehouseRunning[interface{}], error) {
+func (_m *MockWarehousesInterface) Start(ctx context.Context, startRequest sql.StartRequest) (*sql.WaitGetWarehouseRunning[struct{}], error) {
 	ret := _m.Called(ctx, startRequest)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Start")
 	}
 
-	var r0 *sql.WaitGetWarehouseRunning[interface{}]
+	var r0 *sql.WaitGetWarehouseRunning[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.StartRequest) (*sql.WaitGetWarehouseRunning[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.StartRequest) (*sql.WaitGetWarehouseRunning[struct{}], error)); ok {
 		return rf(ctx, startRequest)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.StartRequest) *sql.WaitGetWarehouseRunning[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.StartRequest) *sql.WaitGetWarehouseRunning[struct{}]); ok {
 		r0 = rf(ctx, startRequest)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.WaitGetWarehouseRunning[interface{}])
+			r0 = ret.Get(0).(*sql.WaitGetWarehouseRunning[struct{}])
 		}
 	}
 
@@ -1228,12 +1228,12 @@ func (_c *MockWarehousesInterface_Start_Call) Run(run func(ctx context.Context, 
 	return _c
 }
 
-func (_c *MockWarehousesInterface_Start_Call) Return(_a0 *sql.WaitGetWarehouseRunning[interface{}], _a1 error) *MockWarehousesInterface_Start_Call {
+func (_c *MockWarehousesInterface_Start_Call) Return(_a0 *sql.WaitGetWarehouseRunning[struct{}], _a1 error) *MockWarehousesInterface_Start_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWarehousesInterface_Start_Call) RunAndReturn(run func(context.Context, sql.StartRequest) (*sql.WaitGetWarehouseRunning[interface{}], error)) *MockWarehousesInterface_Start_Call {
+func (_c *MockWarehousesInterface_Start_Call) RunAndReturn(run func(context.Context, sql.StartRequest) (*sql.WaitGetWarehouseRunning[struct{}], error)) *MockWarehousesInterface_Start_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1313,23 +1313,23 @@ func (_c *MockWarehousesInterface_StartAndWait_Call) RunAndReturn(run func(conte
 }
 
 // Stop provides a mock function with given fields: ctx, stopRequest
-func (_m *MockWarehousesInterface) Stop(ctx context.Context, stopRequest sql.StopRequest) (*sql.WaitGetWarehouseStopped[interface{}], error) {
+func (_m *MockWarehousesInterface) Stop(ctx context.Context, stopRequest sql.StopRequest) (*sql.WaitGetWarehouseStopped[struct{}], error) {
 	ret := _m.Called(ctx, stopRequest)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Stop")
 	}
 
-	var r0 *sql.WaitGetWarehouseStopped[interface{}]
+	var r0 *sql.WaitGetWarehouseStopped[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.StopRequest) (*sql.WaitGetWarehouseStopped[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.StopRequest) (*sql.WaitGetWarehouseStopped[struct{}], error)); ok {
 		return rf(ctx, stopRequest)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.StopRequest) *sql.WaitGetWarehouseStopped[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.StopRequest) *sql.WaitGetWarehouseStopped[struct{}]); ok {
 		r0 = rf(ctx, stopRequest)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.WaitGetWarehouseStopped[interface{}])
+			r0 = ret.Get(0).(*sql.WaitGetWarehouseStopped[struct{}])
 		}
 	}
 
@@ -1361,12 +1361,12 @@ func (_c *MockWarehousesInterface_Stop_Call) Run(run func(ctx context.Context, s
 	return _c
 }
 
-func (_c *MockWarehousesInterface_Stop_Call) Return(_a0 *sql.WaitGetWarehouseStopped[interface{}], _a1 error) *MockWarehousesInterface_Stop_Call {
+func (_c *MockWarehousesInterface_Stop_Call) Return(_a0 *sql.WaitGetWarehouseStopped[struct{}], _a1 error) *MockWarehousesInterface_Stop_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWarehousesInterface_Stop_Call) RunAndReturn(run func(context.Context, sql.StopRequest) (*sql.WaitGetWarehouseStopped[interface{}], error)) *MockWarehousesInterface_Stop_Call {
+func (_c *MockWarehousesInterface_Stop_Call) RunAndReturn(run func(context.Context, sql.StopRequest) (*sql.WaitGetWarehouseStopped[struct{}], error)) *MockWarehousesInterface_Stop_Call {
 	_c.Call.Return(run)
 	return _c
 }

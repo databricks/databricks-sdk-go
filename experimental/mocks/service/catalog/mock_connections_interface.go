@@ -461,19 +461,19 @@ func (_c *MockConnectionsInterface_Impl_Call) RunAndReturn(run func() catalog.Co
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockConnectionsInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListConnectionsResponse, catalog.ConnectionInfo] {
+func (_m *MockConnectionsInterface) List(ctx context.Context) listing.Iterator[catalog.ConnectionInfo] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *catalog.ListConnectionsResponse, catalog.ConnectionInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListConnectionsResponse, catalog.ConnectionInfo]); ok {
+	var r0 listing.Iterator[catalog.ConnectionInfo]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[catalog.ConnectionInfo]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *catalog.ListConnectionsResponse, catalog.ConnectionInfo])
+			r0 = ret.Get(0).(listing.Iterator[catalog.ConnectionInfo])
 		}
 	}
 
@@ -498,12 +498,12 @@ func (_c *MockConnectionsInterface_List_Call) Run(run func(ctx context.Context))
 	return _c
 }
 
-func (_c *MockConnectionsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *catalog.ListConnectionsResponse, catalog.ConnectionInfo]) *MockConnectionsInterface_List_Call {
+func (_c *MockConnectionsInterface_List_Call) Return(_a0 listing.Iterator[catalog.ConnectionInfo]) *MockConnectionsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockConnectionsInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *catalog.ListConnectionsResponse, catalog.ConnectionInfo]) *MockConnectionsInterface_List_Call {
+func (_c *MockConnectionsInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[catalog.ConnectionInfo]) *MockConnectionsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

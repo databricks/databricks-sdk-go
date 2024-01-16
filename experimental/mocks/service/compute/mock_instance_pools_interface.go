@@ -744,19 +744,19 @@ func (_c *MockInstancePoolsInterface_InstancePoolAndStatsInstancePoolNameToInsta
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockInstancePoolsInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *compute.ListInstancePools, compute.InstancePoolAndStats] {
+func (_m *MockInstancePoolsInterface) List(ctx context.Context) listing.Iterator[compute.InstancePoolAndStats] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *compute.ListInstancePools, compute.InstancePoolAndStats]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *compute.ListInstancePools, compute.InstancePoolAndStats]); ok {
+	var r0 listing.Iterator[compute.InstancePoolAndStats]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[compute.InstancePoolAndStats]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *compute.ListInstancePools, compute.InstancePoolAndStats])
+			r0 = ret.Get(0).(listing.Iterator[compute.InstancePoolAndStats])
 		}
 	}
 
@@ -781,12 +781,12 @@ func (_c *MockInstancePoolsInterface_List_Call) Run(run func(ctx context.Context
 	return _c
 }
 
-func (_c *MockInstancePoolsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *compute.ListInstancePools, compute.InstancePoolAndStats]) *MockInstancePoolsInterface_List_Call {
+func (_c *MockInstancePoolsInterface_List_Call) Return(_a0 listing.Iterator[compute.InstancePoolAndStats]) *MockInstancePoolsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockInstancePoolsInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *compute.ListInstancePools, compute.InstancePoolAndStats]) *MockInstancePoolsInterface_List_Call {
+func (_c *MockInstancePoolsInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[compute.InstancePoolAndStats]) *MockInstancePoolsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

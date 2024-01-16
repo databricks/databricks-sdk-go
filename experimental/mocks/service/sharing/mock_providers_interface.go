@@ -343,19 +343,19 @@ func (_c *MockProvidersInterface_Impl_Call) RunAndReturn(run func() sharing.Prov
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockProvidersInterface) List(ctx context.Context, request sharing.ListProvidersRequest) *listing.PaginatingIterator[sharing.ListProvidersRequest, *sharing.ListProvidersResponse, sharing.ProviderInfo] {
+func (_m *MockProvidersInterface) List(ctx context.Context, request sharing.ListProvidersRequest) listing.Iterator[sharing.ProviderInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[sharing.ListProvidersRequest, *sharing.ListProvidersResponse, sharing.ProviderInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, sharing.ListProvidersRequest) *listing.PaginatingIterator[sharing.ListProvidersRequest, *sharing.ListProvidersResponse, sharing.ProviderInfo]); ok {
+	var r0 listing.Iterator[sharing.ProviderInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, sharing.ListProvidersRequest) listing.Iterator[sharing.ProviderInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[sharing.ListProvidersRequest, *sharing.ListProvidersResponse, sharing.ProviderInfo])
+			r0 = ret.Get(0).(listing.Iterator[sharing.ProviderInfo])
 		}
 	}
 
@@ -381,12 +381,12 @@ func (_c *MockProvidersInterface_List_Call) Run(run func(ctx context.Context, re
 	return _c
 }
 
-func (_c *MockProvidersInterface_List_Call) Return(_a0 *listing.PaginatingIterator[sharing.ListProvidersRequest, *sharing.ListProvidersResponse, sharing.ProviderInfo]) *MockProvidersInterface_List_Call {
+func (_c *MockProvidersInterface_List_Call) Return(_a0 listing.Iterator[sharing.ProviderInfo]) *MockProvidersInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockProvidersInterface_List_Call) RunAndReturn(run func(context.Context, sharing.ListProvidersRequest) *listing.PaginatingIterator[sharing.ListProvidersRequest, *sharing.ListProvidersResponse, sharing.ProviderInfo]) *MockProvidersInterface_List_Call {
+func (_c *MockProvidersInterface_List_Call) RunAndReturn(run func(context.Context, sharing.ListProvidersRequest) listing.Iterator[sharing.ProviderInfo]) *MockProvidersInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -451,19 +451,19 @@ func (_c *MockProvidersInterface_ListAll_Call) RunAndReturn(run func(context.Con
 }
 
 // ListShares provides a mock function with given fields: ctx, request
-func (_m *MockProvidersInterface) ListShares(ctx context.Context, request sharing.ListSharesRequest) *listing.PaginatingIterator[sharing.ListSharesRequest, *sharing.ListProviderSharesResponse, sharing.ProviderShare] {
+func (_m *MockProvidersInterface) ListShares(ctx context.Context, request sharing.ListSharesRequest) listing.Iterator[sharing.ProviderShare] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListShares")
 	}
 
-	var r0 *listing.PaginatingIterator[sharing.ListSharesRequest, *sharing.ListProviderSharesResponse, sharing.ProviderShare]
-	if rf, ok := ret.Get(0).(func(context.Context, sharing.ListSharesRequest) *listing.PaginatingIterator[sharing.ListSharesRequest, *sharing.ListProviderSharesResponse, sharing.ProviderShare]); ok {
+	var r0 listing.Iterator[sharing.ProviderShare]
+	if rf, ok := ret.Get(0).(func(context.Context, sharing.ListSharesRequest) listing.Iterator[sharing.ProviderShare]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[sharing.ListSharesRequest, *sharing.ListProviderSharesResponse, sharing.ProviderShare])
+			r0 = ret.Get(0).(listing.Iterator[sharing.ProviderShare])
 		}
 	}
 
@@ -489,12 +489,12 @@ func (_c *MockProvidersInterface_ListShares_Call) Run(run func(ctx context.Conte
 	return _c
 }
 
-func (_c *MockProvidersInterface_ListShares_Call) Return(_a0 *listing.PaginatingIterator[sharing.ListSharesRequest, *sharing.ListProviderSharesResponse, sharing.ProviderShare]) *MockProvidersInterface_ListShares_Call {
+func (_c *MockProvidersInterface_ListShares_Call) Return(_a0 listing.Iterator[sharing.ProviderShare]) *MockProvidersInterface_ListShares_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockProvidersInterface_ListShares_Call) RunAndReturn(run func(context.Context, sharing.ListSharesRequest) *listing.PaginatingIterator[sharing.ListSharesRequest, *sharing.ListProviderSharesResponse, sharing.ProviderShare]) *MockProvidersInterface_ListShares_Call {
+func (_c *MockProvidersInterface_ListShares_Call) RunAndReturn(run func(context.Context, sharing.ListSharesRequest) listing.Iterator[sharing.ProviderShare]) *MockProvidersInterface_ListShares_Call {
 	_c.Call.Return(run)
 	return _c
 }

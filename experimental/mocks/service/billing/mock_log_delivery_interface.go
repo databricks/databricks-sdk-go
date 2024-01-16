@@ -309,19 +309,19 @@ func (_c *MockLogDeliveryInterface_Impl_Call) RunAndReturn(run func() billing.Lo
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockLogDeliveryInterface) List(ctx context.Context, request billing.ListLogDeliveryRequest) *listing.PaginatingIterator[billing.ListLogDeliveryRequest, *billing.WrappedLogDeliveryConfigurations, billing.LogDeliveryConfiguration] {
+func (_m *MockLogDeliveryInterface) List(ctx context.Context, request billing.ListLogDeliveryRequest) listing.Iterator[billing.LogDeliveryConfiguration] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[billing.ListLogDeliveryRequest, *billing.WrappedLogDeliveryConfigurations, billing.LogDeliveryConfiguration]
-	if rf, ok := ret.Get(0).(func(context.Context, billing.ListLogDeliveryRequest) *listing.PaginatingIterator[billing.ListLogDeliveryRequest, *billing.WrappedLogDeliveryConfigurations, billing.LogDeliveryConfiguration]); ok {
+	var r0 listing.Iterator[billing.LogDeliveryConfiguration]
+	if rf, ok := ret.Get(0).(func(context.Context, billing.ListLogDeliveryRequest) listing.Iterator[billing.LogDeliveryConfiguration]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[billing.ListLogDeliveryRequest, *billing.WrappedLogDeliveryConfigurations, billing.LogDeliveryConfiguration])
+			r0 = ret.Get(0).(listing.Iterator[billing.LogDeliveryConfiguration])
 		}
 	}
 
@@ -347,12 +347,12 @@ func (_c *MockLogDeliveryInterface_List_Call) Run(run func(ctx context.Context, 
 	return _c
 }
 
-func (_c *MockLogDeliveryInterface_List_Call) Return(_a0 *listing.PaginatingIterator[billing.ListLogDeliveryRequest, *billing.WrappedLogDeliveryConfigurations, billing.LogDeliveryConfiguration]) *MockLogDeliveryInterface_List_Call {
+func (_c *MockLogDeliveryInterface_List_Call) Return(_a0 listing.Iterator[billing.LogDeliveryConfiguration]) *MockLogDeliveryInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockLogDeliveryInterface_List_Call) RunAndReturn(run func(context.Context, billing.ListLogDeliveryRequest) *listing.PaginatingIterator[billing.ListLogDeliveryRequest, *billing.WrappedLogDeliveryConfigurations, billing.LogDeliveryConfiguration]) *MockLogDeliveryInterface_List_Call {
+func (_c *MockLogDeliveryInterface_List_Call) RunAndReturn(run func(context.Context, billing.ListLogDeliveryRequest) listing.Iterator[billing.LogDeliveryConfiguration]) *MockLogDeliveryInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

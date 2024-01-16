@@ -686,19 +686,19 @@ func (_c *MockClusterPoliciesInterface_Impl_Call) RunAndReturn(run func() comput
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockClusterPoliciesInterface) List(ctx context.Context, request compute.ListClusterPoliciesRequest) *listing.PaginatingIterator[compute.ListClusterPoliciesRequest, *compute.ListPoliciesResponse, compute.Policy] {
+func (_m *MockClusterPoliciesInterface) List(ctx context.Context, request compute.ListClusterPoliciesRequest) listing.Iterator[compute.Policy] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[compute.ListClusterPoliciesRequest, *compute.ListPoliciesResponse, compute.Policy]
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ListClusterPoliciesRequest) *listing.PaginatingIterator[compute.ListClusterPoliciesRequest, *compute.ListPoliciesResponse, compute.Policy]); ok {
+	var r0 listing.Iterator[compute.Policy]
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ListClusterPoliciesRequest) listing.Iterator[compute.Policy]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[compute.ListClusterPoliciesRequest, *compute.ListPoliciesResponse, compute.Policy])
+			r0 = ret.Get(0).(listing.Iterator[compute.Policy])
 		}
 	}
 
@@ -724,12 +724,12 @@ func (_c *MockClusterPoliciesInterface_List_Call) Run(run func(ctx context.Conte
 	return _c
 }
 
-func (_c *MockClusterPoliciesInterface_List_Call) Return(_a0 *listing.PaginatingIterator[compute.ListClusterPoliciesRequest, *compute.ListPoliciesResponse, compute.Policy]) *MockClusterPoliciesInterface_List_Call {
+func (_c *MockClusterPoliciesInterface_List_Call) Return(_a0 listing.Iterator[compute.Policy]) *MockClusterPoliciesInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockClusterPoliciesInterface_List_Call) RunAndReturn(run func(context.Context, compute.ListClusterPoliciesRequest) *listing.PaginatingIterator[compute.ListClusterPoliciesRequest, *compute.ListPoliciesResponse, compute.Policy]) *MockClusterPoliciesInterface_List_Call {
+func (_c *MockClusterPoliciesInterface_List_Call) RunAndReturn(run func(context.Context, compute.ListClusterPoliciesRequest) listing.Iterator[compute.Policy]) *MockClusterPoliciesInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

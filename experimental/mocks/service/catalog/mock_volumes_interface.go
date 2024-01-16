@@ -285,19 +285,19 @@ func (_c *MockVolumesInterface_Impl_Call) RunAndReturn(run func() catalog.Volume
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockVolumesInterface) List(ctx context.Context, request catalog.ListVolumesRequest) *listing.PaginatingIterator[catalog.ListVolumesRequest, *catalog.ListVolumesResponseContent, catalog.VolumeInfo] {
+func (_m *MockVolumesInterface) List(ctx context.Context, request catalog.ListVolumesRequest) listing.Iterator[catalog.VolumeInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[catalog.ListVolumesRequest, *catalog.ListVolumesResponseContent, catalog.VolumeInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListVolumesRequest) *listing.PaginatingIterator[catalog.ListVolumesRequest, *catalog.ListVolumesResponseContent, catalog.VolumeInfo]); ok {
+	var r0 listing.Iterator[catalog.VolumeInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListVolumesRequest) listing.Iterator[catalog.VolumeInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[catalog.ListVolumesRequest, *catalog.ListVolumesResponseContent, catalog.VolumeInfo])
+			r0 = ret.Get(0).(listing.Iterator[catalog.VolumeInfo])
 		}
 	}
 
@@ -323,12 +323,12 @@ func (_c *MockVolumesInterface_List_Call) Run(run func(ctx context.Context, requ
 	return _c
 }
 
-func (_c *MockVolumesInterface_List_Call) Return(_a0 *listing.PaginatingIterator[catalog.ListVolumesRequest, *catalog.ListVolumesResponseContent, catalog.VolumeInfo]) *MockVolumesInterface_List_Call {
+func (_c *MockVolumesInterface_List_Call) Return(_a0 listing.Iterator[catalog.VolumeInfo]) *MockVolumesInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockVolumesInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListVolumesRequest) *listing.PaginatingIterator[catalog.ListVolumesRequest, *catalog.ListVolumesResponseContent, catalog.VolumeInfo]) *MockVolumesInterface_List_Call {
+func (_c *MockVolumesInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListVolumesRequest) listing.Iterator[catalog.VolumeInfo]) *MockVolumesInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

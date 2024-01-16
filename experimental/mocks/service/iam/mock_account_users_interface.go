@@ -402,19 +402,19 @@ func (_c *MockAccountUsersInterface_Impl_Call) RunAndReturn(run func() iam.Accou
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockAccountUsersInterface) List(ctx context.Context, request iam.ListAccountUsersRequest) *listing.DeduplicatingIterator[iam.User, string] {
+func (_m *MockAccountUsersInterface) List(ctx context.Context, request iam.ListAccountUsersRequest) listing.Iterator[iam.User] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.DeduplicatingIterator[iam.User, string]
-	if rf, ok := ret.Get(0).(func(context.Context, iam.ListAccountUsersRequest) *listing.DeduplicatingIterator[iam.User, string]); ok {
+	var r0 listing.Iterator[iam.User]
+	if rf, ok := ret.Get(0).(func(context.Context, iam.ListAccountUsersRequest) listing.Iterator[iam.User]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.DeduplicatingIterator[iam.User, string])
+			r0 = ret.Get(0).(listing.Iterator[iam.User])
 		}
 	}
 
@@ -440,12 +440,12 @@ func (_c *MockAccountUsersInterface_List_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockAccountUsersInterface_List_Call) Return(_a0 *listing.DeduplicatingIterator[iam.User, string]) *MockAccountUsersInterface_List_Call {
+func (_c *MockAccountUsersInterface_List_Call) Return(_a0 listing.Iterator[iam.User]) *MockAccountUsersInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockAccountUsersInterface_List_Call) RunAndReturn(run func(context.Context, iam.ListAccountUsersRequest) *listing.DeduplicatingIterator[iam.User, string]) *MockAccountUsersInterface_List_Call {
+func (_c *MockAccountUsersInterface_List_Call) RunAndReturn(run func(context.Context, iam.ListAccountUsersRequest) listing.Iterator[iam.User]) *MockAccountUsersInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

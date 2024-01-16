@@ -437,19 +437,19 @@ func (_c *MockDbfsInterface_Impl_Call) RunAndReturn(run func() files.DbfsService
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockDbfsInterface) List(ctx context.Context, request files.ListDbfsRequest) *listing.PaginatingIterator[files.ListDbfsRequest, *files.ListStatusResponse, files.FileInfo] {
+func (_m *MockDbfsInterface) List(ctx context.Context, request files.ListDbfsRequest) listing.Iterator[files.FileInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[files.ListDbfsRequest, *files.ListStatusResponse, files.FileInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, files.ListDbfsRequest) *listing.PaginatingIterator[files.ListDbfsRequest, *files.ListStatusResponse, files.FileInfo]); ok {
+	var r0 listing.Iterator[files.FileInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, files.ListDbfsRequest) listing.Iterator[files.FileInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[files.ListDbfsRequest, *files.ListStatusResponse, files.FileInfo])
+			r0 = ret.Get(0).(listing.Iterator[files.FileInfo])
 		}
 	}
 
@@ -475,12 +475,12 @@ func (_c *MockDbfsInterface_List_Call) Run(run func(ctx context.Context, request
 	return _c
 }
 
-func (_c *MockDbfsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[files.ListDbfsRequest, *files.ListStatusResponse, files.FileInfo]) *MockDbfsInterface_List_Call {
+func (_c *MockDbfsInterface_List_Call) Return(_a0 listing.Iterator[files.FileInfo]) *MockDbfsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockDbfsInterface_List_Call) RunAndReturn(run func(context.Context, files.ListDbfsRequest) *listing.PaginatingIterator[files.ListDbfsRequest, *files.ListStatusResponse, files.FileInfo]) *MockDbfsInterface_List_Call {
+func (_c *MockDbfsInterface_List_Call) RunAndReturn(run func(context.Context, files.ListDbfsRequest) listing.Iterator[files.FileInfo]) *MockDbfsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

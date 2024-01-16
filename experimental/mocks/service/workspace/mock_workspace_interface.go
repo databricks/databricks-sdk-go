@@ -715,19 +715,19 @@ func (_c *MockWorkspaceInterface_Import_Call) RunAndReturn(run func(context.Cont
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceInterface) List(ctx context.Context, request workspace.ListWorkspaceRequest) *listing.PaginatingIterator[workspace.ListWorkspaceRequest, *workspace.ListResponse, workspace.ObjectInfo] {
+func (_m *MockWorkspaceInterface) List(ctx context.Context, request workspace.ListWorkspaceRequest) listing.Iterator[workspace.ObjectInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[workspace.ListWorkspaceRequest, *workspace.ListResponse, workspace.ObjectInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListWorkspaceRequest) *listing.PaginatingIterator[workspace.ListWorkspaceRequest, *workspace.ListResponse, workspace.ObjectInfo]); ok {
+	var r0 listing.Iterator[workspace.ObjectInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListWorkspaceRequest) listing.Iterator[workspace.ObjectInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[workspace.ListWorkspaceRequest, *workspace.ListResponse, workspace.ObjectInfo])
+			r0 = ret.Get(0).(listing.Iterator[workspace.ObjectInfo])
 		}
 	}
 
@@ -753,12 +753,12 @@ func (_c *MockWorkspaceInterface_List_Call) Run(run func(ctx context.Context, re
 	return _c
 }
 
-func (_c *MockWorkspaceInterface_List_Call) Return(_a0 *listing.PaginatingIterator[workspace.ListWorkspaceRequest, *workspace.ListResponse, workspace.ObjectInfo]) *MockWorkspaceInterface_List_Call {
+func (_c *MockWorkspaceInterface_List_Call) Return(_a0 listing.Iterator[workspace.ObjectInfo]) *MockWorkspaceInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockWorkspaceInterface_List_Call) RunAndReturn(run func(context.Context, workspace.ListWorkspaceRequest) *listing.PaginatingIterator[workspace.ListWorkspaceRequest, *workspace.ListResponse, workspace.ObjectInfo]) *MockWorkspaceInterface_List_Call {
+func (_c *MockWorkspaceInterface_List_Call) RunAndReturn(run func(context.Context, workspace.ListWorkspaceRequest) listing.Iterator[workspace.ObjectInfo]) *MockWorkspaceInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

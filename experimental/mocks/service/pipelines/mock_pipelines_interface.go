@@ -761,19 +761,19 @@ func (_c *MockPipelinesInterface_Impl_Call) RunAndReturn(run func() pipelines.Pi
 }
 
 // ListPipelineEvents provides a mock function with given fields: ctx, request
-func (_m *MockPipelinesInterface) ListPipelineEvents(ctx context.Context, request pipelines.ListPipelineEventsRequest) *listing.PaginatingIterator[pipelines.ListPipelineEventsRequest, *pipelines.ListPipelineEventsResponse, pipelines.PipelineEvent] {
+func (_m *MockPipelinesInterface) ListPipelineEvents(ctx context.Context, request pipelines.ListPipelineEventsRequest) listing.Iterator[pipelines.PipelineEvent] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListPipelineEvents")
 	}
 
-	var r0 *listing.PaginatingIterator[pipelines.ListPipelineEventsRequest, *pipelines.ListPipelineEventsResponse, pipelines.PipelineEvent]
-	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ListPipelineEventsRequest) *listing.PaginatingIterator[pipelines.ListPipelineEventsRequest, *pipelines.ListPipelineEventsResponse, pipelines.PipelineEvent]); ok {
+	var r0 listing.Iterator[pipelines.PipelineEvent]
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ListPipelineEventsRequest) listing.Iterator[pipelines.PipelineEvent]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[pipelines.ListPipelineEventsRequest, *pipelines.ListPipelineEventsResponse, pipelines.PipelineEvent])
+			r0 = ret.Get(0).(listing.Iterator[pipelines.PipelineEvent])
 		}
 	}
 
@@ -799,12 +799,12 @@ func (_c *MockPipelinesInterface_ListPipelineEvents_Call) Run(run func(ctx conte
 	return _c
 }
 
-func (_c *MockPipelinesInterface_ListPipelineEvents_Call) Return(_a0 *listing.PaginatingIterator[pipelines.ListPipelineEventsRequest, *pipelines.ListPipelineEventsResponse, pipelines.PipelineEvent]) *MockPipelinesInterface_ListPipelineEvents_Call {
+func (_c *MockPipelinesInterface_ListPipelineEvents_Call) Return(_a0 listing.Iterator[pipelines.PipelineEvent]) *MockPipelinesInterface_ListPipelineEvents_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockPipelinesInterface_ListPipelineEvents_Call) RunAndReturn(run func(context.Context, pipelines.ListPipelineEventsRequest) *listing.PaginatingIterator[pipelines.ListPipelineEventsRequest, *pipelines.ListPipelineEventsResponse, pipelines.PipelineEvent]) *MockPipelinesInterface_ListPipelineEvents_Call {
+func (_c *MockPipelinesInterface_ListPipelineEvents_Call) RunAndReturn(run func(context.Context, pipelines.ListPipelineEventsRequest) listing.Iterator[pipelines.PipelineEvent]) *MockPipelinesInterface_ListPipelineEvents_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -928,19 +928,19 @@ func (_c *MockPipelinesInterface_ListPipelineEventsByPipelineId_Call) RunAndRetu
 }
 
 // ListPipelines provides a mock function with given fields: ctx, request
-func (_m *MockPipelinesInterface) ListPipelines(ctx context.Context, request pipelines.ListPipelinesRequest) *listing.PaginatingIterator[pipelines.ListPipelinesRequest, *pipelines.ListPipelinesResponse, pipelines.PipelineStateInfo] {
+func (_m *MockPipelinesInterface) ListPipelines(ctx context.Context, request pipelines.ListPipelinesRequest) listing.Iterator[pipelines.PipelineStateInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListPipelines")
 	}
 
-	var r0 *listing.PaginatingIterator[pipelines.ListPipelinesRequest, *pipelines.ListPipelinesResponse, pipelines.PipelineStateInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ListPipelinesRequest) *listing.PaginatingIterator[pipelines.ListPipelinesRequest, *pipelines.ListPipelinesResponse, pipelines.PipelineStateInfo]); ok {
+	var r0 listing.Iterator[pipelines.PipelineStateInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ListPipelinesRequest) listing.Iterator[pipelines.PipelineStateInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[pipelines.ListPipelinesRequest, *pipelines.ListPipelinesResponse, pipelines.PipelineStateInfo])
+			r0 = ret.Get(0).(listing.Iterator[pipelines.PipelineStateInfo])
 		}
 	}
 
@@ -966,12 +966,12 @@ func (_c *MockPipelinesInterface_ListPipelines_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockPipelinesInterface_ListPipelines_Call) Return(_a0 *listing.PaginatingIterator[pipelines.ListPipelinesRequest, *pipelines.ListPipelinesResponse, pipelines.PipelineStateInfo]) *MockPipelinesInterface_ListPipelines_Call {
+func (_c *MockPipelinesInterface_ListPipelines_Call) Return(_a0 listing.Iterator[pipelines.PipelineStateInfo]) *MockPipelinesInterface_ListPipelines_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockPipelinesInterface_ListPipelines_Call) RunAndReturn(run func(context.Context, pipelines.ListPipelinesRequest) *listing.PaginatingIterator[pipelines.ListPipelinesRequest, *pipelines.ListPipelinesResponse, pipelines.PipelineStateInfo]) *MockPipelinesInterface_ListPipelines_Call {
+func (_c *MockPipelinesInterface_ListPipelines_Call) RunAndReturn(run func(context.Context, pipelines.ListPipelinesRequest) listing.Iterator[pipelines.PipelineStateInfo]) *MockPipelinesInterface_ListPipelines_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1213,23 +1213,23 @@ func (_c *MockPipelinesInterface_PipelineStateInfoNameToPipelineIdMap_Call) RunA
 }
 
 // Reset provides a mock function with given fields: ctx, resetRequest
-func (_m *MockPipelinesInterface) Reset(ctx context.Context, resetRequest pipelines.ResetRequest) (*pipelines.WaitGetPipelineRunning[interface{}], error) {
+func (_m *MockPipelinesInterface) Reset(ctx context.Context, resetRequest pipelines.ResetRequest) (*pipelines.WaitGetPipelineRunning[struct{}], error) {
 	ret := _m.Called(ctx, resetRequest)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Reset")
 	}
 
-	var r0 *pipelines.WaitGetPipelineRunning[interface{}]
+	var r0 *pipelines.WaitGetPipelineRunning[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ResetRequest) (*pipelines.WaitGetPipelineRunning[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ResetRequest) (*pipelines.WaitGetPipelineRunning[struct{}], error)); ok {
 		return rf(ctx, resetRequest)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ResetRequest) *pipelines.WaitGetPipelineRunning[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ResetRequest) *pipelines.WaitGetPipelineRunning[struct{}]); ok {
 		r0 = rf(ctx, resetRequest)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pipelines.WaitGetPipelineRunning[interface{}])
+			r0 = ret.Get(0).(*pipelines.WaitGetPipelineRunning[struct{}])
 		}
 	}
 
@@ -1261,12 +1261,12 @@ func (_c *MockPipelinesInterface_Reset_Call) Run(run func(ctx context.Context, r
 	return _c
 }
 
-func (_c *MockPipelinesInterface_Reset_Call) Return(_a0 *pipelines.WaitGetPipelineRunning[interface{}], _a1 error) *MockPipelinesInterface_Reset_Call {
+func (_c *MockPipelinesInterface_Reset_Call) Return(_a0 *pipelines.WaitGetPipelineRunning[struct{}], _a1 error) *MockPipelinesInterface_Reset_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockPipelinesInterface_Reset_Call) RunAndReturn(run func(context.Context, pipelines.ResetRequest) (*pipelines.WaitGetPipelineRunning[interface{}], error)) *MockPipelinesInterface_Reset_Call {
+func (_c *MockPipelinesInterface_Reset_Call) RunAndReturn(run func(context.Context, pipelines.ResetRequest) (*pipelines.WaitGetPipelineRunning[struct{}], error)) *MockPipelinesInterface_Reset_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1464,23 +1464,23 @@ func (_c *MockPipelinesInterface_StartUpdate_Call) RunAndReturn(run func(context
 }
 
 // Stop provides a mock function with given fields: ctx, stopRequest
-func (_m *MockPipelinesInterface) Stop(ctx context.Context, stopRequest pipelines.StopRequest) (*pipelines.WaitGetPipelineIdle[interface{}], error) {
+func (_m *MockPipelinesInterface) Stop(ctx context.Context, stopRequest pipelines.StopRequest) (*pipelines.WaitGetPipelineIdle[struct{}], error) {
 	ret := _m.Called(ctx, stopRequest)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Stop")
 	}
 
-	var r0 *pipelines.WaitGetPipelineIdle[interface{}]
+	var r0 *pipelines.WaitGetPipelineIdle[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, pipelines.StopRequest) (*pipelines.WaitGetPipelineIdle[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.StopRequest) (*pipelines.WaitGetPipelineIdle[struct{}], error)); ok {
 		return rf(ctx, stopRequest)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, pipelines.StopRequest) *pipelines.WaitGetPipelineIdle[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.StopRequest) *pipelines.WaitGetPipelineIdle[struct{}]); ok {
 		r0 = rf(ctx, stopRequest)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pipelines.WaitGetPipelineIdle[interface{}])
+			r0 = ret.Get(0).(*pipelines.WaitGetPipelineIdle[struct{}])
 		}
 	}
 
@@ -1512,12 +1512,12 @@ func (_c *MockPipelinesInterface_Stop_Call) Run(run func(ctx context.Context, st
 	return _c
 }
 
-func (_c *MockPipelinesInterface_Stop_Call) Return(_a0 *pipelines.WaitGetPipelineIdle[interface{}], _a1 error) *MockPipelinesInterface_Stop_Call {
+func (_c *MockPipelinesInterface_Stop_Call) Return(_a0 *pipelines.WaitGetPipelineIdle[struct{}], _a1 error) *MockPipelinesInterface_Stop_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockPipelinesInterface_Stop_Call) RunAndReturn(run func(context.Context, pipelines.StopRequest) (*pipelines.WaitGetPipelineIdle[interface{}], error)) *MockPipelinesInterface_Stop_Call {
+func (_c *MockPipelinesInterface_Stop_Call) RunAndReturn(run func(context.Context, pipelines.StopRequest) (*pipelines.WaitGetPipelineIdle[struct{}], error)) *MockPipelinesInterface_Stop_Call {
 	_c.Call.Return(run)
 	return _c
 }

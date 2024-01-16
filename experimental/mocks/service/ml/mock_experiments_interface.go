@@ -461,19 +461,19 @@ func (_c *MockExperimentsInterface_GetExperiment_Call) RunAndReturn(run func(con
 }
 
 // GetHistory provides a mock function with given fields: ctx, request
-func (_m *MockExperimentsInterface) GetHistory(ctx context.Context, request ml.GetHistoryRequest) *listing.PaginatingIterator[ml.GetHistoryRequest, *ml.GetMetricHistoryResponse, ml.Metric] {
+func (_m *MockExperimentsInterface) GetHistory(ctx context.Context, request ml.GetHistoryRequest) listing.Iterator[ml.Metric] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetHistory")
 	}
 
-	var r0 *listing.PaginatingIterator[ml.GetHistoryRequest, *ml.GetMetricHistoryResponse, ml.Metric]
-	if rf, ok := ret.Get(0).(func(context.Context, ml.GetHistoryRequest) *listing.PaginatingIterator[ml.GetHistoryRequest, *ml.GetMetricHistoryResponse, ml.Metric]); ok {
+	var r0 listing.Iterator[ml.Metric]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetHistoryRequest) listing.Iterator[ml.Metric]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[ml.GetHistoryRequest, *ml.GetMetricHistoryResponse, ml.Metric])
+			r0 = ret.Get(0).(listing.Iterator[ml.Metric])
 		}
 	}
 
@@ -499,12 +499,12 @@ func (_c *MockExperimentsInterface_GetHistory_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockExperimentsInterface_GetHistory_Call) Return(_a0 *listing.PaginatingIterator[ml.GetHistoryRequest, *ml.GetMetricHistoryResponse, ml.Metric]) *MockExperimentsInterface_GetHistory_Call {
+func (_c *MockExperimentsInterface_GetHistory_Call) Return(_a0 listing.Iterator[ml.Metric]) *MockExperimentsInterface_GetHistory_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockExperimentsInterface_GetHistory_Call) RunAndReturn(run func(context.Context, ml.GetHistoryRequest) *listing.PaginatingIterator[ml.GetHistoryRequest, *ml.GetMetricHistoryResponse, ml.Metric]) *MockExperimentsInterface_GetHistory_Call {
+func (_c *MockExperimentsInterface_GetHistory_Call) RunAndReturn(run func(context.Context, ml.GetHistoryRequest) listing.Iterator[ml.Metric]) *MockExperimentsInterface_GetHistory_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -911,19 +911,19 @@ func (_c *MockExperimentsInterface_Impl_Call) RunAndReturn(run func() ml.Experim
 }
 
 // ListArtifacts provides a mock function with given fields: ctx, request
-func (_m *MockExperimentsInterface) ListArtifacts(ctx context.Context, request ml.ListArtifactsRequest) *listing.PaginatingIterator[ml.ListArtifactsRequest, *ml.ListArtifactsResponse, ml.FileInfo] {
+func (_m *MockExperimentsInterface) ListArtifacts(ctx context.Context, request ml.ListArtifactsRequest) listing.Iterator[ml.FileInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListArtifacts")
 	}
 
-	var r0 *listing.PaginatingIterator[ml.ListArtifactsRequest, *ml.ListArtifactsResponse, ml.FileInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, ml.ListArtifactsRequest) *listing.PaginatingIterator[ml.ListArtifactsRequest, *ml.ListArtifactsResponse, ml.FileInfo]); ok {
+	var r0 listing.Iterator[ml.FileInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListArtifactsRequest) listing.Iterator[ml.FileInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[ml.ListArtifactsRequest, *ml.ListArtifactsResponse, ml.FileInfo])
+			r0 = ret.Get(0).(listing.Iterator[ml.FileInfo])
 		}
 	}
 
@@ -949,12 +949,12 @@ func (_c *MockExperimentsInterface_ListArtifacts_Call) Run(run func(ctx context.
 	return _c
 }
 
-func (_c *MockExperimentsInterface_ListArtifacts_Call) Return(_a0 *listing.PaginatingIterator[ml.ListArtifactsRequest, *ml.ListArtifactsResponse, ml.FileInfo]) *MockExperimentsInterface_ListArtifacts_Call {
+func (_c *MockExperimentsInterface_ListArtifacts_Call) Return(_a0 listing.Iterator[ml.FileInfo]) *MockExperimentsInterface_ListArtifacts_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockExperimentsInterface_ListArtifacts_Call) RunAndReturn(run func(context.Context, ml.ListArtifactsRequest) *listing.PaginatingIterator[ml.ListArtifactsRequest, *ml.ListArtifactsResponse, ml.FileInfo]) *MockExperimentsInterface_ListArtifacts_Call {
+func (_c *MockExperimentsInterface_ListArtifacts_Call) RunAndReturn(run func(context.Context, ml.ListArtifactsRequest) listing.Iterator[ml.FileInfo]) *MockExperimentsInterface_ListArtifacts_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1019,19 +1019,19 @@ func (_c *MockExperimentsInterface_ListArtifactsAll_Call) RunAndReturn(run func(
 }
 
 // ListExperiments provides a mock function with given fields: ctx, request
-func (_m *MockExperimentsInterface) ListExperiments(ctx context.Context, request ml.ListExperimentsRequest) *listing.PaginatingIterator[ml.ListExperimentsRequest, *ml.ListExperimentsResponse, ml.Experiment] {
+func (_m *MockExperimentsInterface) ListExperiments(ctx context.Context, request ml.ListExperimentsRequest) listing.Iterator[ml.Experiment] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListExperiments")
 	}
 
-	var r0 *listing.PaginatingIterator[ml.ListExperimentsRequest, *ml.ListExperimentsResponse, ml.Experiment]
-	if rf, ok := ret.Get(0).(func(context.Context, ml.ListExperimentsRequest) *listing.PaginatingIterator[ml.ListExperimentsRequest, *ml.ListExperimentsResponse, ml.Experiment]); ok {
+	var r0 listing.Iterator[ml.Experiment]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListExperimentsRequest) listing.Iterator[ml.Experiment]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[ml.ListExperimentsRequest, *ml.ListExperimentsResponse, ml.Experiment])
+			r0 = ret.Get(0).(listing.Iterator[ml.Experiment])
 		}
 	}
 
@@ -1057,12 +1057,12 @@ func (_c *MockExperimentsInterface_ListExperiments_Call) Run(run func(ctx contex
 	return _c
 }
 
-func (_c *MockExperimentsInterface_ListExperiments_Call) Return(_a0 *listing.PaginatingIterator[ml.ListExperimentsRequest, *ml.ListExperimentsResponse, ml.Experiment]) *MockExperimentsInterface_ListExperiments_Call {
+func (_c *MockExperimentsInterface_ListExperiments_Call) Return(_a0 listing.Iterator[ml.Experiment]) *MockExperimentsInterface_ListExperiments_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockExperimentsInterface_ListExperiments_Call) RunAndReturn(run func(context.Context, ml.ListExperimentsRequest) *listing.PaginatingIterator[ml.ListExperimentsRequest, *ml.ListExperimentsResponse, ml.Experiment]) *MockExperimentsInterface_ListExperiments_Call {
+func (_c *MockExperimentsInterface_ListExperiments_Call) RunAndReturn(run func(context.Context, ml.ListExperimentsRequest) listing.Iterator[ml.Experiment]) *MockExperimentsInterface_ListExperiments_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1515,19 +1515,19 @@ func (_c *MockExperimentsInterface_RestoreRuns_Call) RunAndReturn(run func(conte
 }
 
 // SearchExperiments provides a mock function with given fields: ctx, request
-func (_m *MockExperimentsInterface) SearchExperiments(ctx context.Context, request ml.SearchExperiments) *listing.PaginatingIterator[ml.SearchExperiments, *ml.SearchExperimentsResponse, ml.Experiment] {
+func (_m *MockExperimentsInterface) SearchExperiments(ctx context.Context, request ml.SearchExperiments) listing.Iterator[ml.Experiment] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SearchExperiments")
 	}
 
-	var r0 *listing.PaginatingIterator[ml.SearchExperiments, *ml.SearchExperimentsResponse, ml.Experiment]
-	if rf, ok := ret.Get(0).(func(context.Context, ml.SearchExperiments) *listing.PaginatingIterator[ml.SearchExperiments, *ml.SearchExperimentsResponse, ml.Experiment]); ok {
+	var r0 listing.Iterator[ml.Experiment]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.SearchExperiments) listing.Iterator[ml.Experiment]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[ml.SearchExperiments, *ml.SearchExperimentsResponse, ml.Experiment])
+			r0 = ret.Get(0).(listing.Iterator[ml.Experiment])
 		}
 	}
 
@@ -1553,12 +1553,12 @@ func (_c *MockExperimentsInterface_SearchExperiments_Call) Run(run func(ctx cont
 	return _c
 }
 
-func (_c *MockExperimentsInterface_SearchExperiments_Call) Return(_a0 *listing.PaginatingIterator[ml.SearchExperiments, *ml.SearchExperimentsResponse, ml.Experiment]) *MockExperimentsInterface_SearchExperiments_Call {
+func (_c *MockExperimentsInterface_SearchExperiments_Call) Return(_a0 listing.Iterator[ml.Experiment]) *MockExperimentsInterface_SearchExperiments_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockExperimentsInterface_SearchExperiments_Call) RunAndReturn(run func(context.Context, ml.SearchExperiments) *listing.PaginatingIterator[ml.SearchExperiments, *ml.SearchExperimentsResponse, ml.Experiment]) *MockExperimentsInterface_SearchExperiments_Call {
+func (_c *MockExperimentsInterface_SearchExperiments_Call) RunAndReturn(run func(context.Context, ml.SearchExperiments) listing.Iterator[ml.Experiment]) *MockExperimentsInterface_SearchExperiments_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1623,19 +1623,19 @@ func (_c *MockExperimentsInterface_SearchExperimentsAll_Call) RunAndReturn(run f
 }
 
 // SearchRuns provides a mock function with given fields: ctx, request
-func (_m *MockExperimentsInterface) SearchRuns(ctx context.Context, request ml.SearchRuns) *listing.PaginatingIterator[ml.SearchRuns, *ml.SearchRunsResponse, ml.Run] {
+func (_m *MockExperimentsInterface) SearchRuns(ctx context.Context, request ml.SearchRuns) listing.Iterator[ml.Run] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SearchRuns")
 	}
 
-	var r0 *listing.PaginatingIterator[ml.SearchRuns, *ml.SearchRunsResponse, ml.Run]
-	if rf, ok := ret.Get(0).(func(context.Context, ml.SearchRuns) *listing.PaginatingIterator[ml.SearchRuns, *ml.SearchRunsResponse, ml.Run]); ok {
+	var r0 listing.Iterator[ml.Run]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.SearchRuns) listing.Iterator[ml.Run]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[ml.SearchRuns, *ml.SearchRunsResponse, ml.Run])
+			r0 = ret.Get(0).(listing.Iterator[ml.Run])
 		}
 	}
 
@@ -1661,12 +1661,12 @@ func (_c *MockExperimentsInterface_SearchRuns_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockExperimentsInterface_SearchRuns_Call) Return(_a0 *listing.PaginatingIterator[ml.SearchRuns, *ml.SearchRunsResponse, ml.Run]) *MockExperimentsInterface_SearchRuns_Call {
+func (_c *MockExperimentsInterface_SearchRuns_Call) Return(_a0 listing.Iterator[ml.Run]) *MockExperimentsInterface_SearchRuns_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockExperimentsInterface_SearchRuns_Call) RunAndReturn(run func(context.Context, ml.SearchRuns) *listing.PaginatingIterator[ml.SearchRuns, *ml.SearchRunsResponse, ml.Run]) *MockExperimentsInterface_SearchRuns_Call {
+func (_c *MockExperimentsInterface_SearchRuns_Call) RunAndReturn(run func(context.Context, ml.SearchRuns) listing.Iterator[ml.Run]) *MockExperimentsInterface_SearchRuns_Call {
 	_c.Call.Return(run)
 	return _c
 }

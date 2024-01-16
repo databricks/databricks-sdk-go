@@ -402,19 +402,19 @@ func (_c *MockQueriesInterface_Impl_Call) RunAndReturn(run func() sql.QueriesSer
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockQueriesInterface) List(ctx context.Context, request sql.ListQueriesRequest) *listing.DeduplicatingIterator[sql.Query, string] {
+func (_m *MockQueriesInterface) List(ctx context.Context, request sql.ListQueriesRequest) listing.Iterator[sql.Query] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.DeduplicatingIterator[sql.Query, string]
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueriesRequest) *listing.DeduplicatingIterator[sql.Query, string]); ok {
+	var r0 listing.Iterator[sql.Query]
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueriesRequest) listing.Iterator[sql.Query]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.DeduplicatingIterator[sql.Query, string])
+			r0 = ret.Get(0).(listing.Iterator[sql.Query])
 		}
 	}
 
@@ -440,12 +440,12 @@ func (_c *MockQueriesInterface_List_Call) Run(run func(ctx context.Context, requ
 	return _c
 }
 
-func (_c *MockQueriesInterface_List_Call) Return(_a0 *listing.DeduplicatingIterator[sql.Query, string]) *MockQueriesInterface_List_Call {
+func (_c *MockQueriesInterface_List_Call) Return(_a0 listing.Iterator[sql.Query]) *MockQueriesInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockQueriesInterface_List_Call) RunAndReturn(run func(context.Context, sql.ListQueriesRequest) *listing.DeduplicatingIterator[sql.Query, string]) *MockQueriesInterface_List_Call {
+func (_c *MockQueriesInterface_List_Call) RunAndReturn(run func(context.Context, sql.ListQueriesRequest) listing.Iterator[sql.Query]) *MockQueriesInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

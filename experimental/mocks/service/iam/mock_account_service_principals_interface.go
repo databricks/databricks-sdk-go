@@ -402,19 +402,19 @@ func (_c *MockAccountServicePrincipalsInterface_Impl_Call) RunAndReturn(run func
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockAccountServicePrincipalsInterface) List(ctx context.Context, request iam.ListAccountServicePrincipalsRequest) *listing.DeduplicatingIterator[iam.ServicePrincipal, string] {
+func (_m *MockAccountServicePrincipalsInterface) List(ctx context.Context, request iam.ListAccountServicePrincipalsRequest) listing.Iterator[iam.ServicePrincipal] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.DeduplicatingIterator[iam.ServicePrincipal, string]
-	if rf, ok := ret.Get(0).(func(context.Context, iam.ListAccountServicePrincipalsRequest) *listing.DeduplicatingIterator[iam.ServicePrincipal, string]); ok {
+	var r0 listing.Iterator[iam.ServicePrincipal]
+	if rf, ok := ret.Get(0).(func(context.Context, iam.ListAccountServicePrincipalsRequest) listing.Iterator[iam.ServicePrincipal]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.DeduplicatingIterator[iam.ServicePrincipal, string])
+			r0 = ret.Get(0).(listing.Iterator[iam.ServicePrincipal])
 		}
 	}
 
@@ -440,12 +440,12 @@ func (_c *MockAccountServicePrincipalsInterface_List_Call) Run(run func(ctx cont
 	return _c
 }
 
-func (_c *MockAccountServicePrincipalsInterface_List_Call) Return(_a0 *listing.DeduplicatingIterator[iam.ServicePrincipal, string]) *MockAccountServicePrincipalsInterface_List_Call {
+func (_c *MockAccountServicePrincipalsInterface_List_Call) Return(_a0 listing.Iterator[iam.ServicePrincipal]) *MockAccountServicePrincipalsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockAccountServicePrincipalsInterface_List_Call) RunAndReturn(run func(context.Context, iam.ListAccountServicePrincipalsRequest) *listing.DeduplicatingIterator[iam.ServicePrincipal, string]) *MockAccountServicePrincipalsInterface_List_Call {
+func (_c *MockAccountServicePrincipalsInterface_List_Call) RunAndReturn(run func(context.Context, iam.ListAccountServicePrincipalsRequest) listing.Iterator[iam.ServicePrincipal]) *MockAccountServicePrincipalsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

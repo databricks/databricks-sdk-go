@@ -135,23 +135,23 @@ func (_c *MockJobsInterface_CancelAllRuns_Call) RunAndReturn(run func(context.Co
 }
 
 // CancelRun provides a mock function with given fields: ctx, cancelRun
-func (_m *MockJobsInterface) CancelRun(ctx context.Context, cancelRun jobs.CancelRun) (*jobs.WaitGetRunJobTerminatedOrSkipped[interface{}], error) {
+func (_m *MockJobsInterface) CancelRun(ctx context.Context, cancelRun jobs.CancelRun) (*jobs.WaitGetRunJobTerminatedOrSkipped[struct{}], error) {
 	ret := _m.Called(ctx, cancelRun)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CancelRun")
 	}
 
-	var r0 *jobs.WaitGetRunJobTerminatedOrSkipped[interface{}]
+	var r0 *jobs.WaitGetRunJobTerminatedOrSkipped[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, jobs.CancelRun) (*jobs.WaitGetRunJobTerminatedOrSkipped[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, jobs.CancelRun) (*jobs.WaitGetRunJobTerminatedOrSkipped[struct{}], error)); ok {
 		return rf(ctx, cancelRun)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, jobs.CancelRun) *jobs.WaitGetRunJobTerminatedOrSkipped[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, jobs.CancelRun) *jobs.WaitGetRunJobTerminatedOrSkipped[struct{}]); ok {
 		r0 = rf(ctx, cancelRun)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*jobs.WaitGetRunJobTerminatedOrSkipped[interface{}])
+			r0 = ret.Get(0).(*jobs.WaitGetRunJobTerminatedOrSkipped[struct{}])
 		}
 	}
 
@@ -183,12 +183,12 @@ func (_c *MockJobsInterface_CancelRun_Call) Run(run func(ctx context.Context, ca
 	return _c
 }
 
-func (_c *MockJobsInterface_CancelRun_Call) Return(_a0 *jobs.WaitGetRunJobTerminatedOrSkipped[interface{}], _a1 error) *MockJobsInterface_CancelRun_Call {
+func (_c *MockJobsInterface_CancelRun_Call) Return(_a0 *jobs.WaitGetRunJobTerminatedOrSkipped[struct{}], _a1 error) *MockJobsInterface_CancelRun_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockJobsInterface_CancelRun_Call) RunAndReturn(run func(context.Context, jobs.CancelRun) (*jobs.WaitGetRunJobTerminatedOrSkipped[interface{}], error)) *MockJobsInterface_CancelRun_Call {
+func (_c *MockJobsInterface_CancelRun_Call) RunAndReturn(run func(context.Context, jobs.CancelRun) (*jobs.WaitGetRunJobTerminatedOrSkipped[struct{}], error)) *MockJobsInterface_CancelRun_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1332,19 +1332,19 @@ func (_c *MockJobsInterface_Impl_Call) RunAndReturn(run func() jobs.JobsService)
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockJobsInterface) List(ctx context.Context, request jobs.ListJobsRequest) *listing.PaginatingIterator[jobs.ListJobsRequest, *jobs.ListJobsResponse, jobs.BaseJob] {
+func (_m *MockJobsInterface) List(ctx context.Context, request jobs.ListJobsRequest) listing.Iterator[jobs.BaseJob] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[jobs.ListJobsRequest, *jobs.ListJobsResponse, jobs.BaseJob]
-	if rf, ok := ret.Get(0).(func(context.Context, jobs.ListJobsRequest) *listing.PaginatingIterator[jobs.ListJobsRequest, *jobs.ListJobsResponse, jobs.BaseJob]); ok {
+	var r0 listing.Iterator[jobs.BaseJob]
+	if rf, ok := ret.Get(0).(func(context.Context, jobs.ListJobsRequest) listing.Iterator[jobs.BaseJob]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[jobs.ListJobsRequest, *jobs.ListJobsResponse, jobs.BaseJob])
+			r0 = ret.Get(0).(listing.Iterator[jobs.BaseJob])
 		}
 	}
 
@@ -1370,12 +1370,12 @@ func (_c *MockJobsInterface_List_Call) Run(run func(ctx context.Context, request
 	return _c
 }
 
-func (_c *MockJobsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[jobs.ListJobsRequest, *jobs.ListJobsResponse, jobs.BaseJob]) *MockJobsInterface_List_Call {
+func (_c *MockJobsInterface_List_Call) Return(_a0 listing.Iterator[jobs.BaseJob]) *MockJobsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockJobsInterface_List_Call) RunAndReturn(run func(context.Context, jobs.ListJobsRequest) *listing.PaginatingIterator[jobs.ListJobsRequest, *jobs.ListJobsResponse, jobs.BaseJob]) *MockJobsInterface_List_Call {
+func (_c *MockJobsInterface_List_Call) RunAndReturn(run func(context.Context, jobs.ListJobsRequest) listing.Iterator[jobs.BaseJob]) *MockJobsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1440,19 +1440,19 @@ func (_c *MockJobsInterface_ListAll_Call) RunAndReturn(run func(context.Context,
 }
 
 // ListRuns provides a mock function with given fields: ctx, request
-func (_m *MockJobsInterface) ListRuns(ctx context.Context, request jobs.ListRunsRequest) *listing.PaginatingIterator[jobs.ListRunsRequest, *jobs.ListRunsResponse, jobs.BaseRun] {
+func (_m *MockJobsInterface) ListRuns(ctx context.Context, request jobs.ListRunsRequest) listing.Iterator[jobs.BaseRun] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListRuns")
 	}
 
-	var r0 *listing.PaginatingIterator[jobs.ListRunsRequest, *jobs.ListRunsResponse, jobs.BaseRun]
-	if rf, ok := ret.Get(0).(func(context.Context, jobs.ListRunsRequest) *listing.PaginatingIterator[jobs.ListRunsRequest, *jobs.ListRunsResponse, jobs.BaseRun]); ok {
+	var r0 listing.Iterator[jobs.BaseRun]
+	if rf, ok := ret.Get(0).(func(context.Context, jobs.ListRunsRequest) listing.Iterator[jobs.BaseRun]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[jobs.ListRunsRequest, *jobs.ListRunsResponse, jobs.BaseRun])
+			r0 = ret.Get(0).(listing.Iterator[jobs.BaseRun])
 		}
 	}
 
@@ -1478,12 +1478,12 @@ func (_c *MockJobsInterface_ListRuns_Call) Run(run func(ctx context.Context, req
 	return _c
 }
 
-func (_c *MockJobsInterface_ListRuns_Call) Return(_a0 *listing.PaginatingIterator[jobs.ListRunsRequest, *jobs.ListRunsResponse, jobs.BaseRun]) *MockJobsInterface_ListRuns_Call {
+func (_c *MockJobsInterface_ListRuns_Call) Return(_a0 listing.Iterator[jobs.BaseRun]) *MockJobsInterface_ListRuns_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockJobsInterface_ListRuns_Call) RunAndReturn(run func(context.Context, jobs.ListRunsRequest) *listing.PaginatingIterator[jobs.ListRunsRequest, *jobs.ListRunsResponse, jobs.BaseRun]) *MockJobsInterface_ListRuns_Call {
+func (_c *MockJobsInterface_ListRuns_Call) RunAndReturn(run func(context.Context, jobs.ListRunsRequest) listing.Iterator[jobs.BaseRun]) *MockJobsInterface_ListRuns_Call {
 	_c.Call.Return(run)
 	return _c
 }

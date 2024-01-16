@@ -284,19 +284,19 @@ func (_c *MockTokensInterface_Impl_Call) RunAndReturn(run func() settings.Tokens
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockTokensInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo] {
+func (_m *MockTokensInterface) List(ctx context.Context) listing.Iterator[settings.PublicTokenInfo] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo]); ok {
+	var r0 listing.Iterator[settings.PublicTokenInfo]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[settings.PublicTokenInfo]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo])
+			r0 = ret.Get(0).(listing.Iterator[settings.PublicTokenInfo])
 		}
 	}
 
@@ -321,12 +321,12 @@ func (_c *MockTokensInterface_List_Call) Run(run func(ctx context.Context)) *Moc
 	return _c
 }
 
-func (_c *MockTokensInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo]) *MockTokensInterface_List_Call {
+func (_c *MockTokensInterface_List_Call) Return(_a0 listing.Iterator[settings.PublicTokenInfo]) *MockTokensInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockTokensInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *settings.ListPublicTokensResponse, settings.PublicTokenInfo]) *MockTokensInterface_List_Call {
+func (_c *MockTokensInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[settings.PublicTokenInfo]) *MockTokensInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

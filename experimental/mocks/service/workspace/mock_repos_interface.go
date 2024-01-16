@@ -638,19 +638,19 @@ func (_c *MockReposInterface_Impl_Call) RunAndReturn(run func() workspace.ReposS
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockReposInterface) List(ctx context.Context, request workspace.ListReposRequest) *listing.PaginatingIterator[workspace.ListReposRequest, *workspace.ListReposResponse, workspace.RepoInfo] {
+func (_m *MockReposInterface) List(ctx context.Context, request workspace.ListReposRequest) listing.Iterator[workspace.RepoInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[workspace.ListReposRequest, *workspace.ListReposResponse, workspace.RepoInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListReposRequest) *listing.PaginatingIterator[workspace.ListReposRequest, *workspace.ListReposResponse, workspace.RepoInfo]); ok {
+	var r0 listing.Iterator[workspace.RepoInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListReposRequest) listing.Iterator[workspace.RepoInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[workspace.ListReposRequest, *workspace.ListReposResponse, workspace.RepoInfo])
+			r0 = ret.Get(0).(listing.Iterator[workspace.RepoInfo])
 		}
 	}
 
@@ -676,12 +676,12 @@ func (_c *MockReposInterface_List_Call) Run(run func(ctx context.Context, reques
 	return _c
 }
 
-func (_c *MockReposInterface_List_Call) Return(_a0 *listing.PaginatingIterator[workspace.ListReposRequest, *workspace.ListReposResponse, workspace.RepoInfo]) *MockReposInterface_List_Call {
+func (_c *MockReposInterface_List_Call) Return(_a0 listing.Iterator[workspace.RepoInfo]) *MockReposInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockReposInterface_List_Call) RunAndReturn(run func(context.Context, workspace.ListReposRequest) *listing.PaginatingIterator[workspace.ListReposRequest, *workspace.ListReposResponse, workspace.RepoInfo]) *MockReposInterface_List_Call {
+func (_c *MockReposInterface_List_Call) RunAndReturn(run func(context.Context, workspace.ListReposRequest) listing.Iterator[workspace.RepoInfo]) *MockReposInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -28,23 +28,23 @@ func (_m *MockCommandExecutionInterface) EXPECT() *MockCommandExecutionInterface
 }
 
 // Cancel provides a mock function with given fields: ctx, cancelCommand
-func (_m *MockCommandExecutionInterface) Cancel(ctx context.Context, cancelCommand compute.CancelCommand) (*compute.WaitCommandStatusCommandExecutionCancelled[interface{}], error) {
+func (_m *MockCommandExecutionInterface) Cancel(ctx context.Context, cancelCommand compute.CancelCommand) (*compute.WaitCommandStatusCommandExecutionCancelled[struct{}], error) {
 	ret := _m.Called(ctx, cancelCommand)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Cancel")
 	}
 
-	var r0 *compute.WaitCommandStatusCommandExecutionCancelled[interface{}]
+	var r0 *compute.WaitCommandStatusCommandExecutionCancelled[struct{}]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, compute.CancelCommand) (*compute.WaitCommandStatusCommandExecutionCancelled[interface{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.CancelCommand) (*compute.WaitCommandStatusCommandExecutionCancelled[struct{}], error)); ok {
 		return rf(ctx, cancelCommand)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, compute.CancelCommand) *compute.WaitCommandStatusCommandExecutionCancelled[interface{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.CancelCommand) *compute.WaitCommandStatusCommandExecutionCancelled[struct{}]); ok {
 		r0 = rf(ctx, cancelCommand)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*compute.WaitCommandStatusCommandExecutionCancelled[interface{}])
+			r0 = ret.Get(0).(*compute.WaitCommandStatusCommandExecutionCancelled[struct{}])
 		}
 	}
 
@@ -76,12 +76,12 @@ func (_c *MockCommandExecutionInterface_Cancel_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockCommandExecutionInterface_Cancel_Call) Return(_a0 *compute.WaitCommandStatusCommandExecutionCancelled[interface{}], _a1 error) *MockCommandExecutionInterface_Cancel_Call {
+func (_c *MockCommandExecutionInterface_Cancel_Call) Return(_a0 *compute.WaitCommandStatusCommandExecutionCancelled[struct{}], _a1 error) *MockCommandExecutionInterface_Cancel_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockCommandExecutionInterface_Cancel_Call) RunAndReturn(run func(context.Context, compute.CancelCommand) (*compute.WaitCommandStatusCommandExecutionCancelled[interface{}], error)) *MockCommandExecutionInterface_Cancel_Call {
+func (_c *MockCommandExecutionInterface_Cancel_Call) RunAndReturn(run func(context.Context, compute.CancelCommand) (*compute.WaitCommandStatusCommandExecutionCancelled[struct{}], error)) *MockCommandExecutionInterface_Cancel_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -461,19 +461,19 @@ func (_c *MockGlobalInitScriptsInterface_Impl_Call) RunAndReturn(run func() comp
 }
 
 // List provides a mock function with given fields: ctx
-func (_m *MockGlobalInitScriptsInterface) List(ctx context.Context) *listing.PaginatingIterator[struct{}, *compute.ListGlobalInitScriptsResponse, compute.GlobalInitScriptDetails] {
+func (_m *MockGlobalInitScriptsInterface) List(ctx context.Context) listing.Iterator[compute.GlobalInitScriptDetails] {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[struct{}, *compute.ListGlobalInitScriptsResponse, compute.GlobalInitScriptDetails]
-	if rf, ok := ret.Get(0).(func(context.Context) *listing.PaginatingIterator[struct{}, *compute.ListGlobalInitScriptsResponse, compute.GlobalInitScriptDetails]); ok {
+	var r0 listing.Iterator[compute.GlobalInitScriptDetails]
+	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[compute.GlobalInitScriptDetails]); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[struct{}, *compute.ListGlobalInitScriptsResponse, compute.GlobalInitScriptDetails])
+			r0 = ret.Get(0).(listing.Iterator[compute.GlobalInitScriptDetails])
 		}
 	}
 
@@ -498,12 +498,12 @@ func (_c *MockGlobalInitScriptsInterface_List_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockGlobalInitScriptsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[struct{}, *compute.ListGlobalInitScriptsResponse, compute.GlobalInitScriptDetails]) *MockGlobalInitScriptsInterface_List_Call {
+func (_c *MockGlobalInitScriptsInterface_List_Call) Return(_a0 listing.Iterator[compute.GlobalInitScriptDetails]) *MockGlobalInitScriptsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockGlobalInitScriptsInterface_List_Call) RunAndReturn(run func(context.Context) *listing.PaginatingIterator[struct{}, *compute.ListGlobalInitScriptsResponse, compute.GlobalInitScriptDetails]) *MockGlobalInitScriptsInterface_List_Call {
+func (_c *MockGlobalInitScriptsInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[compute.GlobalInitScriptDetails]) *MockGlobalInitScriptsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

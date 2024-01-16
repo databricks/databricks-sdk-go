@@ -285,19 +285,19 @@ func (_c *MockWorkspaceAssignmentInterface_Impl_Call) RunAndReturn(run func() ia
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceAssignmentInterface) List(ctx context.Context, request iam.ListWorkspaceAssignmentRequest) *listing.PaginatingIterator[iam.ListWorkspaceAssignmentRequest, *iam.PermissionAssignments, iam.PermissionAssignment] {
+func (_m *MockWorkspaceAssignmentInterface) List(ctx context.Context, request iam.ListWorkspaceAssignmentRequest) listing.Iterator[iam.PermissionAssignment] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[iam.ListWorkspaceAssignmentRequest, *iam.PermissionAssignments, iam.PermissionAssignment]
-	if rf, ok := ret.Get(0).(func(context.Context, iam.ListWorkspaceAssignmentRequest) *listing.PaginatingIterator[iam.ListWorkspaceAssignmentRequest, *iam.PermissionAssignments, iam.PermissionAssignment]); ok {
+	var r0 listing.Iterator[iam.PermissionAssignment]
+	if rf, ok := ret.Get(0).(func(context.Context, iam.ListWorkspaceAssignmentRequest) listing.Iterator[iam.PermissionAssignment]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[iam.ListWorkspaceAssignmentRequest, *iam.PermissionAssignments, iam.PermissionAssignment])
+			r0 = ret.Get(0).(listing.Iterator[iam.PermissionAssignment])
 		}
 	}
 
@@ -323,12 +323,12 @@ func (_c *MockWorkspaceAssignmentInterface_List_Call) Run(run func(ctx context.C
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_List_Call) Return(_a0 *listing.PaginatingIterator[iam.ListWorkspaceAssignmentRequest, *iam.PermissionAssignments, iam.PermissionAssignment]) *MockWorkspaceAssignmentInterface_List_Call {
+func (_c *MockWorkspaceAssignmentInterface_List_Call) Return(_a0 listing.Iterator[iam.PermissionAssignment]) *MockWorkspaceAssignmentInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_List_Call) RunAndReturn(run func(context.Context, iam.ListWorkspaceAssignmentRequest) *listing.PaginatingIterator[iam.ListWorkspaceAssignmentRequest, *iam.PermissionAssignments, iam.PermissionAssignment]) *MockWorkspaceAssignmentInterface_List_Call {
+func (_c *MockWorkspaceAssignmentInterface_List_Call) RunAndReturn(run func(context.Context, iam.ListWorkspaceAssignmentRequest) listing.Iterator[iam.PermissionAssignment]) *MockWorkspaceAssignmentInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

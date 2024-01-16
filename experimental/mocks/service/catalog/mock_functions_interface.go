@@ -403,19 +403,19 @@ func (_c *MockFunctionsInterface_Impl_Call) RunAndReturn(run func() catalog.Func
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockFunctionsInterface) List(ctx context.Context, request catalog.ListFunctionsRequest) *listing.PaginatingIterator[catalog.ListFunctionsRequest, *catalog.ListFunctionsResponse, catalog.FunctionInfo] {
+func (_m *MockFunctionsInterface) List(ctx context.Context, request catalog.ListFunctionsRequest) listing.Iterator[catalog.FunctionInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[catalog.ListFunctionsRequest, *catalog.ListFunctionsResponse, catalog.FunctionInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListFunctionsRequest) *listing.PaginatingIterator[catalog.ListFunctionsRequest, *catalog.ListFunctionsResponse, catalog.FunctionInfo]); ok {
+	var r0 listing.Iterator[catalog.FunctionInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListFunctionsRequest) listing.Iterator[catalog.FunctionInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[catalog.ListFunctionsRequest, *catalog.ListFunctionsResponse, catalog.FunctionInfo])
+			r0 = ret.Get(0).(listing.Iterator[catalog.FunctionInfo])
 		}
 	}
 
@@ -441,12 +441,12 @@ func (_c *MockFunctionsInterface_List_Call) Run(run func(ctx context.Context, re
 	return _c
 }
 
-func (_c *MockFunctionsInterface_List_Call) Return(_a0 *listing.PaginatingIterator[catalog.ListFunctionsRequest, *catalog.ListFunctionsResponse, catalog.FunctionInfo]) *MockFunctionsInterface_List_Call {
+func (_c *MockFunctionsInterface_List_Call) Return(_a0 listing.Iterator[catalog.FunctionInfo]) *MockFunctionsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockFunctionsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListFunctionsRequest) *listing.PaginatingIterator[catalog.ListFunctionsRequest, *catalog.ListFunctionsResponse, catalog.FunctionInfo]) *MockFunctionsInterface_List_Call {
+func (_c *MockFunctionsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListFunctionsRequest) listing.Iterator[catalog.FunctionInfo]) *MockFunctionsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

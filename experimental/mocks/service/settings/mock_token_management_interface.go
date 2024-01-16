@@ -518,19 +518,19 @@ func (_c *MockTokenManagementInterface_Impl_Call) RunAndReturn(run func() settin
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockTokenManagementInterface) List(ctx context.Context, request settings.ListTokenManagementRequest) *listing.PaginatingIterator[settings.ListTokenManagementRequest, *settings.ListTokensResponse, settings.TokenInfo] {
+func (_m *MockTokenManagementInterface) List(ctx context.Context, request settings.ListTokenManagementRequest) listing.Iterator[settings.TokenInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[settings.ListTokenManagementRequest, *settings.ListTokensResponse, settings.TokenInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, settings.ListTokenManagementRequest) *listing.PaginatingIterator[settings.ListTokenManagementRequest, *settings.ListTokensResponse, settings.TokenInfo]); ok {
+	var r0 listing.Iterator[settings.TokenInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, settings.ListTokenManagementRequest) listing.Iterator[settings.TokenInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[settings.ListTokenManagementRequest, *settings.ListTokensResponse, settings.TokenInfo])
+			r0 = ret.Get(0).(listing.Iterator[settings.TokenInfo])
 		}
 	}
 
@@ -556,12 +556,12 @@ func (_c *MockTokenManagementInterface_List_Call) Run(run func(ctx context.Conte
 	return _c
 }
 
-func (_c *MockTokenManagementInterface_List_Call) Return(_a0 *listing.PaginatingIterator[settings.ListTokenManagementRequest, *settings.ListTokensResponse, settings.TokenInfo]) *MockTokenManagementInterface_List_Call {
+func (_c *MockTokenManagementInterface_List_Call) Return(_a0 listing.Iterator[settings.TokenInfo]) *MockTokenManagementInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockTokenManagementInterface_List_Call) RunAndReturn(run func(context.Context, settings.ListTokenManagementRequest) *listing.PaginatingIterator[settings.ListTokenManagementRequest, *settings.ListTokensResponse, settings.TokenInfo]) *MockTokenManagementInterface_List_Call {
+func (_c *MockTokenManagementInterface_List_Call) RunAndReturn(run func(context.Context, settings.ListTokenManagementRequest) listing.Iterator[settings.TokenInfo]) *MockTokenManagementInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

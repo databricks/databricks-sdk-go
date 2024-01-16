@@ -344,19 +344,19 @@ func (_c *MockTablesInterface_Impl_Call) RunAndReturn(run func() catalog.TablesS
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockTablesInterface) List(ctx context.Context, request catalog.ListTablesRequest) *listing.PaginatingIterator[catalog.ListTablesRequest, *catalog.ListTablesResponse, catalog.TableInfo] {
+func (_m *MockTablesInterface) List(ctx context.Context, request catalog.ListTablesRequest) listing.Iterator[catalog.TableInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *listing.PaginatingIterator[catalog.ListTablesRequest, *catalog.ListTablesResponse, catalog.TableInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListTablesRequest) *listing.PaginatingIterator[catalog.ListTablesRequest, *catalog.ListTablesResponse, catalog.TableInfo]); ok {
+	var r0 listing.Iterator[catalog.TableInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListTablesRequest) listing.Iterator[catalog.TableInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[catalog.ListTablesRequest, *catalog.ListTablesResponse, catalog.TableInfo])
+			r0 = ret.Get(0).(listing.Iterator[catalog.TableInfo])
 		}
 	}
 
@@ -382,12 +382,12 @@ func (_c *MockTablesInterface_List_Call) Run(run func(ctx context.Context, reque
 	return _c
 }
 
-func (_c *MockTablesInterface_List_Call) Return(_a0 *listing.PaginatingIterator[catalog.ListTablesRequest, *catalog.ListTablesResponse, catalog.TableInfo]) *MockTablesInterface_List_Call {
+func (_c *MockTablesInterface_List_Call) Return(_a0 listing.Iterator[catalog.TableInfo]) *MockTablesInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockTablesInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListTablesRequest) *listing.PaginatingIterator[catalog.ListTablesRequest, *catalog.ListTablesResponse, catalog.TableInfo]) *MockTablesInterface_List_Call {
+func (_c *MockTablesInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListTablesRequest) listing.Iterator[catalog.TableInfo]) *MockTablesInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -452,19 +452,19 @@ func (_c *MockTablesInterface_ListAll_Call) RunAndReturn(run func(context.Contex
 }
 
 // ListSummaries provides a mock function with given fields: ctx, request
-func (_m *MockTablesInterface) ListSummaries(ctx context.Context, request catalog.ListSummariesRequest) *listing.PaginatingIterator[catalog.ListSummariesRequest, *catalog.ListTableSummariesResponse, catalog.TableSummary] {
+func (_m *MockTablesInterface) ListSummaries(ctx context.Context, request catalog.ListSummariesRequest) listing.Iterator[catalog.TableSummary] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListSummaries")
 	}
 
-	var r0 *listing.PaginatingIterator[catalog.ListSummariesRequest, *catalog.ListTableSummariesResponse, catalog.TableSummary]
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListSummariesRequest) *listing.PaginatingIterator[catalog.ListSummariesRequest, *catalog.ListTableSummariesResponse, catalog.TableSummary]); ok {
+	var r0 listing.Iterator[catalog.TableSummary]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListSummariesRequest) listing.Iterator[catalog.TableSummary]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*listing.PaginatingIterator[catalog.ListSummariesRequest, *catalog.ListTableSummariesResponse, catalog.TableSummary])
+			r0 = ret.Get(0).(listing.Iterator[catalog.TableSummary])
 		}
 	}
 
@@ -490,12 +490,12 @@ func (_c *MockTablesInterface_ListSummaries_Call) Run(run func(ctx context.Conte
 	return _c
 }
 
-func (_c *MockTablesInterface_ListSummaries_Call) Return(_a0 *listing.PaginatingIterator[catalog.ListSummariesRequest, *catalog.ListTableSummariesResponse, catalog.TableSummary]) *MockTablesInterface_ListSummaries_Call {
+func (_c *MockTablesInterface_ListSummaries_Call) Return(_a0 listing.Iterator[catalog.TableSummary]) *MockTablesInterface_ListSummaries_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockTablesInterface_ListSummaries_Call) RunAndReturn(run func(context.Context, catalog.ListSummariesRequest) *listing.PaginatingIterator[catalog.ListSummariesRequest, *catalog.ListTableSummariesResponse, catalog.TableSummary]) *MockTablesInterface_ListSummaries_Call {
+func (_c *MockTablesInterface_ListSummaries_Call) RunAndReturn(run func(context.Context, catalog.ListSummariesRequest) listing.Iterator[catalog.TableSummary]) *MockTablesInterface_ListSummaries_Call {
 	_c.Call.Return(run)
 	return _c
 }
