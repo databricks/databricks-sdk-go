@@ -1,5 +1,10 @@
 # Version changelog
 
+## 0.29.1
+
+This patch release contains two small changes:
+* Retry on Status Code 503 ([#733](https://github.com/databricks/databricks-sdk-go/pull/733)), improving the stability of the SDK in light of transient API unavailability.
+* Simplify mocking of iterator and waiter objects ([#769](https://github.com/databricks/databricks-sdk-go/pull/769), [#770](https://github.com/databricks/databricks-sdk-go/pull/770)). See the [Testing section of the README.md](https://github.com/databricks/databricks-sdk-go#testing) for usage information and examples.
 ## 0.29.0
 
 * Extract API interfaces for all services and generate mock clients ([#740](https://github.com/databricks/databricks-sdk-go/pull/740)).
