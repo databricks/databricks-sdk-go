@@ -215,3 +215,37 @@ func TestDedupeIterator(t *testing.T) {
 		assert.ErrorIs(t, err, expectedErr)
 	})
 }
+
+func TestSliceIterator(t *testing.T) {
+	t.Run("basic iteration", func(t *testing.T) {
+		iterator := listing.SliceIterator[int]([]int{1, 2, 3, 4, 5})
+
+		for i := 1; i <= 5; i++ {
+			assert.True(t, iterator.HasNext(context.Background()))
+			item, err := iterator.Next(context.Background())
+			assert.NoError(t, err)
+			assert.Equal(t, i, item)
+		}
+
+		assert.False(t, iterator.HasNext(context.Background()))
+		_, err := iterator.Next(context.Background())
+		assert.ErrorIs(t, err, listing.ErrNoMoreItems)
+	})
+
+	t.Run("ToSlice returns all items", func(t *testing.T) {
+		iterator := listing.SliceIterator[int]([]int{1, 2, 3, 4, 5})
+
+		items, err := listing.ToSlice[int](context.Background(), &iterator)
+		assert.NoError(t, err)
+		assert.Equal(t, []int{1, 2, 3, 4, 5}, items)
+	})
+
+	t.Run("ToSliceN returns the first N items", func(t *testing.T) {
+		iterator := listing.SliceIterator[int]([]int{1, 2, 3, 4, 5})
+
+		items, err := listing.ToSliceN[int](context.Background(), &iterator, 3)
+		assert.NoError(t, err)
+		assert.Equal(t, []int{1, 2, 3}, items)
+	})
+
+}
