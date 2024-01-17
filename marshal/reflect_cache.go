@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"strings"
 	"sync"
+
+	"github.com/databricks/databricks-sdk-go/openapi/code"
 )
 
 var mutexType sync.Mutex
@@ -56,7 +58,12 @@ func parseJSONTag(field reflect.StructField) jsonTag {
 	name := field.Name
 
 	if raw == "-" {
-		return jsonTag{ignore: true}
+		// For CLI deserialization purposes, use the snake case of the field name
+		// as the JSON name.
+		return jsonTag{
+			ignore: true,
+			name:   (&code.Named{Name: name}).SnakeName(),
+		}
 	}
 
 	parts := strings.Split(raw, ",")

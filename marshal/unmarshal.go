@@ -9,6 +9,21 @@ import (
 // Unmarshals a JSON element and fills in the ForceSendFields field if
 // the struct contains it. Only anotates basic types in the ForceSendFields.
 func Unmarshal(data []byte, v any) error {
+	return UnmarshalCustom(data, v, UnmarshalOptions{})
+}
+
+// UnmarshalOptions is used to configure the Unmarshal function.
+type UnmarshalOptions struct {
+	// If true, the function will unmarshal fields that are ignored by the
+	// JSON tag. Path and query parameters are annotated with `json:"-"` to
+	// prevent them from being serialized in request bodies.
+	//
+	// This option only applies to top-level ignored fields. Nested fields
+	// with `json:"-"` will still be ignored.
+	UnmarshalIgnoredFields bool
+}
+
+func UnmarshalCustom(data []byte, v any, opts UnmarshalOptions) error {
 	if len(data) == 0 {
 		return nil
 	}
@@ -26,7 +41,7 @@ func Unmarshal(data []byte, v any) error {
 	foundFields := []string{}
 
 	for _, field := range getTypeFields(objectType) {
-		if field.JsonTag.ignore {
+		if !opts.UnmarshalIgnoredFields && field.JsonTag.ignore {
 			continue
 		}
 		index := field.IndexInStruct
