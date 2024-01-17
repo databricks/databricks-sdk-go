@@ -25,7 +25,7 @@ func TestUnmarshalCustom_UnmarshalIgnoredFields(t *testing.T) {
 
 	var request ignoredField
 	UnmarshalCustom(raw, &request, UnmarshalOptions{
-		UnmarshalIgnoredFields: true,
+		UnmarshalTopLevelIgnoredFields: true,
 	})
 
 	assert.Equal(t, ignoredField{A: "foo", B: "bar"}, request)

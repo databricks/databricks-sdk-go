@@ -20,7 +20,7 @@ type UnmarshalOptions struct {
 	//
 	// This option only applies to top-level ignored fields. Nested fields
 	// with `json:"-"` will still be ignored.
-	UnmarshalIgnoredFields bool
+	UnmarshalTopLevelIgnoredFields bool
 }
 
 func UnmarshalCustom(data []byte, v any, opts UnmarshalOptions) error {
@@ -41,7 +41,7 @@ func UnmarshalCustom(data []byte, v any, opts UnmarshalOptions) error {
 	foundFields := []string{}
 
 	for _, field := range getTypeFields(objectType) {
-		if !opts.UnmarshalIgnoredFields && field.JsonTag.ignore {
+		if !opts.UnmarshalTopLevelIgnoredFields && field.JsonTag.ignore {
 			continue
 		}
 		index := field.IndexInStruct
