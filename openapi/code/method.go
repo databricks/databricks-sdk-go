@@ -204,6 +204,34 @@ func (m *Method) CanUseJson() bool {
 	return m.MustUseJson() || (m.Request != nil && m.Request.HasJsonField())
 }
 
+func (m *Method) HasRequiredPositionalArguments() bool {
+	if m.Request == nil {
+		return false
+	}
+
+	e := m.Request
+	return e.HasRequiredPathFields() || (!m.MustUseJson() && e.IsAllRequiredFieldsPrimitive())
+}
+
+func (m *Method) RequiredPositionalArguments() (fields []*Field) {
+	if m.Request == nil {
+		return nil
+	}
+
+	e := m.Request
+	// Path fields are always required as positional arguments
+	posArgs := e.RequiredPathFields()
+	if !m.MustUseJson() && e.IsAllRequiredFieldsPrimitive() {
+		for _, f := range e.RequiredFields() {
+			if f.IsPath {
+				continue
+			}
+			posArgs = append(posArgs, f)
+		}
+	}
+	return posArgs
+}
+
 func (m *Method) HasIdentifierField() bool {
 	return len(m.IdFieldPath) > 0
 }
