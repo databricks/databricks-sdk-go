@@ -88,6 +88,12 @@ type Entity struct {
 
 	// Schema references the OpenAPI schema this entity was created from.
 	Schema *openapi.Schema
+
+	// Discriminator references mandatory field in subtypes
+	// See https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
+	Discriminator *Field
+	SubTypes      []Subtype
+	SuperType     *Entity
 }
 
 // Whether the Entity contains a basic GoLang type which is not required

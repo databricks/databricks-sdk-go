@@ -231,16 +231,27 @@ type Schema struct {
 	EnumDescriptions map[string]string  `json:"x-databricks-enum-descriptions,omitempty"`
 	Default          any                `json:"default,omitempty"`
 	Example          any                `json:"example,omitempty"`
-	Const            any                `json:"const,omitempty"`
 	Format           string             `json:"format,omitempty"`
 	Required         []string           `json:"required,omitempty"`
 	Properties       map[string]*Schema `json:"properties,omitempty"`
 	ArrayValue       *Schema            `json:"items,omitempty"`
 	MapValue         *Schema            `json:"additionalProperties,omitempty"`
+
+	Const         any            `json:"const,omitempty"`
+	Discriminator *Discriminator `json:"discriminator,omitempty"`
+	OneOf         []Node         `json:"oneOf,omitempty"`
+}
+
+type Discriminator struct {
+	PropertyName string `json:"propertyName"`
 }
 
 func (s *Schema) IsEnum() bool {
 	return len(s.Enum) != 0
+}
+
+func (s *Schema) IsOneOf() bool {
+	return len(s.OneOf) > 0
 }
 
 func (s *Schema) IsObject() bool {
@@ -266,6 +277,9 @@ func (s *Schema) IsEmpty() bool {
 		return false
 	}
 	if s.IsArray() {
+		return false
+	}
+	if s.IsOneOf() {
 		return false
 	}
 	if s.IsObject() {
