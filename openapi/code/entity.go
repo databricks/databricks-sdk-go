@@ -74,6 +74,7 @@ type Entity struct {
 	IsString     bool
 	IsByteStream bool
 	IsEmpty      bool
+	Const        any
 
 	// this field does not have a concrete type
 	IsAny bool

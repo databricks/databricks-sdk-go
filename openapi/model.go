@@ -231,6 +231,7 @@ type Schema struct {
 	EnumDescriptions map[string]string  `json:"x-databricks-enum-descriptions,omitempty"`
 	Default          any                `json:"default,omitempty"`
 	Example          any                `json:"example,omitempty"`
+	Const            any                `json:"const,omitempty"`
 	Format           string             `json:"format,omitempty"`
 	Required         []string           `json:"required,omitempty"`
 	Properties       map[string]*Schema `json:"properties,omitempty"`
