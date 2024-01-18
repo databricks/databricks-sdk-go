@@ -11,69 +11,70 @@ import (
 func newPolymorphism(components *openapi.Components) *polymorphism {
 	return &polymorphism{
 		components: components,
-		superTypes: map[string]*Entity{},
-		types:      map[string]*Entity{},
+		types:      map[string]ChildTypes{},
 	}
 }
 
 type polymorphism struct {
 	components *openapi.Components
-	superTypes map[string]*Entity
-	types      map[string]*Entity
+	types      map[string]ChildTypes
 }
 
-type discriminatorSpec struct {
-	Property string
-	Constant string
-}
+type TypeLookup []*Field
 
-func (p *polymorphism) loadDiscriminators() (map[discriminatorSpec]string, error) {
-	discriminators := map[discriminatorSpec]string{}
-	for typeName, typeSchema := range p.components.Schemas {
-		if typeSchema == nil {
-			continue
-		}
-		properties := (*typeSchema).Properties
-		if len(properties) == 0 {
-			// not at object
-			continue
-		}
-		for fieldName, fieldSchema := range properties {
-			resolvedFieldSchema := p.components.Schemas.Resolve(fieldSchema)
-			if resolvedFieldSchema == nil {
-				return nil, fmt.Errorf("cannot resolve: %s.%s", typeName, fieldName)
-			}
-			constant := (*resolvedFieldSchema).Const
-			if constant == nil {
-				continue
-			}
-			constantValue, ok := constant.(string)
-			if !ok {
-				// non-string constants cannot be used as discriminators
-				// see https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
-				continue
-			}
-			discriminator := discriminatorSpec{
-				Property: fieldName,
-				Constant: constantValue,
-			}
-			_, exists := discriminators[discriminator]
-			if exists {
-				return nil, fmt.Errorf("duplicate oneOf discriminator: %s=%s", discriminator.Property, discriminator.Constant)
-			}
-			discriminators[discriminator] = fmt.Sprintf("#/components/schemas/%s", typeName)
+func (d TypeLookup) IsConstant() bool {
+	for _, v := range d {
+		if v.Schema.Const != nil {
+			return true
 		}
 	}
-	return discriminators, nil
+	return false
 }
 
-type Subtype struct {
+func (d TypeLookup) Sort() {
+	sort.Slice(d, func(i, j int) bool {
+		return d[i].Name < d[j].Name
+	})
+}
+
+func (d TypeLookup) String() string {
+	var tmp []string
+	for _, v := range d {
+		tmp = append(tmp, fmt.Sprintf("%s=%v", v.Name, v.Schema.Const))
+	}
+	return strings.Join(tmp, ", ")
+}
+
+type TypeDiscriminator struct {
 	*Entity
-	Constant string
+	TypeLookup
 }
 
-func (p *polymorphism) loadSubtypes(discriminators map[discriminatorSpec]string) (map[string]*Entity, error) {
-	subTypes := map[string]*Entity{}
+type ChildTypes []TypeDiscriminator
+
+func (d ChildTypes) IsConstant() bool {
+	for _, v := range d {
+		if v.IsConstant() {
+			return true
+		}
+	}
+	return false
+}
+
+func (d ChildTypes) Sort() {
+	if d.IsConstant() {
+		sort.Slice(d, func(i, j int) bool {
+			return d[i].String() < d[j].String()
+		})
+		return
+	}
+	sort.Slice(d, func(i, j int) bool {
+		return len(d[i].TypeLookup) < len(d[j].TypeLookup)
+	})
+}
+
+func (p *polymorphism) unresolvedChildren() (map[string]ChildTypes, error) {
+	out := map[string]ChildTypes{}
 	for typeName, typeSchema := range p.components.Schemas {
 		if typeSchema == nil {
 			continue
@@ -82,33 +83,16 @@ func (p *polymorphism) loadSubtypes(discriminators map[discriminatorSpec]string)
 		if len(s.OneOf) == 0 {
 			continue
 		}
-		if s.Discriminator == nil {
-			return nil, fmt.Errorf("missing discriminator: %s", typeName)
+		if s.Discriminator != nil && len(s.DiscriminatorProperties) > 0 {
+			return nil, fmt.Errorf("both x-databricks-discriminator-properties and discriminator there: %s", typeName)
 		}
-		propertyName := s.Discriminator.PropertyName
-		if propertyName == "" {
-			return nil, fmt.Errorf("missing discriminator.propetyName: %s", typeName)
+		if s.Discriminator != nil {
+			s.DiscriminatorProperties = append(s.DiscriminatorProperties, s.Discriminator.PropertyName)
 		}
-		packageName, thisName, ok := strings.Cut(typeName, ".")
-		if !ok {
-			return nil, fmt.Errorf("corrupt type name: %s", typeName)
+		if len(s.DiscriminatorProperties) == 0 {
+			return nil, fmt.Errorf("oneOf needs discriminators: %s", typeName)
 		}
-		thisEntity := &Entity{
-			Named: Named{
-				Name: thisName,
-			},
-			Package: &Package{
-				Named: Named{
-					Name: packageName,
-				},
-			},
-			Discriminator: &Field{
-				Required: true,
-				Named: Named{
-					Name: propertyName,
-				},
-			},
-		}
+		children := ChildTypes{}
 		for _, oneOf := range s.OneOf {
 			if oneOf.Ref == "" {
 				return nil, fmt.Errorf("oneOf can point only to a type: %s", typeName)
@@ -117,62 +101,57 @@ func (p *polymorphism) loadSubtypes(discriminators map[discriminatorSpec]string)
 			if otherType == nil {
 				return nil, fmt.Errorf("not found: %s", oneOf.Ref)
 			}
-			propertySchema, ok := (*otherType).Properties[propertyName]
+			lookup := TypeLookup{}
+			for _, propertyName := range s.DiscriminatorProperties {
+				unresolved, ok := (*otherType).Properties[propertyName]
+				if !ok {
+					return nil, fmt.Errorf("%s has no %s", oneOf.Ref, propertyName)
+				}
+				propertySchema := p.components.Schemas.Resolve(unresolved)
+				if propertySchema == nil {
+					return nil, fmt.Errorf("cannot resolve property: %s", propertyName)
+				}
+				lookup = append(lookup, &Field{
+					Schema: *propertySchema,
+					Named: Named{
+						Name: propertyName,
+					},
+				})
+			}
+			lookup.Sort()
+			otherPackage, otherName, ok := strings.Cut(oneOf.Component(), ".")
 			if !ok {
-				return nil, fmt.Errorf("%s has no %s", oneOf.Ref, propertyName)
+				return nil, fmt.Errorf("no package: %s", oneOf.Ref)
 			}
-			constantValue, ok := propertySchema.Const.(string)
-			if !ok {
-				return nil, fmt.Errorf("%s is not a string: %v", propertyName, propertySchema.Const)
-			}
-			spec := discriminatorSpec{propertyName, constantValue}
-			backRef, ok := discriminators[spec]
-			if !ok {
-				return nil, fmt.Errorf("discriminator not found: %s", spec)
-			}
-			if oneOf.Ref != backRef {
-				return nil, fmt.Errorf("discriminator conflict: %s and %s", oneOf.Ref, backRef)
-			}
-			subtypePackage, subtypeName, ok := strings.Cut(oneOf.Ref, ".")
-			if !ok {
-				return nil, fmt.Errorf("invalid ref: %s", oneOf.Ref)
-			}
-			some, exists := p.superTypes[backRef]
-			if exists && !(some.Name == thisName && some.Package.Name == packageName) {
-				return nil, fmt.Errorf("supertype conflict: %s already has %s", backRef, some.FullName())
-			}
-			p.superTypes[backRef] = thisEntity
-			thisEntity.SubTypes = append(thisEntity.SubTypes, Subtype{
-				// later to be linked to a real entity
+			children = append(children, TypeDiscriminator{
 				Entity: &Entity{
 					Named: Named{
-						Name: subtypeName,
+						Name: otherName,
 					},
 					Package: &Package{
 						Named: Named{
-							Name: subtypePackage,
+							Name: otherPackage,
 						},
 					},
 				},
-				Constant: constantValue,
+				TypeLookup: lookup,
 			})
 		}
-		sort.Slice(thisEntity.SubTypes, func(i, j int) bool {
-			return strings.Compare(thisEntity.SubTypes[i].Constant, thisEntity.SubTypes[j].Constant) > 0
-		})
-		subTypes[typeName] = thisEntity
+		children.Sort()
+		out[typeName] = children
 	}
-	return subTypes, nil
+	return out, nil
+}
+
+type Subtype struct {
+	*Entity
+	Constant string
 }
 
 func (p *polymorphism) Load() error {
-	discriminators, err := p.loadDiscriminators()
+	types, err := p.unresolvedChildren()
 	if err != nil {
-		return fmt.Errorf("disriminators: %w", err)
-	}
-	types, err := p.loadSubtypes(discriminators)
-	if err != nil {
-		return fmt.Errorf("subtypes: %w", err)
+		return fmt.Errorf("types: %w", err)
 	}
 	p.types = types
 	return nil
@@ -180,27 +159,40 @@ func (p *polymorphism) Load() error {
 
 func (p *polymorphism) Link(batch *Batch) error {
 	for _, pkg := range batch.packages {
-		for _, t := range pkg.types {
-			if !t.Schema.IsOneOf() {
+		for _, abstractType := range pkg.types {
+			if abstractType.ChildTypes == nil {
 				continue
 			}
-			for _, st := range t.SubTypes {
-				linkedPackage, ok := batch.packages[st.Package.Name]
+			for _, subType := range abstractType.ChildTypes {
+				linkedPackage, ok := batch.packages[subType.Package.Name]
 				if !ok {
-					return fmt.Errorf("missing package: %s", st.FullName())
+					return fmt.Errorf("missing package: %s", subType.FullName())
 				}
-				linkedType, ok := linkedPackage.types[st.Name]
+				resolvedType, ok := linkedPackage.types[subType.Name]
 				if !ok {
-					return fmt.Errorf("missing tyoe: %s", st.FullName())
+					return fmt.Errorf("missing type: %s", subType.FullName())
 				}
-				st.Entity = linkedType
-				linkedType.SuperType = t
+				subType.Entity = resolvedType
+				resolvedType.AbstractType = abstractType
+				for _, field := range subType.TypeLookup {
+					field.Entity = resolvedType.fields[field.Name].Entity
+				}
 			}
 		}
 	}
 	return nil
 }
 
-func (p *polymorphism) Resolve(path []string) (*Entity, error) {
-	return nil, nil
+func (p *polymorphism) Resolve(pkgName, typeName string) (*Entity, error) {
+	key := fmt.Sprintf("%s.%s", pkgName, typeName)
+	discriminators, ok := p.types[key]
+	if !ok {
+		return nil, fmt.Errorf("not found: %s", key)
+	}
+	return &Entity{
+		Named: Named{
+			Name: typeName,
+		},
+		ChildTypes: discriminators,
+	}, nil
 }

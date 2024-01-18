@@ -91,9 +91,8 @@ type Entity struct {
 
 	// Discriminator references mandatory field in subtypes
 	// See https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
-	Discriminator *Field
-	SubTypes      []Subtype
-	SuperType     *Entity
+	ChildTypes   ChildTypes
+	AbstractType *Entity
 }
 
 // Whether the Entity contains a basic GoLang type which is not required

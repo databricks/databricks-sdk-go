@@ -101,12 +101,12 @@ func (pkg *Package) ImportedPackages() (res []string) {
 
 func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool) *Entity {
 	if s.IsOneOf() {
-		entity, err := pkg.poly.Resolve(path)
+		entity, err := pkg.poly.Resolve(pkg.Name, path[0])
 		if err != nil {
 			err = fmt.Errorf("oneOf: %w", err)
 			panic(err)
 		}
-		return entity
+		return pkg.define(entity)
 	}
 	if s.IsRef() {
 		pair := strings.Split(s.Component(), ".")

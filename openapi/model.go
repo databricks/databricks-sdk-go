@@ -237,9 +237,10 @@ type Schema struct {
 	ArrayValue       *Schema            `json:"items,omitempty"`
 	MapValue         *Schema            `json:"additionalProperties,omitempty"`
 
-	Const         any            `json:"const,omitempty"`
-	Discriminator *Discriminator `json:"discriminator,omitempty"`
-	OneOf         []Node         `json:"oneOf,omitempty"`
+	Const                   any            `json:"const,omitempty"`
+	Discriminator           *Discriminator `json:"discriminator,omitempty"`
+	DiscriminatorProperties []string       `json:"x-databricks-discriminator-properties"`
+	OneOf                   []Node         `json:"oneOf,omitempty"`
 }
 
 type Discriminator struct {
