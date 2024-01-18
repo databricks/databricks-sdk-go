@@ -50,7 +50,7 @@ type TypeDiscriminator struct {
 	TypeLookup
 }
 
-type ChildTypes []TypeDiscriminator
+type ChildTypes []*TypeDiscriminator
 
 func (d ChildTypes) IsConstant() bool {
 	for _, v := range d {
@@ -123,7 +123,7 @@ func (p *polymorphism) unresolvedChildren() (map[string]ChildTypes, error) {
 			if !ok {
 				return nil, fmt.Errorf("no package: %s", oneOf.Ref)
 			}
-			children = append(children, TypeDiscriminator{
+			children = append(children, &TypeDiscriminator{
 				Entity: &Entity{
 					Named: Named{
 						Name: otherName,
@@ -163,6 +163,7 @@ func (p *polymorphism) Link(batch *Batch) error {
 			if abstractType.ChildTypes == nil {
 				continue
 			}
+			abstractType.Package = pkg
 			for _, subType := range abstractType.ChildTypes {
 				linkedPackage, ok := batch.packages[subType.Package.Name]
 				if !ok {
@@ -189,10 +190,16 @@ func (p *polymorphism) Resolve(pkgName, typeName string) (*Entity, error) {
 	if !ok {
 		return nil, fmt.Errorf("not found: %s", key)
 	}
+	fields := map[string]*Field{}
+	for _, v := range discriminators[0].TypeLookup {
+		fields[v.Name] = v
+		v.IsJson = true
+	}
 	return &Entity{
 		Named: Named{
 			Name: typeName,
 		},
 		ChildTypes: discriminators,
+		fields:     fields,
 	}, nil
 }
