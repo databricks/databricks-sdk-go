@@ -12,12 +12,14 @@ func newPolymorphism(components *openapi.Components) *polymorphism {
 	return &polymorphism{
 		components: components,
 		types:      map[string]ChildTypes{},
+		anyOf:      map[string][]string{},
 	}
 }
 
 type polymorphism struct {
 	components *openapi.Components
 	types      map[string]ChildTypes
+	anyOf      map[string][]string
 }
 
 type TypeLookup []*Field
@@ -52,6 +54,13 @@ type TypeDiscriminator struct {
 
 type ChildTypes []*TypeDiscriminator
 
+func (d ChildTypes) TypeLookup() TypeLookup {
+	if len(d) == 0 {
+		return nil
+	}
+	return d[0].TypeLookup
+}
+
 func (d ChildTypes) IsConstant() bool {
 	for _, v := range d {
 		if v.IsConstant() {
@@ -73,7 +82,7 @@ func (d ChildTypes) Sort() {
 	})
 }
 
-func (p *polymorphism) unresolvedChildren() (map[string]ChildTypes, error) {
+func (p *polymorphism) unresolvedOneOf() (map[string]ChildTypes, error) {
 	out := map[string]ChildTypes{}
 	for typeName, typeSchema := range p.components.Schemas {
 		if typeSchema == nil {
@@ -90,12 +99,12 @@ func (p *polymorphism) unresolvedChildren() (map[string]ChildTypes, error) {
 			s.DiscriminatorProperties = append(s.DiscriminatorProperties, s.Discriminator.PropertyName)
 		}
 		if len(s.DiscriminatorProperties) == 0 {
-			return nil, fmt.Errorf("oneOf needs discriminators: %s", typeName)
+			return nil, fmt.Errorf("missing discriminators: %s", typeName)
 		}
 		children := ChildTypes{}
 		for _, oneOf := range s.OneOf {
 			if oneOf.Ref == "" {
-				return nil, fmt.Errorf("oneOf can point only to a type: %s", typeName)
+				return nil, fmt.Errorf("can point only to a type: %s", typeName)
 			}
 			otherType := p.components.Schemas.Resolve(&openapi.Schema{Node: oneOf})
 			if otherType == nil {
@@ -143,17 +152,38 @@ func (p *polymorphism) unresolvedChildren() (map[string]ChildTypes, error) {
 	return out, nil
 }
 
-type Subtype struct {
-	*Entity
-	Constant string
+func (p *polymorphism) unresolvedAnyOf() (map[string][]string, error) {
+	out := map[string][]string{}
+	for typeName, typeSchema := range p.components.Schemas {
+		if typeSchema == nil {
+			continue
+		}
+		s := *typeSchema
+		if len(s.AnyOf) == 0 {
+			continue
+		}
+		for _, anyOf := range s.AnyOf {
+			if anyOf.Ref == "" {
+				return nil, fmt.Errorf("can point only to a type: %s", typeName)
+			}
+			otherName := anyOf.Component()
+			out[typeName] = append(out[typeName], otherName)
+		}
+	}
+	return out, nil
 }
 
 func (p *polymorphism) Load() error {
-	types, err := p.unresolvedChildren()
+	types, err := p.unresolvedOneOf()
 	if err != nil {
-		return fmt.Errorf("types: %w", err)
+		return fmt.Errorf("oneOf: %w", err)
+	}
+	anyOf, err := p.unresolvedAnyOf()
+	if err != nil {
+		return fmt.Errorf("anyOf: %w", err)
 	}
 	p.types = types
+	p.anyOf = anyOf
 	return nil
 }
 
@@ -163,7 +193,7 @@ func (p *polymorphism) Link(batch *Batch) error {
 			if abstractType.ChildTypes == nil {
 				continue
 			}
-			abstractType.Package = pkg
+			(*abstractType).Package = pkg
 			for _, subType := range abstractType.ChildTypes {
 				linkedPackage, ok := batch.packages[subType.Package.Name]
 				if !ok {
@@ -173,8 +203,11 @@ func (p *polymorphism) Link(batch *Batch) error {
 				if !ok {
 					return fmt.Errorf("missing type: %s", subType.FullName())
 				}
-				subType.Entity = resolvedType
-				resolvedType.AbstractType = abstractType
+				(*subType).Entity = resolvedType
+				(*resolvedType).AbstractType = abstractType
+				if subType.TypeLookup == nil {
+					continue
+				}
 				for _, field := range subType.TypeLookup {
 					field.Entity = resolvedType.fields[field.Name].Entity
 				}
@@ -187,9 +220,50 @@ func (p *polymorphism) Link(batch *Batch) error {
 func (p *polymorphism) Resolve(pkgName, typeName string) (*Entity, error) {
 	key := fmt.Sprintf("%s.%s", pkgName, typeName)
 	discriminators, ok := p.types[key]
+	if ok {
+		return p.resolveOneOf(typeName, discriminators)
+	}
+	assignable, ok := p.anyOf[key]
 	if !ok {
 		return nil, fmt.Errorf("not found: %s", key)
 	}
+	for _, anyOf := range assignable {
+		otherPackage, otherType, ok := strings.Cut(anyOf, ".")
+		if !ok {
+			return nil, fmt.Errorf("malformed: %s", anyOf)
+		}
+		discriminators = append(discriminators, &TypeDiscriminator{
+			Entity: &Entity{
+				Named: Named{
+					Name: otherType,
+				},
+				Package: &Package{
+					Named: Named{
+						Name: otherPackage,
+					},
+				},
+			},
+		})
+	}
+	return &Entity{
+		Named: Named{
+			Name: typeName,
+		},
+		ChildTypes: discriminators,
+		fields: map[string]*Field{
+			// dummy field so that it's not filtered out
+			"_": {
+				IsJson: true,
+				Entity: &Entity{
+					IsString: true,
+					Const:    "_",
+				},
+			},
+		},
+	}, nil
+}
+
+func (p *polymorphism) resolveOneOf(typeName string, discriminators ChildTypes) (*Entity, error) {
 	fields := map[string]*Field{}
 	for _, v := range discriminators[0].TypeLookup {
 		fields[v.Name] = v

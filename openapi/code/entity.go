@@ -89,8 +89,6 @@ type Entity struct {
 	// Schema references the OpenAPI schema this entity was created from.
 	Schema *openapi.Schema
 
-	// Discriminator references mandatory field in subtypes
-	// See https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
 	ChildTypes   ChildTypes
 	AbstractType *Entity
 }

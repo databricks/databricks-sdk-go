@@ -241,6 +241,7 @@ type Schema struct {
 	Discriminator           *Discriminator `json:"discriminator,omitempty"`
 	DiscriminatorProperties []string       `json:"x-databricks-discriminator-properties"`
 	OneOf                   []Node         `json:"oneOf,omitempty"`
+	AnyOf                   []Node         `json:"anyOf,omitempty"`
 }
 
 type Discriminator struct {
@@ -253,6 +254,10 @@ func (s *Schema) IsEnum() bool {
 
 func (s *Schema) IsOneOf() bool {
 	return len(s.OneOf) > 0
+}
+
+func (s *Schema) IsAnyOf() bool {
+	return len(s.AnyOf) > 0
 }
 
 func (s *Schema) IsObject() bool {
@@ -281,6 +286,9 @@ func (s *Schema) IsEmpty() bool {
 		return false
 	}
 	if s.IsOneOf() {
+		return false
+	}
+	if s.IsAnyOf() {
 		return false
 	}
 	if s.IsObject() {
