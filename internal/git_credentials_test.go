@@ -1,16 +1,32 @@
 package internal
 
 import (
+	"context"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/qa/lock"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
+func acquireLock(ctx context.Context, t *testing.T, w *databricks.WorkspaceClient) {
+	me, err := w.CurrentUser.Me(ctx)
+	require.NoError(t, err)
+	lockable := lock.GitCredentials{
+		WorkspaceHost: w.Config.Host,
+		Username:      me.UserName,
+	}
+	_, err = lock.Acquire(ctx, lock.WithLockable(lockable), lock.InTest(t))
+	require.NoError(t, err)
+}
+
 func TestAccGitCredentials(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
+	// skip-next-line-roll
+	acquireLock(ctx, t, w)
 	list, err := w.GitCredentials.ListAll(ctx)
 	require.NoError(t, err)
 	for _, v := range list {

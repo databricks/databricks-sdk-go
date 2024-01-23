@@ -12,6 +12,18 @@ import (
 // Acquire acquires a lock according to the provided lock options. If successful,
 // the lock is returned. The caller is responsible for calling the Unlock() method
 // on the returned lock when the lock is no longer needed.
+//
+// When the lock is no longer needed, the caller should call the Unlock() method
+// on the returned lock. This will release the lock and return any errors that
+// occurred while releasing the lock. If a *testing.T is provided as a
+// LockOption, the Unlock() method will be called automatically when the test
+// completes.
+//
+// By default, the lock will be acquired for 1 minute. This can be changed by
+// passing the WithLeaseDuration() LockOption.
+//
+// By default, the lock will be acquired using the azureBackend. This can be
+// changed by passing the WithBackend() LockOption.
 func Acquire(ctx context.Context, os ...LockOption) (*Lock, error) {
 	opts := LockOptions{}
 	for _, o := range os {
@@ -19,6 +31,9 @@ func Acquire(ctx context.Context, os ...LockOption) (*Lock, error) {
 	}
 	if opts.Backend == nil {
 		opts.Backend = &azureBackend{}
+	}
+	if opts.LeaseDuration == 0 {
+		opts.LeaseDuration = time.Minute
 	}
 
 	lockId := opts.Lockable.GetLockId()
@@ -33,7 +48,7 @@ func Acquire(ctx context.Context, os ...LockOption) (*Lock, error) {
 	// 2. AcquireLease the blob. If duration < 60, request the lease for the duration. Otherwise, start a goroutine to renew the lease every 45 seconds.
 	// 3. Update the blob content to include the current test context.
 	// 4. Run the test.
-	// 5. Delete the blob. (maybe this removes the lease?)
+	// 5. Delete the blob.
 
 	timesToPoll := int(opts.LeaseDuration/(10*time.Second)) + 1
 	for i := 0; i < timesToPoll; i++ {
@@ -92,10 +107,21 @@ func Acquire(ctx context.Context, os ...LockOption) (*Lock, error) {
 		}
 	}()
 
-	return &Lock{
+	lock := &Lock{
 		done: done,
 		errs: errs,
-	}, nil
+	}
+
+	if opts.T != nil {
+		opts.T.Cleanup(func() {
+			err := lock.Unlock()
+			if err != nil {
+				opts.T.Errorf("error unlocking: %s", err)
+			}
+		})
+	}
+
+	return lock, nil
 }
 
 // Lock is a lock that is acquired by a single test. Locks can be acquired

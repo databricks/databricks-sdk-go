@@ -378,6 +378,14 @@ func (s *Suite) expectFn(fn *ast.FuncDecl, file *ast.File) *example {
 			hint = strings.TrimSpace(cmt.Text())
 			break
 		}
+		if hint == "skip-next-line-roll" {
+			switch v.(type) {
+			case *ast.ExprStmt:
+				continue
+			default:
+				panic(fmt.Errorf("skip-next-line-roll can only be used immediately before an expression, found %T", v))
+			}
+		}
 		switch stmt := v.(type) {
 		case *ast.AssignStmt:
 			s.expectAssign(ex, stmt, hint)
