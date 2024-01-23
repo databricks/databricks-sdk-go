@@ -17,7 +17,7 @@ import (
 func TestAcquireLock_NoExistingLock(t *testing.T) {
 	w := mocks.NewMockWorkspaceClient(t)
 	w.GetMockWorkspaceAPI().EXPECT().Download(mock.Anything, "/Shared/locks/my-lock.lock", mock.Anything).Return(nil, apierr.ErrNotFound)
-	w.GetMockWorkspaceAPI().EXPECT().Upload(mock.Anything, "/Shared/locks/my-lock.lock", mock.Anything).Return(nil)
+	w.GetMockWorkspaceAPI().EXPECT().Upload(mock.Anything, "/Shared/locks/my-lock.lock", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	backend := &Backend{
 		lockClient: w.WorkspaceClient,
@@ -34,7 +34,7 @@ func TestAcquireLock_ExistingExpiredLock(t *testing.T) {
 	resp := io.NopCloser(bytes.NewReader([]byte(`{"Expiry": "2021-01-01T00:00:00Z"}`)))
 	w.GetMockWorkspaceAPI().EXPECT().Download(mock.Anything, "/Shared/locks/my-lock.lock", mock.Anything).Return(resp, nil)
 	w.GetMockWorkspaceAPI().EXPECT().Delete(mock.Anything, workspace.Delete{Path: "/Shared/locks/my-lock.lock"}).Return(nil)
-	w.GetMockWorkspaceAPI().EXPECT().Upload(mock.Anything, "/Shared/locks/my-lock.lock", mock.Anything).Return(nil)
+	w.GetMockWorkspaceAPI().EXPECT().Upload(mock.Anything, "/Shared/locks/my-lock.lock", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	backend := &Backend{
 		lockClient: w.WorkspaceClient,
@@ -80,7 +80,7 @@ func TestRenewLock(t *testing.T) {
 	w := mocks.NewMockWorkspaceClient(t)
 	resp := io.NopCloser(bytes.NewReader([]byte(`{"Expiry": "3021-01-01T00:00:00Z", "LeaseId": "lease-id"}`)))
 	w.GetMockWorkspaceAPI().EXPECT().Download(mock.Anything, "/Shared/locks/my-lock.lock", mock.Anything).Return(resp, nil)
-	w.GetMockWorkspaceAPI().EXPECT().Upload(mock.Anything, "/Shared/locks/my-lock.lock", mock.Anything, mock.Anything).Return(nil)
+	w.GetMockWorkspaceAPI().EXPECT().Upload(mock.Anything, "/Shared/locks/my-lock.lock", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	backend := &Backend{
 		lockClient: w.WorkspaceClient,
