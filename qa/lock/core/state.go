@@ -10,19 +10,20 @@ import (
 )
 
 type LockState struct {
-	Test            string
-	Start           time.Time
-	Expiry          time.Time
-	Lockable        string
-	LeaseId         string
-	IsInDebug       bool
-	User            string `env:"USER"`
-	GithubActions   string `env:"GITHUB_ACTIONS"`
-	GithubRef       string `env:"GITHUB_REF"`
-	GithubRunId     string `env:"GITHUB_RUN_ID"`
-	GithubRunNumber string `env:"GITHUB_RUN_NUMBER"`
-	GithubSha       string `env:"GITHUB_SHA"`
-	GithubWorkflow  string `env:"GITHUB_WORKFLOW"`
+	Test             string
+	Start            time.Time
+	Expiry           time.Time
+	Lockable         string
+	LeaseId          string
+	IsInDebug        bool
+	User             string `env:"USER"`
+	GithubActions    string `env:"GITHUB_ACTIONS"`
+	GithubRef        string `env:"GITHUB_REF"`
+	GithubRepository string `env:"GITHUB_REPOSITORY"`
+	GithubRunId      string `env:"GITHUB_RUN_ID"`
+	GithubRunNumber  string `env:"GITHUB_RUN_NUMBER"`
+	GithubSha        string `env:"GITHUB_SHA"`
+	GithubWorkflow   string `env:"GITHUB_WORKFLOW"`
 }
 
 func (l *LockState) loadFromEnv() {

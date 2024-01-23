@@ -3,6 +3,7 @@ package databricks
 import (
 	"bytes"
 	"context"
+	"errors"
 	"io"
 	"testing"
 
@@ -74,6 +75,22 @@ func TestAcquireLock_ExistingValidLockHeldBySelf(t *testing.T) {
 
 	err := backend.AcquireLock(context.Background(), &core.LockState{LeaseId: "new-lease-id"})
 	assert.NoError(t, err)
+}
+
+func TestAcquireLock_Fails(t *testing.T) {
+	w := mocks.NewMockWorkspaceClient(t)
+	w.GetMockWorkspaceAPI().EXPECT().Download(mock.Anything, "/Shared/locks/my-lock.lock", mock.Anything).Return(nil, apierr.ErrNotFound)
+	testErr := errors.New("test error")
+	w.GetMockWorkspaceAPI().EXPECT().Upload(mock.Anything, "/Shared/locks/my-lock.lock", mock.Anything, mock.Anything, mock.Anything).Return(testErr)
+
+	backend := &Backend{
+		lockClient: w.WorkspaceClient,
+		lockDir:    "/Shared/locks",
+		lockName:   "my-lock",
+	}
+
+	err := backend.AcquireLock(context.Background(), &core.LockState{})
+	assert.ErrorIs(t, err, testErr)
 }
 
 func TestRenewLock(t *testing.T) {

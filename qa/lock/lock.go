@@ -13,7 +13,10 @@ import (
 
 // Acquire acquires a lock according to the provided lock options. If successful,
 // the lock is returned. The caller is responsible for calling the Unlock() method
-// on the returned lock when the lock is no longer needed.
+// on the returned lock when the lock is no longer needed. If the lock is held
+// at the moment Acquire() is called, the method will block for up to the lease
+// duration, retrying periodically to acquire the lock. If the lock is not
+// acquired in time, an error will be returned.
 //
 // When the lock is no longer needed, the caller should call the Unlock() method
 // on the returned lock. This will release the lock and return any errors that
@@ -24,7 +27,7 @@ import (
 // By default, the lock will be acquired for 1 minute. This can be changed by
 // passing the WithLeaseDuration() LockOption.
 //
-// By default, the lock will be acquired using the azureBackend. This can be
+// By default, the lock will be acquired using a Databricks backend. This can be
 // changed by passing the WithBackend() LockOption.
 func Acquire(ctx context.Context, lockable core.Lockable, os ...LockOption) (*Lock, error) {
 	opts := LockOptions{}
@@ -44,15 +47,7 @@ func Acquire(ctx context.Context, lockable core.Lockable, os ...LockOption) (*Lo
 		return nil, fmt.Errorf("error preparing backend: %w", err)
 	}
 
-	// Algorithm:
-	//
-	// 1. Create the blob with no lease and no content. If the blob already exists, this will fail. Try every 10 seconds up to configured MaxWaitDuration.
-	// 2. AcquireLease the blob. If duration < 60, request the lease for the duration. Otherwise, start a goroutine to renew the lease every 45 seconds.
-	// 3. Run the test.
-	// 4. Delete the blob.
-
 	leaseId := uuid.New().String()
-
 	timesToPoll := int(opts.LeaseDuration/(10*time.Second)) + 1
 	for i := 0; i < timesToPoll; i++ {
 		state := core.NewLockState(lockable, leaseId, opts.LeaseDuration, opts.T)
@@ -73,14 +68,14 @@ func Acquire(ctx context.Context, lockable core.Lockable, os ...LockOption) (*Lo
 	// Channel to communicate errors renewing the lease or deleting the blob
 	errs := make(chan error, 1)
 
-	// Renew the lock every 45 seconds until the lock is released.
+	// Renew the lock periodically until the lock is released.
 	go func() {
 		duration := opts.Backend.RefreshDuration()
-		timer := time.NewTimer(duration)
+		ticker := time.NewTicker(duration)
 		testTimer := time.NewTimer(opts.LeaseDuration)
 		defer close(errs)
+		defer ticker.Stop()
 		for {
-			timer.Reset(duration)
 			select {
 			case <-done:
 				err := opts.Backend.ReleaseLock(ctx, leaseId)
@@ -88,7 +83,7 @@ func Acquire(ctx context.Context, lockable core.Lockable, os ...LockOption) (*Lo
 					errs <- err
 				}
 				return
-			case <-timer.C:
+			case <-ticker.C:
 				err := opts.Backend.RenewLock(ctx, leaseId)
 				if err != nil {
 					errs <- err

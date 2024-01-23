@@ -353,6 +353,25 @@ func (s *Suite) expectExamples(file *ast.File) {
 	}
 }
 
+// Given a function declaration, return a map of statement index to comment
+// immediately preceding the statement.
+//
+// Example:
+//
+// func foo() {
+//   // comment 1
+//   bar()
+//   baz()
+//   // comment 2
+//   baz()
+// }
+//
+// Returns:
+//
+// map[int]string{
+//   0: "comment 1",
+//   2: "comment 2",
+// }
 func (s *Suite) getCommentPrecedingStatementMap(fn *ast.FuncDecl, file *ast.File) map[int]string {
 	res := map[int]string{}
 	commentIndex := 0
