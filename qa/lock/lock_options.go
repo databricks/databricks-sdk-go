@@ -12,12 +12,6 @@ import (
 
 type LockOption func(*LockOptions)
 
-func WithLockable(lockable Lockable) LockOption {
-	return func(opts *LockOptions) {
-		opts.Lockable = lockable
-	}
-}
-
 func WithBackend(backend LockBackend) LockOption {
 	return func(opts *LockOptions) {
 		opts.Backend = backend
@@ -37,20 +31,19 @@ func InTest(t *testing.T) LockOption {
 }
 
 type LockOptions struct {
-	Lockable      Lockable
 	LeaseDuration time.Duration
 	Backend       LockBackend
 	T             *testing.T
 }
 
-func (opts LockOptions) getLockContents() ([]byte, error) {
+func (opts LockOptions) getLockContents(l Lockable) ([]byte, error) {
 	info := make(map[string]string)
 
 	if opts.T != nil {
 		info["Test"] = opts.T.Name()
 	}
 	info["Start"] = time.Now().Format(time.RFC3339)
-	info["Lockable"] = opts.Lockable.GetLockId()
+	info["Lockable"] = l.GetLockId()
 	info["LeaseDuration"] = opts.LeaseDuration.String()
 	info["IsInDebug"] = strconv.FormatBool(qa.IsInDebug())
 	envVars := []string{

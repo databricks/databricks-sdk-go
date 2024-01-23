@@ -18,7 +18,7 @@ func acquireGitCredentialsLock(ctx context.Context, t *testing.T, w *databricks.
 		WorkspaceHost: w.Config.Host,
 		Username:      me.UserName,
 	}
-	_, err = lock.Acquire(ctx, lock.WithLockable(lockable), lock.InTest(t))
+	_, err = lock.Acquire(ctx, lockable, lock.InTest(t))
 	require.NoError(t, err)
 }
 

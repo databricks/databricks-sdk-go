@@ -24,7 +24,7 @@ import (
 //
 // By default, the lock will be acquired using the azureBackend. This can be
 // changed by passing the WithBackend() LockOption.
-func Acquire(ctx context.Context, os ...LockOption) (*Lock, error) {
+func Acquire(ctx context.Context, lockable Lockable, os ...LockOption) (*Lock, error) {
 	opts := LockOptions{}
 	for _, o := range os {
 		o(&opts)
@@ -36,7 +36,7 @@ func Acquire(ctx context.Context, os ...LockOption) (*Lock, error) {
 		opts.LeaseDuration = time.Minute
 	}
 
-	lockId := opts.Lockable.GetLockId()
+	lockId := lockable.GetLockId()
 	err := opts.Backend.PrepareBackend(ctx, lockId)
 	if err != nil {
 		return nil, fmt.Errorf("error preparing backend: %w", err)
@@ -63,7 +63,7 @@ func Acquire(ctx context.Context, os ...LockOption) (*Lock, error) {
 	}
 
 	leaseId := uuid.New().String()
-	contents, err := opts.getLockContents()
+	contents, err := opts.getLockContents(lockable)
 	if err != nil {
 		return nil, err
 	}
