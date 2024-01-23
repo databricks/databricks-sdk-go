@@ -44,7 +44,6 @@ func (b *testBackend) RefreshDuration() time.Duration {
 func getOptions(backend *testBackend) []LockOption {
 	return []LockOption{
 		WithBackend(backend),
-		WithLockable(NewLockable("test")),
 		WithLeaseDuration(1 * time.Second),
 	}
 }
@@ -56,7 +55,7 @@ func TestAcquire_PrepareBackendFails(t *testing.T) {
 			return errTest
 		},
 	}
-	_, err := Acquire(context.Background(), getOptions(backend)...)
+	_, err := Acquire(context.Background(), NewLockable("lock"), getOptions(backend)...)
 	assert.ErrorIs(t, err, errTest)
 }
 
@@ -70,7 +69,7 @@ func TestAcquire_PrepareLockFails(t *testing.T) {
 			return errTest
 		},
 	}
-	_, err := Acquire(context.Background(), getOptions(backend)...)
+	_, err := Acquire(context.Background(), NewLockable("lock"), getOptions(backend)...)
 	assert.ErrorIs(t, err, errTest)
 }
 
@@ -87,7 +86,7 @@ func TestAcquire_AcquireLockFails(t *testing.T) {
 			return errTest
 		},
 	}
-	_, err := Acquire(context.Background(), getOptions(backend)...)
+	_, err := Acquire(context.Background(), NewLockable("lock"), getOptions(backend)...)
 	assert.ErrorIs(t, err, errTest)
 }
 
@@ -110,7 +109,7 @@ func TestAcquire_UnlockFails(t *testing.T) {
 			return nil
 		},
 	}
-	lock, err := Acquire(context.Background(), getOptions(backend)...)
+	lock, err := Acquire(context.Background(), NewLockable("lock"), getOptions(backend)...)
 	assert.NoError(t, err)
 	err = lock.Unlock()
 	assert.ErrorIs(t, err, errTest)
@@ -134,7 +133,7 @@ func TestAcquire_UnlockSucceeds(t *testing.T) {
 			return nil
 		},
 	}
-	lock, err := Acquire(context.Background(), getOptions(backend)...)
+	lock, err := Acquire(context.Background(), NewLockable("lock"), getOptions(backend)...)
 	assert.NoError(t, err)
 	err = lock.Unlock()
 	assert.NoError(t, err)
