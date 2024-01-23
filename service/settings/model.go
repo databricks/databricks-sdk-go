@@ -42,13 +42,14 @@ type CreateNetworkConnectivityConfigRequest struct {
 	Region string `json:"region"`
 }
 
+// Configuration details for creating on-behalf tokens.
 type CreateOboTokenRequest struct {
 	// Application ID of the service principal.
 	ApplicationId string `json:"application_id"`
 	// Comment that describes the purpose of the token.
 	Comment string `json:"comment,omitempty"`
 	// The number of seconds before the token expires.
-	LifetimeSeconds int64 `json:"lifetime_seconds"`
+	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -61,6 +62,7 @@ func (s CreateOboTokenRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// An on-behalf token was successfully created for the service principal.
 type CreateOboTokenResponse struct {
 	TokenInfo *TokenInfo `json:"token_info,omitempty"`
 	// Value of the token.
@@ -369,6 +371,11 @@ type GetTokenPermissionLevelsResponse struct {
 	PermissionLevels []TokenPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+// Token with specified Token ID was successfully returned.
+type GetTokenResponse struct {
+	TokenInfo *TokenInfo `json:"token_info,omitempty"`
+}
+
 // Definition of an IP Access list
 type IpAccessListInfo struct {
 	// Total number of IP or CIDR values.
@@ -489,7 +496,7 @@ type ListPublicTokensResponse struct {
 // List all tokens
 type ListTokenManagementRequest struct {
 	// User ID of the user that created the token.
-	CreatedById string `json:"-" url:"created_by_id,omitempty"`
+	CreatedById int64 `json:"-" url:"created_by_id,omitempty"`
 	// Username of the user that created the token.
 	CreatedByUsername string `json:"-" url:"created_by_username,omitempty"`
 
@@ -504,7 +511,9 @@ func (s ListTokenManagementRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Tokens were successfully returned.
 type ListTokensResponse struct {
+	// Token metadata of each user-created token in the workspace
 	TokenInfos []TokenInfo `json:"token_infos,omitempty"`
 }
 
@@ -930,8 +939,7 @@ type TokenAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
-	// Application ID of an active service principal. Setting this field
-	// requires the `servicePrincipal/user` role.
+	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`

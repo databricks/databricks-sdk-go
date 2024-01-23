@@ -382,6 +382,83 @@ type GrantsService interface {
 	Update(ctx context.Context, request UpdatePermissions) (*PermissionsList, error)
 }
 
+// A monitor computes and monitors data or model quality metrics for a table
+// over time. It generates metrics tables and a dashboard that you can use to
+// monitor table health and set alerts.
+//
+// Most write operations require the user to be the owner of the table (or its
+// parent schema or parent catalog). Viewing the dashboard, computed metrics, or
+// monitor configuration only requires the user to have **SELECT** privileges on
+// the table (along with **USE_SCHEMA** and **USE_CATALOG**).
+type LakehouseMonitorsService interface {
+
+	// Create a table monitor.
+	//
+	// Creates a new monitor for the specified table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog,
+	// have **USE_SCHEMA** on the table's parent schema, and have **SELECT**
+	// access on the table 2. have **USE_CATALOG** on the table's parent
+	// catalog, be an owner of the table's parent schema, and have **SELECT**
+	// access on the table. 3. have the following permissions: - **USE_CATALOG**
+	// on the table's parent catalog - **USE_SCHEMA** on the table's parent
+	// schema - be an owner of the table.
+	//
+	// Workspace assets, such as the dashboard, will be created in the workspace
+	// where this call was made.
+	Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error)
+
+	// Delete a table monitor.
+	//
+	// Deletes a monitor for the specified table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2.
+	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
+	// table's parent schema 3. have the following permissions: -
+	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
+	// table's parent schema - be an owner of the table.
+	//
+	// Additionally, the call must be made from the workspace where the monitor
+	// was created.
+	//
+	// Note that the metric tables and dashboard will not be deleted as part of
+	// this call; those assets must be manually cleaned up (if desired).
+	Delete(ctx context.Context, request DeleteLakehouseMonitorRequest) error
+
+	// Get a table monitor.
+	//
+	// Gets a monitor for the specified table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2.
+	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
+	// table's parent schema. 3. have the following permissions: -
+	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
+	// table's parent schema - **SELECT** privilege on the table.
+	//
+	// The returned information includes configuration values, as well as
+	// information on assets created by the monitor. Some information (e.g.,
+	// dashboard) may be filtered out if the caller is in a different workspace
+	// than where the monitor was created.
+	Get(ctx context.Context, request GetLakehouseMonitorRequest) (*MonitorInfo, error)
+
+	// Update a table monitor.
+	//
+	// Updates a monitor for the specified table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2.
+	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
+	// table's parent schema 3. have the following permissions: -
+	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
+	// table's parent schema - be an owner of the table.
+	//
+	// Additionally, the call must be made from the workspace where the monitor
+	// was created, and the caller must be the original creator of the monitor.
+	//
+	// Certain configuration fields, such as output asset identifiers, cannot be
+	// updated.
+	Update(ctx context.Context, request UpdateMonitor) (*MonitorInfo, error)
+}
+
 // A metastore is the top-level container of objects in Unity Catalog. It stores
 // data assets (tables and views) and the permissions that govern access to
 // them. Databricks account admins can create metastores and assign them to
@@ -873,13 +950,28 @@ type TablesService interface {
 	// parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 	Delete(ctx context.Context, request DeleteTableRequest) error
 
+	// Get boolean reflecting if table exists.
+	//
+	// Gets if a table exists in the metastore for a specific catalog and
+	// schema. The caller must satisfy one of the following requirements: * Be a
+	// metastore admin * Be the owner of the parent catalog * Be the owner of
+	// the parent schema and have the USE_CATALOG privilege on the parent
+	// catalog * Have the **USE_CATALOG** privilege on the parent catalog and
+	// the **USE_SCHEMA** privilege on the parent schema, and either be the
+	// table owner or have the SELECT privilege on the table. * Have BROWSE
+	// privilege on the parent catalog * Have BROWSE privilege on the parent
+	// schema.
+	Exists(ctx context.Context, request ExistsRequest) (*TableExistsResponse, error)
+
 	// Get a table.
 	//
 	// Gets a table from the metastore for a specific catalog and schema. The
-	// caller must be a metastore admin, be the owner of the table and have the
-	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
-	// privilege on the parent schema, or be the owner of the table and have the
-	// **SELECT** privilege on it as well.
+	// caller must satisfy one of the following requirements: * Be a metastore
+	// admin * Be the owner of the parent catalog * Be the owner of the parent
+	// schema and have the USE_CATALOG privilege on the parent catalog * Have
+	// the **USE_CATALOG** privilege on the parent catalog and the
+	// **USE_SCHEMA** privilege on the parent schema, and either be the table
+	// owner or have the SELECT privilege on the table.
 	Get(ctx context.Context, request GetTableRequest) (*TableInfo, error)
 
 	// List tables.

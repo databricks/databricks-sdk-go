@@ -384,7 +384,7 @@ type TokenManagementService interface {
 	// Get token info.
 	//
 	// Gets information about a token, specified by its ID.
-	Get(ctx context.Context, request GetTokenManagementRequest) (*TokenInfo, error)
+	Get(ctx context.Context, request GetTokenManagementRequest) (*GetTokenResponse, error)
 
 	// Get token permission levels.
 	//

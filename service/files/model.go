@@ -169,9 +169,9 @@ func (s Put) MarshalJSON() ([]byte, error) {
 type ReadDbfsRequest struct {
 	// The number of bytes to read starting from the offset. This has a limit of
 	// 1 MB, and a default value of 0.5 MB.
-	Length int `json:"-" url:"length,omitempty"`
+	Length int64 `json:"-" url:"length,omitempty"`
 	// The offset to read from in bytes.
-	Offset int `json:"-" url:"offset,omitempty"`
+	Offset int64 `json:"-" url:"offset,omitempty"`
 	// The path of the file to read. The path should be the absolute DBFS path.
 	Path string `json:"-" url:"path"`
 
@@ -187,7 +187,7 @@ func (s ReadDbfsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ReadResponse struct {
-	// The number of bytes read (could be less than `length` if we hit end of
+	// The number of bytes read (could be less than ``length`` if we hit end of
 	// file). This refers to number of bytes read in unencoded version (response
 	// data is base64-encoded).
 	BytesRead int64 `json:"bytes_read,omitempty"`

@@ -119,6 +119,124 @@ func (_c *MockTablesInterface_DeleteByFullName_Call) RunAndReturn(run func(conte
 	return _c
 }
 
+// Exists provides a mock function with given fields: ctx, request
+func (_m *MockTablesInterface) Exists(ctx context.Context, request catalog.ExistsRequest) (*catalog.TableExistsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Exists")
+	}
+
+	var r0 *catalog.TableExistsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ExistsRequest) (*catalog.TableExistsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ExistsRequest) *catalog.TableExistsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.TableExistsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.ExistsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockTablesInterface_Exists_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Exists'
+type MockTablesInterface_Exists_Call struct {
+	*mock.Call
+}
+
+// Exists is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.ExistsRequest
+func (_e *MockTablesInterface_Expecter) Exists(ctx interface{}, request interface{}) *MockTablesInterface_Exists_Call {
+	return &MockTablesInterface_Exists_Call{Call: _e.mock.On("Exists", ctx, request)}
+}
+
+func (_c *MockTablesInterface_Exists_Call) Run(run func(ctx context.Context, request catalog.ExistsRequest)) *MockTablesInterface_Exists_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.ExistsRequest))
+	})
+	return _c
+}
+
+func (_c *MockTablesInterface_Exists_Call) Return(_a0 *catalog.TableExistsResponse, _a1 error) *MockTablesInterface_Exists_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockTablesInterface_Exists_Call) RunAndReturn(run func(context.Context, catalog.ExistsRequest) (*catalog.TableExistsResponse, error)) *MockTablesInterface_Exists_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ExistsByFullName provides a mock function with given fields: ctx, fullName
+func (_m *MockTablesInterface) ExistsByFullName(ctx context.Context, fullName string) (*catalog.TableExistsResponse, error) {
+	ret := _m.Called(ctx, fullName)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ExistsByFullName")
+	}
+
+	var r0 *catalog.TableExistsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.TableExistsResponse, error)); ok {
+		return rf(ctx, fullName)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.TableExistsResponse); ok {
+		r0 = rf(ctx, fullName)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.TableExistsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, fullName)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockTablesInterface_ExistsByFullName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExistsByFullName'
+type MockTablesInterface_ExistsByFullName_Call struct {
+	*mock.Call
+}
+
+// ExistsByFullName is a helper method to define mock.On call
+//   - ctx context.Context
+//   - fullName string
+func (_e *MockTablesInterface_Expecter) ExistsByFullName(ctx interface{}, fullName interface{}) *MockTablesInterface_ExistsByFullName_Call {
+	return &MockTablesInterface_ExistsByFullName_Call{Call: _e.mock.On("ExistsByFullName", ctx, fullName)}
+}
+
+func (_c *MockTablesInterface_ExistsByFullName_Call) Run(run func(ctx context.Context, fullName string)) *MockTablesInterface_ExistsByFullName_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockTablesInterface_ExistsByFullName_Call) Return(_a0 *catalog.TableExistsResponse, _a1 error) *MockTablesInterface_ExistsByFullName_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockTablesInterface_ExistsByFullName_Call) RunAndReturn(run func(context.Context, string) (*catalog.TableExistsResponse, error)) *MockTablesInterface_ExistsByFullName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function with given fields: ctx, request
 func (_m *MockTablesInterface) Get(ctx context.Context, request catalog.GetTableRequest) (*catalog.TableInfo, error) {
 	ret := _m.Called(ctx, request)

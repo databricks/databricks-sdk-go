@@ -74,6 +74,8 @@
 //
 // - [jobs.JobsAPI]: The Jobs API allows you to create, edit, and delete jobs.
 //
+// - [catalog.LakehouseMonitorsAPI]: A monitor computes and monitors data or model quality metrics for a table over time.
+//
 // - [dashboards.LakeviewAPI]: These APIs provide specific management operations for Lakeview dashboards.
 //
 // - [compute.LibrariesAPI]: The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster.
@@ -245,6 +247,7 @@ var (
 	_ *settings.IpAccessListsAPI              = nil
 	_ *settings.AccountIpAccessListsAPI       = nil
 	_ *jobs.JobsAPI                           = nil
+	_ *catalog.LakehouseMonitorsAPI           = nil
 	_ *dashboards.LakeviewAPI                 = nil
 	_ *compute.LibrariesAPI                   = nil
 	_ *billing.LogDeliveryAPI                 = nil

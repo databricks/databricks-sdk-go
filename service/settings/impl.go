@@ -305,17 +305,18 @@ func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request Create
 func (a *tokenManagementImpl) Delete(ctx context.Context, request DeleteTokenManagementRequest) error {
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
-func (a *tokenManagementImpl) Get(ctx context.Context, request GetTokenManagementRequest) (*TokenInfo, error) {
-	var tokenInfo TokenInfo
+func (a *tokenManagementImpl) Get(ctx context.Context, request GetTokenManagementRequest) (*GetTokenResponse, error) {
+	var getTokenResponse GetTokenResponse
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &tokenInfo)
-	return &tokenInfo, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getTokenResponse)
+	return &getTokenResponse, err
 }
 
 func (a *tokenManagementImpl) GetPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {

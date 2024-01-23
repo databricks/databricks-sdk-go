@@ -1335,12 +1335,12 @@ type TokenManagementInterface interface {
 	// Get token info.
 	//
 	// Gets information about a token, specified by its ID.
-	Get(ctx context.Context, request GetTokenManagementRequest) (*TokenInfo, error)
+	Get(ctx context.Context, request GetTokenManagementRequest) (*GetTokenResponse, error)
 
 	// Get token info.
 	//
 	// Gets information about a token, specified by its ID.
-	GetByTokenId(ctx context.Context, tokenId string) (*TokenInfo, error)
+	GetByTokenId(ctx context.Context, tokenId string) (*GetTokenResponse, error)
 
 	// Get token permission levels.
 	//
@@ -1455,14 +1455,14 @@ func (a *TokenManagementAPI) DeleteByTokenId(ctx context.Context, tokenId string
 // Get token info.
 //
 // Gets information about a token, specified by its ID.
-func (a *TokenManagementAPI) Get(ctx context.Context, request GetTokenManagementRequest) (*TokenInfo, error) {
+func (a *TokenManagementAPI) Get(ctx context.Context, request GetTokenManagementRequest) (*GetTokenResponse, error) {
 	return a.impl.Get(ctx, request)
 }
 
 // Get token info.
 //
 // Gets information about a token, specified by its ID.
-func (a *TokenManagementAPI) GetByTokenId(ctx context.Context, tokenId string) (*TokenInfo, error) {
+func (a *TokenManagementAPI) GetByTokenId(ctx context.Context, tokenId string) (*GetTokenResponse, error) {
 	return a.impl.Get(ctx, GetTokenManagementRequest{
 		TokenId: tokenId,
 	})

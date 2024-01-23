@@ -108,8 +108,8 @@ func (h *fileHandle) Read(p []byte) (int, error) {
 
 		res, err := h.api.Read(h.ctx, ReadDbfsRequest{
 			Path:   h.path,
-			Length: len(chunk),
-			Offset: int(r.offset), // TODO: make int32/in64 work properly
+			Length: int64(len(chunk)),
+			Offset: r.offset,
 		})
 		if err != nil {
 			return ntotal, r.error(err)

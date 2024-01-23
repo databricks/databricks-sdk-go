@@ -422,6 +422,47 @@ func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*Pe
 	return &permissionsList, err
 }
 
+// unexported type that holds implementations of just LakehouseMonitors API methods
+type lakehouseMonitorsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *lakehouseMonitorsImpl) Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error) {
+	var monitorInfo MonitorInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &monitorInfo)
+	return &monitorInfo, err
+}
+
+func (a *lakehouseMonitorsImpl) Delete(ctx context.Context, request DeleteLakehouseMonitorRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.FullName)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	return err
+}
+
+func (a *lakehouseMonitorsImpl) Get(ctx context.Context, request GetLakehouseMonitorRequest) (*MonitorInfo, error) {
+	var monitorInfo MonitorInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorInfo)
+	return &monitorInfo, err
+}
+
+func (a *lakehouseMonitorsImpl) Update(ctx context.Context, request UpdateMonitor) (*MonitorInfo, error) {
+	var monitorInfo MonitorInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &monitorInfo)
+	return &monitorInfo, err
+}
+
 // unexported type that holds implementations of just Metastores API methods
 type metastoresImpl struct {
 	client *client.DatabricksClient
@@ -809,6 +850,15 @@ func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) err
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
+}
+
+func (a *tablesImpl) Exists(ctx context.Context, request ExistsRequest) (*TableExistsResponse, error) {
+	var tableExistsResponse TableExistsResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/exists", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &tableExistsResponse)
+	return &tableExistsResponse, err
 }
 
 func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableInfo, error) {

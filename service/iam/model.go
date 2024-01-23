@@ -15,8 +15,7 @@ type AccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
-	// Application ID of an active service principal. Setting this field
-	// requires the `servicePrincipal/user` role.
+	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -326,7 +325,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -758,8 +757,7 @@ type PasswordAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
-	// Application ID of an active service principal. Setting this field
-	// requires the `servicePrincipal/user` role.
+	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`

@@ -332,8 +332,7 @@ type ClusterAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
-	// Application ID of an active service principal. Setting this field
-	// requires the `servicePrincipal/user` role.
+	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -870,8 +869,7 @@ type ClusterPolicyAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
-	// Application ID of an active service principal. Setting this field
-	// requires the `servicePrincipal/user` role.
+	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -1660,7 +1658,7 @@ type CreatePolicy struct {
 	// Additional human-readable description of the cluster policy.
 	Description string `json:"description,omitempty"`
 	// A list of libraries to be installed on the next cluster restart that uses
-	// this policy.
+	// this policy. The maximum number of libraries is 500.
 	Libraries []Library `json:"libraries,omitempty"`
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.
@@ -2270,7 +2268,7 @@ type EditPolicy struct {
 	// Additional human-readable description of the cluster policy.
 	Description string `json:"description,omitempty"`
 	// A list of libraries to be installed on the next cluster restart that uses
-	// this policy.
+	// this policy. The maximum number of libraries is 500.
 	Libraries []Library `json:"libraries,omitempty"`
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.
@@ -3036,8 +3034,7 @@ type InstancePoolAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
-	// Application ID of an active service principal. Setting this field
-	// requires the `servicePrincipal/user` role.
+	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -3995,7 +3992,7 @@ type Policy struct {
 	// changed.
 	IsDefault bool `json:"is_default,omitempty"`
 	// A list of libraries to be installed on the next cluster restart that uses
-	// this policy.
+	// this policy. The maximum number of libraries is 500.
 	Libraries []Library `json:"libraries,omitempty"`
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.

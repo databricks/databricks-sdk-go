@@ -98,7 +98,7 @@ type dashboardsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *dashboardsImpl) Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error) {
+func (a *dashboardsImpl) Create(ctx context.Context, request DashboardPostContent) (*Dashboard, error) {
 	var dashboard Dashboard
 	path := "/api/2.0/preview/sql/dashboards"
 	headers := make(map[string]string)
@@ -140,6 +140,16 @@ func (a *dashboardsImpl) Restore(ctx context.Context, request RestoreDashboardRe
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
 	return err
+}
+
+func (a *dashboardsImpl) Update(ctx context.Context, request DashboardEditContent) (*Dashboard, error) {
+	var dashboard Dashboard
+	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &dashboard)
+	return &dashboard, err
 }
 
 // unexported type that holds implementations of just DataSources API methods

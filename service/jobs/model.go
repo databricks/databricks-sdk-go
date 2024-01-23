@@ -824,8 +824,7 @@ type JobAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
-	// Application ID of an active service principal. Setting this field
-	// requires the `servicePrincipal/user` role.
+	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -3335,9 +3334,10 @@ type SubmitTask struct {
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
-	// all runs of this task. When running tasks on an existing cluster, you may
-	// need to manually restart the cluster if it stops responding. We suggest
-	// running jobs on new clusters for greater reliability.
+	// all runs of this task. Only all-purpose clusters are supported. When
+	// running tasks on an existing cluster, you may need to manually restart
+	// the cluster if it stops responding. We suggest running jobs on new
+	// clusters for greater reliability.
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
@@ -3436,9 +3436,10 @@ type Task struct {
 	// behavior is to not send any emails.
 	EmailNotifications *TaskEmailNotifications `json:"email_notifications,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
-	// all runs of this task. When running tasks on an existing cluster, you may
-	// need to manually restart the cluster if it stops responding. We suggest
-	// running jobs on new clusters for greater reliability.
+	// all runs of this task. Only all-purpose clusters are supported. When
+	// running tasks on an existing cluster, you may need to manually restart
+	// the cluster if it stops responding. We suggest running jobs on new
+	// clusters for greater reliability.
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
