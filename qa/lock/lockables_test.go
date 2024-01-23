@@ -1,6 +1,10 @@
 package lock
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/databricks/databricks-sdk-go/qa/lock/internal"
+)
 
 func TestGenerateBlobName(t *testing.T) {
 	type testStruct struct {
@@ -31,7 +35,7 @@ func TestGenerateBlobName(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			got := generateBlobName(c.in)
+			got := internal.GenerateBlobName(c.in)
 			if got != c.want {
 				t.Errorf("generateBlobName(%v) == %s, want %s", c.in, got, c.want)
 			}
@@ -67,7 +71,7 @@ func TestGenerateBlobName_Panic(t *testing.T) {
 					t.Errorf("generateBlobName(%v) did not panic", c.in)
 				}
 			}()
-			generateBlobName(c.in)
+			internal.GenerateBlobName(c.in)
 		})
 	}
 }

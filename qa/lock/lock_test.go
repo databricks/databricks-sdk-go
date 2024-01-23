@@ -6,12 +6,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/qa/lock/core"
 	"github.com/stretchr/testify/assert"
 )
 
 type testBackend struct {
 	prepareBackend func(lockId string) error
-	acquireLock    func(contents *lockState) error
+	acquireLock    func(contents *core.LockState) error
 	renewLock      func(leaseId string) error
 	releaseLock    func(leaseId string) error
 }
@@ -20,7 +21,7 @@ func (b *testBackend) PrepareBackend(_ context.Context, lockId string) error {
 	return b.prepareBackend(lockId)
 }
 
-func (b *testBackend) AcquireLock(_ context.Context, contents *lockState) error {
+func (b *testBackend) AcquireLock(_ context.Context, contents *core.LockState) error {
 	return b.acquireLock(contents)
 }
 
@@ -36,7 +37,7 @@ func (b *testBackend) RefreshDuration() time.Duration {
 	return 10 * time.Millisecond
 }
 
-var _ LockBackend = &testBackend{}
+var _ core.LockBackend = &testBackend{}
 
 func getOptions(backend *testBackend) []LockOption {
 	return []LockOption{
@@ -62,7 +63,7 @@ func TestAcquire_AcquireLockFails(t *testing.T) {
 		prepareBackend: func(lockId string) error {
 			return nil
 		},
-		acquireLock: func(contents *lockState) error {
+		acquireLock: func(contents *core.LockState) error {
 			return errTest
 		},
 	}
@@ -76,8 +77,8 @@ func TestAcquire_UnlockFails(t *testing.T) {
 		prepareBackend: func(lockId string) error {
 			return nil
 		},
-		acquireLock: func(contents *lockState) error {
-			return errTest
+		acquireLock: func(contents *core.LockState) error {
+			return nil
 		},
 		releaseLock: func(leaseId string) error {
 			return errTest
@@ -97,7 +98,7 @@ func TestAcquire_UnlockSucceeds(t *testing.T) {
 		prepareBackend: func(lockId string) error {
 			return nil
 		},
-		acquireLock: func(contents *lockState) error {
+		acquireLock: func(contents *core.LockState) error {
 			return nil
 		},
 		releaseLock: func(leaseId string) error {

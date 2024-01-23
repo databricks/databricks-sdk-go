@@ -1,4 +1,4 @@
-package lock
+package core
 
 import (
 	"context"
@@ -13,7 +13,7 @@ type LockBackend interface {
 
 	// AcquireLock acquires the lock. This is called once per lock. Locking is aborted
 	// if this fails.
-	AcquireLock(ctx context.Context, contents *lockState) error
+	AcquireLock(ctx context.Context, contents *LockState) error
 
 	// RenewLock renews the lock. This is called periodically while the lock is held.
 	RenewLock(ctx context.Context, leaseId string) error

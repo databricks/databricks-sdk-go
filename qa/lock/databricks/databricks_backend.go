@@ -1,4 +1,4 @@
-package lock
+package databricks
 
 import (
 	"bytes"
@@ -12,20 +12,21 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/qa/lock/core"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
 
-// databricksBackend stores locks in the Databricks workspace. All locks are stored
+// Backend stores locks in the Databricks workspace. All locks are stored
 // in a fixed directory, and each lock is stored in a file named after the lock ID.
 // The workspace client is shared by all locks.
-type databricksBackend struct {
+type Backend struct {
 	lockClient *databricks.WorkspaceClient
 	lockDir    string
 	lockName   string
 }
 
 // Configure the backend by setting the workspace client and lock file.
-func (d *databricksBackend) PrepareBackend(ctx context.Context, lockId string) error {
+func (d *Backend) PrepareBackend(ctx context.Context, lockId string) error {
 	configJson, lockDirectory := os.Getenv("LOCK_CONFIG"), os.Getenv("LOCK_DIRECTORY")
 	if configJson == "" || lockDirectory == "" {
 		panic("LOCK_CONFIG and LOCK_DIRECTORY must be set")
@@ -48,11 +49,11 @@ func (d *databricksBackend) PrepareBackend(ctx context.Context, lockId string) e
 	return nil
 }
 
-func (d *databricksBackend) getLockPath() string {
+func (d *Backend) getLockPath() string {
 	return fmt.Sprintf("%s/%s.lock", d.lockDir, d.lockName)
 }
 
-func (d *databricksBackend) getCurrentLockState(ctx context.Context) (*lockState, error) {
+func (d *Backend) getCurrentLockState(ctx context.Context) (*core.LockState, error) {
 	resp, err := d.lockClient.Workspace.Download(ctx, d.getLockPath())
 	if errors.Is(err, apierr.ErrNotFound) {
 		return nil, nil
@@ -65,7 +66,7 @@ func (d *databricksBackend) getCurrentLockState(ctx context.Context) (*lockState
 		return nil, fmt.Errorf("failed to read lock %s state: %w", d.lockName, err)
 	}
 
-	var state lockState
+	var state core.LockState
 	err = json.Unmarshal(bs, &state)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal lock %s state: %w", d.lockName, err)
@@ -74,7 +75,7 @@ func (d *databricksBackend) getCurrentLockState(ctx context.Context) (*lockState
 	return &state, nil
 }
 
-func (d *databricksBackend) uploadLockState(ctx context.Context, contents *lockState, overwrite bool) error {
+func (d *Backend) uploadLockState(ctx context.Context, contents *core.LockState, overwrite bool) error {
 	buf, err := json.Marshal(contents)
 	if err != nil {
 		return fmt.Errorf("failed to marshal contents: %w", err)
@@ -92,7 +93,7 @@ func (d *databricksBackend) uploadLockState(ctx context.Context, contents *lockS
 // If it doesn't exist, create it.
 // If it is valid, return an error.
 // If it is not valid, delete the lock file and create a new one.
-func (d *databricksBackend) AcquireLock(ctx context.Context, contents *lockState) error {
+func (d *Backend) AcquireLock(ctx context.Context, contents *core.LockState) error {
 	lockState, err := d.getCurrentLockState(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to get lock state during acquire: %w", err)
@@ -124,7 +125,7 @@ func (d *databricksBackend) AcquireLock(ctx context.Context, contents *lockState
 // If it doesn't exist or is invalid, fail (the lock should be kept valid the entire time it is in use).
 // If it is valid and held by a different lease, return an error.
 // Otherwise, extend the lease.
-func (d *databricksBackend) RenewLock(ctx context.Context, leaseId string) error {
+func (d *Backend) RenewLock(ctx context.Context, leaseId string) error {
 	lockState, err := d.getCurrentLockState(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to get lock state during renew: %w", err)
@@ -142,7 +143,7 @@ func (d *databricksBackend) RenewLock(ctx context.Context, leaseId string) error
 	return d.uploadLockState(ctx, lockState, true)
 }
 
-func (d *databricksBackend) ReleaseLock(ctx context.Context, leaseId string) error {
+func (d *Backend) ReleaseLock(ctx context.Context, leaseId string) error {
 	lockState, err := d.getCurrentLockState(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to get lock state during release: %w", err)
@@ -157,8 +158,8 @@ func (d *databricksBackend) ReleaseLock(ctx context.Context, leaseId string) err
 	return d.lockClient.Workspace.Delete(ctx, workspace.Delete{Path: d.getLockPath()})
 }
 
-func (d *databricksBackend) RefreshDuration() time.Duration {
+func (d *Backend) RefreshDuration() time.Duration {
 	return time.Minute
 }
 
-var _ LockBackend = &databricksBackend{}
+var _ core.LockBackend = &Backend{}

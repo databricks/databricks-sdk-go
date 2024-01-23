@@ -1,4 +1,4 @@
-package lock
+package internal
 
 import (
 	"bytes"
@@ -6,44 +6,7 @@ import (
 	"reflect"
 )
 
-type Lockable interface {
-	GetLockId() string
-}
-
-// GitCredentials are unique to the user and workspace.
-type GitCredentials struct {
-	WorkspaceHost string
-	Username      string
-}
-
-func (g GitCredentials) GetLockId() string {
-	return generateBlobName(g)
-}
-
-// Some operations require locking the entire workspace.
-type Workspace struct {
-	WorkspaceId string
-}
-
-func (w Workspace) GetLockId() string {
-	return generateBlobName(w)
-}
-
-// LockableImpl is a default implementation of Lockable. If r is a struct, it uses
-// reflection to generate a unique lock ID based on the name and fields of the struct.
-// If r is a string, it uses the string as the lock ID.
-type LockableImpl[R any] struct {
-	r R
-}
-
-func NewLockable[R any](r R) LockableImpl[R] {
-	return LockableImpl[R]{r: r}
-}
-func (l LockableImpl[R]) GetLockId() string {
-	return generateBlobName(l.r)
-}
-
-func generateBlobName[R any](r R) string {
+func GenerateBlobName[R any](r R) string {
 	rv := reflect.ValueOf(r)
 	if rv.Kind() == reflect.Ptr {
 		rv = rv.Elem()

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/qa/lock/core"
+	"github.com/databricks/databricks-sdk-go/qa/lock/databricks"
 	"github.com/google/uuid"
 )
 
@@ -24,13 +26,13 @@ import (
 //
 // By default, the lock will be acquired using the azureBackend. This can be
 // changed by passing the WithBackend() LockOption.
-func Acquire(ctx context.Context, lockable Lockable, os ...LockOption) (*Lock, error) {
+func Acquire(ctx context.Context, lockable core.Lockable, os ...LockOption) (*Lock, error) {
 	opts := LockOptions{}
 	for _, o := range os {
 		o(&opts)
 	}
 	if opts.Backend == nil {
-		opts.Backend = &databricksBackend{}
+		opts.Backend = &databricks.Backend{}
 	}
 	if opts.LeaseDuration == 0 {
 		opts.LeaseDuration = time.Minute
@@ -53,7 +55,7 @@ func Acquire(ctx context.Context, lockable Lockable, os ...LockOption) (*Lock, e
 
 	timesToPoll := int(opts.LeaseDuration/(10*time.Second)) + 1
 	for i := 0; i < timesToPoll; i++ {
-		state := newLockState(lockable, leaseId, opts.LeaseDuration, opts.T)
+		state := core.NewLockState(lockable, leaseId, opts.LeaseDuration, opts.T)
 		err = opts.Backend.AcquireLock(ctx, state)
 		if err == nil {
 			break
