@@ -21,12 +21,12 @@ func TestGenerateBlobName(t *testing.T) {
 		{
 			name: "struct",
 			in:   testStruct{A: "hello", B: 1},
-			want: "A=hello;B=1",
+			want: "testStruct:A=hello;B=1",
 		},
 		{
 			name: "struct pointer",
 			in:   &testStruct{A: "hello", B: 1},
-			want: "A=hello;B=1",
+			want: "testStruct:A=hello;B=1",
 		},
 	}
 	for _, c := range cases {
