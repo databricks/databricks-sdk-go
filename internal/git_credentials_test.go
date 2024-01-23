@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func acquireLock(ctx context.Context, t *testing.T, w *databricks.WorkspaceClient) {
+func acquireGitCredentialsLock(ctx context.Context, t *testing.T, w *databricks.WorkspaceClient) {
 	me, err := w.CurrentUser.Me(ctx)
 	require.NoError(t, err)
 	lockable := lock.GitCredentials{
@@ -26,7 +26,7 @@ func TestAccGitCredentials(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	// skip-next-line-roll
-	acquireLock(ctx, t, w)
+	acquireGitCredentialsLock(ctx, t, w)
 	list, err := w.GitCredentials.ListAll(ctx)
 	require.NoError(t, err)
 	for _, v := range list {
