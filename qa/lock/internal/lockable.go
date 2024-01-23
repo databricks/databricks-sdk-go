@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 func GenerateBlobName[R any](r R) string {
@@ -26,7 +27,8 @@ func GenerateBlobName[R any](r R) string {
 			id.WriteString(fmt.Sprintf("%s=", fieldName))
 			switch v := rv.Field(i).Interface().(type) {
 			case string:
-				id.WriteString(v)
+				noSlashes := strings.ReplaceAll(v, "/", "_")
+				id.WriteString(noSlashes)
 			case int, int8, int16, int32, int64:
 				id.WriteString(fmt.Sprintf("%d", v))
 			default:

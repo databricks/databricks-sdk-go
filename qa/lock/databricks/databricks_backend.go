@@ -25,12 +25,18 @@ type Backend struct {
 	lockName   string
 }
 
+func getEnvOrFail(key string) string {
+	val := os.Getenv(key)
+	if val == "" {
+		panic(fmt.Sprintf("%s must be set", key))
+	}
+	return val
+}
+
 // Configure the backend by setting the workspace client and lock file.
 func (d *Backend) PrepareBackend(ctx context.Context, lockId string) error {
-	configJson, lockDirectory := os.Getenv("LOCK_CONFIG"), os.Getenv("LOCK_DIRECTORY")
-	if configJson == "" || lockDirectory == "" {
-		panic("LOCK_CONFIG and LOCK_DIRECTORY must be set")
-	}
+	configJson := getEnvOrFail("LOCK_CLIENT_CONFIG")
+	lockDirectory := getEnvOrFail("LOCK_DIRECTORY")
 
 	c := &databricks.Config{}
 	err := json.Unmarshal([]byte(configJson), c)
@@ -66,6 +72,8 @@ func (d *Backend) getCurrentLockState(ctx context.Context) (*core.LockState, err
 		return nil, fmt.Errorf("failed to read lock %s state: %w", d.lockName, err)
 	}
 
+	bs = bytes.TrimPrefix(bs, []byte("# Databricks notebook source\n"))
+
 	var state core.LockState
 	err = json.Unmarshal(bs, &state)
 	if err != nil {
@@ -81,7 +89,10 @@ func (d *Backend) uploadLockState(ctx context.Context, contents *core.LockState,
 		return fmt.Errorf("failed to marshal contents: %w", err)
 	}
 
-	opts := []workspace.UploadOption{}
+	opts := []workspace.UploadOption{
+		workspace.UploadLanguage(workspace.LanguagePython),
+		workspace.UploadFormat(workspace.ImportFormatSource),
+	}
 	if overwrite {
 		opts = append(opts, workspace.UploadOverwrite())
 	}
