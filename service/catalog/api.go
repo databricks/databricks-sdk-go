@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, External Locations, Functions, Grants, Metastores, Model Versions, Registered Models, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Volumes, Workspace Bindings, etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, External Locations, Functions, Grants, Lakehouse Monitors, Metastores, Model Versions, Registered Models, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Volumes, Workspace Bindings, etc.
 package catalog
 
 import (
@@ -1816,6 +1816,267 @@ func (a *GrantsAPI) GetEffectiveBySecurableTypeAndFullName(ctx context.Context, 
 //
 // Updates the permissions for a securable.
 func (a *GrantsAPI) Update(ctx context.Context, request UpdatePermissions) (*PermissionsList, error) {
+	return a.impl.Update(ctx, request)
+}
+
+type LakehouseMonitorsInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockLakehouseMonitorsInterface instead.
+	WithImpl(impl LakehouseMonitorsService) LakehouseMonitorsInterface
+
+	// Impl returns low-level LakehouseMonitors API implementation
+	// Deprecated: use MockLakehouseMonitorsInterface instead.
+	Impl() LakehouseMonitorsService
+
+	// Create a table monitor.
+	//
+	// Creates a new monitor for the specified table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog, have
+	// **USE_SCHEMA** on the table's parent schema, and have **SELECT** access on
+	// the table 2. have **USE_CATALOG** on the table's parent catalog, be an owner
+	// of the table's parent schema, and have **SELECT** access on the table. 3.
+	// have the following permissions: - **USE_CATALOG** on the table's parent
+	// catalog - **USE_SCHEMA** on the table's parent schema - be an owner of the
+	// table.
+	//
+	// Workspace assets, such as the dashboard, will be created in the workspace
+	// where this call was made.
+	Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error)
+
+	// Delete a table monitor.
+	//
+	// Deletes a monitor for the specified table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2. have
+	// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
+	// parent schema 3. have the following permissions: - **USE_CATALOG** on the
+	// table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+	// owner of the table.
+	//
+	// Additionally, the call must be made from the workspace where the monitor was
+	// created.
+	//
+	// Note that the metric tables and dashboard will not be deleted as part of this
+	// call; those assets must be manually cleaned up (if desired).
+	Delete(ctx context.Context, request DeleteLakehouseMonitorRequest) error
+
+	// Delete a table monitor.
+	//
+	// Deletes a monitor for the specified table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2. have
+	// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
+	// parent schema 3. have the following permissions: - **USE_CATALOG** on the
+	// table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+	// owner of the table.
+	//
+	// Additionally, the call must be made from the workspace where the monitor was
+	// created.
+	//
+	// Note that the metric tables and dashboard will not be deleted as part of this
+	// call; those assets must be manually cleaned up (if desired).
+	DeleteByFullName(ctx context.Context, fullName string) error
+
+	// Get a table monitor.
+	//
+	// Gets a monitor for the specified table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2. have
+	// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
+	// parent schema. 3. have the following permissions: - **USE_CATALOG** on the
+	// table's parent catalog - **USE_SCHEMA** on the table's parent schema -
+	// **SELECT** privilege on the table.
+	//
+	// The returned information includes configuration values, as well as
+	// information on assets created by the monitor. Some information (e.g.,
+	// dashboard) may be filtered out if the caller is in a different workspace than
+	// where the monitor was created.
+	Get(ctx context.Context, request GetLakehouseMonitorRequest) (*MonitorInfo, error)
+
+	// Get a table monitor.
+	//
+	// Gets a monitor for the specified table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2. have
+	// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
+	// parent schema. 3. have the following permissions: - **USE_CATALOG** on the
+	// table's parent catalog - **USE_SCHEMA** on the table's parent schema -
+	// **SELECT** privilege on the table.
+	//
+	// The returned information includes configuration values, as well as
+	// information on assets created by the monitor. Some information (e.g.,
+	// dashboard) may be filtered out if the caller is in a different workspace than
+	// where the monitor was created.
+	GetByFullName(ctx context.Context, fullName string) (*MonitorInfo, error)
+
+	// Update a table monitor.
+	//
+	// Updates a monitor for the specified table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2. have
+	// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
+	// parent schema 3. have the following permissions: - **USE_CATALOG** on the
+	// table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+	// owner of the table.
+	//
+	// Additionally, the call must be made from the workspace where the monitor was
+	// created, and the caller must be the original creator of the monitor.
+	//
+	// Certain configuration fields, such as output asset identifiers, cannot be
+	// updated.
+	Update(ctx context.Context, request UpdateMonitor) (*MonitorInfo, error)
+}
+
+func NewLakehouseMonitors(client *client.DatabricksClient) *LakehouseMonitorsAPI {
+	return &LakehouseMonitorsAPI{
+		impl: &lakehouseMonitorsImpl{
+			client: client,
+		},
+	}
+}
+
+// A monitor computes and monitors data or model quality metrics for a table
+// over time. It generates metrics tables and a dashboard that you can use to
+// monitor table health and set alerts.
+//
+// Most write operations require the user to be the owner of the table (or its
+// parent schema or parent catalog). Viewing the dashboard, computed metrics, or
+// monitor configuration only requires the user to have **SELECT** privileges on
+// the table (along with **USE_SCHEMA** and **USE_CATALOG**).
+type LakehouseMonitorsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(LakehouseMonitorsService)
+	impl LakehouseMonitorsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockLakehouseMonitorsInterface instead.
+func (a *LakehouseMonitorsAPI) WithImpl(impl LakehouseMonitorsService) LakehouseMonitorsInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level LakehouseMonitors API implementation
+// Deprecated: use MockLakehouseMonitorsInterface instead.
+func (a *LakehouseMonitorsAPI) Impl() LakehouseMonitorsService {
+	return a.impl
+}
+
+// Create a table monitor.
+//
+// Creates a new monitor for the specified table.
+//
+// The caller must either: 1. be an owner of the table's parent catalog, have
+// **USE_SCHEMA** on the table's parent schema, and have **SELECT** access on
+// the table 2. have **USE_CATALOG** on the table's parent catalog, be an owner
+// of the table's parent schema, and have **SELECT** access on the table. 3.
+// have the following permissions: - **USE_CATALOG** on the table's parent
+// catalog - **USE_SCHEMA** on the table's parent schema - be an owner of the
+// table.
+//
+// Workspace assets, such as the dashboard, will be created in the workspace
+// where this call was made.
+func (a *LakehouseMonitorsAPI) Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Delete a table monitor.
+//
+// Deletes a monitor for the specified table.
+//
+// The caller must either: 1. be an owner of the table's parent catalog 2. have
+// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
+// parent schema 3. have the following permissions: - **USE_CATALOG** on the
+// table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+// owner of the table.
+//
+// Additionally, the call must be made from the workspace where the monitor was
+// created.
+//
+// Note that the metric tables and dashboard will not be deleted as part of this
+// call; those assets must be manually cleaned up (if desired).
+func (a *LakehouseMonitorsAPI) Delete(ctx context.Context, request DeleteLakehouseMonitorRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Delete a table monitor.
+//
+// Deletes a monitor for the specified table.
+//
+// The caller must either: 1. be an owner of the table's parent catalog 2. have
+// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
+// parent schema 3. have the following permissions: - **USE_CATALOG** on the
+// table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+// owner of the table.
+//
+// Additionally, the call must be made from the workspace where the monitor was
+// created.
+//
+// Note that the metric tables and dashboard will not be deleted as part of this
+// call; those assets must be manually cleaned up (if desired).
+func (a *LakehouseMonitorsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
+	return a.impl.Delete(ctx, DeleteLakehouseMonitorRequest{
+		FullName: fullName,
+	})
+}
+
+// Get a table monitor.
+//
+// Gets a monitor for the specified table.
+//
+// The caller must either: 1. be an owner of the table's parent catalog 2. have
+// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
+// parent schema. 3. have the following permissions: - **USE_CATALOG** on the
+// table's parent catalog - **USE_SCHEMA** on the table's parent schema -
+// **SELECT** privilege on the table.
+//
+// The returned information includes configuration values, as well as
+// information on assets created by the monitor. Some information (e.g.,
+// dashboard) may be filtered out if the caller is in a different workspace than
+// where the monitor was created.
+func (a *LakehouseMonitorsAPI) Get(ctx context.Context, request GetLakehouseMonitorRequest) (*MonitorInfo, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Get a table monitor.
+//
+// Gets a monitor for the specified table.
+//
+// The caller must either: 1. be an owner of the table's parent catalog 2. have
+// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
+// parent schema. 3. have the following permissions: - **USE_CATALOG** on the
+// table's parent catalog - **USE_SCHEMA** on the table's parent schema -
+// **SELECT** privilege on the table.
+//
+// The returned information includes configuration values, as well as
+// information on assets created by the monitor. Some information (e.g.,
+// dashboard) may be filtered out if the caller is in a different workspace than
+// where the monitor was created.
+func (a *LakehouseMonitorsAPI) GetByFullName(ctx context.Context, fullName string) (*MonitorInfo, error) {
+	return a.impl.Get(ctx, GetLakehouseMonitorRequest{
+		FullName: fullName,
+	})
+}
+
+// Update a table monitor.
+//
+// Updates a monitor for the specified table.
+//
+// The caller must either: 1. be an owner of the table's parent catalog 2. have
+// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
+// parent schema 3. have the following permissions: - **USE_CATALOG** on the
+// table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+// owner of the table.
+//
+// Additionally, the call must be made from the workspace where the monitor was
+// created, and the caller must be the original creator of the monitor.
+//
+// Certain configuration fields, such as output asset identifiers, cannot be
+// updated.
+func (a *LakehouseMonitorsAPI) Update(ctx context.Context, request UpdateMonitor) (*MonitorInfo, error) {
 	return a.impl.Update(ctx, request)
 }
 
@@ -3891,22 +4152,50 @@ type TablesInterface interface {
 	// **USE_SCHEMA** privilege on the parent schema.
 	DeleteByFullName(ctx context.Context, fullName string) error
 
+	// Get boolean reflecting if table exists.
+	//
+	// Gets if a table exists in the metastore for a specific catalog and schema.
+	// The caller must satisfy one of the following requirements: * Be a metastore
+	// admin * Be the owner of the parent catalog * Be the owner of the parent
+	// schema and have the USE_CATALOG privilege on the parent catalog * Have the
+	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+	// privilege on the parent schema, and either be the table owner or have the
+	// SELECT privilege on the table. * Have BROWSE privilege on the parent catalog
+	// * Have BROWSE privilege on the parent schema.
+	Exists(ctx context.Context, request ExistsRequest) (*TableExistsResponse, error)
+
+	// Get boolean reflecting if table exists.
+	//
+	// Gets if a table exists in the metastore for a specific catalog and schema.
+	// The caller must satisfy one of the following requirements: * Be a metastore
+	// admin * Be the owner of the parent catalog * Be the owner of the parent
+	// schema and have the USE_CATALOG privilege on the parent catalog * Have the
+	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+	// privilege on the parent schema, and either be the table owner or have the
+	// SELECT privilege on the table. * Have BROWSE privilege on the parent catalog
+	// * Have BROWSE privilege on the parent schema.
+	ExistsByFullName(ctx context.Context, fullName string) (*TableExistsResponse, error)
+
 	// Get a table.
 	//
 	// Gets a table from the metastore for a specific catalog and schema. The caller
-	// must be a metastore admin, be the owner of the table and have the
-	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
-	// privilege on the parent schema, or be the owner of the table and have the
-	// **SELECT** privilege on it as well.
+	// must satisfy one of the following requirements: * Be a metastore admin * Be
+	// the owner of the parent catalog * Be the owner of the parent schema and have
+	// the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
+	// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+	// parent schema, and either be the table owner or have the SELECT privilege on
+	// the table.
 	Get(ctx context.Context, request GetTableRequest) (*TableInfo, error)
 
 	// Get a table.
 	//
 	// Gets a table from the metastore for a specific catalog and schema. The caller
-	// must be a metastore admin, be the owner of the table and have the
-	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
-	// privilege on the parent schema, or be the owner of the table and have the
-	// **SELECT** privilege on it as well.
+	// must satisfy one of the following requirements: * Be a metastore admin * Be
+	// the owner of the parent catalog * Be the owner of the parent schema and have
+	// the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
+	// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+	// parent schema, and either be the table owner or have the SELECT privilege on
+	// the table.
 	GetByFullName(ctx context.Context, fullName string) (*TableInfo, error)
 
 	// List tables.
@@ -4057,13 +4346,45 @@ func (a *TablesAPI) DeleteByFullName(ctx context.Context, fullName string) error
 	})
 }
 
+// Get boolean reflecting if table exists.
+//
+// Gets if a table exists in the metastore for a specific catalog and schema.
+// The caller must satisfy one of the following requirements: * Be a metastore
+// admin * Be the owner of the parent catalog * Be the owner of the parent
+// schema and have the USE_CATALOG privilege on the parent catalog * Have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema, and either be the table owner or have the
+// SELECT privilege on the table. * Have BROWSE privilege on the parent catalog
+// * Have BROWSE privilege on the parent schema.
+func (a *TablesAPI) Exists(ctx context.Context, request ExistsRequest) (*TableExistsResponse, error) {
+	return a.impl.Exists(ctx, request)
+}
+
+// Get boolean reflecting if table exists.
+//
+// Gets if a table exists in the metastore for a specific catalog and schema.
+// The caller must satisfy one of the following requirements: * Be a metastore
+// admin * Be the owner of the parent catalog * Be the owner of the parent
+// schema and have the USE_CATALOG privilege on the parent catalog * Have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema, and either be the table owner or have the
+// SELECT privilege on the table. * Have BROWSE privilege on the parent catalog
+// * Have BROWSE privilege on the parent schema.
+func (a *TablesAPI) ExistsByFullName(ctx context.Context, fullName string) (*TableExistsResponse, error) {
+	return a.impl.Exists(ctx, ExistsRequest{
+		FullName: fullName,
+	})
+}
+
 // Get a table.
 //
 // Gets a table from the metastore for a specific catalog and schema. The caller
-// must be a metastore admin, be the owner of the table and have the
-// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
-// privilege on the parent schema, or be the owner of the table and have the
-// **SELECT** privilege on it as well.
+// must satisfy one of the following requirements: * Be a metastore admin * Be
+// the owner of the parent catalog * Be the owner of the parent schema and have
+// the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
+// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+// parent schema, and either be the table owner or have the SELECT privilege on
+// the table.
 func (a *TablesAPI) Get(ctx context.Context, request GetTableRequest) (*TableInfo, error) {
 	return a.impl.Get(ctx, request)
 }
@@ -4071,10 +4392,12 @@ func (a *TablesAPI) Get(ctx context.Context, request GetTableRequest) (*TableInf
 // Get a table.
 //
 // Gets a table from the metastore for a specific catalog and schema. The caller
-// must be a metastore admin, be the owner of the table and have the
-// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
-// privilege on the parent schema, or be the owner of the table and have the
-// **SELECT** privilege on it as well.
+// must satisfy one of the following requirements: * Be a metastore admin * Be
+// the owner of the parent catalog * Be the owner of the parent schema and have
+// the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
+// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+// parent schema, and either be the table owner or have the SELECT privilege on
+// the table.
 func (a *TablesAPI) GetByFullName(ctx context.Context, fullName string) (*TableInfo, error) {
 	return a.impl.Get(ctx, GetTableRequest{
 		FullName: fullName,

@@ -14,30 +14,30 @@ type DbfsService interface {
 	//
 	// Appends a block of data to the stream specified by the input handle. If
 	// the handle does not exist, this call will throw an exception with
-	// `RESOURCE_DOES_NOT_EXIST`.
+	// ``RESOURCE_DOES_NOT_EXIST``.
 	//
 	// If the block of data exceeds 1 MB, this call will throw an exception with
-	// `MAX_BLOCK_SIZE_EXCEEDED`.
+	// ``MAX_BLOCK_SIZE_EXCEEDED``.
 	AddBlock(ctx context.Context, request AddBlock) error
 
 	// Close the stream.
 	//
 	// Closes the stream specified by the input handle. If the handle does not
-	// exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
+	// exist, this call throws an exception with ``RESOURCE_DOES_NOT_EXIST``.
 	Close(ctx context.Context, request Close) error
 
 	// Open a stream.
 	//
 	// Opens a stream to write to a file and returns a handle to this stream.
 	// There is a 10 minute idle timeout on this handle. If a file or directory
-	// already exists on the given path and __overwrite__ is set to `false`,
-	// this call throws an exception with `RESOURCE_ALREADY_EXISTS`.
+	// already exists on the given path and __overwrite__ is set to false, this
+	// call will throw an exception with ``RESOURCE_ALREADY_EXISTS``.
 	//
 	// A typical workflow for file upload would be:
 	//
-	// 1. Issue a `create` call and get a handle. 2. Issue one or more
-	// `add-block` calls with the handle you have. 3. Issue a `close` call with
-	// the handle you have.
+	// 1. Issue a ``create`` call and get a handle. 2. Issue one or more
+	// ``add-block`` calls with the handle you have. 3. Issue a ``close`` call
+	// with the handle you have.
 	Create(ctx context.Context, request Create) (*CreateResponse, error)
 
 	// Delete a file/directory.
@@ -103,7 +103,7 @@ type DbfsService interface {
 	// `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the destination
 	// path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If
 	// the given source path is a directory, this call always recursively moves
-	// all files.",
+	// all files.
 	Move(ctx context.Context, request Move) error
 
 	// Upload a file.
@@ -132,7 +132,7 @@ type DbfsService interface {
 	// `MAX_READ_SIZE_EXCEEDED`.
 	//
 	// If `offset + length` exceeds the number of bytes in a file, it reads the
-	// contents until the end of file.",
+	// contents until the end of file.
 	Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error)
 }
 

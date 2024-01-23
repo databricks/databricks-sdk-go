@@ -109,7 +109,7 @@ func TestAccAlerts(t *testing.T) {
 func TestAccDashboards(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	created, err := w.Dashboards.Create(ctx, sql.CreateDashboardRequest{
+	created, err := w.Dashboards.Create(ctx, sql.DashboardPostContent{
 		Name: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)

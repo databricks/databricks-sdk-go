@@ -25,7 +25,7 @@ func (_m *MockDashboardsInterface) EXPECT() *MockDashboardsInterface_Expecter {
 }
 
 // Create provides a mock function with given fields: ctx, request
-func (_m *MockDashboardsInterface) Create(ctx context.Context, request sql.CreateDashboardRequest) (*sql.Dashboard, error) {
+func (_m *MockDashboardsInterface) Create(ctx context.Context, request sql.DashboardPostContent) (*sql.Dashboard, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -34,10 +34,10 @@ func (_m *MockDashboardsInterface) Create(ctx context.Context, request sql.Creat
 
 	var r0 *sql.Dashboard
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateDashboardRequest) (*sql.Dashboard, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.DashboardPostContent) (*sql.Dashboard, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateDashboardRequest) *sql.Dashboard); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.DashboardPostContent) *sql.Dashboard); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -45,7 +45,7 @@ func (_m *MockDashboardsInterface) Create(ctx context.Context, request sql.Creat
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, sql.CreateDashboardRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, sql.DashboardPostContent) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -61,14 +61,14 @@ type MockDashboardsInterface_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request sql.CreateDashboardRequest
+//   - request sql.DashboardPostContent
 func (_e *MockDashboardsInterface_Expecter) Create(ctx interface{}, request interface{}) *MockDashboardsInterface_Create_Call {
 	return &MockDashboardsInterface_Create_Call{Call: _e.mock.On("Create", ctx, request)}
 }
 
-func (_c *MockDashboardsInterface_Create_Call) Run(run func(ctx context.Context, request sql.CreateDashboardRequest)) *MockDashboardsInterface_Create_Call {
+func (_c *MockDashboardsInterface_Create_Call) Run(run func(ctx context.Context, request sql.DashboardPostContent)) *MockDashboardsInterface_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.CreateDashboardRequest))
+		run(args[0].(context.Context), args[1].(sql.DashboardPostContent))
 	})
 	return _c
 }
@@ -78,7 +78,7 @@ func (_c *MockDashboardsInterface_Create_Call) Return(_a0 *sql.Dashboard, _a1 er
 	return _c
 }
 
-func (_c *MockDashboardsInterface_Create_Call) RunAndReturn(run func(context.Context, sql.CreateDashboardRequest) (*sql.Dashboard, error)) *MockDashboardsInterface_Create_Call {
+func (_c *MockDashboardsInterface_Create_Call) RunAndReturn(run func(context.Context, sql.DashboardPostContent) (*sql.Dashboard, error)) *MockDashboardsInterface_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -611,6 +611,65 @@ func (_c *MockDashboardsInterface_Restore_Call) Return(_a0 error) *MockDashboard
 }
 
 func (_c *MockDashboardsInterface_Restore_Call) RunAndReturn(run func(context.Context, sql.RestoreDashboardRequest) error) *MockDashboardsInterface_Restore_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Update provides a mock function with given fields: ctx, request
+func (_m *MockDashboardsInterface) Update(ctx context.Context, request sql.DashboardEditContent) (*sql.Dashboard, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Update")
+	}
+
+	var r0 *sql.Dashboard
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, sql.DashboardEditContent) (*sql.Dashboard, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, sql.DashboardEditContent) *sql.Dashboard); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*sql.Dashboard)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, sql.DashboardEditContent) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDashboardsInterface_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
+type MockDashboardsInterface_Update_Call struct {
+	*mock.Call
+}
+
+// Update is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sql.DashboardEditContent
+func (_e *MockDashboardsInterface_Expecter) Update(ctx interface{}, request interface{}) *MockDashboardsInterface_Update_Call {
+	return &MockDashboardsInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
+}
+
+func (_c *MockDashboardsInterface_Update_Call) Run(run func(ctx context.Context, request sql.DashboardEditContent)) *MockDashboardsInterface_Update_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sql.DashboardEditContent))
+	})
+	return _c
+}
+
+func (_c *MockDashboardsInterface_Update_Call) Return(_a0 *sql.Dashboard, _a1 error) *MockDashboardsInterface_Update_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDashboardsInterface_Update_Call) RunAndReturn(run func(context.Context, sql.DashboardEditContent) (*sql.Dashboard, error)) *MockDashboardsInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

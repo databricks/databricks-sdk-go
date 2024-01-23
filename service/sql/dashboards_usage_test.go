@@ -20,7 +20,7 @@ func ExampleDashboardsAPI_Create_dashboards() {
 		panic(err)
 	}
 
-	created, err := w.Dashboards.Create(ctx, sql.CreateDashboardRequest{
+	created, err := w.Dashboards.Create(ctx, sql.DashboardPostContent{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 	})
 	if err != nil {
@@ -44,7 +44,7 @@ func ExampleDashboardsAPI_Delete_dashboards() {
 		panic(err)
 	}
 
-	created, err := w.Dashboards.Create(ctx, sql.CreateDashboardRequest{
+	created, err := w.Dashboards.Create(ctx, sql.DashboardPostContent{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 	})
 	if err != nil {
@@ -73,7 +73,7 @@ func ExampleDashboardsAPI_Get_dashboards() {
 		panic(err)
 	}
 
-	created, err := w.Dashboards.Create(ctx, sql.CreateDashboardRequest{
+	created, err := w.Dashboards.Create(ctx, sql.DashboardPostContent{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 	})
 	if err != nil {
@@ -118,7 +118,7 @@ func ExampleDashboardsAPI_Restore_dashboards() {
 		panic(err)
 	}
 
-	created, err := w.Dashboards.Create(ctx, sql.CreateDashboardRequest{
+	created, err := w.Dashboards.Create(ctx, sql.DashboardPostContent{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 	})
 	if err != nil {

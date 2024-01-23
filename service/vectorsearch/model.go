@@ -550,7 +550,7 @@ type QueryVectorIndexRequest struct {
 	QueryText string `json:"query_text,omitempty"`
 	// Query vector. Required for Direct Vector Access Index and Delta Sync
 	// Index using self-managed vectors.
-	QueryVector []any/* MISSING TYPE */ `json:"query_vector,omitempty"`
+	QueryVector []float64 `json:"query_vector,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

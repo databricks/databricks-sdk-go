@@ -12,11 +12,11 @@ import (
 // limit their use to specific users and groups.
 //
 // With cluster policies, you can: - Auto-install cluster libraries on the next
-// restart by listing them in the policy's "libraries" field. - Limit users to
-// creating clusters with the prescribed settings. - Simplify the user
-// interface, enabling more users to create clusters, by fixing and hiding some
-// fields. - Manage costs by setting limits on attributes that impact the hourly
-// rate.
+// restart by listing them in the policy's "libraries" field (Public Preview). -
+// Limit users to creating clusters with the prescribed settings. - Simplify the
+// user interface, enabling more users to create clusters, by fixing and hiding
+// some fields. - Manage costs by setting limits on attributes that impact the
+// hourly rate.
 //
 // Cluster policy permissions limit which policies a user can select in the
 // Policy drop-down when the user creates a cluster: - A user who has
@@ -116,8 +116,9 @@ type ClustersService interface {
 
 	// Change cluster owner.
 	//
-	// Change the owner of the cluster. You must be an admin to perform this
-	// operation.
+	// Change the owner of the cluster. You must be an admin and the cluster
+	// must be terminated to perform this operation. The service principal
+	// application ID can be supplied as an argument to `owner_username`.
 	ChangeOwner(ctx context.Context, request ChangeClusterOwner) error
 
 	// Create new cluster.
@@ -358,7 +359,7 @@ type GlobalInitScriptsService interface {
 	// Get a list of all global init scripts for this workspace. This returns
 	// all properties for each script but **not** the script contents. To
 	// retrieve the contents of a script, use the [get a global init
-	// script](#operation/get-script) operation.
+	// script](:method:globalinitscripts/get) operation.
 	//
 	// Use ListAll() to get all GlobalInitScriptDetails instances
 	List(ctx context.Context) (*ListGlobalInitScriptsResponse, error)

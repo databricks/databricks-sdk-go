@@ -75,11 +75,11 @@ type WorkspaceClient struct {
 	// have ACLs that limit their use to specific users and groups.
 	//
 	// With cluster policies, you can: - Auto-install cluster libraries on the
-	// next restart by listing them in the policy's "libraries" field. - Limit
-	// users to creating clusters with the prescribed settings. - Simplify the
-	// user interface, enabling more users to create clusters, by fixing and
-	// hiding some fields. - Manage costs by setting limits on attributes that
-	// impact the hourly rate.
+	// next restart by listing them in the policy's "libraries" field (Public
+	// Preview). - Limit users to creating clusters with the prescribed
+	// settings. - Simplify the user interface, enabling more users to create
+	// clusters, by fixing and hiding some fields. - Manage costs by setting
+	// limits on attributes that impact the hourly rate.
 	//
 	// Cluster policy permissions limit which policies a user can select in the
 	// Policy drop-down when the user creates a cluster: - A user who has
@@ -346,6 +346,17 @@ type WorkspaceClient struct {
 	// [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
 	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs jobs.JobsInterface
+
+	// A monitor computes and monitors data or model quality metrics for a table
+	// over time. It generates metrics tables and a dashboard that you can use
+	// to monitor table health and set alerts.
+	//
+	// Most write operations require the user to be the owner of the table (or
+	// its parent schema or parent catalog). Viewing the dashboard, computed
+	// metrics, or monitor configuration only requires the user to have
+	// **SELECT** privileges on the table (along with **USE_SCHEMA** and
+	// **USE_CATALOG**).
+	LakehouseMonitors catalog.LakehouseMonitorsInterface
 
 	// These APIs provide specific management operations for Lakeview
 	// dashboards. Generic resource management can be done with Workspace API
@@ -959,6 +970,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		InstanceProfiles:          compute.NewInstanceProfiles(apiClient),
 		IpAccessLists:             settings.NewIpAccessLists(apiClient),
 		Jobs:                      jobs.NewJobs(apiClient),
+		LakehouseMonitors:         catalog.NewLakehouseMonitors(apiClient),
 		Lakeview:                  dashboards.NewLakeview(apiClient),
 		Libraries:                 compute.NewLibraries(apiClient),
 		Metastores:                catalog.NewMetastores(apiClient),

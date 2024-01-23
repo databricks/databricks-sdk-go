@@ -286,6 +286,7 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -434,35 +435,6 @@ func (s *CreateAlert) UnmarshalJSON(b []byte) error {
 }
 
 func (s CreateAlert) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Create a dashboard object
-type CreateDashboardRequest struct {
-	// Indicates whether the dashboard filters are enabled
-	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
-	// Indicates whether this query object should appear in the current user's
-	// favorites list. The application uses this flag to determine whether or
-	// not the "favorite star " should selected.
-	IsFavorite bool `json:"is_favorite,omitempty"`
-	// The title of this dashboard that appears in list views and at the top of
-	// the dashboard page.
-	Name string `json:"name"`
-	// The identifier of the workspace folder containing the object.
-	Parent string `json:"parent,omitempty"`
-	// Run as role
-	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
-
-	Tags []string `json:"tags,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateDashboardRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -699,6 +671,27 @@ func (s Dashboard) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DashboardEditContent struct {
+	DashboardId string `json:"-" url:"-"`
+	// The title of this dashboard that appears in list views and at the top of
+	// the dashboard page.
+	Name string `json:"name,omitempty"`
+	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
+	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
+	// owner" behavior)
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DashboardEditContent) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DashboardEditContent) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DashboardOptions struct {
 	// The timestamp when this dashboard was moved to trash. Only present when
 	// the `is_archived` property is `true`. Trashed items are deleted after
@@ -713,6 +706,35 @@ func (s *DashboardOptions) UnmarshalJSON(b []byte) error {
 }
 
 func (s DashboardOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DashboardPostContent struct {
+	// Indicates whether the dashboard filters are enabled
+	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
+	// Indicates whether this dashboard object should appear in the current
+	// user's favorites list.
+	IsFavorite bool `json:"is_favorite,omitempty"`
+	// The title of this dashboard that appears in list views and at the top of
+	// the dashboard page.
+	Name string `json:"name"`
+	// The identifier of the workspace folder containing the object.
+	Parent string `json:"parent,omitempty"`
+	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
+	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
+	// owner" behavior)
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
+
+	Tags []string `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DashboardPostContent) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DashboardPostContent) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1382,8 +1404,14 @@ type ExternalLink struct {
 	// A presigned URL pointing to a chunk of result data, hosted by an external
 	// service, with a short expiration time (<= 15 minutes). As this URL
 	// contains a temporary credential, it should be considered sensitive and
-	// the client should expose this URL in a log.
+	// the client should not expose this URL in a log.
 	ExternalLink string `json:"external_link,omitempty"`
+	// HTTP headers that must be included with a GET request to the
+	// `external_link`. Each header is provided as a key-value pair. Headers are
+	// typically used to pass a decryption key to the external service. The
+	// values of these headers should be considered sensitive and the client
+	// should not expose these values in a log.
+	HttpHeaders map[string]string `json:"http_headers,omitempty"`
 	// When fetching, provides the `chunk_index` for the _next_ chunk. If
 	// absent, indicates there are no more chunks. The next chunk can be fetched
 	// with a :method:statementexecution/getStatementResultChunkN request.
@@ -2194,7 +2222,9 @@ type Query struct {
 	Query string `json:"query,omitempty"`
 	// A SHA-256 hash of the query text along with the authenticated user ID.
 	QueryHash string `json:"query_hash,omitempty"`
-	// Run as role
+	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
+	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
+	// owner" behavior)
 	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	Tags []string `json:"tags,omitempty"`
@@ -2238,6 +2268,10 @@ type QueryEditContent struct {
 	Query string `json:"query,omitempty"`
 
 	QueryId string `json:"-" url:"-"`
+	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
+	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
+	// owner" behavior)
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -2465,7 +2499,9 @@ type QueryPostContent struct {
 	Parent string `json:"parent,omitempty"`
 	// The text of the query to be run.
 	Query string `json:"query,omitempty"`
-	// Run as role
+	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
+	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
+	// owner" behavior)
 	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -2696,7 +2732,9 @@ func (s ResultSchema) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Run as role
+// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
+// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as owner"
+// behavior)
 type RunAsRole string
 
 const RunAsRoleOwner RunAsRole = `owner`
@@ -3448,8 +3486,7 @@ type WarehouseAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
-	// Application ID of an active service principal. Setting this field
-	// requires the `servicePrincipal/user` role.
+	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`

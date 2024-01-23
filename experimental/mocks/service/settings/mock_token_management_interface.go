@@ -178,23 +178,23 @@ func (_c *MockTokenManagementInterface_DeleteByTokenId_Call) RunAndReturn(run fu
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockTokenManagementInterface) Get(ctx context.Context, request settings.GetTokenManagementRequest) (*settings.TokenInfo, error) {
+func (_m *MockTokenManagementInterface) Get(ctx context.Context, request settings.GetTokenManagementRequest) (*settings.GetTokenResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Get")
 	}
 
-	var r0 *settings.TokenInfo
+	var r0 *settings.GetTokenResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetTokenManagementRequest) (*settings.TokenInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetTokenManagementRequest) (*settings.GetTokenResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetTokenManagementRequest) *settings.TokenInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetTokenManagementRequest) *settings.GetTokenResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.TokenInfo)
+			r0 = ret.Get(0).(*settings.GetTokenResponse)
 		}
 	}
 
@@ -226,12 +226,12 @@ func (_c *MockTokenManagementInterface_Get_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockTokenManagementInterface_Get_Call) Return(_a0 *settings.TokenInfo, _a1 error) *MockTokenManagementInterface_Get_Call {
+func (_c *MockTokenManagementInterface_Get_Call) Return(_a0 *settings.GetTokenResponse, _a1 error) *MockTokenManagementInterface_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockTokenManagementInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetTokenManagementRequest) (*settings.TokenInfo, error)) *MockTokenManagementInterface_Get_Call {
+func (_c *MockTokenManagementInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetTokenManagementRequest) (*settings.GetTokenResponse, error)) *MockTokenManagementInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -296,23 +296,23 @@ func (_c *MockTokenManagementInterface_GetByComment_Call) RunAndReturn(run func(
 }
 
 // GetByTokenId provides a mock function with given fields: ctx, tokenId
-func (_m *MockTokenManagementInterface) GetByTokenId(ctx context.Context, tokenId string) (*settings.TokenInfo, error) {
+func (_m *MockTokenManagementInterface) GetByTokenId(ctx context.Context, tokenId string) (*settings.GetTokenResponse, error) {
 	ret := _m.Called(ctx, tokenId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByTokenId")
 	}
 
-	var r0 *settings.TokenInfo
+	var r0 *settings.GetTokenResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*settings.TokenInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*settings.GetTokenResponse, error)); ok {
 		return rf(ctx, tokenId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *settings.TokenInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *settings.GetTokenResponse); ok {
 		r0 = rf(ctx, tokenId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.TokenInfo)
+			r0 = ret.Get(0).(*settings.GetTokenResponse)
 		}
 	}
 
@@ -344,12 +344,12 @@ func (_c *MockTokenManagementInterface_GetByTokenId_Call) Run(run func(ctx conte
 	return _c
 }
 
-func (_c *MockTokenManagementInterface_GetByTokenId_Call) Return(_a0 *settings.TokenInfo, _a1 error) *MockTokenManagementInterface_GetByTokenId_Call {
+func (_c *MockTokenManagementInterface_GetByTokenId_Call) Return(_a0 *settings.GetTokenResponse, _a1 error) *MockTokenManagementInterface_GetByTokenId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockTokenManagementInterface_GetByTokenId_Call) RunAndReturn(run func(context.Context, string) (*settings.TokenInfo, error)) *MockTokenManagementInterface_GetByTokenId_Call {
+func (_c *MockTokenManagementInterface_GetByTokenId_Call) RunAndReturn(run func(context.Context, string) (*settings.GetTokenResponse, error)) *MockTokenManagementInterface_GetByTokenId_Call {
 	_c.Call.Return(run)
 	return _c
 }

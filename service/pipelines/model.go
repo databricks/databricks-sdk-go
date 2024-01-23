@@ -620,8 +620,7 @@ type PipelineAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
-	// Application ID of an active service principal. Setting this field
-	// requires the `servicePrincipal/user` role.
+	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -701,6 +700,11 @@ type PipelineCluster struct {
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	GcpAttributes *compute.GcpAttributes `json:"gcp_attributes,omitempty"`
+	// The configuration for storing init scripts. Any number of destinations
+	// can be specified. The scripts are executed sequentially in the order
+	// provided. If `cluster_log_conf` is specified, init script logs are sent
+	// to `<destination>/<cluster-ID>/init_scripts`.
+	InitScripts []compute.InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// A label for the cluster specification, either `default` to configure the
@@ -1112,6 +1116,9 @@ type StartUpdate struct {
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	RefreshSelection []string `json:"refresh_selection,omitempty"`
+	// If true, this update only validates the correctness of pipeline source
+	// code but does not materialize or publish any datasets.
+	ValidateOnly bool `json:"validate_only,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1206,6 +1213,9 @@ type UpdateInfo struct {
 	State UpdateInfoState `json:"state,omitempty"`
 	// The ID of this update.
 	UpdateId string `json:"update_id,omitempty"`
+	// If true, this update only validates the correctness of pipeline source
+	// code but does not materialize or publish any datasets.
+	ValidateOnly bool `json:"validate_only,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

@@ -67,6 +67,7 @@ func NewMockWorkspaceClient(t interface {
 			InstanceProfiles:          compute.NewMockInstanceProfilesInterface(t),
 			IpAccessLists:             settings.NewMockIpAccessListsInterface(t),
 			Jobs:                      jobs.NewMockJobsInterface(t),
+			LakehouseMonitors:         catalog.NewMockLakehouseMonitorsInterface(t),
 			Lakeview:                  dashboards.NewMockLakeviewInterface(t),
 			Libraries:                 compute.NewMockLibrariesInterface(t),
 			Metastores:                catalog.NewMockMetastoresInterface(t),
@@ -336,6 +337,14 @@ func (m *MockWorkspaceClient) GetMockJobsAPI() *jobs.MockJobsInterface {
 	api, ok := m.WorkspaceClient.Jobs.(*jobs.MockJobsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Jobs to be *jobs.MockJobsInterface, actual was %T", m.WorkspaceClient.Jobs))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockLakehouseMonitorsAPI() *catalog.MockLakehouseMonitorsInterface {
+	api, ok := m.WorkspaceClient.LakehouseMonitors.(*catalog.MockLakehouseMonitorsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected LakehouseMonitors to be *catalog.MockLakehouseMonitorsInterface, actual was %T", m.WorkspaceClient.LakehouseMonitors))
 	}
 	return api
 }

@@ -67,7 +67,7 @@ type DashboardWidgetsService interface {
 type DashboardsService interface {
 
 	// Create a dashboard object.
-	Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error)
+	Create(ctx context.Context, request DashboardPostContent) (*Dashboard, error)
 
 	// Remove a dashboard.
 	//
@@ -93,6 +93,14 @@ type DashboardsService interface {
 	// A restored dashboard appears in list views and searches and can be
 	// shared.
 	Restore(ctx context.Context, request RestoreDashboardRequest) error
+
+	// Change a dashboard definition.
+	//
+	// Modify this dashboard definition. This operation only affects attributes
+	// of the dashboard object. It does not add, modify, or remove widgets.
+	//
+	// **Note**: You cannot undo this operation.
+	Update(ctx context.Context, request DashboardEditContent) (*Dashboard, error)
 }
 
 // This API is provided to assist you in making new query objects. When creating
@@ -186,6 +194,9 @@ type QueriesService interface {
 	//
 	// Gets a list of queries. Optionally, this list can be filtered by a search
 	// term.
+	//
+	// ### **Warning: Calling this API concurrently 10 or more times could
+	// result in throttling, service degradation, or a temporary ban.**
 	//
 	// Use ListAll() to get all Query instances, which will iterate over every result page.
 	List(ctx context.Context, request ListQueriesRequest) (*QueryList, error)
