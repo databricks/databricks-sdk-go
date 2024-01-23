@@ -41,12 +41,12 @@ func (d *Backend) PrepareBackend(ctx context.Context, lockId string) error {
 	c := &databricks.Config{}
 	err := json.Unmarshal([]byte(configJson), c)
 	if err != nil {
-		panic(fmt.Errorf("failed to unmarshal config: %w", err))
+		return fmt.Errorf("failed to unmarshal config: %w", err)
 	}
 
 	w, err := databricks.NewWorkspaceClient(c)
 	if err != nil {
-		panic(fmt.Errorf("failed to create workspace client: %w", err))
+		return fmt.Errorf("failed to create workspace client: %w", err)
 	}
 
 	d.lockClient = w
