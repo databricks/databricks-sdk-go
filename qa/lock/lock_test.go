@@ -11,8 +11,7 @@ import (
 
 type testBackend struct {
 	prepareBackend func(lockId string) error
-	prepareLock    func(lockId string) error
-	acquireLock    func(leaseId string, contents []byte, duration time.Duration) error
+	acquireLock    func(contents *lockState) error
 	renewLock      func(leaseId string) error
 	releaseLock    func(leaseId string) error
 }
@@ -21,12 +20,8 @@ func (b *testBackend) PrepareBackend(_ context.Context, lockId string) error {
 	return b.prepareBackend(lockId)
 }
 
-func (b *testBackend) PrepareLock(_ context.Context, lockId string) error {
-	return b.prepareLock(lockId)
-}
-
-func (b *testBackend) AcquireLock(_ context.Context, leaseId string, contents []byte, duration time.Duration) error {
-	return b.acquireLock(leaseId, contents, duration)
+func (b *testBackend) AcquireLock(_ context.Context, contents *lockState) error {
+	return b.acquireLock(contents)
 }
 
 func (b *testBackend) RenewLock(_ context.Context, leaseId string) error {
@@ -40,6 +35,8 @@ func (b *testBackend) ReleaseLock(_ context.Context, leaseId string) error {
 func (b *testBackend) RefreshDuration() time.Duration {
 	return 10 * time.Millisecond
 }
+
+var _ LockBackend = &testBackend{}
 
 func getOptions(backend *testBackend) []LockOption {
 	return []LockOption{
@@ -59,30 +56,13 @@ func TestAcquire_PrepareBackendFails(t *testing.T) {
 	assert.ErrorIs(t, err, errTest)
 }
 
-func TestAcquire_PrepareLockFails(t *testing.T) {
-	errTest := errors.New("test error")
-	backend := &testBackend{
-		prepareBackend: func(lockId string) error {
-			return nil
-		},
-		prepareLock: func(lockId string) error {
-			return errTest
-		},
-	}
-	_, err := Acquire(context.Background(), NewLockable("lock"), getOptions(backend)...)
-	assert.ErrorIs(t, err, errTest)
-}
-
 func TestAcquire_AcquireLockFails(t *testing.T) {
 	errTest := errors.New("test error")
 	backend := &testBackend{
 		prepareBackend: func(lockId string) error {
 			return nil
 		},
-		prepareLock: func(lockId string) error {
-			return nil
-		},
-		acquireLock: func(leaseId string, contents []byte, duration time.Duration) error {
+		acquireLock: func(contents *lockState) error {
 			return errTest
 		},
 	}
@@ -96,11 +76,8 @@ func TestAcquire_UnlockFails(t *testing.T) {
 		prepareBackend: func(lockId string) error {
 			return nil
 		},
-		prepareLock: func(lockId string) error {
-			return nil
-		},
-		acquireLock: func(leaseId string, contents []byte, duration time.Duration) error {
-			return nil
+		acquireLock: func(contents *lockState) error {
+			return errTest
 		},
 		releaseLock: func(leaseId string) error {
 			return errTest
@@ -120,10 +97,7 @@ func TestAcquire_UnlockSucceeds(t *testing.T) {
 		prepareBackend: func(lockId string) error {
 			return nil
 		},
-		prepareLock: func(lockId string) error {
-			return nil
-		},
-		acquireLock: func(leaseId string, contents []byte, duration time.Duration) error {
+		acquireLock: func(contents *lockState) error {
 			return nil
 		},
 		releaseLock: func(leaseId string) error {

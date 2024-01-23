@@ -11,13 +11,9 @@ type LockBackend interface {
 	// Locking is aborted if this fails.
 	PrepareBackend(ctx context.Context, lockId string) error
 
-	// PrepareLock prepares the lock for use. This is called multiple times per lock.
-	// Locking is aborted if this never succeeds during the specified LeaseDuration.
-	PrepareLock(ctx context.Context, lockId string) error
-
 	// AcquireLock acquires the lock. This is called once per lock. Locking is aborted
 	// if this fails.
-	AcquireLock(ctx context.Context, leaseId string, contents []byte, duration time.Duration) error
+	AcquireLock(ctx context.Context, contents *lockState) error
 
 	// RenewLock renews the lock. This is called periodically while the lock is held.
 	RenewLock(ctx context.Context, leaseId string) error

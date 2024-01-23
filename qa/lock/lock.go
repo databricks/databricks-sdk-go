@@ -30,7 +30,7 @@ func Acquire(ctx context.Context, lockable Lockable, os ...LockOption) (*Lock, e
 		o(&opts)
 	}
 	if opts.Backend == nil {
-		opts.Backend = &azureBackend{}
+		opts.Backend = &databricksBackend{}
 	}
 	if opts.LeaseDuration == 0 {
 		opts.LeaseDuration = time.Minute
@@ -46,30 +46,23 @@ func Acquire(ctx context.Context, lockable Lockable, os ...LockOption) (*Lock, e
 	//
 	// 1. Create the blob with no lease and no content. If the blob already exists, this will fail. Try every 10 seconds up to configured MaxWaitDuration.
 	// 2. AcquireLease the blob. If duration < 60, request the lease for the duration. Otherwise, start a goroutine to renew the lease every 45 seconds.
-	// 3. Update the blob content to include the current test context.
-	// 4. Run the test.
-	// 5. Delete the blob.
+	// 3. Run the test.
+	// 4. Delete the blob.
+
+	leaseId := uuid.New().String()
 
 	timesToPoll := int(opts.LeaseDuration/(10*time.Second)) + 1
 	for i := 0; i < timesToPoll; i++ {
-		err = opts.Backend.PrepareLock(ctx, lockId)
+		state := newLockState(lockable, leaseId, opts.LeaseDuration, opts.T)
+		err = opts.Backend.AcquireLock(ctx, state)
 		if err == nil {
 			break
 		}
 		if i == timesToPoll-1 {
 			return nil, fmt.Errorf("max wait duration exceeded, last error: %w", err)
 		}
+		fmt.Printf("Failed to acquire lock %s, retrying in 10 seconds. error: %s\n", lockId, err)
 		time.Sleep(10 * time.Second)
-	}
-
-	leaseId := uuid.New().String()
-	contents, err := opts.getLockContents(lockable)
-	if err != nil {
-		return nil, err
-	}
-	err = opts.Backend.AcquireLock(ctx, leaseId, contents, 60*time.Second)
-	if err != nil {
-		return nil, fmt.Errorf("error acquiring lock: %w", err)
 	}
 
 	// Channel to signal when the lock should be released

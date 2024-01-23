@@ -1,9 +1,8 @@
 package lock
 
 import (
-	"encoding/json"
 	"os"
-	"strconv"
+	"reflect"
 	"testing"
 	"time"
 
@@ -36,31 +35,58 @@ type LockOptions struct {
 	T             *testing.T
 }
 
-func (opts LockOptions) getLockContents(l Lockable) ([]byte, error) {
-	info := make(map[string]string)
+type lockState struct {
+	Test            string
+	Start           time.Time
+	Expiry          time.Time
+	Lockable        string
+	LeaseId         string
+	IsInDebug       bool
+	User            string `env:"USER"`
+	GithubActions   string `env:"GITHUB_ACTIONS"`
+	GithubRef       string `env:"GITHUB_REF"`
+	GithubRunId     string `env:"GITHUB_RUN_ID"`
+	GithubRunNumber string `env:"GITHUB_RUN_NUMBER"`
+	GithubSha       string `env:"GITHUB_SHA"`
+	GithubWorkflow  string `env:"GITHUB_WORKFLOW"`
+}
 
-	if opts.T != nil {
-		info["Test"] = opts.T.Name()
-	}
-	info["Start"] = time.Now().Format(time.RFC3339)
-	info["Lockable"] = l.GetLockId()
-	info["LeaseDuration"] = opts.LeaseDuration.String()
-	info["IsInDebug"] = strconv.FormatBool(qa.IsInDebug())
-	envVars := []string{
-		"USER",
-		"GITHUB_ACTIONS",
-		"GITHUB_REF",
-		"GITHUB_RUN_ID",
-		"GITHUB_RUN_NUMBER",
-		"GITHUB_SHA",
-		"GITHUB_WORKFLOW",
-	}
-	for _, envVar := range envVars {
-		val := os.Getenv(envVar)
+func (l *lockState) loadFromEnv() {
+	rv := reflect.ValueOf(l).Elem()
+	t := rv.Type()
+	for i := 0; i < rv.NumField(); i++ {
+		field := rv.Field(i)
+		tag := t.Field(i).Tag.Get("env")
+		if tag == "" {
+			continue
+		}
+		val := os.Getenv(tag)
 		if val != "" {
-			info[envVar] = val
+			field.SetString(val)
 		}
 	}
+}
 
-	return json.MarshalIndent(info, "", "  ")
+func (l *lockState) IsValid() bool {
+	return time.Now().Before(l.Expiry)
+}
+
+func (l *lockState) Extend(duration time.Duration) {
+	l.Expiry = time.Now().Add(duration)
+}
+
+func newLockState(lockable Lockable, leaseId string, leaseDuration time.Duration, t *testing.T) *lockState {
+	now := time.Now()
+	state := &lockState{
+		Start:     now,
+		Expiry:    now.Add(leaseDuration),
+		Lockable:  lockable.GetLockId(),
+		LeaseId:   leaseId,
+		IsInDebug: qa.IsInDebug(),
+	}
+	state.loadFromEnv()
+	if t != nil {
+		state.Test = t.Name()
+	}
+	return state
 }
