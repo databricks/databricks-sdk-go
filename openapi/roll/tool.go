@@ -358,20 +358,20 @@ func (s *Suite) expectExamples(file *ast.File) {
 //
 // Example:
 //
-// func foo() {
-//   // comment 1
-//   bar()
-//   baz()
-//   // comment 2
-//   baz()
-// }
+//	func foo() {
+//	  // comment 1
+//	  bar()
+//	  baz()
+//	  // comment 2
+//	  baz()
+//	}
 //
 // Returns:
 //
-// map[int]string{
-//   0: "comment 1",
-//   2: "comment 2",
-// }
+//	map[int]string{
+//	  0: "comment 1",
+//	  2: "comment 2",
+//	}
 func (s *Suite) getCommentPrecedingStatementMap(fn *ast.FuncDecl, file *ast.File) map[int]string {
 	res := map[int]string{}
 	commentIndex := 0
