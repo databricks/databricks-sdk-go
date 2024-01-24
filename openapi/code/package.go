@@ -24,6 +24,7 @@ type Package struct {
 	types      map[string]*Entity
 	emptyTypes []*Named
 	extImports map[string]*Entity
+	poly       *polymorphism
 }
 
 // FullName just returns pacakge name
@@ -52,12 +53,28 @@ func (pkg *Package) MainService() *Service {
 }
 
 // Types returns sorted slice of types
-func (pkg *Package) Types() (types []*Entity) {
+func (pkg *Package) Types() (out []*Entity) {
+	types := []*Entity{}
 	for _, v := range pkg.types {
 		types = append(types, v)
 	}
 	pascalNameSort(types)
-	return types
+	// Python doesn't support forward-references for base classes,
+	// so that's why we have to pull abstract types first.
+	// topological sort is not required, as Databricks doesn't have (yet)
+	// complicated type hierarchy with oneOf/anyOf references. toposort
+	// could easily be added here later.
+	for _, v := range types {
+		if v.ChildTypes != nil {
+			out = append(out, v)
+		}
+	}
+	for _, v := range types {
+		if v.ChildTypes == nil {
+			out = append(out, v)
+		}
+	}
+	return out
 }
 
 // EmptyTypes returns sorted list of types without fields
@@ -99,6 +116,14 @@ func (pkg *Package) ImportedPackages() (res []string) {
 }
 
 func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool) *Entity {
+	if s.IsOneOf() || s.IsAnyOf() {
+		entity, err := pkg.poly.Resolve(pkg.Name, path[0])
+		if err != nil {
+			err = fmt.Errorf("poly: %w", err)
+			panic(err)
+		}
+		return pkg.define(entity)
+	}
 	if s.IsRef() {
 		pair := strings.Split(s.Component(), ".")
 		if len(pair) == 2 && pair[0] != pkg.Name {
@@ -172,7 +197,8 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	e.IsString = s.Type == "string"
 	e.IsInt64 = s.Type == "integer" && s.Format == "int64"
 	e.IsFloat64 = s.Type == "number" && s.Format == "double"
-	e.IsInt = s.Type == "integer" || s.Type == "int"
+	e.IsInt = s.Type == "integer" || s.Type == "int" || s.Type == "number"
+	e.Const = s.Const
 	return e
 }
 

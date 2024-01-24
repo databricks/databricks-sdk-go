@@ -49,6 +49,24 @@ var HelperFuncs = template.FuncMap{
 		}
 		return out
 	},
+	"noConst": func(in []*Field) (out []*Field) {
+		for _, v := range in {
+			if v.Entity.Const != nil {
+				continue
+			}
+			out = append(out, v)
+		}
+		return out
+	},
+	"constOnly": func(in []*Field) (out []*Field) {
+		for _, v := range in {
+			if v.Entity.Const == nil {
+				continue
+			}
+			out = append(out, v)
+		}
+		return out
+	},
 	"list": func(l ...any) []any {
 		return l
 	},

@@ -74,6 +74,7 @@ type Entity struct {
 	IsString     bool
 	IsByteStream bool
 	IsEmpty      bool
+	Const        any
 
 	// this field does not have a concrete type
 	IsAny bool
@@ -87,6 +88,9 @@ type Entity struct {
 
 	// Schema references the OpenAPI schema this entity was created from.
 	Schema *openapi.Schema
+
+	ChildTypes   ChildTypes
+	AbstractType *Entity
 }
 
 // Whether the Entity contains a basic GoLang type which is not required

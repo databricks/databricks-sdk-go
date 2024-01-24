@@ -30,8 +30,13 @@ func NewFromFile(ctx context.Context, name string) (*Batch, error) {
 
 // NewFromSpec converts OpenAPI spec to intermediate representation
 func NewFromSpec(ctx context.Context, spec *openapi.Specification) (*Batch, error) {
-	batch := Batch{
+	batch := &Batch{
 		packages: map[string]*Package{},
+	}
+	poly := newPolymorphism(spec.Components)
+	err := poly.Load()
+	if err != nil {
+		return nil, fmt.Errorf("polymorphic types: %w", err)
 	}
 	for _, tag := range spec.Tags {
 		pkg, ok := batch.packages[tag.Package]
@@ -41,6 +46,7 @@ func NewFromSpec(ctx context.Context, spec *openapi.Specification) (*Batch, erro
 				Components: spec.Components,
 				services:   map[string]*Service{},
 				types:      map[string]*Entity{},
+				poly:       poly,
 			}
 			batch.packages[tag.Package] = pkg
 		}
@@ -48,6 +54,10 @@ func NewFromSpec(ctx context.Context, spec *openapi.Specification) (*Batch, erro
 		if err != nil {
 			return nil, fmt.Errorf("fail to load %s: %w", tag.Name, err)
 		}
+	}
+	err = poly.Link(batch)
+	if err != nil {
+		return nil, fmt.Errorf("link: %w", err)
 	}
 	// add some packages at least some description
 	for _, pkg := range batch.packages {
@@ -59,7 +69,7 @@ func NewFromSpec(ctx context.Context, spec *openapi.Specification) (*Batch, erro
 			pkg.Description = svc.Summary()
 		}
 	}
-	return &batch, nil
+	return batch, nil
 }
 
 func (b *Batch) FullName() string {
