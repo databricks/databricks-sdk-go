@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/google/go-querystring v1.1.0
+	github.com/google/uuid v1.4.0
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
 	golang.org/x/mod v0.14.0

@@ -353,6 +353,47 @@ func (s *Suite) expectExamples(file *ast.File) {
 	}
 }
 
+// Given a function declaration, return a map of statement index to comment
+// immediately preceding the statement.
+//
+// Example:
+//
+// func foo() {
+//   // comment 1
+//   bar()
+//   baz()
+//   // comment 2
+//   baz()
+// }
+//
+// Returns:
+//
+// map[int]string{
+//   0: "comment 1",
+//   2: "comment 2",
+// }
+func (s *Suite) getCommentPrecedingStatementMap(fn *ast.FuncDecl, file *ast.File) map[int]string {
+	res := map[int]string{}
+	commentIndex := 0
+	for _, cg := range file.Comments {
+		if cg.End() >= fn.Pos() {
+			break
+		}
+		commentIndex += 1
+	}
+	for i, stmt := range fn.Body.List {
+		if commentIndex >= len(file.Comments) {
+			return res
+		}
+		commentGroup := file.Comments[commentIndex]
+		if stmt.Pos() > commentGroup.End() {
+			res[i] = strings.TrimSpace(commentGroup.Text())
+			commentIndex += 1
+		}
+	}
+	return res
+}
+
 func (s *Suite) expectFn(fn *ast.FuncDecl, file *ast.File) *example {
 	testName := fn.Name.Name
 	testName = strings.TrimPrefix(testName, "TestAcc")
@@ -364,19 +405,23 @@ func (s *Suite) expectFn(fn *ast.FuncDecl, file *ast.File) *example {
 		},
 		scope: map[string]expression{},
 	}
-	lastPos := fn.Pos()
-	hint := ""
-	for _, v := range fn.Body.List {
-		for _, cmt := range file.Comments {
-			if cmt.End() < lastPos {
+	commentMap := s.getCommentPrecedingStatementMap(fn, file)
+	for i, v := range fn.Body.List {
+		hint := commentMap[i]
+		if hint == "skip-next-line-roll" {
+			switch node := v.(type) {
+			case *ast.ExprStmt:
+				if _, ok := node.X.(*ast.CallExpr); !ok {
+					buf := &strings.Builder{}
+					ast.Fprint(buf, s.fset, node, nil)
+					panic(fmt.Errorf("skip-next-line-roll can only be used immediately before plain function call with no LHS, found %s", buf.String()))
+				}
 				continue
+			default:
+				buf := &strings.Builder{}
+				ast.Fprint(buf, s.fset, node, nil)
+				panic(fmt.Errorf("skip-next-line-roll can only be used immediately before plain function call with no LHS, found %s", buf.String()))
 			}
-			if cmt.Pos() > v.Pos() {
-				continue
-			}
-			// figure out comment hint exactly above the given statement
-			hint = strings.TrimSpace(cmt.Text())
-			break
 		}
 		switch stmt := v.(type) {
 		case *ast.AssignStmt:
@@ -386,10 +431,6 @@ func (s *Suite) expectFn(fn *ast.FuncDecl, file *ast.File) *example {
 		case *ast.ExprStmt:
 			s.expectExprStmt(ex, stmt)
 		}
-		// store the end of the last statement to figure out the next
-		// statement comment.
-		lastPos = v.End()
-		hint = ""
 	}
 	return ex
 }

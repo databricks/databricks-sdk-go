@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
-	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -16,6 +15,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/qa"
 )
 
 const fullCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -147,7 +147,7 @@ func RandomHex(prefix string, randLen int) string {
 }
 
 func skipf(t *testing.T) func(format string, args ...any) {
-	if isInDebug() {
+	if qa.IsInDebug() {
 		// VSCode "debug test" feature doesn't show dlv logs,
 		// so that we fail here for maintainer productivity.
 		return t.Fatalf
@@ -155,15 +155,9 @@ func skipf(t *testing.T) func(format string, args ...any) {
 	return t.Skipf
 }
 
-// detects if test is run from "debug test" feature in VSCode
-func isInDebug() bool {
-	ex, _ := os.Executable()
-	return strings.HasPrefix(path.Base(ex), "__debug_bin")
-}
-
 // loads debug environment from ~/.databricks/debug-env.json
 func loadDebugEnvIfRunsFromIDE(t *testing.T, key string) {
-	if !isInDebug() {
+	if !qa.IsInDebug() {
 		return
 	}
 	home, err := os.UserHomeDir()
