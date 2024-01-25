@@ -193,6 +193,11 @@ func (m *Method) MustUseJson() bool {
 		return true
 	}
 
+	// if request is a map, then we have to use JSON input
+	if m.Request != nil && m.Request.IsMap() {
+		return true
+	}
+
 	return false
 }
 

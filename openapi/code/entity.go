@@ -167,6 +167,10 @@ func (e *Entity) IsObject() bool {
 	return e.MapValue == nil && len(e.fields) > 0
 }
 
+func (e *Entity) IsMap() bool {
+	return e.MapValue != nil
+}
+
 // IsExternal returns true if entity is declared in external package and
 // has to be imported from it
 func (e *Entity) IsExternal() bool {
