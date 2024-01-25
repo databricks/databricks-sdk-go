@@ -23,9 +23,6 @@ func (c DatabricksCliCredentials) Name() string {
 }
 
 func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
-	if !cfg.IsAws() {
-		return nil, nil
-	}
 	if cfg.Host == "" {
 		return nil, nil
 	}
