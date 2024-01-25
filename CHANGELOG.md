@@ -1,5 +1,17 @@
 # Version changelog
 
+## 0.30.1
+
+Major changes:
+
+* Enable Databricks CLI auth for all clouds ([#783](https://github.com/databricks/databricks-sdk-go/pull/783)).
+
+Other changes:
+
+* Update codecov/codecov-action to v3 ([#785](https://github.com/databricks/databricks-sdk-go/pull/785)).
+* MustUseJson must be true if request is a map ([#786](https://github.com/databricks/databricks-sdk-go/pull/786)).
+
+
 ## 0.30.0
 
 Other changes:
