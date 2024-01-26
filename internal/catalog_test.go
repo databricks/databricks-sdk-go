@@ -1,9 +1,13 @@
 package internal
 
 import (
+	"context"
 	"fmt"
 	"testing"
+	"time"
 
+	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/stretchr/testify/assert"
@@ -365,10 +369,15 @@ func TestUcAccCatalogWorkspaceBindings(t *testing.T) {
 	require.NoError(t, err)
 
 	thisWorkspaceID := MustParseInt64(GetEnvOrSkipTest(t, "THIS_WORKSPACE_ID"))
-	_, err = w.WorkspaceBindings.Update(ctx, catalog.UpdateWorkspaceBindings{
-		Name:             created.Name,
-		AssignWorkspaces: []int64{thisWorkspaceID},
+	err = retries.New[struct{}](retries.OnErrors(apierr.ErrDeadlineExceeded), retries.WithTimeout(1*time.Minute)).Wait(ctx, func(ctx context.Context) error {
+		_, err := w.WorkspaceBindings.Update(ctx, catalog.UpdateWorkspaceBindings{
+			Name:             created.Name,
+			AssignWorkspaces: []int64{thisWorkspaceID},
+		})
+		return err
 	})
+	require.NoError(t, err)
+
 	require.NoError(t, err)
 
 	bindings, err := w.WorkspaceBindings.GetByName(ctx, created.Name)
