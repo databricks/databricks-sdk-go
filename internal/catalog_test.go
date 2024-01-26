@@ -378,8 +378,6 @@ func TestUcAccCatalogWorkspaceBindings(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	require.NoError(t, err)
-
 	bindings, err := w.WorkspaceBindings.GetByName(ctx, created.Name)
 	require.NoError(t, err)
 
