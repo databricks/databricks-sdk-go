@@ -369,13 +369,15 @@ func TestUcAccCatalogWorkspaceBindings(t *testing.T) {
 	require.NoError(t, err)
 
 	thisWorkspaceID := MustParseInt64(GetEnvOrSkipTest(t, "THIS_WORKSPACE_ID"))
-	err = retries.New[struct{}](retries.OnErrors(apierr.ErrDeadlineExceeded), retries.WithTimeout(1*time.Minute)).Wait(ctx, func(ctx context.Context) error {
+	updateFunction := func(ctx context.Context) error {
 		_, err := w.WorkspaceBindings.Update(ctx, catalog.UpdateWorkspaceBindings{
 			Name:             created.Name,
 			AssignWorkspaces: []int64{thisWorkspaceID},
 		})
 		return err
-	})
+	}
+	r := retries.New[struct{}](retries.OnErrors(apierr.ErrDeadlineExceeded), retries.WithTimeout(1*time.Minute))
+	err = r.Wait(ctx, updateFunction)
 	require.NoError(t, err)
 
 	bindings, err := w.WorkspaceBindings.GetByName(ctx, created.Name)
