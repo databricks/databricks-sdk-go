@@ -16,6 +16,6 @@ func (c *AccountClient) GetWorkspaceClient(w provisioning.Workspace) (*Workspace
 	if err != nil {
 		return nil, err
 	}
-	cfg.AzureResourceID = w.AzureResourceID()
+	cfg.AzureResourceID = w.AzureResourceId()
 	return NewWorkspaceClient((*Config)(cfg))
 }
