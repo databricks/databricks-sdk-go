@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
@@ -157,51 +158,37 @@ func (c *Config) NewWithWorkspaceHost(host string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Config{
-		Credentials: c.Credentials,
-		Host:        host,
-		ClusterID:   c.ClusterID,
-		WarehouseID: c.WarehouseID,
-		// We don't include account ID in workspace-level config.
-		MetadataServiceURL:   c.MetadataServiceURL,
-		Token:                c.Token,
-		Username:             c.Username,
-		Password:             c.Password,
-		Profile:              c.Profile,
-		ConfigFile:           c.ConfigFile,
-		GoogleServiceAccount: c.GoogleServiceAccount,
-		GoogleCredentials:    c.GoogleCredentials,
-		// The Azure Resource ID can't be computed from the host alone, so it is
-		// omitted.
-		AzureUseMSI:           c.AzureUseMSI,
-		AzureClientSecret:     c.AzureClientSecret,
-		AzureClientID:         c.AzureClientID,
-		AzureTenantID:         c.AzureTenantID,
-		AzureEnvironment:      c.AzureEnvironment,
-		AzureLoginAppID:       c.AzureLoginAppID,
-		ClientID:              c.ClientID,
-		ClientSecret:          c.ClientSecret,
-		DatabricksCliPath:     c.DatabricksCliPath,
-		AuthType:              c.AuthType,
-		InsecureSkipVerify:    c.InsecureSkipVerify,
-		HTTPTimeoutSeconds:    c.HTTPTimeoutSeconds,
-		DebugTruncateBytes:    c.DebugTruncateBytes,
-		DebugHeaders:          c.DebugHeaders,
-		RateLimitPerSecond:    c.RateLimitPerSecond,
-		RetryTimeoutSeconds:   c.RetryTimeoutSeconds,
-		HTTPTransport:         c.HTTPTransport,
-		DatabricksEnvironment: c.DatabricksEnvironment,
-		Loaders:               c.Loaders,
-		// We can reuse the same OAuth token refresh client and context. The
-		// reuseTokenSource internally locks.
-		refreshClient: c.refreshClient,
-		refreshCtx:    c.refreshCtx,
-		// The config does not need to be re-resolved, as we reuse all attributes
-		// from the original config.
-		resolved:  c.resolved,
-		auth:      c.auth,
-		isTesting: c.isTesting,
-	}, nil
+
+	var fieldsToSkip = map[string]struct{}{
+		"Host":            {},
+		"AzureResourceID": {},
+		"AccountID":       {},
+	}
+	res := &Config{}
+	cv := reflect.ValueOf(c).Elem()
+	resv := reflect.ValueOf(res).Elem()
+	for i := 0; i < resv.NumField(); i++ {
+		field := resv.Field(i)
+		if !field.CanSet() {
+			continue
+		}
+		if _, ok := fieldsToSkip[resv.Type().Field(i).Name]; ok {
+			continue
+		}
+		field.Set(cv.Field(i))
+	}
+
+	res.Host = host
+	// We can reuse the same OAuth token refresh client and context. The
+	// reuseTokenSource internally locks.
+	res.refreshClient = c.refreshClient
+	res.refreshCtx = c.refreshCtx
+	// The config does not need to be re-resolved, as we reuse all attributes
+	// from the original config.
+	res.resolved = c.resolved
+	res.auth = c.auth
+	res.isTesting = c.isTesting
+	return res, nil
 }
 
 // Authenticate adds special headers to HTTP request to authorize it to work with Databricks REST API
