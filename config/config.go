@@ -148,6 +148,62 @@ type Config struct {
 	auth func(r *http.Request) error
 }
 
+// NewWithWorkspaceHost returns a new instance of the Config with the host set to
+// the workspace host. Fields that are not relevant to workspace-level config,
+// like account ID, are omitted. Workspace-level attributes that cannot be
+// computed from the host alone, like Azure Resource ID, are also omitted.
+func (c *Config) NewWithWorkspaceHost(host string) (*Config, error) {
+	err := c.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	return &Config{
+		Credentials: c.Credentials,
+		Host:        host,
+		ClusterID:   c.ClusterID,
+		WarehouseID: c.WarehouseID,
+		// We don't include account ID in workspace-level config.
+		MetadataServiceURL:   c.MetadataServiceURL,
+		Token:                c.Token,
+		Username:             c.Username,
+		Password:             c.Password,
+		Profile:              c.Profile,
+		ConfigFile:           c.ConfigFile,
+		GoogleServiceAccount: c.GoogleServiceAccount,
+		GoogleCredentials:    c.GoogleCredentials,
+		// The Azure Resource ID can't be computed from the host alone, so it is
+		// omitted.
+		AzureUseMSI:           c.AzureUseMSI,
+		AzureClientSecret:     c.AzureClientSecret,
+		AzureClientID:         c.AzureClientID,
+		AzureTenantID:         c.AzureTenantID,
+		AzureEnvironment:      c.AzureEnvironment,
+		AzureLoginAppID:       c.AzureLoginAppID,
+		ClientID:              c.ClientID,
+		ClientSecret:          c.ClientSecret,
+		DatabricksCliPath:     c.DatabricksCliPath,
+		AuthType:              c.AuthType,
+		InsecureSkipVerify:    c.InsecureSkipVerify,
+		HTTPTimeoutSeconds:    c.HTTPTimeoutSeconds,
+		DebugTruncateBytes:    c.DebugTruncateBytes,
+		DebugHeaders:          c.DebugHeaders,
+		RateLimitPerSecond:    c.RateLimitPerSecond,
+		RetryTimeoutSeconds:   c.RetryTimeoutSeconds,
+		HTTPTransport:         c.HTTPTransport,
+		DatabricksEnvironment: c.DatabricksEnvironment,
+		Loaders:               c.Loaders,
+		// We can reuse the same OAuth token refresh client and context. The
+		// reuseTokenSource internally locks.
+		refreshClient: c.refreshClient,
+		refreshCtx:    c.refreshCtx,
+		// The config does not need to be re-resolved, as we reuse all attributes
+		// from the original config.
+		resolved:  c.resolved,
+		auth:      c.auth,
+		isTesting: c.isTesting,
+	}, nil
+}
+
 // Authenticate adds special headers to HTTP request to authorize it to work with Databricks REST API
 func (c *Config) Authenticate(r *http.Request) error {
 	err := c.EnsureResolved()
