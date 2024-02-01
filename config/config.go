@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
@@ -146,6 +147,48 @@ type Config struct {
 
 	// HTTP request interceptor, that assigns Authorization header
 	auth func(r *http.Request) error
+}
+
+// NewWithWorkspaceHost returns a new instance of the Config with the host set to
+// the workspace host. Fields that are not relevant to workspace-level config,
+// like account ID, are omitted. Workspace-level attributes that cannot be
+// computed from the host alone, like Azure Resource ID, are also omitted.
+func (c *Config) NewWithWorkspaceHost(host string) (*Config, error) {
+	err := c.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+
+	var fieldsToSkip = map[string]struct{}{
+		"Host":            {},
+		"AzureResourceID": {},
+		"AccountID":       {},
+	}
+	res := &Config{}
+	cv := reflect.ValueOf(c).Elem()
+	resv := reflect.ValueOf(res).Elem()
+	for i := 0; i < resv.NumField(); i++ {
+		field := resv.Field(i)
+		if !field.CanSet() {
+			continue
+		}
+		if _, ok := fieldsToSkip[resv.Type().Field(i).Name]; ok {
+			continue
+		}
+		field.Set(cv.Field(i))
+	}
+
+	res.Host = host
+	// We can reuse the same OAuth token refresh client and context. The
+	// reuseTokenSource internally locks.
+	res.refreshClient = c.refreshClient
+	res.refreshCtx = c.refreshCtx
+	// The config does not need to be re-resolved, as we reuse all attributes
+	// from the original config.
+	res.resolved = c.resolved
+	res.auth = c.auth
+	res.isTesting = c.isTesting
+	return res, nil
 }
 
 // Authenticate adds special headers to HTTP request to authorize it to work with Databricks REST API
