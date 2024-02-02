@@ -9,6 +9,9 @@ import (
 
 func TestMwsAccAccountClient_GetWorkspaceClient_NoTranspile(t *testing.T) {
 	ctx, a := accountTest(t)
+	if !a.Config.IsAws() {
+		skipf(t)("Only works on AWS")
+	}
 	wss, err := a.Workspaces.List(ctx)
 	require.NoError(t, err)
 
