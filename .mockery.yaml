@@ -1,10 +1,16 @@
 with-expecter: true
 filename: "mock_{{.InterfaceName | snakecase}}.go"
-dir: "experimental/mocks/service/{{.PackageName | snakecase}}"
 mockname: "Mock{{.InterfaceName}}"
 outpkg: "{{.PackageName}}"
 packages:
   github.com/databricks/databricks-sdk-go/service:
     config:
+      dir: "experimental/mocks/service/{{.PackageName | snakecase}}"
       recursive: true
       include-regex: ".*Interface"
+  github.com/databricks/databricks-sdk-go:
+    config:
+      dir: "experimental/mocks"
+      outpkg: "mocks"
+    interfaces:
+      AccountClientUtilities:

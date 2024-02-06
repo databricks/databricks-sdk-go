@@ -22,6 +22,7 @@ func NewMockAccountClient(t interface {
 	return &MockAccountClient {
 		AccountClient: &databricks.AccountClient{
 			Config: nil,
+			Utilities: NewMockAccountClientUtilities(t),
 			{{range .Services}}{{if .IsAccounts}}
 			{{(.TrimPrefix "account").PascalName}}: {{ template "mock-interface-constructor" . }}(t),
 			{{- end}}{{end}}

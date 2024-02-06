@@ -18,7 +18,7 @@ func TestMwsAccAccountClient_GetWorkspaceClient_NoTranspile(t *testing.T) {
 	if len(wss) == 0 {
 		t.Skip("No workspaces found")
 	}
-	w, err := a.GetWorkspaceClient(wss[0])
+	w, err := a.Utilities.GetWorkspaceClient(wss[0])
 	assert.NoError(t, err)
 	me, err := w.CurrentUser.Me(ctx)
 	assert.NoError(t, err)

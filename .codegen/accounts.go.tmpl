@@ -11,6 +11,7 @@ import (
 
 type AccountClient struct {
 	Config *config.Config
+	Utilities AccountClientUtilities
 
 	{{range .Services}}{{if .IsAccounts}}
 	{{.Comment "    // " 80}}

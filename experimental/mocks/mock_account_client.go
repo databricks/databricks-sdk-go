@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/stretchr/testify/mock"
+	mock "github.com/stretchr/testify/mock"
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/billing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
@@ -28,7 +28,8 @@ func NewMockAccountClient(t interface {
 }) *MockAccountClient {
 	return &MockAccountClient{
 		AccountClient: &databricks.AccountClient{
-			Config: nil,
+			Config:    nil,
+			Utilities: NewMockAccountClientUtilities(t),
 
 			AccessControl:           iam.NewMockAccountAccessControlInterface(t),
 			BillableUsage:           billing.NewMockBillableUsageInterface(t),

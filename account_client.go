@@ -17,7 +17,8 @@ import (
 )
 
 type AccountClient struct {
-	Config *config.Config
+	Config    *config.Config
+	Utilities AccountClientUtilities
 
 	// These APIs manage access rules on resources in an account. Currently,
 	// only grant rules are supported. A grant rule specifies a role assigned to
