@@ -98,6 +98,8 @@ func (pkg *Package) ImportedPackages() (res []string) {
 	return
 }
 
+// schemaToEntity converts a schema into an Entity
+// processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
 func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool, processedEntities []string) *Entity {
 	if s.IsRef() {
 		pair := strings.Split(s.Component(), ".")
@@ -177,6 +179,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 }
 
 // makeObject converts OpenAPI Schema into type representation
+// processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
 func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string, processedEntities []string) *Entity {
 	e.fields = map[string]*Field{}
 	required := map[string]bool{}
@@ -229,9 +232,11 @@ func (pkg *Package) localComponent(n *openapi.Node) string {
 	return component
 }
 
+// definedEntity defines and returns the requested entity based on the schema.
+// processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
 func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntities []string) *Entity {
 	if slices.Contains(processedEntities, name) {
-		// Skip if already generated to avoid infinite recursion
+		// Skip if it's already being generated has part of this stack to avoid infinite recursion.
 		return nil
 	}
 	if s == nil || s.IsEmpty() {
