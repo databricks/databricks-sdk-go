@@ -131,6 +131,7 @@ var crudNames = map[string]bool{
 	"create":  true,
 	"read":    true,
 	"get":     true,
+	"head":    true,
 	"update":  true,
 	"replace": true,
 	"delete":  true,

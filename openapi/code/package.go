@@ -331,6 +331,10 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 	}
 	for prefix, path := range spec.Paths {
 		for verb, op := range path.Verbs() {
+			if op.OperationId == "Files.getStatusHead" {
+				// skip this method, it needs to be removed from the spec
+				continue
+			}
 			if !op.HasTag(tag.Name) {
 				continue
 			}

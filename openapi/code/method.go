@@ -101,7 +101,7 @@ func (m *Method) pathParams() (params []Field) {
 	if len(m.PathParts) == 0 {
 		return nil
 	}
-	if !(m.Verb == "GET" || m.Verb == "DELETE") {
+	if !(m.Verb == "GET" || m.Verb == "DELETE" || m.Verb == "HEAD") {
 		return nil
 	}
 	for _, part := range m.PathParts {

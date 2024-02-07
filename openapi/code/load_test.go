@@ -19,7 +19,7 @@ func TestBasic(t *testing.T) {
 
 	require.Len(t, batch.Packages(), 1)
 	require.Len(t, batch.Services(), 1)
-	require.Len(t, batch.Types(), 14)
+	require.Len(t, batch.Types(), 15)
 	commands, ok := batch.packages["commands"]
 	require.True(t, ok)
 
@@ -33,7 +33,7 @@ func TestBasic(t *testing.T) {
 	assert.Equal(t, commands, ce.Package)
 
 	methods := ce.Methods()
-	assert.Equal(t, 6, len(methods))
+	assert.Equal(t, 7, len(methods))
 
 	execute := methods[5]
 	assert.Equal(t, "execute", execute.Name)
@@ -51,7 +51,7 @@ func TestBasic(t *testing.T) {
 	assert.Equal(t, 0, len(wait.MessagePath()))
 
 	types := commands.Types()
-	assert.Equal(t, 14, len(types))
+	assert.Equal(t, 15, len(types))
 
 	command := types[1]
 	assert.Equal(t, "Command", command.PascalName())
