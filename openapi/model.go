@@ -87,6 +87,7 @@ type Path struct {
 	Node
 	Parameters []Parameter `json:"parameters,omitempty"`
 	Get        *Operation  `json:"get,omitempty"`
+	Head       *Operation  `json:"head,omitempty"`
 	Post       *Operation  `json:"post,omitempty"`
 	Put        *Operation  `json:"put,omitempty"`
 	Patch      *Operation  `json:"patch,omitempty"`
@@ -98,6 +99,9 @@ func (path *Path) Verbs() map[string]*Operation {
 	m := map[string]*Operation{}
 	if path.Get != nil {
 		m["GET"] = path.Get
+	}
+	if path.Head != nil {
+		m["HEAD"] = path.Head
 	}
 	if path.Post != nil {
 		m["POST"] = path.Post

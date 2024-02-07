@@ -34,6 +34,14 @@ func TestMakeRequestBody(t *testing.T) {
 	require.Equal(t, "/a/b/c", requestURL)
 	x1 := `{"scope":"test"}`
 	require.Equal(t, []byte(x1), bodyBytes)
+
+	requestURL = "/a/b/c"
+	body, err = makeRequestBody("HEAD", &requestURL, x{"test"})
+	require.NoError(t, err)
+	bodyBytes, err = io.ReadAll(body.Reader)
+	require.NoError(t, err)
+	require.Equal(t, "/a/b/c?scope=test", requestURL)
+	require.Equal(t, 0, len(bodyBytes))
 }
 
 func TestMakeRequestBodyFromReader(t *testing.T) {

@@ -113,7 +113,7 @@ func makeRequestBody(method string, requestURL *string, data interface{}) (commo
 	if data == nil {
 		return common.RequestBody{}, nil
 	}
-	if method == "GET" || method == "DELETE" {
+	if method == "GET" || method == "DELETE" || method == "HEAD" {
 		qs, err := makeQueryString(data)
 		if err != nil {
 			return common.RequestBody{}, err
