@@ -33,7 +33,7 @@ func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
 	latest, err := sparkVersions.Select(compute.SparkVersionRequest{
 		Latest:          true,
 		LongTermSupport: true,
-		ML:              true,
+		Photon:          false,
 	})
 	require.NoError(t, err)
 
@@ -94,7 +94,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
 		Latest:          true,
 		LongTermSupport: true,
-		ML:              true,
+		Photon:          false,
 	})
 	require.NoError(t, err)
 
