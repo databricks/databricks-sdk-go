@@ -29,9 +29,10 @@ func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
-	// Select the latest LTS version
+	// Select the latest LTS version without Photon
 	latest, err := sparkVersions.Select(compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	require.NoError(t, err)
 
@@ -88,9 +89,10 @@ func TestAccClustersApiIntegration(t *testing.T) {
 
 	clusterName := RandomName("sdk-go-cluster-")
 
-	// Select the latest LTS version
+	// Select the latest LTS version without Photon
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	require.NoError(t, err)
 
