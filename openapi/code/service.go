@@ -123,7 +123,7 @@ func (svc *Service) paramToField(op *openapi.Operation, param openapi.Parameter)
 		Entity: svc.Package.schemaToEntity(param.Schema, []string{
 			op.Name(),
 			named.PascalName(),
-		}, false),
+		}, false, []string{}),
 	}
 }
 
@@ -176,7 +176,7 @@ func (svc *Service) newMethodEntity(op *openapi.Operation) (*Entity, openapi.Mim
 		return &Entity{fields: map[string]*Field{}}, "", nil
 	}
 	requestSchema, mimeType := svc.getBaseSchemaAndMimeType(op.RequestBody)
-	res := svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true)
+	res := svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true, []string{})
 	if res == nil {
 		panic(fmt.Errorf("%s request body is nil", op.OperationId))
 	}
@@ -316,7 +316,7 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 	body := op.SuccessResponseBody(svc.Package.Components)
 	schema, mimeType := svc.getBaseSchemaAndMimeType(body)
 	name := op.Name()
-	response := svc.Package.definedEntity(name+"Response", schema)
+	response := svc.Package.definedEntity(name+"Response", schema, []string{})
 	var bodyField *Field
 	if mimeType.IsByteStream() {
 		bodyField = response.fields[openapi.MediaTypeNonJsonBodyFieldName]
