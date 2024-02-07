@@ -98,7 +98,7 @@ func (pkg *Package) ImportedPackages() (res []string) {
 	return
 }
 
-func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool) *Entity {
+func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool, processedEntities []string) *Entity {
 	if s.IsRef() {
 		pair := strings.Split(s.Component(), ".")
 		if len(pair) == 2 && pair[0] != pkg.Name {
@@ -130,7 +130,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 			return nil
 		}
 		component := pkg.localComponent(&s.Node)
-		return pkg.definedEntity(component, *src)
+		return pkg.definedEntity(component, *src, processedEntities)
 	}
 	e := &Entity{
 		Named: Named{
@@ -156,16 +156,16 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	}
 	// object
 	if len(s.Properties) != 0 {
-		return pkg.makeObject(e, s, path)
+		return pkg.makeObject(e, s, path, processedEntities)
 	}
 	// array
 	if s.ArrayValue != nil {
-		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, append(path, "Item"), false)
+		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, append(path, "Item"), false, processedEntities)
 		return e
 	}
 	// map
 	if s.MapValue != nil {
-		e.MapValue = pkg.schemaToEntity(s.MapValue, path, hasName)
+		e.MapValue = pkg.schemaToEntity(s.MapValue, path, hasName, processedEntities)
 		return e
 	}
 	e.IsBool = s.Type == "boolean" || s.Type == "bool"
@@ -177,7 +177,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 }
 
 // makeObject converts OpenAPI Schema into type representation
-func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Entity {
+func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string, processedEntities []string) *Entity {
 	e.fields = map[string]*Field{}
 	required := map[string]bool{}
 	for _, v := range s.Required {
@@ -193,7 +193,7 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 		named := Named{k, v.Description}
 		e.fields[k] = &Field{
 			Named:    named,
-			Entity:   pkg.schemaToEntity(v, append(path, named.PascalName()), false),
+			Entity:   pkg.schemaToEntity(v, append(path, named.PascalName()), false, processedEntities),
 			Required: required[k],
 			Schema:   v,
 			IsJson:   true,
@@ -229,7 +229,11 @@ func (pkg *Package) localComponent(n *openapi.Node) string {
 	return component
 }
 
-func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
+func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntities []string) *Entity {
+	if slices.Contains(processedEntities, name) {
+		// Skip if already generated to avoid infinite recursion
+		return nil
+	}
 	if s == nil || s.IsEmpty() {
 		entity := &Entity{
 			Named: Named{
@@ -240,8 +244,9 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 		}
 		return pkg.define(entity)
 	}
+	processedEntities = append(processedEntities, name)
 
-	e := pkg.schemaToEntity(s, []string{name}, true)
+	e := pkg.schemaToEntity(s, []string{name}, true, processedEntities)
 	if e == nil {
 		// gets here when responses are objects with no properties
 		return nil
@@ -317,7 +322,7 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 		if split[0] != pkg.Name {
 			continue
 		}
-		pkg.definedEntity(split[1], *v)
+		pkg.definedEntity(split[1], *v, []string{})
 	}
 	for prefix, path := range spec.Paths {
 		for verb, op := range path.Verbs() {
