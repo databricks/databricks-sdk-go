@@ -81,6 +81,65 @@ func (_c *MockAccountSettingsInterface_DeletePersonalComputeSetting_Call) RunAnd
 	return _c
 }
 
+// GetPersonalComputeSetting provides a mock function with given fields: ctx, request
+func (_m *MockAccountSettingsInterface) GetPersonalComputeSetting(ctx context.Context, request settings.GetPersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPersonalComputeSetting")
+	}
+
+	var r0 *settings.PersonalComputeSetting
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetPersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetPersonalComputeSettingRequest) *settings.PersonalComputeSetting); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.PersonalComputeSetting)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetPersonalComputeSettingRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountSettingsInterface_GetPersonalComputeSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPersonalComputeSetting'
+type MockAccountSettingsInterface_GetPersonalComputeSetting_Call struct {
+	*mock.Call
+}
+
+// GetPersonalComputeSetting is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.GetPersonalComputeSettingRequest
+func (_e *MockAccountSettingsInterface_Expecter) GetPersonalComputeSetting(ctx interface{}, request interface{}) *MockAccountSettingsInterface_GetPersonalComputeSetting_Call {
+	return &MockAccountSettingsInterface_GetPersonalComputeSetting_Call{Call: _e.mock.On("GetPersonalComputeSetting", ctx, request)}
+}
+
+func (_c *MockAccountSettingsInterface_GetPersonalComputeSetting_Call) Run(run func(ctx context.Context, request settings.GetPersonalComputeSettingRequest)) *MockAccountSettingsInterface_GetPersonalComputeSetting_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settings.GetPersonalComputeSettingRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_GetPersonalComputeSetting_Call) Return(_a0 *settings.PersonalComputeSetting, _a1 error) *MockAccountSettingsInterface_GetPersonalComputeSetting_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_GetPersonalComputeSetting_Call) RunAndReturn(run func(context.Context, settings.GetPersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error)) *MockAccountSettingsInterface_GetPersonalComputeSetting_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Impl provides a mock function with given fields:
 func (_m *MockAccountSettingsInterface) Impl() settings.AccountSettingsService {
 	ret := _m.Called()
@@ -124,65 +183,6 @@ func (_c *MockAccountSettingsInterface_Impl_Call) Return(_a0 settings.AccountSet
 }
 
 func (_c *MockAccountSettingsInterface_Impl_Call) RunAndReturn(run func() settings.AccountSettingsService) *MockAccountSettingsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ReadPersonalComputeSetting provides a mock function with given fields: ctx, request
-func (_m *MockAccountSettingsInterface) ReadPersonalComputeSetting(ctx context.Context, request settings.ReadPersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ReadPersonalComputeSetting")
-	}
-
-	var r0 *settings.PersonalComputeSetting
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.ReadPersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.ReadPersonalComputeSettingRequest) *settings.PersonalComputeSetting); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.PersonalComputeSetting)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, settings.ReadPersonalComputeSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockAccountSettingsInterface_ReadPersonalComputeSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadPersonalComputeSetting'
-type MockAccountSettingsInterface_ReadPersonalComputeSetting_Call struct {
-	*mock.Call
-}
-
-// ReadPersonalComputeSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.ReadPersonalComputeSettingRequest
-func (_e *MockAccountSettingsInterface_Expecter) ReadPersonalComputeSetting(ctx interface{}, request interface{}) *MockAccountSettingsInterface_ReadPersonalComputeSetting_Call {
-	return &MockAccountSettingsInterface_ReadPersonalComputeSetting_Call{Call: _e.mock.On("ReadPersonalComputeSetting", ctx, request)}
-}
-
-func (_c *MockAccountSettingsInterface_ReadPersonalComputeSetting_Call) Run(run func(ctx context.Context, request settings.ReadPersonalComputeSettingRequest)) *MockAccountSettingsInterface_ReadPersonalComputeSetting_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.ReadPersonalComputeSettingRequest))
-	})
-	return _c
-}
-
-func (_c *MockAccountSettingsInterface_ReadPersonalComputeSetting_Call) Return(_a0 *settings.PersonalComputeSetting, _a1 error) *MockAccountSettingsInterface_ReadPersonalComputeSetting_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockAccountSettingsInterface_ReadPersonalComputeSetting_Call) RunAndReturn(run func(context.Context, settings.ReadPersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error)) *MockAccountSettingsInterface_ReadPersonalComputeSetting_Call {
 	_c.Call.Return(run)
 	return _c
 }

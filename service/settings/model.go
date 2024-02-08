@@ -205,7 +205,7 @@ type DeleteAccountIpAccessListRequest struct {
 }
 
 // Delete the default namespace setting
-type DeleteDefaultWorkspaceNamespaceRequest struct {
+type DeleteDefaultNamespaceSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -213,17 +213,28 @@ type DeleteDefaultWorkspaceNamespaceRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag"`
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
 }
 
-type DeleteDefaultWorkspaceNamespaceResponse struct {
+func (s *DeleteDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteDefaultNamespaceSettingResponse struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
 	// is strongly suggested that systems make use of the etag in the read ->
-	// update pattern to perform setting updates in order to avoid race
+	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
-	// PATCH request to identify the setting version you are updating.
+	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"etag"`
 }
 
@@ -248,17 +259,28 @@ type DeletePersonalComputeSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag"`
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
 }
 
+func (s *DeletePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeletePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
 type DeletePersonalComputeSettingResponse struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
 	// is strongly suggested that systems make use of the etag in the read ->
-	// update pattern to perform setting updates in order to avoid race
+	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
-	// PATCH request to identify the setting version you are updating.
+	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"etag"`
 }
 
@@ -270,12 +292,47 @@ type DeletePrivateEndpointRuleRequest struct {
 	PrivateEndpointRuleId string `json:"-" url:"-"`
 }
 
+// Delete the restrict workspace admins setting
+type DeleteRestrictWorkspaceAdminsSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteRestrictWorkspaceAdminsSettingResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
+}
+
 // Delete a token
 type DeleteTokenManagementRequest struct {
 	// The ID of the token to get.
 	TokenId string `json:"-" url:"-"`
 }
 
+// The exchange token is the result of the token exchange with the IdP
 type ExchangeToken struct {
 	// The requested token.
 	Credential string `json:"credential,omitempty"`
@@ -286,8 +343,7 @@ type ExchangeToken struct {
 	OwnerId int64 `json:"ownerId,omitempty"`
 	// The scopes of access granted in the token.
 	Scopes []string `json:"scopes,omitempty"`
-	// The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN`
-	// is supported.
+	// The type of this exchange token
 	TokenType TokenType `json:"tokenType,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -301,14 +357,17 @@ func (s ExchangeToken) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Exchange a token with the IdP
 type ExchangeTokenRequest struct {
+	// The partition of Credentials store
 	PartitionId PartitionId `json:"partitionId"`
 	// Array of scopes for the token request.
 	Scopes []string `json:"scopes"`
-
+	// A list of token types being requested
 	TokenType []TokenType `json:"tokenType"`
 }
 
+// Exhanged tokens were successfully returned.
 type ExchangeTokenResponse struct {
 	Values []ExchangeToken `json:"values,omitempty"`
 }
@@ -323,6 +382,28 @@ type FetchIpAccessListResponse struct {
 type GetAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
+}
+
+// Get the default namespace setting
+type GetDefaultNamespaceSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get access list
@@ -347,12 +428,56 @@ type GetNetworkConnectivityConfigurationRequest struct {
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 }
 
+// Get Personal Compute setting
+type GetPersonalComputeSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetPersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetPersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get a private endpoint rule
 type GetPrivateEndpointRuleRequest struct {
 	// Your Network Connectvity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 	// Your private endpoint rule ID.
 	PrivateEndpointRuleId string `json:"-" url:"-"`
+}
+
+// Get the restrict workspace admins setting
+type GetRestrictWorkspaceAdminsSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Check configuration status
@@ -763,6 +888,7 @@ func (s NetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Partition by workspace or account
 type PartitionId struct {
 	// The ID of the workspace.
 	WorkspaceId int64 `json:"workspaceId,omitempty"`
@@ -836,6 +962,8 @@ type PersonalComputeSetting struct {
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -871,30 +999,6 @@ func (s PublicTokenInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the default namespace setting
-type ReadDefaultWorkspaceNamespaceRequest struct {
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// delete pattern to perform setting deletions in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag"`
-}
-
-// Get Personal Compute setting
-type ReadPersonalComputeSettingRequest struct {
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// delete pattern to perform setting deletions in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag"`
-}
-
 // Details required to replace an IP access list.
 type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
@@ -912,6 +1016,68 @@ type ReplaceIpAccessList struct {
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
 	ListType ListType `json:"list_type"`
+}
+
+type RestrictWorkspaceAdminsMessage struct {
+	Status RestrictWorkspaceAdminsMessageStatus `json:"status"`
+}
+
+type RestrictWorkspaceAdminsMessageStatus string
+
+const RestrictWorkspaceAdminsMessageStatusAllowAll RestrictWorkspaceAdminsMessageStatus = `ALLOW_ALL`
+
+const RestrictWorkspaceAdminsMessageStatusRestrictTokensAndJobRunAs RestrictWorkspaceAdminsMessageStatus = `RESTRICT_TOKENS_AND_JOB_RUN_AS`
+
+const RestrictWorkspaceAdminsMessageStatusStatusUnspecified RestrictWorkspaceAdminsMessageStatus = `STATUS_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (f *RestrictWorkspaceAdminsMessageStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RestrictWorkspaceAdminsMessageStatus) Set(v string) error {
+	switch v {
+	case `ALLOW_ALL`, `RESTRICT_TOKENS_AND_JOB_RUN_AS`, `STATUS_UNSPECIFIED`:
+		*f = RestrictWorkspaceAdminsMessageStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALLOW_ALL", "RESTRICT_TOKENS_AND_JOB_RUN_AS", "STATUS_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns RestrictWorkspaceAdminsMessageStatus to satisfy [pflag.Value] interface
+func (f *RestrictWorkspaceAdminsMessageStatus) Type() string {
+	return "RestrictWorkspaceAdminsMessageStatus"
+}
+
+type RestrictWorkspaceAdminsSetting struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+
+	RestrictWorkspaceAdmins RestrictWorkspaceAdminsMessage `json:"restrict_workspace_admins"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RestrictWorkspaceAdminsSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RestrictWorkspaceAdminsSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RevokeTokenRequest struct {
@@ -1115,19 +1281,16 @@ func (f *TokenType) Type() string {
 	return "TokenType"
 }
 
-// Update the default namespace setting
-type UpdateDefaultWorkspaceNamespaceRequest struct {
+// Details required to update a setting.
+type UpdateDefaultNamespaceSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
-	AllowMissing bool `json:"allow_missing,omitempty"`
+	AllowMissing bool `json:"allow_missing"`
 	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. For
-	// example, for Default Namespace setting, the field mask is supposed to
-	// contain fields from the DefaultNamespaceSetting.namespace schema.
-	//
-	// The field mask needs to be supplied as single string. To specify multiple
-	// fields in the field mask, use comma as the seperator (no space).
-	FieldMask string `json:"field_mask,omitempty"`
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
 	// This represents the setting configuration for the default namespace in
 	// the Databricks workspace. Setting the default catalog for the workspace
 	// determines the catalog that is used when queries do not reference a fully
@@ -1137,17 +1300,7 @@ type UpdateDefaultWorkspaceNamespaceRequest struct {
 	// assumed). This setting requires a restart of clusters and SQL warehouses
 	// to take effect. Additionally, the default namespace only applies when
 	// using Unity Catalog-enabled compute.
-	Setting *DefaultNamespaceSetting `json:"setting,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateDefaultWorkspaceNamespaceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateDefaultWorkspaceNamespaceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	Setting DefaultNamespaceSetting `json:"setting"`
 }
 
 // Details required to update an IP access list.
@@ -1179,23 +1332,32 @@ func (s UpdateIpAccessList) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Update Personal Compute setting
+// Details required to update a setting.
 type UpdatePersonalComputeSettingRequest struct {
-	// This should always be set to true for Settings RPCs. Added for AIP
+	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
-	AllowMissing bool `json:"allow_missing,omitempty"`
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
 
-	Setting *PersonalComputeSetting `json:"setting,omitempty"`
-
-	ForceSendFields []string `json:"-"`
+	Setting PersonalComputeSetting `json:"setting"`
 }
 
-func (s *UpdatePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
+// Details required to update a setting.
+type UpdateRestrictWorkspaceAdminsSettingRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
 
-func (s UpdatePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	Setting RestrictWorkspaceAdminsSetting `json:"setting"`
 }
 
 type WorkspaceConf map[string]string

@@ -140,23 +140,43 @@ type DbfsService interface {
 // Unity Catalog volumes.
 type FilesService interface {
 
-	// Delete a file or directory.
+	// Create a directory.
 	//
-	// Deletes a file or directory.
+	// Creates an empty directory. If called on an existing directory, the API
+	// returns a success response.
+	CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error
+
+	// Delete a file.
+	//
+	// Deletes a file.
 	Delete(ctx context.Context, request DeleteFileRequest) error
+
+	// Delete a directory.
+	//
+	// Deletes an empty directory. If the directory is not empty, the API
+	// returns a HTTP 400 error.
+	DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error
 
 	// Download a file.
 	//
-	// Downloads a file of up to 2 GiB.
+	// Downloads a file of up to 5 GiB.
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 
-	// Get file or directory status.
+	// Get the metadata of a file.
 	//
 	// Returns the status of a file or directory.
 	GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error)
 
+	// List directory contents.
+	//
+	// Returns the contents of a directory. If there is no directory at the
+	// specified path, the API returns a HTTP 404 error.
+	//
+	// Use ListDirectoryContentsAll() to get all DirectoryEntry instances, which will iterate over every result page.
+	ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error)
+
 	// Upload a file.
 	//
-	// Uploads a file of up to 2 GiB.
+	// Uploads a file of up to 5 GiB.
 	Upload(ctx context.Context, request UploadRequest) error
 }

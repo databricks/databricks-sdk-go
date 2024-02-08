@@ -40,6 +40,12 @@ func (s Create) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Create a directory
+type CreateDirectoryRequest struct {
+	// The absolute path of a directory.
+	DirectoryPath string `json:"-" url:"-"`
+}
+
 type CreateResponse struct {
 	// Handle which should subsequently be passed into the AddBlock and Close
 	// calls when writing to a file through a stream.
@@ -75,15 +81,44 @@ func (s Delete) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a file or directory
+// Delete a directory
+type DeleteDirectoryRequest struct {
+	// The absolute path of a directory.
+	DirectoryPath string `json:"-" url:"-"`
+}
+
+// Delete a file
 type DeleteFileRequest struct {
-	// The absolute path of the file or directory in DBFS.
+	// The absolute path of the file.
 	FilePath string `json:"-" url:"-"`
+}
+
+type DirectoryEntry struct {
+	// The length of the file in bytes. This field is omitted for directories.
+	FileSize int64 `json:"file_size,omitempty"`
+	// True if the path is a directory.
+	IsDirectory bool `json:"is_directory,omitempty"`
+	// Last modification time of given file in milliseconds since unix epoch.
+	LastModified int64 `json:"last_modified,omitempty"`
+	// The name of the file or directory.
+	Name string `json:"name,omitempty"`
+	// The absolute path of the file or directory.
+	Path string `json:"path,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DirectoryEntry) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DirectoryEntry) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Download a file
 type DownloadRequest struct {
-	// The absolute path of the file or directory in DBFS.
+	// The absolute path of the file.
 	FilePath string `json:"-" url:"-"`
 }
 
@@ -124,6 +159,51 @@ type ListDbfsRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
 	Path string `json:"-" url:"path"`
+}
+
+// List directory contents
+type ListDirectoryContentsRequest struct {
+	// The absolute path of a directory.
+	DirectoryPath string `json:"-" url:"-"`
+	// The maximum number of directory entries to return. The API may return
+	// fewer than this value. Receiving fewer results does not imply there are
+	// no more results. As long as the response contains a next_page_token,
+	// there may be more results.
+	//
+	// If unspecified, at most 1000 directory entries will be returned. The
+	// maximum value is 1000. Values above 1000 will be coerced to 1000.
+	PageSize int64 `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous `list` call. Provide this to
+	// retrieve the subsequent page. When paginating, all other parameters
+	// provided to `list` must match the call that provided the page token.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListDirectoryContentsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDirectoryContentsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDirectoryResponse struct {
+	// Array of DirectoryEntry.
+	Contents []DirectoryEntry `json:"contents,omitempty"`
+	// A token, which can be sent as `page_token` to retrieve the next page.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListDirectoryResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDirectoryResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListStatusResponse struct {
@@ -208,7 +288,7 @@ func (s ReadResponse) MarshalJSON() ([]byte, error) {
 // Upload a file
 type UploadRequest struct {
 	Contents io.ReadCloser `json:"-"`
-	// The absolute path of the file or directory in DBFS.
+	// The absolute path of the file.
 	FilePath string `json:"-" url:"-"`
 	// If true, an existing file will be overwritten.
 	Overwrite bool `json:"-" url:"overwrite,omitempty"`

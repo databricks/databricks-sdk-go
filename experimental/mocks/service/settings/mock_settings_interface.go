@@ -22,28 +22,28 @@ func (_m *MockSettingsInterface) EXPECT() *MockSettingsInterface_Expecter {
 	return &MockSettingsInterface_Expecter{mock: &_m.Mock}
 }
 
-// DeleteDefaultWorkspaceNamespace provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) DeleteDefaultWorkspaceNamespace(ctx context.Context, request settings.DeleteDefaultWorkspaceNamespaceRequest) (*settings.DeleteDefaultWorkspaceNamespaceResponse, error) {
+// DeleteDefaultNamespaceSetting provides a mock function with given fields: ctx, request
+func (_m *MockSettingsInterface) DeleteDefaultNamespaceSetting(ctx context.Context, request settings.DeleteDefaultNamespaceSettingRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteDefaultWorkspaceNamespace")
+		panic("no return value specified for DeleteDefaultNamespaceSetting")
 	}
 
-	var r0 *settings.DeleteDefaultWorkspaceNamespaceResponse
+	var r0 *settings.DeleteDefaultNamespaceSettingResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteDefaultWorkspaceNamespaceRequest) (*settings.DeleteDefaultWorkspaceNamespaceResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteDefaultWorkspaceNamespaceRequest) *settings.DeleteDefaultWorkspaceNamespaceResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) *settings.DeleteDefaultNamespaceSettingResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.DeleteDefaultWorkspaceNamespaceResponse)
+			r0 = ret.Get(0).(*settings.DeleteDefaultNamespaceSettingResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.DeleteDefaultWorkspaceNamespaceRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -52,31 +52,208 @@ func (_m *MockSettingsInterface) DeleteDefaultWorkspaceNamespace(ctx context.Con
 	return r0, r1
 }
 
-// MockSettingsInterface_DeleteDefaultWorkspaceNamespace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDefaultWorkspaceNamespace'
-type MockSettingsInterface_DeleteDefaultWorkspaceNamespace_Call struct {
+// MockSettingsInterface_DeleteDefaultNamespaceSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDefaultNamespaceSetting'
+type MockSettingsInterface_DeleteDefaultNamespaceSetting_Call struct {
 	*mock.Call
 }
 
-// DeleteDefaultWorkspaceNamespace is a helper method to define mock.On call
+// DeleteDefaultNamespaceSetting is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.DeleteDefaultWorkspaceNamespaceRequest
-func (_e *MockSettingsInterface_Expecter) DeleteDefaultWorkspaceNamespace(ctx interface{}, request interface{}) *MockSettingsInterface_DeleteDefaultWorkspaceNamespace_Call {
-	return &MockSettingsInterface_DeleteDefaultWorkspaceNamespace_Call{Call: _e.mock.On("DeleteDefaultWorkspaceNamespace", ctx, request)}
+//   - request settings.DeleteDefaultNamespaceSettingRequest
+func (_e *MockSettingsInterface_Expecter) DeleteDefaultNamespaceSetting(ctx interface{}, request interface{}) *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call {
+	return &MockSettingsInterface_DeleteDefaultNamespaceSetting_Call{Call: _e.mock.On("DeleteDefaultNamespaceSetting", ctx, request)}
 }
 
-func (_c *MockSettingsInterface_DeleteDefaultWorkspaceNamespace_Call) Run(run func(ctx context.Context, request settings.DeleteDefaultWorkspaceNamespaceRequest)) *MockSettingsInterface_DeleteDefaultWorkspaceNamespace_Call {
+func (_c *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call) Run(run func(ctx context.Context, request settings.DeleteDefaultNamespaceSettingRequest)) *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.DeleteDefaultWorkspaceNamespaceRequest))
+		run(args[0].(context.Context), args[1].(settings.DeleteDefaultNamespaceSettingRequest))
 	})
 	return _c
 }
 
-func (_c *MockSettingsInterface_DeleteDefaultWorkspaceNamespace_Call) Return(_a0 *settings.DeleteDefaultWorkspaceNamespaceResponse, _a1 error) *MockSettingsInterface_DeleteDefaultWorkspaceNamespace_Call {
+func (_c *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call) Return(_a0 *settings.DeleteDefaultNamespaceSettingResponse, _a1 error) *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockSettingsInterface_DeleteDefaultWorkspaceNamespace_Call) RunAndReturn(run func(context.Context, settings.DeleteDefaultWorkspaceNamespaceRequest) (*settings.DeleteDefaultWorkspaceNamespaceResponse, error)) *MockSettingsInterface_DeleteDefaultWorkspaceNamespace_Call {
+func (_c *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call) RunAndReturn(run func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error)) *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteRestrictWorkspaceAdminsSetting provides a mock function with given fields: ctx, request
+func (_m *MockSettingsInterface) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request settings.DeleteRestrictWorkspaceAdminsSettingRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteRestrictWorkspaceAdminsSetting")
+	}
+
+	var r0 *settings.DeleteRestrictWorkspaceAdminsSettingResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) *settings.DeleteRestrictWorkspaceAdminsSettingResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.DeleteRestrictWorkspaceAdminsSettingResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteRestrictWorkspaceAdminsSetting'
+type MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call struct {
+	*mock.Call
+}
+
+// DeleteRestrictWorkspaceAdminsSetting is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.DeleteRestrictWorkspaceAdminsSettingRequest
+func (_e *MockSettingsInterface_Expecter) DeleteRestrictWorkspaceAdminsSetting(ctx interface{}, request interface{}) *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call {
+	return &MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call{Call: _e.mock.On("DeleteRestrictWorkspaceAdminsSetting", ctx, request)}
+}
+
+func (_c *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call) Run(run func(ctx context.Context, request settings.DeleteRestrictWorkspaceAdminsSettingRequest)) *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settings.DeleteRestrictWorkspaceAdminsSettingRequest))
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call) Return(_a0 *settings.DeleteRestrictWorkspaceAdminsSettingResponse, _a1 error) *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call) RunAndReturn(run func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error)) *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetDefaultNamespaceSetting provides a mock function with given fields: ctx, request
+func (_m *MockSettingsInterface) GetDefaultNamespaceSetting(ctx context.Context, request settings.GetDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDefaultNamespaceSetting")
+	}
+
+	var r0 *settings.DefaultNamespaceSetting
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetDefaultNamespaceSettingRequest) *settings.DefaultNamespaceSetting); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.DefaultNamespaceSetting)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetDefaultNamespaceSettingRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSettingsInterface_GetDefaultNamespaceSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDefaultNamespaceSetting'
+type MockSettingsInterface_GetDefaultNamespaceSetting_Call struct {
+	*mock.Call
+}
+
+// GetDefaultNamespaceSetting is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.GetDefaultNamespaceSettingRequest
+func (_e *MockSettingsInterface_Expecter) GetDefaultNamespaceSetting(ctx interface{}, request interface{}) *MockSettingsInterface_GetDefaultNamespaceSetting_Call {
+	return &MockSettingsInterface_GetDefaultNamespaceSetting_Call{Call: _e.mock.On("GetDefaultNamespaceSetting", ctx, request)}
+}
+
+func (_c *MockSettingsInterface_GetDefaultNamespaceSetting_Call) Run(run func(ctx context.Context, request settings.GetDefaultNamespaceSettingRequest)) *MockSettingsInterface_GetDefaultNamespaceSetting_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settings.GetDefaultNamespaceSettingRequest))
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_GetDefaultNamespaceSetting_Call) Return(_a0 *settings.DefaultNamespaceSetting, _a1 error) *MockSettingsInterface_GetDefaultNamespaceSetting_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSettingsInterface_GetDefaultNamespaceSetting_Call) RunAndReturn(run func(context.Context, settings.GetDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error)) *MockSettingsInterface_GetDefaultNamespaceSetting_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetRestrictWorkspaceAdminsSetting provides a mock function with given fields: ctx, request
+func (_m *MockSettingsInterface) GetRestrictWorkspaceAdminsSetting(ctx context.Context, request settings.GetRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetRestrictWorkspaceAdminsSetting")
+	}
+
+	var r0 *settings.RestrictWorkspaceAdminsSetting
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) *settings.RestrictWorkspaceAdminsSetting); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.RestrictWorkspaceAdminsSetting)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRestrictWorkspaceAdminsSetting'
+type MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call struct {
+	*mock.Call
+}
+
+// GetRestrictWorkspaceAdminsSetting is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.GetRestrictWorkspaceAdminsSettingRequest
+func (_e *MockSettingsInterface_Expecter) GetRestrictWorkspaceAdminsSetting(ctx interface{}, request interface{}) *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call {
+	return &MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call{Call: _e.mock.On("GetRestrictWorkspaceAdminsSetting", ctx, request)}
+}
+
+func (_c *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call) Run(run func(ctx context.Context, request settings.GetRestrictWorkspaceAdminsSettingRequest)) *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settings.GetRestrictWorkspaceAdminsSettingRequest))
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call) Return(_a0 *settings.RestrictWorkspaceAdminsSetting, _a1 error) *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call) RunAndReturn(run func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error)) *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -128,20 +305,20 @@ func (_c *MockSettingsInterface_Impl_Call) RunAndReturn(run func() settings.Sett
 	return _c
 }
 
-// ReadDefaultWorkspaceNamespace provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) ReadDefaultWorkspaceNamespace(ctx context.Context, request settings.ReadDefaultWorkspaceNamespaceRequest) (*settings.DefaultNamespaceSetting, error) {
+// UpdateDefaultNamespaceSetting provides a mock function with given fields: ctx, request
+func (_m *MockSettingsInterface) UpdateDefaultNamespaceSetting(ctx context.Context, request settings.UpdateDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
-		panic("no return value specified for ReadDefaultWorkspaceNamespace")
+		panic("no return value specified for UpdateDefaultNamespaceSetting")
 	}
 
 	var r0 *settings.DefaultNamespaceSetting
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.ReadDefaultWorkspaceNamespaceRequest) (*settings.DefaultNamespaceSetting, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.ReadDefaultWorkspaceNamespaceRequest) *settings.DefaultNamespaceSetting); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateDefaultNamespaceSettingRequest) *settings.DefaultNamespaceSetting); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -149,7 +326,7 @@ func (_m *MockSettingsInterface) ReadDefaultWorkspaceNamespace(ctx context.Conte
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.ReadDefaultWorkspaceNamespaceRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateDefaultNamespaceSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -158,57 +335,57 @@ func (_m *MockSettingsInterface) ReadDefaultWorkspaceNamespace(ctx context.Conte
 	return r0, r1
 }
 
-// MockSettingsInterface_ReadDefaultWorkspaceNamespace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadDefaultWorkspaceNamespace'
-type MockSettingsInterface_ReadDefaultWorkspaceNamespace_Call struct {
+// MockSettingsInterface_UpdateDefaultNamespaceSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateDefaultNamespaceSetting'
+type MockSettingsInterface_UpdateDefaultNamespaceSetting_Call struct {
 	*mock.Call
 }
 
-// ReadDefaultWorkspaceNamespace is a helper method to define mock.On call
+// UpdateDefaultNamespaceSetting is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.ReadDefaultWorkspaceNamespaceRequest
-func (_e *MockSettingsInterface_Expecter) ReadDefaultWorkspaceNamespace(ctx interface{}, request interface{}) *MockSettingsInterface_ReadDefaultWorkspaceNamespace_Call {
-	return &MockSettingsInterface_ReadDefaultWorkspaceNamespace_Call{Call: _e.mock.On("ReadDefaultWorkspaceNamespace", ctx, request)}
+//   - request settings.UpdateDefaultNamespaceSettingRequest
+func (_e *MockSettingsInterface_Expecter) UpdateDefaultNamespaceSetting(ctx interface{}, request interface{}) *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call {
+	return &MockSettingsInterface_UpdateDefaultNamespaceSetting_Call{Call: _e.mock.On("UpdateDefaultNamespaceSetting", ctx, request)}
 }
 
-func (_c *MockSettingsInterface_ReadDefaultWorkspaceNamespace_Call) Run(run func(ctx context.Context, request settings.ReadDefaultWorkspaceNamespaceRequest)) *MockSettingsInterface_ReadDefaultWorkspaceNamespace_Call {
+func (_c *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call) Run(run func(ctx context.Context, request settings.UpdateDefaultNamespaceSettingRequest)) *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.ReadDefaultWorkspaceNamespaceRequest))
+		run(args[0].(context.Context), args[1].(settings.UpdateDefaultNamespaceSettingRequest))
 	})
 	return _c
 }
 
-func (_c *MockSettingsInterface_ReadDefaultWorkspaceNamespace_Call) Return(_a0 *settings.DefaultNamespaceSetting, _a1 error) *MockSettingsInterface_ReadDefaultWorkspaceNamespace_Call {
+func (_c *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call) Return(_a0 *settings.DefaultNamespaceSetting, _a1 error) *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockSettingsInterface_ReadDefaultWorkspaceNamespace_Call) RunAndReturn(run func(context.Context, settings.ReadDefaultWorkspaceNamespaceRequest) (*settings.DefaultNamespaceSetting, error)) *MockSettingsInterface_ReadDefaultWorkspaceNamespace_Call {
+func (_c *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call) RunAndReturn(run func(context.Context, settings.UpdateDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error)) *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// UpdateDefaultWorkspaceNamespace provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) UpdateDefaultWorkspaceNamespace(ctx context.Context, request settings.UpdateDefaultWorkspaceNamespaceRequest) (*settings.DefaultNamespaceSetting, error) {
+// UpdateRestrictWorkspaceAdminsSetting provides a mock function with given fields: ctx, request
+func (_m *MockSettingsInterface) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request settings.UpdateRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
-		panic("no return value specified for UpdateDefaultWorkspaceNamespace")
+		panic("no return value specified for UpdateRestrictWorkspaceAdminsSetting")
 	}
 
-	var r0 *settings.DefaultNamespaceSetting
+	var r0 *settings.RestrictWorkspaceAdminsSetting
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateDefaultWorkspaceNamespaceRequest) (*settings.DefaultNamespaceSetting, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateDefaultWorkspaceNamespaceRequest) *settings.DefaultNamespaceSetting); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateRestrictWorkspaceAdminsSettingRequest) *settings.RestrictWorkspaceAdminsSetting); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.DefaultNamespaceSetting)
+			r0 = ret.Get(0).(*settings.RestrictWorkspaceAdminsSetting)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateDefaultWorkspaceNamespaceRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateRestrictWorkspaceAdminsSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -217,31 +394,31 @@ func (_m *MockSettingsInterface) UpdateDefaultWorkspaceNamespace(ctx context.Con
 	return r0, r1
 }
 
-// MockSettingsInterface_UpdateDefaultWorkspaceNamespace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateDefaultWorkspaceNamespace'
-type MockSettingsInterface_UpdateDefaultWorkspaceNamespace_Call struct {
+// MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateRestrictWorkspaceAdminsSetting'
+type MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call struct {
 	*mock.Call
 }
 
-// UpdateDefaultWorkspaceNamespace is a helper method to define mock.On call
+// UpdateRestrictWorkspaceAdminsSetting is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.UpdateDefaultWorkspaceNamespaceRequest
-func (_e *MockSettingsInterface_Expecter) UpdateDefaultWorkspaceNamespace(ctx interface{}, request interface{}) *MockSettingsInterface_UpdateDefaultWorkspaceNamespace_Call {
-	return &MockSettingsInterface_UpdateDefaultWorkspaceNamespace_Call{Call: _e.mock.On("UpdateDefaultWorkspaceNamespace", ctx, request)}
+//   - request settings.UpdateRestrictWorkspaceAdminsSettingRequest
+func (_e *MockSettingsInterface_Expecter) UpdateRestrictWorkspaceAdminsSetting(ctx interface{}, request interface{}) *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call {
+	return &MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call{Call: _e.mock.On("UpdateRestrictWorkspaceAdminsSetting", ctx, request)}
 }
 
-func (_c *MockSettingsInterface_UpdateDefaultWorkspaceNamespace_Call) Run(run func(ctx context.Context, request settings.UpdateDefaultWorkspaceNamespaceRequest)) *MockSettingsInterface_UpdateDefaultWorkspaceNamespace_Call {
+func (_c *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call) Run(run func(ctx context.Context, request settings.UpdateRestrictWorkspaceAdminsSettingRequest)) *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.UpdateDefaultWorkspaceNamespaceRequest))
+		run(args[0].(context.Context), args[1].(settings.UpdateRestrictWorkspaceAdminsSettingRequest))
 	})
 	return _c
 }
 
-func (_c *MockSettingsInterface_UpdateDefaultWorkspaceNamespace_Call) Return(_a0 *settings.DefaultNamespaceSetting, _a1 error) *MockSettingsInterface_UpdateDefaultWorkspaceNamespace_Call {
+func (_c *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call) Return(_a0 *settings.RestrictWorkspaceAdminsSetting, _a1 error) *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockSettingsInterface_UpdateDefaultWorkspaceNamespace_Call) RunAndReturn(run func(context.Context, settings.UpdateDefaultWorkspaceNamespaceRequest) (*settings.DefaultNamespaceSetting, error)) *MockSettingsInterface_UpdateDefaultWorkspaceNamespace_Call {
+func (_c *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call) RunAndReturn(run func(context.Context, settings.UpdateRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error)) *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call {
 	_c.Call.Return(run)
 	return _c
 }

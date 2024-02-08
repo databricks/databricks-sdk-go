@@ -23,7 +23,8 @@ func ExampleClustersAPI_ChangeOwner_clustersApiIntegration() {
 	}
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
@@ -81,7 +82,8 @@ func ExampleClustersAPI_Create_clustersApiIntegration() {
 	}
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
@@ -119,7 +121,8 @@ func ExampleClustersAPI_Delete_clustersApiIntegration() {
 	}
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
@@ -164,7 +167,8 @@ func ExampleClustersAPI_Edit_clustersApiIntegration() {
 	clusterName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
@@ -247,7 +251,8 @@ func ExampleClustersAPI_Events_clustersApiIntegration() {
 	}
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
@@ -293,7 +298,8 @@ func ExampleClustersAPI_Get_clustersApiIntegration() {
 	}
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
@@ -367,7 +373,8 @@ func ExampleClustersAPI_Pin_clustersApiIntegration() {
 	}
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
@@ -410,7 +417,8 @@ func ExampleClustersAPI_Resize_clustersApiIntegration() {
 	}
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
@@ -457,7 +465,8 @@ func ExampleClustersAPI_Restart_clustersApiIntegration() {
 	}
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
@@ -519,7 +528,8 @@ func ExampleClustersAPI_SelectSparkVersion_clustersApiIntegration() {
 	}
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
@@ -536,7 +546,8 @@ func ExampleClustersAPI_Start_clustersApiIntegration() {
 	}
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
@@ -579,7 +590,8 @@ func ExampleClustersAPI_Unpin_clustersApiIntegration() {
 	}
 
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
-		Latest: true,
+		Latest:          true,
+		LongTermSupport: true,
 	})
 	if err != nil {
 		panic(err)
