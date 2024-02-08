@@ -65,10 +65,8 @@ func NewFromSpec(ctx context.Context, spec *openapi.Specification) (*Batch, erro
 	return &batch, nil
 }
 
-// Only works when the reference is on the same package. It does not add the "package." prefix on the type.
-// Ex: "cluster compute.NewCluster `json:"-"` is missing "compute."
 func fillMissingEntities(batch *Batch) {
-	for _, pkg := range batch.packages {
+	for pkgName, pkg := range batch.packages {
 		for _, entity := range pkg.types {
 			for _, field := range entity.fields {
 				if field.Entity == nil && field.Schema != nil && field.Schema.IsRef() {
@@ -76,6 +74,19 @@ func fillMissingEntities(batch *Batch) {
 					packageName, _ := strings.CutPrefix(prefix, "#/components/schemas/")
 					if refEntify, ok := batch.packages[packageName].types[refType]; ok {
 						field.Entity = refEntify
+						if packageName != pkgName {
+							fieldSchema := field.Schema
+							pkg.extImports[fieldSchema.Component()] = &Entity{
+								Named: Named{
+									Name: refType,
+								},
+								Package: &Package{
+									Named: Named{
+										Name: packageName,
+									},
+								},
+							}
+						}
 					}
 				}
 			}
