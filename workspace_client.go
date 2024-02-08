@@ -25,8 +25,8 @@ import (
 )
 
 type WorkspaceClient struct {
-	Config            *config.Config
-	apiClient         *client.DatabricksClient
+	Config    *config.Config
+	apiClient *client.DatabricksClient
 
 	// These APIs manage access rules on resources in an account. Currently,
 	// only grant rules are supported. A grant rule specifies a role assigned to
