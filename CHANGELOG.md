@@ -64,6 +64,12 @@ Additions:
  * Pipelines: 
     - [pipelines.PipelineClusterAutoscale](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineClusterAutoscale).
     - [pipelines.PipelineClusterAutoscaleMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineClusterAutoscaleMode).
+ * Settings: 
+    - [settings.RestrictWorkspaceAdminsMessageStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsMessageStatus).
+    - [settings.RestrictWorkspaceAdminsSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsSetting).
+ * Catalog: 
+    - [catalog.MonitorRefreshInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MonitorRefreshInfo).
+    - [catalog.MonitorRefreshInfoState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MonitorRefreshInfoState).
  * Added `GetPersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service.
  * Added the following fields: 
   - `DeltaSyncIndexSpec` for [vectorsearch.CreateVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#CreateVectorIndexRequest).
@@ -72,13 +78,8 @@ Additions:
  * Added `ZoneId` field for [compute.GcpAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GcpAttributes).
  * Added `ForEachTask` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask), [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask) and [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
  * Added `DeleteDefaultNamespaceSetting`, `DeleteRestrictWorkspaceAdminsSetting`, `GetDefaultNamespaceSetting`, `GetRestrictWorkspaceAdminsSetting`, `UpdateDefaultNamespaceSetting` and `UpdateRestrictWorkspaceAdminsSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
- * Added [settings.RestrictWorkspaceAdminsMessageStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsMessageStatus).
- * Added [settings.RestrictWorkspaceAdminsSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsSetting).
- * Added [catalog.MonitorRefreshInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MonitorRefreshInfo).
- * Added [catalog.MonitorRefreshInfoState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MonitorRefreshInfoState).
  * Added `FieldMask` field for [settings.UpdatePersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdatePersonalComputeSettingRequest).
  * Added `UsePreemptibleExecutors` field for [compute.GcpAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GcpAttributes).
-
  * Misc:
     - [compute.Adlsgen2Info](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#Adlsgen2Info).
     - [compute.GcsStorageInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GcsStorageInfo).
