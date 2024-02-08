@@ -116,10 +116,11 @@ Removals:
 * SDK Generation + Fix backwards incompatible changes ([#806](https://github.com/databricks/databricks-sdk-go/pull/806)).
 * Fixed `any` references when generating code with circular dependencies ([#805](https://github.com/databricks/databricks-sdk-go/pull/805)).
 * Fixed stack overflow on recursive schemas ([#801](https://github.com/databricks/databricks-sdk-go/pull/801)).
+
+Dependency updates:
  * Bump google.golang.org/api from 0.154.0 to 0.161.0 ([#794](https://github.com/databricks/databricks-sdk-go/pull/794)).
 
 OpenAPI SHA: cadf1693527b365728a55ff06a0e38ce5740c9f7, Date: 2024-02-08
-Dependency updates:
 
 
 ## 0.30.1
