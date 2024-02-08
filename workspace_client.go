@@ -26,9 +26,9 @@ import (
 )
 
 type WorkspaceClient struct {
-	Config *config.Config
-	apiClient *client.DatabricksClient
-	mu *sync.Mutex
+	Config            *config.Config
+	apiClient         *client.DatabricksClient
+	mu                *sync.Mutex
 	cachedWorkspaceId *int64
 
 	// These APIs manage access rules on resources in an account. Currently,
@@ -943,9 +943,9 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		return nil, err
 	}
 	return &WorkspaceClient{
-		Config: cfg,
+		Config:    cfg,
 		apiClient: apiClient,
-		mu: &sync.Mutex{},
+		mu:        &sync.Mutex{},
 
 		AccountAccessControlProxy: iam.NewAccountAccessControlProxy(apiClient),
 		Alerts:                    sql.NewAlerts(apiClient),
