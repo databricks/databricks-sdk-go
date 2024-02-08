@@ -12,6 +12,8 @@ type Node struct {
 	Description string `json:"description,omitempty"`
 	Preview     string `json:"x-databricks-preview,omitempty"`
 	Ref         string `json:"$ref,omitempty"`
+	// Currently it is only defined for top level schemas
+	JsonPath string `json:"-"`
 }
 
 // IsRef flags object being a reference to a component
@@ -35,7 +37,15 @@ func NewFromReader(r io.Reader) (*Specification, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse openapi spec: %w", err)
 	}
+	setJsonPaths(spec)
 	return &spec, nil
+}
+
+func setJsonPaths(spec Specification) {
+	for name, schema := range spec.Components.Schemas {
+		deref := *schema
+		deref.JsonPath = fmt.Sprintf("%s,%s", "#/components/schemas/", name)
+	}
 }
 
 type Specification struct {

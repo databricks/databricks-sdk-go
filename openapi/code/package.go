@@ -142,7 +142,9 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		Package: pkg,
 		enum:    map[string]EnumEntry{},
 	}
-	processedEntities[s.Component()] = e
+	if s.JsonPath != "" {
+		processedEntities[s.JsonPath] = e
+	}
 	// pull embedded types up, if they can be defined at package level
 	if s.IsDefinable() && !hasName {
 		// TODO: log message or panic when overrides a type
@@ -236,9 +238,11 @@ func (pkg *Package) localComponent(n *openapi.Node) string {
 // definedEntity defines and returns the requested entity based on the schema.
 // processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
 func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntities map[string]*Entity) *Entity {
-	if entity, ok := processedEntities[s.Component()]; ok {
-		// Return existing entity if it's already being generated.
-		return entity
+	if s != nil {
+		if entity, ok := processedEntities[s.JsonPath]; ok {
+			// Return existing entity if it's already being generated.
+			return entity
+		}
 	}
 	if s == nil || s.IsEmpty() {
 		entity := &Entity{
