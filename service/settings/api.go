@@ -370,7 +370,7 @@ type AccountSettingsInterface interface {
 	// Get Personal Compute setting.
 	//
 	// Gets the value of the Personal Compute setting.
-	ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+	GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
 
 	// Update Personal Compute setting.
 	//
@@ -425,8 +425,8 @@ func (a *AccountSettingsAPI) DeletePersonalComputeSetting(ctx context.Context, r
 // Get Personal Compute setting.
 //
 // Gets the value of the Personal Compute setting.
-func (a *AccountSettingsAPI) ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	return a.impl.ReadPersonalComputeSetting(ctx, request)
+func (a *AccountSettingsAPI) GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+	return a.impl.GetPersonalComputeSetting(ctx, request)
 }
 
 // Update Personal Compute setting.
@@ -449,7 +449,7 @@ type CredentialsManagerInterface interface {
 	// Exchange token.
 	//
 	// Exchange tokens with an Identity Provider to get a new access token. It
-	// allowes specifying scopes to determine token permissions.
+	// allows specifying scopes to determine token permissions.
 	ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error)
 }
 
@@ -486,7 +486,7 @@ func (a *CredentialsManagerAPI) Impl() CredentialsManagerService {
 // Exchange token.
 //
 // Exchange tokens with an Identity Provider to get a new access token. It
-// allowes specifying scopes to determine token permissions.
+// allows specifying scopes to determine token permissions.
 func (a *CredentialsManagerAPI) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
 	return a.impl.ExchangeToken(ctx, request)
 }
@@ -1215,12 +1215,27 @@ type SettingsInterface interface {
 	// retrieved by making a GET request before the DELETE request. If the setting
 	// is updated/deleted concurrently, DELETE will fail with 409 and the request
 	// will need to be retried by using the fresh etag in the 409 response.
-	DeleteDefaultWorkspaceNamespace(ctx context.Context, request DeleteDefaultWorkspaceNamespaceRequest) (*DeleteDefaultWorkspaceNamespaceResponse, error)
+	DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+
+	// Delete the restrict workspace admins setting.
+	//
+	// Reverts the restrict workspace admins setting status for the workspace. A
+	// fresh etag needs to be provided in DELETE requests (as a query parameter).
+	// The etag can be retrieved by making a GET request before the DELETE request.
+	// If the setting is updated/deleted concurrently, DELETE will fail with 409 and
+	// the request will need to be retried by using the fresh etag in the 409
+	// response.
+	DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
 
 	// Get the default namespace setting.
 	//
 	// Gets the default namespace setting.
-	ReadDefaultWorkspaceNamespace(ctx context.Context, request ReadDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error)
+	GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
+
+	// Get the restrict workspace admins setting.
+	//
+	// Gets the restrict workspace admins setting.
+	GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
 
 	// Update the default namespace setting.
 	//
@@ -1232,7 +1247,16 @@ type SettingsInterface interface {
 	// request. If the setting is updated concurrently, PATCH will fail with 409 and
 	// the request will need to be retried by using the fresh etag in the 409
 	// response.
-	UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error)
+	UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
+
+	// Update the restrict workspace admins setting.
+	//
+	// Updates the restrict workspace admins setting for the workspace. A fresh etag
+	// needs to be provided in PATCH requests (as part of the setting field). The
+	// etag can be retrieved by making a GET request before the PATCH request. If
+	// the setting is updated concurrently, PATCH will fail with 409 and the request
+	// will need to be retried by using the fresh etag in the 409 response.
+	UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
 }
 
 func NewSettings(client *client.DatabricksClient) *SettingsAPI {
@@ -1282,15 +1306,34 @@ func (a *SettingsAPI) Impl() SettingsService {
 // retrieved by making a GET request before the DELETE request. If the setting
 // is updated/deleted concurrently, DELETE will fail with 409 and the request
 // will need to be retried by using the fresh etag in the 409 response.
-func (a *SettingsAPI) DeleteDefaultWorkspaceNamespace(ctx context.Context, request DeleteDefaultWorkspaceNamespaceRequest) (*DeleteDefaultWorkspaceNamespaceResponse, error) {
-	return a.impl.DeleteDefaultWorkspaceNamespace(ctx, request)
+func (a *SettingsAPI) DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
+	return a.impl.DeleteDefaultNamespaceSetting(ctx, request)
+}
+
+// Delete the restrict workspace admins setting.
+//
+// Reverts the restrict workspace admins setting status for the workspace. A
+// fresh etag needs to be provided in DELETE requests (as a query parameter).
+// The etag can be retrieved by making a GET request before the DELETE request.
+// If the setting is updated/deleted concurrently, DELETE will fail with 409 and
+// the request will need to be retried by using the fresh etag in the 409
+// response.
+func (a *SettingsAPI) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
+	return a.impl.DeleteRestrictWorkspaceAdminsSetting(ctx, request)
 }
 
 // Get the default namespace setting.
 //
 // Gets the default namespace setting.
-func (a *SettingsAPI) ReadDefaultWorkspaceNamespace(ctx context.Context, request ReadDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
-	return a.impl.ReadDefaultWorkspaceNamespace(ctx, request)
+func (a *SettingsAPI) GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
+	return a.impl.GetDefaultNamespaceSetting(ctx, request)
+}
+
+// Get the restrict workspace admins setting.
+//
+// Gets the restrict workspace admins setting.
+func (a *SettingsAPI) GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
+	return a.impl.GetRestrictWorkspaceAdminsSetting(ctx, request)
 }
 
 // Update the default namespace setting.
@@ -1303,8 +1346,19 @@ func (a *SettingsAPI) ReadDefaultWorkspaceNamespace(ctx context.Context, request
 // request. If the setting is updated concurrently, PATCH will fail with 409 and
 // the request will need to be retried by using the fresh etag in the 409
 // response.
-func (a *SettingsAPI) UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
-	return a.impl.UpdateDefaultWorkspaceNamespace(ctx, request)
+func (a *SettingsAPI) UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
+	return a.impl.UpdateDefaultNamespaceSetting(ctx, request)
+}
+
+// Update the restrict workspace admins setting.
+//
+// Updates the restrict workspace admins setting for the workspace. A fresh etag
+// needs to be provided in PATCH requests (as part of the setting field). The
+// etag can be retrieved by making a GET request before the PATCH request. If
+// the setting is updated concurrently, PATCH will fail with 409 and the request
+// will need to be retried by using the fresh etag in the 409 response.
+func (a *SettingsAPI) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
+	return a.impl.UpdateRestrictWorkspaceAdminsSetting(ctx, request)
 }
 
 type TokenManagementInterface interface {

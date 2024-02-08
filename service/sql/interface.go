@@ -85,6 +85,9 @@ type DashboardsService interface {
 	//
 	// Fetch a paginated list of dashboard objects.
 	//
+	// ### **Warning: Calling this API concurrently 10 or more times could
+	// result in throttling, service degradation, or a temporary ban.**
+	//
 	// Use ListAll() to get all Dashboard instances, which will iterate over every result page.
 	List(ctx context.Context, request ListDashboardsRequest) (*ListResponse, error)
 

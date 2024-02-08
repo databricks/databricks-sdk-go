@@ -286,7 +286,6 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -1871,7 +1870,9 @@ type ListQueryHistoryRequest struct {
 	IncludeMetrics bool `json:"-" url:"include_metrics,omitempty"`
 	// Limit the number of results returned in one page. The default is 100.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// A token that can be used to get the next page of results.
+	// A token that can be used to get the next page of results. The token can
+	// contains characters that need to be encoded before using it in a URL. For
+	// example, the character '+' needs to be replaced by %2B.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`

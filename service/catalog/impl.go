@@ -427,6 +427,13 @@ type lakehouseMonitorsImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *lakehouseMonitorsImpl) CancelRefresh(ctx context.Context, request CancelRefreshRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v/cancel", request.FullName, request.RefreshId)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
+	return err
+}
+
 func (a *lakehouseMonitorsImpl) Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error) {
 	var monitorInfo MonitorInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.FullName)
@@ -451,6 +458,33 @@ func (a *lakehouseMonitorsImpl) Get(ctx context.Context, request GetLakehouseMon
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorInfo)
 	return &monitorInfo, err
+}
+
+func (a *lakehouseMonitorsImpl) GetRefresh(ctx context.Context, request GetRefreshRequest) (*MonitorRefreshInfo, error) {
+	var monitorRefreshInfo MonitorRefreshInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v", request.FullName, request.RefreshId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorRefreshInfo)
+	return &monitorRefreshInfo, err
+}
+
+func (a *lakehouseMonitorsImpl) ListRefreshes(ctx context.Context, request ListRefreshesRequest) ([]MonitorRefreshInfo, error) {
+	var monitorRefreshInfoList []MonitorRefreshInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorRefreshInfoList)
+	return monitorRefreshInfoList, err
+}
+
+func (a *lakehouseMonitorsImpl) RunRefresh(ctx context.Context, request RunRefreshRequest) (*MonitorRefreshInfo, error) {
+	var monitorRefreshInfo MonitorRefreshInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &monitorRefreshInfo)
+	return &monitorRefreshInfo, err
 }
 
 func (a *lakehouseMonitorsImpl) Update(ctx context.Context, request UpdateMonitor) (*MonitorInfo, error) {

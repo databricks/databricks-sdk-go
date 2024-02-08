@@ -112,8 +112,22 @@ type filesImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *filesImpl) CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error {
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", request.DirectoryPath)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, nil, nil)
+	return err
+}
+
 func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
-	path := fmt.Sprintf("/api/2.0/fs/files/%v", request.FilePath)
+	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	return err
+}
+
+func (a *filesImpl) DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error {
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", request.DirectoryPath)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -121,7 +135,7 @@ func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error
 
 func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
 	var downloadResponse io.ReadCloser
-	path := fmt.Sprintf("/api/2.0/fs/files/%v", request.FilePath)
+	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/octet-stream"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &downloadResponse)
@@ -137,8 +151,17 @@ func (a *filesImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*F
 	return &fileInfo, err
 }
 
+func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
+	var listDirectoryResponse ListDirectoryResponse
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", request.DirectoryPath)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listDirectoryResponse)
+	return &listDirectoryResponse, err
+}
+
 func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
-	path := fmt.Sprintf("/api/2.0/fs/files/%v", request.FilePath)
+	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/octet-stream"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request.Contents, nil)

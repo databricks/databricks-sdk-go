@@ -96,14 +96,6 @@ func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequ
 	return &listUpdatesResponse, err
 }
 
-func (a *pipelinesImpl) Reset(ctx context.Context, request ResetRequest) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/reset", request.PipelineId)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
-	return err
-}
-
 func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
 	var pipelinePermissions PipelinePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
