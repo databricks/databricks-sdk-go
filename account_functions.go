@@ -36,6 +36,5 @@ func (c *AccountClient) GetWorkspaceClient(ws provisioning.Workspace) (*Workspac
 	if err != nil {
 		return nil, err
 	}
-	w.cachedWorkspaceId = &ws.WorkspaceId
 	return w, nil
 }
