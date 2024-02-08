@@ -284,7 +284,7 @@ func TestUcAccMetastores(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEqual(t, created.MetastoreId, currentMetastore.MetastoreId)
 
-	_, err = w.Metastores.Update(ctx, catalog.UpdateMetastore{service/catalog/connections_usage_test.go
+	_, err = w.Metastores.Update(ctx, catalog.UpdateMetastore{
 		Id:      created.MetastoreId,
 		NewName: RandomName("go-sdk-updated"),
 	})
