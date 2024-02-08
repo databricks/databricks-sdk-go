@@ -8,6 +8,11 @@ import (
 	"github.com/databricks/databricks-sdk-go/openapi"
 )
 
+// The following headers should not be added added to the generated structs
+var HIDDEN_HEADERS = map[string]bool{
+	"X-Databricks-GCP-SA-Access-Token": true,
+}
+
 // Service represents specific Databricks API
 type Service struct {
 	Named
@@ -120,6 +125,7 @@ func (svc *Service) paramToField(op *openapi.Operation, param openapi.Parameter)
 		Required: param.Required,
 		IsPath:   param.In == "path",
 		IsQuery:  param.In == "query",
+		IsHeader: param.In == "header",
 		Entity: svc.Package.schemaToEntity(param.Schema, []string{
 			op.Name(),
 			named.PascalName(),
@@ -202,9 +208,14 @@ func (svc *Service) newMethodEntity(op *openapi.Operation) (*Entity, openapi.Mim
 	return res, mimeType, bodyField
 }
 
-func (svc *Service) addParams(request *Entity, op *openapi.Operation, params []openapi.Parameter) {
+func (svc *Service) skipHeader(v openapi.Parameter, includeHeaders bool) bool {
+	hiddenHeader := HIDDEN_HEADERS[v.Name]
+	return v.In == "header" && (!includeHeaders || hiddenHeader)
+}
+
+func (svc *Service) addParams(request *Entity, op *openapi.Operation, params []openapi.Parameter, includeHeaders bool) {
 	for _, v := range params {
-		if v.In == "header" {
+		if svc.skipHeader(v, includeHeaders) {
 			continue
 		}
 		param := svc.paramToField(op, v)
@@ -217,6 +228,7 @@ func (svc *Service) addParams(request *Entity, op *openapi.Operation, params []o
 		}
 		field.IsPath = param.IsPath
 		field.IsQuery = param.IsQuery
+		field.IsHeader = param.IsHeader
 		request.fields[param.Name] = field
 		if param.Required {
 			var alreadyRequired bool
@@ -305,7 +317,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	if request.fields == nil && request.MapValue == nil {
 		return nil, "", nil
 	}
-	svc.addParams(request, op, params)
+	svc.addParams(request, op, params, false)
 	svc.addBodyParamIfNeeded(request, mimeType)
 	if request.Name == "" {
 		svc.nameAndDefineRequest(request, op)
@@ -318,6 +330,9 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 	schema, mimeType := svc.getBaseSchemaAndMimeType(body)
 	name := op.Name()
 	response := svc.Package.definedEntity(name+"Response", schema, map[string]*Entity{})
+	if op.Responses["200"] != nil {
+		svc.addHeaderParams(response, op, op.Responses["200"].Headers)
+	}
 	var bodyField *Field
 	if mimeType.IsByteStream() {
 		bodyField = response.fields[openapi.MediaTypeNonJsonBodyFieldName]
@@ -335,12 +350,30 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 		}
 	}
 
+	// This next block of code is needed to make up for shortcomings in
+	// schemaToEntity. That function (and the Entity structure) assumes that all
+	// fields are part of the response schema. If we have fields part of the headers,
+	// we need to mark the response has non-empty.
+	if response.HasHeaderField() {
+		response.IsEmpty = false
+	}
+
 	var emptyResponse Named
 	if response != nil && response.IsEmpty {
 		emptyResponse = response.Named
 		response = nil
 	}
 	return response, mimeType, bodyField, emptyResponse
+}
+
+func (svc *Service) addHeaderParams(request *Entity, op *openapi.Operation, headers map[string]*openapi.Parameter) {
+	headersList := make([]openapi.Parameter, 0, len(headers))
+	for name, header := range headers {
+		header.Name = name
+		header.In = "header"
+		headersList = append(headersList, *header)
+	}
+	svc.addParams(request, op, headersList, true)
 }
 
 func (svc *Service) paramPath(path string, request *Entity, params []openapi.Parameter) (parts []PathPart) {

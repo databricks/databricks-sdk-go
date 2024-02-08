@@ -251,6 +251,7 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntit
 				Description: "",
 			},
 			IsEmpty: true,
+			fields:  map[string]*Field{},
 		}
 		return pkg.define(entity)
 	}

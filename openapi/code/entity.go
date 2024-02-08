@@ -16,6 +16,7 @@ type Field struct {
 	IsJson   bool
 	IsPath   bool
 	IsQuery  bool
+	IsHeader bool
 	Schema   *openapi.Schema
 }
 
@@ -39,7 +40,7 @@ func (f *Field) IsPublicPreview() bool {
 // by making path parameters always required. Thus, we don't need to consider such fields
 // as request body fields anymore.
 func (f *Field) IsRequestBodyField() bool {
-	return f.IsJson && !f.IsPath && !f.IsQuery
+	return f.IsJson && !f.IsPath && !f.IsQuery && !f.IsHeader
 }
 
 // Call the provided callback on this field and any nested fields in its entity,
@@ -247,6 +248,16 @@ func (e *Entity) Fields() (fields []*Field) {
 func (e *Entity) HasQueryField() bool {
 	for _, v := range e.fields {
 		if v.IsQuery {
+			return true
+		}
+	}
+	return false
+}
+
+// HasHeaderField returns true if any of the fields is from header
+func (e *Entity) HasHeaderField() bool {
+	for _, v := range e.fields {
+		if v.IsHeader {
 			return true
 		}
 	}

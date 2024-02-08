@@ -304,8 +304,9 @@ type Parameter struct {
 
 type Body struct {
 	Node
-	Required bool                 `json:"required,omitempty"`
-	Content  map[string]MediaType `json:"content,omitempty"`
+	Required bool                  `json:"required,omitempty"`
+	Content  map[string]MediaType  `json:"content,omitempty"`
+	Headers  map[string]*Parameter `json:"headers,omitempty"`
 }
 
 type MimeType string

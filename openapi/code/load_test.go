@@ -65,6 +65,13 @@ func TestBasic(t *testing.T) {
 	assert.NotNil(t, language)
 	assert.False(t, language.IsOptionalObject())
 	assert.Equal(t, 3, len(language.Entity.Enum()))
+
+	cancel := methods[0]
+	cancelResponse := cancel.Response
+	assert.Equal(t, "cancel", cancel.Name)
+	assert.Equal(t, "cancelResponse", cancelResponse.Name)
+	assert.Equal(t, 1, len(cancelResponse.fields))
+	assert.Equal(t, "content-type", cancelResponse.fields["content-type"].Name)
 }
 
 // This test is used for debugging purposes
