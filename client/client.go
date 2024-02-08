@@ -30,7 +30,7 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 	httpTimeout := time.Duration(orDefault(cfg.HTTPTimeoutSeconds, 60)) * time.Second
 	return &DatabricksClient{
 		Config: cfg,
-		client: httpclient.NewApiClient(httpclient.ClientConfig{
+		Client: httpclient.NewApiClient(httpclient.ClientConfig{
 			RetryTimeout:       retryTimeout,
 			HTTPTimeout:        httpTimeout,
 			RateLimitPerSecond: orDefault(cfg.RateLimitPerSecond, 15),
@@ -86,7 +86,7 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 
 type DatabricksClient struct {
 	Config *config.Config
-	client *httpclient.ApiClient
+	Client *httpclient.ApiClient
 }
 
 // ConfiguredAccountID returns Databricks Account ID if it's provided in config,
@@ -111,7 +111,7 @@ func (c *DatabricksClient) Do(ctx context.Context, method, path string,
 	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
-	return c.client.Do(ctx, method, path, opts...)
+	return c.Client.Do(ctx, method, path, opts...)
 }
 
 func orDefault(configured, _default int) int {
