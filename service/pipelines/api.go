@@ -147,19 +147,6 @@ type PipelinesInterface interface {
 	// List updates for an active pipeline.
 	ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error)
 
-	// Reset a pipeline.
-	//
-	// Resets a pipeline.
-	Reset(ctx context.Context, resetRequest ResetRequest) (*WaitGetPipelineRunning[struct{}], error)
-
-	// Calls [PipelinesAPIInterface.Reset] and waits to reach RUNNING state
-	//
-	// You can override the default timeout of 20 minutes by calling adding
-	// retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-	//
-	// Deprecated: use [PipelinesAPIInterface.Reset].Get() or [PipelinesAPIInterface.WaitGetPipelineRunning]
-	ResetAndWait(ctx context.Context, resetRequest ResetRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error)
-
 	// Set pipeline permissions.
 	//
 	// Sets permissions on a pipeline. Pipelines can inherit permissions from their
@@ -592,52 +579,6 @@ func (a *PipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId s
 	return a.impl.ListUpdates(ctx, ListUpdatesRequest{
 		PipelineId: pipelineId,
 	})
-}
-
-// Reset a pipeline.
-//
-// Resets a pipeline.
-func (a *PipelinesAPI) Reset(ctx context.Context, resetRequest ResetRequest) (*WaitGetPipelineRunning[struct{}], error) {
-	err := a.impl.Reset(ctx, resetRequest)
-	if err != nil {
-		return nil, err
-	}
-	return &WaitGetPipelineRunning[struct{}]{
-
-		PipelineId: resetRequest.PipelineId,
-		Poll: func(timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error) {
-			return a.WaitGetPipelineRunning(ctx, resetRequest.PipelineId, timeout, callback)
-		},
-		timeout:  20 * time.Minute,
-		callback: nil,
-	}, nil
-}
-
-// Calls [PipelinesAPI.Reset] and waits to reach RUNNING state
-//
-// You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-//
-// Deprecated: use [PipelinesAPI.Reset].Get() or [PipelinesAPI.WaitGetPipelineRunning]
-func (a *PipelinesAPI) ResetAndWait(ctx context.Context, resetRequest ResetRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
-	wait, err := a.Reset(ctx, resetRequest)
-	if err != nil {
-		return nil, err
-	}
-	tmp := &retries.Info[GetPipelineResponse]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(tmp)
-	}
-	wait.timeout = tmp.Timeout
-	wait.callback = func(info *GetPipelineResponse) {
-		for _, o := range options {
-			o(&retries.Info[GetPipelineResponse]{
-				Info:    info,
-				Timeout: wait.timeout,
-			})
-		}
-	}
-	return wait.Get()
 }
 
 // Set pipeline permissions.

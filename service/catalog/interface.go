@@ -392,6 +392,20 @@ type GrantsService interface {
 // the table (along with **USE_SCHEMA** and **USE_CATALOG**).
 type LakehouseMonitorsService interface {
 
+	// Cancel refresh.
+	//
+	// Cancel an active monitor refresh for the given refresh ID.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2.
+	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
+	// table's parent schema 3. have the following permissions: -
+	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
+	// table's parent schema - be an owner of the table
+	//
+	// Additionally, the call must be made from the workspace where the monitor
+	// was created.
+	CancelRefresh(ctx context.Context, request CancelRefreshRequest) error
+
 	// Create a table monitor.
 	//
 	// Creates a new monitor for the specified table.
@@ -440,6 +454,50 @@ type LakehouseMonitorsService interface {
 	// dashboard) may be filtered out if the caller is in a different workspace
 	// than where the monitor was created.
 	Get(ctx context.Context, request GetLakehouseMonitorRequest) (*MonitorInfo, error)
+
+	// Get refresh.
+	//
+	// Gets info about a specific monitor refresh using the given refresh ID.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2.
+	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
+	// table's parent schema 3. have the following permissions: -
+	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
+	// table's parent schema - **SELECT** privilege on the table.
+	//
+	// Additionally, the call must be made from the workspace where the monitor
+	// was created.
+	GetRefresh(ctx context.Context, request GetRefreshRequest) (*MonitorRefreshInfo, error)
+
+	// List refreshes.
+	//
+	// Gets an array containing the history of the most recent refreshes (up to
+	// 25) for this table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2.
+	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
+	// table's parent schema 3. have the following permissions: -
+	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
+	// table's parent schema - **SELECT** privilege on the table.
+	//
+	// Additionally, the call must be made from the workspace where the monitor
+	// was created.
+	ListRefreshes(ctx context.Context, request ListRefreshesRequest) ([]MonitorRefreshInfo, error)
+
+	// Queue a metric refresh for a monitor.
+	//
+	// Queues a metric refresh on the monitor for the specified table. The
+	// refresh will execute in the background.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2.
+	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
+	// table's parent schema 3. have the following permissions: -
+	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
+	// table's parent schema - be an owner of the table
+	//
+	// Additionally, the call must be made from the workspace where the monitor
+	// was created.
+	RunRefresh(ctx context.Context, request RunRefreshRequest) (*MonitorRefreshInfo, error)
 
 	// Update a table monitor.
 	//

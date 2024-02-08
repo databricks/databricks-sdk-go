@@ -49,15 +49,31 @@ func (s AddInstanceProfile) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type Adlsgen2Info struct {
+	// abfss destination, e.g.
+	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`.
+	Destination string `json:"destination"`
+}
+
 type AutoScale struct {
 	// The maximum number of workers to which the cluster can scale up when
 	// overloaded. Note that `max_workers` must be strictly greater than
 	// `min_workers`.
-	MaxWorkers int `json:"max_workers"`
+	MaxWorkers int `json:"max_workers,omitempty"`
 	// The minimum number of workers to which the cluster can scale down when
 	// underutilized. It is also the initial number of workers the cluster will
 	// have after creation.
-	MinWorkers int `json:"min_workers"`
+	MinWorkers int `json:"min_workers,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AutoScale) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AutoScale) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type AwsAttributes struct {
@@ -1855,17 +1871,7 @@ func (f *DataSecurityMode) Type() string {
 
 type DbfsStorageInfo struct {
 	// dbfs destination, e.g. `dbfs:/my/path`
-	Destination string `json:"destination,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DbfsStorageInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DbfsStorageInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	Destination string `json:"destination"`
 }
 
 type DeleteCluster struct {
@@ -2492,6 +2498,19 @@ type GcpAttributes struct {
 	//
 	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
 	LocalSsdCount int `json:"local_ssd_count,omitempty"`
+	// This field determines whether the spark executors will be scheduled to
+	// run on preemptible VMs (when set to true) versus standard compute engine
+	// VMs (when set to false; default). Note: Soon to be deprecated, use the
+	// availability field instead.
+	UsePreemptibleExecutors bool `json:"use_preemptible_executors,omitempty"`
+	// Identifier for the availability zone in which the cluster resides. This
+	// can be one of the following: - "HA" => High availability, spread nodes
+	// across availability zones for a Databricks deployment region [default] -
+	// "AUTO" => Databricks picks an availability zone to schedule the cluster
+	// on. - A GCP availability zone => Pick One of the available zones for
+	// (machine type + region) from
+	// https://cloud.google.com/compute/docs/regions-zones.
+	ZoneId string `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -2534,6 +2553,11 @@ func (f *GcpAvailability) Set(v string) error {
 // Type always returns GcpAvailability to satisfy [pflag.Value] interface
 func (f *GcpAvailability) Type() string {
 	return "GcpAvailability"
+}
+
+type GcsStorageInfo struct {
+	// GCS destination/URI, e.g. `gs://my-bucket/some-prefix`
+	Destination string `json:"destination"`
 }
 
 // Get cluster permission levels
@@ -2995,12 +3019,19 @@ func (f *InitScriptExecutionDetailsStatus) Type() string {
 }
 
 type InitScriptInfo struct {
+	// destination needs to be provided. e.g. `{ "abfss" : { "destination" :
+	// "abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>"
+	// } }
+	Abfss *Adlsgen2Info `json:"abfss,omitempty"`
 	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
 	// "dbfs:/home/cluster_log" } }`
 	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
 	// destination needs to be provided. e.g. `{ "file" : { "destination" :
 	// "file:/my/local/file.sh" } }`
 	File *LocalFileInfo `json:"file,omitempty"`
+	// destination needs to be provided. e.g. `{ "gcs": { "destination":
+	// "gs://my-bucket/file.sh" } }`
+	Gcs *GcsStorageInfo `json:"gcs,omitempty"`
 	// destination and either the region or endpoint need to be provided. e.g.
 	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
 	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
@@ -3792,17 +3823,7 @@ func (f *ListSortOrder) Type() string {
 
 type LocalFileInfo struct {
 	// local file destination, e.g. `file:/my/local/file.sh`
-	Destination string `json:"destination,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *LocalFileInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s LocalFileInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	Destination string `json:"destination"`
 }
 
 type LogAnalyticsInfo struct {
@@ -4243,7 +4264,7 @@ type S3StorageInfo struct {
 	// delivered using cluster iam role, please make sure you set cluster iam
 	// role and the role has write access to the destination. Please also note
 	// that you cannot use AWS keys to deliver logs.
-	Destination string `json:"destination,omitempty"`
+	Destination string `json:"destination"`
 	// (Optional) Flag to enable server side encryption, `false` by default.
 	EnableEncryption bool `json:"enable_encryption,omitempty"`
 	// (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It
@@ -4628,36 +4649,16 @@ type UnpinCluster struct {
 
 type VolumesStorageInfo struct {
 	// Unity Catalog Volumes file destination, e.g. `/Volumes/my-init.sh`
-	Destination string `json:"destination,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *VolumesStorageInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s VolumesStorageInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	Destination string `json:"destination"`
 }
 
 type WorkloadType struct {
 	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
-	Clients *ClientsTypes `json:"clients,omitempty"`
+	Clients ClientsTypes `json:"clients"`
 }
 
 type WorkspaceStorageInfo struct {
 	// workspace files destination, e.g.
 	// `/Users/user1@databricks.com/my-init.sh`
-	Destination string `json:"destination,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *WorkspaceStorageInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WorkspaceStorageInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	Destination string `json:"destination"`
 }

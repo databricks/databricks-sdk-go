@@ -23,6 +23,53 @@ func (_m *MockLakehouseMonitorsInterface) EXPECT() *MockLakehouseMonitorsInterfa
 	return &MockLakehouseMonitorsInterface_Expecter{mock: &_m.Mock}
 }
 
+// CancelRefresh provides a mock function with given fields: ctx, request
+func (_m *MockLakehouseMonitorsInterface) CancelRefresh(ctx context.Context, request catalog.CancelRefreshRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CancelRefresh")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.CancelRefreshRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLakehouseMonitorsInterface_CancelRefresh_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CancelRefresh'
+type MockLakehouseMonitorsInterface_CancelRefresh_Call struct {
+	*mock.Call
+}
+
+// CancelRefresh is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.CancelRefreshRequest
+func (_e *MockLakehouseMonitorsInterface_Expecter) CancelRefresh(ctx interface{}, request interface{}) *MockLakehouseMonitorsInterface_CancelRefresh_Call {
+	return &MockLakehouseMonitorsInterface_CancelRefresh_Call{Call: _e.mock.On("CancelRefresh", ctx, request)}
+}
+
+func (_c *MockLakehouseMonitorsInterface_CancelRefresh_Call) Run(run func(ctx context.Context, request catalog.CancelRefreshRequest)) *MockLakehouseMonitorsInterface_CancelRefresh_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.CancelRefreshRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_CancelRefresh_Call) Return(_a0 error) *MockLakehouseMonitorsInterface_CancelRefresh_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_CancelRefresh_Call) RunAndReturn(run func(context.Context, catalog.CancelRefreshRequest) error) *MockLakehouseMonitorsInterface_CancelRefresh_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Create provides a mock function with given fields: ctx, request
 func (_m *MockLakehouseMonitorsInterface) Create(ctx context.Context, request catalog.CreateMonitor) (*catalog.MonitorInfo, error) {
 	ret := _m.Called(ctx, request)
@@ -294,6 +341,125 @@ func (_c *MockLakehouseMonitorsInterface_GetByFullName_Call) RunAndReturn(run fu
 	return _c
 }
 
+// GetRefresh provides a mock function with given fields: ctx, request
+func (_m *MockLakehouseMonitorsInterface) GetRefresh(ctx context.Context, request catalog.GetRefreshRequest) (*catalog.MonitorRefreshInfo, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetRefresh")
+	}
+
+	var r0 *catalog.MonitorRefreshInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetRefreshRequest) (*catalog.MonitorRefreshInfo, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetRefreshRequest) *catalog.MonitorRefreshInfo); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.MonitorRefreshInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.GetRefreshRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakehouseMonitorsInterface_GetRefresh_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRefresh'
+type MockLakehouseMonitorsInterface_GetRefresh_Call struct {
+	*mock.Call
+}
+
+// GetRefresh is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.GetRefreshRequest
+func (_e *MockLakehouseMonitorsInterface_Expecter) GetRefresh(ctx interface{}, request interface{}) *MockLakehouseMonitorsInterface_GetRefresh_Call {
+	return &MockLakehouseMonitorsInterface_GetRefresh_Call{Call: _e.mock.On("GetRefresh", ctx, request)}
+}
+
+func (_c *MockLakehouseMonitorsInterface_GetRefresh_Call) Run(run func(ctx context.Context, request catalog.GetRefreshRequest)) *MockLakehouseMonitorsInterface_GetRefresh_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.GetRefreshRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_GetRefresh_Call) Return(_a0 *catalog.MonitorRefreshInfo, _a1 error) *MockLakehouseMonitorsInterface_GetRefresh_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_GetRefresh_Call) RunAndReturn(run func(context.Context, catalog.GetRefreshRequest) (*catalog.MonitorRefreshInfo, error)) *MockLakehouseMonitorsInterface_GetRefresh_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetRefreshByFullNameAndRefreshId provides a mock function with given fields: ctx, fullName, refreshId
+func (_m *MockLakehouseMonitorsInterface) GetRefreshByFullNameAndRefreshId(ctx context.Context, fullName string, refreshId string) (*catalog.MonitorRefreshInfo, error) {
+	ret := _m.Called(ctx, fullName, refreshId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetRefreshByFullNameAndRefreshId")
+	}
+
+	var r0 *catalog.MonitorRefreshInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*catalog.MonitorRefreshInfo, error)); ok {
+		return rf(ctx, fullName, refreshId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *catalog.MonitorRefreshInfo); ok {
+		r0 = rf(ctx, fullName, refreshId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.MonitorRefreshInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, fullName, refreshId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakehouseMonitorsInterface_GetRefreshByFullNameAndRefreshId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRefreshByFullNameAndRefreshId'
+type MockLakehouseMonitorsInterface_GetRefreshByFullNameAndRefreshId_Call struct {
+	*mock.Call
+}
+
+// GetRefreshByFullNameAndRefreshId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - fullName string
+//   - refreshId string
+func (_e *MockLakehouseMonitorsInterface_Expecter) GetRefreshByFullNameAndRefreshId(ctx interface{}, fullName interface{}, refreshId interface{}) *MockLakehouseMonitorsInterface_GetRefreshByFullNameAndRefreshId_Call {
+	return &MockLakehouseMonitorsInterface_GetRefreshByFullNameAndRefreshId_Call{Call: _e.mock.On("GetRefreshByFullNameAndRefreshId", ctx, fullName, refreshId)}
+}
+
+func (_c *MockLakehouseMonitorsInterface_GetRefreshByFullNameAndRefreshId_Call) Run(run func(ctx context.Context, fullName string, refreshId string)) *MockLakehouseMonitorsInterface_GetRefreshByFullNameAndRefreshId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_GetRefreshByFullNameAndRefreshId_Call) Return(_a0 *catalog.MonitorRefreshInfo, _a1 error) *MockLakehouseMonitorsInterface_GetRefreshByFullNameAndRefreshId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_GetRefreshByFullNameAndRefreshId_Call) RunAndReturn(run func(context.Context, string, string) (*catalog.MonitorRefreshInfo, error)) *MockLakehouseMonitorsInterface_GetRefreshByFullNameAndRefreshId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Impl provides a mock function with given fields:
 func (_m *MockLakehouseMonitorsInterface) Impl() catalog.LakehouseMonitorsService {
 	ret := _m.Called()
@@ -337,6 +503,183 @@ func (_c *MockLakehouseMonitorsInterface_Impl_Call) Return(_a0 catalog.Lakehouse
 }
 
 func (_c *MockLakehouseMonitorsInterface_Impl_Call) RunAndReturn(run func() catalog.LakehouseMonitorsService) *MockLakehouseMonitorsInterface_Impl_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListRefreshes provides a mock function with given fields: ctx, request
+func (_m *MockLakehouseMonitorsInterface) ListRefreshes(ctx context.Context, request catalog.ListRefreshesRequest) ([]catalog.MonitorRefreshInfo, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListRefreshes")
+	}
+
+	var r0 []catalog.MonitorRefreshInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListRefreshesRequest) ([]catalog.MonitorRefreshInfo, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListRefreshesRequest) []catalog.MonitorRefreshInfo); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]catalog.MonitorRefreshInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListRefreshesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakehouseMonitorsInterface_ListRefreshes_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListRefreshes'
+type MockLakehouseMonitorsInterface_ListRefreshes_Call struct {
+	*mock.Call
+}
+
+// ListRefreshes is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.ListRefreshesRequest
+func (_e *MockLakehouseMonitorsInterface_Expecter) ListRefreshes(ctx interface{}, request interface{}) *MockLakehouseMonitorsInterface_ListRefreshes_Call {
+	return &MockLakehouseMonitorsInterface_ListRefreshes_Call{Call: _e.mock.On("ListRefreshes", ctx, request)}
+}
+
+func (_c *MockLakehouseMonitorsInterface_ListRefreshes_Call) Run(run func(ctx context.Context, request catalog.ListRefreshesRequest)) *MockLakehouseMonitorsInterface_ListRefreshes_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.ListRefreshesRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_ListRefreshes_Call) Return(_a0 []catalog.MonitorRefreshInfo, _a1 error) *MockLakehouseMonitorsInterface_ListRefreshes_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_ListRefreshes_Call) RunAndReturn(run func(context.Context, catalog.ListRefreshesRequest) ([]catalog.MonitorRefreshInfo, error)) *MockLakehouseMonitorsInterface_ListRefreshes_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListRefreshesByFullName provides a mock function with given fields: ctx, fullName
+func (_m *MockLakehouseMonitorsInterface) ListRefreshesByFullName(ctx context.Context, fullName string) ([]catalog.MonitorRefreshInfo, error) {
+	ret := _m.Called(ctx, fullName)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListRefreshesByFullName")
+	}
+
+	var r0 []catalog.MonitorRefreshInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) ([]catalog.MonitorRefreshInfo, error)); ok {
+		return rf(ctx, fullName)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) []catalog.MonitorRefreshInfo); ok {
+		r0 = rf(ctx, fullName)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]catalog.MonitorRefreshInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, fullName)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakehouseMonitorsInterface_ListRefreshesByFullName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListRefreshesByFullName'
+type MockLakehouseMonitorsInterface_ListRefreshesByFullName_Call struct {
+	*mock.Call
+}
+
+// ListRefreshesByFullName is a helper method to define mock.On call
+//   - ctx context.Context
+//   - fullName string
+func (_e *MockLakehouseMonitorsInterface_Expecter) ListRefreshesByFullName(ctx interface{}, fullName interface{}) *MockLakehouseMonitorsInterface_ListRefreshesByFullName_Call {
+	return &MockLakehouseMonitorsInterface_ListRefreshesByFullName_Call{Call: _e.mock.On("ListRefreshesByFullName", ctx, fullName)}
+}
+
+func (_c *MockLakehouseMonitorsInterface_ListRefreshesByFullName_Call) Run(run func(ctx context.Context, fullName string)) *MockLakehouseMonitorsInterface_ListRefreshesByFullName_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_ListRefreshesByFullName_Call) Return(_a0 []catalog.MonitorRefreshInfo, _a1 error) *MockLakehouseMonitorsInterface_ListRefreshesByFullName_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_ListRefreshesByFullName_Call) RunAndReturn(run func(context.Context, string) ([]catalog.MonitorRefreshInfo, error)) *MockLakehouseMonitorsInterface_ListRefreshesByFullName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RunRefresh provides a mock function with given fields: ctx, request
+func (_m *MockLakehouseMonitorsInterface) RunRefresh(ctx context.Context, request catalog.RunRefreshRequest) (*catalog.MonitorRefreshInfo, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RunRefresh")
+	}
+
+	var r0 *catalog.MonitorRefreshInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.RunRefreshRequest) (*catalog.MonitorRefreshInfo, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.RunRefreshRequest) *catalog.MonitorRefreshInfo); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.MonitorRefreshInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.RunRefreshRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakehouseMonitorsInterface_RunRefresh_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RunRefresh'
+type MockLakehouseMonitorsInterface_RunRefresh_Call struct {
+	*mock.Call
+}
+
+// RunRefresh is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.RunRefreshRequest
+func (_e *MockLakehouseMonitorsInterface_Expecter) RunRefresh(ctx interface{}, request interface{}) *MockLakehouseMonitorsInterface_RunRefresh_Call {
+	return &MockLakehouseMonitorsInterface_RunRefresh_Call{Call: _e.mock.On("RunRefresh", ctx, request)}
+}
+
+func (_c *MockLakehouseMonitorsInterface_RunRefresh_Call) Run(run func(ctx context.Context, request catalog.RunRefreshRequest)) *MockLakehouseMonitorsInterface_RunRefresh_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.RunRefreshRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_RunRefresh_Call) Return(_a0 *catalog.MonitorRefreshInfo, _a1 error) *MockLakehouseMonitorsInterface_RunRefresh_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakehouseMonitorsInterface_RunRefresh_Call) RunAndReturn(run func(context.Context, catalog.RunRefreshRequest) (*catalog.MonitorRefreshInfo, error)) *MockLakehouseMonitorsInterface_RunRefresh_Call {
 	_c.Call.Return(run)
 	return _c
 }

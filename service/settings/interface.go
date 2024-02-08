@@ -122,7 +122,7 @@ type AccountSettingsService interface {
 	// Get Personal Compute setting.
 	//
 	// Gets the value of the Personal Compute setting.
-	ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+	GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
 
 	// Update Personal Compute setting.
 	//
@@ -137,7 +137,7 @@ type CredentialsManagerService interface {
 	// Exchange token.
 	//
 	// Exchange tokens with an Identity Provider to get a new access token. It
-	// allowes specifying scopes to determine token permissions.
+	// allows specifying scopes to determine token permissions.
 	ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error)
 }
 
@@ -346,12 +346,27 @@ type SettingsService interface {
 	// the setting is updated/deleted concurrently, DELETE will fail with 409
 	// and the request will need to be retried by using the fresh etag in the
 	// 409 response.
-	DeleteDefaultWorkspaceNamespace(ctx context.Context, request DeleteDefaultWorkspaceNamespaceRequest) (*DeleteDefaultWorkspaceNamespaceResponse, error)
+	DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+
+	// Delete the restrict workspace admins setting.
+	//
+	// Reverts the restrict workspace admins setting status for the workspace. A
+	// fresh etag needs to be provided in DELETE requests (as a query
+	// parameter). The etag can be retrieved by making a GET request before the
+	// DELETE request. If the setting is updated/deleted concurrently, DELETE
+	// will fail with 409 and the request will need to be retried by using the
+	// fresh etag in the 409 response.
+	DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
 
 	// Get the default namespace setting.
 	//
 	// Gets the default namespace setting.
-	ReadDefaultWorkspaceNamespace(ctx context.Context, request ReadDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error)
+	GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
+
+	// Get the restrict workspace admins setting.
+	//
+	// Gets the restrict workspace admins setting.
+	GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
 
 	// Update the default namespace setting.
 	//
@@ -363,7 +378,17 @@ type SettingsService interface {
 	// should be set in the PATCH request. If the setting is updated
 	// concurrently, PATCH will fail with 409 and the request will need to be
 	// retried by using the fresh etag in the 409 response.
-	UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error)
+	UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
+
+	// Update the restrict workspace admins setting.
+	//
+	// Updates the restrict workspace admins setting for the workspace. A fresh
+	// etag needs to be provided in PATCH requests (as part of the setting
+	// field). The etag can be retrieved by making a GET request before the
+	// PATCH request. If the setting is updated concurrently, PATCH will fail
+	// with 409 and the request will need to be retried by using the fresh etag
+	// in the 409 response.
+	UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
 }
 
 // Enables administrators to get all tokens and delete tokens for other users.

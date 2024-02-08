@@ -30,7 +30,6 @@ func TestAccConnections(t *testing.T) {
 	})
 
 	connUpdate, err := w.Connections.Update(ctx, catalog.UpdateConnection{
-		Name:    connCreate.Name,
 		NameArg: connCreate.Name,
 		Options: map[string]string{
 			"host":                fmt.Sprintf("%s-fake-workspace.cloud.databricks.com", RandomName("go-sdk-connection-")),

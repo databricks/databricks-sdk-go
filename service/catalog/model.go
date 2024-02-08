@@ -179,6 +179,14 @@ type AzureServicePrincipal struct {
 	DirectoryId string `json:"directory_id"`
 }
 
+// Cancel refresh
+type CancelRefreshRequest struct {
+	// Full name of the table.
+	FullName string `json:"-" url:"-"`
+	// ID of the refresh.
+	RefreshId string `json:"-" url:"-"`
+}
+
 type CatalogInfo struct {
 	// Indicate whether or not the catalog info contains only browsable
 	// metadata.
@@ -559,6 +567,8 @@ func (f *ConnectionInfoSecurableKind) Type() string {
 // The type of connection.
 type ConnectionType string
 
+const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
+
 const ConnectionTypeDatabricks ConnectionType = `DATABRICKS`
 
 const ConnectionTypeMysql ConnectionType = `MYSQL`
@@ -581,11 +591,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `DATABRICKS`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
+	case `BIGQUERY`, `DATABRICKS`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DATABRICKS", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
 	}
 }
 
@@ -2145,6 +2155,14 @@ type GetModelVersionRequest struct {
 	Version int `json:"-" url:"-"`
 }
 
+// Get refresh
+type GetRefreshRequest struct {
+	// Full name of the table.
+	FullName string `json:"-" url:"-"`
+	// ID of the refresh.
+	RefreshId string `json:"-" url:"-"`
+}
+
 // Get a Registered Model
 type GetRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
@@ -2379,6 +2397,12 @@ func (s *ListModelVersionsResponse) UnmarshalJSON(b []byte) error {
 
 func (s ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// List refreshes
+type ListRefreshesRequest struct {
+	// Full name of the table.
+	FullName string `json:"-" url:"-"`
 }
 
 // List Registered Models
@@ -3138,6 +3162,64 @@ type MonitorNotificationsConfig struct {
 	OnFailure *MonitorDestinations `json:"on_failure,omitempty"`
 }
 
+type MonitorRefreshInfo struct {
+	// The time at which the refresh ended, in epoch milliseconds.
+	EndTimeMs int64 `json:"end_time_ms,omitempty"`
+	// An optional message to give insight into the current state of the job
+	// (e.g. FAILURE messages).
+	Message string `json:"message,omitempty"`
+	// The ID of the refresh.
+	RefreshId int64 `json:"refresh_id,omitempty"`
+	// The time at which the refresh started, in epoch milliseconds.
+	StartTimeMs int64 `json:"start_time_ms,omitempty"`
+	// The current state of the refresh.
+	State MonitorRefreshInfoState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MonitorRefreshInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MonitorRefreshInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The current state of the refresh.
+type MonitorRefreshInfoState string
+
+const MonitorRefreshInfoStateCanceled MonitorRefreshInfoState = `CANCELED`
+
+const MonitorRefreshInfoStateFailed MonitorRefreshInfoState = `FAILED`
+
+const MonitorRefreshInfoStatePending MonitorRefreshInfoState = `PENDING`
+
+const MonitorRefreshInfoStateRunning MonitorRefreshInfoState = `RUNNING`
+
+const MonitorRefreshInfoStateSuccess MonitorRefreshInfoState = `SUCCESS`
+
+// String representation for [fmt.Print]
+func (f *MonitorRefreshInfoState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *MonitorRefreshInfoState) Set(v string) error {
+	switch v {
+	case `CANCELED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCESS`:
+		*f = MonitorRefreshInfoState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "FAILED", "PENDING", "RUNNING", "SUCCESS"`, v)
+	}
+}
+
+// Type always returns MonitorRefreshInfoState to satisfy [pflag.Value] interface
+func (f *MonitorRefreshInfoState) Type() string {
+	return "MonitorRefreshInfoState"
+}
+
 type MonitorTimeSeriesProfileType struct {
 	// List of granularities to use when aggregating data into time windows
 	// based on their timestamp.
@@ -3420,6 +3502,12 @@ func (s *RegisteredModelInfo) UnmarshalJSON(b []byte) error {
 
 func (s RegisteredModelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Queue a metric refresh for a monitor
+type RunRefreshRequest struct {
+	// Full name of the table.
+	FullName string `json:"-" url:"-"`
 }
 
 type SchemaInfo struct {
@@ -3903,8 +3991,6 @@ func (s UpdateCatalog) MarshalJSON() ([]byte, error) {
 
 type UpdateConnection struct {
 	// Name of the connection.
-	Name string `json:"name,omitempty"`
-	// Name of the connection.
 	NameArg string `json:"-" url:"-"`
 	// New name for the connection.
 	NewName string `json:"new_name,omitempty"`
@@ -3989,8 +4075,6 @@ type UpdateMetastore struct {
 	DeltaSharingScope UpdateMetastoreDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
-	// The user-specified name of the metastore.
-	Name string `json:"name,omitempty"`
 	// New name for the metastore.
 	NewName string `json:"new_name,omitempty"`
 	// The owner of the metastore.
@@ -4137,8 +4221,6 @@ type UpdateRegisteredModelRequest struct {
 	Comment string `json:"comment,omitempty"`
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
-	// The name of the registered model
-	Name string `json:"name,omitempty"`
 	// New name for the registered model.
 	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the registered model
@@ -4163,8 +4245,6 @@ type UpdateSchema struct {
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of the schema.
 	FullName string `json:"-" url:"-"`
-	// Name of schema, relative to parent catalog.
-	Name string `json:"name,omitempty"`
 	// New name for the schema.
 	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of schema.
@@ -4245,8 +4325,6 @@ type UpdateVolumeRequestContent struct {
 	Comment string `json:"comment,omitempty"`
 	// The three-level (fully qualified) name of the volume
 	FullNameArg string `json:"-" url:"-"`
-	// The name of the volume
-	Name string `json:"name,omitempty"`
 	// New name for the volume.
 	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the volume

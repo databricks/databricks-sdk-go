@@ -226,8 +226,8 @@ func ExampleMetastoresAPI_Update_metastores() {
 	logger.Infof(ctx, "found %v", created)
 
 	_, err = w.Metastores.Update(ctx, catalog.UpdateMetastore{
-		Id:   created.MetastoreId,
-		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		Id:      created.MetastoreId,
+		NewName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 	})
 	if err != nil {
 		panic(err)

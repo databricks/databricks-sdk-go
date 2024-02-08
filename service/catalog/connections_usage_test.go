@@ -61,7 +61,6 @@ func ExampleConnectionsAPI_Get_connections() {
 	logger.Infof(ctx, "found %v", connCreate)
 
 	connUpdate, err := w.Connections.Update(ctx, catalog.UpdateConnection{
-		Name:    connCreate.Name,
 		NameArg: connCreate.Name,
 		Options: map[string]string{"host": fmt.Sprintf("%s-fake-workspace.cloud.databricks.com", fmt.Sprintf("sdk-%x", time.Now().UnixNano())), "httpPath": fmt.Sprintf("/sql/1.0/warehouses/%s", fmt.Sprintf("sdk-%x", time.Now().UnixNano())), "personalAccessToken": fmt.Sprintf("sdk-%x", time.Now().UnixNano())},
 	})
@@ -123,7 +122,6 @@ func ExampleConnectionsAPI_Update_connections() {
 	logger.Infof(ctx, "found %v", connCreate)
 
 	connUpdate, err := w.Connections.Update(ctx, catalog.UpdateConnection{
-		Name:    connCreate.Name,
 		NameArg: connCreate.Name,
 		Options: map[string]string{"host": fmt.Sprintf("%s-fake-workspace.cloud.databricks.com", fmt.Sprintf("sdk-%x", time.Now().UnixNano())), "httpPath": fmt.Sprintf("/sql/1.0/warehouses/%s", fmt.Sprintf("sdk-%x", time.Now().UnixNano())), "personalAccessToken": fmt.Sprintf("sdk-%x", time.Now().UnixNano())},
 	})

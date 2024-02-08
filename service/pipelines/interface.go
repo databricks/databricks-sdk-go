@@ -72,11 +72,6 @@ type PipelinesService interface {
 	// List updates for an active pipeline.
 	ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error)
 
-	// Reset a pipeline.
-	//
-	// Resets a pipeline.
-	Reset(ctx context.Context, request ResetRequest) error
-
 	// Set pipeline permissions.
 	//
 	// Sets permissions on a pipeline. Pipelines can inherit permissions from

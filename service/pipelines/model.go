@@ -666,7 +666,7 @@ type PipelineCluster struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
-	Autoscale *compute.AutoScale `json:"autoscale,omitempty"`
+	Autoscale *PipelineClusterAutoscale `json:"autoscale,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
 	AwsAttributes *compute.AwsAttributes `json:"aws_attributes,omitempty"`
@@ -762,6 +762,54 @@ func (s *PipelineCluster) UnmarshalJSON(b []byte) error {
 
 func (s PipelineCluster) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type PipelineClusterAutoscale struct {
+	// The maximum number of workers to which the cluster can scale up when
+	// overloaded. `max_workers` must be strictly greater than `min_workers`.
+	MaxWorkers int `json:"max_workers"`
+	// The minimum number of workers the cluster can scale down to when
+	// underutilized. It is also the initial number of workers the cluster will
+	// have after creation.
+	MinWorkers int `json:"min_workers"`
+	// Databricks Enhanced Autoscaling optimizes cluster utilization by
+	// automatically allocating cluster resources based on workload volume, with
+	// minimal impact to the data processing latency of your pipelines. Enhanced
+	// Autoscaling is available for `updates` clusters only. The legacy
+	// autoscaling feature is used for `maintenance` clusters.
+	Mode PipelineClusterAutoscaleMode `json:"mode,omitempty"`
+}
+
+// Databricks Enhanced Autoscaling optimizes cluster utilization by
+// automatically allocating cluster resources based on workload volume, with
+// minimal impact to the data processing latency of your pipelines. Enhanced
+// Autoscaling is available for `updates` clusters only. The legacy autoscaling
+// feature is used for `maintenance` clusters.
+type PipelineClusterAutoscaleMode string
+
+const PipelineClusterAutoscaleModeEnhanced PipelineClusterAutoscaleMode = `ENHANCED`
+
+const PipelineClusterAutoscaleModeLegacy PipelineClusterAutoscaleMode = `LEGACY`
+
+// String representation for [fmt.Print]
+func (f *PipelineClusterAutoscaleMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PipelineClusterAutoscaleMode) Set(v string) error {
+	switch v {
+	case `ENHANCED`, `LEGACY`:
+		*f = PipelineClusterAutoscaleMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ENHANCED", "LEGACY"`, v)
+	}
+}
+
+// Type always returns PipelineClusterAutoscaleMode to satisfy [pflag.Value] interface
+func (f *PipelineClusterAutoscaleMode) Type() string {
+	return "PipelineClusterAutoscaleMode"
 }
 
 type PipelineEvent struct {
@@ -1036,11 +1084,6 @@ type PipelineTrigger struct {
 	Cron *CronTrigger `json:"cron,omitempty"`
 
 	Manual any `json:"manual,omitempty"`
-}
-
-// Reset a pipeline
-type ResetRequest struct {
-	PipelineId string `json:"-" url:"-"`
 }
 
 type Sequencing struct {

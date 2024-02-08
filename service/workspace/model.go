@@ -282,6 +282,8 @@ type ExportResponse struct {
 	// The base64-encoded content. If the limit (10MB) is exceeded, exception
 	// with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
 	Content string `json:"content,omitempty"`
+	// The file type of the exported file.
+	FileType string `json:"file_type,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -626,10 +628,13 @@ type ObjectInfo struct {
 	//
 	// - `NOTEBOOK`: document that contains runnable code, visualizations, and
 	// explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`:
-	// file - `REPO`: repository
+	// file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard
 	ObjectType ObjectType `json:"object_type,omitempty"`
 	// The absolute path of the object.
 	Path string `json:"path,omitempty"`
+	// A unique identifier for the object that is consistent across all
+	// Databricks APIs.
+	ResourceId string `json:"resource_id,omitempty"`
 	// Only applicable to files. The file size in bytes can be returned.
 	Size int64 `json:"size,omitempty"`
 
@@ -648,8 +653,11 @@ func (s ObjectInfo) MarshalJSON() ([]byte, error) {
 //
 // - `NOTEBOOK`: document that contains runnable code, visualizations, and
 // explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`:
-// file - `REPO`: repository
+// file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard
 type ObjectType string
+
+// Lakeview dashboard
+const ObjectTypeDashboard ObjectType = `DASHBOARD`
 
 // directory
 const ObjectTypeDirectory ObjectType = `DIRECTORY`
@@ -674,11 +682,11 @@ func (f *ObjectType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ObjectType) Set(v string) error {
 	switch v {
-	case `DIRECTORY`, `FILE`, `LIBRARY`, `NOTEBOOK`, `REPO`:
+	case `DASHBOARD`, `DIRECTORY`, `FILE`, `LIBRARY`, `NOTEBOOK`, `REPO`:
 		*f = ObjectType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DIRECTORY", "FILE", "LIBRARY", "NOTEBOOK", "REPO"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DASHBOARD", "DIRECTORY", "FILE", "LIBRARY", "NOTEBOOK", "REPO"`, v)
 	}
 }
 

@@ -100,7 +100,7 @@ func (pkg *Package) ImportedPackages() (res []string) {
 
 // schemaToEntity converts a schema into an Entity
 // processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
-func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool, processedEntities []string) *Entity {
+func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool, processedEntities map[string]*Entity) *Entity {
 	if s.IsRef() {
 		pair := strings.Split(s.Component(), ".")
 		if len(pair) == 2 && pair[0] != pkg.Name {
@@ -142,6 +142,9 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		Package: pkg,
 		enum:    map[string]EnumEntry{},
 	}
+	if s.JsonPath != "" {
+		processedEntities[s.JsonPath] = e
+	}
 	// pull embedded types up, if they can be defined at package level
 	if s.IsDefinable() && !hasName {
 		// TODO: log message or panic when overrides a type
@@ -180,7 +183,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 
 // makeObject converts OpenAPI Schema into type representation
 // processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
-func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string, processedEntities []string) *Entity {
+func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string, processedEntities map[string]*Entity) *Entity {
 	e.fields = map[string]*Field{}
 	required := map[string]bool{}
 	for _, v := range s.Required {
@@ -234,10 +237,12 @@ func (pkg *Package) localComponent(n *openapi.Node) string {
 
 // definedEntity defines and returns the requested entity based on the schema.
 // processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
-func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntities []string) *Entity {
-	if slices.Contains(processedEntities, name) {
-		// Skip if it's already being generated has part of this stack to avoid infinite recursion.
-		return nil
+func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntities map[string]*Entity) *Entity {
+	if s != nil {
+		if entity, ok := processedEntities[s.JsonPath]; ok {
+			// Return existing entity if it's already being generated.
+			return entity
+		}
 	}
 	if s == nil || s.IsEmpty() {
 		entity := &Entity{
@@ -249,7 +254,6 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntit
 		}
 		return pkg.define(entity)
 	}
-	processedEntities = append(processedEntities, name)
 
 	e := pkg.schemaToEntity(s, []string{name}, true, processedEntities)
 	if e == nil {
@@ -327,7 +331,7 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 		if split[0] != pkg.Name {
 			continue
 		}
-		pkg.definedEntity(split[1], *v, []string{})
+		pkg.definedEntity(split[1], *v, map[string]*Entity{})
 	}
 	for prefix, path := range spec.Paths {
 		for verb, op := range path.Verbs() {

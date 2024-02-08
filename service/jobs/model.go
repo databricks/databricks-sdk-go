@@ -530,13 +530,22 @@ type DbtTask struct {
 	// if no warehouse_id is specified. If no warehouse_id is specified and this
 	// folder is unset, the root directory is used.
 	ProfilesDirectory string `json:"profiles_directory,omitempty"`
-	// Optional (relative) path to the project directory, if no value is
-	// provided, the root of the git repository is used.
+	// Path to the project directory. Optional for Git sourced tasks, in which
+	// case if no value is provided, the root of the Git repository is used.
 	ProjectDirectory string `json:"project_directory,omitempty"`
 	// Optional schema to write to. This parameter is only used when a
 	// warehouse_id is also provided. If not provided, the `default` schema is
 	// used.
 	Schema string `json:"schema,omitempty"`
+	// Optional location type of the project directory. When set to `WORKSPACE`,
+	// the project will be retrieved from the local <Databricks> workspace. When
+	// set to `GIT`, the project will be retrieved from a Git repository defined
+	// in `git_source`. If the value is empty, the task will use `GIT` if
+	// `git_source` is defined and `WORKSPACE` otherwise.
+	//
+	// * `WORKSPACE`: Project is located in <Databricks> workspace. * `GIT`:
+	// Project is located in cloud Git provider.
+	Source Source `json:"source,omitempty"`
 	// ID of the SQL warehouse to connect to. If provided, we automatically
 	// generate and provide the profile and connection details to dbt. It can be
 	// overridden on a per-command basis by using the `--profiles-dir` command
@@ -586,8 +595,9 @@ type FileArrivalTriggerConfiguration struct {
 	// passed since the last time the trigger fired. The minimum allowed value
 	// is 60 seconds
 	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
-	// URL to be monitored for file arrivals. The path must point to the root or
-	// a subpath of the external location.
+	// The storage location to monitor for file arrivals. The value must point
+	// to the root or a subpath of an external location URL or the root or
+	// subpath of a Unity Catalog volume.
 	Url string `json:"url,omitempty"`
 	// If set, the trigger starts a run only after no file activity has occurred
 	// for the specified amount of time. This makes it possible to wait for a
@@ -603,6 +613,78 @@ func (s *FileArrivalTriggerConfiguration) UnmarshalJSON(b []byte) error {
 }
 
 func (s FileArrivalTriggerConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ForEachStats struct {
+	// Sample of 3 most common error messages occurred during the iteration.
+	ErrorMessageStats *ForEachTaskErrorMessageStats `json:"error_message_stats,omitempty"`
+	// Describes stats of the iteration. Only latest retries are considered.
+	TaskRunStats *ForEachTaskTaskRunStats `json:"task_run_stats,omitempty"`
+}
+
+type ForEachTask struct {
+	// Controls the number of active iterations task runs. Default is 100
+	// (maximal value).
+	Concurrency int `json:"concurrency,omitempty"`
+	// Array for task to iterate on. This can be a JSON string or a reference to
+	// an array parameter.
+	Inputs string `json:"inputs"`
+
+	Task Task `json:"task"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ForEachTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ForEachTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ForEachTaskErrorMessageStats struct {
+	// Describes the count of such error message encountered during the
+	// iterations.
+	Count string `json:"count,omitempty"`
+	// Describes the error message occured during the iterations.
+	ErrorMessage string `json:"error_message,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ForEachTaskErrorMessageStats) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ForEachTaskErrorMessageStats) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ForEachTaskTaskRunStats struct {
+	// Describes the iteration runs having an active lifecycle state or an
+	// active run sub state.
+	ActiveIterations int `json:"active_iterations,omitempty"`
+	// Describes the number of failed and succeeded iteration runs.
+	CompletedIterations int `json:"completed_iterations,omitempty"`
+	// Describes the number of failed iteration runs.
+	FailedIterations int `json:"failed_iterations,omitempty"`
+	// Describes the number of iteration runs that have been scheduled.
+	ScheduledIterations int `json:"scheduled_iterations,omitempty"`
+	// Describes the number of succeeded iteration runs.
+	SucceededIterations int `json:"succeeded_iterations,omitempty"`
+	// Describes the length of the list of items to iterate over.
+	TotalIterations int `json:"total_iterations,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ForEachTaskTaskRunStats) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ForEachTaskTaskRunStats) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1392,7 +1474,7 @@ type JobsHealthRule struct {
 	Op JobsHealthOperator `json:"op,omitempty"`
 	// Specifies the threshold value that the health metric should obey to
 	// satisfy the health rule.
-	Value int `json:"value,omitempty"`
+	Value int64 `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -2172,6 +2254,29 @@ func (f *RunConditionTaskOp) Type() string {
 	return "RunConditionTaskOp"
 }
 
+type RunForEachTask struct {
+	// Controls the number of active iterations task runs. Default is 100
+	// (maximal value).
+	Concurrency int `json:"concurrency,omitempty"`
+	// Array for task to iterate on. This can be a JSON string or a reference to
+	// an array parameter.
+	Inputs string `json:"inputs,omitempty"`
+
+	Stats *ForEachStats `json:"stats,omitempty"`
+
+	Task *Task `json:"task,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunForEachTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RunForEachTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // An optional value indicating the condition that determines whether the task
 // should be run once its dependencies have been completed. When omitted,
 // defaults to `ALL_SUCCESS`.
@@ -2724,6 +2829,9 @@ type RunTask struct {
 	// need to manually restart the cluster if it stops responding. We suggest
 	// running jobs on new clusters for greater reliability.
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
+	// If for_each_task, indicates that this task must execute the nested task
+	// within it.
+	ForEachTask *RunForEachTask `json:"for_each_task,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -3211,8 +3319,18 @@ func (s SqlTaskDashboard) MarshalJSON() ([]byte, error) {
 }
 
 type SqlTaskFile struct {
-	// Relative path of the SQL file in the remote Git repository.
+	// Path of the SQL file. Must be relative if the source is a remote Git
+	// repository and absolute for workspace paths.
 	Path string `json:"path"`
+	// Optional location type of the SQL file. When set to `WORKSPACE`, the SQL
+	// file will be retrieved from the local <Databricks> workspace. When set to
+	// `GIT`, the SQL file will be retrieved from a Git repository defined in
+	// `git_source`. If the value is empty, the task will use `GIT` if
+	// `git_source` is defined and `WORKSPACE` otherwise.
+	//
+	// * `WORKSPACE`: SQL file is located in <Databricks> workspace. * `GIT`:
+	// SQL file is located in cloud Git provider.
+	Source Source `json:"source,omitempty"`
 }
 
 type SqlTaskQuery struct {
@@ -3339,6 +3457,9 @@ type SubmitTask struct {
 	// the cluster if it stops responding. We suggest running jobs on new
 	// clusters for greater reliability.
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
+	// If for_each_task, indicates that this must execute the nested task within
+	// it for the inputs provided.
+	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
@@ -3441,6 +3562,9 @@ type Task struct {
 	// the cluster if it stops responding. We suggest running jobs on new
 	// clusters for greater reliability.
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
+	// If for_each_task, indicates that this must execute the nested task within
+	// it for the inputs provided.
+	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// If job_cluster_key, this task is executed reusing the cluster specified
