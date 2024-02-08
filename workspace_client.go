@@ -4,7 +4,6 @@ package databricks
 
 import (
 	"errors"
-	"sync"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/config"
@@ -28,8 +27,6 @@ import (
 type WorkspaceClient struct {
 	Config            *config.Config
 	apiClient         *client.DatabricksClient
-	mu                *sync.Mutex
-	cachedWorkspaceId *int64
 
 	// These APIs manage access rules on resources in an account. Currently,
 	// only grant rules are supported. A grant rule specifies a role assigned to
@@ -945,7 +942,6 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	return &WorkspaceClient{
 		Config:    cfg,
 		apiClient: apiClient,
-		mu:        &sync.Mutex{},
 
 		AccountAccessControlProxy: iam.NewAccountAccessControlProxy(apiClient),
 		Alerts:                    sql.NewAlerts(apiClient),
