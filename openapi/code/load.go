@@ -49,9 +49,6 @@ func NewFromSpec(ctx context.Context, spec *openapi.Specification) (*Batch, erro
 			return nil, fmt.Errorf("fail to load %s: %w", tag.Name, err)
 		}
 	}
-	// Fields which have recursieve references are not filled in the first pass.
-	// This is the second pass to fill in the missing fields.
-	fillMissingEntities(&batch)
 	// add some packages at least some description
 	for _, pkg := range batch.packages {
 		if len(pkg.services) > 1 {
@@ -63,43 +60,6 @@ func NewFromSpec(ctx context.Context, spec *openapi.Specification) (*Batch, erro
 		}
 	}
 	return &batch, nil
-}
-
-func fillMissingEntities(batch *Batch) {
-	for _, pkg := range batch.packages {
-		for _, entity := range pkg.types {
-			for _, field := range entity.fields {
-				if field.Entity == nil && field.Schema != nil && field.Schema.IsRef() {
-					fillMissingEntity(field, batch, pkg)
-				}
-			}
-		}
-	}
-}
-
-func fillMissingEntity(field *Field, batch *Batch, pkg *Package) {
-	prefix, refType, _ := strings.Cut(field.Schema.Ref, ".")
-	packageName, _ := strings.CutPrefix(prefix, "#/components/schemas/")
-	if refEntify, ok := batch.packages[packageName].types[refType]; ok {
-		field.Entity = refEntify
-		if packageName != pkg.Name {
-			setExternalImport(field, pkg, refType, packageName)
-		}
-	}
-}
-
-func setExternalImport(field *Field, pkg *Package, refType string, packageName string) {
-	fieldSchema := field.Schema
-	pkg.extImports[fieldSchema.Component()] = &Entity{
-		Named: Named{
-			Name: refType,
-		},
-		Package: &Package{
-			Named: Named{
-				Name: packageName,
-			},
-		},
-	}
 }
 
 func (b *Batch) FullName() string {
