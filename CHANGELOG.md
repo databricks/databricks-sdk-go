@@ -1,5 +1,137 @@
 # Version changelog
 
+## 0.31.0
+
+* Support creating a new workspace client from an account client ([#792](https://github.com/databricks/databricks-sdk-go/pull/792)). Please see the example:
+```
+// GetWorkspaceClient returns a WorkspaceClient for the given workspace. The
+// workspace can be fetched by calling w.Workspaces.Get() or w.Workspaces.List().
+//
+// The config used for the workspace is identical to that used for the account,
+// except that the host is set to the workspace host, and the account ID is
+// not set.
+
+a, err := databricks.NewAccountClient()
+if err != nil {
+  panic(err)
+}
+ctx := context.Background()
+workspaces, err := a.Workspaces.List(ctx)
+if err != nil {
+  panic(err)
+}
+w, err := a.GetWorkspaceClient(workspaces[0])
+if err != nil {
+  panic(err)
+}
+me, err := w.CurrentUser.Me(ctx)
+```
+* Added support to select Spark version with Photon ([#799](https://github.com/databricks/databricks-sdk-go/pull/799)). Please Note: Photon selection is disabled by default. To enable it, please use `Photon: true` in request. Example:
+````
+	version, err := sparkVersions.Select(compute.SparkVersionRequest{
+		Photon:          true,
+	})
+````
+
+
+API Changes:
+
+Additions:
+
+ * Added the following Requests: 
+    - [catalog.CancelRefreshRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CancelRefreshRequest).
+    - [catalog.GetRefreshRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetRefreshRequest).
+    - [catalog.ListRefreshesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListRefreshesRequest).
+    - [settings.DeleteRestrictWorkspaceAdminsSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteRestrictWorkspaceAdminsSettingRequest).
+    - [settings.GetDefaultNamespaceSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetDefaultNamespaceSettingRequest).
+    - [settings.GetPersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetPersonalComputeSettingRequest).
+    - [settings.GetRestrictWorkspaceAdminsSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetRestrictWorkspaceAdminsSettingRequest).
+    - [settings.UpdateDefaultNamespaceSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateDefaultNamespaceSettingRequest).
+    - [settings.UpdateRestrictWorkspaceAdminsSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateRestrictWorkspaceAdminsSettingRequest).
+    - [catalog.RunRefreshRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#RunRefreshRequest).
+    - [settings.DeleteDefaultNamespaceSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteDefaultNamespaceSettingRequest).
+    - [files.CreateDirectoryRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#CreateDirectoryRequest).
+    - [files.DeleteDirectoryRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#DeleteDirectoryRequest).
+    - [files.ListDirectoryContentsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#ListDirectoryContentsRequest).
+ * Added the following Responses: 
+    - [settings.DeleteRestrictWorkspaceAdminsSettingResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteRestrictWorkspaceAdminsSettingResponse).
+    - [settings.DeleteDefaultNamespaceSettingResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteDefaultNamespaceSettingResponse).
+    - [files.ListDirectoryResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#ListDirectoryResponse).
+ * Added `CancelRefresh`, `GetRefresh`, `ListRefreshes` and `RunRefresh` method for [w.LakehouseMonitors](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#LakehouseMonitorsAPI) workspace-level service.
+ * Added `Abfss` and `Gcs` field for [compute.InitScriptInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InitScriptInfo).
+ * Added `CreateDirectory`, `DeleteDirectory` and `ListDirectoryContents` method for [w.Files](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#FilesAPI) workspace-level service.
+ * Added `Source` field for [jobs.DbtTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#DbtTask) and [jobs.SqlTaskFile](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SqlTaskFile).
+ * Added [settings.RestrictWorkspaceAdminsMessage](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsMessage).
+ * Jobs: 
+    - [jobs.ForEachStats](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ForEachStats).
+    - [jobs.ForEachTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ForEachTask).
+    - [jobs.ForEachTaskErrorMessageStats](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ForEachTaskErrorMessageStats).
+    - [jobs.ForEachTaskTaskRunStats](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ForEachTaskTaskRunStats).
+    - [jobs.RunForEachTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunForEachTask).
+ * Pipelines: 
+    - [pipelines.PipelineClusterAutoscale](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineClusterAutoscale).
+    - [pipelines.PipelineClusterAutoscaleMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineClusterAutoscaleMode).
+ * Settings: 
+    - [settings.RestrictWorkspaceAdminsMessageStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsMessageStatus).
+    - [settings.RestrictWorkspaceAdminsSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsSetting).
+ * Catalog: 
+    - [catalog.MonitorRefreshInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MonitorRefreshInfo).
+    - [catalog.MonitorRefreshInfoState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MonitorRefreshInfoState).
+ * Added `GetPersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service.
+ * Added the following fields: 
+  - `DeltaSyncIndexSpec` for [vectorsearch.CreateVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#CreateVectorIndexRequest).
+  - `FileType` for [workspace.ExportResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#ExportResponse).
+  - `ResourceId` for [workspace.ObjectInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#ObjectInfo).
+ * Added `ZoneId` field for [compute.GcpAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GcpAttributes).
+ * Added `ForEachTask` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask), [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask) and [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+ * Added `DeleteDefaultNamespaceSetting`, `DeleteRestrictWorkspaceAdminsSetting`, `GetDefaultNamespaceSetting`, `GetRestrictWorkspaceAdminsSetting`, `UpdateDefaultNamespaceSetting` and `UpdateRestrictWorkspaceAdminsSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
+ * Added `FieldMask` field for [settings.UpdatePersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdatePersonalComputeSettingRequest).
+ * Added `UsePreemptibleExecutors` field for [compute.GcpAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GcpAttributes).
+ * Misc:
+    - [compute.Adlsgen2Info](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#Adlsgen2Info).
+    - [compute.GcsStorageInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GcsStorageInfo).
+    - [files.DirectoryEntry](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#DirectoryEntry).
+    - [files.PageToken](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#PageToken).
+
+Changes:
+ * Changed `MaxWorkers` and `MinWorkers`  field for [compute.AutoScale](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#AutoScale) to no longer be required.
+ * Changed `Destination` field for [compute.LocalFileInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#LocalFileInfo), [compute.S3StorageInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#S3StorageInfo), [compute.VolumesStorageInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#VolumesStorageInfo), [compute.WorkspaceStorageInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#WorkspaceStorageInfo) to be required.
+ * Changed `Destination` field for [compute.DbfsStorageInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#DbfsStorageInfo) to be required.
+ * Changed `Clients` field for [compute.WorkloadType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#WorkloadType) to be required.
+ * Changed `Autoscale` field for [pipelines.PipelineCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineCluster) to [pipelines.PipelineClusterAutoscale](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineClusterAutoscale).
+ * Changed `DeletePersonalComputeSetting` and `UpdatePersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service with new required argument order.
+ * Changed `AllowMissing` and `Setting` field for [settings.UpdatePersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdatePersonalComputeSettingRequest) to be required.
+ * Changed `Etag` field for [settings.DeletePersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeletePersonalComputeSettingRequest) to no longer be required.
+
+Removals: 
+ * Removed `Name` field for [catalog.UpdateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateConnection), [catalog.UpdateMetastore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateMetastore), [catalog.UpdateRegisteredModelRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateRegisteredModelRequest), [catalog.UpdateSchema](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateSchema), [catalog.UpdateVolumeRequestContent](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateVolumeRequestContent).
+ * Settings: 
+    - [settings.DeleteDefaultWorkspaceNamespaceResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteDefaultWorkspaceNamespaceResponse).
+    - [settings.DeleteDefaultWorkspaceNamespaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteDefaultWorkspaceNamespaceRequest).
+    - [settings.ReadDefaultWorkspaceNamespaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ReadDefaultWorkspaceNamespaceRequest).
+    - [settings.UpdateDefaultWorkspaceNamespaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateDefaultWorkspaceNamespaceRequest).
+    - [settings.ReadPersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ReadPersonalComputeSettingRequest).
+ * Removed `ReadDefaultWorkspaceNamespace`, `UpdateDefaultWorkspaceNamespace` and `DeleteDefaultWorkspaceNamespace` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
+ * Removed `Reset` method for [w.Pipelines](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinesAPI) workspace-level service.
+ * Removed [pipelines.ResetRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ResetRequest).
+ * Removed `ReadPersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service.
+ * Removed `DeltaSyncVectorIndexSpec` field for [vectorsearch.CreateVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#CreateVectorIndexRequest).
+
+ Internal Changes:
+* Added Support for HEAD operations ([#802](https://github.com/databricks/databricks-sdk-go/pull/802)).
+* Updated actions/setup-go to v5 ([#784](https://github.com/databricks/databricks-sdk-go/pull/784)).
+* Retry update of catalog in test to avoid flakiness ([#788](https://github.com/databricks/databricks-sdk-go/pull/788)).
+* Skip AccountClient_GetWorkspaceClient() test in Azure/GCP ([#798](https://github.com/databricks/databricks-sdk-go/pull/798)).
+* SDK Generation + Fix backwards incompatible changes ([#806](https://github.com/databricks/databricks-sdk-go/pull/806)).
+* Fixed `any` references when generating code with circular dependencies ([#805](https://github.com/databricks/databricks-sdk-go/pull/805)).
+* Fixed stack overflow on recursive schemas ([#801](https://github.com/databricks/databricks-sdk-go/pull/801)).
+
+Dependency updates:
+ * Bump google.golang.org/api from 0.154.0 to 0.161.0 ([#794](https://github.com/databricks/databricks-sdk-go/pull/794)).
+
+OpenAPI SHA: cadf1693527b365728a55ff06a0e38ce5740c9f7, Date: 2024-02-08
+
+
 ## 0.30.1
 
 Major changes:
