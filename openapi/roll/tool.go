@@ -732,6 +732,10 @@ func (s *Suite) inlineRetryExpression(e *ast.CallExpr) *ast.CallExpr {
 		return e
 	}
 	name := t.Sel.Name
+	// TODO: support reusable Retriers in integration tests.
+	if name == "New" && t.X.(*ast.Ident).Name == "retrier" {
+		s.explainAndPanic("cannot call retrier.New() without immediately calling Run() or Wait()", e)
+	}
 	if name != "Run" && name != "Wait" {
 		return e
 	}
@@ -755,6 +759,9 @@ func (s *Suite) inlineRetryExpression(e *ast.CallExpr) *ast.CallExpr {
 	retryFunc, ok := e.Args[1].(*ast.FuncLit)
 	if !ok {
 		s.explainAndPanic("function literal", e.Args[1])
+	}
+	if len(retryFunc.Body.List) != 1 {
+		s.explainAndPanic(fmt.Sprintf("retry func provided to (*Retrier[T]) %s() must contain only a single return statement", name), retryFunc.Body)
 	}
 	retStmt, ok := retryFunc.Body.List[len(retryFunc.Body.List)-1].(*ast.ReturnStmt)
 	if !ok {
