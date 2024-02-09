@@ -10,6 +10,7 @@ import (
 
 type WorkspaceClient struct {
 	Config *config.Config
+	apiClient *httpclient.ApiClient
 
 	{{range .Services}}{{if not .IsAccounts}}
 	{{.Comment "    // " 80}}
@@ -37,14 +38,19 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, ErrNotWorkspaceClient
 	}
-	apiClient, err := client.New(cfg)
+	apiClient, err := cfg.NewApiClient()
+	if err != nil {
+		return nil, err
+	}
+	databricksClient, err := client.NewWithClient(cfg, apiClient)
 	if err != nil {
 		return nil, err
 	}
 	return &WorkspaceClient{
 		Config: cfg,
+		apiClient: apiClient,
 		{{range .Services}}{{if not .IsAccounts}}
-		{{.Name}}: {{.Package.Name}}.New{{.Name}}(apiClient),
+		{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient),
 		{{- end}}{{end}}
 	}, nil
 }
