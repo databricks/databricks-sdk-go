@@ -726,16 +726,31 @@ func (s *Suite) expectLookup(se *ast.SelectorExpr) *lookup {
 	}
 }
 
+func (s *Suite) failOnBareRetrier(e *ast.CallExpr) {
+	t, ok := e.Fun.(*ast.IndexExpr)
+	if !ok {
+		return
+	}
+	t2, ok := t.X.(*ast.SelectorExpr)
+	if !ok {
+		return
+	}
+	if t2.X.(*ast.Ident).Name != "retries" {
+		return
+	}
+	if t2.Sel.Name == "New" {
+		s.explainAndPanic("cannot call retrier.New() without immediately calling Run() or Wait()", e)
+	}
+}
+
 func (s *Suite) inlineRetryExpression(e *ast.CallExpr) *ast.CallExpr {
+	// TODO: support reusable Retriers in integration tests.
+	s.failOnBareRetrier(e)
 	t, ok := e.Fun.(*ast.SelectorExpr)
 	if !ok {
 		return e
 	}
 	name := t.Sel.Name
-	// TODO: support reusable Retriers in integration tests.
-	if name == "New" && t.X.(*ast.Ident).Name == "retrier" {
-		s.explainAndPanic("cannot call retrier.New() without immediately calling Run() or Wait()", e)
-	}
 	if name != "Run" && name != "Wait" {
 		return e
 	}
