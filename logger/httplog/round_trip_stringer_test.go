@@ -103,11 +103,11 @@ func TestHideAuthorizationHeaderWhenConfigured(t *testing.T) {
 			Status: "200 OK",
 			Proto:  "HTTP/1.1",
 		},
-		RequestBody:              []byte("request-hello"),
-		ResponseBody:             []byte("response-hello"),
-		DebugHeaders:             true,
-		DebugTruncateBytes:       100,
-		DebugAuthorizationHeader: false,
+		RequestBody:           []byte("request-hello"),
+		ResponseBody:          []byte("response-hello"),
+		DebugHeaders:          true,
+		DebugTruncateBytes:    100,
+		DebugSensitiveHeaders: false,
 	}.String()
 	assert.Equal(t, `GET /
 > * Host: 

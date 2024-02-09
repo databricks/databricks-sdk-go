@@ -26,12 +26,13 @@ type RequestVisitor func(*http.Request) error
 type ClientConfig struct {
 	Visitors []RequestVisitor
 
-	RetryTimeout       time.Duration
-	HTTPTimeout        time.Duration
-	InsecureSkipVerify bool
-	DebugHeaders       bool
-	DebugTruncateBytes int
-	RateLimitPerSecond int
+	RetryTimeout          time.Duration
+	HTTPTimeout           time.Duration
+	InsecureSkipVerify    bool
+	DebugHeaders          bool
+	DebugSensitiveHeaders bool
+	DebugTruncateBytes    int
+	RateLimitPerSecond    int
 
 	ErrorMapper     func(ctx context.Context, resp common.ResponseWrapper) error
 	ErrorRetriable  func(ctx context.Context, err error) bool
@@ -252,13 +253,13 @@ func (c *ApiClient) recordRequestLog(
 		return
 	}
 	message := httplog.RoundTripStringer{
-		Response:                 response,
-		Err:                      err,
-		RequestBody:              requestBody,
-		ResponseBody:             responseBody,
-		DebugHeaders:             c.config.DebugHeaders,
-		DebugTruncateBytes:       c.config.DebugTruncateBytes,
-		DebugAuthorizationHeader: true,
+		Response:              response,
+		Err:                   err,
+		RequestBody:           requestBody,
+		ResponseBody:          responseBody,
+		DebugHeaders:          c.config.DebugHeaders,
+		DebugSensitiveHeaders: c.config.DebugSensitiveHeaders,
+		DebugTruncateBytes:    c.config.DebugTruncateBytes,
 	}.String()
 	logger.Debugf(ctx, message)
 }
