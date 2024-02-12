@@ -91,7 +91,7 @@ func tryInjectContent(response any, body *common.ResponseWrapper) bool {
 	if value.Kind() != reflect.Struct {
 		return false
 	}
-	contentField := value.FieldByName("Content")
+	contentField := value.FieldByName("Contents")
 	if !contentField.IsValid() {
 		return false
 	}

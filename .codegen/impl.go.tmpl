@@ -40,11 +40,7 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 
 {{ define "response-var" -}}
 {{ if .Response }}
-  var {{ .Response.CamelName }} {{ if .IsResponseByteStream -}}
-    io.ReadCloser
-  {{- else -}}
-	{{ template "type" .Response }}
-  {{- end }}
+  var {{ .Response.CamelName }} {{ template "type" .Response }}
 {{- end }}
 {{- end }}
 
@@ -57,11 +53,7 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 
 {{ define "response" -}}
   {{ if .Response -}}
-  {{ if .IsResponseByteStream -}}
-    &{{ .Response.PascalName }}{ {{ .ResponseBodyField.PascalName }}: {{ .Response.CamelName }} }
-  {{- else -}}
-    {{ if not .Response.ArrayValue }}&{{end}}{{.Response.CamelName}}
-  {{- end }}, {{end}}err
+  {{ if not .Response.ArrayValue }}&{{end}}{{.Response.CamelName}}, {{end}}err
 {{- end }}
 
 {{ define "make-header" -}}
