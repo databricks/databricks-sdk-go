@@ -7,6 +7,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/compute"
@@ -25,7 +26,8 @@ import (
 )
 
 type WorkspaceClient struct {
-	Config *config.Config
+	Config    *config.Config
+	apiClient *httpclient.ApiClient
 
 	// These APIs manage access rules on resources in an account. Currently,
 	// only grant rules are supported. A grant rule specifies a role assigned to
@@ -934,79 +936,84 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, ErrNotWorkspaceClient
 	}
-	apiClient, err := client.New(cfg)
+	apiClient, err := cfg.NewApiClient()
+	if err != nil {
+		return nil, err
+	}
+	databricksClient, err := client.NewWithClient(cfg, apiClient)
 	if err != nil {
 		return nil, err
 	}
 	return &WorkspaceClient{
-		Config: cfg,
+		Config:    cfg,
+		apiClient: apiClient,
 
-		AccountAccessControlProxy: iam.NewAccountAccessControlProxy(apiClient),
-		Alerts:                    sql.NewAlerts(apiClient),
-		Apps:                      serving.NewApps(apiClient),
-		ArtifactAllowlists:        catalog.NewArtifactAllowlists(apiClient),
-		Catalogs:                  catalog.NewCatalogs(apiClient),
-		CleanRooms:                sharing.NewCleanRooms(apiClient),
-		ClusterPolicies:           compute.NewClusterPolicies(apiClient),
-		Clusters:                  compute.NewClusters(apiClient),
-		CommandExecution:          compute.NewCommandExecution(apiClient),
-		Connections:               catalog.NewConnections(apiClient),
-		CredentialsManager:        settings.NewCredentialsManager(apiClient),
-		CurrentUser:               iam.NewCurrentUser(apiClient),
-		DashboardWidgets:          sql.NewDashboardWidgets(apiClient),
-		Dashboards:                sql.NewDashboards(apiClient),
-		DataSources:               sql.NewDataSources(apiClient),
-		Dbfs:                      files.NewDbfs(apiClient),
-		DbsqlPermissions:          sql.NewDbsqlPermissions(apiClient),
-		Experiments:               ml.NewExperiments(apiClient),
-		ExternalLocations:         catalog.NewExternalLocations(apiClient),
-		Files:                     files.NewFiles(apiClient),
-		Functions:                 catalog.NewFunctions(apiClient),
-		GitCredentials:            workspace.NewGitCredentials(apiClient),
-		GlobalInitScripts:         compute.NewGlobalInitScripts(apiClient),
-		Grants:                    catalog.NewGrants(apiClient),
-		Groups:                    iam.NewGroups(apiClient),
-		InstancePools:             compute.NewInstancePools(apiClient),
-		InstanceProfiles:          compute.NewInstanceProfiles(apiClient),
-		IpAccessLists:             settings.NewIpAccessLists(apiClient),
-		Jobs:                      jobs.NewJobs(apiClient),
-		LakehouseMonitors:         catalog.NewLakehouseMonitors(apiClient),
-		Lakeview:                  dashboards.NewLakeview(apiClient),
-		Libraries:                 compute.NewLibraries(apiClient),
-		Metastores:                catalog.NewMetastores(apiClient),
-		ModelRegistry:             ml.NewModelRegistry(apiClient),
-		ModelVersions:             catalog.NewModelVersions(apiClient),
-		Permissions:               iam.NewPermissions(apiClient),
-		Pipelines:                 pipelines.NewPipelines(apiClient),
-		PolicyFamilies:            compute.NewPolicyFamilies(apiClient),
-		Providers:                 sharing.NewProviders(apiClient),
-		Queries:                   sql.NewQueries(apiClient),
-		QueryHistory:              sql.NewQueryHistory(apiClient),
-		QueryVisualizations:       sql.NewQueryVisualizations(apiClient),
-		RecipientActivation:       sharing.NewRecipientActivation(apiClient),
-		Recipients:                sharing.NewRecipients(apiClient),
-		RegisteredModels:          catalog.NewRegisteredModels(apiClient),
-		Repos:                     workspace.NewRepos(apiClient),
-		Schemas:                   catalog.NewSchemas(apiClient),
-		Secrets:                   workspace.NewSecrets(apiClient),
-		ServicePrincipals:         iam.NewServicePrincipals(apiClient),
-		ServingEndpoints:          serving.NewServingEndpoints(apiClient),
-		Settings:                  settings.NewSettings(apiClient),
-		Shares:                    sharing.NewShares(apiClient),
-		StatementExecution:        sql.NewStatementExecution(apiClient),
-		StorageCredentials:        catalog.NewStorageCredentials(apiClient),
-		SystemSchemas:             catalog.NewSystemSchemas(apiClient),
-		TableConstraints:          catalog.NewTableConstraints(apiClient),
-		Tables:                    catalog.NewTables(apiClient),
-		TokenManagement:           settings.NewTokenManagement(apiClient),
-		Tokens:                    settings.NewTokens(apiClient),
-		Users:                     iam.NewUsers(apiClient),
-		VectorSearchEndpoints:     vectorsearch.NewVectorSearchEndpoints(apiClient),
-		VectorSearchIndexes:       vectorsearch.NewVectorSearchIndexes(apiClient),
-		Volumes:                   catalog.NewVolumes(apiClient),
-		Warehouses:                sql.NewWarehouses(apiClient),
-		Workspace:                 workspace.NewWorkspace(apiClient),
-		WorkspaceBindings:         catalog.NewWorkspaceBindings(apiClient),
-		WorkspaceConf:             settings.NewWorkspaceConf(apiClient),
+		AccountAccessControlProxy: iam.NewAccountAccessControlProxy(databricksClient),
+		Alerts:                    sql.NewAlerts(databricksClient),
+		Apps:                      serving.NewApps(databricksClient),
+		ArtifactAllowlists:        catalog.NewArtifactAllowlists(databricksClient),
+		Catalogs:                  catalog.NewCatalogs(databricksClient),
+		CleanRooms:                sharing.NewCleanRooms(databricksClient),
+		ClusterPolicies:           compute.NewClusterPolicies(databricksClient),
+		Clusters:                  compute.NewClusters(databricksClient),
+		CommandExecution:          compute.NewCommandExecution(databricksClient),
+		Connections:               catalog.NewConnections(databricksClient),
+		CredentialsManager:        settings.NewCredentialsManager(databricksClient),
+		CurrentUser:               iam.NewCurrentUser(databricksClient),
+		DashboardWidgets:          sql.NewDashboardWidgets(databricksClient),
+		Dashboards:                sql.NewDashboards(databricksClient),
+		DataSources:               sql.NewDataSources(databricksClient),
+		Dbfs:                      files.NewDbfs(databricksClient),
+		DbsqlPermissions:          sql.NewDbsqlPermissions(databricksClient),
+		Experiments:               ml.NewExperiments(databricksClient),
+		ExternalLocations:         catalog.NewExternalLocations(databricksClient),
+		Files:                     files.NewFiles(databricksClient),
+		Functions:                 catalog.NewFunctions(databricksClient),
+		GitCredentials:            workspace.NewGitCredentials(databricksClient),
+		GlobalInitScripts:         compute.NewGlobalInitScripts(databricksClient),
+		Grants:                    catalog.NewGrants(databricksClient),
+		Groups:                    iam.NewGroups(databricksClient),
+		InstancePools:             compute.NewInstancePools(databricksClient),
+		InstanceProfiles:          compute.NewInstanceProfiles(databricksClient),
+		IpAccessLists:             settings.NewIpAccessLists(databricksClient),
+		Jobs:                      jobs.NewJobs(databricksClient),
+		LakehouseMonitors:         catalog.NewLakehouseMonitors(databricksClient),
+		Lakeview:                  dashboards.NewLakeview(databricksClient),
+		Libraries:                 compute.NewLibraries(databricksClient),
+		Metastores:                catalog.NewMetastores(databricksClient),
+		ModelRegistry:             ml.NewModelRegistry(databricksClient),
+		ModelVersions:             catalog.NewModelVersions(databricksClient),
+		Permissions:               iam.NewPermissions(databricksClient),
+		Pipelines:                 pipelines.NewPipelines(databricksClient),
+		PolicyFamilies:            compute.NewPolicyFamilies(databricksClient),
+		Providers:                 sharing.NewProviders(databricksClient),
+		Queries:                   sql.NewQueries(databricksClient),
+		QueryHistory:              sql.NewQueryHistory(databricksClient),
+		QueryVisualizations:       sql.NewQueryVisualizations(databricksClient),
+		RecipientActivation:       sharing.NewRecipientActivation(databricksClient),
+		Recipients:                sharing.NewRecipients(databricksClient),
+		RegisteredModels:          catalog.NewRegisteredModels(databricksClient),
+		Repos:                     workspace.NewRepos(databricksClient),
+		Schemas:                   catalog.NewSchemas(databricksClient),
+		Secrets:                   workspace.NewSecrets(databricksClient),
+		ServicePrincipals:         iam.NewServicePrincipals(databricksClient),
+		ServingEndpoints:          serving.NewServingEndpoints(databricksClient),
+		Settings:                  settings.NewSettings(databricksClient),
+		Shares:                    sharing.NewShares(databricksClient),
+		StatementExecution:        sql.NewStatementExecution(databricksClient),
+		StorageCredentials:        catalog.NewStorageCredentials(databricksClient),
+		SystemSchemas:             catalog.NewSystemSchemas(databricksClient),
+		TableConstraints:          catalog.NewTableConstraints(databricksClient),
+		Tables:                    catalog.NewTables(databricksClient),
+		TokenManagement:           settings.NewTokenManagement(databricksClient),
+		Tokens:                    settings.NewTokens(databricksClient),
+		Users:                     iam.NewUsers(databricksClient),
+		VectorSearchEndpoints:     vectorsearch.NewVectorSearchEndpoints(databricksClient),
+		VectorSearchIndexes:       vectorsearch.NewVectorSearchIndexes(databricksClient),
+		Volumes:                   catalog.NewVolumes(databricksClient),
+		Warehouses:                sql.NewWarehouses(databricksClient),
+		Workspace:                 workspace.NewWorkspace(databricksClient),
+		WorkspaceBindings:         catalog.NewWorkspaceBindings(databricksClient),
+		WorkspaceConf:             settings.NewWorkspaceConf(databricksClient),
 	}, nil
 }

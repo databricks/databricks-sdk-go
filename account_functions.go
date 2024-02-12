@@ -25,12 +25,16 @@ import "github.com/databricks/databricks-sdk-go/service/provisioning"
 //		panic(err)
 //	}
 //	me, err := w.CurrentUser.Me(ctx)
-func (c *AccountClient) GetWorkspaceClient(w provisioning.Workspace) (*WorkspaceClient, error) {
-	host := c.Config.Environment().DeploymentURL(w.DeploymentName)
+func (c *AccountClient) GetWorkspaceClient(ws provisioning.Workspace) (*WorkspaceClient, error) {
+	host := c.Config.Environment().DeploymentURL(ws.DeploymentName)
 	cfg, err := c.Config.NewWithWorkspaceHost(host)
 	if err != nil {
 		return nil, err
 	}
-	cfg.AzureResourceID = w.AzureResourceId()
-	return NewWorkspaceClient((*Config)(cfg))
+	cfg.AzureResourceID = ws.AzureResourceId()
+	w, err := NewWorkspaceClient((*Config)(cfg))
+	if err != nil {
+		return nil, err
+	}
+	return w, nil
 }
