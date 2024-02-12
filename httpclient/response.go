@@ -87,18 +87,18 @@ func WithResponseUnmarshal(response any) DoOption {
 func tryInjectContent(response any, body *common.ResponseWrapper) bool {
 	value := reflect.ValueOf(response)
 	value = reflect.Indirect(value)
-
 	if value.Kind() != reflect.Struct {
 		return false
 	}
+
+	// Check if there is a "Contents" of typo io.ReadCloser
+	// This is by internal convention with the teams.
+	ioType := reflect.TypeOf((*io.ReadCloser)(nil)).Elem()
 	contentField := value.FieldByName("Contents")
-	if !contentField.IsValid() {
+	if !contentField.IsValid() || !contentField.CanSet() || contentField.Type() != ioType {
 		return false
 	}
-	contentFieldType := contentField.Type()
-	if contentFieldType != reflect.TypeOf(bytes.Buffer{}) {
-		return false
-	}
+	// If so, set the value
 	contentField.Set(reflect.ValueOf(body.ReadCloser))
 	return true
 }
