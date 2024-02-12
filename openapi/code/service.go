@@ -9,8 +9,8 @@ import (
 )
 
 // The following headers should not be added added to the generated structs
-var HIDDEN_HEADERS = map[string]bool{
-	"X-Databricks-GCP-SA-Access-Token": true,
+var HIDDEN_HEADERS = map[string]struct{}{
+	"X-Databricks-GCP-SA-Access-Token": {},
 }
 
 // Service represents specific Databricks API
@@ -209,7 +209,7 @@ func (svc *Service) newMethodEntity(op *openapi.Operation) (*Entity, openapi.Mim
 }
 
 func (svc *Service) skipHeader(v openapi.Parameter, includeHeaders bool) bool {
-	hiddenHeader := HIDDEN_HEADERS[v.Name]
+	_, hiddenHeader := HIDDEN_HEADERS[v.Name]
 	return v.In == "header" && (!includeHeaders || hiddenHeader)
 }
 
