@@ -47,9 +47,10 @@ func WithResponseUnmarshal(response any) DoOption {
 				return nil
 			}
 			injectHeaders(response, body)
-			// If the field contains a "Content" field of type bytes.Buffer, write the body over there.
-			set := tryInjectContent(response, body)
-			if set {
+			// If the field contains a "Content" field of type bytes.Buffer, write the body over there and return.
+			if field, ok := findContentsField(response, body); ok {
+				// If so, set the value
+				field.Set(reflect.ValueOf(body.ReadCloser))
 				return nil
 			}
 
@@ -84,11 +85,11 @@ func WithResponseUnmarshal(response any) DoOption {
 	}
 }
 
-func tryInjectContent(response any, body *common.ResponseWrapper) bool {
+func findContentsField(response any, body *common.ResponseWrapper) (*reflect.Value, bool) {
 	value := reflect.ValueOf(response)
 	value = reflect.Indirect(value)
 	if value.Kind() != reflect.Struct {
-		return false
+		return nil, false
 	}
 
 	// Check if there is a "Contents" of typo io.ReadCloser
@@ -96,11 +97,9 @@ func tryInjectContent(response any, body *common.ResponseWrapper) bool {
 	ioType := reflect.TypeOf((*io.ReadCloser)(nil)).Elem()
 	contentField := value.FieldByName("Contents")
 	if !contentField.IsValid() || !contentField.CanSet() || contentField.Type() != ioType {
-		return false
+		return nil, false
 	}
-	// If so, set the value
-	contentField.Set(reflect.ValueOf(body.ReadCloser))
-	return true
+	return &contentField, true
 }
 
 func injectHeaders(response any, body *common.ResponseWrapper) error {
