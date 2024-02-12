@@ -88,6 +88,9 @@ func tryInjectContent(response any, body *common.ResponseWrapper) bool {
 	value := reflect.ValueOf(response)
 	value = reflect.Indirect(value)
 
+	if value.Kind() != reflect.Struct {
+		return false
+	}
 	contentField := value.FieldByName("Content")
 	if !contentField.IsValid() {
 		return false
@@ -105,6 +108,9 @@ func injectHeaders(response any, body *common.ResponseWrapper) error {
 	value = reflect.Indirect(value)
 	objectType := value.Type()
 
+	if objectType.Kind() != reflect.Struct {
+		return nil
+	}
 	headers := body.Response.Header
 
 	for i := 0; i < objectType.NumField(); i++ {

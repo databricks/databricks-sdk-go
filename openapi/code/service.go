@@ -353,9 +353,11 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 	// This next block of code is needed to make up for shortcomings in
 	// schemaToEntity. That function (and the Entity structure) assumes that all
 	// fields are part of the response schema. If we have fields part of the headers,
-	// we need to mark the response has non-empty.
+	// we need to mark the response has non-empty and add it from the type map
 	if response.HasHeaderField() {
 		response.IsEmpty = false
+		svc.Package.define(response)
+		svc.removeFromEmtyList(response)
 	}
 
 	var emptyResponse Named
@@ -364,6 +366,16 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 		response = nil
 	}
 	return response, mimeType, bodyField, emptyResponse
+}
+
+func (svc *Service) removeFromEmtyList(response *Entity) {
+	list := svc.Package.emptyTypes
+	for i, t := range list {
+		if t.Name == response.Name {
+			svc.Package.emptyTypes = append(list[:i], list[i+1:]...)
+			return
+		}
+	}
 }
 
 func (svc *Service) addHeaderParams(request *Entity, op *openapi.Operation, headers map[string]*openapi.Parameter) {
