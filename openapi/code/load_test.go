@@ -19,7 +19,7 @@ func TestBasic(t *testing.T) {
 
 	require.Len(t, batch.Packages(), 1)
 	require.Len(t, batch.Services(), 1)
-	require.Len(t, batch.Types(), 15)
+	require.Len(t, batch.Types(), 17)
 	commands, ok := batch.packages["commands"]
 	require.True(t, ok)
 
@@ -51,9 +51,9 @@ func TestBasic(t *testing.T) {
 	assert.Equal(t, 0, len(wait.MessagePath()))
 
 	types := commands.Types()
-	assert.Equal(t, 15, len(types))
+	assert.Equal(t, 17, len(types))
 
-	command := types[1]
+	command := types[2]
 	assert.Equal(t, "Command", command.PascalName())
 	assert.Equal(t, "command", command.CamelName())
 	assert.Equal(t, "commands.Command", command.FullName())
@@ -65,6 +65,14 @@ func TestBasic(t *testing.T) {
 	assert.NotNil(t, language)
 	assert.False(t, language.IsOptionalObject())
 	assert.Equal(t, 3, len(language.Entity.Enum()))
+
+	cancel := methods[0]
+	cancelResponse := cancel.Response
+	assert.Equal(t, "cancel", cancel.Name)
+	assert.Equal(t, "cancelResponse", cancelResponse.Name)
+	assert.Equal(t, 2, len(cancelResponse.fields))
+	assert.Equal(t, "content-type", cancelResponse.fields["content-type"].Name)
+	assert.Equal(t, "last-modified", cancelResponse.fields["last-modified"].Name)
 }
 
 // This test is used for debugging purposes

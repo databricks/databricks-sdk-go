@@ -23,6 +23,17 @@
         },
         "responses": {
           "200": {
+            "headers": {
+              "content-type": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "The content type of the response."
+              },
+              "last-modified": {
+                "schema": { "$ref": "#/components/schemas/ModificationTime" }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {}
@@ -432,6 +443,11 @@
           "sql"
         ],
         "type": "string"
+      },
+      "ModificationTime": {
+        "description": "Last modification time of given file in milliseconds since unix epoch.",
+        "type": "integer",
+        "format": "int64"
       },
       "ResultType": {
         "enum": [

@@ -62,6 +62,7 @@ func (f *{{.PascalName}}) Type() string {
 {{- define "field-tag" -}}
 	{{if .IsJson}}json:"{{.Name}}{{if not .Required}},omitempty{{end}}"{{else}}json:"-"{{end -}}
 	{{if .IsPath}} url:"-"{{end -}}
+	{{if .IsHeader}} url:"-" header:"{{.Name}}{{if not .Required}},omitempty{{end}}"{{end -}}
 	{{if .IsQuery}} url:"{{.Name}}{{if not .Required}},omitempty{{end}}"{{end -}}
 {{- end -}}
 
