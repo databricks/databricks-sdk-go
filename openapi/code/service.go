@@ -13,6 +13,13 @@ var HIDDEN_HEADERS = map[string]struct{}{
 	"X-Databricks-GCP-SA-Access-Token": {},
 }
 
+// When adding a new type, implement it
+// in httpclient/response.go#injectHeaders
+var SUPPORTED_HEADER_TYPES = map[string]struct{}{
+	"string":  {},
+	"integer": {},
+}
+
 // Service represents specific Databricks API
 type Service struct {
 	Named
@@ -325,7 +332,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	return request, mimeType, bodyField
 }
 
-func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeType, *Field, Named) {
+func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeType, *Field, Named, error) {
 	body := op.SuccessResponseBody(svc.Package.Components)
 	schema, mimeType := svc.getBaseSchemaAndMimeType(body)
 	name := op.Name()
@@ -360,12 +367,21 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 		svc.removeFromEmptyList(response)
 	}
 
+	// We only support certain types of headers. Fail at build time if an unsupported type is found.
+	// We don't check this before because we need to ensure all referenced schemas have been defined.
+	if op.Responses["200"] != nil {
+		err := svc.validateHeaders(op.Responses["200"].Headers)
+		if err != nil {
+			return nil, "", nil, Named{}, err
+		}
+	}
+
 	var emptyResponse Named
 	if response != nil && response.IsEmpty {
 		emptyResponse = response.Named
 		response = nil
 	}
-	return response, mimeType, bodyField, emptyResponse
+	return response, mimeType, bodyField, emptyResponse, nil
 }
 
 func (svc *Service) removeFromEmptyList(response *Entity) {
@@ -378,14 +394,30 @@ func (svc *Service) removeFromEmptyList(response *Entity) {
 	}
 }
 
-func (svc *Service) addHeaderParams(request *Entity, op *openapi.Operation, headers map[string]*openapi.Parameter) {
+// ResponseHeaders are a map[string]*openapi.Parameter. The name is the key. This function converts
+// the map to a slice of openapi.Parameter.
+func (svc *Service) convertResponseHeaders(headers map[string]*openapi.Parameter) []openapi.Parameter {
 	headersList := make([]openapi.Parameter, 0, len(headers))
 	for name, header := range headers {
 		header.Name = name
 		header.In = "header"
 		headersList = append(headersList, *header)
 	}
-	svc.addParams(request, op, headersList, true)
+	return headersList
+}
+
+func (svc *Service) validateHeaders(headers map[string]*openapi.Parameter) error {
+	for _, header := range svc.convertResponseHeaders(headers) {
+		param := *svc.Package.Components.Schemas.Resolve(header.Schema)
+		if _, ok := SUPPORTED_HEADER_TYPES[param.Type]; !ok {
+			return fmt.Errorf("unsupported header type %q", param.Type)
+		}
+	}
+	return nil
+}
+
+func (svc *Service) addHeaderParams(request *Entity, op *openapi.Operation, headers map[string]*openapi.Parameter) {
+	svc.addParams(request, op, svc.convertResponseHeaders(headers), true)
 }
 
 func (svc *Service) paramPath(path string, request *Entity, params []openapi.Parameter) (parts []PathPart) {
@@ -434,10 +466,13 @@ func (svc *Service) getPathStyle(op *openapi.Operation) openapi.PathStyle {
 	return openapi.PathStyleRest
 }
 
-func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) *Method {
+func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) (*Method, error) {
 	methodName := op.Name()
 	request, reqMimeType, reqBodyField := svc.newRequest(params, op)
-	response, respMimeType, respBodyField, emptyResponse := svc.newResponse(op)
+	response, respMimeType, respBodyField, emptyResponse, err := svc.newResponse(op)
+	if err != nil {
+		return nil, err
+	}
 	requestStyle := svc.getPathStyle(op)
 	if requestStyle == openapi.PathStyleRpc {
 		methodName = filepath.Base(path)
@@ -497,7 +532,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		Operation:           op,
 		pagination:          op.Pagination,
 		shortcut:            op.Shortcut,
-	}
+	}, nil
 }
 
 func (svc *Service) HasWaits() bool {

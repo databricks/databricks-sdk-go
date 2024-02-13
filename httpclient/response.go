@@ -136,8 +136,7 @@ func injectHeaders(response any, body *common.ResponseWrapper) error {
 			}
 			value.Field(i).Set(reflect.ValueOf(intValue))
 		default:
-			// Don't fail the request if we can't inject a header for backwards compatibility.
-			//return fmt.Errorf("unsupported header type %s for field %s", field.Type.Kind(), field.Name)
+			// Do not fail the request if the header is not supported to avoid breaking changes.
 			logger.Warnf(context.Background(), "unsupported header type %s for field %s", field.Type.Kind(), field.Name)
 		}
 

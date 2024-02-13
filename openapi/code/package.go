@@ -370,6 +370,7 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 					if param == nil {
 						return nil
 					}
+					// We don't support headers in requests.
 					if param.In == "header" {
 						continue
 					}
@@ -389,7 +390,10 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 					seenParams[param.Name] = true
 				}
 			}
-			method := svc.newMethod(verb, prefix, params, op)
+			method, err := svc.newMethod(verb, prefix, params, op)
+			if err != nil {
+				return err
+			}
 			svc.methods[method.Name] = method
 		}
 	}
