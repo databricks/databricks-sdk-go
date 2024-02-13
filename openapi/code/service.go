@@ -13,8 +13,8 @@ var HIDDEN_HEADERS = map[string]struct{}{
 	"X-Databricks-GCP-SA-Access-Token": {},
 }
 
-// When adding a new type, implement it
-// in httpclient/response.go#injectHeaders
+// When adding a new type, implement it in all SDKs
+// GO: httpclient/response.go#injectHeaders
 var SUPPORTED_HEADER_TYPES = map[string]struct{}{
 	"string":  {},
 	"integer": {},
