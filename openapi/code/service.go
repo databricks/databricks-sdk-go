@@ -357,7 +357,7 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 	if response.HasHeaderField() {
 		response.IsEmpty = false
 		svc.Package.define(response)
-		svc.removeFromEmtyList(response)
+		svc.removeFromEmptyList(response)
 	}
 
 	var emptyResponse Named
@@ -368,7 +368,7 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 	return response, mimeType, bodyField, emptyResponse
 }
 
-func (svc *Service) removeFromEmtyList(response *Entity) {
+func (svc *Service) removeFromEmptyList(response *Entity) {
 	list := svc.Package.emptyTypes
 	for i, t := range list {
 		if t.Name == response.Name {

@@ -46,7 +46,10 @@ func WithResponseUnmarshal(response any) DoOption {
 			if response == nil {
 				return nil
 			}
-			injectHeaders(response, body)
+			err := injectHeaders(response, body)
+			if err != nil {
+				return err
+			}
 			// If the field contains a "Content" field of type bytes.Buffer, write the body over there and return.
 			if field, ok := findContentsField(response, body); ok {
 				// If so, set the value
@@ -92,7 +95,7 @@ func findContentsField(response any, body *common.ResponseWrapper) (*reflect.Val
 		return nil, false
 	}
 
-	// Check if there is a "Contents" of typo io.ReadCloser
+	// Check if there is a "Contents" of type io.ReadCloser
 	// This is by internal convention with the teams.
 	ioType := reflect.TypeOf((*io.ReadCloser)(nil)).Elem()
 	contentField := value.FieldByName("Contents")
@@ -134,6 +137,7 @@ func injectHeaders(response any, body *common.ResponseWrapper) error {
 			value.Field(i).Set(reflect.ValueOf(intValue))
 		default:
 			// Don't fail the request if we can't inject a header for backwards compatibility.
+			//return fmt.Errorf("unsupported header type %s for field %s", field.Type.Kind(), field.Name)
 			logger.Warnf(context.Background(), "unsupported header type %s for field %s", field.Type.Kind(), field.Name)
 		}
 
