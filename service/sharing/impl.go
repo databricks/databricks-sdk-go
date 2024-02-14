@@ -28,7 +28,7 @@ func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoom) (*
 }
 
 func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -37,7 +37,7 @@ func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequ
 
 func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (*CleanRoomInfo, error) {
 	var cleanRoomInfo CleanRoomInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cleanRoomInfo)
@@ -55,7 +55,7 @@ func (a *cleanRoomsImpl) List(ctx context.Context, request ListCleanRoomsRequest
 
 func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoom) (*CleanRoomInfo, error) {
 	var cleanRoomInfo CleanRoomInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

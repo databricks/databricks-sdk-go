@@ -1231,7 +1231,7 @@ func (s DeleteCatalogRequest) MarshalJSON() ([]byte, error) {
 // Delete a connection
 type DeleteConnectionRequest struct {
 	// The name of the connection to be deleted.
-	NameArg string `json:"-" url:"-"`
+	Name string `json:"-" url:"-"`
 }
 
 // Delete an external location
@@ -1355,7 +1355,7 @@ type DeleteTableRequest struct {
 // Delete a Volume
 type DeleteVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
-	FullNameArg string `json:"-" url:"-"`
+	Name string `json:"-" url:"-"`
 }
 
 // Properties pertaining to the current state of the delta table as given by the
@@ -1997,7 +1997,7 @@ type GetCatalogRequest struct {
 // Get a connection
 type GetConnectionRequest struct {
 	// Name of the connection.
-	NameArg string `json:"-" url:"-"`
+	Name string `json:"-" url:"-"`
 }
 
 // Get effective permissions
@@ -2654,12 +2654,53 @@ func (s ListTablesResponse) MarshalJSON() ([]byte, error) {
 type ListVolumesRequest struct {
 	// The identifier of the catalog
 	CatalogName string `json:"-" url:"catalog_name"`
+	// Maximum number of volumes to return (page length).
+	//
+	// If not set, the page length is set to a server configured value (10000,
+	// as of 1/29/2024). - when set to a value greater than 0, the page length
+	// is the minimum of this value and a server configured value (10000, as of
+	// 1/29/2024); - when set to 0, the page length is set to a server
+	// configured value (10000, as of 1/29/2024) (recommended); - when set to a
+	// value less than 0, an invalid parameter error is returned;
+	//
+	// Note: this parameter controls only the maximum number of volumes to
+	// return. The actual number of volumes returned in a page may be smaller
+	// than this value, including 0, even if there are more pages.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque token returned by a previous request. It must be included in the
+	// request to retrieve the next page of results (pagination).
+	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The identifier of the schema
 	SchemaName string `json:"-" url:"schema_name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListVolumesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListVolumesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListVolumesResponseContent struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request to retrieve the next page of results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
 	Volumes []VolumeInfo `json:"volumes,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListVolumesResponseContent) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListVolumesResponseContent) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The artifact pattern matching type
@@ -3441,7 +3482,7 @@ func (f *ProvisioningInfoState) Type() string {
 // Get a Volume
 type ReadVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
-	FullNameArg string `json:"-" url:"-"`
+	Name string `json:"-" url:"-"`
 }
 
 // Registered model alias.
@@ -3991,7 +4032,7 @@ func (s UpdateCatalog) MarshalJSON() ([]byte, error) {
 
 type UpdateConnection struct {
 	// Name of the connection.
-	NameArg string `json:"-" url:"-"`
+	Name string `json:"-" url:"-"`
 	// New name for the connection.
 	NewName string `json:"new_name,omitempty"`
 	// A map of key-value properties attached to the securable.
@@ -4324,7 +4365,7 @@ type UpdateVolumeRequestContent struct {
 	// The comment attached to the volume
 	Comment string `json:"comment,omitempty"`
 	// The three-level (fully qualified) name of the volume
-	FullNameArg string `json:"-" url:"-"`
+	Name string `json:"-" url:"-"`
 	// New name for the volume.
 	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the volume

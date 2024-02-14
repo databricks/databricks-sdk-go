@@ -1118,7 +1118,7 @@ type VolumesService interface {
 
 	// List Volumes.
 	//
-	// Gets an array of all volumes for the current metastore under the parent
+	// Gets an array of volumes for the current metastore under the parent
 	// catalog and schema.
 	//
 	// The returned volumes are filtered based on the privileges of the calling
@@ -1132,7 +1132,7 @@ type VolumesService interface {
 	// There is no guarantee of a specific ordering of the elements in the
 	// array.
 	//
-	// Use ListAll() to get all VolumeInfo instances
+	// Use ListAll() to get all VolumeInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListVolumesRequest) (*ListVolumesResponseContent, error)
 
 	// Get a Volume.

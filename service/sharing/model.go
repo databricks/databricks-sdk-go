@@ -432,7 +432,7 @@ func (s CreateShare) MarshalJSON() ([]byte, error) {
 // Delete a clean room
 type DeleteCleanRoomRequest struct {
 	// The name of the clean room.
-	NameArg string `json:"-" url:"-"`
+	Name string `json:"-" url:"-"`
 }
 
 // Delete a provider
@@ -464,7 +464,7 @@ type GetCleanRoomRequest struct {
 	// Whether to include remote details (central) on the clean room.
 	IncludeRemoteDetails bool `json:"-" url:"include_remote_details,omitempty"`
 	// The name of the clean room.
-	NameArg string `json:"-" url:"-"`
+	Name string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1222,7 +1222,7 @@ type UpdateCleanRoom struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// The name of the clean room.
-	NameArg string `json:"-" url:"-"`
+	Name string `json:"-" url:"-"`
 	// Username of current owner of clean room.
 	Owner string `json:"owner,omitempty"`
 

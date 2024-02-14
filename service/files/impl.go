@@ -5,7 +5,6 @@ package files
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -134,21 +133,27 @@ func (a *filesImpl) DeleteDirectory(ctx context.Context, request DeleteDirectory
 }
 
 func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
-	var downloadResponse io.ReadCloser
+	var downloadResponse DownloadResponse
 	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/octet-stream"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &downloadResponse)
-	return &DownloadResponse{Contents: downloadResponse}, err
+	return &downloadResponse, err
 }
 
-func (a *filesImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error) {
-	var fileInfo FileInfo
-	path := "/api/2.0/fs/get-status"
+func (a *filesImpl) GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error {
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", request.DirectoryPath)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &fileInfo)
-	return &fileInfo, err
+	err := a.client.Do(ctx, http.MethodHead, path, headers, request, nil)
+	return err
+}
+
+func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error) {
+	var getMetadataResponse GetMetadataResponse
+	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodHead, path, headers, request, &getMetadataResponse)
+	return &getMetadataResponse, err
 }
 
 func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {

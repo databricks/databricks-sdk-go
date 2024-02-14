@@ -286,7 +286,6 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -1930,6 +1929,28 @@ type ListWarehousesResponse struct {
 	Warehouses []EndpointInfo `json:"warehouses,omitempty"`
 }
 
+// If specified, allows multiple values to be selected for this parameter. Only
+// applies to dropdown list and query-based dropdown list parameters.
+type MultiValuesOptions struct {
+	// Character that prefixes each selected parameter value.
+	Prefix string `json:"prefix,omitempty"`
+	// Character that separates each selected parameter value. Defaults to a
+	// comma.
+	Separator string `json:"separator,omitempty"`
+	// Character that suffixes each selected parameter value.
+	Suffix string `json:"suffix,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MultiValuesOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MultiValuesOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // A singular noun object type.
 type ObjectType string
 
@@ -2045,9 +2066,18 @@ func (f *OwnableObjectType) Type() string {
 }
 
 type Parameter struct {
+	// List of valid parameter values, newline delimited. Only applies for
+	// dropdown list parameters.
+	EnumOptions string `json:"enumOptions,omitempty"`
+	// If specified, allows multiple values to be selected for this parameter.
+	// Only applies to dropdown list and query-based dropdown list parameters.
+	MultiValuesOptions *MultiValuesOptions `json:"multiValuesOptions,omitempty"`
 	// The literal parameter marker that appears between double curly braces in
 	// the query text.
 	Name string `json:"name,omitempty"`
+	// The UUID of the query that provides the parameter values. Only applies
+	// for query-based dropdown list parameters.
+	QueryId string `json:"queryId,omitempty"`
 	// The text displayed in a parameter picking widget.
 	Title string `json:"title,omitempty"`
 	// Parameters can have several different types.
@@ -2071,7 +2101,11 @@ type ParameterType string
 
 const ParameterTypeDatetime ParameterType = `datetime`
 
+const ParameterTypeEnum ParameterType = `enum`
+
 const ParameterTypeNumber ParameterType = `number`
+
+const ParameterTypeQuery ParameterType = `query`
 
 const ParameterTypeText ParameterType = `text`
 
@@ -2083,11 +2117,11 @@ func (f *ParameterType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ParameterType) Set(v string) error {
 	switch v {
-	case `datetime`, `number`, `text`:
+	case `datetime`, `enum`, `number`, `query`, `text`:
 		*f = ParameterType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "datetime", "number", "text"`, v)
+		return fmt.Errorf(`value "%s" is not one of "datetime", "enum", "number", "query", "text"`, v)
 	}
 }
 
@@ -3459,7 +3493,7 @@ type Visualization struct {
 	// UI.
 	Description string `json:"description,omitempty"`
 	// The UUID for this visualization.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 	// The name of the visualization that appears on dashboards and the query
 	// screen.
 	Name string `json:"name,omitempty"`

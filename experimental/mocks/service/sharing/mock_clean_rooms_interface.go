@@ -130,17 +130,17 @@ func (_c *MockCleanRoomsInterface_Delete_Call) RunAndReturn(run func(context.Con
 	return _c
 }
 
-// DeleteByNameArg provides a mock function with given fields: ctx, nameArg
-func (_m *MockCleanRoomsInterface) DeleteByNameArg(ctx context.Context, nameArg string) error {
-	ret := _m.Called(ctx, nameArg)
+// DeleteByName provides a mock function with given fields: ctx, name
+func (_m *MockCleanRoomsInterface) DeleteByName(ctx context.Context, name string) error {
+	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteByNameArg")
+		panic("no return value specified for DeleteByName")
 	}
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
-		r0 = rf(ctx, nameArg)
+		r0 = rf(ctx, name)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -148,31 +148,31 @@ func (_m *MockCleanRoomsInterface) DeleteByNameArg(ctx context.Context, nameArg 
 	return r0
 }
 
-// MockCleanRoomsInterface_DeleteByNameArg_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByNameArg'
-type MockCleanRoomsInterface_DeleteByNameArg_Call struct {
+// MockCleanRoomsInterface_DeleteByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByName'
+type MockCleanRoomsInterface_DeleteByName_Call struct {
 	*mock.Call
 }
 
-// DeleteByNameArg is a helper method to define mock.On call
+// DeleteByName is a helper method to define mock.On call
 //   - ctx context.Context
-//   - nameArg string
-func (_e *MockCleanRoomsInterface_Expecter) DeleteByNameArg(ctx interface{}, nameArg interface{}) *MockCleanRoomsInterface_DeleteByNameArg_Call {
-	return &MockCleanRoomsInterface_DeleteByNameArg_Call{Call: _e.mock.On("DeleteByNameArg", ctx, nameArg)}
+//   - name string
+func (_e *MockCleanRoomsInterface_Expecter) DeleteByName(ctx interface{}, name interface{}) *MockCleanRoomsInterface_DeleteByName_Call {
+	return &MockCleanRoomsInterface_DeleteByName_Call{Call: _e.mock.On("DeleteByName", ctx, name)}
 }
 
-func (_c *MockCleanRoomsInterface_DeleteByNameArg_Call) Run(run func(ctx context.Context, nameArg string)) *MockCleanRoomsInterface_DeleteByNameArg_Call {
+func (_c *MockCleanRoomsInterface_DeleteByName_Call) Run(run func(ctx context.Context, name string)) *MockCleanRoomsInterface_DeleteByName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *MockCleanRoomsInterface_DeleteByNameArg_Call) Return(_a0 error) *MockCleanRoomsInterface_DeleteByNameArg_Call {
+func (_c *MockCleanRoomsInterface_DeleteByName_Call) Return(_a0 error) *MockCleanRoomsInterface_DeleteByName_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockCleanRoomsInterface_DeleteByNameArg_Call) RunAndReturn(run func(context.Context, string) error) *MockCleanRoomsInterface_DeleteByNameArg_Call {
+func (_c *MockCleanRoomsInterface_DeleteByName_Call) RunAndReturn(run func(context.Context, string) error) *MockCleanRoomsInterface_DeleteByName_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -236,21 +236,21 @@ func (_c *MockCleanRoomsInterface_Get_Call) RunAndReturn(run func(context.Contex
 	return _c
 }
 
-// GetByNameArg provides a mock function with given fields: ctx, nameArg
-func (_m *MockCleanRoomsInterface) GetByNameArg(ctx context.Context, nameArg string) (*sharing.CleanRoomInfo, error) {
-	ret := _m.Called(ctx, nameArg)
+// GetByName provides a mock function with given fields: ctx, name
+func (_m *MockCleanRoomsInterface) GetByName(ctx context.Context, name string) (*sharing.CleanRoomInfo, error) {
+	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetByNameArg")
+		panic("no return value specified for GetByName")
 	}
 
 	var r0 *sharing.CleanRoomInfo
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string) (*sharing.CleanRoomInfo, error)); ok {
-		return rf(ctx, nameArg)
+		return rf(ctx, name)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string) *sharing.CleanRoomInfo); ok {
-		r0 = rf(ctx, nameArg)
+		r0 = rf(ctx, name)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*sharing.CleanRoomInfo)
@@ -258,7 +258,7 @@ func (_m *MockCleanRoomsInterface) GetByNameArg(ctx context.Context, nameArg str
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, nameArg)
+		r1 = rf(ctx, name)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -266,31 +266,31 @@ func (_m *MockCleanRoomsInterface) GetByNameArg(ctx context.Context, nameArg str
 	return r0, r1
 }
 
-// MockCleanRoomsInterface_GetByNameArg_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByNameArg'
-type MockCleanRoomsInterface_GetByNameArg_Call struct {
+// MockCleanRoomsInterface_GetByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByName'
+type MockCleanRoomsInterface_GetByName_Call struct {
 	*mock.Call
 }
 
-// GetByNameArg is a helper method to define mock.On call
+// GetByName is a helper method to define mock.On call
 //   - ctx context.Context
-//   - nameArg string
-func (_e *MockCleanRoomsInterface_Expecter) GetByNameArg(ctx interface{}, nameArg interface{}) *MockCleanRoomsInterface_GetByNameArg_Call {
-	return &MockCleanRoomsInterface_GetByNameArg_Call{Call: _e.mock.On("GetByNameArg", ctx, nameArg)}
+//   - name string
+func (_e *MockCleanRoomsInterface_Expecter) GetByName(ctx interface{}, name interface{}) *MockCleanRoomsInterface_GetByName_Call {
+	return &MockCleanRoomsInterface_GetByName_Call{Call: _e.mock.On("GetByName", ctx, name)}
 }
 
-func (_c *MockCleanRoomsInterface_GetByNameArg_Call) Run(run func(ctx context.Context, nameArg string)) *MockCleanRoomsInterface_GetByNameArg_Call {
+func (_c *MockCleanRoomsInterface_GetByName_Call) Run(run func(ctx context.Context, name string)) *MockCleanRoomsInterface_GetByName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *MockCleanRoomsInterface_GetByNameArg_Call) Return(_a0 *sharing.CleanRoomInfo, _a1 error) *MockCleanRoomsInterface_GetByNameArg_Call {
+func (_c *MockCleanRoomsInterface_GetByName_Call) Return(_a0 *sharing.CleanRoomInfo, _a1 error) *MockCleanRoomsInterface_GetByName_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockCleanRoomsInterface_GetByNameArg_Call) RunAndReturn(run func(context.Context, string) (*sharing.CleanRoomInfo, error)) *MockCleanRoomsInterface_GetByNameArg_Call {
+func (_c *MockCleanRoomsInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*sharing.CleanRoomInfo, error)) *MockCleanRoomsInterface_GetByName_Call {
 	_c.Call.Return(run)
 	return _c
 }

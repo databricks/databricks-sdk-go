@@ -49,7 +49,7 @@ func TestUcAccFilesAPI(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		w.Volumes.Delete(ctx, catalog.DeleteVolumeRequest{
-			FullNameArg: volume.FullName,
+			Name: volume.FullName,
 		})
 	})
 
@@ -59,12 +59,11 @@ func TestUcAccFilesAPI(t *testing.T) {
 		Contents: io.NopCloser(strings.NewReader("abcd")),
 	})
 	require.NoError(t, err)
-	// TODO: Enable this after SDK Generation. Method name may differ.
-	// fileHead, err := w.Files.GetStatusHead(ctx, files.GetStatusHeadRequest{
-	// 	FilePath: filePath,
-	// })
-	// require.NoError(t, err)
-	// require.Equal(t, fileHead.ContentType, "application/octet-stream")
+	fileHead, err := w.Files.GetMetadata(ctx, files.GetMetadataRequest{
+		FilePath: filePath,
+	})
+	require.NoError(t, err)
+	require.Equal(t, fileHead.ContentType, "application/octet-stream")
 	t.Cleanup(func() {
 		err = w.Files.DeleteByFilePath(ctx, filePath)
 		assert.NoError(t, err)
