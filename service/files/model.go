@@ -147,6 +147,36 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Get directory metadata
+type GetDirectoryMetadataRequest struct {
+	// The absolute path of a directory.
+	DirectoryPath string `json:"-" url:"-"`
+}
+
+// Get file metadata
+type GetMetadataRequest struct {
+	// The absolute path of the file.
+	FilePath string `json:"-" url:"-"`
+}
+
+type GetMetadataResponse struct {
+	ContentLength int64 `json:"-" url:"-" header:"content-length,omitempty"`
+
+	ContentType string `json:"-" url:"-" header:"content-type,omitempty"`
+
+	LastModified string `json:"-" url:"-" header:"last-modified,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetMetadataResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetMetadataResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get the information of a file or directory
 type GetStatusRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS

@@ -39,7 +39,7 @@ type CleanRoomsInterface interface {
 	//
 	// Deletes a data object clean room from the metastore. The caller must be an
 	// owner of the clean room.
-	DeleteByNameArg(ctx context.Context, nameArg string) error
+	DeleteByName(ctx context.Context, name string) error
 
 	// Get a clean room.
 	//
@@ -51,7 +51,7 @@ type CleanRoomsInterface interface {
 	//
 	// Gets a data object clean room from the metastore. The caller must be a
 	// metastore admin or the owner of the clean room.
-	GetByNameArg(ctx context.Context, nameArg string) (*CleanRoomInfo, error)
+	GetByName(ctx context.Context, name string) (*CleanRoomInfo, error)
 
 	// List clean rooms.
 	//
@@ -145,9 +145,9 @@ func (a *CleanRoomsAPI) Delete(ctx context.Context, request DeleteCleanRoomReque
 //
 // Deletes a data object clean room from the metastore. The caller must be an
 // owner of the clean room.
-func (a *CleanRoomsAPI) DeleteByNameArg(ctx context.Context, nameArg string) error {
+func (a *CleanRoomsAPI) DeleteByName(ctx context.Context, name string) error {
 	return a.impl.Delete(ctx, DeleteCleanRoomRequest{
-		NameArg: nameArg,
+		Name: name,
 	})
 }
 
@@ -163,9 +163,9 @@ func (a *CleanRoomsAPI) Get(ctx context.Context, request GetCleanRoomRequest) (*
 //
 // Gets a data object clean room from the metastore. The caller must be a
 // metastore admin or the owner of the clean room.
-func (a *CleanRoomsAPI) GetByNameArg(ctx context.Context, nameArg string) (*CleanRoomInfo, error) {
+func (a *CleanRoomsAPI) GetByName(ctx context.Context, name string) (*CleanRoomInfo, error) {
 	return a.impl.Get(ctx, GetCleanRoomRequest{
-		NameArg: nameArg,
+		Name: name,
 	})
 }
 

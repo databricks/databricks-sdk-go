@@ -131,17 +131,17 @@ func (_c *MockVolumesInterface_Delete_Call) RunAndReturn(run func(context.Contex
 	return _c
 }
 
-// DeleteByFullNameArg provides a mock function with given fields: ctx, fullNameArg
-func (_m *MockVolumesInterface) DeleteByFullNameArg(ctx context.Context, fullNameArg string) error {
-	ret := _m.Called(ctx, fullNameArg)
+// DeleteByName provides a mock function with given fields: ctx, name
+func (_m *MockVolumesInterface) DeleteByName(ctx context.Context, name string) error {
+	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteByFullNameArg")
+		panic("no return value specified for DeleteByName")
 	}
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
-		r0 = rf(ctx, fullNameArg)
+		r0 = rf(ctx, name)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -149,31 +149,31 @@ func (_m *MockVolumesInterface) DeleteByFullNameArg(ctx context.Context, fullNam
 	return r0
 }
 
-// MockVolumesInterface_DeleteByFullNameArg_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByFullNameArg'
-type MockVolumesInterface_DeleteByFullNameArg_Call struct {
+// MockVolumesInterface_DeleteByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByName'
+type MockVolumesInterface_DeleteByName_Call struct {
 	*mock.Call
 }
 
-// DeleteByFullNameArg is a helper method to define mock.On call
+// DeleteByName is a helper method to define mock.On call
 //   - ctx context.Context
-//   - fullNameArg string
-func (_e *MockVolumesInterface_Expecter) DeleteByFullNameArg(ctx interface{}, fullNameArg interface{}) *MockVolumesInterface_DeleteByFullNameArg_Call {
-	return &MockVolumesInterface_DeleteByFullNameArg_Call{Call: _e.mock.On("DeleteByFullNameArg", ctx, fullNameArg)}
+//   - name string
+func (_e *MockVolumesInterface_Expecter) DeleteByName(ctx interface{}, name interface{}) *MockVolumesInterface_DeleteByName_Call {
+	return &MockVolumesInterface_DeleteByName_Call{Call: _e.mock.On("DeleteByName", ctx, name)}
 }
 
-func (_c *MockVolumesInterface_DeleteByFullNameArg_Call) Run(run func(ctx context.Context, fullNameArg string)) *MockVolumesInterface_DeleteByFullNameArg_Call {
+func (_c *MockVolumesInterface_DeleteByName_Call) Run(run func(ctx context.Context, name string)) *MockVolumesInterface_DeleteByName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *MockVolumesInterface_DeleteByFullNameArg_Call) Return(_a0 error) *MockVolumesInterface_DeleteByFullNameArg_Call {
+func (_c *MockVolumesInterface_DeleteByName_Call) Return(_a0 error) *MockVolumesInterface_DeleteByName_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockVolumesInterface_DeleteByFullNameArg_Call) RunAndReturn(run func(context.Context, string) error) *MockVolumesInterface_DeleteByFullNameArg_Call {
+func (_c *MockVolumesInterface_DeleteByName_Call) RunAndReturn(run func(context.Context, string) error) *MockVolumesInterface_DeleteByName_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -451,21 +451,21 @@ func (_c *MockVolumesInterface_Read_Call) RunAndReturn(run func(context.Context,
 	return _c
 }
 
-// ReadByFullNameArg provides a mock function with given fields: ctx, fullNameArg
-func (_m *MockVolumesInterface) ReadByFullNameArg(ctx context.Context, fullNameArg string) (*catalog.VolumeInfo, error) {
-	ret := _m.Called(ctx, fullNameArg)
+// ReadByName provides a mock function with given fields: ctx, name
+func (_m *MockVolumesInterface) ReadByName(ctx context.Context, name string) (*catalog.VolumeInfo, error) {
+	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
-		panic("no return value specified for ReadByFullNameArg")
+		panic("no return value specified for ReadByName")
 	}
 
 	var r0 *catalog.VolumeInfo
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.VolumeInfo, error)); ok {
-		return rf(ctx, fullNameArg)
+		return rf(ctx, name)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.VolumeInfo); ok {
-		r0 = rf(ctx, fullNameArg)
+		r0 = rf(ctx, name)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*catalog.VolumeInfo)
@@ -473,7 +473,7 @@ func (_m *MockVolumesInterface) ReadByFullNameArg(ctx context.Context, fullNameA
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, fullNameArg)
+		r1 = rf(ctx, name)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -481,31 +481,31 @@ func (_m *MockVolumesInterface) ReadByFullNameArg(ctx context.Context, fullNameA
 	return r0, r1
 }
 
-// MockVolumesInterface_ReadByFullNameArg_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadByFullNameArg'
-type MockVolumesInterface_ReadByFullNameArg_Call struct {
+// MockVolumesInterface_ReadByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadByName'
+type MockVolumesInterface_ReadByName_Call struct {
 	*mock.Call
 }
 
-// ReadByFullNameArg is a helper method to define mock.On call
+// ReadByName is a helper method to define mock.On call
 //   - ctx context.Context
-//   - fullNameArg string
-func (_e *MockVolumesInterface_Expecter) ReadByFullNameArg(ctx interface{}, fullNameArg interface{}) *MockVolumesInterface_ReadByFullNameArg_Call {
-	return &MockVolumesInterface_ReadByFullNameArg_Call{Call: _e.mock.On("ReadByFullNameArg", ctx, fullNameArg)}
+//   - name string
+func (_e *MockVolumesInterface_Expecter) ReadByName(ctx interface{}, name interface{}) *MockVolumesInterface_ReadByName_Call {
+	return &MockVolumesInterface_ReadByName_Call{Call: _e.mock.On("ReadByName", ctx, name)}
 }
 
-func (_c *MockVolumesInterface_ReadByFullNameArg_Call) Run(run func(ctx context.Context, fullNameArg string)) *MockVolumesInterface_ReadByFullNameArg_Call {
+func (_c *MockVolumesInterface_ReadByName_Call) Run(run func(ctx context.Context, name string)) *MockVolumesInterface_ReadByName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *MockVolumesInterface_ReadByFullNameArg_Call) Return(_a0 *catalog.VolumeInfo, _a1 error) *MockVolumesInterface_ReadByFullNameArg_Call {
+func (_c *MockVolumesInterface_ReadByName_Call) Return(_a0 *catalog.VolumeInfo, _a1 error) *MockVolumesInterface_ReadByName_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockVolumesInterface_ReadByFullNameArg_Call) RunAndReturn(run func(context.Context, string) (*catalog.VolumeInfo, error)) *MockVolumesInterface_ReadByFullNameArg_Call {
+func (_c *MockVolumesInterface_ReadByName_Call) RunAndReturn(run func(context.Context, string) (*catalog.VolumeInfo, error)) *MockVolumesInterface_ReadByName_Call {
 	_c.Call.Return(run)
 	return _c
 }

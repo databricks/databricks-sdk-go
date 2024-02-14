@@ -189,17 +189,17 @@ func (_c *MockConnectionsInterface_Delete_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
-// DeleteByNameArg provides a mock function with given fields: ctx, nameArg
-func (_m *MockConnectionsInterface) DeleteByNameArg(ctx context.Context, nameArg string) error {
-	ret := _m.Called(ctx, nameArg)
+// DeleteByName provides a mock function with given fields: ctx, name
+func (_m *MockConnectionsInterface) DeleteByName(ctx context.Context, name string) error {
+	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteByNameArg")
+		panic("no return value specified for DeleteByName")
 	}
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
-		r0 = rf(ctx, nameArg)
+		r0 = rf(ctx, name)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -207,31 +207,31 @@ func (_m *MockConnectionsInterface) DeleteByNameArg(ctx context.Context, nameArg
 	return r0
 }
 
-// MockConnectionsInterface_DeleteByNameArg_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByNameArg'
-type MockConnectionsInterface_DeleteByNameArg_Call struct {
+// MockConnectionsInterface_DeleteByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByName'
+type MockConnectionsInterface_DeleteByName_Call struct {
 	*mock.Call
 }
 
-// DeleteByNameArg is a helper method to define mock.On call
+// DeleteByName is a helper method to define mock.On call
 //   - ctx context.Context
-//   - nameArg string
-func (_e *MockConnectionsInterface_Expecter) DeleteByNameArg(ctx interface{}, nameArg interface{}) *MockConnectionsInterface_DeleteByNameArg_Call {
-	return &MockConnectionsInterface_DeleteByNameArg_Call{Call: _e.mock.On("DeleteByNameArg", ctx, nameArg)}
+//   - name string
+func (_e *MockConnectionsInterface_Expecter) DeleteByName(ctx interface{}, name interface{}) *MockConnectionsInterface_DeleteByName_Call {
+	return &MockConnectionsInterface_DeleteByName_Call{Call: _e.mock.On("DeleteByName", ctx, name)}
 }
 
-func (_c *MockConnectionsInterface_DeleteByNameArg_Call) Run(run func(ctx context.Context, nameArg string)) *MockConnectionsInterface_DeleteByNameArg_Call {
+func (_c *MockConnectionsInterface_DeleteByName_Call) Run(run func(ctx context.Context, name string)) *MockConnectionsInterface_DeleteByName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *MockConnectionsInterface_DeleteByNameArg_Call) Return(_a0 error) *MockConnectionsInterface_DeleteByNameArg_Call {
+func (_c *MockConnectionsInterface_DeleteByName_Call) Return(_a0 error) *MockConnectionsInterface_DeleteByName_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockConnectionsInterface_DeleteByNameArg_Call) RunAndReturn(run func(context.Context, string) error) *MockConnectionsInterface_DeleteByNameArg_Call {
+func (_c *MockConnectionsInterface_DeleteByName_Call) RunAndReturn(run func(context.Context, string) error) *MockConnectionsInterface_DeleteByName_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -350,65 +350,6 @@ func (_c *MockConnectionsInterface_GetByName_Call) Return(_a0 *catalog.Connectio
 }
 
 func (_c *MockConnectionsInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*catalog.ConnectionInfo, error)) *MockConnectionsInterface_GetByName_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetByNameArg provides a mock function with given fields: ctx, nameArg
-func (_m *MockConnectionsInterface) GetByNameArg(ctx context.Context, nameArg string) (*catalog.ConnectionInfo, error) {
-	ret := _m.Called(ctx, nameArg)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByNameArg")
-	}
-
-	var r0 *catalog.ConnectionInfo
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.ConnectionInfo, error)); ok {
-		return rf(ctx, nameArg)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.ConnectionInfo); ok {
-		r0 = rf(ctx, nameArg)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.ConnectionInfo)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, nameArg)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockConnectionsInterface_GetByNameArg_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByNameArg'
-type MockConnectionsInterface_GetByNameArg_Call struct {
-	*mock.Call
-}
-
-// GetByNameArg is a helper method to define mock.On call
-//   - ctx context.Context
-//   - nameArg string
-func (_e *MockConnectionsInterface_Expecter) GetByNameArg(ctx interface{}, nameArg interface{}) *MockConnectionsInterface_GetByNameArg_Call {
-	return &MockConnectionsInterface_GetByNameArg_Call{Call: _e.mock.On("GetByNameArg", ctx, nameArg)}
-}
-
-func (_c *MockConnectionsInterface_GetByNameArg_Call) Run(run func(ctx context.Context, nameArg string)) *MockConnectionsInterface_GetByNameArg_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockConnectionsInterface_GetByNameArg_Call) Return(_a0 *catalog.ConnectionInfo, _a1 error) *MockConnectionsInterface_GetByNameArg_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockConnectionsInterface_GetByNameArg_Call) RunAndReturn(run func(context.Context, string) (*catalog.ConnectionInfo, error)) *MockConnectionsInterface_GetByNameArg_Call {
 	_c.Call.Return(run)
 	return _c
 }

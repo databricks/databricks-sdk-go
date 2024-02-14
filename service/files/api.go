@@ -502,10 +502,27 @@ type FilesInterface interface {
 	// Downloads a file of up to 5 GiB.
 	DownloadByFilePath(ctx context.Context, filePath string) (*DownloadResponse, error)
 
-	// Get the metadata of a file.
+	// Get directory metadata.
 	//
-	// Returns the status of a file or directory.
-	GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error)
+	// Get the metadata of a directory. This endpoint does not return a response
+	// body.
+	GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error
+
+	// Get directory metadata.
+	//
+	// Get the metadata of a directory. This endpoint does not return a response
+	// body.
+	GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) error
+
+	// Get file metadata.
+	//
+	// Get the metadata of a file. This endpoint does not return a response body.
+	GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error)
+
+	// Get file metadata.
+	//
+	// Get the metadata of a file. This endpoint does not return a response body.
+	GetMetadataByFilePath(ctx context.Context, filePath string) (*GetMetadataResponse, error)
 
 	// List directory contents.
 	//
@@ -623,11 +640,38 @@ func (a *FilesAPI) DownloadByFilePath(ctx context.Context, filePath string) (*Do
 	})
 }
 
-// Get the metadata of a file.
+// Get directory metadata.
 //
-// Returns the status of a file or directory.
-func (a *FilesAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error) {
-	return a.impl.GetStatus(ctx, request)
+// Get the metadata of a directory. This endpoint does not return a response
+// body.
+func (a *FilesAPI) GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error {
+	return a.impl.GetDirectoryMetadata(ctx, request)
+}
+
+// Get directory metadata.
+//
+// Get the metadata of a directory. This endpoint does not return a response
+// body.
+func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) error {
+	return a.impl.GetDirectoryMetadata(ctx, GetDirectoryMetadataRequest{
+		DirectoryPath: directoryPath,
+	})
+}
+
+// Get file metadata.
+//
+// Get the metadata of a file. This endpoint does not return a response body.
+func (a *FilesAPI) GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error) {
+	return a.impl.GetMetadata(ctx, request)
+}
+
+// Get file metadata.
+//
+// Get the metadata of a file. This endpoint does not return a response body.
+func (a *FilesAPI) GetMetadataByFilePath(ctx context.Context, filePath string) (*GetMetadataResponse, error) {
+	return a.impl.GetMetadata(ctx, GetMetadataRequest{
+		FilePath: filePath,
+	})
 }
 
 // List directory contents.

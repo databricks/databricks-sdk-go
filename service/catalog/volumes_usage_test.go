@@ -94,7 +94,7 @@ func ExampleVolumesAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	err = w.Volumes.DeleteByFullNameArg(ctx, createdVolume.FullName)
+	err = w.Volumes.DeleteByName(ctx, createdVolume.FullName)
 	if err != nil {
 		panic(err)
 	}
@@ -209,7 +209,7 @@ func ExampleVolumesAPI_Read_volumes() {
 	}
 	logger.Infof(ctx, "found %v", createdVolume)
 
-	loadedVolume, err := w.Volumes.ReadByFullNameArg(ctx, createdVolume.FullName)
+	loadedVolume, err := w.Volumes.ReadByName(ctx, createdVolume.FullName)
 	if err != nil {
 		panic(err)
 	}
@@ -236,7 +236,7 @@ func ExampleVolumesAPI_Read_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	err = w.Volumes.DeleteByFullNameArg(ctx, createdVolume.FullName)
+	err = w.Volumes.DeleteByName(ctx, createdVolume.FullName)
 	if err != nil {
 		panic(err)
 	}
@@ -302,15 +302,15 @@ func ExampleVolumesAPI_Update_volumes() {
 	}
 	logger.Infof(ctx, "found %v", createdVolume)
 
-	loadedVolume, err := w.Volumes.ReadByFullNameArg(ctx, createdVolume.FullName)
+	loadedVolume, err := w.Volumes.ReadByName(ctx, createdVolume.FullName)
 	if err != nil {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", loadedVolume)
 
 	_, err = w.Volumes.Update(ctx, catalog.UpdateVolumeRequestContent{
-		FullNameArg: loadedVolume.FullName,
-		Comment:     "Updated volume comment",
+		Name:    loadedVolume.FullName,
+		Comment: "Updated volume comment",
 	})
 	if err != nil {
 		panic(err)
@@ -337,7 +337,7 @@ func ExampleVolumesAPI_Update_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	err = w.Volumes.DeleteByFullNameArg(ctx, createdVolume.FullName)
+	err = w.Volumes.DeleteByName(ctx, createdVolume.FullName)
 	if err != nil {
 		panic(err)
 	}

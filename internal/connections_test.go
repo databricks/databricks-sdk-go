@@ -25,12 +25,12 @@ func TestAccConnections(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := w.Connections.Delete(ctx, catalog.DeleteConnectionRequest{NameArg: connCreate.Name})
+		err := w.Connections.Delete(ctx, catalog.DeleteConnectionRequest{Name: connCreate.Name})
 		require.True(t, err == nil || apierr.IsMissing(err))
 	})
 
 	connUpdate, err := w.Connections.Update(ctx, catalog.UpdateConnection{
-		NameArg: connCreate.Name,
+		Name: connCreate.Name,
 		Options: map[string]string{
 			"host":                fmt.Sprintf("%s-fake-workspace.cloud.databricks.com", RandomName("go-sdk-connection-")),
 			"httpPath":            fmt.Sprintf("/sql/1.0/warehouses/%s", RandomName("go-sdk-connection-")),
@@ -39,7 +39,7 @@ func TestAccConnections(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	conn, err := w.Connections.Get(ctx, catalog.GetConnectionRequest{NameArg: connUpdate.Name})
+	conn, err := w.Connections.Get(ctx, catalog.GetConnectionRequest{Name: connUpdate.Name})
 	require.NoError(t, err)
 	assert.Equal(t, conn.Options, connUpdate.Options)
 

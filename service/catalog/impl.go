@@ -252,7 +252,7 @@ func (a *connectionsImpl) Create(ctx context.Context, request CreateConnection) 
 }
 
 func (a *connectionsImpl) Delete(ctx context.Context, request DeleteConnectionRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -261,7 +261,7 @@ func (a *connectionsImpl) Delete(ctx context.Context, request DeleteConnectionRe
 
 func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest) (*ConnectionInfo, error) {
 	var connectionInfo ConnectionInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &connectionInfo)
@@ -279,7 +279,7 @@ func (a *connectionsImpl) List(ctx context.Context) (*ListConnectionsResponse, e
 
 func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error) {
 	var connectionInfo ConnectionInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.NameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -947,7 +947,7 @@ func (a *volumesImpl) Create(ctx context.Context, request CreateVolumeRequestCon
 }
 
 func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.FullNameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.Name)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -964,7 +964,7 @@ func (a *volumesImpl) List(ctx context.Context, request ListVolumesRequest) (*Li
 
 func (a *volumesImpl) Read(ctx context.Context, request ReadVolumeRequest) (*VolumeInfo, error) {
 	var volumeInfo VolumeInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.FullNameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &volumeInfo)
@@ -973,7 +973,7 @@ func (a *volumesImpl) Read(ctx context.Context, request ReadVolumeRequest) (*Vol
 
 func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error) {
 	var volumeInfo VolumeInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.FullNameArg)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

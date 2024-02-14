@@ -162,10 +162,17 @@ type FilesService interface {
 	// Downloads a file of up to 5 GiB.
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 
-	// Get the metadata of a file.
+	// Get directory metadata.
 	//
-	// Returns the status of a file or directory.
-	GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error)
+	// Get the metadata of a directory. This endpoint does not return a response
+	// body.
+	GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error
+
+	// Get file metadata.
+	//
+	// Get the metadata of a file. This endpoint does not return a response
+	// body.
+	GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error)
 
 	// List directory contents.
 	//

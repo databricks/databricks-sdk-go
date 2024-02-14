@@ -145,9 +145,8 @@ type BaseRun struct {
 	// `RETRY`: Indicates a run that is triggered as a retry of a previously
 	// failed run. This occurs when you request to re-run the job in case of
 	// failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run
-	// Job task.
-	//
-	// * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival.
+	// Job task. * `FILE_ARRIVAL`: Indicates a run that is triggered by a file
+	// arrival. * `TABLE`: Indicates a run that is triggered by a table update.
 	Trigger TriggerType `json:"trigger,omitempty"`
 
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
@@ -238,6 +237,33 @@ func (s *ClusterSpec) UnmarshalJSON(b []byte) error {
 
 func (s ClusterSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type Condition string
+
+const ConditionAllUpdated Condition = `ALL_UPDATED`
+
+const ConditionAnyUpdated Condition = `ANY_UPDATED`
+
+// String representation for [fmt.Print]
+func (f *Condition) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *Condition) Set(v string) error {
+	switch v {
+	case `ALL_UPDATED`, `ANY_UPDATED`:
+		*f = Condition(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALL_UPDATED", "ANY_UPDATED"`, v)
+	}
+}
+
+// Type always returns Condition to satisfy [pflag.Value] interface
+func (f *Condition) Type() string {
+	return "Condition"
 }
 
 type ConditionTask struct {
@@ -413,10 +439,9 @@ type CreateJob struct {
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
-	// Trigger settings for the job. Can be used to trigger a run when new files
-	// arrive in an external location. The default behavior is that the job runs
-	// only when triggered by clicking “Run Now” in the Jobs UI or sending
-	// an API request to `runNow`.
+	// A configuration to trigger a run when certain conditions are met. The
+	// default behavior is that the job runs only when triggered by clicking
+	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
@@ -887,8 +912,6 @@ type Job struct {
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
-	// History of the file arrival trigger associated with the job.
-	TriggerHistory *TriggerHistory `json:"trigger_history,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1299,10 +1322,9 @@ type JobSettings struct {
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
-	// Trigger settings for the job. Can be used to trigger a run when new files
-	// arrive in an external location. The default behavior is that the job runs
-	// only when triggered by clicking “Run Now” in the Jobs UI or sending
-	// an API request to `runNow`.
+	// A configuration to trigger a run when certain conditions are met. The
+	// default behavior is that the job runs only when triggered by clicking
+	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
@@ -1683,8 +1705,8 @@ type NotebookTask struct {
 	// two parameters maps are merged. If the same key is specified in
 	// `base_parameters` and in `run-now`, the value from `run-now` is used.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
 	// If the notebook takes a parameter that is not specified in the job’s
 	// `base_parameters` or the `run-now` override parameters, the default value
@@ -1694,8 +1716,8 @@ type NotebookTask struct {
 	//
 	// The JSON representation of this field cannot exceed 1MB.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	BaseParameters map[string]string `json:"base_parameters,omitempty"`
 	// The path of the notebook to be run in the Databricks workspace or remote
 	// repository. For notebooks stored in the Databricks workspace, the path
@@ -1874,8 +1896,10 @@ type RepairRun struct {
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables](/jobs.html"#parameter-variables") to set
-	// parameters containing information about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
+	//
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	JarParams []string `json:"jar_params,omitempty"`
 	// Job-level parameters used in the run. for example `"param":
 	// "overriding_val"`
@@ -1894,15 +1918,15 @@ type RepairRun struct {
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
 	// The JSON representation of this field (for example
 	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
 	// 10,000 bytes.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -1917,8 +1941,8 @@ type RepairRun struct {
 	// representation of this field (for example `{"python_params":["john
 	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
 	// Important
 	//
@@ -1926,7 +1950,7 @@ type RepairRun struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	PythonParams []string `json:"python_params,omitempty"`
 	// If true, repair all failed tasks. Only one of `rerun_tasks` or
 	// `rerun_all_failed_tasks` can be used.
@@ -1947,8 +1971,8 @@ type RepairRun struct {
 	// The JSON representation of this field (for example
 	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
 	// Important
 	//
@@ -1956,7 +1980,7 @@ type RepairRun struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
@@ -2178,9 +2202,8 @@ type Run struct {
 	// `RETRY`: Indicates a run that is triggered as a retry of a previously
 	// failed run. This occurs when you request to re-run the job in case of
 	// failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run
-	// Job task.
-	//
-	// * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival.
+	// Job task. * `FILE_ARRIVAL`: Indicates a run that is triggered by a file
+	// arrival. * `TABLE`: Indicates a run that is triggered by a table update.
 	Trigger TriggerType `json:"trigger,omitempty"`
 
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
@@ -2448,8 +2471,10 @@ type RunNow struct {
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables](/jobs.html"#parameter-variables") to set
-	// parameters containing information about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
+	//
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	JarParams []string `json:"jar_params,omitempty"`
 	// The ID of the job to be executed
 	JobId int64 `json:"job_id"`
@@ -2466,15 +2491,15 @@ type RunNow struct {
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
 	// The JSON representation of this field (for example
 	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
 	// 10,000 bytes.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -2489,8 +2514,8 @@ type RunNow struct {
 	// representation of this field (for example `{"python_params":["john
 	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
 	// Important
 	//
@@ -2498,7 +2523,7 @@ type RunNow struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	PythonParams []string `json:"python_params,omitempty"`
 	// The queue settings of the run.
 	Queue *QueueSettings `json:"queue,omitempty"`
@@ -2510,8 +2535,8 @@ type RunNow struct {
 	// The JSON representation of this field (for example
 	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
 	// Important
 	//
@@ -2519,7 +2544,7 @@ type RunNow struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
@@ -2614,8 +2639,10 @@ type RunParameters struct {
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables](/jobs.html"#parameter-variables") to set
-	// parameters containing information about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
+	//
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	JarParams []string `json:"jar_params,omitempty"`
 	// Job-level parameters used in the run. for example `"param":
 	// "overriding_val"`
@@ -2630,15 +2657,15 @@ type RunParameters struct {
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
 	// The JSON representation of this field (for example
 	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
 	// 10,000 bytes.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -2653,8 +2680,8 @@ type RunParameters struct {
 	// representation of this field (for example `{"python_params":["john
 	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
 	// Important
 	//
@@ -2662,7 +2689,7 @@ type RunParameters struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
@@ -2672,8 +2699,8 @@ type RunParameters struct {
 	// The JSON representation of this field (for example
 	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
 	// Important
 	//
@@ -2681,7 +2708,7 @@ type RunParameters struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
@@ -3002,10 +3029,10 @@ type SparkJarTask struct {
 	MainClassName string `json:"main_class_name,omitempty"`
 	// Parameters passed to the main method.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	Parameters []string `json:"parameters,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -3022,10 +3049,10 @@ func (s SparkJarTask) MarshalJSON() ([]byte, error) {
 type SparkPythonTask struct {
 	// Command line parameters passed to the Python file.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	Parameters []string `json:"parameters,omitempty"`
 	// The Python file to be executed. Cloud file URIs (such as dbfs:/, s3:/,
 	// adls:/, gcs:/) and workspace paths are supported. For python files stored
@@ -3048,10 +3075,10 @@ type SparkPythonTask struct {
 type SparkSubmitTask struct {
 	// Command-line parameters passed to spark submit.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// Use [task parameter variables] such as `{{job.id}}` to pass context about
+	// job runs.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
 	Parameters []string `json:"parameters,omitempty"`
 }
 
@@ -3533,6 +3560,33 @@ func (s SubmitTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type TableTriggerConfiguration struct {
+	// The table(s) condition based on which to trigger a job run.
+	Condition Condition `json:"condition,omitempty"`
+	// If set, the trigger starts a run only after the specified amount of time
+	// has passed since the last time the trigger fired. The minimum allowed
+	// value is 60 seconds.
+	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
+	// A list of Delta tables to monitor for changes. The table name must be in
+	// the format `catalog_name.schema_name.table_name`.
+	TableNames []string `json:"table_names,omitempty"`
+	// If set, the trigger starts a run only after no table updates have
+	// occurred for the specified time and can be used to wait for a series of
+	// table updates before triggering a run. The minimum allowed value is 60
+	// seconds.
+	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TableTriggerConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TableTriggerConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type Task struct {
 	// The key of the compute requirement, specified in `job.settings.compute`,
 	// to use for execution of this task.
@@ -3723,36 +3777,6 @@ func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type TriggerEvaluation struct {
-	// Human-readable description of the the trigger evaluation result. Explains
-	// why the trigger evaluation triggered or did not trigger a run, or failed.
-	Description string `json:"description,omitempty"`
-	// The ID of the run that was triggered by the trigger evaluation. Only
-	// returned if a run was triggered.
-	RunId int64 `json:"run_id,omitempty"`
-	// Timestamp at which the trigger was evaluated.
-	Timestamp int64 `json:"timestamp,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *TriggerEvaluation) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s TriggerEvaluation) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type TriggerHistory struct {
-	// The last time the trigger failed to evaluate.
-	LastFailed *TriggerEvaluation `json:"last_failed,omitempty"`
-	// The last time the trigger was evaluated but did not trigger a run.
-	LastNotTriggered *TriggerEvaluation `json:"last_not_triggered,omitempty"`
-	// The last time the run was triggered due to a file arrival.
-	LastTriggered *TriggerEvaluation `json:"last_triggered,omitempty"`
-}
-
 type TriggerInfo struct {
 	// The run id of the Run Job task run
 	RunId int `json:"run_id,omitempty"`
@@ -3773,6 +3797,8 @@ type TriggerSettings struct {
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
 	// Whether this trigger is paused or not.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
+	// Table trigger settings.
+	Table *TableTriggerConfiguration `json:"table,omitempty"`
 }
 
 // The type of trigger that fired this run.
@@ -3782,9 +3808,9 @@ type TriggerSettings struct {
 // occurs you triggered a single run on demand through the UI or the API. *
 // `RETRY`: Indicates a run that is triggered as a retry of a previously failed
 // run. This occurs when you request to re-run the job in case of failures. *
-// `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task.
-//
-// * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival.
+// `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. *
+// `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival. *
+// `TABLE`: Indicates a run that is triggered by a table update.
 type TriggerType string
 
 // Indicates a run that is triggered by a file arrival.
@@ -3804,6 +3830,9 @@ const TriggerTypeRetry TriggerType = `RETRY`
 // Indicates a run that is triggered using a Run Job task.
 const TriggerTypeRunJobTask TriggerType = `RUN_JOB_TASK`
 
+// Indicates a run that is triggered by a table update.
+const TriggerTypeTable TriggerType = `TABLE`
+
 // String representation for [fmt.Print]
 func (f *TriggerType) String() string {
 	return string(*f)
@@ -3812,11 +3841,11 @@ func (f *TriggerType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TriggerType) Set(v string) error {
 	switch v {
-	case `FILE_ARRIVAL`, `ONE_TIME`, `PERIODIC`, `RETRY`, `RUN_JOB_TASK`:
+	case `FILE_ARRIVAL`, `ONE_TIME`, `PERIODIC`, `RETRY`, `RUN_JOB_TASK`, `TABLE`:
 		*f = TriggerType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FILE_ARRIVAL", "ONE_TIME", "PERIODIC", "RETRY", "RUN_JOB_TASK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FILE_ARRIVAL", "ONE_TIME", "PERIODIC", "RETRY", "RUN_JOB_TASK", "TABLE"`, v)
 	}
 }
 
