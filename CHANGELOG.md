@@ -1,5 +1,72 @@
 # Version changelog
 
+## 0.32.0
+
+Major Changes:
+
+* Generate fields for headers in responses ([#812](https://github.com/databricks/databricks-sdk-go/pull/812)).
+
+Other Changes:
+
+* Add `CurrentWorkspaceID()` method on WorkspaceClient ([#808](https://github.com/databricks/databricks-sdk-go/pull/808)).
+* Update OpenAPI spec ([#816](https://github.com/databricks/databricks-sdk-go/pull/816)).
+
+Internal Changes:
+
+* Do not generate erroneous "r" and "w" samples ([#811](https://github.com/databricks/databricks-sdk-go/pull/811)).
+
+API Changes:
+
+ * Changed `Delete` method for [w.Connections](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionsAPI) workspace-level service with new required argument order.
+ * Changed `Get` method for [w.Connections](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionsAPI) workspace-level service with new required argument order.
+ * Changed `Update` method for [w.Connections](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionsAPI) workspace-level service with new required argument order.
+ * Changed `Delete` method for [w.Volumes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#VolumesAPI) workspace-level service with new required argument order.
+ * Changed `Read` method for [w.Volumes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#VolumesAPI) workspace-level service with new required argument order.
+ * Changed `Update` method for [w.Volumes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#VolumesAPI) workspace-level service with new required argument order.
+ * Removed `NameArg` field for [catalog.DeleteConnectionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteConnectionRequest).
+ * Added `Name` field for [catalog.DeleteConnectionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteConnectionRequest).
+ * Removed `FullNameArg` field for [catalog.DeleteVolumeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteVolumeRequest).
+ * Added `Name` field for [catalog.DeleteVolumeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteVolumeRequest).
+ * Removed `NameArg` field for [catalog.GetConnectionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetConnectionRequest).
+ * Added `Name` field for [catalog.GetConnectionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetConnectionRequest).
+ * Added `MaxResults` field for [catalog.ListVolumesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListVolumesRequest).
+ * Added `PageToken` field for [catalog.ListVolumesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListVolumesRequest).
+ * Added `NextPageToken` field for [catalog.ListVolumesResponseContent](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListVolumesResponseContent).
+ * Removed `FullNameArg` field for [catalog.ReadVolumeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ReadVolumeRequest).
+ * Added `Name` field for [catalog.ReadVolumeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ReadVolumeRequest).
+ * Removed `NameArg` field for [catalog.UpdateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateConnection).
+ * Added `Name` field for [catalog.UpdateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateConnection).
+ * Removed `FullNameArg` field for [catalog.UpdateVolumeRequestContent](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateVolumeRequestContent).
+ * Added `Name` field for [catalog.UpdateVolumeRequestContent](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateVolumeRequestContent).
+ * Removed `GetStatus` method for [w.Files](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#FilesAPI) workspace-level service.
+ * Added `GetDirectoryMetadata` method for [w.Files](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#FilesAPI) workspace-level service.
+ * Added `GetMetadata` method for [w.Files](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#FilesAPI) workspace-level service.
+ * Added [files.FileSize](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#FileSize).
+ * Added [files.GetDirectoryMetadataRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#GetDirectoryMetadataRequest).
+ * Added [files.GetMetadataRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#GetMetadataRequest).
+ * Added [files.GetMetadataResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#GetMetadataResponse).
+ * Removed `TriggerHistory` field for [jobs.Job](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Job).
+ * Removed [jobs.TriggerEvaluation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerEvaluation).
+ * Removed [jobs.TriggerHistory](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerHistory).
+ * Added `Table` field for [jobs.TriggerSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerSettings).
+ * Added [jobs.Condition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Condition).
+ * Added [jobs.TableTriggerConfiguration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TableTriggerConfiguration).
+ * Changed `Delete` method for [w.CleanRooms](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomsAPI) workspace-level service with new required argument order.
+ * Changed `Get` method for [w.CleanRooms](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomsAPI) workspace-level service with new required argument order.
+ * Changed `Update` method for [w.CleanRooms](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomsAPI) workspace-level service with new required argument order.
+ * Removed `NameArg` field for [sharing.DeleteCleanRoomRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#DeleteCleanRoomRequest).
+ * Added `Name` field for [sharing.DeleteCleanRoomRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#DeleteCleanRoomRequest).
+ * Removed `NameArg` field for [sharing.GetCleanRoomRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#GetCleanRoomRequest).
+ * Added `Name` field for [sharing.GetCleanRoomRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#GetCleanRoomRequest).
+ * Removed `NameArg` field for [sharing.UpdateCleanRoom](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#UpdateCleanRoom).
+ * Added `Name` field for [sharing.UpdateCleanRoom](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#UpdateCleanRoom).
+ * Added `EnumOptions` field for [sql.Parameter](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#Parameter).
+ * Added `MultiValuesOptions` field for [sql.Parameter](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#Parameter).
+ * Added `QueryId` field for [sql.Parameter](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#Parameter).
+ * Added [sql.MultiValuesOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#MultiValuesOptions).
+
+OpenAPI SHA: c40670f5a2055c92cf0a6aac92a5bccebfb80866, Date: 2024-02-14
+
 ## 0.31.0
 
 * Support creating a new workspace client from an account client ([#792](https://github.com/databricks/databricks-sdk-go/pull/792)). Please see the example:
