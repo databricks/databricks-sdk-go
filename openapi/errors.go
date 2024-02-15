@@ -22,6 +22,7 @@ var ErrorStatusCodeMapping = []ErrorMappingRule{
 
 var ErrorCodeMapping = []ErrorMappingRule{
 	{400, "INVALID_PARAMETER_VALUE", "supplied value for a parameter was invalid"},
+	{404, "FEATURE_DISABLED", "feature is disabled for the current workspace"},
 	{404, "RESOURCE_DOES_NOT_EXIST", "operation was performed on a resource that does not exist"},
 	{409, "ABORTED", "the operation was aborted, typically due to a concurrency issue such as a sequencer check failure"},
 	{409, "ALREADY_EXISTS", "operation was rejected due a conflict with an existing resource"},
