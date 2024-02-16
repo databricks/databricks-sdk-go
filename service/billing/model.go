@@ -9,7 +9,11 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
+type DeleteResponse struct{}
+
+type PatchStatusResponse struct{}
+
+type UpdateResponse struct{}
 
 // Budget configuration to be created.
 type Budget struct {

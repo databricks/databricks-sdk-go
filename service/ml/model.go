@@ -8,7 +8,115 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
+type DeleteCommentResponse struct{}
+
+type DeleteExperimentResponse struct{}
+
+type DeleteExperimentResponse struct{}
+
+type DeleteExperimentResponse struct{}
+
+type DeleteModelResponse struct{}
+
+type DeleteModelTagResponse struct{}
+
+type DeleteModelVersionResponse struct{}
+
+type DeleteModelVersionTagResponse struct{}
+
+type DeleteRunResponse struct{}
+
+type DeleteRunResponse struct{}
+
+type DeleteRunResponse struct{}
+
+type DeleteTagResponse struct{}
+
+type DeleteTagResponse struct{}
+
+type DeleteTagResponse struct{}
+
+type DeleteTransitionRequestResponse struct{}
+
+type DeleteWebhookResponse struct{}
+
+type LogBatchResponse struct{}
+
+type LogBatchResponse struct{}
+
+type LogBatchResponse struct{}
+
+type LogInputsResponse struct{}
+
+type LogInputsResponse struct{}
+
+type LogInputsResponse struct{}
+
+type LogMetricResponse struct{}
+
+type LogMetricResponse struct{}
+
+type LogMetricResponse struct{}
+
+type LogModelResponse struct{}
+
+type LogModelResponse struct{}
+
+type LogModelResponse struct{}
+
+type LogParamResponse struct{}
+
+type LogParamResponse struct{}
+
+type LogParamResponse struct{}
+
+type RestoreExperimentResponse struct{}
+
+type RestoreExperimentResponse struct{}
+
+type RestoreExperimentResponse struct{}
+
+type RestoreRunResponse struct{}
+
+type RestoreRunResponse struct{}
+
+type RestoreRunResponse struct{}
+
+type SetExperimentTagResponse struct{}
+
+type SetExperimentTagResponse struct{}
+
+type SetExperimentTagResponse struct{}
+
+type SetModelTagResponse struct{}
+
+type SetModelTagResponse struct{}
+
+type SetModelTagResponse struct{}
+
+type SetModelVersionTagResponse struct{}
+
+type SetModelVersionTagResponse struct{}
+
+type SetModelVersionTagResponse struct{}
+
+type SetTagResponse struct{}
+
+type SetTagResponse struct{}
+
+type SetTagResponse struct{}
+
+type UpdateExperimentResponse struct{}
+
+type UpdateExperimentResponse struct{}
+
+type UpdateExperimentResponse struct{}
+
+type UpdateModelResponse struct{}
+
+type UpdateModelVersionResponse struct{}
+
+type UpdateWebhookResponse struct{}
 
 // Activity recorded for the action.
 type Activity struct {

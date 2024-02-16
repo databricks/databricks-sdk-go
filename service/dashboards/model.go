@@ -6,7 +6,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
+type PublishResponse struct{}
+
+type PublishResponse struct{}
 
 type PublishRequest struct {
 	// UUID identifying the dashboard to be published.

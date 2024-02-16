@@ -6,7 +6,47 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
+type DeleteCustomAppIntegrationOutput struct{}
+
+type DeleteCustomAppIntegrationOutput struct{}
+
+type DeleteCustomAppIntegrationOutput struct{}
+
+type DeleteCustomAppIntegrationOutput struct{}
+
+type DeleteCustomAppIntegrationOutput struct{}
+
+type DeletePublishedAppIntegrationOutput struct{}
+
+type DeletePublishedAppIntegrationOutput struct{}
+
+type DeletePublishedAppIntegrationOutput struct{}
+
+type DeletePublishedAppIntegrationOutput struct{}
+
+type DeletePublishedAppIntegrationOutput struct{}
+
+type DeleteResponse struct{}
+
+type UpdateCustomAppIntegrationOutput struct{}
+
+type UpdateCustomAppIntegrationOutput struct{}
+
+type UpdateCustomAppIntegrationOutput struct{}
+
+type UpdateCustomAppIntegrationOutput struct{}
+
+type UpdateCustomAppIntegrationOutput struct{}
+
+type UpdatePublishedAppIntegrationOutput struct{}
+
+type UpdatePublishedAppIntegrationOutput struct{}
+
+type UpdatePublishedAppIntegrationOutput struct{}
+
+type UpdatePublishedAppIntegrationOutput struct{}
+
+type UpdatePublishedAppIntegrationOutput struct{}
 
 type CreateCustomAppIntegration struct {
 	// indicates if an oauth client-secret should be generated

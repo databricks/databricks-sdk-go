@@ -8,7 +8,11 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
+type DeleteEndpointResponse struct{}
+
+type DeleteIndexResponse struct{}
+
+type SyncIndexResponse struct{}
 
 type ColumnInfo struct {
 	// Name of the column.

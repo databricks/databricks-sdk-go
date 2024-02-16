@@ -10,7 +10,17 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
-// all definitions in this file are in alphabetical order
+type CancelAllRunsResponse struct{}
+
+type CancelRunResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteRunResponse struct{}
+
+type ResetResponse struct{}
+
+type UpdateResponse struct{}
 
 type BaseJob struct {
 	// The time at which this job was created in epoch milliseconds

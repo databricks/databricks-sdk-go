@@ -8,7 +8,45 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
+type DeleteNetworkConnectivityConfigurationResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteResponse struct{}
+
+type ReplaceResponse struct{}
+
+type ReplaceResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type SetStatusResponse struct{}
+
+type UpdateResponse struct{}
+
+type UpdateResponse struct{}
 
 // Details required to configure a block list or allow list.
 type CreateIpAccessList struct {

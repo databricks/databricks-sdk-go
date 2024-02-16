@@ -9,7 +9,49 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
-// all definitions in this file are in alphabetical order
+type DeletePipelineResponse struct{}
+
+type DeletePipelineResponse struct{}
+
+type EditPipelineResponse struct{}
+
+type EditPipelineResponse struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type ManualTrigger struct{}
+
+type StopPipelineResponse struct{}
+
+type StopPipelineResponse struct{}
 
 type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another

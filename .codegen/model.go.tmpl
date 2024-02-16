@@ -8,8 +8,10 @@ import (
 	"io"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
-
-// all definitions in this file are in alphabetical order
+{{range .EmptyTypes}}
+{{.Comment "// " 80}}
+type {{.PascalName}} struct {}
+{{end}}
 {{range .Types}}
 {{if .Fields -}}{{.Comment "// " 80}}
 type {{.PascalName}} struct {

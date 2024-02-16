@@ -8,7 +8,23 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
+type DeleteResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteResponse struct{}
+
+type ReplaceResponse struct{}
+
+type UpdateResponse struct{}
 
 type AwsCredentials struct {
 	StsRole *StsRole `json:"sts_role,omitempty"`
