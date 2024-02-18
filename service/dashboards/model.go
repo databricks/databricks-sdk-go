@@ -8,8 +8,6 @@ import (
 
 type PublishResponse struct{}
 
-type PublishResponse struct{}
-
 type PublishRequest struct {
 	// UUID identifying the dashboard to be published.
 	DashboardId string `json:"-" url:"-"`

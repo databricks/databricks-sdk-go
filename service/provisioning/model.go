@@ -10,18 +10,6 @@ import (
 
 type DeleteResponse struct{}
 
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
 type ReplaceResponse struct{}
 
 type UpdateResponse struct{}

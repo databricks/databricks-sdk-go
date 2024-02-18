@@ -172,7 +172,7 @@ type FilesService interface {
 	//
 	// Get the metadata of a file. This endpoint does not return a response
 	// body.
-	GetMetadata(ctx context.Context, request GetMetadataRequest) error
+	GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error)
 
 	// List directory contents.
 	//

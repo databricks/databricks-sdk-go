@@ -11,22 +11,6 @@ import (
 
 type DeleteResponse struct{}
 
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type GetActivationUrlInfoResponse struct{}
-
-type GetActivationUrlInfoResponse struct{}
-
-type GetActivationUrlInfoResponse struct{}
-
-type GetActivationUrlInfoResponse struct{}
-
-type GetActivationUrlInfoResponse struct{}
-
 type GetActivationUrlInfoResponse struct{}
 
 type UpdatePermissionsResponse struct{}

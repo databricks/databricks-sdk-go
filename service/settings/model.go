@@ -12,39 +12,11 @@ type DeleteNetworkConnectivityConfigurationResponse struct{}
 
 type DeleteResponse struct{}
 
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
 type ReplaceResponse struct{}
-
-type ReplaceResponse struct{}
-
-type RevokeTokenResponse struct{}
-
-type RevokeTokenResponse struct{}
-
-type RevokeTokenResponse struct{}
-
-type RevokeTokenResponse struct{}
-
-type RevokeTokenResponse struct{}
-
-type RevokeTokenResponse struct{}
-
-type RevokeTokenResponse struct{}
-
-type RevokeTokenResponse struct{}
-
-type RevokeTokenResponse struct{}
-
-type RevokeTokenResponse struct{}
 
 type RevokeTokenResponse struct{}
 
 type SetStatusResponse struct{}
-
-type UpdateResponse struct{}
 
 type UpdateResponse struct{}
 

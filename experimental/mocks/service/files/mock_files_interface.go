@@ -472,21 +472,33 @@ func (_c *MockFilesInterface_GetDirectoryMetadataByDirectoryPath_Call) RunAndRet
 }
 
 // GetMetadata provides a mock function with given fields: ctx, request
-func (_m *MockFilesInterface) GetMetadata(ctx context.Context, request files.GetMetadataRequest) error {
+func (_m *MockFilesInterface) GetMetadata(ctx context.Context, request files.GetMetadataRequest) (*files.GetMetadataResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetMetadata")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, files.GetMetadataRequest) error); ok {
+	var r0 *files.GetMetadataResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, files.GetMetadataRequest) (*files.GetMetadataResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, files.GetMetadataRequest) *files.GetMetadataResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*files.GetMetadataResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, files.GetMetadataRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockFilesInterface_GetMetadata_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMetadata'
@@ -508,32 +520,44 @@ func (_c *MockFilesInterface_GetMetadata_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockFilesInterface_GetMetadata_Call) Return(_a0 error) *MockFilesInterface_GetMetadata_Call {
-	_c.Call.Return(_a0)
+func (_c *MockFilesInterface_GetMetadata_Call) Return(_a0 *files.GetMetadataResponse, _a1 error) *MockFilesInterface_GetMetadata_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockFilesInterface_GetMetadata_Call) RunAndReturn(run func(context.Context, files.GetMetadataRequest) error) *MockFilesInterface_GetMetadata_Call {
+func (_c *MockFilesInterface_GetMetadata_Call) RunAndReturn(run func(context.Context, files.GetMetadataRequest) (*files.GetMetadataResponse, error)) *MockFilesInterface_GetMetadata_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetMetadataByFilePath provides a mock function with given fields: ctx, filePath
-func (_m *MockFilesInterface) GetMetadataByFilePath(ctx context.Context, filePath string) error {
+func (_m *MockFilesInterface) GetMetadataByFilePath(ctx context.Context, filePath string) (*files.GetMetadataResponse, error) {
 	ret := _m.Called(ctx, filePath)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetMetadataByFilePath")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+	var r0 *files.GetMetadataResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*files.GetMetadataResponse, error)); ok {
+		return rf(ctx, filePath)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *files.GetMetadataResponse); ok {
 		r0 = rf(ctx, filePath)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*files.GetMetadataResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, filePath)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockFilesInterface_GetMetadataByFilePath_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMetadataByFilePath'
@@ -555,12 +579,12 @@ func (_c *MockFilesInterface_GetMetadataByFilePath_Call) Run(run func(ctx contex
 	return _c
 }
 
-func (_c *MockFilesInterface_GetMetadataByFilePath_Call) Return(_a0 error) *MockFilesInterface_GetMetadataByFilePath_Call {
-	_c.Call.Return(_a0)
+func (_c *MockFilesInterface_GetMetadataByFilePath_Call) Return(_a0 *files.GetMetadataResponse, _a1 error) *MockFilesInterface_GetMetadataByFilePath_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockFilesInterface_GetMetadataByFilePath_Call) RunAndReturn(run func(context.Context, string) error) *MockFilesInterface_GetMetadataByFilePath_Call {
+func (_c *MockFilesInterface_GetMetadataByFilePath_Call) RunAndReturn(run func(context.Context, string) (*files.GetMetadataResponse, error)) *MockFilesInterface_GetMetadataByFilePath_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -148,11 +148,12 @@ func (a *filesImpl) GetDirectoryMetadata(ctx context.Context, request GetDirecto
 	return err
 }
 
-func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest) error {
+func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error) {
+	var getMetadataResponse GetMetadataResponse
 	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodHead, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodHead, path, headers, request, &getMetadataResponse)
+	return &getMetadataResponse, err
 }
 
 func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {

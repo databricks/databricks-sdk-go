@@ -11,45 +11,9 @@ import (
 
 type DeletePipelineResponse struct{}
 
-type DeletePipelineResponse struct{}
-
-type EditPipelineResponse struct{}
-
 type EditPipelineResponse struct{}
 
 type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type ManualTrigger struct{}
-
-type StopPipelineResponse struct{}
 
 type StopPipelineResponse struct{}
 

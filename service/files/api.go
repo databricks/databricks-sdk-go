@@ -517,12 +517,12 @@ type FilesInterface interface {
 	// Get file metadata.
 	//
 	// Get the metadata of a file. This endpoint does not return a response body.
-	GetMetadata(ctx context.Context, request GetMetadataRequest) error
+	GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error)
 
 	// Get file metadata.
 	//
 	// Get the metadata of a file. This endpoint does not return a response body.
-	GetMetadataByFilePath(ctx context.Context, filePath string) error
+	GetMetadataByFilePath(ctx context.Context, filePath string) (*GetMetadataResponse, error)
 
 	// List directory contents.
 	//
@@ -661,14 +661,14 @@ func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, dire
 // Get file metadata.
 //
 // Get the metadata of a file. This endpoint does not return a response body.
-func (a *FilesAPI) GetMetadata(ctx context.Context, request GetMetadataRequest) error {
+func (a *FilesAPI) GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error) {
 	return a.impl.GetMetadata(ctx, request)
 }
 
 // Get file metadata.
 //
 // Get the metadata of a file. This endpoint does not return a response body.
-func (a *FilesAPI) GetMetadataByFilePath(ctx context.Context, filePath string) error {
+func (a *FilesAPI) GetMetadataByFilePath(ctx context.Context, filePath string) (*GetMetadataResponse, error) {
 	return a.impl.GetMetadata(ctx, GetMetadataRequest{
 		FilePath: filePath,
 	})

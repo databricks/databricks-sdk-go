@@ -10,237 +10,19 @@ import (
 
 type AnyValue struct{}
 
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
 type CancelExecutionResponse struct{}
 
 type DeleteResponse struct{}
 
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
 type DeleteWarehouseResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
 
 type EditWarehouseResponse struct{}
 
 type RestoreResponse struct{}
 
-type RestoreResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
 type SetWorkspaceWarehouseConfigResponse struct{}
 
 type StartWarehouseResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
 
 type StopWarehouseResponse struct{}
 
@@ -3729,7 +3511,7 @@ type Visualization struct {
 	// UI.
 	Description string `json:"description,omitempty"`
 	// The UUID for this visualization.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 	// The name of the visualization that appears on dashboards and the query
 	// screen.
 	Name string `json:"name,omitempty"`

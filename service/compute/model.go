@@ -14,73 +14,9 @@ type CancelResponse struct{}
 
 type ChangeClusterOwnerResponse struct{}
 
-type ChangeClusterOwnerResponse struct{}
-
-type ChangeClusterOwnerResponse struct{}
-
-type ChangeClusterOwnerResponse struct{}
-
-type ChangeClusterOwnerResponse struct{}
-
-type ChangeClusterOwnerResponse struct{}
-
-type ChangeClusterOwnerResponse struct{}
-
-type ChangeClusterOwnerResponse struct{}
-
-type ChangeClusterOwnerResponse struct{}
-
-type DeleteClusterResponse struct{}
-
-type DeleteClusterResponse struct{}
-
-type DeleteClusterResponse struct{}
-
-type DeleteClusterResponse struct{}
-
-type DeleteClusterResponse struct{}
-
-type DeleteClusterResponse struct{}
-
-type DeleteClusterResponse struct{}
-
-type DeleteClusterResponse struct{}
-
 type DeleteClusterResponse struct{}
 
 type DeleteInstancePoolResponse struct{}
-
-type DeleteInstancePoolResponse struct{}
-
-type DeleteInstancePoolResponse struct{}
-
-type DeleteInstancePoolResponse struct{}
-
-type DeleteInstancePoolResponse struct{}
-
-type DeleteInstancePoolResponse struct{}
-
-type DeleteInstancePoolResponse struct{}
-
-type DeleteInstancePoolResponse struct{}
-
-type DeleteInstancePoolResponse struct{}
-
-type DeletePolicyResponse struct{}
-
-type DeletePolicyResponse struct{}
-
-type DeletePolicyResponse struct{}
-
-type DeletePolicyResponse struct{}
-
-type DeletePolicyResponse struct{}
-
-type DeletePolicyResponse struct{}
-
-type DeletePolicyResponse struct{}
-
-type DeletePolicyResponse struct{}
 
 type DeletePolicyResponse struct{}
 
@@ -90,55 +26,7 @@ type DestroyResponse struct{}
 
 type EditClusterResponse struct{}
 
-type EditClusterResponse struct{}
-
-type EditClusterResponse struct{}
-
-type EditClusterResponse struct{}
-
-type EditClusterResponse struct{}
-
-type EditClusterResponse struct{}
-
-type EditClusterResponse struct{}
-
-type EditClusterResponse struct{}
-
-type EditClusterResponse struct{}
-
 type EditInstancePoolResponse struct{}
-
-type EditInstancePoolResponse struct{}
-
-type EditInstancePoolResponse struct{}
-
-type EditInstancePoolResponse struct{}
-
-type EditInstancePoolResponse struct{}
-
-type EditInstancePoolResponse struct{}
-
-type EditInstancePoolResponse struct{}
-
-type EditInstancePoolResponse struct{}
-
-type EditInstancePoolResponse struct{}
-
-type EditPolicyResponse struct{}
-
-type EditPolicyResponse struct{}
-
-type EditPolicyResponse struct{}
-
-type EditPolicyResponse struct{}
-
-type EditPolicyResponse struct{}
-
-type EditPolicyResponse struct{}
-
-type EditPolicyResponse struct{}
-
-type EditPolicyResponse struct{}
 
 type EditPolicyResponse struct{}
 
@@ -146,55 +34,7 @@ type EditResponse struct{}
 
 type InstallLibrariesResponse struct{}
 
-type InstallLibrariesResponse struct{}
-
-type InstallLibrariesResponse struct{}
-
-type InstallLibrariesResponse struct{}
-
-type InstallLibrariesResponse struct{}
-
-type InstallLibrariesResponse struct{}
-
-type InstallLibrariesResponse struct{}
-
-type InstallLibrariesResponse struct{}
-
-type InstallLibrariesResponse struct{}
-
 type PermanentDeleteClusterResponse struct{}
-
-type PermanentDeleteClusterResponse struct{}
-
-type PermanentDeleteClusterResponse struct{}
-
-type PermanentDeleteClusterResponse struct{}
-
-type PermanentDeleteClusterResponse struct{}
-
-type PermanentDeleteClusterResponse struct{}
-
-type PermanentDeleteClusterResponse struct{}
-
-type PermanentDeleteClusterResponse struct{}
-
-type PermanentDeleteClusterResponse struct{}
-
-type PinClusterResponse struct{}
-
-type PinClusterResponse struct{}
-
-type PinClusterResponse struct{}
-
-type PinClusterResponse struct{}
-
-type PinClusterResponse struct{}
-
-type PinClusterResponse struct{}
-
-type PinClusterResponse struct{}
-
-type PinClusterResponse struct{}
 
 type PinClusterResponse struct{}
 
@@ -202,91 +42,11 @@ type RemoveResponse struct{}
 
 type ResizeClusterResponse struct{}
 
-type ResizeClusterResponse struct{}
-
-type ResizeClusterResponse struct{}
-
-type ResizeClusterResponse struct{}
-
-type ResizeClusterResponse struct{}
-
-type ResizeClusterResponse struct{}
-
-type ResizeClusterResponse struct{}
-
-type ResizeClusterResponse struct{}
-
-type ResizeClusterResponse struct{}
-
-type RestartClusterResponse struct{}
-
-type RestartClusterResponse struct{}
-
-type RestartClusterResponse struct{}
-
-type RestartClusterResponse struct{}
-
-type RestartClusterResponse struct{}
-
-type RestartClusterResponse struct{}
-
-type RestartClusterResponse struct{}
-
-type RestartClusterResponse struct{}
-
 type RestartClusterResponse struct{}
 
 type StartClusterResponse struct{}
 
-type StartClusterResponse struct{}
-
-type StartClusterResponse struct{}
-
-type StartClusterResponse struct{}
-
-type StartClusterResponse struct{}
-
-type StartClusterResponse struct{}
-
-type StartClusterResponse struct{}
-
-type StartClusterResponse struct{}
-
-type StartClusterResponse struct{}
-
 type UninstallLibrariesResponse struct{}
-
-type UninstallLibrariesResponse struct{}
-
-type UninstallLibrariesResponse struct{}
-
-type UninstallLibrariesResponse struct{}
-
-type UninstallLibrariesResponse struct{}
-
-type UninstallLibrariesResponse struct{}
-
-type UninstallLibrariesResponse struct{}
-
-type UninstallLibrariesResponse struct{}
-
-type UninstallLibrariesResponse struct{}
-
-type UnpinClusterResponse struct{}
-
-type UnpinClusterResponse struct{}
-
-type UnpinClusterResponse struct{}
-
-type UnpinClusterResponse struct{}
-
-type UnpinClusterResponse struct{}
-
-type UnpinClusterResponse struct{}
-
-type UnpinClusterResponse struct{}
-
-type UnpinClusterResponse struct{}
 
 type UnpinClusterResponse struct{}
 

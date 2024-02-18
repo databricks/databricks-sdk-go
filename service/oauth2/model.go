@@ -8,43 +8,11 @@ import (
 
 type DeleteCustomAppIntegrationOutput struct{}
 
-type DeleteCustomAppIntegrationOutput struct{}
-
-type DeleteCustomAppIntegrationOutput struct{}
-
-type DeleteCustomAppIntegrationOutput struct{}
-
-type DeleteCustomAppIntegrationOutput struct{}
-
-type DeletePublishedAppIntegrationOutput struct{}
-
-type DeletePublishedAppIntegrationOutput struct{}
-
-type DeletePublishedAppIntegrationOutput struct{}
-
-type DeletePublishedAppIntegrationOutput struct{}
-
 type DeletePublishedAppIntegrationOutput struct{}
 
 type DeleteResponse struct{}
 
 type UpdateCustomAppIntegrationOutput struct{}
-
-type UpdateCustomAppIntegrationOutput struct{}
-
-type UpdateCustomAppIntegrationOutput struct{}
-
-type UpdateCustomAppIntegrationOutput struct{}
-
-type UpdateCustomAppIntegrationOutput struct{}
-
-type UpdatePublishedAppIntegrationOutput struct{}
-
-type UpdatePublishedAppIntegrationOutput struct{}
-
-type UpdatePublishedAppIntegrationOutput struct{}
-
-type UpdatePublishedAppIntegrationOutput struct{}
 
 type UpdatePublishedAppIntegrationOutput struct{}
 

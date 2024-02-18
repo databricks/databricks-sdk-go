@@ -10,14 +10,6 @@ import (
 
 type AddBlockResponse struct{}
 
-type AddBlockResponse struct{}
-
-type AddBlockResponse struct{}
-
-type CloseResponse struct{}
-
-type CloseResponse struct{}
-
 type CloseResponse struct{}
 
 type CreateDirectoryResponse struct{}
@@ -26,31 +18,11 @@ type DeleteDirectoryResponse struct{}
 
 type DeleteResponse struct{}
 
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
 type GetDirectoryMetadataResponse struct{}
 
-type GetMetadataResponse struct{}
-
-type MkDirsResponse struct{}
-
-type MkDirsResponse struct{}
-
 type MkDirsResponse struct{}
 
 type MoveResponse struct{}
-
-type MoveResponse struct{}
-
-type MoveResponse struct{}
-
-type PutResponse struct{}
-
-type PutResponse struct{}
 
 type PutResponse struct{}
 
@@ -203,6 +175,24 @@ type GetDirectoryMetadataRequest struct {
 type GetMetadataRequest struct {
 	// The absolute path of the file.
 	FilePath string `json:"-" url:"-"`
+}
+
+type GetMetadataResponse struct {
+	ContentLength int64 `json:"-"`
+
+	ContentType string `json:"-"`
+
+	LastModified string `json:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetMetadataResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetMetadataResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get the information of a file or directory

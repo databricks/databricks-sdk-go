@@ -10,85 +10,11 @@ import (
 
 type DeleteResponse struct{}
 
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
 type DeleteWorkspaceAssignments struct{}
 
 type PatchResponse struct{}
 
-type PatchResponse struct{}
-
-type PatchResponse struct{}
-
-type PatchResponse struct{}
-
-type PatchResponse struct{}
-
-type PatchResponse struct{}
-
 type UpdateResponse struct{}
-
-type UpdateResponse struct{}
-
-type UpdateResponse struct{}
-
-type UpdateResponse struct{}
-
-type UpdateResponse struct{}
-
-type UpdateResponse struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
 
 type WorkspaceAssignmentsUpdated struct{}
 

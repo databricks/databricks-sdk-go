@@ -10,126 +10,6 @@ import (
 
 type AnyValue struct{}
 
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
-type AnyValue struct{}
-
 type DeleteResponse struct{}
 
 type ExportMetricsResponse struct{}
@@ -1110,6 +990,9 @@ type QueryEndpointResponse struct {
 	Object QueryEndpointResponseObject `json:"object,omitempty"`
 	// The predictions returned by the serving endpoint.
 	Predictions []any `json:"predictions,omitempty"`
+	// The name of the served model that served the request. This is useful when
+	// there are multiple models behind the same endpoint with traffic split.
+	ServedModelName string `json:"-"`
 	// The usage object that may be returned by the __external/foundation
 	// model__ serving endpoint. This contains information about the number of
 	// tokens used in the prompt and response.

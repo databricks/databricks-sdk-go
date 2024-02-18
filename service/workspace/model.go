@@ -14,55 +14,17 @@ type DeleteAclResponse struct{}
 
 type DeleteResponse struct{}
 
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteResponse struct{}
-
 type DeleteScopeResponse struct{}
 
 type DeleteSecretResponse struct{}
 
-type DeleteSecretResponse struct{}
-
-type DeleteSecretResponse struct{}
-
-type DeleteSecretResponse struct{}
-
-type DeleteSecretResponse struct{}
-
 type ImportResponse struct{}
-
-type ImportResponse struct{}
-
-type ImportResponse struct{}
-
-type ImportResponse struct{}
-
-type ImportResponse struct{}
-
-type MkdirsResponse struct{}
-
-type MkdirsResponse struct{}
-
-type MkdirsResponse struct{}
-
-type MkdirsResponse struct{}
 
 type MkdirsResponse struct{}
 
 type PutAclResponse struct{}
 
 type PutSecretResponse struct{}
-
-type UpdateResponse struct{}
 
 type UpdateResponse struct{}
 
