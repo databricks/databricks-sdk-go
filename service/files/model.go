@@ -178,11 +178,11 @@ type GetMetadataRequest struct {
 }
 
 type GetMetadataResponse struct {
-	ContentLength int64 `json:"-"`
+	ContentLength int64 `json:"-" url:"-" header:"content-length,omitempty"`
 
-	ContentType string `json:"-"`
+	ContentType string `json:"-" url:"-" header:"content-type,omitempty"`
 
-	LastModified string `json:"-"`
+	LastModified string `json:"-" url:"-" header:"last-modified,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
