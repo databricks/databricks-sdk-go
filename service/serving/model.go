@@ -58,7 +58,7 @@ type AppManifest struct {
 	// list of app services. Restricted to one for now.
 	Services any `json:"services,omitempty"`
 	// The manifest format version. Must be set to 1.
-	Version string `json:"version,omitempty"`
+	Version any `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
