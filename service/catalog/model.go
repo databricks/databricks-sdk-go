@@ -954,7 +954,7 @@ type CreateMonitor struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot any `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeriesProfileType `json:"time_series,omitempty"`
 	// Optional argument to specify the warehouse for dashboard creation. If not
@@ -1031,7 +1031,7 @@ type CreateStorageCredential struct {
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
-	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name"`
 	// Whether the storage credential is only usable for read operations.
@@ -3166,7 +3166,7 @@ type MonitorInfo struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot any `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// The status of the monitor.
 	Status MonitorInfoStatus `json:"status,omitempty"`
 	// The full name of the table to monitor. Format:
@@ -4255,7 +4255,7 @@ type UpdateMonitor struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot any `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeriesProfileType `json:"time_series,omitempty"`
 
@@ -4338,7 +4338,7 @@ type UpdateStorageCredential struct {
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
-	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// Force update even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"force,omitempty"`
@@ -4434,13 +4434,13 @@ type ValidateStorageCredential struct {
 	// The Cloudflare API token configuration.
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// The Databricks created GCP service account configuration.
-	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate.
 	ExternalLocationName string `json:"external_location_name,omitempty"`
 	// Whether the storage credential is only usable for read operations.
 	ReadOnly bool `json:"read_only,omitempty"`
 	// The name of the storage credential to validate.
-	StorageCredentialName any `json:"storage_credential_name,omitempty"`
+	StorageCredentialName string `json:"storage_credential_name,omitempty"`
 	// The external location url to validate.
 	Url string `json:"url,omitempty"`
 

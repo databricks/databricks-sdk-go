@@ -659,7 +659,7 @@ type ForEachStats struct {
 }
 
 type ForEachTask struct {
-	// Controls the number of active iterations task runs. Default is 100
+	// Controls the number of active iterations task runs. Default is 20
 	// (maximal value).
 	Concurrency int `json:"concurrency,omitempty"`
 	// Array for task to iterate on. This can be a JSON string or a reference to
@@ -2288,7 +2288,7 @@ func (f *RunConditionTaskOp) Type() string {
 }
 
 type RunForEachTask struct {
-	// Controls the number of active iterations task runs. Default is 100
+	// Controls the number of active iterations task runs. Default is 20
 	// (maximal value).
 	Concurrency int `json:"concurrency,omitempty"`
 	// Array for task to iterate on. This can be a JSON string or a reference to

@@ -113,7 +113,7 @@ type DataPlaneId struct {
 	// The instance name of the data plane emitting an event.
 	Instance string `json:"instance,omitempty"`
 	// A sequence number, unique and increasing within the data plane instance.
-	SeqNo any `json:"seq_no,omitempty"`
+	SeqNo int `json:"seq_no,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1089,7 +1089,7 @@ func (s PipelineStateInfo) MarshalJSON() ([]byte, error) {
 type PipelineTrigger struct {
 	Cron *CronTrigger `json:"cron,omitempty"`
 
-	Manual any `json:"manual,omitempty"`
+	Manual ManualTrigger `json:"manual,omitempty"`
 }
 
 type Sequencing struct {

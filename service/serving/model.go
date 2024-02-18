@@ -48,19 +48,19 @@ func (s AppEvents) MarshalJSON() ([]byte, error) {
 
 type AppManifest struct {
 	// Workspace dependencies.
-	Dependencies []any `json:"dependencies,omitempty"`
+	Dependencies []AnyValue `json:"dependencies,omitempty"`
 	// application description
 	Description string `json:"description,omitempty"`
 	// Ingress rules for app public endpoints
-	Ingress any `json:"ingress,omitempty"`
+	Ingress AnyValue `json:"ingress,omitempty"`
 	// Only a-z and dashes (-). Max length of 30.
 	Name string `json:"name,omitempty"`
 	// Container private registry
-	Registry any `json:"registry,omitempty"`
+	Registry AnyValue `json:"registry,omitempty"`
 	// list of app services. Restricted to one for now.
-	Services any `json:"services,omitempty"`
+	Services AnyValue `json:"services,omitempty"`
 	// The manifest format version. Must be set to 1.
-	Version any `json:"version,omitempty"`
+	Version string `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -74,11 +74,11 @@ func (s AppManifest) MarshalJSON() ([]byte, error) {
 }
 
 type AppServiceStatus struct {
-	Deployment any `json:"deployment,omitempty"`
+	Deployment AnyValue `json:"deployment,omitempty"`
 
 	Name string `json:"name,omitempty"`
 
-	Template any `json:"template,omitempty"`
+	Template AnyValue `json:"template,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -285,9 +285,9 @@ type DatabricksModelServingConfig struct {
 }
 
 type DataframeSplitInput struct {
-	Columns []any `json:"columns,omitempty"`
+	Columns []AnyValue `json:"columns,omitempty"`
 
-	Data []any `json:"data,omitempty"`
+	Data []AnyValue `json:"data,omitempty"`
 
 	Index []int `json:"index,omitempty"`
 }
@@ -322,12 +322,12 @@ type DeployAppRequest struct {
 	// Manifest that specifies the application requirements
 	Manifest AppManifest `json:"manifest"`
 	// Information passed at app deployment time to fulfill app dependencies
-	Resources any `json:"resources,omitempty"`
+	Resources AnyValue `json:"resources,omitempty"`
 }
 
 type DeploymentStatus struct {
 	// Container logs.
-	ContainerLogs []any `json:"container_logs,omitempty"`
+	ContainerLogs []AnyValue `json:"container_logs,omitempty"`
 	// description
 	DeploymentId string `json:"deployment_id,omitempty"`
 	// Supplementary information about pod
@@ -791,7 +791,7 @@ type ListAppEventsResponse struct {
 
 type ListAppsResponse struct {
 	// Available apps.
-	Apps []any `json:"apps,omitempty"`
+	Apps []AnyValue `json:"apps,omitempty"`
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
@@ -908,7 +908,7 @@ type PutResponse struct {
 
 type QueryEndpointInput struct {
 	// Pandas Dataframe input in the records orientation.
-	DataframeRecords []any `json:"dataframe_records,omitempty"`
+	DataframeRecords []AnyValue `json:"dataframe_records,omitempty"`
 	// Pandas Dataframe input in the split orientation.
 	DataframeSplit *DataframeSplitInput `json:"dataframe_split,omitempty"`
 	// The extra parameters field used ONLY for __completions, chat,__ and
@@ -923,7 +923,7 @@ type QueryEndpointInput struct {
 	// Tensor-based input in columnar format.
 	Inputs any `json:"inputs,omitempty"`
 	// Tensor-based input in row format.
-	Instances []any `json:"instances,omitempty"`
+	Instances []AnyValue `json:"instances,omitempty"`
 	// The max tokens field used ONLY for __completions__ and __chat external &
 	// foundation model__ serving endpoints. This is an integer and should only
 	// be used with other chat/completions query fields.
@@ -989,7 +989,7 @@ type QueryEndpointResponse struct {
 	// embeddings)].
 	Object QueryEndpointResponseObject `json:"object,omitempty"`
 	// The predictions returned by the serving endpoint.
-	Predictions []any `json:"predictions,omitempty"`
+	Predictions []AnyValue `json:"predictions,omitempty"`
 	// The name of the served model that served the request. This is useful when
 	// there are multiple models behind the same endpoint with traffic split.
 	ServedModelName string `json:"-"`
