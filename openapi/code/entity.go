@@ -254,6 +254,16 @@ func (e *Entity) HasQueryField() bool {
 	return false
 }
 
+// HasByteStreamField returns true if any of the fields is a ByteStream
+func (e *Entity) HasByteStreamField() bool {
+	for _, v := range e.fields {
+		if v.Entity.IsByteStream {
+			return true
+		}
+	}
+	return false
+}
+
 // HasHeaderField returns true if any of the fields is from header
 func (e *Entity) HasHeaderField() bool {
 	for _, v := range e.fields {
