@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, External Locations, Functions, Grants, Lakehouse Monitors, Metastores, Model Versions, Registered Models, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Volumes, Workspace Bindings, etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, External Locations, Functions, Grants, Lakehouse Monitors, Metastores, Model Versions, Online Tables, Registered Models, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Volumes, Workspace Bindings, etc.
 package catalog
 
 import (
@@ -2943,6 +2943,119 @@ func (a *ModelVersionsAPI) ListByFullName(ctx context.Context, fullName string) 
 // Currently only the comment of the model version can be updated.
 func (a *ModelVersionsAPI) Update(ctx context.Context, request UpdateModelVersionRequest) (*ModelVersionInfo, error) {
 	return a.impl.Update(ctx, request)
+}
+
+type OnlineTablesInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockOnlineTablesInterface instead.
+	WithImpl(impl OnlineTablesService) OnlineTablesInterface
+
+	// Impl returns low-level OnlineTables API implementation
+	// Deprecated: use MockOnlineTablesInterface instead.
+	Impl() OnlineTablesService
+
+	// Create an Online Table.
+	//
+	// Create a new Online Table.
+	Create(ctx context.Context, request ViewData) (*OnlineTable, error)
+
+	// Delete an Online Table.
+	//
+	// Delete an online table. Warning: This will delete all the data in the online
+	// table. If the source Delta table was deleted or modified since this Online
+	// Table was created, this will lose the data forever!
+	Delete(ctx context.Context, request DeleteOnlineTableRequest) error
+
+	// Delete an Online Table.
+	//
+	// Delete an online table. Warning: This will delete all the data in the online
+	// table. If the source Delta table was deleted or modified since this Online
+	// Table was created, this will lose the data forever!
+	DeleteByName(ctx context.Context, name string) error
+
+	// Get an Online Table.
+	//
+	// Get information about an existing online table and its status.
+	Get(ctx context.Context, request GetOnlineTableRequest) (*OnlineTable, error)
+
+	// Get an Online Table.
+	//
+	// Get information about an existing online table and its status.
+	GetByName(ctx context.Context, name string) (*OnlineTable, error)
+}
+
+func NewOnlineTables(client *client.DatabricksClient) *OnlineTablesAPI {
+	return &OnlineTablesAPI{
+		impl: &onlineTablesImpl{
+			client: client,
+		},
+	}
+}
+
+// Online tables provide lower latency and higher QPS access to data from Delta
+// tables.
+type OnlineTablesAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(OnlineTablesService)
+	impl OnlineTablesService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockOnlineTablesInterface instead.
+func (a *OnlineTablesAPI) WithImpl(impl OnlineTablesService) OnlineTablesInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level OnlineTables API implementation
+// Deprecated: use MockOnlineTablesInterface instead.
+func (a *OnlineTablesAPI) Impl() OnlineTablesService {
+	return a.impl
+}
+
+// Create an Online Table.
+//
+// Create a new Online Table.
+func (a *OnlineTablesAPI) Create(ctx context.Context, request ViewData) (*OnlineTable, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Delete an Online Table.
+//
+// Delete an online table. Warning: This will delete all the data in the online
+// table. If the source Delta table was deleted or modified since this Online
+// Table was created, this will lose the data forever!
+func (a *OnlineTablesAPI) Delete(ctx context.Context, request DeleteOnlineTableRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Delete an Online Table.
+//
+// Delete an online table. Warning: This will delete all the data in the online
+// table. If the source Delta table was deleted or modified since this Online
+// Table was created, this will lose the data forever!
+func (a *OnlineTablesAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.impl.Delete(ctx, DeleteOnlineTableRequest{
+		Name: name,
+	})
+}
+
+// Get an Online Table.
+//
+// Get information about an existing online table and its status.
+func (a *OnlineTablesAPI) Get(ctx context.Context, request GetOnlineTableRequest) (*OnlineTable, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Get an Online Table.
+//
+// Get information about an existing online table and its status.
+func (a *OnlineTablesAPI) GetByName(ctx context.Context, name string) (*OnlineTable, error) {
+	return a.impl.Get(ctx, GetOnlineTableRequest{
+		Name: name,
+	})
 }
 
 type RegisteredModelsInterface interface {
