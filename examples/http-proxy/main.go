@@ -18,7 +18,9 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"os/signal"
 	"runtime"
+	"syscall"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
@@ -37,6 +39,7 @@ func main() {
 	defer server.Close()
 
 	callWithProxyClient()
+	waitForSigint()
 }
 
 func callWithProxyClient() {
@@ -65,6 +68,13 @@ func callWithProxyClient() {
 	for _, c := range all {
 		println(c.ClusterName)
 	}
+}
+
+func waitForSigint() {
+	log.Printf("Waiting for SIGINT...")
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT)
+	<-sigChan
 }
 
 func createX509Certificate() {
