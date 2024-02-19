@@ -113,6 +113,18 @@ func (m *Method) pathParams() (params []Field) {
 	return params
 }
 
+func (m *Method) ResponseHeaders() (headers []Field) {
+	if m.Response == nil {
+		return headers
+	}
+	for _, field := range m.Response.Fields() {
+		if field.IsHeader {
+			headers = append(headers, *field)
+		}
+	}
+	return headers
+}
+
 func (m *Method) allowShortcut() bool {
 	if m.shortcut {
 		return true
