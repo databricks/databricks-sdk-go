@@ -678,6 +678,28 @@ type ModelVersionsService interface {
 	Update(ctx context.Context, request UpdateModelVersionRequest) (*ModelVersionInfo, error)
 }
 
+// Online tables provide lower latency and higher QPS access to data from Delta
+// tables.
+type OnlineTablesService interface {
+
+	// Create an Online Table.
+	//
+	// Create a new Online Table.
+	Create(ctx context.Context, request ViewData) (*OnlineTable, error)
+
+	// Delete an Online Table.
+	//
+	// Delete an online table. Warning: This will delete all the data in the
+	// online table. If the source Delta table was deleted or modified since
+	// this Online Table was created, this will lose the data forever!
+	Delete(ctx context.Context, request DeleteOnlineTableRequest) error
+
+	// Get an Online Table.
+	//
+	// Get information about an existing online table and its status.
+	Get(ctx context.Context, request GetOnlineTableRequest) (*OnlineTable, error)
+}
+
 // Databricks provides a hosted version of MLflow Model Registry in Unity
 // Catalog. Models in Unity Catalog provide centralized access control,
 // auditing, lineage, and discovery of ML models across Databricks workspaces.
