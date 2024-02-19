@@ -71,6 +71,7 @@ func callWithProxyClient() {
 }
 
 func waitForSigint() {
+	log.Printf("Proxy server started. Press Ctrl+C to stop.")
 	log.Printf("Waiting for SIGINT...")
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT)
