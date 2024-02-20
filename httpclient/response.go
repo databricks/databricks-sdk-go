@@ -129,8 +129,8 @@ func injectHeaders(response any, body *common.ResponseWrapper) error {
 		switch field.Type.Kind() {
 		case reflect.String:
 			value.Field(i).Set(reflect.ValueOf(headerValue))
-		case reflect.Int64:
-			intValue, err := strconv.ParseInt(headerValue, 10, 64)
+		case reflect.Int:
+			intValue, err := strconv.Atoi(headerValue)
 			if err != nil {
 				return fmt.Errorf("failed to parse header %s as int: %w", headerTag.name, err)
 			}
