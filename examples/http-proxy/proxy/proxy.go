@@ -8,6 +8,7 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"math/big"
@@ -24,13 +25,23 @@ import (
 )
 
 func main() {
-	createX509Certificate()
-	defer cleanup()
+	proxyType := "https"
+	if len(os.Args) == 2 {
+		proxyType = os.Args[1]
+	}
+	if proxyType != "https" && proxyType != "http" {
+		log.Printf("Usage: %s [https|http]", os.Args[0])
+	}
 
-	addCertToSystemKeychain()
-	defer removeCertFromSystemKeychain()
+	if proxyType == "https" {
+		createX509Certificate()
+		defer cleanup()
 
-	server := startServer()
+		addCertToSystemKeychain()
+		defer removeCertFromSystemKeychain()
+	}
+
+	server := startServer(proxyType)
 	defer server.Close()
 
 	waitForSigint()
@@ -186,10 +197,10 @@ func transfer(destination io.WriteCloser, source io.ReadCloser) {
 	io.Copy(destination, source)
 }
 
-func startServer() *http.Server {
+func startServer(proxyType string) *http.Server {
 	log.Printf("Starting server...")
 	server := &http.Server{
-		Addr:    "localhost:8443", // HTTPS default port
+		Addr:    "localhost:8443",
 		Handler: http.HandlerFunc(handleTunneling),
 	}
 	err := http2.ConfigureServer(server, &http2.Server{})
@@ -198,15 +209,21 @@ func startServer() *http.Server {
 	}
 
 	// Start the server
-	log.Printf("Starting proxy server on https://%s", server.Addr)
+	log.Printf("Starting proxy server on %s://%s", proxyType, server.Addr)
 	go func() {
-		if err := server.ListenAndServeTLS("proxy.crt", "proxy.key"); !errors.Is(err, http.ErrServerClosed) {
+		var err error
+		if proxyType == "http" {
+			err = server.ListenAndServe()
+		} else {
+			err = server.ListenAndServeTLS("proxy.crt", "proxy.key")
+		}
+		if !errors.Is(err, http.ErrServerClosed) {
 			panic(err)
 		}
 	}()
 	log.Printf("Waiting for server to start...")
 	for {
-		_, err := http.Get("https://localhost:8443/ping")
+		_, err := http.Get(fmt.Sprintf("%s://localhost:8443/ping", proxyType))
 		if err == nil {
 			break
 		}
