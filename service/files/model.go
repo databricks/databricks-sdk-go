@@ -100,7 +100,8 @@ type DirectoryEntry struct {
 	IsDirectory bool `json:"is_directory,omitempty"`
 	// Last modification time of given file in milliseconds since unix epoch.
 	LastModified int64 `json:"last_modified,omitempty"`
-	// The name of the file or directory.
+	// The name of the file or directory. This is the last component of the
+	// path.
 	Name string `json:"name,omitempty"`
 	// The absolute path of the file or directory.
 	Path string `json:"path,omitempty"`
@@ -123,7 +124,23 @@ type DownloadRequest struct {
 }
 
 type DownloadResponse struct {
+	ContentLength int64 `json:"-" url:"-" header:"content-length,omitempty"`
+
+	ContentType string `json:"-" url:"-" header:"content-type,omitempty"`
+
 	Contents io.ReadCloser `json:"-"`
+
+	LastModified string `json:"-" url:"-" header:"last-modified,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DownloadResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DownloadResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type FileInfo struct {
@@ -195,17 +212,25 @@ type ListDbfsRequest struct {
 type ListDirectoryContentsRequest struct {
 	// The absolute path of a directory.
 	DirectoryPath string `json:"-" url:"-"`
-	// The maximum number of directory entries to return. The API may return
-	// fewer than this value. Receiving fewer results does not imply there are
-	// no more results. As long as the response contains a next_page_token,
-	// there may be more results.
+	// The maximum number of directory entries to return. The response may
+	// contain fewer entries. If the response contains a `next_page_token`,
+	// there may be more entries, even if fewer than `page_size` entries are in
+	// the response.
+	//
+	// We recommend not to set this value unless you are intentionally listing
+	// less than the complete directory contents.
 	//
 	// If unspecified, at most 1000 directory entries will be returned. The
 	// maximum value is 1000. Values above 1000 will be coerced to 1000.
 	PageSize int64 `json:"-" url:"page_size,omitempty"`
-	// A page token, received from a previous `list` call. Provide this to
-	// retrieve the subsequent page. When paginating, all other parameters
-	// provided to `list` must match the call that provided the page token.
+	// An opaque page token which was the `next_page_token` in the response of
+	// the previous request to list the contents of this directory. Provide this
+	// token to retrieve the next page of directory entries. When providing a
+	// `page_token`, all other parameters provided to the request must match the
+	// previous request. To list all of the entries in a directory, it is
+	// necessary to continue requesting pages of entries until the response
+	// contains no `next_page_token`. Note that the number of entries returned
+	// must not be used to determine when the listing is complete.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`

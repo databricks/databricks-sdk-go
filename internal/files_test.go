@@ -43,6 +43,7 @@ func TestAccUCUploadAndDownloadFilesAPI(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.Equal(t, fileHead.ContentType, "application/octet-stream")
+	require.Equal(t, fileHead.ContentLength, int64(4))
 	t.Cleanup(func() {
 		err = w.Files.DeleteByFilePath(ctx, filePath)
 		assert.NoError(t, err)
