@@ -74,34 +74,6 @@ type accountSettingsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountSettingsImpl) DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
-	var deletePersonalComputeSettingResponse DeletePersonalComputeSettingResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deletePersonalComputeSettingResponse)
-	return &deletePersonalComputeSettingResponse, err
-}
-
-func (a *accountSettingsImpl) GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	var personalComputeSetting PersonalComputeSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &personalComputeSetting)
-	return &personalComputeSetting, err
-}
-
-func (a *accountSettingsImpl) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	var personalComputeSetting PersonalComputeSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &personalComputeSetting)
-	return &personalComputeSetting, err
-}
-
 // unexported type that holds implementations of just CredentialsManager API methods
 type credentialsManagerImpl struct {
 	client *client.DatabricksClient
@@ -115,6 +87,39 @@ func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request Exch
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &exchangeTokenResponse)
 	return &exchangeTokenResponse, err
+}
+
+// unexported type that holds implementations of just DefaultNamespace API methods
+type defaultNamespaceImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *defaultNamespaceImpl) DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
+	var deleteDefaultNamespaceSettingResponse DeleteDefaultNamespaceSettingResponse
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDefaultNamespaceSettingResponse)
+	return &deleteDefaultNamespaceSettingResponse, err
+}
+
+func (a *defaultNamespaceImpl) GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
+	var defaultNamespaceSetting DefaultNamespaceSetting
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &defaultNamespaceSetting)
+	return &defaultNamespaceSetting, err
+}
+
+func (a *defaultNamespaceImpl) UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
+	var defaultNamespaceSetting DefaultNamespaceSetting
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &defaultNamespaceSetting)
+	return &defaultNamespaceSetting, err
 }
 
 // unexported type that holds implementations of just IpAccessLists API methods
@@ -254,21 +259,45 @@ func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, 
 	return &listNccAzurePrivateEndpointRulesResponse, err
 }
 
-// unexported type that holds implementations of just Settings API methods
-type settingsImpl struct {
+// unexported type that holds implementations of just PersonalComputeEnablement API methods
+type personalComputeEnablementImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *settingsImpl) DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
-	var deleteDefaultNamespaceSettingResponse DeleteDefaultNamespaceSettingResponse
-	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+func (a *personalComputeEnablementImpl) DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
+	var deletePersonalComputeSettingResponse DeletePersonalComputeSettingResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDefaultNamespaceSettingResponse)
-	return &deleteDefaultNamespaceSettingResponse, err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deletePersonalComputeSettingResponse)
+	return &deletePersonalComputeSettingResponse, err
 }
 
-func (a *settingsImpl) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
+func (a *personalComputeEnablementImpl) GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+	var personalComputeSetting PersonalComputeSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &personalComputeSetting)
+	return &personalComputeSetting, err
+}
+
+func (a *personalComputeEnablementImpl) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+	var personalComputeSetting PersonalComputeSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &personalComputeSetting)
+	return &personalComputeSetting, err
+}
+
+// unexported type that holds implementations of just RestrictWorkspaceAdmins API methods
+type restrictWorkspaceAdminsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *restrictWorkspaceAdminsImpl) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
 	var deleteRestrictWorkspaceAdminsSettingResponse DeleteRestrictWorkspaceAdminsSettingResponse
 	path := "/api/2.0/settings/types/restrict_workspace_admins/names/default"
 	headers := make(map[string]string)
@@ -277,16 +306,7 @@ func (a *settingsImpl) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context,
 	return &deleteRestrictWorkspaceAdminsSettingResponse, err
 }
 
-func (a *settingsImpl) GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	var defaultNamespaceSetting DefaultNamespaceSetting
-	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &defaultNamespaceSetting)
-	return &defaultNamespaceSetting, err
-}
-
-func (a *settingsImpl) GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
+func (a *restrictWorkspaceAdminsImpl) GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
 	var restrictWorkspaceAdminsSetting RestrictWorkspaceAdminsSetting
 	path := "/api/2.0/settings/types/restrict_workspace_admins/names/default"
 	headers := make(map[string]string)
@@ -295,17 +315,7 @@ func (a *settingsImpl) GetRestrictWorkspaceAdminsSetting(ctx context.Context, re
 	return &restrictWorkspaceAdminsSetting, err
 }
 
-func (a *settingsImpl) UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	var defaultNamespaceSetting DefaultNamespaceSetting
-	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &defaultNamespaceSetting)
-	return &defaultNamespaceSetting, err
-}
-
-func (a *settingsImpl) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
+func (a *restrictWorkspaceAdminsImpl) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
 	var restrictWorkspaceAdminsSetting RestrictWorkspaceAdminsSetting
 	path := "/api/2.0/settings/types/restrict_workspace_admins/names/default"
 	headers := make(map[string]string)
@@ -313,6 +323,11 @@ func (a *settingsImpl) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context,
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &restrictWorkspaceAdminsSetting)
 	return &restrictWorkspaceAdminsSetting, err
+}
+
+// unexported type that holds implementations of just Settings API methods
+type settingsImpl struct {
+	client *client.DatabricksClient
 }
 
 // unexported type that holds implementations of just TokenManagement API methods

@@ -44,6 +44,8 @@
 //
 // - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/set.
 //
+// - [settings.DefaultNamespaceAPI]: The default namespace setting API allows users to configure the default namespace for a Databricks workspace.
+//
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
 // - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
@@ -102,6 +104,8 @@
 //
 // - [iam.PermissionsAPI]: Permissions API are used to create read, write, edit, update and manage access for various users on different objects and endpoints.
 //
+// - [settings.PersonalComputeEnablementAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
+//
 // - [pipelines.PipelinesAPI]: The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
 //
 // - [compute.PolicyFamiliesAPI]: View available policy families.
@@ -126,6 +130,8 @@
 //
 // - [workspace.ReposAPI]: The Repos API allows users to manage their git repos.
 //
+// - [settings.RestrictWorkspaceAdminsAPI]: The Restrict Workspace Admins setting lets you control the capabilities of workspace admins.
+//
 // - [catalog.SchemasAPI]: A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace.
 //
 // - [workspace.SecretsAPI]: The Secrets API allows you to manage secrets, secret scopes, and access permissions.
@@ -138,9 +144,9 @@
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
-// - [settings.SettingsAPI]: The default namespace setting API allows users to configure the default namespace for a Databricks workspace.
+// - [settings.SettingsAPI]: Wrapper for Workspace Settings services.
 //
-// - [settings.AccountSettingsAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
+// - [settings.AccountSettingsAPI]: Wrapper for Account Settings services.
 //
 // - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
 //
@@ -234,6 +240,7 @@ var (
 	_ *sql.DataSourcesAPI                     = nil
 	_ *files.DbfsAPI                          = nil
 	_ *sql.DbsqlPermissionsAPI                = nil
+	_ *settings.DefaultNamespaceAPI           = nil
 	_ *provisioning.EncryptionKeysAPI         = nil
 	_ *ml.ExperimentsAPI                      = nil
 	_ *catalog.ExternalLocationsAPI           = nil
@@ -263,6 +270,7 @@ var (
 	_ *oauth2.OAuthPublishedAppsAPI           = nil
 	_ *catalog.OnlineTablesAPI                = nil
 	_ *iam.PermissionsAPI                     = nil
+	_ *settings.PersonalComputeEnablementAPI  = nil
 	_ *pipelines.PipelinesAPI                 = nil
 	_ *compute.PolicyFamiliesAPI              = nil
 	_ *provisioning.PrivateAccessAPI          = nil
@@ -275,6 +283,7 @@ var (
 	_ *sharing.RecipientsAPI                  = nil
 	_ *catalog.RegisteredModelsAPI            = nil
 	_ *workspace.ReposAPI                     = nil
+	_ *settings.RestrictWorkspaceAdminsAPI    = nil
 	_ *catalog.SchemasAPI                     = nil
 	_ *workspace.SecretsAPI                   = nil
 	_ *oauth2.ServicePrincipalSecretsAPI      = nil

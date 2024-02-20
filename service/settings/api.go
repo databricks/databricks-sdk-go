@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Credentials Manager, Ip Access Lists, Network Connectivity, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Credentials Manager, Default Namespace, Ip Access Lists, Network Connectivity, Personal Compute Enablement, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -362,20 +362,17 @@ type AccountSettingsInterface interface {
 	// Deprecated: use MockAccountSettingsInterface instead.
 	Impl() AccountSettingsService
 
-	// Delete Personal Compute setting.
+	// The Personal Compute enablement setting lets you control which users can
+	// use the Personal Compute default policy to create compute resources. By
+	// default all users in all workspaces have access (ON), but you can change
+	// the setting to instead let individual workspaces configure access control
+	// (DELEGATE).
 	//
-	// Reverts back the Personal Compute setting value to default (ON)
-	DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error)
-
-	// Get Personal Compute setting.
-	//
-	// Gets the value of the Personal Compute setting.
-	GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
-
-	// Update Personal Compute setting.
-	//
-	// Updates the value of the Personal Compute setting.
-	UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+	// There is only one instance of this setting per account. Since this
+	// setting has a default value, this setting is present on all accounts even
+	// though it's never set on a given account. Deletion reverts the value of
+	// the setting back to the default value.
+	PersonalComputeEnablement() PersonalComputeEnablementInterface
 }
 
 func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
@@ -383,22 +380,32 @@ func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 		impl: &accountSettingsImpl{
 			client: client,
 		},
+
+		personalComputeEnablement: NewPersonalComputeEnablement(client),
 	}
 }
 
-// The Personal Compute enablement setting lets you control which users can use
-// the Personal Compute default policy to create compute resources. By default
-// all users in all workspaces have access (ON), but you can change the setting
-// to instead let individual workspaces configure access control (DELEGATE).
-//
-// There is only one instance of this setting per account. Since this setting
-// has a default value, this setting is present on all accounts even though it's
-// never set on a given account. Deletion reverts the value of the setting back
-// to the default value.
+// Wrapper for Account Settings services
 type AccountSettingsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AccountSettingsService)
 	impl AccountSettingsService
+
+	// The Personal Compute enablement setting lets you control which users can
+	// use the Personal Compute default policy to create compute resources. By
+	// default all users in all workspaces have access (ON), but you can change
+	// the setting to instead let individual workspaces configure access control
+	// (DELEGATE).
+	//
+	// There is only one instance of this setting per account. Since this
+	// setting has a default value, this setting is present on all accounts even
+	// though it's never set on a given account. Deletion reverts the value of
+	// the setting back to the default value.
+	personalComputeEnablement PersonalComputeEnablementInterface
+}
+
+func (a *AccountSettingsAPI) PersonalComputeEnablement() PersonalComputeEnablementInterface {
+	return a.personalComputeEnablement
 }
 
 // WithImpl could be used to override low-level API implementations for unit
@@ -413,27 +420,6 @@ func (a *AccountSettingsAPI) WithImpl(impl AccountSettingsService) AccountSettin
 // Deprecated: use MockAccountSettingsInterface instead.
 func (a *AccountSettingsAPI) Impl() AccountSettingsService {
 	return a.impl
-}
-
-// Delete Personal Compute setting.
-//
-// Reverts back the Personal Compute setting value to default (ON)
-func (a *AccountSettingsAPI) DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
-	return a.impl.DeletePersonalComputeSetting(ctx, request)
-}
-
-// Get Personal Compute setting.
-//
-// Gets the value of the Personal Compute setting.
-func (a *AccountSettingsAPI) GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	return a.impl.GetPersonalComputeSetting(ctx, request)
-}
-
-// Update Personal Compute setting.
-//
-// Updates the value of the Personal Compute setting.
-func (a *AccountSettingsAPI) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	return a.impl.UpdatePersonalComputeSetting(ctx, request)
 }
 
 type CredentialsManagerInterface interface {
@@ -489,6 +475,115 @@ func (a *CredentialsManagerAPI) Impl() CredentialsManagerService {
 // allows specifying scopes to determine token permissions.
 func (a *CredentialsManagerAPI) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
 	return a.impl.ExchangeToken(ctx, request)
+}
+
+type DefaultNamespaceInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockDefaultNamespaceInterface instead.
+	WithImpl(impl DefaultNamespaceService) DefaultNamespaceInterface
+
+	// Impl returns low-level DefaultNamespace API implementation
+	// Deprecated: use MockDefaultNamespaceInterface instead.
+	Impl() DefaultNamespaceService
+
+	// Delete the default namespace setting.
+	//
+	// Deletes the default namespace setting for the workspace. A fresh etag needs
+	// to be provided in DELETE requests (as a query parameter). The etag can be
+	// retrieved by making a GET request before the DELETE request. If the setting
+	// is updated/deleted concurrently, DELETE will fail with 409 and the request
+	// will need to be retried by using the fresh etag in the 409 response.
+	DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+
+	// Get the default namespace setting.
+	//
+	// Gets the default namespace setting.
+	GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
+
+	// Update the default namespace setting.
+	//
+	// Updates the default namespace setting for the workspace. A fresh etag needs
+	// to be provided in PATCH requests (as part of the setting field). The etag can
+	// be retrieved by making a GET request before the PATCH request. Note that if
+	// the setting does not exist, GET will return a NOT_FOUND error and the etag
+	// will be present in the error response, which should be set in the PATCH
+	// request. If the setting is updated concurrently, PATCH will fail with 409 and
+	// the request will need to be retried by using the fresh etag in the 409
+	// response.
+	UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
+}
+
+func NewDefaultNamespace(client *client.DatabricksClient) *DefaultNamespaceAPI {
+	return &DefaultNamespaceAPI{
+		impl: &defaultNamespaceImpl{
+			client: client,
+		},
+	}
+}
+
+// The default namespace setting API allows users to configure the default
+// namespace for a Databricks workspace.
+//
+// Through this API, users can retrieve, set, or modify the default namespace
+// used when queries do not reference a fully qualified three-level name. For
+// example, if you use the API to set 'retail_prod' as the default catalog, then
+// a query 'SELECT * FROM myTable' would reference the object
+// 'retail_prod.default.myTable' (the schema 'default' is always assumed).
+//
+// This setting requires a restart of clusters and SQL warehouses to take
+// effect. Additionally, the default namespace only applies when using Unity
+// Catalog-enabled compute.
+type DefaultNamespaceAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(DefaultNamespaceService)
+	impl DefaultNamespaceService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockDefaultNamespaceInterface instead.
+func (a *DefaultNamespaceAPI) WithImpl(impl DefaultNamespaceService) DefaultNamespaceInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level DefaultNamespace API implementation
+// Deprecated: use MockDefaultNamespaceInterface instead.
+func (a *DefaultNamespaceAPI) Impl() DefaultNamespaceService {
+	return a.impl
+}
+
+// Delete the default namespace setting.
+//
+// Deletes the default namespace setting for the workspace. A fresh etag needs
+// to be provided in DELETE requests (as a query parameter). The etag can be
+// retrieved by making a GET request before the DELETE request. If the setting
+// is updated/deleted concurrently, DELETE will fail with 409 and the request
+// will need to be retried by using the fresh etag in the 409 response.
+func (a *DefaultNamespaceAPI) DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
+	return a.impl.DeleteDefaultNamespaceSetting(ctx, request)
+}
+
+// Get the default namespace setting.
+//
+// Gets the default namespace setting.
+func (a *DefaultNamespaceAPI) GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
+	return a.impl.GetDefaultNamespaceSetting(ctx, request)
+}
+
+// Update the default namespace setting.
+//
+// Updates the default namespace setting for the workspace. A fresh etag needs
+// to be provided in PATCH requests (as part of the setting field). The etag can
+// be retrieved by making a GET request before the PATCH request. Note that if
+// the setting does not exist, GET will return a NOT_FOUND error and the etag
+// will be present in the error response, which should be set in the PATCH
+// request. If the setting is updated concurrently, PATCH will fail with 409 and
+// the request will need to be retried by using the fresh etag in the 409
+// response.
+func (a *DefaultNamespaceAPI) UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
+	return a.impl.UpdateDefaultNamespaceSetting(ctx, request)
 }
 
 type IpAccessListsInterface interface {
@@ -1198,24 +1293,99 @@ func (a *NetworkConnectivityAPI) ListPrivateEndpointRulesByNetworkConnectivityCo
 	})
 }
 
-type SettingsInterface interface {
+type PersonalComputeEnablementInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockSettingsInterface instead.
-	WithImpl(impl SettingsService) SettingsInterface
+	// Deprecated: use MockPersonalComputeEnablementInterface instead.
+	WithImpl(impl PersonalComputeEnablementService) PersonalComputeEnablementInterface
 
-	// Impl returns low-level Settings API implementation
-	// Deprecated: use MockSettingsInterface instead.
-	Impl() SettingsService
+	// Impl returns low-level PersonalComputeEnablement API implementation
+	// Deprecated: use MockPersonalComputeEnablementInterface instead.
+	Impl() PersonalComputeEnablementService
 
-	// Delete the default namespace setting.
+	// Delete Personal Compute setting.
 	//
-	// Deletes the default namespace setting for the workspace. A fresh etag needs
-	// to be provided in DELETE requests (as a query parameter). The etag can be
-	// retrieved by making a GET request before the DELETE request. If the setting
-	// is updated/deleted concurrently, DELETE will fail with 409 and the request
-	// will need to be retried by using the fresh etag in the 409 response.
-	DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+	// Reverts back the Personal Compute setting value to default (ON)
+	DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error)
+
+	// Get Personal Compute setting.
+	//
+	// Gets the value of the Personal Compute setting.
+	GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+
+	// Update Personal Compute setting.
+	//
+	// Updates the value of the Personal Compute setting.
+	UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+}
+
+func NewPersonalComputeEnablement(client *client.DatabricksClient) *PersonalComputeEnablementAPI {
+	return &PersonalComputeEnablementAPI{
+		impl: &personalComputeEnablementImpl{
+			client: client,
+		},
+	}
+}
+
+// The Personal Compute enablement setting lets you control which users can use
+// the Personal Compute default policy to create compute resources. By default
+// all users in all workspaces have access (ON), but you can change the setting
+// to instead let individual workspaces configure access control (DELEGATE).
+//
+// There is only one instance of this setting per account. Since this setting
+// has a default value, this setting is present on all accounts even though it's
+// never set on a given account. Deletion reverts the value of the setting back
+// to the default value.
+type PersonalComputeEnablementAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(PersonalComputeEnablementService)
+	impl PersonalComputeEnablementService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockPersonalComputeEnablementInterface instead.
+func (a *PersonalComputeEnablementAPI) WithImpl(impl PersonalComputeEnablementService) PersonalComputeEnablementInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level PersonalComputeEnablement API implementation
+// Deprecated: use MockPersonalComputeEnablementInterface instead.
+func (a *PersonalComputeEnablementAPI) Impl() PersonalComputeEnablementService {
+	return a.impl
+}
+
+// Delete Personal Compute setting.
+//
+// Reverts back the Personal Compute setting value to default (ON)
+func (a *PersonalComputeEnablementAPI) DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
+	return a.impl.DeletePersonalComputeSetting(ctx, request)
+}
+
+// Get Personal Compute setting.
+//
+// Gets the value of the Personal Compute setting.
+func (a *PersonalComputeEnablementAPI) GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+	return a.impl.GetPersonalComputeSetting(ctx, request)
+}
+
+// Update Personal Compute setting.
+//
+// Updates the value of the Personal Compute setting.
+func (a *PersonalComputeEnablementAPI) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+	return a.impl.UpdatePersonalComputeSetting(ctx, request)
+}
+
+type RestrictWorkspaceAdminsInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockRestrictWorkspaceAdminsInterface instead.
+	WithImpl(impl RestrictWorkspaceAdminsService) RestrictWorkspaceAdminsInterface
+
+	// Impl returns low-level RestrictWorkspaceAdmins API implementation
+	// Deprecated: use MockRestrictWorkspaceAdminsInterface instead.
+	Impl() RestrictWorkspaceAdminsService
 
 	// Delete the restrict workspace admins setting.
 	//
@@ -1227,27 +1397,10 @@ type SettingsInterface interface {
 	// response.
 	DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
 
-	// Get the default namespace setting.
-	//
-	// Gets the default namespace setting.
-	GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
-
 	// Get the restrict workspace admins setting.
 	//
 	// Gets the restrict workspace admins setting.
 	GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
-
-	// Update the default namespace setting.
-	//
-	// Updates the default namespace setting for the workspace. A fresh etag needs
-	// to be provided in PATCH requests (as part of the setting field). The etag can
-	// be retrieved by making a GET request before the PATCH request. Note that if
-	// the setting does not exist, GET will return a NOT_FOUND error and the etag
-	// will be present in the error response, which should be set in the PATCH
-	// request. If the setting is updated concurrently, PATCH will fail with 409 and
-	// the request will need to be retried by using the fresh etag in the 409
-	// response.
-	UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
 
 	// Update the restrict workspace admins setting.
 	//
@@ -1259,30 +1412,167 @@ type SettingsInterface interface {
 	UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
 }
 
-func NewSettings(client *client.DatabricksClient) *SettingsAPI {
-	return &SettingsAPI{
-		impl: &settingsImpl{
+func NewRestrictWorkspaceAdmins(client *client.DatabricksClient) *RestrictWorkspaceAdminsAPI {
+	return &RestrictWorkspaceAdminsAPI{
+		impl: &restrictWorkspaceAdminsImpl{
 			client: client,
 		},
 	}
 }
 
-// The default namespace setting API allows users to configure the default
-// namespace for a Databricks workspace.
+// The Restrict Workspace Admins setting lets you control the capabilities of
+// workspace admins. With the setting status set to ALLOW_ALL, workspace admins
+// can create service principal personal access tokens on behalf of any service
+// principal in their workspace. Workspace admins can also change a job owner or
+// the job run_as setting to any user in their workspace or a service principal
+// on which they have the Service Principal User role. With the setting status
+// set to RESTRICT_TOKENS_AND_JOB_RUN_AS, workspace admins can only create
+// personal access tokens on behalf of service principals they have the Service
+// Principal User role on. They can also only change a job owner or the job
+// run_as setting to themselves or a service principal on which they have the
+// Service Principal User role.
+type RestrictWorkspaceAdminsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(RestrictWorkspaceAdminsService)
+	impl RestrictWorkspaceAdminsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockRestrictWorkspaceAdminsInterface instead.
+func (a *RestrictWorkspaceAdminsAPI) WithImpl(impl RestrictWorkspaceAdminsService) RestrictWorkspaceAdminsInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level RestrictWorkspaceAdmins API implementation
+// Deprecated: use MockRestrictWorkspaceAdminsInterface instead.
+func (a *RestrictWorkspaceAdminsAPI) Impl() RestrictWorkspaceAdminsService {
+	return a.impl
+}
+
+// Delete the restrict workspace admins setting.
 //
-// Through this API, users can retrieve, set, or modify the default namespace
-// used when queries do not reference a fully qualified three-level name. For
-// example, if you use the API to set 'retail_prod' as the default catalog, then
-// a query 'SELECT * FROM myTable' would reference the object
-// 'retail_prod.default.myTable' (the schema 'default' is always assumed).
+// Reverts the restrict workspace admins setting status for the workspace. A
+// fresh etag needs to be provided in DELETE requests (as a query parameter).
+// The etag can be retrieved by making a GET request before the DELETE request.
+// If the setting is updated/deleted concurrently, DELETE will fail with 409 and
+// the request will need to be retried by using the fresh etag in the 409
+// response.
+func (a *RestrictWorkspaceAdminsAPI) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
+	return a.impl.DeleteRestrictWorkspaceAdminsSetting(ctx, request)
+}
+
+// Get the restrict workspace admins setting.
 //
-// This setting requires a restart of clusters and SQL warehouses to take
-// effect. Additionally, the default namespace only applies when using Unity
-// Catalog-enabled compute.
+// Gets the restrict workspace admins setting.
+func (a *RestrictWorkspaceAdminsAPI) GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
+	return a.impl.GetRestrictWorkspaceAdminsSetting(ctx, request)
+}
+
+// Update the restrict workspace admins setting.
+//
+// Updates the restrict workspace admins setting for the workspace. A fresh etag
+// needs to be provided in PATCH requests (as part of the setting field). The
+// etag can be retrieved by making a GET request before the PATCH request. If
+// the setting is updated concurrently, PATCH will fail with 409 and the request
+// will need to be retried by using the fresh etag in the 409 response.
+func (a *RestrictWorkspaceAdminsAPI) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
+	return a.impl.UpdateRestrictWorkspaceAdminsSetting(ctx, request)
+}
+
+type SettingsInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockSettingsInterface instead.
+	WithImpl(impl SettingsService) SettingsInterface
+
+	// Impl returns low-level Settings API implementation
+	// Deprecated: use MockSettingsInterface instead.
+	Impl() SettingsService
+
+	// The default namespace setting API allows users to configure the default
+	// namespace for a Databricks workspace.
+	//
+	// Through this API, users can retrieve, set, or modify the default
+	// namespace used when queries do not reference a fully qualified
+	// three-level name. For example, if you use the API to set 'retail_prod' as
+	// the default catalog, then a query 'SELECT * FROM myTable' would reference
+	// the object 'retail_prod.default.myTable' (the schema 'default' is always
+	// assumed).
+	//
+	// This setting requires a restart of clusters and SQL warehouses to take
+	// effect. Additionally, the default namespace only applies when using Unity
+	// Catalog-enabled compute.
+	DefaultNamespace() DefaultNamespaceInterface
+
+	// The Restrict Workspace Admins setting lets you control the capabilities
+	// of workspace admins. With the setting status set to ALLOW_ALL, workspace
+	// admins can create service principal personal access tokens on behalf of
+	// any service principal in their workspace. Workspace admins can also
+	// change a job owner or the job run_as setting to any user in their
+	// workspace or a service principal on which they have the Service Principal
+	// User role. With the setting status set to RESTRICT_TOKENS_AND_JOB_RUN_AS,
+	// workspace admins can only create personal access tokens on behalf of
+	// service principals they have the Service Principal User role on. They can
+	// also only change a job owner or the job run_as setting to themselves or a
+	// service principal on which they have the Service Principal User role.
+	RestrictWorkspaceAdmins() RestrictWorkspaceAdminsInterface
+}
+
+func NewSettings(client *client.DatabricksClient) *SettingsAPI {
+	return &SettingsAPI{
+		impl: &settingsImpl{
+			client: client,
+		},
+
+		defaultNamespace: NewDefaultNamespace(client),
+
+		restrictWorkspaceAdmins: NewRestrictWorkspaceAdmins(client),
+	}
+}
+
+// Wrapper for Workspace Settings services
 type SettingsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(SettingsService)
 	impl SettingsService
+
+	// The default namespace setting API allows users to configure the default
+	// namespace for a Databricks workspace.
+	//
+	// Through this API, users can retrieve, set, or modify the default
+	// namespace used when queries do not reference a fully qualified
+	// three-level name. For example, if you use the API to set 'retail_prod' as
+	// the default catalog, then a query 'SELECT * FROM myTable' would reference
+	// the object 'retail_prod.default.myTable' (the schema 'default' is always
+	// assumed).
+	//
+	// This setting requires a restart of clusters and SQL warehouses to take
+	// effect. Additionally, the default namespace only applies when using Unity
+	// Catalog-enabled compute.
+	defaultNamespace DefaultNamespaceInterface
+
+	// The Restrict Workspace Admins setting lets you control the capabilities
+	// of workspace admins. With the setting status set to ALLOW_ALL, workspace
+	// admins can create service principal personal access tokens on behalf of
+	// any service principal in their workspace. Workspace admins can also
+	// change a job owner or the job run_as setting to any user in their
+	// workspace or a service principal on which they have the Service Principal
+	// User role. With the setting status set to RESTRICT_TOKENS_AND_JOB_RUN_AS,
+	// workspace admins can only create personal access tokens on behalf of
+	// service principals they have the Service Principal User role on. They can
+	// also only change a job owner or the job run_as setting to themselves or a
+	// service principal on which they have the Service Principal User role.
+	restrictWorkspaceAdmins RestrictWorkspaceAdminsInterface
+}
+
+func (a *SettingsAPI) DefaultNamespace() DefaultNamespaceInterface {
+	return a.defaultNamespace
+}
+
+func (a *SettingsAPI) RestrictWorkspaceAdmins() RestrictWorkspaceAdminsInterface {
+	return a.restrictWorkspaceAdmins
 }
 
 // WithImpl could be used to override low-level API implementations for unit
@@ -1297,68 +1587,6 @@ func (a *SettingsAPI) WithImpl(impl SettingsService) SettingsInterface {
 // Deprecated: use MockSettingsInterface instead.
 func (a *SettingsAPI) Impl() SettingsService {
 	return a.impl
-}
-
-// Delete the default namespace setting.
-//
-// Deletes the default namespace setting for the workspace. A fresh etag needs
-// to be provided in DELETE requests (as a query parameter). The etag can be
-// retrieved by making a GET request before the DELETE request. If the setting
-// is updated/deleted concurrently, DELETE will fail with 409 and the request
-// will need to be retried by using the fresh etag in the 409 response.
-func (a *SettingsAPI) DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
-	return a.impl.DeleteDefaultNamespaceSetting(ctx, request)
-}
-
-// Delete the restrict workspace admins setting.
-//
-// Reverts the restrict workspace admins setting status for the workspace. A
-// fresh etag needs to be provided in DELETE requests (as a query parameter).
-// The etag can be retrieved by making a GET request before the DELETE request.
-// If the setting is updated/deleted concurrently, DELETE will fail with 409 and
-// the request will need to be retried by using the fresh etag in the 409
-// response.
-func (a *SettingsAPI) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
-	return a.impl.DeleteRestrictWorkspaceAdminsSetting(ctx, request)
-}
-
-// Get the default namespace setting.
-//
-// Gets the default namespace setting.
-func (a *SettingsAPI) GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	return a.impl.GetDefaultNamespaceSetting(ctx, request)
-}
-
-// Get the restrict workspace admins setting.
-//
-// Gets the restrict workspace admins setting.
-func (a *SettingsAPI) GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
-	return a.impl.GetRestrictWorkspaceAdminsSetting(ctx, request)
-}
-
-// Update the default namespace setting.
-//
-// Updates the default namespace setting for the workspace. A fresh etag needs
-// to be provided in PATCH requests (as part of the setting field). The etag can
-// be retrieved by making a GET request before the PATCH request. Note that if
-// the setting does not exist, GET will return a NOT_FOUND error and the etag
-// will be present in the error response, which should be set in the PATCH
-// request. If the setting is updated concurrently, PATCH will fail with 409 and
-// the request will need to be retried by using the fresh etag in the 409
-// response.
-func (a *SettingsAPI) UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	return a.impl.UpdateDefaultNamespaceSetting(ctx, request)
-}
-
-// Update the restrict workspace admins setting.
-//
-// Updates the restrict workspace admins setting for the workspace. A fresh etag
-// needs to be provided in PATCH requests (as part of the setting field). The
-// etag can be retrieved by making a GET request before the PATCH request. If
-// the setting is updated concurrently, PATCH will fail with 409 and the request
-// will need to be retried by using the fresh etag in the 409 response.
-func (a *SettingsAPI) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
-	return a.impl.UpdateRestrictWorkspaceAdminsSetting(ctx, request)
 }
 
 type TokenManagementInterface interface {

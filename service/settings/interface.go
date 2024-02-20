@@ -103,31 +103,8 @@ type AccountIpAccessListsService interface {
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 
-// The Personal Compute enablement setting lets you control which users can use
-// the Personal Compute default policy to create compute resources. By default
-// all users in all workspaces have access (ON), but you can change the setting
-// to instead let individual workspaces configure access control (DELEGATE).
-//
-// There is only one instance of this setting per account. Since this setting
-// has a default value, this setting is present on all accounts even though it's
-// never set on a given account. Deletion reverts the value of the setting back
-// to the default value.
+// Wrapper for Account Settings services
 type AccountSettingsService interface {
-
-	// Delete Personal Compute setting.
-	//
-	// Reverts back the Personal Compute setting value to default (ON)
-	DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error)
-
-	// Get Personal Compute setting.
-	//
-	// Gets the value of the Personal Compute setting.
-	GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
-
-	// Update Personal Compute setting.
-	//
-	// Updates the value of the Personal Compute setting.
-	UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
 }
 
 // Credentials manager interacts with with Identity Providers to to perform
@@ -139,6 +116,48 @@ type CredentialsManagerService interface {
 	// Exchange tokens with an Identity Provider to get a new access token. It
 	// allows specifying scopes to determine token permissions.
 	ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error)
+}
+
+// The default namespace setting API allows users to configure the default
+// namespace for a Databricks workspace.
+//
+// Through this API, users can retrieve, set, or modify the default namespace
+// used when queries do not reference a fully qualified three-level name. For
+// example, if you use the API to set 'retail_prod' as the default catalog, then
+// a query 'SELECT * FROM myTable' would reference the object
+// 'retail_prod.default.myTable' (the schema 'default' is always assumed).
+//
+// This setting requires a restart of clusters and SQL warehouses to take
+// effect. Additionally, the default namespace only applies when using Unity
+// Catalog-enabled compute.
+type DefaultNamespaceService interface {
+
+	// Delete the default namespace setting.
+	//
+	// Deletes the default namespace setting for the workspace. A fresh etag
+	// needs to be provided in DELETE requests (as a query parameter). The etag
+	// can be retrieved by making a GET request before the DELETE request. If
+	// the setting is updated/deleted concurrently, DELETE will fail with 409
+	// and the request will need to be retried by using the fresh etag in the
+	// 409 response.
+	DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+
+	// Get the default namespace setting.
+	//
+	// Gets the default namespace setting.
+	GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
+
+	// Update the default namespace setting.
+	//
+	// Updates the default namespace setting for the workspace. A fresh etag
+	// needs to be provided in PATCH requests (as part of the setting field).
+	// The etag can be retrieved by making a GET request before the PATCH
+	// request. Note that if the setting does not exist, GET will return a
+	// NOT_FOUND error and the etag will be present in the error response, which
+	// should be set in the PATCH request. If the setting is updated
+	// concurrently, PATCH will fail with 409 and the request will need to be
+	// retried by using the fresh etag in the 409 response.
+	UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
 }
 
 // IP Access List enables admins to configure IP access lists.
@@ -324,29 +343,45 @@ type NetworkConnectivityService interface {
 	ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error)
 }
 
-// The default namespace setting API allows users to configure the default
-// namespace for a Databricks workspace.
+// The Personal Compute enablement setting lets you control which users can use
+// the Personal Compute default policy to create compute resources. By default
+// all users in all workspaces have access (ON), but you can change the setting
+// to instead let individual workspaces configure access control (DELEGATE).
 //
-// Through this API, users can retrieve, set, or modify the default namespace
-// used when queries do not reference a fully qualified three-level name. For
-// example, if you use the API to set 'retail_prod' as the default catalog, then
-// a query 'SELECT * FROM myTable' would reference the object
-// 'retail_prod.default.myTable' (the schema 'default' is always assumed).
-//
-// This setting requires a restart of clusters and SQL warehouses to take
-// effect. Additionally, the default namespace only applies when using Unity
-// Catalog-enabled compute.
-type SettingsService interface {
+// There is only one instance of this setting per account. Since this setting
+// has a default value, this setting is present on all accounts even though it's
+// never set on a given account. Deletion reverts the value of the setting back
+// to the default value.
+type PersonalComputeEnablementService interface {
 
-	// Delete the default namespace setting.
+	// Delete Personal Compute setting.
 	//
-	// Deletes the default namespace setting for the workspace. A fresh etag
-	// needs to be provided in DELETE requests (as a query parameter). The etag
-	// can be retrieved by making a GET request before the DELETE request. If
-	// the setting is updated/deleted concurrently, DELETE will fail with 409
-	// and the request will need to be retried by using the fresh etag in the
-	// 409 response.
-	DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+	// Reverts back the Personal Compute setting value to default (ON)
+	DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error)
+
+	// Get Personal Compute setting.
+	//
+	// Gets the value of the Personal Compute setting.
+	GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+
+	// Update Personal Compute setting.
+	//
+	// Updates the value of the Personal Compute setting.
+	UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+}
+
+// The Restrict Workspace Admins setting lets you control the capabilities of
+// workspace admins. With the setting status set to ALLOW_ALL, workspace admins
+// can create service principal personal access tokens on behalf of any service
+// principal in their workspace. Workspace admins can also change a job owner or
+// the job run_as setting to any user in their workspace or a service principal
+// on which they have the Service Principal User role. With the setting status
+// set to RESTRICT_TOKENS_AND_JOB_RUN_AS, workspace admins can only create
+// personal access tokens on behalf of service principals they have the Service
+// Principal User role on. They can also only change a job owner or the job
+// run_as setting to themselves or a service principal on which they have the
+// Service Principal User role.
+type RestrictWorkspaceAdminsService interface {
 
 	// Delete the restrict workspace admins setting.
 	//
@@ -358,27 +393,10 @@ type SettingsService interface {
 	// fresh etag in the 409 response.
 	DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
 
-	// Get the default namespace setting.
-	//
-	// Gets the default namespace setting.
-	GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
-
 	// Get the restrict workspace admins setting.
 	//
 	// Gets the restrict workspace admins setting.
 	GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
-
-	// Update the default namespace setting.
-	//
-	// Updates the default namespace setting for the workspace. A fresh etag
-	// needs to be provided in PATCH requests (as part of the setting field).
-	// The etag can be retrieved by making a GET request before the PATCH
-	// request. Note that if the setting does not exist, GET will return a
-	// NOT_FOUND error and the etag will be present in the error response, which
-	// should be set in the PATCH request. If the setting is updated
-	// concurrently, PATCH will fail with 409 and the request will need to be
-	// retried by using the fresh etag in the 409 response.
-	UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
 
 	// Update the restrict workspace admins setting.
 	//
@@ -389,6 +407,10 @@ type SettingsService interface {
 	// with 409 and the request will need to be retried by using the fresh etag
 	// in the 409 response.
 	UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
+}
+
+// Wrapper for Workspace Settings services
+type SettingsService interface {
 }
 
 // Enables administrators to get all tokens and delete tokens for other users.
