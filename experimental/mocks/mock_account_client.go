@@ -26,7 +26,7 @@ func NewMockAccountClient(t interface {
 	mock.TestingT
 	Cleanup(func())
 }) *MockAccountClient {
-	return &MockAccountClient{
+	cli := &MockAccountClient{
 		AccountClient: &databricks.AccountClient{
 			Config: nil,
 
@@ -57,6 +57,21 @@ func NewMockAccountClient(t interface {
 			Workspaces:              provisioning.NewMockWorkspacesInterface(t),
 		},
 	}
+
+	mockAccountSettingsAPI := cli.GetMockAccountSettingsAPI()
+
+	mockPersonalComputeEnablement := settings.NewMockPersonalComputeEnablementInterface(t)
+	mockAccountSettingsAPI.On("PersonalComputeEnablement").Return(mockPersonalComputeEnablement).Maybe()
+
+	return cli
+}
+
+func (m *MockAccountClient) GetMockPersonalComputeEnablementAPI() *settings.MockPersonalComputeEnablementInterface {
+	api, ok := m.GetMockAccountSettingsAPI().PersonalComputeEnablement().(*settings.MockPersonalComputeEnablementInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected PersonalComputeEnablement to be *settings.MockPersonalComputeEnablementInterface, actual was %T", m.GetMockAccountSettingsAPI().PersonalComputeEnablement()))
+	}
+	return api
 }
 
 func (m *MockAccountClient) GetMockAccountAccessControlAPI() *iam.MockAccountAccessControlInterface {

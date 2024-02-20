@@ -29,11 +29,11 @@ func NewMockWorkspaceClient(t interface {
 	}
 	{{range .ServicesSortedByParent}} {{if not .IsAccounts}}
 	{{if  .HasSubservices}}
-	mock{{.CamelCase}}API := cli.GetMock{{.Name}}API()
+	mock{{.CamelName}}API := cli.GetMock{{.Name}}API()
 	{{end}}
 	{{if .HasParent}}
-	mock{{.CamelCase}} := {{ template "mock-interface-constructor" . }}(t),
-	mock{{.ParentService.CamelCase}}API.On("{{.Name}}").Return(mock{{.CamelCase}})
+	mock{{.CamelName}} := {{ template "mock-interface-constructor" . }}(t)
+	mock{{.ParentService.CamelName}}API.On("{{.Name}}").Return(mock{{.CamelName}}).Maybe()
 	{{end}}
 	{{end}}
 	{{end}}
@@ -42,9 +42,9 @@ func NewMockWorkspaceClient(t interface {
 
 {{range .Services}}{{if and (not .IsAccounts) (.HasParent)}}
 func(m *MockWorkspaceClient) GetMock{{.Name}}API() *{{ template "mock-interface-name" . }} {
-	api, ok := m.GetMock{{.ParentService.Name}}API().{{.Name}}.(*{{ template "mock-interface-name" . }})
+	api, ok := m.GetMock{{.ParentService.Name}}API().{{.Name}}().(*{{ template "mock-interface-name" . }})
 	if !ok {
-		panic(fmt.Sprintf("expected {{.Name}} to be *{{ template "mock-interface-name" . }}, actual was %T", m.WorkspaceClient.{{.Name}}))
+		panic(fmt.Sprintf("expected {{.Name}} to be *{{ template "mock-interface-name" . }}, actual was %T", m.GetMock{{.ParentService.Name}}API().{{.Name}}()))
 	}
 	return api
 }

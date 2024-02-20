@@ -120,3 +120,10 @@ func (b *Batch) Services() (services []*Service) {
 	})
 	return services
 }
+
+func (b *Batch) ServicesSortedByParent() (services []*Service) {
+	for _, pkg := range b.packages {
+		services = append(services, pkg.ServicesSortedByParent()...)
+	}
+	return services
+}

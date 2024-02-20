@@ -69,8 +69,11 @@ experimental/mocks/service/serving/mock_serving_endpoints_interface.go linguist-
 experimental/mocks/service/settings/mock_account_ip_access_lists_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_account_settings_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_credentials_manager_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_default_namespace_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_ip_access_lists_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_network_connectivity_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_personal_compute_enablement_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_restrict_workspace_admins_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_settings_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_token_management_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_tokens_interface.go linguist-generated=true

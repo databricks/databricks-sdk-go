@@ -108,9 +108,14 @@ func NewMockWorkspaceClient(t interface {
 			WorkspaceConf:             settings.NewMockWorkspaceConfInterface(t),
 		},
 	}
-	settingsApi := cli.GetMockSettingsAPI()
-	defaultNamespace := settings.NewMockDefaultNamespaceInterface(t)
-	settingsApi.On("DefaultNamespace").Return(defaultNamespace)
+
+	mocksettingsAPI := cli.GetMockSettingsAPI()
+
+	mockdefaultNamespace := settings.NewMockDefaultNamespaceInterface(t)
+	mocksettingsAPI.On("DefaultNamespace").Return(mockdefaultNamespace).Maybe()
+
+	mockrestrictWorkspaceAdmins := settings.NewMockRestrictWorkspaceAdminsInterface(t)
+	mocksettingsAPI.On("RestrictWorkspaceAdmins").Return(mockrestrictWorkspaceAdmins).Maybe()
 
 	return cli
 }
@@ -118,7 +123,15 @@ func NewMockWorkspaceClient(t interface {
 func (m *MockWorkspaceClient) GetMockDefaultNamespaceAPI() *settings.MockDefaultNamespaceInterface {
 	api, ok := m.GetMockSettingsAPI().DefaultNamespace().(*settings.MockDefaultNamespaceInterface)
 	if !ok {
-		panic(fmt.Sprintf("expected Workspace to be *workspace.MockWorkspaceInterface, actual was %T", m.WorkspaceClient.Workspace))
+		panic(fmt.Sprintf("expected DefaultNamespace to be *settings.MockDefaultNamespaceInterface, actual was %T", m.GetMockSettingsAPI().DefaultNamespace()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockRestrictWorkspaceAdminsAPI() *settings.MockRestrictWorkspaceAdminsInterface {
+	api, ok := m.GetMockSettingsAPI().RestrictWorkspaceAdmins().(*settings.MockRestrictWorkspaceAdminsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected RestrictWorkspaceAdmins to be *settings.MockRestrictWorkspaceAdminsInterface, actual was %T", m.GetMockSettingsAPI().RestrictWorkspaceAdmins()))
 	}
 	return api
 }
