@@ -34,7 +34,7 @@ func NewMockWorkspaceClient(t interface {
 	mock.TestingT
 	Cleanup(func())
 }) *MockWorkspaceClient {
-	return &MockWorkspaceClient{
+	cli := &MockWorkspaceClient{
 		WorkspaceClient: &databricks.WorkspaceClient{
 			Config: nil,
 
@@ -108,6 +108,19 @@ func NewMockWorkspaceClient(t interface {
 			WorkspaceConf:             settings.NewMockWorkspaceConfInterface(t),
 		},
 	}
+	settingsApi := cli.GetMockSettingsAPI()
+	defaultNamespace := settings.NewMockDefaultNamespaceInterface(t)
+	settingsApi.On("DefaultNamespace").Return(defaultNamespace)
+
+	return cli
+}
+
+func (m *MockWorkspaceClient) GetMockDefaultNamespaceAPI() *settings.MockDefaultNamespaceInterface {
+	api, ok := m.GetMockSettingsAPI().DefaultNamespace().(*settings.MockDefaultNamespaceInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Workspace to be *workspace.MockWorkspaceInterface, actual was %T", m.WorkspaceClient.Workspace))
+	}
+	return api
 }
 
 func (m *MockWorkspaceClient) GetMockAccountAccessControlProxyAPI() *iam.MockAccountAccessControlProxyInterface {
