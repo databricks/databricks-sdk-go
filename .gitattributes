@@ -18,6 +18,7 @@ experimental/mocks/service/catalog/mock_grants_interface.go linguist-generated=t
 experimental/mocks/service/catalog/mock_lakehouse_monitors_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_metastores_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_model_versions_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_online_tables_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_registered_models_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_schemas_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_storage_credentials_interface.go linguist-generated=true

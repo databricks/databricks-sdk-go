@@ -22,14 +22,14 @@ func NewMockWorkspaceClient(t interface {
 	return &MockWorkspaceClient{
 		WorkspaceClient: &databricks.WorkspaceClient{
 			Config: nil,
-			{{range .Services}}{{if not .IsAccounts}}
+			{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
 			{{.Name}}: {{ template "mock-interface-constructor" . }}(t),
 			{{- end}}{{end}}
 		},
 	}
 }
 
-{{range .Services}}{{if not .IsAccounts}}
+{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
 func(m *MockWorkspaceClient) GetMock{{.Name}}API() *{{ template "mock-interface-name" . }} {
 	api, ok := m.WorkspaceClient.{{.Name}}.(*{{ template "mock-interface-name" . }})
 	if !ok {

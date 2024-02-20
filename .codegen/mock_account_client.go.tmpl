@@ -22,14 +22,14 @@ func NewMockAccountClient(t interface {
 	return &MockAccountClient {
 		AccountClient: &databricks.AccountClient{
 			Config: nil,
-			{{range .Services}}{{if .IsAccounts}}
+			{{range .Services}}{{if and .IsAccounts (not .HasParent)}}
 			{{(.TrimPrefix "account").PascalName}}: {{ template "mock-interface-constructor" . }}(t),
 			{{- end}}{{end}}
 		},
 	}
 }
 
-{{range .Services}}{{if .IsAccounts}}
+{{range .Services}}{{if and .IsAccounts (not .HasParent)}}
 func(m *MockAccountClient) GetMock{{.Name}}API() *{{ template "mock-interface-name" . }} {
 	api, ok := m.AccountClient.{{(.TrimPrefix "account").PascalName}}.(*{{ template "mock-interface-name" . }})
 	if !ok {

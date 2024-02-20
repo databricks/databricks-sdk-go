@@ -12,10 +12,10 @@ type WorkspaceClient struct {
 	Config *config.Config
 	apiClient *httpclient.ApiClient
 
-	{{range .Services}}{{if not .IsAccounts}}
+	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
 	{{.Comment "    // " 80}}
 	{{.Name}} {{.Package.Name}}.{{.Name}}Interface
-	{{end}}{{end}}
+	{{- end}}{{end}}
 }
 
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")
@@ -49,7 +49,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	return &WorkspaceClient{
 		Config: cfg,
 		apiClient: apiClient,
-		{{range .Services}}{{if not .IsAccounts}}
+		{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
 		{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient),
 		{{- end}}{{end}}
 	}, nil
