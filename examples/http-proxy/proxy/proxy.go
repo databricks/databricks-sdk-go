@@ -1,11 +1,9 @@
 package main
 
 import (
-	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
-	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
@@ -15,7 +13,6 @@ import (
 	"math/big"
 	"net"
 	"net/http"
-	"net/url"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -23,9 +20,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
-	"github.com/databricks/databricks-sdk-go/service/compute"
+	"golang.org/x/net/http2"
 )
 
 func main() {
@@ -38,36 +33,7 @@ func main() {
 	server := startServer()
 	defer server.Close()
 
-	callWithProxyClient()
 	waitForSigint()
-}
-
-func callWithProxyClient() {
-	log.Printf("Constructing client...")
-	logger.DefaultLogger = &logger.SimpleLogger{
-		Level: logger.LevelDebug,
-	}
-	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-		HTTPTransport: &http.Transport{
-			// The proxy server used in this example only supports HTTP/1.1. See
-			// https://github.com/golang/go/issues/26479 for more information.
-			TLSNextProto: make(map[string]func(authority string, c *tls.Conn) http.RoundTripper),
-			// This can be configured using the HTTPS_PROXY environment variable
-			// in normal circumstances (i.e. when the proxy server isn't running
-			// in the same process).
-			Proxy: func(r *http.Request) (*url.URL, error) {
-				return url.Parse("https://localhost:8443")
-			},
-		},
-	}))
-	log.Printf("Listing clusters...")
-	all, err := w.Clusters.ListAll(context.Background(), compute.ListClustersRequest{})
-	if err != nil {
-		panic(err)
-	}
-	for _, c := range all {
-		println(c.ClusterName)
-	}
 }
 
 func waitForSigint() {
@@ -225,6 +191,10 @@ func startServer() *http.Server {
 	server := &http.Server{
 		Addr:    "localhost:8443", // HTTPS default port
 		Handler: http.HandlerFunc(handleTunneling),
+	}
+	err := http2.ConfigureServer(server, &http2.Server{})
+	if err != nil {
+		panic(err)
 	}
 
 	// Start the server
