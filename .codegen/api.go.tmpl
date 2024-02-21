@@ -37,6 +37,11 @@ type {{.PascalName}}Interface interface {
 	// Deprecated: use Mock{{.PascalName}}Interface instead.
 	Impl() {{.PascalName}}Service
 
+	{{range .Subservices}}
+	{{.Comment "    // " 80}}
+	{{.PascalName}}() {{.PascalName}}Interface
+	{{end}}
+
 	{{range .Waits}}
 	// {{.PascalName}} repeatedly calls [{{.Method.Service.Name}}API.{{.Poll.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
 	{{.PascalName}}(ctx context.Context{{range .Binding}}, {{.PollField.CamelName}} {{template "type" .PollField.Entity}}{{end}},
@@ -105,6 +110,9 @@ func New{{.PascalName}}(client *client.DatabricksClient) *{{.PascalName}}API {
 		impl: &{{.CamelName}}Impl{
 			client: client,
 		},
+		{{range .Subservices}}
+		{{.CamelName}}: New{{.PascalName}}(client),
+		{{end}}
 	}
 }
 
@@ -113,7 +121,18 @@ type {{.PascalName}}API struct {
 	// impl contains low-level REST API interface, that could be overridden 
 	// through WithImpl({{.PascalName}}Service)
 	impl {{.PascalName}}Service
+
+	{{range .Subservices}}
+	{{.Comment "    // " 80}}
+	{{.CamelName}} {{.PascalName}}Interface
+	{{end}}
 }
+
+{{range .Subservices}}
+func (a *{{.ParentService.PascalName}}API) {{.PascalName}}() {{.PascalName}}Interface {
+	return a.{{.CamelName}}
+}
+{{end}}
 
 // WithImpl could be used to override low-level API implementations for unit 
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.

@@ -27,13 +27,34 @@ type Service struct {
 	IsAccounts          bool
 	Package             *Package
 	methods             map[string]*Method
+	subservices         map[string]*Service
 	ByPathParamsMethods []*Shortcut
+	ParentService       *Service
 	tag                 *openapi.Tag
 }
 
 // FullName holds package name and service name
 func (svc *Service) FullName() string {
 	return fmt.Sprintf("%s.%s", svc.Package.FullName(), svc.PascalName())
+}
+
+// Returns whether the service has a parent service
+func (svc *Service) HasParent() bool {
+	return svc.tag.ParentService != ""
+}
+
+// Returns the list of subservices
+func (svc *Service) Subservices() (services []*Service) {
+	for _, v := range svc.subservices {
+		services = append(services, v)
+	}
+	pascalNameSort(services)
+	return services
+}
+
+// Returns whether the service has subservices
+func (svc *Service) HasSubservices() bool {
+	return len(svc.subservices) > 0
 }
 
 // MatchesPackageName if package name and service name are the same,

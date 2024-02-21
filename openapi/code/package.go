@@ -40,6 +40,33 @@ func (pkg *Package) Services() (types []*Service) {
 	return types
 }
 
+func (pkg *Package) addRecursively(service *Service, result []*Service) []*Service {
+	result = append(result, service)
+	subservices := make([]*Service, 0, len(service.subservices))
+	for _, v := range service.subservices {
+		subservices = append(subservices, v)
+	}
+	pascalNameSort(subservices)
+	for _, svc := range subservices {
+		result = pkg.addRecursively(svc, result)
+	}
+	return result
+}
+
+// Returns the Services sorted such has parents always come before subservices.
+func (pkg *Package) ServicesSortedByParent() []*Service {
+	allServices := pkg.Services()
+	resultServices := []*Service{}
+	for _, svc := range allServices {
+		if svc.ParentService != nil {
+			continue
+		}
+		resultServices = pkg.addRecursively(svc, resultServices)
+	}
+
+	return resultServices
+}
+
 // MainService returns a Service that matches Package name
 func (pkg *Package) MainService() *Service {
 	for _, svc := range pkg.services {
@@ -325,8 +352,29 @@ func (pkg *Package) HasWaits() bool {
 	return false
 }
 
+func (pkg *Package) getService(tag *openapi.Tag) *Service {
+	svc, ok := pkg.services[tag.Service]
+	if !ok {
+		svc = &Service{
+			Package:     pkg,
+			IsAccounts:  tag.IsAccounts,
+			PathStyle:   tag.PathStyle,
+			methods:     map[string]*Method{},
+			subservices: map[string]*Service{},
+			Named: Named{
+				Name:        tag.Service,
+				Description: tag.Description,
+			},
+			tag: tag,
+		}
+		pkg.services[tag.Service] = svc
+	}
+	return svc
+}
+
 // Load takes OpenAPI specification and loads a service model
 func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag openapi.Tag) error {
+	svc := pkg.getService(&tag)
 	for k, v := range spec.Components.Schemas {
 		split := strings.Split(k, ".")
 		if split[0] != pkg.Name {
@@ -334,6 +382,17 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 		}
 		pkg.definedEntity(split[1], *v, map[string]*Entity{})
 	}
+	// Fill in subservice information
+	if tag.ParentService != "" {
+		parentTag, err := spec.GetTagByServiceName(tag.ParentService)
+		if err != nil {
+			return err
+		}
+		parentSvc := pkg.getService(parentTag)
+		parentSvc.subservices[svc.Name] = svc
+		svc.ParentService = parentSvc
+	}
+
 	for prefix, path := range spec.Paths {
 		for verb, op := range path.Verbs() {
 			if op.OperationId == "Files.getStatusHead" {
@@ -344,21 +403,6 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 				continue
 			}
 			logger.Infof(ctx, "pkg.Load %s %s", verb, prefix)
-			svc, ok := pkg.services[tag.Service]
-			if !ok {
-				svc = &Service{
-					Package:    pkg,
-					IsAccounts: tag.IsAccounts,
-					PathStyle:  tag.PathStyle,
-					methods:    map[string]*Method{},
-					Named: Named{
-						Name:        tag.Service,
-						Description: tag.Description,
-					},
-					tag: &tag,
-				}
-				pkg.services[tag.Service] = svc
-			}
 			params := []openapi.Parameter{}
 			seenParams := map[string]bool{}
 			for _, list := range [][]openapi.Parameter{path.Parameters, op.Parameters} {

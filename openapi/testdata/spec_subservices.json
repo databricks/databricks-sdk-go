@@ -1,0 +1,268 @@
+{
+  "openapi": "3.0.0",
+  "tags": [
+    {
+      "name": "Settings",
+      "x-databricks-package": "settings",
+      "x-databricks-service": "Settings"
+    },
+    {
+      "name": "Default Namespace",
+      "x-databricks-package": "settings",
+      "x-databricks-service": "DefaultNamespace",
+      "x-databricks-parent-service": "Settings"
+    }
+  ],
+  "paths": {
+    "/api/1.2/commands/cancel": {
+      "post": {
+        "operationId": "DefaultNamespace.cancel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelCommand"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "headers": {
+              "content-type": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "The content type of the response."
+              },
+              "last-modified": {
+                "schema": { "$ref": "#/components/schemas/ModificationTime" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Status was returned successfully."
+          }
+        },
+        "summary": "Cancel a command",
+        "tags": [
+          "Default Namespace"
+        ],
+        "x-databricks-wait": {
+          "bind": "commandId",
+          "failure": [
+            "Error"
+          ],
+          "field": [
+            "status"
+          ],
+          "message": [
+            "results",
+            "cause"
+          ],
+          "poll": "commandStatus",
+          "success": [
+            "Cancelled"
+          ]
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CancelCommand": {
+        "properties": {
+          "clusterId": {
+            "type": "string"
+          },
+          "commandId": {
+            "type": "string"
+          },
+          "contextId": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Command": {
+        "properties": {
+          "clusterId": {
+            "description": "Running cluster id",
+            "type": "string"
+          },
+          "command": {
+            "description": "Executable code",
+            "type": "string"
+          },
+          "contextId": {
+            "description": "Running context id",
+            "type": "string"
+          },
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          }
+        },
+        "type": "object"
+      },
+      "CommandStatus": {
+        "enum": [
+          "Cancelled",
+          "Cancelling",
+          "Error",
+          "Finished",
+          "Queued",
+          "Running"
+        ],
+        "type": "string"
+      },
+      "CommandStatusResponse": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "results": {
+            "$ref": "#/components/schemas/Results"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CommandStatus"
+          }
+        },
+        "type": "object"
+      },
+      "ContextStatus": {
+        "enum": [
+          "Running",
+          "Pending",
+          "Error"
+        ],
+        "type": "string"
+      },
+      "ContextStatusResponse": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ContextStatus"
+          }
+        },
+        "type": "object"
+      },
+      "CreateContext": {
+        "properties": {
+          "clusterId": {
+            "description": "Running cluster id",
+            "type": "string"
+          },
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          }
+        },
+        "type": "object"
+      },
+      "Created": {
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "DestroyContext": {
+        "properties": {
+          "clusterId": {
+            "type": "string"
+          },
+          "contextId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "clusterId",
+          "contextId"
+        ],
+        "type": "object"
+      },
+      "Language": {
+        "enum": [
+          "python",
+          "scala",
+          "sql"
+        ],
+        "type": "string"
+      },
+      "ModificationTime": {
+        "description": "Last modification time of given file in milliseconds since unix epoch.",
+        "type": "integer",
+        "format": "int64"
+      },
+      "ResultType": {
+        "enum": [
+          "error",
+          "image",
+          "images",
+          "table",
+          "text"
+        ],
+        "type": "string"
+      },
+      "Results": {
+        "properties": {
+          "cause": {
+            "description": "The cause of the error",
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "x-databricks-any": true
+          },
+          "fileName": {
+            "description": "The image filename",
+            "type": "string"
+          },
+          "fileNames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "isJsonSchema": {
+            "description": "true if a JSON schema is returned instead of a string representation of the Hive type.",
+            "type": "boolean"
+          },
+          "pos": {
+            "description": "internal field used by SDK",
+            "type": "integer"
+          },
+          "resultType": {
+            "$ref": "#/components/schemas/ResultType"
+          },
+          "schema": {
+            "description": "The table schema",
+            "items": {
+              "items": {
+                "type": "object",
+                "x-databricks-any": true
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "summary": {
+            "description": "The summary of the error",
+            "type": "string"
+          },
+          "truncated": {
+            "description": "true if partial results are returned.",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}
