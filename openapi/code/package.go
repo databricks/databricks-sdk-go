@@ -40,6 +40,33 @@ func (pkg *Package) Services() (types []*Service) {
 	return types
 }
 
+func (pkg *Package) addRecursively(service *Service, result []*Service) []*Service {
+	result = append(result, service)
+	subservices := make([]*Service, 0, len(service.subservices))
+	for _, v := range service.subservices {
+		subservices = append(subservices, v)
+	}
+	pascalNameSort(subservices)
+	for _, svc := range subservices {
+		result = pkg.addRecursively(svc, result)
+	}
+	return result
+}
+
+// Returns the Services sorted such has parets always come before subservices.
+func (pkg *Package) ServicesSortedByParent() []*Service {
+	allServices := pkg.Services()
+	resultServices := []*Service{}
+	for _, svc := range allServices {
+		if svc.ParentService != nil {
+			continue
+		}
+		resultServices = pkg.addRecursively(svc, resultServices)
+	}
+
+	return resultServices
+}
+
 // MainService returns a Service that matches Package name
 func (pkg *Package) MainService() *Service {
 	for _, svc := range pkg.services {

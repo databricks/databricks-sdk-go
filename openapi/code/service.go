@@ -52,6 +52,11 @@ func (svc *Service) Subservices() (services []*Service) {
 	return services
 }
 
+// Returns whether the service has subservices
+func (svc *Service) HasSubservices() bool {
+	return len(svc.subservices) > 0
+}
+
 // MatchesPackageName if package name and service name are the same,
 // e.g. `clusters` package & `Clusters` service
 func (svc *Service) MatchesPackageName() bool {

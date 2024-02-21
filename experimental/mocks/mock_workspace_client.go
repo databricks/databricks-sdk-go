@@ -34,7 +34,7 @@ func NewMockWorkspaceClient(t interface {
 	mock.TestingT
 	Cleanup(func())
 }) *MockWorkspaceClient {
-	return &MockWorkspaceClient{
+	cli := &MockWorkspaceClient{
 		WorkspaceClient: &databricks.WorkspaceClient{
 			Config: nil,
 
@@ -108,6 +108,32 @@ func NewMockWorkspaceClient(t interface {
 			WorkspaceConf:             settings.NewMockWorkspaceConfInterface(t),
 		},
 	}
+
+	mocksettingsAPI := cli.GetMockSettingsAPI()
+
+	mockdefaultNamespace := settings.NewMockDefaultNamespaceInterface(t)
+	mocksettingsAPI.On("DefaultNamespace").Return(mockdefaultNamespace).Maybe()
+
+	mockrestrictWorkspaceAdmins := settings.NewMockRestrictWorkspaceAdminsInterface(t)
+	mocksettingsAPI.On("RestrictWorkspaceAdmins").Return(mockrestrictWorkspaceAdmins).Maybe()
+
+	return cli
+}
+
+func (m *MockWorkspaceClient) GetMockDefaultNamespaceAPI() *settings.MockDefaultNamespaceInterface {
+	api, ok := m.GetMockSettingsAPI().DefaultNamespace().(*settings.MockDefaultNamespaceInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DefaultNamespace to be *settings.MockDefaultNamespaceInterface, actual was %T", m.GetMockSettingsAPI().DefaultNamespace()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockRestrictWorkspaceAdminsAPI() *settings.MockRestrictWorkspaceAdminsInterface {
+	api, ok := m.GetMockSettingsAPI().RestrictWorkspaceAdmins().(*settings.MockRestrictWorkspaceAdminsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected RestrictWorkspaceAdmins to be *settings.MockRestrictWorkspaceAdminsInterface, actual was %T", m.GetMockSettingsAPI().RestrictWorkspaceAdmins()))
+	}
+	return api
 }
 
 func (m *MockWorkspaceClient) GetMockAccountAccessControlProxyAPI() *iam.MockAccountAccessControlProxyInterface {
