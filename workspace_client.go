@@ -613,7 +613,19 @@ type WorkspaceClient struct {
 	// Additionally, you can configure the scale of resources that should be
 	// applied to each served entity.
 	ServingEndpoints serving.ServingEndpointsInterface
-	// Wrapper for Workspace Settings services
+	// The default namespace setting API allows users to configure the default
+	// namespace for a Databricks workspace.
+	//
+	// Through this API, users can retrieve, set, or modify the default
+	// namespace used when queries do not reference a fully qualified
+	// three-level name. For example, if you use the API to set 'retail_prod' as
+	// the default catalog, then a query 'SELECT * FROM myTable' would reference
+	// the object 'retail_prod.default.myTable' (the schema 'default' is always
+	// assumed).
+	//
+	// This setting requires a restart of clusters and SQL warehouses to take
+	// effect. Additionally, the default namespace only applies when using Unity
+	// Catalog-enabled compute.
 	Settings settings.SettingsInterface
 	// A share is a container instantiated with :method:shares/create. Once
 	// created you can iteratively register a collection of existing data assets
