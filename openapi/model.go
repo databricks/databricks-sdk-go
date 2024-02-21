@@ -55,6 +55,15 @@ type Specification struct {
 	Tags       []Tag           `json:"tags"`
 }
 
+func (s *Specification) GetTagByServiceName(name string) (*Tag, error) {
+	for _, tag := range s.Tags {
+		if tag.Service == name {
+			return &tag, nil
+		}
+	}
+	return nil, fmt.Errorf("tag %s not found", name)
+}
+
 type PathStyle string
 
 const (

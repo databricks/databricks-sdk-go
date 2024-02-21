@@ -53,7 +53,7 @@ func (pkg *Package) addRecursively(service *Service, result []*Service) []*Servi
 	return result
 }
 
-// Returns the Services sorted such has parets always come before subservices.
+// Returns the Services sorted such has parents always come before subservices.
 func (pkg *Package) ServicesSortedByParent() []*Service {
 	allServices := pkg.Services()
 	resultServices := []*Service{}
@@ -352,15 +352,6 @@ func (pkg *Package) HasWaits() bool {
 	return false
 }
 
-func (pkg *Package) getTagByServiceName(name string, spec *openapi.Specification) (*openapi.Tag, error) {
-	for _, tag := range spec.Tags {
-		if tag.Service == name {
-			return &tag, nil
-		}
-	}
-	return nil, fmt.Errorf("tag %s not found", name)
-}
-
 func (pkg *Package) getService(tag *openapi.Tag) *Service {
 	svc, ok := pkg.services[tag.Service]
 	if !ok {
@@ -393,7 +384,7 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 	}
 	// Fill in subservice information
 	if tag.ParentService != "" {
-		parentTag, err := pkg.getTagByServiceName(tag.ParentService, spec)
+		parentTag, err := spec.GetTagByServiceName(tag.ParentService)
 		if err != nil {
 			return err
 		}

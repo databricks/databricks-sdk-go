@@ -39,7 +39,7 @@ type {{.PascalName}}Interface interface {
 
 	{{range .Subservices}}
 	{{.Comment "    // " 80}}
-	{{.PascalName}}() {{.Name}}Interface
+	{{.PascalName}}() {{.PascalName}}Interface
 	{{end}}
 
 	{{range .Waits}}
@@ -111,7 +111,7 @@ func New{{.PascalName}}(client *client.DatabricksClient) *{{.PascalName}}API {
 			client: client,
 		},
 		{{range .Subservices}}
-		{{.CamelName}}: New{{.Name}}(client),
+		{{.CamelName}}: New{{.PascalName}}(client),
 		{{end}}
 	}
 }
@@ -124,12 +124,12 @@ type {{.PascalName}}API struct {
 
 	{{range .Subservices}}
 	{{.Comment "    // " 80}}
-	{{.CamelName}} {{.Name}}Interface
+	{{.CamelName}} {{.PascalName}}Interface
 	{{end}}
 }
 
 {{range .Subservices}}
-func (a *{{.ParentService.PascalName}}API) {{.PascalName}}() {{.Name}}Interface {
+func (a *{{.ParentService.PascalName}}API) {{.PascalName}}() {{.PascalName}}Interface {
 	return a.{{.CamelName}}
 }
 {{end}}
