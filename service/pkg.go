@@ -50,7 +50,7 @@
 //
 // - [catalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
 //
-// - [files.FilesAPI]: The Files API allows you to read, write, and delete files and directories in Unity Catalog volumes.
+// - [files.FilesAPI]: The Files API allows you to read, write, list, and delete files and directories.
 //
 // - [catalog.FunctionsAPI]: Functions implement User-Defined Functions (UDFs) in Unity Catalog.
 //
@@ -97,6 +97,8 @@
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //
 // - [oauth2.OAuthPublishedAppsAPI]: These APIs enable administrators to view all the available published OAuth applications in Databricks.
+//
+// - [catalog.OnlineTablesAPI]: Online tables provide lower latency and higher QPS access to data from Delta tables.
 //
 // - [iam.PermissionsAPI]: Permissions API are used to create read, write, edit, update and manage access for various users on different objects and endpoints.
 //
@@ -259,6 +261,7 @@ var (
 	_ *settings.NetworkConnectivityAPI        = nil
 	_ *provisioning.NetworksAPI               = nil
 	_ *oauth2.OAuthPublishedAppsAPI           = nil
+	_ *catalog.OnlineTablesAPI                = nil
 	_ *iam.PermissionsAPI                     = nil
 	_ *pipelines.PipelinesAPI                 = nil
 	_ *compute.PolicyFamiliesAPI              = nil

@@ -466,62 +466,87 @@ type FilesInterface interface {
 
 	// Create a directory.
 	//
-	// Creates an empty directory. If called on an existing directory, the API
-	// returns a success response.
+	// Creates an empty directory. If necessary, also creates any parent directories
+	// of the new, empty directory (like the shell command `mkdir -p`). If called on
+	// an existing directory, returns a success response; this method is idempotent.
 	CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error
 
 	// Delete a file.
 	//
-	// Deletes a file.
+	// Deletes a file. If the request is successful, there is no response body.
 	Delete(ctx context.Context, request DeleteFileRequest) error
 
 	// Delete a file.
 	//
-	// Deletes a file.
+	// Deletes a file. If the request is successful, there is no response body.
 	DeleteByFilePath(ctx context.Context, filePath string) error
 
 	// Delete a directory.
 	//
-	// Deletes an empty directory. If the directory is not empty, the API returns a
-	// HTTP 400 error.
+	// Deletes an empty directory.
+	//
+	// To delete a non-empty directory, first delete all of its contents. This can
+	// be done by listing the directory contents and deleting each file and
+	// subdirectory recursively.
 	DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error
 
 	// Delete a directory.
 	//
-	// Deletes an empty directory. If the directory is not empty, the API returns a
-	// HTTP 400 error.
+	// Deletes an empty directory.
+	//
+	// To delete a non-empty directory, first delete all of its contents. This can
+	// be done by listing the directory contents and deleting each file and
+	// subdirectory recursively.
 	DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) error
 
 	// Download a file.
 	//
-	// Downloads a file of up to 5 GiB.
+	// Downloads a file of up to 5 GiB. The file contents are the response body.
+	// This is a standard HTTP file download, not a JSON RPC.
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 
 	// Download a file.
 	//
-	// Downloads a file of up to 5 GiB.
+	// Downloads a file of up to 5 GiB. The file contents are the response body.
+	// This is a standard HTTP file download, not a JSON RPC.
 	DownloadByFilePath(ctx context.Context, filePath string) (*DownloadResponse, error)
 
 	// Get directory metadata.
 	//
-	// Get the metadata of a directory. This endpoint does not return a response
-	// body.
+	// Get the metadata of a directory. The response HTTP headers contain the
+	// metadata. There is no response body.
+	//
+	// This method is useful to check if a directory exists and the caller has
+	// access to it.
+	//
+	// If you wish to ensure the directory exists, you can instead use `PUT`, which
+	// will create the directory if it does not exist, and is idempotent (it will
+	// succeed if the directory already exists).
 	GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error
 
 	// Get directory metadata.
 	//
-	// Get the metadata of a directory. This endpoint does not return a response
-	// body.
+	// Get the metadata of a directory. The response HTTP headers contain the
+	// metadata. There is no response body.
+	//
+	// This method is useful to check if a directory exists and the caller has
+	// access to it.
+	//
+	// If you wish to ensure the directory exists, you can instead use `PUT`, which
+	// will create the directory if it does not exist, and is idempotent (it will
+	// succeed if the directory already exists).
 	GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) error
 
 	// Get file metadata.
 	//
-	// Get the metadata of a file. This endpoint does not return a response body.
+	// Get the metadata of a file. The response HTTP headers contain the metadata.
+	// There is no response body.
 	GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error)
 
 	// Get file metadata.
 	//
-	// Get the metadata of a file. This endpoint does not return a response body.
+	// Get the metadata of a file. The response HTTP headers contain the metadata.
+	// There is no response body.
 	GetMetadataByFilePath(ctx context.Context, filePath string) (*GetMetadataResponse, error)
 
 	// List directory contents.
@@ -548,7 +573,11 @@ type FilesInterface interface {
 
 	// Upload a file.
 	//
-	// Uploads a file of up to 5 GiB.
+	// Uploads a file of up to 5 GiB. The file contents should be sent as the
+	// request body as raw bytes (an octet stream); do not encode or otherwise
+	// modify the bytes before sending. The contents of the resulting file will be
+	// exactly the bytes sent in the request body. If the request is successful,
+	// there is no response body.
 	Upload(ctx context.Context, request UploadRequest) error
 }
 
@@ -560,8 +589,20 @@ func NewFiles(client *client.DatabricksClient) *FilesAPI {
 	}
 }
 
-// The Files API allows you to read, write, and delete files and directories in
-// Unity Catalog volumes.
+// The Files API allows you to read, write, list, and delete files and
+// directories. We support Unity Catalog volumes with paths starting with
+// "/Volumes/<catalog>/<schema>/<volume>".
+//
+// The Files API is designed like a standard HTTP API, rather than as a JSON RPC
+// API. This is intended to make it easier and more efficient to work with file
+// contents as raw bytes.
+//
+// Because the Files API is a standard HTTP API, the URI path is used to specify
+// the file or directory to operate on. The path is always absolute.
+//
+// The Files API has separate endpoints for working with files, `/fs/files`, and
+// working with directories, `/fs/directories`. The standard HTTP methods `GET`,
+// `HEAD`, `PUT`, and `DELETE` work as expected on these endpoints.
 type FilesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(FilesService)
@@ -584,22 +625,23 @@ func (a *FilesAPI) Impl() FilesService {
 
 // Create a directory.
 //
-// Creates an empty directory. If called on an existing directory, the API
-// returns a success response.
+// Creates an empty directory. If necessary, also creates any parent directories
+// of the new, empty directory (like the shell command `mkdir -p`). If called on
+// an existing directory, returns a success response; this method is idempotent.
 func (a *FilesAPI) CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error {
 	return a.impl.CreateDirectory(ctx, request)
 }
 
 // Delete a file.
 //
-// Deletes a file.
+// Deletes a file. If the request is successful, there is no response body.
 func (a *FilesAPI) Delete(ctx context.Context, request DeleteFileRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
 // Delete a file.
 //
-// Deletes a file.
+// Deletes a file. If the request is successful, there is no response body.
 func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) error {
 	return a.impl.Delete(ctx, DeleteFileRequest{
 		FilePath: filePath,
@@ -608,16 +650,22 @@ func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) error 
 
 // Delete a directory.
 //
-// Deletes an empty directory. If the directory is not empty, the API returns a
-// HTTP 400 error.
+// Deletes an empty directory.
+//
+// To delete a non-empty directory, first delete all of its contents. This can
+// be done by listing the directory contents and deleting each file and
+// subdirectory recursively.
 func (a *FilesAPI) DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error {
 	return a.impl.DeleteDirectory(ctx, request)
 }
 
 // Delete a directory.
 //
-// Deletes an empty directory. If the directory is not empty, the API returns a
-// HTTP 400 error.
+// Deletes an empty directory.
+//
+// To delete a non-empty directory, first delete all of its contents. This can
+// be done by listing the directory contents and deleting each file and
+// subdirectory recursively.
 func (a *FilesAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) error {
 	return a.impl.DeleteDirectory(ctx, DeleteDirectoryRequest{
 		DirectoryPath: directoryPath,
@@ -626,14 +674,16 @@ func (a *FilesAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, directory
 
 // Download a file.
 //
-// Downloads a file of up to 5 GiB.
+// Downloads a file of up to 5 GiB. The file contents are the response body.
+// This is a standard HTTP file download, not a JSON RPC.
 func (a *FilesAPI) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
 	return a.impl.Download(ctx, request)
 }
 
 // Download a file.
 //
-// Downloads a file of up to 5 GiB.
+// Downloads a file of up to 5 GiB. The file contents are the response body.
+// This is a standard HTTP file download, not a JSON RPC.
 func (a *FilesAPI) DownloadByFilePath(ctx context.Context, filePath string) (*DownloadResponse, error) {
 	return a.impl.Download(ctx, DownloadRequest{
 		FilePath: filePath,
@@ -642,16 +692,30 @@ func (a *FilesAPI) DownloadByFilePath(ctx context.Context, filePath string) (*Do
 
 // Get directory metadata.
 //
-// Get the metadata of a directory. This endpoint does not return a response
-// body.
+// Get the metadata of a directory. The response HTTP headers contain the
+// metadata. There is no response body.
+//
+// This method is useful to check if a directory exists and the caller has
+// access to it.
+//
+// If you wish to ensure the directory exists, you can instead use `PUT`, which
+// will create the directory if it does not exist, and is idempotent (it will
+// succeed if the directory already exists).
 func (a *FilesAPI) GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error {
 	return a.impl.GetDirectoryMetadata(ctx, request)
 }
 
 // Get directory metadata.
 //
-// Get the metadata of a directory. This endpoint does not return a response
-// body.
+// Get the metadata of a directory. The response HTTP headers contain the
+// metadata. There is no response body.
+//
+// This method is useful to check if a directory exists and the caller has
+// access to it.
+//
+// If you wish to ensure the directory exists, you can instead use `PUT`, which
+// will create the directory if it does not exist, and is idempotent (it will
+// succeed if the directory already exists).
 func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) error {
 	return a.impl.GetDirectoryMetadata(ctx, GetDirectoryMetadataRequest{
 		DirectoryPath: directoryPath,
@@ -660,14 +724,16 @@ func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, dire
 
 // Get file metadata.
 //
-// Get the metadata of a file. This endpoint does not return a response body.
+// Get the metadata of a file. The response HTTP headers contain the metadata.
+// There is no response body.
 func (a *FilesAPI) GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error) {
 	return a.impl.GetMetadata(ctx, request)
 }
 
 // Get file metadata.
 //
-// Get the metadata of a file. This endpoint does not return a response body.
+// Get the metadata of a file. The response HTTP headers contain the metadata.
+// There is no response body.
 func (a *FilesAPI) GetMetadataByFilePath(ctx context.Context, filePath string) (*GetMetadataResponse, error) {
 	return a.impl.GetMetadata(ctx, GetMetadataRequest{
 		FilePath: filePath,
@@ -728,7 +794,11 @@ func (a *FilesAPI) ListDirectoryContentsByDirectoryPath(ctx context.Context, dir
 
 // Upload a file.
 //
-// Uploads a file of up to 5 GiB.
+// Uploads a file of up to 5 GiB. The file contents should be sent as the
+// request body as raw bytes (an octet stream); do not encode or otherwise
+// modify the bytes before sending. The contents of the resulting file will be
+// exactly the bytes sent in the request body. If the request is successful,
+// there is no response body.
 func (a *FilesAPI) Upload(ctx context.Context, request UploadRequest) error {
 	return a.impl.Upload(ctx, request)
 }

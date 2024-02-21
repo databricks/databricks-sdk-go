@@ -600,33 +600,29 @@ type ExportMetricsRequest struct {
 }
 
 type ExternalModel struct {
-	// The config for the external model, which must match the provider.
-	Config ExternalModelConfig `json:"config"`
+	// AI21Labs Config. Only required if the provider is 'ai21labs'.
+	Ai21labsConfig *Ai21LabsConfig `json:"ai21labs_config,omitempty"`
+	// Anthropic Config. Only required if the provider is 'anthropic'.
+	AnthropicConfig *AnthropicConfig `json:"anthropic_config,omitempty"`
+	// AWS Bedrock Config. Only required if the provider is 'aws-bedrock'.
+	AwsBedrockConfig *AwsBedrockConfig `json:"aws_bedrock_config,omitempty"`
+	// Cohere Config. Only required if the provider is 'cohere'.
+	CohereConfig *CohereConfig `json:"cohere_config,omitempty"`
+	// Databricks Model Serving Config. Only required if the provider is
+	// 'databricks-model-serving'.
+	DatabricksModelServingConfig *DatabricksModelServingConfig `json:"databricks_model_serving_config,omitempty"`
 	// The name of the external model.
 	Name string `json:"name"`
+	// OpenAI Config. Only required if the provider is 'openai'.
+	OpenaiConfig *OpenAiConfig `json:"openai_config,omitempty"`
+	// PaLM Config. Only required if the provider is 'palm'.
+	PalmConfig *PaLmConfig `json:"palm_config,omitempty"`
 	// The name of the provider for the external model. Currently, the supported
 	// providers are 'ai21labs', 'anthropic', 'aws-bedrock', 'cohere',
 	// 'databricks-model-serving', 'openai', and 'palm'.",
 	Provider ExternalModelProvider `json:"provider"`
 	// The task type of the external model.
 	Task string `json:"task"`
-}
-
-type ExternalModelConfig struct {
-	// AI21Labs Config
-	Ai21labsConfig *Ai21LabsConfig `json:"ai21labs_config,omitempty"`
-	// Anthropic Config
-	AnthropicConfig *AnthropicConfig `json:"anthropic_config,omitempty"`
-	// AWS Bedrock Config
-	AwsBedrockConfig *AwsBedrockConfig `json:"aws_bedrock_config,omitempty"`
-	// Cohere Config
-	CohereConfig *CohereConfig `json:"cohere_config,omitempty"`
-	// Databricks Model Serving Config
-	DatabricksModelServingConfig *DatabricksModelServingConfig `json:"databricks_model_serving_config,omitempty"`
-	// OpenAI Config
-	OpenaiConfig *OpenAiConfig `json:"openai_config,omitempty"`
-	// PaLM Config
-	PalmConfig *PaLmConfig `json:"palm_config,omitempty"`
 }
 
 // The name of the provider for the external model. Currently, the supported
@@ -1145,6 +1141,10 @@ type ServedEntityInput struct {
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The maximum tokens per second that the endpoint can scale up to.
+	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
+	// The minimum tokens per second that the endpoint can scale down to.
+	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
 	// underscores. If not specified for an external model, this field defaults
@@ -1217,6 +1217,10 @@ type ServedEntityOutput struct {
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The maximum tokens per second that the endpoint can scale up to.
+	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
+	// The minimum tokens per second that the endpoint can scale down to.
+	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
 	// The name of the served entity.
 	Name string `json:"name,omitempty"`
 	// Whether the compute resources for the served entity should scale down to

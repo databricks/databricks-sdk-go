@@ -641,6 +641,38 @@ func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersi
 	return &modelVersionInfo, err
 }
 
+// unexported type that holds implementations of just OnlineTables API methods
+type onlineTablesImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *onlineTablesImpl) Create(ctx context.Context, request ViewData) (*OnlineTable, error) {
+	var onlineTable OnlineTable
+	path := "/api/2.0/online-tables"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &onlineTable)
+	return &onlineTable, err
+}
+
+func (a *onlineTablesImpl) Delete(ctx context.Context, request DeleteOnlineTableRequest) error {
+	path := fmt.Sprintf("/api/2.0/online-tables/%v", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	return err
+}
+
+func (a *onlineTablesImpl) Get(ctx context.Context, request GetOnlineTableRequest) (*OnlineTable, error) {
+	var onlineTable OnlineTable
+	path := fmt.Sprintf("/api/2.0/online-tables/%v", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &onlineTable)
+	return &onlineTable, err
+}
+
 // unexported type that holds implementations of just RegisteredModels API methods
 type registeredModelsImpl struct {
 	client *client.DatabricksClient

@@ -2,6 +2,7 @@ package internal
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"hash/fnv"
 	"io"
@@ -11,6 +12,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/databricks/databricks-sdk-go"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/files"
@@ -26,35 +29,11 @@ func (buf hashable) Hash() uint32 {
 	return h.Sum32()
 }
 
-func TestUcAccFilesAPI(t *testing.T) {
-	ctx, w := ucwsTest(t)
-
-	schema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
-		CatalogName: "main",
-		Name:        RandomName("files-"),
-	})
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		w.Schemas.Delete(ctx, catalog.DeleteSchemaRequest{
-			FullName: schema.FullName,
-		})
-	})
-
-	volume, err := w.Volumes.Create(ctx, catalog.CreateVolumeRequestContent{
-		CatalogName: "main",
-		SchemaName:  schema.Name,
-		Name:        RandomName("files-"),
-		VolumeType:  catalog.VolumeTypeManaged,
-	})
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		w.Volumes.Delete(ctx, catalog.DeleteVolumeRequest{
-			Name: volume.FullName,
-		})
-	})
+func TestAccUCUploadAndDownloadFilesAPI(t *testing.T) {
+	ctx, w, volume := setupUCVolume(t)
 
 	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/files-")
-	err = w.Files.Upload(ctx, files.UploadRequest{
+	err := w.Files.Upload(ctx, files.UploadRequest{
 		FilePath: filePath,
 		Contents: io.NopCloser(strings.NewReader("abcd")),
 	})
@@ -64,6 +43,7 @@ func TestUcAccFilesAPI(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.Equal(t, fileHead.ContentType, "application/octet-stream")
+	require.Equal(t, fileHead.ContentLength, int64(4))
 	t.Cleanup(func() {
 		err = w.Files.DeleteByFilePath(ctx, filePath)
 		assert.NoError(t, err)
@@ -72,7 +52,74 @@ func TestUcAccFilesAPI(t *testing.T) {
 	require.NoError(t, err)
 	contents, err := io.ReadAll(raw.Contents)
 	require.NoError(t, err)
+	defer raw.Contents.Close()
+
 	assert.Equal(t, "abcd", string(contents))
+}
+
+func TestAccUCDeleteFile(t *testing.T) {
+	ctx, w, volume := setupUCVolume(t)
+
+	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/file-")
+	require.NoError(t, createFile(t, ctx, w, filePath, "Hello, world!"))
+
+	err := w.Files.DeleteByFilePath(ctx, filePath)
+	require.NoError(t, err)
+}
+
+func TestAccUCGetMetadata(t *testing.T) {
+	ctx, w, volume := setupUCVolume(t)
+
+	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/file-")
+	require.NoError(t, createFile(t, ctx, w, filePath, "12345"))
+
+	metadata, err := w.Files.GetMetadataByFilePath(ctx, filePath)
+	require.NoError(t, err)
+
+	assert.Equal(t, "application/octet-stream", metadata.ContentType)
+	assert.Equal(t, int64(5), metadata.ContentLength)
+	assert.NotEmpty(t, metadata.LastModified)
+}
+
+func TestAccUCCreateDirectory(t *testing.T) {
+	ctx, w, volume := setupUCVolume(t)
+
+	directoryPath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/directory-")
+	require.NoError(t, createDirectory(t, ctx, w, directoryPath))
+}
+
+func TestAccUCListDirectoryContents(t *testing.T) {
+	ctx, w, volume := setupUCVolume(t)
+
+	directoryPath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/directory-")
+	require.NoError(t, createFile(t, ctx, w, directoryPath+"/file01.txt", "Hello, world!"))
+	require.NoError(t, createFile(t, ctx, w, directoryPath+"/file02.txt", "Hello, world!"))
+	require.NoError(t, createFile(t, ctx, w, directoryPath+"/file03.txt", "Hello, world!"))
+
+	response, err := w.Files.ListDirectoryContentsAll(ctx, files.ListDirectoryContentsRequest{DirectoryPath: directoryPath})
+	require.NoError(t, err)
+
+	assert.Len(t, response, 3)
+}
+
+func TestAccUCDeleteDirectory(t *testing.T) {
+	ctx, w, volume := setupUCVolume(t)
+
+	directoryPath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/directory-")
+	require.NoError(t, createDirectory(t, ctx, w, directoryPath))
+
+	err := w.Files.DeleteDirectoryByDirectoryPath(ctx, directoryPath)
+	assert.NoError(t, err)
+}
+
+func TestAccUCGetDirectoryMetadata(t *testing.T) {
+	ctx, w, volume := setupUCVolume(t)
+
+	directoryPath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/directory-")
+	require.NoError(t, createDirectory(t, ctx, w, directoryPath))
+
+	err := w.Files.GetDirectoryMetadataByDirectoryPath(ctx, directoryPath)
+	require.NoError(t, err)
 }
 
 func TestAccDbfsOpen(t *testing.T) {
@@ -319,4 +366,73 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	files, err := w.Dbfs.RecursiveList(ctx, path.Dir(testPath1))
 	require.NoError(t, err)
 	assert.True(t, len(files) >= 2)
+}
+
+func setupUCVolume(t *testing.T) (context.Context, *databricks.WorkspaceClient, *catalog.VolumeInfo) {
+	ctx, w := ucwsTest(t)
+
+	schema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
+		CatalogName: "main",
+		Name:        RandomName("files-"),
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		w.Schemas.Delete(ctx, catalog.DeleteSchemaRequest{
+			FullName: schema.FullName,
+		})
+	})
+
+	volume, err := w.Volumes.Create(ctx, catalog.CreateVolumeRequestContent{
+		CatalogName: "main",
+		SchemaName:  schema.Name,
+		Name:        RandomName("files-"),
+		VolumeType:  catalog.VolumeTypeManaged,
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		w.Volumes.Delete(ctx, catalog.DeleteVolumeRequest{
+			Name: volume.FullName,
+		})
+	})
+
+	return ctx, w, volume
+}
+
+// createDirectory creates a directory with the given contents and registers a cleanup function to delete it.
+func createDirectory(t *testing.T, ctx context.Context, w *databricks.WorkspaceClient, directory string) error {
+	t.Helper()
+
+	err := w.Files.CreateDirectory(ctx, files.CreateDirectoryRequest{
+		DirectoryPath: directory,
+	})
+	if err != nil {
+		return err
+	}
+
+	t.Cleanup(func() {
+		if err := w.Files.DeleteDirectoryByDirectoryPath(ctx, directory); err != nil {
+			t.Log("failed to clean up directory:", err)
+		}
+	})
+	return nil
+}
+
+// createFile creates a file with the given contents and registers a cleanup function to delete it.
+func createFile(t *testing.T, ctx context.Context, w *databricks.WorkspaceClient, filePath, contents string) error {
+	t.Helper()
+
+	err := w.Files.Upload(ctx, files.UploadRequest{
+		FilePath: filePath,
+		Contents: io.NopCloser(strings.NewReader(contents)),
+	})
+	if err != nil {
+		return err
+	}
+
+	t.Cleanup(func() {
+		if err := w.Files.DeleteByFilePath(ctx, filePath); err != nil {
+			t.Log("failed to clean up file:", err)
+		}
+	})
+	return nil
 }

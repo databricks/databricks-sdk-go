@@ -73,6 +73,7 @@ func NewMockWorkspaceClient(t interface {
 			Metastores:                catalog.NewMockMetastoresInterface(t),
 			ModelRegistry:             ml.NewMockModelRegistryInterface(t),
 			ModelVersions:             catalog.NewMockModelVersionsInterface(t),
+			OnlineTables:              catalog.NewMockOnlineTablesInterface(t),
 			Permissions:               iam.NewMockPermissionsInterface(t),
 			Pipelines:                 pipelines.NewMockPipelinesInterface(t),
 			PolicyFamilies:            compute.NewMockPolicyFamiliesInterface(t),
@@ -385,6 +386,14 @@ func (m *MockWorkspaceClient) GetMockModelVersionsAPI() *catalog.MockModelVersio
 	api, ok := m.WorkspaceClient.ModelVersions.(*catalog.MockModelVersionsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ModelVersions to be *catalog.MockModelVersionsInterface, actual was %T", m.WorkspaceClient.ModelVersions))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockOnlineTablesAPI() *catalog.MockOnlineTablesInterface {
+	api, ok := m.WorkspaceClient.OnlineTables.(*catalog.MockOnlineTablesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected OnlineTables to be *catalog.MockOnlineTablesInterface, actual was %T", m.WorkspaceClient.OnlineTables))
 	}
 	return api
 }
