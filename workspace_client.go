@@ -34,6 +34,7 @@ type WorkspaceClient struct {
 	// a set of principals. A list of rules attached to a resource is called a
 	// rule set. A workspace must belong to an account for these APIs to work.
 	AccountAccessControlProxy iam.AccountAccessControlProxyInterface
+
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
 	// is a Databricks SQL object that periodically runs a query, evaluates a
 	// condition of its result, and notifies one or more users and/or
@@ -41,14 +42,17 @@ type WorkspaceClient struct {
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
 	Alerts sql.AlertsInterface
+
 	// Lakehouse Apps run directly on a customer’s Databricks instance,
 	// integrate with their data, use and extend Databricks services, and enable
 	// users to interact through single sign-on.
 	Apps serving.AppsInterface
+
 	// In Databricks Runtime 13.3 and above, you can add libraries and init
 	// scripts to the `allowlist` in UC so that users can leverage these
 	// artifacts on compute configured with shared access mode.
 	ArtifactAllowlists catalog.ArtifactAllowlistsInterface
+
 	// A catalog is the first layer of Unity Catalog’s three-level namespace.
 	// It’s used to organize your data assets. Users can see all catalogs on
 	// which they have been assigned the USE_CATALOG data permission.
@@ -58,6 +62,7 @@ type WorkspaceClient struct {
 	// Users in different workspaces can share access to the same data,
 	// depending on privileges granted centrally in Unity Catalog.
 	Catalogs catalog.CatalogsInterface
+
 	// A clean room is a secure, privacy-protecting environment where two or
 	// more parties can share sensitive enterprise data, including customer
 	// data, for measurements, insights, activation and other use cases.
@@ -65,6 +70,7 @@ type WorkspaceClient struct {
 	// To create clean rooms, you must be a metastore admin or a user with the
 	// **CREATE_CLEAN_ROOM** privilege.
 	CleanRooms sharing.CleanRoomsInterface
+
 	// You can use cluster policies to control users' ability to configure
 	// clusters based on a set of rules. These rules specify which attributes or
 	// attribute values can be used during cluster creation. Cluster policies
@@ -90,6 +96,7 @@ type WorkspaceClient struct {
 	// appear. Only admin users can create, edit, and delete policies. Admin
 	// users also have access to all policies.
 	ClusterPolicies compute.ClusterPoliciesInterface
+
 	// The Clusters API allows you to create, start, edit, list, terminate, and
 	// delete clusters.
 	//
@@ -118,9 +125,11 @@ type WorkspaceClient struct {
 	// cluster configuration even after it has been terminated for more than 30
 	// days, an administrator can pin a cluster to the cluster list.
 	Clusters compute.ClustersInterface
+
 	// This API allows execution of Python, Scala, SQL, or R commands on running
 	// Databricks Clusters.
 	CommandExecution compute.CommandExecutionInterface
+
 	// Connections allow for creating a connection to an external data source.
 	//
 	// A connection is an abstraction of an external data source that can be
@@ -133,16 +142,20 @@ type WorkspaceClient struct {
 	// each connection having a unique set of configuration options to support
 	// credential management and other settings.
 	Connections catalog.ConnectionsInterface
+
 	// Credentials manager interacts with with Identity Providers to to perform
 	// token exchanges using stored credentials and refresh tokens.
 	CredentialsManager settings.CredentialsManagerInterface
+
 	// This API allows retrieving information about currently authenticated user
 	// or service principal.
 	CurrentUser iam.CurrentUserInterface
+
 	// This is an evolving API that facilitates the addition and removal of
 	// widgets from existing dashboards within the Databricks Workspace. Data
 	// structures may change over time.
 	DashboardWidgets sql.DashboardWidgetsInterface
+
 	// In general, there is little need to modify dashboards using the API.
 	// However, it can be useful to use dashboard objects to look-up a
 	// collection of related query IDs. The API can also be used to duplicate
@@ -151,6 +164,7 @@ type WorkspaceClient struct {
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
 	Dashboards sql.DashboardsInterface
+
 	// This API is provided to assist you in making new query objects. When
 	// creating a query object, you may optionally specify a `data_source_id`
 	// for the SQL warehouse against which it will run. If you don't already
@@ -162,9 +176,11 @@ type WorkspaceClient struct {
 	// client, or `grep` to search the response from this API for the name of
 	// your SQL warehouse as it appears in Databricks SQL.
 	DataSources sql.DataSourcesInterface
+
 	// DBFS API makes it simple to interact with various data sources without
 	// having to include a users credentials every time to read a file.
 	Dbfs files.DbfsInterface
+
 	// The SQL Permissions API is similar to the endpoints of the
 	// :method:permissions/set. However, this exposes only one endpoint, which
 	// gets the Access Control List for a given object. You cannot modify any
@@ -179,6 +195,7 @@ type WorkspaceClient struct {
 	// - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
 	// permissions (superset of `CAN_RUN`)
 	DbsqlPermissions sql.DbsqlPermissionsInterface
+
 	// Experiments are the primary unit of organization in MLflow; all MLflow
 	// runs belong to an experiment. Each experiment lets you visualize, search,
 	// and compare runs, as well as download run artifacts or metadata for
@@ -189,6 +206,7 @@ type WorkspaceClient struct {
 	// experiments using the same tools you use to manage other workspace
 	// objects such as folders, notebooks, and libraries.
 	Experiments ml.ExperimentsInterface
+
 	// An external location is an object that combines a cloud storage path with
 	// a storage credential that authorizes access to the cloud storage path.
 	// Each external location is subject to Unity Catalog access-control
@@ -203,6 +221,7 @@ type WorkspaceClient struct {
 	// To create external locations, you must be a metastore admin or a user
 	// with the **CREATE_EXTERNAL_LOCATION** privilege.
 	ExternalLocations catalog.ExternalLocationsInterface
+
 	// The Files API allows you to read, write, list, and delete files and
 	// directories. We support Unity Catalog volumes with paths starting with
 	// "/Volumes/<catalog>/<schema>/<volume>".
@@ -219,6 +238,7 @@ type WorkspaceClient struct {
 	// methods `GET`, `HEAD`, `PUT`, and `DELETE` work as expected on these
 	// endpoints.
 	Files files.FilesInterface
+
 	// Functions implement User-Defined Functions (UDFs) in Unity Catalog.
 	//
 	// The function implementation can be any SQL expression or Query, and it
@@ -227,6 +247,7 @@ type WorkspaceClient struct {
 	// referenced with the form
 	// __catalog_name__.__schema_name__.__function_name__.
 	Functions catalog.FunctionsInterface
+
 	// Registers personal access token for Databricks to do operations on behalf
 	// of the user.
 	//
@@ -234,6 +255,7 @@ type WorkspaceClient struct {
 	//
 	// [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 	GitCredentials workspace.GitCredentialsInterface
+
 	// The Global Init Scripts API enables Workspace administrators to configure
 	// global initialization scripts for their workspace. These scripts run on
 	// every node in every cluster in the workspace.
@@ -245,6 +267,7 @@ type WorkspaceClient struct {
 	// enough containers fail, the entire cluster fails with a
 	// `GLOBAL_INIT_SCRIPT_FAILURE` error code.
 	GlobalInitScripts compute.GlobalInitScriptsInterface
+
 	// In Unity Catalog, data is secure by default. Initially, users have no
 	// access to data in a metastore. Access can be granted by either a
 	// metastore admin, the owner of an object, or the owner of the catalog or
@@ -257,6 +280,7 @@ type WorkspaceClient struct {
 	// within the catalog. Similarly, privileges granted on a schema are
 	// inherited by all current and future objects within that schema.
 	Grants catalog.GrantsInterface
+
 	// Groups simplify identity management, making it easier to assign access to
 	// Databricks workspace, data, and other securable objects.
 	//
@@ -265,6 +289,7 @@ type WorkspaceClient struct {
 	// All Databricks workspace identities can be assigned as members of groups,
 	// and members inherit permissions that are assigned to their group.
 	Groups iam.GroupsInterface
+
 	// Instance Pools API are used to create, edit, delete and list instance
 	// pools by using ready-to-use cloud instances which reduces a cluster start
 	// and auto-scaling times.
@@ -284,6 +309,7 @@ type WorkspaceClient struct {
 	// Databricks does not charge DBUs while instances are idle in the pool.
 	// Instance provider billing does apply. See pricing.
 	InstancePools compute.InstancePoolsInterface
+
 	// The Instance Profiles API allows admins to add, list, and remove instance
 	// profiles that users can launch clusters with. Regular users can list the
 	// instance profiles available to them. See [Secure access to S3 buckets]
@@ -291,6 +317,7 @@ type WorkspaceClient struct {
 	//
 	// [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html
 	InstanceProfiles compute.InstanceProfilesInterface
+
 	// IP Access List enables admins to configure IP access lists.
 	//
 	// IP access lists affect web application access and REST API access to this
@@ -313,6 +340,7 @@ type WorkspaceClient struct {
 	// After changes to the IP access list feature, it can take a few minutes
 	// for changes to take effect.
 	IpAccessLists settings.IpAccessListsInterface
+
 	// The Jobs API allows you to create, edit, and delete jobs.
 	//
 	// You can use a Databricks job to run a data processing or data analysis
@@ -333,6 +361,7 @@ type WorkspaceClient struct {
 	// [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
 	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs jobs.JobsInterface
+
 	// A monitor computes and monitors data or model quality metrics for a table
 	// over time. It generates metrics tables and a dashboard that you can use
 	// to monitor table health and set alerts.
@@ -343,10 +372,12 @@ type WorkspaceClient struct {
 	// **SELECT** privileges on the table (along with **USE_SCHEMA** and
 	// **USE_CATALOG**).
 	LakehouseMonitors catalog.LakehouseMonitorsInterface
+
 	// These APIs provide specific management operations for Lakeview
 	// dashboards. Generic resource management can be done with Workspace API
 	// (import, export, get-status, list, delete).
 	Lakeview dashboards.LakeviewInterface
+
 	// The Libraries API allows you to install and uninstall libraries and get
 	// the status of libraries on a cluster.
 	//
@@ -369,6 +400,7 @@ type WorkspaceClient struct {
 	// when you restart the cluster. Until you restart the cluster, the status
 	// of the uninstalled library appears as Uninstall pending restart.
 	Libraries compute.LibrariesInterface
+
 	// A metastore is the top-level container of objects in Unity Catalog. It
 	// stores data assets (tables and views) and the permissions that govern
 	// access to them. Databricks account admins can create metastores and
@@ -385,6 +417,7 @@ type WorkspaceClient struct {
 	// workspace includes a legacy Hive metastore, the data in that metastore is
 	// available in a catalog named hive_metastore.
 	Metastores catalog.MetastoresInterface
+
 	// Note: This API reference documents APIs for the Workspace Model Registry.
 	// Databricks recommends using [Models in Unity
 	// Catalog](/api/workspace/registeredmodels) instead. Models in Unity
@@ -396,6 +429,7 @@ type WorkspaceClient struct {
 	// and set of APIs that enable you to manage the full lifecycle of MLflow
 	// Models.
 	ModelRegistry ml.ModelRegistryInterface
+
 	// Databricks provides a hosted version of MLflow Model Registry in Unity
 	// Catalog. Models in Unity Catalog provide centralized access control,
 	// auditing, lineage, and discovery of ML models across Databricks
@@ -405,9 +439,11 @@ type WorkspaceClient struct {
 	// versions in Unity Catalog. For more details, see the [registered models
 	// API docs](/api/workspace/registeredmodels).
 	ModelVersions catalog.ModelVersionsInterface
+
 	// Online tables provide lower latency and higher QPS access to data from
 	// Delta tables.
 	OnlineTables catalog.OnlineTablesInterface
+
 	// Permissions API are used to create read, write, edit, update and manage
 	// access for various users on different objects and endpoints.
 	//
@@ -456,6 +492,7 @@ type WorkspaceClient struct {
 	//
 	// [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 	Permissions iam.PermissionsInterface
+
 	// The Delta Live Tables API allows you to create, edit, delete, start, and
 	// view details about pipelines.
 	//
@@ -471,6 +508,7 @@ type WorkspaceClient struct {
 	// allow you to define expected data quality and specify how to handle
 	// records that fail those expectations.
 	Pipelines pipelines.PipelinesInterface
+
 	// View available policy families. A policy family contains a policy
 	// definition providing best practices for configuring clusters for a
 	// particular use case.
@@ -482,22 +520,27 @@ type WorkspaceClient struct {
 	// create cluster policies using a policy family. Cluster policies created
 	// using a policy family inherit the policy family's policy definition.
 	PolicyFamilies compute.PolicyFamiliesInterface
+
 	// A data provider is an object representing the organization in the real
 	// world who shares the data. A provider contains shares which further
 	// contain the shared data.
 	Providers sharing.ProvidersInterface
+
 	// These endpoints are used for CRUD operations on query definitions. Query
 	// definitions include the target SQL warehouse, query text, name,
 	// description, tags, parameters, and visualizations. Queries can be
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
 	Queries sql.QueriesInterface
+
 	// Access the history of queries through SQL warehouses.
 	QueryHistory sql.QueryHistoryInterface
+
 	// This is an evolving API that facilitates the addition and removal of
 	// vizualisations from existing queries within the Databricks Workspace.
 	// Data structures may change over time.
 	QueryVisualizations sql.QueryVisualizationsInterface
+
 	// The Recipient Activation API is only applicable in the open sharing model
 	// where the recipient object has the authentication type of `TOKEN`. The
 	// data recipient follows the activation link shared by the data provider to
@@ -509,6 +552,7 @@ type WorkspaceClient struct {
 	// should treat the downloaded credential as a secret and must not share it
 	// outside of their organization.
 	RecipientActivation sharing.RecipientActivationInterface
+
 	// A recipient is an object you create using :method:recipients/create to
 	// represent an organization which you want to allow access shares. The way
 	// how sharing works differs depending on whether or not your recipient has
@@ -527,6 +571,7 @@ type WorkspaceClient struct {
 	// uses the credential file to establish a secure connection to receive the
 	// shared data. This sharing mode is called **open sharing**.
 	Recipients sharing.RecipientsInterface
+
 	// Databricks provides a hosted version of MLflow Model Registry in Unity
 	// Catalog. Models in Unity Catalog provide centralized access control,
 	// auditing, lineage, and discovery of ML models across Databricks
@@ -559,6 +604,7 @@ type WorkspaceClient struct {
 	// (e.g. tagging, grants) that specify a securable type, use "FUNCTION" as
 	// the securable type.
 	RegisteredModels catalog.RegisteredModelsInterface
+
 	// The Repos API allows users to manage their git repos. Users can use the
 	// API to access all repos that they have manage permissions on.
 	//
@@ -571,12 +617,14 @@ type WorkspaceClient struct {
 	// data science and engineering code development best practices using Git
 	// for version control, collaboration, and CI/CD.
 	Repos workspace.ReposInterface
+
 	// A schema (also called a database) is the second layer of Unity
 	// Catalog’s three-level namespace. A schema organizes tables, views and
 	// functions. To access (or list) a table or view in a schema, users must
 	// have the USE_SCHEMA data permission on the schema and its parent catalog,
 	// and they must have the SELECT permission on the table or view.
 	Schemas catalog.SchemasInterface
+
 	// The Secrets API allows you to manage secrets, secret scopes, and access
 	// permissions.
 	//
@@ -590,6 +638,7 @@ type WorkspaceClient struct {
 	// values that might be displayed in notebooks, it is not possible to
 	// prevent such users from reading secrets.
 	Secrets workspace.SecretsInterface
+
 	// Identities for use with jobs, automated tools, and systems such as
 	// scripts, apps, and CI/CD platforms. Databricks recommends creating
 	// service principals to run production jobs or modify production data. If
@@ -598,6 +647,7 @@ type WorkspaceClient struct {
 	// production. This eliminates the risk of a user overwriting production
 	// data by accident.
 	ServicePrincipals iam.ServicePrincipalsInterface
+
 	// The Serving Endpoints API allows you to create, update, and delete model
 	// serving endpoints.
 	//
@@ -613,6 +663,7 @@ type WorkspaceClient struct {
 	// Additionally, you can configure the scale of resources that should be
 	// applied to each served entity.
 	ServingEndpoints serving.ServingEndpointsInterface
+
 	// The default namespace setting API allows users to configure the default
 	// namespace for a Databricks workspace.
 	//
@@ -627,12 +678,14 @@ type WorkspaceClient struct {
 	// effect. Additionally, the default namespace only applies when using Unity
 	// Catalog-enabled compute.
 	Settings settings.SettingsInterface
+
 	// A share is a container instantiated with :method:shares/create. Once
 	// created you can iteratively register a collection of existing data assets
 	// defined within the metastore using :method:shares/update. You can
 	// register data assets under their original name, qualified by their
 	// original schema, or provide alternate exposed names.
 	Shares sharing.SharesInterface
+
 	// The Databricks SQL Statement Execution API can be used to execute SQL
 	// statements on a SQL warehouse and fetch the result.
 	//
@@ -742,6 +795,7 @@ type WorkspaceClient struct {
 	// [Apache Arrow Columnar]: https://arrow.apache.org/overview/
 	// [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
 	StatementExecution sql.StatementExecutionInterface
+
 	// A storage credential represents an authentication and authorization
 	// mechanism for accessing data stored on your cloud tenant. Each storage
 	// credential is subject to Unity Catalog access-control policies that
@@ -757,10 +811,12 @@ type WorkspaceClient struct {
 	// The account admin who creates the storage credential can delegate
 	// ownership to another user or group to manage permissions on it.
 	StorageCredentials catalog.StorageCredentialsInterface
+
 	// A system schema is a schema that lives within the system catalog. A
 	// system schema may contain information about customer usage of Unity
 	// Catalog such as audit-logs, billing-logs, lineage information, etc.
 	SystemSchemas catalog.SystemSchemasInterface
+
 	// Primary key and foreign key constraints encode relationships between
 	// fields in tables.
 	//
@@ -775,6 +831,7 @@ type WorkspaceClient struct {
 	// specification during table creation. You can also add or drop constraints
 	// on existing tables.
 	TableConstraints catalog.TableConstraintsInterface
+
 	// A table resides in the third layer of Unity Catalog’s three-level
 	// namespace. It contains rows of data. To create a table, users must have
 	// CREATE_TABLE and USE_SCHEMA permissions on the schema, and they must have
@@ -786,13 +843,16 @@ type WorkspaceClient struct {
 	// A table can be managed or external. From an API perspective, a __VIEW__
 	// is a particular kind of table (rather than a managed or external table).
 	Tables catalog.TablesInterface
+
 	// Enables administrators to get all tokens and delete tokens for other
 	// users. Admins can either get every token, get a specific token by ID, or
 	// get all tokens for a particular user.
 	TokenManagement settings.TokenManagementInterface
+
 	// The Token API allows you to create, list, and revoke tokens that can be
 	// used to authenticate and access Databricks REST APIs.
 	Tokens settings.TokensInterface
+
 	// User identities recognized by Databricks and represented by email
 	// addresses.
 	//
@@ -806,9 +866,11 @@ type WorkspaceClient struct {
 	// removed from Databricks workspace. This ensures a consistent offboarding
 	// process and prevents unauthorized users from accessing sensitive data.
 	Users iam.UsersInterface
+
 	// **Endpoint**: Represents the compute resources to host vector search
 	// indexes.
 	VectorSearchEndpoints vectorsearch.VectorSearchEndpointsInterface
+
 	// **Index**: An efficient representation of your embedding vectors that
 	// supports real-time and efficient approximate nearest neighbor (ANN)
 	// search queries.
@@ -820,6 +882,7 @@ type WorkspaceClient struct {
 	// direct read and write of vectors and metadata through our REST and SDK
 	// APIs. With this model, the user manages index updates.
 	VectorSearchIndexes vectorsearch.VectorSearchIndexesInterface
+
 	// Volumes are a Unity Catalog (UC) capability for accessing, storing,
 	// governing, organizing and processing files. Use cases include running
 	// machine learning on unstructured data such as image, audio, video, or PDF
@@ -830,16 +893,19 @@ type WorkspaceClient struct {
 	// workspaces to it, or transforming and querying non-tabular data files in
 	// ETL.
 	Volumes catalog.VolumesInterface
+
 	// A SQL warehouse is a compute resource that lets you run SQL commands on
 	// data objects within Databricks SQL. Compute resources are infrastructure
 	// resources that provide processing capabilities in the cloud.
 	Warehouses sql.WarehousesInterface
+
 	// The Workspace API allows you to list, import, export, and delete
 	// notebooks and folders.
 	//
 	// A notebook is a web-based interface to a document that contains runnable
 	// code, visualizations, and explanatory text.
 	Workspace workspace.WorkspaceInterface
+
 	// A securable in Databricks can be configured as __OPEN__ or __ISOLATED__.
 	// An __OPEN__ securable can be accessed from any workspace, while an
 	// __ISOLATED__ securable can only be accessed from a configured list of
@@ -862,6 +928,7 @@ type WorkspaceClient struct {
 	//
 	// Securables that support binding: - catalog
 	WorkspaceBindings catalog.WorkspaceBindingsInterface
+
 	// This API allows updating known workspace settings for advanced users.
 	WorkspaceConf settings.WorkspaceConfInterface
 }
