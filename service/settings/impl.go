@@ -83,6 +83,24 @@ func (a *accountSettingsImpl) DeletePersonalComputeSetting(ctx context.Context, 
 	return &deletePersonalComputeSettingResponse, err
 }
 
+func (a *accountSettingsImpl) GetCspEnablementAccountSetting(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
+	var cspEnablementAccountSetting CspEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cspEnablementAccountSetting)
+	return &cspEnablementAccountSetting, err
+}
+
+func (a *accountSettingsImpl) GetEsmEnablementAccountSetting(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
+	var esmEnablementAccountSetting EsmEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &esmEnablementAccountSetting)
+	return &esmEnablementAccountSetting, err
+}
+
 func (a *accountSettingsImpl) GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	var personalComputeSetting PersonalComputeSetting
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
@@ -90,6 +108,26 @@ func (a *accountSettingsImpl) GetPersonalComputeSetting(ctx context.Context, req
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &personalComputeSetting)
 	return &personalComputeSetting, err
+}
+
+func (a *accountSettingsImpl) UpdateCspEnablementAccountSetting(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
+	var cspEnablementAccountSetting CspEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cspEnablementAccountSetting)
+	return &cspEnablementAccountSetting, err
+}
+
+func (a *accountSettingsImpl) UpdateEsmEnablementAccountSetting(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
+	var esmEnablementAccountSetting EsmEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &esmEnablementAccountSetting)
+	return &esmEnablementAccountSetting, err
 }
 
 func (a *accountSettingsImpl) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
@@ -277,6 +315,24 @@ func (a *settingsImpl) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context,
 	return &deleteRestrictWorkspaceAdminsSettingResponse, err
 }
 
+func (a *settingsImpl) GetAutomaticClusterUpdateSetting(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
+	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
+	path := "/api/2.0/settings/types/automatic_cluster_update/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &automaticClusterUpdateSetting)
+	return &automaticClusterUpdateSetting, err
+}
+
+func (a *settingsImpl) GetCspEnablementSetting(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error) {
+	var cspEnablementSetting CspEnablementSetting
+	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cspEnablementSetting)
+	return &cspEnablementSetting, err
+}
+
 func (a *settingsImpl) GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
 	var defaultNamespaceSetting DefaultNamespaceSetting
 	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
@@ -284,6 +340,15 @@ func (a *settingsImpl) GetDefaultNamespaceSetting(ctx context.Context, request G
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &defaultNamespaceSetting)
 	return &defaultNamespaceSetting, err
+}
+
+func (a *settingsImpl) GetEsmEnablementSetting(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
+	var esmEnablementSetting EsmEnablementSetting
+	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &esmEnablementSetting)
+	return &esmEnablementSetting, err
 }
 
 func (a *settingsImpl) GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
@@ -295,6 +360,26 @@ func (a *settingsImpl) GetRestrictWorkspaceAdminsSetting(ctx context.Context, re
 	return &restrictWorkspaceAdminsSetting, err
 }
 
+func (a *settingsImpl) UpdateAutomaticClusterUpdateSetting(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
+	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
+	path := "/api/2.0/settings/types/automatic_cluster_update/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &automaticClusterUpdateSetting)
+	return &automaticClusterUpdateSetting, err
+}
+
+func (a *settingsImpl) UpdateCspEnablementSetting(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error) {
+	var cspEnablementSetting CspEnablementSetting
+	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cspEnablementSetting)
+	return &cspEnablementSetting, err
+}
+
 func (a *settingsImpl) UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
 	var defaultNamespaceSetting DefaultNamespaceSetting
 	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
@@ -303,6 +388,16 @@ func (a *settingsImpl) UpdateDefaultNamespaceSetting(ctx context.Context, reques
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &defaultNamespaceSetting)
 	return &defaultNamespaceSetting, err
+}
+
+func (a *settingsImpl) UpdateEsmEnablementSetting(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
+	var esmEnablementSetting EsmEnablementSetting
+	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &esmEnablementSetting)
+	return &esmEnablementSetting, err
 }
 
 func (a *settingsImpl) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {

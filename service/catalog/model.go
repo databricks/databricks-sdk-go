@@ -26,6 +26,10 @@ type EnableResponse struct{}
 
 type MonitorSnapshotProfileType struct{}
 
+type OnlineTableSpecContinuousSchedulingPolicy struct{}
+
+type OnlineTableSpecTriggeredSchedulingPolicy struct{}
+
 type UnassignResponse struct{}
 
 type UpdateAssignmentResponse struct{}
@@ -3403,10 +3407,10 @@ type OnlineTableSpec struct {
 	// Primary Key columns to be used for data insert/update in the destination.
 	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
 	// Pipeline runs continuously after generating the initial data.
-	RunContinuously any `json:"run_continuously,omitempty"`
+	RunContinuously OnlineTableSpecContinuousSchedulingPolicy `json:"run_continuously,omitempty"`
 	// Pipeline stops after generating the initial data and can be triggered
 	// later (manually, through a cron job or through data triggers)
-	RunTriggered any `json:"run_triggered,omitempty"`
+	RunTriggered OnlineTableSpecTriggeredSchedulingPolicy `json:"run_triggered,omitempty"`
 	// Three-part (catalog, schema, table) name of the source Delta table.
 	SourceTableFullName string `json:"source_table_full_name,omitempty"`
 	// Time series key to deduplicate (tie-break) rows with the same primary

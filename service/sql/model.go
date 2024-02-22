@@ -2183,58 +2183,6 @@ func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
 }
 
-// The phase of the query.
-type Phase string
-
-const PhaseAnalysis Phase = `ANALYSIS`
-
-const PhaseOptimization Phase = `OPTIMIZATION`
-
-const PhaseParsing Phase = `PARSING`
-
-const PhasePlanning Phase = `PLANNING`
-
-const PhaseReplanning Phase = `REPLANNING`
-
-const PhaseUnspecified Phase = `UNSPECIFIED`
-
-// String representation for [fmt.Print]
-func (f *Phase) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *Phase) Set(v string) error {
-	switch v {
-	case `ANALYSIS`, `OPTIMIZATION`, `PARSING`, `PLANNING`, `REPLANNING`, `UNSPECIFIED`:
-		*f = Phase(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ANALYSIS", "OPTIMIZATION", "PARSING", "PLANNING", "REPLANNING", "UNSPECIFIED"`, v)
-	}
-}
-
-// Type always returns Phase to satisfy [pflag.Value] interface
-func (f *Phase) Type() string {
-	return "Phase"
-}
-
-type PlanningPhase struct {
-	DurationMs int `json:"duration_ms,omitempty"`
-	// The phase of the query.
-	Phase Phase `json:"phase,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PlanningPhase) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PlanningPhase) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 // Whether plans exist for the execution, or the reason why they are missing
 type PlansState string
 
@@ -2504,8 +2452,6 @@ type QueryMetrics struct {
 	// Total execution time for all individual Photon query engine tasks in the
 	// query, in milliseconds.
 	PhotonTotalTimeMs int `json:"photon_total_time_ms,omitempty"`
-	// Reserved for internal use.
-	PlanningPhases []PlanningPhase `json:"planning_phases,omitempty"`
 	// Reserved for internal use.
 	PlanningTimeMs int `json:"planning_time_ms,omitempty"`
 	// Timestamp of when the query was enqueued waiting for a cluster to be
