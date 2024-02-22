@@ -235,7 +235,8 @@ func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Re
 		callback: nil,
 	}, nil
 	{{- else -}}
-	return a.impl.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
+	{{ if .Response.IsEmpty }}_, err :={{else}}return{{end}} a.impl.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
+	{{ if .Response.IsEmpty}}return err{{end}}
 	{{- end}}
 }
 {{end}}
@@ -425,3 +426,10 @@ func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Conte
 {{- define "paginated-return-type" -}}
   listing.Iterator[{{ template "type" .Pagination.Entity }}]
 {{- end -}}
+
+{{ define "api-response-type" -}}
+  {{ if and .Response (not .Response.IsEmpty) }}(
+  {{- if not .Response.ArrayValue }}*{{end}}{{ template "type" .Response }}, error)
+  {{- else }}error
+  {{- end }}
+{{- end }}
