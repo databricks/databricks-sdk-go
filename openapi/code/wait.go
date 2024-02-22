@@ -62,7 +62,7 @@ func (w *Wait) Binding() (binding []Binding) {
 		responseBind := true
 		bind := w.Method.wait.Bind
 		entity := w.Method.Response
-		if entity == nil {
+		if entity == nil || entity.IsEmpty() {
 			entity = w.Method.Request
 			responseBind = false
 		}
