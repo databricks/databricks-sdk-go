@@ -397,10 +397,11 @@ func (a *{{.Service.Name}}API) GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}
 {{end}}{{if .Shortcut}}
 {{.Comment "// " 80}}
 func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{ template "api-response-type" . }} {
-	return a.impl.{{.PascalName}}(ctx, {{.Request.PascalName}}{
+    {{ if .Response.IsEmpty -}}_, err :={{ else }}return{{end}} a.impl.{{.PascalName}}(ctx, {{.Request.PascalName}}{
 		{{- range .Shortcut.Params}}
 		{{.PascalName}}: {{.CamelName}},{{end}}
 	})
+	{{if .Response.IsEmpty -}}return err{{end}}
 }
 {{end}}{{if and .Shortcut $hasWaiter}}
 func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
