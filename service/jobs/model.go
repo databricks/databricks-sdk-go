@@ -178,9 +178,15 @@ func (s CancelAllRuns) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CancelAllRunsResponse struct {
+}
+
 type CancelRun struct {
 	// This field is required.
 	RunId int64 `json:"run_id"`
+}
+
+type CancelRunResponse struct {
 }
 
 type ClusterInstance struct {
@@ -591,9 +597,15 @@ type DeleteJob struct {
 	JobId int64 `json:"job_id"`
 }
 
+type DeleteResponse struct {
+}
+
 type DeleteRun struct {
 	// The canonical identifier of the run for which to retrieve the metadata.
 	RunId int64 `json:"run_id"`
+}
+
+type DeleteRunResponse struct {
 }
 
 type ExportRunOutput struct {
@@ -2021,6 +2033,9 @@ type ResetJob struct {
 	// Changes to the field `JobBaseSettings.timeout_seconds` are applied to
 	// active runs. Changes to other fields are applied to future runs only.
 	NewSettings JobSettings `json:"new_settings"`
+}
+
+type ResetResponse struct {
 }
 
 type ResolvedConditionTaskValues struct {
@@ -3873,6 +3888,9 @@ type UpdateJob struct {
 	NewSettings *JobSettings `json:"new_settings,omitempty"`
 }
 
+type UpdateResponse struct {
+}
+
 type ViewItem struct {
 	// Content of the view.
 	Content string `json:"content,omitempty"`
@@ -4003,15 +4021,3 @@ func (s *WebhookNotificationsOnDurationWarningThresholdExceededItem) UnmarshalJS
 func (s WebhookNotificationsOnDurationWarningThresholdExceededItem) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
-
-type CancelAllRunsResponse struct{}
-
-type CancelRunResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteRunResponse struct{}
-
-type ResetResponse struct{}
-
-type UpdateResponse struct{}

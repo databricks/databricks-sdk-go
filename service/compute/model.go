@@ -47,6 +47,9 @@ func (s AddInstanceProfile) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type AddResponse struct {
+}
+
 type Adlsgen2Info struct {
 	// abfss destination, e.g.
 	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`.
@@ -286,11 +289,17 @@ func (s CancelCommand) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CancelResponse struct {
+}
+
 type ChangeClusterOwner struct {
 	// <needs content added>
 	ClusterId string `json:"cluster_id"`
 	// New owner of the cluster_id after this RPC.
 	OwnerUsername string `json:"owner_username"`
+}
+
+type ChangeClusterOwnerResponse struct {
 }
 
 type ClientsTypes struct {
@@ -1877,6 +1886,9 @@ type DeleteCluster struct {
 	ClusterId string `json:"cluster_id"`
 }
 
+type DeleteClusterResponse struct {
+}
+
 // Delete init script
 type DeleteGlobalInitScriptRequest struct {
 	// The ID of the global init script.
@@ -1888,15 +1900,27 @@ type DeleteInstancePool struct {
 	InstancePoolId string `json:"instance_pool_id"`
 }
 
+type DeleteInstancePoolResponse struct {
+}
+
 type DeletePolicy struct {
 	// The ID of the policy to delete.
 	PolicyId string `json:"policy_id"`
+}
+
+type DeletePolicyResponse struct {
+}
+
+type DeleteResponse struct {
 }
 
 type DestroyContext struct {
 	ClusterId string `json:"clusterId"`
 
 	ContextId string `json:"contextId"`
+}
+
+type DestroyResponse struct {
 }
 
 type DiskSpec struct {
@@ -2219,6 +2243,9 @@ func (s EditCluster) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type EditClusterResponse struct {
+}
+
 type EditInstancePool struct {
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -2261,6 +2288,9 @@ func (s *EditInstancePool) UnmarshalJSON(b []byte) error {
 
 func (s EditInstancePool) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type EditInstancePoolResponse struct {
 }
 
 type EditPolicy struct {
@@ -2309,6 +2339,12 @@ func (s *EditPolicy) UnmarshalJSON(b []byte) error {
 
 func (s EditPolicy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type EditPolicyResponse struct {
+}
+
+type EditResponse struct {
 }
 
 type EventDetails struct {
@@ -3056,6 +3092,9 @@ type InstallLibraries struct {
 	ClusterId string `json:"cluster_id"`
 	// The libraries to install.
 	Libraries []Library `json:"libraries"`
+}
+
+type InstallLibrariesResponse struct {
 }
 
 type InstancePoolAccessControlRequest struct {
@@ -3987,9 +4026,15 @@ type PermanentDeleteCluster struct {
 	ClusterId string `json:"cluster_id"`
 }
 
+type PermanentDeleteClusterResponse struct {
+}
+
 type PinCluster struct {
 	// <needs content added>
 	ClusterId string `json:"cluster_id"`
+}
+
+type PinClusterResponse struct {
 }
 
 type Policy struct {
@@ -4059,6 +4104,10 @@ type PolicyFamily struct {
 	PolicyFamilyId string `json:"policy_family_id"`
 }
 
+// ID of the policy family.
+type PolicyFamilyId struct {
+}
+
 type PythonPyPiLibrary struct {
 	// The name of the pypi package to install. An optional exact version
 	// specification is also supported. Examples: "simplejson" and
@@ -4102,6 +4151,9 @@ type RemoveInstanceProfile struct {
 	InstanceProfileArn string `json:"instance_profile_arn"`
 }
 
+type RemoveResponse struct {
+}
+
 type ResizeCluster struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
@@ -4132,6 +4184,9 @@ func (s ResizeCluster) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ResizeClusterResponse struct {
+}
+
 type RestartCluster struct {
 	// The cluster to be started.
 	ClusterId string `json:"cluster_id"`
@@ -4147,6 +4202,9 @@ func (s *RestartCluster) UnmarshalJSON(b []byte) error {
 
 func (s RestartCluster) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type RestartClusterResponse struct {
 }
 
 type ResultType string
@@ -4367,6 +4425,9 @@ func (s SparkVersion) MarshalJSON() ([]byte, error) {
 type StartCluster struct {
 	// The cluster to be started.
 	ClusterId string `json:"cluster_id"`
+}
+
+type StartClusterResponse struct {
 }
 
 // Current state of the cluster.
@@ -4640,9 +4701,18 @@ type UninstallLibraries struct {
 	Libraries []Library `json:"libraries"`
 }
 
+type UninstallLibrariesResponse struct {
+}
+
 type UnpinCluster struct {
 	// <needs content added>
 	ClusterId string `json:"cluster_id"`
+}
+
+type UnpinClusterResponse struct {
+}
+
+type UpdateResponse struct {
 }
 
 type VolumesStorageInfo struct {
@@ -4660,47 +4730,3 @@ type WorkspaceStorageInfo struct {
 	// `/Users/user1@databricks.com/my-init.sh`
 	Destination string `json:"destination"`
 }
-
-type AddResponse struct{}
-
-type CancelResponse struct{}
-
-type ChangeClusterOwnerResponse struct{}
-
-type DeleteClusterResponse struct{}
-
-type DeleteInstancePoolResponse struct{}
-
-type DeletePolicyResponse struct{}
-
-type DeleteResponse struct{}
-
-type DestroyResponse struct{}
-
-type EditClusterResponse struct{}
-
-type EditInstancePoolResponse struct{}
-
-type EditPolicyResponse struct{}
-
-type EditResponse struct{}
-
-type InstallLibrariesResponse struct{}
-
-type PermanentDeleteClusterResponse struct{}
-
-type PinClusterResponse struct{}
-
-type RemoveResponse struct{}
-
-type ResizeClusterResponse struct{}
-
-type RestartClusterResponse struct{}
-
-type StartClusterResponse struct{}
-
-type UninstallLibrariesResponse struct{}
-
-type UnpinClusterResponse struct{}
-
-type UpdateResponse struct{}

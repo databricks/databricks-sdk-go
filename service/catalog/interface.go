@@ -12,13 +12,13 @@ type AccountMetastoreAssignmentsService interface {
 	// Assigns a workspace to a metastore.
 	//
 	// Creates an assignment to a metastore for a workspace
-	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error
+	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*CreateResponse, error)
 
 	// Delete a metastore assignment.
 	//
 	// Deletes a metastore assignment to a workspace, leaving the workspace with
 	// no metastore.
-	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error
+	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) (*DeleteResponse, error)
 
 	// Gets the metastore assignment for a workspace.
 	//
@@ -40,7 +40,7 @@ type AccountMetastoreAssignmentsService interface {
 	//
 	// Updates an assignment to a metastore for a workspace. Currently, only the
 	// default catalog may be updated.
-	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error
+	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*UpdateResponse, error)
 }
 
 // These APIs manage Unity Catalog metastores for an account. A metastore
@@ -55,7 +55,7 @@ type AccountMetastoresService interface {
 	// Delete a metastore.
 	//
 	// Deletes a Unity Catalog metastore for an account, both specified by ID.
-	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error
+	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) (*DeleteResponse, error)
 
 	// Get a metastore.
 	//
@@ -95,7 +95,7 @@ type AccountStorageCredentialsService interface {
 	//
 	// Deletes a storage credential from the metastore. The caller must be an
 	// owner of the storage credential.
-	Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error
+	Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) (*DeleteResponse, error)
 
 	// Gets the named storage credential.
 	//
@@ -159,7 +159,7 @@ type CatalogsService interface {
 	//
 	// Deletes the catalog that matches the supplied name. The caller must be a
 	// metastore admin or the owner of the catalog.
-	Delete(ctx context.Context, request DeleteCatalogRequest) error
+	Delete(ctx context.Context, request DeleteCatalogRequest) (*DeleteResponse, error)
 
 	// Get a catalog.
 	//
@@ -212,7 +212,7 @@ type ConnectionsService interface {
 	// Delete a connection.
 	//
 	// Deletes the connection that matches the supplied name.
-	Delete(ctx context.Context, request DeleteConnectionRequest) error
+	Delete(ctx context.Context, request DeleteConnectionRequest) (*DeleteResponse, error)
 
 	// Get a connection.
 	//
@@ -258,7 +258,7 @@ type ExternalLocationsService interface {
 	//
 	// Deletes the specified external location from the metastore. The caller
 	// must be the owner of the external location.
-	Delete(ctx context.Context, request DeleteExternalLocationRequest) error
+	Delete(ctx context.Context, request DeleteExternalLocationRequest) (*DeleteResponse, error)
 
 	// Get an external location.
 	//
@@ -313,7 +313,7 @@ type FunctionsService interface {
 	// catalog - Is the owner of the function itself and have both the
 	// **USE_CATALOG** privilege on its parent catalog and the **USE_SCHEMA**
 	// privilege on its parent schema
-	Delete(ctx context.Context, request DeleteFunctionRequest) error
+	Delete(ctx context.Context, request DeleteFunctionRequest) (*DeleteResponse, error)
 
 	// Get a function.
 	//
@@ -404,7 +404,7 @@ type LakehouseMonitorsService interface {
 	//
 	// Additionally, the call must be made from the workspace where the monitor
 	// was created.
-	CancelRefresh(ctx context.Context, request CancelRefreshRequest) error
+	CancelRefresh(ctx context.Context, request CancelRefreshRequest) (*CancelRefreshResponse, error)
 
 	// Create a table monitor.
 	//
@@ -437,7 +437,7 @@ type LakehouseMonitorsService interface {
 	//
 	// Note that the metric tables and dashboard will not be deleted as part of
 	// this call; those assets must be manually cleaned up (if desired).
-	Delete(ctx context.Context, request DeleteLakehouseMonitorRequest) error
+	Delete(ctx context.Context, request DeleteLakehouseMonitorRequest) (*DeleteResponse, error)
 
 	// Get a table monitor.
 	//
@@ -539,7 +539,7 @@ type MetastoresService interface {
 	// __workspace_id__ exists, it will be overwritten by the new
 	// __metastore_id__ and __default_catalog_name__. The caller must be an
 	// account admin.
-	Assign(ctx context.Context, request CreateMetastoreAssignment) error
+	Assign(ctx context.Context, request CreateMetastoreAssignment) (*AssignResponse, error)
 
 	// Create a metastore.
 	//
@@ -558,7 +558,7 @@ type MetastoresService interface {
 	// Delete a metastore.
 	//
 	// Deletes a metastore. The caller must be a metastore admin.
-	Delete(ctx context.Context, request DeleteMetastoreRequest) error
+	Delete(ctx context.Context, request DeleteMetastoreRequest) (*DeleteResponse, error)
 
 	// Get a metastore.
 	//
@@ -586,7 +586,7 @@ type MetastoresService interface {
 	//
 	// Deletes a metastore assignment. The caller must be an account
 	// administrator.
-	Unassign(ctx context.Context, request UnassignRequest) error
+	Unassign(ctx context.Context, request UnassignRequest) (*UnassignResponse, error)
 
 	// Update a metastore.
 	//
@@ -602,7 +602,7 @@ type MetastoresService interface {
 	// if the Workspace is already assigned a metastore. The caller must be an
 	// account admin to update __metastore_id__; otherwise, the caller can be a
 	// Workspace admin.
-	UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error
+	UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) (*UpdateAssignmentResponse, error)
 }
 
 // Databricks provides a hosted version of MLflow Model Registry in Unity
@@ -623,7 +623,7 @@ type ModelVersionsService interface {
 	// model. For the latter case, the caller must also be the owner or have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	Delete(ctx context.Context, request DeleteModelVersionRequest) error
+	Delete(ctx context.Context, request DeleteModelVersionRequest) (*DeleteResponse, error)
 
 	// Get a Model Version.
 	//
@@ -692,7 +692,7 @@ type OnlineTablesService interface {
 	// Delete an online table. Warning: This will delete all the data in the
 	// online table. If the source Delta table was deleted or modified since
 	// this Online Table was created, this will lose the data forever!
-	Delete(ctx context.Context, request DeleteOnlineTableRequest) error
+	Delete(ctx context.Context, request DeleteOnlineTableRequest) (*DeleteResponse, error)
 
 	// Get an Online Table.
 	//
@@ -756,7 +756,7 @@ type RegisteredModelsService interface {
 	// For the latter case, the caller must also be the owner or have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	Delete(ctx context.Context, request DeleteRegisteredModelRequest) error
+	Delete(ctx context.Context, request DeleteRegisteredModelRequest) (*DeleteResponse, error)
 
 	// Delete a Registered Model Alias.
 	//
@@ -766,7 +766,7 @@ type RegisteredModelsService interface {
 	// For the latter case, the caller must also be the owner or have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	DeleteAlias(ctx context.Context, request DeleteAliasRequest) error
+	DeleteAlias(ctx context.Context, request DeleteAliasRequest) (*DeleteAliasResponse, error)
 
 	// Get a Registered Model.
 	//
@@ -839,7 +839,7 @@ type SchemasService interface {
 	//
 	// Deletes the specified schema from the parent catalog. The caller must be
 	// the owner of the schema or an owner of the parent catalog.
-	Delete(ctx context.Context, request DeleteSchemaRequest) error
+	Delete(ctx context.Context, request DeleteSchemaRequest) (*DeleteResponse, error)
 
 	// Get a schema.
 	//
@@ -895,7 +895,7 @@ type StorageCredentialsService interface {
 	//
 	// Deletes a storage credential from the metastore. The caller must be an
 	// owner of the storage credential.
-	Delete(ctx context.Context, request DeleteStorageCredentialRequest) error
+	Delete(ctx context.Context, request DeleteStorageCredentialRequest) (*DeleteResponse, error)
 
 	// Get a credential.
 	//
@@ -948,13 +948,13 @@ type SystemSchemasService interface {
 	//
 	// Disables the system schema and removes it from the system catalog. The
 	// caller must be an account admin or a metastore admin.
-	Disable(ctx context.Context, request DisableRequest) error
+	Disable(ctx context.Context, request DisableRequest) (*DisableResponse, error)
 
 	// Enable a system schema.
 	//
 	// Enables the system schema and adds it to the system catalog. The caller
 	// must be an account admin or a metastore admin.
-	Enable(ctx context.Context, request EnableRequest) error
+	Enable(ctx context.Context, request EnableRequest) (*EnableResponse, error)
 
 	// List system schemas.
 	//
@@ -1006,7 +1006,7 @@ type TableConstraintsService interface {
 	// of the child tables: the **USE_CATALOG** privilege on the table's
 	// catalog, the **USE_SCHEMA** privilege on the table's schema, and be the
 	// owner of the table.
-	Delete(ctx context.Context, request DeleteTableConstraintRequest) error
+	Delete(ctx context.Context, request DeleteTableConstraintRequest) (*DeleteResponse, error)
 }
 
 // A table resides in the third layer of Unity Catalog’s three-level
@@ -1028,7 +1028,7 @@ type TablesService interface {
 	// privilege on the parent catalog and be the owner of the parent schema, or
 	// be the owner of the table and have the **USE_CATALOG** privilege on the
 	// parent catalog and the **USE_SCHEMA** privilege on the parent schema.
-	Delete(ctx context.Context, request DeleteTableRequest) error
+	Delete(ctx context.Context, request DeleteTableRequest) (*DeleteResponse, error)
 
 	// Get boolean reflecting if table exists.
 	//
@@ -1093,7 +1093,7 @@ type TablesService interface {
 	// the owner of the parent schema, or be the owner of the table and have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	Update(ctx context.Context, request UpdateTableRequest) error
+	Update(ctx context.Context, request UpdateTableRequest) (*UpdateResponse, error)
 }
 
 // Volumes are a Unity Catalog (UC) capability for accessing, storing,
@@ -1136,7 +1136,7 @@ type VolumesService interface {
 	// latter case, the caller must also be the owner or have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	Delete(ctx context.Context, request DeleteVolumeRequest) error
+	Delete(ctx context.Context, request DeleteVolumeRequest) (*DeleteResponse, error)
 
 	// List Volumes.
 	//

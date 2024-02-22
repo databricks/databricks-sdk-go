@@ -374,7 +374,8 @@ func (w *WaitGetRunJobTerminatedOrSkipped[R]) GetWithTimeout(timeout time.Durati
 // Cancels all active runs of a job. The runs are canceled asynchronously, so it
 // doesn't prevent new runs from being started.
 func (a *JobsAPI) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {
-	return a.impl.CancelAllRuns(ctx, request)
+	_, err := a.impl.CancelAllRuns(ctx, request)
+	return err
 }
 
 // Cancel a run.
@@ -382,7 +383,7 @@ func (a *JobsAPI) CancelAllRuns(ctx context.Context, request CancelAllRuns) erro
 // Cancels a job run or a task run. The run is canceled asynchronously, so it
 // may still be running when this request completes.
 func (a *JobsAPI) CancelRun(ctx context.Context, cancelRun CancelRun) (*WaitGetRunJobTerminatedOrSkipped[struct{}], error) {
-	err := a.impl.CancelRun(ctx, cancelRun)
+	_, err := a.impl.CancelRun(ctx, cancelRun)
 	if err != nil {
 		return nil, err
 	}
@@ -429,9 +430,10 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, opt
 // Cancels a job run or a task run. The run is canceled asynchronously, so it
 // may still be running when this request completes.
 func (a *JobsAPI) CancelRunByRunId(ctx context.Context, runId int64) error {
-	return a.impl.CancelRun(ctx, CancelRun{
+	_, err := a.impl.CancelRun(ctx, CancelRun{
 		RunId: runId,
 	})
+	return err
 }
 
 func (a *JobsAPI) CancelRunByRunIdAndWait(ctx context.Context, runId int64, options ...retries.Option[Run]) (*Run, error) {
@@ -451,32 +453,36 @@ func (a *JobsAPI) Create(ctx context.Context, request CreateJob) (*CreateRespons
 //
 // Deletes a job.
 func (a *JobsAPI) Delete(ctx context.Context, request DeleteJob) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a job.
 //
 // Deletes a job.
 func (a *JobsAPI) DeleteByJobId(ctx context.Context, jobId int64) error {
-	return a.impl.Delete(ctx, DeleteJob{
+	_, err := a.impl.Delete(ctx, DeleteJob{
 		JobId: jobId,
 	})
+	return err
 }
 
 // Delete a job run.
 //
 // Deletes a non-active run. Returns an error if the run is active.
 func (a *JobsAPI) DeleteRun(ctx context.Context, request DeleteRun) error {
-	return a.impl.DeleteRun(ctx, request)
+	_, err := a.impl.DeleteRun(ctx, request)
+	return err
 }
 
 // Delete a job run.
 //
 // Deletes a non-active run. Returns an error if the run is active.
 func (a *JobsAPI) DeleteRunByRunId(ctx context.Context, runId int64) error {
-	return a.impl.DeleteRun(ctx, DeleteRun{
+	_, err := a.impl.DeleteRun(ctx, DeleteRun{
 		RunId: runId,
 	})
+	return err
 }
 
 // Export and retrieve a job run.
@@ -763,7 +769,8 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 // Overwrite all settings for the given job. Use the [_Update_
 // endpoint](:method:jobs/update) to update job settings partially.
 func (a *JobsAPI) Reset(ctx context.Context, request ResetJob) error {
-	return a.impl.Reset(ctx, request)
+	_, err := a.impl.Reset(ctx, request)
+	return err
 }
 
 // Trigger a new job run.
@@ -874,7 +881,8 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 // Add, update, or remove specific settings of an existing job. Use the [_Reset_
 // endpoint](:method:jobs/reset) to overwrite all job settings.
 func (a *JobsAPI) Update(ctx context.Context, request UpdateJob) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 // Update job permissions.

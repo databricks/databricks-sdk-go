@@ -575,6 +575,9 @@ type DeleteNetworkConnectivityConfigurationRequest struct {
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 }
 
+type DeleteNetworkConnectivityConfigurationResponse struct {
+}
+
 // Delete Personal Compute setting
 type DeletePersonalComputeSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -615,6 +618,9 @@ type DeletePrivateEndpointRuleRequest struct {
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 	// Your private endpoint rule ID.
 	PrivateEndpointRuleId string `json:"-" url:"-"`
+}
+
+type DeleteResponse struct {
 }
 
 // Delete the restrict workspace admins setting
@@ -1543,6 +1549,9 @@ type ReplaceIpAccessList struct {
 	ListType ListType `json:"list_type"`
 }
 
+type ReplaceResponse struct {
+}
+
 type RestrictWorkspaceAdminsMessage struct {
 	Status RestrictWorkspaceAdminsMessageStatus `json:"status"`
 }
@@ -1608,6 +1617,12 @@ func (s RestrictWorkspaceAdminsSetting) MarshalJSON() ([]byte, error) {
 type RevokeTokenRequest struct {
 	// The ID of the token to be revoked.
 	TokenId string `json:"token_id"`
+}
+
+type RevokeTokenResponse struct {
+}
+
+type SetStatusResponse struct {
 }
 
 type StringMessage struct {
@@ -1941,6 +1956,9 @@ type UpdatePersonalComputeSettingRequest struct {
 	Setting PersonalComputeSetting `json:"setting"`
 }
 
+type UpdateResponse struct {
+}
+
 // Details required to update a setting.
 type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
@@ -1956,15 +1974,3 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 }
 
 type WorkspaceConf map[string]string
-
-type DeleteNetworkConnectivityConfigurationResponse struct{}
-
-type DeleteResponse struct{}
-
-type ReplaceResponse struct{}
-
-type RevokeTokenResponse struct{}
-
-type SetStatusResponse struct{}
-
-type UpdateResponse struct{}

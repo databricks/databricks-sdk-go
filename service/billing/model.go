@@ -232,6 +232,9 @@ type DeleteBudgetRequest struct {
 	BudgetId string `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 // The status string for log delivery. Possible values are: * `CREATED`: There
 // were no log delivery attempts since the config was created. * `SUCCEEDED`:
 // The latest attempt of log delivery has succeeded completely. *
@@ -577,6 +580,9 @@ func (f *OutputFormat) Type() string {
 	return "OutputFormat"
 }
 
+type PatchStatusResponse struct {
+}
+
 type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Databricks log delivery configuration ID
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
@@ -586,6 +592,18 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status"`
+}
+
+type UpdateResponse struct {
+}
+
+// Format specification for month in the format `YYYY-MM`. This is used to
+// specify billable usage `start_month` and `end_month` properties. **Note**:
+// Billable usage logs are unavailable before March 2019 (`2019-03`).
+type UsageDownloadMonth struct {
+}
+
+type WorkspaceId struct {
 }
 
 type WrappedBudget struct {
@@ -611,9 +629,3 @@ type WrappedLogDeliveryConfiguration struct {
 type WrappedLogDeliveryConfigurations struct {
 	LogDeliveryConfigurations []LogDeliveryConfiguration `json:"log_delivery_configurations,omitempty"`
 }
-
-type DeleteResponse struct{}
-
-type PatchStatusResponse struct{}
-
-type UpdateResponse struct{}

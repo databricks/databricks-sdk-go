@@ -25,7 +25,7 @@ type GitCredentialsService interface {
 	// Delete a credential.
 	//
 	// Deletes the specified Git credential.
-	Delete(ctx context.Context, request DeleteGitCredentialRequest) error
+	Delete(ctx context.Context, request DeleteGitCredentialRequest) (*DeleteResponse, error)
 
 	// Get a credential entry.
 	//
@@ -43,7 +43,7 @@ type GitCredentialsService interface {
 	// Update a credential.
 	//
 	// Updates the specified Git credential.
-	Update(ctx context.Context, request UpdateCredentials) error
+	Update(ctx context.Context, request UpdateCredentials) (*UpdateResponse, error)
 }
 
 // The Repos API allows users to manage their git repos. Users can use the API
@@ -68,7 +68,7 @@ type ReposService interface {
 	// Delete a repo.
 	//
 	// Deletes the specified repo.
-	Delete(ctx context.Context, request DeleteRepoRequest) error
+	Delete(ctx context.Context, request DeleteRepoRequest) (*DeleteResponse, error)
 
 	// Get a repo.
 	//
@@ -104,7 +104,7 @@ type ReposService interface {
 	//
 	// Updates the repo to a different branch or tag, or updates the repo to the
 	// latest commit on the same branch.
-	Update(ctx context.Context, request UpdateRepo) error
+	Update(ctx context.Context, request UpdateRepo) (*UpdateResponse, error)
 
 	// Update repo permissions.
 	//
@@ -132,7 +132,7 @@ type SecretsService interface {
 	// The scope name must consist of alphanumeric characters, dashes,
 	// underscores, and periods, and may not exceed 128 characters. The maximum
 	// number of scopes in a workspace is 100.
-	CreateScope(ctx context.Context, request CreateScope) error
+	CreateScope(ctx context.Context, request CreateScope) (*CreateScopeResponse, error)
 
 	// Delete an ACL.
 	//
@@ -142,7 +142,7 @@ type SecretsService interface {
 	// `RESOURCE_DOES_NOT_EXIST` if no such secret scope, principal, or ACL
 	// exists. Throws `PERMISSION_DENIED` if the user does not have permission
 	// to make this API call.
-	DeleteAcl(ctx context.Context, request DeleteAcl) error
+	DeleteAcl(ctx context.Context, request DeleteAcl) (*DeleteAclResponse, error)
 
 	// Delete a secret scope.
 	//
@@ -151,7 +151,7 @@ type SecretsService interface {
 	// Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws
 	// `PERMISSION_DENIED` if the user does not have permission to make this API
 	// call.
-	DeleteScope(ctx context.Context, request DeleteScope) error
+	DeleteScope(ctx context.Context, request DeleteScope) (*DeleteScopeResponse, error)
 
 	// Delete a secret.
 	//
@@ -161,7 +161,7 @@ type SecretsService interface {
 	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret
 	// exists. Throws `PERMISSION_DENIED` if the user does not have permission
 	// to make this API call.
-	DeleteSecret(ctx context.Context, request DeleteSecret) error
+	DeleteSecret(ctx context.Context, request DeleteSecret) (*DeleteSecretResponse, error)
 
 	// Get secret ACL details.
 	//
@@ -254,7 +254,7 @@ type SecretsService interface {
 	// exists. Throws `INVALID_PARAMETER_VALUE` if the permission or principal
 	// is invalid. Throws `PERMISSION_DENIED` if the user does not have
 	// permission to make this API call.
-	PutAcl(ctx context.Context, request PutAcl) error
+	PutAcl(ctx context.Context, request PutAcl) (*PutAclResponse, error)
 
 	// Add a secret.
 	//
@@ -278,7 +278,7 @@ type SecretsService interface {
 	// exceeded. Throws `INVALID_PARAMETER_VALUE` if the key name or value
 	// length is invalid. Throws `PERMISSION_DENIED` if the user does not have
 	// permission to make this API call.
-	PutSecret(ctx context.Context, request PutSecret) error
+	PutSecret(ctx context.Context, request PutSecret) (*PutSecretResponse, error)
 }
 
 // The Workspace API allows you to list, import, export, and delete notebooks
@@ -298,7 +298,7 @@ type WorkspaceService interface {
 	//
 	// Object deletion cannot be undone and deleting a directory recursively is
 	// not atomic.
-	Delete(ctx context.Context, request Delete) error
+	Delete(ctx context.Context, request Delete) (*DeleteResponse, error)
 
 	// Export a workspace object.
 	//
@@ -337,7 +337,7 @@ type WorkspaceService interface {
 	// To import a directory, you can use either the `DBC` format or the
 	// `SOURCE` format with the `language` field unset. To import a single file
 	// as `SOURCE`, you must set the `language` field.
-	Import(ctx context.Context, request Import) error
+	Import(ctx context.Context, request Import) (*ImportResponse, error)
 
 	// List contents.
 	//
@@ -356,7 +356,7 @@ type WorkspaceService interface {
 	//
 	// Note that if this operation fails it may have succeeded in creating some
 	// of the necessary parent directories.
-	Mkdirs(ctx context.Context, request Mkdirs) error
+	Mkdirs(ctx context.Context, request Mkdirs) (*MkdirsResponse, error)
 
 	// Set workspace object permissions.
 	//

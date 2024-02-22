@@ -348,16 +348,18 @@ func (a *PipelinesAPI) Create(ctx context.Context, request CreatePipeline) (*Cre
 //
 // Deletes a pipeline.
 func (a *PipelinesAPI) Delete(ctx context.Context, request DeletePipelineRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a pipeline.
 //
 // Deletes a pipeline.
 func (a *PipelinesAPI) DeleteByPipelineId(ctx context.Context, pipelineId string) error {
-	return a.impl.Delete(ctx, DeletePipelineRequest{
+	_, err := a.impl.Delete(ctx, DeletePipelineRequest{
 		PipelineId: pipelineId,
 	})
+	return err
 }
 
 // Get a pipeline.
@@ -603,7 +605,7 @@ func (a *PipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate) (*S
 // Stops the pipeline by canceling the active update. If there is no active
 // update for the pipeline, this request is a no-op.
 func (a *PipelinesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*WaitGetPipelineIdle[struct{}], error) {
-	err := a.impl.Stop(ctx, stopRequest)
+	_, err := a.impl.Stop(ctx, stopRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -649,7 +651,8 @@ func (a *PipelinesAPI) StopAndWait(ctx context.Context, stopRequest StopRequest,
 //
 // Updates a pipeline with the supplied configuration.
 func (a *PipelinesAPI) Update(ctx context.Context, request EditPipeline) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 // Update pipeline permissions.

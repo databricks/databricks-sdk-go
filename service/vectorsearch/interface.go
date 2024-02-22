@@ -15,7 +15,7 @@ type VectorSearchEndpointsService interface {
 	CreateEndpoint(ctx context.Context, request CreateEndpoint) (*EndpointInfo, error)
 
 	// Delete an endpoint.
-	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error
+	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (*DeleteEndpointResponse, error)
 
 	// Get an endpoint.
 	GetEndpoint(ctx context.Context, request GetEndpointRequest) (*EndpointInfo, error)
@@ -51,7 +51,7 @@ type VectorSearchIndexesService interface {
 	// Delete an index.
 	//
 	// Delete an index.
-	DeleteIndex(ctx context.Context, request DeleteIndexRequest) error
+	DeleteIndex(ctx context.Context, request DeleteIndexRequest) (*DeleteIndexResponse, error)
 
 	// Get an index.
 	//
@@ -73,7 +73,7 @@ type VectorSearchIndexesService interface {
 	// Synchronize an index.
 	//
 	// Triggers a synchronization process for a specified vector index.
-	SyncIndex(ctx context.Context, request SyncIndexRequest) error
+	SyncIndex(ctx context.Context, request SyncIndexRequest) (*SyncIndexResponse, error)
 
 	// Upsert data into an index.
 	//

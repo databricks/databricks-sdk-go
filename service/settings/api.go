@@ -200,16 +200,18 @@ func (a *AccountIpAccessListsAPI) Create(ctx context.Context, request CreateIpAc
 //
 // Deletes an IP access list, specified by its list ID.
 func (a *AccountIpAccessListsAPI) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete access list.
 //
 // Deletes an IP access list, specified by its list ID.
 func (a *AccountIpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) error {
-	return a.impl.Delete(ctx, DeleteAccountIpAccessListRequest{
+	_, err := a.impl.Delete(ctx, DeleteAccountIpAccessListRequest{
 		IpAccessListId: ipAccessListId,
 	})
+	return err
 }
 
 // Get IP access list.
@@ -328,7 +330,8 @@ func (a *AccountIpAccessListsAPI) GetByLabel(ctx context.Context, name string) (
 // the calling user's current IP, error 400 is returned with `error_code` value
 // `INVALID_STATE`. It can take a few minutes for the changes to take effect.
 func (a *AccountIpAccessListsAPI) Replace(ctx context.Context, request ReplaceIpAccessList) error {
-	return a.impl.Replace(ctx, request)
+	_, err := a.impl.Replace(ctx, request)
+	return err
 }
 
 // Update access list.
@@ -349,7 +352,8 @@ func (a *AccountIpAccessListsAPI) Replace(ctx context.Context, request ReplaceIp
 //
 // It can take a few minutes for the changes to take effect.
 func (a *AccountIpAccessListsAPI) Update(ctx context.Context, request UpdateIpAccessList) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type AccountSettingsInterface interface {
@@ -738,16 +742,18 @@ func (a *IpAccessListsAPI) Create(ctx context.Context, request CreateIpAccessLis
 //
 // Deletes an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) Delete(ctx context.Context, request DeleteIpAccessListRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete access list.
 //
 // Deletes an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) error {
-	return a.impl.Delete(ctx, DeleteIpAccessListRequest{
+	_, err := a.impl.Delete(ctx, DeleteIpAccessListRequest{
 		IpAccessListId: ipAccessListId,
 	})
+	return err
 }
 
 // Get access list.
@@ -868,7 +874,8 @@ func (a *IpAccessListsAPI) GetByLabel(ctx context.Context, name string) (*IpAcce
 // Note that your resulting IP access list has no effect until you enable the
 // feature. See :method:workspaceconf/setStatus.
 func (a *IpAccessListsAPI) Replace(ctx context.Context, request ReplaceIpAccessList) error {
-	return a.impl.Replace(ctx, request)
+	_, err := a.impl.Replace(ctx, request)
+	return err
 }
 
 // Update access list.
@@ -891,7 +898,8 @@ func (a *IpAccessListsAPI) Replace(ctx context.Context, request ReplaceIpAccessL
 // resulting IP access list has no effect until you enable the feature. See
 // :method:workspaceconf/setStatus.
 func (a *IpAccessListsAPI) Update(ctx context.Context, request UpdateIpAccessList) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type NetworkConnectivityInterface interface {
@@ -1093,16 +1101,18 @@ func (a *NetworkConnectivityAPI) CreatePrivateEndpointRule(ctx context.Context, 
 //
 // Deletes a network connectivity configuration.
 func (a *NetworkConnectivityAPI) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error {
-	return a.impl.DeleteNetworkConnectivityConfiguration(ctx, request)
+	_, err := a.impl.DeleteNetworkConnectivityConfiguration(ctx, request)
+	return err
 }
 
 // Delete a network connectivity configuration.
 //
 // Deletes a network connectivity configuration.
 func (a *NetworkConnectivityAPI) DeleteNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) error {
-	return a.impl.DeleteNetworkConnectivityConfiguration(ctx, DeleteNetworkConnectivityConfigurationRequest{
+	_, err := a.impl.DeleteNetworkConnectivityConfiguration(ctx, DeleteNetworkConnectivityConfigurationRequest{
 		NetworkConnectivityConfigId: networkConnectivityConfigId,
 	})
+	return err
 }
 
 // Delete a private endpoint rule.
@@ -1640,16 +1650,18 @@ func (a *TokenManagementAPI) CreateOboToken(ctx context.Context, request CreateO
 //
 // Deletes a token, specified by its ID.
 func (a *TokenManagementAPI) Delete(ctx context.Context, request DeleteTokenManagementRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a token.
 //
 // Deletes a token, specified by its ID.
 func (a *TokenManagementAPI) DeleteByTokenId(ctx context.Context, tokenId string) error {
-	return a.impl.Delete(ctx, DeleteTokenManagementRequest{
+	_, err := a.impl.Delete(ctx, DeleteTokenManagementRequest{
 		TokenId: tokenId,
 	})
+	return err
 }
 
 // Get token info.
@@ -1899,7 +1911,8 @@ func (a *TokensAPI) Create(ctx context.Context, request CreateTokenRequest) (*Cr
 // If a token with the specified ID is not valid, this call returns an error
 // **RESOURCE_DOES_NOT_EXIST**.
 func (a *TokensAPI) Delete(ctx context.Context, request RevokeTokenRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Revoke token.
@@ -1909,9 +1922,10 @@ func (a *TokensAPI) Delete(ctx context.Context, request RevokeTokenRequest) erro
 // If a token with the specified ID is not valid, this call returns an error
 // **RESOURCE_DOES_NOT_EXIST**.
 func (a *TokensAPI) DeleteByTokenId(ctx context.Context, tokenId string) error {
-	return a.impl.Delete(ctx, RevokeTokenRequest{
+	_, err := a.impl.Delete(ctx, RevokeTokenRequest{
 		TokenId: tokenId,
 	})
+	return err
 }
 
 // List tokens.
@@ -2064,5 +2078,6 @@ func (a *WorkspaceConfAPI) GetStatus(ctx context.Context, request GetStatusReque
 // Sets the configuration status for a workspace, including enabling or
 // disabling it.
 func (a *WorkspaceConfAPI) SetStatus(ctx context.Context, request WorkspaceConf) error {
-	return a.impl.SetStatus(ctx, request)
+	_, err := a.impl.SetStatus(ctx, request)
+	return err
 }

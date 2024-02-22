@@ -18,6 +18,9 @@ type AnthropicConfig struct {
 	AnthropicApiKey string `json:"anthropic_api_key"`
 }
 
+type AnyValue struct {
+}
+
 type AppEvents struct {
 	EventName string `json:"event_name,omitempty"`
 
@@ -304,6 +307,9 @@ func (s *DeleteAppResponse) UnmarshalJSON(b []byte) error {
 
 func (s DeleteAppResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type DeleteResponse struct {
 }
 
 // Delete a serving endpoint
@@ -593,6 +599,9 @@ type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
 	// required.
 	Name string `json:"-" url:"-"`
+}
+
+type ExportMetricsResponse struct {
 }
 
 type ExternalModel struct {
@@ -1826,7 +1835,3 @@ func (s *V1ResponseChoiceElement) UnmarshalJSON(b []byte) error {
 func (s V1ResponseChoiceElement) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
-
-type DeleteResponse struct{}
-
-type ExportMetricsResponse struct{}

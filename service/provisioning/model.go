@@ -397,6 +397,9 @@ type DeletePrivateAccesRequest struct {
 	PrivateAccessSettingsId string `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 // Delete storage configuration
 type DeleteStorageRequest struct {
 	// Databricks Account API storage configuration ID.
@@ -922,6 +925,9 @@ func (s PrivateAccessSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ReplaceResponse struct {
+}
+
 // Root S3 bucket information.
 type RootBucketInfo struct {
 	// The name of the S3 bucket.
@@ -977,6 +983,9 @@ func (s *StsRole) UnmarshalJSON(b []byte) error {
 
 func (s StsRole) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateResponse struct {
 }
 
 type UpdateWorkspaceRequest struct {
@@ -1325,9 +1334,3 @@ func (f *WorkspaceStatus) Set(v string) error {
 func (f *WorkspaceStatus) Type() string {
 	return "WorkspaceStatus"
 }
-
-type DeleteResponse struct{}
-
-type ReplaceResponse struct{}
-
-type UpdateResponse struct{}

@@ -140,10 +140,16 @@ type DeleteEndpointRequest struct {
 	Name string `json:"-"`
 }
 
+type DeleteEndpointResponse struct {
+}
+
 // Delete an index
 type DeleteIndexRequest struct {
 	// Name of the index
 	IndexName string `json:"-" url:"-"`
+}
+
+type DeleteIndexResponse struct {
 }
 
 type DeltaSyncVectorIndexSpecRequest struct {
@@ -596,6 +602,9 @@ type SyncIndexRequest struct {
 	IndexName string `json:"-" url:"-"`
 }
 
+type SyncIndexResponse struct {
+}
+
 // Result of the upsert or delete operation.
 type UpsertDataResult struct {
 	// List of primary keys for rows that failed to process.
@@ -755,9 +764,3 @@ func (f *VectorIndexType) Set(v string) error {
 func (f *VectorIndexType) Type() string {
 	return "VectorIndexType"
 }
-
-type DeleteEndpointResponse struct{}
-
-type DeleteIndexResponse struct{}
-
-type SyncIndexResponse struct{}

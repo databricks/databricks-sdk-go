@@ -53,7 +53,7 @@ type AccountIpAccessListsService interface {
 	// Delete access list.
 	//
 	// Deletes an IP access list, specified by its list ID.
-	Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error
+	Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) (*DeleteResponse, error)
 
 	// Get IP access list.
 	//
@@ -80,7 +80,7 @@ type AccountIpAccessListsService interface {
 	// resulting list would block the calling user's current IP, error 400 is
 	// returned with `error_code` value `INVALID_STATE`. It can take a few
 	// minutes for the changes to take effect.
-	Replace(ctx context.Context, request ReplaceIpAccessList) error
+	Replace(ctx context.Context, request ReplaceIpAccessList) (*ReplaceResponse, error)
 
 	// Update access list.
 	//
@@ -100,7 +100,7 @@ type AccountIpAccessListsService interface {
 	// `INVALID_STATE`.
 	//
 	// It can take a few minutes for the changes to take effect.
-	Update(ctx context.Context, request UpdateIpAccessList) error
+	Update(ctx context.Context, request UpdateIpAccessList) (*UpdateResponse, error)
 }
 
 // The Personal Compute enablement setting lets you control which users can use
@@ -211,7 +211,7 @@ type IpAccessListsService interface {
 	// Delete access list.
 	//
 	// Deletes an IP access list, specified by its list ID.
-	Delete(ctx context.Context, request DeleteIpAccessListRequest) error
+	Delete(ctx context.Context, request DeleteIpAccessListRequest) (*DeleteResponse, error)
 
 	// Get access list.
 	//
@@ -240,7 +240,7 @@ type IpAccessListsService interface {
 	// minutes for the changes to take effect. Note that your resulting IP
 	// access list has no effect until you enable the feature. See
 	// :method:workspaceconf/setStatus.
-	Replace(ctx context.Context, request ReplaceIpAccessList) error
+	Replace(ctx context.Context, request ReplaceIpAccessList) (*ReplaceResponse, error)
 
 	// Update access list.
 	//
@@ -262,7 +262,7 @@ type IpAccessListsService interface {
 	// It can take a few minutes for the changes to take effect. Note that your
 	// resulting IP access list has no effect until you enable the feature. See
 	// :method:workspaceconf/setStatus.
-	Update(ctx context.Context, request UpdateIpAccessList) error
+	Update(ctx context.Context, request UpdateIpAccessList) (*UpdateResponse, error)
 }
 
 // These APIs provide configurations for the network connectivity of your
@@ -310,7 +310,7 @@ type NetworkConnectivityService interface {
 	// Delete a network connectivity configuration.
 	//
 	// Deletes a network connectivity configuration.
-	DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error
+	DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) (*DeleteNetworkConnectivityConfigurationResponse, error)
 
 	// Delete a private endpoint rule.
 	//
@@ -471,7 +471,7 @@ type TokenManagementService interface {
 	// Delete a token.
 	//
 	// Deletes a token, specified by its ID.
-	Delete(ctx context.Context, request DeleteTokenManagementRequest) error
+	Delete(ctx context.Context, request DeleteTokenManagementRequest) (*DeleteResponse, error)
 
 	// Get token info.
 	//
@@ -527,7 +527,7 @@ type TokensService interface {
 	//
 	// If a token with the specified ID is not valid, this call returns an error
 	// **RESOURCE_DOES_NOT_EXIST**.
-	Delete(ctx context.Context, request RevokeTokenRequest) error
+	Delete(ctx context.Context, request RevokeTokenRequest) (*RevokeTokenResponse, error)
 
 	// List tokens.
 	//
@@ -549,5 +549,5 @@ type WorkspaceConfService interface {
 	//
 	// Sets the configuration status for a workspace, including enabling or
 	// disabling it.
-	SetStatus(ctx context.Context, request WorkspaceConf) error
+	SetStatus(ctx context.Context, request WorkspaceConf) (*SetStatusResponse, error)
 }

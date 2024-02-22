@@ -120,7 +120,8 @@ func (a *CustomAppIntegrationAPI) Create(ctx context.Context, request CreateCust
 // Delete an existing Custom OAuth App Integration. You can retrieve the custom
 // oauth app integration via :method:CustomAppIntegration/get.
 func (a *CustomAppIntegrationAPI) Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete Custom OAuth App Integration.
@@ -128,9 +129,10 @@ func (a *CustomAppIntegrationAPI) Delete(ctx context.Context, request DeleteCust
 // Delete an existing Custom OAuth App Integration. You can retrieve the custom
 // oauth app integration via :method:CustomAppIntegration/get.
 func (a *CustomAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
-	return a.impl.Delete(ctx, DeleteCustomAppIntegrationRequest{
+	_, err := a.impl.Delete(ctx, DeleteCustomAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
+	return err
 }
 
 // Get OAuth Custom App Integration.
@@ -190,7 +192,8 @@ func (a *CustomAppIntegrationAPI) ListAll(ctx context.Context) ([]GetCustomAppIn
 // Updates an existing custom OAuth App Integration. You can retrieve the custom
 // oauth app integration via :method:CustomAppIntegration/get.
 func (a *CustomAppIntegrationAPI) Update(ctx context.Context, request UpdateCustomAppIntegration) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type OAuthPublishedAppsInterface interface {
@@ -399,7 +402,8 @@ func (a *PublishedAppIntegrationAPI) Create(ctx context.Context, request CreateP
 // Delete an existing Published OAuth App Integration. You can retrieve the
 // published oauth app integration via :method:PublishedAppIntegration/get.
 func (a *PublishedAppIntegrationAPI) Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete Published OAuth App Integration.
@@ -407,9 +411,10 @@ func (a *PublishedAppIntegrationAPI) Delete(ctx context.Context, request DeleteP
 // Delete an existing Published OAuth App Integration. You can retrieve the
 // published oauth app integration via :method:PublishedAppIntegration/get.
 func (a *PublishedAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
-	return a.impl.Delete(ctx, DeletePublishedAppIntegrationRequest{
+	_, err := a.impl.Delete(ctx, DeletePublishedAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
+	return err
 }
 
 // Get OAuth Published App Integration.
@@ -469,7 +474,8 @@ func (a *PublishedAppIntegrationAPI) ListAll(ctx context.Context) ([]GetPublishe
 // Updates an existing published OAuth App Integration. You can retrieve the
 // published oauth app integration via :method:PublishedAppIntegration/get.
 func (a *PublishedAppIntegrationAPI) Update(ctx context.Context, request UpdatePublishedAppIntegration) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type ServicePrincipalSecretsInterface interface {
@@ -575,17 +581,19 @@ func (a *ServicePrincipalSecretsAPI) Create(ctx context.Context, request CreateS
 //
 // Delete a secret from the given service principal.
 func (a *ServicePrincipalSecretsAPI) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete service principal secret.
 //
 // Delete a secret from the given service principal.
 func (a *ServicePrincipalSecretsAPI) DeleteByServicePrincipalIdAndSecretId(ctx context.Context, servicePrincipalId int64, secretId string) error {
-	return a.impl.Delete(ctx, DeleteServicePrincipalSecretRequest{
+	_, err := a.impl.Delete(ctx, DeleteServicePrincipalSecretRequest{
 		ServicePrincipalId: servicePrincipalId,
 		SecretId:           secretId,
 	})
+	return err
 }
 
 // List service principal secrets.

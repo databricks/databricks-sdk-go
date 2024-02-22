@@ -23,7 +23,7 @@ type CustomAppIntegrationService interface {
 	//
 	// Delete an existing Custom OAuth App Integration. You can retrieve the
 	// custom oauth app integration via :method:CustomAppIntegration/get.
-	Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error
+	Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) (*DeleteCustomAppIntegrationOutput, error)
 
 	// Get OAuth Custom App Integration.
 	//
@@ -42,7 +42,7 @@ type CustomAppIntegrationService interface {
 	//
 	// Updates an existing custom OAuth App Integration. You can retrieve the
 	// custom oauth app integration via :method:CustomAppIntegration/get.
-	Update(ctx context.Context, request UpdateCustomAppIntegration) error
+	Update(ctx context.Context, request UpdateCustomAppIntegration) (*UpdateCustomAppIntegrationOutput, error)
 }
 
 // These APIs enable administrators to view all the available published OAuth
@@ -76,7 +76,7 @@ type PublishedAppIntegrationService interface {
 	//
 	// Delete an existing Published OAuth App Integration. You can retrieve the
 	// published oauth app integration via :method:PublishedAppIntegration/get.
-	Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error
+	Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) (*DeletePublishedAppIntegrationOutput, error)
 
 	// Get OAuth Published App Integration.
 	//
@@ -95,7 +95,7 @@ type PublishedAppIntegrationService interface {
 	//
 	// Updates an existing published OAuth App Integration. You can retrieve the
 	// published oauth app integration via :method:PublishedAppIntegration/get.
-	Update(ctx context.Context, request UpdatePublishedAppIntegration) error
+	Update(ctx context.Context, request UpdatePublishedAppIntegration) (*UpdatePublishedAppIntegrationOutput, error)
 }
 
 // These APIs enable administrators to manage service principal secrets.
@@ -121,7 +121,7 @@ type ServicePrincipalSecretsService interface {
 	// Delete service principal secret.
 	//
 	// Delete a secret from the given service principal.
-	Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error
+	Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) (*DeleteResponse, error)
 
 	// List service principal secrets.
 	//

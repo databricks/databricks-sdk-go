@@ -168,6 +168,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		e.Named.Name = strings.Join(path, "")
 		pkg.define(e)
 	}
+	e.fields = map[string]*Field{}
 	e.IsAny = s.IsAny
 	e.IsComputed = s.IsComputed
 	e.RequiredOrder = s.Required
@@ -200,7 +201,6 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 // makeObject converts OpenAPI Schema into type representation
 // processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
 func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string, processedEntities map[string]*Entity) *Entity {
-	e.fields = map[string]*Field{}
 	required := map[string]bool{}
 	for _, v := range s.Required {
 		required[v] = true

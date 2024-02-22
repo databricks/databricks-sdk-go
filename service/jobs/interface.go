@@ -30,13 +30,13 @@ type JobsService interface {
 	//
 	// Cancels all active runs of a job. The runs are canceled asynchronously,
 	// so it doesn't prevent new runs from being started.
-	CancelAllRuns(ctx context.Context, request CancelAllRuns) error
+	CancelAllRuns(ctx context.Context, request CancelAllRuns) (*CancelAllRunsResponse, error)
 
 	// Cancel a run.
 	//
 	// Cancels a job run or a task run. The run is canceled asynchronously, so
 	// it may still be running when this request completes.
-	CancelRun(ctx context.Context, request CancelRun) error
+	CancelRun(ctx context.Context, request CancelRun) (*CancelRunResponse, error)
 
 	// Create a new job.
 	//
@@ -46,12 +46,12 @@ type JobsService interface {
 	// Delete a job.
 	//
 	// Deletes a job.
-	Delete(ctx context.Context, request DeleteJob) error
+	Delete(ctx context.Context, request DeleteJob) (*DeleteResponse, error)
 
 	// Delete a job run.
 	//
 	// Deletes a non-active run. Returns an error if the run is active.
-	DeleteRun(ctx context.Context, request DeleteRun) error
+	DeleteRun(ctx context.Context, request DeleteRun) (*DeleteRunResponse, error)
 
 	// Export and retrieve a job run.
 	//
@@ -118,7 +118,7 @@ type JobsService interface {
 	//
 	// Overwrite all settings for the given job. Use the [_Update_
 	// endpoint](:method:jobs/update) to update job settings partially.
-	Reset(ctx context.Context, request ResetJob) error
+	Reset(ctx context.Context, request ResetJob) (*ResetResponse, error)
 
 	// Trigger a new job run.
 	//
@@ -143,7 +143,7 @@ type JobsService interface {
 	//
 	// Add, update, or remove specific settings of an existing job. Use the
 	// [_Reset_ endpoint](:method:jobs/reset) to overwrite all job settings.
-	Update(ctx context.Context, request UpdateJob) error
+	Update(ctx context.Context, request UpdateJob) (*UpdateResponse, error)
 
 	// Update job permissions.
 	//

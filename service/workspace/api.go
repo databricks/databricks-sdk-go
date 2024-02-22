@@ -138,16 +138,18 @@ func (a *GitCredentialsAPI) Create(ctx context.Context, request CreateCredential
 //
 // Deletes the specified Git credential.
 func (a *GitCredentialsAPI) Delete(ctx context.Context, request DeleteGitCredentialRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a credential.
 //
 // Deletes the specified Git credential.
 func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credentialId int64) error {
-	return a.impl.Delete(ctx, DeleteGitCredentialRequest{
+	_, err := a.impl.Delete(ctx, DeleteGitCredentialRequest{
 		CredentialId: credentialId,
 	})
+	return err
 }
 
 // Get a credential entry.
@@ -259,7 +261,8 @@ func (a *GitCredentialsAPI) GetByGitProvider(ctx context.Context, name string) (
 //
 // Updates the specified Git credential.
 func (a *GitCredentialsAPI) Update(ctx context.Context, request UpdateCredentials) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type ReposInterface interface {
@@ -425,16 +428,18 @@ func (a *ReposAPI) Create(ctx context.Context, request CreateRepo) (*RepoInfo, e
 //
 // Deletes the specified repo.
 func (a *ReposAPI) Delete(ctx context.Context, request DeleteRepoRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a repo.
 //
 // Deletes the specified repo.
 func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
-	return a.impl.Delete(ctx, DeleteRepoRequest{
+	_, err := a.impl.Delete(ctx, DeleteRepoRequest{
 		RepoId: repoId,
 	})
+	return err
 }
 
 // Get a repo.
@@ -594,7 +599,8 @@ func (a *ReposAPI) SetPermissions(ctx context.Context, request RepoPermissionsRe
 // Updates the repo to a different branch or tag, or updates the repo to the
 // latest commit on the same branch.
 func (a *ReposAPI) Update(ctx context.Context, request UpdateRepo) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 // Update repo permissions.
@@ -880,7 +886,8 @@ func (a *SecretsAPI) Impl() SecretsService {
 // and periods, and may not exceed 128 characters. The maximum number of scopes
 // in a workspace is 100.
 func (a *SecretsAPI) CreateScope(ctx context.Context, request CreateScope) error {
-	return a.impl.CreateScope(ctx, request)
+	_, err := a.impl.CreateScope(ctx, request)
+	return err
 }
 
 // Delete an ACL.
@@ -892,7 +899,8 @@ func (a *SecretsAPI) CreateScope(ctx context.Context, request CreateScope) error
 // Throws `PERMISSION_DENIED` if the user does not have permission to make this
 // API call.
 func (a *SecretsAPI) DeleteAcl(ctx context.Context, request DeleteAcl) error {
-	return a.impl.DeleteAcl(ctx, request)
+	_, err := a.impl.DeleteAcl(ctx, request)
+	return err
 }
 
 // Delete a secret scope.
@@ -903,7 +911,8 @@ func (a *SecretsAPI) DeleteAcl(ctx context.Context, request DeleteAcl) error {
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) DeleteScope(ctx context.Context, request DeleteScope) error {
-	return a.impl.DeleteScope(ctx, request)
+	_, err := a.impl.DeleteScope(ctx, request)
+	return err
 }
 
 // Delete a secret scope.
@@ -914,9 +923,10 @@ func (a *SecretsAPI) DeleteScope(ctx context.Context, request DeleteScope) error
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) DeleteScopeByScope(ctx context.Context, scope string) error {
-	return a.impl.DeleteScope(ctx, DeleteScope{
+	_, err := a.impl.DeleteScope(ctx, DeleteScope{
 		Scope: scope,
 	})
+	return err
 }
 
 // Delete a secret.
@@ -928,7 +938,8 @@ func (a *SecretsAPI) DeleteScopeByScope(ctx context.Context, scope string) error
 // Throws `PERMISSION_DENIED` if the user does not have permission to make this
 // API call.
 func (a *SecretsAPI) DeleteSecret(ctx context.Context, request DeleteSecret) error {
-	return a.impl.DeleteSecret(ctx, request)
+	_, err := a.impl.DeleteSecret(ctx, request)
+	return err
 }
 
 // Get secret ACL details.
@@ -1150,7 +1161,8 @@ func (a *SecretsAPI) ListSecretsByScope(ctx context.Context, scope string) (*Lis
 // Throws `PERMISSION_DENIED` if the user does not have permission to make this
 // API call.
 func (a *SecretsAPI) PutAcl(ctx context.Context, request PutAcl) error {
-	return a.impl.PutAcl(ctx, request)
+	_, err := a.impl.PutAcl(ctx, request)
+	return err
 }
 
 // Add a secret.
@@ -1175,7 +1187,8 @@ func (a *SecretsAPI) PutAcl(ctx context.Context, request PutAcl) error {
 // Throws `PERMISSION_DENIED` if the user does not have permission to make this
 // API call.
 func (a *SecretsAPI) PutSecret(ctx context.Context, request PutSecret) error {
-	return a.impl.PutSecret(ctx, request)
+	_, err := a.impl.PutSecret(ctx, request)
+	return err
 }
 
 type WorkspaceInterface interface {
@@ -1370,7 +1383,8 @@ func (a *WorkspaceAPI) Impl() WorkspaceService {
 // Object deletion cannot be undone and deleting a directory recursively is not
 // atomic.
 func (a *WorkspaceAPI) Delete(ctx context.Context, request Delete) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Export a workspace object.
@@ -1450,7 +1464,8 @@ func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*Objec
 // the `language` field unset. To import a single file as `SOURCE`, you must set
 // the `language` field.
 func (a *WorkspaceAPI) Import(ctx context.Context, request Import) error {
-	return a.impl.Import(ctx, request)
+	_, err := a.impl.Import(ctx, request)
+	return err
 }
 
 // List contents.
@@ -1552,7 +1567,8 @@ func (a *WorkspaceAPI) GetByPath(ctx context.Context, name string) (*ObjectInfo,
 // Note that if this operation fails it may have succeeded in creating some of
 // the necessary parent directories.
 func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
-	return a.impl.Mkdirs(ctx, request)
+	_, err := a.impl.Mkdirs(ctx, request)
+	return err
 }
 
 // Create a directory.
@@ -1564,9 +1580,10 @@ func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
 // Note that if this operation fails it may have succeeded in creating some of
 // the necessary parent directories.
 func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
-	return a.impl.Mkdirs(ctx, Mkdirs{
+	_, err := a.impl.Mkdirs(ctx, Mkdirs{
 		Path: path,
 	})
+	return err
 }
 
 // Set workspace object permissions.

@@ -319,16 +319,18 @@ func (a *AccountGroupsAPI) Create(ctx context.Context, request Group) (*Group, e
 //
 // Deletes a group from the Databricks account.
 func (a *AccountGroupsAPI) Delete(ctx context.Context, request DeleteAccountGroupRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a group.
 //
 // Deletes a group from the Databricks account.
 func (a *AccountGroupsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.impl.Delete(ctx, DeleteAccountGroupRequest{
+	_, err := a.impl.Delete(ctx, DeleteAccountGroupRequest{
 		Id: id,
 	})
+	return err
 }
 
 // Get group details.
@@ -453,14 +455,16 @@ func (a *AccountGroupsAPI) GetByDisplayName(ctx context.Context, name string) (*
 //
 // Partially updates the details of a group.
 func (a *AccountGroupsAPI) Patch(ctx context.Context, request PartialUpdate) error {
-	return a.impl.Patch(ctx, request)
+	_, err := a.impl.Patch(ctx, request)
+	return err
 }
 
 // Replace a group.
 //
 // Updates the details of a group by replacing the entire group entity.
 func (a *AccountGroupsAPI) Update(ctx context.Context, request Group) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type AccountServicePrincipalsInterface interface {
@@ -591,16 +595,18 @@ func (a *AccountServicePrincipalsAPI) Create(ctx context.Context, request Servic
 //
 // Delete a single service principal in the Databricks account.
 func (a *AccountServicePrincipalsAPI) Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a service principal.
 //
 // Delete a single service principal in the Databricks account.
 func (a *AccountServicePrincipalsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.impl.Delete(ctx, DeleteAccountServicePrincipalRequest{
+	_, err := a.impl.Delete(ctx, DeleteAccountServicePrincipalRequest{
 		Id: id,
 	})
+	return err
 }
 
 // Get service principal details.
@@ -728,7 +734,8 @@ func (a *AccountServicePrincipalsAPI) GetByDisplayName(ctx context.Context, name
 // Partially updates the details of a single service principal in the Databricks
 // account.
 func (a *AccountServicePrincipalsAPI) Patch(ctx context.Context, request PartialUpdate) error {
-	return a.impl.Patch(ctx, request)
+	_, err := a.impl.Patch(ctx, request)
+	return err
 }
 
 // Replace service principal.
@@ -737,7 +744,8 @@ func (a *AccountServicePrincipalsAPI) Patch(ctx context.Context, request Partial
 //
 // This action replaces the existing service principal with the same name.
 func (a *AccountServicePrincipalsAPI) Update(ctx context.Context, request ServicePrincipal) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type AccountUsersInterface interface {
@@ -874,7 +882,8 @@ func (a *AccountUsersAPI) Create(ctx context.Context, request User) (*User, erro
 // Deletes a user. Deleting a user from a Databricks account also removes
 // objects associated with the user.
 func (a *AccountUsersAPI) Delete(ctx context.Context, request DeleteAccountUserRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a user.
@@ -882,9 +891,10 @@ func (a *AccountUsersAPI) Delete(ctx context.Context, request DeleteAccountUserR
 // Deletes a user. Deleting a user from a Databricks account also removes
 // objects associated with the user.
 func (a *AccountUsersAPI) DeleteById(ctx context.Context, id string) error {
-	return a.impl.Delete(ctx, DeleteAccountUserRequest{
+	_, err := a.impl.Delete(ctx, DeleteAccountUserRequest{
 		Id: id,
 	})
+	return err
 }
 
 // Get user details.
@@ -1010,14 +1020,16 @@ func (a *AccountUsersAPI) GetByUserName(ctx context.Context, name string) (*User
 // Partially updates a user resource by applying the supplied operations on
 // specific user attributes.
 func (a *AccountUsersAPI) Patch(ctx context.Context, request PartialUpdate) error {
-	return a.impl.Patch(ctx, request)
+	_, err := a.impl.Patch(ctx, request)
+	return err
 }
 
 // Replace a user.
 //
 // Replaces a user's information with the data supplied in request.
 func (a *AccountUsersAPI) Update(ctx context.Context, request User) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type CurrentUserInterface interface {
@@ -1199,16 +1211,18 @@ func (a *GroupsAPI) Create(ctx context.Context, request Group) (*Group, error) {
 //
 // Deletes a group from the Databricks workspace.
 func (a *GroupsAPI) Delete(ctx context.Context, request DeleteGroupRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a group.
 //
 // Deletes a group from the Databricks workspace.
 func (a *GroupsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.impl.Delete(ctx, DeleteGroupRequest{
+	_, err := a.impl.Delete(ctx, DeleteGroupRequest{
 		Id: id,
 	})
+	return err
 }
 
 // Get group details.
@@ -1333,14 +1347,16 @@ func (a *GroupsAPI) GetByDisplayName(ctx context.Context, name string) (*Group, 
 //
 // Partially updates the details of a group.
 func (a *GroupsAPI) Patch(ctx context.Context, request PartialUpdate) error {
-	return a.impl.Patch(ctx, request)
+	_, err := a.impl.Patch(ctx, request)
+	return err
 }
 
 // Replace a group.
 //
 // Updates the details of a group by replacing the entire group entity.
 func (a *GroupsAPI) Update(ctx context.Context, request Group) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type PermissionsInterface interface {
@@ -1643,16 +1659,18 @@ func (a *ServicePrincipalsAPI) Create(ctx context.Context, request ServicePrinci
 //
 // Delete a single service principal in the Databricks workspace.
 func (a *ServicePrincipalsAPI) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a service principal.
 //
 // Delete a single service principal in the Databricks workspace.
 func (a *ServicePrincipalsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.impl.Delete(ctx, DeleteServicePrincipalRequest{
+	_, err := a.impl.Delete(ctx, DeleteServicePrincipalRequest{
 		Id: id,
 	})
+	return err
 }
 
 // Get service principal details.
@@ -1780,7 +1798,8 @@ func (a *ServicePrincipalsAPI) GetByDisplayName(ctx context.Context, name string
 // Partially updates the details of a single service principal in the Databricks
 // workspace.
 func (a *ServicePrincipalsAPI) Patch(ctx context.Context, request PartialUpdate) error {
-	return a.impl.Patch(ctx, request)
+	_, err := a.impl.Patch(ctx, request)
+	return err
 }
 
 // Replace service principal.
@@ -1789,7 +1808,8 @@ func (a *ServicePrincipalsAPI) Patch(ctx context.Context, request PartialUpdate)
 //
 // This action replaces the existing service principal with the same name.
 func (a *ServicePrincipalsAPI) Update(ctx context.Context, request ServicePrincipal) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type UsersInterface interface {
@@ -1949,7 +1969,8 @@ func (a *UsersAPI) Create(ctx context.Context, request User) (*User, error) {
 // Deletes a user. Deleting a user from a Databricks workspace also removes
 // objects associated with the user.
 func (a *UsersAPI) Delete(ctx context.Context, request DeleteUserRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a user.
@@ -1957,9 +1978,10 @@ func (a *UsersAPI) Delete(ctx context.Context, request DeleteUserRequest) error 
 // Deletes a user. Deleting a user from a Databricks workspace also removes
 // objects associated with the user.
 func (a *UsersAPI) DeleteById(ctx context.Context, id string) error {
-	return a.impl.Delete(ctx, DeleteUserRequest{
+	_, err := a.impl.Delete(ctx, DeleteUserRequest{
 		Id: id,
 	})
+	return err
 }
 
 // Get user details.
@@ -2100,7 +2122,8 @@ func (a *UsersAPI) GetByUserName(ctx context.Context, name string) (*User, error
 // Partially updates a user resource by applying the supplied operations on
 // specific user attributes.
 func (a *UsersAPI) Patch(ctx context.Context, request PartialUpdate) error {
-	return a.impl.Patch(ctx, request)
+	_, err := a.impl.Patch(ctx, request)
+	return err
 }
 
 // Set password permissions.
@@ -2115,7 +2138,8 @@ func (a *UsersAPI) SetPermissions(ctx context.Context, request PasswordPermissio
 //
 // Replaces a user's information with the data supplied in request.
 func (a *UsersAPI) Update(ctx context.Context, request User) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 // Update password permissions.
@@ -2224,7 +2248,8 @@ func (a *WorkspaceAssignmentAPI) Impl() WorkspaceAssignmentService {
 // Deletes the workspace permissions assignment in a given account and workspace
 // for the specified principal.
 func (a *WorkspaceAssignmentAPI) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete permissions assignment.
@@ -2232,10 +2257,11 @@ func (a *WorkspaceAssignmentAPI) Delete(ctx context.Context, request DeleteWorks
 // Deletes the workspace permissions assignment in a given account and workspace
 // for the specified principal.
 func (a *WorkspaceAssignmentAPI) DeleteByWorkspaceIdAndPrincipalId(ctx context.Context, workspaceId int64, principalId int64) error {
-	return a.impl.Delete(ctx, DeleteWorkspaceAssignmentRequest{
+	_, err := a.impl.Delete(ctx, DeleteWorkspaceAssignmentRequest{
 		WorkspaceId: workspaceId,
 		PrincipalId: principalId,
 	})
+	return err
 }
 
 // List workspace permissions.
@@ -2306,5 +2332,6 @@ func (a *WorkspaceAssignmentAPI) ListByWorkspaceId(ctx context.Context, workspac
 // Creates or updates the workspace permissions assignment in a given account
 // and workspace for the specified principal.
 func (a *WorkspaceAssignmentAPI) Update(ctx context.Context, request UpdateWorkspaceAssignments) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }

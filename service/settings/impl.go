@@ -25,12 +25,13 @@ func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpA
 	return &createIpAccessListResponse, err
 }
 
-func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
+func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpAccessListRequest) (*GetIpAccessListResponse, error) {
@@ -51,22 +52,24 @@ func (a *accountIpAccessListsImpl) List(ctx context.Context) (*GetIpAccessListsR
 	return &getIpAccessListsResponse, err
 }
 
-func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
+func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) (*ReplaceResponse, error) {
+	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &replaceResponse)
+	return &replaceResponse, err
 }
 
-func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
+func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) (*UpdateResponse, error) {
+	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
+	return &updateResponse, err
 }
 
 // unexported type that holds implementations of just AccountSettings API methods
@@ -170,12 +173,13 @@ func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessLi
 	return &createIpAccessListResponse, err
 }
 
-func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessListRequest) error {
+func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessListRequest) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error) {
@@ -196,22 +200,24 @@ func (a *ipAccessListsImpl) List(ctx context.Context) (*ListIpAccessListResponse
 	return &listIpAccessListResponse, err
 }
 
-func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
+func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) (*ReplaceResponse, error) {
+	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &replaceResponse)
+	return &replaceResponse, err
 }
 
-func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
+func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) (*UpdateResponse, error) {
+	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
+	return &updateResponse, err
 }
 
 // unexported type that holds implementations of just NetworkConnectivity API methods
@@ -239,12 +245,13 @@ func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context,
 	return &nccAzurePrivateEndpointRule, err
 }
 
-func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error {
+func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) (*DeleteNetworkConnectivityConfigurationResponse, error) {
+	var deleteNetworkConnectivityConfigurationResponse DeleteNetworkConnectivityConfigurationResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteNetworkConnectivityConfigurationResponse)
+	return &deleteNetworkConnectivityConfigurationResponse, err
 }
 
 func (a *networkConnectivityImpl) DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
@@ -425,12 +432,13 @@ func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request Create
 	return &createOboTokenResponse, err
 }
 
-func (a *tokenManagementImpl) Delete(ctx context.Context, request DeleteTokenManagementRequest) error {
+func (a *tokenManagementImpl) Delete(ctx context.Context, request DeleteTokenManagementRequest) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *tokenManagementImpl) Get(ctx context.Context, request GetTokenManagementRequest) (*GetTokenResponse, error) {
@@ -504,13 +512,14 @@ func (a *tokensImpl) Create(ctx context.Context, request CreateTokenRequest) (*C
 	return &createTokenResponse, err
 }
 
-func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) error {
+func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) (*RevokeTokenResponse, error) {
+	var revokeTokenResponse RevokeTokenResponse
 	path := "/api/2.0/token/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &revokeTokenResponse)
+	return &revokeTokenResponse, err
 }
 
 func (a *tokensImpl) List(ctx context.Context) (*ListPublicTokensResponse, error) {
@@ -536,10 +545,11 @@ func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatusRequ
 	return &workspaceConf, err
 }
 
-func (a *workspaceConfImpl) SetStatus(ctx context.Context, request WorkspaceConf) error {
+func (a *workspaceConfImpl) SetStatus(ctx context.Context, request WorkspaceConf) (*SetStatusResponse, error) {
+	var setStatusResponse SetStatusResponse
 	path := "/api/2.0/workspace-conf"
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &setStatusResponse)
+	return &setStatusResponse, err
 }

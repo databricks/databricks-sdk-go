@@ -198,14 +198,16 @@ func (a *VectorSearchEndpointsAPI) CreateEndpointAndWait(ctx context.Context, cr
 
 // Delete an endpoint.
 func (a *VectorSearchEndpointsAPI) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error {
-	return a.impl.DeleteEndpoint(ctx, request)
+	_, err := a.impl.DeleteEndpoint(ctx, request)
+	return err
 }
 
 // Delete an endpoint.
 func (a *VectorSearchEndpointsAPI) DeleteEndpointByEndpointName(ctx context.Context, endpointName string) error {
-	return a.impl.DeleteEndpoint(ctx, DeleteEndpointRequest{
+	_, err := a.impl.DeleteEndpoint(ctx, DeleteEndpointRequest{
 		EndpointName: endpointName,
 	})
+	return err
 }
 
 // Get an endpoint.
@@ -381,16 +383,18 @@ func (a *VectorSearchIndexesAPI) DeleteDataVectorIndex(ctx context.Context, requ
 //
 // Delete an index.
 func (a *VectorSearchIndexesAPI) DeleteIndex(ctx context.Context, request DeleteIndexRequest) error {
-	return a.impl.DeleteIndex(ctx, request)
+	_, err := a.impl.DeleteIndex(ctx, request)
+	return err
 }
 
 // Delete an index.
 //
 // Delete an index.
 func (a *VectorSearchIndexesAPI) DeleteIndexByIndexName(ctx context.Context, indexName string) error {
-	return a.impl.DeleteIndex(ctx, DeleteIndexRequest{
+	_, err := a.impl.DeleteIndex(ctx, DeleteIndexRequest{
 		IndexName: indexName,
 	})
+	return err
 }
 
 // Get an index.
@@ -459,7 +463,8 @@ func (a *VectorSearchIndexesAPI) QueryIndex(ctx context.Context, request QueryVe
 //
 // Triggers a synchronization process for a specified vector index.
 func (a *VectorSearchIndexesAPI) SyncIndex(ctx context.Context, request SyncIndexRequest) error {
-	return a.impl.SyncIndex(ctx, request)
+	_, err := a.impl.SyncIndex(ctx, request)
+	return err
 }
 
 // Upsert data into an index.

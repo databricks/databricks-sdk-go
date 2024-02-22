@@ -123,6 +123,9 @@ type DeletePipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
+type DeletePipelineResponse struct {
+}
+
 type EditPipeline struct {
 	// If false, deployment will fail if name has changed and conflicts the name
 	// of another pipeline.
@@ -183,6 +186,9 @@ func (s *EditPipeline) UnmarshalJSON(b []byte) error {
 
 func (s EditPipeline) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type EditPipelineResponse struct {
 }
 
 type ErrorDetail struct {
@@ -505,6 +511,9 @@ func (s *ListUpdatesResponse) UnmarshalJSON(b []byte) error {
 
 func (s ListUpdatesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ManualTrigger struct {
 }
 
 // Maturity level for EventDetails.
@@ -1221,6 +1230,9 @@ func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type StopPipelineResponse struct {
+}
+
 // Stop a pipeline
 type StopRequest struct {
 	PipelineId string `json:"-" url:"-"`
@@ -1413,11 +1425,3 @@ func (f *UpdateStateInfoState) Set(v string) error {
 func (f *UpdateStateInfoState) Type() string {
 	return "UpdateStateInfoState"
 }
-
-type DeletePipelineResponse struct{}
-
-type EditPipelineResponse struct{}
-
-type ManualTrigger struct{}
-
-type StopPipelineResponse struct{}

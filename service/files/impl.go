@@ -15,22 +15,24 @@ type dbfsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) error {
+func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) (*AddBlockResponse, error) {
+	var addBlockResponse AddBlockResponse
 	path := "/api/2.0/dbfs/add-block"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &addBlockResponse)
+	return &addBlockResponse, err
 }
 
-func (a *dbfsImpl) Close(ctx context.Context, request Close) error {
+func (a *dbfsImpl) Close(ctx context.Context, request Close) (*CloseResponse, error) {
+	var closeResponse CloseResponse
 	path := "/api/2.0/dbfs/close"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &closeResponse)
+	return &closeResponse, err
 }
 
 func (a *dbfsImpl) Create(ctx context.Context, request Create) (*CreateResponse, error) {
@@ -43,13 +45,14 @@ func (a *dbfsImpl) Create(ctx context.Context, request Create) (*CreateResponse,
 	return &createResponse, err
 }
 
-func (a *dbfsImpl) Delete(ctx context.Context, request Delete) error {
+func (a *dbfsImpl) Delete(ctx context.Context, request Delete) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := "/api/2.0/dbfs/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *dbfsImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error) {
@@ -70,31 +73,34 @@ func (a *dbfsImpl) List(ctx context.Context, request ListDbfsRequest) (*ListStat
 	return &listStatusResponse, err
 }
 
-func (a *dbfsImpl) Mkdirs(ctx context.Context, request MkDirs) error {
+func (a *dbfsImpl) Mkdirs(ctx context.Context, request MkDirs) (*MkDirsResponse, error) {
+	var mkDirsResponse MkDirsResponse
 	path := "/api/2.0/dbfs/mkdirs"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &mkDirsResponse)
+	return &mkDirsResponse, err
 }
 
-func (a *dbfsImpl) Move(ctx context.Context, request Move) error {
+func (a *dbfsImpl) Move(ctx context.Context, request Move) (*MoveResponse, error) {
+	var moveResponse MoveResponse
 	path := "/api/2.0/dbfs/move"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &moveResponse)
+	return &moveResponse, err
 }
 
-func (a *dbfsImpl) Put(ctx context.Context, request Put) error {
+func (a *dbfsImpl) Put(ctx context.Context, request Put) (*PutResponse, error) {
+	var putResponse PutResponse
 	path := "/api/2.0/dbfs/put"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &putResponse)
+	return &putResponse, err
 }
 
 func (a *dbfsImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error) {
@@ -111,25 +117,28 @@ type filesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *filesImpl) CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error {
+func (a *filesImpl) CreateDirectory(ctx context.Context, request CreateDirectoryRequest) (*CreateDirectoryResponse, error) {
+	var createDirectoryResponse CreateDirectoryResponse
 	path := fmt.Sprintf("/api/2.0/fs/directories%v", request.DirectoryPath)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPut, path, headers, nil, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, nil, &createDirectoryResponse)
+	return &createDirectoryResponse, err
 }
 
-func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
+func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
-func (a *filesImpl) DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error {
+func (a *filesImpl) DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) (*DeleteDirectoryResponse, error) {
+	var deleteDirectoryResponse DeleteDirectoryResponse
 	path := fmt.Sprintf("/api/2.0/fs/directories%v", request.DirectoryPath)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDirectoryResponse)
+	return &deleteDirectoryResponse, err
 }
 
 func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
@@ -141,11 +150,12 @@ func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*Dow
 	return &downloadResponse, err
 }
 
-func (a *filesImpl) GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error {
+func (a *filesImpl) GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) (*GetDirectoryMetadataResponse, error) {
+	var getDirectoryMetadataResponse GetDirectoryMetadataResponse
 	path := fmt.Sprintf("/api/2.0/fs/directories%v", request.DirectoryPath)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodHead, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodHead, path, headers, request, &getDirectoryMetadataResponse)
+	return &getDirectoryMetadataResponse, err
 }
 
 func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error) {
@@ -165,10 +175,11 @@ func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirec
 	return &listDirectoryResponse, err
 }
 
-func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
+func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) (*UploadResponse, error) {
+	var uploadResponse UploadResponse
 	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/octet-stream"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request.Contents, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request.Contents, &uploadResponse)
+	return &uploadResponse, err
 }

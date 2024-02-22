@@ -497,14 +497,16 @@ func (a *ServingEndpointsAPI) CreateAndWait(ctx context.Context, createServingEn
 
 // Delete a serving endpoint.
 func (a *ServingEndpointsAPI) Delete(ctx context.Context, request DeleteServingEndpointRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a serving endpoint.
 func (a *ServingEndpointsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.impl.Delete(ctx, DeleteServingEndpointRequest{
+	_, err := a.impl.Delete(ctx, DeleteServingEndpointRequest{
 		Name: name,
 	})
+	return err
 }
 
 // Retrieve the metrics associated with a serving endpoint.
@@ -512,7 +514,8 @@ func (a *ServingEndpointsAPI) DeleteByName(ctx context.Context, name string) err
 // Retrieves the metrics associated with the provided serving endpoint in either
 // Prometheus or OpenMetrics exposition format.
 func (a *ServingEndpointsAPI) ExportMetrics(ctx context.Context, request ExportMetricsRequest) error {
-	return a.impl.ExportMetrics(ctx, request)
+	_, err := a.impl.ExportMetrics(ctx, request)
+	return err
 }
 
 // Retrieve the metrics associated with a serving endpoint.
@@ -520,9 +523,10 @@ func (a *ServingEndpointsAPI) ExportMetrics(ctx context.Context, request ExportM
 // Retrieves the metrics associated with the provided serving endpoint in either
 // Prometheus or OpenMetrics exposition format.
 func (a *ServingEndpointsAPI) ExportMetricsByName(ctx context.Context, name string) error {
-	return a.impl.ExportMetrics(ctx, ExportMetricsRequest{
+	_, err := a.impl.ExportMetrics(ctx, ExportMetricsRequest{
 		Name: name,
 	})
+	return err
 }
 
 // Get a single serving endpoint.

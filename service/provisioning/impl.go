@@ -25,12 +25,13 @@ func (a *credentialsImpl) Create(ctx context.Context, request CreateCredentialRe
 	return &credential, err
 }
 
-func (a *credentialsImpl) Delete(ctx context.Context, request DeleteCredentialRequest) error {
+func (a *credentialsImpl) Delete(ctx context.Context, request DeleteCredentialRequest) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), request.CredentialsId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *credentialsImpl) Get(ctx context.Context, request GetCredentialRequest) (*Credential, error) {
@@ -66,12 +67,13 @@ func (a *encryptionKeysImpl) Create(ctx context.Context, request CreateCustomerM
 	return &customerManagedKey, err
 }
 
-func (a *encryptionKeysImpl) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error {
+func (a *encryptionKeysImpl) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), request.CustomerManagedKeyId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *encryptionKeysImpl) Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error) {
@@ -107,12 +109,13 @@ func (a *networksImpl) Create(ctx context.Context, request CreateNetworkRequest)
 	return &network, err
 }
 
-func (a *networksImpl) Delete(ctx context.Context, request DeleteNetworkRequest) error {
+func (a *networksImpl) Delete(ctx context.Context, request DeleteNetworkRequest) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), request.NetworkId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *networksImpl) Get(ctx context.Context, request GetNetworkRequest) (*Network, error) {
@@ -148,12 +151,13 @@ func (a *privateAccessImpl) Create(ctx context.Context, request UpsertPrivateAcc
 	return &privateAccessSettings, err
 }
 
-func (a *privateAccessImpl) Delete(ctx context.Context, request DeletePrivateAccesRequest) error {
+func (a *privateAccessImpl) Delete(ctx context.Context, request DeletePrivateAccesRequest) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *privateAccessImpl) Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error) {
@@ -174,13 +178,14 @@ func (a *privateAccessImpl) List(ctx context.Context) ([]PrivateAccessSettings, 
 	return privateAccessSettingsList, err
 }
 
-func (a *privateAccessImpl) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
+func (a *privateAccessImpl) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*ReplaceResponse, error) {
+	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &replaceResponse)
+	return &replaceResponse, err
 }
 
 // unexported type that holds implementations of just Storage API methods
@@ -198,12 +203,13 @@ func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigura
 	return &storageConfiguration, err
 }
 
-func (a *storageImpl) Delete(ctx context.Context, request DeleteStorageRequest) error {
+func (a *storageImpl) Delete(ctx context.Context, request DeleteStorageRequest) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), request.StorageConfigurationId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *storageImpl) Get(ctx context.Context, request GetStorageRequest) (*StorageConfiguration, error) {
@@ -239,12 +245,13 @@ func (a *vpcEndpointsImpl) Create(ctx context.Context, request CreateVpcEndpoint
 	return &vpcEndpoint, err
 }
 
-func (a *vpcEndpointsImpl) Delete(ctx context.Context, request DeleteVpcEndpointRequest) error {
+func (a *vpcEndpointsImpl) Delete(ctx context.Context, request DeleteVpcEndpointRequest) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), request.VpcEndpointId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *vpcEndpointsImpl) Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
@@ -280,12 +287,13 @@ func (a *workspacesImpl) Create(ctx context.Context, request CreateWorkspaceRequ
 	return &workspace, err
 }
 
-func (a *workspacesImpl) Delete(ctx context.Context, request DeleteWorkspaceRequest) error {
+func (a *workspacesImpl) Delete(ctx context.Context, request DeleteWorkspaceRequest) (*DeleteResponse, error) {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *workspacesImpl) Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
@@ -306,11 +314,12 @@ func (a *workspacesImpl) List(ctx context.Context) ([]Workspace, error) {
 	return workspaceList, err
 }
 
-func (a *workspacesImpl) Update(ctx context.Context, request UpdateWorkspaceRequest) error {
+func (a *workspacesImpl) Update(ctx context.Context, request UpdateWorkspaceRequest) (*UpdateResponse, error) {
+	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
+	return &updateResponse, err
 }

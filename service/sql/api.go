@@ -132,7 +132,8 @@ func (a *AlertsAPI) Create(ctx context.Context, request CreateAlert) (*Alert, er
 // restored. **Note:** Unlike queries and dashboards, alerts cannot be moved to
 // the trash.
 func (a *AlertsAPI) Delete(ctx context.Context, request DeleteAlertRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete an alert.
@@ -141,9 +142,10 @@ func (a *AlertsAPI) Delete(ctx context.Context, request DeleteAlertRequest) erro
 // restored. **Note:** Unlike queries and dashboards, alerts cannot be moved to
 // the trash.
 func (a *AlertsAPI) DeleteByAlertId(ctx context.Context, alertId string) error {
-	return a.impl.Delete(ctx, DeleteAlertRequest{
+	_, err := a.impl.Delete(ctx, DeleteAlertRequest{
 		AlertId: alertId,
 	})
+	return err
 }
 
 // Get an alert.
@@ -226,7 +228,8 @@ func (a *AlertsAPI) GetByName(ctx context.Context, name string) (*Alert, error) 
 //
 // Updates an alert.
 func (a *AlertsAPI) Update(ctx context.Context, request EditAlert) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type DashboardWidgetsInterface interface {
@@ -290,14 +293,16 @@ func (a *DashboardWidgetsAPI) Create(ctx context.Context, request CreateWidget) 
 
 // Remove widget.
 func (a *DashboardWidgetsAPI) Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Remove widget.
 func (a *DashboardWidgetsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.impl.Delete(ctx, DeleteDashboardWidgetRequest{
+	_, err := a.impl.Delete(ctx, DeleteDashboardWidgetRequest{
 		Id: id,
 	})
+	return err
 }
 
 // Update existing widget.
@@ -438,7 +443,8 @@ func (a *DashboardsAPI) Create(ctx context.Context, request DashboardPostContent
 // Moves a dashboard to the trash. Trashed dashboards do not appear in list
 // views or searches, and cannot be shared.
 func (a *DashboardsAPI) Delete(ctx context.Context, request DeleteDashboardRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Remove a dashboard.
@@ -446,9 +452,10 @@ func (a *DashboardsAPI) Delete(ctx context.Context, request DeleteDashboardReque
 // Moves a dashboard to the trash. Trashed dashboards do not appear in list
 // views or searches, and cannot be shared.
 func (a *DashboardsAPI) DeleteByDashboardId(ctx context.Context, dashboardId string) error {
-	return a.impl.Delete(ctx, DeleteDashboardRequest{
+	_, err := a.impl.Delete(ctx, DeleteDashboardRequest{
 		DashboardId: dashboardId,
 	})
+	return err
 }
 
 // Retrieve a definition.
@@ -579,7 +586,8 @@ func (a *DashboardsAPI) GetByName(ctx context.Context, name string) (*Dashboard,
 //
 // A restored dashboard appears in list views and searches and can be shared.
 func (a *DashboardsAPI) Restore(ctx context.Context, request RestoreDashboardRequest) error {
-	return a.impl.Restore(ctx, request)
+	_, err := a.impl.Restore(ctx, request)
+	return err
 }
 
 // Change a dashboard definition.
@@ -995,7 +1003,8 @@ func (a *QueriesAPI) Create(ctx context.Context, request QueryPostContent) (*Que
 // searches and list views, and they cannot be used for alerts. The trash is
 // deleted after 30 days.
 func (a *QueriesAPI) Delete(ctx context.Context, request DeleteQueryRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a query.
@@ -1004,9 +1013,10 @@ func (a *QueriesAPI) Delete(ctx context.Context, request DeleteQueryRequest) err
 // searches and list views, and they cannot be used for alerts. The trash is
 // deleted after 30 days.
 func (a *QueriesAPI) DeleteByQueryId(ctx context.Context, queryId string) error {
-	return a.impl.Delete(ctx, DeleteQueryRequest{
+	_, err := a.impl.Delete(ctx, DeleteQueryRequest{
 		QueryId: queryId,
 	})
+	return err
 }
 
 // Get a query definition.
@@ -1140,7 +1150,8 @@ func (a *QueriesAPI) GetByName(ctx context.Context, name string) (*Query, error)
 // Restore a query that has been moved to the trash. A restored query appears in
 // list views and searches. You can use restored queries for alerts.
 func (a *QueriesAPI) Restore(ctx context.Context, request RestoreQueryRequest) error {
-	return a.impl.Restore(ctx, request)
+	_, err := a.impl.Restore(ctx, request)
+	return err
 }
 
 // Change a query definition.
@@ -1315,14 +1326,16 @@ func (a *QueryVisualizationsAPI) Create(ctx context.Context, request CreateQuery
 
 // Remove visualization.
 func (a *QueryVisualizationsAPI) Delete(ctx context.Context, request DeleteQueryVisualizationRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Remove visualization.
 func (a *QueryVisualizationsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.impl.Delete(ctx, DeleteQueryVisualizationRequest{
+	_, err := a.impl.Delete(ctx, DeleteQueryVisualizationRequest{
 		Id: id,
 	})
+	return err
 }
 
 // Edit existing visualization.
@@ -1537,7 +1550,8 @@ func (a *StatementExecutionAPI) Impl() StatementExecutionService {
 // Requests that an executing statement be canceled. Callers must poll for
 // status to see the terminal state.
 func (a *StatementExecutionAPI) CancelExecution(ctx context.Context, request CancelExecutionRequest) error {
-	return a.impl.CancelExecution(ctx, request)
+	_, err := a.impl.CancelExecution(ctx, request)
+	return err
 }
 
 // Execute a SQL statement.
@@ -1968,23 +1982,25 @@ func (a *WarehousesAPI) CreateAndWait(ctx context.Context, createWarehouseReques
 //
 // Deletes a SQL warehouse.
 func (a *WarehousesAPI) Delete(ctx context.Context, request DeleteWarehouseRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a warehouse.
 //
 // Deletes a SQL warehouse.
 func (a *WarehousesAPI) DeleteById(ctx context.Context, id string) error {
-	return a.impl.Delete(ctx, DeleteWarehouseRequest{
+	_, err := a.impl.Delete(ctx, DeleteWarehouseRequest{
 		Id: id,
 	})
+	return err
 }
 
 // Update a warehouse.
 //
 // Updates the configuration for a SQL warehouse.
 func (a *WarehousesAPI) Edit(ctx context.Context, editWarehouseRequest EditWarehouseRequest) (*WaitGetWarehouseRunning[struct{}], error) {
-	err := a.impl.Edit(ctx, editWarehouseRequest)
+	_, err := a.impl.Edit(ctx, editWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -2183,14 +2199,15 @@ func (a *WarehousesAPI) SetPermissions(ctx context.Context, request WarehousePer
 // Sets the workspace level configuration that is shared by all SQL warehouses
 // in a workspace.
 func (a *WarehousesAPI) SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error {
-	return a.impl.SetWorkspaceWarehouseConfig(ctx, request)
+	_, err := a.impl.SetWorkspaceWarehouseConfig(ctx, request)
+	return err
 }
 
 // Start a warehouse.
 //
 // Starts a SQL warehouse.
 func (a *WarehousesAPI) Start(ctx context.Context, startRequest StartRequest) (*WaitGetWarehouseRunning[struct{}], error) {
-	err := a.impl.Start(ctx, startRequest)
+	_, err := a.impl.Start(ctx, startRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -2236,7 +2253,7 @@ func (a *WarehousesAPI) StartAndWait(ctx context.Context, startRequest StartRequ
 //
 // Stops a SQL warehouse.
 func (a *WarehousesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*WaitGetWarehouseStopped[struct{}], error) {
-	err := a.impl.Stop(ctx, stopRequest)
+	_, err := a.impl.Stop(ctx, stopRequest)
 	if err != nil {
 		return nil, err
 	}

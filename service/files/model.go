@@ -16,9 +16,15 @@ type AddBlock struct {
 	Handle int64 `json:"handle"`
 }
 
+type AddBlockResponse struct {
+}
+
 type Close struct {
 	// The handle on an open stream.
 	Handle int64 `json:"handle"`
+}
+
+type CloseResponse struct {
 }
 
 type Create struct {
@@ -42,6 +48,9 @@ func (s Create) MarshalJSON() ([]byte, error) {
 type CreateDirectoryRequest struct {
 	// The absolute path of a directory.
 	DirectoryPath string `json:"-" url:"-"`
+}
+
+type CreateDirectoryResponse struct {
 }
 
 type CreateResponse struct {
@@ -85,10 +94,16 @@ type DeleteDirectoryRequest struct {
 	DirectoryPath string `json:"-" url:"-"`
 }
 
+type DeleteDirectoryResponse struct {
+}
+
 // Delete a file
 type DeleteFileRequest struct {
 	// The absolute path of the file.
 	FilePath string `json:"-" url:"-"`
+}
+
+type DeleteResponse struct {
 }
 
 type DirectoryEntry struct {
@@ -162,10 +177,17 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The length of the file in bytes. This field is omitted for directories.
+type FileSize struct {
+}
+
 // Get directory metadata
 type GetDirectoryMetadataRequest struct {
 	// The absolute path of a directory.
 	DirectoryPath string `json:"-" url:"-"`
+}
+
+type GetDirectoryMetadataResponse struct {
 }
 
 // Get file metadata
@@ -197,6 +219,10 @@ type GetStatusRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
 	Path string `json:"-" url:"path"`
+}
+
+// The last modified time of the file in HTTP-date (RFC 7231) format.
+type LastModifiedHttpDate struct {
 }
 
 // List directory contents or file details
@@ -270,6 +296,9 @@ type MkDirs struct {
 	Path string `json:"path"`
 }
 
+type MkDirsResponse struct {
+}
+
 type Move struct {
 	// The destination path of the file or directory. The path should be the
 	// absolute DBFS path.
@@ -277,6 +306,13 @@ type Move struct {
 	// The source path of the file or directory. The path should be the absolute
 	// DBFS path.
 	SourcePath string `json:"source_path"`
+}
+
+type MoveResponse struct {
+}
+
+// A token, which can be sent as `page_token` to retrieve the next page.
+type PageToken struct {
 }
 
 type Put struct {
@@ -296,6 +332,9 @@ func (s *Put) UnmarshalJSON(b []byte) error {
 
 func (s Put) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type PutResponse struct {
 }
 
 // Get the contents of a file
@@ -357,22 +396,5 @@ func (s UploadRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type AddBlockResponse struct{}
-
-type CloseResponse struct{}
-
-type CreateDirectoryResponse struct{}
-
-type DeleteDirectoryResponse struct{}
-
-type DeleteResponse struct{}
-
-type GetDirectoryMetadataResponse struct{}
-
-type MkDirsResponse struct{}
-
-type MoveResponse struct{}
-
-type PutResponse struct{}
-
-type UploadResponse struct{}
+type UploadResponse struct {
+}

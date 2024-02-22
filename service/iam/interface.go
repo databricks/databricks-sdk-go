@@ -79,7 +79,7 @@ type AccountGroupsService interface {
 	// Delete a group.
 	//
 	// Deletes a group from the Databricks account.
-	Delete(ctx context.Context, request DeleteAccountGroupRequest) error
+	Delete(ctx context.Context, request DeleteAccountGroupRequest) (*DeleteResponse, error)
 
 	// Get group details.
 	//
@@ -96,12 +96,12 @@ type AccountGroupsService interface {
 	// Update group details.
 	//
 	// Partially updates the details of a group.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Replace a group.
 	//
 	// Updates the details of a group by replacing the entire group entity.
-	Update(ctx context.Context, request Group) error
+	Update(ctx context.Context, request Group) (*UpdateResponse, error)
 }
 
 // Identities for use with jobs, automated tools, and systems such as scripts,
@@ -120,7 +120,7 @@ type AccountServicePrincipalsService interface {
 	// Delete a service principal.
 	//
 	// Delete a single service principal in the Databricks account.
-	Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error
+	Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) (*DeleteResponse, error)
 
 	// Get service principal details.
 	//
@@ -139,14 +139,14 @@ type AccountServicePrincipalsService interface {
 	//
 	// Partially updates the details of a single service principal in the
 	// Databricks account.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Replace service principal.
 	//
 	// Updates the details of a single service principal.
 	//
 	// This action replaces the existing service principal with the same name.
-	Update(ctx context.Context, request ServicePrincipal) error
+	Update(ctx context.Context, request ServicePrincipal) (*UpdateResponse, error)
 }
 
 // User identities recognized by Databricks and represented by email addresses.
@@ -172,7 +172,7 @@ type AccountUsersService interface {
 	//
 	// Deletes a user. Deleting a user from a Databricks account also removes
 	// objects associated with the user.
-	Delete(ctx context.Context, request DeleteAccountUserRequest) error
+	Delete(ctx context.Context, request DeleteAccountUserRequest) (*DeleteResponse, error)
 
 	// Get user details.
 	//
@@ -190,12 +190,12 @@ type AccountUsersService interface {
 	//
 	// Partially updates a user resource by applying the supplied operations on
 	// specific user attributes.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Replace a user.
 	//
 	// Replaces a user's information with the data supplied in request.
-	Update(ctx context.Context, request User) error
+	Update(ctx context.Context, request User) (*UpdateResponse, error)
 }
 
 // This API allows retrieving information about currently authenticated user or
@@ -226,7 +226,7 @@ type GroupsService interface {
 	// Delete a group.
 	//
 	// Deletes a group from the Databricks workspace.
-	Delete(ctx context.Context, request DeleteGroupRequest) error
+	Delete(ctx context.Context, request DeleteGroupRequest) (*DeleteResponse, error)
 
 	// Get group details.
 	//
@@ -243,12 +243,12 @@ type GroupsService interface {
 	// Update group details.
 	//
 	// Partially updates the details of a group.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Replace a group.
 	//
 	// Updates the details of a group by replacing the entire group entity.
-	Update(ctx context.Context, request Group) error
+	Update(ctx context.Context, request Group) (*UpdateResponse, error)
 }
 
 // Permissions API are used to create read, write, edit, update and manage
@@ -340,7 +340,7 @@ type ServicePrincipalsService interface {
 	// Delete a service principal.
 	//
 	// Delete a single service principal in the Databricks workspace.
-	Delete(ctx context.Context, request DeleteServicePrincipalRequest) error
+	Delete(ctx context.Context, request DeleteServicePrincipalRequest) (*DeleteResponse, error)
 
 	// Get service principal details.
 	//
@@ -360,14 +360,14 @@ type ServicePrincipalsService interface {
 	//
 	// Partially updates the details of a single service principal in the
 	// Databricks workspace.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Replace service principal.
 	//
 	// Updates the details of a single service principal.
 	//
 	// This action replaces the existing service principal with the same name.
-	Update(ctx context.Context, request ServicePrincipal) error
+	Update(ctx context.Context, request ServicePrincipal) (*UpdateResponse, error)
 }
 
 // User identities recognized by Databricks and represented by email addresses.
@@ -393,7 +393,7 @@ type UsersService interface {
 	//
 	// Deletes a user. Deleting a user from a Databricks workspace also removes
 	// objects associated with the user.
-	Delete(ctx context.Context, request DeleteUserRequest) error
+	Delete(ctx context.Context, request DeleteUserRequest) (*DeleteResponse, error)
 
 	// Get user details.
 	//
@@ -422,7 +422,7 @@ type UsersService interface {
 	//
 	// Partially updates a user resource by applying the supplied operations on
 	// specific user attributes.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Set password permissions.
 	//
@@ -433,7 +433,7 @@ type UsersService interface {
 	// Replace a user.
 	//
 	// Replaces a user's information with the data supplied in request.
-	Update(ctx context.Context, request User) error
+	Update(ctx context.Context, request User) (*UpdateResponse, error)
 
 	// Update password permissions.
 	//
@@ -450,7 +450,7 @@ type WorkspaceAssignmentService interface {
 	//
 	// Deletes the workspace permissions assignment in a given account and
 	// workspace for the specified principal.
-	Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error
+	Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) (*DeleteWorkspaceAssignments, error)
 
 	// List workspace permissions.
 	//
@@ -470,5 +470,5 @@ type WorkspaceAssignmentService interface {
 	//
 	// Creates or updates the workspace permissions assignment in a given
 	// account and workspace for the specified principal.
-	Update(ctx context.Context, request UpdateWorkspaceAssignments) error
+	Update(ctx context.Context, request UpdateWorkspaceAssignments) (*WorkspaceAssignmentsUpdated, error)
 }

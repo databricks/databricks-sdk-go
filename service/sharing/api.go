@@ -138,7 +138,8 @@ func (a *CleanRoomsAPI) Create(ctx context.Context, request CreateCleanRoom) (*C
 // Deletes a data object clean room from the metastore. The caller must be an
 // owner of the clean room.
 func (a *CleanRoomsAPI) Delete(ctx context.Context, request DeleteCleanRoomRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a clean room.
@@ -146,9 +147,10 @@ func (a *CleanRoomsAPI) Delete(ctx context.Context, request DeleteCleanRoomReque
 // Deletes a data object clean room from the metastore. The caller must be an
 // owner of the clean room.
 func (a *CleanRoomsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.impl.Delete(ctx, DeleteCleanRoomRequest{
+	_, err := a.impl.Delete(ctx, DeleteCleanRoomRequest{
 		Name: name,
 	})
+	return err
 }
 
 // Get a clean room.
@@ -383,7 +385,8 @@ func (a *ProvidersAPI) Create(ctx context.Context, request CreateProvider) (*Pro
 // Deletes an authentication provider, if the caller is a metastore admin or is
 // the owner of the provider.
 func (a *ProvidersAPI) Delete(ctx context.Context, request DeleteProviderRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a provider.
@@ -391,9 +394,10 @@ func (a *ProvidersAPI) Delete(ctx context.Context, request DeleteProviderRequest
 // Deletes an authentication provider, if the caller is a metastore admin or is
 // the owner of the provider.
 func (a *ProvidersAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.impl.Delete(ctx, DeleteProviderRequest{
+	_, err := a.impl.Delete(ctx, DeleteProviderRequest{
 		Name: name,
 	})
+	return err
 }
 
 // Get a provider.
@@ -613,16 +617,18 @@ func (a *RecipientActivationAPI) Impl() RecipientActivationService {
 //
 // Gets an activation URL for a share.
 func (a *RecipientActivationAPI) GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error {
-	return a.impl.GetActivationUrlInfo(ctx, request)
+	_, err := a.impl.GetActivationUrlInfo(ctx, request)
+	return err
 }
 
 // Get a share activation URL.
 //
 // Gets an activation URL for a share.
 func (a *RecipientActivationAPI) GetActivationUrlInfoByActivationUrl(ctx context.Context, activationUrl string) error {
-	return a.impl.GetActivationUrlInfo(ctx, GetActivationUrlInfoRequest{
+	_, err := a.impl.GetActivationUrlInfo(ctx, GetActivationUrlInfoRequest{
 		ActivationUrl: activationUrl,
 	})
+	return err
 }
 
 // Get an access token.
@@ -801,7 +807,8 @@ func (a *RecipientsAPI) Create(ctx context.Context, request CreateRecipient) (*R
 // Deletes the specified recipient from the metastore. The caller must be the
 // owner of the recipient.
 func (a *RecipientsAPI) Delete(ctx context.Context, request DeleteRecipientRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a share recipient.
@@ -809,9 +816,10 @@ func (a *RecipientsAPI) Delete(ctx context.Context, request DeleteRecipientReque
 // Deletes the specified recipient from the metastore. The caller must be the
 // owner of the recipient.
 func (a *RecipientsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.impl.Delete(ctx, DeleteRecipientRequest{
+	_, err := a.impl.Delete(ctx, DeleteRecipientRequest{
 		Name: name,
 	})
+	return err
 }
 
 // Get a share recipient.
@@ -931,7 +939,8 @@ func (a *RecipientsAPI) SharePermissionsByName(ctx context.Context, name string)
 // updated, the user must be both a metastore admin and the owner of the
 // recipient.
 func (a *RecipientsAPI) Update(ctx context.Context, request UpdateRecipient) error {
-	return a.impl.Update(ctx, request)
+	_, err := a.impl.Update(ctx, request)
+	return err
 }
 
 type SharesInterface interface {
@@ -1081,7 +1090,8 @@ func (a *SharesAPI) Create(ctx context.Context, request CreateShare) (*ShareInfo
 // Deletes a data object share from the metastore. The caller must be an owner
 // of the share.
 func (a *SharesAPI) Delete(ctx context.Context, request DeleteShareRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a share.
@@ -1089,9 +1099,10 @@ func (a *SharesAPI) Delete(ctx context.Context, request DeleteShareRequest) erro
 // Deletes a data object share from the metastore. The caller must be an owner
 // of the share.
 func (a *SharesAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.impl.Delete(ctx, DeleteShareRequest{
+	_, err := a.impl.Delete(ctx, DeleteShareRequest{
 		Name: name,
 	})
+	return err
 }
 
 // Get a share.
@@ -1197,5 +1208,6 @@ func (a *SharesAPI) Update(ctx context.Context, request UpdateShare) (*ShareInfo
 // For new recipient grants, the user must also be the owner of the recipients.
 // recipient revocations do not require additional privileges.
 func (a *SharesAPI) UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error {
-	return a.impl.UpdatePermissions(ctx, request)
+	_, err := a.impl.UpdatePermissions(ctx, request)
+	return err
 }

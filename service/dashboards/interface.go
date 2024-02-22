@@ -14,5 +14,5 @@ type LakeviewService interface {
 	// Publish dashboard.
 	//
 	// Publish the current draft dashboard.
-	Publish(ctx context.Context, request PublishRequest) error
+	Publish(ctx context.Context, request PublishRequest) (*PublishResponse, error)
 }

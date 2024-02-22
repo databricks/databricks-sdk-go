@@ -445,6 +445,9 @@ type DeleteRecipientRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 // Delete a share
 type DeleteShareRequest struct {
 	// The name of the share.
@@ -455,6 +458,9 @@ type DeleteShareRequest struct {
 type GetActivationUrlInfoRequest struct {
 	// The one time activation url. It also accepts activation token.
 	ActivationUrl string `json:"-" url:"-"`
+}
+
+type GetActivationUrlInfoResponse struct {
 }
 
 // Get a clean room
@@ -673,6 +679,9 @@ func (f *PartitionValueOp) Set(v string) error {
 // Type always returns PartitionValueOp to satisfy [pflag.Value] interface
 func (f *PartitionValueOp) Type() string {
 	return "PartitionValueOp"
+}
+
+type PermissionsList struct {
 }
 
 type Privilege string
@@ -1235,6 +1244,9 @@ func (s UpdateCleanRoom) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdatePermissionsResponse struct {
+}
+
 type UpdateProvider struct {
 	// Description about the provider.
 	Comment string `json:"comment,omitempty"`
@@ -1287,6 +1299,9 @@ func (s UpdateRecipient) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateResponse struct {
+}
+
 type UpdateShare struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -1316,11 +1331,3 @@ type UpdateSharePermissions struct {
 	// The name of the share.
 	Name string `json:"-" url:"-"`
 }
-
-type DeleteResponse struct{}
-
-type GetActivationUrlInfoResponse struct{}
-
-type UpdatePermissionsResponse struct{}
-
-type UpdateResponse struct{}

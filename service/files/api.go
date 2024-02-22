@@ -236,7 +236,8 @@ func (a *DbfsAPI) Impl() DbfsService {
 // If the block of data exceeds 1 MB, this call will throw an exception with
 // “MAX_BLOCK_SIZE_EXCEEDED“.
 func (a *DbfsAPI) AddBlock(ctx context.Context, request AddBlock) error {
-	return a.impl.AddBlock(ctx, request)
+	_, err := a.impl.AddBlock(ctx, request)
+	return err
 }
 
 // Close the stream.
@@ -244,7 +245,8 @@ func (a *DbfsAPI) AddBlock(ctx context.Context, request AddBlock) error {
 // Closes the stream specified by the input handle. If the handle does not
 // exist, this call throws an exception with “RESOURCE_DOES_NOT_EXIST“.
 func (a *DbfsAPI) Close(ctx context.Context, request Close) error {
-	return a.impl.Close(ctx, request)
+	_, err := a.impl.Close(ctx, request)
+	return err
 }
 
 // Close the stream.
@@ -252,9 +254,10 @@ func (a *DbfsAPI) Close(ctx context.Context, request Close) error {
 // Closes the stream specified by the input handle. If the handle does not
 // exist, this call throws an exception with “RESOURCE_DOES_NOT_EXIST“.
 func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) error {
-	return a.impl.Close(ctx, Close{
+	_, err := a.impl.Close(ctx, Close{
 		Handle: handle,
 	})
+	return err
 }
 
 // Open a stream.
@@ -294,7 +297,8 @@ func (a *DbfsAPI) Create(ctx context.Context, request Create) (*CreateResponse, 
 // such as selective deletes, and the possibility to automate periodic delete
 // jobs.
 func (a *DbfsAPI) Delete(ctx context.Context, request Delete) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Get the information of a file or directory.
@@ -395,7 +399,8 @@ func (a *DbfsAPI) ListByPath(ctx context.Context, path string) (*ListStatusRespo
 // this operation fails, it might have succeeded in creating some of the
 // necessary parent directories.
 func (a *DbfsAPI) Mkdirs(ctx context.Context, request MkDirs) error {
-	return a.impl.Mkdirs(ctx, request)
+	_, err := a.impl.Mkdirs(ctx, request)
+	return err
 }
 
 // Create a directory.
@@ -406,9 +411,10 @@ func (a *DbfsAPI) Mkdirs(ctx context.Context, request MkDirs) error {
 // this operation fails, it might have succeeded in creating some of the
 // necessary parent directories.
 func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) error {
-	return a.impl.Mkdirs(ctx, MkDirs{
+	_, err := a.impl.Mkdirs(ctx, MkDirs{
 		Path: path,
 	})
+	return err
 }
 
 // Move a file.
@@ -419,7 +425,8 @@ func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) error {
 // this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given
 // source path is a directory, this call always recursively moves all files.
 func (a *DbfsAPI) Move(ctx context.Context, request Move) error {
-	return a.impl.Move(ctx, request)
+	_, err := a.impl.Move(ctx, request)
+	return err
 }
 
 // Upload a file.
@@ -437,7 +444,8 @@ func (a *DbfsAPI) Move(ctx context.Context, request Move) error {
 // If you want to upload large files, use the streaming upload. For details, see
 // :method:dbfs/create, :method:dbfs/addBlock, :method:dbfs/close.
 func (a *DbfsAPI) Put(ctx context.Context, request Put) error {
-	return a.impl.Put(ctx, request)
+	_, err := a.impl.Put(ctx, request)
+	return err
 }
 
 // Get the contents of a file.
@@ -633,23 +641,26 @@ func (a *FilesAPI) Impl() FilesService {
 // an existing directory, returns a success response; this method is idempotent
 // (it will succeed if the directory already exists).
 func (a *FilesAPI) CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error {
-	return a.impl.CreateDirectory(ctx, request)
+	_, err := a.impl.CreateDirectory(ctx, request)
+	return err
 }
 
 // Delete a file.
 //
 // Deletes a file. If the request is successful, there is no response body.
 func (a *FilesAPI) Delete(ctx context.Context, request DeleteFileRequest) error {
-	return a.impl.Delete(ctx, request)
+	_, err := a.impl.Delete(ctx, request)
+	return err
 }
 
 // Delete a file.
 //
 // Deletes a file. If the request is successful, there is no response body.
 func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) error {
-	return a.impl.Delete(ctx, DeleteFileRequest{
+	_, err := a.impl.Delete(ctx, DeleteFileRequest{
 		FilePath: filePath,
 	})
+	return err
 }
 
 // Delete a directory.
@@ -660,7 +671,8 @@ func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) error 
 // be done by listing the directory contents and deleting each file and
 // subdirectory recursively.
 func (a *FilesAPI) DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error {
-	return a.impl.DeleteDirectory(ctx, request)
+	_, err := a.impl.DeleteDirectory(ctx, request)
+	return err
 }
 
 // Delete a directory.
@@ -671,9 +683,10 @@ func (a *FilesAPI) DeleteDirectory(ctx context.Context, request DeleteDirectoryR
 // be done by listing the directory contents and deleting each file and
 // subdirectory recursively.
 func (a *FilesAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) error {
-	return a.impl.DeleteDirectory(ctx, DeleteDirectoryRequest{
+	_, err := a.impl.DeleteDirectory(ctx, DeleteDirectoryRequest{
 		DirectoryPath: directoryPath,
 	})
+	return err
 }
 
 // Download a file.
@@ -706,7 +719,8 @@ func (a *FilesAPI) DownloadByFilePath(ctx context.Context, filePath string) (*Do
 // will create the directory if it does not exist, and is idempotent (it will
 // succeed if the directory already exists).
 func (a *FilesAPI) GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error {
-	return a.impl.GetDirectoryMetadata(ctx, request)
+	_, err := a.impl.GetDirectoryMetadata(ctx, request)
+	return err
 }
 
 // Get directory metadata.
@@ -721,9 +735,10 @@ func (a *FilesAPI) GetDirectoryMetadata(ctx context.Context, request GetDirector
 // will create the directory if it does not exist, and is idempotent (it will
 // succeed if the directory already exists).
 func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) error {
-	return a.impl.GetDirectoryMetadata(ctx, GetDirectoryMetadataRequest{
+	_, err := a.impl.GetDirectoryMetadata(ctx, GetDirectoryMetadataRequest{
 		DirectoryPath: directoryPath,
 	})
+	return err
 }
 
 // Get file metadata.
@@ -804,5 +819,6 @@ func (a *FilesAPI) ListDirectoryContentsByDirectoryPath(ctx context.Context, dir
 // exactly the bytes sent in the request body. If the request is successful,
 // there is no response body.
 func (a *FilesAPI) Upload(ctx context.Context, request UploadRequest) error {
-	return a.impl.Upload(ctx, request)
+	_, err := a.impl.Upload(ctx, request)
+	return err
 }

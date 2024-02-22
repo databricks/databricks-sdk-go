@@ -98,6 +98,9 @@ type DeleteGroupRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 // Delete a service principal
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
@@ -116,6 +119,9 @@ type DeleteWorkspaceAssignmentRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type DeleteWorkspaceAssignments struct {
 }
 
 // Get group details
@@ -925,6 +931,9 @@ func (f *PatchOp) Type() string {
 	return "PatchOp"
 }
 
+type PatchResponse struct {
+}
+
 type PatchSchema string
 
 const PatchSchemaUrnIetfParamsScimApiMessages20PatchOp PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
@@ -1090,6 +1099,13 @@ type PermissionsRequest struct {
 	RequestObjectType string `json:"-" url:"-"`
 }
 
+// A principal can be a user (for end users), a service principal (for
+// applications and compute workloads), or an account group. Each principal has
+// its own identifier format: * users/<USERNAME> * groups/<GROUP_NAME> *
+// servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>
+type Principal struct {
+}
+
 type PrincipalOutput struct {
 	// The display name of the principal.
 	DisplayName string `json:"display_name,omitempty"`
@@ -1182,7 +1198,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
@@ -1222,6 +1238,9 @@ func (f *ServicePrincipalSchema) Set(v string) error {
 // Type always returns ServicePrincipalSchema to satisfy [pflag.Value] interface
 func (f *ServicePrincipalSchema) Type() string {
 	return "ServicePrincipalSchema"
+}
+
+type UpdateResponse struct {
 }
 
 type UpdateRuleSetRequest struct {
@@ -1311,6 +1330,9 @@ func (f *UserSchema) Type() string {
 	return "UserSchema"
 }
 
+type WorkspaceAssignmentsUpdated struct {
+}
+
 type WorkspacePermission string
 
 const WorkspacePermissionAdmin WorkspacePermission = `ADMIN`
@@ -1344,13 +1366,3 @@ type WorkspacePermissions struct {
 	// Array of permissions defined for a workspace.
 	Permissions []PermissionOutput `json:"permissions,omitempty"`
 }
-
-type DeleteResponse struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type PatchResponse struct{}
-
-type UpdateResponse struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
