@@ -40,13 +40,13 @@ type ClusterPoliciesService interface {
 	//
 	// Delete a policy for a cluster. Clusters governed by this policy can still
 	// run, but cannot be edited.
-	Delete(ctx context.Context, request DeletePolicy) (*DeletePolicyResponse, error)
+	Delete(ctx context.Context, request DeletePolicy) error
 
 	// Update a cluster policy.
 	//
 	// Update an existing policy for cluster. This operation may make some
 	// clusters governed by the previous policy invalid.
-	Edit(ctx context.Context, request EditPolicy) (*EditPolicyResponse, error)
+	Edit(ctx context.Context, request EditPolicy) error
 
 	// Get a cluster policy.
 	//
@@ -119,7 +119,7 @@ type ClustersService interface {
 	// Change the owner of the cluster. You must be an admin and the cluster
 	// must be terminated to perform this operation. The service principal
 	// application ID can be supplied as an argument to `owner_username`.
-	ChangeOwner(ctx context.Context, request ChangeClusterOwner) (*ChangeClusterOwnerResponse, error)
+	ChangeOwner(ctx context.Context, request ChangeClusterOwner) error
 
 	// Create new cluster.
 	//
@@ -139,7 +139,7 @@ type ClustersService interface {
 	// removed asynchronously. Once the termination has completed, the cluster
 	// will be in a `TERMINATED` state. If the cluster is already in a
 	// `TERMINATING` or `TERMINATED` state, nothing will happen.
-	Delete(ctx context.Context, request DeleteCluster) (*DeleteClusterResponse, error)
+	Delete(ctx context.Context, request DeleteCluster) error
 
 	// Update cluster configuration.
 	//
@@ -156,7 +156,7 @@ type ClustersService interface {
 	// any other state will be rejected with an `INVALID_STATE` error code.
 	//
 	// Clusters created by the Databricks Jobs service cannot be edited.
-	Edit(ctx context.Context, request EditCluster) (*EditClusterResponse, error)
+	Edit(ctx context.Context, request EditCluster) error
 
 	// List cluster activity events.
 	//
@@ -221,26 +221,26 @@ type ClustersService interface {
 	// In addition, users will no longer see permanently deleted clusters in the
 	// cluster list, and API users can no longer perform any action on
 	// permanently deleted clusters.
-	PermanentDelete(ctx context.Context, request PermanentDeleteCluster) (*PermanentDeleteClusterResponse, error)
+	PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error
 
 	// Pin cluster.
 	//
 	// Pinning a cluster ensures that the cluster will always be returned by the
 	// ListClusters API. Pinning a cluster that is already pinned will have no
 	// effect. This API can only be called by workspace admins.
-	Pin(ctx context.Context, request PinCluster) (*PinClusterResponse, error)
+	Pin(ctx context.Context, request PinCluster) error
 
 	// Resize cluster.
 	//
 	// Resizes a cluster to have a desired number of workers. This will fail
 	// unless the cluster is in a `RUNNING` state.
-	Resize(ctx context.Context, request ResizeCluster) (*ResizeClusterResponse, error)
+	Resize(ctx context.Context, request ResizeCluster) error
 
 	// Restart cluster.
 	//
 	// Restarts a Spark cluster with the supplied ID. If the cluster is not
 	// currently in a `RUNNING` state, nothing will happen.
-	Restart(ctx context.Context, request RestartCluster) (*RestartClusterResponse, error)
+	Restart(ctx context.Context, request RestartCluster) error
 
 	// Set cluster permissions.
 	//
@@ -265,14 +265,14 @@ type ClustersService interface {
 	// number of nodes. * If the cluster is not currently in a `TERMINATED`
 	// state, nothing will happen. * Clusters launched to run a job cannot be
 	// started.
-	Start(ctx context.Context, request StartCluster) (*StartClusterResponse, error)
+	Start(ctx context.Context, request StartCluster) error
 
 	// Unpin cluster.
 	//
 	// Unpinning a cluster will allow the cluster to eventually be removed from
 	// the ListClusters API. Unpinning a cluster that is not pinned will have no
 	// effect. This API can only be called by workspace admins.
-	Unpin(ctx context.Context, request UnpinCluster) (*UnpinClusterResponse, error)
+	Unpin(ctx context.Context, request UnpinCluster) error
 
 	// Update cluster permissions.
 	//
@@ -290,7 +290,7 @@ type CommandExecutionService interface {
 	// Cancels a currently running command within an execution context.
 	//
 	// The command ID is obtained from a prior successful call to __execute__.
-	Cancel(ctx context.Context, request CancelCommand) (*CancelResponse, error)
+	Cancel(ctx context.Context, request CancelCommand) error
 
 	// Get command info.
 	//
@@ -315,7 +315,7 @@ type CommandExecutionService interface {
 	// Delete an execution context.
 	//
 	// Deletes an execution context.
-	Destroy(ctx context.Context, request DestroyContext) (*DestroyResponse, error)
+	Destroy(ctx context.Context, request DestroyContext) error
 
 	// Run a command.
 	//
@@ -347,7 +347,7 @@ type GlobalInitScriptsService interface {
 	// Delete init script.
 	//
 	// Deletes a global init script.
-	Delete(ctx context.Context, request DeleteGlobalInitScriptRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteGlobalInitScriptRequest) error
 
 	// Get an init script.
 	//
@@ -368,7 +368,7 @@ type GlobalInitScriptsService interface {
 	//
 	// Updates a global init script, specifying only the fields to change. All
 	// fields are optional. Unspecified fields retain their current value.
-	Update(ctx context.Context, request GlobalInitScriptUpdateRequest) (*UpdateResponse, error)
+	Update(ctx context.Context, request GlobalInitScriptUpdateRequest) error
 }
 
 // Instance Pools API are used to create, edit, delete and list instance pools
@@ -400,12 +400,12 @@ type InstancePoolsService interface {
 	//
 	// Deletes the instance pool permanently. The idle instances in the pool are
 	// terminated asynchronously.
-	Delete(ctx context.Context, request DeleteInstancePool) (*DeleteInstancePoolResponse, error)
+	Delete(ctx context.Context, request DeleteInstancePool) error
 
 	// Edit an existing instance pool.
 	//
 	// Modifies the configuration of an existing instance pool.
-	Edit(ctx context.Context, request EditInstancePool) (*EditInstancePoolResponse, error)
+	Edit(ctx context.Context, request EditInstancePool) error
 
 	// Get instance pool information.
 	//
@@ -455,7 +455,7 @@ type InstanceProfilesService interface {
 	//
 	// In the UI, you can select the instance profile when launching clusters.
 	// This API is only available to admin users.
-	Add(ctx context.Context, request AddInstanceProfile) (*AddResponse, error)
+	Add(ctx context.Context, request AddInstanceProfile) error
 
 	// Edit an instance profile.
 	//
@@ -474,7 +474,7 @@ type InstanceProfilesService interface {
 	//
 	// [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
 	// [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html
-	Edit(ctx context.Context, request InstanceProfile) (*EditResponse, error)
+	Edit(ctx context.Context, request InstanceProfile) error
 
 	// List available instance profiles.
 	//
@@ -492,7 +492,7 @@ type InstanceProfilesService interface {
 	// this instance profile will continue to function.
 	//
 	// This API is only accessible to admin users.
-	Remove(ctx context.Context, request RemoveInstanceProfile) (*RemoveResponse, error)
+	Remove(ctx context.Context, request RemoveInstanceProfile) error
 }
 
 // The Libraries API allows you to install and uninstall libraries and get the
@@ -555,14 +555,14 @@ type LibrariesService interface {
 	// **Note**: The actual set of libraries to be installed on a cluster is the
 	// union of the libraries specified via this method and the libraries set to
 	// be installed on all clusters via the libraries UI.
-	Install(ctx context.Context, request InstallLibraries) (*InstallLibrariesResponse, error)
+	Install(ctx context.Context, request InstallLibraries) error
 
 	// Uninstall libraries.
 	//
 	// Set libraries to be uninstalled on a cluster. The libraries won't be
 	// uninstalled until the cluster is restarted. Uninstalling libraries that
 	// are not installed on the cluster will have no impact but is not an error.
-	Uninstall(ctx context.Context, request UninstallLibraries) (*UninstallLibrariesResponse, error)
+	Uninstall(ctx context.Context, request UninstallLibraries) error
 }
 
 // View available policy families. A policy family contains a policy definition

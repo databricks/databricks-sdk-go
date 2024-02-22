@@ -202,18 +202,16 @@ func (a *BudgetsAPI) Create(ctx context.Context, request WrappedBudget) (*Wrappe
 //
 // Deletes the budget specified by its UUID.
 func (a *BudgetsAPI) Delete(ctx context.Context, request DeleteBudgetRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete budget.
 //
 // Deletes the budget specified by its UUID.
 func (a *BudgetsAPI) DeleteByBudgetId(ctx context.Context, budgetId string) error {
-	_, err := a.impl.Delete(ctx, DeleteBudgetRequest{
+	return a.impl.Delete(ctx, DeleteBudgetRequest{
 		BudgetId: budgetId,
 	})
-	return err
 }
 
 // Get budget and its status.
@@ -328,8 +326,7 @@ func (a *BudgetsAPI) GetByName(ctx context.Context, name string) (*BudgetWithSta
 // Modifies a budget in this account. Budget properties are completely
 // overwritten.
 func (a *BudgetsAPI) Update(ctx context.Context, request WrappedBudget) error {
-	_, err := a.impl.Update(ctx, request)
-	return err
+	return a.impl.Update(ctx, request)
 }
 
 type LogDeliveryInterface interface {
@@ -661,6 +658,5 @@ func (a *LogDeliveryAPI) GetByConfigName(ctx context.Context, name string) (*Log
 // if this would violate the delivery configuration limits described under
 // [Create log delivery](:method:LogDelivery/Create).
 func (a *LogDeliveryAPI) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
-	_, err := a.impl.PatchStatus(ctx, request)
-	return err
+	return a.impl.PatchStatus(ctx, request)
 }

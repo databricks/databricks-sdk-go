@@ -382,16 +382,14 @@ func (a *ExperimentsAPI) CreateRun(ctx context.Context, request CreateRun) (*Cre
 // for deletion. If the experiment uses FileStore, artifacts associated with
 // experiment are also deleted.
 func (a *ExperimentsAPI) DeleteExperiment(ctx context.Context, request DeleteExperiment) error {
-	_, err := a.impl.DeleteExperiment(ctx, request)
-	return err
+	return a.impl.DeleteExperiment(ctx, request)
 }
 
 // Delete a run.
 //
 // Marks a run for deletion.
 func (a *ExperimentsAPI) DeleteRun(ctx context.Context, request DeleteRun) error {
-	_, err := a.impl.DeleteRun(ctx, request)
-	return err
+	return a.impl.DeleteRun(ctx, request)
 }
 
 // Delete runs by creation time.
@@ -409,8 +407,7 @@ func (a *ExperimentsAPI) DeleteRuns(ctx context.Context, request DeleteRuns) (*D
 // Deletes a tag on a run. Tags are run metadata that can be updated during a
 // run and after a run completes.
 func (a *ExperimentsAPI) DeleteTag(ctx context.Context, request DeleteTag) error {
-	_, err := a.impl.DeleteTag(ctx, request)
-	return err
+	return a.impl.DeleteTag(ctx, request)
 }
 
 // Get metadata.
@@ -642,8 +639,7 @@ func (a *ExperimentsAPI) ListExperimentsAll(ctx context.Context, request ListExp
 // * Metric keys, param keys, and tag keys can be up to 250 characters in length
 // * Parameter and tag values can be up to 250 characters in length
 func (a *ExperimentsAPI) LogBatch(ctx context.Context, request LogBatch) error {
-	_, err := a.impl.LogBatch(ctx, request)
-	return err
+	return a.impl.LogBatch(ctx, request)
 }
 
 // Log inputs to a run.
@@ -651,8 +647,7 @@ func (a *ExperimentsAPI) LogBatch(ctx context.Context, request LogBatch) error {
 // **NOTE:** Experimental: This API may change or be removed in a future release
 // without warning.
 func (a *ExperimentsAPI) LogInputs(ctx context.Context, request LogInputs) error {
-	_, err := a.impl.LogInputs(ctx, request)
-	return err
+	return a.impl.LogInputs(ctx, request)
 }
 
 // Log a metric.
@@ -661,8 +656,7 @@ func (a *ExperimentsAPI) LogInputs(ctx context.Context, request LogInputs) error
 // value) with an associated timestamp. Examples include the various metrics
 // that represent ML model accuracy. A metric can be logged multiple times.
 func (a *ExperimentsAPI) LogMetric(ctx context.Context, request LogMetric) error {
-	_, err := a.impl.LogMetric(ctx, request)
-	return err
+	return a.impl.LogMetric(ctx, request)
 }
 
 // Log a model.
@@ -670,8 +664,7 @@ func (a *ExperimentsAPI) LogMetric(ctx context.Context, request LogMetric) error
 // **NOTE:** Experimental: This API may change or be removed in a future release
 // without warning.
 func (a *ExperimentsAPI) LogModel(ctx context.Context, request LogModel) error {
-	_, err := a.impl.LogModel(ctx, request)
-	return err
+	return a.impl.LogModel(ctx, request)
 }
 
 // Log a param.
@@ -681,8 +674,7 @@ func (a *ExperimentsAPI) LogModel(ctx context.Context, request LogModel) error {
 // constant dates and values used in an ETL pipeline. A param can be logged only
 // once for a run.
 func (a *ExperimentsAPI) LogParam(ctx context.Context, request LogParam) error {
-	_, err := a.impl.LogParam(ctx, request)
-	return err
+	return a.impl.LogParam(ctx, request)
 }
 
 // Restores an experiment.
@@ -694,16 +686,14 @@ func (a *ExperimentsAPI) LogParam(ctx context.Context, request LogParam) error {
 // Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was
 // permanently deleted.
 func (a *ExperimentsAPI) RestoreExperiment(ctx context.Context, request RestoreExperiment) error {
-	_, err := a.impl.RestoreExperiment(ctx, request)
-	return err
+	return a.impl.RestoreExperiment(ctx, request)
 }
 
 // Restore a run.
 //
 // Restores a deleted run.
 func (a *ExperimentsAPI) RestoreRun(ctx context.Context, request RestoreRun) error {
-	_, err := a.impl.RestoreRun(ctx, request)
-	return err
+	return a.impl.RestoreRun(ctx, request)
 }
 
 // Restore runs by deletion time.
@@ -803,8 +793,7 @@ func (a *ExperimentsAPI) SearchRunsAll(ctx context.Context, request SearchRuns) 
 // Sets a tag on an experiment. Experiment tags are metadata that can be
 // updated.
 func (a *ExperimentsAPI) SetExperimentTag(ctx context.Context, request SetExperimentTag) error {
-	_, err := a.impl.SetExperimentTag(ctx, request)
-	return err
+	return a.impl.SetExperimentTag(ctx, request)
 }
 
 // Set experiment permissions.
@@ -820,16 +809,14 @@ func (a *ExperimentsAPI) SetPermissions(ctx context.Context, request ExperimentP
 // Sets a tag on a run. Tags are run metadata that can be updated during a run
 // and after a run completes.
 func (a *ExperimentsAPI) SetTag(ctx context.Context, request SetTag) error {
-	_, err := a.impl.SetTag(ctx, request)
-	return err
+	return a.impl.SetTag(ctx, request)
 }
 
 // Update an experiment.
 //
 // Updates experiment metadata.
 func (a *ExperimentsAPI) UpdateExperiment(ctx context.Context, request UpdateExperiment) error {
-	_, err := a.impl.UpdateExperiment(ctx, request)
-	return err
+	return a.impl.UpdateExperiment(ctx, request)
 }
 
 // Update experiment permissions.
@@ -1222,48 +1209,42 @@ func (a *ModelRegistryAPI) CreateWebhook(ctx context.Context, request CreateRegi
 //
 // Deletes a comment on a model version.
 func (a *ModelRegistryAPI) DeleteComment(ctx context.Context, request DeleteCommentRequest) error {
-	_, err := a.impl.DeleteComment(ctx, request)
-	return err
+	return a.impl.DeleteComment(ctx, request)
 }
 
 // Delete a model.
 //
 // Deletes a registered model.
 func (a *ModelRegistryAPI) DeleteModel(ctx context.Context, request DeleteModelRequest) error {
-	_, err := a.impl.DeleteModel(ctx, request)
-	return err
+	return a.impl.DeleteModel(ctx, request)
 }
 
 // Delete a model tag.
 //
 // Deletes the tag for a registered model.
 func (a *ModelRegistryAPI) DeleteModelTag(ctx context.Context, request DeleteModelTagRequest) error {
-	_, err := a.impl.DeleteModelTag(ctx, request)
-	return err
+	return a.impl.DeleteModelTag(ctx, request)
 }
 
 // Delete a model version.
 //
 // Deletes a model version.
 func (a *ModelRegistryAPI) DeleteModelVersion(ctx context.Context, request DeleteModelVersionRequest) error {
-	_, err := a.impl.DeleteModelVersion(ctx, request)
-	return err
+	return a.impl.DeleteModelVersion(ctx, request)
 }
 
 // Delete a model version tag.
 //
 // Deletes a model version tag.
 func (a *ModelRegistryAPI) DeleteModelVersionTag(ctx context.Context, request DeleteModelVersionTagRequest) error {
-	_, err := a.impl.DeleteModelVersionTag(ctx, request)
-	return err
+	return a.impl.DeleteModelVersionTag(ctx, request)
 }
 
 // Delete a transition request.
 //
 // Cancels a model version stage transition request.
 func (a *ModelRegistryAPI) DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) error {
-	_, err := a.impl.DeleteTransitionRequest(ctx, request)
-	return err
+	return a.impl.DeleteTransitionRequest(ctx, request)
 }
 
 // Delete a webhook.
@@ -1272,8 +1253,7 @@ func (a *ModelRegistryAPI) DeleteTransitionRequest(ctx context.Context, request 
 //
 // Deletes a registry webhook.
 func (a *ModelRegistryAPI) DeleteWebhook(ctx context.Context, request DeleteWebhookRequest) error {
-	_, err := a.impl.DeleteWebhook(ctx, request)
-	return err
+	return a.impl.DeleteWebhook(ctx, request)
 }
 
 // Get the latest version.
@@ -1584,16 +1564,14 @@ func (a *ModelRegistryAPI) SearchModelsAll(ctx context.Context, request SearchMo
 //
 // Sets a tag on a registered model.
 func (a *ModelRegistryAPI) SetModelTag(ctx context.Context, request SetModelTagRequest) error {
-	_, err := a.impl.SetModelTag(ctx, request)
-	return err
+	return a.impl.SetModelTag(ctx, request)
 }
 
 // Set a version tag.
 //
 // Sets a model version tag.
 func (a *ModelRegistryAPI) SetModelVersionTag(ctx context.Context, request SetModelVersionTagRequest) error {
-	_, err := a.impl.SetModelVersionTag(ctx, request)
-	return err
+	return a.impl.SetModelVersionTag(ctx, request)
 }
 
 // Set registered model permissions.
@@ -1635,16 +1613,14 @@ func (a *ModelRegistryAPI) UpdateComment(ctx context.Context, request UpdateComm
 //
 // Updates a registered model.
 func (a *ModelRegistryAPI) UpdateModel(ctx context.Context, request UpdateModelRequest) error {
-	_, err := a.impl.UpdateModel(ctx, request)
-	return err
+	return a.impl.UpdateModel(ctx, request)
 }
 
 // Update model version.
 //
 // Updates the model version.
 func (a *ModelRegistryAPI) UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) error {
-	_, err := a.impl.UpdateModelVersion(ctx, request)
-	return err
+	return a.impl.UpdateModelVersion(ctx, request)
 }
 
 // Update registered model permissions.
@@ -1661,6 +1637,5 @@ func (a *ModelRegistryAPI) UpdatePermissions(ctx context.Context, request Regist
 //
 // Updates a registry webhook.
 func (a *ModelRegistryAPI) UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) error {
-	_, err := a.impl.UpdateWebhook(ctx, request)
-	return err
+	return a.impl.UpdateWebhook(ctx, request)
 }

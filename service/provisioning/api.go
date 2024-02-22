@@ -151,8 +151,7 @@ func (a *CredentialsAPI) Create(ctx context.Context, request CreateCredentialReq
 // specified by ID. You cannot delete a credential that is associated with any
 // workspace.
 func (a *CredentialsAPI) Delete(ctx context.Context, request DeleteCredentialRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete credential configuration.
@@ -161,10 +160,9 @@ func (a *CredentialsAPI) Delete(ctx context.Context, request DeleteCredentialReq
 // specified by ID. You cannot delete a credential that is associated with any
 // workspace.
 func (a *CredentialsAPI) DeleteByCredentialsId(ctx context.Context, credentialsId string) error {
-	_, err := a.impl.Delete(ctx, DeleteCredentialRequest{
+	return a.impl.Delete(ctx, DeleteCredentialRequest{
 		CredentialsId: credentialsId,
 	})
-	return err
 }
 
 // Get credential configuration.
@@ -417,8 +415,7 @@ func (a *EncryptionKeysAPI) Create(ctx context.Context, request CreateCustomerMa
 // Deletes a customer-managed key configuration object for an account. You
 // cannot delete a configuration that is associated with a running workspace.
 func (a *EncryptionKeysAPI) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete encryption key configuration.
@@ -426,10 +423,9 @@ func (a *EncryptionKeysAPI) Delete(ctx context.Context, request DeleteEncryption
 // Deletes a customer-managed key configuration object for an account. You
 // cannot delete a configuration that is associated with a running workspace.
 func (a *EncryptionKeysAPI) DeleteByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) error {
-	_, err := a.impl.Delete(ctx, DeleteEncryptionKeyRequest{
+	return a.impl.Delete(ctx, DeleteEncryptionKeyRequest{
 		CustomerManagedKeyId: customerManagedKeyId,
 	})
-	return err
 }
 
 // Get encryption key configuration.
@@ -621,8 +617,7 @@ func (a *NetworksAPI) Create(ctx context.Context, request CreateNetworkRequest) 
 // This operation is available only if your account is on the E2 version of the
 // platform.
 func (a *NetworksAPI) Delete(ctx context.Context, request DeleteNetworkRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a network configuration.
@@ -634,10 +629,9 @@ func (a *NetworksAPI) Delete(ctx context.Context, request DeleteNetworkRequest) 
 // This operation is available only if your account is on the E2 version of the
 // platform.
 func (a *NetworksAPI) DeleteByNetworkId(ctx context.Context, networkId string) error {
-	_, err := a.impl.Delete(ctx, DeleteNetworkRequest{
+	return a.impl.Delete(ctx, DeleteNetworkRequest{
 		NetworkId: networkId,
 	})
-	return err
 }
 
 // Get a network configuration.
@@ -910,8 +904,7 @@ func (a *PrivateAccessAPI) Create(ctx context.Context, request UpsertPrivateAcce
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *PrivateAccessAPI) Delete(ctx context.Context, request DeletePrivateAccesRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a private access settings object.
@@ -925,10 +918,9 @@ func (a *PrivateAccessAPI) Delete(ctx context.Context, request DeletePrivateAcce
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *PrivateAccessAPI) DeleteByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) error {
-	_, err := a.impl.Delete(ctx, DeletePrivateAccesRequest{
+	return a.impl.Delete(ctx, DeletePrivateAccesRequest{
 		PrivateAccessSettingsId: privateAccessSettingsId,
 	})
-	return err
 }
 
 // Get a private access settings object.
@@ -1046,8 +1038,7 @@ func (a *PrivateAccessAPI) GetByPrivateAccessSettingsName(ctx context.Context, n
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *PrivateAccessAPI) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
-	_, err := a.impl.Replace(ctx, request)
-	return err
+	return a.impl.Replace(ctx, request)
 }
 
 type StorageInterface interface {
@@ -1176,8 +1167,7 @@ func (a *StorageAPI) Create(ctx context.Context, request CreateStorageConfigurat
 // Deletes a Databricks storage configuration. You cannot delete a storage
 // configuration that is associated with any workspace.
 func (a *StorageAPI) Delete(ctx context.Context, request DeleteStorageRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete storage configuration.
@@ -1185,10 +1175,9 @@ func (a *StorageAPI) Delete(ctx context.Context, request DeleteStorageRequest) e
 // Deletes a Databricks storage configuration. You cannot delete a storage
 // configuration that is associated with any workspace.
 func (a *StorageAPI) DeleteByStorageConfigurationId(ctx context.Context, storageConfigurationId string) error {
-	_, err := a.impl.Delete(ctx, DeleteStorageRequest{
+	return a.impl.Delete(ctx, DeleteStorageRequest{
 		StorageConfigurationId: storageConfigurationId,
 	})
-	return err
 }
 
 // Get storage configuration.
@@ -1430,8 +1419,7 @@ func (a *VpcEndpointsAPI) Create(ctx context.Context, request CreateVpcEndpointR
 // [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *VpcEndpointsAPI) Delete(ctx context.Context, request DeleteVpcEndpointRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete VPC endpoint configuration.
@@ -1446,10 +1434,9 @@ func (a *VpcEndpointsAPI) Delete(ctx context.Context, request DeleteVpcEndpointR
 // [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *VpcEndpointsAPI) DeleteByVpcEndpointId(ctx context.Context, vpcEndpointId string) error {
-	_, err := a.impl.Delete(ctx, DeleteVpcEndpointRequest{
+	return a.impl.Delete(ctx, DeleteVpcEndpointRequest{
 		VpcEndpointId: vpcEndpointId,
 	})
-	return err
 }
 
 // Get a VPC endpoint configuration.
@@ -1946,8 +1933,7 @@ func (a *WorkspacesAPI) CreateAndWait(ctx context.Context, createWorkspaceReques
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
 func (a *WorkspacesAPI) Delete(ctx context.Context, request DeleteWorkspaceRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a workspace.
@@ -1961,10 +1947,9 @@ func (a *WorkspacesAPI) Delete(ctx context.Context, request DeleteWorkspaceReque
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
 func (a *WorkspacesAPI) DeleteByWorkspaceId(ctx context.Context, workspaceId int64) error {
-	_, err := a.impl.Delete(ctx, DeleteWorkspaceRequest{
+	return a.impl.Delete(ctx, DeleteWorkspaceRequest{
 		WorkspaceId: workspaceId,
 	})
-	return err
 }
 
 // Get a workspace.
@@ -2190,7 +2175,7 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 // [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
 // [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 func (a *WorkspacesAPI) Update(ctx context.Context, updateWorkspaceRequest UpdateWorkspaceRequest) (*WaitGetWorkspaceRunning[struct{}], error) {
-	_, err := a.impl.Update(ctx, updateWorkspaceRequest)
+	err := a.impl.Update(ctx, updateWorkspaceRequest)
 	if err != nil {
 		return nil, err
 	}

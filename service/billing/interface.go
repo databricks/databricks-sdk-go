@@ -38,7 +38,7 @@ type BudgetsService interface {
 	// Delete budget.
 	//
 	// Deletes the budget specified by its UUID.
-	Delete(ctx context.Context, request DeleteBudgetRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteBudgetRequest) error
 
 	// Get budget and its status.
 	//
@@ -58,7 +58,7 @@ type BudgetsService interface {
 	//
 	// Modifies a budget in this account. Budget properties are completely
 	// overwritten.
-	Update(ctx context.Context, request WrappedBudget) (*UpdateResponse, error)
+	Update(ctx context.Context, request WrappedBudget) error
 }
 
 // These APIs manage log delivery configurations for this account. The two
@@ -175,5 +175,5 @@ type LogDeliveryService interface {
 	// that are no longer needed. Note that you can't re-enable a delivery
 	// configuration if this would violate the delivery configuration limits
 	// described under [Create log delivery](:method:LogDelivery/Create).
-	PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) (*PatchStatusResponse, error)
+	PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error
 }

@@ -36,7 +36,7 @@ type CredentialsService interface {
 	// Deletes a Databricks credential configuration object for an account, both
 	// specified by ID. You cannot delete a credential that is associated with
 	// any workspace.
-	Delete(ctx context.Context, request DeleteCredentialRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteCredentialRequest) error
 
 	// Get credential configuration.
 	//
@@ -95,7 +95,7 @@ type EncryptionKeysService interface {
 	// Deletes a customer-managed key configuration object for an account. You
 	// cannot delete a configuration that is associated with a running
 	// workspace.
-	Delete(ctx context.Context, request DeleteEncryptionKeyRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error
 
 	// Get encryption key configuration.
 	//
@@ -155,7 +155,7 @@ type NetworksService interface {
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
-	Delete(ctx context.Context, request DeleteNetworkRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteNetworkRequest) error
 
 	// Get a network configuration.
 	//
@@ -205,7 +205,7 @@ type PrivateAccessService interface {
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	Delete(ctx context.Context, request DeletePrivateAccesRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeletePrivateAccesRequest) error
 
 	// Get a private access settings object.
 	//
@@ -250,7 +250,7 @@ type PrivateAccessService interface {
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*ReplaceResponse, error)
+	Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error
 }
 
 // These APIs manage storage configurations for this workspace. A root storage
@@ -279,7 +279,7 @@ type StorageService interface {
 	//
 	// Deletes a Databricks storage configuration. You cannot delete a storage
 	// configuration that is associated with any workspace.
-	Delete(ctx context.Context, request DeleteStorageRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteStorageRequest) error
 
 	// Get storage configuration.
 	//
@@ -327,7 +327,7 @@ type VpcEndpointsService interface {
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
 	// [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	Delete(ctx context.Context, request DeleteVpcEndpointRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteVpcEndpointRequest) error
 
 	// Get a VPC endpoint configuration.
 	//
@@ -385,7 +385,7 @@ type WorkspacesService interface {
 	// This operation is available only if your account is on the E2 version of
 	// the platform or on a select custom plan that allows multiple workspaces
 	// per account.
-	Delete(ctx context.Context, request DeleteWorkspaceRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteWorkspaceRequest) error
 
 	// Get a workspace.
 	//
@@ -538,5 +538,5 @@ type WorkspacesService interface {
 	//
 	// [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
 	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-	Update(ctx context.Context, request UpdateWorkspaceRequest) (*UpdateResponse, error)
+	Update(ctx context.Context, request UpdateWorkspaceRequest) error
 }

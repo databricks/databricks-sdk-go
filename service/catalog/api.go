@@ -117,8 +117,7 @@ func (a *AccountMetastoreAssignmentsAPI) Impl() AccountMetastoreAssignmentsServi
 //
 // Creates an assignment to a metastore for a workspace
 func (a *AccountMetastoreAssignmentsAPI) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error {
-	_, err := a.impl.Create(ctx, request)
-	return err
+	return a.impl.Create(ctx, request)
 }
 
 // Delete a metastore assignment.
@@ -126,8 +125,7 @@ func (a *AccountMetastoreAssignmentsAPI) Create(ctx context.Context, request Acc
 // Deletes a metastore assignment to a workspace, leaving the workspace with no
 // metastore.
 func (a *AccountMetastoreAssignmentsAPI) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a metastore assignment.
@@ -135,11 +133,10 @@ func (a *AccountMetastoreAssignmentsAPI) Delete(ctx context.Context, request Del
 // Deletes a metastore assignment to a workspace, leaving the workspace with no
 // metastore.
 func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) error {
-	_, err := a.impl.Delete(ctx, DeleteAccountMetastoreAssignmentRequest{
+	return a.impl.Delete(ctx, DeleteAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
 		MetastoreId: metastoreId,
 	})
-	return err
 }
 
 // Gets the metastore assignment for a workspace.
@@ -214,8 +211,7 @@ func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, 
 // Updates an assignment to a metastore for a workspace. Currently, only the
 // default catalog may be updated.
 func (a *AccountMetastoreAssignmentsAPI) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error {
-	_, err := a.impl.Update(ctx, request)
-	return err
+	return a.impl.Update(ctx, request)
 }
 
 type AccountMetastoresInterface interface {
@@ -314,18 +310,16 @@ func (a *AccountMetastoresAPI) Create(ctx context.Context, request AccountsCreat
 //
 // Deletes a Unity Catalog metastore for an account, both specified by ID.
 func (a *AccountMetastoresAPI) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a metastore.
 //
 // Deletes a Unity Catalog metastore for an account, both specified by ID.
 func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) error {
-	_, err := a.impl.Delete(ctx, DeleteAccountMetastoreRequest{
+	return a.impl.Delete(ctx, DeleteAccountMetastoreRequest{
 		MetastoreId: metastoreId,
 	})
-	return err
 }
 
 // Get a metastore.
@@ -519,8 +513,7 @@ func (a *AccountStorageCredentialsAPI) Create(ctx context.Context, request Accou
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
 func (a *AccountStorageCredentialsAPI) Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a storage credential.
@@ -528,11 +521,10 @@ func (a *AccountStorageCredentialsAPI) Delete(ctx context.Context, request Delet
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
 func (a *AccountStorageCredentialsAPI) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) error {
-	_, err := a.impl.Delete(ctx, DeleteAccountStorageCredentialRequest{
+	return a.impl.Delete(ctx, DeleteAccountStorageCredentialRequest{
 		MetastoreId:           metastoreId,
 		StorageCredentialName: storageCredentialName,
 	})
-	return err
 }
 
 // Gets the named storage credential.
@@ -845,8 +837,7 @@ func (a *CatalogsAPI) Create(ctx context.Context, request CreateCatalog) (*Catal
 // Deletes the catalog that matches the supplied name. The caller must be a
 // metastore admin or the owner of the catalog.
 func (a *CatalogsAPI) Delete(ctx context.Context, request DeleteCatalogRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a catalog.
@@ -854,10 +845,9 @@ func (a *CatalogsAPI) Delete(ctx context.Context, request DeleteCatalogRequest) 
 // Deletes the catalog that matches the supplied name. The caller must be a
 // metastore admin or the owner of the catalog.
 func (a *CatalogsAPI) DeleteByName(ctx context.Context, name string) error {
-	_, err := a.impl.Delete(ctx, DeleteCatalogRequest{
+	return a.impl.Delete(ctx, DeleteCatalogRequest{
 		Name: name,
 	})
-	return err
 }
 
 // Get a catalog.
@@ -1053,18 +1043,16 @@ func (a *ConnectionsAPI) Create(ctx context.Context, request CreateConnection) (
 //
 // Deletes the connection that matches the supplied name.
 func (a *ConnectionsAPI) Delete(ctx context.Context, request DeleteConnectionRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a connection.
 //
 // Deletes the connection that matches the supplied name.
 func (a *ConnectionsAPI) DeleteByName(ctx context.Context, name string) error {
-	_, err := a.impl.Delete(ctx, DeleteConnectionRequest{
+	return a.impl.Delete(ctx, DeleteConnectionRequest{
 		Name: name,
 	})
-	return err
 }
 
 // Get a connection.
@@ -1279,8 +1267,7 @@ func (a *ExternalLocationsAPI) Create(ctx context.Context, request CreateExterna
 // Deletes the specified external location from the metastore. The caller must
 // be the owner of the external location.
 func (a *ExternalLocationsAPI) Delete(ctx context.Context, request DeleteExternalLocationRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete an external location.
@@ -1288,10 +1275,9 @@ func (a *ExternalLocationsAPI) Delete(ctx context.Context, request DeleteExterna
 // Deletes the specified external location from the metastore. The caller must
 // be the owner of the external location.
 func (a *ExternalLocationsAPI) DeleteByName(ctx context.Context, name string) error {
-	_, err := a.impl.Delete(ctx, DeleteExternalLocationRequest{
+	return a.impl.Delete(ctx, DeleteExternalLocationRequest{
 		Name: name,
 	})
-	return err
 }
 
 // Get an external location.
@@ -1541,8 +1527,7 @@ func (a *FunctionsAPI) Create(ctx context.Context, request CreateFunctionRequest
 // privilege on its parent catalog and the **USE_SCHEMA** privilege on its
 // parent schema
 func (a *FunctionsAPI) Delete(ctx context.Context, request DeleteFunctionRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a function.
@@ -1555,10 +1540,9 @@ func (a *FunctionsAPI) Delete(ctx context.Context, request DeleteFunctionRequest
 // privilege on its parent catalog and the **USE_SCHEMA** privilege on its
 // parent schema
 func (a *FunctionsAPI) DeleteByName(ctx context.Context, name string) error {
-	_, err := a.impl.Delete(ctx, DeleteFunctionRequest{
+	return a.impl.Delete(ctx, DeleteFunctionRequest{
 		Name: name,
 	})
-	return err
 }
 
 // Get a function.
@@ -2044,8 +2028,7 @@ func (a *LakehouseMonitorsAPI) Impl() LakehouseMonitorsService {
 // Additionally, the call must be made from the workspace where the monitor was
 // created.
 func (a *LakehouseMonitorsAPI) CancelRefresh(ctx context.Context, request CancelRefreshRequest) error {
-	_, err := a.impl.CancelRefresh(ctx, request)
-	return err
+	return a.impl.CancelRefresh(ctx, request)
 }
 
 // Create a table monitor.
@@ -2082,8 +2065,7 @@ func (a *LakehouseMonitorsAPI) Create(ctx context.Context, request CreateMonitor
 // Note that the metric tables and dashboard will not be deleted as part of this
 // call; those assets must be manually cleaned up (if desired).
 func (a *LakehouseMonitorsAPI) Delete(ctx context.Context, request DeleteLakehouseMonitorRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a table monitor.
@@ -2102,10 +2084,9 @@ func (a *LakehouseMonitorsAPI) Delete(ctx context.Context, request DeleteLakehou
 // Note that the metric tables and dashboard will not be deleted as part of this
 // call; those assets must be manually cleaned up (if desired).
 func (a *LakehouseMonitorsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	_, err := a.impl.Delete(ctx, DeleteLakehouseMonitorRequest{
+	return a.impl.Delete(ctx, DeleteLakehouseMonitorRequest{
 		FullName: fullName,
 	})
-	return err
 }
 
 // Get a table monitor.
@@ -2423,8 +2404,7 @@ func (a *MetastoresAPI) Impl() MetastoresService {
 // __workspace_id__ exists, it will be overwritten by the new __metastore_id__
 // and __default_catalog_name__. The caller must be an account admin.
 func (a *MetastoresAPI) Assign(ctx context.Context, request CreateMetastoreAssignment) error {
-	_, err := a.impl.Assign(ctx, request)
-	return err
+	return a.impl.Assign(ctx, request)
 }
 
 // Create a metastore.
@@ -2449,18 +2429,16 @@ func (a *MetastoresAPI) Current(ctx context.Context) (*MetastoreAssignment, erro
 //
 // Deletes a metastore. The caller must be a metastore admin.
 func (a *MetastoresAPI) Delete(ctx context.Context, request DeleteMetastoreRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a metastore.
 //
 // Deletes a metastore. The caller must be a metastore admin.
 func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) error {
-	_, err := a.impl.Delete(ctx, DeleteMetastoreRequest{
+	return a.impl.Delete(ctx, DeleteMetastoreRequest{
 		Id: id,
 	})
-	return err
 }
 
 // Get a metastore.
@@ -2584,18 +2562,16 @@ func (a *MetastoresAPI) Summary(ctx context.Context) (*GetMetastoreSummaryRespon
 //
 // Deletes a metastore assignment. The caller must be an account administrator.
 func (a *MetastoresAPI) Unassign(ctx context.Context, request UnassignRequest) error {
-	_, err := a.impl.Unassign(ctx, request)
-	return err
+	return a.impl.Unassign(ctx, request)
 }
 
 // Delete an assignment.
 //
 // Deletes a metastore assignment. The caller must be an account administrator.
 func (a *MetastoresAPI) UnassignByWorkspaceId(ctx context.Context, workspaceId int64) error {
-	_, err := a.impl.Unassign(ctx, UnassignRequest{
+	return a.impl.Unassign(ctx, UnassignRequest{
 		WorkspaceId: workspaceId,
 	})
-	return err
 }
 
 // Update a metastore.
@@ -2615,8 +2591,7 @@ func (a *MetastoresAPI) Update(ctx context.Context, request UpdateMetastore) (*M
 // admin to update __metastore_id__; otherwise, the caller can be a Workspace
 // admin.
 func (a *MetastoresAPI) UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error {
-	_, err := a.impl.UpdateAssignment(ctx, request)
-	return err
+	return a.impl.UpdateAssignment(ctx, request)
 }
 
 type ModelVersionsInterface interface {
@@ -2801,8 +2776,7 @@ func (a *ModelVersionsAPI) Impl() ModelVersionsService {
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
 func (a *ModelVersionsAPI) Delete(ctx context.Context, request DeleteModelVersionRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a Model Version.
@@ -2815,11 +2789,10 @@ func (a *ModelVersionsAPI) Delete(ctx context.Context, request DeleteModelVersio
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
 func (a *ModelVersionsAPI) DeleteByFullNameAndVersion(ctx context.Context, fullName string, version int) error {
-	_, err := a.impl.Delete(ctx, DeleteModelVersionRequest{
+	return a.impl.Delete(ctx, DeleteModelVersionRequest{
 		FullName: fullName,
 		Version:  version,
 	})
-	return err
 }
 
 // Get a Model Version.
@@ -3055,8 +3028,7 @@ func (a *OnlineTablesAPI) Create(ctx context.Context, request ViewData) (*Online
 // table. If the source Delta table was deleted or modified since this Online
 // Table was created, this will lose the data forever!
 func (a *OnlineTablesAPI) Delete(ctx context.Context, request DeleteOnlineTableRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete an Online Table.
@@ -3065,10 +3037,9 @@ func (a *OnlineTablesAPI) Delete(ctx context.Context, request DeleteOnlineTableR
 // table. If the source Delta table was deleted or modified since this Online
 // Table was created, this will lose the data forever!
 func (a *OnlineTablesAPI) DeleteByName(ctx context.Context, name string) error {
-	_, err := a.impl.Delete(ctx, DeleteOnlineTableRequest{
+	return a.impl.Delete(ctx, DeleteOnlineTableRequest{
 		Name: name,
 	})
-	return err
 }
 
 // Get an Online Table.
@@ -3338,8 +3309,7 @@ func (a *RegisteredModelsAPI) Create(ctx context.Context, request CreateRegister
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
 func (a *RegisteredModelsAPI) Delete(ctx context.Context, request DeleteRegisteredModelRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a Registered Model.
@@ -3352,10 +3322,9 @@ func (a *RegisteredModelsAPI) Delete(ctx context.Context, request DeleteRegister
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
 func (a *RegisteredModelsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	_, err := a.impl.Delete(ctx, DeleteRegisteredModelRequest{
+	return a.impl.Delete(ctx, DeleteRegisteredModelRequest{
 		FullName: fullName,
 	})
-	return err
 }
 
 // Delete a Registered Model Alias.
@@ -3367,8 +3336,7 @@ func (a *RegisteredModelsAPI) DeleteByFullName(ctx context.Context, fullName str
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
 func (a *RegisteredModelsAPI) DeleteAlias(ctx context.Context, request DeleteAliasRequest) error {
-	_, err := a.impl.DeleteAlias(ctx, request)
-	return err
+	return a.impl.DeleteAlias(ctx, request)
 }
 
 // Delete a Registered Model Alias.
@@ -3380,11 +3348,10 @@ func (a *RegisteredModelsAPI) DeleteAlias(ctx context.Context, request DeleteAli
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
 func (a *RegisteredModelsAPI) DeleteAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) error {
-	_, err := a.impl.DeleteAlias(ctx, DeleteAliasRequest{
+	return a.impl.DeleteAlias(ctx, DeleteAliasRequest{
 		FullName: fullName,
 		Alias:    alias,
 	})
-	return err
 }
 
 // Get a Registered Model.
@@ -3699,8 +3666,7 @@ func (a *SchemasAPI) Create(ctx context.Context, request CreateSchema) (*SchemaI
 // Deletes the specified schema from the parent catalog. The caller must be the
 // owner of the schema or an owner of the parent catalog.
 func (a *SchemasAPI) Delete(ctx context.Context, request DeleteSchemaRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a schema.
@@ -3708,10 +3674,9 @@ func (a *SchemasAPI) Delete(ctx context.Context, request DeleteSchemaRequest) er
 // Deletes the specified schema from the parent catalog. The caller must be the
 // owner of the schema or an owner of the parent catalog.
 func (a *SchemasAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	_, err := a.impl.Delete(ctx, DeleteSchemaRequest{
+	return a.impl.Delete(ctx, DeleteSchemaRequest{
 		FullName: fullName,
 	})
-	return err
 }
 
 // Get a schema.
@@ -3999,8 +3964,7 @@ func (a *StorageCredentialsAPI) Create(ctx context.Context, request CreateStorag
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
 func (a *StorageCredentialsAPI) Delete(ctx context.Context, request DeleteStorageCredentialRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a credential.
@@ -4008,10 +3972,9 @@ func (a *StorageCredentialsAPI) Delete(ctx context.Context, request DeleteStorag
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
 func (a *StorageCredentialsAPI) DeleteByName(ctx context.Context, name string) error {
-	_, err := a.impl.Delete(ctx, DeleteStorageCredentialRequest{
+	return a.impl.Delete(ctx, DeleteStorageCredentialRequest{
 		Name: name,
 	})
-	return err
 }
 
 // Get a credential.
@@ -4221,8 +4184,7 @@ func (a *SystemSchemasAPI) Impl() SystemSchemasService {
 // Disables the system schema and removes it from the system catalog. The caller
 // must be an account admin or a metastore admin.
 func (a *SystemSchemasAPI) Disable(ctx context.Context, request DisableRequest) error {
-	_, err := a.impl.Disable(ctx, request)
-	return err
+	return a.impl.Disable(ctx, request)
 }
 
 // Disable a system schema.
@@ -4230,11 +4192,10 @@ func (a *SystemSchemasAPI) Disable(ctx context.Context, request DisableRequest) 
 // Disables the system schema and removes it from the system catalog. The caller
 // must be an account admin or a metastore admin.
 func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName DisableSchemaName) error {
-	_, err := a.impl.Disable(ctx, DisableRequest{
+	return a.impl.Disable(ctx, DisableRequest{
 		MetastoreId: metastoreId,
 		SchemaName:  schemaName,
 	})
-	return err
 }
 
 // Enable a system schema.
@@ -4242,8 +4203,7 @@ func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context
 // Enables the system schema and adds it to the system catalog. The caller must
 // be an account admin or a metastore admin.
 func (a *SystemSchemasAPI) Enable(ctx context.Context, request EnableRequest) error {
-	_, err := a.impl.Enable(ctx, request)
-	return err
+	return a.impl.Enable(ctx, request)
 }
 
 // List system schemas.
@@ -4411,8 +4371,7 @@ func (a *TableConstraintsAPI) Create(ctx context.Context, request CreateTableCon
 // **USE_CATALOG** privilege on the table's catalog, the **USE_SCHEMA**
 // privilege on the table's schema, and be the owner of the table.
 func (a *TableConstraintsAPI) Delete(ctx context.Context, request DeleteTableConstraintRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a table constraint.
@@ -4427,10 +4386,9 @@ func (a *TableConstraintsAPI) Delete(ctx context.Context, request DeleteTableCon
 // **USE_CATALOG** privilege on the table's catalog, the **USE_SCHEMA**
 // privilege on the table's schema, and be the owner of the table.
 func (a *TableConstraintsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	_, err := a.impl.Delete(ctx, DeleteTableConstraintRequest{
+	return a.impl.Delete(ctx, DeleteTableConstraintRequest{
 		FullName: fullName,
 	})
-	return err
 }
 
 type TablesInterface interface {
@@ -4639,8 +4597,7 @@ func (a *TablesAPI) Impl() TablesService {
 // table and have the **USE_CATALOG** privilege on the parent catalog and the
 // **USE_SCHEMA** privilege on the parent schema.
 func (a *TablesAPI) Delete(ctx context.Context, request DeleteTableRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a table.
@@ -4651,10 +4608,9 @@ func (a *TablesAPI) Delete(ctx context.Context, request DeleteTableRequest) erro
 // table and have the **USE_CATALOG** privilege on the parent catalog and the
 // **USE_SCHEMA** privilege on the parent schema.
 func (a *TablesAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	_, err := a.impl.Delete(ctx, DeleteTableRequest{
+	return a.impl.Delete(ctx, DeleteTableRequest{
 		FullName: fullName,
 	})
-	return err
 }
 
 // Get boolean reflecting if table exists.
@@ -4886,8 +4842,7 @@ func (a *TablesAPI) ListSummariesAll(ctx context.Context, request ListSummariesR
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
 func (a *TablesAPI) Update(ctx context.Context, request UpdateTableRequest) error {
-	_, err := a.impl.Update(ctx, request)
-	return err
+	return a.impl.Update(ctx, request)
 }
 
 type VolumesInterface interface {
@@ -5097,8 +5052,7 @@ func (a *VolumesAPI) Create(ctx context.Context, request CreateVolumeRequestCont
 // privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 // parent schema.
 func (a *VolumesAPI) Delete(ctx context.Context, request DeleteVolumeRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a Volume.
@@ -5110,10 +5064,9 @@ func (a *VolumesAPI) Delete(ctx context.Context, request DeleteVolumeRequest) er
 // privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 // parent schema.
 func (a *VolumesAPI) DeleteByName(ctx context.Context, name string) error {
-	_, err := a.impl.Delete(ctx, DeleteVolumeRequest{
+	return a.impl.Delete(ctx, DeleteVolumeRequest{
 		Name: name,
 	})
-	return err
 }
 
 // List Volumes.

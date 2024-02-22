@@ -67,13 +67,13 @@ type ServingEndpointsService interface {
 	Create(ctx context.Context, request CreateServingEndpoint) (*ServingEndpointDetailed, error)
 
 	// Delete a serving endpoint.
-	Delete(ctx context.Context, request DeleteServingEndpointRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteServingEndpointRequest) error
 
 	// Retrieve the metrics associated with a serving endpoint.
 	//
 	// Retrieves the metrics associated with the provided serving endpoint in
 	// either Prometheus or OpenMetrics exposition format.
-	ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error)
+	ExportMetrics(ctx context.Context, request ExportMetricsRequest) error
 
 	// Get a single serving endpoint.
 	//

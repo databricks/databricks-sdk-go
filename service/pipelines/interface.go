@@ -32,7 +32,7 @@ type PipelinesService interface {
 	// Delete a pipeline.
 	//
 	// Deletes a pipeline.
-	Delete(ctx context.Context, request DeletePipelineRequest) (*DeletePipelineResponse, error)
+	Delete(ctx context.Context, request DeletePipelineRequest) error
 
 	// Get a pipeline.
 	Get(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error)
@@ -89,12 +89,12 @@ type PipelinesService interface {
 	//
 	// Stops the pipeline by canceling the active update. If there is no active
 	// update for the pipeline, this request is a no-op.
-	Stop(ctx context.Context, request StopRequest) (*StopPipelineResponse, error)
+	Stop(ctx context.Context, request StopRequest) error
 
 	// Edit a pipeline.
 	//
 	// Updates a pipeline with the supplied configuration.
-	Update(ctx context.Context, request EditPipeline) (*EditPipelineResponse, error)
+	Update(ctx context.Context, request EditPipeline) error
 
 	// Update pipeline permissions.
 	//

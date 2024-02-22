@@ -25,13 +25,13 @@ func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCus
 	return &createCustomAppIntegrationOutput, err
 }
 
-func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) (*DeleteCustomAppIntegrationOutput, error) {
+func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error {
 	var deleteCustomAppIntegrationOutput DeleteCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteCustomAppIntegrationOutput)
-	return &deleteCustomAppIntegrationOutput, err
+	return err
 }
 
 func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomAppIntegrationRequest) (*GetCustomAppIntegrationOutput, error) {
@@ -52,14 +52,14 @@ func (a *customAppIntegrationImpl) List(ctx context.Context) (*GetCustomAppInteg
 	return &getCustomAppIntegrationsOutput, err
 }
 
-func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCustomAppIntegration) (*UpdateCustomAppIntegrationOutput, error) {
+func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCustomAppIntegration) error {
 	var updateCustomAppIntegrationOutput UpdateCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateCustomAppIntegrationOutput)
-	return &updateCustomAppIntegrationOutput, err
+	return err
 }
 
 // unexported type that holds implementations of just OAuthPublishedApps API methods
@@ -91,13 +91,13 @@ func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request Create
 	return &createPublishedAppIntegrationOutput, err
 }
 
-func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) (*DeletePublishedAppIntegrationOutput, error) {
+func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error {
 	var deletePublishedAppIntegrationOutput DeletePublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deletePublishedAppIntegrationOutput)
-	return &deletePublishedAppIntegrationOutput, err
+	return err
 }
 
 func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublishedAppIntegrationRequest) (*GetPublishedAppIntegrationOutput, error) {
@@ -118,14 +118,14 @@ func (a *publishedAppIntegrationImpl) List(ctx context.Context) (*GetPublishedAp
 	return &getPublishedAppIntegrationsOutput, err
 }
 
-func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request UpdatePublishedAppIntegration) (*UpdatePublishedAppIntegrationOutput, error) {
+func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request UpdatePublishedAppIntegration) error {
 	var updatePublishedAppIntegrationOutput UpdatePublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updatePublishedAppIntegrationOutput)
-	return &updatePublishedAppIntegrationOutput, err
+	return err
 }
 
 // unexported type that holds implementations of just ServicePrincipalSecrets API methods
@@ -142,12 +142,12 @@ func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request Create
 	return &createServicePrincipalSecretResponse, err
 }
 
-func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) (*DeleteResponse, error) {
+func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.SecretId)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return &deleteResponse, err
+	return err
 }
 
 func (a *servicePrincipalSecretsImpl) List(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {

@@ -60,6 +60,5 @@ func (a *LakeviewAPI) Impl() LakeviewService {
 //
 // Publish the current draft dashboard.
 func (a *LakeviewAPI) Publish(ctx context.Context, request PublishRequest) error {
-	_, err := a.impl.Publish(ctx, request)
-	return err
+	return a.impl.Publish(ctx, request)
 }

@@ -39,13 +39,13 @@ func (a *budgetsImpl) Create(ctx context.Context, request WrappedBudget) (*Wrapp
 	return &wrappedBudgetWithStatus, err
 }
 
-func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetRequest) (*DeleteResponse, error) {
+func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return &deleteResponse, err
+	return err
 }
 
 func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetRequest) (*WrappedBudgetWithStatus, error) {
@@ -66,14 +66,14 @@ func (a *budgetsImpl) List(ctx context.Context) (*BudgetList, error) {
 	return &budgetList, err
 }
 
-func (a *budgetsImpl) Update(ctx context.Context, request WrappedBudget) (*UpdateResponse, error) {
+func (a *budgetsImpl) Update(ctx context.Context, request WrappedBudget) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
-	return &updateResponse, err
+	return err
 }
 
 // unexported type that holds implementations of just LogDelivery API methods
@@ -109,12 +109,12 @@ func (a *logDeliveryImpl) List(ctx context.Context, request ListLogDeliveryReque
 	return &wrappedLogDeliveryConfigurations, err
 }
 
-func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) (*PatchStatusResponse, error) {
+func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
 	var patchStatusResponse PatchStatusResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchStatusResponse)
-	return &patchStatusResponse, err
+	return err
 }

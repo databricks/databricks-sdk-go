@@ -27,7 +27,7 @@ type CleanRoomsService interface {
 	//
 	// Deletes a data object clean room from the metastore. The caller must be
 	// an owner of the clean room.
-	Delete(ctx context.Context, request DeleteCleanRoomRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteCleanRoomRequest) error
 
 	// Get a clean room.
 	//
@@ -80,7 +80,7 @@ type ProvidersService interface {
 	//
 	// Deletes an authentication provider, if the caller is a metastore admin or
 	// is the owner of the provider.
-	Delete(ctx context.Context, request DeleteProviderRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteProviderRequest) error
 
 	// Get a provider.
 	//
@@ -133,7 +133,7 @@ type RecipientActivationService interface {
 	// Get a share activation URL.
 	//
 	// Gets an activation URL for a share.
-	GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) (*GetActivationUrlInfoResponse, error)
+	GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error
 
 	// Get an access token.
 	//
@@ -172,7 +172,7 @@ type RecipientsService interface {
 	//
 	// Deletes the specified recipient from the metastore. The caller must be
 	// the owner of the recipient.
-	Delete(ctx context.Context, request DeleteRecipientRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteRecipientRequest) error
 
 	// Get a share recipient.
 	//
@@ -211,7 +211,7 @@ type RecipientsService interface {
 	// metastore admin or the owner of the recipient. If the recipient name will
 	// be updated, the user must be both a metastore admin and the owner of the
 	// recipient.
-	Update(ctx context.Context, request UpdateRecipient) (*UpdateResponse, error)
+	Update(ctx context.Context, request UpdateRecipient) error
 }
 
 // A share is a container instantiated with :method:shares/create. Once created
@@ -232,7 +232,7 @@ type SharesService interface {
 	//
 	// Deletes a data object share from the metastore. The caller must be an
 	// owner of the share.
-	Delete(ctx context.Context, request DeleteShareRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteShareRequest) error
 
 	// Get a share.
 	//
@@ -281,5 +281,5 @@ type SharesService interface {
 	//
 	// For new recipient grants, the user must also be the owner of the
 	// recipients. recipient revocations do not require additional privileges.
-	UpdatePermissions(ctx context.Context, request UpdateSharePermissions) (*UpdatePermissionsResponse, error)
+	UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error
 }

@@ -18,13 +18,13 @@ type DbfsService interface {
 	//
 	// If the block of data exceeds 1 MB, this call will throw an exception with
 	// ``MAX_BLOCK_SIZE_EXCEEDED``.
-	AddBlock(ctx context.Context, request AddBlock) (*AddBlockResponse, error)
+	AddBlock(ctx context.Context, request AddBlock) error
 
 	// Close the stream.
 	//
 	// Closes the stream specified by the input handle. If the handle does not
 	// exist, this call throws an exception with ``RESOURCE_DOES_NOT_EXIST``.
-	Close(ctx context.Context, request Close) (*CloseResponse, error)
+	Close(ctx context.Context, request Close) error
 
 	// Open a stream.
 	//
@@ -60,7 +60,7 @@ type DbfsService interface {
 	// Running such operations using notebooks provides better control and
 	// manageability, such as selective deletes, and the possibility to automate
 	// periodic delete jobs.
-	Delete(ctx context.Context, request Delete) (*DeleteResponse, error)
+	Delete(ctx context.Context, request Delete) error
 
 	// Get the information of a file or directory.
 	//
@@ -94,7 +94,7 @@ type DbfsService interface {
 	// path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`.
 	// **Note**: If this operation fails, it might have succeeded in creating
 	// some of the necessary parent directories.
-	Mkdirs(ctx context.Context, request MkDirs) (*MkDirsResponse, error)
+	Mkdirs(ctx context.Context, request MkDirs) error
 
 	// Move a file.
 	//
@@ -104,7 +104,7 @@ type DbfsService interface {
 	// path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If
 	// the given source path is a directory, this call always recursively moves
 	// all files.
-	Move(ctx context.Context, request Move) (*MoveResponse, error)
+	Move(ctx context.Context, request Move) error
 
 	// Upload a file.
 	//
@@ -120,7 +120,7 @@ type DbfsService interface {
 	//
 	// If you want to upload large files, use the streaming upload. For details,
 	// see :method:dbfs/create, :method:dbfs/addBlock, :method:dbfs/close.
-	Put(ctx context.Context, request Put) (*PutResponse, error)
+	Put(ctx context.Context, request Put) error
 
 	// Get the contents of a file.
 	//
@@ -161,12 +161,12 @@ type FilesService interface {
 	// -p`). If called on an existing directory, returns a success response;
 	// this method is idempotent (it will succeed if the directory already
 	// exists).
-	CreateDirectory(ctx context.Context, request CreateDirectoryRequest) (*CreateDirectoryResponse, error)
+	CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error
 
 	// Delete a file.
 	//
 	// Deletes a file. If the request is successful, there is no response body.
-	Delete(ctx context.Context, request DeleteFileRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteFileRequest) error
 
 	// Delete a directory.
 	//
@@ -175,7 +175,7 @@ type FilesService interface {
 	// To delete a non-empty directory, first delete all of its contents. This
 	// can be done by listing the directory contents and deleting each file and
 	// subdirectory recursively.
-	DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) (*DeleteDirectoryResponse, error)
+	DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error
 
 	// Download a file.
 	//
@@ -194,7 +194,7 @@ type FilesService interface {
 	// If you wish to ensure the directory exists, you can instead use `PUT`,
 	// which will create the directory if it does not exist, and is idempotent
 	// (it will succeed if the directory already exists).
-	GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) (*GetDirectoryMetadataResponse, error)
+	GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error
 
 	// Get file metadata.
 	//
@@ -217,5 +217,5 @@ type FilesService interface {
 	// modify the bytes before sending. The contents of the resulting file will
 	// be exactly the bytes sent in the request body. If the request is
 	// successful, there is no response body.
-	Upload(ctx context.Context, request UploadRequest) (*UploadResponse, error)
+	Upload(ctx context.Context, request UploadRequest) error
 }

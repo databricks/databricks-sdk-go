@@ -94,21 +94,21 @@ func (a *servingEndpointsImpl) Create(ctx context.Context, request CreateServing
 	return &servingEndpointDetailed, err
 }
 
-func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServingEndpointRequest) (*DeleteResponse, error) {
+func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServingEndpointRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return &deleteResponse, err
+	return err
 }
 
-func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error) {
+func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) error {
 	var exportMetricsResponse ExportMetricsResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/metrics", request.Name)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &exportMetricsResponse)
-	return &exportMetricsResponse, err
+	return err
 }
 
 func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error) {

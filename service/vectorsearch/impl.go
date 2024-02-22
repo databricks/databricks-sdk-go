@@ -25,12 +25,12 @@ func (a *vectorSearchEndpointsImpl) CreateEndpoint(ctx context.Context, request 
 	return &endpointInfo, err
 }
 
-func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (*DeleteEndpointResponse, error) {
+func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error {
 	var deleteEndpointResponse DeleteEndpointResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", request.EndpointName)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteEndpointResponse)
-	return &deleteEndpointResponse, err
+	return err
 }
 
 func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request GetEndpointRequest) (*EndpointInfo, error) {
@@ -76,12 +76,12 @@ func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, req
 	return &deleteDataVectorIndexResponse, err
 }
 
-func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request DeleteIndexRequest) (*DeleteIndexResponse, error) {
+func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request DeleteIndexRequest) error {
 	var deleteIndexResponse DeleteIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v", request.IndexName)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteIndexResponse)
-	return &deleteIndexResponse, err
+	return err
 }
 
 func (a *vectorSearchIndexesImpl) GetIndex(ctx context.Context, request GetIndexRequest) (*VectorIndex, error) {
@@ -112,12 +112,12 @@ func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryV
 	return &queryVectorIndexResponse, err
 }
 
-func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncIndexRequest) (*SyncIndexResponse, error) {
+func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncIndexRequest) error {
 	var syncIndexResponse SyncIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/sync", request.IndexName)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &syncIndexResponse)
-	return &syncIndexResponse, err
+	return err
 }
 
 func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error) {

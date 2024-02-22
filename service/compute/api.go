@@ -189,8 +189,7 @@ func (a *ClusterPoliciesAPI) Create(ctx context.Context, request CreatePolicy) (
 // Delete a policy for a cluster. Clusters governed by this policy can still
 // run, but cannot be edited.
 func (a *ClusterPoliciesAPI) Delete(ctx context.Context, request DeletePolicy) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a cluster policy.
@@ -198,10 +197,9 @@ func (a *ClusterPoliciesAPI) Delete(ctx context.Context, request DeletePolicy) e
 // Delete a policy for a cluster. Clusters governed by this policy can still
 // run, but cannot be edited.
 func (a *ClusterPoliciesAPI) DeleteByPolicyId(ctx context.Context, policyId string) error {
-	_, err := a.impl.Delete(ctx, DeletePolicy{
+	return a.impl.Delete(ctx, DeletePolicy{
 		PolicyId: policyId,
 	})
-	return err
 }
 
 // Update a cluster policy.
@@ -209,8 +207,7 @@ func (a *ClusterPoliciesAPI) DeleteByPolicyId(ctx context.Context, policyId stri
 // Update an existing policy for cluster. This operation may make some clusters
 // governed by the previous policy invalid.
 func (a *ClusterPoliciesAPI) Edit(ctx context.Context, request EditPolicy) error {
-	_, err := a.impl.Edit(ctx, request)
-	return err
+	return a.impl.Edit(ctx, request)
 }
 
 // Get a cluster policy.
@@ -886,8 +883,7 @@ func (w *WaitGetClusterTerminated[R]) GetWithTimeout(timeout time.Duration) (*Cl
 // terminated to perform this operation. The service principal application ID
 // can be supplied as an argument to `owner_username`.
 func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
-	_, err := a.impl.ChangeOwner(ctx, request)
-	return err
+	return a.impl.ChangeOwner(ctx, request)
 }
 
 // Create new cluster.
@@ -950,7 +946,7 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 // `TERMINATED` state. If the cluster is already in a `TERMINATING` or
 // `TERMINATED` state, nothing will happen.
 func (a *ClustersAPI) Delete(ctx context.Context, deleteCluster DeleteCluster) (*WaitGetClusterTerminated[struct{}], error) {
-	_, err := a.impl.Delete(ctx, deleteCluster)
+	err := a.impl.Delete(ctx, deleteCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -999,10 +995,9 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 // `TERMINATED` state. If the cluster is already in a `TERMINATING` or
 // `TERMINATED` state, nothing will happen.
 func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) error {
-	_, err := a.impl.Delete(ctx, DeleteCluster{
+	return a.impl.Delete(ctx, DeleteCluster{
 		ClusterId: clusterId,
 	})
-	return err
 }
 
 func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
@@ -1026,7 +1021,7 @@ func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId st
 //
 // Clusters created by the Databricks Jobs service cannot be edited.
 func (a *ClustersAPI) Edit(ctx context.Context, editCluster EditCluster) (*WaitGetClusterRunning[struct{}], error) {
-	_, err := a.impl.Edit(ctx, editCluster)
+	err := a.impl.Edit(ctx, editCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -1309,8 +1304,7 @@ func (a *ClustersAPI) ListZones(ctx context.Context) (*ListAvailableZonesRespons
 // cluster list, and API users can no longer perform any action on permanently
 // deleted clusters.
 func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error {
-	_, err := a.impl.PermanentDelete(ctx, request)
-	return err
+	return a.impl.PermanentDelete(ctx, request)
 }
 
 // Permanently delete cluster.
@@ -1322,10 +1316,9 @@ func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDele
 // cluster list, and API users can no longer perform any action on permanently
 // deleted clusters.
 func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId string) error {
-	_, err := a.impl.PermanentDelete(ctx, PermanentDeleteCluster{
+	return a.impl.PermanentDelete(ctx, PermanentDeleteCluster{
 		ClusterId: clusterId,
 	})
-	return err
 }
 
 // Pin cluster.
@@ -1334,8 +1327,7 @@ func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId 
 // ListClusters API. Pinning a cluster that is already pinned will have no
 // effect. This API can only be called by workspace admins.
 func (a *ClustersAPI) Pin(ctx context.Context, request PinCluster) error {
-	_, err := a.impl.Pin(ctx, request)
-	return err
+	return a.impl.Pin(ctx, request)
 }
 
 // Pin cluster.
@@ -1344,10 +1336,9 @@ func (a *ClustersAPI) Pin(ctx context.Context, request PinCluster) error {
 // ListClusters API. Pinning a cluster that is already pinned will have no
 // effect. This API can only be called by workspace admins.
 func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) error {
-	_, err := a.impl.Pin(ctx, PinCluster{
+	return a.impl.Pin(ctx, PinCluster{
 		ClusterId: clusterId,
 	})
-	return err
 }
 
 // Resize cluster.
@@ -1355,7 +1346,7 @@ func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) erro
 // Resizes a cluster to have a desired number of workers. This will fail unless
 // the cluster is in a `RUNNING` state.
 func (a *ClustersAPI) Resize(ctx context.Context, resizeCluster ResizeCluster) (*WaitGetClusterRunning[struct{}], error) {
-	_, err := a.impl.Resize(ctx, resizeCluster)
+	err := a.impl.Resize(ctx, resizeCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -1402,7 +1393,7 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 // Restarts a Spark cluster with the supplied ID. If the cluster is not
 // currently in a `RUNNING` state, nothing will happen.
 func (a *ClustersAPI) Restart(ctx context.Context, restartCluster RestartCluster) (*WaitGetClusterRunning[struct{}], error) {
-	_, err := a.impl.Restart(ctx, restartCluster)
+	err := a.impl.Restart(ctx, restartCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -1471,7 +1462,7 @@ func (a *ClustersAPI) SparkVersions(ctx context.Context) (*GetSparkVersionsRespo
 // nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
 func (a *ClustersAPI) Start(ctx context.Context, startCluster StartCluster) (*WaitGetClusterRunning[struct{}], error) {
-	_, err := a.impl.Start(ctx, startCluster)
+	err := a.impl.Start(ctx, startCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -1524,10 +1515,9 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 // nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
 func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) error {
-	_, err := a.impl.Start(ctx, StartCluster{
+	return a.impl.Start(ctx, StartCluster{
 		ClusterId: clusterId,
 	})
-	return err
 }
 
 func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
@@ -1542,8 +1532,7 @@ func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId str
 // ListClusters API. Unpinning a cluster that is not pinned will have no effect.
 // This API can only be called by workspace admins.
 func (a *ClustersAPI) Unpin(ctx context.Context, request UnpinCluster) error {
-	_, err := a.impl.Unpin(ctx, request)
-	return err
+	return a.impl.Unpin(ctx, request)
 }
 
 // Unpin cluster.
@@ -1552,10 +1541,9 @@ func (a *ClustersAPI) Unpin(ctx context.Context, request UnpinCluster) error {
 // ListClusters API. Unpinning a cluster that is not pinned will have no effect.
 // This API can only be called by workspace admins.
 func (a *ClustersAPI) UnpinByClusterId(ctx context.Context, clusterId string) error {
-	_, err := a.impl.Unpin(ctx, UnpinCluster{
+	return a.impl.Unpin(ctx, UnpinCluster{
 		ClusterId: clusterId,
 	})
-	return err
 }
 
 // Update cluster permissions.
@@ -1866,7 +1854,7 @@ func (w *WaitContextStatusCommandExecutionRunning[R]) GetWithTimeout(timeout tim
 //
 // The command ID is obtained from a prior successful call to __execute__.
 func (a *CommandExecutionAPI) Cancel(ctx context.Context, cancelCommand CancelCommand) (*WaitCommandStatusCommandExecutionCancelled[struct{}], error) {
-	_, err := a.impl.Cancel(ctx, cancelCommand)
+	err := a.impl.Cancel(ctx, cancelCommand)
 	if err != nil {
 		return nil, err
 	}
@@ -1980,8 +1968,7 @@ func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext C
 //
 // Deletes an execution context.
 func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContext) error {
-	_, err := a.impl.Destroy(ctx, request)
-	return err
+	return a.impl.Destroy(ctx, request)
 }
 
 // Run a command.
@@ -2165,18 +2152,16 @@ func (a *GlobalInitScriptsAPI) Create(ctx context.Context, request GlobalInitScr
 //
 // Deletes a global init script.
 func (a *GlobalInitScriptsAPI) Delete(ctx context.Context, request DeleteGlobalInitScriptRequest) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete init script.
 //
 // Deletes a global init script.
 func (a *GlobalInitScriptsAPI) DeleteByScriptId(ctx context.Context, scriptId string) error {
-	_, err := a.impl.Delete(ctx, DeleteGlobalInitScriptRequest{
+	return a.impl.Delete(ctx, DeleteGlobalInitScriptRequest{
 		ScriptId: scriptId,
 	})
-	return err
 }
 
 // Get an init script.
@@ -2293,8 +2278,7 @@ func (a *GlobalInitScriptsAPI) GetByName(ctx context.Context, name string) (*Glo
 // Updates a global init script, specifying only the fields to change. All
 // fields are optional. Unspecified fields retain their current value.
 func (a *GlobalInitScriptsAPI) Update(ctx context.Context, request GlobalInitScriptUpdateRequest) error {
-	_, err := a.impl.Update(ctx, request)
-	return err
+	return a.impl.Update(ctx, request)
 }
 
 type InstancePoolsInterface interface {
@@ -2464,8 +2448,7 @@ func (a *InstancePoolsAPI) Create(ctx context.Context, request CreateInstancePoo
 // Deletes the instance pool permanently. The idle instances in the pool are
 // terminated asynchronously.
 func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePool) error {
-	_, err := a.impl.Delete(ctx, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete an instance pool.
@@ -2473,18 +2456,16 @@ func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePoo
 // Deletes the instance pool permanently. The idle instances in the pool are
 // terminated asynchronously.
 func (a *InstancePoolsAPI) DeleteByInstancePoolId(ctx context.Context, instancePoolId string) error {
-	_, err := a.impl.Delete(ctx, DeleteInstancePool{
+	return a.impl.Delete(ctx, DeleteInstancePool{
 		InstancePoolId: instancePoolId,
 	})
-	return err
 }
 
 // Edit an existing instance pool.
 //
 // Modifies the configuration of an existing instance pool.
 func (a *InstancePoolsAPI) Edit(ctx context.Context, request EditInstancePool) error {
-	_, err := a.impl.Edit(ctx, request)
-	return err
+	return a.impl.Edit(ctx, request)
 }
 
 // Get instance pool information.
@@ -2749,8 +2730,7 @@ func (a *InstanceProfilesAPI) Impl() InstanceProfilesService {
 // In the UI, you can select the instance profile when launching clusters. This
 // API is only available to admin users.
 func (a *InstanceProfilesAPI) Add(ctx context.Context, request AddInstanceProfile) error {
-	_, err := a.impl.Add(ctx, request)
-	return err
+	return a.impl.Add(ctx, request)
 }
 
 // Edit an instance profile.
@@ -2771,8 +2751,7 @@ func (a *InstanceProfilesAPI) Add(ctx context.Context, request AddInstanceProfil
 // [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
 // [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html
 func (a *InstanceProfilesAPI) Edit(ctx context.Context, request InstanceProfile) error {
-	_, err := a.impl.Edit(ctx, request)
-	return err
+	return a.impl.Edit(ctx, request)
 }
 
 // List available instance profiles.
@@ -2820,8 +2799,7 @@ func (a *InstanceProfilesAPI) ListAll(ctx context.Context) ([]InstanceProfile, e
 //
 // This API is only accessible to admin users.
 func (a *InstanceProfilesAPI) Remove(ctx context.Context, request RemoveInstanceProfile) error {
-	_, err := a.impl.Remove(ctx, request)
-	return err
+	return a.impl.Remove(ctx, request)
 }
 
 // Remove the instance profile.
@@ -2831,10 +2809,9 @@ func (a *InstanceProfilesAPI) Remove(ctx context.Context, request RemoveInstance
 //
 // This API is only accessible to admin users.
 func (a *InstanceProfilesAPI) RemoveByInstanceProfileArn(ctx context.Context, instanceProfileArn string) error {
-	_, err := a.impl.Remove(ctx, RemoveInstanceProfile{
+	return a.impl.Remove(ctx, RemoveInstanceProfile{
 		InstanceProfileArn: instanceProfileArn,
 	})
-	return err
 }
 
 type LibrariesInterface interface {
@@ -3086,8 +3063,7 @@ func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId s
 // union of the libraries specified via this method and the libraries set to be
 // installed on all clusters via the libraries UI.
 func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibraries) error {
-	_, err := a.impl.Install(ctx, request)
-	return err
+	return a.impl.Install(ctx, request)
 }
 
 // Uninstall libraries.
@@ -3096,8 +3072,7 @@ func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibraries) er
 // uninstalled until the cluster is restarted. Uninstalling libraries that are
 // not installed on the cluster will have no impact but is not an error.
 func (a *LibrariesAPI) Uninstall(ctx context.Context, request UninstallLibraries) error {
-	_, err := a.impl.Uninstall(ctx, request)
-	return err
+	return a.impl.Uninstall(ctx, request)
 }
 
 type PolicyFamiliesInterface interface {

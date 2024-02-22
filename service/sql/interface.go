@@ -25,7 +25,7 @@ type AlertsService interface {
 	// Deletes an alert. Deleted alerts are no longer accessible and cannot be
 	// restored. **Note:** Unlike queries and dashboards, alerts cannot be moved
 	// to the trash.
-	Delete(ctx context.Context, request DeleteAlertRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteAlertRequest) error
 
 	// Get an alert.
 	//
@@ -40,7 +40,7 @@ type AlertsService interface {
 	// Update an alert.
 	//
 	// Updates an alert.
-	Update(ctx context.Context, request EditAlert) (*UpdateResponse, error)
+	Update(ctx context.Context, request EditAlert) error
 }
 
 // This is an evolving API that facilitates the addition and removal of widgets
@@ -52,7 +52,7 @@ type DashboardWidgetsService interface {
 	Create(ctx context.Context, request CreateWidget) (*Widget, error)
 
 	// Remove widget.
-	Delete(ctx context.Context, request DeleteDashboardWidgetRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error
 
 	// Update existing widget.
 	Update(ctx context.Context, request CreateWidget) (*Widget, error)
@@ -73,7 +73,7 @@ type DashboardsService interface {
 	//
 	// Moves a dashboard to the trash. Trashed dashboards do not appear in list
 	// views or searches, and cannot be shared.
-	Delete(ctx context.Context, request DeleteDashboardRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteDashboardRequest) error
 
 	// Retrieve a definition.
 	//
@@ -95,7 +95,7 @@ type DashboardsService interface {
 	//
 	// A restored dashboard appears in list views and searches and can be
 	// shared.
-	Restore(ctx context.Context, request RestoreDashboardRequest) (*RestoreResponse, error)
+	Restore(ctx context.Context, request RestoreDashboardRequest) error
 
 	// Change a dashboard definition.
 	//
@@ -185,7 +185,7 @@ type QueriesService interface {
 	// Moves a query to the trash. Trashed queries immediately disappear from
 	// searches and list views, and they cannot be used for alerts. The trash is
 	// deleted after 30 days.
-	Delete(ctx context.Context, request DeleteQueryRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteQueryRequest) error
 
 	// Get a query definition.
 	//
@@ -209,7 +209,7 @@ type QueriesService interface {
 	// Restore a query that has been moved to the trash. A restored query
 	// appears in list views and searches. You can use restored queries for
 	// alerts.
-	Restore(ctx context.Context, request RestoreQueryRequest) (*RestoreResponse, error)
+	Restore(ctx context.Context, request RestoreQueryRequest) error
 
 	// Change a query definition.
 	//
@@ -241,7 +241,7 @@ type QueryVisualizationsService interface {
 	Create(ctx context.Context, request CreateQueryVisualizationRequest) (*Visualization, error)
 
 	// Remove visualization.
-	Delete(ctx context.Context, request DeleteQueryVisualizationRequest) (*DeleteResponse, error)
+	Delete(ctx context.Context, request DeleteQueryVisualizationRequest) error
 
 	// Edit existing visualization.
 	Update(ctx context.Context, request Visualization) (*Visualization, error)
@@ -356,7 +356,7 @@ type StatementExecutionService interface {
 	//
 	// Requests that an executing statement be canceled. Callers must poll for
 	// status to see the terminal state.
-	CancelExecution(ctx context.Context, request CancelExecutionRequest) (*CancelExecutionResponse, error)
+	CancelExecution(ctx context.Context, request CancelExecutionRequest) error
 
 	// Execute a SQL statement.
 	ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*ExecuteStatementResponse, error)
@@ -402,12 +402,12 @@ type WarehousesService interface {
 	// Delete a warehouse.
 	//
 	// Deletes a SQL warehouse.
-	Delete(ctx context.Context, request DeleteWarehouseRequest) (*DeleteWarehouseResponse, error)
+	Delete(ctx context.Context, request DeleteWarehouseRequest) error
 
 	// Update a warehouse.
 	//
 	// Updates the configuration for a SQL warehouse.
-	Edit(ctx context.Context, request EditWarehouseRequest) (*EditWarehouseResponse, error)
+	Edit(ctx context.Context, request EditWarehouseRequest) error
 
 	// Get warehouse info.
 	//
@@ -448,17 +448,17 @@ type WarehousesService interface {
 	//
 	// Sets the workspace level configuration that is shared by all SQL
 	// warehouses in a workspace.
-	SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) (*SetWorkspaceWarehouseConfigResponse, error)
+	SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error
 
 	// Start a warehouse.
 	//
 	// Starts a SQL warehouse.
-	Start(ctx context.Context, request StartRequest) (*StartWarehouseResponse, error)
+	Start(ctx context.Context, request StartRequest) error
 
 	// Stop a warehouse.
 	//
 	// Stops a SQL warehouse.
-	Stop(ctx context.Context, request StopRequest) (*StopWarehouseResponse, error)
+	Stop(ctx context.Context, request StopRequest) error
 
 	// Update SQL warehouse permissions.
 	//

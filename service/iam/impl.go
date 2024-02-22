@@ -91,12 +91,12 @@ func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, 
 	return &group, err
 }
 
-func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteAccountGroupRequest) (*DeleteResponse, error) {
+func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteAccountGroupRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return &deleteResponse, err
+	return err
 }
 
 func (a *accountGroupsImpl) Get(ctx context.Context, request GetAccountGroupRequest) (*Group, error) {
@@ -117,24 +117,24 @@ func (a *accountGroupsImpl) List(ctx context.Context, request ListAccountGroupsR
 	return &listGroupsResponse, err
 }
 
-func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error) {
+func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchResponse)
-	return &patchResponse, err
+	return err
 }
 
-func (a *accountGroupsImpl) Update(ctx context.Context, request Group) (*UpdateResponse, error) {
+func (a *accountGroupsImpl) Update(ctx context.Context, request Group) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
-	return &updateResponse, err
+	return err
 }
 
 // unexported type that holds implementations of just AccountServicePrincipals API methods
@@ -152,12 +152,12 @@ func (a *accountServicePrincipalsImpl) Create(ctx context.Context, request Servi
 	return &servicePrincipal, err
 }
 
-func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) (*DeleteResponse, error) {
+func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return &deleteResponse, err
+	return err
 }
 
 func (a *accountServicePrincipalsImpl) Get(ctx context.Context, request GetAccountServicePrincipalRequest) (*ServicePrincipal, error) {
@@ -178,24 +178,24 @@ func (a *accountServicePrincipalsImpl) List(ctx context.Context, request ListAcc
 	return &listServicePrincipalResponse, err
 }
 
-func (a *accountServicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error) {
+func (a *accountServicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchResponse)
-	return &patchResponse, err
+	return err
 }
 
-func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) (*UpdateResponse, error) {
+func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
-	return &updateResponse, err
+	return err
 }
 
 // unexported type that holds implementations of just AccountUsers API methods
@@ -213,12 +213,12 @@ func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, err
 	return &user, err
 }
 
-func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteAccountUserRequest) (*DeleteResponse, error) {
+func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteAccountUserRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return &deleteResponse, err
+	return err
 }
 
 func (a *accountUsersImpl) Get(ctx context.Context, request GetAccountUserRequest) (*User, error) {
@@ -239,24 +239,24 @@ func (a *accountUsersImpl) List(ctx context.Context, request ListAccountUsersReq
 	return &listUsersResponse, err
 }
 
-func (a *accountUsersImpl) Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error) {
+func (a *accountUsersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchResponse)
-	return &patchResponse, err
+	return err
 }
 
-func (a *accountUsersImpl) Update(ctx context.Context, request User) (*UpdateResponse, error) {
+func (a *accountUsersImpl) Update(ctx context.Context, request User) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
-	return &updateResponse, err
+	return err
 }
 
 // unexported type that holds implementations of just CurrentUser API methods
@@ -288,12 +288,12 @@ func (a *groupsImpl) Create(ctx context.Context, request Group) (*Group, error) 
 	return &group, err
 }
 
-func (a *groupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) (*DeleteResponse, error) {
+func (a *groupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return &deleteResponse, err
+	return err
 }
 
 func (a *groupsImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, error) {
@@ -314,24 +314,24 @@ func (a *groupsImpl) List(ctx context.Context, request ListGroupsRequest) (*List
 	return &listGroupsResponse, err
 }
 
-func (a *groupsImpl) Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error) {
+func (a *groupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchResponse)
-	return &patchResponse, err
+	return err
 }
 
-func (a *groupsImpl) Update(ctx context.Context, request Group) (*UpdateResponse, error) {
+func (a *groupsImpl) Update(ctx context.Context, request Group) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
-	return &updateResponse, err
+	return err
 }
 
 // unexported type that holds implementations of just Permissions API methods
@@ -392,12 +392,12 @@ func (a *servicePrincipalsImpl) Create(ctx context.Context, request ServicePrinc
 	return &servicePrincipal, err
 }
 
-func (a *servicePrincipalsImpl) Delete(ctx context.Context, request DeleteServicePrincipalRequest) (*DeleteResponse, error) {
+func (a *servicePrincipalsImpl) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return &deleteResponse, err
+	return err
 }
 
 func (a *servicePrincipalsImpl) Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
@@ -418,24 +418,24 @@ func (a *servicePrincipalsImpl) List(ctx context.Context, request ListServicePri
 	return &listServicePrincipalResponse, err
 }
 
-func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error) {
+func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchResponse)
-	return &patchResponse, err
+	return err
 }
 
-func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) (*UpdateResponse, error) {
+func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
-	return &updateResponse, err
+	return err
 }
 
 // unexported type that holds implementations of just Users API methods
@@ -453,12 +453,12 @@ func (a *usersImpl) Create(ctx context.Context, request User) (*User, error) {
 	return &user, err
 }
 
-func (a *usersImpl) Delete(ctx context.Context, request DeleteUserRequest) (*DeleteResponse, error) {
+func (a *usersImpl) Delete(ctx context.Context, request DeleteUserRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return &deleteResponse, err
+	return err
 }
 
 func (a *usersImpl) Get(ctx context.Context, request GetUserRequest) (*User, error) {
@@ -497,14 +497,14 @@ func (a *usersImpl) List(ctx context.Context, request ListUsersRequest) (*ListUs
 	return &listUsersResponse, err
 }
 
-func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error) {
+func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchResponse)
-	return &patchResponse, err
+	return err
 }
 
 func (a *usersImpl) SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
@@ -517,14 +517,14 @@ func (a *usersImpl) SetPermissions(ctx context.Context, request PasswordPermissi
 	return &passwordPermissions, err
 }
 
-func (a *usersImpl) Update(ctx context.Context, request User) (*UpdateResponse, error) {
+func (a *usersImpl) Update(ctx context.Context, request User) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
-	return &updateResponse, err
+	return err
 }
 
 func (a *usersImpl) UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
@@ -542,13 +542,13 @@ type workspaceAssignmentImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) (*DeleteWorkspaceAssignments, error) {
+func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
 	var deleteWorkspaceAssignments DeleteWorkspaceAssignments
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteWorkspaceAssignments)
-	return &deleteWorkspaceAssignments, err
+	return err
 }
 
 func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error) {
@@ -569,12 +569,12 @@ func (a *workspaceAssignmentImpl) List(ctx context.Context, request ListWorkspac
 	return &permissionAssignments, err
 }
 
-func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWorkspaceAssignments) (*WorkspaceAssignmentsUpdated, error) {
+func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWorkspaceAssignments) error {
 	var workspaceAssignmentsUpdated WorkspaceAssignmentsUpdated
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &workspaceAssignmentsUpdated)
-	return &workspaceAssignmentsUpdated, err
+	return err
 }
