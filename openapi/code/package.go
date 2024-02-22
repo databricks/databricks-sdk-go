@@ -298,7 +298,7 @@ func (pkg *Package) define(entity *Entity) *Entity {
 }
 
 func (pkg *Package) updateType(entity *Entity) {
-	e, defined := pkg.types[entity.Name]
+	e, defined := pkg.types[entity.PascalName()]
 	if !defined {
 		return
 	}
