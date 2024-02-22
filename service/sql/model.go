@@ -8,8 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 type AccessControl struct {
 	GroupName string `json:"group_name,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
@@ -286,7 +284,6 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -2438,8 +2435,6 @@ type QueryMetrics struct {
 	// query, in milliseconds.
 	PhotonTotalTimeMs int `json:"photon_total_time_ms,omitempty"`
 	// Reserved for internal use.
-	PlanningPhases []any `json:"planning_phases,omitempty"`
-	// Reserved for internal use.
 	PlanningTimeMs int `json:"planning_time_ms,omitempty"`
 	// Timestamp of when the query was enqueued waiting for a cluster to be
 	// provisioned for the warehouse. This field is optional and will not appear
@@ -3777,3 +3772,21 @@ func (s *WidgetPosition) UnmarshalJSON(b []byte) error {
 func (s WidgetPosition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
+
+type CancelExecutionResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteWarehouseResponse struct{}
+
+type EditWarehouseResponse struct{}
+
+type RestoreResponse struct{}
+
+type SetWorkspaceWarehouseConfigResponse struct{}
+
+type StartWarehouseResponse struct{}
+
+type StopWarehouseResponse struct{}
+
+type UpdateResponse struct{}

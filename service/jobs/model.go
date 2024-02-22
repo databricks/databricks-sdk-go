@@ -10,8 +10,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
-// all definitions in this file are in alphabetical order
-
 type BaseJob struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
@@ -4005,3 +4003,15 @@ func (s *WebhookNotificationsOnDurationWarningThresholdExceededItem) UnmarshalJS
 func (s WebhookNotificationsOnDurationWarningThresholdExceededItem) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
+
+type CancelAllRunsResponse struct{}
+
+type CancelRunResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteRunResponse struct{}
+
+type ResetResponse struct{}
+
+type UpdateResponse struct{}

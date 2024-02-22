@@ -8,8 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 type AclItem struct {
 	// The permission level applied to the principal.
 	Permission AclPermission `json:"permission"`
@@ -1148,3 +1146,23 @@ type WorkspaceObjectPermissionsRequest struct {
 	// The workspace object type for which to get or manage permissions.
 	WorkspaceObjectType string `json:"-" url:"-"`
 }
+
+type CreateScopeResponse struct{}
+
+type DeleteAclResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteScopeResponse struct{}
+
+type DeleteSecretResponse struct{}
+
+type ImportResponse struct{}
+
+type MkdirsResponse struct{}
+
+type PutAclResponse struct{}
+
+type PutSecretResponse struct{}
+
+type UpdateResponse struct{}

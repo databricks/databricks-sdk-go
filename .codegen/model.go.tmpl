@@ -8,8 +8,6 @@ import (
 	"io"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
-
-// all definitions in this file are in alphabetical order
 {{range .Types}}
 {{if .Fields -}}{{.Comment "// " 80}}
 type {{.PascalName}} struct {
@@ -58,6 +56,10 @@ func (f *{{.PascalName}}) Type() string {
     return "{{.PascalName}}"
 }{{end}}
 {{end}}
+{{range .EmptyTypes}}
+{{.Comment "// " 80}}
+type {{.PascalName}} struct {}
+{{end}}
 
 {{- define "field-tag" -}}
 	{{if .IsJson}}json:"{{.Name}}{{if not .Required}},omitempty{{end}}"{{else}}json:"-"{{end -}}
@@ -68,8 +70,8 @@ func (f *{{.PascalName}}) Type() string {
 
 {{- define "type" -}}
 	{{- if not . }}any /* ERROR */
-	{{- else if .IsEmpty}}any
 	{{- else if .IsAny}}any
+	{{- else if .IsEmpty}}{{.PascalName}}
 	{{- else if .IsString}}string
 	{{- else if .IsBool}}bool
 	{{- else if .IsInt64}}int64

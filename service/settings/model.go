@@ -8,7 +8,234 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
+type AutomaticClusterUpdateSetting struct {
+	AutomaticClusterUpdateWorkspace ClusterAutoRestartMessage `json:"automatic_cluster_update_workspace"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AutomaticClusterUpdateSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AutomaticClusterUpdateSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ClusterAutoRestartMessage struct {
+	CanToggle bool `json:"can_toggle,omitempty"`
+
+	Enabled bool `json:"enabled,omitempty"`
+	// Contains an information about the enablement status judging (e.g. whether
+	// the enterprise tier is enabled) This is only additional information that
+	// MUST NOT be used to decide whether the setting is enabled or not. This is
+	// intended to use only for purposes like showing an error message to the
+	// customer with the additional details. For example, using these details we
+	// can check why exactly the feature is disabled for this customer.
+	EnablementDetails *ClusterAutoRestartMessageEnablementDetails `json:"enablement_details,omitempty"`
+
+	MaintenanceWindow *ClusterAutoRestartMessageMaintenanceWindow `json:"maintenance_window,omitempty"`
+
+	RestartEvenIfNoUpdatesAvailable bool `json:"restart_even_if_no_updates_available,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterAutoRestartMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClusterAutoRestartMessage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Contains an information about the enablement status judging (e.g. whether the
+// enterprise tier is enabled) This is only additional information that MUST NOT
+// be used to decide whether the setting is enabled or not. This is intended to
+// use only for purposes like showing an error message to the customer with the
+// additional details. For example, using these details we can check why exactly
+// the feature is disabled for this customer.
+type ClusterAutoRestartMessageEnablementDetails struct {
+	// The feature is force enabled if compliance mode is active
+	ForcedForComplianceMode bool `json:"forced_for_compliance_mode,omitempty"`
+	// The feature is unavailable if the corresponding entitlement disabled (see
+	// getShieldEntitlementEnable)
+	UnavailableForDisabledEntitlement bool `json:"unavailable_for_disabled_entitlement,omitempty"`
+	// The feature is unavailable if the customer doesn't have enterprise tier
+	UnavailableForNonEnterpriseTier bool `json:"unavailable_for_non_enterprise_tier,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterAutoRestartMessageEnablementDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClusterAutoRestartMessageEnablementDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ClusterAutoRestartMessageMaintenanceWindow struct {
+	WeekDayBasedSchedule *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule `json:"week_day_based_schedule,omitempty"`
+}
+
+type ClusterAutoRestartMessageMaintenanceWindowDayOfWeek string
+
+const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekDayOfWeekUnspecified ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `DAY_OF_WEEK_UNSPECIFIED`
+
+const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekFriday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `FRIDAY`
+
+const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekMonday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `MONDAY`
+
+const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekSaturday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `SATURDAY`
+
+const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekSunday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `SUNDAY`
+
+const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekThursday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `THURSDAY`
+
+const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekTuesday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `TUESDAY`
+
+const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekWednesday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `WEDNESDAY`
+
+// String representation for [fmt.Print]
+func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Set(v string) error {
+	switch v {
+	case `DAY_OF_WEEK_UNSPECIFIED`, `FRIDAY`, `MONDAY`, `SATURDAY`, `SUNDAY`, `THURSDAY`, `TUESDAY`, `WEDNESDAY`:
+		*f = ClusterAutoRestartMessageMaintenanceWindowDayOfWeek(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DAY_OF_WEEK_UNSPECIFIED", "FRIDAY", "MONDAY", "SATURDAY", "SUNDAY", "THURSDAY", "TUESDAY", "WEDNESDAY"`, v)
+	}
+}
+
+// Type always returns ClusterAutoRestartMessageMaintenanceWindowDayOfWeek to satisfy [pflag.Value] interface
+func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Type() string {
+	return "ClusterAutoRestartMessageMaintenanceWindowDayOfWeek"
+}
+
+type ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule struct {
+	DayOfWeek ClusterAutoRestartMessageMaintenanceWindowDayOfWeek `json:"day_of_week,omitempty"`
+
+	Frequency ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency `json:"frequency,omitempty"`
+
+	WindowStartTime *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime `json:"window_start_time,omitempty"`
+}
+
+type ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency string
+
+const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyEveryWeek ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency = `EVERY_WEEK`
+
+const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyFirstAndThirdOfMonth ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency = `FIRST_AND_THIRD_OF_MONTH`
+
+const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyFirstOfMonth ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency = `FIRST_OF_MONTH`
+
+const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyFourthOfMonth ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency = `FOURTH_OF_MONTH`
+
+const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencySecondAndFourthOfMonth ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency = `SECOND_AND_FOURTH_OF_MONTH`
+
+const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencySecondOfMonth ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency = `SECOND_OF_MONTH`
+
+const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyThirdOfMonth ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency = `THIRD_OF_MONTH`
+
+const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyWeekDayFrequencyUnspecified ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency = `WEEK_DAY_FREQUENCY_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) Set(v string) error {
+	switch v {
+	case `EVERY_WEEK`, `FIRST_AND_THIRD_OF_MONTH`, `FIRST_OF_MONTH`, `FOURTH_OF_MONTH`, `SECOND_AND_FOURTH_OF_MONTH`, `SECOND_OF_MONTH`, `THIRD_OF_MONTH`, `WEEK_DAY_FREQUENCY_UNSPECIFIED`:
+		*f = ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EVERY_WEEK", "FIRST_AND_THIRD_OF_MONTH", "FIRST_OF_MONTH", "FOURTH_OF_MONTH", "SECOND_AND_FOURTH_OF_MONTH", "SECOND_OF_MONTH", "THIRD_OF_MONTH", "WEEK_DAY_FREQUENCY_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency to satisfy [pflag.Value] interface
+func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) Type() string {
+	return "ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency"
+}
+
+type ClusterAutoRestartMessageMaintenanceWindowWindowStartTime struct {
+	Hours int `json:"hours,omitempty"`
+
+	Minutes int `json:"minutes,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Compliance stardard for SHIELD customers
+type ComplianceStandard string
+
+const ComplianceStandardComplianceStandardUnspecified ComplianceStandard = `COMPLIANCE_STANDARD_UNSPECIFIED`
+
+const ComplianceStandardFedrampHigh ComplianceStandard = `FEDRAMP_HIGH`
+
+const ComplianceStandardFedrampIl5 ComplianceStandard = `FEDRAMP_IL5`
+
+const ComplianceStandardFedrampModerate ComplianceStandard = `FEDRAMP_MODERATE`
+
+const ComplianceStandardHipaa ComplianceStandard = `HIPAA`
+
+const ComplianceStandardIrapProtected ComplianceStandard = `IRAP_PROTECTED`
+
+const ComplianceStandardItarEar ComplianceStandard = `ITAR_EAR`
+
+const ComplianceStandardNone ComplianceStandard = `NONE`
+
+const ComplianceStandardPciDss ComplianceStandard = `PCI_DSS`
+
+// String representation for [fmt.Print]
+func (f *ComplianceStandard) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ComplianceStandard) Set(v string) error {
+	switch v {
+	case `COMPLIANCE_STANDARD_UNSPECIFIED`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `HIPAA`, `IRAP_PROTECTED`, `ITAR_EAR`, `NONE`, `PCI_DSS`:
+		*f = ComplianceStandard(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COMPLIANCE_STANDARD_UNSPECIFIED", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "HIPAA", "IRAP_PROTECTED", "ITAR_EAR", "NONE", "PCI_DSS"`, v)
+	}
+}
+
+// Type always returns ComplianceStandard to satisfy [pflag.Value] interface
+func (f *ComplianceStandard) Type() string {
+	return "ComplianceStandard"
+}
 
 // Details required to configure a block list or allow list.
 type CreateIpAccessList struct {
@@ -157,6 +384,104 @@ func (s *CreateTokenResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s CreateTokenResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Compliance Security Profile (CSP) - one of the features in ESC product Tracks
+// if the feature is enabled.
+type CspEnablement struct {
+	// Set by customers when they request Compliance Security Profile (CSP)
+	// Invariants are enforced in Settings policy.
+	ComplianceStandards []ComplianceStandard `json:"compliance_standards,omitempty"`
+
+	IsEnabled bool `json:"is_enabled,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CspEnablement) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CspEnablement) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Account level policy for CSP
+type CspEnablementAccount struct {
+	// Set by customers when they request Compliance Security Profile (CSP)
+	// Invariants are enforced in Settings policy.
+	ComplianceStandards []ComplianceStandard `json:"compliance_standards,omitempty"`
+	// Enforced = it cannot be overriden at workspace level.
+	IsEnforced bool `json:"is_enforced,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CspEnablementAccount) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CspEnablementAccount) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CspEnablementAccountSetting struct {
+	// Account level policy for CSP
+	CspEnablementAccount CspEnablementAccount `json:"csp_enablement_account"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CspEnablementAccountSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CspEnablementSetting struct {
+	// Compliance Security Profile (CSP) - one of the features in ESC product
+	// Tracks if the feature is enabled.
+	CspEnablementWorkspace CspEnablement `json:"csp_enablement_workspace"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CspEnablementSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CspEnablementSetting) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -332,6 +657,96 @@ type DeleteTokenManagementRequest struct {
 	TokenId string `json:"-" url:"-"`
 }
 
+// Enhanced Security Monitoring (ESM) - one of the features in ESC product
+// Tracks if the feature is enabled.
+type EsmEnablement struct {
+	IsEnabled bool `json:"is_enabled,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EsmEnablement) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EsmEnablement) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Account level policy for ESM
+type EsmEnablementAccount struct {
+	IsEnforced bool `json:"is_enforced,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EsmEnablementAccount) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EsmEnablementAccount) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EsmEnablementAccountSetting struct {
+	// Account level policy for ESM
+	EsmEnablementAccount EsmEnablementAccount `json:"esm_enablement_account"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EsmEnablementAccountSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EsmEnablementAccountSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EsmEnablementSetting struct {
+	// Enhanced Security Monitoring (ESM) - one of the features in ESC product
+	// Tracks if the feature is enabled.
+	EsmEnablementWorkspace EsmEnablement `json:"esm_enablement_workspace"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EsmEnablementSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EsmEnablementSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // The exchange token is the result of the token exchange with the IdP
 type ExchangeToken struct {
 	// The requested token.
@@ -384,6 +799,72 @@ type GetAccountIpAccessListRequest struct {
 	IpAccessListId string `json:"-" url:"-"`
 }
 
+// Get the automatic cluster update setting
+type GetAutomaticClusterUpdateSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetAutomaticClusterUpdateSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get the compliance security profile setting for new workspaces
+type GetCspEnablementAccountSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get the compliance security profile setting
+type GetCspEnablementSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetCspEnablementSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetCspEnablementSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get the default namespace setting
 type GetDefaultNamespaceSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -403,6 +884,50 @@ func (s *GetDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get the enhanced security monitoring setting for new workspaces
+type GetEsmEnablementAccountSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get the enhanced security monitoring setting
+type GetEsmEnablementSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetEsmEnablementSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetEsmEnablementSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1282,6 +1807,48 @@ func (f *TokenType) Type() string {
 }
 
 // Details required to update a setting.
+type UpdateAutomaticClusterUpdateSettingRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting AutomaticClusterUpdateSetting `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateCspEnablementAccountSettingRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting CspEnablementAccountSetting `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateCspEnablementSettingRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting CspEnablementSetting `json:"setting"`
+}
+
+// Details required to update a setting.
 type UpdateDefaultNamespaceSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
@@ -1301,6 +1868,34 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	// to take effect. Additionally, the default namespace only applies when
 	// using Unity Catalog-enabled compute.
 	Setting DefaultNamespaceSetting `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateEsmEnablementAccountSettingRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting EsmEnablementAccountSetting `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateEsmEnablementSettingRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting EsmEnablementSetting `json:"setting"`
 }
 
 // Details required to update an IP access list.
@@ -1361,3 +1956,15 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 }
 
 type WorkspaceConf map[string]string
+
+type DeleteNetworkConnectivityConfigurationResponse struct{}
+
+type DeleteResponse struct{}
+
+type ReplaceResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type SetStatusResponse struct{}
+
+type UpdateResponse struct{}

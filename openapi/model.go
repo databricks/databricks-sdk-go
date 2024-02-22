@@ -297,6 +297,9 @@ func (s *Schema) IsEmpty() bool {
 	if s.IsRef() {
 		return false
 	}
+	if s.IsAny {
+		return false
+	}
 	if s.Type == "object" || s.Type == "" {
 		return true
 	}

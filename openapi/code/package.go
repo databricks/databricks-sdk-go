@@ -9,8 +9,6 @@ import (
 	"sort"
 	"strings"
 
-	"golang.org/x/exp/slices"
-
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/openapi"
 )
@@ -179,7 +177,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		pkg.define(e)
 	}
 	e.IsEmpty = s.IsEmpty()
-	e.IsAny = s.IsAny || s.Type == "object" && s.IsEmpty()
+	e.IsAny = s.IsAny
 	e.IsComputed = s.IsComputed
 	e.RequiredOrder = s.Required
 	// enum
@@ -299,9 +297,10 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntit
 
 func (pkg *Package) define(entity *Entity) *Entity {
 	if entity.IsEmpty {
-		if slices.Contains(pkg.emptyTypes, &entity.Named) {
-			//panic(fmt.Sprintf("%s is already defined", entity.Name))
-			return entity
+		for _, e := range pkg.emptyTypes {
+			if e.PascalName() == entity.PascalName() {
+				return entity
+			}
 		}
 		pkg.emptyTypes = append(pkg.emptyTypes, &entity.Named)
 		return entity

@@ -8,8 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 type AccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
@@ -1184,7 +1182,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
@@ -1265,7 +1263,7 @@ type User struct {
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID. This is automatically set by Databricks. Any value
 	// provided by the client will be ignored.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
@@ -1346,3 +1344,13 @@ type WorkspacePermissions struct {
 	// Array of permissions defined for a workspace.
 	Permissions []PermissionOutput `json:"permissions,omitempty"`
 }
+
+type DeleteResponse struct{}
+
+type DeleteWorkspaceAssignments struct{}
+
+type PatchResponse struct{}
+
+type UpdateResponse struct{}
+
+type WorkspaceAssignmentsUpdated struct{}

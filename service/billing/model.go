@@ -9,8 +9,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 // Budget configuration to be created.
 type Budget struct {
 	Alerts []BudgetAlert `json:"alerts,omitempty"`
@@ -613,3 +611,9 @@ type WrappedLogDeliveryConfiguration struct {
 type WrappedLogDeliveryConfigurations struct {
 	LogDeliveryConfigurations []LogDeliveryConfiguration `json:"log_delivery_configurations,omitempty"`
 }
+
+type DeleteResponse struct{}
+
+type PatchStatusResponse struct{}
+
+type UpdateResponse struct{}

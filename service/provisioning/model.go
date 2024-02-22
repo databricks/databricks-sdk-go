@@ -8,8 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 type AwsCredentials struct {
 	StsRole *StsRole `json:"sts_role,omitempty"`
 }
@@ -1327,3 +1325,9 @@ func (f *WorkspaceStatus) Set(v string) error {
 func (f *WorkspaceStatus) Type() string {
 	return "WorkspaceStatus"
 }
+
+type DeleteResponse struct{}
+
+type ReplaceResponse struct{}
+
+type UpdateResponse struct{}
