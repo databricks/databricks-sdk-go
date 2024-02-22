@@ -51,7 +51,7 @@ type {{.PascalName}}Interface interface {
 	{{range .Methods}}
 	{{- $hasWaiter := and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
 	{{if not .Pagination}}{{.Comment "// " 80}}	
-	{{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}, error){{else}}{{ template "response-type" .}}{{end}}
+	{{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}[{{with .Response}}{{if .IsEmpty}}struct{}{{else}}{{.PascalName}}{{end}}{{end}}], error){{else}}{{ template "response-type" .}}{{end}}
 	{{end}}
 
 	{{if $hasWaiter}}
@@ -220,11 +220,11 @@ func (w *{{.PascalName}}[R]) GetWithTimeout(timeout time.Duration) (*{{.Poll.Res
 {{if not .Pagination}}{{.Comment "// " 80}}
 func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}, error){{else}}{{ template "response-type" .}}{{end}} {
 	{{if $hasWaiter -}}
-	{{if .Response}}{{.Response.CamelName}}, {{end}}err := a.impl.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
+	{{.Response.CamelName}}, err := a.impl.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
 	if err != nil {
 		return nil, err
 	}
-	return &{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}{
+	return &{{.Wait.PascalName}}[{{with .Response}}{{if .IsEmpty}}struct{}{{else}}{{.PascalName}}{{end}}{{end}}]{
 		{{with .Response}}Response: {{.CamelName}},
 		{{- end}}{{range .Wait.Binding}}
 		{{.PollField.PascalName}}: {{.Bind.Of.CamelName}}.{{.Bind.PascalName}},{{end}}
