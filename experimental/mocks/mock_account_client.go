@@ -26,7 +26,7 @@ func NewMockAccountClient(t interface {
 	mock.TestingT
 	Cleanup(func())
 }) *MockAccountClient {
-	return &MockAccountClient{
+	cli := &MockAccountClient{
 		AccountClient: &databricks.AccountClient{
 			Config: nil,
 
@@ -57,6 +57,8 @@ func NewMockAccountClient(t interface {
 			Workspaces:              provisioning.NewMockWorkspacesInterface(t),
 		},
 	}
+
+	return cli
 }
 
 func (m *MockAccountClient) GetMockAccountAccessControlAPI() *iam.MockAccountAccessControlInterface {

@@ -12,6 +12,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestNested(t *testing.T) {
+	ctx := context.Background()
+	batch, err := NewFromFile(ctx, "../testdata/spec_subservices.json")
+	require.NoError(t, err)
+	require.Contains(t, batch.packages["settings"].services, "Settings")
+	require.Contains(t, batch.packages["settings"].services["Settings"].subservices, "DefaultNamespace")
+	require.Equal(t, batch.packages["settings"].services["DefaultNamespace"].ParentService.Name, "Settings")
+}
+
 func TestBasic(t *testing.T) {
 	ctx := context.Background()
 	batch, err := NewFromFile(ctx, "../testdata/spec.json")

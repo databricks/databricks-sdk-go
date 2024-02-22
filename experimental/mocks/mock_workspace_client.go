@@ -34,7 +34,7 @@ func NewMockWorkspaceClient(t interface {
 	mock.TestingT
 	Cleanup(func())
 }) *MockWorkspaceClient {
-	return &MockWorkspaceClient{
+	cli := &MockWorkspaceClient{
 		WorkspaceClient: &databricks.WorkspaceClient{
 			Config: nil,
 
@@ -108,6 +108,8 @@ func NewMockWorkspaceClient(t interface {
 			WorkspaceConf:             settings.NewMockWorkspaceConfInterface(t),
 		},
 	}
+
+	return cli
 }
 
 func (m *MockWorkspaceClient) GetMockAccountAccessControlProxyAPI() *iam.MockAccountAccessControlProxyInterface {
