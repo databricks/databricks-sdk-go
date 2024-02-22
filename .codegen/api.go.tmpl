@@ -397,7 +397,7 @@ func (a *{{.Service.Name}}API) GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}
 {{end}}{{if .Shortcut}}
 {{.Comment "// " 80}}
 func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{ template "response-type" . }} {
-    return a.impl.{{.PascalName}}(ctx, {{.Request.PascalName}}{
+	return a.impl.{{.PascalName}}(ctx, {{.Request.PascalName}}{
 		{{- range .Shortcut.Params}}
 		{{.PascalName}}: {{.CamelName}},{{end}}
 	})
