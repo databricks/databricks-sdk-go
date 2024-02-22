@@ -20,7 +20,6 @@ type Package struct {
 	Components *openapi.Components
 	services   map[string]*Service
 	types      map[string]*Entity
-	emptyTypes []*Named
 	extImports map[string]*Entity
 }
 
@@ -81,13 +80,6 @@ func (pkg *Package) Types() (types []*Entity) {
 	for _, v := range pkg.types {
 		types = append(types, v)
 	}
-	pascalNameSort(types)
-	return types
-}
-
-// EmptyTypes returns sorted list of types without fields
-func (pkg *Package) EmptyTypes() (types []*Named) {
-	types = append(types, pkg.emptyTypes...)
 	pascalNameSort(types)
 	return types
 }
@@ -176,7 +168,6 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		e.Named.Name = strings.Join(path, "")
 		pkg.define(e)
 	}
-	e.IsEmpty = s.IsEmpty()
 	e.IsAny = s.IsAny
 	e.IsComputed = s.IsComputed
 	e.RequiredOrder = s.Required
@@ -263,22 +254,19 @@ func (pkg *Package) localComponent(n *openapi.Node) string {
 // definedEntity defines and returns the requested entity based on the schema.
 // processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
 func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntities map[string]*Entity) *Entity {
-	if s != nil {
-		if entity, ok := processedEntities[s.JsonPath]; ok {
-			// Return existing entity if it's already being generated.
-			return entity
-		}
-	}
-	if s == nil || s.IsEmpty() {
+	if s == nil {
 		entity := &Entity{
 			Named: Named{
 				Name:        name,
 				Description: "",
 			},
-			IsEmpty: true,
-			fields:  map[string]*Field{},
+			fields: map[string]*Field{},
 		}
 		return pkg.define(entity)
+	}
+	if entity, ok := processedEntities[s.JsonPath]; ok {
+		// Return existing entity if it's already being generated.
+		return entity
 	}
 
 	e := pkg.schemaToEntity(s, []string{name}, true, processedEntities)
@@ -296,15 +284,6 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntit
 }
 
 func (pkg *Package) define(entity *Entity) *Entity {
-	if entity.IsEmpty {
-		for _, e := range pkg.emptyTypes {
-			if e.PascalName() == entity.PascalName() {
-				return entity
-			}
-		}
-		pkg.emptyTypes = append(pkg.emptyTypes, &entity.Named)
-		return entity
-	}
 	_, defined := pkg.types[entity.Name]
 	if defined {
 		//panic(fmt.Sprintf("%s is already defined", entity.Name))

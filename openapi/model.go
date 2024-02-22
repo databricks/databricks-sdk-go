@@ -284,28 +284,6 @@ func (s *Schema) IsArray() bool {
 	return s.ArrayValue != nil
 }
 
-func (s *Schema) IsEmpty() bool {
-	if s.IsMap() {
-		return false
-	}
-	if s.IsArray() {
-		return false
-	}
-	if s.IsObject() {
-		return false
-	}
-	if s.IsRef() {
-		return false
-	}
-	if s.IsAny {
-		return false
-	}
-	if s.Type == "object" || s.Type == "" {
-		return true
-	}
-	return false
-}
-
 type Parameter struct {
 	Node
 	Required     bool    `json:"required,omitempty"`

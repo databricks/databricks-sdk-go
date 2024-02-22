@@ -22,7 +22,6 @@ type Method struct {
 	Request *Entity
 	// Response type representation
 	Response          *Entity
-	EmptyResponseName Named
 
 	// The style of the request, either "rpc" or "rest". See the documentation on
 	// Operation for more details.
