@@ -284,7 +284,8 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntit
 }
 
 func (pkg *Package) define(entity *Entity) *Entity {
-	_, defined := pkg.types[entity.Name]
+	k := entity.PascalName()
+	_, defined := pkg.types[k]
 	if defined {
 		//panic(fmt.Sprintf("%s is already defined", entity.Name))
 		return entity
@@ -292,7 +293,7 @@ func (pkg *Package) define(entity *Entity) *Entity {
 	if entity.Package == nil {
 		entity.Package = pkg
 	}
-	pkg.types[entity.Name] = entity
+	pkg.types[k] = entity
 	return entity
 }
 
