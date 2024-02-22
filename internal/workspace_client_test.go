@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUcAccWorkspaceClient_CurrentWorkspaceId(t *testing.T) {
+func TestUcAccWorkspaceClient_CurrentWorkspaceId_NoTranspile(t *testing.T) {
 	ctx, w := ucwsTest(t)
 	expectedWorkspaceId := MustParseInt64(GetEnvOrSkipTest(t, "THIS_WORKSPACE_ID"))
 	workspaceId, err := w.CurrentWorkspaceID(ctx)
