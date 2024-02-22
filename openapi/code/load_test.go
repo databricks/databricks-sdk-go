@@ -28,7 +28,7 @@ func TestBasic(t *testing.T) {
 
 	require.Len(t, batch.Packages(), 1)
 	require.Len(t, batch.Services(), 1)
-	require.Len(t, batch.Types(), 17)
+	require.Len(t, batch.Types(), 19)
 	commands, ok := batch.packages["commands"]
 	require.True(t, ok)
 
