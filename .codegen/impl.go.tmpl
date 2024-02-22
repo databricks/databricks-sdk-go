@@ -45,7 +45,7 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 {{- end }}
 
 {{ define "response-type" -}}
-  {{ if .Response }}(
+  {{ if and .Response (not .Response.IsEmpty) }}(
   {{- if not .Response.ArrayValue }}*{{end}}{{ template "type" .Response }}, error)
   {{- else }}error
   {{- end }}
