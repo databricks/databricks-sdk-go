@@ -51,7 +51,7 @@ type {{.PascalName}}Interface interface {
 	{{range .Methods}}
 	{{- $hasWaiter := and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
 	{{if not .Pagination}}{{.Comment "// " 80}}	
-	{{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}[{{with .Response}}{{if .IsEmpty}}struct{}{{else}}{{.PascalName}}{{end}}{{end}}], error){{else}}{{ template "api-response-type" .}}{{end}}
+	{{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}{{ template "wait-response-type" . }}{{else}}{{ template "api-response-type" .}}{{end}}
 	{{end}}
 
 	{{if $hasWaiter}}
@@ -218,7 +218,7 @@ func (w *{{.PascalName}}[R]) GetWithTimeout(timeout time.Duration) (*{{.Poll.Res
 {{range .Methods}}
 {{- $hasWaiter := and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
 {{if not .Pagination}}{{.Comment "// " 80}}
-func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}, error){{else}}{{ template "api-response-type" .}}{{end}} {
+func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}{{ template "wait-response-type" . }}{{else}}{{ template "api-response-type" .}}{{end}} {
 	{{if $hasWaiter -}}
 	{{.Response.CamelName}}, err := a.impl.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
 	if err != nil {
@@ -432,4 +432,7 @@ func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Conte
   {{- if not .Response.ArrayValue }}*{{end}}{{ template "type" .Response }}, error)
   {{- else }}error
   {{- end }}
-{{- end }}
+{{- end -}}
+{{- define "wait-response-type" -}}
+(*{{.Wait.PascalName}}[{{with .Response}}{{if .IsEmpty}}struct{}{{else}}{{.PascalName}}{{end}}{{end}}], error)
+{{- end -}}
