@@ -8,50 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-type AddResponse struct{}
-
-type CancelResponse struct{}
-
-type ChangeClusterOwnerResponse struct{}
-
-type DeleteClusterResponse struct{}
-
-type DeleteInstancePoolResponse struct{}
-
-type DeletePolicyResponse struct{}
-
-type DeleteResponse struct{}
-
-type DestroyResponse struct{}
-
-type EditClusterResponse struct{}
-
-type EditInstancePoolResponse struct{}
-
-type EditPolicyResponse struct{}
-
-type EditResponse struct{}
-
-type InstallLibrariesResponse struct{}
-
-type PermanentDeleteClusterResponse struct{}
-
-type PinClusterResponse struct{}
-
-type RemoveResponse struct{}
-
-type ResizeClusterResponse struct{}
-
-type RestartClusterResponse struct{}
-
-type StartClusterResponse struct{}
-
-type UninstallLibrariesResponse struct{}
-
-type UnpinClusterResponse struct{}
-
-type UpdateResponse struct{}
-
 type AddInstanceProfile struct {
 	// The AWS IAM role ARN of the role associated with the instance profile.
 	// This field is required if your role name and instance profile name do not
@@ -4704,3 +4660,47 @@ type WorkspaceStorageInfo struct {
 	// `/Users/user1@databricks.com/my-init.sh`
 	Destination string `json:"destination"`
 }
+
+type AddResponse struct{}
+
+type CancelResponse struct{}
+
+type ChangeClusterOwnerResponse struct{}
+
+type DeleteClusterResponse struct{}
+
+type DeleteInstancePoolResponse struct{}
+
+type DeletePolicyResponse struct{}
+
+type DeleteResponse struct{}
+
+type DestroyResponse struct{}
+
+type EditClusterResponse struct{}
+
+type EditInstancePoolResponse struct{}
+
+type EditPolicyResponse struct{}
+
+type EditResponse struct{}
+
+type InstallLibrariesResponse struct{}
+
+type PermanentDeleteClusterResponse struct{}
+
+type PinClusterResponse struct{}
+
+type RemoveResponse struct{}
+
+type ResizeClusterResponse struct{}
+
+type RestartClusterResponse struct{}
+
+type StartClusterResponse struct{}
+
+type UninstallLibrariesResponse struct{}
+
+type UnpinClusterResponse struct{}
+
+type UpdateResponse struct{}

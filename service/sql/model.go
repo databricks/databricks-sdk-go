@@ -8,24 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-type CancelExecutionResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
-
-type RestoreResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
-
-type UpdateResponse struct{}
-
 type AccessControl struct {
 	GroupName string `json:"group_name,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
@@ -302,7 +284,6 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -3791,3 +3772,21 @@ func (s *WidgetPosition) UnmarshalJSON(b []byte) error {
 func (s WidgetPosition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
+
+type CancelExecutionResponse struct{}
+
+type DeleteResponse struct{}
+
+type DeleteWarehouseResponse struct{}
+
+type EditWarehouseResponse struct{}
+
+type RestoreResponse struct{}
+
+type SetWorkspaceWarehouseConfigResponse struct{}
+
+type StartWarehouseResponse struct{}
+
+type StopWarehouseResponse struct{}
+
+type UpdateResponse struct{}

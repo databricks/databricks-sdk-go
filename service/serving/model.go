@@ -8,10 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-type DeleteResponse struct{}
-
-type ExportMetricsResponse struct{}
-
 type Ai21LabsConfig struct {
 	// The Databricks secret key reference for an AI21Labs API key.
 	Ai21labsApiKey string `json:"ai21labs_api_key"`
@@ -1830,3 +1826,7 @@ func (s *V1ResponseChoiceElement) UnmarshalJSON(b []byte) error {
 func (s V1ResponseChoiceElement) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
+
+type DeleteResponse struct{}
+
+type ExportMetricsResponse struct{}

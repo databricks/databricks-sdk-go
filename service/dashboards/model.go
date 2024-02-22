@@ -6,8 +6,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-type PublishResponse struct{}
-
 type PublishRequest struct {
 	// UUID identifying the dashboard to be published.
 	DashboardId string `json:"-" url:"-"`
@@ -29,3 +27,5 @@ func (s *PublishRequest) UnmarshalJSON(b []byte) error {
 func (s PublishRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
+
+type PublishResponse struct{}

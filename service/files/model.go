@@ -8,26 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-type AddBlockResponse struct{}
-
-type CloseResponse struct{}
-
-type CreateDirectoryResponse struct{}
-
-type DeleteDirectoryResponse struct{}
-
-type DeleteResponse struct{}
-
-type GetDirectoryMetadataResponse struct{}
-
-type MkDirsResponse struct{}
-
-type MoveResponse struct{}
-
-type PutResponse struct{}
-
-type UploadResponse struct{}
-
 type AddBlock struct {
 	// The base64-encoded data to append to the stream. This has a limit of 1
 	// MB.
@@ -376,3 +356,23 @@ func (s *UploadRequest) UnmarshalJSON(b []byte) error {
 func (s UploadRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
+
+type AddBlockResponse struct{}
+
+type CloseResponse struct{}
+
+type CreateDirectoryResponse struct{}
+
+type DeleteDirectoryResponse struct{}
+
+type DeleteResponse struct{}
+
+type GetDirectoryMetadataResponse struct{}
+
+type MkDirsResponse struct{}
+
+type MoveResponse struct{}
+
+type PutResponse struct{}
+
+type UploadResponse struct{}

@@ -9,14 +9,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
-type DeletePipelineResponse struct{}
-
-type EditPipelineResponse struct{}
-
-type ManualTrigger struct{}
-
-type StopPipelineResponse struct{}
-
 type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
@@ -1421,3 +1413,11 @@ func (f *UpdateStateInfoState) Set(v string) error {
 func (f *UpdateStateInfoState) Type() string {
 	return "UpdateStateInfoState"
 }
+
+type DeletePipelineResponse struct{}
+
+type EditPipelineResponse struct{}
+
+type ManualTrigger struct{}
+
+type StopPipelineResponse struct{}

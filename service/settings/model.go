@@ -8,18 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-type DeleteNetworkConnectivityConfigurationResponse struct{}
-
-type DeleteResponse struct{}
-
-type ReplaceResponse struct{}
-
-type RevokeTokenResponse struct{}
-
-type SetStatusResponse struct{}
-
-type UpdateResponse struct{}
-
 type AutomaticClusterUpdateSetting struct {
 	AutomaticClusterUpdateWorkspace ClusterAutoRestartMessage `json:"automatic_cluster_update_workspace"`
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -1968,3 +1956,15 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 }
 
 type WorkspaceConf map[string]string
+
+type DeleteNetworkConnectivityConfigurationResponse struct{}
+
+type DeleteResponse struct{}
+
+type ReplaceResponse struct{}
+
+type RevokeTokenResponse struct{}
+
+type SetStatusResponse struct{}
+
+type UpdateResponse struct{}

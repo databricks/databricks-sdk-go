@@ -8,34 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-type AssignResponse struct{}
-
-type CancelRefreshResponse struct{}
-
-type CreateResponse struct{}
-
-type DatabricksGcpServiceAccountRequest struct{}
-
-type DeleteAliasResponse struct{}
-
-type DeleteResponse struct{}
-
-type DisableResponse struct{}
-
-type EnableResponse struct{}
-
-type MonitorSnapshotProfileType struct{}
-
-type OnlineTableSpecContinuousSchedulingPolicy struct{}
-
-type OnlineTableSpecTriggeredSchedulingPolicy struct{}
-
-type UnassignResponse struct{}
-
-type UpdateAssignmentResponse struct{}
-
-type UpdateResponse struct{}
-
 type AccountsCreateMetastore struct {
 	MetastoreInfo *CreateMetastore `json:"metastore_info,omitempty"`
 }
@@ -4947,3 +4919,31 @@ type WorkspaceBindingsResponse struct {
 	// List of workspace bindings
 	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 }
+
+type AssignResponse struct{}
+
+type CancelRefreshResponse struct{}
+
+type CreateResponse struct{}
+
+type DatabricksGcpServiceAccountRequest struct{}
+
+type DeleteAliasResponse struct{}
+
+type DeleteResponse struct{}
+
+type DisableResponse struct{}
+
+type EnableResponse struct{}
+
+type MonitorSnapshotProfileType struct{}
+
+type OnlineTableSpecContinuousSchedulingPolicy struct{}
+
+type OnlineTableSpecTriggeredSchedulingPolicy struct{}
+
+type UnassignResponse struct{}
+
+type UpdateAssignmentResponse struct{}
+
+type UpdateResponse struct{}

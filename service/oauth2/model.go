@@ -6,16 +6,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-type DeleteCustomAppIntegrationOutput struct{}
-
-type DeletePublishedAppIntegrationOutput struct{}
-
-type DeleteResponse struct{}
-
-type UpdateCustomAppIntegrationOutput struct{}
-
-type UpdatePublishedAppIntegrationOutput struct{}
-
 type CreateCustomAppIntegration struct {
 	// indicates if an oauth client-secret should be generated
 	Confidential bool `json:"confidential,omitempty"`
@@ -344,3 +334,13 @@ type UpdatePublishedAppIntegration struct {
 	// Token access policy to be updated in the published oauth app integration
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 }
+
+type DeleteCustomAppIntegrationOutput struct{}
+
+type DeletePublishedAppIntegrationOutput struct{}
+
+type DeleteResponse struct{}
+
+type UpdateCustomAppIntegrationOutput struct{}
+
+type UpdatePublishedAppIntegrationOutput struct{}

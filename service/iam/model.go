@@ -8,16 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-type DeleteResponse struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type PatchResponse struct{}
-
-type UpdateResponse struct{}
-
-type WorkspaceAssignmentsUpdated struct{}
-
 type AccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
@@ -333,7 +323,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -1354,3 +1344,13 @@ type WorkspacePermissions struct {
 	// Array of permissions defined for a workspace.
 	Permissions []PermissionOutput `json:"permissions,omitempty"`
 }
+
+type DeleteResponse struct{}
+
+type DeleteWorkspaceAssignments struct{}
+
+type PatchResponse struct{}
+
+type UpdateResponse struct{}
+
+type WorkspaceAssignmentsUpdated struct{}

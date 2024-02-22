@@ -8,12 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-type DeleteEndpointResponse struct{}
-
-type DeleteIndexResponse struct{}
-
-type SyncIndexResponse struct{}
-
 type ColumnInfo struct {
 	// Name of the column.
 	Name string `json:"name,omitempty"`
@@ -761,3 +755,9 @@ func (f *VectorIndexType) Set(v string) error {
 func (f *VectorIndexType) Type() string {
 	return "VectorIndexType"
 }
+
+type DeleteEndpointResponse struct{}
+
+type DeleteIndexResponse struct{}
+
+type SyncIndexResponse struct{}

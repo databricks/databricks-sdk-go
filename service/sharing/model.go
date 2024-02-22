@@ -9,14 +9,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-type DeleteResponse struct{}
-
-type GetActivationUrlInfoResponse struct{}
-
-type UpdatePermissionsResponse struct{}
-
-type UpdateResponse struct{}
-
 // The delta sharing authentication type.
 type AuthenticationType string
 
@@ -1324,3 +1316,11 @@ type UpdateSharePermissions struct {
 	// The name of the share.
 	Name string `json:"-" url:"-"`
 }
+
+type DeleteResponse struct{}
+
+type GetActivationUrlInfoResponse struct{}
+
+type UpdatePermissionsResponse struct{}
+
+type UpdateResponse struct{}
