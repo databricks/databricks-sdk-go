@@ -60,7 +60,7 @@ func TestBasic(t *testing.T) {
 	assert.Equal(t, 0, len(wait.MessagePath()))
 
 	types := commands.Types()
-	assert.Equal(t, 17, len(types))
+	assert.Equal(t, 19, len(types))
 
 	command := types[2]
 	assert.Equal(t, "Command", command.PascalName())
