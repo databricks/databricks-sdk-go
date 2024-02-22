@@ -51,7 +51,7 @@ type {{.PascalName}}Interface interface {
 	{{range .Methods}}
 	{{- $hasWaiter := and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
 	{{if not .Pagination}}{{.Comment "// " 80}}	
-	{{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}[{{with .Response}}{{if .IsEmpty}}struct{}{{else}}{{.PascalName}}{{end}}{{end}}], error){{else}}{{ template "response-type" .}}{{end}}
+	{{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}[{{with .Response}}{{if .IsEmpty}}struct{}{{else}}{{.PascalName}}{{end}}{{end}}], error){{else}}{{ template "api-response-type" .}}{{end}}
 	{{end}}
 
 	{{if $hasWaiter}}
@@ -96,7 +96,7 @@ type {{.PascalName}}Interface interface {
 		
 	{{end}}{{if .Shortcut}}
 	{{.Comment "// " 80}}
-	{{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{ template "response-type" . }}
+	{{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{ template "api-response-type" . }}
 	
 	{{end}}{{if and .Shortcut $hasWaiter}}
 	{{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error)
@@ -218,7 +218,7 @@ func (w *{{.PascalName}}[R]) GetWithTimeout(timeout time.Duration) (*{{.Poll.Res
 {{range .Methods}}
 {{- $hasWaiter := and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
 {{if not .Pagination}}{{.Comment "// " 80}}
-func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}, error){{else}}{{ template "response-type" .}}{{end}} {
+func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}, error){{else}}{{ template "api-response-type" .}}{{end}} {
 	{{if $hasWaiter -}}
 	{{.Response.CamelName}}, err := a.impl.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
 	if err != nil {
@@ -396,7 +396,7 @@ func (a *{{.Service.Name}}API) GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}
 }
 {{end}}{{if .Shortcut}}
 {{.Comment "// " 80}}
-func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{ template "response-type" . }} {
+func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{ template "api-response-type" . }} {
 	return a.impl.{{.PascalName}}(ctx, {{.Request.PascalName}}{
 		{{- range .Shortcut.Params}}
 		{{.PascalName}}: {{.CamelName}},{{end}}
