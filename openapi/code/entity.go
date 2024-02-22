@@ -189,7 +189,8 @@ func (e *Entity) IsEmpty() bool {
 		!e.IsString &&
 		!e.IsByteStream &&
 		!e.IsAny &&
-		!e.IsComputed
+		!e.IsComputed &&
+		!e.IsExternal()
 }
 
 func (e *Entity) RequiredFields() (fields []*Field) {

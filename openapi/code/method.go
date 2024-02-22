@@ -21,7 +21,7 @@ type Method struct {
 	// Request type representation
 	Request *Entity
 	// Response type representation
-	Response          *Entity
+	Response *Entity
 
 	// The style of the request, either "rpc" or "rest". See the documentation on
 	// Operation for more details.

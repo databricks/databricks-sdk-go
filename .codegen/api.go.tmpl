@@ -220,7 +220,7 @@ func (w *{{.PascalName}}[R]) GetWithTimeout(timeout time.Duration) (*{{.Poll.Res
 {{if not .Pagination}}{{.Comment "// " 80}}
 func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}{{ template "wait-response-type" . }}{{else}}{{ template "api-response-type" .}}{{end}} {
 	{{if $hasWaiter -}}
-	{{.Response.CamelName}}, err := a.impl.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
+	{{if not .Response.IsEmpty}}{{.Response.CamelName}}{{else}}_{{end}}, err := a.impl.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
 	if err != nil {
 		return nil, err
 	}
