@@ -37,7 +37,7 @@ func (f *{{.PascalName}}) Set(v string) error {
 func (f *{{.PascalName}}) Type() string {
     return "{{.PascalName}}"
 }
-{{-else}}
+{{- else}}
 {{.Comment "// " 80}}
 type {{.PascalName}} struct {
     {{- range .Fields}}
