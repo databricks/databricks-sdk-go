@@ -236,7 +236,9 @@ func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Re
 	}, nil
 	{{- else -}}
 	{{ if .Response.IsEmpty }}_, err :={{else}}return{{end}} a.impl.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
-	{{ if .Response.IsEmpty}}return err{{end}}
+	{{- if .Response.IsEmpty}}
+	return err
+	{{- end -}}
 	{{- end}}
 }
 {{end}}
@@ -402,7 +404,8 @@ func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{ran
 		{{- range .Shortcut.Params}}
 		{{.PascalName}}: {{.CamelName}},{{end}}
 	})
-	{{if .Response.IsEmpty -}}return err{{end}}
+	{{- if .Response.IsEmpty }}
+	return err{{end}}
 }
 {{end}}{{if and .Shortcut $hasWaiter}}
 func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
