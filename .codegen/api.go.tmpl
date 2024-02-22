@@ -225,7 +225,7 @@ func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Re
 		return nil, err
 	}
 	return &{{.Wait.PascalName}}[{{with .Response}}{{if .IsEmpty}}struct{}{{else}}{{.PascalName}}{{end}}{{end}}]{
-		{{with .Response}}Response: {{.CamelName}},
+		{{with .Response}}{{if not .IsEmpty}}Response: {{.CamelName}},{{end}}
 		{{- end}}{{range .Wait.Binding}}
 		{{.PollField.PascalName}}: {{.Bind.Of.CamelName}}.{{.Bind.PascalName}},{{end}}
 		Poll: func(timeout time.Duration, callback func(*{{.Wait.Poll.Response.PascalName}})) (*{{.Wait.Poll.Response.PascalName}}, error) {
