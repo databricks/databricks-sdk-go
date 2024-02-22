@@ -9,25 +9,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 {{range .Types}}
-{{if .Fields -}}{{.Comment "// " 80}}
-type {{.PascalName}} struct {
-    {{- range .Fields}}
-    {{.Comment "    // " 80}}
-    {{.PascalName}} {{if .IsOptionalObject}}*{{end}}{{template "type" .Entity}} `{{template "field-tag" . }}`{{end}}
-
-	{{if .ShouldIncludeForceSendFields}} ForceSendFields []string `json:"-"` {{end}}
-}
-
-{{if .ShouldIncludeForceSendFields}}
-func (s *{{.PascalName}}) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s {{.PascalName}}) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-{{end}}
-{{else if .MapValue}}{{.Comment "// " 80}}
+{{if .MapValue}}{{.Comment "// " 80}}
 type {{.PascalName}} {{template "type" .}}
 {{else if .Enum}}{{.Comment "// " 80}}
 type {{.PascalName}} string
@@ -54,7 +36,27 @@ func (f *{{.PascalName}}) Set(v string) error {
 // Type always returns {{.PascalName}} to satisfy [pflag.Value] interface
 func (f *{{.PascalName}}) Type() string {
     return "{{.PascalName}}"
-}{{end}}
+}
+{{-else}}
+{{.Comment "// " 80}}
+type {{.PascalName}} struct {
+    {{- range .Fields}}
+    {{.Comment "    // " 80}}
+    {{.PascalName}} {{if .IsOptionalObject}}*{{end}}{{template "type" .Entity}} `{{template "field-tag" . }}`{{end}}
+
+	{{if .ShouldIncludeForceSendFields}} ForceSendFields []string `json:"-"` {{end}}
+}
+
+{{if .ShouldIncludeForceSendFields}}
+func (s *{{.PascalName}}) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s {{.PascalName}}) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+{{end}}
+{{end}}
 {{end}}
 {{range .EmptyTypes}}
 {{.Comment "// " 80}}

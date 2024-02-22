@@ -70,9 +70,10 @@ func (w *Wait) Binding() (binding []Binding) {
 		if pollField == nil {
 			panic(fmt.Errorf("cannot bind response field: %s", bind))
 		}
+		bindInner := entity.Field(bind)
 		binding = append(binding, Binding{
 			PollField:      pollField,
-			Bind:           entity.Field(bind),
+			Bind:           bindInner,
 			IsResponseBind: responseBind,
 		})
 	}
