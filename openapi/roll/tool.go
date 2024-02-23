@@ -1,6 +1,7 @@
 package roll
 
 import (
+	"cmp"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -124,8 +125,12 @@ func (s *Suite) Methods() []methodRef {
 	for k := range found {
 		methods = append(methods, k)
 	}
-	slices.SortFunc(methods, func(a, b methodRef) bool {
-		return a.Service < b.Service && a.Method < b.Method
+	slices.SortFunc(methods, func(a, b methodRef) int {
+		service := cmp.Compare(a.Service, b.Service)
+		if service != 0 {
+			return service
+		}
+		return cmp.Compare(a.Method, b.Method)
 	})
 	return methods
 }
@@ -164,8 +169,8 @@ func (s *Suite) ServicesExamples() (out []*serviceExample) {
 			}
 			se.Samples = append(se.Samples, v)
 		}
-		slices.SortFunc(se.Samples, func(a, b *sample) bool {
-			return a.FullName() < b.FullName()
+		slices.SortFunc(se.Samples, func(a, b *sample) int {
+			return cmp.Compare(a.FullName(), b.FullName())
 		})
 		out = append(out, se)
 	}
@@ -305,9 +310,14 @@ func (s *Suite) usageSamples(svc, mth string) (out []*sample) {
 				callIds[c.id] = true
 			}
 		}
-		slices.SortFunc[*call](sa.Calls, func(a, b *call) bool {
-			x := a.IsDependentOn(b)
-			return x
+		slices.SortFunc(sa.Calls, func(a, b *call) int {
+			if a == b {
+				return 0
+			} else if a.IsDependentOn(b) {
+				return -1
+			} else {
+				return 1
+			}
 		})
 		reverse(sa.Calls)
 		reverse(sa.Cleanup)
