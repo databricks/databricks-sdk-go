@@ -250,6 +250,9 @@ type CancelExecutionRequest struct {
 	StatementId string `json:"-" url:"-"`
 }
 
+type CancelExecutionResponse struct {
+}
+
 type Channel struct {
 	DbsqlVersion string `json:"dbsql_version,omitempty"`
 
@@ -800,10 +803,16 @@ type DeleteQueryVisualizationRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 // Delete a warehouse
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+}
+
+type DeleteWarehouseResponse struct {
 }
 
 // The fetch disposition provides two modes of fetching results: `INLINE` and
@@ -985,6 +994,9 @@ func (f *EditWarehouseRequestWarehouseType) Set(v string) error {
 // Type always returns EditWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
 func (f *EditWarehouseRequestWarehouseType) Type() string {
 	return "EditWarehouseRequestWarehouseType"
+}
+
+type EditWarehouseResponse struct {
 }
 
 type EndpointConfPair struct {
@@ -2674,6 +2686,9 @@ type RestoreQueryRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
+type RestoreResponse struct {
+}
+
 // Contains the result data of a single chunk when using `INLINE` disposition.
 // When using `EXTERNAL_LINKS` disposition, the array `external_links` is used
 // instead to provide presigned URLs to the result data in cloud storage.
@@ -2957,6 +2972,9 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 	return "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
 }
 
+type SetWorkspaceWarehouseConfigResponse struct {
+}
+
 // Configurations whether the warehouse should use spot instances.
 type SpotInstancePolicy string
 
@@ -2991,6 +3009,9 @@ func (f *SpotInstancePolicy) Type() string {
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+}
+
+type StartWarehouseResponse struct {
 }
 
 // State of the warehouse
@@ -3153,6 +3174,9 @@ func (f *Status) Type() string {
 type StopRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+}
+
+type StopWarehouseResponse struct {
 }
 
 type Success struct {
@@ -3458,6 +3482,9 @@ func (s *TransferOwnershipRequest) UnmarshalJSON(b []byte) error {
 
 func (s TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateResponse struct {
 }
 
 type User struct {
@@ -3772,21 +3799,3 @@ func (s *WidgetPosition) UnmarshalJSON(b []byte) error {
 func (s WidgetPosition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
-
-type CancelExecutionResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteWarehouseResponse struct{}
-
-type EditWarehouseResponse struct{}
-
-type RestoreResponse struct{}
-
-type SetWorkspaceWarehouseConfigResponse struct{}
-
-type StartWarehouseResponse struct{}
-
-type StopWarehouseResponse struct{}
-
-type UpdateResponse struct{}

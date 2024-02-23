@@ -9,7 +9,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 {{range .Types}}
-{{if .Fields -}}{{.Comment "// " 80}}
+{{- if or .Fields .IsEmpty}}
+{{.Comment "// " 80}}
 type {{.PascalName}} struct {
     {{- range .Fields}}
     {{.Comment "    // " 80}}
@@ -54,11 +55,8 @@ func (f *{{.PascalName}}) Set(v string) error {
 // Type always returns {{.PascalName}} to satisfy [pflag.Value] interface
 func (f *{{.PascalName}}) Type() string {
     return "{{.PascalName}}"
-}{{end}}
+}
 {{end}}
-{{range .EmptyTypes}}
-{{.Comment "// " 80}}
-type {{.PascalName}} struct {}
 {{end}}
 
 {{- define "field-tag" -}}
@@ -70,6 +68,7 @@ type {{.PascalName}} struct {}
 
 {{- define "type" -}}
 	{{- if not . }}any /* ERROR */
+	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
 	{{- else if .IsAny}}any
 	{{- else if .IsEmpty}}{{.PascalName}}
 	{{- else if .IsString}}string
@@ -80,7 +79,6 @@ type {{.PascalName}} struct {}
 	{{- else if .IsByteStream}}io.ReadCloser
 	{{- else if .ArrayValue }}[]{{template "type" .ArrayValue}}
 	{{- else if .MapValue }}map[string]{{template "type" .MapValue}}
-	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
 	{{- else if .IsObject }}{{.PascalName}}
 	{{- else if .Enum }}{{.PascalName}}
 	{{- else}}any /* MISSING TYPE */

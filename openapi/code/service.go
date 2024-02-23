@@ -196,7 +196,6 @@ func (svc *Service) updateEntityTypeFromMimeType(entity *Entity, mimeType openap
 	// For request or response bodies that are not application/json, the body
 	// is modeled by a byte stream.
 	entity.IsByteStream = true
-	entity.IsEmpty = false
 	entity.IsAny = false
 }
 
@@ -353,7 +352,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	return request, mimeType, bodyField
 }
 
-func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeType, *Field, Named, error) {
+func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeType, *Field, error) {
 	body := op.SuccessResponseBody(svc.Package.Components)
 	schema, mimeType := svc.getBaseSchemaAndMimeType(body)
 	name := op.Name()
@@ -378,41 +377,16 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 		}
 	}
 
-	// This next block of code is needed to make up for shortcomings in
-	// schemaToEntity. That function (and the Entity structure) assumes that all
-	// fields are part of the response schema. If we have fields part of the headers,
-	// we need to mark the response has non-empty and add it from the type map
-	if response.HasHeaderField() {
-		response.IsEmpty = false
-		svc.Package.define(response)
-		svc.removeFromEmptyList(response)
-	}
-
 	// We only support certain types of headers. Fail at build time if an unsupported type is found.
 	// We don't check this before because we need to ensure all referenced schemas have been defined.
 	if op.Responses["200"] != nil {
 		err := svc.validateHeaders(op.Responses["200"].Headers)
 		if err != nil {
-			return nil, "", nil, Named{}, err
+			return nil, "", nil, err
 		}
 	}
 
-	var emptyResponse Named
-	if response != nil && response.IsEmpty {
-		emptyResponse = response.Named
-		response = nil
-	}
-	return response, mimeType, bodyField, emptyResponse, nil
-}
-
-func (svc *Service) removeFromEmptyList(response *Entity) {
-	list := svc.Package.emptyTypes
-	for i, t := range list {
-		if t.Name == response.Name {
-			svc.Package.emptyTypes = append(list[:i], list[i+1:]...)
-			return
-		}
-	}
+	return response, mimeType, bodyField, nil
 }
 
 // ResponseHeaders are a map[string]*openapi.Parameter. The name is the key. This function converts
@@ -490,7 +464,7 @@ func (svc *Service) getPathStyle(op *openapi.Operation) openapi.PathStyle {
 func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) (*Method, error) {
 	methodName := op.Name()
 	request, reqMimeType, reqBodyField := svc.newRequest(params, op)
-	response, respMimeType, respBodyField, emptyResponse, err := svc.newResponse(op)
+	response, respMimeType, respBodyField, err := svc.newResponse(op)
 	if err != nil {
 		return nil, err
 	}
@@ -542,7 +516,6 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		Request:             request,
 		PathParts:           svc.paramPath(path, request, params),
 		Response:            response,
-		EmptyResponseName:   emptyResponse,
 		PathStyle:           requestStyle,
 		NameFieldPath:       nameFieldPath,
 		IdFieldPath:         idFieldPath,

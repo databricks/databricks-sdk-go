@@ -119,6 +119,9 @@ func (f *ArtifactType) Type() string {
 	return "ArtifactType"
 }
 
+type AssignResponse struct {
+}
+
 type AwsIamRole struct {
 	// The external ID used in role assumption to prevent confused deputy
 	// problem..
@@ -183,6 +186,9 @@ type CancelRefreshRequest struct {
 	FullName string `json:"-" url:"-"`
 	// ID of the refresh.
 	RefreshId string `json:"-" url:"-"`
+}
+
+type CancelRefreshResponse struct {
 }
 
 type CatalogInfo struct {
@@ -996,6 +1002,9 @@ func (s CreateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateResponse struct {
+}
+
 type CreateSchema struct {
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name"`
@@ -1159,6 +1168,9 @@ func (f *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
 }
 
+type DatabricksGcpServiceAccountRequest struct {
+}
+
 type DatabricksGcpServiceAccountResponse struct {
 	// The Databricks internal ID that represents this service account. This is
 	// an output-only field.
@@ -1230,6 +1242,9 @@ type DeleteAliasRequest struct {
 	Alias string `json:"-" url:"-"`
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
+}
+
+type DeleteAliasResponse struct {
 }
 
 // Delete a catalog
@@ -1337,6 +1352,9 @@ type DeleteRegisteredModelRequest struct {
 	FullName string `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 // Delete a schema
 type DeleteSchemaRequest struct {
 	// Full name of the schema.
@@ -1415,6 +1433,9 @@ type DisableRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
 	SchemaName DisableSchemaName `json:"-" url:"-"`
+}
+
+type DisableResponse struct {
 }
 
 type DisableSchemaName string
@@ -1583,6 +1604,9 @@ type EnableRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
 	SchemaName EnableSchemaName `json:"-" url:"-"`
+}
+
+type EnableResponse struct {
 }
 
 type EnableSchemaName string
@@ -3319,6 +3343,9 @@ func (f *MonitorRefreshInfoState) Type() string {
 	return "MonitorRefreshInfoState"
 }
 
+type MonitorSnapshotProfileType struct {
+}
+
 type MonitorTimeSeriesProfileType struct {
 	// List of granularities to use when aggregating data into time windows
 	// based on their timestamp.
@@ -3398,6 +3425,12 @@ func (s *OnlineTableSpec) UnmarshalJSON(b []byte) error {
 
 func (s OnlineTableSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type OnlineTableSpecContinuousSchedulingPolicy struct {
+}
+
+type OnlineTableSpecTriggeredSchedulingPolicy struct {
 }
 
 // The state of an online table.
@@ -4253,6 +4286,12 @@ type UnassignRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+type UnassignResponse struct {
+}
+
+type UpdateAssignmentResponse struct {
+}
+
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -4526,6 +4565,9 @@ func (s *UpdateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateResponse struct {
 }
 
 type UpdateSchema struct {
@@ -4919,31 +4961,3 @@ type WorkspaceBindingsResponse struct {
 	// List of workspace bindings
 	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 }
-
-type AssignResponse struct{}
-
-type CancelRefreshResponse struct{}
-
-type CreateResponse struct{}
-
-type DatabricksGcpServiceAccountRequest struct{}
-
-type DeleteAliasResponse struct{}
-
-type DeleteResponse struct{}
-
-type DisableResponse struct{}
-
-type EnableResponse struct{}
-
-type MonitorSnapshotProfileType struct{}
-
-type OnlineTableSpecContinuousSchedulingPolicy struct{}
-
-type OnlineTableSpecTriggeredSchedulingPolicy struct{}
-
-type UnassignResponse struct{}
-
-type UpdateAssignmentResponse struct{}
-
-type UpdateResponse struct{}

@@ -114,16 +114,25 @@ func (s CreateServicePrincipalSecretResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DeleteCustomAppIntegrationOutput struct {
+}
+
 // Delete Custom OAuth App Integration
 type DeleteCustomAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
 }
 
+type DeletePublishedAppIntegrationOutput struct {
+}
+
 // Delete Published OAuth App Integration
 type DeletePublishedAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
+}
+
+type DeleteResponse struct {
 }
 
 // Delete service principal secret
@@ -328,6 +337,9 @@ type UpdateCustomAppIntegration struct {
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 }
 
+type UpdateCustomAppIntegrationOutput struct {
+}
+
 type UpdatePublishedAppIntegration struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
@@ -335,12 +347,5 @@ type UpdatePublishedAppIntegration struct {
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 }
 
-type DeleteCustomAppIntegrationOutput struct{}
-
-type DeletePublishedAppIntegrationOutput struct{}
-
-type DeleteResponse struct{}
-
-type UpdateCustomAppIntegrationOutput struct{}
-
-type UpdatePublishedAppIntegrationOutput struct{}
+type UpdatePublishedAppIntegrationOutput struct {
+}

@@ -16,10 +16,11 @@ type lakeviewImpl struct {
 }
 
 func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) error {
+	var publishResponse PublishResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &publishResponse)
 	return err
 }

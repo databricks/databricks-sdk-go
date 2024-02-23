@@ -40,10 +40,11 @@ func (a *budgetsImpl) Create(ctx context.Context, request WrappedBudget) (*Wrapp
 }
 
 func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -66,11 +67,12 @@ func (a *budgetsImpl) List(ctx context.Context) (*BudgetList, error) {
 }
 
 func (a *budgetsImpl) Update(ctx context.Context, request WrappedBudget) error {
+	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
 }
 
@@ -108,10 +110,11 @@ func (a *logDeliveryImpl) List(ctx context.Context, request ListLogDeliveryReque
 }
 
 func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
+	var patchStatusResponse PatchStatusResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchStatusResponse)
 	return err
 }

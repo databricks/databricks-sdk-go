@@ -146,6 +146,9 @@ func (s CreateScope) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateScopeResponse struct {
+}
+
 type CredentialInfo struct {
 	// ID of the credential object in the workspace.
 	CredentialId int64 `json:"credential_id,omitempty"`
@@ -195,6 +198,9 @@ type DeleteAcl struct {
 	Scope string `json:"scope"`
 }
 
+type DeleteAclResponse struct {
+}
+
 // Delete a credential
 type DeleteGitCredentialRequest struct {
 	// The ID for the corresponding credential to access.
@@ -207,9 +213,15 @@ type DeleteRepoRequest struct {
 	RepoId int64 `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 type DeleteScope struct {
 	// Name of the scope to delete.
 	Scope string `json:"scope"`
+}
+
+type DeleteScopeResponse struct {
 }
 
 type DeleteSecret struct {
@@ -217,6 +229,9 @@ type DeleteSecret struct {
 	Key string `json:"key"`
 	// The name of the scope that contains the secret to delete.
 	Scope string `json:"scope"`
+}
+
+type DeleteSecretResponse struct {
 }
 
 type ExportFormat string
@@ -484,6 +499,9 @@ func (f *ImportFormat) Type() string {
 	return "ImportFormat"
 }
 
+type ImportResponse struct {
+}
+
 // The language of the object. This value is set only if the object type is
 // `NOTEBOOK`.
 type Language string
@@ -612,6 +630,9 @@ type Mkdirs struct {
 	Path string `json:"path"`
 }
 
+type MkdirsResponse struct {
+}
+
 type ObjectInfo struct {
 	// Only applicable to files. The creation UTC timestamp.
 	CreatedAt int64 `json:"created_at,omitempty"`
@@ -702,6 +723,9 @@ type PutAcl struct {
 	Scope string `json:"scope"`
 }
 
+type PutAclResponse struct {
+}
+
 type PutSecret struct {
 	// If specified, value will be stored as bytes.
 	BytesValue string `json:"bytes_value,omitempty"`
@@ -721,6 +745,9 @@ func (s *PutSecret) UnmarshalJSON(b []byte) error {
 
 func (s PutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type PutSecretResponse struct {
 }
 
 type RepoAccessControlRequest struct {
@@ -1011,6 +1038,9 @@ func (s UpdateRepo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateResponse struct {
+}
+
 type WorkspaceObjectAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
@@ -1146,23 +1176,3 @@ type WorkspaceObjectPermissionsRequest struct {
 	// The workspace object type for which to get or manage permissions.
 	WorkspaceObjectType string `json:"-" url:"-"`
 }
-
-type CreateScopeResponse struct{}
-
-type DeleteAclResponse struct{}
-
-type DeleteResponse struct{}
-
-type DeleteScopeResponse struct{}
-
-type DeleteSecretResponse struct{}
-
-type ImportResponse struct{}
-
-type MkdirsResponse struct{}
-
-type PutAclResponse struct{}
-
-type PutSecretResponse struct{}
-
-type UpdateResponse struct{}

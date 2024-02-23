@@ -98,6 +98,9 @@ type DeleteGroupRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 // Delete a service principal
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
@@ -116,6 +119,9 @@ type DeleteWorkspaceAssignmentRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type DeleteWorkspaceAssignments struct {
 }
 
 // Get group details
@@ -925,6 +931,9 @@ func (f *PatchOp) Type() string {
 	return "PatchOp"
 }
 
+type PatchResponse struct {
+}
+
 type PatchSchema string
 
 const PatchSchemaUrnIetfParamsScimApiMessages20PatchOp PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
@@ -1182,7 +1191,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
@@ -1224,6 +1233,9 @@ func (f *ServicePrincipalSchema) Type() string {
 	return "ServicePrincipalSchema"
 }
 
+type UpdateResponse struct {
+}
+
 type UpdateRuleSetRequest struct {
 	// Name of the rule set.
 	Name string `json:"name"`
@@ -1263,7 +1275,7 @@ type User struct {
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID. This is automatically set by Databricks. Any value
 	// provided by the client will be ignored.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
@@ -1311,6 +1323,9 @@ func (f *UserSchema) Type() string {
 	return "UserSchema"
 }
 
+type WorkspaceAssignmentsUpdated struct {
+}
+
 type WorkspacePermission string
 
 const WorkspacePermissionAdmin WorkspacePermission = `ADMIN`
@@ -1344,13 +1359,3 @@ type WorkspacePermissions struct {
 	// Array of permissions defined for a workspace.
 	Permissions []PermissionOutput `json:"permissions,omitempty"`
 }
-
-type DeleteResponse struct{}
-
-type DeleteWorkspaceAssignments struct{}
-
-type PatchResponse struct{}
-
-type UpdateResponse struct{}
-
-type WorkspaceAssignmentsUpdated struct{}

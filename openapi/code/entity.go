@@ -74,7 +74,6 @@ type Entity struct {
 	IsBool       bool
 	IsString     bool
 	IsByteStream bool
-	IsEmpty      bool
 
 	// this field does not have a concrete type
 	IsAny bool
@@ -176,6 +175,22 @@ func (e *Entity) IsMap() bool {
 // has to be imported from it
 func (e *Entity) IsExternal() bool {
 	return e.Package != nil && len(e.Package.types) == 0
+}
+
+func (e *Entity) IsEmpty() bool {
+	return len(e.fields) == 0 &&
+		len(e.enum) == 0 &&
+		e.ArrayValue == nil &&
+		e.MapValue == nil &&
+		!e.IsInt &&
+		!e.IsInt64 &&
+		!e.IsFloat64 &&
+		!e.IsBool &&
+		!e.IsString &&
+		!e.IsByteStream &&
+		!e.IsAny &&
+		!e.IsComputed &&
+		!e.IsExternal()
 }
 
 func (e *Entity) RequiredFields() (fields []*Field) {

@@ -28,4 +28,5 @@ func (s PublishRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type PublishResponse struct{}
+type PublishResponse struct {
+}
