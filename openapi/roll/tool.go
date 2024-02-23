@@ -1,7 +1,6 @@
 package roll
 
 import (
-	"cmp"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -126,11 +125,11 @@ func (s *Suite) Methods() []methodRef {
 		methods = append(methods, k)
 	}
 	slices.SortFunc(methods, func(a, b methodRef) int {
-		service := cmp.Compare(a.Service, b.Service)
+		service := Compare(a.Service, b.Service)
 		if service != 0 {
 			return service
 		}
-		return cmp.Compare(a.Method, b.Method)
+		return Compare(a.Method, b.Method)
 	})
 	return methods
 }
@@ -170,7 +169,7 @@ func (s *Suite) ServicesExamples() (out []*serviceExample) {
 			se.Samples = append(se.Samples, v)
 		}
 		slices.SortFunc(se.Samples, func(a, b *sample) int {
-			return cmp.Compare(a.FullName(), b.FullName())
+			return Compare(a.FullName(), b.FullName())
 		})
 		out = append(out, se)
 	}
