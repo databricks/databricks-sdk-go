@@ -18,9 +18,6 @@ type AnthropicConfig struct {
 	AnthropicApiKey string `json:"anthropic_api_key"`
 }
 
-type AnyValue struct {
-}
-
 type AppEvents struct {
 	EventName string `json:"event_name,omitempty"`
 

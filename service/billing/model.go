@@ -597,15 +597,6 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 type UpdateResponse struct {
 }
 
-// Format specification for month in the format `YYYY-MM`. This is used to
-// specify billable usage `start_month` and `end_month` properties. **Note**:
-// Billable usage logs are unavailable before March 2019 (`2019-03`).
-type UsageDownloadMonth struct {
-}
-
-type WorkspaceId struct {
-}
-
 type WrappedBudget struct {
 	// Budget configuration to be created.
 	Budget Budget `json:"budget"`

@@ -254,16 +254,6 @@ func (pkg *Package) localComponent(n *openapi.Node) string {
 // definedEntity defines and returns the requested entity based on the schema.
 // processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
 func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntities map[string]*Entity) *Entity {
-	if s == nil {
-		entity := &Entity{
-			Named: Named{
-				Name:        name,
-				Description: "",
-			},
-			fields: map[string]*Field{},
-		}
-		return pkg.define(entity)
-	}
 	if entity, ok := processedEntities[s.JsonPath]; ok {
 		// Return existing entity if it's already being generated.
 		return entity

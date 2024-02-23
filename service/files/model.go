@@ -177,10 +177,6 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The length of the file in bytes. This field is omitted for directories.
-type FileSize struct {
-}
-
 // Get directory metadata
 type GetDirectoryMetadataRequest struct {
 	// The absolute path of a directory.
@@ -219,10 +215,6 @@ type GetStatusRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
 	Path string `json:"-" url:"path"`
-}
-
-// The last modified time of the file in HTTP-date (RFC 7231) format.
-type LastModifiedHttpDate struct {
 }
 
 // List directory contents or file details
@@ -309,10 +301,6 @@ type Move struct {
 }
 
 type MoveResponse struct {
-}
-
-// A token, which can be sent as `page_token` to retrieve the next page.
-type PageToken struct {
 }
 
 type Put struct {

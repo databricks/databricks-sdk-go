@@ -983,12 +983,6 @@ type SparseCheckout struct {
 	Patterns []string `json:"patterns,omitempty"`
 }
 
-// Sparse checkout cone pattern, see [cone mode handling] for details.
-//
-// [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
-type SparseCheckoutPattern struct {
-}
-
 type SparseCheckoutUpdate struct {
 	// List of patterns to include for sparse checkout.
 	Patterns []string `json:"patterns,omitempty"`

@@ -9,7 +9,26 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 {{range .Types}}
-{{if .MapValue}}{{.Comment "// " 80}}
+{{- if or .Fields .IsEmpty}}
+{{.Comment "// " 80}}
+type {{.PascalName}} struct {
+    {{- range .Fields}}
+    {{.Comment "    // " 80}}
+    {{.PascalName}} {{if .IsOptionalObject}}*{{end}}{{template "type" .Entity}} `{{template "field-tag" . }}`{{end}}
+
+	{{if .ShouldIncludeForceSendFields}} ForceSendFields []string `json:"-"` {{end}}
+}
+
+{{if .ShouldIncludeForceSendFields}}
+func (s *{{.PascalName}}) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s {{.PascalName}}) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+{{end}}
+{{else if .MapValue}}{{.Comment "// " 80}}
 type {{.PascalName}} {{template "type" .}}
 {{else if .Enum}}{{.Comment "// " 80}}
 type {{.PascalName}} string
@@ -37,25 +56,6 @@ func (f *{{.PascalName}}) Set(v string) error {
 func (f *{{.PascalName}}) Type() string {
     return "{{.PascalName}}"
 }
-{{- else}}
-{{.Comment "// " 80}}
-type {{.PascalName}} struct {
-    {{- range .Fields}}
-    {{.Comment "    // " 80}}
-    {{.PascalName}} {{if .IsOptionalObject}}*{{end}}{{template "type" .Entity}} `{{template "field-tag" . }}`{{end}}
-
-	{{if .ShouldIncludeForceSendFields}} ForceSendFields []string `json:"-"` {{end}}
-}
-
-{{if .ShouldIncludeForceSendFields}}
-func (s *{{.PascalName}}) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s {{.PascalName}}) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-{{end}}
 {{end}}
 {{end}}
 
@@ -68,6 +68,7 @@ func (s {{.PascalName}}) MarshalJSON() ([]byte, error) {
 
 {{- define "type" -}}
 	{{- if not . }}any /* ERROR */
+	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
 	{{- else if .IsAny}}any
 	{{- else if .IsEmpty}}{{.PascalName}}
 	{{- else if .IsString}}string
@@ -78,7 +79,6 @@ func (s {{.PascalName}}) MarshalJSON() ([]byte, error) {
 	{{- else if .IsByteStream}}io.ReadCloser
 	{{- else if .ArrayValue }}[]{{template "type" .ArrayValue}}
 	{{- else if .MapValue }}map[string]{{template "type" .MapValue}}
-	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
 	{{- else if .IsObject }}{{.PascalName}}
 	{{- else if .Enum }}{{.PascalName}}
 	{{- else}}any /* MISSING TYPE */

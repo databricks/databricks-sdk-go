@@ -113,10 +113,6 @@ func (f *ActivityAction) Type() string {
 	return "ActivityAction"
 }
 
-// Unique identifier of an activity
-type ActivityId struct {
-}
-
 // Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
 // corresponding stage transition.
 //
@@ -1619,10 +1615,6 @@ func (s ModelDatabricks) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Name of the model whose events would trigger this webhook.
-type ModelName struct {
-}
-
 type ModelTag struct {
 	// The tag key.
 	Key string `json:"key,omitempty"`
@@ -3074,8 +3066,4 @@ func (f *UpdateRunStatus) Type() string {
 }
 
 type UpdateWebhookResponse struct {
-}
-
-// Webhook ID
-type WebhookId struct {
 }

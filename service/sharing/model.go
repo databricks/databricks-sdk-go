@@ -681,9 +681,6 @@ func (f *PartitionValueOp) Type() string {
 	return "PartitionValueOp"
 }
 
-type PermissionsList struct {
-}
-
 type Privilege string
 
 const PrivilegeAllPrivileges Privilege = `ALL_PRIVILEGES`

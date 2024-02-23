@@ -4961,7 +4961,3 @@ type WorkspaceBindingsResponse struct {
 	// List of workspace bindings
 	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 }
-
-// Workspace id.
-type WorkspaceId struct {
-}
