@@ -162,9 +162,19 @@ func (e *Entity) GetUnderlyingFields(path []string) ([]*Field, error) {
 	return append([]*Field{field}, rest...), nil
 }
 
-// IsObject returns true if entity is not a Mpa and has more than zero fields
+// IsObject returns true if entity is an object. We determine this by checking if
+// it is any other type of structure.
 func (e *Entity) IsObject() bool {
-	return e.MapValue == nil && len(e.fields) > 0
+	return len(e.enum) == 0 &&
+		e.ArrayValue == nil &&
+		e.MapValue == nil &&
+		!e.IsInt &&
+		!e.IsInt64 &&
+		!e.IsFloat64 &&
+		!e.IsBool &&
+		!e.IsString &&
+		!e.IsByteStream &&
+		!e.IsAny
 }
 
 func (e *Entity) IsMap() bool {
@@ -178,17 +188,9 @@ func (e *Entity) IsExternal() bool {
 }
 
 func (e *Entity) IsEmpty() bool {
-	return len(e.fields) == 0 &&
+	return e.IsObject() &&
+		len(e.fields) == 0 &&
 		len(e.enum) == 0 &&
-		e.ArrayValue == nil &&
-		e.MapValue == nil &&
-		!e.IsInt &&
-		!e.IsInt64 &&
-		!e.IsFloat64 &&
-		!e.IsBool &&
-		!e.IsString &&
-		!e.IsByteStream &&
-		!e.IsAny &&
 		!e.IsComputed &&
 		!e.IsExternal()
 }
