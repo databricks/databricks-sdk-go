@@ -190,7 +190,6 @@ func (e *Entity) IsExternal() bool {
 func (e *Entity) IsEmpty() bool {
 	return e.IsObject() &&
 		len(e.fields) == 0 &&
-		len(e.enum) == 0 &&
 		!e.IsComputed &&
 		!e.IsExternal()
 }
