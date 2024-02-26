@@ -8,8 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 type AclItem struct {
 	// The permission level applied to the principal.
 	Permission AclPermission `json:"permission"`
@@ -148,6 +146,9 @@ func (s CreateScope) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateScopeResponse struct {
+}
+
 type CredentialInfo struct {
 	// ID of the credential object in the workspace.
 	CredentialId int64 `json:"credential_id,omitempty"`
@@ -197,6 +198,9 @@ type DeleteAcl struct {
 	Scope string `json:"scope"`
 }
 
+type DeleteAclResponse struct {
+}
+
 // Delete a credential
 type DeleteGitCredentialRequest struct {
 	// The ID for the corresponding credential to access.
@@ -209,9 +213,15 @@ type DeleteRepoRequest struct {
 	RepoId int64 `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 type DeleteScope struct {
 	// Name of the scope to delete.
 	Scope string `json:"scope"`
+}
+
+type DeleteScopeResponse struct {
 }
 
 type DeleteSecret struct {
@@ -219,6 +229,9 @@ type DeleteSecret struct {
 	Key string `json:"key"`
 	// The name of the scope that contains the secret to delete.
 	Scope string `json:"scope"`
+}
+
+type DeleteSecretResponse struct {
 }
 
 type ExportFormat string
@@ -486,6 +499,9 @@ func (f *ImportFormat) Type() string {
 	return "ImportFormat"
 }
 
+type ImportResponse struct {
+}
+
 // The language of the object. This value is set only if the object type is
 // `NOTEBOOK`.
 type Language string
@@ -614,6 +630,9 @@ type Mkdirs struct {
 	Path string `json:"path"`
 }
 
+type MkdirsResponse struct {
+}
+
 type ObjectInfo struct {
 	// Only applicable to files. The creation UTC timestamp.
 	CreatedAt int64 `json:"created_at,omitempty"`
@@ -704,6 +723,9 @@ type PutAcl struct {
 	Scope string `json:"scope"`
 }
 
+type PutAclResponse struct {
+}
+
 type PutSecret struct {
 	// If specified, value will be stored as bytes.
 	BytesValue string `json:"bytes_value,omitempty"`
@@ -723,6 +745,9 @@ func (s *PutSecret) UnmarshalJSON(b []byte) error {
 
 func (s PutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type PutSecretResponse struct {
 }
 
 type RepoAccessControlRequest struct {
@@ -1011,6 +1036,9 @@ func (s *UpdateRepo) UnmarshalJSON(b []byte) error {
 
 func (s UpdateRepo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateResponse struct {
 }
 
 type WorkspaceObjectAccessControlRequest struct {

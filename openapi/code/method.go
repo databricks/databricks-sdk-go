@@ -21,8 +21,7 @@ type Method struct {
 	// Request type representation
 	Request *Entity
 	// Response type representation
-	Response          *Entity
-	EmptyResponseName Named
+	Response *Entity
 
 	// The style of the request, either "rpc" or "rest". See the documentation on
 	// Operation for more details.
@@ -111,6 +110,18 @@ func (m *Method) pathParams() (params []Field) {
 		params = append(params, *part.Field)
 	}
 	return params
+}
+
+func (m *Method) ResponseHeaders() (headers []Field) {
+	if m.Response == nil {
+		return headers
+	}
+	for _, field := range m.Response.Fields() {
+		if field.IsHeader {
+			headers = append(headers, *field)
+		}
+	}
+	return headers
 }
 
 func (m *Method) allowShortcut() bool {

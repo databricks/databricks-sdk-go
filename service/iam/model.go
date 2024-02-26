@@ -8,8 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 type AccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
@@ -100,6 +98,9 @@ type DeleteGroupRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 // Delete a service principal
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
@@ -118,6 +119,9 @@ type DeleteWorkspaceAssignmentRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type DeleteWorkspaceAssignments struct {
 }
 
 // Get group details
@@ -325,7 +329,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -927,6 +931,9 @@ func (f *PatchOp) Type() string {
 	return "PatchOp"
 }
 
+type PatchResponse struct {
+}
+
 type PatchSchema string
 
 const PatchSchemaUrnIetfParamsScimApiMessages20PatchOp PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
@@ -1226,6 +1233,9 @@ func (f *ServicePrincipalSchema) Type() string {
 	return "ServicePrincipalSchema"
 }
 
+type UpdateResponse struct {
+}
+
 type UpdateRuleSetRequest struct {
 	// Name of the rule set.
 	Name string `json:"name"`
@@ -1265,7 +1275,7 @@ type User struct {
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID. This is automatically set by Databricks. Any value
 	// provided by the client will be ignored.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
@@ -1311,6 +1321,9 @@ func (f *UserSchema) Set(v string) error {
 // Type always returns UserSchema to satisfy [pflag.Value] interface
 func (f *UserSchema) Type() string {
 	return "UserSchema"
+}
+
+type WorkspaceAssignmentsUpdated struct {
 }
 
 type WorkspacePermission string

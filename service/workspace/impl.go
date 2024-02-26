@@ -26,9 +26,10 @@ func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentia
 }
 
 func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteGitCredentialRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -51,11 +52,12 @@ func (a *gitCredentialsImpl) List(ctx context.Context) (*GetCredentialsResponse,
 }
 
 func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentials) error {
+	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
 }
 
@@ -75,9 +77,10 @@ func (a *reposImpl) Create(ctx context.Context, request CreateRepo) (*RepoInfo, 
 }
 
 func (a *reposImpl) Delete(ctx context.Context, request DeleteRepoRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -128,11 +131,12 @@ func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsR
 }
 
 func (a *reposImpl) Update(ctx context.Context, request UpdateRepo) error {
+	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
 }
 
@@ -152,38 +156,42 @@ type secretsImpl struct {
 }
 
 func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) error {
+	var createScopeResponse CreateScopeResponse
 	path := "/api/2.0/secrets/scopes/create"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createScopeResponse)
 	return err
 }
 
 func (a *secretsImpl) DeleteAcl(ctx context.Context, request DeleteAcl) error {
+	var deleteAclResponse DeleteAclResponse
 	path := "/api/2.0/secrets/acls/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteAclResponse)
 	return err
 }
 
 func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) error {
+	var deleteScopeResponse DeleteScopeResponse
 	path := "/api/2.0/secrets/scopes/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteScopeResponse)
 	return err
 }
 
 func (a *secretsImpl) DeleteSecret(ctx context.Context, request DeleteSecret) error {
+	var deleteSecretResponse DeleteSecretResponse
 	path := "/api/2.0/secrets/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteSecretResponse)
 	return err
 }
 
@@ -233,20 +241,22 @@ func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsReques
 }
 
 func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) error {
+	var putAclResponse PutAclResponse
 	path := "/api/2.0/secrets/acls/put"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &putAclResponse)
 	return err
 }
 
 func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) error {
+	var putSecretResponse PutSecretResponse
 	path := "/api/2.0/secrets/put"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &putSecretResponse)
 	return err
 }
 
@@ -256,11 +266,12 @@ type workspaceImpl struct {
 }
 
 func (a *workspaceImpl) Delete(ctx context.Context, request Delete) error {
+	var deleteResponse DeleteResponse
 	path := "/api/2.0/workspace/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -301,11 +312,12 @@ func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatusRequest)
 }
 
 func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
+	var importResponse ImportResponse
 	path := "/api/2.0/workspace/import"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &importResponse)
 	return err
 }
 
@@ -319,11 +331,12 @@ func (a *workspaceImpl) List(ctx context.Context, request ListWorkspaceRequest) 
 }
 
 func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
+	var mkdirsResponse MkdirsResponse
 	path := "/api/2.0/workspace/mkdirs"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &mkdirsResponse)
 	return err
 }
 

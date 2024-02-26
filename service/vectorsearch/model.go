@@ -8,8 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 type ColumnInfo struct {
 	// Name of the column.
 	Name string `json:"name,omitempty"`
@@ -142,10 +140,16 @@ type DeleteEndpointRequest struct {
 	Name string `json:"-"`
 }
 
+type DeleteEndpointResponse struct {
+}
+
 // Delete an index
 type DeleteIndexRequest struct {
 	// Name of the index
 	IndexName string `json:"-" url:"-"`
+}
+
+type DeleteIndexResponse struct {
 }
 
 type DeltaSyncVectorIndexSpecRequest struct {
@@ -227,23 +231,9 @@ func (s DirectAccessVectorIndexSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type EmbeddingConfig struct {
+type EmbeddingSourceColumn struct {
 	// Name of the embedding model endpoint
 	EmbeddingModelEndpointName string `json:"embedding_model_endpoint_name,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *EmbeddingConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s EmbeddingConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type EmbeddingSourceColumn struct {
-	EmbeddingConfig *EmbeddingConfig `json:"embedding_config,omitempty"`
 	// Name of the column
 	Name string `json:"name,omitempty"`
 
@@ -612,6 +602,9 @@ type SyncIndexRequest struct {
 	IndexName string `json:"-" url:"-"`
 }
 
+type SyncIndexResponse struct {
+}
+
 // Result of the upsert or delete operation.
 type UpsertDataResult struct {
 	// List of primary keys for rows that failed to process.
@@ -681,9 +674,9 @@ type VectorIndex struct {
 	// The user who created the index.
 	Creator string `json:"creator,omitempty"`
 
-	DeltaSyncVectorIndexSpec *DeltaSyncVectorIndexSpecResponse `json:"delta_sync_vector_index_spec,omitempty"`
+	DeltaSyncIndexSpec *DeltaSyncVectorIndexSpecResponse `json:"delta_sync_index_spec,omitempty"`
 
-	DirectAccessVectorIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_vector_index_spec,omitempty"`
+	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
 	// Name of the endpoint associated with the index
 	EndpointName string `json:"endpoint_name,omitempty"`
 	// There are 2 types of Vector Search indexes:

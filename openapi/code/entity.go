@@ -74,7 +74,6 @@ type Entity struct {
 	IsBool       bool
 	IsString     bool
 	IsByteStream bool
-	IsEmpty      bool
 
 	// this field does not have a concrete type
 	IsAny bool
@@ -178,6 +177,22 @@ func (e *Entity) IsExternal() bool {
 	return e.Package != nil && len(e.Package.types) == 0
 }
 
+func (e *Entity) IsEmpty() bool {
+	return len(e.fields) == 0 &&
+		len(e.enum) == 0 &&
+		e.ArrayValue == nil &&
+		e.MapValue == nil &&
+		!e.IsInt &&
+		!e.IsInt64 &&
+		!e.IsFloat64 &&
+		!e.IsBool &&
+		!e.IsString &&
+		!e.IsByteStream &&
+		!e.IsAny &&
+		!e.IsComputed &&
+		!e.IsExternal()
+}
+
 func (e *Entity) RequiredFields() (fields []*Field) {
 	for _, r := range e.RequiredOrder {
 		v := e.fields[r]
@@ -248,6 +263,16 @@ func (e *Entity) Fields() (fields []*Field) {
 func (e *Entity) HasQueryField() bool {
 	for _, v := range e.fields {
 		if v.IsQuery {
+			return true
+		}
+	}
+	return false
+}
+
+// HasByteStreamField returns true if any of the fields is a ByteStream
+func (e *Entity) HasByteStreamField() bool {
+	for _, v := range e.fields {
+		if v.Entity.IsByteStream {
 			return true
 		}
 	}

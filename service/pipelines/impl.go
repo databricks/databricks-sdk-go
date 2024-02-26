@@ -26,10 +26,11 @@ func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*Cr
 }
 
 func (a *pipelinesImpl) Delete(ctx context.Context, request DeletePipelineRequest) error {
+	var deletePipelineResponse DeletePipelineResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deletePipelineResponse)
 	return err
 }
 
@@ -117,19 +118,21 @@ func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*
 }
 
 func (a *pipelinesImpl) Stop(ctx context.Context, request StopRequest) error {
+	var stopPipelineResponse StopPipelineResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", request.PipelineId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &stopPipelineResponse)
 	return err
 }
 
 func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error {
+	var editPipelineResponse EditPipelineResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &editPipelineResponse)
 	return err
 }
 

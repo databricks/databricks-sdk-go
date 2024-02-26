@@ -36,20 +36,22 @@ func (a *experimentsImpl) CreateRun(ctx context.Context, request CreateRun) (*Cr
 }
 
 func (a *experimentsImpl) DeleteExperiment(ctx context.Context, request DeleteExperiment) error {
+	var deleteExperimentResponse DeleteExperimentResponse
 	path := "/api/2.0/mlflow/experiments/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteExperimentResponse)
 	return err
 }
 
 func (a *experimentsImpl) DeleteRun(ctx context.Context, request DeleteRun) error {
+	var deleteRunResponse DeleteRunResponse
 	path := "/api/2.0/mlflow/runs/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteRunResponse)
 	return err
 }
 
@@ -64,11 +66,12 @@ func (a *experimentsImpl) DeleteRuns(ctx context.Context, request DeleteRuns) (*
 }
 
 func (a *experimentsImpl) DeleteTag(ctx context.Context, request DeleteTag) error {
+	var deleteTagResponse DeleteTagResponse
 	path := "/api/2.0/mlflow/runs/delete-tag"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteTagResponse)
 	return err
 }
 
@@ -145,65 +148,72 @@ func (a *experimentsImpl) ListExperiments(ctx context.Context, request ListExper
 }
 
 func (a *experimentsImpl) LogBatch(ctx context.Context, request LogBatch) error {
+	var logBatchResponse LogBatchResponse
 	path := "/api/2.0/mlflow/runs/log-batch"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &logBatchResponse)
 	return err
 }
 
 func (a *experimentsImpl) LogInputs(ctx context.Context, request LogInputs) error {
+	var logInputsResponse LogInputsResponse
 	path := "/api/2.0/mlflow/runs/log-inputs"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &logInputsResponse)
 	return err
 }
 
 func (a *experimentsImpl) LogMetric(ctx context.Context, request LogMetric) error {
+	var logMetricResponse LogMetricResponse
 	path := "/api/2.0/mlflow/runs/log-metric"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &logMetricResponse)
 	return err
 }
 
 func (a *experimentsImpl) LogModel(ctx context.Context, request LogModel) error {
+	var logModelResponse LogModelResponse
 	path := "/api/2.0/mlflow/runs/log-model"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &logModelResponse)
 	return err
 }
 
 func (a *experimentsImpl) LogParam(ctx context.Context, request LogParam) error {
+	var logParamResponse LogParamResponse
 	path := "/api/2.0/mlflow/runs/log-parameter"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &logParamResponse)
 	return err
 }
 
 func (a *experimentsImpl) RestoreExperiment(ctx context.Context, request RestoreExperiment) error {
+	var restoreExperimentResponse RestoreExperimentResponse
 	path := "/api/2.0/mlflow/experiments/restore"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &restoreExperimentResponse)
 	return err
 }
 
 func (a *experimentsImpl) RestoreRun(ctx context.Context, request RestoreRun) error {
+	var restoreRunResponse RestoreRunResponse
 	path := "/api/2.0/mlflow/runs/restore"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &restoreRunResponse)
 	return err
 }
 
@@ -238,11 +248,12 @@ func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) (*
 }
 
 func (a *experimentsImpl) SetExperimentTag(ctx context.Context, request SetExperimentTag) error {
+	var setExperimentTagResponse SetExperimentTagResponse
 	path := "/api/2.0/mlflow/experiments/set-experiment-tag"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &setExperimentTagResponse)
 	return err
 }
 
@@ -257,20 +268,22 @@ func (a *experimentsImpl) SetPermissions(ctx context.Context, request Experiment
 }
 
 func (a *experimentsImpl) SetTag(ctx context.Context, request SetTag) error {
+	var setTagResponse SetTagResponse
 	path := "/api/2.0/mlflow/runs/set-tag"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &setTagResponse)
 	return err
 }
 
 func (a *experimentsImpl) UpdateExperiment(ctx context.Context, request UpdateExperiment) error {
+	var updateExperimentResponse UpdateExperimentResponse
 	path := "/api/2.0/mlflow/experiments/update"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &updateExperimentResponse)
 	return err
 }
 
@@ -360,58 +373,65 @@ func (a *modelRegistryImpl) CreateWebhook(ctx context.Context, request CreateReg
 }
 
 func (a *modelRegistryImpl) DeleteComment(ctx context.Context, request DeleteCommentRequest) error {
+	var deleteCommentResponse DeleteCommentResponse
 	path := "/api/2.0/mlflow/comments/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteCommentResponse)
 	return err
 }
 
 func (a *modelRegistryImpl) DeleteModel(ctx context.Context, request DeleteModelRequest) error {
+	var deleteModelResponse DeleteModelResponse
 	path := "/api/2.0/mlflow/registered-models/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteModelResponse)
 	return err
 }
 
 func (a *modelRegistryImpl) DeleteModelTag(ctx context.Context, request DeleteModelTagRequest) error {
+	var deleteModelTagResponse DeleteModelTagResponse
 	path := "/api/2.0/mlflow/registered-models/delete-tag"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteModelTagResponse)
 	return err
 }
 
 func (a *modelRegistryImpl) DeleteModelVersion(ctx context.Context, request DeleteModelVersionRequest) error {
+	var deleteModelVersionResponse DeleteModelVersionResponse
 	path := "/api/2.0/mlflow/model-versions/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteModelVersionResponse)
 	return err
 }
 
 func (a *modelRegistryImpl) DeleteModelVersionTag(ctx context.Context, request DeleteModelVersionTagRequest) error {
+	var deleteModelVersionTagResponse DeleteModelVersionTagResponse
 	path := "/api/2.0/mlflow/model-versions/delete-tag"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteModelVersionTagResponse)
 	return err
 }
 
 func (a *modelRegistryImpl) DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) error {
+	var deleteTransitionRequestResponse DeleteTransitionRequestResponse
 	path := "/api/2.0/mlflow/transition-requests/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteTransitionRequestResponse)
 	return err
 }
 
 func (a *modelRegistryImpl) DeleteWebhook(ctx context.Context, request DeleteWebhookRequest) error {
+	var deleteWebhookResponse DeleteWebhookResponse
 	path := "/api/2.0/mlflow/registry-webhooks/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteWebhookResponse)
 	return err
 }
 
@@ -536,20 +556,22 @@ func (a *modelRegistryImpl) SearchModels(ctx context.Context, request SearchMode
 }
 
 func (a *modelRegistryImpl) SetModelTag(ctx context.Context, request SetModelTagRequest) error {
+	var setModelTagResponse SetModelTagResponse
 	path := "/api/2.0/mlflow/registered-models/set-tag"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &setModelTagResponse)
 	return err
 }
 
 func (a *modelRegistryImpl) SetModelVersionTag(ctx context.Context, request SetModelVersionTagRequest) error {
+	var setModelVersionTagResponse SetModelVersionTagResponse
 	path := "/api/2.0/mlflow/model-versions/set-tag"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &setModelVersionTagResponse)
 	return err
 }
 
@@ -594,20 +616,22 @@ func (a *modelRegistryImpl) UpdateComment(ctx context.Context, request UpdateCom
 }
 
 func (a *modelRegistryImpl) UpdateModel(ctx context.Context, request UpdateModelRequest) error {
+	var updateModelResponse UpdateModelResponse
 	path := "/api/2.0/mlflow/registered-models/update"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateModelResponse)
 	return err
 }
 
 func (a *modelRegistryImpl) UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) error {
+	var updateModelVersionResponse UpdateModelVersionResponse
 	path := "/api/2.0/mlflow/model-versions/update"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateModelVersionResponse)
 	return err
 }
 
@@ -622,10 +646,11 @@ func (a *modelRegistryImpl) UpdatePermissions(ctx context.Context, request Regis
 }
 
 func (a *modelRegistryImpl) UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) error {
+	var updateWebhookResponse UpdateWebhookResponse
 	path := "/api/2.0/mlflow/registry-webhooks/update"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateWebhookResponse)
 	return err
 }

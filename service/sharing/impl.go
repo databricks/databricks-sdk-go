@@ -28,10 +28,11 @@ func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoom) (*
 }
 
 func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -79,10 +80,11 @@ func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*Pr
 }
 
 func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -129,10 +131,11 @@ type recipientActivationImpl struct {
 }
 
 func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error {
+	var getActivationUrlInfoResponse GetActivationUrlInfoResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation_info/%v", request.ActivationUrl)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getActivationUrlInfoResponse)
 	return err
 }
 
@@ -161,10 +164,11 @@ func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*
 }
 
 func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -206,11 +210,12 @@ func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePerm
 }
 
 func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) error {
+	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
 }
 
@@ -230,10 +235,11 @@ func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*ShareInf
 }
 
 func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -275,10 +281,11 @@ func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInf
 }
 
 func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error {
+	var updatePermissionsResponse UpdatePermissionsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updatePermissionsResponse)
 	return err
 }

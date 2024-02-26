@@ -1,5 +1,50 @@
 # Version changelog
 
+## 0.33.0
+
+Internal Changes:
+
+* Add helper function to get header fields ([#822](https://github.com/databricks/databricks-sdk-go/pull/822)).
+* Add Int64 to header type injection ([#819](https://github.com/databricks/databricks-sdk-go/pull/819)).
+
+API Changes:
+
+ * Changed `Update` method for [w.LakehouseMonitors](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#LakehouseMonitorsAPI) workspace-level service with new required argument order.
+ * Added [w.OnlineTables](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#OnlineTablesAPI) workspace-level service.
+ * Removed `AssetsDir` field for [catalog.UpdateMonitor](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateMonitor).
+ * Added [catalog.ContinuousUpdateStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ContinuousUpdateStatus).
+ * Added [catalog.DeleteOnlineTableRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteOnlineTableRequest).
+ * Added [catalog.FailedStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FailedStatus).
+ * Added [catalog.GetOnlineTableRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetOnlineTableRequest).
+ * Added [catalog.OnlineTable](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#OnlineTable).
+ * Added [catalog.OnlineTableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#OnlineTableSpec).
+ * Added [catalog.OnlineTableState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#OnlineTableState).
+ * Added [catalog.OnlineTableStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#OnlineTableStatus).
+ * Added [catalog.PipelineProgress](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#PipelineProgress).
+ * Added [catalog.ProvisioningStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ProvisioningStatus).
+ * Added [catalog.TriggeredUpdateStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TriggeredUpdateStatus).
+ * Added [catalog.ViewData](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ViewData).
+ * Added `ContentLength` field for [files.DownloadResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#DownloadResponse).
+ * Added `ContentType` field for [files.DownloadResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#DownloadResponse).
+ * Added `LastModified` field for [files.DownloadResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#DownloadResponse).
+ * Changed `LastModified` field for [files.GetMetadataResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#GetMetadataResponse) to [files.LastModifiedHttpDate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#LastModifiedHttpDate).
+ * Added [files.LastModifiedHttpDate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#LastModifiedHttpDate).
+ * Removed `Config` field for [serving.ExternalModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalModel).
+ * Added `Ai21labsConfig` field for [serving.ExternalModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalModel).
+ * Added `AnthropicConfig` field for [serving.ExternalModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalModel).
+ * Added `AwsBedrockConfig` field for [serving.ExternalModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalModel).
+ * Added `CohereConfig` field for [serving.ExternalModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalModel).
+ * Added `DatabricksModelServingConfig` field for [serving.ExternalModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalModel).
+ * Added `OpenaiConfig` field for [serving.ExternalModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalModel).
+ * Added `PalmConfig` field for [serving.ExternalModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalModel).
+ * Removed [serving.ExternalModelConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalModelConfig).
+ * Added `MaxProvisionedThroughput` field for [serving.ServedEntityInput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedEntityInput).
+ * Added `MinProvisionedThroughput` field for [serving.ServedEntityInput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedEntityInput).
+ * Added `MaxProvisionedThroughput` field for [serving.ServedEntityOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedEntityOutput).
+ * Added `MinProvisionedThroughput` field for [serving.ServedEntityOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedEntityOutput).
+
+OpenAPI SHA: cdd76a98a4fca7008572b3a94427566dd286c63b, Date: 2024-02-19
+
 ## 0.32.0
 
 Major Changes:

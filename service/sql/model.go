@@ -8,8 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 type AccessControl struct {
 	GroupName string `json:"group_name,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
@@ -252,6 +250,9 @@ type CancelExecutionRequest struct {
 	StatementId string `json:"-" url:"-"`
 }
 
+type CancelExecutionResponse struct {
+}
+
 type Channel struct {
 	DbsqlVersion string `json:"dbsql_version,omitempty"`
 
@@ -286,7 +287,6 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -803,10 +803,16 @@ type DeleteQueryVisualizationRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 // Delete a warehouse
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+}
+
+type DeleteWarehouseResponse struct {
 }
 
 // The fetch disposition provides two modes of fetching results: `INLINE` and
@@ -988,6 +994,9 @@ func (f *EditWarehouseRequestWarehouseType) Set(v string) error {
 // Type always returns EditWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
 func (f *EditWarehouseRequestWarehouseType) Type() string {
 	return "EditWarehouseRequestWarehouseType"
+}
+
+type EditWarehouseResponse struct {
 }
 
 type EndpointConfPair struct {
@@ -2438,8 +2447,6 @@ type QueryMetrics struct {
 	// query, in milliseconds.
 	PhotonTotalTimeMs int `json:"photon_total_time_ms,omitempty"`
 	// Reserved for internal use.
-	PlanningPhases []any `json:"planning_phases,omitempty"`
-	// Reserved for internal use.
 	PlanningTimeMs int `json:"planning_time_ms,omitempty"`
 	// Timestamp of when the query was enqueued waiting for a cluster to be
 	// provisioned for the warehouse. This field is optional and will not appear
@@ -2677,6 +2684,9 @@ type RestoreDashboardRequest struct {
 // Restore a query
 type RestoreQueryRequest struct {
 	QueryId string `json:"-" url:"-"`
+}
+
+type RestoreResponse struct {
 }
 
 // Contains the result data of a single chunk when using `INLINE` disposition.
@@ -2962,6 +2972,9 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 	return "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
 }
 
+type SetWorkspaceWarehouseConfigResponse struct {
+}
+
 // Configurations whether the warehouse should use spot instances.
 type SpotInstancePolicy string
 
@@ -2996,6 +3009,9 @@ func (f *SpotInstancePolicy) Type() string {
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+}
+
+type StartWarehouseResponse struct {
 }
 
 // State of the warehouse
@@ -3158,6 +3174,9 @@ func (f *Status) Type() string {
 type StopRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+}
+
+type StopWarehouseResponse struct {
 }
 
 type Success struct {
@@ -3463,6 +3482,9 @@ func (s *TransferOwnershipRequest) UnmarshalJSON(b []byte) error {
 
 func (s TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateResponse struct {
 }
 
 type User struct {

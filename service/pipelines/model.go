@@ -9,8 +9,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
-// all definitions in this file are in alphabetical order
-
 type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
@@ -107,7 +105,7 @@ type DataPlaneId struct {
 	// The instance name of the data plane emitting an event.
 	Instance string `json:"instance,omitempty"`
 	// A sequence number, unique and increasing within the data plane instance.
-	SeqNo any `json:"seq_no,omitempty"`
+	SeqNo int `json:"seq_no,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -123,6 +121,9 @@ func (s DataPlaneId) MarshalJSON() ([]byte, error) {
 // Delete a pipeline
 type DeletePipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
+}
+
+type DeletePipelineResponse struct {
 }
 
 type EditPipeline struct {
@@ -185,6 +186,9 @@ func (s *EditPipeline) UnmarshalJSON(b []byte) error {
 
 func (s EditPipeline) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type EditPipelineResponse struct {
 }
 
 type ErrorDetail struct {
@@ -507,6 +511,9 @@ func (s *ListUpdatesResponse) UnmarshalJSON(b []byte) error {
 
 func (s ListUpdatesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ManualTrigger struct {
 }
 
 // Maturity level for EventDetails.
@@ -1083,7 +1090,7 @@ func (s PipelineStateInfo) MarshalJSON() ([]byte, error) {
 type PipelineTrigger struct {
 	Cron *CronTrigger `json:"cron,omitempty"`
 
-	Manual any `json:"manual,omitempty"`
+	Manual ManualTrigger `json:"manual,omitempty"`
 }
 
 type Sequencing struct {
@@ -1221,6 +1228,9 @@ func (s *StartUpdateResponse) UnmarshalJSON(b []byte) error {
 
 func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type StopPipelineResponse struct {
 }
 
 // Stop a pipeline

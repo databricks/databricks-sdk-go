@@ -179,15 +179,14 @@ func (c *Config) NewWithWorkspaceHost(host string) (*Config, error) {
 	}
 
 	res.Host = host
-	// We can reuse the same OAuth token refresh client and context. The
-	// reuseTokenSource internally locks.
-	res.refreshClient = c.refreshClient
-	res.refreshCtx = c.refreshCtx
-	// The config does not need to be re-resolved, as we reuse all attributes
-	// from the original config.
-	res.resolved = c.resolved
-	res.auth = c.auth
 	res.isTesting = c.isTesting
+	// We need to reresolve the config with the updated host in general. For
+	// example, the audience for OAuth tokens provided by GCP is derived from
+	// the host, so account-level tokens cannot be used at workspace-level or
+	// vice-versa.
+	//
+	// In the future, when unified login is widely available, we may be able to
+	// reuse the authentication visitor specifically for in-house OAuth.
 	return res, nil
 }
 

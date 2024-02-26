@@ -16,20 +16,22 @@ type jobsImpl struct {
 }
 
 func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {
+	var cancelAllRunsResponse CancelAllRunsResponse
 	path := "/api/2.1/jobs/runs/cancel-all"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &cancelAllRunsResponse)
 	return err
 }
 
 func (a *jobsImpl) CancelRun(ctx context.Context, request CancelRun) error {
+	var cancelRunResponse CancelRunResponse
 	path := "/api/2.1/jobs/runs/cancel"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &cancelRunResponse)
 	return err
 }
 
@@ -44,20 +46,22 @@ func (a *jobsImpl) Create(ctx context.Context, request CreateJob) (*CreateRespon
 }
 
 func (a *jobsImpl) Delete(ctx context.Context, request DeleteJob) error {
+	var deleteResponse DeleteResponse
 	path := "/api/2.1/jobs/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteResponse)
 	return err
 }
 
 func (a *jobsImpl) DeleteRun(ctx context.Context, request DeleteRun) error {
+	var deleteRunResponse DeleteRunResponse
 	path := "/api/2.1/jobs/runs/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteRunResponse)
 	return err
 }
 
@@ -144,11 +148,12 @@ func (a *jobsImpl) RepairRun(ctx context.Context, request RepairRun) (*RepairRun
 }
 
 func (a *jobsImpl) Reset(ctx context.Context, request ResetJob) error {
+	var resetResponse ResetResponse
 	path := "/api/2.1/jobs/reset"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &resetResponse)
 	return err
 }
 
@@ -183,11 +188,12 @@ func (a *jobsImpl) Submit(ctx context.Context, request SubmitRun) (*SubmitRunRes
 }
 
 func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) error {
+	var updateResponse UpdateResponse
 	path := "/api/2.1/jobs/update"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &updateResponse)
 	return err
 }
 

@@ -26,9 +26,10 @@ func (a *vectorSearchEndpointsImpl) CreateEndpoint(ctx context.Context, request 
 }
 
 func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error {
+	var deleteEndpointResponse DeleteEndpointResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", request.EndpointName)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteEndpointResponse)
 	return err
 }
 
@@ -76,9 +77,10 @@ func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, req
 }
 
 func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request DeleteIndexRequest) error {
+	var deleteIndexResponse DeleteIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v", request.IndexName)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteIndexResponse)
 	return err
 }
 
@@ -111,9 +113,10 @@ func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryV
 }
 
 func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncIndexRequest) error {
+	var syncIndexResponse SyncIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/sync", request.IndexName)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &syncIndexResponse)
 	return err
 }
 

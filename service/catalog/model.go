@@ -8,8 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 type AccountsCreateMetastore struct {
 	MetastoreInfo *CreateMetastore `json:"metastore_info,omitempty"`
 }
@@ -121,6 +119,9 @@ func (f *ArtifactType) Type() string {
 	return "ArtifactType"
 }
 
+type AssignResponse struct {
+}
+
 type AwsIamRole struct {
 	// The external ID used in role assumption to prevent confused deputy
 	// problem..
@@ -185,6 +186,9 @@ type CancelRefreshRequest struct {
 	FullName string `json:"-" url:"-"`
 	// ID of the refresh.
 	RefreshId string `json:"-" url:"-"`
+}
+
+type CancelRefreshResponse struct {
 }
 
 type CatalogInfo struct {
@@ -604,6 +608,30 @@ func (f *ConnectionType) Type() string {
 	return "ConnectionType"
 }
 
+// Detailed status of an online table. Shown if the online table is in the
+// ONLINE_CONTINUOUS_UPDATE or the ONLINE_UPDATING_PIPELINE_RESOURCES state.
+type ContinuousUpdateStatus struct {
+	// Progress of the initial data synchronization.
+	InitialPipelineSyncProgress *PipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
+	// The last source table Delta version that was synced to the online table.
+	// Note that this Delta version may not be completely synced to the online
+	// table yet.
+	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
+	// The timestamp of the last time any data was synchronized from the source
+	// table to the online table.
+	Timestamp string `json:"timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ContinuousUpdateStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -932,7 +960,7 @@ type CreateMonitor struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot any `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeriesProfileType `json:"time_series,omitempty"`
 	// Optional argument to specify the warehouse for dashboard creation. If not
@@ -974,6 +1002,9 @@ func (s CreateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateResponse struct {
+}
+
 type CreateSchema struct {
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name"`
@@ -1009,7 +1040,7 @@ type CreateStorageCredential struct {
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
-	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name"`
 	// Whether the storage credential is only usable for read operations.
@@ -1137,6 +1168,9 @@ func (f *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
 }
 
+type DatabricksGcpServiceAccountRequest struct {
+}
+
 type DatabricksGcpServiceAccountResponse struct {
 	// The Databricks internal ID that represents this service account. This is
 	// an output-only field.
@@ -1208,6 +1242,9 @@ type DeleteAliasRequest struct {
 	Alias string `json:"-" url:"-"`
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
+}
+
+type DeleteAliasResponse struct {
 }
 
 // Delete a catalog
@@ -1303,10 +1340,19 @@ type DeleteModelVersionRequest struct {
 	Version int `json:"-" url:"-"`
 }
 
+// Delete an Online Table
+type DeleteOnlineTableRequest struct {
+	// Full three-part (catalog, schema, table) name of the table.
+	Name string `json:"-" url:"-"`
+}
+
 // Delete a Registered Model
 type DeleteRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
+}
+
+type DeleteResponse struct {
 }
 
 // Delete a schema
@@ -1387,6 +1433,9 @@ type DisableRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
 	SchemaName DisableSchemaName `json:"-" url:"-"`
+}
+
+type DisableResponse struct {
 }
 
 type DisableSchemaName string
@@ -1557,6 +1606,9 @@ type EnableRequest struct {
 	SchemaName EnableSchemaName `json:"-" url:"-"`
 }
 
+type EnableResponse struct {
+}
+
 type EnableSchemaName string
 
 const EnableSchemaNameAccess EnableSchemaName = `access`
@@ -1639,6 +1691,30 @@ func (s *ExternalLocationInfo) UnmarshalJSON(b []byte) error {
 }
 
 func (s ExternalLocationInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Detailed status of an online table. Shown if the online table is in the
+// OFFLINE_FAILED or the ONLINE_PIPELINE_FAILED state.
+type FailedStatus struct {
+	// The last source table Delta version that was synced to the online table.
+	// Note that this Delta version may only be partially synced to the online
+	// table. Only populated if the table is still online and available for
+	// serving.
+	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
+	// The timestamp of the last time any data was synchronized from the source
+	// table to the online table. Only populated if the table is still online
+	// and available for serving.
+	Timestamp string `json:"timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *FailedStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FailedStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2153,6 +2229,12 @@ type GetModelVersionRequest struct {
 	FullName string `json:"-" url:"-"`
 	// The integer version number of the model version
 	Version int `json:"-" url:"-"`
+}
+
+// Get an Online Table
+type GetOnlineTableRequest struct {
+	// Full three-part (catalog, schema, table) name of the table.
+	Name string `json:"-" url:"-"`
 }
 
 // Get refresh
@@ -3144,7 +3226,7 @@ type MonitorInfo struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot any `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// The status of the monitor.
 	Status MonitorInfoStatus `json:"status,omitempty"`
 	// The full name of the table to monitor. Format:
@@ -3261,6 +3343,9 @@ func (f *MonitorRefreshInfoState) Type() string {
 	return "MonitorRefreshInfoState"
 }
 
+type MonitorSnapshotProfileType struct {
+}
+
 type MonitorTimeSeriesProfileType struct {
 	// List of granularities to use when aggregating data into time windows
 	// based on their timestamp.
@@ -3285,6 +3370,148 @@ type NamedTableConstraint struct {
 	Name string `json:"name"`
 }
 
+// Online Table information.
+type OnlineTable struct {
+	// Full three-part (catalog, schema, table) name of the table.
+	Name string `json:"name,omitempty"`
+	// Specification of the online table.
+	Spec *OnlineTableSpec `json:"spec,omitempty"`
+	// Online Table status
+	Status *OnlineTableStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *OnlineTable) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OnlineTable) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Specification of an online table.
+type OnlineTableSpec struct {
+	// Whether to create a full-copy pipeline -- a pipeline that stops after
+	// creates a full copy of the source table upon initialization and does not
+	// process any change data feeds (CDFs) afterwards. The pipeline can still
+	// be manually triggered afterwards, but it always perform a full copy of
+	// the source table and there are no incremental updates. This mode is
+	// useful for syncing views or tables without CDFs to online tables. Note
+	// that the full-copy pipeline only supports "triggered" scheduling policy.
+	PerformFullCopy bool `json:"perform_full_copy,omitempty"`
+	// ID of the associated pipeline. Generated by the server - cannot be set by
+	// the caller.
+	PipelineId string `json:"pipeline_id,omitempty"`
+	// Primary Key columns to be used for data insert/update in the destination.
+	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
+	// Pipeline runs continuously after generating the initial data.
+	RunContinuously OnlineTableSpecContinuousSchedulingPolicy `json:"run_continuously,omitempty"`
+	// Pipeline stops after generating the initial data and can be triggered
+	// later (manually, through a cron job or through data triggers)
+	RunTriggered OnlineTableSpecTriggeredSchedulingPolicy `json:"run_triggered,omitempty"`
+	// Three-part (catalog, schema, table) name of the source Delta table.
+	SourceTableFullName string `json:"source_table_full_name,omitempty"`
+	// Time series key to deduplicate (tie-break) rows with the same primary
+	// key.
+	TimeseriesKey string `json:"timeseries_key,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *OnlineTableSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OnlineTableSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type OnlineTableSpecContinuousSchedulingPolicy struct {
+}
+
+type OnlineTableSpecTriggeredSchedulingPolicy struct {
+}
+
+// The state of an online table.
+type OnlineTableState string
+
+const OnlineTableStateOffline OnlineTableState = `OFFLINE`
+
+const OnlineTableStateOfflineFailed OnlineTableState = `OFFLINE_FAILED`
+
+const OnlineTableStateOnline OnlineTableState = `ONLINE`
+
+const OnlineTableStateOnlineContinuousUpdate OnlineTableState = `ONLINE_CONTINUOUS_UPDATE`
+
+const OnlineTableStateOnlineNoPendingUpdate OnlineTableState = `ONLINE_NO_PENDING_UPDATE`
+
+const OnlineTableStateOnlinePipelineFailed OnlineTableState = `ONLINE_PIPELINE_FAILED`
+
+const OnlineTableStateOnlineTableStateUnspecified OnlineTableState = `ONLINE_TABLE_STATE_UNSPECIFIED`
+
+const OnlineTableStateOnlineTriggeredUpdate OnlineTableState = `ONLINE_TRIGGERED_UPDATE`
+
+const OnlineTableStateOnlineUpdatingPipelineResources OnlineTableState = `ONLINE_UPDATING_PIPELINE_RESOURCES`
+
+const OnlineTableStateProvisioning OnlineTableState = `PROVISIONING`
+
+const OnlineTableStateProvisioningInitialSnapshot OnlineTableState = `PROVISIONING_INITIAL_SNAPSHOT`
+
+const OnlineTableStateProvisioningPipelineResources OnlineTableState = `PROVISIONING_PIPELINE_RESOURCES`
+
+// String representation for [fmt.Print]
+func (f *OnlineTableState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *OnlineTableState) Set(v string) error {
+	switch v {
+	case `OFFLINE`, `OFFLINE_FAILED`, `ONLINE`, `ONLINE_CONTINUOUS_UPDATE`, `ONLINE_NO_PENDING_UPDATE`, `ONLINE_PIPELINE_FAILED`, `ONLINE_TABLE_STATE_UNSPECIFIED`, `ONLINE_TRIGGERED_UPDATE`, `ONLINE_UPDATING_PIPELINE_RESOURCES`, `PROVISIONING`, `PROVISIONING_INITIAL_SNAPSHOT`, `PROVISIONING_PIPELINE_RESOURCES`:
+		*f = OnlineTableState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "OFFLINE", "OFFLINE_FAILED", "ONLINE", "ONLINE_CONTINUOUS_UPDATE", "ONLINE_NO_PENDING_UPDATE", "ONLINE_PIPELINE_FAILED", "ONLINE_TABLE_STATE_UNSPECIFIED", "ONLINE_TRIGGERED_UPDATE", "ONLINE_UPDATING_PIPELINE_RESOURCES", "PROVISIONING", "PROVISIONING_INITIAL_SNAPSHOT", "PROVISIONING_PIPELINE_RESOURCES"`, v)
+	}
+}
+
+// Type always returns OnlineTableState to satisfy [pflag.Value] interface
+func (f *OnlineTableState) Type() string {
+	return "OnlineTableState"
+}
+
+// Status of an online table.
+type OnlineTableStatus struct {
+	// Detailed status of an online table. Shown if the online table is in the
+	// ONLINE_CONTINUOUS_UPDATE or the ONLINE_UPDATING_PIPELINE_RESOURCES state.
+	ContinuousUpdateStatus *ContinuousUpdateStatus `json:"continuous_update_status,omitempty"`
+	// The state of the online table.
+	DetailedState OnlineTableState `json:"detailed_state,omitempty"`
+	// Detailed status of an online table. Shown if the online table is in the
+	// OFFLINE_FAILED or the ONLINE_PIPELINE_FAILED state.
+	FailedStatus *FailedStatus `json:"failed_status,omitempty"`
+	// A text description of the current state of the online table.
+	Message string `json:"message,omitempty"`
+	// Detailed status of an online table. Shown if the online table is in the
+	// PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT
+	// state.
+	ProvisioningStatus *ProvisioningStatus `json:"provisioning_status,omitempty"`
+	// Detailed status of an online table. Shown if the online table is in the
+	// ONLINE_TRIGGERED_UPDATE or the ONLINE_NO_PENDING_UPDATE state.
+	TriggeredUpdateStatus *TriggeredUpdateStatus `json:"triggered_update_status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *OnlineTableStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OnlineTableStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PermissionsChange struct {
 	// The set of privileges to add.
 	Add []Privilege `json:"add,omitempty"`
@@ -3307,6 +3534,32 @@ func (s PermissionsChange) MarshalJSON() ([]byte, error) {
 type PermissionsList struct {
 	// The privileges assigned to each principal
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+}
+
+// Progress information of the Online Table data synchronization pipeline.
+type PipelineProgress struct {
+	// The estimated time remaining to complete this update in seconds.
+	EstimatedCompletionTimeSeconds float64 `json:"estimated_completion_time_seconds,omitempty"`
+	// The source table Delta version that was last processed by the pipeline.
+	// The pipeline may not have completely processed this version yet.
+	LatestVersionCurrentlyProcessing int64 `json:"latest_version_currently_processing,omitempty"`
+	// The completion ratio of this update. This is a number between 0 and 1.
+	SyncProgressCompletion float64 `json:"sync_progress_completion,omitempty"`
+	// The number of rows that have been synced in this update.
+	SyncedRowCount int64 `json:"synced_row_count,omitempty"`
+	// The total number of rows that need to be synced in this update. This
+	// number may be an estimate.
+	TotalRowCount int64 `json:"total_row_count,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelineProgress) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelineProgress) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PrimaryKeyConstraint struct {
@@ -3477,6 +3730,14 @@ func (f *ProvisioningInfoState) Set(v string) error {
 // Type always returns ProvisioningInfoState to satisfy [pflag.Value] interface
 func (f *ProvisioningInfoState) Type() string {
 	return "ProvisioningInfoState"
+}
+
+// Detailed status of an online table. Shown if the online table is in the
+// PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state.
+type ProvisioningStatus struct {
+	// Details about initial data synchronization. Only populated when in the
+	// PROVISIONING_INITIAL_SNAPSHOT state.
+	InitialPipelineSyncProgress *PipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
 }
 
 // Get a Volume
@@ -3993,12 +4254,42 @@ func (f *TableType) Type() string {
 	return "TableType"
 }
 
+// Detailed status of an online table. Shown if the online table is in the
+// ONLINE_TRIGGERED_UPDATE or the ONLINE_NO_PENDING_UPDATE state.
+type TriggeredUpdateStatus struct {
+	// The last source table Delta version that was synced to the online table.
+	// Note that this Delta version may not be completely synced to the online
+	// table yet.
+	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
+	// The timestamp of the last time any data was synchronized from the source
+	// table to the online table.
+	Timestamp string `json:"timestamp,omitempty"`
+	// Progress of the active data synchronization pipeline.
+	TriggeredUpdateProgress *PipelineProgress `json:"triggered_update_progress,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TriggeredUpdateStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Delete an assignment
 type UnassignRequest struct {
 	// Query for the ID of the metastore to delete.
 	MetastoreId string `json:"-" url:"metastore_id"`
 	// A workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type UnassignResponse struct {
+}
+
+type UpdateAssignmentResponse struct {
 }
 
 type UpdateCatalog struct {
@@ -4204,8 +4495,6 @@ func (s UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateMonitor struct {
-	// The directory to store monitoring assets (e.g. dashboard, metric tables).
-	AssetsDir string `json:"assets_dir"`
 	// Name of the baseline table from which drift metrics are computed from.
 	// Columns in the monitored table should also be present in the baseline
 	// table.
@@ -4233,7 +4522,7 @@ type UpdateMonitor struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot any `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeriesProfileType `json:"time_series,omitempty"`
 
@@ -4278,6 +4567,9 @@ func (s UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateResponse struct {
+}
+
 type UpdateSchema struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -4316,7 +4608,7 @@ type UpdateStorageCredential struct {
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
-	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// Force update even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"force,omitempty"`
@@ -4412,13 +4704,13 @@ type ValidateStorageCredential struct {
 	// The Cloudflare API token configuration.
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// The Databricks created GCP service account configuration.
-	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate.
 	ExternalLocationName string `json:"external_location_name,omitempty"`
 	// Whether the storage credential is only usable for read operations.
 	ReadOnly bool `json:"read_only,omitempty"`
 	// The name of the storage credential to validate.
-	StorageCredentialName any `json:"storage_credential_name,omitempty"`
+	StorageCredentialName string `json:"storage_credential_name,omitempty"`
 	// The external location url to validate.
 	Url string `json:"url,omitempty"`
 
@@ -4529,6 +4821,24 @@ func (f *ValidationResultResult) Set(v string) error {
 // Type always returns ValidationResultResult to satisfy [pflag.Value] interface
 func (f *ValidationResultResult) Type() string {
 	return "ValidationResultResult"
+}
+
+// Online Table information.
+type ViewData struct {
+	// Full three-part (catalog, schema, table) name of the table.
+	Name string `json:"name,omitempty"`
+	// Specification of the online table.
+	Spec *OnlineTableSpec `json:"spec,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ViewData) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ViewData) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type VolumeInfo struct {

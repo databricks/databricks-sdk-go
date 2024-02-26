@@ -49,5 +49,6 @@ func TestNewWithWorkspaceHost(t *testing.T) {
 	// Other fields should be preserved
 	assert.Equal(t, "client-id", c2.ClientID)
 	assert.Equal(t, "http://", c2.MetadataServiceURL)
-	assert.True(t, c2.resolved)
+	// The new config will not be automatically resolved.
+	assert.False(t, c2.resolved)
 }

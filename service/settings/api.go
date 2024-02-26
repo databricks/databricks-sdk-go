@@ -367,10 +367,32 @@ type AccountSettingsInterface interface {
 	// Reverts back the Personal Compute setting value to default (ON)
 	DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error)
 
+	// Get the compliance security profile setting for new workspaces.
+	//
+	// Gets the compliance security profile setting for new workspaces.
+	GetCspEnablementAccountSetting(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
+
+	// Get the enhanced security monitoring setting for new workspaces.
+	//
+	// Gets the enhanced security monitoring setting for new workspaces.
+	GetEsmEnablementAccountSetting(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error)
+
 	// Get Personal Compute setting.
 	//
 	// Gets the value of the Personal Compute setting.
 	GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+
+	// Update the compliance security profile setting for new workspaces.
+	//
+	// Updates the value of the compliance security profile setting for new
+	// workspaces.
+	UpdateCspEnablementAccountSetting(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
+
+	// Update the enhanced security monitoring setting for new workspaces.
+	//
+	// Updates the value of the enhanced security monitoring setting for new
+	// workspaces.
+	UpdateEsmEnablementAccountSetting(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error)
 
 	// Update Personal Compute setting.
 	//
@@ -422,11 +444,41 @@ func (a *AccountSettingsAPI) DeletePersonalComputeSetting(ctx context.Context, r
 	return a.impl.DeletePersonalComputeSetting(ctx, request)
 }
 
+// Get the compliance security profile setting for new workspaces.
+//
+// Gets the compliance security profile setting for new workspaces.
+func (a *AccountSettingsAPI) GetCspEnablementAccountSetting(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
+	return a.impl.GetCspEnablementAccountSetting(ctx, request)
+}
+
+// Get the enhanced security monitoring setting for new workspaces.
+//
+// Gets the enhanced security monitoring setting for new workspaces.
+func (a *AccountSettingsAPI) GetEsmEnablementAccountSetting(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
+	return a.impl.GetEsmEnablementAccountSetting(ctx, request)
+}
+
 // Get Personal Compute setting.
 //
 // Gets the value of the Personal Compute setting.
 func (a *AccountSettingsAPI) GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	return a.impl.GetPersonalComputeSetting(ctx, request)
+}
+
+// Update the compliance security profile setting for new workspaces.
+//
+// Updates the value of the compliance security profile setting for new
+// workspaces.
+func (a *AccountSettingsAPI) UpdateCspEnablementAccountSetting(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
+	return a.impl.UpdateCspEnablementAccountSetting(ctx, request)
+}
+
+// Update the enhanced security monitoring setting for new workspaces.
+//
+// Updates the value of the enhanced security monitoring setting for new
+// workspaces.
+func (a *AccountSettingsAPI) UpdateEsmEnablementAccountSetting(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
+	return a.impl.UpdateEsmEnablementAccountSetting(ctx, request)
 }
 
 // Update Personal Compute setting.
@@ -1211,51 +1263,92 @@ type SettingsInterface interface {
 	// Delete the default namespace setting.
 	//
 	// Deletes the default namespace setting for the workspace. A fresh etag needs
-	// to be provided in DELETE requests (as a query parameter). The etag can be
-	// retrieved by making a GET request before the DELETE request. If the setting
-	// is updated/deleted concurrently, DELETE will fail with 409 and the request
-	// will need to be retried by using the fresh etag in the 409 response.
+	// to be provided in `DELETE` requests (as a query parameter). The etag can be
+	// retrieved by making a `GET` request before the `DELETE` request. If the
+	// setting is updated/deleted concurrently, `DELETE` fails with 409 and the
+	// request must be retried by using the fresh etag in the 409 response.
 	DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error)
 
 	// Delete the restrict workspace admins setting.
 	//
 	// Reverts the restrict workspace admins setting status for the workspace. A
-	// fresh etag needs to be provided in DELETE requests (as a query parameter).
-	// The etag can be retrieved by making a GET request before the DELETE request.
-	// If the setting is updated/deleted concurrently, DELETE will fail with 409 and
-	// the request will need to be retried by using the fresh etag in the 409
+	// fresh etag needs to be provided in `DELETE` requests (as a query parameter).
+	// The etag can be retrieved by making a `GET` request before the DELETE
+	// request. If the setting is updated/deleted concurrently, `DELETE` fails with
+	// 409 and the request must be retried by using the fresh etag in the 409
 	// response.
 	DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
+
+	// Get the automatic cluster update setting.
+	//
+	// Gets the automatic cluster update setting.
+	GetAutomaticClusterUpdateSetting(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
+
+	// Get the compliance security profile setting.
+	//
+	// Gets the compliance security profile setting.
+	GetCspEnablementSetting(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error)
 
 	// Get the default namespace setting.
 	//
 	// Gets the default namespace setting.
 	GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
 
+	// Get the enhanced security monitoring setting.
+	//
+	// Gets the enhanced security monitoring setting.
+	GetEsmEnablementSetting(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
+
 	// Get the restrict workspace admins setting.
 	//
 	// Gets the restrict workspace admins setting.
 	GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
 
+	// Update the automatic cluster update setting.
+	//
+	// Updates the automatic cluster update setting for the workspace. A fresh etag
+	// needs to be provided in `PATCH` requests (as part of the setting field). The
+	// etag can be retrieved by making a `GET` request before the `PATCH` request.
+	// If the setting is updated concurrently, `PATCH` fails with 409 and the
+	// request must be retried by using the fresh etag in the 409 response.
+	UpdateAutomaticClusterUpdateSetting(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
+
+	// Update the compliance security profile setting.
+	//
+	// Updates the compliance security profile setting for the workspace. A fresh
+	// etag needs to be provided in `PATCH` requests (as part of the setting field).
+	// The etag can be retrieved by making a `GET` request before the `PATCH`
+	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+	// the request must be retried by using the fresh etag in the 409 response.
+	UpdateCspEnablementSetting(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error)
+
 	// Update the default namespace setting.
 	//
 	// Updates the default namespace setting for the workspace. A fresh etag needs
-	// to be provided in PATCH requests (as part of the setting field). The etag can
-	// be retrieved by making a GET request before the PATCH request. Note that if
-	// the setting does not exist, GET will return a NOT_FOUND error and the etag
-	// will be present in the error response, which should be set in the PATCH
-	// request. If the setting is updated concurrently, PATCH will fail with 409 and
-	// the request will need to be retried by using the fresh etag in the 409
-	// response.
+	// to be provided in `PATCH` requests (as part of the setting field). The etag
+	// can be retrieved by making a `GET` request before the `PATCH` request. Note
+	// that if the setting does not exist, `GET` returns a NOT_FOUND error and the
+	// etag is present in the error response, which should be set in the `PATCH`
+	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+	// the request must be retried by using the fresh etag in the 409 response.
 	UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
+
+	// Update the enhanced security monitoring setting.
+	//
+	// Updates the enhanced security monitoring setting for the workspace. A fresh
+	// etag needs to be provided in `PATCH` requests (as part of the setting field).
+	// The etag can be retrieved by making a `GET` request before the `PATCH`
+	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+	// the request must be retried by using the fresh etag in the 409 response.
+	UpdateEsmEnablementSetting(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
 
 	// Update the restrict workspace admins setting.
 	//
 	// Updates the restrict workspace admins setting for the workspace. A fresh etag
-	// needs to be provided in PATCH requests (as part of the setting field). The
-	// etag can be retrieved by making a GET request before the PATCH request. If
-	// the setting is updated concurrently, PATCH will fail with 409 and the request
-	// will need to be retried by using the fresh etag in the 409 response.
+	// needs to be provided in `PATCH` requests (as part of the setting field). The
+	// etag can be retrieved by making a GET request before the `PATCH` request. If
+	// the setting is updated concurrently, `PATCH` fails with 409 and the request
+	// must be retried by using the fresh etag in the 409 response.
 	UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
 }
 
@@ -1302,10 +1395,10 @@ func (a *SettingsAPI) Impl() SettingsService {
 // Delete the default namespace setting.
 //
 // Deletes the default namespace setting for the workspace. A fresh etag needs
-// to be provided in DELETE requests (as a query parameter). The etag can be
-// retrieved by making a GET request before the DELETE request. If the setting
-// is updated/deleted concurrently, DELETE will fail with 409 and the request
-// will need to be retried by using the fresh etag in the 409 response.
+// to be provided in `DELETE` requests (as a query parameter). The etag can be
+// retrieved by making a `GET` request before the `DELETE` request. If the
+// setting is updated/deleted concurrently, `DELETE` fails with 409 and the
+// request must be retried by using the fresh etag in the 409 response.
 func (a *SettingsAPI) DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
 	return a.impl.DeleteDefaultNamespaceSetting(ctx, request)
 }
@@ -1313,13 +1406,27 @@ func (a *SettingsAPI) DeleteDefaultNamespaceSetting(ctx context.Context, request
 // Delete the restrict workspace admins setting.
 //
 // Reverts the restrict workspace admins setting status for the workspace. A
-// fresh etag needs to be provided in DELETE requests (as a query parameter).
-// The etag can be retrieved by making a GET request before the DELETE request.
-// If the setting is updated/deleted concurrently, DELETE will fail with 409 and
-// the request will need to be retried by using the fresh etag in the 409
+// fresh etag needs to be provided in `DELETE` requests (as a query parameter).
+// The etag can be retrieved by making a `GET` request before the DELETE
+// request. If the setting is updated/deleted concurrently, `DELETE` fails with
+// 409 and the request must be retried by using the fresh etag in the 409
 // response.
 func (a *SettingsAPI) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
 	return a.impl.DeleteRestrictWorkspaceAdminsSetting(ctx, request)
+}
+
+// Get the automatic cluster update setting.
+//
+// Gets the automatic cluster update setting.
+func (a *SettingsAPI) GetAutomaticClusterUpdateSetting(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
+	return a.impl.GetAutomaticClusterUpdateSetting(ctx, request)
+}
+
+// Get the compliance security profile setting.
+//
+// Gets the compliance security profile setting.
+func (a *SettingsAPI) GetCspEnablementSetting(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error) {
+	return a.impl.GetCspEnablementSetting(ctx, request)
 }
 
 // Get the default namespace setting.
@@ -1329,6 +1436,13 @@ func (a *SettingsAPI) GetDefaultNamespaceSetting(ctx context.Context, request Ge
 	return a.impl.GetDefaultNamespaceSetting(ctx, request)
 }
 
+// Get the enhanced security monitoring setting.
+//
+// Gets the enhanced security monitoring setting.
+func (a *SettingsAPI) GetEsmEnablementSetting(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
+	return a.impl.GetEsmEnablementSetting(ctx, request)
+}
+
 // Get the restrict workspace admins setting.
 //
 // Gets the restrict workspace admins setting.
@@ -1336,27 +1450,59 @@ func (a *SettingsAPI) GetRestrictWorkspaceAdminsSetting(ctx context.Context, req
 	return a.impl.GetRestrictWorkspaceAdminsSetting(ctx, request)
 }
 
+// Update the automatic cluster update setting.
+//
+// Updates the automatic cluster update setting for the workspace. A fresh etag
+// needs to be provided in `PATCH` requests (as part of the setting field). The
+// etag can be retrieved by making a `GET` request before the `PATCH` request.
+// If the setting is updated concurrently, `PATCH` fails with 409 and the
+// request must be retried by using the fresh etag in the 409 response.
+func (a *SettingsAPI) UpdateAutomaticClusterUpdateSetting(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
+	return a.impl.UpdateAutomaticClusterUpdateSetting(ctx, request)
+}
+
+// Update the compliance security profile setting.
+//
+// Updates the compliance security profile setting for the workspace. A fresh
+// etag needs to be provided in `PATCH` requests (as part of the setting field).
+// The etag can be retrieved by making a `GET` request before the `PATCH`
+// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+// the request must be retried by using the fresh etag in the 409 response.
+func (a *SettingsAPI) UpdateCspEnablementSetting(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error) {
+	return a.impl.UpdateCspEnablementSetting(ctx, request)
+}
+
 // Update the default namespace setting.
 //
 // Updates the default namespace setting for the workspace. A fresh etag needs
-// to be provided in PATCH requests (as part of the setting field). The etag can
-// be retrieved by making a GET request before the PATCH request. Note that if
-// the setting does not exist, GET will return a NOT_FOUND error and the etag
-// will be present in the error response, which should be set in the PATCH
-// request. If the setting is updated concurrently, PATCH will fail with 409 and
-// the request will need to be retried by using the fresh etag in the 409
-// response.
+// to be provided in `PATCH` requests (as part of the setting field). The etag
+// can be retrieved by making a `GET` request before the `PATCH` request. Note
+// that if the setting does not exist, `GET` returns a NOT_FOUND error and the
+// etag is present in the error response, which should be set in the `PATCH`
+// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+// the request must be retried by using the fresh etag in the 409 response.
 func (a *SettingsAPI) UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
 	return a.impl.UpdateDefaultNamespaceSetting(ctx, request)
+}
+
+// Update the enhanced security monitoring setting.
+//
+// Updates the enhanced security monitoring setting for the workspace. A fresh
+// etag needs to be provided in `PATCH` requests (as part of the setting field).
+// The etag can be retrieved by making a `GET` request before the `PATCH`
+// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+// the request must be retried by using the fresh etag in the 409 response.
+func (a *SettingsAPI) UpdateEsmEnablementSetting(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
+	return a.impl.UpdateEsmEnablementSetting(ctx, request)
 }
 
 // Update the restrict workspace admins setting.
 //
 // Updates the restrict workspace admins setting for the workspace. A fresh etag
-// needs to be provided in PATCH requests (as part of the setting field). The
-// etag can be retrieved by making a GET request before the PATCH request. If
-// the setting is updated concurrently, PATCH will fail with 409 and the request
-// will need to be retried by using the fresh etag in the 409 response.
+// needs to be provided in `PATCH` requests (as part of the setting field). The
+// etag can be retrieved by making a GET request before the `PATCH` request. If
+// the setting is updated concurrently, `PATCH` fails with 409 and the request
+// must be retried by using the fresh etag in the 409 response.
 func (a *SettingsAPI) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
 	return a.impl.UpdateRestrictWorkspaceAdminsSetting(ctx, request)
 }

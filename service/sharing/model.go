@@ -9,8 +9,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-// all definitions in this file are in alphabetical order
-
 // The delta sharing authentication type.
 type AuthenticationType string
 
@@ -447,6 +445,9 @@ type DeleteRecipientRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type DeleteResponse struct {
+}
+
 // Delete a share
 type DeleteShareRequest struct {
 	// The name of the share.
@@ -457,6 +458,9 @@ type DeleteShareRequest struct {
 type GetActivationUrlInfoRequest struct {
 	// The one time activation url. It also accepts activation token.
 	ActivationUrl string `json:"-" url:"-"`
+}
+
+type GetActivationUrlInfoResponse struct {
 }
 
 // Get a clean room
@@ -1237,6 +1241,9 @@ func (s UpdateCleanRoom) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdatePermissionsResponse struct {
+}
+
 type UpdateProvider struct {
 	// Description about the provider.
 	Comment string `json:"comment,omitempty"`
@@ -1287,6 +1294,9 @@ func (s *UpdateRecipient) UnmarshalJSON(b []byte) error {
 
 func (s UpdateRecipient) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateResponse struct {
 }
 
 type UpdateShare struct {

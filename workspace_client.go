@@ -222,8 +222,22 @@ type WorkspaceClient struct {
 	// with the **CREATE_EXTERNAL_LOCATION** privilege.
 	ExternalLocations catalog.ExternalLocationsInterface
 
-	// The Files API allows you to read, write, and delete files and directories
-	// in Unity Catalog volumes.
+	// The Files API is a standard HTTP API that allows you to read, write,
+	// list, and delete files and directories by referring to their URI. The API
+	// makes working with file content as raw bytes easier and more efficient.
+	//
+	// The API supports [Unity Catalog volumes], where files and directories to
+	// operate on are specified using their volume URI path, which follows the
+	// format
+	// /Volumes/&lt;catalog_name&gt;/&lt;schema_name&gt;/&lt;volume_name&gt;/&lt;path_to_file&gt;.
+	//
+	// The Files API has two distinct endpoints, one for working with files
+	// (`/fs/files`) and another one for working with directories
+	// (`/fs/directories`). Both endpoints, use the standard HTTP methods GET,
+	// HEAD, PUT, and DELETE to manage files and directories specified using
+	// their URI path. The path is always absolute.
+	//
+	// [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 	Files files.FilesInterface
 
 	// Functions implement User-Defined Functions (UDFs) in Unity Catalog.
@@ -426,6 +440,10 @@ type WorkspaceClient struct {
 	// versions in Unity Catalog. For more details, see the [registered models
 	// API docs](/api/workspace/registeredmodels).
 	ModelVersions catalog.ModelVersionsInterface
+
+	// Online tables provide lower latency and higher QPS access to data from
+	// Delta tables.
+	OnlineTables catalog.OnlineTablesInterface
 
 	// Permissions API are used to create read, write, edit, update and manage
 	// access for various users on different objects and endpoints.
@@ -983,6 +1001,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Metastores:                catalog.NewMetastores(databricksClient),
 		ModelRegistry:             ml.NewModelRegistry(databricksClient),
 		ModelVersions:             catalog.NewModelVersions(databricksClient),
+		OnlineTables:              catalog.NewOnlineTables(databricksClient),
 		Permissions:               iam.NewPermissions(databricksClient),
 		Pipelines:                 pipelines.NewPipelines(databricksClient),
 		PolicyFamilies:            compute.NewPolicyFamilies(databricksClient),

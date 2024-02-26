@@ -26,10 +26,11 @@ func (a *alertsImpl) Create(ctx context.Context, request CreateAlert) (*Alert, e
 }
 
 func (a *alertsImpl) Delete(ctx context.Context, request DeleteAlertRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -52,11 +53,12 @@ func (a *alertsImpl) List(ctx context.Context) ([]Alert, error) {
 }
 
 func (a *alertsImpl) Update(ctx context.Context, request EditAlert) error {
+	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
 	return err
 }
 
@@ -76,10 +78,11 @@ func (a *dashboardWidgetsImpl) Create(ctx context.Context, request CreateWidget)
 }
 
 func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -109,10 +112,11 @@ func (a *dashboardsImpl) Create(ctx context.Context, request DashboardPostConten
 }
 
 func (a *dashboardsImpl) Delete(ctx context.Context, request DeleteDashboardRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -135,10 +139,11 @@ func (a *dashboardsImpl) List(ctx context.Context, request ListDashboardsRequest
 }
 
 func (a *dashboardsImpl) Restore(ctx context.Context, request RestoreDashboardRequest) error {
+	var restoreResponse RestoreResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/trash/%v", request.DashboardId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &restoreResponse)
 	return err
 }
 
@@ -216,10 +221,11 @@ func (a *queriesImpl) Create(ctx context.Context, request QueryPostContent) (*Qu
 }
 
 func (a *queriesImpl) Delete(ctx context.Context, request DeleteQueryRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -242,10 +248,11 @@ func (a *queriesImpl) List(ctx context.Context, request ListQueriesRequest) (*Qu
 }
 
 func (a *queriesImpl) Restore(ctx context.Context, request RestoreQueryRequest) error {
+	var restoreResponse RestoreResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/trash/%v", request.QueryId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &restoreResponse)
 	return err
 }
 
@@ -289,10 +296,11 @@ func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateQuer
 }
 
 func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteQueryVisualizationRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -312,9 +320,10 @@ type statementExecutionImpl struct {
 }
 
 func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request CancelExecutionRequest) error {
+	var cancelExecutionResponse CancelExecutionResponse
 	path := fmt.Sprintf("/api/2.0/sql/statements/%v/cancel", request.StatementId)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &cancelExecutionResponse)
 	return err
 }
 
@@ -362,19 +371,21 @@ func (a *warehousesImpl) Create(ctx context.Context, request CreateWarehouseRequ
 }
 
 func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequest) error {
+	var deleteWarehouseResponse DeleteWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteWarehouseResponse)
 	return err
 }
 
 func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest) error {
+	var editWarehouseResponse EditWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &editWarehouseResponse)
 	return err
 }
 
@@ -434,27 +445,30 @@ func (a *warehousesImpl) SetPermissions(ctx context.Context, request WarehousePe
 }
 
 func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error {
+	var setWorkspaceWarehouseConfigResponse SetWorkspaceWarehouseConfigResponse
 	path := "/api/2.0/sql/config/warehouses"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &setWorkspaceWarehouseConfigResponse)
 	return err
 }
 
 func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) error {
+	var startWarehouseResponse StartWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/start", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &startWarehouseResponse)
 	return err
 }
 
 func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
+	var stopWarehouseResponse StopWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &stopWarehouseResponse)
 	return err
 }
 

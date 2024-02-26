@@ -6,8 +6,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 type CreateCustomAppIntegration struct {
 	// indicates if an oauth client-secret should be generated
 	Confidential bool `json:"confidential,omitempty"`
@@ -116,16 +114,25 @@ func (s CreateServicePrincipalSecretResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DeleteCustomAppIntegrationOutput struct {
+}
+
 // Delete Custom OAuth App Integration
 type DeleteCustomAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
 }
 
+type DeletePublishedAppIntegrationOutput struct {
+}
+
 // Delete Published OAuth App Integration
 type DeletePublishedAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
+}
+
+type DeleteResponse struct {
 }
 
 // Delete service principal secret
@@ -330,9 +337,15 @@ type UpdateCustomAppIntegration struct {
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 }
 
+type UpdateCustomAppIntegrationOutput struct {
+}
+
 type UpdatePublishedAppIntegration struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
 	// Token access policy to be updated in the published oauth app integration
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+}
+
+type UpdatePublishedAppIntegrationOutput struct {
 }

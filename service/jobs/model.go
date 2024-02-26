@@ -10,8 +10,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
-// all definitions in this file are in alphabetical order
-
 type BaseJob struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
@@ -180,9 +178,15 @@ func (s CancelAllRuns) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CancelAllRunsResponse struct {
+}
+
 type CancelRun struct {
 	// This field is required.
 	RunId int64 `json:"run_id"`
+}
+
+type CancelRunResponse struct {
 }
 
 type ClusterInstance struct {
@@ -593,9 +597,15 @@ type DeleteJob struct {
 	JobId int64 `json:"job_id"`
 }
 
+type DeleteResponse struct {
+}
+
 type DeleteRun struct {
 	// The canonical identifier of the run for which to retrieve the metadata.
 	RunId int64 `json:"run_id"`
+}
+
+type DeleteRunResponse struct {
 }
 
 type ExportRunOutput struct {
@@ -649,8 +659,8 @@ type ForEachStats struct {
 }
 
 type ForEachTask struct {
-	// Controls the number of active iterations task runs. Default is 100
-	// (maximal value).
+	// Controls the number of active iterations task runs. Default is 20,
+	// maximum allowed is 100.
 	Concurrency int `json:"concurrency,omitempty"`
 	// Array for task to iterate on. This can be a JSON string or a reference to
 	// an array parameter.
@@ -2025,6 +2035,9 @@ type ResetJob struct {
 	NewSettings JobSettings `json:"new_settings"`
 }
 
+type ResetResponse struct {
+}
+
 type ResolvedConditionTaskValues struct {
 	Left string `json:"left,omitempty"`
 
@@ -2278,8 +2291,8 @@ func (f *RunConditionTaskOp) Type() string {
 }
 
 type RunForEachTask struct {
-	// Controls the number of active iterations task runs. Default is 100
-	// (maximal value).
+	// Controls the number of active iterations task runs. Default is 20,
+	// maximum allowed is 100.
 	Concurrency int `json:"concurrency,omitempty"`
 	// Array for task to iterate on. This can be a JSON string or a reference to
 	// an array parameter.
@@ -3873,6 +3886,9 @@ type UpdateJob struct {
 	// Changes to the field `JobSettings.timeout_seconds` are applied to active
 	// runs. Changes to other fields are applied to future runs only.
 	NewSettings *JobSettings `json:"new_settings,omitempty"`
+}
+
+type UpdateResponse struct {
 }
 
 type ViewItem struct {

@@ -12,6 +12,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestNested(t *testing.T) {
+	ctx := context.Background()
+	batch, err := NewFromFile(ctx, "../testdata/spec_subservices.json")
+	require.NoError(t, err)
+	require.Contains(t, batch.packages["settings"].services, "Settings")
+	require.Contains(t, batch.packages["settings"].services["Settings"].subservices, "DefaultNamespace")
+	require.Equal(t, batch.packages["settings"].services["DefaultNamespace"].ParentService.Name, "Settings")
+}
+
 func TestBasic(t *testing.T) {
 	ctx := context.Background()
 	batch, err := NewFromFile(ctx, "../testdata/spec.json")
@@ -19,7 +28,7 @@ func TestBasic(t *testing.T) {
 
 	require.Len(t, batch.Packages(), 1)
 	require.Len(t, batch.Services(), 1)
-	require.Len(t, batch.Types(), 17)
+	require.Len(t, batch.Types(), 19)
 	commands, ok := batch.packages["commands"]
 	require.True(t, ok)
 
@@ -51,7 +60,7 @@ func TestBasic(t *testing.T) {
 	assert.Equal(t, 0, len(wait.MessagePath()))
 
 	types := commands.Types()
-	assert.Equal(t, 17, len(types))
+	assert.Equal(t, 19, len(types))
 
 	command := types[2]
 	assert.Equal(t, "Command", command.PascalName())

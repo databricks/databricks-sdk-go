@@ -8,8 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 // Activity recorded for the action.
 type Activity struct {
 	// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied
@@ -552,15 +550,24 @@ type DeleteCommentRequest struct {
 	Id string `json:"-" url:"id"`
 }
 
+type DeleteCommentResponse struct {
+}
+
 type DeleteExperiment struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"experiment_id"`
+}
+
+type DeleteExperimentResponse struct {
 }
 
 // Delete a model
 type DeleteModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"-" url:"name"`
+}
+
+type DeleteModelResponse struct {
 }
 
 // Delete a model tag
@@ -572,12 +579,18 @@ type DeleteModelTagRequest struct {
 	Name string `json:"-" url:"name"`
 }
 
+type DeleteModelTagResponse struct {
+}
+
 // Delete a model version.
 type DeleteModelVersionRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
 	// Model version number
 	Version string `json:"-" url:"version"`
+}
+
+type DeleteModelVersionResponse struct {
 }
 
 // Delete a model version tag
@@ -591,9 +604,15 @@ type DeleteModelVersionTagRequest struct {
 	Version string `json:"-" url:"version"`
 }
 
+type DeleteModelVersionTagResponse struct {
+}
+
 type DeleteRun struct {
 	// ID of the run to delete.
 	RunId string `json:"run_id"`
+}
+
+type DeleteRunResponse struct {
 }
 
 type DeleteRuns struct {
@@ -640,6 +659,9 @@ type DeleteTag struct {
 	RunId string `json:"run_id"`
 }
 
+type DeleteTagResponse struct {
+}
+
 // Delete a transition request
 type DeleteTransitionRequestRequest struct {
 	// User-provided comment on the action.
@@ -672,6 +694,9 @@ func (s *DeleteTransitionRequestRequest) UnmarshalJSON(b []byte) error {
 
 func (s DeleteTransitionRequestRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type DeleteTransitionRequestResponse struct {
 }
 
 type DeleteTransitionRequestStage string
@@ -719,6 +744,9 @@ func (s *DeleteWebhookRequest) UnmarshalJSON(b []byte) error {
 
 func (s DeleteWebhookRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type DeleteWebhookResponse struct {
 }
 
 type Experiment struct {
@@ -1408,6 +1436,9 @@ func (s LogBatch) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type LogBatchResponse struct {
+}
+
 type LogInputs struct {
 	// Dataset inputs
 	Datasets []DatasetInput `json:"datasets,omitempty"`
@@ -1423,6 +1454,9 @@ func (s *LogInputs) UnmarshalJSON(b []byte) error {
 
 func (s LogInputs) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type LogInputsResponse struct {
 }
 
 type LogMetric struct {
@@ -1451,6 +1485,9 @@ func (s LogMetric) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type LogMetricResponse struct {
+}
+
 type LogModel struct {
 	// MLmodel file in json format.
 	ModelJson string `json:"model_json,omitempty"`
@@ -1466,6 +1503,9 @@ func (s *LogModel) UnmarshalJSON(b []byte) error {
 
 func (s LogModel) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type LogModelResponse struct {
 }
 
 type LogParam struct {
@@ -1488,6 +1528,9 @@ func (s *LogParam) UnmarshalJSON(b []byte) error {
 
 func (s LogParam) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type LogParamResponse struct {
 }
 
 type Metric struct {
@@ -2145,9 +2188,15 @@ type RestoreExperiment struct {
 	ExperimentId string `json:"experiment_id"`
 }
 
+type RestoreExperimentResponse struct {
+}
+
 type RestoreRun struct {
 	// ID of the run to restore.
 	RunId string `json:"run_id"`
+}
+
+type RestoreRunResponse struct {
 }
 
 type RestoreRuns struct {
@@ -2564,6 +2613,9 @@ type SetExperimentTag struct {
 	Value string `json:"value"`
 }
 
+type SetExperimentTagResponse struct {
+}
+
 type SetModelTagRequest struct {
 	// Name of the tag. Maximum size depends on storage backend. If a tag with
 	// this name already exists, its preexisting value will be replaced by the
@@ -2576,6 +2628,9 @@ type SetModelTagRequest struct {
 	// backend. All storage backends are guaranteed to support key values up to
 	// 5000 bytes in size.
 	Value string `json:"value"`
+}
+
+type SetModelTagResponse struct {
 }
 
 type SetModelVersionTagRequest struct {
@@ -2592,6 +2647,9 @@ type SetModelVersionTagRequest struct {
 	Value string `json:"value"`
 	// Model version number.
 	Version string `json:"version"`
+}
+
+type SetModelVersionTagResponse struct {
 }
 
 type SetTag struct {
@@ -2617,6 +2675,9 @@ func (s *SetTag) UnmarshalJSON(b []byte) error {
 
 func (s SetTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type SetTagResponse struct {
 }
 
 // Stage of the model version. Valid values are:
@@ -2834,6 +2895,9 @@ func (s UpdateExperiment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateExperimentResponse struct {
+}
+
 type UpdateModelRequest struct {
 	// If provided, updates the description for this `registered_model`.
 	Description string `json:"description,omitempty"`
@@ -2849,6 +2913,9 @@ func (s *UpdateModelRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateModelRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateModelResponse struct {
 }
 
 type UpdateModelVersionRequest struct {
@@ -2868,6 +2935,9 @@ func (s *UpdateModelVersionRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateModelVersionResponse struct {
 }
 
 type UpdateRegistryWebhook struct {
@@ -2993,4 +3063,7 @@ func (f *UpdateRunStatus) Set(v string) error {
 // Type always returns UpdateRunStatus to satisfy [pflag.Value] interface
 func (f *UpdateRunStatus) Type() string {
 	return "UpdateRunStatus"
+}
+
+type UpdateWebhookResponse struct {
 }

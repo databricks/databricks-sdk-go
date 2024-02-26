@@ -26,10 +26,11 @@ func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpA
 }
 
 func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -52,20 +53,22 @@ func (a *accountIpAccessListsImpl) List(ctx context.Context) (*GetIpAccessListsR
 }
 
 func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
+	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &replaceResponse)
 	return err
 }
 
 func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
+	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
 }
 
@@ -83,6 +86,24 @@ func (a *accountSettingsImpl) DeletePersonalComputeSetting(ctx context.Context, 
 	return &deletePersonalComputeSettingResponse, err
 }
 
+func (a *accountSettingsImpl) GetCspEnablementAccountSetting(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
+	var cspEnablementAccountSetting CspEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cspEnablementAccountSetting)
+	return &cspEnablementAccountSetting, err
+}
+
+func (a *accountSettingsImpl) GetEsmEnablementAccountSetting(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
+	var esmEnablementAccountSetting EsmEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &esmEnablementAccountSetting)
+	return &esmEnablementAccountSetting, err
+}
+
 func (a *accountSettingsImpl) GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	var personalComputeSetting PersonalComputeSetting
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
@@ -90,6 +111,26 @@ func (a *accountSettingsImpl) GetPersonalComputeSetting(ctx context.Context, req
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &personalComputeSetting)
 	return &personalComputeSetting, err
+}
+
+func (a *accountSettingsImpl) UpdateCspEnablementAccountSetting(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
+	var cspEnablementAccountSetting CspEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cspEnablementAccountSetting)
+	return &cspEnablementAccountSetting, err
+}
+
+func (a *accountSettingsImpl) UpdateEsmEnablementAccountSetting(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
+	var esmEnablementAccountSetting EsmEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &esmEnablementAccountSetting)
+	return &esmEnablementAccountSetting, err
 }
 
 func (a *accountSettingsImpl) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
@@ -133,10 +174,11 @@ func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessLi
 }
 
 func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessListRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -159,20 +201,22 @@ func (a *ipAccessListsImpl) List(ctx context.Context) (*ListIpAccessListResponse
 }
 
 func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
+	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &replaceResponse)
 	return err
 }
 
 func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
+	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
 }
 
@@ -202,10 +246,11 @@ func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context,
 }
 
 func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error {
+	var deleteNetworkConnectivityConfigurationResponse DeleteNetworkConnectivityConfigurationResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteNetworkConnectivityConfigurationResponse)
 	return err
 }
 
@@ -277,6 +322,24 @@ func (a *settingsImpl) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context,
 	return &deleteRestrictWorkspaceAdminsSettingResponse, err
 }
 
+func (a *settingsImpl) GetAutomaticClusterUpdateSetting(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
+	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
+	path := "/api/2.0/settings/types/automatic_cluster_update/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &automaticClusterUpdateSetting)
+	return &automaticClusterUpdateSetting, err
+}
+
+func (a *settingsImpl) GetCspEnablementSetting(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error) {
+	var cspEnablementSetting CspEnablementSetting
+	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cspEnablementSetting)
+	return &cspEnablementSetting, err
+}
+
 func (a *settingsImpl) GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
 	var defaultNamespaceSetting DefaultNamespaceSetting
 	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
@@ -284,6 +347,15 @@ func (a *settingsImpl) GetDefaultNamespaceSetting(ctx context.Context, request G
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &defaultNamespaceSetting)
 	return &defaultNamespaceSetting, err
+}
+
+func (a *settingsImpl) GetEsmEnablementSetting(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
+	var esmEnablementSetting EsmEnablementSetting
+	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &esmEnablementSetting)
+	return &esmEnablementSetting, err
 }
 
 func (a *settingsImpl) GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
@@ -295,6 +367,26 @@ func (a *settingsImpl) GetRestrictWorkspaceAdminsSetting(ctx context.Context, re
 	return &restrictWorkspaceAdminsSetting, err
 }
 
+func (a *settingsImpl) UpdateAutomaticClusterUpdateSetting(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
+	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
+	path := "/api/2.0/settings/types/automatic_cluster_update/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &automaticClusterUpdateSetting)
+	return &automaticClusterUpdateSetting, err
+}
+
+func (a *settingsImpl) UpdateCspEnablementSetting(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error) {
+	var cspEnablementSetting CspEnablementSetting
+	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cspEnablementSetting)
+	return &cspEnablementSetting, err
+}
+
 func (a *settingsImpl) UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
 	var defaultNamespaceSetting DefaultNamespaceSetting
 	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
@@ -303,6 +395,16 @@ func (a *settingsImpl) UpdateDefaultNamespaceSetting(ctx context.Context, reques
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &defaultNamespaceSetting)
 	return &defaultNamespaceSetting, err
+}
+
+func (a *settingsImpl) UpdateEsmEnablementSetting(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
+	var esmEnablementSetting EsmEnablementSetting
+	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &esmEnablementSetting)
+	return &esmEnablementSetting, err
 }
 
 func (a *settingsImpl) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
@@ -331,10 +433,11 @@ func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request Create
 }
 
 func (a *tokenManagementImpl) Delete(ctx context.Context, request DeleteTokenManagementRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
@@ -410,11 +513,12 @@ func (a *tokensImpl) Create(ctx context.Context, request CreateTokenRequest) (*C
 }
 
 func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) error {
+	var revokeTokenResponse RevokeTokenResponse
 	path := "/api/2.0/token/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &revokeTokenResponse)
 	return err
 }
 
@@ -442,9 +546,10 @@ func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatusRequ
 }
 
 func (a *workspaceConfImpl) SetStatus(ctx context.Context, request WorkspaceConf) error {
+	var setStatusResponse SetStatusResponse
 	path := "/api/2.0/workspace-conf"
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &setStatusResponse)
 	return err
 }

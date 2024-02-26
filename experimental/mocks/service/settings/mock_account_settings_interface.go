@@ -81,6 +81,124 @@ func (_c *MockAccountSettingsInterface_DeletePersonalComputeSetting_Call) RunAnd
 	return _c
 }
 
+// GetCspEnablementAccountSetting provides a mock function with given fields: ctx, request
+func (_m *MockAccountSettingsInterface) GetCspEnablementAccountSetting(ctx context.Context, request settings.GetCspEnablementAccountSettingRequest) (*settings.CspEnablementAccountSetting, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetCspEnablementAccountSetting")
+	}
+
+	var r0 *settings.CspEnablementAccountSetting
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetCspEnablementAccountSettingRequest) (*settings.CspEnablementAccountSetting, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetCspEnablementAccountSettingRequest) *settings.CspEnablementAccountSetting); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.CspEnablementAccountSetting)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetCspEnablementAccountSettingRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountSettingsInterface_GetCspEnablementAccountSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCspEnablementAccountSetting'
+type MockAccountSettingsInterface_GetCspEnablementAccountSetting_Call struct {
+	*mock.Call
+}
+
+// GetCspEnablementAccountSetting is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.GetCspEnablementAccountSettingRequest
+func (_e *MockAccountSettingsInterface_Expecter) GetCspEnablementAccountSetting(ctx interface{}, request interface{}) *MockAccountSettingsInterface_GetCspEnablementAccountSetting_Call {
+	return &MockAccountSettingsInterface_GetCspEnablementAccountSetting_Call{Call: _e.mock.On("GetCspEnablementAccountSetting", ctx, request)}
+}
+
+func (_c *MockAccountSettingsInterface_GetCspEnablementAccountSetting_Call) Run(run func(ctx context.Context, request settings.GetCspEnablementAccountSettingRequest)) *MockAccountSettingsInterface_GetCspEnablementAccountSetting_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settings.GetCspEnablementAccountSettingRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_GetCspEnablementAccountSetting_Call) Return(_a0 *settings.CspEnablementAccountSetting, _a1 error) *MockAccountSettingsInterface_GetCspEnablementAccountSetting_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_GetCspEnablementAccountSetting_Call) RunAndReturn(run func(context.Context, settings.GetCspEnablementAccountSettingRequest) (*settings.CspEnablementAccountSetting, error)) *MockAccountSettingsInterface_GetCspEnablementAccountSetting_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetEsmEnablementAccountSetting provides a mock function with given fields: ctx, request
+func (_m *MockAccountSettingsInterface) GetEsmEnablementAccountSetting(ctx context.Context, request settings.GetEsmEnablementAccountSettingRequest) (*settings.EsmEnablementAccountSetting, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetEsmEnablementAccountSetting")
+	}
+
+	var r0 *settings.EsmEnablementAccountSetting
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetEsmEnablementAccountSettingRequest) (*settings.EsmEnablementAccountSetting, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetEsmEnablementAccountSettingRequest) *settings.EsmEnablementAccountSetting); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.EsmEnablementAccountSetting)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetEsmEnablementAccountSettingRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountSettingsInterface_GetEsmEnablementAccountSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetEsmEnablementAccountSetting'
+type MockAccountSettingsInterface_GetEsmEnablementAccountSetting_Call struct {
+	*mock.Call
+}
+
+// GetEsmEnablementAccountSetting is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.GetEsmEnablementAccountSettingRequest
+func (_e *MockAccountSettingsInterface_Expecter) GetEsmEnablementAccountSetting(ctx interface{}, request interface{}) *MockAccountSettingsInterface_GetEsmEnablementAccountSetting_Call {
+	return &MockAccountSettingsInterface_GetEsmEnablementAccountSetting_Call{Call: _e.mock.On("GetEsmEnablementAccountSetting", ctx, request)}
+}
+
+func (_c *MockAccountSettingsInterface_GetEsmEnablementAccountSetting_Call) Run(run func(ctx context.Context, request settings.GetEsmEnablementAccountSettingRequest)) *MockAccountSettingsInterface_GetEsmEnablementAccountSetting_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settings.GetEsmEnablementAccountSettingRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_GetEsmEnablementAccountSetting_Call) Return(_a0 *settings.EsmEnablementAccountSetting, _a1 error) *MockAccountSettingsInterface_GetEsmEnablementAccountSetting_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_GetEsmEnablementAccountSetting_Call) RunAndReturn(run func(context.Context, settings.GetEsmEnablementAccountSettingRequest) (*settings.EsmEnablementAccountSetting, error)) *MockAccountSettingsInterface_GetEsmEnablementAccountSetting_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetPersonalComputeSetting provides a mock function with given fields: ctx, request
 func (_m *MockAccountSettingsInterface) GetPersonalComputeSetting(ctx context.Context, request settings.GetPersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error) {
 	ret := _m.Called(ctx, request)
@@ -183,6 +301,124 @@ func (_c *MockAccountSettingsInterface_Impl_Call) Return(_a0 settings.AccountSet
 }
 
 func (_c *MockAccountSettingsInterface_Impl_Call) RunAndReturn(run func() settings.AccountSettingsService) *MockAccountSettingsInterface_Impl_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateCspEnablementAccountSetting provides a mock function with given fields: ctx, request
+func (_m *MockAccountSettingsInterface) UpdateCspEnablementAccountSetting(ctx context.Context, request settings.UpdateCspEnablementAccountSettingRequest) (*settings.CspEnablementAccountSetting, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateCspEnablementAccountSetting")
+	}
+
+	var r0 *settings.CspEnablementAccountSetting
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateCspEnablementAccountSettingRequest) (*settings.CspEnablementAccountSetting, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateCspEnablementAccountSettingRequest) *settings.CspEnablementAccountSetting); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.CspEnablementAccountSetting)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateCspEnablementAccountSettingRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountSettingsInterface_UpdateCspEnablementAccountSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateCspEnablementAccountSetting'
+type MockAccountSettingsInterface_UpdateCspEnablementAccountSetting_Call struct {
+	*mock.Call
+}
+
+// UpdateCspEnablementAccountSetting is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.UpdateCspEnablementAccountSettingRequest
+func (_e *MockAccountSettingsInterface_Expecter) UpdateCspEnablementAccountSetting(ctx interface{}, request interface{}) *MockAccountSettingsInterface_UpdateCspEnablementAccountSetting_Call {
+	return &MockAccountSettingsInterface_UpdateCspEnablementAccountSetting_Call{Call: _e.mock.On("UpdateCspEnablementAccountSetting", ctx, request)}
+}
+
+func (_c *MockAccountSettingsInterface_UpdateCspEnablementAccountSetting_Call) Run(run func(ctx context.Context, request settings.UpdateCspEnablementAccountSettingRequest)) *MockAccountSettingsInterface_UpdateCspEnablementAccountSetting_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settings.UpdateCspEnablementAccountSettingRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_UpdateCspEnablementAccountSetting_Call) Return(_a0 *settings.CspEnablementAccountSetting, _a1 error) *MockAccountSettingsInterface_UpdateCspEnablementAccountSetting_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_UpdateCspEnablementAccountSetting_Call) RunAndReturn(run func(context.Context, settings.UpdateCspEnablementAccountSettingRequest) (*settings.CspEnablementAccountSetting, error)) *MockAccountSettingsInterface_UpdateCspEnablementAccountSetting_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateEsmEnablementAccountSetting provides a mock function with given fields: ctx, request
+func (_m *MockAccountSettingsInterface) UpdateEsmEnablementAccountSetting(ctx context.Context, request settings.UpdateEsmEnablementAccountSettingRequest) (*settings.EsmEnablementAccountSetting, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateEsmEnablementAccountSetting")
+	}
+
+	var r0 *settings.EsmEnablementAccountSetting
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateEsmEnablementAccountSettingRequest) (*settings.EsmEnablementAccountSetting, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateEsmEnablementAccountSettingRequest) *settings.EsmEnablementAccountSetting); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.EsmEnablementAccountSetting)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateEsmEnablementAccountSettingRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountSettingsInterface_UpdateEsmEnablementAccountSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateEsmEnablementAccountSetting'
+type MockAccountSettingsInterface_UpdateEsmEnablementAccountSetting_Call struct {
+	*mock.Call
+}
+
+// UpdateEsmEnablementAccountSetting is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.UpdateEsmEnablementAccountSettingRequest
+func (_e *MockAccountSettingsInterface_Expecter) UpdateEsmEnablementAccountSetting(ctx interface{}, request interface{}) *MockAccountSettingsInterface_UpdateEsmEnablementAccountSetting_Call {
+	return &MockAccountSettingsInterface_UpdateEsmEnablementAccountSetting_Call{Call: _e.mock.On("UpdateEsmEnablementAccountSetting", ctx, request)}
+}
+
+func (_c *MockAccountSettingsInterface_UpdateEsmEnablementAccountSetting_Call) Run(run func(ctx context.Context, request settings.UpdateEsmEnablementAccountSettingRequest)) *MockAccountSettingsInterface_UpdateEsmEnablementAccountSetting_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settings.UpdateEsmEnablementAccountSettingRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_UpdateEsmEnablementAccountSetting_Call) Return(_a0 *settings.EsmEnablementAccountSetting, _a1 error) *MockAccountSettingsInterface_UpdateEsmEnablementAccountSetting_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_UpdateEsmEnablementAccountSetting_Call) RunAndReturn(run func(context.Context, settings.UpdateEsmEnablementAccountSettingRequest) (*settings.EsmEnablementAccountSetting, error)) *MockAccountSettingsInterface_UpdateEsmEnablementAccountSetting_Call {
 	_c.Call.Return(run)
 	return _c
 }

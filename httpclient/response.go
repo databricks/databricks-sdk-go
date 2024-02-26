@@ -135,6 +135,12 @@ func injectHeaders(response any, body *common.ResponseWrapper) error {
 				return fmt.Errorf("failed to parse header %s as int: %w", headerTag.name, err)
 			}
 			value.Field(i).Set(reflect.ValueOf(intValue))
+		case reflect.Int64:
+			intValue, err := strconv.ParseInt(headerValue, 10, 64)
+			if err != nil {
+				return fmt.Errorf("failed to parse header %s as int: %w", headerTag.name, err)
+			}
+			value.Field(i).Set(reflect.ValueOf(intValue))
 		default:
 			// Do not fail the request if the header is not supported to avoid breaking changes.
 			logger.Warnf(context.Background(), "unsupported header type %s for field %s", field.Type.Kind(), field.Name)

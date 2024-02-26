@@ -9,8 +9,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 // Budget configuration to be created.
 type Budget struct {
 	Alerts []BudgetAlert `json:"alerts,omitempty"`
@@ -232,6 +230,9 @@ func (s CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
 type DeleteBudgetRequest struct {
 	// Budget ID
 	BudgetId string `json:"-" url:"-"`
+}
+
+type DeleteResponse struct {
 }
 
 // The status string for log delivery. Possible values are: * `CREATED`: There
@@ -579,6 +580,9 @@ func (f *OutputFormat) Type() string {
 	return "OutputFormat"
 }
 
+type PatchStatusResponse struct {
+}
+
 type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Databricks log delivery configuration ID
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
@@ -588,6 +592,9 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status"`
+}
+
+type UpdateResponse struct {
 }
 
 type WrappedBudget struct {

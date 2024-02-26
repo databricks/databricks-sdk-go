@@ -9,16 +9,10 @@ import (
 
 func TestMwsAccAccountClient_GetWorkspaceClient_NoTranspile(t *testing.T) {
 	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
-		skipf(t)("Only works on AWS")
-	}
-	wss, err := a.Workspaces.List(ctx)
+	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
+	ws, err := a.Workspaces.GetByWorkspaceId(ctx, int64(workspaceId))
 	require.NoError(t, err)
-
-	if len(wss) == 0 {
-		t.Skip("No workspaces found")
-	}
-	w, err := a.GetWorkspaceClient(wss[0])
+	w, err := a.GetWorkspaceClient(*ws)
 	assert.NoError(t, err)
 	me, err := w.CurrentUser.Me(ctx)
 	assert.NoError(t, err)

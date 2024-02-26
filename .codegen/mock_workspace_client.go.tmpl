@@ -19,17 +19,39 @@ func NewMockWorkspaceClient(t interface {
 	mock.TestingT
 	Cleanup(func())
 }) (*MockWorkspaceClient) {
-	return &MockWorkspaceClient{
+	cli := &MockWorkspaceClient{
 		WorkspaceClient: &databricks.WorkspaceClient{
 			Config: nil,
-			{{range .Services}}{{if not .IsAccounts}}
+			{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
 			{{.Name}}: {{ template "mock-interface-constructor" . }}(t),
 			{{- end}}{{end}}
 		},
 	}
+	{{range .ServicesSortedByParent}} {{if not .IsAccounts}}
+	{{if  .HasSubservices}}
+	mock{{.CamelName}}API := cli.GetMock{{.PascalName}}API()
+	{{end}}
+	{{if .HasParent}}
+	mock{{.CamelName}} := {{ template "mock-interface-constructor" . }}(t)
+	mock{{.ParentService.CamelName}}API.On("{{.PascalName}}").Return(mock{{.CamelName}}).Maybe()
+	{{end}}
+	{{end}}
+	{{end}}
+	return cli
 }
 
-{{range .Services}}{{if not .IsAccounts}}
+{{range .Services}}{{if and (not .IsAccounts) (.HasParent)}}
+func(m *MockWorkspaceClient) GetMock{{.PascalName}}API() *{{ template "mock-interface-name" . }} {
+	api, ok := m.GetMock{{.ParentService.Name}}API().{{.PascalName}}().(*{{ template "mock-interface-name" . }})
+	if !ok {
+		panic(fmt.Sprintf("expected {{.PascalName}} to be *{{ template "mock-interface-name" . }}, actual was %T", m.GetMock{{.ParentService.Name}}API().{{.PascalName}}()))
+	}
+	return api
+}
+
+{{end}}{{end}}
+
+{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
 func(m *MockWorkspaceClient) GetMock{{.Name}}API() *{{ template "mock-interface-name" . }} {
 	api, ok := m.WorkspaceClient.{{.Name}}.(*{{ template "mock-interface-name" . }})
 	if !ok {

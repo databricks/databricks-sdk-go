@@ -95,17 +95,19 @@ func (a *servingEndpointsImpl) Create(ctx context.Context, request CreateServing
 }
 
 func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServingEndpointRequest) error {
+	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
 }
 
 func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) error {
+	var exportMetricsResponse ExportMetricsResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/metrics", request.Name)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &exportMetricsResponse)
 	return err
 }
 

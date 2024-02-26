@@ -37,6 +37,11 @@ type {{.PascalName}}Interface interface {
 	// Deprecated: use Mock{{.PascalName}}Interface instead.
 	Impl() {{.PascalName}}Service
 
+	{{range .Subservices}}
+	{{.Comment "    // " 80}}
+	{{.PascalName}}() {{.PascalName}}Interface
+	{{end}}
+
 	{{range .Waits}}
 	// {{.PascalName}} repeatedly calls [{{.Method.Service.Name}}API.{{.Poll.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
 	{{.PascalName}}(ctx context.Context{{range .Binding}}, {{.PollField.CamelName}} {{template "type" .PollField.Entity}}{{end}},
@@ -46,7 +51,7 @@ type {{.PascalName}}Interface interface {
 	{{range .Methods}}
 	{{- $hasWaiter := and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
 	{{if not .Pagination}}{{.Comment "// " 80}}	
-	{{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}, error){{else}}{{ template "response-type" .}}{{end}}
+	{{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}{{ template "wait-response-type" . }}{{else}}{{ template "response-type" .}}{{end}}
 	{{end}}
 
 	{{if $hasWaiter}}
@@ -105,6 +110,9 @@ func New{{.PascalName}}(client *client.DatabricksClient) *{{.PascalName}}API {
 		impl: &{{.CamelName}}Impl{
 			client: client,
 		},
+		{{range .Subservices}}
+		{{.CamelName}}: New{{.PascalName}}(client),
+		{{end}}
 	}
 }
 
@@ -113,7 +121,18 @@ type {{.PascalName}}API struct {
 	// impl contains low-level REST API interface, that could be overridden 
 	// through WithImpl({{.PascalName}}Service)
 	impl {{.PascalName}}Service
+
+	{{range .Subservices}}
+	{{.Comment "    // " 80}}
+	{{.CamelName}} {{.PascalName}}Interface
+	{{end}}
 }
+
+{{range .Subservices}}
+func (a *{{.ParentService.PascalName}}API) {{.PascalName}}() {{.PascalName}}Interface {
+	return a.{{.CamelName}}
+}
+{{end}}
 
 // WithImpl could be used to override low-level API implementations for unit 
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
@@ -199,14 +218,14 @@ func (w *{{.PascalName}}[R]) GetWithTimeout(timeout time.Duration) (*{{.Poll.Res
 {{range .Methods}}
 {{- $hasWaiter := and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
 {{if not .Pagination}}{{.Comment "// " 80}}
-func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}, error){{else}}{{ template "response-type" .}}{{end}} {
+func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}{{ template "wait-response-type" . }}{{else}}{{ template "response-type" .}}{{end}} {
 	{{if $hasWaiter -}}
-	{{if .Response}}{{.Response.CamelName}}, {{end}}err := a.impl.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
+	{{if not .Response.IsEmpty }}{{.Response.CamelName}}, {{end}}err := a.impl.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
 	if err != nil {
 		return nil, err
 	}
-	return &{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[struct{}]{{end}}{
-		{{with .Response}}Response: {{.CamelName}},
+	return &{{.Wait.PascalName}}[{{with .Response}}{{if .IsEmpty}}struct{}{{else}}{{.PascalName}}{{end}}{{end}}]{
+		{{with .Response}}{{if not .IsEmpty}}Response: {{.CamelName}},{{end}}
 		{{- end}}{{range .Wait.Binding}}
 		{{.PollField.PascalName}}: {{.Bind.Of.CamelName}}.{{.Bind.PascalName}},{{end}}
 		Poll: func(timeout time.Duration, callback func(*{{.Wait.Poll.Response.PascalName}})) (*{{.Wait.Poll.Response.PascalName}}, error) {
@@ -404,4 +423,8 @@ func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Conte
 {{/* Note: we return the interface to make it possible to mock list responses more easily. */}}
 {{- define "paginated-return-type" -}}
   listing.Iterator[{{ template "type" .Pagination.Entity }}]
+{{- end -}}
+
+{{- define "wait-response-type" -}}
+(*{{.Wait.PascalName}}[{{with .Response}}{{if .IsEmpty}}struct{}{{else}}{{.PascalName}}{{end}}{{end}}], error)
 {{- end -}}

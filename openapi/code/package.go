@@ -9,8 +9,6 @@ import (
 	"sort"
 	"strings"
 
-	"golang.org/x/exp/slices"
-
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/openapi"
 )
@@ -22,7 +20,6 @@ type Package struct {
 	Components *openapi.Components
 	services   map[string]*Service
 	types      map[string]*Entity
-	emptyTypes []*Named
 	extImports map[string]*Entity
 }
 
@@ -38,6 +35,33 @@ func (pkg *Package) Services() (types []*Service) {
 	}
 	pascalNameSort(types)
 	return types
+}
+
+func (pkg *Package) addRecursively(service *Service, result []*Service) []*Service {
+	result = append(result, service)
+	subservices := make([]*Service, 0, len(service.subservices))
+	for _, v := range service.subservices {
+		subservices = append(subservices, v)
+	}
+	pascalNameSort(subservices)
+	for _, svc := range subservices {
+		result = pkg.addRecursively(svc, result)
+	}
+	return result
+}
+
+// Returns the Services sorted such has parents always come before subservices.
+func (pkg *Package) ServicesSortedByParent() []*Service {
+	allServices := pkg.Services()
+	resultServices := []*Service{}
+	for _, svc := range allServices {
+		if svc.ParentService != nil {
+			continue
+		}
+		resultServices = pkg.addRecursively(svc, resultServices)
+	}
+
+	return resultServices
 }
 
 // MainService returns a Service that matches Package name
@@ -56,13 +80,6 @@ func (pkg *Package) Types() (types []*Entity) {
 	for _, v := range pkg.types {
 		types = append(types, v)
 	}
-	pascalNameSort(types)
-	return types
-}
-
-// EmptyTypes returns sorted list of types without fields
-func (pkg *Package) EmptyTypes() (types []*Named) {
-	types = append(types, pkg.emptyTypes...)
 	pascalNameSort(types)
 	return types
 }
@@ -151,8 +168,8 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		e.Named.Name = strings.Join(path, "")
 		pkg.define(e)
 	}
-	e.IsEmpty = s.IsEmpty()
-	e.IsAny = s.IsAny || s.Type == "object" && s.IsEmpty()
+	e.fields = map[string]*Field{}
+	e.IsAny = s.IsAny
 	e.IsComputed = s.IsComputed
 	e.RequiredOrder = s.Required
 	// enum
@@ -184,7 +201,6 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 // makeObject converts OpenAPI Schema into type representation
 // processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
 func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string, processedEntities map[string]*Entity) *Entity {
-	e.fields = map[string]*Field{}
 	required := map[string]bool{}
 	for _, v := range s.Required {
 		required[v] = true
@@ -238,22 +254,19 @@ func (pkg *Package) localComponent(n *openapi.Node) string {
 // definedEntity defines and returns the requested entity based on the schema.
 // processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
 func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntities map[string]*Entity) *Entity {
-	if s != nil {
-		if entity, ok := processedEntities[s.JsonPath]; ok {
-			// Return existing entity if it's already being generated.
-			return entity
-		}
-	}
-	if s == nil || s.IsEmpty() {
+	if s == nil {
 		entity := &Entity{
 			Named: Named{
 				Name:        name,
 				Description: "",
 			},
-			IsEmpty: true,
-			fields:  map[string]*Field{},
+			fields: map[string]*Field{},
 		}
 		return pkg.define(entity)
+	}
+	if entity, ok := processedEntities[s.JsonPath]; ok {
+		// Return existing entity if it's already being generated.
+		return entity
 	}
 
 	e := pkg.schemaToEntity(s, []string{name}, true, processedEntities)
@@ -271,15 +284,8 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntit
 }
 
 func (pkg *Package) define(entity *Entity) *Entity {
-	if entity.IsEmpty {
-		if slices.Contains(pkg.emptyTypes, &entity.Named) {
-			//panic(fmt.Sprintf("%s is already defined", entity.Name))
-			return entity
-		}
-		pkg.emptyTypes = append(pkg.emptyTypes, &entity.Named)
-		return entity
-	}
-	_, defined := pkg.types[entity.Name]
+	k := entity.PascalName()
+	_, defined := pkg.types[k]
 	if defined {
 		//panic(fmt.Sprintf("%s is already defined", entity.Name))
 		return entity
@@ -287,12 +293,12 @@ func (pkg *Package) define(entity *Entity) *Entity {
 	if entity.Package == nil {
 		entity.Package = pkg
 	}
-	pkg.types[entity.Name] = entity
+	pkg.types[k] = entity
 	return entity
 }
 
 func (pkg *Package) updateType(entity *Entity) {
-	e, defined := pkg.types[entity.Name]
+	e, defined := pkg.types[entity.PascalName()]
 	if !defined {
 		return
 	}
@@ -325,8 +331,29 @@ func (pkg *Package) HasWaits() bool {
 	return false
 }
 
+func (pkg *Package) getService(tag *openapi.Tag) *Service {
+	svc, ok := pkg.services[tag.Service]
+	if !ok {
+		svc = &Service{
+			Package:     pkg,
+			IsAccounts:  tag.IsAccounts,
+			PathStyle:   tag.PathStyle,
+			methods:     map[string]*Method{},
+			subservices: map[string]*Service{},
+			Named: Named{
+				Name:        tag.Service,
+				Description: tag.Description,
+			},
+			tag: tag,
+		}
+		pkg.services[tag.Service] = svc
+	}
+	return svc
+}
+
 // Load takes OpenAPI specification and loads a service model
 func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag openapi.Tag) error {
+	svc := pkg.getService(&tag)
 	for k, v := range spec.Components.Schemas {
 		split := strings.Split(k, ".")
 		if split[0] != pkg.Name {
@@ -334,6 +361,17 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 		}
 		pkg.definedEntity(split[1], *v, map[string]*Entity{})
 	}
+	// Fill in subservice information
+	if tag.ParentService != "" {
+		parentTag, err := spec.GetTagByServiceName(tag.ParentService)
+		if err != nil {
+			return err
+		}
+		parentSvc := pkg.getService(parentTag)
+		parentSvc.subservices[svc.Name] = svc
+		svc.ParentService = parentSvc
+	}
+
 	for prefix, path := range spec.Paths {
 		for verb, op := range path.Verbs() {
 			if op.OperationId == "Files.getStatusHead" {
@@ -344,21 +382,6 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 				continue
 			}
 			logger.Infof(ctx, "pkg.Load %s %s", verb, prefix)
-			svc, ok := pkg.services[tag.Service]
-			if !ok {
-				svc = &Service{
-					Package:    pkg,
-					IsAccounts: tag.IsAccounts,
-					PathStyle:  tag.PathStyle,
-					methods:    map[string]*Method{},
-					Named: Named{
-						Name:        tag.Service,
-						Description: tag.Description,
-					},
-					tag: &tag,
-				}
-				pkg.services[tag.Service] = svc
-			}
 			params := []openapi.Parameter{}
 			seenParams := map[string]bool{}
 			for _, list := range [][]openapi.Parameter{path.Parameters, op.Parameters} {

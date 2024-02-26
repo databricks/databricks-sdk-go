@@ -8,8 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// all definitions in this file are in alphabetical order
-
 type AwsCredentials struct {
 	StsRole *StsRole `json:"sts_role,omitempty"`
 }
@@ -397,6 +395,9 @@ type DeleteNetworkRequest struct {
 type DeletePrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" url:"-"`
+}
+
+type DeleteResponse struct {
 }
 
 // Delete storage configuration
@@ -924,6 +925,9 @@ func (s PrivateAccessSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ReplaceResponse struct {
+}
+
 // Root S3 bucket information.
 type RootBucketInfo struct {
 	// The name of the S3 bucket.
@@ -979,6 +983,9 @@ func (s *StsRole) UnmarshalJSON(b []byte) error {
 
 func (s StsRole) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateResponse struct {
 }
 
 type UpdateWorkspaceRequest struct {
