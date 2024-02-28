@@ -88,7 +88,10 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 		config:      cfg,
 		rateLimiter: rate.NewLimiter(rateLimit, 1),
 		httpClient: &http.Client{
-			Timeout:   cfg.HTTPTimeout,
+			// We deal with request timeouts ourselves such that we do not
+			// time out during request or response body reads that make
+			// progress (e.g. on a slower network connection).
+			Timeout:   0,
 			Transport: transport,
 		},
 	}
@@ -196,7 +199,12 @@ func (c *ApiClient) attempt(
 		if err != nil {
 			return c.failRequest(ctx, "failed in rate limiter", err)
 		}
-		request, err := http.NewRequestWithContext(ctx, method, requestURL, requestBody.Reader)
+
+		// This custom context enables us to extend the request timeout
+		// while the request or response body is being read.
+		// It exists because the net/http package supports only a fixed timeout.
+		ctx, ticker := newTimeoutContext(ctx, c.config.HTTPTimeout)
+		request, err := http.NewRequestWithContext(ctx, method, requestURL, tickingReader(ticker, requestBody.Reader))
 		if err != nil {
 			return c.failRequest(ctx, "failed creating new request", err)
 		}
@@ -219,6 +227,11 @@ func (c *ApiClient) attempt(
 		// possible.
 		if _, ok := err.(*url.Error); ok {
 			return c.handleError(ctx, err, requestBody)
+		}
+
+		// If there is a response body, wrap it to extend the request timeout while it is being read.
+		if response != nil && response.Body != nil {
+			response.Body = tickingReadCloser(ticker, response.Body)
 		}
 
 		// By this point, the request body has certainly been consumed.
