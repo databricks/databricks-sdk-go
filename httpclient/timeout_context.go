@@ -12,7 +12,7 @@ type timeoutContext struct {
 	cancel context.CancelCauseFunc
 
 	// Timeout is constant.
-	// Deadline is updated when Mark function is called.
+	// Deadline is updated when Tick function is called.
 	timeout  time.Duration
 	deadline time.Time
 
