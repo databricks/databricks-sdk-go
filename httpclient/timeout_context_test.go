@@ -15,7 +15,6 @@ func TestTimeoutContextTimeout(t *testing.T) {
 
 	// The context should have timed out.
 	assert.Equal(t, context.Canceled, ctx.Err())
-	assert.Equal(t, context.DeadlineExceeded, context.Cause(ctx))
 }
 
 func TestTimeoutContextTick(t *testing.T) {
@@ -30,7 +29,6 @@ func TestTimeoutContextTick(t *testing.T) {
 
 	// The context should not have timed out.
 	assert.Nil(t, ctx.Err())
-	assert.Nil(t, context.Cause(ctx))
 }
 
 func TestTimeoutContextCancel(t *testing.T) {
@@ -42,5 +40,4 @@ func TestTimeoutContextCancel(t *testing.T) {
 
 	// The context should have timed out.
 	assert.Equal(t, context.Canceled, ctx.Err())
-	assert.Equal(t, context.Canceled, context.Cause(ctx))
 }

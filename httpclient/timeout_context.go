@@ -9,7 +9,7 @@ import (
 
 type timeoutContext struct {
 	ctx    context.Context
-	cancel context.CancelCauseFunc
+	cancel context.CancelFunc
 
 	// Timeout is constant.
 	// Deadline is updated when Tick function is called.
@@ -26,7 +26,7 @@ type TimeoutTicker interface {
 }
 
 func newTimeoutContext(ctx context.Context, timeout time.Duration) (context.Context, TimeoutTicker) {
-	ctx, cancel := context.WithCancelCause(ctx)
+	ctx, cancel := context.WithCancel(ctx)
 	t := &timeoutContext{
 		ctx:      ctx,
 		cancel:   cancel,
@@ -48,7 +48,7 @@ func (t *timeoutContext) Tick() {
 
 // Cancel cancels the context.
 func (t *timeoutContext) Cancel() {
-	t.cancel(context.Canceled)
+	t.cancel()
 }
 
 // Deadline returns the current deadline.
@@ -62,7 +62,7 @@ func (t *timeoutContext) run() {
 	for {
 		ttl := time.Until(t.Deadline())
 		if ttl <= 0 {
-			t.cancel(context.DeadlineExceeded)
+			t.cancel()
 			return
 		}
 		select {
