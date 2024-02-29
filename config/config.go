@@ -67,12 +67,12 @@ type Config struct {
 	GoogleCredentials    string `name:"google_credentials" env:"GOOGLE_CREDENTIALS" auth:"google,sensitive"`
 
 	// Azure Resource Manager ID for Azure Databricks workspace, which is exhanged for a Host
-	AzureResourceID string `name:"azure_workspace_resource_id" env:"DATABRICKS_AZURE_RESOURCE_ID" auth:"azure"`
+	AzureResourceID string `name:"azure_workspace_resource_id" env:"DATABRICKS_AZURE_RESOURCE_ID" auth:"azure-cli,azure-msi" auth_group:"azure"`
 
-	AzureUseMSI       bool   `name:"azure_use_msi" env:"ARM_USE_MSI" auth:"azure"`
-	AzureClientSecret string `name:"azure_client_secret" env:"ARM_CLIENT_SECRET" auth:"azure,sensitive"`
-	AzureClientID     string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure"`
-	AzureTenantID     string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure"`
+	AzureUseMSI       bool   `name:"azure_use_msi" env:"ARM_USE_MSI" auth:"azure-msi" auth_group:"azure"`
+	AzureClientSecret string `name:"azure_client_secret" env:"ARM_CLIENT_SECRET" auth:"azure-client-secret,sensitive" auth_group:"azure"`
+	AzureClientID     string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure-client-secret,azure-msi" auth_group:"azure"`
+	AzureTenantID     string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure-cli,azure-client-secret" auth_group:"azure"`
 
 	// AzureEnvironment (PUBLIC, USGOVERNMENT, CHINA) has specific set of API endpoints. Starting from v0.26.0,
 	// the environment is determined based on the workspace hostname, if it's specified.
