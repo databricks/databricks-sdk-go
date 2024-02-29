@@ -232,6 +232,11 @@ func (c *ApiClient) attempt(
 		// If there is a response body, wrap it to extend the request timeout while it is being read.
 		if response != nil && response.Body != nil {
 			response.Body = tickingReadCloser(ticker, response.Body)
+		} else {
+			// If there is no response body, the request has completed and there
+			// is no need to extend the timeout. Cancel the context to clean up
+			// the underlying goroutine.
+			ticker.Cancel()
 		}
 
 		// By this point, the request body has certainly been consumed.
