@@ -233,6 +233,7 @@ func (c *ApiClient) attempt(
 		// After this point, the request body has (probably) been consumed. handleError() must be called to reset it if
 		// possible.
 		if uerr, ok := err.(*url.Error); ok {
+			// If the timeout context has been canceled but the parent context hasn't, then the request has timed out.
 			if pctx.Err() == nil && uerr.Err == context.Canceled {
 				uerr.Err = fmt.Errorf("request timed out after %s of inactivity", c.config.HTTPTimeout)
 			}
