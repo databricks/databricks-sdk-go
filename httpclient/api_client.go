@@ -205,7 +205,7 @@ func (c *ApiClient) attempt(
 		// It exists because the net/http package supports only a fixed timeout.
 		pctx := ctx
 		ctx, ticker := newTimeoutContext(pctx, c.config.HTTPTimeout)
-		request, err := http.NewRequestWithContext(ctx, method, requestURL, tickingReader(ticker, requestBody.Reader))
+		request, err := http.NewRequestWithContext(ctx, method, requestURL, requestBody.Reader)
 		if err != nil {
 			return c.failRequest(ctx, "failed creating new request", err)
 		}
@@ -219,6 +219,12 @@ func (c *ApiClient) attempt(
 		request.Header.Set("User-Agent", useragent.FromContext(request.Context()))
 		if request.Header.Get("Content-Type") == "" && requestBody.ContentType != "" {
 			request.Header.Set("Content-Type", requestBody.ContentType)
+		}
+		// If there is a request body, wrap it to extend the request timeout while it is being read.
+		// Note: we do not wrap the request body earlier, because [http.NewRequestWithContext] performs
+		// type probing on the body variable to determine the content length.
+		if request.Body != nil {
+			request.Body = newRequestBodyTicker(ticker, request.Body)
 		}
 
 		// attempt the actual request
@@ -235,7 +241,7 @@ func (c *ApiClient) attempt(
 
 		// If there is a response body, wrap it to extend the request timeout while it is being read.
 		if response != nil && response.Body != nil {
-			response.Body = tickingReadCloser(ticker, response.Body)
+			response.Body = newResponseBodyTicker(ticker, response.Body)
 		} else {
 			// If there is no response body, the request has completed and there
 			// is no need to extend the timeout. Cancel the context to clean up

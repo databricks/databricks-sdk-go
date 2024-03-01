@@ -75,46 +75,32 @@ func (t *timeoutContext) run() {
 	}
 }
 
-type timeoutTickReader struct {
+// tickingReadCloser wraps an io.ReadCloser and calls the tick function on each read.
+type tickingReadCloser struct {
+	io.ReadCloser
 	t TimeoutTicker
-	r io.Reader
 }
 
-func (t timeoutTickReader) Read(p []byte) (n int, err error) {
+func (t tickingReadCloser) Read(p []byte) (n int, err error) {
 	defer t.t.Tick()
-	return t.r.Read(p)
+	return t.ReadCloser.Read(p)
 }
 
-// tickingReader returns a reader that ticks the timeout ticker on each read.
-// This is used when reading the request body and writing it to the server.
-func tickingReader(t TimeoutTicker, r io.Reader) io.Reader {
-	if r == nil {
-		return nil
-	}
-	return timeoutTickReader{t, r}
-}
-
-type timeoutTickReadCloser struct {
+// cancellingReadCloser wraps an io.ReadCloser and calls the cancel function on close.
+type cancellingReadCloser struct {
+	io.ReadCloser
 	t TimeoutTicker
-	r io.ReadCloser
 }
 
-// tickingReadCloser returns a read closer that ticks the timeout ticker on each read.
-// It also cancels the ticker when the read closer is closed.
-// This is used specifically for reading the response body.
-func tickingReadCloser(t TimeoutTicker, r io.ReadCloser) io.ReadCloser {
-	if r == nil {
-		return nil
-	}
-	return timeoutTickReadCloser{t, r}
+func (t cancellingReadCloser) Close() error {
+	defer t.t.Cancel()
+	return t.ReadCloser.Close()
 }
 
-func (t timeoutTickReadCloser) Read(p []byte) (n int, err error) {
-	defer t.t.Tick()
-	return t.r.Read(p)
+func newRequestBodyTicker(t TimeoutTicker, r io.ReadCloser) io.ReadCloser {
+	return tickingReadCloser{r, t}
 }
 
-func (t timeoutTickReadCloser) Close() error {
-	t.t.Cancel()
-	return t.r.Close()
+func newResponseBodyTicker(t TimeoutTicker, r io.ReadCloser) io.ReadCloser {
+	return cancellingReadCloser{tickingReadCloser{r, t}, t}
 }
