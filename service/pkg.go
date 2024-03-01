@@ -10,9 +10,15 @@
 //
 // - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode.
 //
+// - [settings.AutomaticClusterUpdateAPI]: Controls whether automatic cluster update is enabled for the current workspace.
+//
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
 //
 // - [billing.BudgetsAPI]: These APIs manage budget configuration including notifications for exceeding a budget for a period.
+//
+// - [settings.CspEnablementAPI]: Controls whether to enable the compliance security profile for the current workspace.
+//
+// - [settings.CspEnablementAccountAPI]: The compliance security profile settings at the account level control whether to enable it for new workspaces.
 //
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
@@ -43,6 +49,12 @@
 // - [files.DbfsAPI]: DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
 //
 // - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/set.
+//
+// - [settings.DefaultNamespaceAPI]: The default namespace setting API allows users to configure the default namespace for a Databricks workspace.
+//
+// - [settings.EsmEnablementAPI]: Controls whether enhanced security monitoring is enabled for the current workspace.
+//
+// - [settings.EsmEnablementAccountAPI]: The enhanced security monitoring setting at the account level controls whether to enable the feature on new workspaces.
 //
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
@@ -102,6 +114,8 @@
 //
 // - [iam.PermissionsAPI]: Permissions API are used to create read, write, edit, update and manage access for various users on different objects and endpoints.
 //
+// - [settings.PersonalComputeAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
+//
 // - [pipelines.PipelinesAPI]: The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
 //
 // - [compute.PolicyFamiliesAPI]: View available policy families.
@@ -126,6 +140,8 @@
 //
 // - [workspace.ReposAPI]: The Repos API allows users to manage their git repos.
 //
+// - [settings.RestrictWorkspaceAdminsAPI]: The Restrict Workspace Admins setting lets you control the capabilities of workspace admins.
+//
 // - [catalog.SchemasAPI]: A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace.
 //
 // - [workspace.SecretsAPI]: The Secrets API allows you to manage secrets, secret scopes, and access permissions.
@@ -138,9 +154,9 @@
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
-// - [settings.SettingsAPI]: The default namespace setting API allows users to configure the default namespace for a Databricks workspace.
+// - [settings.SettingsAPI]: Workspace Settings API allows users to manage settings at the workspace level.
 //
-// - [settings.AccountSettingsAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
+// - [settings.AccountSettingsAPI]: Accounts Settings API allows users to manage settings at the account level.
 //
 // - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
 //
@@ -217,8 +233,11 @@ var (
 	_ *sql.AlertsAPI                          = nil
 	_ *serving.AppsAPI                        = nil
 	_ *catalog.ArtifactAllowlistsAPI          = nil
+	_ *settings.AutomaticClusterUpdateAPI     = nil
 	_ *billing.BillableUsageAPI               = nil
 	_ *billing.BudgetsAPI                     = nil
+	_ *settings.CspEnablementAPI              = nil
+	_ *settings.CspEnablementAccountAPI       = nil
 	_ *catalog.CatalogsAPI                    = nil
 	_ *sharing.CleanRoomsAPI                  = nil
 	_ *compute.ClusterPoliciesAPI             = nil
@@ -234,6 +253,9 @@ var (
 	_ *sql.DataSourcesAPI                     = nil
 	_ *files.DbfsAPI                          = nil
 	_ *sql.DbsqlPermissionsAPI                = nil
+	_ *settings.DefaultNamespaceAPI           = nil
+	_ *settings.EsmEnablementAPI              = nil
+	_ *settings.EsmEnablementAccountAPI       = nil
 	_ *provisioning.EncryptionKeysAPI         = nil
 	_ *ml.ExperimentsAPI                      = nil
 	_ *catalog.ExternalLocationsAPI           = nil
@@ -263,6 +285,7 @@ var (
 	_ *oauth2.OAuthPublishedAppsAPI           = nil
 	_ *catalog.OnlineTablesAPI                = nil
 	_ *iam.PermissionsAPI                     = nil
+	_ *settings.PersonalComputeAPI            = nil
 	_ *pipelines.PipelinesAPI                 = nil
 	_ *compute.PolicyFamiliesAPI              = nil
 	_ *provisioning.PrivateAccessAPI          = nil
@@ -275,6 +298,7 @@ var (
 	_ *sharing.RecipientsAPI                  = nil
 	_ *catalog.RegisteredModelsAPI            = nil
 	_ *workspace.ReposAPI                     = nil
+	_ *settings.RestrictWorkspaceAdminsAPI    = nil
 	_ *catalog.SchemasAPI                     = nil
 	_ *workspace.SecretsAPI                   = nil
 	_ *oauth2.ServicePrincipalSecretsAPI      = nil

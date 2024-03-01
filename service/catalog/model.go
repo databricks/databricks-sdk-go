@@ -960,7 +960,7 @@ type CreateMonitor struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshotProfileType `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeriesProfileType `json:"time_series,omitempty"`
 	// Optional argument to specify the warehouse for dashboard creation. If not
@@ -1040,7 +1040,7 @@ type CreateStorageCredential struct {
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name"`
 	// Whether the storage credential is only usable for read operations.
@@ -3226,7 +3226,7 @@ type MonitorInfo struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshotProfileType `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// The status of the monitor.
 	Status MonitorInfoStatus `json:"status,omitempty"`
 	// The full name of the table to monitor. Format:
@@ -3406,10 +3406,10 @@ type OnlineTableSpec struct {
 	// Primary Key columns to be used for data insert/update in the destination.
 	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
 	// Pipeline runs continuously after generating the initial data.
-	RunContinuously *OnlineTableSpecContinuousSchedulingPolicy `json:"run_continuously,omitempty"`
+	RunContinuously OnlineTableSpecContinuousSchedulingPolicy `json:"run_continuously,omitempty"`
 	// Pipeline stops after generating the initial data and can be triggered
 	// later (manually, through a cron job or through data triggers)
-	RunTriggered *OnlineTableSpecTriggeredSchedulingPolicy `json:"run_triggered,omitempty"`
+	RunTriggered OnlineTableSpecTriggeredSchedulingPolicy `json:"run_triggered,omitempty"`
 	// Three-part (catalog, schema, table) name of the source Delta table.
 	SourceTableFullName string `json:"source_table_full_name,omitempty"`
 	// Time series key to deduplicate (tie-break) rows with the same primary
@@ -4522,7 +4522,7 @@ type UpdateMonitor struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshotProfileType `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeriesProfileType `json:"time_series,omitempty"`
 
@@ -4608,7 +4608,7 @@ type UpdateStorageCredential struct {
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// Force update even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"force,omitempty"`
@@ -4704,7 +4704,7 @@ type ValidateStorageCredential struct {
 	// The Cloudflare API token configuration.
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// The Databricks created GCP service account configuration.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate.
 	ExternalLocationName string `json:"external_location_name,omitempty"`
 	// Whether the storage credential is only usable for read operations.

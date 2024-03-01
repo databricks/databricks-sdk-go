@@ -58,7 +58,42 @@ func NewMockAccountClient(t interface {
 		},
 	}
 
+	mockAccountSettingsAPI := cli.GetMockAccountSettingsAPI()
+
+	mockCspEnablementAccount := settings.NewMockCspEnablementAccountInterface(t)
+	mockAccountSettingsAPI.On("CspEnablementAccount").Return(mockCspEnablementAccount).Maybe()
+
+	mockEsmEnablementAccount := settings.NewMockEsmEnablementAccountInterface(t)
+	mockAccountSettingsAPI.On("EsmEnablementAccount").Return(mockEsmEnablementAccount).Maybe()
+
+	mockPersonalCompute := settings.NewMockPersonalComputeInterface(t)
+	mockAccountSettingsAPI.On("PersonalCompute").Return(mockPersonalCompute).Maybe()
+
 	return cli
+}
+
+func (m *MockAccountClient) GetMockCspEnablementAccountAPI() *settings.MockCspEnablementAccountInterface {
+	api, ok := m.GetMockAccountSettingsAPI().CspEnablementAccount().(*settings.MockCspEnablementAccountInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected CspEnablementAccount to be *settings.MockCspEnablementAccountInterface, actual was %T", m.GetMockAccountSettingsAPI().CspEnablementAccount()))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockEsmEnablementAccountAPI() *settings.MockEsmEnablementAccountInterface {
+	api, ok := m.GetMockAccountSettingsAPI().EsmEnablementAccount().(*settings.MockEsmEnablementAccountInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected EsmEnablementAccount to be *settings.MockEsmEnablementAccountInterface, actual was %T", m.GetMockAccountSettingsAPI().EsmEnablementAccount()))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockPersonalComputeAPI() *settings.MockPersonalComputeInterface {
+	api, ok := m.GetMockAccountSettingsAPI().PersonalCompute().(*settings.MockPersonalComputeInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected PersonalCompute to be *settings.MockPersonalComputeInterface, actual was %T", m.GetMockAccountSettingsAPI().PersonalCompute()))
+	}
+	return api
 }
 
 func (m *MockAccountClient) GetMockAccountAccessControlAPI() *iam.MockAccountAccessControlInterface {

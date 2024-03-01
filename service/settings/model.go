@@ -263,9 +263,9 @@ type CreateNetworkConnectivityConfigRequest struct {
 	// between 3 and 30 characters. The name must match the regular expression
 	// `^[0-9a-zA-Z-_]{3,30}$`.
 	Name string `json:"name"`
-	// The Azure region for this network connectivity configuration. Only
-	// workspaces in the same Azure region can be attached to this network
-	// connectivity configuration.
+	// The region for the network connectivity configuration. Only workspaces in
+	// the same region can be attached to the network connectivity
+	// configuration.
 	Region string `json:"region"`
 }
 
@@ -530,7 +530,7 @@ type DeleteAccountIpAccessListRequest struct {
 }
 
 // Delete the default namespace setting
-type DeleteDefaultNamespaceSettingRequest struct {
+type DeleteDefaultNamespaceRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -543,11 +543,11 @@ type DeleteDefaultNamespaceSettingRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *DeleteDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
+func (s *DeleteDefaultNamespaceRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s DeleteDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+func (s DeleteDefaultNamespaceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -579,7 +579,7 @@ type DeleteNetworkConnectivityConfigurationResponse struct {
 }
 
 // Delete Personal Compute setting
-type DeletePersonalComputeSettingRequest struct {
+type DeletePersonalComputeRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -592,11 +592,11 @@ type DeletePersonalComputeSettingRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *DeletePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+func (s *DeletePersonalComputeRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s DeletePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+func (s DeletePersonalComputeRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -624,7 +624,7 @@ type DeleteResponse struct {
 }
 
 // Delete the restrict workspace admins setting
-type DeleteRestrictWorkspaceAdminsSettingRequest struct {
+type DeleteRestrictWorkspaceAdminRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -637,11 +637,11 @@ type DeleteRestrictWorkspaceAdminsSettingRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *DeleteRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
+func (s *DeleteRestrictWorkspaceAdminRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s DeleteRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
+func (s DeleteRestrictWorkspaceAdminRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -806,7 +806,7 @@ type GetAccountIpAccessListRequest struct {
 }
 
 // Get the automatic cluster update setting
-type GetAutomaticClusterUpdateSettingRequest struct {
+type GetAutomaticClusterUpdateRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -819,16 +819,16 @@ type GetAutomaticClusterUpdateSettingRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *GetAutomaticClusterUpdateSettingRequest) UnmarshalJSON(b []byte) error {
+func (s *GetAutomaticClusterUpdateRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s GetAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
+func (s GetAutomaticClusterUpdateRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
 // Get the compliance security profile setting for new workspaces
-type GetCspEnablementAccountSettingRequest struct {
+type GetCspEnablementAccountRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -841,16 +841,16 @@ type GetCspEnablementAccountSettingRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *GetCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+func (s *GetCspEnablementAccountRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s GetCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+func (s GetCspEnablementAccountRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
 // Get the compliance security profile setting
-type GetCspEnablementSettingRequest struct {
+type GetCspEnablementRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -863,16 +863,16 @@ type GetCspEnablementSettingRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *GetCspEnablementSettingRequest) UnmarshalJSON(b []byte) error {
+func (s *GetCspEnablementRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s GetCspEnablementSettingRequest) MarshalJSON() ([]byte, error) {
+func (s GetCspEnablementRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
 // Get the default namespace setting
-type GetDefaultNamespaceSettingRequest struct {
+type GetDefaultNamespaceRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -885,16 +885,16 @@ type GetDefaultNamespaceSettingRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *GetDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
+func (s *GetDefaultNamespaceRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+func (s GetDefaultNamespaceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
 // Get the enhanced security monitoring setting for new workspaces
-type GetEsmEnablementAccountSettingRequest struct {
+type GetEsmEnablementAccountRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -907,16 +907,16 @@ type GetEsmEnablementAccountSettingRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *GetEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+func (s *GetEsmEnablementAccountRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s GetEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+func (s GetEsmEnablementAccountRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
 // Get the enhanced security monitoring setting
-type GetEsmEnablementSettingRequest struct {
+type GetEsmEnablementRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -929,11 +929,11 @@ type GetEsmEnablementSettingRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *GetEsmEnablementSettingRequest) UnmarshalJSON(b []byte) error {
+func (s *GetEsmEnablementRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s GetEsmEnablementSettingRequest) MarshalJSON() ([]byte, error) {
+func (s GetEsmEnablementRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -960,7 +960,7 @@ type GetNetworkConnectivityConfigurationRequest struct {
 }
 
 // Get Personal Compute setting
-type GetPersonalComputeSettingRequest struct {
+type GetPersonalComputeRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -973,11 +973,11 @@ type GetPersonalComputeSettingRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *GetPersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+func (s *GetPersonalComputeRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s GetPersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+func (s GetPersonalComputeRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -990,7 +990,7 @@ type GetPrivateEndpointRuleRequest struct {
 }
 
 // Get the restrict workspace admins setting
-type GetRestrictWorkspaceAdminsSettingRequest struct {
+type GetRestrictWorkspaceAdminRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -1003,11 +1003,11 @@ type GetRestrictWorkspaceAdminsSettingRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *GetRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
+func (s *GetRestrictWorkspaceAdminRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s GetRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
+func (s GetRestrictWorkspaceAdminRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1208,6 +1208,14 @@ func (f *ListType) Type() string {
 	return "ListType"
 }
 
+// The stable AWS IP CIDR blocks. You can use these to configure the firewall of
+// your resources to allow traffic from your Databricks workspace.
+type NccAwsStableIpRule struct {
+	// The list of stable IP CIDR blocks from which Databricks network traffic
+	// originates when accessing your resources.
+	CidrBlocks []string `json:"cidr_blocks,omitempty"`
+}
+
 type NccAzurePrivateEndpointRule struct {
 	// The current status of this private endpoint. The private endpoint rules
 	// are effective only if the connection state is `ESTABLISHED`. Remember
@@ -1374,6 +1382,10 @@ type NccEgressConfig struct {
 // specific configurations. You can find the stable network information of your
 // serverless compute resources here.
 type NccEgressDefaultRules struct {
+	// The stable AWS IP CIDR blocks. You can use these to configure the
+	// firewall of your resources to allow traffic from your Databricks
+	// workspace.
+	AwsStableIpRule *NccAwsStableIpRule `json:"aws_stable_ip_rule,omitempty"`
 	// The stable Azure service endpoints. You can configure the firewall of
 	// your Azure resources to allow traffic from your Databricks serverless
 	// compute resources.
@@ -1401,9 +1413,9 @@ type NetworkConnectivityConfiguration struct {
 	Name string `json:"name,omitempty"`
 	// Databricks network connectivity configuration ID.
 	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
-	// The Azure region for this network connectivity configuration. Only
-	// workspaces in the same Azure region can be attached to this network
-	// connectivity configuration.
+	// The region for the network connectivity configuration. Only workspaces in
+	// the same region can be attached to the network connectivity
+	// configuration.
 	Region string `json:"region,omitempty"`
 	// Time in epoch milliseconds when this object was updated.
 	UpdatedTime int64 `json:"updated_time,omitempty"`

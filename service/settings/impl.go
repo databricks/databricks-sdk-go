@@ -77,70 +77,28 @@ type accountSettingsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountSettingsImpl) DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
-	var deletePersonalComputeSettingResponse DeletePersonalComputeSettingResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deletePersonalComputeSettingResponse)
-	return &deletePersonalComputeSettingResponse, err
+// unexported type that holds implementations of just AutomaticClusterUpdate API methods
+type automaticClusterUpdateImpl struct {
+	client *client.DatabricksClient
 }
 
-func (a *accountSettingsImpl) GetCspEnablementAccountSetting(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
-	var cspEnablementAccountSetting CspEnablementAccountSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
+func (a *automaticClusterUpdateImpl) Get(ctx context.Context, request GetAutomaticClusterUpdateRequest) (*AutomaticClusterUpdateSetting, error) {
+	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
+	path := "/api/2.0/settings/types/automatic_cluster_update/names/default"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cspEnablementAccountSetting)
-	return &cspEnablementAccountSetting, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &automaticClusterUpdateSetting)
+	return &automaticClusterUpdateSetting, err
 }
 
-func (a *accountSettingsImpl) GetEsmEnablementAccountSetting(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
-	var esmEnablementAccountSetting EsmEnablementAccountSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &esmEnablementAccountSetting)
-	return &esmEnablementAccountSetting, err
-}
-
-func (a *accountSettingsImpl) GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	var personalComputeSetting PersonalComputeSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &personalComputeSetting)
-	return &personalComputeSetting, err
-}
-
-func (a *accountSettingsImpl) UpdateCspEnablementAccountSetting(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
-	var cspEnablementAccountSetting CspEnablementAccountSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
+func (a *automaticClusterUpdateImpl) Update(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
+	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
+	path := "/api/2.0/settings/types/automatic_cluster_update/names/default"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cspEnablementAccountSetting)
-	return &cspEnablementAccountSetting, err
-}
-
-func (a *accountSettingsImpl) UpdateEsmEnablementAccountSetting(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
-	var esmEnablementAccountSetting EsmEnablementAccountSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &esmEnablementAccountSetting)
-	return &esmEnablementAccountSetting, err
-}
-
-func (a *accountSettingsImpl) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	var personalComputeSetting PersonalComputeSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &personalComputeSetting)
-	return &personalComputeSetting, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &automaticClusterUpdateSetting)
+	return &automaticClusterUpdateSetting, err
 }
 
 // unexported type that holds implementations of just CredentialsManager API methods
@@ -156,6 +114,135 @@ func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request Exch
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &exchangeTokenResponse)
 	return &exchangeTokenResponse, err
+}
+
+// unexported type that holds implementations of just CSPEnablement API methods
+type cspEnablementImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *cspEnablementImpl) Get(ctx context.Context, request GetCspEnablementRequest) (*CspEnablementSetting, error) {
+	var cspEnablementSetting CspEnablementSetting
+	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cspEnablementSetting)
+	return &cspEnablementSetting, err
+}
+
+func (a *cspEnablementImpl) Update(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error) {
+	var cspEnablementSetting CspEnablementSetting
+	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cspEnablementSetting)
+	return &cspEnablementSetting, err
+}
+
+// unexported type that holds implementations of just CSPEnablementAccount API methods
+type cspEnablementAccountImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *cspEnablementAccountImpl) Get(ctx context.Context, request GetCspEnablementAccountRequest) (*CspEnablementAccountSetting, error) {
+	var cspEnablementAccountSetting CspEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cspEnablementAccountSetting)
+	return &cspEnablementAccountSetting, err
+}
+
+func (a *cspEnablementAccountImpl) Update(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
+	var cspEnablementAccountSetting CspEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cspEnablementAccountSetting)
+	return &cspEnablementAccountSetting, err
+}
+
+// unexported type that holds implementations of just DefaultNamespace API methods
+type defaultNamespaceImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *defaultNamespaceImpl) Delete(ctx context.Context, request DeleteDefaultNamespaceRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
+	var deleteDefaultNamespaceSettingResponse DeleteDefaultNamespaceSettingResponse
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDefaultNamespaceSettingResponse)
+	return &deleteDefaultNamespaceSettingResponse, err
+}
+
+func (a *defaultNamespaceImpl) Get(ctx context.Context, request GetDefaultNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	var defaultNamespaceSetting DefaultNamespaceSetting
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &defaultNamespaceSetting)
+	return &defaultNamespaceSetting, err
+}
+
+func (a *defaultNamespaceImpl) Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
+	var defaultNamespaceSetting DefaultNamespaceSetting
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &defaultNamespaceSetting)
+	return &defaultNamespaceSetting, err
+}
+
+// unexported type that holds implementations of just ESMEnablement API methods
+type esmEnablementImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *esmEnablementImpl) Get(ctx context.Context, request GetEsmEnablementRequest) (*EsmEnablementSetting, error) {
+	var esmEnablementSetting EsmEnablementSetting
+	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &esmEnablementSetting)
+	return &esmEnablementSetting, err
+}
+
+func (a *esmEnablementImpl) Update(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
+	var esmEnablementSetting EsmEnablementSetting
+	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &esmEnablementSetting)
+	return &esmEnablementSetting, err
+}
+
+// unexported type that holds implementations of just ESMEnablementAccount API methods
+type esmEnablementAccountImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *esmEnablementAccountImpl) Get(ctx context.Context, request GetEsmEnablementAccountRequest) (*EsmEnablementAccountSetting, error) {
+	var esmEnablementAccountSetting EsmEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &esmEnablementAccountSetting)
+	return &esmEnablementAccountSetting, err
+}
+
+func (a *esmEnablementAccountImpl) Update(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
+	var esmEnablementAccountSetting EsmEnablementAccountSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &esmEnablementAccountSetting)
+	return &esmEnablementAccountSetting, err
 }
 
 // unexported type that holds implementations of just IpAccessLists API methods
@@ -299,21 +386,45 @@ func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, 
 	return &listNccAzurePrivateEndpointRulesResponse, err
 }
 
-// unexported type that holds implementations of just Settings API methods
-type settingsImpl struct {
+// unexported type that holds implementations of just PersonalCompute API methods
+type personalComputeImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *settingsImpl) DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
-	var deleteDefaultNamespaceSettingResponse DeleteDefaultNamespaceSettingResponse
-	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+func (a *personalComputeImpl) Delete(ctx context.Context, request DeletePersonalComputeRequest) (*DeletePersonalComputeSettingResponse, error) {
+	var deletePersonalComputeSettingResponse DeletePersonalComputeSettingResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDefaultNamespaceSettingResponse)
-	return &deleteDefaultNamespaceSettingResponse, err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deletePersonalComputeSettingResponse)
+	return &deletePersonalComputeSettingResponse, err
 }
 
-func (a *settingsImpl) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
+func (a *personalComputeImpl) Get(ctx context.Context, request GetPersonalComputeRequest) (*PersonalComputeSetting, error) {
+	var personalComputeSetting PersonalComputeSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &personalComputeSetting)
+	return &personalComputeSetting, err
+}
+
+func (a *personalComputeImpl) Update(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+	var personalComputeSetting PersonalComputeSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &personalComputeSetting)
+	return &personalComputeSetting, err
+}
+
+// unexported type that holds implementations of just RestrictWorkspaceAdmins API methods
+type restrictWorkspaceAdminsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *restrictWorkspaceAdminsImpl) Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
 	var deleteRestrictWorkspaceAdminsSettingResponse DeleteRestrictWorkspaceAdminsSettingResponse
 	path := "/api/2.0/settings/types/restrict_workspace_admins/names/default"
 	headers := make(map[string]string)
@@ -322,43 +433,7 @@ func (a *settingsImpl) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context,
 	return &deleteRestrictWorkspaceAdminsSettingResponse, err
 }
 
-func (a *settingsImpl) GetAutomaticClusterUpdateSetting(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
-	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
-	path := "/api/2.0/settings/types/automatic_cluster_update/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &automaticClusterUpdateSetting)
-	return &automaticClusterUpdateSetting, err
-}
-
-func (a *settingsImpl) GetCspEnablementSetting(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error) {
-	var cspEnablementSetting CspEnablementSetting
-	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cspEnablementSetting)
-	return &cspEnablementSetting, err
-}
-
-func (a *settingsImpl) GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	var defaultNamespaceSetting DefaultNamespaceSetting
-	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &defaultNamespaceSetting)
-	return &defaultNamespaceSetting, err
-}
-
-func (a *settingsImpl) GetEsmEnablementSetting(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
-	var esmEnablementSetting EsmEnablementSetting
-	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &esmEnablementSetting)
-	return &esmEnablementSetting, err
-}
-
-func (a *settingsImpl) GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
+func (a *restrictWorkspaceAdminsImpl) Get(ctx context.Context, request GetRestrictWorkspaceAdminRequest) (*RestrictWorkspaceAdminsSetting, error) {
 	var restrictWorkspaceAdminsSetting RestrictWorkspaceAdminsSetting
 	path := "/api/2.0/settings/types/restrict_workspace_admins/names/default"
 	headers := make(map[string]string)
@@ -367,47 +442,7 @@ func (a *settingsImpl) GetRestrictWorkspaceAdminsSetting(ctx context.Context, re
 	return &restrictWorkspaceAdminsSetting, err
 }
 
-func (a *settingsImpl) UpdateAutomaticClusterUpdateSetting(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
-	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
-	path := "/api/2.0/settings/types/automatic_cluster_update/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &automaticClusterUpdateSetting)
-	return &automaticClusterUpdateSetting, err
-}
-
-func (a *settingsImpl) UpdateCspEnablementSetting(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error) {
-	var cspEnablementSetting CspEnablementSetting
-	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cspEnablementSetting)
-	return &cspEnablementSetting, err
-}
-
-func (a *settingsImpl) UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	var defaultNamespaceSetting DefaultNamespaceSetting
-	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &defaultNamespaceSetting)
-	return &defaultNamespaceSetting, err
-}
-
-func (a *settingsImpl) UpdateEsmEnablementSetting(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
-	var esmEnablementSetting EsmEnablementSetting
-	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &esmEnablementSetting)
-	return &esmEnablementSetting, err
-}
-
-func (a *settingsImpl) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
+func (a *restrictWorkspaceAdminsImpl) Update(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
 	var restrictWorkspaceAdminsSetting RestrictWorkspaceAdminsSetting
 	path := "/api/2.0/settings/types/restrict_workspace_admins/names/default"
 	headers := make(map[string]string)
@@ -415,6 +450,11 @@ func (a *settingsImpl) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context,
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &restrictWorkspaceAdminsSetting)
 	return &restrictWorkspaceAdminsSetting, err
+}
+
+// unexported type that holds implementations of just Settings API methods
+type settingsImpl struct {
+	client *client.DatabricksClient
 }
 
 // unexported type that holds implementations of just TokenManagement API methods

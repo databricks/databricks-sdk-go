@@ -101,13 +101,17 @@ type AwsAttributes struct {
 	// Please note that if EBS volumes are specified, then the Spark
 	// configuration `spark.local.dir` will be overridden.
 	EbsVolumeCount int `json:"ebs_volume_count,omitempty"`
-	// <needs content added>
+	// If using gp3 volumes, what IOPS to use for the disk. If this is not set,
+	// the maximum performance of a gp2 volume with the same volume size will be
+	// used.
 	EbsVolumeIops int `json:"ebs_volume_iops,omitempty"`
 	// The size of each EBS volume (in GiB) launched for each instance. For
 	// general purpose SSD, this value must be within the range 100 - 4096. For
 	// throughput optimized HDD, this value must be within the range 500 - 4096.
 	EbsVolumeSize int `json:"ebs_volume_size,omitempty"`
-	// <needs content added>
+	// If using gp3 volumes, what throughput to use for the disk. If this is not
+	// set, the maximum performance of a gp2 volume with the same volume size
+	// will be used.
 	EbsVolumeThroughput int `json:"ebs_volume_throughput,omitempty"`
 	// The type of EBS volumes that will be launched with this cluster.
 	EbsVolumeType EbsVolumeType `json:"ebs_volume_type,omitempty"`

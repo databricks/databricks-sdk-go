@@ -103,53 +103,28 @@ type AccountIpAccessListsService interface {
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 
-// The Personal Compute enablement setting lets you control which users can use
-// the Personal Compute default policy to create compute resources. By default
-// all users in all workspaces have access (ON), but you can change the setting
-// to instead let individual workspaces configure access control (DELEGATE).
-//
-// There is only one instance of this setting per account. Since this setting
-// has a default value, this setting is present on all accounts even though it's
-// never set on a given account. Deletion reverts the value of the setting back
-// to the default value.
+// Accounts Settings API allows users to manage settings at the account level.
 type AccountSettingsService interface {
+}
 
-	// Delete Personal Compute setting.
-	//
-	// Reverts back the Personal Compute setting value to default (ON)
-	DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error)
+// Controls whether automatic cluster update is enabled for the current
+// workspace. By default, it is turned off.
+type AutomaticClusterUpdateService interface {
 
-	// Get the compliance security profile setting for new workspaces.
+	// Get the automatic cluster update setting.
 	//
-	// Gets the compliance security profile setting for new workspaces.
-	GetCspEnablementAccountSetting(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
+	// Gets the automatic cluster update setting.
+	Get(ctx context.Context, request GetAutomaticClusterUpdateRequest) (*AutomaticClusterUpdateSetting, error)
 
-	// Get the enhanced security monitoring setting for new workspaces.
+	// Update the automatic cluster update setting.
 	//
-	// Gets the enhanced security monitoring setting for new workspaces.
-	GetEsmEnablementAccountSetting(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error)
-
-	// Get Personal Compute setting.
-	//
-	// Gets the value of the Personal Compute setting.
-	GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
-
-	// Update the compliance security profile setting for new workspaces.
-	//
-	// Updates the value of the compliance security profile setting for new
-	// workspaces.
-	UpdateCspEnablementAccountSetting(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
-
-	// Update the enhanced security monitoring setting for new workspaces.
-	//
-	// Updates the value of the enhanced security monitoring setting for new
-	// workspaces.
-	UpdateEsmEnablementAccountSetting(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error)
-
-	// Update Personal Compute setting.
-	//
-	// Updates the value of the Personal Compute setting.
-	UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+	// Updates the automatic cluster update setting for the workspace. A fresh
+	// etag needs to be provided in `PATCH` requests (as part of the setting
+	// field). The etag can be retrieved by making a `GET` request before the
+	// `PATCH` request. If the setting is updated concurrently, `PATCH` fails
+	// with 409 and the request must be retried by using the fresh etag in the
+	// 409 response.
+	Update(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
 }
 
 // Credentials manager interacts with with Identity Providers to to perform
@@ -161,6 +136,136 @@ type CredentialsManagerService interface {
 	// Exchange tokens with an Identity Provider to get a new access token. It
 	// allows specifying scopes to determine token permissions.
 	ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error)
+}
+
+// Controls whether to enable the compliance security profile for the current
+// workspace. Enabling it on a workspace is permanent. By default, it is turned
+// off.
+//
+// This settings can NOT be disabled once it is enabled.
+type CspEnablementService interface {
+
+	// Get the compliance security profile setting.
+	//
+	// Gets the compliance security profile setting.
+	Get(ctx context.Context, request GetCspEnablementRequest) (*CspEnablementSetting, error)
+
+	// Update the compliance security profile setting.
+	//
+	// Updates the compliance security profile setting for the workspace. A
+	// fresh etag needs to be provided in `PATCH` requests (as part of the
+	// setting field). The etag can be retrieved by making a `GET` request
+	// before the `PATCH` request. If the setting is updated concurrently,
+	// `PATCH` fails with 409 and the request must be retried by using the fresh
+	// etag in the 409 response.
+	Update(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error)
+}
+
+// The compliance security profile settings at the account level control whether
+// to enable it for new workspaces. By default, this account-level setting is
+// disabled for new workspaces. After workspace creation, account admins can
+// enable the compliance security profile individually for each workspace.
+//
+// This settings can be disabled so that new workspaces do not have compliance
+// security profile enabled by default.
+type CspEnablementAccountService interface {
+
+	// Get the compliance security profile setting for new workspaces.
+	//
+	// Gets the compliance security profile setting for new workspaces.
+	Get(ctx context.Context, request GetCspEnablementAccountRequest) (*CspEnablementAccountSetting, error)
+
+	// Update the compliance security profile setting for new workspaces.
+	//
+	// Updates the value of the compliance security profile setting for new
+	// workspaces.
+	Update(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
+}
+
+// The default namespace setting API allows users to configure the default
+// namespace for a Databricks workspace.
+//
+// Through this API, users can retrieve, set, or modify the default namespace
+// used when queries do not reference a fully qualified three-level name. For
+// example, if you use the API to set 'retail_prod' as the default catalog, then
+// a query 'SELECT * FROM myTable' would reference the object
+// 'retail_prod.default.myTable' (the schema 'default' is always assumed).
+//
+// This setting requires a restart of clusters and SQL warehouses to take
+// effect. Additionally, the default namespace only applies when using Unity
+// Catalog-enabled compute.
+type DefaultNamespaceService interface {
+
+	// Delete the default namespace setting.
+	//
+	// Deletes the default namespace setting for the workspace. A fresh etag
+	// needs to be provided in `DELETE` requests (as a query parameter). The
+	// etag can be retrieved by making a `GET` request before the `DELETE`
+	// request. If the setting is updated/deleted concurrently, `DELETE` fails
+	// with 409 and the request must be retried by using the fresh etag in the
+	// 409 response.
+	Delete(ctx context.Context, request DeleteDefaultNamespaceRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+
+	// Get the default namespace setting.
+	//
+	// Gets the default namespace setting.
+	Get(ctx context.Context, request GetDefaultNamespaceRequest) (*DefaultNamespaceSetting, error)
+
+	// Update the default namespace setting.
+	//
+	// Updates the default namespace setting for the workspace. A fresh etag
+	// needs to be provided in `PATCH` requests (as part of the setting field).
+	// The etag can be retrieved by making a `GET` request before the `PATCH`
+	// request. Note that if the setting does not exist, `GET` returns a
+	// NOT_FOUND error and the etag is present in the error response, which
+	// should be set in the `PATCH` request. If the setting is updated
+	// concurrently, `PATCH` fails with 409 and the request must be retried by
+	// using the fresh etag in the 409 response.
+	Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
+}
+
+// Controls whether enhanced security monitoring is enabled for the current
+// workspace. If the compliance security profile is enabled, this is
+// automatically enabled. By default, it is disabled. However, if the compliance
+// security profile is enabled, this is automatically enabled.
+//
+// If the compliance security profile is disabled, you can enable or disable
+// this setting and it is not permanent.
+type EsmEnablementService interface {
+
+	// Get the enhanced security monitoring setting.
+	//
+	// Gets the enhanced security monitoring setting.
+	Get(ctx context.Context, request GetEsmEnablementRequest) (*EsmEnablementSetting, error)
+
+	// Update the enhanced security monitoring setting.
+	//
+	// Updates the enhanced security monitoring setting for the workspace. A
+	// fresh etag needs to be provided in `PATCH` requests (as part of the
+	// setting field). The etag can be retrieved by making a `GET` request
+	// before the `PATCH` request. If the setting is updated concurrently,
+	// `PATCH` fails with 409 and the request must be retried by using the fresh
+	// etag in the 409 response.
+	Update(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
+}
+
+// The enhanced security monitoring setting at the account level controls
+// whether to enable the feature on new workspaces. By default, this
+// account-level setting is disabled for new workspaces. After workspace
+// creation, account admins can enable enhanced security monitoring individually
+// for each workspace.
+type EsmEnablementAccountService interface {
+
+	// Get the enhanced security monitoring setting for new workspaces.
+	//
+	// Gets the enhanced security monitoring setting for new workspaces.
+	Get(ctx context.Context, request GetEsmEnablementAccountRequest) (*EsmEnablementAccountSetting, error)
+
+	// Update the enhanced security monitoring setting for new workspaces.
+	//
+	// Updates the value of the enhanced security monitoring setting for new
+	// workspaces.
+	Update(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error)
 }
 
 // IP Access List enables admins to configure IP access lists.
@@ -266,31 +371,10 @@ type IpAccessListsService interface {
 }
 
 // These APIs provide configurations for the network connectivity of your
-// workspaces for serverless compute resources. This API provides stable subnets
-// for your workspace so that you can configure your firewalls on your Azure
-// Storage accounts to allow access from Databricks. You can also use the API to
-// provision private endpoints for Databricks to privately connect serverless
-// compute resources to your Azure resources using Azure Private Link. See
-// [configure serverless secure connectivity].
-//
-// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+// workspaces for serverless compute resources.
 type NetworkConnectivityService interface {
 
 	// Create a network connectivity configuration.
-	//
-	// Creates a network connectivity configuration (NCC), which provides stable
-	// Azure service subnets when accessing your Azure Storage accounts. You can
-	// also use a network connectivity configuration to create
-	// Databricks-managed private endpoints so that Databricks serverless
-	// compute resources privately access your resources.
-	//
-	// **IMPORTANT**: After you create the network connectivity configuration,
-	// you must assign one or more workspaces to the new network connectivity
-	// configuration. You can share one network connectivity configuration with
-	// multiple workspaces from the same Azure region within the same Databricks
-	// account. See [configure serverless secure connectivity].
-	//
-	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 	CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error)
 
 	// Create a private endpoint rule.
@@ -346,29 +430,46 @@ type NetworkConnectivityService interface {
 	ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error)
 }
 
-// The default namespace setting API allows users to configure the default
-// namespace for a Databricks workspace.
+// The Personal Compute enablement setting lets you control which users can use
+// the Personal Compute default policy to create compute resources. By default
+// all users in all workspaces have access (ON), but you can change the setting
+// to instead let individual workspaces configure access control (DELEGATE).
 //
-// Through this API, users can retrieve, set, or modify the default namespace
-// used when queries do not reference a fully qualified three-level name. For
-// example, if you use the API to set 'retail_prod' as the default catalog, then
-// a query 'SELECT * FROM myTable' would reference the object
-// 'retail_prod.default.myTable' (the schema 'default' is always assumed).
-//
-// This setting requires a restart of clusters and SQL warehouses to take
-// effect. Additionally, the default namespace only applies when using Unity
-// Catalog-enabled compute.
-type SettingsService interface {
+// There is only one instance of this setting per account. Since this setting
+// has a default value, this setting is present on all accounts even though it's
+// never set on a given account. Deletion reverts the value of the setting back
+// to the default value.
+type PersonalComputeService interface {
 
-	// Delete the default namespace setting.
+	// Delete Personal Compute setting.
 	//
-	// Deletes the default namespace setting for the workspace. A fresh etag
-	// needs to be provided in `DELETE` requests (as a query parameter). The
-	// etag can be retrieved by making a `GET` request before the `DELETE`
-	// request. If the setting is updated/deleted concurrently, `DELETE` fails
-	// with 409 and the request must be retried by using the fresh etag in the
-	// 409 response.
-	DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+	// Reverts back the Personal Compute setting value to default (ON)
+	Delete(ctx context.Context, request DeletePersonalComputeRequest) (*DeletePersonalComputeSettingResponse, error)
+
+	// Get Personal Compute setting.
+	//
+	// Gets the value of the Personal Compute setting.
+	Get(ctx context.Context, request GetPersonalComputeRequest) (*PersonalComputeSetting, error)
+
+	// Update Personal Compute setting.
+	//
+	// Updates the value of the Personal Compute setting.
+	Update(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+}
+
+// The Restrict Workspace Admins setting lets you control the capabilities of
+// workspace admins. With the setting status set to ALLOW_ALL, workspace admins
+// can create service principal personal access tokens on behalf of any service
+// principal in their workspace. Workspace admins can also change a job owner to
+// any user in their workspace. And they can change the job run_as setting to
+// any user in their workspace or to a service principal on which they have the
+// Service Principal User role. With the setting status set to
+// RESTRICT_TOKENS_AND_JOB_RUN_AS, workspace admins can only create personal
+// access tokens on behalf of service principals they have the Service Principal
+// User role on. They can also only change a job owner to themselves. And they
+// can change the job run_as setting to themselves or to a service principal on
+// which they have the Service Principal User role.
+type RestrictWorkspaceAdminsService interface {
 
 	// Delete the restrict workspace admins setting.
 	//
@@ -378,74 +479,12 @@ type SettingsService interface {
 	// the DELETE request. If the setting is updated/deleted concurrently,
 	// `DELETE` fails with 409 and the request must be retried by using the
 	// fresh etag in the 409 response.
-	DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
-
-	// Get the automatic cluster update setting.
-	//
-	// Gets the automatic cluster update setting.
-	GetAutomaticClusterUpdateSetting(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
-
-	// Get the compliance security profile setting.
-	//
-	// Gets the compliance security profile setting.
-	GetCspEnablementSetting(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error)
-
-	// Get the default namespace setting.
-	//
-	// Gets the default namespace setting.
-	GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
-
-	// Get the enhanced security monitoring setting.
-	//
-	// Gets the enhanced security monitoring setting.
-	GetEsmEnablementSetting(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
+	Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
 
 	// Get the restrict workspace admins setting.
 	//
 	// Gets the restrict workspace admins setting.
-	GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
-
-	// Update the automatic cluster update setting.
-	//
-	// Updates the automatic cluster update setting for the workspace. A fresh
-	// etag needs to be provided in `PATCH` requests (as part of the setting
-	// field). The etag can be retrieved by making a `GET` request before the
-	// `PATCH` request. If the setting is updated concurrently, `PATCH` fails
-	// with 409 and the request must be retried by using the fresh etag in the
-	// 409 response.
-	UpdateAutomaticClusterUpdateSetting(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
-
-	// Update the compliance security profile setting.
-	//
-	// Updates the compliance security profile setting for the workspace. A
-	// fresh etag needs to be provided in `PATCH` requests (as part of the
-	// setting field). The etag can be retrieved by making a `GET` request
-	// before the `PATCH` request. If the setting is updated concurrently,
-	// `PATCH` fails with 409 and the request must be retried by using the fresh
-	// etag in the 409 response.
-	UpdateCspEnablementSetting(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error)
-
-	// Update the default namespace setting.
-	//
-	// Updates the default namespace setting for the workspace. A fresh etag
-	// needs to be provided in `PATCH` requests (as part of the setting field).
-	// The etag can be retrieved by making a `GET` request before the `PATCH`
-	// request. Note that if the setting does not exist, `GET` returns a
-	// NOT_FOUND error and the etag is present in the error response, which
-	// should be set in the `PATCH` request. If the setting is updated
-	// concurrently, `PATCH` fails with 409 and the request must be retried by
-	// using the fresh etag in the 409 response.
-	UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
-
-	// Update the enhanced security monitoring setting.
-	//
-	// Updates the enhanced security monitoring setting for the workspace. A
-	// fresh etag needs to be provided in `PATCH` requests (as part of the
-	// setting field). The etag can be retrieved by making a `GET` request
-	// before the `PATCH` request. If the setting is updated concurrently,
-	// `PATCH` fails with 409 and the request must be retried by using the fresh
-	// etag in the 409 response.
-	UpdateEsmEnablementSetting(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
+	Get(ctx context.Context, request GetRestrictWorkspaceAdminRequest) (*RestrictWorkspaceAdminsSetting, error)
 
 	// Update the restrict workspace admins setting.
 	//
@@ -455,7 +494,12 @@ type SettingsService interface {
 	// `PATCH` request. If the setting is updated concurrently, `PATCH` fails
 	// with 409 and the request must be retried by using the fresh etag in the
 	// 409 response.
-	UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
+	Update(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
+}
+
+// Workspace Settings API allows users to manage settings at the workspace
+// level.
+type SettingsService interface {
 }
 
 // Enables administrators to get all tokens and delete tokens for other users.

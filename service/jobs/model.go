@@ -1558,11 +1558,13 @@ type ListJobsResponse struct {
 	// If true, additional jobs matching the provided filter are available for
 	// listing.
 	HasMore bool `json:"has_more,omitempty"`
-	// The list of jobs.
+	// The list of jobs. Only included in the response if there are jobs to
+	// list.
 	Jobs []BaseJob `json:"jobs,omitempty"`
-	// A token that can be used to list the next page of jobs.
+	// A token that can be used to list the next page of jobs (if applicable).
 	NextPageToken string `json:"next_page_token,omitempty"`
-	// A token that can be used to list the previous page of jobs.
+	// A token that can be used to list the previous page of jobs (if
+	// applicable).
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -1631,11 +1633,13 @@ type ListRunsResponse struct {
 	// If true, additional runs matching the provided filter are available for
 	// listing.
 	HasMore bool `json:"has_more,omitempty"`
-	// A token that can be used to list the next page of runs.
+	// A token that can be used to list the next page of runs (if applicable).
 	NextPageToken string `json:"next_page_token,omitempty"`
-	// A token that can be used to list the previous page of runs.
+	// A token that can be used to list the previous page of runs (if
+	// applicable).
 	PrevPageToken string `json:"prev_page_token,omitempty"`
-	// A list of runs, from most recently started to least.
+	// A list of runs, from most recently started to least. Only included in the
+	// response if there are runs to list.
 	Runs []BaseRun `json:"runs,omitempty"`
 
 	ForceSendFields []string `json:"-"`
