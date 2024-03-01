@@ -77,24 +77,32 @@ func (t *timeoutContext) run() {
 
 // tickingReadCloser wraps an io.ReadCloser and calls the tick function on each read.
 type tickingReadCloser struct {
-	io.ReadCloser
-	t TimeoutTicker
+	rc io.ReadCloser
+	t  TimeoutTicker
 }
 
 func (t tickingReadCloser) Read(p []byte) (n int, err error) {
 	defer t.t.Tick()
-	return t.ReadCloser.Read(p)
+	return t.rc.Read(p)
+}
+
+func (t tickingReadCloser) Close() error {
+	return t.rc.Close()
 }
 
 // cancellingReadCloser wraps an io.ReadCloser and calls the cancel function on close.
 type cancellingReadCloser struct {
-	io.ReadCloser
-	t TimeoutTicker
+	rc io.ReadCloser
+	t  TimeoutTicker
+}
+
+func (t cancellingReadCloser) Read(p []byte) (n int, err error) {
+	return t.rc.Read(p)
 }
 
 func (t cancellingReadCloser) Close() error {
 	defer t.t.Cancel()
-	return t.ReadCloser.Close()
+	return t.rc.Close()
 }
 
 func newRequestBodyTicker(t TimeoutTicker, r io.ReadCloser) io.ReadCloser {

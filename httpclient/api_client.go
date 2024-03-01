@@ -223,7 +223,7 @@ func (c *ApiClient) attempt(
 		// If there is a request body, wrap it to extend the request timeout while it is being read.
 		// Note: we do not wrap the request body earlier, because [http.NewRequestWithContext] performs
 		// type probing on the body variable to determine the content length.
-		if request.Body != nil {
+		if request.Body != nil && request.Body != http.NoBody {
 			request.Body = newRequestBodyTicker(ticker, request.Body)
 		}
 
