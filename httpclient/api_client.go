@@ -200,10 +200,11 @@ func (c *ApiClient) attempt(
 			return c.failRequest(ctx, "failed in rate limiter", err)
 		}
 
-		// This custom context enables us to extend the request timeout
-		// while the request or response body is being read.
-		// It exists because the net/http package supports only a fixed timeout.
 		pctx := ctx
+
+		// This timeout context enables us to extend the request timeout
+		// while the request or response body is being read.
+		// It exists because the net/http package uses a fixed timeout regardless of payload size.
 		ctx, ticker := newTimeoutContext(pctx, c.config.HTTPTimeout)
 		request, err := http.NewRequestWithContext(ctx, method, requestURL, requestBody.Reader)
 		if err != nil {
