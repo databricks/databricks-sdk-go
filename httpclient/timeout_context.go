@@ -65,11 +65,14 @@ func (t *timeoutContext) run() {
 			t.cancel()
 			return
 		}
+
+		timer := time.NewTimer(ttl)
 		select {
-		case <-time.After(ttl):
+		case <-timer.C:
 			// Check if the deadline has been updated
 			continue
 		case <-t.ctx.Done():
+			timer.Stop()
 			return
 		}
 	}
