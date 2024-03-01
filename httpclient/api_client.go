@@ -203,7 +203,8 @@ func (c *ApiClient) attempt(
 		// This custom context enables us to extend the request timeout
 		// while the request or response body is being read.
 		// It exists because the net/http package supports only a fixed timeout.
-		ctx, ticker := newTimeoutContext(ctx, c.config.HTTPTimeout)
+		pctx := ctx
+		ctx, ticker := newTimeoutContext(pctx, c.config.HTTPTimeout)
 		request, err := http.NewRequestWithContext(ctx, method, requestURL, tickingReader(ticker, requestBody.Reader))
 		if err != nil {
 			return c.failRequest(ctx, "failed creating new request", err)
@@ -225,7 +226,10 @@ func (c *ApiClient) attempt(
 
 		// After this point, the request body has (probably) been consumed. handleError() must be called to reset it if
 		// possible.
-		if _, ok := err.(*url.Error); ok {
+		if uerr, ok := err.(*url.Error); ok {
+			if pctx.Err() == nil && uerr.Err == context.Canceled {
+				uerr.Err = fmt.Errorf("request timed out after %s of inactivity", c.config.HTTPTimeout)
+			}
 			return c.handleError(ctx, err, requestBody)
 		}
 

@@ -275,6 +275,55 @@ func TestSimpleRequestErrReaderCloseBody_StreamResponse(t *testing.T) {
 	require.NoError(t, err, "response body should not be closed for streaming responses")
 }
 
+func timeoutTransport(r *http.Request) (*http.Response, error) {
+	select {
+	case <-r.Context().Done():
+		return nil, r.Context().Err()
+	case <-time.After(50 * time.Millisecond):
+		return nil, fmt.Errorf("test timeout")
+	}
+}
+
+func TestSimpleRequestContextCancel(t *testing.T) {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+
+	// Cancel outer context after 10ms
+	go func() {
+		defer cancel()
+		time.Sleep(10 * time.Millisecond)
+	}()
+
+	c := NewApiClient(ClientConfig{
+		Transport: hc(timeoutTransport),
+	})
+	err := c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
+	require.ErrorContains(t, err, "context canceled")
+}
+
+func TestSimpleRequestContextDeadline(t *testing.T) {
+	ctx := context.Background()
+	ctx, cancel := context.WithDeadline(ctx, time.Now().Add(10*time.Millisecond))
+	defer cancel()
+
+	c := NewApiClient(ClientConfig{
+		Transport: hc(timeoutTransport),
+	})
+	err := c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
+	require.ErrorContains(t, err, "context deadline exceeded")
+}
+
+func TestSimpleRequestTimeout(t *testing.T) {
+	ctx := context.Background()
+
+	c := NewApiClient(ClientConfig{
+		HTTPTimeout: 10 * time.Millisecond,
+		Transport:   hc(timeoutTransport),
+	})
+	err := c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
+	require.ErrorContains(t, err, "request timed out after 10ms of inactivity")
+}
+
 type BufferLogger struct {
 	strings.Builder
 }
