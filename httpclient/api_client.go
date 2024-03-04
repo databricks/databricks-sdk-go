@@ -88,7 +88,10 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 		config:      cfg,
 		rateLimiter: rate.NewLimiter(rateLimit, 1),
 		httpClient: &http.Client{
-			Timeout:   cfg.HTTPTimeout,
+			// We deal with request timeouts ourselves such that we do not
+			// time out during request or response body reads that make
+			// progress (e.g. on a slower network connection).
+			Timeout:   0,
 			Transport: transport,
 		},
 	}
@@ -196,6 +199,13 @@ func (c *ApiClient) attempt(
 		if err != nil {
 			return c.failRequest(ctx, "failed in rate limiter", err)
 		}
+
+		pctx := ctx
+
+		// This timeout context enables us to extend the request timeout
+		// while the request or response body is being read.
+		// It exists because the net/http package uses a fixed timeout regardless of payload size.
+		ctx, ticker := newTimeoutContext(pctx, c.config.HTTPTimeout)
 		request, err := http.NewRequestWithContext(ctx, method, requestURL, requestBody.Reader)
 		if err != nil {
 			return c.failRequest(ctx, "failed creating new request", err)
@@ -211,14 +221,34 @@ func (c *ApiClient) attempt(
 		if request.Header.Get("Content-Type") == "" && requestBody.ContentType != "" {
 			request.Header.Set("Content-Type", requestBody.ContentType)
 		}
+		// If there is a request body, wrap it to extend the request timeout while it is being read.
+		// Note: we do not wrap the request body earlier, because [http.NewRequestWithContext] performs
+		// type probing on the body variable to determine the content length.
+		if request.Body != nil && request.Body != http.NoBody {
+			request.Body = newRequestBodyTicker(ticker, request.Body)
+		}
 
 		// attempt the actual request
 		response, err := c.httpClient.Do(request)
 
 		// After this point, the request body has (probably) been consumed. handleError() must be called to reset it if
 		// possible.
-		if _, ok := err.(*url.Error); ok {
+		if uerr, ok := err.(*url.Error); ok {
+			// If the timeout context has been canceled but the parent context hasn't, then the request has timed out.
+			if pctx.Err() == nil && uerr.Err == context.Canceled {
+				uerr.Err = fmt.Errorf("request timed out after %s of inactivity", c.config.HTTPTimeout)
+			}
 			return c.handleError(ctx, err, requestBody)
+		}
+
+		// If there is a response body, wrap it to extend the request timeout while it is being read.
+		if response != nil && response.Body != nil {
+			response.Body = newResponseBodyTicker(ticker, response.Body)
+		} else {
+			// If there is no response body, the request has completed and there
+			// is no need to extend the timeout. Cancel the context to clean up
+			// the underlying goroutine.
+			ticker.Cancel()
 		}
 
 		// By this point, the request body has certainly been consumed.
