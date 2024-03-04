@@ -63,16 +63,16 @@ type Config struct {
 	// in ~/.databrickscfg.
 	ConfigFile string `name:"config_file" env:"DATABRICKS_CONFIG_FILE"`
 
-	GoogleServiceAccount string `name:"google_service_account" env:"DATABRICKS_GOOGLE_SERVICE_ACCOUNT" auth:"google"`
-	GoogleCredentials    string `name:"google_credentials" env:"GOOGLE_CREDENTIALS" auth:"google,sensitive"`
+	GoogleServiceAccount string `name:"google_service_account" env:"DATABRICKS_GOOGLE_SERVICE_ACCOUNT" auth:"google" auth_types:"google-id"`
+	GoogleCredentials    string `name:"google_credentials" env:"GOOGLE_CREDENTIALS" auth:"google,sensitive" auth_types:"google-credentials"`
 
 	// Azure Resource Manager ID for Azure Databricks workspace, which is exhanged for a Host
-	AzureResourceID string `name:"azure_workspace_resource_id" env:"DATABRICKS_AZURE_RESOURCE_ID" auth:"azure-cli,azure-msi" auth_group:"azure"`
+	AzureResourceID string `name:"azure_workspace_resource_id" env:"DATABRICKS_AZURE_RESOURCE_ID" auth:"azure" auth_types:"azure-cli,azure-msi"`
 
-	AzureUseMSI       bool   `name:"azure_use_msi" env:"ARM_USE_MSI" auth:"azure-msi" auth_group:"azure"`
-	AzureClientSecret string `name:"azure_client_secret" env:"ARM_CLIENT_SECRET" auth:"azure-client-secret,sensitive" auth_group:"azure"`
-	AzureClientID     string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure-client-secret,azure-msi" auth_group:"azure"`
-	AzureTenantID     string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure-cli,azure-client-secret" auth_group:"azure"`
+	AzureUseMSI       bool   `name:"azure_use_msi" env:"ARM_USE_MSI" auth:"azure" auth_types:"azure-msi"`
+	AzureClientSecret string `name:"azure_client_secret" env:"ARM_CLIENT_SECRET" auth:"azure,sensitive" auth_types:"azure-client-secret"`
+	AzureClientID     string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure" auth_types:"azure-client-secret,azure-msi"`
+	AzureTenantID     string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure" auth_types:"azure-cli,azure-client-secret"`
 
 	// AzureEnvironment (PUBLIC, USGOVERNMENT, CHINA) has specific set of API endpoints. Starting from v0.26.0,
 	// the environment is determined based on the workspace hostname, if it's specified.
@@ -147,6 +147,9 @@ type Config struct {
 
 	// HTTP request interceptor, that assigns Authorization header
 	auth func(r *http.Request) error
+
+	// Keep track of the source of each attribute
+	attrSource map[string]*Source
 }
 
 // NewWithWorkspaceHost returns a new instance of the Config with the host set to

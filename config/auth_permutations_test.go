@@ -139,7 +139,7 @@ func TestConfig_HostEnv(t *testing.T) {
 		Env: map[string]string{
 			"DATABRICKS_HOST": "x",
 		},
-		AssertError: fmt.Sprintf("%s. Config: host=https://x. Env: DATABRICKS_HOST", defaultAuthBaseErrorMessage),
+		AssertError: fmt.Sprintf("%s. host=https://x\nConfiguration:\n- host=https://x (from DATABRICKS_HOST environment variable)", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -148,7 +148,7 @@ func TestConfig_TokenEnv(t *testing.T) {
 		Env: map[string]string{
 			"DATABRICKS_TOKEN": "x",
 		},
-		AssertError: fmt.Sprintf("%s. Config: token=***. Env: DATABRICKS_TOKEN", defaultAuthBaseErrorMessage),
+		AssertError: fmt.Sprintf("%s. \nConfiguration:\n- token=******** (from DATABRICKS_TOKEN environment variable)", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -180,7 +180,7 @@ func TestConfig_UserPasswordEnv(t *testing.T) {
 			"DATABRICKS_USERNAME": "x",
 			"DATABRICKS_PASSWORD": "x",
 		},
-		AssertError: fmt.Sprintf("%s. Config: username=x, password=***. Env: DATABRICKS_USERNAME, DATABRICKS_PASSWORD", defaultAuthBaseErrorMessage),
+		AssertError: fmt.Sprintf("%s. \nConfiguration:\n- password=******** (from DATABRICKS_PASSWORD environment variable)\n- username=x (from DATABRICKS_USERNAME environment variable)", defaultAuthBaseErrorMessage),
 		AssertHost:  "https://x",
 	}.apply(t)
 }
@@ -240,7 +240,7 @@ func TestConfig_ConflictingEnvs(t *testing.T) {
 			"DATABRICKS_USERNAME": "x",
 			"DATABRICKS_PASSWORD": "x",
 		},
-		AssertError: "validate: more than one authorization method configured: basic and pat. Config: host=x, token=***, username=x, password=***. Env: DATABRICKS_HOST, DATABRICKS_TOKEN, DATABRICKS_USERNAME, DATABRICKS_PASSWORD",
+		AssertError: "validate: more than one authorization method configured: basic and pat. host=x\nConfiguration:\n- host=x (from DATABRICKS_HOST environment variable)\n- password=******** (from DATABRICKS_PASSWORD environment variable)\n- token=******** (from DATABRICKS_TOKEN environment variable)\n- username=x (from DATABRICKS_USERNAME environment variable)",
 	}.apply(t)
 }
 
@@ -263,7 +263,7 @@ func TestConfig_ConfigFile(t *testing.T) {
 		Env: map[string]string{
 			"DATABRICKS_CONFIG_FILE": "x",
 		},
-		AssertError: fmt.Sprintf("%s. Config: config_file=x. Env: DATABRICKS_CONFIG_FILE", defaultAuthBaseErrorMessage),
+		AssertError: fmt.Sprintf("%s. \nConfiguration:\n- config_file=x (from DATABRICKS_CONFIG_FILE environment variable)", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -274,7 +274,7 @@ func TestConfig_ConfigFileSkipDefaultProfileIfHostSpecified(t *testing.T) {
 			// This directory has a DEFAULT profile in databrickscfg
 			"HOME": "testdata",
 		},
-		AssertError: fmt.Sprintf("%s. Config: host=https://x", defaultAuthBaseErrorMessage),
+		AssertError: fmt.Sprintf("%s. host=https://x\nConfiguration:\n- host=https://x (from dynamic configuration)", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -328,7 +328,7 @@ func TestConfig_PatFromDatabricksCfg_NohostProfile(t *testing.T) {
 			"HOME":                      "testdata",
 			"DATABRICKS_CONFIG_PROFILE": "nohost",
 		},
-		AssertError: fmt.Sprintf("%s. Config: token=***, profile=nohost. Env: DATABRICKS_CONFIG_PROFILE", defaultAuthBaseErrorMessage),
+		AssertError: fmt.Sprintf("%s. \nConfiguration:\n- profile=nohost (from DATABRICKS_CONFIG_PROFILE environment variable)\n- token=******** (from testdata/.databrickscfg config file)", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -339,7 +339,7 @@ func TestConfig_ConfigProfileAndToken(t *testing.T) {
 			"DATABRICKS_CONFIG_PROFILE": "nohost",
 			"HOME":                      "testdata",
 		},
-		AssertError: fmt.Sprintf("%s. Config: token=***, profile=nohost. Env: DATABRICKS_TOKEN, DATABRICKS_CONFIG_PROFILE", defaultAuthBaseErrorMessage),
+		AssertError: fmt.Sprintf("%s. \nConfiguration:\n- profile=nohost (from DATABRICKS_CONFIG_PROFILE environment variable)\n- token=******** (from DATABRICKS_TOKEN environment variable)", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -350,7 +350,7 @@ func TestConfig_ConfigProfileAndPassword(t *testing.T) {
 			"DATABRICKS_CONFIG_PROFILE": "nohost",
 			"HOME":                      "testdata",
 		},
-		AssertError: "validate: more than one authorization method configured: basic and pat. Config: token=***, username=x, profile=nohost. Env: DATABRICKS_USERNAME, DATABRICKS_CONFIG_PROFILE",
+		AssertError: "validate: more than one authorization method configured: basic and pat. \nConfiguration:\n- profile=nohost (from DATABRICKS_CONFIG_PROFILE environment variable)\n- token=******** (from testdata/.databrickscfg config file)\n- username=x (from DATABRICKS_USERNAME environment variable)",
 	}.apply(t)
 }
 
@@ -389,7 +389,7 @@ func TestConfig_AzureCliHost_Fail(t *testing.T) {
 			"HOME": "testdata/azure",
 			"FAIL": "yes",
 		},
-		AssertError: "default auth: azure-cli: cannot get access token: This is just a failing script.\n. Config: azure_workspace_resource_id=/sub/rg/ws",
+		AssertError: "default auth: azure-cli: cannot get access token: This is just a failing script.\n. \nConfiguration:\n- azure_workspace_resource_id=/sub/rg/ws (from dynamic configuration)",
 	}.apply(t)
 }
 
@@ -401,7 +401,7 @@ func TestConfig_AzureCliHost_AzNotInstalled(t *testing.T) {
 			"PATH": "whatever",
 			"HOME": "testdata/azure",
 		},
-		AssertError: fmt.Sprintf("%s. Config: azure_workspace_resource_id=/sub/rg/ws", defaultAuthBaseErrorMessage),
+		AssertError: fmt.Sprintf("%s. \nConfiguration:\n- azure_workspace_resource_id=/sub/rg/ws (from dynamic configuration)", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -413,7 +413,7 @@ func TestConfig_AzureCliHost_PatConflict_WithConfigFilePresentWithoutDefaultProf
 			"PATH": testdataPath(),
 			"HOME": "testdata/azure",
 		},
-		AssertError: "validate: more than one authorization method configured: azure and pat. Config: token=***, azure_workspace_resource_id=/sub/rg/ws",
+		AssertError: "validate: more than one authorization method configured: azure and pat. \nConfiguration:\n- azure_workspace_resource_id=/sub/rg/ws (from dynamic configuration)\n- token=******** (from dynamic configuration)",
 	}.apply(t)
 }
 
@@ -457,7 +457,7 @@ func TestConfig_AzureAndPasswordConflict(t *testing.T) { // TODO: this breaks
 			"HOME":                "testdata/azure",
 			"DATABRICKS_USERNAME": "x",
 		},
-		AssertError: "validate: more than one authorization method configured: azure and basic. Config: host=x, username=x, azure_workspace_resource_id=/sub/rg/ws. Env: DATABRICKS_USERNAME",
+		AssertError: "validate: more than one authorization method configured: azure and basic. host=x\nConfiguration:\n- azure_workspace_resource_id=/sub/rg/ws (from dynamic configuration)\n- host=x (from dynamic configuration)\n- username=x (from DATABRICKS_USERNAME environment variable)",
 	}.apply(t)
 }
 
@@ -467,7 +467,7 @@ func TestConfig_CorruptConfig(t *testing.T) {
 			"HOME":                      "testdata/corrupt",
 			"DATABRICKS_CONFIG_PROFILE": "DEFAULT",
 		},
-		AssertError: "resolve: testdata/corrupt/.databrickscfg has no DEFAULT profile configured. Config: profile=DEFAULT. Env: DATABRICKS_CONFIG_PROFILE",
+		AssertError: "resolve: testdata/corrupt/.databrickscfg has no DEFAULT profile configured. \nConfiguration:\n- profile=DEFAULT (from DATABRICKS_CONFIG_PROFILE environment variable)",
 	}.apply(t)
 }
 

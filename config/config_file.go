@@ -107,7 +107,7 @@ func (l configFileLoader) Configure(cfg *Config) error {
 
 func (l configFileLoader) isAnyAuthConfigured(cfg *Config) bool {
 	for _, a := range ConfigAttributes {
-		if !a.IsAuthAttribute() {
+		if !a.HasAuthAttribute() {
 			continue
 		}
 		if !a.IsZero(cfg) {

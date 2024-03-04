@@ -32,20 +32,13 @@ const (
 //
 // Internal: this field can become unexported in the future
 type ConfigAttribute struct {
-	Name    string
-	Kind    reflect.Kind
-	EnvVars []string
-	Auth    []string
-
-	// AuthGroup is used to group auth attributes.
-	// It is used later in validate step to check if there are more than 1 auth defined.
-	// This field is needed because some auth attributes can be used in multiple auth methods of the same group.
-	// But when we are validating we need to check if there are auth attribute from different groups.
-	// If AuthGroup is empty, we use Auth as a grouping field.
-	AuthGroup string
+	Name      string
+	Kind      reflect.Kind
+	EnvVars   []string
+	Auth      string
+	AuthTypes []string
 	Sensitive bool
 	Internal  bool
-	Source    *Source
 	num       int
 }
 
@@ -55,7 +48,6 @@ func (a *ConfigAttribute) ReadEnv() string {
 		if v == "" {
 			continue
 		}
-		a.SetSource(&Source{Type: SourceEnv, Name: envName})
 		return v
 	}
 	return ""
@@ -112,10 +104,6 @@ func (a *ConfigAttribute) GetString(cfg *Config) string {
 	return fmt.Sprintf("%v", field.Interface())
 }
 
-func (a *ConfigAttribute) IsAuthAttribute() bool {
-	return len(a.Auth) > 0
-}
-
-func (a *ConfigAttribute) SetSource(s *Source) {
-	a.Source = s
+func (a *ConfigAttribute) HasAuthAttribute() bool {
+	return a.Auth != ""
 }

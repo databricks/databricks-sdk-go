@@ -14,37 +14,8 @@ var ConfigAttributes = loadAttrs()
 type attributes []ConfigAttribute
 
 func (a attributes) DebugString(cfg *Config) string {
-	buf := []string{}
-	attrsUsed := []string{}
-	envsUsed := []string{}
-	for _, attr := range a {
-		if attr.IsZero(cfg) {
-			continue
-		}
-		// Don't include internal fields in debug representation.
-		if attr.Internal {
-			continue
-		}
-		v := "***"
-		if !attr.Sensitive {
-			v = attr.GetString(cfg)
-		}
-		attrsUsed = append(attrsUsed, fmt.Sprintf("%s=%s", attr.Name, v))
-		for _, envName := range attr.EnvVars {
-			v := os.Getenv(envName)
-			if v == "" {
-				continue
-			}
-			envsUsed = append(envsUsed, envName)
-		}
-	}
-	if len(attrsUsed) > 0 {
-		buf = append(buf, fmt.Sprintf("Config: %s", strings.Join(attrsUsed, ", ")))
-	}
-	if len(envsUsed) > 0 {
-		buf = append(buf, fmt.Sprintf("Env: %s", strings.Join(envsUsed, ", ")))
-	}
-	return strings.Join(buf, ". ")
+	authDetails := cfg.GetAuthDetails(false)
+	return authDetails.String()
 }
 
 func (a attributes) Validate(cfg *Config) error {
@@ -53,16 +24,10 @@ func (a attributes) Validate(cfg *Config) error {
 		if attr.IsZero(cfg) {
 			continue
 		}
-		if !attr.IsAuthAttribute() {
+		if !attr.HasAuthAttribute() {
 			continue
 		}
-		for _, auth := range attr.Auth {
-			if attr.AuthGroup != "" {
-				authsUsed[attr.AuthGroup] = true
-			} else {
-				authsUsed[auth] = true
-			}
-		}
+		authsUsed[attr.Auth] = true
 	}
 	if len(authsUsed) <= 1 {
 		return nil
@@ -93,7 +58,15 @@ func (a attributes) Configure(cfg *Config) error {
 			// don't overwtite a value previously set
 			continue
 		}
-		v := attr.ReadEnv()
+		var v string
+		for _, envName := range attr.EnvVars {
+			v = os.Getenv(envName)
+			if v == "" {
+				continue
+			}
+			cfg.SetAttrSource(attr, &Source{Type: SourceEnv, Name: envName})
+			break
+		}
 		if v == "" {
 			continue
 		}
@@ -124,7 +97,7 @@ func (a attributes) ResolveFromStringMapWithSource(cfg *Config, m map[string]str
 		if err != nil {
 			return err
 		}
-		attr.SetSource(source)
+		cfg.SetAttrSource(attr, source)
 	}
 	return nil
 }
@@ -148,7 +121,7 @@ func (a attributes) ResolveFromAnyMapWithSource(cfg *Config, m map[string]interf
 		if err != nil {
 			return err
 		}
-		attr.SetSource(source)
+		cfg.SetAttrSource(attr, source)
 	}
 	return nil
 }
@@ -162,31 +135,33 @@ func loadAttrs() (attrs attributes) {
 			continue
 		}
 		sensitive := false
-		authTag := field.Tag.Get("auth")
-		var auth []string
-		if authTag != "" {
-			// auth tag can be "auth1"  or "auth1,auth2", or "auth1,sensitive" or "auth1,auth2,sensitive" or "-"
-			// if auth tag is "-" then it is an internal field and should not be exposed
-			// if auth tag ends with "sensitive" then it is a sensitive field
-			auth = strings.Split(authTag, ",")
-			l := len(auth)
-			if auth[l-1] == "sensitive" {
-				auth = auth[0 : l-1]
-				sensitive = true
-			}
+		auth := field.Tag.Get("auth")
+		authSplit := strings.Split(auth, ",")
+		if len(authSplit) == 2 {
+			auth = authSplit[0]
+			sensitive = authSplit[1] == "sensitive"
 		}
-		authGroup := field.Tag.Get("auth_group")
-
 		// internal config fields are skipped in debugging
 		internal := false
-		if len(auth) > 0 && auth[0] == "-" {
-			auth = nil
+		if auth == "-" {
+			auth = ""
 			internal = true
 		}
+
+		var authTypes []string
+		authTypesTag := field.Tag.Get("auth_types")
+		if authTypesTag == "" {
+			if auth != "" {
+				authTypes = append(authTypes, auth)
+			}
+		} else {
+			authTypes = strings.Split(authTypesTag, ",")
+		}
+
 		attr := ConfigAttribute{
 			Name:      nameTag,
 			Auth:      auth,
-			AuthGroup: authGroup,
+			AuthTypes: authTypes,
 			Kind:      field.Type.Kind(),
 			Sensitive: sensitive,
 			Internal:  internal,
