@@ -14,8 +14,37 @@ var ConfigAttributes = loadAttrs()
 type attributes []ConfigAttribute
 
 func (a attributes) DebugString(cfg *Config) string {
-	authDetails := cfg.GetAuthDetails(false)
-	return authDetails.String()
+	buf := []string{}
+	attrsUsed := []string{}
+	envsUsed := []string{}
+	for _, attr := range a {
+		if attr.IsZero(cfg) {
+			continue
+		}
+		// Don't include internal fields in debug representation.
+		if attr.Internal {
+			continue
+		}
+		v := "***"
+		if !attr.Sensitive {
+			v = attr.GetString(cfg)
+		}
+		attrsUsed = append(attrsUsed, fmt.Sprintf("%s=%s", attr.Name, v))
+		for _, envName := range attr.EnvVars {
+			v := os.Getenv(envName)
+			if v == "" {
+				continue
+			}
+			envsUsed = append(envsUsed, envName)
+		}
+	}
+	if len(attrsUsed) > 0 {
+		buf = append(buf, fmt.Sprintf("Config: %s", strings.Join(attrsUsed, ", ")))
+	}
+	if len(envsUsed) > 0 {
+		buf = append(buf, fmt.Sprintf("Env: %s", strings.Join(envsUsed, ", ")))
+	}
+	return strings.Join(buf, ". ")
 }
 
 func (a attributes) Validate(cfg *Config) error {
@@ -52,25 +81,17 @@ func (a attributes) Name() string {
 
 // Configure implements Loader interface for environment variables
 func (a attributes) Configure(cfg *Config) error {
-	for k := range a {
-		attr := &a[k]
+	for _, attr := range a {
 		if !attr.IsZero(cfg) {
 			// don't overwtite a value previously set
 			continue
 		}
-		var v string
-		for _, envName := range attr.EnvVars {
-			v = os.Getenv(envName)
-			if v == "" {
-				continue
-			}
-			cfg.SetAttrSource(attr, &Source{Type: SourceEnv, Name: envName})
-			break
-		}
+		v, envName := attr.ReadEnv()
 		if v == "" {
 			continue
 		}
 		err := attr.SetS(cfg, v)
+		cfg.SetAttrSource(&attr, &Source{Type: SourceEnv, Name: envName})
 		if err != nil {
 			return err
 		}
@@ -150,6 +171,8 @@ func loadAttrs() (attrs attributes) {
 
 		var authTypes []string
 		authTypesTag := field.Tag.Get("auth_types")
+		// If auth_types is not set, use auth as the only auth type
+		// In this case auth should be set and a valid auth type.
 		if authTypesTag == "" {
 			if auth != "" {
 				authTypes = append(authTypes, auth)

@@ -10,9 +10,7 @@ import (
 // AuthDetails contains the details of the authentication configuration.
 type AuthDetails struct {
 	AuthType      string            `json:"auth_type"`
-	Username      string            `json:"username,omitempty"`
 	Host          string            `json:"host,omitempty"`
-	AccountID     string            `json:"account_id,omitempty"`
 	Configuration AuthConfiguration `json:"configuration"`
 }
 
@@ -24,14 +22,6 @@ func (a *AuthDetails) String() string {
 
 	if a.AuthType != "" {
 		s += fmt.Sprintf(", auth_type=%s", a.AuthType)
-	}
-
-	if a.Username != "" {
-		s += fmt.Sprintf(", username=%s", a.Username)
-	}
-
-	if a.AccountID != "" {
-		s += fmt.Sprintf(", account_id=%s", a.AccountID)
 	}
 
 	conf := a.Configuration.String()
@@ -47,16 +37,16 @@ Configuration:
 // AuthConfiguration is a map of attribute name to its configuration.
 type AuthConfiguration map[string]*AttrConfig
 
-func (c *AuthConfiguration) String() string {
-	keys := make([]string, 0, len(*c))
-	for k := range *c {
+func (c AuthConfiguration) String() string {
+	keys := make([]string, 0, len(c))
+	for k := range c {
 		keys = append(keys, k)
 	}
 	slices.Sort(keys)
 
 	var conf []string
 	for _, k := range keys {
-		v := (*c)[k]
+		v := c[k]
 		conf = append(conf, fmt.Sprintf("- %s=%s", k, v))
 	}
 	return strings.Join(conf, "\n")
@@ -76,7 +66,21 @@ func (a *AttrConfig) String() string {
 	return s
 }
 
-func (c *Config) GetAuthDetails(showSensitive bool) AuthDetails {
+type AuthDetailsOptions int
+
+const (
+	ShowSensitive AuthDetailsOptions = iota
+)
+
+func (c *Config) GetAuthDetails(opts ...AuthDetailsOptions) AuthDetails {
+	var showSensitive bool
+	for _, opt := range opts {
+		switch opt {
+		case ShowSensitive:
+			showSensitive = true
+		}
+	}
+
 	attrSet := make(map[string]*AttrConfig, 0)
 	for _, a := range ConfigAttributes {
 		if a.IsZero(c) {

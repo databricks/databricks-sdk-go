@@ -22,7 +22,7 @@ func TestConfigAuthDetails(t *testing.T) {
 		"azure_client_id": "1234",
 	}, &Source{Type: SourceFile, Name: "test.file"})
 
-	authDetails := c.GetAuthDetails(false)
+	authDetails := c.GetAuthDetails()
 	assert.Equal(t, "https://cloud.databricks.com", authDetails.Host)
 	assert.Equal(t, "pat", authDetails.AuthType)
 	assert.Equal(t, "********", authDetails.Configuration["token"].Value)
@@ -53,7 +53,7 @@ func TestConfigAuthDetailsToString(t *testing.T) {
 		"azure_client_id": "1234",
 	}, &Source{Type: SourceFile, Name: "test.file"})
 
-	authDetails := c.GetAuthDetails(false)
+	authDetails := c.GetAuthDetails()
 	expected := `host=https://cloud.databricks.com, auth_type=pat
 Configuration:
 - auth_type=pat (from dynamic configuration)

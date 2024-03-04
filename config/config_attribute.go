@@ -42,15 +42,15 @@ type ConfigAttribute struct {
 	num       int
 }
 
-func (a *ConfigAttribute) ReadEnv() string {
+func (a *ConfigAttribute) ReadEnv() (string, string) {
 	for _, envName := range a.EnvVars {
 		v := os.Getenv(envName)
 		if v == "" {
 			continue
 		}
-		return v
+		return v, envName
 	}
-	return ""
+	return "", ""
 }
 
 func (a *ConfigAttribute) SetS(cfg *Config, v string) error {
