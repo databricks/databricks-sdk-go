@@ -45,6 +45,7 @@ experimental/mocks/service/iam/mock_account_service_principals_interface.go ling
 experimental/mocks/service/iam/mock_account_users_interface.go linguist-generated=true
 experimental/mocks/service/iam/mock_current_user_interface.go linguist-generated=true
 experimental/mocks/service/iam/mock_groups_interface.go linguist-generated=true
+experimental/mocks/service/iam/mock_permission_migration_interface.go linguist-generated=true
 experimental/mocks/service/iam/mock_permissions_interface.go linguist-generated=true
 experimental/mocks/service/iam/mock_service_principals_interface.go linguist-generated=true
 experimental/mocks/service/iam/mock_users_interface.go linguist-generated=true
