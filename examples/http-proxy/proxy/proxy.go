@@ -17,7 +17,6 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
-	"runtime"
 	"syscall"
 	"time"
 
@@ -25,23 +24,14 @@ import (
 )
 
 func main() {
-	proxyType := "https"
-	if len(os.Args) == 2 {
-		proxyType = os.Args[1]
-	}
-	if proxyType != "https" && proxyType != "http" {
-		log.Printf("Usage: %s [https|http]", os.Args[0])
-	}
+	createX509Certificate()
+	defer cleanup()
 
-	if proxyType == "https" {
-		createX509Certificate()
-		defer cleanup()
+	util := newCertUtil()
+	runCommands(util.GetRegisterCertificateCommands("proxy.crt"))
+	defer runCommands(util.GetDeregisterCertificateCommands("proxy.crt"))
 
-		addCertToSystemKeychain()
-		defer removeCertFromSystemKeychain()
-	}
-
-	server := startServer(proxyType)
+	server := startServer()
 	defer server.Close()
 
 	waitForSigint()
@@ -129,38 +119,9 @@ func runCommands(cmds [][]string) {
 	}
 }
 
-func addCertToSystemKeychain() {
-	log.Printf("Adding certificate to system keychain...")
-	homeDir := os.Getenv("HOME")
-	allCmds := map[string][][]string{
-		"darwin":  {{"security", "add-trusted-cert", "-r", "trustRoot", "-k", homeDir + "/Library/Keychains/login.keychain-db", "proxy.crt"}},
-		"linux":   {{"sudo", "cp", "proxy.crt", "/usr/local/share/ca-certificates/proxy.crt"}, {"sudo", "update-ca-certificates"}},
-		"windows": {{"certutil", "-addstore", "-f", "ROOT", "proxy.crt"}},
-	}
-	cmds, ok := allCmds[runtime.GOOS]
-	if !ok {
-		panic("unsupported OS")
-	}
-	runCommands(cmds)
-}
-
-func removeCertFromSystemKeychain() {
-	log.Printf("Removing certificate from system keychain...")
-	allCmds := map[string][][]string{
-		"darwin":  {{"security", "remove-trusted-cert", "proxy.crt"}},
-		"linux":   {{"sudo", "rm", "/usr/local/share/ca-certificates/proxy.crt"}, {"sudo", "update-ca-certificates"}},
-		"windows": {{"certutil", "-delstore", "ROOT", "proxy.crt"}},
-	}
-	cmds, ok := allCmds[runtime.GOOS]
-	if !ok {
-		panic("unsupported OS")
-	}
-	runCommands(cmds)
-}
-
 // The following code is a simple HTTPS proxy server.
 func handleTunneling(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Handling request: %s", r.URL.String())
+	log.Printf("Handling request: %s %s", r.Method, r.URL.String())
 	if r.URL.Path == "/ping" {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("pong"))
@@ -197,7 +158,7 @@ func transfer(destination io.WriteCloser, source io.ReadCloser) {
 	io.Copy(destination, source)
 }
 
-func startServer(proxyType string) *http.Server {
+func startServer() *http.Server {
 	log.Printf("Starting server...")
 	server := &http.Server{
 		Addr:    "localhost:8443",
@@ -209,21 +170,16 @@ func startServer(proxyType string) *http.Server {
 	}
 
 	// Start the server
-	log.Printf("Starting proxy server on %s://%s", proxyType, server.Addr)
+	log.Printf("Starting proxy server on https://%s", server.Addr)
 	go func() {
-		var err error
-		if proxyType == "http" {
-			err = server.ListenAndServe()
-		} else {
-			err = server.ListenAndServeTLS("proxy.crt", "proxy.key")
-		}
+		err := server.ListenAndServeTLS("proxy.crt", "proxy.key")
 		if !errors.Is(err, http.ErrServerClosed) {
 			panic(err)
 		}
 	}()
 	log.Printf("Waiting for server to start...")
 	for {
-		_, err := http.Get(fmt.Sprintf("%s://localhost:8443/ping", proxyType))
+		_, err := http.Get(fmt.Sprintf("https://localhost:8443/ping"))
 		if err == nil {
 			break
 		}
