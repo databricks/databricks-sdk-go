@@ -18,11 +18,17 @@ func main() {
 
 $ go run ../proxy
 
+On Windows, you must do this from a command prompt with administrator privileges.
+
 Then, run this example setting the HTTP_PROXY or HTTPS_PROXY environment variable to the proxy server:
 
 $ HTTPS_PROXY=https://localhost:8443 go run .
 
-to see the list of clusters in your Databricks workspace using this proxy.
+on macOS or Linux, or
+
+$ $env:HTTPS_PROXY="https://localhost:8443"; go run .
+
+on Windows to see the list of clusters in your Databricks workspace using this proxy.
 `)
 		os.Exit(1)
 	}
