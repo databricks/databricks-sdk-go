@@ -74,6 +74,7 @@ func NewMockWorkspaceClient(t interface {
 			ModelRegistry:             ml.NewMockModelRegistryInterface(t),
 			ModelVersions:             catalog.NewMockModelVersionsInterface(t),
 			OnlineTables:              catalog.NewMockOnlineTablesInterface(t),
+			PermissionMigration:       iam.NewMockPermissionMigrationInterface(t),
 			Permissions:               iam.NewMockPermissionsInterface(t),
 			Pipelines:                 pipelines.NewMockPipelinesInterface(t),
 			PolicyFamilies:            compute.NewMockPolicyFamiliesInterface(t),
@@ -453,6 +454,14 @@ func (m *MockWorkspaceClient) GetMockOnlineTablesAPI() *catalog.MockOnlineTables
 	api, ok := m.WorkspaceClient.OnlineTables.(*catalog.MockOnlineTablesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected OnlineTables to be *catalog.MockOnlineTablesInterface, actual was %T", m.WorkspaceClient.OnlineTables))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockPermissionMigrationAPI() *iam.MockPermissionMigrationInterface {
+	api, ok := m.WorkspaceClient.PermissionMigration.(*iam.MockPermissionMigrationInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected PermissionMigration to be *iam.MockPermissionMigrationInterface, actual was %T", m.WorkspaceClient.PermissionMigration))
 	}
 	return api
 }

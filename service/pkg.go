@@ -112,6 +112,8 @@
 //
 // - [catalog.OnlineTablesAPI]: Online tables provide lower latency and higher QPS access to data from Delta tables.
 //
+// - [iam.PermissionMigrationAPI]: This spec contains undocumented permission migration APIs used in https://github.com/databrickslabs/ucx.
+//
 // - [iam.PermissionsAPI]: Permissions API are used to create read, write, edit, update and manage access for various users on different objects and endpoints.
 //
 // - [settings.PersonalComputeAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
@@ -284,6 +286,7 @@ var (
 	_ *provisioning.NetworksAPI               = nil
 	_ *oauth2.OAuthPublishedAppsAPI           = nil
 	_ *catalog.OnlineTablesAPI                = nil
+	_ *iam.PermissionMigrationAPI             = nil
 	_ *iam.PermissionsAPI                     = nil
 	_ *settings.PersonalComputeAPI            = nil
 	_ *pipelines.PipelinesAPI                 = nil

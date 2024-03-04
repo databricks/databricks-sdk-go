@@ -445,6 +445,10 @@ type WorkspaceClient struct {
 	// Delta tables.
 	OnlineTables catalog.OnlineTablesInterface
 
+	// This spec contains undocumented permission migration APIs used in
+	// https://github.com/databrickslabs/ucx.
+	PermissionMigration iam.PermissionMigrationInterface
+
 	// Permissions API are used to create read, write, edit, update and manage
 	// access for various users on different objects and endpoints.
 	//
@@ -991,6 +995,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ModelRegistry:             ml.NewModelRegistry(databricksClient),
 		ModelVersions:             catalog.NewModelVersions(databricksClient),
 		OnlineTables:              catalog.NewOnlineTables(databricksClient),
+		PermissionMigration:       iam.NewPermissionMigration(databricksClient),
 		Permissions:               iam.NewPermissions(databricksClient),
 		Pipelines:                 pipelines.NewPipelines(databricksClient),
 		PolicyFamilies:            compute.NewPolicyFamilies(databricksClient),

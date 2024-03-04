@@ -334,6 +334,21 @@ func (a *groupsImpl) Update(ctx context.Context, request Group) error {
 	return err
 }
 
+// unexported type that holds implementations of just PermissionMigration API methods
+type permissionMigrationImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *permissionMigrationImpl) MigratePermissions(ctx context.Context, request PermissionMigrationRequest) (*PermissionMigrationResponse, error) {
+	var permissionMigrationResponse PermissionMigrationResponse
+	path := "/api/2.0/permissionmigration"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &permissionMigrationResponse)
+	return &permissionMigrationResponse, err
+}
+
 // unexported type that holds implementations of just Permissions API methods
 type permissionsImpl struct {
 	client *client.DatabricksClient

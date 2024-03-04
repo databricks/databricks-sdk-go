@@ -68,7 +68,7 @@ func (a *vectorSearchIndexesImpl) CreateIndex(ctx context.Context, request Creat
 
 func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, request DeleteDataVectorIndexRequest) (*DeleteDataVectorIndexResponse, error) {
 	var deleteDataVectorIndexResponse DeleteDataVectorIndexResponse
-	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/delete-data", request.Name)
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/delete-data", request.IndexName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -122,7 +122,7 @@ func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncInd
 
 func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error) {
 	var upsertDataVectorIndexResponse UpsertDataVectorIndexResponse
-	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/upsert-data", request.Name)
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/upsert-data", request.IndexName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
