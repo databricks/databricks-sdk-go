@@ -8,7 +8,6 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"errors"
-	"fmt"
 	"io"
 	"log"
 	"math/big"
@@ -179,7 +178,7 @@ func startServer() *http.Server {
 	}()
 	log.Printf("Waiting for server to start...")
 	for {
-		_, err := http.Get(fmt.Sprintf("https://localhost:8443/ping"))
+		_, err := http.Get("https://localhost:8443/ping")
 		if err == nil {
 			break
 		}
