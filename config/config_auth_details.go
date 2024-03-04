@@ -2,8 +2,9 @@ package config
 
 import (
 	"fmt"
-	"slices"
 	"strings"
+
+	"golang.org/x/exp/slices"
 )
 
 // AuthDetails contains the details of the authentication configuration.
