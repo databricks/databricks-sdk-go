@@ -329,7 +329,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -1055,6 +1055,44 @@ func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
 }
 
+type PermissionMigrationRequest struct {
+	// The name of the workspace group that permissions will be migrated from.
+	FromWorkspaceGroupName string `json:"from_workspace_group_name"`
+	// The maximum number of permissions that will be migrated.
+	Size int `json:"size,omitempty"`
+	// The name of the account group that permissions will be migrated to.
+	ToAccountGroupName string `json:"to_account_group_name"`
+	// WorkspaceId of the associated workspace where the permission migration
+	// will occur. Both workspace group and account group must be in this
+	// workspace.
+	WorkspaceId int64 `json:"workspace_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PermissionMigrationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PermissionMigrationRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PermissionMigrationResponse struct {
+	// Number of permissions migrated.
+	PermissionsMigrated int `json:"permissions_migrated,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PermissionMigrationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PermissionMigrationResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PermissionOutput struct {
 	// The results of a permissions query.
 	Description string `json:"description,omitempty"`
@@ -1275,7 +1313,7 @@ type User struct {
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID. This is automatically set by Databricks. Any value
 	// provided by the client will be ignored.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`
 	// Corresponds to AWS instance profile/arn role.

@@ -74,6 +74,7 @@ func NewMockWorkspaceClient(t interface {
 			ModelRegistry:             ml.NewMockModelRegistryInterface(t),
 			ModelVersions:             catalog.NewMockModelVersionsInterface(t),
 			OnlineTables:              catalog.NewMockOnlineTablesInterface(t),
+			PermissionMigration:       iam.NewMockPermissionMigrationInterface(t),
 			Permissions:               iam.NewMockPermissionsInterface(t),
 			Pipelines:                 pipelines.NewMockPipelinesInterface(t),
 			PolicyFamilies:            compute.NewMockPolicyFamiliesInterface(t),
@@ -109,7 +110,64 @@ func NewMockWorkspaceClient(t interface {
 		},
 	}
 
+	mocksettingsAPI := cli.GetMockSettingsAPI()
+
+	mockautomaticClusterUpdate := settings.NewMockAutomaticClusterUpdateInterface(t)
+	mocksettingsAPI.On("AutomaticClusterUpdate").Return(mockautomaticClusterUpdate).Maybe()
+
+	mockcspEnablement := settings.NewMockCspEnablementInterface(t)
+	mocksettingsAPI.On("CspEnablement").Return(mockcspEnablement).Maybe()
+
+	mockdefaultNamespace := settings.NewMockDefaultNamespaceInterface(t)
+	mocksettingsAPI.On("DefaultNamespace").Return(mockdefaultNamespace).Maybe()
+
+	mockesmEnablement := settings.NewMockEsmEnablementInterface(t)
+	mocksettingsAPI.On("EsmEnablement").Return(mockesmEnablement).Maybe()
+
+	mockrestrictWorkspaceAdmins := settings.NewMockRestrictWorkspaceAdminsInterface(t)
+	mocksettingsAPI.On("RestrictWorkspaceAdmins").Return(mockrestrictWorkspaceAdmins).Maybe()
+
 	return cli
+}
+
+func (m *MockWorkspaceClient) GetMockAutomaticClusterUpdateAPI() *settings.MockAutomaticClusterUpdateInterface {
+	api, ok := m.GetMockSettingsAPI().AutomaticClusterUpdate().(*settings.MockAutomaticClusterUpdateInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AutomaticClusterUpdate to be *settings.MockAutomaticClusterUpdateInterface, actual was %T", m.GetMockSettingsAPI().AutomaticClusterUpdate()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockCspEnablementAPI() *settings.MockCspEnablementInterface {
+	api, ok := m.GetMockSettingsAPI().CspEnablement().(*settings.MockCspEnablementInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected CspEnablement to be *settings.MockCspEnablementInterface, actual was %T", m.GetMockSettingsAPI().CspEnablement()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDefaultNamespaceAPI() *settings.MockDefaultNamespaceInterface {
+	api, ok := m.GetMockSettingsAPI().DefaultNamespace().(*settings.MockDefaultNamespaceInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DefaultNamespace to be *settings.MockDefaultNamespaceInterface, actual was %T", m.GetMockSettingsAPI().DefaultNamespace()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockEsmEnablementAPI() *settings.MockEsmEnablementInterface {
+	api, ok := m.GetMockSettingsAPI().EsmEnablement().(*settings.MockEsmEnablementInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected EsmEnablement to be *settings.MockEsmEnablementInterface, actual was %T", m.GetMockSettingsAPI().EsmEnablement()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockRestrictWorkspaceAdminsAPI() *settings.MockRestrictWorkspaceAdminsInterface {
+	api, ok := m.GetMockSettingsAPI().RestrictWorkspaceAdmins().(*settings.MockRestrictWorkspaceAdminsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected RestrictWorkspaceAdmins to be *settings.MockRestrictWorkspaceAdminsInterface, actual was %T", m.GetMockSettingsAPI().RestrictWorkspaceAdmins()))
+	}
+	return api
 }
 
 func (m *MockWorkspaceClient) GetMockAccountAccessControlProxyAPI() *iam.MockAccountAccessControlProxyInterface {
@@ -396,6 +454,14 @@ func (m *MockWorkspaceClient) GetMockOnlineTablesAPI() *catalog.MockOnlineTables
 	api, ok := m.WorkspaceClient.OnlineTables.(*catalog.MockOnlineTablesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected OnlineTables to be *catalog.MockOnlineTablesInterface, actual was %T", m.WorkspaceClient.OnlineTables))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockPermissionMigrationAPI() *iam.MockPermissionMigrationInterface {
+	api, ok := m.WorkspaceClient.PermissionMigration.(*iam.MockPermissionMigrationInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected PermissionMigration to be *iam.MockPermissionMigrationInterface, actual was %T", m.WorkspaceClient.PermissionMigration))
 	}
 	return api
 }

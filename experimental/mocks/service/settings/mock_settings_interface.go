@@ -3,8 +3,6 @@
 package settings
 
 import (
-	context "context"
-
 	settings "github.com/databricks/databricks-sdk-go/service/settings"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -22,415 +20,190 @@ func (_m *MockSettingsInterface) EXPECT() *MockSettingsInterface_Expecter {
 	return &MockSettingsInterface_Expecter{mock: &_m.Mock}
 }
 
-// DeleteDefaultNamespaceSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) DeleteDefaultNamespaceSetting(ctx context.Context, request settings.DeleteDefaultNamespaceSettingRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error) {
-	ret := _m.Called(ctx, request)
+// AutomaticClusterUpdate provides a mock function with given fields:
+func (_m *MockSettingsInterface) AutomaticClusterUpdate() settings.AutomaticClusterUpdateInterface {
+	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteDefaultNamespaceSetting")
+		panic("no return value specified for AutomaticClusterUpdate")
 	}
 
-	var r0 *settings.DeleteDefaultNamespaceSettingResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) *settings.DeleteDefaultNamespaceSettingResponse); ok {
-		r0 = rf(ctx, request)
+	var r0 settings.AutomaticClusterUpdateInterface
+	if rf, ok := ret.Get(0).(func() settings.AutomaticClusterUpdateInterface); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.DeleteDefaultNamespaceSettingResponse)
+			r0 = ret.Get(0).(settings.AutomaticClusterUpdateInterface)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
-// MockSettingsInterface_DeleteDefaultNamespaceSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDefaultNamespaceSetting'
-type MockSettingsInterface_DeleteDefaultNamespaceSetting_Call struct {
+// MockSettingsInterface_AutomaticClusterUpdate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AutomaticClusterUpdate'
+type MockSettingsInterface_AutomaticClusterUpdate_Call struct {
 	*mock.Call
 }
 
-// DeleteDefaultNamespaceSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.DeleteDefaultNamespaceSettingRequest
-func (_e *MockSettingsInterface_Expecter) DeleteDefaultNamespaceSetting(ctx interface{}, request interface{}) *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call {
-	return &MockSettingsInterface_DeleteDefaultNamespaceSetting_Call{Call: _e.mock.On("DeleteDefaultNamespaceSetting", ctx, request)}
+// AutomaticClusterUpdate is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) AutomaticClusterUpdate() *MockSettingsInterface_AutomaticClusterUpdate_Call {
+	return &MockSettingsInterface_AutomaticClusterUpdate_Call{Call: _e.mock.On("AutomaticClusterUpdate")}
 }
 
-func (_c *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call) Run(run func(ctx context.Context, request settings.DeleteDefaultNamespaceSettingRequest)) *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call {
+func (_c *MockSettingsInterface_AutomaticClusterUpdate_Call) Run(run func()) *MockSettingsInterface_AutomaticClusterUpdate_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.DeleteDefaultNamespaceSettingRequest))
+		run()
 	})
 	return _c
 }
 
-func (_c *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call) Return(_a0 *settings.DeleteDefaultNamespaceSettingResponse, _a1 error) *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call {
-	_c.Call.Return(_a0, _a1)
+func (_c *MockSettingsInterface_AutomaticClusterUpdate_Call) Return(_a0 settings.AutomaticClusterUpdateInterface) *MockSettingsInterface_AutomaticClusterUpdate_Call {
+	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call) RunAndReturn(run func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error)) *MockSettingsInterface_DeleteDefaultNamespaceSetting_Call {
+func (_c *MockSettingsInterface_AutomaticClusterUpdate_Call) RunAndReturn(run func() settings.AutomaticClusterUpdateInterface) *MockSettingsInterface_AutomaticClusterUpdate_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// DeleteRestrictWorkspaceAdminsSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request settings.DeleteRestrictWorkspaceAdminsSettingRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error) {
-	ret := _m.Called(ctx, request)
+// CspEnablement provides a mock function with given fields:
+func (_m *MockSettingsInterface) CspEnablement() settings.CspEnablementInterface {
+	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteRestrictWorkspaceAdminsSetting")
+		panic("no return value specified for CspEnablement")
 	}
 
-	var r0 *settings.DeleteRestrictWorkspaceAdminsSettingResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) *settings.DeleteRestrictWorkspaceAdminsSettingResponse); ok {
-		r0 = rf(ctx, request)
+	var r0 settings.CspEnablementInterface
+	if rf, ok := ret.Get(0).(func() settings.CspEnablementInterface); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.DeleteRestrictWorkspaceAdminsSettingResponse)
+			r0 = ret.Get(0).(settings.CspEnablementInterface)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
-// MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteRestrictWorkspaceAdminsSetting'
-type MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call struct {
+// MockSettingsInterface_CspEnablement_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CspEnablement'
+type MockSettingsInterface_CspEnablement_Call struct {
 	*mock.Call
 }
 
-// DeleteRestrictWorkspaceAdminsSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.DeleteRestrictWorkspaceAdminsSettingRequest
-func (_e *MockSettingsInterface_Expecter) DeleteRestrictWorkspaceAdminsSetting(ctx interface{}, request interface{}) *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call {
-	return &MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call{Call: _e.mock.On("DeleteRestrictWorkspaceAdminsSetting", ctx, request)}
+// CspEnablement is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) CspEnablement() *MockSettingsInterface_CspEnablement_Call {
+	return &MockSettingsInterface_CspEnablement_Call{Call: _e.mock.On("CspEnablement")}
 }
 
-func (_c *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call) Run(run func(ctx context.Context, request settings.DeleteRestrictWorkspaceAdminsSettingRequest)) *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call {
+func (_c *MockSettingsInterface_CspEnablement_Call) Run(run func()) *MockSettingsInterface_CspEnablement_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.DeleteRestrictWorkspaceAdminsSettingRequest))
+		run()
 	})
 	return _c
 }
 
-func (_c *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call) Return(_a0 *settings.DeleteRestrictWorkspaceAdminsSettingResponse, _a1 error) *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call {
-	_c.Call.Return(_a0, _a1)
+func (_c *MockSettingsInterface_CspEnablement_Call) Return(_a0 settings.CspEnablementInterface) *MockSettingsInterface_CspEnablement_Call {
+	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call) RunAndReturn(run func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error)) *MockSettingsInterface_DeleteRestrictWorkspaceAdminsSetting_Call {
+func (_c *MockSettingsInterface_CspEnablement_Call) RunAndReturn(run func() settings.CspEnablementInterface) *MockSettingsInterface_CspEnablement_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetAutomaticClusterUpdateSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) GetAutomaticClusterUpdateSetting(ctx context.Context, request settings.GetAutomaticClusterUpdateSettingRequest) (*settings.AutomaticClusterUpdateSetting, error) {
-	ret := _m.Called(ctx, request)
+// DefaultNamespace provides a mock function with given fields:
+func (_m *MockSettingsInterface) DefaultNamespace() settings.DefaultNamespaceInterface {
+	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetAutomaticClusterUpdateSetting")
+		panic("no return value specified for DefaultNamespace")
 	}
 
-	var r0 *settings.AutomaticClusterUpdateSetting
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetAutomaticClusterUpdateSettingRequest) (*settings.AutomaticClusterUpdateSetting, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetAutomaticClusterUpdateSettingRequest) *settings.AutomaticClusterUpdateSetting); ok {
-		r0 = rf(ctx, request)
+	var r0 settings.DefaultNamespaceInterface
+	if rf, ok := ret.Get(0).(func() settings.DefaultNamespaceInterface); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.AutomaticClusterUpdateSetting)
+			r0 = ret.Get(0).(settings.DefaultNamespaceInterface)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetAutomaticClusterUpdateSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
-// MockSettingsInterface_GetAutomaticClusterUpdateSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAutomaticClusterUpdateSetting'
-type MockSettingsInterface_GetAutomaticClusterUpdateSetting_Call struct {
+// MockSettingsInterface_DefaultNamespace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DefaultNamespace'
+type MockSettingsInterface_DefaultNamespace_Call struct {
 	*mock.Call
 }
 
-// GetAutomaticClusterUpdateSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.GetAutomaticClusterUpdateSettingRequest
-func (_e *MockSettingsInterface_Expecter) GetAutomaticClusterUpdateSetting(ctx interface{}, request interface{}) *MockSettingsInterface_GetAutomaticClusterUpdateSetting_Call {
-	return &MockSettingsInterface_GetAutomaticClusterUpdateSetting_Call{Call: _e.mock.On("GetAutomaticClusterUpdateSetting", ctx, request)}
+// DefaultNamespace is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) DefaultNamespace() *MockSettingsInterface_DefaultNamespace_Call {
+	return &MockSettingsInterface_DefaultNamespace_Call{Call: _e.mock.On("DefaultNamespace")}
 }
 
-func (_c *MockSettingsInterface_GetAutomaticClusterUpdateSetting_Call) Run(run func(ctx context.Context, request settings.GetAutomaticClusterUpdateSettingRequest)) *MockSettingsInterface_GetAutomaticClusterUpdateSetting_Call {
+func (_c *MockSettingsInterface_DefaultNamespace_Call) Run(run func()) *MockSettingsInterface_DefaultNamespace_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetAutomaticClusterUpdateSettingRequest))
+		run()
 	})
 	return _c
 }
 
-func (_c *MockSettingsInterface_GetAutomaticClusterUpdateSetting_Call) Return(_a0 *settings.AutomaticClusterUpdateSetting, _a1 error) *MockSettingsInterface_GetAutomaticClusterUpdateSetting_Call {
-	_c.Call.Return(_a0, _a1)
+func (_c *MockSettingsInterface_DefaultNamespace_Call) Return(_a0 settings.DefaultNamespaceInterface) *MockSettingsInterface_DefaultNamespace_Call {
+	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSettingsInterface_GetAutomaticClusterUpdateSetting_Call) RunAndReturn(run func(context.Context, settings.GetAutomaticClusterUpdateSettingRequest) (*settings.AutomaticClusterUpdateSetting, error)) *MockSettingsInterface_GetAutomaticClusterUpdateSetting_Call {
+func (_c *MockSettingsInterface_DefaultNamespace_Call) RunAndReturn(run func() settings.DefaultNamespaceInterface) *MockSettingsInterface_DefaultNamespace_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetCspEnablementSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) GetCspEnablementSetting(ctx context.Context, request settings.GetCspEnablementSettingRequest) (*settings.CspEnablementSetting, error) {
-	ret := _m.Called(ctx, request)
+// EsmEnablement provides a mock function with given fields:
+func (_m *MockSettingsInterface) EsmEnablement() settings.EsmEnablementInterface {
+	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetCspEnablementSetting")
+		panic("no return value specified for EsmEnablement")
 	}
 
-	var r0 *settings.CspEnablementSetting
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetCspEnablementSettingRequest) (*settings.CspEnablementSetting, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetCspEnablementSettingRequest) *settings.CspEnablementSetting); ok {
-		r0 = rf(ctx, request)
+	var r0 settings.EsmEnablementInterface
+	if rf, ok := ret.Get(0).(func() settings.EsmEnablementInterface); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.CspEnablementSetting)
+			r0 = ret.Get(0).(settings.EsmEnablementInterface)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetCspEnablementSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
-// MockSettingsInterface_GetCspEnablementSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCspEnablementSetting'
-type MockSettingsInterface_GetCspEnablementSetting_Call struct {
+// MockSettingsInterface_EsmEnablement_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EsmEnablement'
+type MockSettingsInterface_EsmEnablement_Call struct {
 	*mock.Call
 }
 
-// GetCspEnablementSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.GetCspEnablementSettingRequest
-func (_e *MockSettingsInterface_Expecter) GetCspEnablementSetting(ctx interface{}, request interface{}) *MockSettingsInterface_GetCspEnablementSetting_Call {
-	return &MockSettingsInterface_GetCspEnablementSetting_Call{Call: _e.mock.On("GetCspEnablementSetting", ctx, request)}
+// EsmEnablement is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) EsmEnablement() *MockSettingsInterface_EsmEnablement_Call {
+	return &MockSettingsInterface_EsmEnablement_Call{Call: _e.mock.On("EsmEnablement")}
 }
 
-func (_c *MockSettingsInterface_GetCspEnablementSetting_Call) Run(run func(ctx context.Context, request settings.GetCspEnablementSettingRequest)) *MockSettingsInterface_GetCspEnablementSetting_Call {
+func (_c *MockSettingsInterface_EsmEnablement_Call) Run(run func()) *MockSettingsInterface_EsmEnablement_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetCspEnablementSettingRequest))
+		run()
 	})
 	return _c
 }
 
-func (_c *MockSettingsInterface_GetCspEnablementSetting_Call) Return(_a0 *settings.CspEnablementSetting, _a1 error) *MockSettingsInterface_GetCspEnablementSetting_Call {
-	_c.Call.Return(_a0, _a1)
+func (_c *MockSettingsInterface_EsmEnablement_Call) Return(_a0 settings.EsmEnablementInterface) *MockSettingsInterface_EsmEnablement_Call {
+	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSettingsInterface_GetCspEnablementSetting_Call) RunAndReturn(run func(context.Context, settings.GetCspEnablementSettingRequest) (*settings.CspEnablementSetting, error)) *MockSettingsInterface_GetCspEnablementSetting_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetDefaultNamespaceSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) GetDefaultNamespaceSetting(ctx context.Context, request settings.GetDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetDefaultNamespaceSetting")
-	}
-
-	var r0 *settings.DefaultNamespaceSetting
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetDefaultNamespaceSettingRequest) *settings.DefaultNamespaceSetting); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.DefaultNamespaceSetting)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetDefaultNamespaceSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockSettingsInterface_GetDefaultNamespaceSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDefaultNamespaceSetting'
-type MockSettingsInterface_GetDefaultNamespaceSetting_Call struct {
-	*mock.Call
-}
-
-// GetDefaultNamespaceSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.GetDefaultNamespaceSettingRequest
-func (_e *MockSettingsInterface_Expecter) GetDefaultNamespaceSetting(ctx interface{}, request interface{}) *MockSettingsInterface_GetDefaultNamespaceSetting_Call {
-	return &MockSettingsInterface_GetDefaultNamespaceSetting_Call{Call: _e.mock.On("GetDefaultNamespaceSetting", ctx, request)}
-}
-
-func (_c *MockSettingsInterface_GetDefaultNamespaceSetting_Call) Run(run func(ctx context.Context, request settings.GetDefaultNamespaceSettingRequest)) *MockSettingsInterface_GetDefaultNamespaceSetting_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetDefaultNamespaceSettingRequest))
-	})
-	return _c
-}
-
-func (_c *MockSettingsInterface_GetDefaultNamespaceSetting_Call) Return(_a0 *settings.DefaultNamespaceSetting, _a1 error) *MockSettingsInterface_GetDefaultNamespaceSetting_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockSettingsInterface_GetDefaultNamespaceSetting_Call) RunAndReturn(run func(context.Context, settings.GetDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error)) *MockSettingsInterface_GetDefaultNamespaceSetting_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetEsmEnablementSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) GetEsmEnablementSetting(ctx context.Context, request settings.GetEsmEnablementSettingRequest) (*settings.EsmEnablementSetting, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetEsmEnablementSetting")
-	}
-
-	var r0 *settings.EsmEnablementSetting
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetEsmEnablementSettingRequest) (*settings.EsmEnablementSetting, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetEsmEnablementSettingRequest) *settings.EsmEnablementSetting); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.EsmEnablementSetting)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetEsmEnablementSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockSettingsInterface_GetEsmEnablementSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetEsmEnablementSetting'
-type MockSettingsInterface_GetEsmEnablementSetting_Call struct {
-	*mock.Call
-}
-
-// GetEsmEnablementSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.GetEsmEnablementSettingRequest
-func (_e *MockSettingsInterface_Expecter) GetEsmEnablementSetting(ctx interface{}, request interface{}) *MockSettingsInterface_GetEsmEnablementSetting_Call {
-	return &MockSettingsInterface_GetEsmEnablementSetting_Call{Call: _e.mock.On("GetEsmEnablementSetting", ctx, request)}
-}
-
-func (_c *MockSettingsInterface_GetEsmEnablementSetting_Call) Run(run func(ctx context.Context, request settings.GetEsmEnablementSettingRequest)) *MockSettingsInterface_GetEsmEnablementSetting_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetEsmEnablementSettingRequest))
-	})
-	return _c
-}
-
-func (_c *MockSettingsInterface_GetEsmEnablementSetting_Call) Return(_a0 *settings.EsmEnablementSetting, _a1 error) *MockSettingsInterface_GetEsmEnablementSetting_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockSettingsInterface_GetEsmEnablementSetting_Call) RunAndReturn(run func(context.Context, settings.GetEsmEnablementSettingRequest) (*settings.EsmEnablementSetting, error)) *MockSettingsInterface_GetEsmEnablementSetting_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetRestrictWorkspaceAdminsSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) GetRestrictWorkspaceAdminsSetting(ctx context.Context, request settings.GetRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetRestrictWorkspaceAdminsSetting")
-	}
-
-	var r0 *settings.RestrictWorkspaceAdminsSetting
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) *settings.RestrictWorkspaceAdminsSetting); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.RestrictWorkspaceAdminsSetting)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRestrictWorkspaceAdminsSetting'
-type MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call struct {
-	*mock.Call
-}
-
-// GetRestrictWorkspaceAdminsSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.GetRestrictWorkspaceAdminsSettingRequest
-func (_e *MockSettingsInterface_Expecter) GetRestrictWorkspaceAdminsSetting(ctx interface{}, request interface{}) *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call {
-	return &MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call{Call: _e.mock.On("GetRestrictWorkspaceAdminsSetting", ctx, request)}
-}
-
-func (_c *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call) Run(run func(ctx context.Context, request settings.GetRestrictWorkspaceAdminsSettingRequest)) *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetRestrictWorkspaceAdminsSettingRequest))
-	})
-	return _c
-}
-
-func (_c *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call) Return(_a0 *settings.RestrictWorkspaceAdminsSetting, _a1 error) *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call) RunAndReturn(run func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error)) *MockSettingsInterface_GetRestrictWorkspaceAdminsSetting_Call {
+func (_c *MockSettingsInterface_EsmEnablement_Call) RunAndReturn(run func() settings.EsmEnablementInterface) *MockSettingsInterface_EsmEnablement_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -482,297 +255,49 @@ func (_c *MockSettingsInterface_Impl_Call) RunAndReturn(run func() settings.Sett
 	return _c
 }
 
-// UpdateAutomaticClusterUpdateSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) UpdateAutomaticClusterUpdateSetting(ctx context.Context, request settings.UpdateAutomaticClusterUpdateSettingRequest) (*settings.AutomaticClusterUpdateSetting, error) {
-	ret := _m.Called(ctx, request)
+// RestrictWorkspaceAdmins provides a mock function with given fields:
+func (_m *MockSettingsInterface) RestrictWorkspaceAdmins() settings.RestrictWorkspaceAdminsInterface {
+	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for UpdateAutomaticClusterUpdateSetting")
+		panic("no return value specified for RestrictWorkspaceAdmins")
 	}
 
-	var r0 *settings.AutomaticClusterUpdateSetting
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateAutomaticClusterUpdateSettingRequest) (*settings.AutomaticClusterUpdateSetting, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateAutomaticClusterUpdateSettingRequest) *settings.AutomaticClusterUpdateSetting); ok {
-		r0 = rf(ctx, request)
+	var r0 settings.RestrictWorkspaceAdminsInterface
+	if rf, ok := ret.Get(0).(func() settings.RestrictWorkspaceAdminsInterface); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.AutomaticClusterUpdateSetting)
+			r0 = ret.Get(0).(settings.RestrictWorkspaceAdminsInterface)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateAutomaticClusterUpdateSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
-// MockSettingsInterface_UpdateAutomaticClusterUpdateSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateAutomaticClusterUpdateSetting'
-type MockSettingsInterface_UpdateAutomaticClusterUpdateSetting_Call struct {
+// MockSettingsInterface_RestrictWorkspaceAdmins_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RestrictWorkspaceAdmins'
+type MockSettingsInterface_RestrictWorkspaceAdmins_Call struct {
 	*mock.Call
 }
 
-// UpdateAutomaticClusterUpdateSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.UpdateAutomaticClusterUpdateSettingRequest
-func (_e *MockSettingsInterface_Expecter) UpdateAutomaticClusterUpdateSetting(ctx interface{}, request interface{}) *MockSettingsInterface_UpdateAutomaticClusterUpdateSetting_Call {
-	return &MockSettingsInterface_UpdateAutomaticClusterUpdateSetting_Call{Call: _e.mock.On("UpdateAutomaticClusterUpdateSetting", ctx, request)}
+// RestrictWorkspaceAdmins is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) RestrictWorkspaceAdmins() *MockSettingsInterface_RestrictWorkspaceAdmins_Call {
+	return &MockSettingsInterface_RestrictWorkspaceAdmins_Call{Call: _e.mock.On("RestrictWorkspaceAdmins")}
 }
 
-func (_c *MockSettingsInterface_UpdateAutomaticClusterUpdateSetting_Call) Run(run func(ctx context.Context, request settings.UpdateAutomaticClusterUpdateSettingRequest)) *MockSettingsInterface_UpdateAutomaticClusterUpdateSetting_Call {
+func (_c *MockSettingsInterface_RestrictWorkspaceAdmins_Call) Run(run func()) *MockSettingsInterface_RestrictWorkspaceAdmins_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.UpdateAutomaticClusterUpdateSettingRequest))
+		run()
 	})
 	return _c
 }
 
-func (_c *MockSettingsInterface_UpdateAutomaticClusterUpdateSetting_Call) Return(_a0 *settings.AutomaticClusterUpdateSetting, _a1 error) *MockSettingsInterface_UpdateAutomaticClusterUpdateSetting_Call {
-	_c.Call.Return(_a0, _a1)
+func (_c *MockSettingsInterface_RestrictWorkspaceAdmins_Call) Return(_a0 settings.RestrictWorkspaceAdminsInterface) *MockSettingsInterface_RestrictWorkspaceAdmins_Call {
+	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSettingsInterface_UpdateAutomaticClusterUpdateSetting_Call) RunAndReturn(run func(context.Context, settings.UpdateAutomaticClusterUpdateSettingRequest) (*settings.AutomaticClusterUpdateSetting, error)) *MockSettingsInterface_UpdateAutomaticClusterUpdateSetting_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// UpdateCspEnablementSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) UpdateCspEnablementSetting(ctx context.Context, request settings.UpdateCspEnablementSettingRequest) (*settings.CspEnablementSetting, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for UpdateCspEnablementSetting")
-	}
-
-	var r0 *settings.CspEnablementSetting
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateCspEnablementSettingRequest) (*settings.CspEnablementSetting, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateCspEnablementSettingRequest) *settings.CspEnablementSetting); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.CspEnablementSetting)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateCspEnablementSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockSettingsInterface_UpdateCspEnablementSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateCspEnablementSetting'
-type MockSettingsInterface_UpdateCspEnablementSetting_Call struct {
-	*mock.Call
-}
-
-// UpdateCspEnablementSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.UpdateCspEnablementSettingRequest
-func (_e *MockSettingsInterface_Expecter) UpdateCspEnablementSetting(ctx interface{}, request interface{}) *MockSettingsInterface_UpdateCspEnablementSetting_Call {
-	return &MockSettingsInterface_UpdateCspEnablementSetting_Call{Call: _e.mock.On("UpdateCspEnablementSetting", ctx, request)}
-}
-
-func (_c *MockSettingsInterface_UpdateCspEnablementSetting_Call) Run(run func(ctx context.Context, request settings.UpdateCspEnablementSettingRequest)) *MockSettingsInterface_UpdateCspEnablementSetting_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.UpdateCspEnablementSettingRequest))
-	})
-	return _c
-}
-
-func (_c *MockSettingsInterface_UpdateCspEnablementSetting_Call) Return(_a0 *settings.CspEnablementSetting, _a1 error) *MockSettingsInterface_UpdateCspEnablementSetting_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockSettingsInterface_UpdateCspEnablementSetting_Call) RunAndReturn(run func(context.Context, settings.UpdateCspEnablementSettingRequest) (*settings.CspEnablementSetting, error)) *MockSettingsInterface_UpdateCspEnablementSetting_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// UpdateDefaultNamespaceSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) UpdateDefaultNamespaceSetting(ctx context.Context, request settings.UpdateDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for UpdateDefaultNamespaceSetting")
-	}
-
-	var r0 *settings.DefaultNamespaceSetting
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateDefaultNamespaceSettingRequest) *settings.DefaultNamespaceSetting); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.DefaultNamespaceSetting)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateDefaultNamespaceSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockSettingsInterface_UpdateDefaultNamespaceSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateDefaultNamespaceSetting'
-type MockSettingsInterface_UpdateDefaultNamespaceSetting_Call struct {
-	*mock.Call
-}
-
-// UpdateDefaultNamespaceSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.UpdateDefaultNamespaceSettingRequest
-func (_e *MockSettingsInterface_Expecter) UpdateDefaultNamespaceSetting(ctx interface{}, request interface{}) *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call {
-	return &MockSettingsInterface_UpdateDefaultNamespaceSetting_Call{Call: _e.mock.On("UpdateDefaultNamespaceSetting", ctx, request)}
-}
-
-func (_c *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call) Run(run func(ctx context.Context, request settings.UpdateDefaultNamespaceSettingRequest)) *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.UpdateDefaultNamespaceSettingRequest))
-	})
-	return _c
-}
-
-func (_c *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call) Return(_a0 *settings.DefaultNamespaceSetting, _a1 error) *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call) RunAndReturn(run func(context.Context, settings.UpdateDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error)) *MockSettingsInterface_UpdateDefaultNamespaceSetting_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// UpdateEsmEnablementSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) UpdateEsmEnablementSetting(ctx context.Context, request settings.UpdateEsmEnablementSettingRequest) (*settings.EsmEnablementSetting, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for UpdateEsmEnablementSetting")
-	}
-
-	var r0 *settings.EsmEnablementSetting
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateEsmEnablementSettingRequest) (*settings.EsmEnablementSetting, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateEsmEnablementSettingRequest) *settings.EsmEnablementSetting); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.EsmEnablementSetting)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateEsmEnablementSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockSettingsInterface_UpdateEsmEnablementSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateEsmEnablementSetting'
-type MockSettingsInterface_UpdateEsmEnablementSetting_Call struct {
-	*mock.Call
-}
-
-// UpdateEsmEnablementSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.UpdateEsmEnablementSettingRequest
-func (_e *MockSettingsInterface_Expecter) UpdateEsmEnablementSetting(ctx interface{}, request interface{}) *MockSettingsInterface_UpdateEsmEnablementSetting_Call {
-	return &MockSettingsInterface_UpdateEsmEnablementSetting_Call{Call: _e.mock.On("UpdateEsmEnablementSetting", ctx, request)}
-}
-
-func (_c *MockSettingsInterface_UpdateEsmEnablementSetting_Call) Run(run func(ctx context.Context, request settings.UpdateEsmEnablementSettingRequest)) *MockSettingsInterface_UpdateEsmEnablementSetting_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.UpdateEsmEnablementSettingRequest))
-	})
-	return _c
-}
-
-func (_c *MockSettingsInterface_UpdateEsmEnablementSetting_Call) Return(_a0 *settings.EsmEnablementSetting, _a1 error) *MockSettingsInterface_UpdateEsmEnablementSetting_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockSettingsInterface_UpdateEsmEnablementSetting_Call) RunAndReturn(run func(context.Context, settings.UpdateEsmEnablementSettingRequest) (*settings.EsmEnablementSetting, error)) *MockSettingsInterface_UpdateEsmEnablementSetting_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// UpdateRestrictWorkspaceAdminsSetting provides a mock function with given fields: ctx, request
-func (_m *MockSettingsInterface) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request settings.UpdateRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for UpdateRestrictWorkspaceAdminsSetting")
-	}
-
-	var r0 *settings.RestrictWorkspaceAdminsSetting
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateRestrictWorkspaceAdminsSettingRequest) *settings.RestrictWorkspaceAdminsSetting); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.RestrictWorkspaceAdminsSetting)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateRestrictWorkspaceAdminsSettingRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateRestrictWorkspaceAdminsSetting'
-type MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call struct {
-	*mock.Call
-}
-
-// UpdateRestrictWorkspaceAdminsSetting is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request settings.UpdateRestrictWorkspaceAdminsSettingRequest
-func (_e *MockSettingsInterface_Expecter) UpdateRestrictWorkspaceAdminsSetting(ctx interface{}, request interface{}) *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call {
-	return &MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call{Call: _e.mock.On("UpdateRestrictWorkspaceAdminsSetting", ctx, request)}
-}
-
-func (_c *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call) Run(run func(ctx context.Context, request settings.UpdateRestrictWorkspaceAdminsSettingRequest)) *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.UpdateRestrictWorkspaceAdminsSettingRequest))
-	})
-	return _c
-}
-
-func (_c *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call) Return(_a0 *settings.RestrictWorkspaceAdminsSetting, _a1 error) *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call) RunAndReturn(run func(context.Context, settings.UpdateRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error)) *MockSettingsInterface_UpdateRestrictWorkspaceAdminsSetting_Call {
+func (_c *MockSettingsInterface_RestrictWorkspaceAdmins_Call) RunAndReturn(run func() settings.RestrictWorkspaceAdminsInterface) *MockSettingsInterface_RestrictWorkspaceAdmins_Call {
 	_c.Call.Return(run)
 	return _c
 }

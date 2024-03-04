@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Credentials Manager, Ip Access Lists, Network Connectivity, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Automatic Cluster Update, Credentials Manager, Csp Enablement, Csp Enablement Account, Default Namespace, Esm Enablement, Esm Enablement Account, Ip Access Lists, Network Connectivity, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -362,42 +362,34 @@ type AccountSettingsInterface interface {
 	// Deprecated: use MockAccountSettingsInterface instead.
 	Impl() AccountSettingsService
 
-	// Delete Personal Compute setting.
+	// The compliance security profile settings at the account level control
+	// whether to enable it for new workspaces. By default, this account-level
+	// setting is disabled for new workspaces. After workspace creation, account
+	// admins can enable the compliance security profile individually for each
+	// workspace.
 	//
-	// Reverts back the Personal Compute setting value to default (ON)
-	DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error)
+	// This settings can be disabled so that new workspaces do not have
+	// compliance security profile enabled by default.
+	CspEnablementAccount() CspEnablementAccountInterface
 
-	// Get the compliance security profile setting for new workspaces.
-	//
-	// Gets the compliance security profile setting for new workspaces.
-	GetCspEnablementAccountSetting(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
+	// The enhanced security monitoring setting at the account level controls
+	// whether to enable the feature on new workspaces. By default, this
+	// account-level setting is disabled for new workspaces. After workspace
+	// creation, account admins can enable enhanced security monitoring
+	// individually for each workspace.
+	EsmEnablementAccount() EsmEnablementAccountInterface
 
-	// Get the enhanced security monitoring setting for new workspaces.
+	// The Personal Compute enablement setting lets you control which users can
+	// use the Personal Compute default policy to create compute resources. By
+	// default all users in all workspaces have access (ON), but you can change
+	// the setting to instead let individual workspaces configure access control
+	// (DELEGATE).
 	//
-	// Gets the enhanced security monitoring setting for new workspaces.
-	GetEsmEnablementAccountSetting(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error)
-
-	// Get Personal Compute setting.
-	//
-	// Gets the value of the Personal Compute setting.
-	GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
-
-	// Update the compliance security profile setting for new workspaces.
-	//
-	// Updates the value of the compliance security profile setting for new
-	// workspaces.
-	UpdateCspEnablementAccountSetting(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
-
-	// Update the enhanced security monitoring setting for new workspaces.
-	//
-	// Updates the value of the enhanced security monitoring setting for new
-	// workspaces.
-	UpdateEsmEnablementAccountSetting(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error)
-
-	// Update Personal Compute setting.
-	//
-	// Updates the value of the Personal Compute setting.
-	UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+	// There is only one instance of this setting per account. Since this
+	// setting has a default value, this setting is present on all accounts even
+	// though it's never set on a given account. Deletion reverts the value of
+	// the setting back to the default value.
+	PersonalCompute() PersonalComputeInterface
 }
 
 func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
@@ -405,22 +397,61 @@ func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 		impl: &accountSettingsImpl{
 			client: client,
 		},
+
+		cspEnablementAccount: NewCspEnablementAccount(client),
+
+		esmEnablementAccount: NewEsmEnablementAccount(client),
+
+		personalCompute: NewPersonalCompute(client),
 	}
 }
 
-// The Personal Compute enablement setting lets you control which users can use
-// the Personal Compute default policy to create compute resources. By default
-// all users in all workspaces have access (ON), but you can change the setting
-// to instead let individual workspaces configure access control (DELEGATE).
-//
-// There is only one instance of this setting per account. Since this setting
-// has a default value, this setting is present on all accounts even though it's
-// never set on a given account. Deletion reverts the value of the setting back
-// to the default value.
+// Accounts Settings API allows users to manage settings at the account level.
 type AccountSettingsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AccountSettingsService)
 	impl AccountSettingsService
+
+	// The compliance security profile settings at the account level control
+	// whether to enable it for new workspaces. By default, this account-level
+	// setting is disabled for new workspaces. After workspace creation, account
+	// admins can enable the compliance security profile individually for each
+	// workspace.
+	//
+	// This settings can be disabled so that new workspaces do not have
+	// compliance security profile enabled by default.
+	cspEnablementAccount CspEnablementAccountInterface
+
+	// The enhanced security monitoring setting at the account level controls
+	// whether to enable the feature on new workspaces. By default, this
+	// account-level setting is disabled for new workspaces. After workspace
+	// creation, account admins can enable enhanced security monitoring
+	// individually for each workspace.
+	esmEnablementAccount EsmEnablementAccountInterface
+
+	// The Personal Compute enablement setting lets you control which users can
+	// use the Personal Compute default policy to create compute resources. By
+	// default all users in all workspaces have access (ON), but you can change
+	// the setting to instead let individual workspaces configure access control
+	// (DELEGATE).
+	//
+	// There is only one instance of this setting per account. Since this
+	// setting has a default value, this setting is present on all accounts even
+	// though it's never set on a given account. Deletion reverts the value of
+	// the setting back to the default value.
+	personalCompute PersonalComputeInterface
+}
+
+func (a *AccountSettingsAPI) CspEnablementAccount() CspEnablementAccountInterface {
+	return a.cspEnablementAccount
+}
+
+func (a *AccountSettingsAPI) EsmEnablementAccount() EsmEnablementAccountInterface {
+	return a.esmEnablementAccount
+}
+
+func (a *AccountSettingsAPI) PersonalCompute() PersonalComputeInterface {
+	return a.personalCompute
 }
 
 // WithImpl could be used to override low-level API implementations for unit
@@ -437,55 +468,77 @@ func (a *AccountSettingsAPI) Impl() AccountSettingsService {
 	return a.impl
 }
 
-// Delete Personal Compute setting.
-//
-// Reverts back the Personal Compute setting value to default (ON)
-func (a *AccountSettingsAPI) DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
-	return a.impl.DeletePersonalComputeSetting(ctx, request)
+type AutomaticClusterUpdateInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockAutomaticClusterUpdateInterface instead.
+	WithImpl(impl AutomaticClusterUpdateService) AutomaticClusterUpdateInterface
+
+	// Impl returns low-level AutomaticClusterUpdate API implementation
+	// Deprecated: use MockAutomaticClusterUpdateInterface instead.
+	Impl() AutomaticClusterUpdateService
+
+	// Get the automatic cluster update setting.
+	//
+	// Gets the automatic cluster update setting.
+	Get(ctx context.Context, request GetAutomaticClusterUpdateRequest) (*AutomaticClusterUpdateSetting, error)
+
+	// Update the automatic cluster update setting.
+	//
+	// Updates the automatic cluster update setting for the workspace. A fresh etag
+	// needs to be provided in `PATCH` requests (as part of the setting field). The
+	// etag can be retrieved by making a `GET` request before the `PATCH` request.
+	// If the setting is updated concurrently, `PATCH` fails with 409 and the
+	// request must be retried by using the fresh etag in the 409 response.
+	Update(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
 }
 
-// Get the compliance security profile setting for new workspaces.
-//
-// Gets the compliance security profile setting for new workspaces.
-func (a *AccountSettingsAPI) GetCspEnablementAccountSetting(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
-	return a.impl.GetCspEnablementAccountSetting(ctx, request)
+func NewAutomaticClusterUpdate(client *client.DatabricksClient) *AutomaticClusterUpdateAPI {
+	return &AutomaticClusterUpdateAPI{
+		impl: &automaticClusterUpdateImpl{
+			client: client,
+		},
+	}
 }
 
-// Get the enhanced security monitoring setting for new workspaces.
-//
-// Gets the enhanced security monitoring setting for new workspaces.
-func (a *AccountSettingsAPI) GetEsmEnablementAccountSetting(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
-	return a.impl.GetEsmEnablementAccountSetting(ctx, request)
+// Controls whether automatic cluster update is enabled for the current
+// workspace. By default, it is turned off.
+type AutomaticClusterUpdateAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(AutomaticClusterUpdateService)
+	impl AutomaticClusterUpdateService
 }
 
-// Get Personal Compute setting.
-//
-// Gets the value of the Personal Compute setting.
-func (a *AccountSettingsAPI) GetPersonalComputeSetting(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	return a.impl.GetPersonalComputeSetting(ctx, request)
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockAutomaticClusterUpdateInterface instead.
+func (a *AutomaticClusterUpdateAPI) WithImpl(impl AutomaticClusterUpdateService) AutomaticClusterUpdateInterface {
+	a.impl = impl
+	return a
 }
 
-// Update the compliance security profile setting for new workspaces.
-//
-// Updates the value of the compliance security profile setting for new
-// workspaces.
-func (a *AccountSettingsAPI) UpdateCspEnablementAccountSetting(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
-	return a.impl.UpdateCspEnablementAccountSetting(ctx, request)
+// Impl returns low-level AutomaticClusterUpdate API implementation
+// Deprecated: use MockAutomaticClusterUpdateInterface instead.
+func (a *AutomaticClusterUpdateAPI) Impl() AutomaticClusterUpdateService {
+	return a.impl
 }
 
-// Update the enhanced security monitoring setting for new workspaces.
+// Get the automatic cluster update setting.
 //
-// Updates the value of the enhanced security monitoring setting for new
-// workspaces.
-func (a *AccountSettingsAPI) UpdateEsmEnablementAccountSetting(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
-	return a.impl.UpdateEsmEnablementAccountSetting(ctx, request)
+// Gets the automatic cluster update setting.
+func (a *AutomaticClusterUpdateAPI) Get(ctx context.Context, request GetAutomaticClusterUpdateRequest) (*AutomaticClusterUpdateSetting, error) {
+	return a.impl.Get(ctx, request)
 }
 
-// Update Personal Compute setting.
+// Update the automatic cluster update setting.
 //
-// Updates the value of the Personal Compute setting.
-func (a *AccountSettingsAPI) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	return a.impl.UpdatePersonalComputeSetting(ctx, request)
+// Updates the automatic cluster update setting for the workspace. A fresh etag
+// needs to be provided in `PATCH` requests (as part of the setting field). The
+// etag can be retrieved by making a `GET` request before the `PATCH` request.
+// If the setting is updated concurrently, `PATCH` fails with 409 and the
+// request must be retried by using the fresh etag in the 409 response.
+func (a *AutomaticClusterUpdateAPI) Update(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
+	return a.impl.Update(ctx, request)
 }
 
 type CredentialsManagerInterface interface {
@@ -541,6 +594,409 @@ func (a *CredentialsManagerAPI) Impl() CredentialsManagerService {
 // allows specifying scopes to determine token permissions.
 func (a *CredentialsManagerAPI) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
 	return a.impl.ExchangeToken(ctx, request)
+}
+
+type CspEnablementInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockCspEnablementInterface instead.
+	WithImpl(impl CspEnablementService) CspEnablementInterface
+
+	// Impl returns low-level CspEnablement API implementation
+	// Deprecated: use MockCspEnablementInterface instead.
+	Impl() CspEnablementService
+
+	// Get the compliance security profile setting.
+	//
+	// Gets the compliance security profile setting.
+	Get(ctx context.Context, request GetCspEnablementRequest) (*CspEnablementSetting, error)
+
+	// Update the compliance security profile setting.
+	//
+	// Updates the compliance security profile setting for the workspace. A fresh
+	// etag needs to be provided in `PATCH` requests (as part of the setting field).
+	// The etag can be retrieved by making a `GET` request before the `PATCH`
+	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+	// the request must be retried by using the fresh etag in the 409 response.
+	Update(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error)
+}
+
+func NewCspEnablement(client *client.DatabricksClient) *CspEnablementAPI {
+	return &CspEnablementAPI{
+		impl: &cspEnablementImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls whether to enable the compliance security profile for the current
+// workspace. Enabling it on a workspace is permanent. By default, it is turned
+// off.
+//
+// This settings can NOT be disabled once it is enabled.
+type CspEnablementAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(CspEnablementService)
+	impl CspEnablementService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockCspEnablementInterface instead.
+func (a *CspEnablementAPI) WithImpl(impl CspEnablementService) CspEnablementInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level CspEnablement API implementation
+// Deprecated: use MockCspEnablementInterface instead.
+func (a *CspEnablementAPI) Impl() CspEnablementService {
+	return a.impl
+}
+
+// Get the compliance security profile setting.
+//
+// Gets the compliance security profile setting.
+func (a *CspEnablementAPI) Get(ctx context.Context, request GetCspEnablementRequest) (*CspEnablementSetting, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Update the compliance security profile setting.
+//
+// Updates the compliance security profile setting for the workspace. A fresh
+// etag needs to be provided in `PATCH` requests (as part of the setting field).
+// The etag can be retrieved by making a `GET` request before the `PATCH`
+// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+// the request must be retried by using the fresh etag in the 409 response.
+func (a *CspEnablementAPI) Update(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error) {
+	return a.impl.Update(ctx, request)
+}
+
+type CspEnablementAccountInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockCspEnablementAccountInterface instead.
+	WithImpl(impl CspEnablementAccountService) CspEnablementAccountInterface
+
+	// Impl returns low-level CspEnablementAccount API implementation
+	// Deprecated: use MockCspEnablementAccountInterface instead.
+	Impl() CspEnablementAccountService
+
+	// Get the compliance security profile setting for new workspaces.
+	//
+	// Gets the compliance security profile setting for new workspaces.
+	Get(ctx context.Context, request GetCspEnablementAccountRequest) (*CspEnablementAccountSetting, error)
+
+	// Update the compliance security profile setting for new workspaces.
+	//
+	// Updates the value of the compliance security profile setting for new
+	// workspaces.
+	Update(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
+}
+
+func NewCspEnablementAccount(client *client.DatabricksClient) *CspEnablementAccountAPI {
+	return &CspEnablementAccountAPI{
+		impl: &cspEnablementAccountImpl{
+			client: client,
+		},
+	}
+}
+
+// The compliance security profile settings at the account level control whether
+// to enable it for new workspaces. By default, this account-level setting is
+// disabled for new workspaces. After workspace creation, account admins can
+// enable the compliance security profile individually for each workspace.
+//
+// This settings can be disabled so that new workspaces do not have compliance
+// security profile enabled by default.
+type CspEnablementAccountAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(CspEnablementAccountService)
+	impl CspEnablementAccountService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockCspEnablementAccountInterface instead.
+func (a *CspEnablementAccountAPI) WithImpl(impl CspEnablementAccountService) CspEnablementAccountInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level CspEnablementAccount API implementation
+// Deprecated: use MockCspEnablementAccountInterface instead.
+func (a *CspEnablementAccountAPI) Impl() CspEnablementAccountService {
+	return a.impl
+}
+
+// Get the compliance security profile setting for new workspaces.
+//
+// Gets the compliance security profile setting for new workspaces.
+func (a *CspEnablementAccountAPI) Get(ctx context.Context, request GetCspEnablementAccountRequest) (*CspEnablementAccountSetting, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Update the compliance security profile setting for new workspaces.
+//
+// Updates the value of the compliance security profile setting for new
+// workspaces.
+func (a *CspEnablementAccountAPI) Update(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
+	return a.impl.Update(ctx, request)
+}
+
+type DefaultNamespaceInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockDefaultNamespaceInterface instead.
+	WithImpl(impl DefaultNamespaceService) DefaultNamespaceInterface
+
+	// Impl returns low-level DefaultNamespace API implementation
+	// Deprecated: use MockDefaultNamespaceInterface instead.
+	Impl() DefaultNamespaceService
+
+	// Delete the default namespace setting.
+	//
+	// Deletes the default namespace setting for the workspace. A fresh etag needs
+	// to be provided in `DELETE` requests (as a query parameter). The etag can be
+	// retrieved by making a `GET` request before the `DELETE` request. If the
+	// setting is updated/deleted concurrently, `DELETE` fails with 409 and the
+	// request must be retried by using the fresh etag in the 409 response.
+	Delete(ctx context.Context, request DeleteDefaultNamespaceRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+
+	// Get the default namespace setting.
+	//
+	// Gets the default namespace setting.
+	Get(ctx context.Context, request GetDefaultNamespaceRequest) (*DefaultNamespaceSetting, error)
+
+	// Update the default namespace setting.
+	//
+	// Updates the default namespace setting for the workspace. A fresh etag needs
+	// to be provided in `PATCH` requests (as part of the setting field). The etag
+	// can be retrieved by making a `GET` request before the `PATCH` request. Note
+	// that if the setting does not exist, `GET` returns a NOT_FOUND error and the
+	// etag is present in the error response, which should be set in the `PATCH`
+	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+	// the request must be retried by using the fresh etag in the 409 response.
+	Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
+}
+
+func NewDefaultNamespace(client *client.DatabricksClient) *DefaultNamespaceAPI {
+	return &DefaultNamespaceAPI{
+		impl: &defaultNamespaceImpl{
+			client: client,
+		},
+	}
+}
+
+// The default namespace setting API allows users to configure the default
+// namespace for a Databricks workspace.
+//
+// Through this API, users can retrieve, set, or modify the default namespace
+// used when queries do not reference a fully qualified three-level name. For
+// example, if you use the API to set 'retail_prod' as the default catalog, then
+// a query 'SELECT * FROM myTable' would reference the object
+// 'retail_prod.default.myTable' (the schema 'default' is always assumed).
+//
+// This setting requires a restart of clusters and SQL warehouses to take
+// effect. Additionally, the default namespace only applies when using Unity
+// Catalog-enabled compute.
+type DefaultNamespaceAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(DefaultNamespaceService)
+	impl DefaultNamespaceService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockDefaultNamespaceInterface instead.
+func (a *DefaultNamespaceAPI) WithImpl(impl DefaultNamespaceService) DefaultNamespaceInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level DefaultNamespace API implementation
+// Deprecated: use MockDefaultNamespaceInterface instead.
+func (a *DefaultNamespaceAPI) Impl() DefaultNamespaceService {
+	return a.impl
+}
+
+// Delete the default namespace setting.
+//
+// Deletes the default namespace setting for the workspace. A fresh etag needs
+// to be provided in `DELETE` requests (as a query parameter). The etag can be
+// retrieved by making a `GET` request before the `DELETE` request. If the
+// setting is updated/deleted concurrently, `DELETE` fails with 409 and the
+// request must be retried by using the fresh etag in the 409 response.
+func (a *DefaultNamespaceAPI) Delete(ctx context.Context, request DeleteDefaultNamespaceRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
+	return a.impl.Delete(ctx, request)
+}
+
+// Get the default namespace setting.
+//
+// Gets the default namespace setting.
+func (a *DefaultNamespaceAPI) Get(ctx context.Context, request GetDefaultNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Update the default namespace setting.
+//
+// Updates the default namespace setting for the workspace. A fresh etag needs
+// to be provided in `PATCH` requests (as part of the setting field). The etag
+// can be retrieved by making a `GET` request before the `PATCH` request. Note
+// that if the setting does not exist, `GET` returns a NOT_FOUND error and the
+// etag is present in the error response, which should be set in the `PATCH`
+// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+// the request must be retried by using the fresh etag in the 409 response.
+func (a *DefaultNamespaceAPI) Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
+	return a.impl.Update(ctx, request)
+}
+
+type EsmEnablementInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockEsmEnablementInterface instead.
+	WithImpl(impl EsmEnablementService) EsmEnablementInterface
+
+	// Impl returns low-level EsmEnablement API implementation
+	// Deprecated: use MockEsmEnablementInterface instead.
+	Impl() EsmEnablementService
+
+	// Get the enhanced security monitoring setting.
+	//
+	// Gets the enhanced security monitoring setting.
+	Get(ctx context.Context, request GetEsmEnablementRequest) (*EsmEnablementSetting, error)
+
+	// Update the enhanced security monitoring setting.
+	//
+	// Updates the enhanced security monitoring setting for the workspace. A fresh
+	// etag needs to be provided in `PATCH` requests (as part of the setting field).
+	// The etag can be retrieved by making a `GET` request before the `PATCH`
+	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+	// the request must be retried by using the fresh etag in the 409 response.
+	Update(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
+}
+
+func NewEsmEnablement(client *client.DatabricksClient) *EsmEnablementAPI {
+	return &EsmEnablementAPI{
+		impl: &esmEnablementImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls whether enhanced security monitoring is enabled for the current
+// workspace. If the compliance security profile is enabled, this is
+// automatically enabled. By default, it is disabled. However, if the compliance
+// security profile is enabled, this is automatically enabled.
+//
+// If the compliance security profile is disabled, you can enable or disable
+// this setting and it is not permanent.
+type EsmEnablementAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(EsmEnablementService)
+	impl EsmEnablementService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockEsmEnablementInterface instead.
+func (a *EsmEnablementAPI) WithImpl(impl EsmEnablementService) EsmEnablementInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level EsmEnablement API implementation
+// Deprecated: use MockEsmEnablementInterface instead.
+func (a *EsmEnablementAPI) Impl() EsmEnablementService {
+	return a.impl
+}
+
+// Get the enhanced security monitoring setting.
+//
+// Gets the enhanced security monitoring setting.
+func (a *EsmEnablementAPI) Get(ctx context.Context, request GetEsmEnablementRequest) (*EsmEnablementSetting, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Update the enhanced security monitoring setting.
+//
+// Updates the enhanced security monitoring setting for the workspace. A fresh
+// etag needs to be provided in `PATCH` requests (as part of the setting field).
+// The etag can be retrieved by making a `GET` request before the `PATCH`
+// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+// the request must be retried by using the fresh etag in the 409 response.
+func (a *EsmEnablementAPI) Update(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
+	return a.impl.Update(ctx, request)
+}
+
+type EsmEnablementAccountInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockEsmEnablementAccountInterface instead.
+	WithImpl(impl EsmEnablementAccountService) EsmEnablementAccountInterface
+
+	// Impl returns low-level EsmEnablementAccount API implementation
+	// Deprecated: use MockEsmEnablementAccountInterface instead.
+	Impl() EsmEnablementAccountService
+
+	// Get the enhanced security monitoring setting for new workspaces.
+	//
+	// Gets the enhanced security monitoring setting for new workspaces.
+	Get(ctx context.Context, request GetEsmEnablementAccountRequest) (*EsmEnablementAccountSetting, error)
+
+	// Update the enhanced security monitoring setting for new workspaces.
+	//
+	// Updates the value of the enhanced security monitoring setting for new
+	// workspaces.
+	Update(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error)
+}
+
+func NewEsmEnablementAccount(client *client.DatabricksClient) *EsmEnablementAccountAPI {
+	return &EsmEnablementAccountAPI{
+		impl: &esmEnablementAccountImpl{
+			client: client,
+		},
+	}
+}
+
+// The enhanced security monitoring setting at the account level controls
+// whether to enable the feature on new workspaces. By default, this
+// account-level setting is disabled for new workspaces. After workspace
+// creation, account admins can enable enhanced security monitoring individually
+// for each workspace.
+type EsmEnablementAccountAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(EsmEnablementAccountService)
+	impl EsmEnablementAccountService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockEsmEnablementAccountInterface instead.
+func (a *EsmEnablementAccountAPI) WithImpl(impl EsmEnablementAccountService) EsmEnablementAccountInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level EsmEnablementAccount API implementation
+// Deprecated: use MockEsmEnablementAccountInterface instead.
+func (a *EsmEnablementAccountAPI) Impl() EsmEnablementAccountService {
+	return a.impl
+}
+
+// Get the enhanced security monitoring setting for new workspaces.
+//
+// Gets the enhanced security monitoring setting for new workspaces.
+func (a *EsmEnablementAccountAPI) Get(ctx context.Context, request GetEsmEnablementAccountRequest) (*EsmEnablementAccountSetting, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Update the enhanced security monitoring setting for new workspaces.
+//
+// Updates the value of the enhanced security monitoring setting for new
+// workspaces.
+func (a *EsmEnablementAccountAPI) Update(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
+	return a.impl.Update(ctx, request)
 }
 
 type IpAccessListsInterface interface {
@@ -905,20 +1361,6 @@ type NetworkConnectivityInterface interface {
 	Impl() NetworkConnectivityService
 
 	// Create a network connectivity configuration.
-	//
-	// Creates a network connectivity configuration (NCC), which provides stable
-	// Azure service subnets when accessing your Azure Storage accounts. You can
-	// also use a network connectivity configuration to create Databricks-managed
-	// private endpoints so that Databricks serverless compute resources privately
-	// access your resources.
-	//
-	// **IMPORTANT**: After you create the network connectivity configuration, you
-	// must assign one or more workspaces to the new network connectivity
-	// configuration. You can share one network connectivity configuration with
-	// multiple workspaces from the same Azure region within the same Databricks
-	// account. See [configure serverless secure connectivity].
-	//
-	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 	CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error)
 
 	// Create a private endpoint rule.
@@ -1026,14 +1468,7 @@ func NewNetworkConnectivity(client *client.DatabricksClient) *NetworkConnectivit
 }
 
 // These APIs provide configurations for the network connectivity of your
-// workspaces for serverless compute resources. This API provides stable subnets
-// for your workspace so that you can configure your firewalls on your Azure
-// Storage accounts to allow access from Databricks. You can also use the API to
-// provision private endpoints for Databricks to privately connect serverless
-// compute resources to your Azure resources using Azure Private Link. See
-// [configure serverless secure connectivity].
-//
-// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+// workspaces for serverless compute resources.
 type NetworkConnectivityAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(NetworkConnectivityService)
@@ -1055,20 +1490,6 @@ func (a *NetworkConnectivityAPI) Impl() NetworkConnectivityService {
 }
 
 // Create a network connectivity configuration.
-//
-// Creates a network connectivity configuration (NCC), which provides stable
-// Azure service subnets when accessing your Azure Storage accounts. You can
-// also use a network connectivity configuration to create Databricks-managed
-// private endpoints so that Databricks serverless compute resources privately
-// access your resources.
-//
-// **IMPORTANT**: After you create the network connectivity configuration, you
-// must assign one or more workspaces to the new network connectivity
-// configuration. You can share one network connectivity configuration with
-// multiple workspaces from the same Azure region within the same Databricks
-// account. See [configure serverless secure connectivity].
-//
-// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 func (a *NetworkConnectivityAPI) CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error) {
 	return a.impl.CreateNetworkConnectivityConfiguration(ctx, request)
 }
@@ -1250,6 +1671,195 @@ func (a *NetworkConnectivityAPI) ListPrivateEndpointRulesByNetworkConnectivityCo
 	})
 }
 
+type PersonalComputeInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockPersonalComputeInterface instead.
+	WithImpl(impl PersonalComputeService) PersonalComputeInterface
+
+	// Impl returns low-level PersonalCompute API implementation
+	// Deprecated: use MockPersonalComputeInterface instead.
+	Impl() PersonalComputeService
+
+	// Delete Personal Compute setting.
+	//
+	// Reverts back the Personal Compute setting value to default (ON)
+	Delete(ctx context.Context, request DeletePersonalComputeRequest) (*DeletePersonalComputeSettingResponse, error)
+
+	// Get Personal Compute setting.
+	//
+	// Gets the value of the Personal Compute setting.
+	Get(ctx context.Context, request GetPersonalComputeRequest) (*PersonalComputeSetting, error)
+
+	// Update Personal Compute setting.
+	//
+	// Updates the value of the Personal Compute setting.
+	Update(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+}
+
+func NewPersonalCompute(client *client.DatabricksClient) *PersonalComputeAPI {
+	return &PersonalComputeAPI{
+		impl: &personalComputeImpl{
+			client: client,
+		},
+	}
+}
+
+// The Personal Compute enablement setting lets you control which users can use
+// the Personal Compute default policy to create compute resources. By default
+// all users in all workspaces have access (ON), but you can change the setting
+// to instead let individual workspaces configure access control (DELEGATE).
+//
+// There is only one instance of this setting per account. Since this setting
+// has a default value, this setting is present on all accounts even though it's
+// never set on a given account. Deletion reverts the value of the setting back
+// to the default value.
+type PersonalComputeAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(PersonalComputeService)
+	impl PersonalComputeService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockPersonalComputeInterface instead.
+func (a *PersonalComputeAPI) WithImpl(impl PersonalComputeService) PersonalComputeInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level PersonalCompute API implementation
+// Deprecated: use MockPersonalComputeInterface instead.
+func (a *PersonalComputeAPI) Impl() PersonalComputeService {
+	return a.impl
+}
+
+// Delete Personal Compute setting.
+//
+// Reverts back the Personal Compute setting value to default (ON)
+func (a *PersonalComputeAPI) Delete(ctx context.Context, request DeletePersonalComputeRequest) (*DeletePersonalComputeSettingResponse, error) {
+	return a.impl.Delete(ctx, request)
+}
+
+// Get Personal Compute setting.
+//
+// Gets the value of the Personal Compute setting.
+func (a *PersonalComputeAPI) Get(ctx context.Context, request GetPersonalComputeRequest) (*PersonalComputeSetting, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Update Personal Compute setting.
+//
+// Updates the value of the Personal Compute setting.
+func (a *PersonalComputeAPI) Update(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+	return a.impl.Update(ctx, request)
+}
+
+type RestrictWorkspaceAdminsInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockRestrictWorkspaceAdminsInterface instead.
+	WithImpl(impl RestrictWorkspaceAdminsService) RestrictWorkspaceAdminsInterface
+
+	// Impl returns low-level RestrictWorkspaceAdmins API implementation
+	// Deprecated: use MockRestrictWorkspaceAdminsInterface instead.
+	Impl() RestrictWorkspaceAdminsService
+
+	// Delete the restrict workspace admins setting.
+	//
+	// Reverts the restrict workspace admins setting status for the workspace. A
+	// fresh etag needs to be provided in `DELETE` requests (as a query parameter).
+	// The etag can be retrieved by making a `GET` request before the DELETE
+	// request. If the setting is updated/deleted concurrently, `DELETE` fails with
+	// 409 and the request must be retried by using the fresh etag in the 409
+	// response.
+	Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
+
+	// Get the restrict workspace admins setting.
+	//
+	// Gets the restrict workspace admins setting.
+	Get(ctx context.Context, request GetRestrictWorkspaceAdminRequest) (*RestrictWorkspaceAdminsSetting, error)
+
+	// Update the restrict workspace admins setting.
+	//
+	// Updates the restrict workspace admins setting for the workspace. A fresh etag
+	// needs to be provided in `PATCH` requests (as part of the setting field). The
+	// etag can be retrieved by making a GET request before the `PATCH` request. If
+	// the setting is updated concurrently, `PATCH` fails with 409 and the request
+	// must be retried by using the fresh etag in the 409 response.
+	Update(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
+}
+
+func NewRestrictWorkspaceAdmins(client *client.DatabricksClient) *RestrictWorkspaceAdminsAPI {
+	return &RestrictWorkspaceAdminsAPI{
+		impl: &restrictWorkspaceAdminsImpl{
+			client: client,
+		},
+	}
+}
+
+// The Restrict Workspace Admins setting lets you control the capabilities of
+// workspace admins. With the setting status set to ALLOW_ALL, workspace admins
+// can create service principal personal access tokens on behalf of any service
+// principal in their workspace. Workspace admins can also change a job owner to
+// any user in their workspace. And they can change the job run_as setting to
+// any user in their workspace or to a service principal on which they have the
+// Service Principal User role. With the setting status set to
+// RESTRICT_TOKENS_AND_JOB_RUN_AS, workspace admins can only create personal
+// access tokens on behalf of service principals they have the Service Principal
+// User role on. They can also only change a job owner to themselves. And they
+// can change the job run_as setting to themselves or to a service principal on
+// which they have the Service Principal User role.
+type RestrictWorkspaceAdminsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(RestrictWorkspaceAdminsService)
+	impl RestrictWorkspaceAdminsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockRestrictWorkspaceAdminsInterface instead.
+func (a *RestrictWorkspaceAdminsAPI) WithImpl(impl RestrictWorkspaceAdminsService) RestrictWorkspaceAdminsInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level RestrictWorkspaceAdmins API implementation
+// Deprecated: use MockRestrictWorkspaceAdminsInterface instead.
+func (a *RestrictWorkspaceAdminsAPI) Impl() RestrictWorkspaceAdminsService {
+	return a.impl
+}
+
+// Delete the restrict workspace admins setting.
+//
+// Reverts the restrict workspace admins setting status for the workspace. A
+// fresh etag needs to be provided in `DELETE` requests (as a query parameter).
+// The etag can be retrieved by making a `GET` request before the DELETE
+// request. If the setting is updated/deleted concurrently, `DELETE` fails with
+// 409 and the request must be retried by using the fresh etag in the 409
+// response.
+func (a *RestrictWorkspaceAdminsAPI) Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
+	return a.impl.Delete(ctx, request)
+}
+
+// Get the restrict workspace admins setting.
+//
+// Gets the restrict workspace admins setting.
+func (a *RestrictWorkspaceAdminsAPI) Get(ctx context.Context, request GetRestrictWorkspaceAdminRequest) (*RestrictWorkspaceAdminsSetting, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Update the restrict workspace admins setting.
+//
+// Updates the restrict workspace admins setting for the workspace. A fresh etag
+// needs to be provided in `PATCH` requests (as part of the setting field). The
+// etag can be retrieved by making a GET request before the `PATCH` request. If
+// the setting is updated concurrently, `PATCH` fails with 409 and the request
+// must be retried by using the fresh etag in the 409 response.
+func (a *RestrictWorkspaceAdminsAPI) Update(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
+	return a.impl.Update(ctx, request)
+}
+
 type SettingsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
@@ -1260,96 +1870,55 @@ type SettingsInterface interface {
 	// Deprecated: use MockSettingsInterface instead.
 	Impl() SettingsService
 
-	// Delete the default namespace setting.
-	//
-	// Deletes the default namespace setting for the workspace. A fresh etag needs
-	// to be provided in `DELETE` requests (as a query parameter). The etag can be
-	// retrieved by making a `GET` request before the `DELETE` request. If the
-	// setting is updated/deleted concurrently, `DELETE` fails with 409 and the
-	// request must be retried by using the fresh etag in the 409 response.
-	DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+	// Controls whether automatic cluster update is enabled for the current
+	// workspace. By default, it is turned off.
+	AutomaticClusterUpdate() AutomaticClusterUpdateInterface
 
-	// Delete the restrict workspace admins setting.
+	// Controls whether to enable the compliance security profile for the
+	// current workspace. Enabling it on a workspace is permanent. By default,
+	// it is turned off.
 	//
-	// Reverts the restrict workspace admins setting status for the workspace. A
-	// fresh etag needs to be provided in `DELETE` requests (as a query parameter).
-	// The etag can be retrieved by making a `GET` request before the DELETE
-	// request. If the setting is updated/deleted concurrently, `DELETE` fails with
-	// 409 and the request must be retried by using the fresh etag in the 409
-	// response.
-	DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
+	// This settings can NOT be disabled once it is enabled.
+	CspEnablement() CspEnablementInterface
 
-	// Get the automatic cluster update setting.
+	// The default namespace setting API allows users to configure the default
+	// namespace for a Databricks workspace.
 	//
-	// Gets the automatic cluster update setting.
-	GetAutomaticClusterUpdateSetting(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
+	// Through this API, users can retrieve, set, or modify the default
+	// namespace used when queries do not reference a fully qualified
+	// three-level name. For example, if you use the API to set 'retail_prod' as
+	// the default catalog, then a query 'SELECT * FROM myTable' would reference
+	// the object 'retail_prod.default.myTable' (the schema 'default' is always
+	// assumed).
+	//
+	// This setting requires a restart of clusters and SQL warehouses to take
+	// effect. Additionally, the default namespace only applies when using Unity
+	// Catalog-enabled compute.
+	DefaultNamespace() DefaultNamespaceInterface
 
-	// Get the compliance security profile setting.
+	// Controls whether enhanced security monitoring is enabled for the current
+	// workspace. If the compliance security profile is enabled, this is
+	// automatically enabled. By default, it is disabled. However, if the
+	// compliance security profile is enabled, this is automatically enabled.
 	//
-	// Gets the compliance security profile setting.
-	GetCspEnablementSetting(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error)
+	// If the compliance security profile is disabled, you can enable or disable
+	// this setting and it is not permanent.
+	EsmEnablement() EsmEnablementInterface
 
-	// Get the default namespace setting.
-	//
-	// Gets the default namespace setting.
-	GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
-
-	// Get the enhanced security monitoring setting.
-	//
-	// Gets the enhanced security monitoring setting.
-	GetEsmEnablementSetting(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
-
-	// Get the restrict workspace admins setting.
-	//
-	// Gets the restrict workspace admins setting.
-	GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
-
-	// Update the automatic cluster update setting.
-	//
-	// Updates the automatic cluster update setting for the workspace. A fresh etag
-	// needs to be provided in `PATCH` requests (as part of the setting field). The
-	// etag can be retrieved by making a `GET` request before the `PATCH` request.
-	// If the setting is updated concurrently, `PATCH` fails with 409 and the
-	// request must be retried by using the fresh etag in the 409 response.
-	UpdateAutomaticClusterUpdateSetting(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
-
-	// Update the compliance security profile setting.
-	//
-	// Updates the compliance security profile setting for the workspace. A fresh
-	// etag needs to be provided in `PATCH` requests (as part of the setting field).
-	// The etag can be retrieved by making a `GET` request before the `PATCH`
-	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
-	// the request must be retried by using the fresh etag in the 409 response.
-	UpdateCspEnablementSetting(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error)
-
-	// Update the default namespace setting.
-	//
-	// Updates the default namespace setting for the workspace. A fresh etag needs
-	// to be provided in `PATCH` requests (as part of the setting field). The etag
-	// can be retrieved by making a `GET` request before the `PATCH` request. Note
-	// that if the setting does not exist, `GET` returns a NOT_FOUND error and the
-	// etag is present in the error response, which should be set in the `PATCH`
-	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
-	// the request must be retried by using the fresh etag in the 409 response.
-	UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
-
-	// Update the enhanced security monitoring setting.
-	//
-	// Updates the enhanced security monitoring setting for the workspace. A fresh
-	// etag needs to be provided in `PATCH` requests (as part of the setting field).
-	// The etag can be retrieved by making a `GET` request before the `PATCH`
-	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
-	// the request must be retried by using the fresh etag in the 409 response.
-	UpdateEsmEnablementSetting(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
-
-	// Update the restrict workspace admins setting.
-	//
-	// Updates the restrict workspace admins setting for the workspace. A fresh etag
-	// needs to be provided in `PATCH` requests (as part of the setting field). The
-	// etag can be retrieved by making a GET request before the `PATCH` request. If
-	// the setting is updated concurrently, `PATCH` fails with 409 and the request
-	// must be retried by using the fresh etag in the 409 response.
-	UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
+	// The Restrict Workspace Admins setting lets you control the capabilities
+	// of workspace admins. With the setting status set to ALLOW_ALL, workspace
+	// admins can create service principal personal access tokens on behalf of
+	// any service principal in their workspace. Workspace admins can also
+	// change a job owner to any user in their workspace. And they can change
+	// the job run_as setting to any user in their workspace or to a service
+	// principal on which they have the Service Principal User role. With the
+	// setting status set to RESTRICT_TOKENS_AND_JOB_RUN_AS, workspace admins
+	// can only create personal access tokens on behalf of service principals
+	// they have the Service Principal User role on. They can also only change a
+	// job owner to themselves. And they can change the job run_as setting to
+	// themselves or to a service principal on which they have the Service
+	// Principal User role.
+	RestrictWorkspaceAdmins() RestrictWorkspaceAdminsInterface
 }
 
 func NewSettings(client *client.DatabricksClient) *SettingsAPI {
@@ -1357,25 +1926,95 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 		impl: &settingsImpl{
 			client: client,
 		},
+
+		automaticClusterUpdate: NewAutomaticClusterUpdate(client),
+
+		cspEnablement: NewCspEnablement(client),
+
+		defaultNamespace: NewDefaultNamespace(client),
+
+		esmEnablement: NewEsmEnablement(client),
+
+		restrictWorkspaceAdmins: NewRestrictWorkspaceAdmins(client),
 	}
 }
 
-// The default namespace setting API allows users to configure the default
-// namespace for a Databricks workspace.
-//
-// Through this API, users can retrieve, set, or modify the default namespace
-// used when queries do not reference a fully qualified three-level name. For
-// example, if you use the API to set 'retail_prod' as the default catalog, then
-// a query 'SELECT * FROM myTable' would reference the object
-// 'retail_prod.default.myTable' (the schema 'default' is always assumed).
-//
-// This setting requires a restart of clusters and SQL warehouses to take
-// effect. Additionally, the default namespace only applies when using Unity
-// Catalog-enabled compute.
+// Workspace Settings API allows users to manage settings at the workspace
+// level.
 type SettingsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(SettingsService)
 	impl SettingsService
+
+	// Controls whether automatic cluster update is enabled for the current
+	// workspace. By default, it is turned off.
+	automaticClusterUpdate AutomaticClusterUpdateInterface
+
+	// Controls whether to enable the compliance security profile for the
+	// current workspace. Enabling it on a workspace is permanent. By default,
+	// it is turned off.
+	//
+	// This settings can NOT be disabled once it is enabled.
+	cspEnablement CspEnablementInterface
+
+	// The default namespace setting API allows users to configure the default
+	// namespace for a Databricks workspace.
+	//
+	// Through this API, users can retrieve, set, or modify the default
+	// namespace used when queries do not reference a fully qualified
+	// three-level name. For example, if you use the API to set 'retail_prod' as
+	// the default catalog, then a query 'SELECT * FROM myTable' would reference
+	// the object 'retail_prod.default.myTable' (the schema 'default' is always
+	// assumed).
+	//
+	// This setting requires a restart of clusters and SQL warehouses to take
+	// effect. Additionally, the default namespace only applies when using Unity
+	// Catalog-enabled compute.
+	defaultNamespace DefaultNamespaceInterface
+
+	// Controls whether enhanced security monitoring is enabled for the current
+	// workspace. If the compliance security profile is enabled, this is
+	// automatically enabled. By default, it is disabled. However, if the
+	// compliance security profile is enabled, this is automatically enabled.
+	//
+	// If the compliance security profile is disabled, you can enable or disable
+	// this setting and it is not permanent.
+	esmEnablement EsmEnablementInterface
+
+	// The Restrict Workspace Admins setting lets you control the capabilities
+	// of workspace admins. With the setting status set to ALLOW_ALL, workspace
+	// admins can create service principal personal access tokens on behalf of
+	// any service principal in their workspace. Workspace admins can also
+	// change a job owner to any user in their workspace. And they can change
+	// the job run_as setting to any user in their workspace or to a service
+	// principal on which they have the Service Principal User role. With the
+	// setting status set to RESTRICT_TOKENS_AND_JOB_RUN_AS, workspace admins
+	// can only create personal access tokens on behalf of service principals
+	// they have the Service Principal User role on. They can also only change a
+	// job owner to themselves. And they can change the job run_as setting to
+	// themselves or to a service principal on which they have the Service
+	// Principal User role.
+	restrictWorkspaceAdmins RestrictWorkspaceAdminsInterface
+}
+
+func (a *SettingsAPI) AutomaticClusterUpdate() AutomaticClusterUpdateInterface {
+	return a.automaticClusterUpdate
+}
+
+func (a *SettingsAPI) CspEnablement() CspEnablementInterface {
+	return a.cspEnablement
+}
+
+func (a *SettingsAPI) DefaultNamespace() DefaultNamespaceInterface {
+	return a.defaultNamespace
+}
+
+func (a *SettingsAPI) EsmEnablement() EsmEnablementInterface {
+	return a.esmEnablement
+}
+
+func (a *SettingsAPI) RestrictWorkspaceAdmins() RestrictWorkspaceAdminsInterface {
+	return a.restrictWorkspaceAdmins
 }
 
 // WithImpl could be used to override low-level API implementations for unit
@@ -1390,121 +2029,6 @@ func (a *SettingsAPI) WithImpl(impl SettingsService) SettingsInterface {
 // Deprecated: use MockSettingsInterface instead.
 func (a *SettingsAPI) Impl() SettingsService {
 	return a.impl
-}
-
-// Delete the default namespace setting.
-//
-// Deletes the default namespace setting for the workspace. A fresh etag needs
-// to be provided in `DELETE` requests (as a query parameter). The etag can be
-// retrieved by making a `GET` request before the `DELETE` request. If the
-// setting is updated/deleted concurrently, `DELETE` fails with 409 and the
-// request must be retried by using the fresh etag in the 409 response.
-func (a *SettingsAPI) DeleteDefaultNamespaceSetting(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
-	return a.impl.DeleteDefaultNamespaceSetting(ctx, request)
-}
-
-// Delete the restrict workspace admins setting.
-//
-// Reverts the restrict workspace admins setting status for the workspace. A
-// fresh etag needs to be provided in `DELETE` requests (as a query parameter).
-// The etag can be retrieved by making a `GET` request before the DELETE
-// request. If the setting is updated/deleted concurrently, `DELETE` fails with
-// 409 and the request must be retried by using the fresh etag in the 409
-// response.
-func (a *SettingsAPI) DeleteRestrictWorkspaceAdminsSetting(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
-	return a.impl.DeleteRestrictWorkspaceAdminsSetting(ctx, request)
-}
-
-// Get the automatic cluster update setting.
-//
-// Gets the automatic cluster update setting.
-func (a *SettingsAPI) GetAutomaticClusterUpdateSetting(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
-	return a.impl.GetAutomaticClusterUpdateSetting(ctx, request)
-}
-
-// Get the compliance security profile setting.
-//
-// Gets the compliance security profile setting.
-func (a *SettingsAPI) GetCspEnablementSetting(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error) {
-	return a.impl.GetCspEnablementSetting(ctx, request)
-}
-
-// Get the default namespace setting.
-//
-// Gets the default namespace setting.
-func (a *SettingsAPI) GetDefaultNamespaceSetting(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	return a.impl.GetDefaultNamespaceSetting(ctx, request)
-}
-
-// Get the enhanced security monitoring setting.
-//
-// Gets the enhanced security monitoring setting.
-func (a *SettingsAPI) GetEsmEnablementSetting(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
-	return a.impl.GetEsmEnablementSetting(ctx, request)
-}
-
-// Get the restrict workspace admins setting.
-//
-// Gets the restrict workspace admins setting.
-func (a *SettingsAPI) GetRestrictWorkspaceAdminsSetting(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
-	return a.impl.GetRestrictWorkspaceAdminsSetting(ctx, request)
-}
-
-// Update the automatic cluster update setting.
-//
-// Updates the automatic cluster update setting for the workspace. A fresh etag
-// needs to be provided in `PATCH` requests (as part of the setting field). The
-// etag can be retrieved by making a `GET` request before the `PATCH` request.
-// If the setting is updated concurrently, `PATCH` fails with 409 and the
-// request must be retried by using the fresh etag in the 409 response.
-func (a *SettingsAPI) UpdateAutomaticClusterUpdateSetting(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
-	return a.impl.UpdateAutomaticClusterUpdateSetting(ctx, request)
-}
-
-// Update the compliance security profile setting.
-//
-// Updates the compliance security profile setting for the workspace. A fresh
-// etag needs to be provided in `PATCH` requests (as part of the setting field).
-// The etag can be retrieved by making a `GET` request before the `PATCH`
-// request. If the setting is updated concurrently, `PATCH` fails with 409 and
-// the request must be retried by using the fresh etag in the 409 response.
-func (a *SettingsAPI) UpdateCspEnablementSetting(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error) {
-	return a.impl.UpdateCspEnablementSetting(ctx, request)
-}
-
-// Update the default namespace setting.
-//
-// Updates the default namespace setting for the workspace. A fresh etag needs
-// to be provided in `PATCH` requests (as part of the setting field). The etag
-// can be retrieved by making a `GET` request before the `PATCH` request. Note
-// that if the setting does not exist, `GET` returns a NOT_FOUND error and the
-// etag is present in the error response, which should be set in the `PATCH`
-// request. If the setting is updated concurrently, `PATCH` fails with 409 and
-// the request must be retried by using the fresh etag in the 409 response.
-func (a *SettingsAPI) UpdateDefaultNamespaceSetting(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	return a.impl.UpdateDefaultNamespaceSetting(ctx, request)
-}
-
-// Update the enhanced security monitoring setting.
-//
-// Updates the enhanced security monitoring setting for the workspace. A fresh
-// etag needs to be provided in `PATCH` requests (as part of the setting field).
-// The etag can be retrieved by making a `GET` request before the `PATCH`
-// request. If the setting is updated concurrently, `PATCH` fails with 409 and
-// the request must be retried by using the fresh etag in the 409 response.
-func (a *SettingsAPI) UpdateEsmEnablementSetting(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
-	return a.impl.UpdateEsmEnablementSetting(ctx, request)
-}
-
-// Update the restrict workspace admins setting.
-//
-// Updates the restrict workspace admins setting for the workspace. A fresh etag
-// needs to be provided in `PATCH` requests (as part of the setting field). The
-// etag can be retrieved by making a GET request before the `PATCH` request. If
-// the setting is updated concurrently, `PATCH` fails with 409 and the request
-// must be retried by using the fresh etag in the 409 response.
-func (a *SettingsAPI) UpdateRestrictWorkspaceAdminsSetting(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
-	return a.impl.UpdateRestrictWorkspaceAdminsSetting(ctx, request)
 }
 
 type TokenManagementInterface interface {

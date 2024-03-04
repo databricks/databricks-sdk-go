@@ -38,7 +38,7 @@ type CreateVectorIndexRequest struct {
 	// `DIRECT_ACCESS`.
 	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
 	// Name of the endpoint to be used for serving the index
-	EndpointName string `json:"endpoint_name,omitempty"`
+	EndpointName string `json:"endpoint_name"`
 	// There are 2 types of Vector Search indexes:
 	//
 	// - `DELTA_SYNC`: An index that automatically syncs with a source Delta
@@ -51,16 +51,6 @@ type CreateVectorIndexRequest struct {
 	Name string `json:"name"`
 	// Primary key of the index
 	PrimaryKey string `json:"primary_key"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateVectorIndexRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateVectorIndexRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateVectorIndexResponse struct {
@@ -119,7 +109,7 @@ func (f *DeleteDataStatus) Type() string {
 type DeleteDataVectorIndexRequest struct {
 	// Name of the vector index where data is to be deleted. Must be a Direct
 	// Vector Access Index.
-	Name string `json:"-" url:"-"`
+	IndexName string `json:"-" url:"-"`
 	// List of primary keys for the data to be deleted.
 	PrimaryKeys []string `json:"primary_keys"`
 }
@@ -136,8 +126,6 @@ type DeleteDataVectorIndexResponse struct {
 type DeleteEndpointRequest struct {
 	// Name of the endpoint
 	EndpointName string `json:"-" url:"-"`
-	// Name of the endpoint to delete
-	Name string `json:"-"`
 }
 
 type DeleteEndpointResponse struct {
@@ -655,11 +643,11 @@ func (f *UpsertDataStatus) Type() string {
 
 // Request payload for upserting data into a vector index.
 type UpsertDataVectorIndexRequest struct {
-	// JSON string representing the data to be upserted.
-	InputsJson string `json:"inputs_json"`
 	// Name of the vector index where data is to be upserted. Must be a Direct
 	// Vector Access Index.
-	Name string `json:"-" url:"-"`
+	IndexName string `json:"-" url:"-"`
+	// JSON string representing the data to be upserted.
+	InputsJson string `json:"inputs_json"`
 }
 
 // Response to an upsert data vector index request.

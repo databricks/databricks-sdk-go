@@ -1003,8 +1003,7 @@ type UpdateWorkspaceRequest struct {
 	// The ID of the workspace's managed services encryption key configuration
 	// object. This parameter is available only for updating failed workspaces.
 	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
-	// The ID of the network connectivity configuration object, which is the
-	// parent resource of this private endpoint rule object.
+
 	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
 	// The ID of the workspace's network configuration object. Used only if you
 	// already use a customer-managed VPC. For failed workspaces only, you can

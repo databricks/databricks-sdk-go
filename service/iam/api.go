@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Access Control, Account Access Control Proxy, Account Groups, Account Service Principals, Account Users, Current User, Groups, Permissions, Service Principals, Users, Workspace Assignment, etc.
+// These APIs allow you to manage Account Access Control, Account Access Control Proxy, Account Groups, Account Service Principals, Account Users, Current User, Groups, Permission Migration, Permissions, Service Principals, Users, Workspace Assignment, etc.
 package iam
 
 import (
@@ -1341,6 +1341,61 @@ func (a *GroupsAPI) Patch(ctx context.Context, request PartialUpdate) error {
 // Updates the details of a group by replacing the entire group entity.
 func (a *GroupsAPI) Update(ctx context.Context, request Group) error {
 	return a.impl.Update(ctx, request)
+}
+
+type PermissionMigrationInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockPermissionMigrationInterface instead.
+	WithImpl(impl PermissionMigrationService) PermissionMigrationInterface
+
+	// Impl returns low-level PermissionMigration API implementation
+	// Deprecated: use MockPermissionMigrationInterface instead.
+	Impl() PermissionMigrationService
+
+	// Migrate Permissions.
+	//
+	// Migrate a batch of permissions from a workspace local group to an account
+	// group.
+	MigratePermissions(ctx context.Context, request PermissionMigrationRequest) (*PermissionMigrationResponse, error)
+}
+
+func NewPermissionMigration(client *client.DatabricksClient) *PermissionMigrationAPI {
+	return &PermissionMigrationAPI{
+		impl: &permissionMigrationImpl{
+			client: client,
+		},
+	}
+}
+
+// This spec contains undocumented permission migration APIs used in
+// https://github.com/databrickslabs/ucx.
+type PermissionMigrationAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(PermissionMigrationService)
+	impl PermissionMigrationService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockPermissionMigrationInterface instead.
+func (a *PermissionMigrationAPI) WithImpl(impl PermissionMigrationService) PermissionMigrationInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level PermissionMigration API implementation
+// Deprecated: use MockPermissionMigrationInterface instead.
+func (a *PermissionMigrationAPI) Impl() PermissionMigrationService {
+	return a.impl
+}
+
+// Migrate Permissions.
+//
+// Migrate a batch of permissions from a workspace local group to an account
+// group.
+func (a *PermissionMigrationAPI) MigratePermissions(ctx context.Context, request PermissionMigrationRequest) (*PermissionMigrationResponse, error) {
+	return a.impl.MigratePermissions(ctx, request)
 }
 
 type PermissionsInterface interface {

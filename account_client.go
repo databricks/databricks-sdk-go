@@ -171,14 +171,7 @@ type AccountClient struct {
 	Metastores catalog.AccountMetastoresInterface
 
 	// These APIs provide configurations for the network connectivity of your
-	// workspaces for serverless compute resources. This API provides stable
-	// subnets for your workspace so that you can configure your firewalls on
-	// your Azure Storage accounts to allow access from Databricks. You can also
-	// use the API to provision private endpoints for Databricks to privately
-	// connect serverless compute resources to your Azure resources using Azure
-	// Private Link. See [configure serverless secure connectivity].
-	//
-	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+	// workspaces for serverless compute resources.
 	NetworkConnectivity settings.NetworkConnectivityInterface
 
 	// These APIs manage network configurations for customer-managed VPCs
@@ -224,16 +217,8 @@ type AccountClient struct {
 	// data by accident.
 	ServicePrincipals iam.AccountServicePrincipalsInterface
 
-	// The Personal Compute enablement setting lets you control which users can
-	// use the Personal Compute default policy to create compute resources. By
-	// default all users in all workspaces have access (ON), but you can change
-	// the setting to instead let individual workspaces configure access control
-	// (DELEGATE).
-	//
-	// There is only one instance of this setting per account. Since this
-	// setting has a default value, this setting is present on all accounts even
-	// though it's never set on a given account. Deletion reverts the value of
-	// the setting back to the default value.
+	// Accounts Settings API allows users to manage settings at the account
+	// level.
 	Settings settings.AccountSettingsInterface
 
 	// These APIs manage storage configurations for this workspace. A root
