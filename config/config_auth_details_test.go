@@ -20,7 +20,7 @@ func TestConfigAuthDetails(t *testing.T) {
 
 	ConfigAttributes.ResolveFromStringMapWithSource(c, map[string]string{
 		"azure_client_id": "1234",
-	}, &Source{Type: SourceFile, Name: "test.file"})
+	}, Source{Type: SourceFile, Name: "test.file"})
 
 	authDetails := c.GetAuthDetails()
 	assert.Equal(t, "https://cloud.databricks.com", authDetails.Host)
@@ -51,16 +51,16 @@ func TestConfigAuthDetailsToString(t *testing.T) {
 
 	ConfigAttributes.ResolveFromStringMapWithSource(c, map[string]string{
 		"azure_client_id": "1234",
-	}, &Source{Type: SourceFile, Name: "test.file"})
+	}, Source{Type: SourceFile, Name: "test.file"})
 
 	authDetails := c.GetAuthDetails()
 	expected := `host=https://cloud.databricks.com, auth_type=pat
 Configuration:
-- auth_type=pat (from dynamic configuration)
-- azure_client_id=1234 (from test.file config file) (not used by the current auth type)
-- azure_use_msi=true (from ARM_USE_MSI environment variable) (not used by the current auth type)
 - host=https://cloud.databricks.com (from dynamic configuration)
-- token=******** (from dynamic configuration)`
+- token=******** (from dynamic configuration)
+- azure_use_msi=true (from ARM_USE_MSI environment variable) (not used by the current auth type)
+- azure_client_id=1234 (from test.file config file) (not used by the current auth type)
+- auth_type=pat (from dynamic configuration)`
 
 	assert.Equal(t, expected, authDetails.String())
 }

@@ -91,7 +91,7 @@ func (a attributes) Configure(cfg *Config) error {
 			continue
 		}
 		err := attr.SetS(cfg, v)
-		cfg.SetAttrSource(&attr, &Source{Type: SourceEnv, Name: envName})
+		cfg.SetAttrSource(&attr, Source{Type: SourceEnv, Name: envName})
 		if err != nil {
 			return err
 		}
@@ -100,12 +100,11 @@ func (a attributes) Configure(cfg *Config) error {
 }
 
 func (a attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error {
-	return a.ResolveFromStringMapWithSource(cfg, m, &Source{Type: SourceDynamicConfig})
+	return a.ResolveFromStringMapWithSource(cfg, m, Source{Type: SourceDynamicConfig})
 }
 
-func (a attributes) ResolveFromStringMapWithSource(cfg *Config, m map[string]string, source *Source) error {
-	for k := range a {
-		attr := &a[k]
+func (a attributes) ResolveFromStringMapWithSource(cfg *Config, m map[string]string, source Source) error {
+	for _, attr := range a {
 		if !attr.IsZero(cfg) {
 			// don't overwtite a value previously set
 			continue
@@ -118,18 +117,17 @@ func (a attributes) ResolveFromStringMapWithSource(cfg *Config, m map[string]str
 		if err != nil {
 			return err
 		}
-		cfg.SetAttrSource(attr, source)
+		cfg.SetAttrSource(&attr, source)
 	}
 	return nil
 }
 
 func (a attributes) ResolveFromAnyMap(cfg *Config, m map[string]interface{}) error {
-	return a.ResolveFromAnyMapWithSource(cfg, m, &Source{Type: SourceDynamicConfig})
+	return a.ResolveFromAnyMapWithSource(cfg, m, Source{Type: SourceDynamicConfig})
 }
 
-func (a attributes) ResolveFromAnyMapWithSource(cfg *Config, m map[string]interface{}, source *Source) error {
-	for k := range a {
-		attr := &a[k]
+func (a attributes) ResolveFromAnyMapWithSource(cfg *Config, m map[string]interface{}, source Source) error {
+	for _, attr := range a {
 		if !attr.IsZero(cfg) {
 			// don't overwtite a value previously set
 			continue
@@ -142,7 +140,7 @@ func (a attributes) ResolveFromAnyMapWithSource(cfg *Config, m map[string]interf
 		if err != nil {
 			return err
 		}
-		cfg.SetAttrSource(attr, source)
+		cfg.SetAttrSource(&attr, source)
 	}
 	return nil
 }

@@ -38,24 +38,21 @@ Configuration:
 type AuthConfiguration map[string]*AttrConfig
 
 func (c AuthConfiguration) String() string {
-	keys := make([]string, 0, len(c))
-	for k := range c {
-		keys = append(keys, k)
-	}
-	slices.Sort(keys)
-
 	var conf []string
-	for _, k := range keys {
-		v := c[k]
-		conf = append(conf, fmt.Sprintf("- %s=%s", k, v))
+	for _, a := range ConfigAttributes {
+		if _, ok := c[a.Name]; ok {
+			k := a.Name
+			v := c[k]
+			conf = append(conf, fmt.Sprintf("- %s=%s", k, v))
+		}
 	}
 	return strings.Join(conf, "\n")
 }
 
 type AttrConfig struct {
-	Value            string  `json:"value"`
-	Source           *Source `json:"source"`
-	AuthTypeMismatch bool    `json:"auth_type_mismatch"`
+	Value            string `json:"value"`
+	Source           Source `json:"source"`
+	AuthTypeMismatch bool   `json:"auth_type_mismatch"`
 }
 
 func (a *AttrConfig) String() string {
@@ -101,23 +98,23 @@ func (c *Config) GetAuthDetails(opts ...AuthDetailsOptions) AuthDetails {
 	}
 }
 
-func (c *Config) SetAttrSource(attr *ConfigAttribute, source *Source) {
+func (c *Config) SetAttrSource(attr *ConfigAttribute, source Source) {
 	if c.attrSource == nil {
-		c.attrSource = make(map[string]*Source)
+		c.attrSource = make(map[string]Source)
 	}
 	c.attrSource[attr.Name] = source
 }
 
-func (c *Config) getSource(a *ConfigAttribute) *Source {
+func (c *Config) getSource(a *ConfigAttribute) Source {
 	if c.attrSource == nil {
-		return &Source{
+		return Source{
 			Type: SourceDynamicConfig,
 		}
 	}
 
 	attrSource, ok := c.attrSource[a.Name]
 	if !ok {
-		return &Source{
+		return Source{
 			Type: SourceDynamicConfig,
 		}
 	}

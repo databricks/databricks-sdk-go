@@ -149,7 +149,7 @@ type Config struct {
 	auth func(r *http.Request) error
 
 	// Keep track of the source of each attribute
-	attrSource map[string]*Source
+	attrSource map[string]Source
 }
 
 // NewWithWorkspaceHost returns a new instance of the Config with the host set to

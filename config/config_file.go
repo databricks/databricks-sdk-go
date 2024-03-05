@@ -98,7 +98,7 @@ func (l configFileLoader) Configure(cfg *Config) error {
 		return fmt.Errorf("%s has no %s profile configured", configFile.Path(), profile)
 	}
 	logger.Debugf(context.Background(), "Loading %s profile from %s", profile, configFile.Path())
-	err = ConfigAttributes.ResolveFromStringMapWithSource(cfg, profileValues.KeysHash(), &Source{Type: SourceFile, Name: configFile.Path()})
+	err = ConfigAttributes.ResolveFromStringMapWithSource(cfg, profileValues.KeysHash(), Source{Type: SourceFile, Name: configFile.Path()})
 	if err != nil {
 		return fmt.Errorf("%s %s profile: %w", configFile.Path(), profile, err)
 	}
