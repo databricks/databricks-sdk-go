@@ -2,108 +2,113 @@
 
 ## 0.34.0
 
-* Add helper function ([#824](https://github.com/databricks/databricks-sdk-go/pull/824)).
-* Add integration tests for files API ([#818](https://github.com/databricks/databricks-sdk-go/pull/818)).
-* Fix GetWorkspaceClient for GCP ([#803](https://github.com/databricks/databricks-sdk-go/pull/803)).
-* Support subservices ([#826](https://github.com/databricks/databricks-sdk-go/pull/826)).
-* Differentiate between empty structures and components that can take on any value ([#821](https://github.com/databricks/databricks-sdk-go/pull/821)).
-* Do not transpile getWorkspaceClient ([#830](https://github.com/databricks/databricks-sdk-go/pull/830)).
-* Treat empty entities as entities ([#831](https://github.com/databricks/databricks-sdk-go/pull/831)).
-* Update isObject to consider empty objects ([#834](https://github.com/databricks/databricks-sdk-go/pull/834)).
-* Added tokei.rs badge ([#836](https://github.com/databricks/databricks-sdk-go/pull/836)).
+### New Features and Improvements 
+* Fixed GetWorkspaceClient for GCP ([#803](https://github.com/databricks/databricks-sdk-go/pull/803)).
 * Adaptive request timeouts ([#837](https://github.com/databricks/databricks-sdk-go/pull/837)).
-* HTTP proxy example ([#825](https://github.com/databricks/databricks-sdk-go/pull/825)).
+* Added HTTP proxy example ([#825](https://github.com/databricks/databricks-sdk-go/pull/825)).
+* Note: Backwards incompatible changes - Settings are now nested, please see the API changes below.
+
+### API Changes:
+* Added:
+  - [w.PermissionMigration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionMigrationAPI) workspace-level service.
+  - [iam.PermissionMigrationRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionMigrationRequest).
+  - [iam.PermissionMigrationResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionMigrationResponse).
+  - [w.AutomaticClusterUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AutomaticClusterUpdateAPI) workspace-level service.
+  - [w.CspEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementAPI) workspace-level service.
+  - [a.CspEnablementAccount](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementAccountAPI) account-level service.
+  - [w.DefaultNamespace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DefaultNamespaceAPI) workspace-level service.
+  - [w.EsmEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementAPI) workspace-level service.
+  - [a.EsmEnablementAccount](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementAccountAPI) account-level service.
+  - [a.PersonalCompute](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#PersonalComputeAPI) account-level service.
+  - [w.RestrictWorkspaceAdmins](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsAPI) workspace-level service.
+  - `AwsStableIpRule` field for [settings.NccEgressDefaultRules](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccEgressDefaultRules).
+  - [settings.AutomaticClusterUpdateSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AutomaticClusterUpdateSetting).
+  - [settings.ClusterAutoRestartMessage](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessage).
+  - [settings.ClusterAutoRestartMessageEnablementDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageEnablementDetails).
+  - [settings.ClusterAutoRestartMessageMaintenanceWindow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageMaintenanceWindow).
+  - [settings.ClusterAutoRestartMessageMaintenanceWindowDayOfWeek](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageMaintenanceWindowDayOfWeek).
+  - [settings.ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule).
+  - [settings.ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency).
+  - [settings.ClusterAutoRestartMessageMaintenanceWindowWindowStartTime](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageMaintenanceWindowWindowStartTime).
+  - [settings.ComplianceStandard](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ComplianceStandard).
+  - [settings.CspEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablement).
+  - [settings.CspEnablementAccount](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementAccount).
+  - [settings.CspEnablementAccountSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementAccountSetting).
+  - [settings.CspEnablementSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementSetting).
+  - [settings.DeleteDefaultNamespaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteDefaultNamespaceRequest).
+  - [settings.DeletePersonalComputeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeletePersonalComputeRequest).
+  - [settings.DeleteRestrictWorkspaceAdminRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteRestrictWorkspaceAdminRequest).
+  - [settings.EsmEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablement).
+  - [settings.EsmEnablementAccount](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementAccount).
+  - [settings.EsmEnablementAccountSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementAccountSetting).
+  - [settings.EsmEnablementSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementSetting).
+  - [settings.GetAutomaticClusterUpdateRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetAutomaticClusterUpdateRequest).
+  - [settings.GetCspEnablementAccountRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetCspEnablementAccountRequest).
+  - [settings.GetCspEnablementRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetCspEnablementRequest).
+  - [settings.GetDefaultNamespaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetDefaultNamespaceRequest).
+  - [settings.GetEsmEnablementAccountRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEsmEnablementAccountRequest).
+  - [settings.GetEsmEnablementRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEsmEnablementRequest).
+  - [settings.GetPersonalComputeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetPersonalComputeRequest).
+  - [settings.GetRestrictWorkspaceAdminRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetRestrictWorkspaceAdminRequest).
+  - [settings.NccAwsStableIpRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccAwsStableIpRule).
+  - [settings.UpdateAutomaticClusterUpdateSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateAutomaticClusterUpdateSettingRequest).
+  - [settings.UpdateCspEnablementAccountSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateCspEnablementAccountSettingRequest).
+  - [settings.UpdateCspEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateCspEnablementSettingRequest).
+  - [settings.UpdateEsmEnablementAccountSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateEsmEnablementAccountSettingRequest).
+  - [settings.UpdateEsmEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateEsmEnablementSettingRequest).
+  - `IndexName` field for [vectorsearch.DeleteDataVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#DeleteDataVectorIndexRequest).
+  - `EmbeddingModelEndpointName` field for [vectorsearch.EmbeddingSourceColumn](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EmbeddingSourceColumn).
+  - `IndexName` field for [vectorsearch.UpsertDataVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#UpsertDataVectorIndexRequest).
+  - `DeltaSyncIndexSpec` field for [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
+  - `DirectAccessIndexSpec` field for [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
+* Changed:
+  - `Version` field for [serving.AppManifest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppManifest) to [serving.AnyValue](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AnyValue).
+  - `DeleteEndpoint` method for [w.VectorSearchEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchEndpointsAPI) workspace-level service with new required argument order.
+  - `CreateIndex` method for [w.VectorSearchIndexes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchIndexesAPI) workspace-level service with new required argument order.
+  - `DeleteDataVectorIndex` method for [w.VectorSearchIndexes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchIndexesAPI) workspace-level service with new required argument order.
+  - `UpsertDataVectorIndex` method for [w.VectorSearchIndexes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchIndexesAPI) workspace-level service with new required argument order.
+  - `EndpointName` field for [vectorsearch.CreateVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#CreateVectorIndexRequest) to be required.
+* Removed: 
+  - `DeletePersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service.
+  - `GetPersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service.
+  - `UpdatePersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service.
+  - `DeleteDefaultNamespaceSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
+  - `DeleteRestrictWorkspaceAdminsSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
+  - `GetDefaultNamespaceSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
+  - `GetRestrictWorkspaceAdminsSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
+  - `UpdateDefaultNamespaceSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
+  - `UpdateRestrictWorkspaceAdminsSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
+  - [settings.DeleteDefaultNamespaceSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteDefaultNamespaceSettingRequest).
+  - [settings.DeletePersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeletePersonalComputeSettingRequest).
+  - [settings.DeleteRestrictWorkspaceAdminsSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteRestrictWorkspaceAdminsSettingRequest).
+  - [settings.GetDefaultNamespaceSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetDefaultNamespaceSettingRequest).
+  - [settings.GetPersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetPersonalComputeSettingRequest).
+  - [settings.GetRestrictWorkspaceAdminsSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetRestrictWorkspaceAdminsSettingRequest).
+  - `PlanningPhases` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+  - `Name` field for [vectorsearch.DeleteDataVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#DeleteDataVectorIndexRequest).
+  - `Name` field for [vectorsearch.DeleteEndpointRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#DeleteEndpointRequest).
+  - [vectorsearch.EmbeddingConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EmbeddingConfig).
+  - `EmbeddingConfig` field for [vectorsearch.EmbeddingSourceColumn](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EmbeddingSourceColumn).
+  - `Name` field for [vectorsearch.UpsertDataVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#UpsertDataVectorIndexRequest).
+  - `DeltaSyncVectorIndexSpec` field for [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
+  - `DirectAccessVectorIndexSpec` field for [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
+
+### Internal Changes:
+* Differentiate between empty structures and components that can take on any value ([#821](https://github.com/databricks/databricks-sdk-go/pull/821)).
+* Added integration tests for files API ([#818](https://github.com/databricks/databricks-sdk-go/pull/818)).
+* Added `HasByteStreamField()` helper function ([#824](https://github.com/databricks/databricks-sdk-go/pull/824)).
 * Update SDK to latest OpenAPI spec ([#839](https://github.com/databricks/databricks-sdk-go/pull/839)).
+* Added tokei.rs badge ([#836](https://github.com/databricks/databricks-sdk-go/pull/836)).
+* Updated isObject to consider empty objects ([#834](https://github.com/databricks/databricks-sdk-go/pull/834)).
+* Treat empty entities as entities ([#831](https://github.com/databricks/databricks-sdk-go/pull/831)).
+* Do not transpile getWorkspaceClient ([#830](https://github.com/databricks/databricks-sdk-go/pull/830)).
 * Include Go 1.22 in test matrix ([#841](https://github.com/databricks/databricks-sdk-go/pull/841)).
-
-API Changes:
-
- * Added [w.PermissionMigration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionMigrationAPI) workspace-level service.
- * Added [iam.PermissionMigrationRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionMigrationRequest).
- * Added [iam.PermissionMigrationResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionMigrationResponse).
- * Changed `Version` field for [serving.AppManifest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppManifest) to [serving.AnyValue](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AnyValue).
- * Removed `DeletePersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service.
- * Removed `GetPersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service.
- * Removed `UpdatePersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service.
- * Removed `DeleteDefaultNamespaceSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
- * Removed `DeleteRestrictWorkspaceAdminsSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
- * Removed `GetDefaultNamespaceSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
- * Removed `GetRestrictWorkspaceAdminsSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
- * Removed `UpdateDefaultNamespaceSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
- * Removed `UpdateRestrictWorkspaceAdminsSetting` method for [w.Settings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#SettingsAPI) workspace-level service.
- * Added [w.AutomaticClusterUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AutomaticClusterUpdateAPI) workspace-level service.
- * Added [w.CspEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementAPI) workspace-level service.
- * Added [a.CspEnablementAccount](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementAccountAPI) account-level service.
- * Added [w.DefaultNamespace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DefaultNamespaceAPI) workspace-level service.
- * Added [w.EsmEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementAPI) workspace-level service.
- * Added [a.EsmEnablementAccount](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementAccountAPI) account-level service.
- * Added [a.PersonalCompute](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#PersonalComputeAPI) account-level service.
- * Added [w.RestrictWorkspaceAdmins](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsAPI) workspace-level service.
- * Removed [settings.DeleteDefaultNamespaceSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteDefaultNamespaceSettingRequest).
- * Removed [settings.DeletePersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeletePersonalComputeSettingRequest).
- * Removed [settings.DeleteRestrictWorkspaceAdminsSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteRestrictWorkspaceAdminsSettingRequest).
- * Removed [settings.GetDefaultNamespaceSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetDefaultNamespaceSettingRequest).
- * Removed [settings.GetPersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetPersonalComputeSettingRequest).
- * Removed [settings.GetRestrictWorkspaceAdminsSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetRestrictWorkspaceAdminsSettingRequest).
- * Added `AwsStableIpRule` field for [settings.NccEgressDefaultRules](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccEgressDefaultRules).
- * Added [settings.AutomaticClusterUpdateSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AutomaticClusterUpdateSetting).
- * Added [settings.ClusterAutoRestartMessage](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessage).
- * Added [settings.ClusterAutoRestartMessageEnablementDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageEnablementDetails).
- * Added [settings.ClusterAutoRestartMessageMaintenanceWindow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageMaintenanceWindow).
- * Added [settings.ClusterAutoRestartMessageMaintenanceWindowDayOfWeek](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageMaintenanceWindowDayOfWeek).
- * Added [settings.ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule).
- * Added [settings.ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency).
- * Added [settings.ClusterAutoRestartMessageMaintenanceWindowWindowStartTime](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ClusterAutoRestartMessageMaintenanceWindowWindowStartTime).
- * Added [settings.ComplianceStandard](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ComplianceStandard).
- * Added [settings.CspEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablement).
- * Added [settings.CspEnablementAccount](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementAccount).
- * Added [settings.CspEnablementAccountSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementAccountSetting).
- * Added [settings.CspEnablementSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementSetting).
- * Added [settings.DeleteDefaultNamespaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteDefaultNamespaceRequest).
- * Added [settings.DeletePersonalComputeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeletePersonalComputeRequest).
- * Added [settings.DeleteRestrictWorkspaceAdminRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteRestrictWorkspaceAdminRequest).
- * Added [settings.EsmEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablement).
- * Added [settings.EsmEnablementAccount](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementAccount).
- * Added [settings.EsmEnablementAccountSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementAccountSetting).
- * Added [settings.EsmEnablementSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementSetting).
- * Added [settings.GetAutomaticClusterUpdateRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetAutomaticClusterUpdateRequest).
- * Added [settings.GetCspEnablementAccountRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetCspEnablementAccountRequest).
- * Added [settings.GetCspEnablementRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetCspEnablementRequest).
- * Added [settings.GetDefaultNamespaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetDefaultNamespaceRequest).
- * Added [settings.GetEsmEnablementAccountRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEsmEnablementAccountRequest).
- * Added [settings.GetEsmEnablementRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEsmEnablementRequest).
- * Added [settings.GetPersonalComputeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetPersonalComputeRequest).
- * Added [settings.GetRestrictWorkspaceAdminRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetRestrictWorkspaceAdminRequest).
- * Added [settings.NccAwsStableIpRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccAwsStableIpRule).
- * Added [settings.UpdateAutomaticClusterUpdateSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateAutomaticClusterUpdateSettingRequest).
- * Added [settings.UpdateCspEnablementAccountSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateCspEnablementAccountSettingRequest).
- * Added [settings.UpdateCspEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateCspEnablementSettingRequest).
- * Added [settings.UpdateEsmEnablementAccountSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateEsmEnablementAccountSettingRequest).
- * Added [settings.UpdateEsmEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateEsmEnablementSettingRequest).
- * Removed `PlanningPhases` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
- * Changed `DeleteEndpoint` method for [w.VectorSearchEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchEndpointsAPI) workspace-level service with new required argument order.
- * Changed `CreateIndex` method for [w.VectorSearchIndexes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchIndexesAPI) workspace-level service with new required argument order.
- * Changed `DeleteDataVectorIndex` method for [w.VectorSearchIndexes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchIndexesAPI) workspace-level service with new required argument order.
- * Changed `UpsertDataVectorIndex` method for [w.VectorSearchIndexes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchIndexesAPI) workspace-level service with new required argument order.
- * Changed `EndpointName` field for [vectorsearch.CreateVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#CreateVectorIndexRequest) to be required.
- * Removed `Name` field for [vectorsearch.DeleteDataVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#DeleteDataVectorIndexRequest).
- * Added `IndexName` field for [vectorsearch.DeleteDataVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#DeleteDataVectorIndexRequest).
- * Removed `Name` field for [vectorsearch.DeleteEndpointRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#DeleteEndpointRequest).
- * Removed [vectorsearch.EmbeddingConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EmbeddingConfig).
- * Removed `EmbeddingConfig` field for [vectorsearch.EmbeddingSourceColumn](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EmbeddingSourceColumn).
- * Added `EmbeddingModelEndpointName` field for [vectorsearch.EmbeddingSourceColumn](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EmbeddingSourceColumn).
- * Removed `Name` field for [vectorsearch.UpsertDataVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#UpsertDataVectorIndexRequest).
- * Added `IndexName` field for [vectorsearch.UpsertDataVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#UpsertDataVectorIndexRequest).
- * Removed `DeltaSyncVectorIndexSpec` field for [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
- * Removed `DirectAccessVectorIndexSpec` field for [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
- * Added `DeltaSyncIndexSpec` field for [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
- * Added `DirectAccessIndexSpec` field for [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
+* Added support for subservices ([#826](https://github.com/databricks/databricks-sdk-go/pull/826)).
+* Bump google.golang.org/api from 0.161.0 to 0.166.0 ([#829](https://github.com/databricks/databricks-sdk-go/pull/829)).
+* Bump exp & mod library ([#832](https://github.com/databricks/databricks-sdk-go/pull/832)).
 
 OpenAPI SHA: d855b30f25a06fe84f25214efa20e7f1fffcdf9e, Date: 2024-03-04
-Dependency updates:
 
- * Bump google.golang.org/api from 0.161.0 to 0.166.0 ([#829](https://github.com/databricks/databricks-sdk-go/pull/829)).
- * Bump exp & mod library ([#832](https://github.com/databricks/databricks-sdk-go/pull/832)).
 
 ## 0.33.0
 
