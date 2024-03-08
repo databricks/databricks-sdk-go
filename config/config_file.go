@@ -98,7 +98,7 @@ func (l configFileLoader) Configure(cfg *Config) error {
 		return fmt.Errorf("%s has no %s profile configured", configFile.Path(), profile)
 	}
 	logger.Debugf(context.Background(), "Loading %s profile from %s", profile, configFile.Path())
-	err = ConfigAttributes.ResolveFromStringMap(cfg, profileValues.KeysHash())
+	err = ConfigAttributes.ResolveFromStringMapWithSource(cfg, profileValues.KeysHash(), Source{Type: SourceFile, Name: configFile.Path()})
 	if err != nil {
 		return fmt.Errorf("%s %s profile: %w", configFile.Path(), profile, err)
 	}
@@ -107,7 +107,7 @@ func (l configFileLoader) Configure(cfg *Config) error {
 
 func (l configFileLoader) isAnyAuthConfigured(cfg *Config) bool {
 	for _, a := range ConfigAttributes {
-		if a.Auth == "" {
+		if !a.HasAuthAttribute() {
 			continue
 		}
 		if !a.IsZero(cfg) {
