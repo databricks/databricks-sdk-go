@@ -36,3 +36,11 @@ func matchAlphanumOrSemVer(s string) error {
 	}
 	return fmt.Errorf("invalid alphanumeric or semver string: %s", s)
 }
+
+func isAlphanum(s string) bool {
+	return regexpAlphanum.MatchString(s)
+}
+
+func isSemVer(s string) bool {
+	return regexpSemVer.MatchString(s)
+}

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
@@ -61,6 +62,17 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 				}
 				// Add the detected CI/CD provider to the user agent
 				ctx := useragent.InContext(r.Context(), "cicd", provider)
+				*r = *r.WithContext(ctx) // replace request
+				return nil
+			},
+			func(r *http.Request) error {
+				// Detect if the SDK is being run in a Databricks Runtime.
+				v, ok := os.LookupEnv("DATABRICKS_RUNTIME_VERSION")
+				if !ok {
+					return nil
+				}
+				// Add the detected Databricks Runtime version to the user agent
+				ctx := useragent.InContext(r.Context(), "runtime", v)
 				*r = *r.WithContext(ctx) // replace request
 				return nil
 			},

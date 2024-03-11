@@ -60,3 +60,15 @@ func TestFromContext_Custom(t *testing.T) {
 func TestDefaultsAreValid(t *testing.T) {
 	WithProduct(productName, productVersion)
 }
+
+func TestUserAgentValidate(t *testing.T) {
+	assert.EqualError(t, validate("non-alphanumic!", "abc"), "expected user agent key to be alphanumeric: non-alphanumic!")
+	assert.EqualError(t, validate("abc", "non-alphanumeric!"), "expected user agent value for key \"abc\" to be alphanumeric or semver: non-alphanumeric!")
+	assert.EqualError(t, validate("abc", "1.1.invalid"), "expected user agent value for key \"abc\" to be alphanumeric or semver: 1.1.invalid")
+
+	assert.NoError(t, validate("runtime", "7.3"))
+	assert.NoError(t, validate("runtime", "client.7"))
+	assert.NoError(t, validate("runtime", "whatever#!@"))
+	assert.NoError(t, validate("abc", "123"))
+	assert.NoError(t, validate("abc", "1.1.1"))
+}

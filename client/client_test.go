@@ -320,6 +320,64 @@ GET /a
 	}
 }
 
+func TestUserAgentForDBR(t *testing.T) {
+	goVersion := strings.TrimPrefix(runtime.Version(), "go")
+	cicdHeader := ""
+	if useragent.CiCdProvider() != "" {
+		cicdHeader = fmt.Sprintf(" cicd/%s", useragent.CiCdProvider())
+	}
+	t.Setenv("DATABRICKS_RUNTIME_VERSION", "15.1")
+	expectedUserAgent := `unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/` + runtime.GOOS + ` auth/pat` + cicdHeader + ` runtime/15.1`
+
+	var userAgent string
+	c, err := New(&config.Config{
+		Host:       "some",
+		Token:      "token",
+		ConfigFile: "/dev/null",
+		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			userAgent = r.UserAgent()
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	require.NoError(t, err)
+	err = c.Do(context.Background(), "GET", "/a", nil, nil, nil)
+	assert.Equal(t, userAgent, expectedUserAgent)
+	require.NoError(t, err)
+}
+
+func TestUserAgentForServerless(t *testing.T) {
+	goVersion := strings.TrimPrefix(runtime.Version(), "go")
+	cicdHeader := ""
+	if useragent.CiCdProvider() != "" {
+		cicdHeader = fmt.Sprintf(" cicd/%s", useragent.CiCdProvider())
+	}
+	t.Setenv("DATABRICKS_RUNTIME_VERSION", "client.1")
+	expectedUserAgent := `unknown/0.0.0 databricks-sdk-go/` + version.Version + ` go/` + goVersion + ` os/` + runtime.GOOS + ` auth/pat` + cicdHeader + ` runtime/client.1`
+
+	var userAgent string
+	c, err := New(&config.Config{
+		Host:       "some",
+		Token:      "token",
+		ConfigFile: "/dev/null",
+		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			userAgent = r.UserAgent()
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	require.NoError(t, err)
+	err = c.Do(context.Background(), "GET", "/a", nil, nil, nil)
+	assert.Equal(t, userAgent, expectedUserAgent)
+	require.NoError(t, err)
+}
+
 func testNonJSONResponseIncludedInError(t *testing.T, statusCode int, status, errorMessage string) {
 	c, err := New(&config.Config{
 		Host:       "some",

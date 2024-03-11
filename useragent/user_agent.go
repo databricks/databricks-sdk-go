@@ -85,13 +85,27 @@ func (u info) String() string {
 
 type data []info
 
+// Validate the key value pair being set in the user agent. Error if invalid.
+func validate(key, value string) error {
+	// DBR versions as set in the `DATABRICKS_RUNTIME_VERSION` environment variable
+	// are not valid semver strings. Eg: 15.1 or client.0. Thus we allow arbitrary
+	// values for the runtime key.
+	if key == "runtime" {
+		return nil
+	}
+	if !isAlphanum(key) {
+		return fmt.Errorf("expected user agent key to be alphanumeric: %s", key)
+	}
+	if !isAlphanum(value) && !isSemVer(value) {
+		return fmt.Errorf("expected user agent value for key %q to be alphanumeric or semver: %s", key, value)
+	}
+	return nil
+}
+
 // With always uses the latest value for a given alphanumeric key.
 // Panics if key or value don't satisfy alphanumeric or semver format.
 func (d data) With(key, value string) data {
-	if err := matchAlphanum(key); err != nil {
-		panic(err)
-	}
-	if err := matchAlphanumOrSemVer(value); err != nil {
+	if err := validate(key, value); err != nil {
 		panic(err)
 	}
 	var c data
