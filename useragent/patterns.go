@@ -17,21 +17,21 @@ var regexpSemVer = regexp.MustCompile(`^` + semVerCore + semVerPrerelease + semV
 var regexpAlphanum = regexp.MustCompile(`^[0-9A-Za-z_-]+$`)
 
 func matchSemVer(s string) error {
-	if regexpSemVer.MatchString(s) {
+	if isSemVer(s) {
 		return nil
 	}
 	return fmt.Errorf("invalid semver string: %s", s)
 }
 
 func matchAlphanum(s string) error {
-	if regexpAlphanum.MatchString(s) {
+	if isAlphanum(s) {
 		return nil
 	}
 	return fmt.Errorf("invalid alphanumeric string: %s", s)
 }
 
 func matchAlphanumOrSemVer(s string) error {
-	if regexpAlphanum.MatchString(s) || regexpSemVer.MatchString(s) {
+	if isAlphanum(s) || isSemVer(s) {
 		return nil
 	}
 	return fmt.Errorf("invalid alphanumeric or semver string: %s", s)
