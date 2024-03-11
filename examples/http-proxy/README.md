@@ -6,6 +6,8 @@ The proxy server generates a self-signed certificate and listens on port 8443 wi
 
 ## Run the Example: Auto-registration of the Proxy Server Certificate
 
+This example demonstrates how to automatically register the proxy server's certificate with the system's certificate store. This allows the client to trust the proxy server's certificate without needing to manually configure the client to trust the certificate. This is the preferred way to configure your system, as it doesn't require application-specific configuration to trust the proxy server's certificate.
+
 Note: this example requires root access to register the proxy server's certificate with the system's certificate store. On Windows, this requires running the proxy server as an administrator.
 
 1. Run the proxy server:
@@ -14,7 +16,7 @@ Note: this example requires root access to register the proxy server's certifica
    go run ./proxy --register-certificate
    ```
 
-   This will attempt to register the proxy server's certificate with the system's certificate store.
+   This will attempt to register the proxy server's certificate with the system's certificate store. If you're using Windows, you will need to run Powershell as an administrator to register the certificate.
 
 2. In another terminal, run the client:
 
@@ -28,9 +30,13 @@ Note: this example requires root access to register the proxy server's certifica
    $env:HTTPS_PROXY="https://localhost:8443" go run ./client
    ```
 
+   Note that on Windows, this does not require administrator privileges.
+
 3. When done, terminate the proxy server by typing `CMD+C` or `Ctrl+C` in the terminal where it is running.
 
 ## Run the Example: Configure the Proxy Server Certificate at Runtime
+
+This example demonstrates how to configure the client to trust the proxy server's certificate at runtime. This is useful when you don't have root access to register the proxy server's certificate with the system's certificate store, or when you want to avoid modifying the system's certificate store.
 
 1. Run the proxy server:
 
