@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"runtime"
 	"strings"
+	"unicode"
 
 	"github.com/databricks/databricks-sdk-go/version"
 	"golang.org/x/mod/semver"
@@ -83,6 +84,21 @@ func goVersion() string {
 type info struct {
 	Key   string
 	Value string
+}
+
+// Sanitize the user agent value. This is useful when the set of possible values is not 
+// known at compile time to be all valid. Having this sanitization then ensures 
+// downstream applications can correctly parse the full user agent header, by making sure
+// characters like '/' and ' ' are not present in the value.
+func Sanitize(s string) string {
+	allowList := func(r rune) rune {
+		if r == '.' || unicode.IsLetter(r) || unicode.IsDigit(r) {
+			return r
+		}
+		return '-'
+	}
+
+	return strings.Map(allowList, s)
 }
 
 func (u info) String() string {
