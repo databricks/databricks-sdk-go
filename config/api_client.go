@@ -51,7 +51,7 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 				return nil
 			},
 			func(r *http.Request) error {
-				ctx := useragent.InContext(r.Context(), "auth", c.AuthType)
+				ctx := useragent.InContext(r.Context(), useragent.AuthKey, c.AuthType)
 				*r = *r.WithContext(ctx) // replace request
 				return nil
 			},
@@ -62,7 +62,7 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 					return nil
 				}
 				// Add the detected CI/CD provider to the user agent
-				ctx := useragent.InContext(r.Context(), "cicd", provider)
+				ctx := useragent.InContext(r.Context(), useragent.CicdKey, provider)
 				*r = *r.WithContext(ctx) // replace request
 				return nil
 			},
@@ -76,7 +76,7 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 				v = strings.ReplaceAll(v, "/", "-")
 				v = strings.ReplaceAll(v, " ", "-")
 				// Add the detected Databricks Runtime version to the user agent
-				ctx := useragent.InContext(r.Context(), "runtime", v)
+				ctx := useragent.InContext(r.Context(), useragent.RuntimeKey, v)
 				*r = *r.WithContext(ctx) // replace request
 				return nil
 			},

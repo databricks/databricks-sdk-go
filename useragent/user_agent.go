@@ -10,6 +10,12 @@ import (
 	"golang.org/x/mod/semver"
 )
 
+const (
+	RuntimeKey = "runtime"
+	CicdKey    = "cicd"
+	AuthKey    = "auth"
+)
+
 // WithProduct sets the product name and product version globally.
 // It should be called by developers to differentiate their application from others.
 func WithProduct(name, version string) {
@@ -90,7 +96,7 @@ func validate(key, value string) error {
 	// DBR versions as set in the `DATABRICKS_RUNTIME_VERSION` environment variable
 	// are not valid semver strings. Eg: 15.1 or client.0. Thus we allow arbitrary
 	// values for the runtime key.
-	if key == "runtime" {
+	if key == RuntimeKey {
 		return nil
 	}
 	if !isAlphanum(key) {
