@@ -260,6 +260,7 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 			}, nil
 		}),
 	})
+	require.NoError(t, err)
 	headers := map[string]string{"Accept": "application/json"}
 	err = c.Do(context.Background(), "PATCH", "/a",
 		WithRequestHeaders(headers),
