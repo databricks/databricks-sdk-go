@@ -3,11 +3,13 @@ package httpclient
 import (
 	"context"
 	"crypto/tls"
+	"crypto/x509"
 	"errors"
 	"fmt"
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"runtime"
 	"strings"
 	"time"
@@ -32,6 +34,7 @@ type ClientConfig struct {
 	DebugHeaders       bool
 	DebugTruncateBytes int
 	RateLimitPerSecond int
+	CABundle           string
 
 	ErrorMapper     func(ctx context.Context, resp common.ResponseWrapper) error
 	ErrorRetriable  func(ctx context.Context, err error) bool
@@ -40,11 +43,36 @@ type ClientConfig struct {
 	Transport http.RoundTripper
 }
 
-func (cfg ClientConfig) httpTransport() http.RoundTripper {
-	if cfg.Transport != nil {
-		return cfg.Transport
+func loadRootCAs(caBundle string) (*x509.CertPool, error) {
+	if caBundle == "" {
+		return nil, nil
 	}
-	return &http.Transport{
+
+	// Load CA cert
+	caCert, err := os.ReadFile(caBundle)
+	if err != nil {
+		return nil, fmt.Errorf("reading CA cert failed: %v", err)
+	}
+
+	// Create a CA certificate pool and add cert to it
+	caCertPool, err := x509.SystemCertPool()
+	if err != nil {
+		return nil, err
+	}
+	caCertPool.AppendCertsFromPEM(caCert)
+
+	return caCertPool, nil
+}
+
+func (cfg ClientConfig) httpTransport() (http.RoundTripper, error) {
+	if cfg.Transport != nil {
+		return cfg.Transport, nil
+	}
+	certPool, err := loadRootCAs(cfg.CABundle)
+	if err != nil {
+		return nil, err
+	}
+	transport := &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
 			Timeout:   30 * time.Second,
@@ -58,11 +86,20 @@ func (cfg ClientConfig) httpTransport() http.RoundTripper {
 		ExpectContinueTimeout: 1 * time.Second,
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: cfg.InsecureSkipVerify,
+			RootCAs:            certPool,
 		},
 	}
+
+	// Disable HTTP/2 when using an HTTPS proxy
+	// Needed until
+	req, _ := http.NewRequest("GET", "https://databricks.com", nil)
+	if url, _ := transport.Proxy(req); url != nil {
+		transport.TLSNextProto = make(map[string]func(authority string, c *tls.Conn) http.RoundTripper)
+	}
+	return transport, nil
 }
 
-func NewApiClient(cfg ClientConfig) *ApiClient {
+func NewHttpClient(cfg ClientConfig) (*http.Client, error) {
 	cfg.HTTPTimeout = time.Duration(orDefault(int(cfg.HTTPTimeout), int(30*time.Second)))
 	cfg.DebugTruncateBytes = orDefault(cfg.DebugTruncateBytes, 96)
 	cfg.RetryTimeout = time.Duration(orDefault(int(cfg.RetryTimeout), int(5*time.Minute)))
@@ -75,10 +112,27 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 		// by default, we just retry on HTTP 429/504
 		cfg.ErrorRetriable = DefaultErrorRetriable
 	}
-	transport := cfg.httpTransport()
+	transport, err := cfg.httpTransport()
+	if err != nil {
+		return nil, fmt.Errorf("failed to construct http transport: %w", err)
+	}
+	return &http.Client{
+		// We deal with request timeouts ourselves such that we do not
+		// time out during request or response body reads that make
+		// progress (e.g. on a slower network connection).
+		Timeout:   0,
+		Transport: transport,
+	}, nil
+}
+
+func NewApiClient(cfg ClientConfig) (*ApiClient, error) {
+	client, err := NewHttpClient(cfg)
+	if err != nil {
+		return nil, err
+	}
 	rateLimit := rate.Limit(orDefault(cfg.RateLimitPerSecond, 15))
 	// depend on the HTTP fixture interface to prevent any coupling
-	if skippable, ok := transport.(interface {
+	if skippable, ok := client.Transport.(interface {
 		SkipRetryOnIO() bool
 	}); ok && skippable.SkipRetryOnIO() {
 		rateLimit = rate.Inf
@@ -87,14 +141,8 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 	return &ApiClient{
 		config:      cfg,
 		rateLimiter: rate.NewLimiter(rateLimit, 1),
-		httpClient: &http.Client{
-			// We deal with request timeouts ourselves such that we do not
-			// time out during request or response body reads that make
-			// progress (e.g. on a slower network connection).
-			Timeout:   0,
-			Transport: transport,
-		},
-	}
+		httpClient:  client,
+	}, nil
 }
 
 type ApiClient struct {

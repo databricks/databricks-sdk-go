@@ -92,7 +92,7 @@ func TestMakeRequestBodyQueryUnsupported(t *testing.T) {
 }
 
 func TestWithTokenSource(t *testing.T) {
-	client := NewApiClient(ClientConfig{
+	client, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			foo := r.Header.Get("Foo")
 			require.Equal(t, "bar", foo)
@@ -105,10 +105,11 @@ func TestWithTokenSource(t *testing.T) {
 			}, nil
 		}),
 	})
+	require.NoError(t, err)
 
 	var buf bytes.Buffer
 	ctx := context.Background()
-	err := client.Do(ctx, "GET", "abc",
+	err = client.Do(ctx, "GET", "abc",
 		WithResponseUnmarshal(&buf),
 		WithRequestHeader("Foo", "bar"),
 		WithTokenSource(oauth2.StaticTokenSource(&oauth2.Token{

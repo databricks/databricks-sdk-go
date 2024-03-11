@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
@@ -26,9 +27,11 @@ func main() {
 	createX509Certificate()
 	defer cleanup()
 
-	util := newCertUtil()
-	runCommands(util.GetRegisterCertificateCommands("proxy.crt"))
-	defer runCommands(util.GetDeregisterCertificateCommands("proxy.crt"))
+	if len(os.Args) == 2 && os.Args[1] == "--register-certificate" {
+		util := newCertUtil()
+		runCommands(util.GetRegisterCertificateCommands("proxy.crt"))
+		defer runCommands(util.GetDeregisterCertificateCommands("proxy.crt"))
+	}
 
 	server := startServer()
 	defer server.Close()
@@ -176,9 +179,29 @@ func startServer() *http.Server {
 			panic(err)
 		}
 	}()
+
+	// Load CA cert
+	caCert, err := os.ReadFile("proxy.crt")
+	if err != nil {
+		log.Fatalf("Reading CA cert failed: %v", err)
+	}
+
+	// Create a CA certificate pool and add cert to it
+	caCertPool := x509.NewCertPool()
+	caCertPool.AppendCertsFromPEM(caCert)
+
+	// Create a HTTPS client and supply the created CA pool
+	httpClient := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				RootCAs: caCertPool,
+			},
+		},
+	}
+
 	log.Printf("Waiting for server to start...")
 	for {
-		_, err := http.Get("https://localhost:8443/ping")
+		_, err = httpClient.Get("https://localhost:8443/ping")
 		if err == nil {
 			break
 		}

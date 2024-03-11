@@ -40,14 +40,15 @@ func (cb hc) RoundTrip(r *http.Request) (*http.Response, error) {
 }
 
 func TestNew(t *testing.T) {
-	c := NewApiClient(ClientConfig{})
+	c, err := NewApiClient(ClientConfig{})
+	require.NoError(t, err)
 
 	require.Equal(t, 96, c.config.DebugTruncateBytes)
 	require.Equal(t, 5*time.Minute, c.config.RetryTimeout)
 }
 
 func TestSimpleRequestFailsURLError(t *testing.T) {
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		RetryTimeout: 1 * time.Millisecond,
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			require.Equal(t, "GET", r.Method)
@@ -57,7 +58,8 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 			return nil, fmt.Errorf("nope")
 		}),
 	})
-	err := c.Do(context.Background(), "GET", "/a/b",
+	require.NoError(t, err)
+	err = c.Do(context.Background(), "GET", "/a/b",
 		WithRequestHeaders(map[string]string{
 			"e": "f",
 		}), WithRequestData(map[string]string{
@@ -67,7 +69,7 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 }
 
 func TestSimpleRequestFailsAPIError(t *testing.T) {
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			require.Equal(t, "GET", r.Method)
 			require.Equal(t, "/a/b", r.URL.Path)
@@ -80,7 +82,8 @@ func TestSimpleRequestFailsAPIError(t *testing.T) {
 			}, nil
 		}),
 	})
-	err := c.Do(context.Background(), "GET", "/a/b",
+	require.NoError(t, err)
+	err = c.Do(context.Background(), "GET", "/a/b",
 		WithRequestHeaders(map[string]string{
 			"e": "f",
 		}), WithRequestData(map[string]string{
@@ -93,7 +96,7 @@ func TestSimpleRequestSucceeds(t *testing.T) {
 	type Dummy struct {
 		Foo int `json:"foo"`
 	}
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 200,
@@ -102,8 +105,9 @@ func TestSimpleRequestSucceeds(t *testing.T) {
 			}, nil
 		}),
 	})
+	require.NoError(t, err)
 	var resp Dummy
-	err := c.Do(context.Background(), "POST", "/c",
+	err = c.Do(context.Background(), "POST", "/c",
 		WithRequestData(Dummy{1}),
 		WithResponseUnmarshal(&resp))
 	require.NoError(t, err)
@@ -115,7 +119,7 @@ func TestSimpleRequestRetried(t *testing.T) {
 		Foo int `json:"foo"`
 	}
 	var retried [1]bool
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			if !retried[0] {
 				retried[0] = true
@@ -132,8 +136,9 @@ func TestSimpleRequestRetried(t *testing.T) {
 			}, nil
 		}),
 	})
+	require.NoError(t, err)
 	var resp Dummy
-	err := c.Do(context.Background(), "PATCH", "/a",
+	err = c.Do(context.Background(), "PATCH", "/a",
 		WithRequestData(Dummy{1}),
 		WithResponseUnmarshal(&resp))
 	require.NoError(t, err)
@@ -152,7 +157,7 @@ func TestSimpleRequestNotRetried(t *testing.T) {
 		Err: fmt.Errorf("some other reason"),
 	}
 
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			if !tried {
 				tried = true
@@ -166,8 +171,9 @@ func TestSimpleRequestNotRetried(t *testing.T) {
 			}, nil
 		}),
 	})
+	require.NoError(t, err)
 	var resp Dummy
-	err := c.Do(context.Background(), "PATCH", "/a",
+	err = c.Do(context.Background(), "PATCH", "/a",
 		WithRequestData(Dummy{1}),
 		WithResponseUnmarshal(&resp))
 	require.Error(t, err)
@@ -192,7 +198,8 @@ func TestHaltAttemptForLimit(t *testing.T) {
 
 func TestHaltAttemptForNewRequest(t *testing.T) {
 	ctx := context.Background()
-	c := NewApiClient(ClientConfig{})
+	c, err := NewApiClient(ClientConfig{})
+	require.NoError(t, err)
 	req, err := common.NewRequestBody([]byte{})
 	require.NoError(t, err)
 	_, rerr := c.attempt(ctx, "🥱", "/", req)()
@@ -203,7 +210,8 @@ func TestHaltAttemptForNewRequest(t *testing.T) {
 
 func TestHaltAttemptForVisitor(t *testing.T) {
 	ctx := context.Background()
-	c := NewApiClient(ClientConfig{})
+	c, err := NewApiClient(ClientConfig{})
+	require.NoError(t, err)
 	req, err := common.NewRequestBody([]byte{})
 	require.NoError(t, err)
 	_, rerr := c.attempt(ctx, "GET", "/", req,
@@ -225,7 +233,7 @@ func TestFailPerformChannel(t *testing.T) {
 }
 
 func TestSimpleRequestErrReaderBodyStreamResponse(t *testing.T) {
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 200,
@@ -234,15 +242,16 @@ func TestSimpleRequestErrReaderBodyStreamResponse(t *testing.T) {
 			}, nil
 		}),
 	})
+	require.NoError(t, err)
 	headers := map[string]string{"Accept": "application/octet-stream"}
-	err := c.Do(context.Background(), "PATCH", "/a",
+	err = c.Do(context.Background(), "PATCH", "/a",
 		WithRequestHeaders(headers),
 		WithRequestData(map[string]any{}))
 	require.NoError(t, err, "streaming response bodies are not read")
 }
 
 func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 200,
@@ -252,14 +261,14 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 		}),
 	})
 	headers := map[string]string{"Accept": "application/json"}
-	err := c.Do(context.Background(), "PATCH", "/a",
+	err = c.Do(context.Background(), "PATCH", "/a",
 		WithRequestHeaders(headers),
 		WithRequestData(map[string]any{}))
 	require.EqualError(t, err, "response body: test error")
 }
 
 func TestSimpleRequestErrReaderCloseBody_StreamResponse(t *testing.T) {
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 200,
@@ -268,8 +277,9 @@ func TestSimpleRequestErrReaderCloseBody_StreamResponse(t *testing.T) {
 			}, nil
 		}),
 	})
+	require.NoError(t, err)
 	headers := map[string]string{"Accept": "application/octet-stream"}
-	err := c.Do(context.Background(), "PATCH", "/a",
+	err = c.Do(context.Background(), "PATCH", "/a",
 		WithRequestHeaders(headers),
 		WithRequestData(map[string]any{}))
 	require.NoError(t, err, "response body should not be closed for streaming responses")
@@ -294,10 +304,11 @@ func TestSimpleRequestContextCancel(t *testing.T) {
 		time.Sleep(10 * time.Millisecond)
 	}()
 
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		Transport: hc(timeoutTransport),
 	})
-	err := c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
+	require.NoError(t, err)
+	err = c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
 	require.ErrorContains(t, err, "context canceled")
 }
 
@@ -306,21 +317,23 @@ func TestSimpleRequestContextDeadline(t *testing.T) {
 	ctx, cancel := context.WithDeadline(ctx, time.Now().Add(10*time.Millisecond))
 	defer cancel()
 
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		Transport: hc(timeoutTransport),
 	})
-	err := c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
+	require.NoError(t, err)
+	err = c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
 	require.ErrorContains(t, err, "context deadline exceeded")
 }
 
 func TestSimpleRequestTimeout(t *testing.T) {
 	ctx := context.Background()
 
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		HTTPTimeout: 10 * time.Millisecond,
 		Transport:   hc(timeoutTransport),
 	})
-	err := c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
+	require.NoError(t, err)
+	err = c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
 	require.ErrorContains(t, err, "request timed out after 10ms of inactivity")
 }
 
@@ -360,7 +373,7 @@ func TestSimpleResponseRedaction(t *testing.T) {
 		logger.DefaultLogger = prevLogger
 	}()
 
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 16,
 		DebugHeaders:       true,
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
@@ -385,7 +398,8 @@ func TestSimpleResponseRedaction(t *testing.T) {
 			}, nil
 		}),
 	})
-	err := c.Do(context.Background(), "GET", "/a",
+	require.NoError(t, err)
+	err = c.Do(context.Background(), "GET", "/a",
 		WithRequestData(map[string]any{
 			"b": 0,
 			"a": 3,
@@ -408,7 +422,7 @@ func TestInlineArrayDebugging(t *testing.T) {
 		logger.DefaultLogger = prevLogger
 	}()
 
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 2048,
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
@@ -420,8 +434,9 @@ func TestInlineArrayDebugging(t *testing.T) {
 			}, nil
 		}),
 	})
+	require.NoError(t, err)
 	headers := map[string]string{"Accept": "application/json"}
-	err := c.Do(context.Background(), "GET", "/a",
+	err = c.Do(context.Background(), "GET", "/a",
 		WithRequestHeaders(headers),
 		WithRequestData(map[string]any{
 			"b": 0,
@@ -447,7 +462,7 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 		logger.DefaultLogger = prevLogger
 	}()
 
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 2048,
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
@@ -457,8 +472,9 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 			}, nil
 		}),
 	})
+	require.NoError(t, err)
 	headers := map[string]string{"Accept": "application/octet-stream"}
-	err := c.Do(context.Background(), "GET", "/a",
+	err = c.Do(context.Background(), "GET", "/a",
 		WithRequestHeaders(headers),
 		WithRequestData(map[string]any{
 			"b": 0,
@@ -506,9 +522,10 @@ func TestStreamRequestFromFileWithReset(t *testing.T) {
 		}, nil
 	}
 
-	client := NewApiClient(ClientConfig{
+	client, err := NewApiClient(ClientConfig{
 		Transport: hc(handler),
 	})
+	require.NoError(t, err)
 
 	respBytes := bytes.Buffer{}
 	err = client.Do(context.Background(), "POST", "/a",
@@ -526,7 +543,7 @@ func (c customReader) Read(p []byte) (n int, err error) {
 }
 
 func TestCannotRetryArbitraryReader(t *testing.T) {
-	client := NewApiClient(ClientConfig{
+	client, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 429,
@@ -535,7 +552,8 @@ func TestCannotRetryArbitraryReader(t *testing.T) {
 			}, nil
 		}),
 	})
-	err := client.Do(context.Background(), "POST", "/a",
+	require.NoError(t, err)
+	err = client.Do(context.Background(), "POST", "/a",
 		WithRequestData(customReader{}))
 	require.ErrorContains(t, err, "cannot reset reader of type httpclient.customReader")
 }
@@ -562,12 +580,13 @@ func TestRetryGetRequest(t *testing.T) {
 		}, nil
 	}
 
-	client := NewApiClient(ClientConfig{
+	client, err := NewApiClient(ClientConfig{
 		Transport: hc(handler),
 	})
+	require.NoError(t, err)
 
 	respBytes := bytes.Buffer{}
-	err := client.Do(context.Background(), "GET", "/a",
+	err = client.Do(context.Background(), "GET", "/a",
 		WithResponseUnmarshal(&respBytes))
 	require.NoError(t, err)
 	require.Equal(t, "succeeded", respBytes.String())
@@ -575,7 +594,7 @@ func TestRetryGetRequest(t *testing.T) {
 }
 
 func TestOAuth2Integration(t *testing.T) {
-	inner := NewApiClient(ClientConfig{
+	inner, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 204,
@@ -584,6 +603,7 @@ func TestOAuth2Integration(t *testing.T) {
 			}, nil
 		}),
 	})
+	require.NoError(t, err)
 
 	ctx := context.Background()
 	ctx = inner.InContextForOAuth2(ctx)
