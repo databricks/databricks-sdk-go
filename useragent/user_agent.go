@@ -86,9 +86,9 @@ type info struct {
 	Value string
 }
 
-// Sanitize the user agent value. This is useful when the set of possible values is not 
-// known at compile time to be all valid. Having this sanitization then ensures 
-// downstream applications can correctly parse the full user agent header, by making sure
+// Sanitize the user agent value. This is useful when the value is not ensured to be 
+// to be valid at compile time. Having this sanitization then ensures downstream
+// applications can correctly parse the full user agent header, by making sure
 // characters like '/' and ' ' are not present in the value.
 func Sanitize(s string) string {
 	allowList := func(r rune) rune {
