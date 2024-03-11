@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
@@ -71,6 +72,9 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 				if !ok {
 					return nil
 				}
+				// Replace any slashes and spaces with dashes, just in case.
+				v = strings.ReplaceAll(v, "/", "-")
+				v = strings.ReplaceAll(v, " ", "-")
 				// Add the detected Databricks Runtime version to the user agent
 				ctx := useragent.InContext(r.Context(), "runtime", v)
 				*r = *r.WithContext(ctx) // replace request
