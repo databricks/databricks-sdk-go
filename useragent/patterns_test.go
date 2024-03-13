@@ -13,7 +13,7 @@ func TestMatchSemVer(t *testing.T) {
 	assert.Error(t, matchSemVer("1.2"))
 }
 
-func TestMatchAlphanum(t *testing.T) {
+func TestMatchValidChars(t *testing.T) {
 	assert.NoError(t, matchValidChars("foo"))
 	assert.True(t, isValid("foo"))
 
