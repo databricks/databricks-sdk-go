@@ -3,6 +3,7 @@ package useragent
 import (
 	"context"
 	"fmt"
+	"os"
 	"runtime"
 	"strings"
 	"testing"
@@ -59,4 +60,15 @@ func TestFromContext_Custom(t *testing.T) {
 
 func TestDefaultsAreValid(t *testing.T) {
 	WithProduct(productName, productVersion)
+}
+
+func TestUpstreamUserAgent(t *testing.T) {
+	// Set the environment variables to test the upstream user agent
+	// and check that it is included in the user agent string.
+	os.Setenv("DATABRICKS_SDK_UPSTREAM", "my-upstream-sdk")
+	os.Setenv("DATABRICKS_SDK_UPSTREAM_VERSION", "1.2.3")
+	userAgent := FromContext(context.Background())
+	assert.Contains(t, userAgent, "upstream/my-upstream-sdk upstream-version/1.2.3")
+	os.Unsetenv("DATABRICKS_SDK_UPSTREAM")
+	os.Unsetenv("DATABRICKS_SDK_UPSTREAM_VERSION")
 }
