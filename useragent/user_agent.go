@@ -112,7 +112,7 @@ func validate(key, value string) error {
 		return fmt.Errorf("expected user agent key to be alphanumeric: %q", key)
 	}
 	if !isValid(value) {
-		return fmt.Errorf("expected user agent value for key %q to be alphanumeric or semver: %q", key, value)
+		return fmt.Errorf("expected user agent value for key %q to be alphanumeric: %q", key, value)
 	}
 	return nil
 }

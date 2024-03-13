@@ -14,12 +14,8 @@ const (
 
 var regexpSemVer = regexp.MustCompile(`^` + semVerCore + semVerPrerelease + semVerBuildmetadata + `$`)
 
-func isSemVer(s string) bool {
-	return regexpSemVer.MatchString(s)
-}
-
 func matchSemVer(s string) error {
-	if isSemVer(s) {
+	if regexpSemVer.MatchString(s) {
 		return nil
 	}
 	return fmt.Errorf("invalid semver string: %s", s)

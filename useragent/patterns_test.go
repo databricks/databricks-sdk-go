@@ -8,16 +8,9 @@ import (
 
 func TestMatchSemVer(t *testing.T) {
 	assert.NoError(t, matchSemVer("1.2.3"))
-	assert.True(t, isSemVer("1.2.3"))
-
 	assert.NoError(t, matchSemVer("0.0.0-dev+2e014739024a"))
-	assert.True(t, isSemVer("0.0.0-dev+2e014739024a"))
-
 	assert.Error(t, matchSemVer("1.2.3.4"))
-	assert.False(t, isSemVer("1.2.3.4"))
-
 	assert.Error(t, matchSemVer("1.2"))
-	assert.False(t, isSemVer("1.2"))
 }
 
 func TestMatchAlphanum(t *testing.T) {

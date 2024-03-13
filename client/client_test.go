@@ -333,7 +333,7 @@ func TestUserAgentForDBR(t *testing.T) {
 				HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
 					// Capture the user agent via the round tripper.
 					userAgent = r.UserAgent()
-					
+
 					return &http.Response{
 						StatusCode: 200,
 						Body:       io.NopCloser(strings.NewReader(`{}`)),

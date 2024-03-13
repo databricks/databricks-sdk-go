@@ -76,13 +76,12 @@ func TestDefaultsAreValid(t *testing.T) {
 }
 
 func TestUserAgentValidate(t *testing.T) {
-	assert.EqualError(t, validate("foobar!", "abc"), "expected user agent key to be alphanumeric: \"foobar!\"")
-	assert.EqualError(t, validate("foo", "invalid!"), "expected user agent value for key \"foo\" to be alphanumeric or semver: \"invalid!\"")
-	assert.EqualError(t, validate("foo", "whatever#!@"), "expected user agent value for key \"foo\" to be alphanumeric or semver: \"whatever#!@\"")
+	assert.EqualError(t, validate("foobar!", ""), "expected user agent key to be alphanumeric: \"foobar!\"")
+	assert.EqualError(t, validate("foo", "invalid!"), "expected user agent value for key \"foo\" to be alphanumeric: \"invalid!\"")
+	assert.EqualError(t, validate("foo", "whatever#!@"), "expected user agent value for key \"foo\" to be alphanumeric: \"whatever#!@\"")
 
 	assert.NoError(t, validate("foo", "7.3"))
 	assert.NoError(t, validate("foo", "client.7"))
-	assert.NoError(t, validate("foo", "123"))
 	assert.NoError(t, validate("foo", "1.1.1"))
 }
 
