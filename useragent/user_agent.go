@@ -111,7 +111,7 @@ func validate(key, value string) error {
 	if !isAlphanum(key) {
 		return fmt.Errorf("expected user agent key to be alphanumeric: %q", key)
 	}
-	if !isValidValue(value) {
+	if !isAlphanum(value) {
 		return fmt.Errorf("expected user agent value for key %q to be alphanumeric or semver: %q", key, value)
 	}
 	return nil
@@ -122,7 +122,7 @@ func validate(key, value string) error {
 // applications can correctly parse the full user agent header, by making sure
 // characters like '/' and ' ' are not present in the value.
 func Sanitize(s string) string {
-	return regexp.MustCompile(`[^`+allowedValueChars+`]`).ReplaceAllString(s, "-")
+	return regexp.MustCompile(`[^`+alphanum+`]`).ReplaceAllString(s, "-")
 }
 
 // With always uses the latest value for a given alphanumeric key.

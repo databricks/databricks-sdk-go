@@ -36,6 +36,9 @@ func TestMatchAlphanum(t *testing.T) {
 	assert.NoError(t, matchAlphanum("foo-bar"))
 	assert.True(t, isAlphanum("foo-bar"))
 
+	assert.NoError(t, matchAlphanum("foo.bar"))
+	assert.True(t, isAlphanum("foo.bar"))
+
 	assert.Error(t, matchAlphanum("foo bar"))
 	assert.False(t, isAlphanum("foo bar"))
 

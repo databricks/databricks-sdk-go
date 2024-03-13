@@ -88,43 +88,43 @@ func TestUserAgentValidate(t *testing.T) {
 
 func TestSanitize(t *testing.T) {
 	// Valid values
-	assert.True(t, isValidValue("foo"))
+	assert.True(t, isAlphanum("foo"))
 	assert.Equal(t, "foo", Sanitize("foo"))
 
-	assert.True(t, isValidValue("FOO"))
+	assert.True(t, isAlphanum("FOO"))
 	assert.Equal(t, "FOO", Sanitize("FOO"))
 
-	assert.True(t, isValidValue("FOO123"))
+	assert.True(t, isAlphanum("FOO123"))
 	assert.Equal(t, "FOO123", Sanitize("FOO123"))
 
-	assert.True(t, isValidValue("foo_bar"))
+	assert.True(t, isAlphanum("foo_bar"))
 	assert.Equal(t, "foo_bar", Sanitize("foo_bar"))
 
-	assert.True(t, isValidValue("foo-bar"))
+	assert.True(t, isAlphanum("foo-bar"))
 	assert.Equal(t, "foo-bar", Sanitize("foo-bar"))
 
-	assert.True(t, isValidValue("foo.bar"))
+	assert.True(t, isAlphanum("foo.bar"))
 	assert.Equal(t, "foo.bar", Sanitize("foo.bar"))
 
-	assert.True(t, isValidValue("1.2.3"))
+	assert.True(t, isAlphanum("1.2.3"))
 	assert.Equal(t, "1.2.3", Sanitize("1.2.3"))
 
-	assert.True(t, isValidValue("client.0"))
+	assert.True(t, isAlphanum("client.0"))
 	assert.Equal(t, "client.0", Sanitize("client.0"))
 
 	// Invalid Values, being sanitized correctly.
-	assert.False(t, isValidValue("1@2#3?4,5/6!7 8 "))
+	assert.False(t, isAlphanum("1@2#3?4,5/6!7 8 "))
 	assert.Equal(t, "1-2-3-4-5-6-7-8-", Sanitize("1@2#3?4,5/6!7 8 "))
 
-	assert.False(t, isValidValue("foo bar"))
+	assert.False(t, isAlphanum("foo bar"))
 	assert.Equal(t, "foo-bar", Sanitize("foo bar"))
 
-	assert.False(t, isValidValue("foo/bar"))
+	assert.False(t, isAlphanum("foo/bar"))
 	assert.Equal(t, "foo-bar", Sanitize("foo/bar"))
 
-	assert.False(t, isValidValue("foo:)bar"))
+	assert.False(t, isAlphanum("foo:)bar"))
 	assert.Equal(t, "foo--bar", Sanitize("foo:)bar"))
 
-	assert.False(t, isValidValue("foo😊bar"))
+	assert.False(t, isAlphanum("foo😊bar"))
 	assert.Equal(t, "foo-bar", Sanitize("foo😊bar"))
 }
