@@ -63,12 +63,11 @@ func TestDefaultsAreValid(t *testing.T) {
 }
 
 func TestUpstreamUserAgent(t *testing.T) {
-	// Set the environment variables to test the upstream user agent
-	// and check that it is included in the user agent string.
 	os.Setenv("DATABRICKS_SDK_UPSTREAM", "my-upstream-sdk")
+	defer os.Unsetenv("DATABRICKS_SDK_UPSTREAM")
 	os.Setenv("DATABRICKS_SDK_UPSTREAM_VERSION", "1.2.3")
+	defer os.Unsetenv("DATABRICKS_SDK_UPSTREAM_VERSION")
+
 	userAgent := FromContext(context.Background())
 	assert.Contains(t, userAgent, "upstream/my-upstream-sdk upstream-version/1.2.3")
-	os.Unsetenv("DATABRICKS_SDK_UPSTREAM")
-	os.Unsetenv("DATABRICKS_SDK_UPSTREAM_VERSION")
 }
