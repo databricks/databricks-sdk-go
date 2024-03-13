@@ -53,7 +53,7 @@ func (a attributes) Validate(cfg *Config) error {
 		if attr.IsZero(cfg) {
 			continue
 		}
-		if attr.Auth == "" {
+		if !attr.HasAuthAttribute() {
 			continue
 		}
 		authsUsed[attr.Auth] = true
@@ -86,11 +86,12 @@ func (a attributes) Configure(cfg *Config) error {
 			// don't overwtite a value previously set
 			continue
 		}
-		v := attr.ReadEnv()
+		v, envName := attr.ReadEnv()
 		if v == "" {
 			continue
 		}
 		err := attr.SetS(cfg, v)
+		cfg.SetAttrSource(&attr, Source{Type: SourceEnv, Name: envName})
 		if err != nil {
 			return err
 		}
@@ -99,6 +100,10 @@ func (a attributes) Configure(cfg *Config) error {
 }
 
 func (a attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error {
+	return a.ResolveFromStringMapWithSource(cfg, m, Source{Type: SourceDynamicConfig})
+}
+
+func (a attributes) ResolveFromStringMapWithSource(cfg *Config, m map[string]string, source Source) error {
 	for _, attr := range a {
 		if !attr.IsZero(cfg) {
 			// don't overwtite a value previously set
@@ -112,11 +117,16 @@ func (a attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error
 		if err != nil {
 			return err
 		}
+		cfg.SetAttrSource(&attr, source)
 	}
 	return nil
 }
 
 func (a attributes) ResolveFromAnyMap(cfg *Config, m map[string]interface{}) error {
+	return a.ResolveFromAnyMapWithSource(cfg, m, Source{Type: SourceDynamicConfig})
+}
+
+func (a attributes) ResolveFromAnyMapWithSource(cfg *Config, m map[string]interface{}, source Source) error {
 	for _, attr := range a {
 		if !attr.IsZero(cfg) {
 			// don't overwtite a value previously set
@@ -130,6 +140,7 @@ func (a attributes) ResolveFromAnyMap(cfg *Config, m map[string]interface{}) err
 		if err != nil {
 			return err
 		}
+		cfg.SetAttrSource(&attr, source)
 	}
 	return nil
 }
@@ -155,9 +166,23 @@ func loadAttrs() (attrs attributes) {
 			auth = ""
 			internal = true
 		}
+
+		var authTypes []string
+		authTypesTag := field.Tag.Get("auth_types")
+		// If auth_types is not set, use auth as the only auth type
+		// In this case auth should be set and a valid auth type.
+		if authTypesTag == "" {
+			if auth != "" {
+				authTypes = append(authTypes, auth)
+			}
+		} else {
+			authTypes = strings.Split(authTypesTag, ",")
+		}
+
 		attr := ConfigAttribute{
 			Name:      nameTag,
 			Auth:      auth,
+			AuthTypes: authTypes,
 			Kind:      field.Type.Kind(),
 			Sensitive: sensitive,
 			Internal:  internal,

@@ -7,6 +7,26 @@ import (
 	"strconv"
 )
 
+type Source struct {
+	Type SourceType
+	Name string
+}
+
+func (s *Source) String() string {
+	if s.Name == "" {
+		return string(s.Type)
+	}
+	return fmt.Sprintf("%s %s", s.Name, s.Type)
+}
+
+type SourceType string
+
+const (
+	SourceEnv           SourceType = "environment variable"
+	SourceFile          SourceType = "config file"
+	SourceDynamicConfig SourceType = "dynamic configuration"
+)
+
 // ConfigAttribute provides generic way to work with Config configuration
 // attributes and parses `name`, `env`, and `auth` field tags.
 //
@@ -16,20 +36,21 @@ type ConfigAttribute struct {
 	Kind      reflect.Kind
 	EnvVars   []string
 	Auth      string
+	AuthTypes []string
 	Sensitive bool
 	Internal  bool
 	num       int
 }
 
-func (a *ConfigAttribute) ReadEnv() string {
+func (a *ConfigAttribute) ReadEnv() (string, string) {
 	for _, envName := range a.EnvVars {
 		v := os.Getenv(envName)
 		if v == "" {
 			continue
 		}
-		return v
+		return v, envName
 	}
-	return ""
+	return "", ""
 }
 
 func (a *ConfigAttribute) SetS(cfg *Config, v string) error {
@@ -81,4 +102,8 @@ func (a *ConfigAttribute) GetString(cfg *Config) string {
 	rv := reflect.ValueOf(cfg)
 	field := rv.Elem().Field(a.num)
 	return fmt.Sprintf("%v", field.Interface())
+}
+
+func (a *ConfigAttribute) HasAuthAttribute() bool {
+	return a.Auth != ""
 }

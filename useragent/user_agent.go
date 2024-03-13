@@ -3,6 +3,7 @@ package useragent
 import (
 	"context"
 	"fmt"
+	"os"
 	"runtime"
 	"strings"
 	"unicode"
@@ -52,6 +53,18 @@ func WithUserAgentExtra(key, value string) {
 	extra = extra.With(key, value)
 }
 
+func getUpstreamUserAgentInfo() []info {
+	product := os.Getenv("DATABRICKS_SDK_UPSTREAM")
+	version := os.Getenv("DATABRICKS_SDK_UPSTREAM_VERSION")
+	if product == "" || version == "" {
+		return nil
+	}
+	return []info{
+		{"upstream", product},
+		{"upstream-version", version},
+	}
+}
+
 // InContext populates context with user agent dimension,
 // usually to differentiate subsets of functionality and
 // agreed with Databricks.
@@ -70,6 +83,7 @@ func FromContext(ctx context.Context) string {
 		{"os", runtime.GOOS},
 	}
 	base = append(base, extra...)
+	base = append(base, getUpstreamUserAgentInfo()...)
 	uac, _ := ctx.Value(ctxAgent).(data)
 	return append(base, uac...).String()
 }

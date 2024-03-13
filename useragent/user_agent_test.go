@@ -3,6 +3,7 @@ package useragent
 import (
 	"context"
 	"fmt"
+	"os"
 	"runtime"
 	"strings"
 	"testing"
@@ -55,6 +56,19 @@ func TestFromContext_Custom(t *testing.T) {
 	expectedFormat2 := "unit-tests/0.0.1 databricks-sdk-go/%s go/%s os/%s pulumi/3.8.4 terraform/1.3.6 a/f foo/bar"
 	expected2 := fmt.Sprintf(expectedFormat2, version.Version, goVersion(), runtime.GOOS)
 	assert.Equal(t, expected2, userAgent2)
+
+	// upstream and upstream-version only appear when both are set
+	assert.NotContains(t, userAgent, "upstream/")
+	os.Setenv("DATABRICKS_SDK_UPSTREAM", "my-upstream-sdk")
+	defer os.Unsetenv("DATABRICKS_SDK_UPSTREAM")
+	userAgent3 := FromContext(ctx)
+	assert.NotContains(t, userAgent3, "upstream/")
+	assert.NotContains(t, userAgent3, "upstream-version/")
+
+	os.Setenv("DATABRICKS_SDK_UPSTREAM_VERSION", "1.2.3")
+	defer os.Unsetenv("DATABRICKS_SDK_UPSTREAM_VERSION")
+	userAgent4 := FromContext(context.Background())
+	assert.Contains(t, userAgent4, "upstream/my-upstream-sdk upstream-version/1.2.3")
 }
 
 func TestDefaultsAreValid(t *testing.T) {
