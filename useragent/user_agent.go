@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"regexp"
 	"runtime"
 	"strings"
-	"unicode"
 
 	"github.com/databricks/databricks-sdk-go/version"
 	"golang.org/x/mod/semver"
@@ -100,21 +100,6 @@ type info struct {
 	Value string
 }
 
-// Sanitize the user agent value. This is useful when the value is not ensured to be
-// to be valid at compile time. Having this sanitization then ensures downstream
-// applications can correctly parse the full user agent header, by making sure
-// characters like '/' and ' ' are not present in the value.
-func Sanitize(s string) string {
-	allowList := func(r rune) rune {
-		if r == '.' || unicode.IsLetter(r) || unicode.IsDigit(r) {
-			return r
-		}
-		return '-'
-	}
-
-	return strings.Map(allowList, s)
-}
-
 func (u info) String() string {
 	return fmt.Sprintf("%s/%s", u.Key, u.Value)
 }
@@ -123,19 +108,21 @@ type data []info
 
 // Validate the key value pair being set in the user agent. Error if invalid.
 func validate(key, value string) error {
-	// DBR versions as set in the `DATABRICKS_RUNTIME_VERSION` environment variable
-	// are not valid semver strings. Eg: 15.1 or client.0. Thus we allow arbitrary
-	// values for the runtime key.
-	if key == RuntimeKey {
-		return nil
-	}
 	if !isAlphanum(key) {
-		return fmt.Errorf("expected user agent key to be alphanumeric: %s", key)
+		return fmt.Errorf("expected user agent key to be alphanumeric: %q", key)
 	}
-	if !isAlphanum(value) && !isSemVer(value) {
-		return fmt.Errorf("expected user agent value for key %q to be alphanumeric or semver: %s", key, value)
+	if !isValidValue(value) {
+		return fmt.Errorf("expected user agent value for key %q to be alphanumeric or semver: %q", key, value)
 	}
 	return nil
+}
+
+// Sanitize the user agent value. This is useful when the value is not ensured to be
+// to be valid at compile time. Having this sanitization then ensures downstream
+// applications can correctly parse the full user agent header, by making sure
+// characters like '/' and ' ' are not present in the value.
+func Sanitize(s string) string {
+	return regexp.MustCompile(`[^`+allowedValueChars+`]`).ReplaceAllString(s, "-")
 }
 
 // With always uses the latest value for a given alphanumeric key.

@@ -76,15 +76,14 @@ func TestDefaultsAreValid(t *testing.T) {
 }
 
 func TestUserAgentValidate(t *testing.T) {
-	assert.EqualError(t, validate("non-alphanumic!", "abc"), "expected user agent key to be alphanumeric: non-alphanumic!")
-	assert.EqualError(t, validate("abc", "non-alphanumeric!"), "expected user agent value for key \"abc\" to be alphanumeric or semver: non-alphanumeric!")
-	assert.EqualError(t, validate("abc", "1.1.invalid"), "expected user agent value for key \"abc\" to be alphanumeric or semver: 1.1.invalid")
+	assert.EqualError(t, validate("foobar!", "abc"), "expected user agent key to be alphanumeric: \"foobar!\"")
+	assert.EqualError(t, validate("foo", "invalid!"), "expected user agent value for key \"foo\" to be alphanumeric or semver: \"invalid!\"")
+	assert.EqualError(t, validate("foo", "whatever#!@"), "expected user agent value for key \"foo\" to be alphanumeric or semver: \"whatever#!@\"")
 
-	assert.NoError(t, validate("runtime", "7.3"))
-	assert.NoError(t, validate("runtime", "client.7"))
-	assert.NoError(t, validate("runtime", "whatever#!@"))
-	assert.NoError(t, validate("abc", "123"))
-	assert.NoError(t, validate("abc", "1.1.1"))
+	assert.NoError(t, validate("foo", "7.3"))
+	assert.NoError(t, validate("foo", "client.7"))
+	assert.NoError(t, validate("foo", "123"))
+	assert.NoError(t, validate("foo", "1.1.1"))
 }
 
 func TestUserAgentNormalizeString(t *testing.T) {

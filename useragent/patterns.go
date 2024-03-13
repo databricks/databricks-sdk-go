@@ -30,11 +30,10 @@ func matchAlphanum(s string) error {
 	return fmt.Errorf("invalid alphanumeric string: %s", s)
 }
 
-func matchAlphanumOrSemVer(s string) error {
-	if isAlphanum(s) || isSemVer(s) {
-		return nil
-	}
-	return fmt.Errorf("invalid alphanumeric or semver string: %s", s)
+var allowedValueChars = `0-9A-Za-z_\-\.`
+
+func isValidValue(s string) bool {
+	return regexp.MustCompile(`^[` + allowedValueChars + `]+$`).MatchString(s)
 }
 
 func isAlphanum(s string) bool {

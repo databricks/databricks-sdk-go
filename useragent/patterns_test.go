@@ -43,19 +43,16 @@ func TestMatchAlphanum(t *testing.T) {
 	assert.False(t, isAlphanum("foo/bar"))
 }
 
-func TestMatchAlphanumOrSemVer(t *testing.T) {
-	assert.NoError(t, matchAlphanumOrSemVer("foo"))
-	assert.True(t, isAlphanum("foo") || isSemVer("foo"))
+func TestIsValidValue(t *testing.T) {
+	assert.True(t, isValidValue("foo"))
+	assert.True(t, isValidValue("FOO"))
+	assert.True(t, isValidValue("FOO123"))
+	assert.True(t, isValidValue("foo_bar"))
+	assert.True(t, isValidValue("foo-bar"))
+	assert.True(t, isValidValue("foo.bar"))
 
-	assert.NoError(t, matchAlphanumOrSemVer("1.2.3"))
-	assert.True(t, isAlphanum("1.2.3") || isSemVer("1.2.3"))
-
-	assert.NoError(t, matchAlphanumOrSemVer("0.0.0-dev+2e014739024a"))
-	assert.True(t, isAlphanum("0.0.0-dev+2e014739024a") || isSemVer("0.0.0-dev+2e014739024a"))
-
-	assert.Error(t, matchAlphanumOrSemVer("foo/bar"))
-	assert.False(t, isAlphanum("foo/bar") || isSemVer("foo/bar"))
-
-	assert.Error(t, matchAlphanumOrSemVer("1/2/3"))
-	assert.False(t, isAlphanum("1/2/3") || isSemVer("1/2/3"))
+	assert.False(t, isValidValue("foo bar"))
+	assert.False(t, isValidValue("foo/bar"))
+	assert.False(t, isValidValue("foo:)bar"))
+	assert.False(t, isValidValue("foo😊bar"))
 }
