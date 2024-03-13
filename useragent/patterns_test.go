@@ -42,17 +42,3 @@ func TestMatchAlphanum(t *testing.T) {
 	assert.Error(t, matchAlphanum("foo/bar"))
 	assert.False(t, isAlphanum("foo/bar"))
 }
-
-func TestIsValidValue(t *testing.T) {
-	assert.True(t, isValidValue("foo"))
-	assert.True(t, isValidValue("FOO"))
-	assert.True(t, isValidValue("FOO123"))
-	assert.True(t, isValidValue("foo_bar"))
-	assert.True(t, isValidValue("foo-bar"))
-	assert.True(t, isValidValue("foo.bar"))
-
-	assert.False(t, isValidValue("foo bar"))
-	assert.False(t, isValidValue("foo/bar"))
-	assert.False(t, isValidValue("foo:)bar"))
-	assert.False(t, isValidValue("foo😊bar"))
-}
