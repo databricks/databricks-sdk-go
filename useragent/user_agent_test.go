@@ -6,6 +6,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/version"
@@ -62,7 +63,33 @@ func TestDefaultsAreValid(t *testing.T) {
 	WithProduct(productName, productVersion)
 }
 
-func TestUpstreamUserAgent(t *testing.T) {
+var upstreamEnvironmentLock sync.Mutex
+
+func TestUpstreamUserAgent_NotPresent(t *testing.T) {
+	upstreamEnvironmentLock.Lock()
+	defer upstreamEnvironmentLock.Unlock()
+
+	userAgent := FromContext(context.Background())
+	assert.NotContains(t, userAgent, "upstream/")
+	assert.NotContains(t, userAgent, "upstream-version/")
+}
+
+func TestUpstreamUserAgent_OnlyOnePresent(t *testing.T) {
+	upstreamEnvironmentLock.Lock()
+	defer upstreamEnvironmentLock.Unlock()
+
+	os.Setenv("DATABRICKS_SDK_UPSTREAM", "my-upstream-sdk")
+	defer os.Unsetenv("DATABRICKS_SDK_UPSTREAM")
+
+	userAgent := FromContext(context.Background())
+	assert.NotContains(t, userAgent, "upstream/")
+	assert.NotContains(t, userAgent, "upstream-version/")
+}
+
+func TestUpstreamUserAgent_Present(t *testing.T) {
+	upstreamEnvironmentLock.Lock()
+	defer upstreamEnvironmentLock.Unlock()
+
 	os.Setenv("DATABRICKS_SDK_UPSTREAM", "my-upstream-sdk")
 	defer os.Unsetenv("DATABRICKS_SDK_UPSTREAM")
 	os.Setenv("DATABRICKS_SDK_UPSTREAM_VERSION", "1.2.3")
