@@ -91,4 +91,5 @@ func TestUserAgentNormalizeString(t *testing.T) {
 	assert.Equal(t, "1-2-3-4-5-6-7-8-", Sanitize("1@2#3?4,5/6!7 8 "))
 	assert.Equal(t, "1.2.3", Sanitize("1.2.3"))
 	assert.Equal(t, "client.0", Sanitize("client.0"))
+	assert.Equal(t, "unicode----", Sanitize("unicode ◬☋☜"))
 }
