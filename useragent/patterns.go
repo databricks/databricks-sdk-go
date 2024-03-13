@@ -31,14 +31,14 @@ func matchSemVer(s string) error {
 //
 // NOTE: HTTP headers in general only work well with ASCII characters. see:
 // https://stackoverflow.com/questions/4400678/what-character-encoding-should-i-use-for-a-http-header
-var alphanum = `0-9A-Za-z_\-\.`
+var validChars = `0-9A-Za-z_\-\.`
 
-func isAlphanum(s string) bool {
-	return regexp.MustCompile(`^[` + alphanum + `]+$`).MatchString(s)
+func isValid(s string) bool {
+	return regexp.MustCompile(`^[` + validChars + `]+$`).MatchString(s)
 }
 
-func matchAlphanum(s string) error {
-	if isAlphanum(s) {
+func matchValidChars(s string) error {
+	if isValid(s) {
 		return nil
 	}
 	return fmt.Errorf("invalid alphanumeric string: %s", s)

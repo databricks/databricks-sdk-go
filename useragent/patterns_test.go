@@ -21,27 +21,27 @@ func TestMatchSemVer(t *testing.T) {
 }
 
 func TestMatchAlphanum(t *testing.T) {
-	assert.NoError(t, matchAlphanum("foo"))
-	assert.True(t, isAlphanum("foo"))
+	assert.NoError(t, matchValidChars("foo"))
+	assert.True(t, isValid("foo"))
 
-	assert.NoError(t, matchAlphanum("FOO"))
-	assert.True(t, isAlphanum("FOO"))
+	assert.NoError(t, matchValidChars("FOO"))
+	assert.True(t, isValid("FOO"))
 
-	assert.NoError(t, matchAlphanum("FOO123"))
-	assert.True(t, isAlphanum("FOO123"))
+	assert.NoError(t, matchValidChars("FOO123"))
+	assert.True(t, isValid("FOO123"))
 
-	assert.NoError(t, matchAlphanum("foo_bar"))
-	assert.True(t, isAlphanum("foo_bar"))
+	assert.NoError(t, matchValidChars("foo_bar"))
+	assert.True(t, isValid("foo_bar"))
 
-	assert.NoError(t, matchAlphanum("foo-bar"))
-	assert.True(t, isAlphanum("foo-bar"))
+	assert.NoError(t, matchValidChars("foo-bar"))
+	assert.True(t, isValid("foo-bar"))
 
-	assert.NoError(t, matchAlphanum("foo.bar"))
-	assert.True(t, isAlphanum("foo.bar"))
+	assert.NoError(t, matchValidChars("foo.bar"))
+	assert.True(t, isValid("foo.bar"))
 
-	assert.Error(t, matchAlphanum("foo bar"))
-	assert.False(t, isAlphanum("foo bar"))
+	assert.Error(t, matchValidChars("foo bar"))
+	assert.False(t, isValid("foo bar"))
 
-	assert.Error(t, matchAlphanum("foo/bar"))
-	assert.False(t, isAlphanum("foo/bar"))
+	assert.Error(t, matchValidChars("foo/bar"))
+	assert.False(t, isValid("foo/bar"))
 }

@@ -21,7 +21,7 @@ const (
 // WithProduct sets the product name and product version globally.
 // It should be called by developers to differentiate their application from others.
 func WithProduct(name, version string) {
-	if err := matchAlphanum(name); err != nil {
+	if err := matchValidChars(name); err != nil {
 		panic(err)
 	}
 	if err := matchSemVer(version); err != nil {
@@ -108,10 +108,10 @@ type data []info
 
 // Validate the key value pair being set in the user agent. Error if invalid.
 func validate(key, value string) error {
-	if !isAlphanum(key) {
+	if !isValid(key) {
 		return fmt.Errorf("expected user agent key to be alphanumeric: %q", key)
 	}
-	if !isAlphanum(value) {
+	if !isValid(value) {
 		return fmt.Errorf("expected user agent value for key %q to be alphanumeric or semver: %q", key, value)
 	}
 	return nil
@@ -122,7 +122,7 @@ func validate(key, value string) error {
 // applications can correctly parse the full user agent header, by making sure
 // characters like '/' and ' ' are not present in the value.
 func Sanitize(s string) string {
-	return regexp.MustCompile(`[^`+alphanum+`]`).ReplaceAllString(s, "-")
+	return regexp.MustCompile(`[^`+validChars+`]`).ReplaceAllString(s, "-")
 }
 
 // With always uses the latest value for a given alphanumeric key.
