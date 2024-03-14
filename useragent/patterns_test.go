@@ -19,13 +19,15 @@ func TestMatchAlphanum(t *testing.T) {
 		"FOO123",
 		"foo_bar",
 		"foo-bar",
-		"foo.bar"} {
+		"foo.bar",
+	} {
 		assert.NoError(t, matchAlphanum(v))
 	}
 
 	for _, v := range []string{
 		"foo bar",
-		"foo/bar"} {
+		"foo/bar",
+	} {
 		assert.Error(t, matchAlphanum(v))
 	}
 }
@@ -34,12 +36,14 @@ func TestMatchAlphanumOrSemVer(t *testing.T) {
 	for _, v := range []string{"foo",
 		"1.2.3",
 		"0.0.0-dev+2e014739024a",
-		"client.0"} {
+		"client.0",
+	} {
 		assert.NoError(t, matchAlphanumOrSemVer(v))
 	}
 	for _, v := range []string{
 		"foo/bar",
-		"1/2/3"} {
+		"1/2/3",
+	} {
 		assert.Error(t, matchAlphanumOrSemVer(v))
 	}
 }
