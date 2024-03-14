@@ -13,6 +13,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"github.com/databricks/databricks-sdk-go/version"
 	"github.com/stretchr/testify/assert"
@@ -320,9 +321,7 @@ GET /a
 	}
 }
 
-func TestUserAgentForDBR(t *testing.T) {
-	t.Setenv("DATABRICKS_RUNTIME_VERSION", "client.0")
-
+func captureUserAgent(t *testing.T) string {
 	var userAgent string
 	c, err := New(&config.Config{
 		Host:       "some",
@@ -342,12 +341,77 @@ func TestUserAgentForDBR(t *testing.T) {
 	require.NoError(t, err)
 
 	err = c.Do(context.Background(), "GET", "/a", nil, nil, nil)
-
-	// We don't assert on the value here, because if this test is run inside
-	// DBR then the value will not match the expected value. This is because the
-	// value is cached during runtime.
-	assert.Contains(t, userAgent, "runtime/")
 	require.NoError(t, err)
+
+	return userAgent
+}
+
+func TestUserAgentForDBR(t *testing.T) {
+	for _, dbrVersion := range []string{"client.0", "client.1", "15.5", "15.5.0", "13.3"} {
+		env.CleanupEnvironment(t)
+		useragent.ClearCache()
+
+		t.Setenv("DATABRICKS_RUNTIME_VERSION", dbrVersion)
+		userAgent := captureUserAgent(t)
+
+		// The user agent should contain the runtime version.
+		assert.Contains(t, userAgent, "runtime/"+dbrVersion)
+	}
+}
+
+func TestUserAgentForCiCd(t *testing.T) {
+	ciToEnv := map[string]map[string]string{
+		"github": {
+			"GITHUB_ACTIONS": "true",
+		},
+		"gitlab": {
+			"GITLAB_CI": "true",
+		},
+		"jenkins": {
+			"JENKINS_URL": "https://jenkins.example.com",
+		},
+		"azure-devops": {
+			"TF_BUILD": "True",
+		},
+		"circle": {
+			"CIRCLECI": "true",
+		},
+		"travis": {
+			"TRAVIS": "true",
+		},
+		"bitbucket": {
+			"BITBUCKET_BUILD_NUMBER": "123",
+		},
+		"google-cloud-build": {
+			"PROJECT_ID":     "",
+			"BUILD_ID":       "",
+			"PROJECT_NUMBER": "",
+			"LOCATION":       "",
+		},
+		"aws-code-build": {
+			"CODEBUILD_BUILD_ARN": "",
+		},
+		"tf-cloud": {
+			"TFC_RUN_ID": "",
+		},
+	}
+
+	for ci, envVars := range ciToEnv {
+		t.Run(ci, func(t *testing.T) {
+			env.CleanupEnvironment(t)
+			useragent.ClearCache()
+
+			for k, v := range envVars {
+				t.Setenv(k, v)
+			}
+
+			userAgent := captureUserAgent(t)
+
+			// The user agent should contain the CI/CD provider.
+			assert.Contains(t, userAgent, "cicd/"+ci)
+		})
+	}
+
 }
 
 func testNonJSONResponseIncludedInError(t *testing.T, statusCode int, status, errorMessage string) {

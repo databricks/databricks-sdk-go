@@ -74,30 +74,3 @@ func TestFromContext_Custom(t *testing.T) {
 func TestDefaultsAreValid(t *testing.T) {
 	WithProduct(productName, productVersion)
 }
-
-func TestSanitize(t *testing.T) {
-	for _, v := range []string{
-		"foo",
-		"FOO",
-		"FOO123",
-		"foo_bar",
-		"foo-bar",
-		"foo+bar",
-		"foo.bar",
-		"1.2.3",
-		"client.0",
-	} {
-		assert.Equal(t, v, Sanitize(v))
-	}
-
-	sanitizeMap := map[string]string{
-		"1@2#3?4,5/6!7 8 ": "1-2-3-4-5-6-7-8-",
-		"foo bar":          "foo-bar",
-		"foo/bar":          "foo-bar",
-		"foo:)bar":         "foo--bar",
-		"foo😊bar":          "foo-bar",
-	}
-	for k, v := range sanitizeMap {
-		assert.Equal(t, v, Sanitize(k))
-	}
-}
