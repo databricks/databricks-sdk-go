@@ -28,6 +28,7 @@ var regexpSemVer = regexp.MustCompile(`^` + semVerCore + semVerPrerelease + semV
 // 2. https://semver.org/#spec-item-10
 var regexpAlphanum = regexp.MustCompile(`^[0-9A-Za-z_\.\+-]+$`)
 var regexpAlphanumInverse = regexp.MustCompile(`[^0-9A-Za-z_\.\+-]`)
+
 func Sanitize(s string) string {
 	return regexpAlphanumInverse.ReplaceAllString(s, "-")
 }
