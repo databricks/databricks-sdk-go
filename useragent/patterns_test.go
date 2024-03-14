@@ -14,7 +14,8 @@ func TestMatchSemVer(t *testing.T) {
 }
 
 func TestMatchAlphanum(t *testing.T) {
-	for _, v := range []string{"foo",
+	for _, v := range []string{
+		"foo",
 		"FOO",
 		"FOO123",
 		"foo_bar",
@@ -33,7 +34,8 @@ func TestMatchAlphanum(t *testing.T) {
 }
 
 func TestMatchAlphanumOrSemVer(t *testing.T) {
-	for _, v := range []string{"foo",
+	for _, v := range []string{
+		"foo",
 		"1.2.3",
 		"0.0.0-dev+2e014739024a",
 		"client.0",
