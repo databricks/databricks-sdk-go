@@ -14,6 +14,8 @@ const (
 
 var regexpSemVer = regexp.MustCompile(`^` + semVerCore + semVerPrerelease + semVerBuildmetadata + `$`)
 
+var regexpAlphanum = regexp.MustCompile(`^[0-9A-Za-z_\.-]+$`)
+
 func matchSemVer(s string) error {
 	if regexpSemVer.MatchString(s) {
 		return nil
@@ -21,21 +23,16 @@ func matchSemVer(s string) error {
 	return fmt.Errorf("invalid semver string: %s", s)
 }
 
-// Alphanumeric characters, hyphen, underscore, and period. This is the subset of
-// characters that we allow in user agent keys and values. This is to ensure that
-// downstream applications can correctly parse the full user agent header.
-//
-// NOTE: HTTP headers in general only work well with ASCII characters. see:
-// https://stackoverflow.com/questions/4400678/what-character-encoding-should-i-use-for-a-http-header
-var validChars = `0-9A-Za-z_\-\.`
-
-func isValid(s string) bool {
-	return regexp.MustCompile(`^[` + validChars + `]+$`).MatchString(s)
-}
-
-func matchValidChars(s string) error {
-	if isValid(s) {
+func matchAlphanum(s string) error {
+	if regexpAlphanum.MatchString(s) {
 		return nil
 	}
 	return fmt.Errorf("invalid alphanumeric string: %s", s)
+}
+
+func matchAlphanumOrSemVer(s string) error {
+	if regexpAlphanum.MatchString(s) || regexpSemVer.MatchString(s) {
+		return nil
+	}
+	return fmt.Errorf("invalid alphanumeric or semver string: %s", s)
 }

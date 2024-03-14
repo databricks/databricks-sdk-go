@@ -75,55 +75,19 @@ func TestDefaultsAreValid(t *testing.T) {
 	WithProduct(productName, productVersion)
 }
 
-func TestUserAgentValidate(t *testing.T) {
-	assert.EqualError(t, validate("foobar!", ""), "expected user agent key to be alphanumeric: \"foobar!\"")
-	assert.EqualError(t, validate("foo", "invalid!"), "expected user agent value for key \"foo\" to be alphanumeric: \"invalid!\"")
-	assert.EqualError(t, validate("foo", "whatever#!@"), "expected user agent value for key \"foo\" to be alphanumeric: \"whatever#!@\"")
-
-	assert.NoError(t, validate("foo", "7.3"))
-	assert.NoError(t, validate("foo", "client.7"))
-	assert.NoError(t, validate("foo", "1.1.1"))
-}
-
 func TestSanitize(t *testing.T) {
-	// Valid values
-	assert.True(t, isValid("foo"))
-	assert.Equal(t, "foo", Sanitize("foo"))
+	for _, v := range []string{"foo", "FOO", "FOO123", "foo_bar", "foo-bar", "foo+bar", "foo.bar", "1.2.3", "client.0"} {
+		assert.Equal(t, v, Sanitize(v))
+	}
 
-	assert.True(t, isValid("FOO"))
-	assert.Equal(t, "FOO", Sanitize("FOO"))
-
-	assert.True(t, isValid("FOO123"))
-	assert.Equal(t, "FOO123", Sanitize("FOO123"))
-
-	assert.True(t, isValid("foo_bar"))
-	assert.Equal(t, "foo_bar", Sanitize("foo_bar"))
-
-	assert.True(t, isValid("foo-bar"))
-	assert.Equal(t, "foo-bar", Sanitize("foo-bar"))
-
-	assert.True(t, isValid("foo.bar"))
-	assert.Equal(t, "foo.bar", Sanitize("foo.bar"))
-
-	assert.True(t, isValid("1.2.3"))
-	assert.Equal(t, "1.2.3", Sanitize("1.2.3"))
-
-	assert.True(t, isValid("client.0"))
-	assert.Equal(t, "client.0", Sanitize("client.0"))
-
-	// Invalid Values, being sanitized correctly.
-	assert.False(t, isValid("1@2#3?4,5/6!7 8 "))
-	assert.Equal(t, "1-2-3-4-5-6-7-8-", Sanitize("1@2#3?4,5/6!7 8 "))
-
-	assert.False(t, isValid("foo bar"))
-	assert.Equal(t, "foo-bar", Sanitize("foo bar"))
-
-	assert.False(t, isValid("foo/bar"))
-	assert.Equal(t, "foo-bar", Sanitize("foo/bar"))
-
-	assert.False(t, isValid("foo:)bar"))
-	assert.Equal(t, "foo--bar", Sanitize("foo:)bar"))
-
-	assert.False(t, isValid("foo😊bar"))
-	assert.Equal(t, "foo-bar", Sanitize("foo😊bar"))
+	sanitizeMap := map[string]string{
+		"1@2#3?4,5/6!7 8 ": "1-2-3-4-5-6-7-8-",
+		"foo bar":          "foo-bar",
+		"foo/bar":          "foo-bar",
+		"foo:)bar":         "foo--bar",
+		"foo😊bar":          "foo-bar",
+	}
+	for k, v := range sanitizeMap {
+		assert.Equal(t, v, Sanitize(k))
+	}
 }

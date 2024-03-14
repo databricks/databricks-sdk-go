@@ -21,7 +21,7 @@ const (
 // WithProduct sets the product name and product version globally.
 // It should be called by developers to differentiate their application from others.
 func WithProduct(name, version string) {
-	if err := matchValidChars(name); err != nil {
+	if err := matchAlphanum(name); err != nil {
 		panic(err)
 	}
 	if err := matchSemVer(version); err != nil {
@@ -106,29 +106,29 @@ func (u info) String() string {
 
 type data []info
 
-// Validate the key value pair being set in the user agent. Error if invalid.
-func validate(key, value string) error {
-	if !isValid(key) {
-		return fmt.Errorf("expected user agent key to be alphanumeric: %q", key)
-	}
-	if !isValid(value) {
-		return fmt.Errorf("expected user agent value for key %q to be alphanumeric: %q", key, value)
-	}
-	return nil
-}
-
-// Sanitize the user agent value. This is useful when the value is not ensured to be
-// to be valid at compile time. Having this sanitization then ensures downstream
-// applications can correctly parse the full user agent header, by making sure
-// characters like '/' and ' ' are not present in the value.
+// Sanitize replaces all non-alphanumeric characters with a hyphen. Use this to
+// ensure that the user agent value is valid. This is useful when the value is not
+// ensured to be valid at compile time.
+//
+// Example: You want to avoid having '/' and ' ' in the value because it will
+// make downstream applications fail.
+//
+// Note: Semver strings are comprised of alphanumeric characters, hyphens, periods
+// and plus signs. This function will not remove these characters.
+// see:
+// 1. https://semver.org/#spec-item-9
+// 2. https://semver.org/#spec-item-10
 func Sanitize(s string) string {
-	return regexp.MustCompile(`[^`+validChars+`]`).ReplaceAllString(s, "-")
+	return regexp.MustCompile(`[^0-9A-Za-z_\.\+-]`).ReplaceAllString(s, "-")
 }
 
 // With always uses the latest value for a given alphanumeric key.
 // Panics if key or value don't satisfy alphanumeric or semver format.
 func (d data) With(key, value string) data {
-	if err := validate(key, value); err != nil {
+	if err := matchAlphanum(key); err != nil {
+		panic(err)
+	}
+	if err := matchAlphanumOrSemVer(value); err != nil {
 		panic(err)
 	}
 	var c data

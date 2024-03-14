@@ -321,6 +321,7 @@ GET /a
 }
 
 func TestUserAgentForDBR(t *testing.T) {
+	useragent.DisableRuntimeCaching = true
 	for _, dbrVersion := range []string{"client.0", "client.1", "15.0", "13.3", "14.4"} {
 		t.Run(dbrVersion, func(t *testing.T) {
 			t.Setenv("DATABRICKS_RUNTIME_VERSION", dbrVersion)

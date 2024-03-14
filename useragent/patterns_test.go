@@ -13,28 +13,21 @@ func TestMatchSemVer(t *testing.T) {
 	assert.Error(t, matchSemVer("1.2"))
 }
 
-func TestMatchValidChars(t *testing.T) {
-	assert.NoError(t, matchValidChars("foo"))
-	assert.True(t, isValid("foo"))
+func TestMatchAlphanum(t *testing.T) {
+	for _, v := range []string{"foo", "FOO", "FOO123", "foo_bar", "foo-bar", "foo.bar"} {
+		assert.NoError(t, matchAlphanum(v))
+	}
 
-	assert.NoError(t, matchValidChars("FOO"))
-	assert.True(t, isValid("FOO"))
+	for _, v := range []string{"foo bar", "foo/bar"} {
+		assert.Error(t, matchAlphanum(v))
+	}
+}
 
-	assert.NoError(t, matchValidChars("FOO123"))
-	assert.True(t, isValid("FOO123"))
-
-	assert.NoError(t, matchValidChars("foo_bar"))
-	assert.True(t, isValid("foo_bar"))
-
-	assert.NoError(t, matchValidChars("foo-bar"))
-	assert.True(t, isValid("foo-bar"))
-
-	assert.NoError(t, matchValidChars("foo.bar"))
-	assert.True(t, isValid("foo.bar"))
-
-	assert.Error(t, matchValidChars("foo bar"))
-	assert.False(t, isValid("foo bar"))
-
-	assert.Error(t, matchValidChars("foo/bar"))
-	assert.False(t, isValid("foo/bar"))
+func TestMatchAlphanumOrSemVer(t *testing.T) {
+	for _, v := range []string{"foo", "1.2.3", "0.0.0-dev+2e014739024a", "client.0"} {
+		assert.NoError(t, matchAlphanumOrSemVer(v))
+	}
+	for _, v := range []string{"foo/bar", "1/2/3"} {
+		assert.Error(t, matchAlphanumOrSemVer(v))
+	}
 }
