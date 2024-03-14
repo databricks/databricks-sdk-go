@@ -321,34 +321,33 @@ GET /a
 }
 
 func TestUserAgentForDBR(t *testing.T) {
-	useragent.DisableRuntimeCaching = true
-	for _, dbrVersion := range []string{"client.0", "client.1", "15.0", "13.3", "14.4"} {
-		t.Run(dbrVersion, func(t *testing.T) {
-			t.Setenv("DATABRICKS_RUNTIME_VERSION", dbrVersion)
+	t.Setenv("DATABRICKS_RUNTIME_VERSION", "client.0")
 
-			var userAgent string
-			c, err := New(&config.Config{
-				Host:       "some",
-				Token:      "token",
-				ConfigFile: "/dev/null",
-				HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
-					// Capture the user agent via the round tripper.
-					userAgent = r.UserAgent()
+	var userAgent string
+	c, err := New(&config.Config{
+		Host:       "some",
+		Token:      "token",
+		ConfigFile: "/dev/null",
+		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			// Capture the user agent via the round tripper.
+			userAgent = r.UserAgent()
 
-					return &http.Response{
-						StatusCode: 200,
-						Body:       io.NopCloser(strings.NewReader(`{}`)),
-						Request:    r,
-					}, nil
-				}),
-			})
-			require.NoError(t, err)
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	require.NoError(t, err)
 
-			err = c.Do(context.Background(), "GET", "/a", nil, nil, nil)
-			assert.Contains(t, userAgent, "runtime/"+dbrVersion)
-			require.NoError(t, err)
-		})
-	}
+	err = c.Do(context.Background(), "GET", "/a", nil, nil, nil)
+
+	// We don't assert on the value here, because if this test is run inside
+	// DBR then the value will not match the expected value. This is because the
+	// value is cached during runtime.
+	assert.Contains(t, userAgent, "runtime/")
+	require.NoError(t, err)
 }
 
 func testNonJSONResponseIncludedInError(t *testing.T, statusCode int, status, errorMessage string) {

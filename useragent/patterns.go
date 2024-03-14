@@ -14,7 +14,23 @@ const (
 
 var regexpSemVer = regexp.MustCompile(`^` + semVerCore + semVerPrerelease + semVerBuildmetadata + `$`)
 
-var regexpAlphanum = regexp.MustCompile(`^[0-9A-Za-z_\.-]+$`)
+// Sanitize replaces all non-alphanumeric characters with a hyphen. Use this to
+// ensure that the user agent value is valid. This is useful when the value is not
+// ensured to be valid at compile time.
+//
+// Example: You want to avoid having '/' and ' ' in the value because it will
+// make downstream applications fail.
+//
+// Note: Semver strings are comprised of alphanumeric characters, hyphens, periods
+// and plus signs. This function will not remove these characters.
+// see:
+// 1. https://semver.org/#spec-item-9
+// 2. https://semver.org/#spec-item-10
+var regexpAlphanum = regexp.MustCompile(`^[0-9A-Za-z_\.\+-]+$`)
+var regexpAlphanumInverse = regexp.MustCompile(`[^0-9A-Za-z_\.\+-]`)
+func Sanitize(s string) string {
+	return regexpAlphanumInverse.ReplaceAllString(s, "-")
+}
 
 func matchSemVer(s string) error {
 	if regexpSemVer.MatchString(s) {

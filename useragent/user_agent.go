@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"regexp"
 	"runtime"
 	"strings"
 
@@ -105,22 +104,6 @@ func (u info) String() string {
 }
 
 type data []info
-
-// Sanitize replaces all non-alphanumeric characters with a hyphen. Use this to
-// ensure that the user agent value is valid. This is useful when the value is not
-// ensured to be valid at compile time.
-//
-// Example: You want to avoid having '/' and ' ' in the value because it will
-// make downstream applications fail.
-//
-// Note: Semver strings are comprised of alphanumeric characters, hyphens, periods
-// and plus signs. This function will not remove these characters.
-// see:
-// 1. https://semver.org/#spec-item-9
-// 2. https://semver.org/#spec-item-10
-func Sanitize(s string) string {
-	return regexp.MustCompile(`[^0-9A-Za-z_\.\+-]`).ReplaceAllString(s, "-")
-}
 
 // With always uses the latest value for a given alphanumeric key.
 // Panics if key or value don't satisfy alphanumeric or semver format.

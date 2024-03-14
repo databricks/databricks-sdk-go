@@ -76,7 +76,15 @@ func TestDefaultsAreValid(t *testing.T) {
 }
 
 func TestSanitize(t *testing.T) {
-	for _, v := range []string{"foo", "FOO", "FOO123", "foo_bar", "foo-bar", "foo+bar", "foo.bar", "1.2.3", "client.0"} {
+	for _, v := range []string{"foo",
+		"FOO",
+		"FOO123",
+		"foo_bar",
+		"foo-bar",
+		"foo+bar",
+		"foo.bar",
+		"1.2.3",
+		"client.0"} {
 		assert.Equal(t, v, Sanitize(v))
 	}
 
