@@ -13,6 +13,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"github.com/databricks/databricks-sdk-go/version"
 	"github.com/stretchr/testify/assert"
@@ -318,6 +319,114 @@ GET /a
 			testNonJSONResponseIncludedInError(t, tc.statusCode, tc.status, tc.errorMessage)
 		})
 	}
+}
+
+func captureUserAgent(t *testing.T) string {
+	var userAgent string
+	c, err := New(&config.Config{
+		Host:       "some",
+		Token:      "token",
+		ConfigFile: "/dev/null",
+		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			// Capture the user agent via the round tripper.
+			userAgent = r.UserAgent()
+
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	require.NoError(t, err)
+
+	err = c.Do(context.Background(), "GET", "/a", nil, nil, nil)
+	require.NoError(t, err)
+
+	return userAgent
+}
+
+func TestUserAgentForDBR(t *testing.T) {
+	for v, sv := range map[string]string{
+		// DBR versions that don't need to be sanitized.
+		"client.0": "client.0",
+		"client.1": "client.1",
+		"15.5":     "15.5",
+		"15.5.0":   "15.5.0",
+		"13.3":     "13.3",
+
+		// DBR versions that need to be sanitized.
+		"foo🧟bar": "foo-bar",
+		"foo/bar": "foo-bar",
+		"foo bar": "foo-bar",
+	} {
+		t.Run(v, func(t *testing.T) {
+			env.CleanupEnvironment(t)
+			useragent.ClearCache()
+
+			t.Setenv("DATABRICKS_RUNTIME_VERSION", v)
+			userAgent := captureUserAgent(t)
+
+			// The user agent should contain the runtime version, with the value
+			// sanitized if necessary.
+			assert.Contains(t, userAgent, "runtime/"+sv)
+		})
+	}
+}
+
+func TestUserAgentForCiCd(t *testing.T) {
+	ciToEnv := map[string]map[string]string{
+		"github": {
+			"GITHUB_ACTIONS": "true",
+		},
+		"gitlab": {
+			"GITLAB_CI": "true",
+		},
+		"jenkins": {
+			"JENKINS_URL": "https://jenkins.example.com",
+		},
+		"azure-devops": {
+			"TF_BUILD": "True",
+		},
+		"circle": {
+			"CIRCLECI": "true",
+		},
+		"travis": {
+			"TRAVIS": "true",
+		},
+		"bitbucket": {
+			"BITBUCKET_BUILD_NUMBER": "123",
+		},
+		"google-cloud-build": {
+			"PROJECT_ID":     "",
+			"BUILD_ID":       "",
+			"PROJECT_NUMBER": "",
+			"LOCATION":       "",
+		},
+		"aws-code-build": {
+			"CODEBUILD_BUILD_ARN": "",
+		},
+		"tf-cloud": {
+			"TFC_RUN_ID": "",
+		},
+	}
+
+	for ci, envVars := range ciToEnv {
+		t.Run(ci, func(t *testing.T) {
+			env.CleanupEnvironment(t)
+			useragent.ClearCache()
+
+			for k, v := range envVars {
+				t.Setenv(k, v)
+			}
+
+			userAgent := captureUserAgent(t)
+
+			// The user agent should contain the CI/CD provider.
+			assert.Contains(t, userAgent, "cicd/"+ci)
+		})
+	}
+
 }
 
 func testNonJSONResponseIncludedInError(t *testing.T, statusCode int, status, errorMessage string) {

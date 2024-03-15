@@ -11,6 +11,12 @@ import (
 	"golang.org/x/mod/semver"
 )
 
+const (
+	RuntimeKey = "runtime"
+	CicdKey    = "cicd"
+	AuthKey    = "auth"
+)
+
 // WithProduct sets the product name and product version globally.
 // It should be called by developers to differentiate their application from others.
 func WithProduct(name, version string) {
