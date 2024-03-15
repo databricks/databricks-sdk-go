@@ -347,22 +347,29 @@ func captureUserAgent(t *testing.T) string {
 }
 
 func TestUserAgentForDBR(t *testing.T) {
-	for _, dbrVersion := range []string{
-		"client.0",
-		"client.1",
-		"15.5",
-		"15.5.0",
-		"13.3",
+	for v, sv := range map[string]string{
+		// DBR versions that don't need to be sanitized.
+		"client.0": "client.0",
+		"client.1": "client.1",
+		"15.5":     "15.5",
+		"15.5.0":   "15.5.0",
+		"13.3":     "13.3",
+
+		// DBR versions that need to be sanitized.
+		"foo🧟bar": "foo-bar",
+		"foo/bar": "foo-bar",
+		"foo bar": "foo-bar",
 	} {
-		t.Run(dbrVersion, func(t *testing.T) {
+		t.Run(v, func(t *testing.T) {
 			env.CleanupEnvironment(t)
 			useragent.ClearCache()
 
-			t.Setenv("DATABRICKS_RUNTIME_VERSION", dbrVersion)
+			t.Setenv("DATABRICKS_RUNTIME_VERSION", v)
 			userAgent := captureUserAgent(t)
 
-			// The user agent should contain the runtime version.
-			assert.Contains(t, userAgent, "runtime/"+dbrVersion)
+			// The user agent should contain the runtime version, with the value
+			// sanitized if necessary.
+			assert.Contains(t, userAgent, "runtime/"+sv)
 		})
 	}
 }
