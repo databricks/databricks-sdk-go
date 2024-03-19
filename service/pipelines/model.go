@@ -1090,7 +1090,7 @@ func (s PipelineStateInfo) MarshalJSON() ([]byte, error) {
 type PipelineTrigger struct {
 	Cron *CronTrigger `json:"cron,omitempty"`
 
-	Manual *ManualTrigger `json:"manual,omitempty"`
+	Manual ManualTrigger `json:"manual,omitempty"`
 }
 
 type Sequencing struct {

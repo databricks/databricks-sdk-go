@@ -172,7 +172,7 @@ type AlertQuery struct {
 	Tags []string `json:"tags,omitempty"`
 	// The timestamp at which this query was last updated.
 	UpdatedAt string `json:"updated_at,omitempty"`
-	// The ID of the user who created this query.
+	// The ID of the user who owns the query.
 	UserId int `json:"user_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -287,6 +287,7 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -655,7 +656,7 @@ type Dashboard struct {
 	UpdatedAt string `json:"updated_at,omitempty"`
 
 	User *User `json:"user,omitempty"`
-	// The ID of the user that created and owns this dashboard.
+	// The ID of the user who owns the dashboard.
 	UserId int `json:"user_id,omitempty"`
 
 	Widgets []Widget `json:"widgets,omitempty"`
@@ -2278,7 +2279,7 @@ type Query struct {
 	UpdatedAt string `json:"updated_at,omitempty"`
 
 	User *User `json:"user,omitempty"`
-	// The ID of the user who created this query.
+	// The ID of the user who owns the query.
 	UserId int `json:"user_id,omitempty"`
 
 	Visualizations []Visualization `json:"visualizations,omitempty"`

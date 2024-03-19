@@ -57,8 +57,7 @@ type AppsService interface {
 // of resources that should be applied to each served entity.
 type ServingEndpointsService interface {
 
-	// Retrieve the logs associated with building the model's environment for a
-	// given serving endpoint's served model.
+	// Get build logs for a served model.
 	//
 	// Retrieves the build logs associated with the provided served model.
 	BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error)
@@ -69,7 +68,7 @@ type ServingEndpointsService interface {
 	// Delete a serving endpoint.
 	Delete(ctx context.Context, request DeleteServingEndpointRequest) error
 
-	// Retrieve the metrics associated with a serving endpoint.
+	// Get metrics of a serving endpoint.
 	//
 	// Retrieves the metrics associated with the provided serving endpoint in
 	// either Prometheus or OpenMetrics exposition format.
@@ -91,30 +90,29 @@ type ServingEndpointsService interface {
 	// permissions from their root object.
 	GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 
-	// Retrieve all serving endpoints.
+	// Get all serving endpoints.
 	//
 	// Use ListAll() to get all ServingEndpoint instances
 	List(ctx context.Context) (*ListEndpointsResponse, error)
 
-	// Retrieve the most recent log lines associated with a given serving
-	// endpoint's served model.
+	// Get the latest logs for a served model.
 	//
 	// Retrieves the service logs associated with the provided served model.
 	Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error)
 
-	// Patch the tags of a serving endpoint.
+	// Update tags of a serving endpoint.
 	//
 	// Used to batch add and delete tags from a serving endpoint with a single
 	// API call.
 	Patch(ctx context.Context, request PatchServingEndpointTags) ([]EndpointTag, error)
 
-	// Update the rate limits of a serving endpoint.
+	// Update rate limits of a serving endpoint.
 	//
 	// Used to update the rate limits of a serving endpoint. NOTE: only external
 	// and foundation model endpoints are supported as of now.
 	Put(ctx context.Context, request PutRequest) (*PutResponse, error)
 
-	// Query a serving endpoint with provided model input.
+	// Query a serving endpoint.
 	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 
 	// Set serving endpoint permissions.
@@ -123,7 +121,7 @@ type ServingEndpointsService interface {
 	// permissions from their root object.
 	SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 
-	// Update a serving endpoint with a new config.
+	// Update config of a serving endpoint.
 	//
 	// Updates any combination of the serving endpoint's served entities, the
 	// compute configuration of those served entities, and the endpoint's

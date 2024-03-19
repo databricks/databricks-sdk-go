@@ -19,10 +19,50 @@ type LakeviewInterface interface {
 	// Deprecated: use MockLakeviewInterface instead.
 	Impl() LakeviewService
 
+	// Create dashboard.
+	//
+	// Create a draft dashboard.
+	Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error)
+
+	// Get dashboard.
+	//
+	// Get a draft dashboard.
+	Get(ctx context.Context, request GetLakeviewRequest) (*Dashboard, error)
+
+	// Get dashboard.
+	//
+	// Get a draft dashboard.
+	GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error)
+
+	// Get published dashboard.
+	//
+	// Get the current published dashboard.
+	GetPublished(ctx context.Context, request GetPublishedRequest) (*PublishedDashboard, error)
+
+	// Get published dashboard.
+	//
+	// Get the current published dashboard.
+	GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error)
+
 	// Publish dashboard.
 	//
 	// Publish the current draft dashboard.
-	Publish(ctx context.Context, request PublishRequest) error
+	Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error)
+
+	// Trash dashboard.
+	//
+	// Trash a dashboard.
+	Trash(ctx context.Context, request TrashRequest) error
+
+	// Trash dashboard.
+	//
+	// Trash a dashboard.
+	TrashByDashboardId(ctx context.Context, dashboardId string) error
+
+	// Update dashboard.
+	//
+	// Update a draft dashboard.
+	Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error)
 }
 
 func NewLakeview(client *client.DatabricksClient) *LakeviewAPI {
@@ -56,9 +96,71 @@ func (a *LakeviewAPI) Impl() LakeviewService {
 	return a.impl
 }
 
+// Create dashboard.
+//
+// Create a draft dashboard.
+func (a *LakeviewAPI) Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Get dashboard.
+//
+// Get a draft dashboard.
+func (a *LakeviewAPI) Get(ctx context.Context, request GetLakeviewRequest) (*Dashboard, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Get dashboard.
+//
+// Get a draft dashboard.
+func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error) {
+	return a.impl.Get(ctx, GetLakeviewRequest{
+		DashboardId: dashboardId,
+	})
+}
+
+// Get published dashboard.
+//
+// Get the current published dashboard.
+func (a *LakeviewAPI) GetPublished(ctx context.Context, request GetPublishedRequest) (*PublishedDashboard, error) {
+	return a.impl.GetPublished(ctx, request)
+}
+
+// Get published dashboard.
+//
+// Get the current published dashboard.
+func (a *LakeviewAPI) GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error) {
+	return a.impl.GetPublished(ctx, GetPublishedRequest{
+		DashboardId: dashboardId,
+	})
+}
+
 // Publish dashboard.
 //
 // Publish the current draft dashboard.
-func (a *LakeviewAPI) Publish(ctx context.Context, request PublishRequest) error {
+func (a *LakeviewAPI) Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error) {
 	return a.impl.Publish(ctx, request)
+}
+
+// Trash dashboard.
+//
+// Trash a dashboard.
+func (a *LakeviewAPI) Trash(ctx context.Context, request TrashRequest) error {
+	return a.impl.Trash(ctx, request)
+}
+
+// Trash dashboard.
+//
+// Trash a dashboard.
+func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) error {
+	return a.impl.Trash(ctx, TrashRequest{
+		DashboardId: dashboardId,
+	})
+}
+
+// Update dashboard.
+//
+// Update a draft dashboard.
+func (a *LakeviewAPI) Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error) {
+	return a.impl.Update(ctx, request)
 }

@@ -122,7 +122,12 @@ func (f *ArtifactType) Type() string {
 type AssignResponse struct {
 }
 
-type AwsIamRole struct {
+type AwsIamRoleRequest struct {
+	// The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
+	RoleArn string `json:"role_arn"`
+}
+
+type AwsIamRoleResponse struct {
 	// The external ID used in role assumption to prevent confused deputy
 	// problem..
 	ExternalId string `json:"external_id,omitempty"`
@@ -135,11 +140,11 @@ type AwsIamRole struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *AwsIamRole) UnmarshalJSON(b []byte) error {
+func (s *AwsIamRoleResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s AwsIamRole) MarshalJSON() ([]byte, error) {
+func (s AwsIamRoleResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -192,8 +197,9 @@ type CancelRefreshResponse struct {
 }
 
 type CatalogInfo struct {
-	// Indicate whether or not the catalog info contains only browsable
-	// metadata.
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
 	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The type of the catalog.
 	CatalogType CatalogType `json:"catalog_type,omitempty"`
@@ -945,7 +951,7 @@ type CreateMonitor struct {
 	// Configuration for monitoring inference logs.
 	InferenceLog *MonitorInferenceLogProfileType `json:"inference_log,omitempty"`
 	// The notification settings for the monitor.
-	Notifications []MonitorNotificationsConfig `json:"notifications,omitempty"`
+	Notifications *MonitorNotificationsConfig `json:"notifications,omitempty"`
 	// Schema where output metric tables are created.
 	OutputSchemaName string `json:"output_schema_name"`
 	// The schedule for automatically updating and refreshing metric tables.
@@ -960,7 +966,7 @@ type CreateMonitor struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshotProfileType `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeriesProfileType `json:"time_series,omitempty"`
 	// Optional argument to specify the warehouse for dashboard creation. If not
@@ -975,6 +981,24 @@ func (s *CreateMonitor) UnmarshalJSON(b []byte) error {
 }
 
 func (s CreateMonitor) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Online Table information.
+type CreateOnlineTableRequest struct {
+	// Full three-part (catalog, schema, table) name of the table.
+	Name string `json:"name,omitempty"`
+	// Specification of the online table.
+	Spec *OnlineTableSpec `json:"spec,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateOnlineTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateOnlineTableRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1030,7 +1054,7 @@ func (s CreateSchema) MarshalJSON() ([]byte, error) {
 
 type CreateStorageCredential struct {
 	// The AWS IAM role configuration.
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
@@ -1040,7 +1064,7 @@ type CreateStorageCredential struct {
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name"`
 	// Whether the storage credential is only usable for read operations.
@@ -1655,6 +1679,10 @@ type ExistsRequest struct {
 type ExternalLocationInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
 	AccessPoint string `json:"access_point,omitempty"`
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// Time at which this external location was created, in epoch milliseconds.
@@ -1737,6 +1765,10 @@ type FunctionDependency struct {
 }
 
 type FunctionInfo struct {
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// User-provided free-form text description.
@@ -2066,8 +2098,21 @@ type GetByAliasRequest struct {
 
 // Get a catalog
 type GetCatalogRequest struct {
+	// Whether to include catalogs in the response for which the principal can
+	// only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetCatalogRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetCatalogRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a connection
@@ -2099,15 +2144,41 @@ func (s GetEffectiveRequest) MarshalJSON() ([]byte, error) {
 
 // Get an external location
 type GetExternalLocationRequest struct {
+	// Whether to include external locations in the response for which the
+	// principal can only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Name of the external location.
 	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetExternalLocationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetExternalLocationRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a function
 type GetFunctionRequest struct {
+	// Whether to include functions in the response for which the principal can
+	// only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
 	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetFunctionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetFunctionRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get permissions
@@ -2227,8 +2298,21 @@ func (f *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
 type GetModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
 	FullName string `json:"-" url:"-"`
+	// Whether to include model versions in the response for which the principal
+	// can only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// The integer version number of the model version
 	Version int `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetModelVersionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetModelVersionRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get an Online Table
@@ -2249,12 +2333,38 @@ type GetRefreshRequest struct {
 type GetRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
+	// Whether to include registered models in the response for which the
+	// principal can only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetRegisteredModelRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a schema
 type GetSchemaRequest struct {
 	// Full name of the schema.
 	FullName string `json:"-" url:"-"`
+	// Whether to include schemas in the response for which the principal can
+	// only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetSchemaRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetSchemaRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a credential
@@ -2267,6 +2377,9 @@ type GetStorageCredentialRequest struct {
 type GetTableRequest struct {
 	// Full name of the table.
 	FullName string `json:"-" url:"-"`
+	// Whether to include tables in the response for which the principal can
+	// only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Whether delta metadata should be included in the response.
 	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
 
@@ -2333,6 +2446,23 @@ type ListAccountStorageCredentialsRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 }
 
+// List catalogs
+type ListCatalogsRequest struct {
+	// Whether to include catalogs in the response for which the principal can
+	// only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListCatalogsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCatalogsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListCatalogsResponse struct {
 	// An array of catalog information objects.
 	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
@@ -2345,6 +2475,9 @@ type ListConnectionsResponse struct {
 
 // List external locations
 type ListExternalLocationsRequest struct {
+	// Whether to include external locations in the response for which the
+	// principal can only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of external locations to return. If not set, all the
 	// external locations are returned (not recommended). - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
@@ -2389,6 +2522,9 @@ func (s ListExternalLocationsResponse) MarshalJSON() ([]byte, error) {
 type ListFunctionsRequest struct {
 	// Name of parent catalog for functions of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
+	// Whether to include functions in the response for which the principal can
+	// only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of functions to return. If not set, all the functions are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
@@ -2441,6 +2577,9 @@ type ListModelVersionsRequest struct {
 	// The full three-level name of the registered model under which to list
 	// model versions
 	FullName string `json:"-" url:"-"`
+	// Whether to include model versions in the response for which the principal
+	// can only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of model versions to return. If not set, the page length
 	// is set to a server configured value (100, as of 1/3/2024). - when set to
 	// a value greater than 0, the page length is the minimum of this value and
@@ -2492,6 +2631,9 @@ type ListRegisteredModelsRequest struct {
 	// The identifier of the catalog under which to list registered models. If
 	// specified, schema_name must be specified.
 	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+	// Whether to include registered models in the response for which the
+	// principal can only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Max number of registered models to return. If catalog and schema are
 	// unspecified, max_results must be specified. If max_results is
 	// unspecified, we return all results, starting from the page specified by
@@ -2536,6 +2678,9 @@ func (s ListRegisteredModelsResponse) MarshalJSON() ([]byte, error) {
 type ListSchemasRequest struct {
 	// Parent catalog for schemas of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
+	// Whether to include schemas in the response for which the principal can
+	// only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of schemas to return. If not set, all the schemas are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
@@ -2684,6 +2829,9 @@ func (s ListTableSummariesResponse) MarshalJSON() ([]byte, error) {
 type ListTablesRequest struct {
 	// Name of parent catalog for tables of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
+	// Whether to include tables in the response for which the principal can
+	// only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Whether delta metadata should be included in the response.
 	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
 	// Maximum number of tables to return. If not set, all the tables are
@@ -2736,6 +2884,9 @@ func (s ListTablesResponse) MarshalJSON() ([]byte, error) {
 type ListVolumesRequest struct {
 	// The identifier of the catalog
 	CatalogName string `json:"-" url:"catalog_name"`
+	// Whether to include volumes in the response for which the principal can
+	// only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Maximum number of volumes to return (page length).
 	//
 	// If not set, the page length is set to a server configured value (10000,
@@ -2911,6 +3062,10 @@ func (f *MetastoreInfoDeltaSharingScope) Type() string {
 }
 
 type ModelVersionInfo struct {
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog containing the model version
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the model version
@@ -3125,7 +3280,8 @@ func (s MonitorDataClassificationConfig) MarshalJSON() ([]byte, error) {
 }
 
 type MonitorDestinations struct {
-	// The list of email addresses to send the notification to.
+	// The list of email addresses to send the notification to. A maximum of 5
+	// email addresses is supported.
 	EmailAddresses []string `json:"email_addresses,omitempty"`
 }
 
@@ -3211,7 +3367,7 @@ type MonitorInfo struct {
 	// may be corrupted.
 	MonitorVersion string `json:"monitor_version,omitempty"`
 	// The notification settings for the monitor.
-	Notifications []MonitorNotificationsConfig `json:"notifications,omitempty"`
+	Notifications *MonitorNotificationsConfig `json:"notifications,omitempty"`
 	// Schema where output metric tables are created.
 	OutputSchemaName string `json:"output_schema_name,omitempty"`
 	// The full name of the profile metrics table. Format:
@@ -3226,7 +3382,7 @@ type MonitorInfo struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshotProfileType `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// The status of the monitor.
 	Status MonitorInfoStatus `json:"status,omitempty"`
 	// The full name of the table to monitor. Format:
@@ -3406,10 +3562,10 @@ type OnlineTableSpec struct {
 	// Primary Key columns to be used for data insert/update in the destination.
 	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
 	// Pipeline runs continuously after generating the initial data.
-	RunContinuously *OnlineTableSpecContinuousSchedulingPolicy `json:"run_continuously,omitempty"`
+	RunContinuously OnlineTableSpecContinuousSchedulingPolicy `json:"run_continuously,omitempty"`
 	// Pipeline stops after generating the initial data and can be triggered
 	// later (manually, through a cron job or through data triggers)
-	RunTriggered *OnlineTableSpecTriggeredSchedulingPolicy `json:"run_triggered,omitempty"`
+	RunTriggered OnlineTableSpecTriggeredSchedulingPolicy `json:"run_triggered,omitempty"`
 	// Three-part (catalog, schema, table) name of the source Delta table.
 	SourceTableFullName string `json:"source_table_full_name,omitempty"`
 	// Time series key to deduplicate (tie-break) rows with the same primary
@@ -3742,8 +3898,21 @@ type ProvisioningStatus struct {
 
 // Get a Volume
 type ReadVolumeRequest struct {
+	// Whether to include volumes in the response for which the principal can
+	// only access selective metadata for
+	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// The three-level (fully qualified) name of the volume
 	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ReadVolumeRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ReadVolumeRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Registered model alias.
@@ -3767,6 +3936,10 @@ func (s RegisteredModelAlias) MarshalJSON() ([]byte, error) {
 type RegisteredModelInfo struct {
 	// List of aliases associated with the registered model
 	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog where the schema and the registered model reside
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the registered model
@@ -3813,6 +3986,10 @@ type RunRefreshRequest struct {
 }
 
 type SchemaInfo struct {
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The type of the parent catalog.
@@ -3979,7 +4156,7 @@ func (f *SseEncryptionDetailsAlgorithm) Type() string {
 
 type StorageCredentialInfo struct {
 	// The AWS IAM role configuration.
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRoleResponse `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
@@ -4112,6 +4289,10 @@ func (s TableExistsResponse) MarshalJSON() ([]byte, error) {
 type TableInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
 	AccessPoint string `json:"access_point,omitempty"`
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The array of __ColumnInfo__ definitions of the table's columns.
@@ -4510,7 +4691,7 @@ type UpdateMonitor struct {
 	// Configuration for monitoring inference logs.
 	InferenceLog *MonitorInferenceLogProfileType `json:"inference_log,omitempty"`
 	// The notification settings for the monitor.
-	Notifications []MonitorNotificationsConfig `json:"notifications,omitempty"`
+	Notifications *MonitorNotificationsConfig `json:"notifications,omitempty"`
 	// Schema where output metric tables are created.
 	OutputSchemaName string `json:"output_schema_name"`
 	// The schedule for automatically updating and refreshing metric tables.
@@ -4522,7 +4703,7 @@ type UpdateMonitor struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshotProfileType `json:"snapshot,omitempty"`
+	Snapshot MonitorSnapshotProfileType `json:"snapshot,omitempty"`
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeriesProfileType `json:"time_series,omitempty"`
 
@@ -4598,7 +4779,7 @@ func (s UpdateSchema) MarshalJSON() ([]byte, error) {
 
 type UpdateStorageCredential struct {
 	// The AWS IAM role configuration.
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
@@ -4608,7 +4789,7 @@ type UpdateStorageCredential struct {
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// Force update even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"force,omitempty"`
@@ -4696,7 +4877,7 @@ type UpdateWorkspaceBindingsParameters struct {
 
 type ValidateStorageCredential struct {
 	// The AWS IAM role configuration.
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
@@ -4704,7 +4885,7 @@ type ValidateStorageCredential struct {
 	// The Cloudflare API token configuration.
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// The Databricks created GCP service account configuration.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
+	DatabricksGcpServiceAccount DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate.
 	ExternalLocationName string `json:"external_location_name,omitempty"`
 	// Whether the storage credential is only usable for read operations.
@@ -4823,27 +5004,13 @@ func (f *ValidationResultResult) Type() string {
 	return "ValidationResultResult"
 }
 
-// Online Table information.
-type ViewData struct {
-	// Full three-part (catalog, schema, table) name of the table.
-	Name string `json:"name,omitempty"`
-	// Specification of the online table.
-	Spec *OnlineTableSpec `json:"spec,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ViewData) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ViewData) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type VolumeInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
 	AccessPoint string `json:"access_point,omitempty"`
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog where the schema and the volume are
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the volume

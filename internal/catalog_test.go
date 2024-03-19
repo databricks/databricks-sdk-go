@@ -44,7 +44,7 @@ func TestUcAccVolumes(t *testing.T) {
 
 	storageCredential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: RandomName("creds-"),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 		Comment: "created via SDK",
@@ -193,7 +193,7 @@ func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 	// See https://github.com/databricks/terraform-provider-databricks/issues/1424
 	created, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: RandomName("go-sdk-"),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
@@ -206,7 +206,7 @@ func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 	_, err = w.StorageCredentials.Update(ctx, catalog.UpdateStorageCredential{
 		Name:    created.Name,
 		Comment: RandomName("comment "),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
@@ -229,7 +229,7 @@ func TestUcAccExternalLocationsOnAws(t *testing.T) {
 
 	credential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: RandomName("go-sdk-"),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
@@ -342,7 +342,7 @@ func TestUcAccCatalogs(t *testing.T) {
 	_, err = w.Catalogs.GetByName(ctx, created.Name)
 	require.NoError(t, err)
 
-	all, err := w.Catalogs.ListAll(ctx)
+	all, err := w.Catalogs.ListAll(ctx, catalog.ListCatalogsRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 }

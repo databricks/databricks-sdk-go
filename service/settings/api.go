@@ -1389,20 +1389,22 @@ type NetworkConnectivityInterface interface {
 
 	// Delete a private endpoint rule.
 	//
-	// Initiates deleting a private endpoint rule. The private endpoint will be
-	// deactivated and will be purged after seven days of deactivation. When a
-	// private endpoint is in deactivated state, `deactivated` field is set to
-	// `true` and the private endpoint is not available to your serverless compute
-	// resources.
+	// Initiates deleting a private endpoint rule. If the connection state is
+	// PENDING or EXPIRED, the private endpoint is immediately deleted. Otherwise,
+	// the private endpoint is deactivated and will be deleted after seven days of
+	// deactivation. When a private endpoint is deactivated, the `deactivated` field
+	// is set to `true` and the private endpoint is not available to your serverless
+	// compute resources.
 	DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
 
 	// Delete a private endpoint rule.
 	//
-	// Initiates deleting a private endpoint rule. The private endpoint will be
-	// deactivated and will be purged after seven days of deactivation. When a
-	// private endpoint is in deactivated state, `deactivated` field is set to
-	// `true` and the private endpoint is not available to your serverless compute
-	// resources.
+	// Initiates deleting a private endpoint rule. If the connection state is
+	// PENDING or EXPIRED, the private endpoint is immediately deleted. Otherwise,
+	// the private endpoint is deactivated and will be deleted after seven days of
+	// deactivation. When a private endpoint is deactivated, the `deactivated` field
+	// is set to `true` and the private endpoint is not available to your serverless
+	// compute resources.
 	DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error)
 
 	// Get a network connectivity configuration.
@@ -1528,22 +1530,24 @@ func (a *NetworkConnectivityAPI) DeleteNetworkConnectivityConfigurationByNetwork
 
 // Delete a private endpoint rule.
 //
-// Initiates deleting a private endpoint rule. The private endpoint will be
-// deactivated and will be purged after seven days of deactivation. When a
-// private endpoint is in deactivated state, `deactivated` field is set to
-// `true` and the private endpoint is not available to your serverless compute
-// resources.
+// Initiates deleting a private endpoint rule. If the connection state is
+// PENDING or EXPIRED, the private endpoint is immediately deleted. Otherwise,
+// the private endpoint is deactivated and will be deleted after seven days of
+// deactivation. When a private endpoint is deactivated, the `deactivated` field
+// is set to `true` and the private endpoint is not available to your serverless
+// compute resources.
 func (a *NetworkConnectivityAPI) DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
 	return a.impl.DeletePrivateEndpointRule(ctx, request)
 }
 
 // Delete a private endpoint rule.
 //
-// Initiates deleting a private endpoint rule. The private endpoint will be
-// deactivated and will be purged after seven days of deactivation. When a
-// private endpoint is in deactivated state, `deactivated` field is set to
-// `true` and the private endpoint is not available to your serverless compute
-// resources.
+// Initiates deleting a private endpoint rule. If the connection state is
+// PENDING or EXPIRED, the private endpoint is immediately deleted. Otherwise,
+// the private endpoint is deactivated and will be deleted after seven days of
+// deactivation. When a private endpoint is deactivated, the `deactivated` field
+// is set to `true` and the private endpoint is not available to your serverless
+// compute resources.
 func (a *NetworkConnectivityAPI) DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error) {
 	return a.impl.DeletePrivateEndpointRule(ctx, DeletePrivateEndpointRuleRequest{
 		NetworkConnectivityConfigId: networkConnectivityConfigId,

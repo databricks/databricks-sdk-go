@@ -24,7 +24,7 @@ func (_m *MockOnlineTablesInterface) EXPECT() *MockOnlineTablesInterface_Expecte
 }
 
 // Create provides a mock function with given fields: ctx, request
-func (_m *MockOnlineTablesInterface) Create(ctx context.Context, request catalog.ViewData) (*catalog.OnlineTable, error) {
+func (_m *MockOnlineTablesInterface) Create(ctx context.Context, request catalog.CreateOnlineTableRequest) (*catalog.OnlineTable, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -33,10 +33,10 @@ func (_m *MockOnlineTablesInterface) Create(ctx context.Context, request catalog
 
 	var r0 *catalog.OnlineTable
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ViewData) (*catalog.OnlineTable, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.CreateOnlineTableRequest) (*catalog.OnlineTable, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ViewData) *catalog.OnlineTable); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.CreateOnlineTableRequest) *catalog.OnlineTable); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -44,7 +44,7 @@ func (_m *MockOnlineTablesInterface) Create(ctx context.Context, request catalog
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, catalog.ViewData) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.CreateOnlineTableRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -60,14 +60,14 @@ type MockOnlineTablesInterface_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request catalog.ViewData
+//   - request catalog.CreateOnlineTableRequest
 func (_e *MockOnlineTablesInterface_Expecter) Create(ctx interface{}, request interface{}) *MockOnlineTablesInterface_Create_Call {
 	return &MockOnlineTablesInterface_Create_Call{Call: _e.mock.On("Create", ctx, request)}
 }
 
-func (_c *MockOnlineTablesInterface_Create_Call) Run(run func(ctx context.Context, request catalog.ViewData)) *MockOnlineTablesInterface_Create_Call {
+func (_c *MockOnlineTablesInterface_Create_Call) Run(run func(ctx context.Context, request catalog.CreateOnlineTableRequest)) *MockOnlineTablesInterface_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(catalog.ViewData))
+		run(args[0].(context.Context), args[1].(catalog.CreateOnlineTableRequest))
 	})
 	return _c
 }
@@ -77,7 +77,7 @@ func (_c *MockOnlineTablesInterface_Create_Call) Return(_a0 *catalog.OnlineTable
 	return _c
 }
 
-func (_c *MockOnlineTablesInterface_Create_Call) RunAndReturn(run func(context.Context, catalog.ViewData) (*catalog.OnlineTable, error)) *MockOnlineTablesInterface_Create_Call {
+func (_c *MockOnlineTablesInterface_Create_Call) RunAndReturn(run func(context.Context, catalog.CreateOnlineTableRequest) (*catalog.OnlineTable, error)) *MockOnlineTablesInterface_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }

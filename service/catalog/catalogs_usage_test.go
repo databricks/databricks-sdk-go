@@ -214,7 +214,7 @@ func ExampleCatalogsAPI_ListAll_catalogs() {
 		panic(err)
 	}
 
-	all, err := w.Catalogs.ListAll(ctx)
+	all, err := w.Catalogs.ListAll(ctx, catalog.ListCatalogsRequest{})
 	if err != nil {
 		panic(err)
 	}

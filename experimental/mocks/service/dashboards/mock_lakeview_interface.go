@@ -22,6 +22,301 @@ func (_m *MockLakeviewInterface) EXPECT() *MockLakeviewInterface_Expecter {
 	return &MockLakeviewInterface_Expecter{mock: &_m.Mock}
 }
 
+// Create provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) Create(ctx context.Context, request dashboards.CreateDashboardRequest) (*dashboards.Dashboard, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Create")
+	}
+
+	var r0 *dashboards.Dashboard
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.CreateDashboardRequest) (*dashboards.Dashboard, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.CreateDashboardRequest) *dashboards.Dashboard); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Dashboard)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.CreateDashboardRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_Create_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Create'
+type MockLakeviewInterface_Create_Call struct {
+	*mock.Call
+}
+
+// Create is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.CreateDashboardRequest
+func (_e *MockLakeviewInterface_Expecter) Create(ctx interface{}, request interface{}) *MockLakeviewInterface_Create_Call {
+	return &MockLakeviewInterface_Create_Call{Call: _e.mock.On("Create", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_Create_Call) Run(run func(ctx context.Context, request dashboards.CreateDashboardRequest)) *MockLakeviewInterface_Create_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.CreateDashboardRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Create_Call) Return(_a0 *dashboards.Dashboard, _a1 error) *MockLakeviewInterface_Create_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Create_Call) RunAndReturn(run func(context.Context, dashboards.CreateDashboardRequest) (*dashboards.Dashboard, error)) *MockLakeviewInterface_Create_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Get provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) Get(ctx context.Context, request dashboards.GetLakeviewRequest) (*dashboards.Dashboard, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Get")
+	}
+
+	var r0 *dashboards.Dashboard
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetLakeviewRequest) (*dashboards.Dashboard, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetLakeviewRequest) *dashboards.Dashboard); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Dashboard)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GetLakeviewRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Get'
+type MockLakeviewInterface_Get_Call struct {
+	*mock.Call
+}
+
+// Get is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GetLakeviewRequest
+func (_e *MockLakeviewInterface_Expecter) Get(ctx interface{}, request interface{}) *MockLakeviewInterface_Get_Call {
+	return &MockLakeviewInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_Get_Call) Run(run func(ctx context.Context, request dashboards.GetLakeviewRequest)) *MockLakeviewInterface_Get_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GetLakeviewRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Get_Call) Return(_a0 *dashboards.Dashboard, _a1 error) *MockLakeviewInterface_Get_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Get_Call) RunAndReturn(run func(context.Context, dashboards.GetLakeviewRequest) (*dashboards.Dashboard, error)) *MockLakeviewInterface_Get_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetByDashboardId provides a mock function with given fields: ctx, dashboardId
+func (_m *MockLakeviewInterface) GetByDashboardId(ctx context.Context, dashboardId string) (*dashboards.Dashboard, error) {
+	ret := _m.Called(ctx, dashboardId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetByDashboardId")
+	}
+
+	var r0 *dashboards.Dashboard
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*dashboards.Dashboard, error)); ok {
+		return rf(ctx, dashboardId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *dashboards.Dashboard); ok {
+		r0 = rf(ctx, dashboardId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Dashboard)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, dashboardId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_GetByDashboardId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByDashboardId'
+type MockLakeviewInterface_GetByDashboardId_Call struct {
+	*mock.Call
+}
+
+// GetByDashboardId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dashboardId string
+func (_e *MockLakeviewInterface_Expecter) GetByDashboardId(ctx interface{}, dashboardId interface{}) *MockLakeviewInterface_GetByDashboardId_Call {
+	return &MockLakeviewInterface_GetByDashboardId_Call{Call: _e.mock.On("GetByDashboardId", ctx, dashboardId)}
+}
+
+func (_c *MockLakeviewInterface_GetByDashboardId_Call) Run(run func(ctx context.Context, dashboardId string)) *MockLakeviewInterface_GetByDashboardId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetByDashboardId_Call) Return(_a0 *dashboards.Dashboard, _a1 error) *MockLakeviewInterface_GetByDashboardId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetByDashboardId_Call) RunAndReturn(run func(context.Context, string) (*dashboards.Dashboard, error)) *MockLakeviewInterface_GetByDashboardId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPublished provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) GetPublished(ctx context.Context, request dashboards.GetPublishedRequest) (*dashboards.PublishedDashboard, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPublished")
+	}
+
+	var r0 *dashboards.PublishedDashboard
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetPublishedRequest) (*dashboards.PublishedDashboard, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetPublishedRequest) *dashboards.PublishedDashboard); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.PublishedDashboard)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GetPublishedRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_GetPublished_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPublished'
+type MockLakeviewInterface_GetPublished_Call struct {
+	*mock.Call
+}
+
+// GetPublished is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GetPublishedRequest
+func (_e *MockLakeviewInterface_Expecter) GetPublished(ctx interface{}, request interface{}) *MockLakeviewInterface_GetPublished_Call {
+	return &MockLakeviewInterface_GetPublished_Call{Call: _e.mock.On("GetPublished", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_GetPublished_Call) Run(run func(ctx context.Context, request dashboards.GetPublishedRequest)) *MockLakeviewInterface_GetPublished_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GetPublishedRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetPublished_Call) Return(_a0 *dashboards.PublishedDashboard, _a1 error) *MockLakeviewInterface_GetPublished_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetPublished_Call) RunAndReturn(run func(context.Context, dashboards.GetPublishedRequest) (*dashboards.PublishedDashboard, error)) *MockLakeviewInterface_GetPublished_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPublishedByDashboardId provides a mock function with given fields: ctx, dashboardId
+func (_m *MockLakeviewInterface) GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*dashboards.PublishedDashboard, error) {
+	ret := _m.Called(ctx, dashboardId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPublishedByDashboardId")
+	}
+
+	var r0 *dashboards.PublishedDashboard
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*dashboards.PublishedDashboard, error)); ok {
+		return rf(ctx, dashboardId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *dashboards.PublishedDashboard); ok {
+		r0 = rf(ctx, dashboardId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.PublishedDashboard)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, dashboardId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_GetPublishedByDashboardId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPublishedByDashboardId'
+type MockLakeviewInterface_GetPublishedByDashboardId_Call struct {
+	*mock.Call
+}
+
+// GetPublishedByDashboardId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dashboardId string
+func (_e *MockLakeviewInterface_Expecter) GetPublishedByDashboardId(ctx interface{}, dashboardId interface{}) *MockLakeviewInterface_GetPublishedByDashboardId_Call {
+	return &MockLakeviewInterface_GetPublishedByDashboardId_Call{Call: _e.mock.On("GetPublishedByDashboardId", ctx, dashboardId)}
+}
+
+func (_c *MockLakeviewInterface_GetPublishedByDashboardId_Call) Run(run func(ctx context.Context, dashboardId string)) *MockLakeviewInterface_GetPublishedByDashboardId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetPublishedByDashboardId_Call) Return(_a0 *dashboards.PublishedDashboard, _a1 error) *MockLakeviewInterface_GetPublishedByDashboardId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetPublishedByDashboardId_Call) RunAndReturn(run func(context.Context, string) (*dashboards.PublishedDashboard, error)) *MockLakeviewInterface_GetPublishedByDashboardId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Impl provides a mock function with given fields:
 func (_m *MockLakeviewInterface) Impl() dashboards.LakeviewService {
 	ret := _m.Called()
@@ -70,21 +365,33 @@ func (_c *MockLakeviewInterface_Impl_Call) RunAndReturn(run func() dashboards.La
 }
 
 // Publish provides a mock function with given fields: ctx, request
-func (_m *MockLakeviewInterface) Publish(ctx context.Context, request dashboards.PublishRequest) error {
+func (_m *MockLakeviewInterface) Publish(ctx context.Context, request dashboards.PublishRequest) (*dashboards.PublishedDashboard, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Publish")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, dashboards.PublishRequest) error); ok {
+	var r0 *dashboards.PublishedDashboard
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.PublishRequest) (*dashboards.PublishedDashboard, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.PublishRequest) *dashboards.PublishedDashboard); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.PublishedDashboard)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.PublishRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockLakeviewInterface_Publish_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Publish'
@@ -106,12 +413,165 @@ func (_c *MockLakeviewInterface_Publish_Call) Run(run func(ctx context.Context, 
 	return _c
 }
 
-func (_c *MockLakeviewInterface_Publish_Call) Return(_a0 error) *MockLakeviewInterface_Publish_Call {
+func (_c *MockLakeviewInterface_Publish_Call) Return(_a0 *dashboards.PublishedDashboard, _a1 error) *MockLakeviewInterface_Publish_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Publish_Call) RunAndReturn(run func(context.Context, dashboards.PublishRequest) (*dashboards.PublishedDashboard, error)) *MockLakeviewInterface_Publish_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Trash provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) Trash(ctx context.Context, request dashboards.TrashRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Trash")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.TrashRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLakeviewInterface_Trash_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Trash'
+type MockLakeviewInterface_Trash_Call struct {
+	*mock.Call
+}
+
+// Trash is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.TrashRequest
+func (_e *MockLakeviewInterface_Expecter) Trash(ctx interface{}, request interface{}) *MockLakeviewInterface_Trash_Call {
+	return &MockLakeviewInterface_Trash_Call{Call: _e.mock.On("Trash", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_Trash_Call) Run(run func(ctx context.Context, request dashboards.TrashRequest)) *MockLakeviewInterface_Trash_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.TrashRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Trash_Call) Return(_a0 error) *MockLakeviewInterface_Trash_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockLakeviewInterface_Publish_Call) RunAndReturn(run func(context.Context, dashboards.PublishRequest) error) *MockLakeviewInterface_Publish_Call {
+func (_c *MockLakeviewInterface_Trash_Call) RunAndReturn(run func(context.Context, dashboards.TrashRequest) error) *MockLakeviewInterface_Trash_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// TrashByDashboardId provides a mock function with given fields: ctx, dashboardId
+func (_m *MockLakeviewInterface) TrashByDashboardId(ctx context.Context, dashboardId string) error {
+	ret := _m.Called(ctx, dashboardId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for TrashByDashboardId")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, dashboardId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLakeviewInterface_TrashByDashboardId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'TrashByDashboardId'
+type MockLakeviewInterface_TrashByDashboardId_Call struct {
+	*mock.Call
+}
+
+// TrashByDashboardId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dashboardId string
+func (_e *MockLakeviewInterface_Expecter) TrashByDashboardId(ctx interface{}, dashboardId interface{}) *MockLakeviewInterface_TrashByDashboardId_Call {
+	return &MockLakeviewInterface_TrashByDashboardId_Call{Call: _e.mock.On("TrashByDashboardId", ctx, dashboardId)}
+}
+
+func (_c *MockLakeviewInterface_TrashByDashboardId_Call) Run(run func(ctx context.Context, dashboardId string)) *MockLakeviewInterface_TrashByDashboardId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_TrashByDashboardId_Call) Return(_a0 error) *MockLakeviewInterface_TrashByDashboardId_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_TrashByDashboardId_Call) RunAndReturn(run func(context.Context, string) error) *MockLakeviewInterface_TrashByDashboardId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Update provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) Update(ctx context.Context, request dashboards.UpdateDashboardRequest) (*dashboards.Dashboard, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Update")
+	}
+
+	var r0 *dashboards.Dashboard
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.UpdateDashboardRequest) (*dashboards.Dashboard, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.UpdateDashboardRequest) *dashboards.Dashboard); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Dashboard)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.UpdateDashboardRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
+type MockLakeviewInterface_Update_Call struct {
+	*mock.Call
+}
+
+// Update is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.UpdateDashboardRequest
+func (_e *MockLakeviewInterface_Expecter) Update(ctx interface{}, request interface{}) *MockLakeviewInterface_Update_Call {
+	return &MockLakeviewInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_Update_Call) Run(run func(ctx context.Context, request dashboards.UpdateDashboardRequest)) *MockLakeviewInterface_Update_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.UpdateDashboardRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Update_Call) Return(_a0 *dashboards.Dashboard, _a1 error) *MockLakeviewInterface_Update_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Update_Call) RunAndReturn(run func(context.Context, dashboards.UpdateDashboardRequest) (*dashboards.Dashboard, error)) *MockLakeviewInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

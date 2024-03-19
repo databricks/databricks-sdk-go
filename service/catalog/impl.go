@@ -223,12 +223,12 @@ func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*Cat
 	return &catalogInfo, err
 }
 
-func (a *catalogsImpl) List(ctx context.Context) (*ListCatalogsResponse, error) {
+func (a *catalogsImpl) List(ctx context.Context, request ListCatalogsRequest) (*ListCatalogsResponse, error) {
 	var listCatalogsResponse ListCatalogsResponse
 	path := "/api/2.1/unity-catalog/catalogs"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listCatalogsResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listCatalogsResponse)
 	return &listCatalogsResponse, err
 }
 
@@ -662,7 +662,7 @@ type onlineTablesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *onlineTablesImpl) Create(ctx context.Context, request ViewData) (*OnlineTable, error) {
+func (a *onlineTablesImpl) Create(ctx context.Context, request CreateOnlineTableRequest) (*OnlineTable, error) {
 	var onlineTable OnlineTable
 	path := "/api/2.0/online-tables"
 	headers := make(map[string]string)
