@@ -23,7 +23,7 @@ func ExampleVolumesAPI_Create_volumes() {
 
 	storageCredential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 		Comment: "created via SDK",
@@ -159,7 +159,7 @@ func ExampleVolumesAPI_Read_volumes() {
 
 	storageCredential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 		Comment: "created via SDK",
@@ -252,7 +252,7 @@ func ExampleVolumesAPI_Update_volumes() {
 
 	storageCredential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 		Comment: "created via SDK",

@@ -23,7 +23,7 @@ func ExampleStorageCredentialsAPI_Create_volumes() {
 
 	storageCredential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 		Comment: "created via SDK",
@@ -51,7 +51,7 @@ func ExampleStorageCredentialsAPI_Create_storageCredentialsOnAws() {
 
 	created, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
@@ -78,7 +78,7 @@ func ExampleStorageCredentialsAPI_Create_externalLocationsOnAws() {
 
 	credential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
@@ -105,7 +105,7 @@ func ExampleStorageCredentialsAPI_Get_storageCredentialsOnAws() {
 
 	created, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
@@ -153,7 +153,7 @@ func ExampleStorageCredentialsAPI_Update_storageCredentialsOnAws() {
 
 	created, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
@@ -165,7 +165,7 @@ func ExampleStorageCredentialsAPI_Update_storageCredentialsOnAws() {
 	_, err = w.StorageCredentials.Update(ctx, catalog.UpdateStorageCredential{
 		Name:    created.Name,
 		Comment: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
