@@ -59,6 +59,66 @@ Dependency updates:
  * Bump golang.org/x/oauth2 from 0.17.0 to 0.18.0 ([#845](https://github.com/databricks/databricks-sdk-go/pull/845)).
  * Bump google.golang.org/api from 0.166.0 to 0.169.0 ([#849](https://github.com/databricks/databricks-sdk-go/pull/849)).
 
+
+## 0.35.0
+
+* Added Config.GetAuthDetails ([#838](https://github.com/databricks/databricks-sdk-go/pull/838)).
+* Support DATABRICKS_SDK_UPSTREAM and DATABRICKS_SDK_UPSTREAM_VERSION ([#854](https://github.com/databricks/databricks-sdk-go/pull/854)).
+
+### Internal Changes
+
+* Add telemetry for SDK usage from DBR ([#851](https://github.com/databricks/databricks-sdk-go/pull/851)).
+
+### Test Fixes
+
+* Fix TestUcAccShares ([#858](https://github.com/databricks/databricks-sdk-go/pull/858)).
+
+API Changes:
+
+ * Changed `List` method for [w.Catalogs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogsAPI) workspace-level service to require request of [catalog.ListCatalogsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListCatalogsRequest).
+ * Changed `Create` method for [w.OnlineTables](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#OnlineTablesAPI) workspace-level service . New request type is [catalog.CreateOnlineTableRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateOnlineTableRequest).
+ * Removed [catalog.AwsIamRole](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AwsIamRole).
+ * Changed `AwsIamRole` field for [catalog.CreateStorageCredential](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateStorageCredential) to [catalog.AwsIamRoleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AwsIamRoleRequest).
+ * Changed `AwsIamRole` field for [catalog.StorageCredentialInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#StorageCredentialInfo) to [catalog.AwsIamRoleResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AwsIamRoleResponse).
+ * Changed `AwsIamRole` field for [catalog.UpdateStorageCredential](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateStorageCredential) to [catalog.AwsIamRoleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AwsIamRoleRequest).
+ * Changed `AwsIamRole` field for [catalog.ValidateStorageCredential](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ValidateStorageCredential) to [catalog.AwsIamRoleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AwsIamRoleRequest).
+ * Changed `Notifications` field for [catalog.CreateMonitor](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateMonitor) to [catalog.MonitorNotificationsConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MonitorNotificationsConfig).
+ * Changed `Notifications` field for [catalog.UpdateMonitor](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateMonitor) to [catalog.MonitorNotificationsConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MonitorNotificationsConfig).
+ * Changed `Notifications` field for [catalog.MonitorInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MonitorInfo) to [catalog.MonitorNotificationsConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MonitorNotificationsConfig).
+ * Added `IncludeBrowse` field for [catalog.GetCatalogRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetCatalogRequest), [catalog.GetExternalLocationRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetExternalLocationRequest), [catalog.GetFunctionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetFunctionRequest), [catalog.GetModelVersionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetModelVersionRequest), [catalog.GetRegisteredModelRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetRegisteredModelRequest), [catalog.GetSchemaRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetSchemaRequest), [catalog.GetTableRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetTableRequest), [catalog.ListExternalLocationsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListExternalLocationsRequest), [catalog.ListFunctionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListFunctionsRequest), [catalog.ListModelVersionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListModelVersionsRequest), [catalog.ListRegisteredModelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListRegisteredModelsRequest), [catalog.ListSchemasRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListSchemasRequest), [catalog.ListTablesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListTablesRequest), [catalog.ListVolumesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListVolumesRequest), and [catalog.ReadVolumeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ReadVolumeRequest).
+ * Added `BrowseOnly` field for [catalog.ExternalLocationInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ExternalLocationInfo), [catalog.FunctionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionInfo), [catalog.ModelVersionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelVersionInfo), [catalog.RegisteredModelInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#RegisteredModelInfo), [catalog.SchemaInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SchemaInfo), [catalog.TableInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TableInfo), and [catalog.VolumeInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#VolumeInfo).
+ * Removed [catalog.ViewData](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ViewData).
+ * Added [catalog.AwsIamRoleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AwsIamRoleRequest).
+ * Added [catalog.AwsIamRoleResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AwsIamRoleResponse).
+ * Added [catalog.CreateOnlineTableRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateOnlineTableRequest).
+ * Added [catalog.ListCatalogsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListCatalogsRequest).
+ * Changed `Publish` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service to return [dashboards.PublishedDashboard](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#PublishedDashboard).
+ * Added `Create` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `Get` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `GetPublished` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `Trash` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `Update` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added [dashboards.CreateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CreateDashboardRequest).
+ * Added [dashboards.Dashboard](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#Dashboard).
+ * Added [dashboards.GetLakeviewRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetLakeviewRequest).
+ * Added [dashboards.GetPublishedRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetPublishedRequest).
+ * Added [dashboards.LifecycleState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LifecycleState).
+ * Added [dashboards.PublishedDashboard](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#PublishedDashboard).
+ * Added [dashboards.TrashRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#TrashRequest).
+ * Added [dashboards.UpdateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#UpdateDashboardRequest).
+ * Added `ScoreThreshold` field for [vectorsearch.QueryVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#QueryVectorIndexRequest).
+
+OpenAPI SHA: 3821dc51952c5cf1c276dd84967da011b191e64a, Date: 2024-03-19
+Dependency updates:
+
+ * Bump google.golang.org/protobuf from 1.31.0 to 1.33.0 in /examples/zerolog ([#855](https://github.com/databricks/databricks-sdk-go/pull/855)).
+ * Bump google.golang.org/protobuf from 1.31.0 to 1.33.0 in /examples/slog ([#856](https://github.com/databricks/databricks-sdk-go/pull/856)).
+ * Bump google.golang.org/protobuf from 1.32.0 to 1.33.0 ([#857](https://github.com/databricks/databricks-sdk-go/pull/857)).
+ * Bump github.com/stretchr/testify from 1.8.4 to 1.9.0 ([#840](https://github.com/databricks/databricks-sdk-go/pull/840)).
+ * Bump golang.org/x/mod from 0.15.0 to 0.16.0 ([#843](https://github.com/databricks/databricks-sdk-go/pull/843)).
+ * Bump golang.org/x/oauth2 from 0.17.0 to 0.18.0 ([#845](https://github.com/databricks/databricks-sdk-go/pull/845)).
+ * Bump google.golang.org/api from 0.166.0 to 0.169.0 ([#849](https://github.com/databricks/databricks-sdk-go/pull/849)).
+
 ## 
 Release v0.35.0
 
