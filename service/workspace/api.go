@@ -618,8 +618,7 @@ type SecretsInterface interface {
 	// Create a new secret scope.
 	//
 	// The scope name must consist of alphanumeric characters, dashes, underscores,
-	// and periods, and may not exceed 128 characters. The maximum number of scopes
-	// in a workspace is 100.
+	// and periods, and may not exceed 128 characters.
 	CreateScope(ctx context.Context, request CreateScope) error
 
 	// Delete an ACL.
@@ -877,8 +876,7 @@ func (a *SecretsAPI) Impl() SecretsService {
 // Create a new secret scope.
 //
 // The scope name must consist of alphanumeric characters, dashes, underscores,
-// and periods, and may not exceed 128 characters. The maximum number of scopes
-// in a workspace is 100.
+// and periods, and may not exceed 128 characters.
 func (a *SecretsAPI) CreateScope(ctx context.Context, request CreateScope) error {
 	return a.impl.CreateScope(ctx, request)
 }

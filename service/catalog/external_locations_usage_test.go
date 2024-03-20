@@ -23,7 +23,7 @@ func ExampleExternalLocationsAPI_Create_volumes() {
 
 	storageCredential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 		Comment: "created via SDK",
@@ -66,7 +66,7 @@ func ExampleExternalLocationsAPI_Create_externalLocationsOnAws() {
 
 	credential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
@@ -107,7 +107,7 @@ func ExampleExternalLocationsAPI_Get_externalLocationsOnAws() {
 
 	credential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
@@ -168,7 +168,7 @@ func ExampleExternalLocationsAPI_Update_externalLocationsOnAws() {
 
 	credential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsIamRole: &catalog.AwsIamRole{
+		AwsIamRole: &catalog.AwsIamRoleRequest{
 			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})

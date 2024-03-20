@@ -177,7 +177,7 @@ type CatalogsService interface {
 	// ordering of the elements in the array.
 	//
 	// Use ListAll() to get all CatalogInfo instances
-	List(ctx context.Context) (*ListCatalogsResponse, error)
+	List(ctx context.Context, request ListCatalogsRequest) (*ListCatalogsResponse, error)
 
 	// Update a catalog.
 	//
@@ -272,9 +272,8 @@ type ExternalLocationsService interface {
 	// Gets an array of external locations (__ExternalLocationInfo__ objects)
 	// from the metastore. The caller must be a metastore admin, the owner of
 	// the external location, or a user that has some privilege on the external
-	// location. For unpaginated request, there is no guarantee of a specific
-	// ordering of the elements in the array. For paginated request, elements
-	// are ordered by their name.
+	// location. There is no guarantee of a specific ordering of the elements in
+	// the array.
 	//
 	// Use ListAll() to get all ExternalLocationInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListExternalLocationsRequest) (*ListExternalLocationsResponse, error)
@@ -333,9 +332,8 @@ type FunctionsService interface {
 	// Otherwise, the user must have the **USE_CATALOG** privilege on the
 	// catalog and the **USE_SCHEMA** privilege on the schema, and the output
 	// list contains only functions for which either the user has the
-	// **EXECUTE** privilege or the user is the owner. For unpaginated request,
-	// there is no guarantee of a specific ordering of the elements in the
-	// array. For paginated request, elements are ordered by their name.
+	// **EXECUTE** privilege or the user is the owner. There is no guarantee of
+	// a specific ordering of the elements in the array.
 	//
 	// Use ListAll() to get all FunctionInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error)
@@ -685,7 +683,7 @@ type OnlineTablesService interface {
 	// Create an Online Table.
 	//
 	// Create a new Online Table.
-	Create(ctx context.Context, request ViewData) (*OnlineTable, error)
+	Create(ctx context.Context, request CreateOnlineTableRequest) (*OnlineTable, error)
 
 	// Delete an Online Table.
 	//
@@ -854,9 +852,8 @@ type SchemasService interface {
 	// the metastore admin or the owner of the parent catalog, all schemas for
 	// the catalog will be retrieved. Otherwise, only schemas owned by the
 	// caller (or for which the caller has the **USE_SCHEMA** privilege) will be
-	// retrieved. For unpaginated request, there is no guarantee of a specific
-	// ordering of the elements in the array. For paginated request, elements
-	// are ordered by their name.
+	// retrieved. There is no guarantee of a specific ordering of the elements
+	// in the array.
 	//
 	// Use ListAll() to get all SchemaInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error)
@@ -909,9 +906,8 @@ type StorageCredentialsService interface {
 	// Gets an array of storage credentials (as __StorageCredentialInfo__
 	// objects). The array is limited to only those storage credentials the
 	// caller has permission to access. If the caller is a metastore admin,
-	// retrieval of credentials is unrestricted. For unpaginated request, there
-	// is no guarantee of a specific ordering of the elements in the array. For
-	// paginated request, elements are ordered by their name.
+	// retrieval of credentials is unrestricted. There is no guarantee of a
+	// specific ordering of the elements in the array.
 	//
 	// Use ListAll() to get all StorageCredentialInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error)

@@ -343,17 +343,17 @@ func (_c *MockCatalogsInterface_Impl_Call) RunAndReturn(run func() catalog.Catal
 	return _c
 }
 
-// List provides a mock function with given fields: ctx
-func (_m *MockCatalogsInterface) List(ctx context.Context) listing.Iterator[catalog.CatalogInfo] {
-	ret := _m.Called(ctx)
+// List provides a mock function with given fields: ctx, request
+func (_m *MockCatalogsInterface) List(ctx context.Context, request catalog.ListCatalogsRequest) listing.Iterator[catalog.CatalogInfo] {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
 	var r0 listing.Iterator[catalog.CatalogInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[catalog.CatalogInfo]); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListCatalogsRequest) listing.Iterator[catalog.CatalogInfo]); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(listing.Iterator[catalog.CatalogInfo])
@@ -370,13 +370,14 @@ type MockCatalogsInterface_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockCatalogsInterface_Expecter) List(ctx interface{}) *MockCatalogsInterface_List_Call {
-	return &MockCatalogsInterface_List_Call{Call: _e.mock.On("List", ctx)}
+//   - request catalog.ListCatalogsRequest
+func (_e *MockCatalogsInterface_Expecter) List(ctx interface{}, request interface{}) *MockCatalogsInterface_List_Call {
+	return &MockCatalogsInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
 }
 
-func (_c *MockCatalogsInterface_List_Call) Run(run func(ctx context.Context)) *MockCatalogsInterface_List_Call {
+func (_c *MockCatalogsInterface_List_Call) Run(run func(ctx context.Context, request catalog.ListCatalogsRequest)) *MockCatalogsInterface_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListCatalogsRequest))
 	})
 	return _c
 }
@@ -386,14 +387,14 @@ func (_c *MockCatalogsInterface_List_Call) Return(_a0 listing.Iterator[catalog.C
 	return _c
 }
 
-func (_c *MockCatalogsInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[catalog.CatalogInfo]) *MockCatalogsInterface_List_Call {
+func (_c *MockCatalogsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListCatalogsRequest) listing.Iterator[catalog.CatalogInfo]) *MockCatalogsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// ListAll provides a mock function with given fields: ctx
-func (_m *MockCatalogsInterface) ListAll(ctx context.Context) ([]catalog.CatalogInfo, error) {
-	ret := _m.Called(ctx)
+// ListAll provides a mock function with given fields: ctx, request
+func (_m *MockCatalogsInterface) ListAll(ctx context.Context, request catalog.ListCatalogsRequest) ([]catalog.CatalogInfo, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
@@ -401,19 +402,19 @@ func (_m *MockCatalogsInterface) ListAll(ctx context.Context) ([]catalog.Catalog
 
 	var r0 []catalog.CatalogInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) ([]catalog.CatalogInfo, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListCatalogsRequest) ([]catalog.CatalogInfo, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) []catalog.CatalogInfo); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListCatalogsRequest) []catalog.CatalogInfo); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]catalog.CatalogInfo)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListCatalogsRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -428,13 +429,14 @@ type MockCatalogsInterface_ListAll_Call struct {
 
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockCatalogsInterface_Expecter) ListAll(ctx interface{}) *MockCatalogsInterface_ListAll_Call {
-	return &MockCatalogsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx)}
+//   - request catalog.ListCatalogsRequest
+func (_e *MockCatalogsInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockCatalogsInterface_ListAll_Call {
+	return &MockCatalogsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
 }
 
-func (_c *MockCatalogsInterface_ListAll_Call) Run(run func(ctx context.Context)) *MockCatalogsInterface_ListAll_Call {
+func (_c *MockCatalogsInterface_ListAll_Call) Run(run func(ctx context.Context, request catalog.ListCatalogsRequest)) *MockCatalogsInterface_ListAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListCatalogsRequest))
 	})
 	return _c
 }
@@ -444,7 +446,7 @@ func (_c *MockCatalogsInterface_ListAll_Call) Return(_a0 []catalog.CatalogInfo, 
 	return _c
 }
 
-func (_c *MockCatalogsInterface_ListAll_Call) RunAndReturn(run func(context.Context) ([]catalog.CatalogInfo, error)) *MockCatalogsInterface_ListAll_Call {
+func (_c *MockCatalogsInterface_ListAll_Call) RunAndReturn(run func(context.Context, catalog.ListCatalogsRequest) ([]catalog.CatalogInfo, error)) *MockCatalogsInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

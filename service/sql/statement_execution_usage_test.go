@@ -97,7 +97,7 @@ func ExampleStatementExecutionAPI_Execute_shares() {
 		WarehouseId: os.Getenv("TEST_DEFAULT_WAREHOUSE_ID"),
 		Catalog:     createdCatalog.Name,
 		Schema:      createdSchema.Name,
-		Statement:   fmt.Sprintf("CREATE TABLE %s AS SELECT 2+2 as four", tableName),
+		Statement:   fmt.Sprintf("CREATE TABLE %s TBLPROPERTIES (delta.enableDeletionVectors=false) AS SELECT 2+2 as four", tableName),
 	})
 	if err != nil {
 		panic(err)

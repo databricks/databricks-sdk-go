@@ -130,8 +130,7 @@ type SecretsService interface {
 	// Create a new secret scope.
 	//
 	// The scope name must consist of alphanumeric characters, dashes,
-	// underscores, and periods, and may not exceed 128 characters. The maximum
-	// number of scopes in a workspace is 100.
+	// underscores, and periods, and may not exceed 128 characters.
 	CreateScope(ctx context.Context, request CreateScope) error
 
 	// Delete an ACL.

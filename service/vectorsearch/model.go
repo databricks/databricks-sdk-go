@@ -529,6 +529,8 @@ type QueryVectorIndexRequest struct {
 	// Query vector. Required for Direct Vector Access Index and Delta Sync
 	// Index using self-managed vectors.
 	QueryVector []float64 `json:"query_vector,omitempty"`
+	// Threshold for the approximate nearest neighbor search. Defaults to 0.0.
+	ScoreThreshold float64 `json:"score_threshold,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

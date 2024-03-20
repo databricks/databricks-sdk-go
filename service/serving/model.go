@@ -185,8 +185,7 @@ func (f *AwsBedrockConfigBedrockProvider) Type() string {
 	return "AwsBedrockConfigBedrockProvider"
 }
 
-// Retrieve the logs associated with building the model's environment for a
-// given serving endpoint's served model.
+// Get build logs for a served model
 type BuildLogsRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
@@ -426,10 +425,10 @@ type EndpointCoreConfigInput struct {
 	// The name of the serving endpoint to update. This field is required.
 	Name string `json:"-" url:"-"`
 	// A list of served entities for the endpoint to serve. A serving endpoint
-	// can have up to 10 served entities.
+	// can have up to 15 served entities.
 	ServedEntities []ServedEntityInput `json:"served_entities,omitempty"`
 	// (Deprecated, use served_entities instead) A list of served models for the
-	// endpoint to serve. A serving endpoint can have up to 10 served models.
+	// endpoint to serve. A serving endpoint can have up to 15 served models.
 	ServedModels []ServedModelInput `json:"served_models,omitempty"`
 	// The traffic config defining how invocations to the serving endpoint
 	// should be routed.
@@ -591,7 +590,7 @@ func (s EndpointTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Retrieve the metrics associated with a serving endpoint
+// Get metrics of a serving endpoint
 type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
 	// required.
@@ -807,8 +806,7 @@ type ListEndpointsResponse struct {
 	Endpoints []ServingEndpoint `json:"endpoints,omitempty"`
 }
 
-// Retrieve the most recent log lines associated with a given serving endpoint's
-// served model
+// Get the latest logs for a served model
 type LogsRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
@@ -888,7 +886,7 @@ func (s PayloadTable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Update the rate limits of a serving endpoint
+// Update rate limits of a serving endpoint
 type PutRequest struct {
 	// The name of the serving endpoint whose rate limits are being updated.
 	// This field is required.
