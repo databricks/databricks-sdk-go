@@ -82,7 +82,7 @@ func (_c *MockLakeviewInterface_Create_Call) RunAndReturn(run func(context.Conte
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockLakeviewInterface) Get(ctx context.Context, request dashboards.GetLakeviewRequest) (*dashboards.Dashboard, error) {
+func (_m *MockLakeviewInterface) Get(ctx context.Context, request dashboards.GetDashboardRequest) (*dashboards.Dashboard, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -91,10 +91,10 @@ func (_m *MockLakeviewInterface) Get(ctx context.Context, request dashboards.Get
 
 	var r0 *dashboards.Dashboard
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetLakeviewRequest) (*dashboards.Dashboard, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetDashboardRequest) (*dashboards.Dashboard, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetLakeviewRequest) *dashboards.Dashboard); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetDashboardRequest) *dashboards.Dashboard); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -102,7 +102,7 @@ func (_m *MockLakeviewInterface) Get(ctx context.Context, request dashboards.Get
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GetLakeviewRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GetDashboardRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -118,14 +118,14 @@ type MockLakeviewInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request dashboards.GetLakeviewRequest
+//   - request dashboards.GetDashboardRequest
 func (_e *MockLakeviewInterface_Expecter) Get(ctx interface{}, request interface{}) *MockLakeviewInterface_Get_Call {
 	return &MockLakeviewInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockLakeviewInterface_Get_Call) Run(run func(ctx context.Context, request dashboards.GetLakeviewRequest)) *MockLakeviewInterface_Get_Call {
+func (_c *MockLakeviewInterface_Get_Call) Run(run func(ctx context.Context, request dashboards.GetDashboardRequest)) *MockLakeviewInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(dashboards.GetLakeviewRequest))
+		run(args[0].(context.Context), args[1].(dashboards.GetDashboardRequest))
 	})
 	return _c
 }
@@ -135,7 +135,7 @@ func (_c *MockLakeviewInterface_Get_Call) Return(_a0 *dashboards.Dashboard, _a1 
 	return _c
 }
 
-func (_c *MockLakeviewInterface_Get_Call) RunAndReturn(run func(context.Context, dashboards.GetLakeviewRequest) (*dashboards.Dashboard, error)) *MockLakeviewInterface_Get_Call {
+func (_c *MockLakeviewInterface_Get_Call) RunAndReturn(run func(context.Context, dashboards.GetDashboardRequest) (*dashboards.Dashboard, error)) *MockLakeviewInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -200,7 +200,7 @@ func (_c *MockLakeviewInterface_GetByDashboardId_Call) RunAndReturn(run func(con
 }
 
 // GetPublished provides a mock function with given fields: ctx, request
-func (_m *MockLakeviewInterface) GetPublished(ctx context.Context, request dashboards.GetPublishedRequest) (*dashboards.PublishedDashboard, error) {
+func (_m *MockLakeviewInterface) GetPublished(ctx context.Context, request dashboards.GetPublishedDashboardRequest) (*dashboards.PublishedDashboard, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -209,10 +209,10 @@ func (_m *MockLakeviewInterface) GetPublished(ctx context.Context, request dashb
 
 	var r0 *dashboards.PublishedDashboard
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetPublishedRequest) (*dashboards.PublishedDashboard, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetPublishedDashboardRequest) (*dashboards.PublishedDashboard, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetPublishedRequest) *dashboards.PublishedDashboard); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetPublishedDashboardRequest) *dashboards.PublishedDashboard); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -220,7 +220,7 @@ func (_m *MockLakeviewInterface) GetPublished(ctx context.Context, request dashb
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GetPublishedRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GetPublishedDashboardRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -236,14 +236,14 @@ type MockLakeviewInterface_GetPublished_Call struct {
 
 // GetPublished is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request dashboards.GetPublishedRequest
+//   - request dashboards.GetPublishedDashboardRequest
 func (_e *MockLakeviewInterface_Expecter) GetPublished(ctx interface{}, request interface{}) *MockLakeviewInterface_GetPublished_Call {
 	return &MockLakeviewInterface_GetPublished_Call{Call: _e.mock.On("GetPublished", ctx, request)}
 }
 
-func (_c *MockLakeviewInterface_GetPublished_Call) Run(run func(ctx context.Context, request dashboards.GetPublishedRequest)) *MockLakeviewInterface_GetPublished_Call {
+func (_c *MockLakeviewInterface_GetPublished_Call) Run(run func(ctx context.Context, request dashboards.GetPublishedDashboardRequest)) *MockLakeviewInterface_GetPublished_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(dashboards.GetPublishedRequest))
+		run(args[0].(context.Context), args[1].(dashboards.GetPublishedDashboardRequest))
 	})
 	return _c
 }
@@ -253,7 +253,7 @@ func (_c *MockLakeviewInterface_GetPublished_Call) Return(_a0 *dashboards.Publis
 	return _c
 }
 
-func (_c *MockLakeviewInterface_GetPublished_Call) RunAndReturn(run func(context.Context, dashboards.GetPublishedRequest) (*dashboards.PublishedDashboard, error)) *MockLakeviewInterface_GetPublished_Call {
+func (_c *MockLakeviewInterface_GetPublished_Call) RunAndReturn(run func(context.Context, dashboards.GetPublishedDashboardRequest) (*dashboards.PublishedDashboard, error)) *MockLakeviewInterface_GetPublished_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -424,7 +424,7 @@ func (_c *MockLakeviewInterface_Publish_Call) RunAndReturn(run func(context.Cont
 }
 
 // Trash provides a mock function with given fields: ctx, request
-func (_m *MockLakeviewInterface) Trash(ctx context.Context, request dashboards.TrashRequest) error {
+func (_m *MockLakeviewInterface) Trash(ctx context.Context, request dashboards.TrashDashboardRequest) error {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -432,7 +432,7 @@ func (_m *MockLakeviewInterface) Trash(ctx context.Context, request dashboards.T
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, dashboards.TrashRequest) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.TrashDashboardRequest) error); ok {
 		r0 = rf(ctx, request)
 	} else {
 		r0 = ret.Error(0)
@@ -448,14 +448,14 @@ type MockLakeviewInterface_Trash_Call struct {
 
 // Trash is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request dashboards.TrashRequest
+//   - request dashboards.TrashDashboardRequest
 func (_e *MockLakeviewInterface_Expecter) Trash(ctx interface{}, request interface{}) *MockLakeviewInterface_Trash_Call {
 	return &MockLakeviewInterface_Trash_Call{Call: _e.mock.On("Trash", ctx, request)}
 }
 
-func (_c *MockLakeviewInterface_Trash_Call) Run(run func(ctx context.Context, request dashboards.TrashRequest)) *MockLakeviewInterface_Trash_Call {
+func (_c *MockLakeviewInterface_Trash_Call) Run(run func(ctx context.Context, request dashboards.TrashDashboardRequest)) *MockLakeviewInterface_Trash_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(dashboards.TrashRequest))
+		run(args[0].(context.Context), args[1].(dashboards.TrashDashboardRequest))
 	})
 	return _c
 }
@@ -465,7 +465,7 @@ func (_c *MockLakeviewInterface_Trash_Call) Return(_a0 error) *MockLakeviewInter
 	return _c
 }
 
-func (_c *MockLakeviewInterface_Trash_Call) RunAndReturn(run func(context.Context, dashboards.TrashRequest) error) *MockLakeviewInterface_Trash_Call {
+func (_c *MockLakeviewInterface_Trash_Call) RunAndReturn(run func(context.Context, dashboards.TrashDashboardRequest) error) *MockLakeviewInterface_Trash_Call {
 	_c.Call.Return(run)
 	return _c
 }

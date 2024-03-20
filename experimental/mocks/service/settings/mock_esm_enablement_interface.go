@@ -23,7 +23,7 @@ func (_m *MockEsmEnablementInterface) EXPECT() *MockEsmEnablementInterface_Expec
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockEsmEnablementInterface) Get(ctx context.Context, request settings.GetEsmEnablementRequest) (*settings.EsmEnablementSetting, error) {
+func (_m *MockEsmEnablementInterface) Get(ctx context.Context, request settings.GetEsmEnablementSettingRequest) (*settings.EsmEnablementSetting, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -32,10 +32,10 @@ func (_m *MockEsmEnablementInterface) Get(ctx context.Context, request settings.
 
 	var r0 *settings.EsmEnablementSetting
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetEsmEnablementRequest) (*settings.EsmEnablementSetting, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetEsmEnablementSettingRequest) (*settings.EsmEnablementSetting, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetEsmEnablementRequest) *settings.EsmEnablementSetting); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetEsmEnablementSettingRequest) *settings.EsmEnablementSetting); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -43,7 +43,7 @@ func (_m *MockEsmEnablementInterface) Get(ctx context.Context, request settings.
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetEsmEnablementRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetEsmEnablementSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -59,14 +59,14 @@ type MockEsmEnablementInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.GetEsmEnablementRequest
+//   - request settings.GetEsmEnablementSettingRequest
 func (_e *MockEsmEnablementInterface_Expecter) Get(ctx interface{}, request interface{}) *MockEsmEnablementInterface_Get_Call {
 	return &MockEsmEnablementInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockEsmEnablementInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetEsmEnablementRequest)) *MockEsmEnablementInterface_Get_Call {
+func (_c *MockEsmEnablementInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetEsmEnablementSettingRequest)) *MockEsmEnablementInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetEsmEnablementRequest))
+		run(args[0].(context.Context), args[1].(settings.GetEsmEnablementSettingRequest))
 	})
 	return _c
 }
@@ -76,7 +76,7 @@ func (_c *MockEsmEnablementInterface_Get_Call) Return(_a0 *settings.EsmEnablemen
 	return _c
 }
 
-func (_c *MockEsmEnablementInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetEsmEnablementRequest) (*settings.EsmEnablementSetting, error)) *MockEsmEnablementInterface_Get_Call {
+func (_c *MockEsmEnablementInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetEsmEnablementSettingRequest) (*settings.EsmEnablementSetting, error)) *MockEsmEnablementInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }

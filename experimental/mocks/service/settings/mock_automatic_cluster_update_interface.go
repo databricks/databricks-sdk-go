@@ -23,7 +23,7 @@ func (_m *MockAutomaticClusterUpdateInterface) EXPECT() *MockAutomaticClusterUpd
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockAutomaticClusterUpdateInterface) Get(ctx context.Context, request settings.GetAutomaticClusterUpdateRequest) (*settings.AutomaticClusterUpdateSetting, error) {
+func (_m *MockAutomaticClusterUpdateInterface) Get(ctx context.Context, request settings.GetAutomaticClusterUpdateSettingRequest) (*settings.AutomaticClusterUpdateSetting, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -32,10 +32,10 @@ func (_m *MockAutomaticClusterUpdateInterface) Get(ctx context.Context, request 
 
 	var r0 *settings.AutomaticClusterUpdateSetting
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetAutomaticClusterUpdateRequest) (*settings.AutomaticClusterUpdateSetting, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetAutomaticClusterUpdateSettingRequest) (*settings.AutomaticClusterUpdateSetting, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetAutomaticClusterUpdateRequest) *settings.AutomaticClusterUpdateSetting); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetAutomaticClusterUpdateSettingRequest) *settings.AutomaticClusterUpdateSetting); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -43,7 +43,7 @@ func (_m *MockAutomaticClusterUpdateInterface) Get(ctx context.Context, request 
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetAutomaticClusterUpdateRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetAutomaticClusterUpdateSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -59,14 +59,14 @@ type MockAutomaticClusterUpdateInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.GetAutomaticClusterUpdateRequest
+//   - request settings.GetAutomaticClusterUpdateSettingRequest
 func (_e *MockAutomaticClusterUpdateInterface_Expecter) Get(ctx interface{}, request interface{}) *MockAutomaticClusterUpdateInterface_Get_Call {
 	return &MockAutomaticClusterUpdateInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockAutomaticClusterUpdateInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetAutomaticClusterUpdateRequest)) *MockAutomaticClusterUpdateInterface_Get_Call {
+func (_c *MockAutomaticClusterUpdateInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetAutomaticClusterUpdateSettingRequest)) *MockAutomaticClusterUpdateInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetAutomaticClusterUpdateRequest))
+		run(args[0].(context.Context), args[1].(settings.GetAutomaticClusterUpdateSettingRequest))
 	})
 	return _c
 }
@@ -76,7 +76,7 @@ func (_c *MockAutomaticClusterUpdateInterface_Get_Call) Return(_a0 *settings.Aut
 	return _c
 }
 
-func (_c *MockAutomaticClusterUpdateInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetAutomaticClusterUpdateRequest) (*settings.AutomaticClusterUpdateSetting, error)) *MockAutomaticClusterUpdateInterface_Get_Call {
+func (_c *MockAutomaticClusterUpdateInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetAutomaticClusterUpdateSettingRequest) (*settings.AutomaticClusterUpdateSetting, error)) *MockAutomaticClusterUpdateInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }

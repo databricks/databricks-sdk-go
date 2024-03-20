@@ -23,7 +23,7 @@ func (_m *MockPersonalComputeInterface) EXPECT() *MockPersonalComputeInterface_E
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockPersonalComputeInterface) Delete(ctx context.Context, request settings.DeletePersonalComputeRequest) (*settings.DeletePersonalComputeSettingResponse, error) {
+func (_m *MockPersonalComputeInterface) Delete(ctx context.Context, request settings.DeletePersonalComputeSettingRequest) (*settings.DeletePersonalComputeSettingResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -32,10 +32,10 @@ func (_m *MockPersonalComputeInterface) Delete(ctx context.Context, request sett
 
 	var r0 *settings.DeletePersonalComputeSettingResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeletePersonalComputeRequest) (*settings.DeletePersonalComputeSettingResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeletePersonalComputeSettingRequest) (*settings.DeletePersonalComputeSettingResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeletePersonalComputeRequest) *settings.DeletePersonalComputeSettingResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeletePersonalComputeSettingRequest) *settings.DeletePersonalComputeSettingResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -43,7 +43,7 @@ func (_m *MockPersonalComputeInterface) Delete(ctx context.Context, request sett
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.DeletePersonalComputeRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.DeletePersonalComputeSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -59,14 +59,14 @@ type MockPersonalComputeInterface_Delete_Call struct {
 
 // Delete is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.DeletePersonalComputeRequest
+//   - request settings.DeletePersonalComputeSettingRequest
 func (_e *MockPersonalComputeInterface_Expecter) Delete(ctx interface{}, request interface{}) *MockPersonalComputeInterface_Delete_Call {
 	return &MockPersonalComputeInterface_Delete_Call{Call: _e.mock.On("Delete", ctx, request)}
 }
 
-func (_c *MockPersonalComputeInterface_Delete_Call) Run(run func(ctx context.Context, request settings.DeletePersonalComputeRequest)) *MockPersonalComputeInterface_Delete_Call {
+func (_c *MockPersonalComputeInterface_Delete_Call) Run(run func(ctx context.Context, request settings.DeletePersonalComputeSettingRequest)) *MockPersonalComputeInterface_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.DeletePersonalComputeRequest))
+		run(args[0].(context.Context), args[1].(settings.DeletePersonalComputeSettingRequest))
 	})
 	return _c
 }
@@ -76,13 +76,13 @@ func (_c *MockPersonalComputeInterface_Delete_Call) Return(_a0 *settings.DeleteP
 	return _c
 }
 
-func (_c *MockPersonalComputeInterface_Delete_Call) RunAndReturn(run func(context.Context, settings.DeletePersonalComputeRequest) (*settings.DeletePersonalComputeSettingResponse, error)) *MockPersonalComputeInterface_Delete_Call {
+func (_c *MockPersonalComputeInterface_Delete_Call) RunAndReturn(run func(context.Context, settings.DeletePersonalComputeSettingRequest) (*settings.DeletePersonalComputeSettingResponse, error)) *MockPersonalComputeInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockPersonalComputeInterface) Get(ctx context.Context, request settings.GetPersonalComputeRequest) (*settings.PersonalComputeSetting, error) {
+func (_m *MockPersonalComputeInterface) Get(ctx context.Context, request settings.GetPersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -91,10 +91,10 @@ func (_m *MockPersonalComputeInterface) Get(ctx context.Context, request setting
 
 	var r0 *settings.PersonalComputeSetting
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetPersonalComputeRequest) (*settings.PersonalComputeSetting, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetPersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetPersonalComputeRequest) *settings.PersonalComputeSetting); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetPersonalComputeSettingRequest) *settings.PersonalComputeSetting); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -102,7 +102,7 @@ func (_m *MockPersonalComputeInterface) Get(ctx context.Context, request setting
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetPersonalComputeRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetPersonalComputeSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -118,14 +118,14 @@ type MockPersonalComputeInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.GetPersonalComputeRequest
+//   - request settings.GetPersonalComputeSettingRequest
 func (_e *MockPersonalComputeInterface_Expecter) Get(ctx interface{}, request interface{}) *MockPersonalComputeInterface_Get_Call {
 	return &MockPersonalComputeInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockPersonalComputeInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetPersonalComputeRequest)) *MockPersonalComputeInterface_Get_Call {
+func (_c *MockPersonalComputeInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetPersonalComputeSettingRequest)) *MockPersonalComputeInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetPersonalComputeRequest))
+		run(args[0].(context.Context), args[1].(settings.GetPersonalComputeSettingRequest))
 	})
 	return _c
 }
@@ -135,7 +135,7 @@ func (_c *MockPersonalComputeInterface_Get_Call) Return(_a0 *settings.PersonalCo
 	return _c
 }
 
-func (_c *MockPersonalComputeInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetPersonalComputeRequest) (*settings.PersonalComputeSetting, error)) *MockPersonalComputeInterface_Get_Call {
+func (_c *MockPersonalComputeInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetPersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error)) *MockPersonalComputeInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }

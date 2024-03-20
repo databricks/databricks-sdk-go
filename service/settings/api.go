@@ -481,7 +481,7 @@ type AutomaticClusterUpdateInterface interface {
 	// Get the automatic cluster update setting.
 	//
 	// Gets the automatic cluster update setting.
-	Get(ctx context.Context, request GetAutomaticClusterUpdateRequest) (*AutomaticClusterUpdateSetting, error)
+	Get(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
 
 	// Update the automatic cluster update setting.
 	//
@@ -526,7 +526,7 @@ func (a *AutomaticClusterUpdateAPI) Impl() AutomaticClusterUpdateService {
 // Get the automatic cluster update setting.
 //
 // Gets the automatic cluster update setting.
-func (a *AutomaticClusterUpdateAPI) Get(ctx context.Context, request GetAutomaticClusterUpdateRequest) (*AutomaticClusterUpdateSetting, error) {
+func (a *AutomaticClusterUpdateAPI) Get(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -609,7 +609,7 @@ type CspEnablementInterface interface {
 	// Get the compliance security profile setting.
 	//
 	// Gets the compliance security profile setting.
-	Get(ctx context.Context, request GetCspEnablementRequest) (*CspEnablementSetting, error)
+	Get(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error)
 
 	// Update the compliance security profile setting.
 	//
@@ -657,7 +657,7 @@ func (a *CspEnablementAPI) Impl() CspEnablementService {
 // Get the compliance security profile setting.
 //
 // Gets the compliance security profile setting.
-func (a *CspEnablementAPI) Get(ctx context.Context, request GetCspEnablementRequest) (*CspEnablementSetting, error) {
+func (a *CspEnablementAPI) Get(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -685,7 +685,7 @@ type CspEnablementAccountInterface interface {
 	// Get the compliance security profile setting for new workspaces.
 	//
 	// Gets the compliance security profile setting for new workspaces.
-	Get(ctx context.Context, request GetCspEnablementAccountRequest) (*CspEnablementAccountSetting, error)
+	Get(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
 
 	// Update the compliance security profile setting for new workspaces.
 	//
@@ -732,7 +732,7 @@ func (a *CspEnablementAccountAPI) Impl() CspEnablementAccountService {
 // Get the compliance security profile setting for new workspaces.
 //
 // Gets the compliance security profile setting for new workspaces.
-func (a *CspEnablementAccountAPI) Get(ctx context.Context, request GetCspEnablementAccountRequest) (*CspEnablementAccountSetting, error) {
+func (a *CspEnablementAccountAPI) Get(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -761,12 +761,12 @@ type DefaultNamespaceInterface interface {
 	// retrieved by making a `GET` request before the `DELETE` request. If the
 	// setting is updated/deleted concurrently, `DELETE` fails with 409 and the
 	// request must be retried by using the fresh etag in the 409 response.
-	Delete(ctx context.Context, request DeleteDefaultNamespaceRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+	Delete(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error)
 
 	// Get the default namespace setting.
 	//
 	// Gets the default namespace setting.
-	Get(ctx context.Context, request GetDefaultNamespaceRequest) (*DefaultNamespaceSetting, error)
+	Get(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
 
 	// Update the default namespace setting.
 	//
@@ -827,14 +827,14 @@ func (a *DefaultNamespaceAPI) Impl() DefaultNamespaceService {
 // retrieved by making a `GET` request before the `DELETE` request. If the
 // setting is updated/deleted concurrently, `DELETE` fails with 409 and the
 // request must be retried by using the fresh etag in the 409 response.
-func (a *DefaultNamespaceAPI) Delete(ctx context.Context, request DeleteDefaultNamespaceRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
+func (a *DefaultNamespaceAPI) Delete(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
 	return a.impl.Delete(ctx, request)
 }
 
 // Get the default namespace setting.
 //
 // Gets the default namespace setting.
-func (a *DefaultNamespaceAPI) Get(ctx context.Context, request GetDefaultNamespaceRequest) (*DefaultNamespaceSetting, error) {
+func (a *DefaultNamespaceAPI) Get(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -864,7 +864,7 @@ type EsmEnablementInterface interface {
 	// Get the enhanced security monitoring setting.
 	//
 	// Gets the enhanced security monitoring setting.
-	Get(ctx context.Context, request GetEsmEnablementRequest) (*EsmEnablementSetting, error)
+	Get(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
 
 	// Update the enhanced security monitoring setting.
 	//
@@ -914,7 +914,7 @@ func (a *EsmEnablementAPI) Impl() EsmEnablementService {
 // Get the enhanced security monitoring setting.
 //
 // Gets the enhanced security monitoring setting.
-func (a *EsmEnablementAPI) Get(ctx context.Context, request GetEsmEnablementRequest) (*EsmEnablementSetting, error) {
+func (a *EsmEnablementAPI) Get(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -942,7 +942,7 @@ type EsmEnablementAccountInterface interface {
 	// Get the enhanced security monitoring setting for new workspaces.
 	//
 	// Gets the enhanced security monitoring setting for new workspaces.
-	Get(ctx context.Context, request GetEsmEnablementAccountRequest) (*EsmEnablementAccountSetting, error)
+	Get(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error)
 
 	// Update the enhanced security monitoring setting for new workspaces.
 	//
@@ -987,7 +987,7 @@ func (a *EsmEnablementAccountAPI) Impl() EsmEnablementAccountService {
 // Get the enhanced security monitoring setting for new workspaces.
 //
 // Gets the enhanced security monitoring setting for new workspaces.
-func (a *EsmEnablementAccountAPI) Get(ctx context.Context, request GetEsmEnablementAccountRequest) (*EsmEnablementAccountSetting, error) {
+func (a *EsmEnablementAccountAPI) Get(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -1042,7 +1042,7 @@ type IpAccessListsInterface interface {
 	// Get access list.
 	//
 	// Gets an IP access list, specified by its list ID.
-	Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error)
+	Get(ctx context.Context, request GetIpAccessList) (*FetchIpAccessListResponse, error)
 
 	// Get access list.
 	//
@@ -1209,7 +1209,7 @@ func (a *IpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessL
 // Get access list.
 //
 // Gets an IP access list, specified by its list ID.
-func (a *IpAccessListsAPI) Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error) {
+func (a *IpAccessListsAPI) Get(ctx context.Context, request GetIpAccessList) (*FetchIpAccessListResponse, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -1217,7 +1217,7 @@ func (a *IpAccessListsAPI) Get(ctx context.Context, request GetIpAccessListReque
 //
 // Gets an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) GetByIpAccessListId(ctx context.Context, ipAccessListId string) (*FetchIpAccessListResponse, error) {
-	return a.impl.Get(ctx, GetIpAccessListRequest{
+	return a.impl.Get(ctx, GetIpAccessList{
 		IpAccessListId: ipAccessListId,
 	})
 }
@@ -1688,12 +1688,12 @@ type PersonalComputeInterface interface {
 	// Delete Personal Compute setting.
 	//
 	// Reverts back the Personal Compute setting value to default (ON)
-	Delete(ctx context.Context, request DeletePersonalComputeRequest) (*DeletePersonalComputeSettingResponse, error)
+	Delete(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error)
 
 	// Get Personal Compute setting.
 	//
 	// Gets the value of the Personal Compute setting.
-	Get(ctx context.Context, request GetPersonalComputeRequest) (*PersonalComputeSetting, error)
+	Get(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
 
 	// Update Personal Compute setting.
 	//
@@ -1741,14 +1741,14 @@ func (a *PersonalComputeAPI) Impl() PersonalComputeService {
 // Delete Personal Compute setting.
 //
 // Reverts back the Personal Compute setting value to default (ON)
-func (a *PersonalComputeAPI) Delete(ctx context.Context, request DeletePersonalComputeRequest) (*DeletePersonalComputeSettingResponse, error) {
+func (a *PersonalComputeAPI) Delete(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
 	return a.impl.Delete(ctx, request)
 }
 
 // Get Personal Compute setting.
 //
 // Gets the value of the Personal Compute setting.
-func (a *PersonalComputeAPI) Get(ctx context.Context, request GetPersonalComputeRequest) (*PersonalComputeSetting, error) {
+func (a *PersonalComputeAPI) Get(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -1777,12 +1777,12 @@ type RestrictWorkspaceAdminsInterface interface {
 	// request. If the setting is updated/deleted concurrently, `DELETE` fails with
 	// 409 and the request must be retried by using the fresh etag in the 409
 	// response.
-	Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
+	Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
 
 	// Get the restrict workspace admins setting.
 	//
 	// Gets the restrict workspace admins setting.
-	Get(ctx context.Context, request GetRestrictWorkspaceAdminRequest) (*RestrictWorkspaceAdminsSetting, error)
+	Get(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
 
 	// Update the restrict workspace admins setting.
 	//
@@ -1842,14 +1842,14 @@ func (a *RestrictWorkspaceAdminsAPI) Impl() RestrictWorkspaceAdminsService {
 // request. If the setting is updated/deleted concurrently, `DELETE` fails with
 // 409 and the request must be retried by using the fresh etag in the 409
 // response.
-func (a *RestrictWorkspaceAdminsAPI) Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
+func (a *RestrictWorkspaceAdminsAPI) Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
 	return a.impl.Delete(ctx, request)
 }
 
 // Get the restrict workspace admins setting.
 //
 // Gets the restrict workspace admins setting.
-func (a *RestrictWorkspaceAdminsAPI) Get(ctx context.Context, request GetRestrictWorkspaceAdminRequest) (*RestrictWorkspaceAdminsSetting, error) {
+func (a *RestrictWorkspaceAdminsAPI) Get(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
 	return a.impl.Get(ctx, request)
 }
 

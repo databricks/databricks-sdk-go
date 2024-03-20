@@ -19,12 +19,12 @@ type LakeviewService interface {
 	// Get dashboard.
 	//
 	// Get a draft dashboard.
-	Get(ctx context.Context, request GetLakeviewRequest) (*Dashboard, error)
+	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
 
 	// Get published dashboard.
 	//
 	// Get the current published dashboard.
-	GetPublished(ctx context.Context, request GetPublishedRequest) (*PublishedDashboard, error)
+	GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error)
 
 	// Publish dashboard.
 	//
@@ -34,7 +34,7 @@ type LakeviewService interface {
 	// Trash dashboard.
 	//
 	// Trash a dashboard.
-	Trash(ctx context.Context, request TrashRequest) error
+	Trash(ctx context.Context, request TrashDashboardRequest) error
 
 	// Update dashboard.
 	//

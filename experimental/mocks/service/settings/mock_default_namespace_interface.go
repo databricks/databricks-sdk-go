@@ -23,7 +23,7 @@ func (_m *MockDefaultNamespaceInterface) EXPECT() *MockDefaultNamespaceInterface
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockDefaultNamespaceInterface) Delete(ctx context.Context, request settings.DeleteDefaultNamespaceRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error) {
+func (_m *MockDefaultNamespaceInterface) Delete(ctx context.Context, request settings.DeleteDefaultNamespaceSettingRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -32,10 +32,10 @@ func (_m *MockDefaultNamespaceInterface) Delete(ctx context.Context, request set
 
 	var r0 *settings.DeleteDefaultNamespaceSettingResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteDefaultNamespaceRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteDefaultNamespaceRequest) *settings.DeleteDefaultNamespaceSettingResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) *settings.DeleteDefaultNamespaceSettingResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -43,7 +43,7 @@ func (_m *MockDefaultNamespaceInterface) Delete(ctx context.Context, request set
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.DeleteDefaultNamespaceRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -59,14 +59,14 @@ type MockDefaultNamespaceInterface_Delete_Call struct {
 
 // Delete is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.DeleteDefaultNamespaceRequest
+//   - request settings.DeleteDefaultNamespaceSettingRequest
 func (_e *MockDefaultNamespaceInterface_Expecter) Delete(ctx interface{}, request interface{}) *MockDefaultNamespaceInterface_Delete_Call {
 	return &MockDefaultNamespaceInterface_Delete_Call{Call: _e.mock.On("Delete", ctx, request)}
 }
 
-func (_c *MockDefaultNamespaceInterface_Delete_Call) Run(run func(ctx context.Context, request settings.DeleteDefaultNamespaceRequest)) *MockDefaultNamespaceInterface_Delete_Call {
+func (_c *MockDefaultNamespaceInterface_Delete_Call) Run(run func(ctx context.Context, request settings.DeleteDefaultNamespaceSettingRequest)) *MockDefaultNamespaceInterface_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.DeleteDefaultNamespaceRequest))
+		run(args[0].(context.Context), args[1].(settings.DeleteDefaultNamespaceSettingRequest))
 	})
 	return _c
 }
@@ -76,13 +76,13 @@ func (_c *MockDefaultNamespaceInterface_Delete_Call) Return(_a0 *settings.Delete
 	return _c
 }
 
-func (_c *MockDefaultNamespaceInterface_Delete_Call) RunAndReturn(run func(context.Context, settings.DeleteDefaultNamespaceRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error)) *MockDefaultNamespaceInterface_Delete_Call {
+func (_c *MockDefaultNamespaceInterface_Delete_Call) RunAndReturn(run func(context.Context, settings.DeleteDefaultNamespaceSettingRequest) (*settings.DeleteDefaultNamespaceSettingResponse, error)) *MockDefaultNamespaceInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockDefaultNamespaceInterface) Get(ctx context.Context, request settings.GetDefaultNamespaceRequest) (*settings.DefaultNamespaceSetting, error) {
+func (_m *MockDefaultNamespaceInterface) Get(ctx context.Context, request settings.GetDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -91,10 +91,10 @@ func (_m *MockDefaultNamespaceInterface) Get(ctx context.Context, request settin
 
 	var r0 *settings.DefaultNamespaceSetting
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetDefaultNamespaceRequest) (*settings.DefaultNamespaceSetting, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetDefaultNamespaceRequest) *settings.DefaultNamespaceSetting); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetDefaultNamespaceSettingRequest) *settings.DefaultNamespaceSetting); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -102,7 +102,7 @@ func (_m *MockDefaultNamespaceInterface) Get(ctx context.Context, request settin
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetDefaultNamespaceRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetDefaultNamespaceSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -118,14 +118,14 @@ type MockDefaultNamespaceInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.GetDefaultNamespaceRequest
+//   - request settings.GetDefaultNamespaceSettingRequest
 func (_e *MockDefaultNamespaceInterface_Expecter) Get(ctx interface{}, request interface{}) *MockDefaultNamespaceInterface_Get_Call {
 	return &MockDefaultNamespaceInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockDefaultNamespaceInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetDefaultNamespaceRequest)) *MockDefaultNamespaceInterface_Get_Call {
+func (_c *MockDefaultNamespaceInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetDefaultNamespaceSettingRequest)) *MockDefaultNamespaceInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetDefaultNamespaceRequest))
+		run(args[0].(context.Context), args[1].(settings.GetDefaultNamespaceSettingRequest))
 	})
 	return _c
 }
@@ -135,7 +135,7 @@ func (_c *MockDefaultNamespaceInterface_Get_Call) Return(_a0 *settings.DefaultNa
 	return _c
 }
 
-func (_c *MockDefaultNamespaceInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetDefaultNamespaceRequest) (*settings.DefaultNamespaceSetting, error)) *MockDefaultNamespaceInterface_Get_Call {
+func (_c *MockDefaultNamespaceInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error)) *MockDefaultNamespaceInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
