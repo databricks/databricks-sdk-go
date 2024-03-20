@@ -199,6 +199,9 @@ func (s DeltaSyncVectorIndexSpecResponse) MarshalJSON() ([]byte, error) {
 }
 
 type DirectAccessVectorIndexSpec struct {
+	// Contains the optional model endpoint to use during query time.
+	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
+
 	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
 	// The schema of the index in JSON format.
 	//

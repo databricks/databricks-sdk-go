@@ -66,13 +66,13 @@ func (s Dashboard) MarshalJSON() ([]byte, error) {
 }
 
 // Get dashboard
-type GetLakeviewRequest struct {
+type GetDashboardRequest struct {
 	// UUID identifying the dashboard.
 	DashboardId string `json:"-" url:"-"`
 }
 
 // Get published dashboard
-type GetPublishedRequest struct {
+type GetPublishedDashboardRequest struct {
 	// UUID identifying the dashboard to be published.
 	DashboardId string `json:"-" url:"-"`
 }
@@ -147,13 +147,13 @@ func (s PublishedDashboard) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type TrashDashboardResponse struct {
-}
-
 // Trash dashboard
-type TrashRequest struct {
+type TrashDashboardRequest struct {
 	// UUID identifying the dashboard.
 	DashboardId string `json:"-" url:"-"`
+}
+
+type TrashDashboardResponse struct {
 }
 
 type UpdateDashboardRequest struct {

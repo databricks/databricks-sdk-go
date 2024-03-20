@@ -82,7 +82,7 @@ type automaticClusterUpdateImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *automaticClusterUpdateImpl) Get(ctx context.Context, request GetAutomaticClusterUpdateRequest) (*AutomaticClusterUpdateSetting, error) {
+func (a *automaticClusterUpdateImpl) Get(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
 	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
 	path := "/api/2.0/settings/types/automatic_cluster_update/names/default"
 	headers := make(map[string]string)
@@ -121,7 +121,7 @@ type cspEnablementImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *cspEnablementImpl) Get(ctx context.Context, request GetCspEnablementRequest) (*CspEnablementSetting, error) {
+func (a *cspEnablementImpl) Get(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error) {
 	var cspEnablementSetting CspEnablementSetting
 	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
 	headers := make(map[string]string)
@@ -145,7 +145,7 @@ type cspEnablementAccountImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *cspEnablementAccountImpl) Get(ctx context.Context, request GetCspEnablementAccountRequest) (*CspEnablementAccountSetting, error) {
+func (a *cspEnablementAccountImpl) Get(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
 	var cspEnablementAccountSetting CspEnablementAccountSetting
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
@@ -169,7 +169,7 @@ type defaultNamespaceImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *defaultNamespaceImpl) Delete(ctx context.Context, request DeleteDefaultNamespaceRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
+func (a *defaultNamespaceImpl) Delete(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
 	var deleteDefaultNamespaceSettingResponse DeleteDefaultNamespaceSettingResponse
 	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
 	headers := make(map[string]string)
@@ -178,7 +178,7 @@ func (a *defaultNamespaceImpl) Delete(ctx context.Context, request DeleteDefault
 	return &deleteDefaultNamespaceSettingResponse, err
 }
 
-func (a *defaultNamespaceImpl) Get(ctx context.Context, request GetDefaultNamespaceRequest) (*DefaultNamespaceSetting, error) {
+func (a *defaultNamespaceImpl) Get(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
 	var defaultNamespaceSetting DefaultNamespaceSetting
 	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
 	headers := make(map[string]string)
@@ -202,7 +202,7 @@ type esmEnablementImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *esmEnablementImpl) Get(ctx context.Context, request GetEsmEnablementRequest) (*EsmEnablementSetting, error) {
+func (a *esmEnablementImpl) Get(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
 	var esmEnablementSetting EsmEnablementSetting
 	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
 	headers := make(map[string]string)
@@ -226,7 +226,7 @@ type esmEnablementAccountImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *esmEnablementAccountImpl) Get(ctx context.Context, request GetEsmEnablementAccountRequest) (*EsmEnablementAccountSetting, error) {
+func (a *esmEnablementAccountImpl) Get(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
 	var esmEnablementAccountSetting EsmEnablementAccountSetting
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
@@ -269,7 +269,7 @@ func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessLi
 	return err
 }
 
-func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error) {
+func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessList) (*FetchIpAccessListResponse, error) {
 	var fetchIpAccessListResponse FetchIpAccessListResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	headers := make(map[string]string)
@@ -391,7 +391,7 @@ type personalComputeImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *personalComputeImpl) Delete(ctx context.Context, request DeletePersonalComputeRequest) (*DeletePersonalComputeSettingResponse, error) {
+func (a *personalComputeImpl) Delete(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
 	var deletePersonalComputeSettingResponse DeletePersonalComputeSettingResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
@@ -400,7 +400,7 @@ func (a *personalComputeImpl) Delete(ctx context.Context, request DeletePersonal
 	return &deletePersonalComputeSettingResponse, err
 }
 
-func (a *personalComputeImpl) Get(ctx context.Context, request GetPersonalComputeRequest) (*PersonalComputeSetting, error) {
+func (a *personalComputeImpl) Get(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	var personalComputeSetting PersonalComputeSetting
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
@@ -424,7 +424,7 @@ type restrictWorkspaceAdminsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *restrictWorkspaceAdminsImpl) Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
+func (a *restrictWorkspaceAdminsImpl) Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
 	var deleteRestrictWorkspaceAdminsSettingResponse DeleteRestrictWorkspaceAdminsSettingResponse
 	path := "/api/2.0/settings/types/restrict_workspace_admins/names/default"
 	headers := make(map[string]string)
@@ -433,7 +433,7 @@ func (a *restrictWorkspaceAdminsImpl) Delete(ctx context.Context, request Delete
 	return &deleteRestrictWorkspaceAdminsSettingResponse, err
 }
 
-func (a *restrictWorkspaceAdminsImpl) Get(ctx context.Context, request GetRestrictWorkspaceAdminRequest) (*RestrictWorkspaceAdminsSetting, error) {
+func (a *restrictWorkspaceAdminsImpl) Get(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
 	var restrictWorkspaceAdminsSetting RestrictWorkspaceAdminsSetting
 	path := "/api/2.0/settings/types/restrict_workspace_admins/names/default"
 	headers := make(map[string]string)

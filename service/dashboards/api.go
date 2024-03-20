@@ -27,7 +27,7 @@ type LakeviewInterface interface {
 	// Get dashboard.
 	//
 	// Get a draft dashboard.
-	Get(ctx context.Context, request GetLakeviewRequest) (*Dashboard, error)
+	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
 
 	// Get dashboard.
 	//
@@ -37,7 +37,7 @@ type LakeviewInterface interface {
 	// Get published dashboard.
 	//
 	// Get the current published dashboard.
-	GetPublished(ctx context.Context, request GetPublishedRequest) (*PublishedDashboard, error)
+	GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error)
 
 	// Get published dashboard.
 	//
@@ -52,7 +52,7 @@ type LakeviewInterface interface {
 	// Trash dashboard.
 	//
 	// Trash a dashboard.
-	Trash(ctx context.Context, request TrashRequest) error
+	Trash(ctx context.Context, request TrashDashboardRequest) error
 
 	// Trash dashboard.
 	//
@@ -106,7 +106,7 @@ func (a *LakeviewAPI) Create(ctx context.Context, request CreateDashboardRequest
 // Get dashboard.
 //
 // Get a draft dashboard.
-func (a *LakeviewAPI) Get(ctx context.Context, request GetLakeviewRequest) (*Dashboard, error) {
+func (a *LakeviewAPI) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -114,7 +114,7 @@ func (a *LakeviewAPI) Get(ctx context.Context, request GetLakeviewRequest) (*Das
 //
 // Get a draft dashboard.
 func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error) {
-	return a.impl.Get(ctx, GetLakeviewRequest{
+	return a.impl.Get(ctx, GetDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
@@ -122,7 +122,7 @@ func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) 
 // Get published dashboard.
 //
 // Get the current published dashboard.
-func (a *LakeviewAPI) GetPublished(ctx context.Context, request GetPublishedRequest) (*PublishedDashboard, error) {
+func (a *LakeviewAPI) GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error) {
 	return a.impl.GetPublished(ctx, request)
 }
 
@@ -130,7 +130,7 @@ func (a *LakeviewAPI) GetPublished(ctx context.Context, request GetPublishedRequ
 //
 // Get the current published dashboard.
 func (a *LakeviewAPI) GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error) {
-	return a.impl.GetPublished(ctx, GetPublishedRequest{
+	return a.impl.GetPublished(ctx, GetPublishedDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
@@ -145,7 +145,7 @@ func (a *LakeviewAPI) Publish(ctx context.Context, request PublishRequest) (*Pub
 // Trash dashboard.
 //
 // Trash a dashboard.
-func (a *LakeviewAPI) Trash(ctx context.Context, request TrashRequest) error {
+func (a *LakeviewAPI) Trash(ctx context.Context, request TrashDashboardRequest) error {
 	return a.impl.Trash(ctx, request)
 }
 
@@ -153,7 +153,7 @@ func (a *LakeviewAPI) Trash(ctx context.Context, request TrashRequest) error {
 //
 // Trash a dashboard.
 func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) error {
-	return a.impl.Trash(ctx, TrashRequest{
+	return a.impl.Trash(ctx, TrashDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }

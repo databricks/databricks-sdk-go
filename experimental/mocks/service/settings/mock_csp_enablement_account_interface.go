@@ -23,7 +23,7 @@ func (_m *MockCspEnablementAccountInterface) EXPECT() *MockCspEnablementAccountI
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockCspEnablementAccountInterface) Get(ctx context.Context, request settings.GetCspEnablementAccountRequest) (*settings.CspEnablementAccountSetting, error) {
+func (_m *MockCspEnablementAccountInterface) Get(ctx context.Context, request settings.GetCspEnablementAccountSettingRequest) (*settings.CspEnablementAccountSetting, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -32,10 +32,10 @@ func (_m *MockCspEnablementAccountInterface) Get(ctx context.Context, request se
 
 	var r0 *settings.CspEnablementAccountSetting
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetCspEnablementAccountRequest) (*settings.CspEnablementAccountSetting, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetCspEnablementAccountSettingRequest) (*settings.CspEnablementAccountSetting, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetCspEnablementAccountRequest) *settings.CspEnablementAccountSetting); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetCspEnablementAccountSettingRequest) *settings.CspEnablementAccountSetting); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -43,7 +43,7 @@ func (_m *MockCspEnablementAccountInterface) Get(ctx context.Context, request se
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetCspEnablementAccountRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetCspEnablementAccountSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -59,14 +59,14 @@ type MockCspEnablementAccountInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.GetCspEnablementAccountRequest
+//   - request settings.GetCspEnablementAccountSettingRequest
 func (_e *MockCspEnablementAccountInterface_Expecter) Get(ctx interface{}, request interface{}) *MockCspEnablementAccountInterface_Get_Call {
 	return &MockCspEnablementAccountInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockCspEnablementAccountInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetCspEnablementAccountRequest)) *MockCspEnablementAccountInterface_Get_Call {
+func (_c *MockCspEnablementAccountInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetCspEnablementAccountSettingRequest)) *MockCspEnablementAccountInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetCspEnablementAccountRequest))
+		run(args[0].(context.Context), args[1].(settings.GetCspEnablementAccountSettingRequest))
 	})
 	return _c
 }
@@ -76,7 +76,7 @@ func (_c *MockCspEnablementAccountInterface_Get_Call) Return(_a0 *settings.CspEn
 	return _c
 }
 
-func (_c *MockCspEnablementAccountInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetCspEnablementAccountRequest) (*settings.CspEnablementAccountSetting, error)) *MockCspEnablementAccountInterface_Get_Call {
+func (_c *MockCspEnablementAccountInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetCspEnablementAccountSettingRequest) (*settings.CspEnablementAccountSetting, error)) *MockCspEnablementAccountInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }

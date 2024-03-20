@@ -1,5 +1,63 @@
 # Version changelog
 
+## 0.36.0
+
+
+API Changes:
+
+ * Changed `Get` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service . New request type is [dashboards.GetDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetDashboardRequest).
+ * Changed `GetPublished` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service . New request type is [dashboards.GetPublishedDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetPublishedDashboardRequest).
+ * Changed `Trash` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service . New request type is [dashboards.TrashDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#TrashDashboardRequest).
+ * Removed [dashboards.GetLakeviewRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetLakeviewRequest).
+ * Removed [dashboards.GetPublishedRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetPublishedRequest).
+ * Removed [dashboards.TrashRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#TrashRequest).
+ * Added [dashboards.GetDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetDashboardRequest).
+ * Added [dashboards.GetPublishedDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetPublishedDashboardRequest).
+ * Added [dashboards.TrashDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#TrashDashboardRequest).
+ * Added `AutoCaptureConfig` field for [serving.EndpointPendingConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#EndpointPendingConfig).
+ * Changed `Get` method for [w.AutomaticClusterUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AutomaticClusterUpdateAPI) workspace-level service . New request type is [settings.GetAutomaticClusterUpdateSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetAutomaticClusterUpdateSettingRequest).
+ * Changed `Get` method for [w.CspEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementAPI) workspace-level service . New request type is [settings.GetCspEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetCspEnablementSettingRequest).
+ * Changed `Get` method for [a.CspEnablementAccount](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementAccountAPI) account-level service . New request type is [settings.GetCspEnablementAccountSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetCspEnablementAccountSettingRequest).
+ * Changed `Delete` method for [w.DefaultNamespace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DefaultNamespaceAPI) workspace-level service . New request type is [settings.DeleteDefaultNamespaceSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteDefaultNamespaceSettingRequest).
+ * Changed `Get` method for [w.DefaultNamespace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DefaultNamespaceAPI) workspace-level service . New request type is [settings.GetDefaultNamespaceSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetDefaultNamespaceSettingRequest).
+ * Changed `Get` method for [w.EsmEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementAPI) workspace-level service . New request type is [settings.GetEsmEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEsmEnablementSettingRequest).
+ * Changed `Get` method for [a.EsmEnablementAccount](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementAccountAPI) account-level service . New request type is [settings.GetEsmEnablementAccountSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEsmEnablementAccountSettingRequest).
+ * Changed `Get` method for [w.IpAccessLists](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#IpAccessListsAPI) workspace-level service . New request type is [settings.GetIpAccessList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetIpAccessList).
+ * Changed `Delete` method for [a.PersonalCompute](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#PersonalComputeAPI) account-level service . New request type is [settings.DeletePersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeletePersonalComputeSettingRequest).
+ * Changed `Get` method for [a.PersonalCompute](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#PersonalComputeAPI) account-level service . New request type is [settings.GetPersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetPersonalComputeSettingRequest).
+ * Changed `Delete` method for [w.RestrictWorkspaceAdmins](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsAPI) workspace-level service . New request type is [settings.DeleteRestrictWorkspaceAdminsSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteRestrictWorkspaceAdminsSettingRequest).
+ * Changed `Get` method for [w.RestrictWorkspaceAdmins](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#RestrictWorkspaceAdminsAPI) workspace-level service . New request type is [settings.GetRestrictWorkspaceAdminsSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetRestrictWorkspaceAdminsSettingRequest).
+ * Removed [settings.DeleteDefaultNamespaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteDefaultNamespaceRequest).
+ * Removed [settings.DeletePersonalComputeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeletePersonalComputeRequest).
+ * Removed [settings.DeleteRestrictWorkspaceAdminRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteRestrictWorkspaceAdminRequest).
+ * Removed [settings.GetAutomaticClusterUpdateRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetAutomaticClusterUpdateRequest).
+ * Removed [settings.GetCspEnablementAccountRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetCspEnablementAccountRequest).
+ * Removed [settings.GetCspEnablementRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetCspEnablementRequest).
+ * Removed [settings.GetDefaultNamespaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetDefaultNamespaceRequest).
+ * Removed [settings.GetEsmEnablementAccountRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEsmEnablementAccountRequest).
+ * Removed [settings.GetEsmEnablementRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEsmEnablementRequest).
+ * Removed [settings.GetIpAccessListRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetIpAccessListRequest).
+ * Removed [settings.GetPersonalComputeRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetPersonalComputeRequest).
+ * Removed [settings.GetRestrictWorkspaceAdminRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetRestrictWorkspaceAdminRequest).
+ * Added [settings.DeleteDefaultNamespaceSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteDefaultNamespaceSettingRequest).
+ * Added [settings.DeletePersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeletePersonalComputeSettingRequest).
+ * Added [settings.DeleteRestrictWorkspaceAdminsSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteRestrictWorkspaceAdminsSettingRequest).
+ * Added [settings.GetAutomaticClusterUpdateSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetAutomaticClusterUpdateSettingRequest).
+ * Added [settings.GetCspEnablementAccountSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetCspEnablementAccountSettingRequest).
+ * Added [settings.GetCspEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetCspEnablementSettingRequest).
+ * Added [settings.GetDefaultNamespaceSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetDefaultNamespaceSettingRequest).
+ * Added [settings.GetEsmEnablementAccountSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEsmEnablementAccountSettingRequest).
+ * Added [settings.GetEsmEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEsmEnablementSettingRequest).
+ * Added [settings.GetIpAccessList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetIpAccessList).
+ * Added [settings.GetPersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetPersonalComputeSettingRequest).
+ * Added [settings.GetRestrictWorkspaceAdminsSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetRestrictWorkspaceAdminsSettingRequest).
+ * Changed `DataObjectType` field for [sharing.SharedDataObject](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#SharedDataObject) to [sharing.SharedDataObjectDataObjectType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#SharedDataObjectDataObjectType).
+ * Added `Content` field for [sharing.SharedDataObject](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#SharedDataObject).
+ * Added [sharing.SharedDataObjectDataObjectType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#SharedDataObjectDataObjectType).
+ * Added `EmbeddingSourceColumns` field for [vectorsearch.DirectAccessVectorIndexSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#DirectAccessVectorIndexSpec).
+
+OpenAPI SHA: 93763b0d7ae908520c229c786fff28b8fd623261, Date: 2024-03-20
+
 ## 0.35.0
 
 * Added Config.GetAuthDetails ([#838](https://github.com/databricks/databricks-sdk-go/pull/838)).

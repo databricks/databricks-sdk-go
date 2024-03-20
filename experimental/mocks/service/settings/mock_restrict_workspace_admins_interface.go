@@ -23,7 +23,7 @@ func (_m *MockRestrictWorkspaceAdminsInterface) EXPECT() *MockRestrictWorkspaceA
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockRestrictWorkspaceAdminsInterface) Delete(ctx context.Context, request settings.DeleteRestrictWorkspaceAdminRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error) {
+func (_m *MockRestrictWorkspaceAdminsInterface) Delete(ctx context.Context, request settings.DeleteRestrictWorkspaceAdminsSettingRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -32,10 +32,10 @@ func (_m *MockRestrictWorkspaceAdminsInterface) Delete(ctx context.Context, requ
 
 	var r0 *settings.DeleteRestrictWorkspaceAdminsSettingResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteRestrictWorkspaceAdminRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteRestrictWorkspaceAdminRequest) *settings.DeleteRestrictWorkspaceAdminsSettingResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) *settings.DeleteRestrictWorkspaceAdminsSettingResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -43,7 +43,7 @@ func (_m *MockRestrictWorkspaceAdminsInterface) Delete(ctx context.Context, requ
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.DeleteRestrictWorkspaceAdminRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -59,14 +59,14 @@ type MockRestrictWorkspaceAdminsInterface_Delete_Call struct {
 
 // Delete is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.DeleteRestrictWorkspaceAdminRequest
+//   - request settings.DeleteRestrictWorkspaceAdminsSettingRequest
 func (_e *MockRestrictWorkspaceAdminsInterface_Expecter) Delete(ctx interface{}, request interface{}) *MockRestrictWorkspaceAdminsInterface_Delete_Call {
 	return &MockRestrictWorkspaceAdminsInterface_Delete_Call{Call: _e.mock.On("Delete", ctx, request)}
 }
 
-func (_c *MockRestrictWorkspaceAdminsInterface_Delete_Call) Run(run func(ctx context.Context, request settings.DeleteRestrictWorkspaceAdminRequest)) *MockRestrictWorkspaceAdminsInterface_Delete_Call {
+func (_c *MockRestrictWorkspaceAdminsInterface_Delete_Call) Run(run func(ctx context.Context, request settings.DeleteRestrictWorkspaceAdminsSettingRequest)) *MockRestrictWorkspaceAdminsInterface_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.DeleteRestrictWorkspaceAdminRequest))
+		run(args[0].(context.Context), args[1].(settings.DeleteRestrictWorkspaceAdminsSettingRequest))
 	})
 	return _c
 }
@@ -76,13 +76,13 @@ func (_c *MockRestrictWorkspaceAdminsInterface_Delete_Call) Return(_a0 *settings
 	return _c
 }
 
-func (_c *MockRestrictWorkspaceAdminsInterface_Delete_Call) RunAndReturn(run func(context.Context, settings.DeleteRestrictWorkspaceAdminRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error)) *MockRestrictWorkspaceAdminsInterface_Delete_Call {
+func (_c *MockRestrictWorkspaceAdminsInterface_Delete_Call) RunAndReturn(run func(context.Context, settings.DeleteRestrictWorkspaceAdminsSettingRequest) (*settings.DeleteRestrictWorkspaceAdminsSettingResponse, error)) *MockRestrictWorkspaceAdminsInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockRestrictWorkspaceAdminsInterface) Get(ctx context.Context, request settings.GetRestrictWorkspaceAdminRequest) (*settings.RestrictWorkspaceAdminsSetting, error) {
+func (_m *MockRestrictWorkspaceAdminsInterface) Get(ctx context.Context, request settings.GetRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -91,10 +91,10 @@ func (_m *MockRestrictWorkspaceAdminsInterface) Get(ctx context.Context, request
 
 	var r0 *settings.RestrictWorkspaceAdminsSetting
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetRestrictWorkspaceAdminRequest) (*settings.RestrictWorkspaceAdminsSetting, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetRestrictWorkspaceAdminRequest) *settings.RestrictWorkspaceAdminsSetting); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) *settings.RestrictWorkspaceAdminsSetting); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -102,7 +102,7 @@ func (_m *MockRestrictWorkspaceAdminsInterface) Get(ctx context.Context, request
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetRestrictWorkspaceAdminRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -118,14 +118,14 @@ type MockRestrictWorkspaceAdminsInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.GetRestrictWorkspaceAdminRequest
+//   - request settings.GetRestrictWorkspaceAdminsSettingRequest
 func (_e *MockRestrictWorkspaceAdminsInterface_Expecter) Get(ctx interface{}, request interface{}) *MockRestrictWorkspaceAdminsInterface_Get_Call {
 	return &MockRestrictWorkspaceAdminsInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockRestrictWorkspaceAdminsInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetRestrictWorkspaceAdminRequest)) *MockRestrictWorkspaceAdminsInterface_Get_Call {
+func (_c *MockRestrictWorkspaceAdminsInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetRestrictWorkspaceAdminsSettingRequest)) *MockRestrictWorkspaceAdminsInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetRestrictWorkspaceAdminRequest))
+		run(args[0].(context.Context), args[1].(settings.GetRestrictWorkspaceAdminsSettingRequest))
 	})
 	return _c
 }
@@ -135,7 +135,7 @@ func (_c *MockRestrictWorkspaceAdminsInterface_Get_Call) Return(_a0 *settings.Re
 	return _c
 }
 
-func (_c *MockRestrictWorkspaceAdminsInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetRestrictWorkspaceAdminRequest) (*settings.RestrictWorkspaceAdminsSetting, error)) *MockRestrictWorkspaceAdminsInterface_Get_Call {
+func (_c *MockRestrictWorkspaceAdminsInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetRestrictWorkspaceAdminsSettingRequest) (*settings.RestrictWorkspaceAdminsSetting, error)) *MockRestrictWorkspaceAdminsInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }

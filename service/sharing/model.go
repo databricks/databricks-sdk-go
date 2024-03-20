@@ -1081,8 +1081,12 @@ type SharedDataObject struct {
 	// A user-provided comment when adding the data object to the share.
 	// [Update:OPT]
 	Comment string `json:"comment,omitempty"`
+	// The content of the notebook file when the data object type is
+	// NOTEBOOK_FILE. This should be base64 encoded. Required for adding a
+	// NOTEBOOK_FILE, optional for updating, ignored for other types.
+	Content string `json:"content,omitempty"`
 	// The type of the data object.
-	DataObjectType string `json:"data_object_type,omitempty"`
+	DataObjectType SharedDataObjectDataObjectType `json:"data_object_type,omitempty"`
 	// Whether to enable or disable sharing of data history. If not specified,
 	// the default is **DISABLED**.
 	HistoryDataSharingStatus SharedDataObjectHistoryDataSharingStatus `json:"history_data_sharing_status,omitempty"`
@@ -1124,6 +1128,44 @@ func (s *SharedDataObject) UnmarshalJSON(b []byte) error {
 
 func (s SharedDataObject) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The type of the data object.
+type SharedDataObjectDataObjectType string
+
+const SharedDataObjectDataObjectTypeMaterializedView SharedDataObjectDataObjectType = `MATERIALIZED_VIEW`
+
+const SharedDataObjectDataObjectTypeModel SharedDataObjectDataObjectType = `MODEL`
+
+const SharedDataObjectDataObjectTypeNotebookFile SharedDataObjectDataObjectType = `NOTEBOOK_FILE`
+
+const SharedDataObjectDataObjectTypeSchema SharedDataObjectDataObjectType = `SCHEMA`
+
+const SharedDataObjectDataObjectTypeStreamingTable SharedDataObjectDataObjectType = `STREAMING_TABLE`
+
+const SharedDataObjectDataObjectTypeTable SharedDataObjectDataObjectType = `TABLE`
+
+const SharedDataObjectDataObjectTypeView SharedDataObjectDataObjectType = `VIEW`
+
+// String representation for [fmt.Print]
+func (f *SharedDataObjectDataObjectType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SharedDataObjectDataObjectType) Set(v string) error {
+	switch v {
+	case `MATERIALIZED_VIEW`, `MODEL`, `NOTEBOOK_FILE`, `SCHEMA`, `STREAMING_TABLE`, `TABLE`, `VIEW`:
+		*f = SharedDataObjectDataObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MATERIALIZED_VIEW", "MODEL", "NOTEBOOK_FILE", "SCHEMA", "STREAMING_TABLE", "TABLE", "VIEW"`, v)
+	}
+}
+
+// Type always returns SharedDataObjectDataObjectType to satisfy [pflag.Value] interface
+func (f *SharedDataObjectDataObjectType) Type() string {
+	return "SharedDataObjectDataObjectType"
 }
 
 // Whether to enable or disable sharing of data history. If not specified, the

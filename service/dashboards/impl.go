@@ -25,7 +25,7 @@ func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardReques
 	return &dashboard, err
 }
 
-func (a *lakeviewImpl) Get(ctx context.Context, request GetLakeviewRequest) (*Dashboard, error) {
+func (a *lakeviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
 	var dashboard Dashboard
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
 	headers := make(map[string]string)
@@ -34,7 +34,7 @@ func (a *lakeviewImpl) Get(ctx context.Context, request GetLakeviewRequest) (*Da
 	return &dashboard, err
 }
 
-func (a *lakeviewImpl) GetPublished(ctx context.Context, request GetPublishedRequest) (*PublishedDashboard, error) {
+func (a *lakeviewImpl) GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error) {
 	var publishedDashboard PublishedDashboard
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
 	headers := make(map[string]string)
@@ -53,7 +53,7 @@ func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*Pu
 	return &publishedDashboard, err
 }
 
-func (a *lakeviewImpl) Trash(ctx context.Context, request TrashRequest) error {
+func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) error {
 	var trashDashboardResponse TrashDashboardResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
 	headers := make(map[string]string)

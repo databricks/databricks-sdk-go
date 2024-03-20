@@ -114,7 +114,7 @@ type AutomaticClusterUpdateService interface {
 	// Get the automatic cluster update setting.
 	//
 	// Gets the automatic cluster update setting.
-	Get(ctx context.Context, request GetAutomaticClusterUpdateRequest) (*AutomaticClusterUpdateSetting, error)
+	Get(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
 
 	// Update the automatic cluster update setting.
 	//
@@ -148,7 +148,7 @@ type CspEnablementService interface {
 	// Get the compliance security profile setting.
 	//
 	// Gets the compliance security profile setting.
-	Get(ctx context.Context, request GetCspEnablementRequest) (*CspEnablementSetting, error)
+	Get(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error)
 
 	// Update the compliance security profile setting.
 	//
@@ -173,7 +173,7 @@ type CspEnablementAccountService interface {
 	// Get the compliance security profile setting for new workspaces.
 	//
 	// Gets the compliance security profile setting for new workspaces.
-	Get(ctx context.Context, request GetCspEnablementAccountRequest) (*CspEnablementAccountSetting, error)
+	Get(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
 
 	// Update the compliance security profile setting for new workspaces.
 	//
@@ -204,12 +204,12 @@ type DefaultNamespaceService interface {
 	// request. If the setting is updated/deleted concurrently, `DELETE` fails
 	// with 409 and the request must be retried by using the fresh etag in the
 	// 409 response.
-	Delete(ctx context.Context, request DeleteDefaultNamespaceRequest) (*DeleteDefaultNamespaceSettingResponse, error)
+	Delete(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error)
 
 	// Get the default namespace setting.
 	//
 	// Gets the default namespace setting.
-	Get(ctx context.Context, request GetDefaultNamespaceRequest) (*DefaultNamespaceSetting, error)
+	Get(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
 
 	// Update the default namespace setting.
 	//
@@ -236,7 +236,7 @@ type EsmEnablementService interface {
 	// Get the enhanced security monitoring setting.
 	//
 	// Gets the enhanced security monitoring setting.
-	Get(ctx context.Context, request GetEsmEnablementRequest) (*EsmEnablementSetting, error)
+	Get(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
 
 	// Update the enhanced security monitoring setting.
 	//
@@ -259,7 +259,7 @@ type EsmEnablementAccountService interface {
 	// Get the enhanced security monitoring setting for new workspaces.
 	//
 	// Gets the enhanced security monitoring setting for new workspaces.
-	Get(ctx context.Context, request GetEsmEnablementAccountRequest) (*EsmEnablementAccountSetting, error)
+	Get(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error)
 
 	// Update the enhanced security monitoring setting for new workspaces.
 	//
@@ -321,7 +321,7 @@ type IpAccessListsService interface {
 	// Get access list.
 	//
 	// Gets an IP access list, specified by its list ID.
-	Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error)
+	Get(ctx context.Context, request GetIpAccessList) (*FetchIpAccessListResponse, error)
 
 	// Get access lists.
 	//
@@ -445,12 +445,12 @@ type PersonalComputeService interface {
 	// Delete Personal Compute setting.
 	//
 	// Reverts back the Personal Compute setting value to default (ON)
-	Delete(ctx context.Context, request DeletePersonalComputeRequest) (*DeletePersonalComputeSettingResponse, error)
+	Delete(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error)
 
 	// Get Personal Compute setting.
 	//
 	// Gets the value of the Personal Compute setting.
-	Get(ctx context.Context, request GetPersonalComputeRequest) (*PersonalComputeSetting, error)
+	Get(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
 
 	// Update Personal Compute setting.
 	//
@@ -480,12 +480,12 @@ type RestrictWorkspaceAdminsService interface {
 	// the DELETE request. If the setting is updated/deleted concurrently,
 	// `DELETE` fails with 409 and the request must be retried by using the
 	// fresh etag in the 409 response.
-	Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
+	Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error)
 
 	// Get the restrict workspace admins setting.
 	//
 	// Gets the restrict workspace admins setting.
-	Get(ctx context.Context, request GetRestrictWorkspaceAdminRequest) (*RestrictWorkspaceAdminsSetting, error)
+	Get(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
 
 	// Update the restrict workspace admins setting.
 	//

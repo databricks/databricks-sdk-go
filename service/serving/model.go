@@ -469,6 +469,9 @@ type EndpointCoreConfigSummary struct {
 }
 
 type EndpointPendingConfig struct {
+	// Configuration for Inference Tables which automatically logs requests and
+	// responses to Unity Catalog.
+	AutoCaptureConfig *AutoCaptureConfigOutput `json:"auto_capture_config,omitempty"`
 	// The config version that the serving endpoint is currently serving.
 	ConfigVersion int `json:"config_version,omitempty"`
 	// The list of served entities belonging to the last issued update to the
