@@ -15,6 +15,12 @@ import (
 func TestGetAPIErrorHandlesEmptyResponse(t *testing.T) {
 	resp := common.ResponseWrapper{
 		Response: &http.Response{
+			Request: &http.Request{
+				Method: "GET",
+				URL: &url.URL{
+					Path: "/api/2.0/compute/get",
+				},
+			},
 			StatusCode: http.StatusConflict,
 		},
 		DebugBytes: []byte{},
