@@ -67,6 +67,15 @@ var testCases = []applyOverridesTestCase{
 		method:        "GET",
 		expectedError: ErrBadRequest,
 	},
+	{
+		initialError: &APIError{
+			ErrorCode: "INVALID_PARAMETER_VALUE",
+			Message:   "Invalid job attribute",
+		},
+		path:          "/api/2.0/jobs/get",
+		method:        "GET",
+		expectedError: ErrBadRequest,
+	},
 }
 
 func TestApplyOverrides(t *testing.T) {
