@@ -533,7 +533,7 @@ Databricks SDK for Go loosely integrates with [spf13/pflag](https://github.com/s
 
 ## Error handling
 
-The Databricks SDK for Go converts error responses from the Databricks API into the apierr.APIError type. This allows you to inspect the error code, message, and details by asserting the error as apierr.APIError:
+The Databricks SDK for Go converts error responses from the Databricks API into the [`apierr.APIError`](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/apierr#APIError) type. This allows you to inspect the error code, message, and details by asserting the error as `apierr.APIError`:
 
 ```go
 _, err := w.Clusters.Create(ctx, compute.CreateCluster{...})
@@ -553,6 +553,8 @@ For instance, to determine if `w.Clusters.GetByClusterId()` failed due to a non-
 c, err := w.Clusters.GetByClusterId(ctx, "12345")
 if errors.Is(err, databricks.ErrResourceDoesNotExist) {... }
 ```
+
+See all predefined errors in [the documentation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go#pkg-variables).
 
 ## Logging
 
