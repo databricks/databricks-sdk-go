@@ -57,6 +57,12 @@ func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestAccClustersGetCorrectErrorMessageNoTranspile(t *testing.T) {
+	ctx, w := workspaceTest(t)
+	_, err := w.Clusters.GetByClusterId(ctx, "123456789")
+	assert.ErrorIs(t, err, databricks.ErrResourceDoesNotExist)
+}
+
 func TestAccAwsInstanceProfiles(t *testing.T) {
 	ctx, w := workspaceTest(t)
 	if !w.Config.IsAws() {
