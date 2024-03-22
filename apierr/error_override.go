@@ -52,7 +52,6 @@ func (e *errorOverride) matches(err *APIError, resp *http.Response) bool {
 }
 
 var invalidParameterValue = "INVALID_PARAMETER_VALUE"
-var resourceDoesNotExist = "RESOURCE_DOES_NOT_EXIST"
 
 var allOverrides = []errorOverride{
 	{
@@ -65,7 +64,7 @@ var allOverrides = []errorOverride{
 	},
 	{
 		debugName:        "Jobs InvalidParameterValue => ResourceDoesNotExist",
-		pathRegex:        regexp.MustCompile(`/api/2\.\d/jobs/get`),
+		pathRegex:        regexp.MustCompile(`^/api/2\.\d/jobs/get`),
 		verb:             "GET",
 		messageMatcher:   regexp.MustCompile("Job .* does not exist"),
 		errorCodeMatcher: regexp.MustCompile(invalidParameterValue),
