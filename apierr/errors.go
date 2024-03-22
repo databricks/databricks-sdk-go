@@ -56,6 +56,7 @@ type APIError struct {
 	Message    string
 	StatusCode int
 	Details    []ErrorDetail
+	unwrap     error
 }
 
 // Error returns error message string instead of

@@ -30,8 +30,9 @@ type errorOverride struct {
 	// for this override to be applied. If nil, this field is ignored.
 	messageMatcher *regexp.Regexp
 
-	// updateFn is a function that can be used to update the error object.
-	updateFn func(*APIError)
+	// customError is the error that will be returned by APIError.Unwrap() if
+	// this override is applied.
+	customError error
 }
 
 func (e *errorOverride) matches(err *APIError, resp *http.Response) bool {
@@ -60,10 +61,7 @@ var allOverrides = []errorOverride{
 		verb:             "GET",
 		messageMatcher:   regexp.MustCompile("Cluster .* does not exist"),
 		errorCodeMatcher: regexp.MustCompile(invalidParameterValue),
-		updateFn: func(err *APIError) {
-			err.StatusCode = http.StatusNotFound
-			err.ErrorCode = resourceDoesNotExist
-		},
+		customError:      ErrResourceDoesNotExist,
 	},
 	{
 		debugName:        "Jobs InvalidParameterValue => ResourceDoesNotExist",
@@ -71,18 +69,15 @@ var allOverrides = []errorOverride{
 		verb:             "GET",
 		messageMatcher:   regexp.MustCompile("Job .* does not exist"),
 		errorCodeMatcher: regexp.MustCompile(invalidParameterValue),
-		updateFn: func(err *APIError) {
-			err.StatusCode = http.StatusNotFound
-			err.ErrorCode = resourceDoesNotExist
-		},
+		customError:      ErrResourceDoesNotExist,
 	},
 }
 
 func applyOverrides(ctx context.Context, err *APIError, resp *http.Response) {
 	for _, override := range allOverrides {
 		if override.matches(err, resp) {
-			logger.Debugf(ctx, "Applying error override: %s", override.debugName)
-			override.updateFn(err)
+			logger.Debugf(ctx, "Applying error override: %s", override)
+			err.unwrap = override.customError
 			return
 		}
 	}

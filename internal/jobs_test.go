@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
@@ -148,6 +149,12 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	})
 	require.NoError(t, err)
 	assert.True(t, len(jobList) >= 1)
+}
+
+func TestAccJobsGetCorrectErrorNoTranspile(t *testing.T) {
+	ctx, w := workspaceTest(t)
+	_, err := w.Jobs.GetByJobId(ctx, 123456789)
+	assert.ErrorIs(t, err, apierr.ErrResourceDoesNotExist)
 }
 
 func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
