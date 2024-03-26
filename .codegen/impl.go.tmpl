@@ -21,15 +21,27 @@ type {{.CamelName}}Impl struct {
 {{range .Methods}}
 func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
 	{{- template "response-var" . }}
-	path := {{if .PathParts -}}
-		fmt.Sprintf("{{range  .PathParts}}{{.Prefix}}{{if or .Field .IsAccountId}}%v{{end}}{{ end }}"{{ range .PathParts }}{{if .Field}}, request.{{.Field.PascalName}}{{ else if .IsAccountId }}, a.client.ConfiguredAccountID(){{end}}{{ end }})
-	{{- else}}"{{.Path}}"{{end}}
+	path := {{ template "path" . }}
 	{{ template "make-header" . }}
 	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, headers, {{ template "request-param" . }}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
 	return {{ template "response" . }}
 }
 {{end -}}
 {{end}}
+
+{{- define "path" -}}
+{{- if .PathParts -}}
+	fmt.Sprintf("{{range  .PathParts -}}
+	    {{.Prefix}}{{if or .Field .IsAccountId}}%v{{end}}{{ end }}"
+	    {{- range .PathParts }}
+	        {{- if .Field}}, httpclient.EscapePathParam(request.{{.Field.PascalName}}, {{.Field.IsPathMultiSegment}})
+			{{- else if .IsAccountId }}, a.client.ConfiguredAccountID()
+			{{end}}
+	    {{- end }})
+{{- else -}}
+	"{{.Path}}"
+{{- end -}}
+{{- end -}}
 
 {{ define "request-param" -}}
   {{ if or (and .Request (or (eq .Verb "GET") (eq .Verb "DELETE") (eq .Verb "HEAD"))) (and .Operation .Operation.RequestBody) -}}
