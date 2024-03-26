@@ -29,6 +29,9 @@ func ByStatusCode(statusCode int) (error, bool) {
 //
 // See https://pkg.go.dev/errors#example-Unwrap
 func (apiError *APIError) Unwrap() error {
+	if apiError.unwrap != nil {
+		return apiError.unwrap
+	}
 	byErrorCode, ok := errorCodeMapping[apiError.ErrorCode]
 	if ok {
 		return byErrorCode

@@ -1,6 +1,6 @@
 # Databricks SDK for Go
 
-[![lines of code](https://tokei.rs/b1/github/databricks/databricks-sdk-go)]([https://codecov.io/github/databricks/databricks-sdk-go](https://github.com/databricks/databricks-sdk-go))
+[![lines of code](https://tokei.rs/b1/github/databricks/databricks-sdk-go)](<[https://codecov.io/github/databricks/databricks-sdk-go](https://github.com/databricks/databricks-sdk-go)>)
 
 [Beta](https://docs.databricks.com/release-notes/release-types.html): This SDK is supported for production use cases,
 but we do expect future releases to have some interface changes; see [Interface stability](#interface-stability).
@@ -22,6 +22,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 - [GetByName utility methods](#getbyname-utility-methods)
 - [Node type and Databricks Runtime selectors](#node-type-and-databricks-runtime-selectors)
 - [Integration with `io` interfaces for DBFS](#integration-with-io-interfaces-for-dbfs)
+- [Error Handling](#error-handling)
 - [Logging](#logging)
 - [Testing](#testing)
 - [Interface stability](#interface-stability)
@@ -529,6 +530,31 @@ buf, err := w.Dbfs.ReadFile(ctx, "/path/to/remote/file")
 ## `pflag.Value` for enums
 
 Databricks SDK for Go loosely integrates with [spf13/pflag](https://github.com/spf13/pflag) by implementing [pflag.Value](https://pkg.go.dev/github.com/spf13/pflag#Value) for all enum types.
+
+## Error handling
+
+The Databricks SDK for Go converts error responses from the Databricks API into the [`apierr.APIError`](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/apierr#APIError) type. This allows you to inspect the error code, message, and details by asserting the error as `apierr.APIError`:
+
+```go
+_, err := w.Clusters.Create(ctx, compute.CreateCluster{...})
+if e, ok := err.(*apierr.APIError); ok {
+    fmt.Printf("Error code: %s\n", e.ErrorCode)
+    fmt.Printf("Error message: %s\n", e.Message)
+    fmt.Printf("Status code: %s\n", e.StatusCode)
+    fmt.Printf("Error details: %v\n", e.Details)
+}
+```
+
+The SDK also provides predefined errors that correspond to errors returned from the Databricks API. These predefined errors enable you to check for specific error conditions in your code. The SDK handles inconsistencies in error responses between different services, ensuring that `errors.Is()` and `errors.As()` function as expected.
+
+For instance, to determine if `w.Clusters.GetByClusterId()` failed due to a non-existent cluster, use `databricks.ErrResourceDoesNotExist`:
+
+```go
+c, err := w.Clusters.GetByClusterId(ctx, "12345")
+if errors.Is(err, databricks.ErrResourceDoesNotExist) {... }
+```
+
+See all predefined errors in [the documentation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go#pkg-variables).
 
 ## Logging
 

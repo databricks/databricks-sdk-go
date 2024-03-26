@@ -56,6 +56,7 @@ type APIError struct {
 	Message    string
 	StatusCode int
 	Details    []ErrorDetail
+	unwrap     error
 }
 
 // Error returns error message string instead of
@@ -168,6 +169,7 @@ func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 			return ReadError(resp.Response.StatusCode, err)
 		}
 		apiError := parseErrorFromResponse(resp.Response, resp.RequestBody.DebugBytes, responseBodyBytes)
+		applyOverrides(ctx, apiError, resp.Response)
 		return apiError
 	}
 	return nil
