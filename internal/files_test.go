@@ -29,7 +29,7 @@ func (buf hashable) Hash() uint32 {
 	return h.Sum32()
 }
 
-func TestUcAccUploadAndDownloadFilesAPI(t *testing.T) {
+func TestUcAccFilesUploadAndDownload(t *testing.T) {
 	ctx, w, volume := setupUCVolume(t)
 
 	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/files-with-?-and-#-")
@@ -57,7 +57,7 @@ func TestUcAccUploadAndDownloadFilesAPI(t *testing.T) {
 	assert.Equal(t, "abcd", string(contents))
 }
 
-func TestUcAccDeleteFile(t *testing.T) {
+func TestUcAccFilesDelete(t *testing.T) {
 	ctx, w, volume := setupUCVolume(t)
 
 	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/file-")
@@ -67,7 +67,7 @@ func TestUcAccDeleteFile(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestUcAccGetMetadata(t *testing.T) {
+func TestUcAccFilesGetMetadata(t *testing.T) {
 	ctx, w, volume := setupUCVolume(t)
 
 	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/file-")
@@ -81,14 +81,14 @@ func TestUcAccGetMetadata(t *testing.T) {
 	assert.NotEmpty(t, metadata.LastModified)
 }
 
-func TestUcAccCreateDirectory(t *testing.T) {
+func TestUcAccFilesCreateDirectory(t *testing.T) {
 	ctx, w, volume := setupUCVolume(t)
 
 	directoryPath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/directory-")
 	require.NoError(t, createDirectory(t, ctx, w, directoryPath))
 }
 
-func TestUcAccListDirectoryContents(t *testing.T) {
+func TestUcAccFilesListDirectoryContents(t *testing.T) {
 	ctx, w, volume := setupUCVolume(t)
 
 	directoryPath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/directory-")
@@ -102,7 +102,7 @@ func TestUcAccListDirectoryContents(t *testing.T) {
 	assert.Len(t, response, 3)
 }
 
-func TestUcAccDeleteDirectory(t *testing.T) {
+func TestUcAccFilesDeleteDirectory(t *testing.T) {
 	ctx, w, volume := setupUCVolume(t)
 
 	directoryPath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/directory-")
@@ -112,7 +112,7 @@ func TestUcAccDeleteDirectory(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestUcAccGetDirectoryMetadata(t *testing.T) {
+func TestUcAccFilesGetDirectoryMetadata(t *testing.T) {
 	ctx, w, volume := setupUCVolume(t)
 
 	directoryPath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/directory-")
