@@ -7,14 +7,16 @@ import (
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetErrorStub(t *testing.T) {
-	client := httpclient.NewApiClient(httpclient.ClientConfig{
+	client, err := httpclient.NewApiClient(httpclient.ClientConfig{
 		Transport: fixtures.SliceTransport{},
 	})
+	require.NoError(t, err)
 	ctx := context.Background()
-	err := client.Do(ctx, "GET", "/foo", httpclient.WithRequestData(map[string]any{
+	err = client.Do(ctx, "GET", "/foo", httpclient.WithRequestData(map[string]any{
 		"foo": "bar",
 	}))
 	// spacing in this test is very important
@@ -31,7 +33,7 @@ func TestGetErrorStubFilled(t *testing.T) {
 	var out struct {
 		Foo string `json:"foo"`
 	}
-	client := httpclient.NewApiClient(httpclient.ClientConfig{
+	client, err := httpclient.NewApiClient(httpclient.ClientConfig{
 		Transport: fixtures.SliceTransport{
 			{
 				Method:   "GET",
@@ -42,8 +44,9 @@ func TestGetErrorStubFilled(t *testing.T) {
 			},
 		},
 	})
+	require.NoError(t, err)
 	ctx := context.Background()
-	err := client.Do(ctx, "GET", "/foo",
+	err = client.Do(ctx, "GET", "/foo",
 		httpclient.WithResponseUnmarshal(&out),
 		httpclient.WithRequestData(map[string]any{
 			"foo": "bar",
@@ -56,7 +59,7 @@ func TestReplyWithString(t *testing.T) {
 	var out struct {
 		Foo string `json:"foo"`
 	}
-	client := httpclient.NewApiClient(httpclient.ClientConfig{
+	client, err := httpclient.NewApiClient(httpclient.ClientConfig{
 		Transport: fixtures.SliceTransport{
 			{
 				Method:   "GET",
@@ -65,8 +68,9 @@ func TestReplyWithString(t *testing.T) {
 			},
 		},
 	})
+	require.NoError(t, err)
 	ctx := context.Background()
-	err := client.Do(ctx, "GET", "/foo",
+	err = client.Do(ctx, "GET", "/foo",
 		httpclient.WithResponseUnmarshal(&out),
 		httpclient.WithRequestData(map[string]any{
 			"foo": "bar",
@@ -76,11 +80,12 @@ func TestReplyWithString(t *testing.T) {
 }
 
 func TestGetErrorStubWithHost(t *testing.T) {
-	client := httpclient.NewApiClient(httpclient.ClientConfig{
+	client, err := httpclient.NewApiClient(httpclient.ClientConfig{
 		Transport: fixtures.SliceTransport{},
 	})
+	require.NoError(t, err)
 	ctx := context.Background()
-	err := client.Do(ctx, "GET", "http://localhost:1234/foo", httpclient.WithRequestData(map[string]any{
+	err = client.Do(ctx, "GET", "http://localhost:1234/foo", httpclient.WithRequestData(map[string]any{
 		"foo": "bar",
 	}))
 	// spacing in this test is very important
@@ -94,11 +99,12 @@ func TestGetErrorStubWithHost(t *testing.T) {
 }
 
 func TestPostErrorStub(t *testing.T) {
-	client := httpclient.NewApiClient(httpclient.ClientConfig{
+	client, err := httpclient.NewApiClient(httpclient.ClientConfig{
 		Transport: fixtures.SliceTransport{},
 	})
+	require.NoError(t, err)
 	ctx := context.Background()
-	err := client.Do(ctx, "POST", "/foo", httpclient.WithRequestData(map[string]any{
+	err = client.Do(ctx, "POST", "/foo", httpclient.WithRequestData(map[string]any{
 		"foo": "bar",
 	}))
 	// spacing in this test is very important
@@ -119,7 +125,7 @@ func TestPostErrorStubFilled(t *testing.T) {
 	type op struct {
 		Foo string `json:"foo"`
 	}
-	client := httpclient.NewApiClient(httpclient.ClientConfig{
+	client, err := httpclient.NewApiClient(httpclient.ClientConfig{
 		Transport: fixtures.SliceTransport{
 			{
 				Method:   "POST",
@@ -130,8 +136,9 @@ func TestPostErrorStubFilled(t *testing.T) {
 			},
 		},
 	})
+	require.NoError(t, err)
 	ctx := context.Background()
-	err := client.Do(ctx, "POST", "/foo", httpclient.WithRequestData(map[string]any{
+	err = client.Do(ctx, "POST", "/foo", httpclient.WithRequestData(map[string]any{
 		"foo": "bar",
 	}))
 	assert.NoError(t, err)
@@ -141,7 +148,7 @@ func TestPostUnexpectedRequest(t *testing.T) {
 	type op struct {
 		Foo string `json:"foo"`
 	}
-	client := httpclient.NewApiClient(httpclient.ClientConfig{
+	client, err := httpclient.NewApiClient(httpclient.ClientConfig{
 		Transport: fixtures.SliceTransport{
 			{
 				Method:   "POST",
@@ -152,8 +159,9 @@ func TestPostUnexpectedRequest(t *testing.T) {
 			},
 		},
 	})
+	require.NoError(t, err)
 	ctx := context.Background()
-	err := client.Do(ctx, "POST", "/foo", httpclient.WithRequestData(map[string]any{
+	err = client.Do(ctx, "POST", "/foo", httpclient.WithRequestData(map[string]any{
 		"foo": "bar",
 	}))
 	assert.EqualError(t, err, `Post "/foo": expected: want {

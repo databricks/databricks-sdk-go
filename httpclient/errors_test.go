@@ -12,7 +12,7 @@ import (
 )
 
 func TestSimpleRequestAPIError(t *testing.T) {
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 400,
@@ -24,7 +24,8 @@ func TestSimpleRequestAPIError(t *testing.T) {
 			}, nil
 		}),
 	})
-	err := c.Do(context.Background(), "PATCH", "/a", WithRequestData(map[string]any{}))
+	require.NoError(t, err)
+	err = c.Do(context.Background(), "PATCH", "/a", WithRequestData(map[string]any{}))
 	var httpErr *HttpError
 	if assert.ErrorAs(t, err, &httpErr) {
 		require.Equal(t, 400, httpErr.StatusCode)
@@ -32,7 +33,7 @@ func TestSimpleRequestAPIError(t *testing.T) {
 }
 
 func TestSimpleRequestErrReaderBody(t *testing.T) {
-	c := NewApiClient(ClientConfig{
+	c, err := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 200,
@@ -41,7 +42,8 @@ func TestSimpleRequestErrReaderBody(t *testing.T) {
 			}, nil
 		}),
 	})
+	require.NoError(t, err)
 	headers := map[string]string{"Accept": "application/json"}
-	err := c.Do(context.Background(), "PATCH", "/a", WithRequestHeaders(headers), WithRequestData(map[string]any{}))
+	err = c.Do(context.Background(), "PATCH", "/a", WithRequestHeaders(headers), WithRequestData(map[string]any{}))
 	require.EqualError(t, err, "response body: test error")
 }

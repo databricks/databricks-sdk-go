@@ -114,6 +114,9 @@ type Config struct {
 	// Number of seconds to keep retrying HTTP requests. Default is 300 (5 minutes)
 	RetryTimeoutSeconds int `name:"retry_timeout_seconds" auth:"-"`
 
+	// The path to a CA certificate bundle that is used to verify SSL certificates.
+	CABundle string `name:"ca_bundle" env:"DATABRICKS_CA_BUNDLE" auth:"-"`
+
 	// HTTPTransport can be overriden for unit testing and together with tooling like https://github.com/google/go-replayers
 	HTTPTransport http.RoundTripper
 
@@ -271,10 +274,11 @@ func (c *Config) EnsureResolved() error {
 		return c.wrapDebug(fmt.Errorf("validate: %w", err))
 	}
 	c.refreshCtx = ctx
-	c.refreshClient = httpclient.NewApiClient(httpclient.ClientConfig{
+	c.refreshClient, err = httpclient.NewApiClient(httpclient.ClientConfig{
 		DebugHeaders:       c.DebugHeaders,
 		DebugTruncateBytes: c.DebugTruncateBytes,
 		InsecureSkipVerify: c.InsecureSkipVerify,
+		CABundle:           c.CABundle,
 		RetryTimeout:       time.Duration(c.RetryTimeoutSeconds) * time.Second,
 		HTTPTimeout:        time.Duration(c.HTTPTimeoutSeconds) * time.Second,
 		Transport:          c.HTTPTransport,
@@ -287,6 +291,9 @@ func (c *Config) EnsureResolved() error {
 			"rate limit",
 		},
 	})
+	if err != nil {
+		return c.wrapDebug(fmt.Errorf("create refresh client: %w", err))
+	}
 	c.resolved = true
 	return nil
 }
