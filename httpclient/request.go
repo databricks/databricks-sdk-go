@@ -112,6 +112,7 @@ func makeQueryString(data interface{}) (string, error) {
 func EncodeMultiSegmentPathParameter(p string) string {
 	segments := strings.Split(p, "/")
 	b := strings.Builder{}
+	b.Grow(len(p))
 	for i, s := range segments {
 		if i > 0 {
 			b.WriteString("/")
