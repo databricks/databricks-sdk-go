@@ -3577,16 +3577,16 @@ func (s SubmitTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type TableTriggerConfiguration struct {
+type TableUpdateTriggerConfiguration struct {
+	// A list of Delta tables to monitor for changes. The table name must be in
+	// the format `catalog_name.schema_name.table_name`.
+	TableNames []string `json:"table_names,omitempty"`
 	// The table(s) condition based on which to trigger a job run.
 	Condition Condition `json:"condition,omitempty"`
 	// If set, the trigger starts a run only after the specified amount of time
 	// has passed since the last time the trigger fired. The minimum allowed
 	// value is 60 seconds.
 	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
-	// A list of Delta tables to monitor for changes. The table name must be in
-	// the format `catalog_name.schema_name.table_name`.
-	TableNames []string `json:"table_names,omitempty"`
 	// If set, the trigger starts a run only after no table updates have
 	// occurred for the specified time and can be used to wait for a series of
 	// table updates before triggering a run. The minimum allowed value is 60
@@ -3596,11 +3596,11 @@ type TableTriggerConfiguration struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *TableTriggerConfiguration) UnmarshalJSON(b []byte) error {
+func (s *TableUpdateTriggerConfiguration) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s TableTriggerConfiguration) MarshalJSON() ([]byte, error) {
+func (s TableUpdateTriggerConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3812,10 +3812,10 @@ func (s TriggerInfo) MarshalJSON() ([]byte, error) {
 type TriggerSettings struct {
 	// File arrival trigger settings.
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
+	// Table trigger settings.
+	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
 	// Whether this trigger is paused or not.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
-	// Table trigger settings.
-	Table *TableTriggerConfiguration `json:"table,omitempty"`
 }
 
 // The type of trigger that fired this run.
