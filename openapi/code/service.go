@@ -149,11 +149,12 @@ func (svc *Service) getDescription(param openapi.Parameter) string {
 func (svc *Service) paramToField(op *openapi.Operation, param openapi.Parameter) *Field {
 	named := Named{param.Name, svc.getDescription(param)}
 	return &Field{
-		Named:    named,
-		Required: param.Required,
-		IsPath:   param.In == "path",
-		IsQuery:  param.In == "query",
-		IsHeader: param.In == "header",
+		Named:              named,
+		Required:           param.Required,
+		IsPath:             param.In == "path",
+		IsPathMultiSegment: param.MultiSegment,
+		IsQuery:            param.In == "query",
+		IsHeader:           param.In == "header",
 		Entity: svc.Package.schemaToEntity(param.Schema, []string{
 			op.Name(),
 			named.PascalName(),
@@ -254,6 +255,7 @@ func (svc *Service) addParams(request *Entity, op *openapi.Operation, params []o
 			field = param
 		}
 		field.IsPath = param.IsPath
+		field.IsPathMultiSegment = param.IsPathMultiSegment
 		field.IsQuery = param.IsQuery
 		field.IsHeader = param.IsHeader
 		request.fields[param.Name] = field

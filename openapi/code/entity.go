@@ -10,14 +10,15 @@ import (
 // Field of a Type (Entity)
 type Field struct {
 	Named
-	Required bool
-	Entity   *Entity
-	Of       *Entity
-	IsJson   bool
-	IsPath   bool
-	IsQuery  bool
-	IsHeader bool
-	Schema   *openapi.Schema
+	Required           bool
+	Entity             *Entity
+	Of                 *Entity
+	IsJson             bool
+	IsPath             bool
+	IsPathMultiSegment bool
+	IsQuery            bool
+	IsHeader           bool
+	Schema             *openapi.Schema
 }
 
 func (f *Field) IsOptionalObject() bool {

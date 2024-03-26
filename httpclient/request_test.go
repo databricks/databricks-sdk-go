@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 )
@@ -117,4 +118,11 @@ func TestWithTokenSource(t *testing.T) {
 		})))
 	require.NoError(t, err)
 	require.Equal(t, "awesome token", buf.String())
+}
+
+func TestEncodeMultiSegmentPathParameter(t *testing.T) {
+	// Slashes should not be encoded.
+	assert.Equal(t, "a/b/c", EncodeMultiSegmentPathParameter("a/b/c"))
+	// # and ? should be encoded.
+	assert.Equal(t, "a%23b%3Fc", EncodeMultiSegmentPathParameter("a#b?c"))
 }

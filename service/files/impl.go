@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 )
 
 // unexported type that holds implementations of just Dbfs API methods
@@ -119,7 +120,7 @@ type filesImpl struct {
 
 func (a *filesImpl) CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error {
 	var createDirectoryResponse CreateDirectoryResponse
-	path := fmt.Sprintf("/api/2.0/fs/directories%v", request.DirectoryPath)
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodPut, path, headers, nil, &createDirectoryResponse)
 	return err
@@ -127,7 +128,7 @@ func (a *filesImpl) CreateDirectory(ctx context.Context, request CreateDirectory
 
 func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
+	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
@@ -135,7 +136,7 @@ func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error
 
 func (a *filesImpl) DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error {
 	var deleteDirectoryResponse DeleteDirectoryResponse
-	path := fmt.Sprintf("/api/2.0/fs/directories%v", request.DirectoryPath)
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDirectoryResponse)
 	return err
@@ -143,7 +144,7 @@ func (a *filesImpl) DeleteDirectory(ctx context.Context, request DeleteDirectory
 
 func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
 	var downloadResponse DownloadResponse
-	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
+	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/octet-stream"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &downloadResponse)
@@ -152,7 +153,7 @@ func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*Dow
 
 func (a *filesImpl) GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error {
 	var getDirectoryMetadataResponse GetDirectoryMetadataResponse
-	path := fmt.Sprintf("/api/2.0/fs/directories%v", request.DirectoryPath)
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodHead, path, headers, request, &getDirectoryMetadataResponse)
 	return err
@@ -160,7 +161,7 @@ func (a *filesImpl) GetDirectoryMetadata(ctx context.Context, request GetDirecto
 
 func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error) {
 	var getMetadataResponse GetMetadataResponse
-	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
+	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodHead, path, headers, request, &getMetadataResponse)
 	return &getMetadataResponse, err
@@ -168,7 +169,7 @@ func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest)
 
 func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
 	var listDirectoryResponse ListDirectoryResponse
-	path := fmt.Sprintf("/api/2.0/fs/directories%v", request.DirectoryPath)
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listDirectoryResponse)
@@ -177,7 +178,7 @@ func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirec
 
 func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
 	var uploadResponse UploadResponse
-	path := fmt.Sprintf("/api/2.0/fs/files%v", request.FilePath)
+	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/octet-stream"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request.Contents, &uploadResponse)
