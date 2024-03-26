@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	{{range .ImportedPackages}}
 	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
 )
@@ -33,11 +34,12 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 {{- if .PathParts -}}
 	fmt.Sprintf("{{range  .PathParts -}}
 	    {{.Prefix}}{{if or .Field .IsAccountId}}%v{{end}}{{ end }}"
-	    {{- range .PathParts }}
-	        {{- if .Field}}, httpclient.EscapePathParam(request.{{.Field.PascalName}}, {{.Field.IsPathMultiSegment}})
+	    {{- range .PathParts -}}
+	        {{- if and .Field .Field.IsPathMultiSegment}}, httpclient.EncodeMultiSegmentPathParameter(request.{{.Field.PascalName}})
+	        {{- else if .Field}}, request.{{.Field.PascalName}}
 			{{- else if .IsAccountId }}, a.client.ConfiguredAccountID()
-			{{end}}
-	    {{- end }})
+			{{- end -}}
+	    {{- end -}})
 {{- else -}}
 	"{{.Path}}"
 {{- end -}}

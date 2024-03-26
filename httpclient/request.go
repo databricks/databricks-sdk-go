@@ -109,10 +109,7 @@ func makeQueryString(data interface{}) (string, error) {
 	return "", fmt.Errorf("unsupported query string data: %#v", data)
 }
 
-func EscapePathParameter(p string, multiSegment bool) string {
-	if !multiSegment {
-		return url.PathEscape(p)
-	}
+func EncodeMultiSegmentPathParameter(p string) string {
 	segments := strings.Split(p, "/")
 	b := strings.Builder{}
 	for i, s := range segments {
