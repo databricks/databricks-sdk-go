@@ -29,7 +29,7 @@ func (buf hashable) Hash() uint32 {
 	return h.Sum32()
 }
 
-func TestUcAccCUploadAndDownloadFilesAPI(t *testing.T) {
+func TestUcAccUploadAndDownloadFilesAPI(t *testing.T) {
 	ctx, w, volume := setupUCVolume(t)
 
 	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/files-")
