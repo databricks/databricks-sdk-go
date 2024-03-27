@@ -13,6 +13,54 @@ type Ai21LabsConfig struct {
 	Ai21labsApiKey string `json:"ai21labs_api_key"`
 }
 
+type AmazonBedrockConfig struct {
+	// The Databricks secret key reference for an AWS Access Key ID with
+	// permissions to interact with Bedrock services.
+	AwsAccessKeyId string `json:"aws_access_key_id"`
+	// The AWS region to use. Bedrock has to be enabled there.
+	AwsRegion string `json:"aws_region"`
+	// The Databricks secret key reference for an AWS Secret Access Key paired
+	// with the access key ID, with permissions to interact with Bedrock
+	// services.
+	AwsSecretAccessKey string `json:"aws_secret_access_key"`
+	// The underlying provider in Amazon Bedrock. Supported values (case
+	// insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
+	BedrockProvider AmazonBedrockConfigBedrockProvider `json:"bedrock_provider"`
+}
+
+// The underlying provider in Amazon Bedrock. Supported values (case
+// insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
+type AmazonBedrockConfigBedrockProvider string
+
+const AmazonBedrockConfigBedrockProviderAi21labs AmazonBedrockConfigBedrockProvider = `ai21labs`
+
+const AmazonBedrockConfigBedrockProviderAmazon AmazonBedrockConfigBedrockProvider = `amazon`
+
+const AmazonBedrockConfigBedrockProviderAnthropic AmazonBedrockConfigBedrockProvider = `anthropic`
+
+const AmazonBedrockConfigBedrockProviderCohere AmazonBedrockConfigBedrockProvider = `cohere`
+
+// String representation for [fmt.Print]
+func (f *AmazonBedrockConfigBedrockProvider) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AmazonBedrockConfigBedrockProvider) Set(v string) error {
+	switch v {
+	case `ai21labs`, `amazon`, `anthropic`, `cohere`:
+		*f = AmazonBedrockConfigBedrockProvider(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ai21labs", "amazon", "anthropic", "cohere"`, v)
+	}
+}
+
+// Type always returns AmazonBedrockConfigBedrockProvider to satisfy [pflag.Value] interface
+func (f *AmazonBedrockConfigBedrockProvider) Type() string {
+	return "AmazonBedrockConfigBedrockProvider"
+}
+
 type AnthropicConfig struct {
 	// The Databricks secret key reference for an Anthropic API key.
 	AnthropicApiKey string `json:"anthropic_api_key"`
@@ -135,54 +183,6 @@ func (s AutoCaptureConfigOutput) MarshalJSON() ([]byte, error) {
 
 type AutoCaptureState struct {
 	PayloadTable *PayloadTable `json:"payload_table,omitempty"`
-}
-
-type AwsBedrockConfig struct {
-	// The Databricks secret key reference for an AWS Access Key ID with
-	// permissions to interact with Bedrock services.
-	AwsAccessKeyId string `json:"aws_access_key_id"`
-	// The AWS region to use. Bedrock has to be enabled there.
-	AwsRegion string `json:"aws_region"`
-	// The Databricks secret key reference for an AWS Secret Access Key paired
-	// with the access key ID, with permissions to interact with Bedrock
-	// services.
-	AwsSecretAccessKey string `json:"aws_secret_access_key"`
-	// The underlying provider in AWS Bedrock. Supported values (case
-	// insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
-	BedrockProvider AwsBedrockConfigBedrockProvider `json:"bedrock_provider"`
-}
-
-// The underlying provider in AWS Bedrock. Supported values (case insensitive)
-// include: Anthropic, Cohere, AI21Labs, Amazon.
-type AwsBedrockConfigBedrockProvider string
-
-const AwsBedrockConfigBedrockProviderAi21labs AwsBedrockConfigBedrockProvider = `ai21labs`
-
-const AwsBedrockConfigBedrockProviderAmazon AwsBedrockConfigBedrockProvider = `amazon`
-
-const AwsBedrockConfigBedrockProviderAnthropic AwsBedrockConfigBedrockProvider = `anthropic`
-
-const AwsBedrockConfigBedrockProviderCohere AwsBedrockConfigBedrockProvider = `cohere`
-
-// String representation for [fmt.Print]
-func (f *AwsBedrockConfigBedrockProvider) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *AwsBedrockConfigBedrockProvider) Set(v string) error {
-	switch v {
-	case `ai21labs`, `amazon`, `anthropic`, `cohere`:
-		*f = AwsBedrockConfigBedrockProvider(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ai21labs", "amazon", "anthropic", "cohere"`, v)
-	}
-}
-
-// Type always returns AwsBedrockConfigBedrockProvider to satisfy [pflag.Value] interface
-func (f *AwsBedrockConfigBedrockProvider) Type() string {
-	return "AwsBedrockConfigBedrockProvider"
 }
 
 // Get build logs for a served model
@@ -606,10 +606,10 @@ type ExportMetricsResponse struct {
 type ExternalModel struct {
 	// AI21Labs Config. Only required if the provider is 'ai21labs'.
 	Ai21labsConfig *Ai21LabsConfig `json:"ai21labs_config,omitempty"`
+	// Amazon Bedrock Config. Only required if the provider is 'amazon-bedrock'.
+	AmazonBedrockConfig *AmazonBedrockConfig `json:"amazon_bedrock_config,omitempty"`
 	// Anthropic Config. Only required if the provider is 'anthropic'.
 	AnthropicConfig *AnthropicConfig `json:"anthropic_config,omitempty"`
-	// AWS Bedrock Config. Only required if the provider is 'aws-bedrock'.
-	AwsBedrockConfig *AwsBedrockConfig `json:"aws_bedrock_config,omitempty"`
 	// Cohere Config. Only required if the provider is 'cohere'.
 	CohereConfig *CohereConfig `json:"cohere_config,omitempty"`
 	// Databricks Model Serving Config. Only required if the provider is
@@ -622,7 +622,7 @@ type ExternalModel struct {
 	// PaLM Config. Only required if the provider is 'palm'.
 	PalmConfig *PaLmConfig `json:"palm_config,omitempty"`
 	// The name of the provider for the external model. Currently, the supported
-	// providers are 'ai21labs', 'anthropic', 'aws-bedrock', 'cohere',
+	// providers are 'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere',
 	// 'databricks-model-serving', 'openai', and 'palm'.",
 	Provider ExternalModelProvider `json:"provider"`
 	// The task type of the external model.
@@ -630,15 +630,15 @@ type ExternalModel struct {
 }
 
 // The name of the provider for the external model. Currently, the supported
-// providers are 'ai21labs', 'anthropic', 'aws-bedrock', 'cohere',
+// providers are 'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere',
 // 'databricks-model-serving', 'openai', and 'palm'.",
 type ExternalModelProvider string
 
 const ExternalModelProviderAi21labs ExternalModelProvider = `ai21labs`
 
-const ExternalModelProviderAnthropic ExternalModelProvider = `anthropic`
+const ExternalModelProviderAmazonBedrock ExternalModelProvider = `amazon-bedrock`
 
-const ExternalModelProviderAwsBedrock ExternalModelProvider = `aws-bedrock`
+const ExternalModelProviderAnthropic ExternalModelProvider = `anthropic`
 
 const ExternalModelProviderCohere ExternalModelProvider = `cohere`
 
@@ -656,11 +656,11 @@ func (f *ExternalModelProvider) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ExternalModelProvider) Set(v string) error {
 	switch v {
-	case `ai21labs`, `anthropic`, `aws-bedrock`, `cohere`, `databricks-model-serving`, `openai`, `palm`:
+	case `ai21labs`, `amazon-bedrock`, `anthropic`, `cohere`, `databricks-model-serving`, `openai`, `palm`:
 		*f = ExternalModelProvider(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ai21labs", "anthropic", "aws-bedrock", "cohere", "databricks-model-serving", "openai", "palm"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ai21labs", "amazon-bedrock", "anthropic", "cohere", "databricks-model-serving", "openai", "palm"`, v)
 	}
 }
 

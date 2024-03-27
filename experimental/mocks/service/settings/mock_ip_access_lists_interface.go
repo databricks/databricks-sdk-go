@@ -178,7 +178,7 @@ func (_c *MockIpAccessListsInterface_DeleteByIpAccessListId_Call) RunAndReturn(r
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockIpAccessListsInterface) Get(ctx context.Context, request settings.GetIpAccessList) (*settings.FetchIpAccessListResponse, error) {
+func (_m *MockIpAccessListsInterface) Get(ctx context.Context, request settings.GetIpAccessListRequest) (*settings.FetchIpAccessListResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -187,10 +187,10 @@ func (_m *MockIpAccessListsInterface) Get(ctx context.Context, request settings.
 
 	var r0 *settings.FetchIpAccessListResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetIpAccessList) (*settings.FetchIpAccessListResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetIpAccessListRequest) (*settings.FetchIpAccessListResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetIpAccessList) *settings.FetchIpAccessListResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetIpAccessListRequest) *settings.FetchIpAccessListResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -198,7 +198,7 @@ func (_m *MockIpAccessListsInterface) Get(ctx context.Context, request settings.
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.GetIpAccessList) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.GetIpAccessListRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -214,14 +214,14 @@ type MockIpAccessListsInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.GetIpAccessList
+//   - request settings.GetIpAccessListRequest
 func (_e *MockIpAccessListsInterface_Expecter) Get(ctx interface{}, request interface{}) *MockIpAccessListsInterface_Get_Call {
 	return &MockIpAccessListsInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockIpAccessListsInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetIpAccessList)) *MockIpAccessListsInterface_Get_Call {
+func (_c *MockIpAccessListsInterface_Get_Call) Run(run func(ctx context.Context, request settings.GetIpAccessListRequest)) *MockIpAccessListsInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.GetIpAccessList))
+		run(args[0].(context.Context), args[1].(settings.GetIpAccessListRequest))
 	})
 	return _c
 }
@@ -231,7 +231,7 @@ func (_c *MockIpAccessListsInterface_Get_Call) Return(_a0 *settings.FetchIpAcces
 	return _c
 }
 
-func (_c *MockIpAccessListsInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetIpAccessList) (*settings.FetchIpAccessListResponse, error)) *MockIpAccessListsInterface_Get_Call {
+func (_c *MockIpAccessListsInterface_Get_Call) RunAndReturn(run func(context.Context, settings.GetIpAccessListRequest) (*settings.FetchIpAccessListResponse, error)) *MockIpAccessListsInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }

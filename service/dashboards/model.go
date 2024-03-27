@@ -104,6 +104,26 @@ func (f *LifecycleState) Type() string {
 	return "LifecycleState"
 }
 
+type MigrateDashboardRequest struct {
+	// Display name for the new Lakeview dashboard.
+	DisplayName string `json:"display_name,omitempty"`
+	// The workspace path of the folder to contain the migrated Lakeview
+	// dashboard.
+	ParentPath string `json:"parent_path,omitempty"`
+	// UUID of the dashboard to be migrated.
+	SourceDashboardId string `json:"source_dashboard_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MigrateDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MigrateDashboardRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PublishRequest struct {
 	// UUID identifying the dashboard to be published.
 	DashboardId string `json:"-" url:"-"`
@@ -154,6 +174,15 @@ type TrashDashboardRequest struct {
 }
 
 type TrashDashboardResponse struct {
+}
+
+// Unpublish dashboard
+type UnpublishDashboardRequest struct {
+	// UUID identifying the dashboard to be published.
+	DashboardId string `json:"-" url:"-"`
+}
+
+type UnpublishDashboardResponse struct {
 }
 
 type UpdateDashboardRequest struct {
