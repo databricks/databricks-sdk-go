@@ -2,9 +2,11 @@
 
 ## ## 0.37.0
 
+### Other Changes
+
 * Fix integration test naming for UC Files ([#868](https://github.com/databricks/databricks-sdk-go/pull/868)).
 
-API Changes:
+### API Changes
 
  * Added `Migrate` and `Unpublish` methods for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
  * Added [dashboards.MigrateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#MigrateDashboardRequest).
