@@ -43,6 +43,16 @@ func (a *lakeviewImpl) GetPublished(ctx context.Context, request GetPublishedDas
 	return &publishedDashboard, err
 }
 
+func (a *lakeviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequest) (*Dashboard, error) {
+	var dashboard Dashboard
+	path := "/api/2.0/lakeview/dashboards/migrate"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &dashboard)
+	return &dashboard, err
+}
+
 func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error) {
 	var publishedDashboard PublishedDashboard
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
@@ -59,6 +69,15 @@ func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &trashDashboardResponse)
+	return err
+}
+
+func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboardRequest) error {
+	var unpublishDashboardResponse UnpublishDashboardResponse
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &unpublishDashboardResponse)
 	return err
 }
 

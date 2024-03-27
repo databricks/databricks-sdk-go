@@ -44,6 +44,11 @@ type LakeviewInterface interface {
 	// Get the current published dashboard.
 	GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error)
 
+	// Migrate dashboard.
+	//
+	// Migrates a classic SQL dashboard to Lakeview.
+	Migrate(ctx context.Context, request MigrateDashboardRequest) (*Dashboard, error)
+
 	// Publish dashboard.
 	//
 	// Publish the current draft dashboard.
@@ -58,6 +63,16 @@ type LakeviewInterface interface {
 	//
 	// Trash a dashboard.
 	TrashByDashboardId(ctx context.Context, dashboardId string) error
+
+	// Unpublish dashboard.
+	//
+	// Unpublish the dashboard.
+	Unpublish(ctx context.Context, request UnpublishDashboardRequest) error
+
+	// Unpublish dashboard.
+	//
+	// Unpublish the dashboard.
+	UnpublishByDashboardId(ctx context.Context, dashboardId string) error
 
 	// Update dashboard.
 	//
@@ -135,6 +150,13 @@ func (a *LakeviewAPI) GetPublishedByDashboardId(ctx context.Context, dashboardId
 	})
 }
 
+// Migrate dashboard.
+//
+// Migrates a classic SQL dashboard to Lakeview.
+func (a *LakeviewAPI) Migrate(ctx context.Context, request MigrateDashboardRequest) (*Dashboard, error) {
+	return a.impl.Migrate(ctx, request)
+}
+
 // Publish dashboard.
 //
 // Publish the current draft dashboard.
@@ -154,6 +176,22 @@ func (a *LakeviewAPI) Trash(ctx context.Context, request TrashDashboardRequest) 
 // Trash a dashboard.
 func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) error {
 	return a.impl.Trash(ctx, TrashDashboardRequest{
+		DashboardId: dashboardId,
+	})
+}
+
+// Unpublish dashboard.
+//
+// Unpublish the dashboard.
+func (a *LakeviewAPI) Unpublish(ctx context.Context, request UnpublishDashboardRequest) error {
+	return a.impl.Unpublish(ctx, request)
+}
+
+// Unpublish dashboard.
+//
+// Unpublish the dashboard.
+func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId string) error {
+	return a.impl.Unpublish(ctx, UnpublishDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }

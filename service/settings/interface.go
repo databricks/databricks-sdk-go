@@ -321,7 +321,7 @@ type IpAccessListsService interface {
 	// Get access list.
 	//
 	// Gets an IP access list, specified by its list ID.
-	Get(ctx context.Context, request GetIpAccessList) (*FetchIpAccessListResponse, error)
+	Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error)
 
 	// Get access lists.
 	//

@@ -269,7 +269,7 @@ func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessLi
 	return err
 }
 
-func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessList) (*FetchIpAccessListResponse, error) {
+func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error) {
 	var fetchIpAccessListResponse FetchIpAccessListResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	headers := make(map[string]string)
