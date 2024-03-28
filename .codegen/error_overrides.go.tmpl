@@ -10,10 +10,10 @@ var allOverrides = []errorOverride{
 {{ range .ErrorOverrides }}
     {
         debugName: "{{.Name}}",
-        pathRegex: regexp.MustCompile("{{.PathRegex}}"),
+        pathRegex: regexp.MustCompile(`{{.PathRegex}}`),
         verb: "{{.Verb}}",
-        errorCodeMatcher: regexp.MustCompile("{{.ErrorCodeMatcher}}"),
-        messageMatcher: regexp.MustCompile("{{.MessageMatcher}}"),
+        errorCodeMatcher: regexp.MustCompile(`{{.ErrorCodeMatcher}}`),
+        messageMatcher: regexp.MustCompile(`{{.MessageMatcher}}`),
         customError: Err{{.OverrideErrorCode.PascalName}}
     },
 {{ end }}
