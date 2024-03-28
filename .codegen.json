@@ -11,6 +11,7 @@
     ".codegen/accounts.go.tmpl": "account_client.go",
     ".codegen/service-pkg.go.tmpl": "service/pkg.go",
     ".codegen/error_mapping.go.tmpl": "apierr/error_mapping.go",
+    ".codegen/error_overrides.go.tmpl": "apierr/error_overrides.go",
     ".codegen/error_alias.go.tmpl": "error_alias.go",
     ".codegen/mock_workspace_client.go.tmpl": "experimental/mocks/mock_workspace_client.go",
     ".codegen/mock_account_client.go.tmpl": "experimental/mocks/mock_account_client.go"
