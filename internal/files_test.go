@@ -32,7 +32,7 @@ func (buf hashable) Hash() uint32 {
 func TestUcAccFilesUploadAndDownload(t *testing.T) {
 	ctx, w, volume := setupUCVolume(t)
 
-	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/files-")
+	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/files-with-?-and-#-")
 	err := w.Files.Upload(ctx, files.UploadRequest{
 		FilePath: filePath,
 		Contents: io.NopCloser(strings.NewReader("abcd")),
