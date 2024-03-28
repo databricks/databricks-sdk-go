@@ -76,6 +76,7 @@ type ErrorOverride struct {
 	Name              string
 	PathRegex         string
 	Verb              string
+	StatusCodeMatcher string
 	ErrorCodeMatcher  string
 	MessageMatcher    string
 	OverrideErrorCode Named
@@ -85,11 +86,12 @@ func (b *Batch) ErrorOverrides() []ErrorOverride {
 	res := []ErrorOverride{}
 	for _, eo := range openapi.ErrorOverrides {
 		res = append(res, ErrorOverride{
-			Name:             eo.Name,
-			PathRegex:        eo.PathRegex.String(),
-			Verb:             eo.Verb,
-			ErrorCodeMatcher: eo.ErrorCodeMatcher.String(),
-			MessageMatcher:   eo.MessageMatcher.String(),
+			Name:              eo.Name,
+			PathRegex:         eo.PathRegex.String(),
+			Verb:              eo.Verb,
+			StatusCodeMatcher: eo.StatusCodeMatcher.String(),
+			ErrorCodeMatcher:  eo.ErrorCodeMatcher.String(),
+			MessageMatcher:    eo.MessageMatcher.String(),
 			OverrideErrorCode: Named{
 				Name: eo.OverrideErrorCode,
 			},
