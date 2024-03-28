@@ -25,6 +25,7 @@ func (a applyOverridesTestCase) testCase(t *testing.T) {
 			},
 			Method: a.method,
 		},
+		StatusCode: a.initialError.StatusCode,
 	}
 	applyOverrides(context.Background(), a.initialError, resp)
 	assert.ErrorIs(t, a.initialError, a.expectedError)
@@ -33,8 +34,9 @@ func (a applyOverridesTestCase) testCase(t *testing.T) {
 var testCases = []applyOverridesTestCase{
 	{
 		initialError: &APIError{
-			ErrorCode: "INVALID_PARAMETER_VALUE",
-			Message:   "Cluster abc does not exist",
+			ErrorCode:  "INVALID_PARAMETER_VALUE",
+			StatusCode: 400,
+			Message:    "Cluster abc does not exist",
 		},
 		path:          "/api/2.0/clusters/get",
 		method:        "GET",
@@ -42,8 +44,9 @@ var testCases = []applyOverridesTestCase{
 	},
 	{
 		initialError: &APIError{
-			ErrorCode: "INVALID_PARAMETER_VALUE",
-			Message:   "Job abc does not exist",
+			ErrorCode:  "INVALID_PARAMETER_VALUE",
+			StatusCode: 400,
+			Message:    "Job abc does not exist",
 		},
 		path:          "/api/2.0/jobs/get",
 		method:        "GET",
@@ -51,8 +54,9 @@ var testCases = []applyOverridesTestCase{
 	},
 	{
 		initialError: &APIError{
-			ErrorCode: "INVALID_PARAMETER_VALUE",
-			Message:   "Job abc does not exist",
+			ErrorCode:  "INVALID_PARAMETER_VALUE",
+			StatusCode: 400,
+			Message:    "Job abc does not exist",
 		},
 		path:          "/api/2.1/jobs/get",
 		method:        "GET",
@@ -60,8 +64,9 @@ var testCases = []applyOverridesTestCase{
 	},
 	{
 		initialError: &APIError{
-			ErrorCode: "INVALID_PARAMETER_VALUE",
-			Message:   "Notebook abc does not exist",
+			ErrorCode:  "INVALID_PARAMETER_VALUE",
+			StatusCode: 400,
+			Message:    "Notebook abc does not exist",
 		},
 		path:          "/api/2.0/notebooks/get",
 		method:        "GET",
@@ -69,8 +74,19 @@ var testCases = []applyOverridesTestCase{
 	},
 	{
 		initialError: &APIError{
-			ErrorCode: "INVALID_PARAMETER_VALUE",
-			Message:   "Invalid job attribute",
+			ErrorCode:  "INVALID_PARAMETER_VALUE",
+			StatusCode: 400,
+			Message:    "Invalid job attribute",
+		},
+		path:          "/api/2.0/jobs/get",
+		method:        "GET",
+		expectedError: ErrBadRequest,
+	},
+	{
+		initialError: &APIError{
+			ErrorCode:  "INVALID_PARAMETER_VALUE",
+			StatusCode: 404,
+			Message:    "Job abc does not exist",
 		},
 		path:          "/api/2.0/jobs/get",
 		method:        "GET",

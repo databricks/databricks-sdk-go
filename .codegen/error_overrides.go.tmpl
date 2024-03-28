@@ -12,6 +12,7 @@ var allOverrides = []errorOverride{
         debugName: "{{.Name}}",
         pathRegex: regexp.MustCompile(`{{.PathRegex}}`),
         verb: "{{.Verb}}",
+        statusCodeMatcher: regexp.MustCompile(`{{.StatusCodeMatcher}}`),
         errorCodeMatcher: regexp.MustCompile(`{{.ErrorCodeMatcher}}`),
         messageMatcher: regexp.MustCompile(`{{.MessageMatcher}}`),
         customError: Err{{.OverrideErrorCode.PascalName}},
