@@ -364,6 +364,65 @@ func (_c *MockLakeviewInterface_Impl_Call) RunAndReturn(run func() dashboards.La
 	return _c
 }
 
+// Migrate provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) Migrate(ctx context.Context, request dashboards.MigrateDashboardRequest) (*dashboards.Dashboard, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Migrate")
+	}
+
+	var r0 *dashboards.Dashboard
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.MigrateDashboardRequest) (*dashboards.Dashboard, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.MigrateDashboardRequest) *dashboards.Dashboard); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Dashboard)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.MigrateDashboardRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_Migrate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Migrate'
+type MockLakeviewInterface_Migrate_Call struct {
+	*mock.Call
+}
+
+// Migrate is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.MigrateDashboardRequest
+func (_e *MockLakeviewInterface_Expecter) Migrate(ctx interface{}, request interface{}) *MockLakeviewInterface_Migrate_Call {
+	return &MockLakeviewInterface_Migrate_Call{Call: _e.mock.On("Migrate", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_Migrate_Call) Run(run func(ctx context.Context, request dashboards.MigrateDashboardRequest)) *MockLakeviewInterface_Migrate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.MigrateDashboardRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Migrate_Call) Return(_a0 *dashboards.Dashboard, _a1 error) *MockLakeviewInterface_Migrate_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Migrate_Call) RunAndReturn(run func(context.Context, dashboards.MigrateDashboardRequest) (*dashboards.Dashboard, error)) *MockLakeviewInterface_Migrate_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Publish provides a mock function with given fields: ctx, request
 func (_m *MockLakeviewInterface) Publish(ctx context.Context, request dashboards.PublishRequest) (*dashboards.PublishedDashboard, error) {
 	ret := _m.Called(ctx, request)
@@ -513,6 +572,100 @@ func (_c *MockLakeviewInterface_TrashByDashboardId_Call) Return(_a0 error) *Mock
 }
 
 func (_c *MockLakeviewInterface_TrashByDashboardId_Call) RunAndReturn(run func(context.Context, string) error) *MockLakeviewInterface_TrashByDashboardId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Unpublish provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) Unpublish(ctx context.Context, request dashboards.UnpublishDashboardRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Unpublish")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.UnpublishDashboardRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLakeviewInterface_Unpublish_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Unpublish'
+type MockLakeviewInterface_Unpublish_Call struct {
+	*mock.Call
+}
+
+// Unpublish is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.UnpublishDashboardRequest
+func (_e *MockLakeviewInterface_Expecter) Unpublish(ctx interface{}, request interface{}) *MockLakeviewInterface_Unpublish_Call {
+	return &MockLakeviewInterface_Unpublish_Call{Call: _e.mock.On("Unpublish", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_Unpublish_Call) Run(run func(ctx context.Context, request dashboards.UnpublishDashboardRequest)) *MockLakeviewInterface_Unpublish_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.UnpublishDashboardRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Unpublish_Call) Return(_a0 error) *MockLakeviewInterface_Unpublish_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_Unpublish_Call) RunAndReturn(run func(context.Context, dashboards.UnpublishDashboardRequest) error) *MockLakeviewInterface_Unpublish_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UnpublishByDashboardId provides a mock function with given fields: ctx, dashboardId
+func (_m *MockLakeviewInterface) UnpublishByDashboardId(ctx context.Context, dashboardId string) error {
+	ret := _m.Called(ctx, dashboardId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UnpublishByDashboardId")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, dashboardId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLakeviewInterface_UnpublishByDashboardId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UnpublishByDashboardId'
+type MockLakeviewInterface_UnpublishByDashboardId_Call struct {
+	*mock.Call
+}
+
+// UnpublishByDashboardId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dashboardId string
+func (_e *MockLakeviewInterface_Expecter) UnpublishByDashboardId(ctx interface{}, dashboardId interface{}) *MockLakeviewInterface_UnpublishByDashboardId_Call {
+	return &MockLakeviewInterface_UnpublishByDashboardId_Call{Call: _e.mock.On("UnpublishByDashboardId", ctx, dashboardId)}
+}
+
+func (_c *MockLakeviewInterface_UnpublishByDashboardId_Call) Run(run func(ctx context.Context, dashboardId string)) *MockLakeviewInterface_UnpublishByDashboardId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_UnpublishByDashboardId_Call) Return(_a0 error) *MockLakeviewInterface_UnpublishByDashboardId_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_UnpublishByDashboardId_Call) RunAndReturn(run func(context.Context, string) error) *MockLakeviewInterface_UnpublishByDashboardId_Call {
 	_c.Call.Return(run)
 	return _c
 }

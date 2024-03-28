@@ -26,6 +26,11 @@ type LakeviewService interface {
 	// Get the current published dashboard.
 	GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error)
 
+	// Migrate dashboard.
+	//
+	// Migrates a classic SQL dashboard to Lakeview.
+	Migrate(ctx context.Context, request MigrateDashboardRequest) (*Dashboard, error)
+
 	// Publish dashboard.
 	//
 	// Publish the current draft dashboard.
@@ -35,6 +40,11 @@ type LakeviewService interface {
 	//
 	// Trash a dashboard.
 	Trash(ctx context.Context, request TrashDashboardRequest) error
+
+	// Unpublish dashboard.
+	//
+	// Unpublish the dashboard.
+	Unpublish(ctx context.Context, request UnpublishDashboardRequest) error
 
 	// Update dashboard.
 	//

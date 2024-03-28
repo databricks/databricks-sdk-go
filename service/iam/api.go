@@ -1497,6 +1497,9 @@ func NewPermissions(client *client.DatabricksClient) *PermissionsAPI {
 // For the mapping of the required permissions for specific actions or abilities
 // and other important information, see [Access Control].
 //
+// Note that to manage access control on service principals, use **[Account
+// Access Control Proxy](:service:accountaccesscontrolproxy)**.
+//
 // [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 type PermissionsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden

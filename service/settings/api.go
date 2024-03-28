@@ -1042,7 +1042,7 @@ type IpAccessListsInterface interface {
 	// Get access list.
 	//
 	// Gets an IP access list, specified by its list ID.
-	Get(ctx context.Context, request GetIpAccessList) (*FetchIpAccessListResponse, error)
+	Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error)
 
 	// Get access list.
 	//
@@ -1209,7 +1209,7 @@ func (a *IpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessL
 // Get access list.
 //
 // Gets an IP access list, specified by its list ID.
-func (a *IpAccessListsAPI) Get(ctx context.Context, request GetIpAccessList) (*FetchIpAccessListResponse, error) {
+func (a *IpAccessListsAPI) Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -1217,7 +1217,7 @@ func (a *IpAccessListsAPI) Get(ctx context.Context, request GetIpAccessList) (*F
 //
 // Gets an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) GetByIpAccessListId(ctx context.Context, ipAccessListId string) (*FetchIpAccessListResponse, error) {
-	return a.impl.Get(ctx, GetIpAccessList{
+	return a.impl.Get(ctx, GetIpAccessListRequest{
 		IpAccessListId: ipAccessListId,
 	})
 }

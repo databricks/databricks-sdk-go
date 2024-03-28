@@ -938,7 +938,7 @@ func (s GetEsmEnablementSettingRequest) MarshalJSON() ([]byte, error) {
 }
 
 // Get access list
-type GetIpAccessList struct {
+type GetIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 }
