@@ -7,7 +7,7 @@ import (
 )
 
 var allOverrides = []errorOverride{
-{{ range .ErrorOverrides }}
+    {{ range .ErrorOverrides -}}
     {
         debugName: "{{.Name}}",
         pathRegex: regexp.MustCompile(`{{.PathRegex}}`),
@@ -17,5 +17,5 @@ var allOverrides = []errorOverride{
         messageMatcher: regexp.MustCompile(`{{.MessageMatcher}}`),
         customError: Err{{.OverrideErrorCode.PascalName}},
     },
-{{ end }}
+{{- end }}
 }

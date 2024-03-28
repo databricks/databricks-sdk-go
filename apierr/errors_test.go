@@ -33,7 +33,7 @@ func TestGetAPIErrorHandlesEmptyResponse(t *testing.T) {
 func TestGetAPIErrorAppliesOverrides(t *testing.T) {
 	resp := common.ResponseWrapper{
 		Response: &http.Response{
-			StatusCode: http.StatusConflict,
+			StatusCode: http.StatusBadRequest,
 			Request: &http.Request{
 				Method: "GET",
 				URL: &url.URL{
