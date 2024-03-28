@@ -3,7 +3,7 @@
 package apierr
 
 import (
-	"errors"
+	"regexp"
 )
 
 var allOverrides = []errorOverride{
@@ -14,7 +14,7 @@ var allOverrides = []errorOverride{
         verb: "{{.Verb}}",
         errorCodeMatcher: regexp.MustCompile(`{{.ErrorCodeMatcher}}`),
         messageMatcher: regexp.MustCompile(`{{.MessageMatcher}}`),
-        customError: Err{{.OverrideErrorCode.PascalName}}
+        customError: Err{{.OverrideErrorCode.PascalName}},
     },
 {{ end }}
 }
