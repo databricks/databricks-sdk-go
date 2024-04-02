@@ -113,14 +113,17 @@ type DoOption struct {
 
 // Do sends an HTTP request against path.
 func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOption) error {
-	authVisitors := []RequestVisitor{}
+	var authVisitor RequestVisitor
 	visitors := c.config.Visitors[:]
 	for _, o := range opts {
 		if o.in == nil {
 			continue
 		}
 		if o.isAuthOption {
-			authVisitors = append(authVisitors, o.in)
+			if authVisitor != nil {
+				return fmt.Errorf("only one auth visitor is allowed")
+			}
+			authVisitor = o.in
 		} else {
 			// merge client-wide and request-specific visitors
 			visitors = append(visitors, o.in)
@@ -128,11 +131,14 @@ func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOptio
 
 	}
 	// Use default AuthVisitor if none is provided
-	if len(authVisitors) == 0 && c.config.AuthVisitor != nil {
-		authVisitors = append(authVisitors, c.config.AuthVisitor)
+	if authVisitor == nil {
+		authVisitor = c.config.AuthVisitor
 	}
-	// AuthVisitors must be the first visitors because other visitors depend on auth being configured
-	visitors = append(authVisitors, visitors...)
+	if authVisitor != nil {
+		// AuthVisitors must be the first visitors because other visitors depend on auth being configured
+		visitors = append([]RequestVisitor{authVisitor}, visitors...)
+	}
+
 	var requestBody any
 	for _, o := range opts {
 		if o.body == nil {
