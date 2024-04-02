@@ -49,7 +49,11 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 				return nil
 			},
 			func(r *http.Request) error {
-				ctx := useragent.InContext(r.Context(), useragent.AuthKey, c.AuthType)
+				authType := c.AuthType
+				if t := r.Context().Value(useragent.AuthKey); t != nil {
+					authType = t.(string)
+				}
+				ctx := useragent.InContext(r.Context(), useragent.AuthKey, authType)
 				*r = *r.WithContext(ctx) // replace request
 				return nil
 			},
