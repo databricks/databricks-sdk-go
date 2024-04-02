@@ -596,6 +596,35 @@ func TestOAuth2Integration(t *testing.T) {
 	require.Equal(t, 204, res.StatusCode)
 }
 
+func TestErrorOnMultipleAuthVisitor(t *testing.T) {
+	defaultAuthVisitor := func(r *http.Request) error {
+		r.Header.Set("X-Auth", "abc")
+		return nil
+	}
+	customAuthVisitor := func(r *http.Request) error {
+		r.Header.Set("X-Auth-custom", "def")
+		return nil
+	}
+	authOption := DoOption{
+		in:           customAuthVisitor,
+		isAuthOption: true,
+	}
+	c := NewApiClient(ClientConfig{
+		AuthVisitor: defaultAuthVisitor,
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			require.Equal(t, "", r.Header.Get("X-Auth"))
+			require.Equal(t, "def", r.Header.Get("X-Auth-custom"))
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{"foo": 2}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	err := c.Do(context.Background(), "GET", "/a/b", WithRequestData(map[string]any{}), authOption, authOption)
+	require.Error(t, err, "only one auth visitor is allowed")
+}
+
 func TestCustomAuthVisitor(t *testing.T) {
 	defaultAuthVisitor := func(r *http.Request) error {
 		r.Header.Set("X-Auth", "abc")
