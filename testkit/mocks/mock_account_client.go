@@ -8,12 +8,12 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/billing"
-	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
-	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
-	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
-	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/provisioning"
-	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
+	"github.com/databricks/databricks-sdk-go/testkit/mocks/service/billing"
+	"github.com/databricks/databricks-sdk-go/testkit/mocks/service/catalog"
+	"github.com/databricks/databricks-sdk-go/testkit/mocks/service/iam"
+	"github.com/databricks/databricks-sdk-go/testkit/mocks/service/oauth2"
+	"github.com/databricks/databricks-sdk-go/testkit/mocks/service/provisioning"
+	"github.com/databricks/databricks-sdk-go/testkit/mocks/service/settings"
 )
 
 type MockAccountClient struct {

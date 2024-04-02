@@ -137,7 +137,7 @@ func (c *Generator) Apply(ctx context.Context, batch *code.Batch, suite *roll.Su
 		filenames = append(filenames, pass.Filenames...)
 	}
 
-	mockDir := filepath.Join(c.dir, "experimental", "mocks", "service")
+	mockDir := filepath.Join(c.dir, "testkit", "mocks", "service")
 	mockFilenames := []string{}
 	info, err := os.Stat(mockDir)
 	if err == nil && info.IsDir() {
