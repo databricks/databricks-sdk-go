@@ -34,8 +34,8 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 		DebugTruncateBytes: c.DebugTruncateBytes,
 		InsecureSkipVerify: c.InsecureSkipVerify,
 		Transport:          c.HTTPTransport,
+		AuthVisitor:        c.Authenticate,
 		Visitors: []httpclient.RequestVisitor{
-			c.Authenticate,
 			func(r *http.Request) error {
 				if r.URL == nil {
 					return fmt.Errorf("no URL found in request")

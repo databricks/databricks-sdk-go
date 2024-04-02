@@ -595,3 +595,60 @@ func TestOAuth2Integration(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, 204, res.StatusCode)
 }
+
+func TestCustomAuthVisitor(t *testing.T) {
+	defaultAuthVisitor := func(r *http.Request) error {
+		r.Header.Set("X-Auth", "abc")
+		return nil
+	}
+	customAuthVisitor := func(r *http.Request) error {
+		r.Header.Set("X-Auth-custom", "def")
+		return nil
+	}
+	authOption := DoOption{
+		in:           customAuthVisitor,
+		isAuthOption: true,
+	}
+	c := NewApiClient(ClientConfig{
+		AuthVisitor: defaultAuthVisitor,
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			require.Equal(t, "", r.Header.Get("X-Auth"))
+			require.Equal(t, "def", r.Header.Get("X-Auth-custom"))
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{"foo": 2}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	err := c.Do(context.Background(), "GET", "/a/b", WithRequestData(map[string]any{}), authOption)
+	require.NoError(t, err)
+}
+
+func TestDefaultAuthVisitor(t *testing.T) {
+	defaultAuthVisitor := func(r *http.Request) error {
+		r.Header.Set("X-Auth", "abc")
+		return nil
+	}
+	anotherVisitor := func(r *http.Request) error {
+		r.Header.Set("X-Unrelated", "def")
+		return nil
+	}
+	authOption := DoOption{
+		in: anotherVisitor,
+	}
+	c := NewApiClient(ClientConfig{
+		AuthVisitor: defaultAuthVisitor,
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			require.Equal(t, "abc", r.Header.Get("X-Auth"))
+			require.Equal(t, "def", r.Header.Get("X-Unrelated"))
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{"foo": 2}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	err := c.Do(context.Background(), "GET", "/a/b", WithRequestData(map[string]any{}), authOption)
+	require.NoError(t, err)
+}
