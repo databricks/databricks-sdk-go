@@ -310,6 +310,9 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 		{{- else -}}
 		request.{{.Pagination.Offset.PascalName}} = resp.{{.Pagination.Offset.PascalName}} + {{template "type" .Pagination.Offset.Entity}}(len(resp.{{.Pagination.Results.PascalName}}))
 		{{- end}}{{ end }}
+		{{if or (eq .Request.PascalName "ListPipelinesRequest") (eq .Request.PascalName "ListPipelineEventsRequest")}}
+		request.Filter = ""
+		{{end}}
 		return &request
 	}
 	{{- end}}

@@ -442,6 +442,7 @@ func (a *PipelinesAPI) ListPipelineEvents(ctx context.Context, request ListPipel
 			return nil
 		}
 		request.PageToken = resp.NextPageToken
+		request.Filter = ""
 		return &request
 	}
 	iterator := listing.NewIterator(
@@ -491,6 +492,7 @@ func (a *PipelinesAPI) ListPipelines(ctx context.Context, request ListPipelinesR
 			return nil
 		}
 		request.PageToken = resp.NextPageToken
+		request.Filter = ""
 		return &request
 	}
 	iterator := listing.NewIterator(
