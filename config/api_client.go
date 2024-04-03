@@ -48,15 +48,7 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 				r.URL.Scheme = url.Scheme
 				return nil
 			},
-			func(r *http.Request) error {
-				authType := c.AuthType
-				if t := r.Context().Value(useragent.AuthKey); t != nil {
-					authType = t.(string)
-				}
-				ctx := useragent.InContext(r.Context(), useragent.AuthKey, authType)
-				*r = *r.WithContext(ctx) // replace request
-				return nil
-			},
+			authInUserAgentVisitor(c),
 			func(r *http.Request) error {
 				// Detect if we are running in a CI/CD environment
 				provider := useragent.CiCdProvider()
