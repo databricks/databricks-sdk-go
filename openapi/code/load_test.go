@@ -12,6 +12,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestDataPlane(t *testing.T) {
+	ctx := context.Background()
+	batch, err := NewFromFile(ctx, "../testdata/spec_dataplane.json")
+	require.NoError(t, err)
+	dataPlane := batch.packages["model"].services["Model"].methods["query"].DataPlane
+	require.Equal(t, "get", dataPlane.InfoOperationId)
+	require.Equal(t, "dataplaneInfo", dataPlane.InfoField)
+}
+
 func TestNested(t *testing.T) {
 	ctx := context.Background()
 	batch, err := NewFromFile(ctx, "../testdata/spec_subservices.json")

@@ -46,6 +46,7 @@ type Method struct {
 	wait       *openapi.Wait
 	pagination *openapi.Pagination
 	Operation  *openapi.Operation
+	DataPlane  *openapi.DataPlane
 	shortcut   bool
 }
 

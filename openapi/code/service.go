@@ -528,6 +528,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		Operation:           op,
 		pagination:          op.Pagination,
 		shortcut:            op.Shortcut,
+		DataPlane:           op.DataPlane,
 	}, nil
 }
 
