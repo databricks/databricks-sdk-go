@@ -34,8 +34,8 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 		DebugTruncateBytes: c.DebugTruncateBytes,
 		InsecureSkipVerify: c.InsecureSkipVerify,
 		Transport:          c.HTTPTransport,
+		AuthVisitor:        c.Authenticate,
 		Visitors: []httpclient.RequestVisitor{
-			c.Authenticate,
 			func(r *http.Request) error {
 				if r.URL == nil {
 					return fmt.Errorf("no URL found in request")
@@ -48,11 +48,7 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 				r.URL.Scheme = url.Scheme
 				return nil
 			},
-			func(r *http.Request) error {
-				ctx := useragent.InContext(r.Context(), useragent.AuthKey, c.AuthType)
-				*r = *r.WithContext(ctx) // replace request
-				return nil
-			},
+			authInUserAgentVisitor(c),
 			func(r *http.Request) error {
 				// Detect if we are running in a CI/CD environment
 				provider := useragent.CiCdProvider()

@@ -24,7 +24,8 @@ import (
 type RequestVisitor func(*http.Request) error
 
 type ClientConfig struct {
-	Visitors []RequestVisitor
+	AuthVisitor RequestVisitor
+	Visitors    []RequestVisitor
 
 	RetryTimeout       time.Duration
 	HTTPTimeout        time.Duration
@@ -104,21 +105,40 @@ type ApiClient struct {
 }
 
 type DoOption struct {
-	in   RequestVisitor
-	out  func(body *common.ResponseWrapper) error
-	body any
+	in           RequestVisitor
+	out          func(body *common.ResponseWrapper) error
+	body         any
+	isAuthOption bool
 }
 
 // Do sends an HTTP request against path.
 func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOption) error {
+	var authVisitor RequestVisitor
 	visitors := c.config.Visitors[:]
 	for _, o := range opts {
 		if o.in == nil {
 			continue
 		}
-		// merge client-wide and request-specific visitors
-		visitors = append(visitors, o.in)
+		if o.isAuthOption {
+			if authVisitor != nil {
+				return fmt.Errorf("only one auth visitor is allowed")
+			}
+			authVisitor = o.in
+		} else {
+			// merge client-wide and request-specific visitors
+			visitors = append(visitors, o.in)
+		}
+
 	}
+	// Use default AuthVisitor if none is provided
+	if authVisitor == nil {
+		authVisitor = c.config.AuthVisitor
+	}
+	if authVisitor != nil {
+		// AuthVisitors must be the first visitors because other visitors depend on auth being configured
+		visitors = append([]RequestVisitor{authVisitor}, visitors...)
+	}
+
 	var requestBody any
 	for _, o := range opts {
 		if o.body == nil {
