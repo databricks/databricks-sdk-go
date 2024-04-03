@@ -1,5 +1,7 @@
 package openapi
 
+import "regexp"
+
 type ErrorMappingRule struct {
 	StatusCode  int    `json:"status_code"`
 	ErrorCode   string `json:"error_code"`
@@ -21,8 +23,8 @@ var ErrorStatusCodeMapping = []ErrorMappingRule{
 }
 
 var ErrorCodeMapping = []ErrorMappingRule{
-	{400, "INVALID_PARAMETER_VALUE", "supplied value for a parameter was invalid"},
-	{404, "RESOURCE_DOES_NOT_EXIST", "operation was performed on a resource that does not exist"},
+	{400, INVALID_PARAMETER_VALUE, "supplied value for a parameter was invalid"},
+	{404, RESOURCE_DOES_NOT_EXIST, "operation was performed on a resource that does not exist"},
 	{409, "ABORTED", "the operation was aborted, typically due to a concurrency issue such as a sequencer check failure"},
 	{409, "ALREADY_EXISTS", "operation was rejected due a conflict with an existing resource"},
 	{409, "RESOURCE_ALREADY_EXISTS", "operation was rejected due a conflict with an existing resource"},
@@ -30,4 +32,38 @@ var ErrorCodeMapping = []ErrorMappingRule{
 	{429, "REQUEST_LIMIT_EXCEEDED", "cluster request was rejected because it would exceed a resource limit"},
 	{500, "UNKNOWN", "this error is used as a fallback if the platform-side mapping is missing some reason"},
 	{500, "DATA_LOSS", "unrecoverable data loss or corruption"},
+}
+
+type ErrorOverride struct {
+	Name              string
+	PathRegex         *regexp.Regexp
+	Verb              string
+	StatusCodeMatcher *regexp.Regexp
+	ErrorCodeMatcher  *regexp.Regexp
+	MessageMatcher    *regexp.Regexp
+	OverrideErrorCode string
+}
+
+const INVALID_PARAMETER_VALUE = "INVALID_PARAMETER_VALUE"
+const RESOURCE_DOES_NOT_EXIST = "RESOURCE_DOES_NOT_EXIST"
+
+var ErrorOverrides = []ErrorOverride{
+	{
+		Name:              "Clusters InvalidParameterValue=>ResourceDoesNotExist",
+		PathRegex:         regexp.MustCompile(`^/api/2\.\d/clusters/get`),
+		Verb:              "GET",
+		StatusCodeMatcher: regexp.MustCompile(`^400$`),
+		MessageMatcher:    regexp.MustCompile("Cluster .* does not exist"),
+		ErrorCodeMatcher:  regexp.MustCompile(INVALID_PARAMETER_VALUE),
+		OverrideErrorCode: RESOURCE_DOES_NOT_EXIST,
+	},
+	{
+		Name:              "Jobs InvalidParameterValue=>ResourceDoesNotExist",
+		PathRegex:         regexp.MustCompile(`^/api/2\.\d/jobs/get`),
+		Verb:              "GET",
+		StatusCodeMatcher: regexp.MustCompile(`^400$`),
+		MessageMatcher:    regexp.MustCompile("Job .* does not exist"),
+		ErrorCodeMatcher:  regexp.MustCompile(INVALID_PARAMETER_VALUE),
+		OverrideErrorCode: RESOURCE_DOES_NOT_EXIST,
+	},
 }

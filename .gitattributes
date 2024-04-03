@@ -1,5 +1,6 @@
 account_client.go linguist-generated=true
 apierr/error_mapping.go linguist-generated=true
+apierr/error_overrides.go linguist-generated=true
 error_alias.go linguist-generated=true
 experimental/mocks/mock_account_client.go linguist-generated=true
 experimental/mocks/mock_workspace_client.go linguist-generated=true
