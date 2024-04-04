@@ -108,6 +108,7 @@ type DoOption struct {
 	in           RequestVisitor
 	out          func(body *common.ResponseWrapper) error
 	body         any
+	contentType  string
 	isAuthOption bool
 }
 
@@ -139,12 +140,18 @@ func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOptio
 		visitors = append([]RequestVisitor{authVisitor}, visitors...)
 	}
 
-	var requestBody any
+	var data any
+	// Default content type for backwars
+	var contentType = ""
 	for _, o := range opts {
 		if o.body == nil {
 			continue
 		}
-		requestBody = o.body
+		data = o.body
+	}
+	requestBody, err := makeRequestBody(method, &path, data, contentType)
+	if err != nil {
+		return fmt.Errorf("request marshal: %w", err)
 	}
 	responseBody, err := c.perform(ctx, method, path, requestBody, visitors...)
 	if err != nil {
@@ -348,13 +355,9 @@ func (c *ApiClient) perform(
 	ctx context.Context,
 	method,
 	requestURL string,
-	data interface{},
+	requestBody common.RequestBody,
 	visitors ...RequestVisitor,
 ) (*common.ResponseWrapper, error) {
-	requestBody, err := makeRequestBody(method, &requestURL, data)
-	if err != nil {
-		return nil, fmt.Errorf("request marshal: %w", err)
-	}
 	resp, err := retries.Poll(ctx, c.config.RetryTimeout,
 		c.attempt(ctx, method, requestURL, requestBody, visitors...))
 	var timedOut *retries.ErrTimedOut

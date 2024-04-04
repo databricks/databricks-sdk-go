@@ -64,6 +64,23 @@ func WithRequestData(body any) DoOption {
 	}
 }
 
+// WithContent takes either a struct instance, map, string, bytes, or io.Reader plus
+// a content type, and sends it either as query string for GET and DELETE calls, or as request body
+// for POST, PUT, and PATCH calls. The content type is used to set the Content-Type header
+// and to determine how to serialize the body.
+//
+// Experimental: this method may eventually be split into more granular options.
+func WithContent(body any, contentType string) DoOption {
+	return DoOption{
+		in: func(r *http.Request) error {
+			r.Header.Set("Content-Type", contentType)
+			return nil
+		},
+		body:        body,
+		contentType: contentType,
+	}
+}
+
 func makeQueryString(data interface{}) (string, error) {
 	inputVal := reflect.ValueOf(data)
 	inputType := reflect.TypeOf(data)
@@ -122,7 +139,7 @@ func EncodeMultiSegmentPathParameter(p string) string {
 	return b.String()
 }
 
-func makeRequestBody(method string, requestURL *string, data interface{}) (common.RequestBody, error) {
+func makeRequestBody(method string, requestURL *string, data interface{}, contentType string) (common.RequestBody, error) {
 	if data == nil {
 		return common.RequestBody{}, nil
 	}
