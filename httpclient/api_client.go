@@ -108,8 +108,13 @@ type DoOption struct {
 	in           RequestVisitor
 	out          func(body *common.ResponseWrapper) error
 	body         any
-	contentType  string
+	encoding     encoding
 	isAuthOption bool
+}
+
+type encoding struct {
+	contentType  string
+	gRpcEncoding bool
 }
 
 // Do sends an HTTP request against path.
@@ -142,14 +147,15 @@ func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOptio
 
 	var data any
 	// Default content type for backwars
-	var contentType = ""
+	var encoding encoding
 	for _, o := range opts {
 		if o.body == nil {
 			continue
 		}
 		data = o.body
+		encoding = o.encoding
 	}
-	requestBody, err := makeRequestBody(method, &path, data, contentType)
+	requestBody, err := makeRequestBody(method, &path, data, encoding)
 	if err != nil {
 		return fmt.Errorf("request marshal: %w", err)
 	}

@@ -1,6 +1,7 @@
 package httpclient
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -61,27 +62,33 @@ func WithRequestData(body any) DoOption {
 	// separate request visitors internally.
 	return DoOption{
 		body: body,
+		encoding: encoding{
+			gRpcEncoding: true,
+		},
 	}
 }
 
-// WithContent takes either a struct instance, map, string, bytes, or io.Reader plus
+// WithCreateTokenRequest takes either a struct instance, map, string, bytes, or io.Reader plus
 // a content type, and sends it either as query string for GET and DELETE calls, or as request body
 // for POST, PUT, and PATCH calls. The content type is used to set the Content-Type header
 // and to determine how to serialize the body.
 //
 // Experimental: this method may eventually be split into more granular options.
-func WithContent(body any, contentType string) DoOption {
+func WithCreateTokenRequest(body any, contentType string) DoOption {
 	return DoOption{
 		in: func(r *http.Request) error {
-			r.Header.Set("Content-Type", contentType)
+			r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 			return nil
 		},
-		body:        body,
-		contentType: contentType,
+		body: body,
+		encoding: encoding{
+			contentType:  "application/x-www-form-urlencoded",
+			gRpcEncoding: false,
+		},
 	}
 }
 
-func makeQueryString(data interface{}) (string, error) {
+func makeQueryString(data interface{}, gRpcEncoding bool) (string, error) {
 	inputVal := reflect.ValueOf(data)
 	inputType := reflect.TypeOf(data)
 	if inputType.Kind() == reflect.Map {
@@ -96,13 +103,26 @@ func makeQueryString(data interface{}) (string, error) {
 			if v.IsZero() {
 				continue
 			}
+			value := ""
+			if gRpcEncoding {
+				value = fmt.Sprintf("%v", v.Interface())
+			} else {
+				marshalled, err := json.Marshal(v.Interface())
+				if err != nil {
+					return "", fmt.Errorf("cannot create query string: %w", err)
+				}
+				value = string(marshalled)
+			}
 			s = append(s, fmt.Sprintf("%s=%s",
 				strings.Replace(url.QueryEscape(fmt.Sprintf("%v", k.Interface())), "+", "%20", -1),
-				strings.Replace(url.QueryEscape(fmt.Sprintf("%v", v.Interface())), "+", "%20", -1)))
+				strings.Replace(url.QueryEscape(fmt.Sprintf("%v", value)), "+", "%20", -1)))
 		}
-		return "?" + strings.Join(s, "&"), nil
+		return strings.Join(s, "&"), nil
 	}
 	if inputType.Kind() == reflect.Struct {
+		if !gRpcEncoding {
+			return "", fmt.Errorf("encoding for non map structures is only supported in gRPC mode: %#v", data)
+		}
 		params, err := query.Values(data)
 		if err != nil {
 			return "", fmt.Errorf("cannot create query string: %w", err)
@@ -121,7 +141,7 @@ func makeQueryString(data interface{}) (string, error) {
 				protoCompatibleParams.Add(newK, v)
 			}
 		}
-		return "?" + protoCompatibleParams.Encode(), nil
+		return protoCompatibleParams.Encode(), nil
 	}
 	return "", fmt.Errorf("unsupported query string data: %#v", data)
 }
@@ -139,17 +159,24 @@ func EncodeMultiSegmentPathParameter(p string) string {
 	return b.String()
 }
 
-func makeRequestBody(method string, requestURL *string, data interface{}, contentType string) (common.RequestBody, error) {
+func makeRequestBody(method string, requestURL *string, data interface{}, encoding encoding) (common.RequestBody, error) {
 	if data == nil {
 		return common.RequestBody{}, nil
 	}
 	if method == "GET" || method == "DELETE" || method == "HEAD" {
-		qs, err := makeQueryString(data)
+		qs, err := makeQueryString(data, encoding.gRpcEncoding)
 		if err != nil {
 			return common.RequestBody{}, err
 		}
-		*requestURL += qs
+		*requestURL += "?" + qs
 		return common.NewRequestBody([]byte{})
+	}
+	if encoding.contentType == "application/x-www-form-urlencoded" {
+		qs, err := makeQueryString(data, encoding.gRpcEncoding)
+		if err != nil {
+			return common.RequestBody{}, err
+		}
+		return common.NewRequestBody(qs)
 	}
 	return common.NewRequestBody(data)
 }
