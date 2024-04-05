@@ -14,6 +14,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 	"golang.org/x/time/rate"
@@ -470,6 +471,38 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 	require.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
 <  
 < <Streaming response>`, bufLogger.String())
+}
+
+func TestLogQueryParametersWithPercent(t *testing.T) {
+	prevLogger := logger.DefaultLogger
+	bufLogger := &BufferLogger{}
+	logger.DefaultLogger = bufLogger
+	defer func() {
+		logger.DefaultLogger = prevLogger
+	}()
+
+	c := NewApiClient(ClientConfig{
+		DebugTruncateBytes: 2048,
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{"foo": "bar"}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	headers := map[string]string{"Accept": "application/json"}
+	err := c.Do(context.Background(), "GET", "/a",
+		WithRequestHeaders(headers),
+		WithRequestData(map[string]any{
+			"filter": "name like '%'",
+		}))
+	assert.NoError(t, err)
+	assert.Equal(t, `[DEBUG] GET /a?filter=name like '%'
+<  
+< {
+<   "foo": "bar"
+< }`, bufLogger.String())
 }
 
 func TestStreamRequestFromFileWithReset(t *testing.T) {
