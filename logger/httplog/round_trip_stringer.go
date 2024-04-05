@@ -19,6 +19,12 @@ type RoundTripStringer struct {
 	DebugTruncateBytes       int
 }
 
+var authorizationHeaders = map[string]bool{
+	"Authorization":                          true,
+	"X-Databricks-Azure-SP-Management-Token": true,
+	"X-Databricks-GCP-SA-Access-Token":       true,
+}
+
 func (r RoundTripStringer) writeHeaders(sb *strings.Builder, prefix string, headers http.Header) {
 	headerKeys := make([]string, 0, len(headers))
 	for k := range headers {
@@ -30,7 +36,7 @@ func (r RoundTripStringer) writeHeaders(sb *strings.Builder, prefix string, head
 			sb.WriteString("\n")
 		}
 		v := headers[k]
-		if k == "Authorization" && !r.DebugAuthorizationHeader {
+		if _, ok := authorizationHeaders[k]; ok && !r.DebugAuthorizationHeader {
 			v = []string{"REDACTED"}
 		}
 		trunc := onlyNBytes(strings.Join(v, ""), r.DebugTruncateBytes)

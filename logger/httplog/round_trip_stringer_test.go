@@ -96,8 +96,10 @@ func TestHideAuthorizationHeaderWhenConfigured(t *testing.T) {
 				Method: "GET",
 				URL:    &url.URL{Path: "/"},
 				Header: http.Header{
-					"Foo":           []string{"bar"},
-					"Authorization": []string{"baz"},
+					"Foo":                                    []string{"bar"},
+					"Authorization":                          []string{"baz"},
+					"X-Databricks-Azure-SP-Management-Token": []string{"open sesame"},
+					"X-Databricks-GCP-SA-Access-Token":       []string{"alohamora"},
 				},
 			},
 			Status: "200 OK",
@@ -113,6 +115,8 @@ func TestHideAuthorizationHeaderWhenConfigured(t *testing.T) {
 > * Host: 
 > * Authorization: REDACTED
 > * Foo: bar
+> * X-Databricks-Azure-SP-Management-Token: REDACTED
+> * X-Databricks-GCP-SA-Access-Token: REDACTED
 > request-hello
 < HTTP/1.1 200 OK
 < response-hello`, res)
