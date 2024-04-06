@@ -585,7 +585,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/experimental/mocks"
+	"github.com/databricks/databricks-sdk-go/testkit/mocks"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/qa/poll"
 	"github.com/databricks/databricks-sdk-go/service/compute"
