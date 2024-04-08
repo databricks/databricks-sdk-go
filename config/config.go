@@ -11,8 +11,10 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"golang.org/x/oauth2"
 )
 
 // CredentialsProvider responsible for configuring static or refreshable
@@ -38,6 +40,8 @@ type Config struct {
 	// Credentials holds an instance of Credentials Provider to authenticate with Databricks REST APIs.
 	// If no credentials provider is specified, `DefaultCredentials` are implicitly used.
 	Credentials CredentialsProvider
+
+	//
 
 	// Databricks host (either of workspace endpoint or Accounts API endpoint)
 	Host string `name:"host" env:"DATABRICKS_HOST"`
@@ -204,6 +208,31 @@ func (c *Config) Authenticate(r *http.Request) error {
 		return err
 	}
 	return c.auth(r)
+}
+
+type Test func(r *http.Request) error
+
+func cast(s interface{}) (credentials.HeaderProvider, bool) {
+	res, ok := s.(credentials.HeaderProvider)
+	return res, ok
+}
+
+// Same as before
+func (c *Config) GetToken() (*oauth2.Token, error) {
+	err := c.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	err = c.authenticateIfNeeded()
+	if err != nil {
+		return nil, err
+	}
+	ctx := c.refreshClient.InContextForOAuth2(c.refreshCtx)
+	if h, ok := c.Credentials.(HeaderFactory); ok {
+		return h.Token(ctx, c)
+	} else {
+		return nil, fmt.Errorf("cannot cast %T to HeaderProvider", c.auth)
+	}
 }
 
 // IsAzure returns if the client is configured for Azure Databricks.

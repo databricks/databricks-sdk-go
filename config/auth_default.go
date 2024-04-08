@@ -7,7 +7,12 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/logger"
+	"golang.org/x/oauth2"
 )
+
+type HeaderFactory interface {
+	Token(ctx context.Context, cfg *Config) (*oauth2.Token, error)
+}
 
 var (
 	authProviders = []CredentialsProvider{
@@ -62,6 +67,22 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		}
 		c.name = p.Name()
 		return visitor, nil
+	}
+	return nil, ErrCannotConfigureAuth
+}
+
+func (c *DefaultCredentials) Token(ctx context.Context, cfg *Config) (*oauth2.Token, error) {
+	// Configure to select credentials provider
+	c.Configure(ctx, cfg)
+	for _, p := range authProviders {
+		if c.name != p.Name() {
+			continue
+		}
+		if provider, ok := p.(HeaderFactory); ok {
+			return provider.Token(ctx, cfg)
+		} else {
+			return nil, fmt.Errorf("cannot get token for %s", p.Name())
+		}
 	}
 	return nil, ErrCannotConfigureAuth
 }

@@ -74,7 +74,7 @@ func WithRequestData(body any) DoOption {
 // and to determine how to serialize the body.
 //
 // Experimental: this method may eventually be split into more granular options.
-func WithCreateTokenRequest(body any, contentType string) DoOption {
+func WithCreateTokenRequest(body any) DoOption {
 	return DoOption{
 		in: func(r *http.Request) error {
 			r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -104,14 +104,17 @@ func makeQueryString(data interface{}, gRpcEncoding bool) (string, error) {
 				continue
 			}
 			value := ""
-			if gRpcEncoding {
-				value = fmt.Sprintf("%v", v.Interface())
+			vInt := v.Interface()
+			if gRpcEncoding || isBasicType(v.Type()) {
+				value = fmt.Sprintf("%v", vInt)
 			} else {
-				marshalled, err := json.Marshal(v.Interface())
+				marshalled, err := json.Marshal(vInt)
 				if err != nil {
 					return "", fmt.Errorf("cannot create query string: %w", err)
 				}
 				value = string(marshalled)
+				value = strings.TrimPrefix(value, "\"")
+				value = strings.TrimSuffix(value, "\"")
 			}
 			s = append(s, fmt.Sprintf("%s=%s",
 				strings.Replace(url.QueryEscape(fmt.Sprintf("%v", k.Interface())), "+", "%20", -1),

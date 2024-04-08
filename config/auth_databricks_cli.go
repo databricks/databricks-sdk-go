@@ -54,8 +54,28 @@ func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (f
 		return nil, err
 	}
 	logger.Debugf(ctx, "Using Databricks CLI authentication with Databricks OAuth tokens")
-	return refreshableVisitor(ts), nil
+	visitor := refreshableVisitor(ts)
+
+	// vH := HeaderFactory(visitor)
+	// return vH, nil
+	return visitor, nil
 }
+
+func (c DatabricksCliCredentials) Token(ctx context.Context, cfg *Config) (*oauth2.Token, error) {
+	t, err := newDatabricksCliTokenSource(cfg)
+	if err != nil {
+		return nil, err
+	}
+	return t.Token()
+}
+
+// func newHeaderFactor() (credentials.HeaderProvider, error) {
+// 	type HeaderFactory func(string) bool
+// 	func (h *HeaderFactory) Token() (*oauth2.Token, error) {
+// 		return ts.Token()
+// 	}
+// 	return &DatabricksCliCredentials{}, nil
+// }
 
 var errLegacyDatabricksCli = errors.New("legacy Databricks CLI detected")
 
