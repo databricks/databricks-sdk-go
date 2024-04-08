@@ -323,7 +323,7 @@ func (c *ApiClient) recordRequestLog(
 		DebugTruncateBytes:       c.config.DebugTruncateBytes,
 		DebugAuthorizationHeader: true,
 	}.String()
-	logger.Debugf(ctx, message)
+	logger.Debugf(ctx, "%s", message)
 }
 
 // RoundTrip implements http.RoundTripper to integrate with golang.org/x/oauth2
