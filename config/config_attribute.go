@@ -8,8 +8,8 @@ import (
 )
 
 type Source struct {
-	Type SourceType
-	Name string
+	Type SourceType `json:"type"`
+	Name string     `json:"name,omitempty"`
 }
 
 func (s *Source) String() string {
