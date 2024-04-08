@@ -85,11 +85,11 @@ type Config struct {
 	// versions of Go SDK.
 	AzureLoginAppID string `name:"azure_login_app_id" env:"DATABRICKS_AZURE_LOGIN_APP_ID" auth:"azure"`
 
-	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID" auth:"oauth"`
-	ClientSecret string `name:"client_secret" env:"DATABRICKS_CLIENT_SECRET" auth:"oauth,sensitive"`
+	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID" auth:"oauth" auth_types:"oauth-m2m"`
+	ClientSecret string `name:"client_secret" env:"DATABRICKS_CLIENT_SECRET" auth:"oauth,sensitive" auth_types:"oauth-m2m"`
 
 	// Path to the Databricks CLI (version >= 0.100.0).
-	DatabricksCliPath string `name:"databricks_cli_path" env:"DATABRICKS_CLI_PATH"`
+	DatabricksCliPath string `name:"databricks_cli_path" env:"DATABRICKS_CLI_PATH" auth_types:"databricks-cli"`
 
 	// When multiple auth attributes are available in the environment, use the auth type
 	// specified by this argument. This argument also holds currently selected auth.
