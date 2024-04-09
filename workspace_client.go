@@ -934,6 +934,15 @@ type WorkspaceClient struct {
 	WorkspaceConf settings.WorkspaceConfInterface
 }
 
+func (a *WorkspaceClient) GetOAuthToken(authorizationDetails interface{}) (string, error) {
+	originalToken, err := a.Config.GetToken()
+	if err != nil {
+		return "", err
+	}
+	return a.apiClient.GetOAuthToken(authorizationDetails, originalToken)
+}
+
+
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")
 
 // NewWorkspaceClient creates new Databricks SDK client for Workspaces or

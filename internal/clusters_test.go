@@ -43,8 +43,7 @@ func TestDataPlane(t *testing.T) {
 		DebugTruncateBytes: 2048,
 	}))
 	det := testDetails()
-	s, _ := w.Config.GetToken()
-	r, _ := w.GetCli().GetOAuthToken(det, s)
+	r, _ := w.GetOAuthToken(det)
 	//_, w := accountTest(t)
 	//r, _ := w.ApiClient.GetApiClient().GetDatabricksOauthToken([]string{testDetails()})
 	fmt.Printf("token: %v\n", r)

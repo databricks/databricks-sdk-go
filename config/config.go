@@ -208,7 +208,8 @@ func (c *Config) Authenticate(r *http.Request) error {
 	return c.credentialsProvider.SetHeaders(r)
 }
 
-// Same as before
+// Authenticate returns an OAuth token for the current configuration.
+// It will return an error if the CredentialsStrategy does not support OAuth tokens.
 func (c *Config) GetToken() (*oauth2.Token, error) {
 	err := c.EnsureResolved()
 	if err != nil {
