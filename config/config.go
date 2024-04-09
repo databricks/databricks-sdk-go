@@ -11,21 +11,22 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 
-// CredentialsProvider responsible for configuring static or refreshable
+// CredentialsStrategy responsible for configuring static or refreshable
 // authentication credentials for Databricks REST APIs
-type CredentialsProvider interface {
+type CredentialsStrategy interface {
 	// Name returns human-addressable name of this credentials provider name
 	Name() string
 
 	// Configure creates HTTP Request Visitor or returns nil if a given credetials
 	// are not configured. It returns an error if credentials are misconfigured.
 	// Takes a context and a pointer to a Config instance, that holds auth mutex.
-	Configure(context.Context, *Config) (func(*http.Request) error, error)
+	Configure(context.Context, *Config) (credentials.CredentialsProvider, error)
 }
 
 type Loader interface {
@@ -36,11 +37,9 @@ type Loader interface {
 
 // Config represents configuration for Databricks Connectivity
 type Config struct {
-	// Credentials holds an instance of Credentials Provider to authenticate with Databricks REST APIs.
+	// Credentials holds an instance of Credentials Strategy to authenticate with Databricks REST APIs.
 	// If no credentials provider is specified, `DefaultCredentials` are implicitly used.
-	Credentials CredentialsProvider
-
-	//
+	Credentials CredentialsStrategy
 
 	// Databricks host (either of workspace endpoint or Accounts API endpoint)
 	Host string `name:"host" env:"DATABRICKS_HOST"`
@@ -352,7 +351,7 @@ func (c *Config) authenticateIfNeeded() error {
 	if visitor == nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: not configured", c.Credentials.Name()))
 	}
-	c.auth = visitor
+	c.auth = visitor.SetHeaders
 	c.AuthType = c.Credentials.Name()
 	c.fixHostIfNeeded()
 	// TODO: error customization

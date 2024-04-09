@@ -65,7 +65,7 @@ func TestAzureCliCredentials_Valid(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := &http.Request{Header: http.Header{}}
-	err = visitor(r)
+	err = visitor.SetHeaders(r)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "Bearer ...", r.Header.Get("Authorization"))
@@ -88,7 +88,7 @@ func TestAzureCliCredentials_ReuseTokens(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := &http.Request{Header: http.Header{}}
-	err = visitor(r)
+	err = visitor.SetHeaders(r)
 	assert.NoError(t, err)
 
 	// We verify the headers in the test above.
@@ -107,7 +107,7 @@ func TestAzureCliCredentials_ValidNoManagementAccess(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := &http.Request{Header: http.Header{}}
-	err = visitor(r)
+	err = visitor.SetHeaders(r)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "Bearer ...", r.Header.Get("Authorization"))
@@ -123,7 +123,7 @@ func TestAzureCliCredentials_ValidWithAzureResourceId(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := &http.Request{Header: http.Header{}}
-	err = visitor(r)
+	err = visitor.SetHeaders(r)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "Bearer ...", r.Header.Get("Authorization"))
@@ -138,7 +138,7 @@ func TestAzureCliCredentials_Fallback(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := &http.Request{Header: http.Header{}}
-	err = visitor(r)
+	err = visitor.SetHeaders(r)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "Bearer ...", r.Header.Get("Authorization"))
@@ -155,7 +155,7 @@ func TestAzureCliCredentials_AlwaysExpired(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := &http.Request{Header: http.Header{}}
-	err = visitor(r)
+	err = visitor.SetHeaders(r)
 
 	assert.NoError(t, err)
 }

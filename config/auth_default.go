@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
 
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
@@ -15,7 +15,7 @@ type HeaderFactory interface {
 }
 
 var (
-	authProviders = []CredentialsProvider{
+	authProviders = []CredentialsStrategy{
 		PatCredentials{},
 		BasicCredentials{},
 		M2mCredentials{},
@@ -50,7 +50,7 @@ var errorMessage = fmt.Sprintf("cannot configure default credentials, please che
 // ErrCannotConfigureAuth (experimental) is returned when no auth is configured
 var ErrCannotConfigureAuth = errors.New(errorMessage)
 
-func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	for _, p := range authProviders {
 		if cfg.AuthType != "" && p.Name() != cfg.AuthType {
 			// ignore other auth types if one is explicitly enforced

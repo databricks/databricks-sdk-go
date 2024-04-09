@@ -10,6 +10,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
@@ -21,12 +22,13 @@ func (c *CustomCredentials) Name() string {
 
 func (c *CustomCredentials) Configure(
 	ctx context.Context, cfg *config.Config,
-) (func(*http.Request) error, error) {
-	return func(r *http.Request) error {
+) (credentials.CredentialsProvider, error) {
+	visitor := func(r *http.Request) error {
 		token := askFor("Token:")
 		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 		return nil
-	}, nil
+	}
+	return credentials.NewCredentialsProvider(visitor), nil
 }
 
 func main() {
