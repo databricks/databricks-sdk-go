@@ -112,6 +112,7 @@ func makeQueryString(data interface{}, gRpcEncoding bool) (string, error) {
 				if err != nil {
 					return "", fmt.Errorf("cannot create query string: %w", err)
 				}
+				// String values on map[string]any are considered interfaces marshalled with quotes, so we need to remove them
 				value = string(marshalled)
 				value = strings.TrimPrefix(value, "\"")
 				value = strings.TrimSuffix(value, "\"")

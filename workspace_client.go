@@ -25,7 +25,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
 
-func(a *WorkspaceClient) GetCli() *httpclient.ApiClient {
+func (a *WorkspaceClient) GetCli() *httpclient.ApiClient {
 	return a.apiClient
 }
 

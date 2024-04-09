@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
-	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -208,13 +207,6 @@ func (c *Config) Authenticate(r *http.Request) error {
 		return err
 	}
 	return c.auth(r)
-}
-
-type Test func(r *http.Request) error
-
-func cast(s interface{}) (credentials.HeaderProvider, bool) {
-	res, ok := s.(credentials.HeaderProvider)
-	return res, ok
 }
 
 // Same as before

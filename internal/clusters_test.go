@@ -2,9 +2,7 @@ package internal
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -29,12 +27,12 @@ func testDetails() any {
 	d := []any{map[string]any{
 		"type":        "workspace_permission",
 		"object_type": "serving-endpoints",
-		"object_path": "/serving-endpoints/dataplane-test",
+		"object_path": "/serving-endpoints/c7725bf656524d3f847feed475770637",
 		"actions":     []string{"query_inference_endpoint"},
 	}}
-	b, _ := json.Marshal(d)
-	s := string(b)
-	fmt.Printf(s)
+	//b, _ := json.Marshal(d)
+	//s := string(b)
+	//fmt.Printf(s)
 	//panic(s)
 	//return string(b)
 	return d
@@ -42,7 +40,7 @@ func testDetails() any {
 
 func TestDataPlane(t *testing.T) {
 	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-		DebugTruncateBytes: 1024,
+		DebugTruncateBytes: 2048,
 	}))
 	det := testDetails()
 	s, _ := w.Config.GetToken()
@@ -50,22 +48,6 @@ func TestDataPlane(t *testing.T) {
 	//_, w := accountTest(t)
 	//r, _ := w.ApiClient.GetApiClient().GetDatabricksOauthToken([]string{testDetails()})
 	fmt.Printf("token: %v\n", r)
-}
-
-func TestReflect(t *testing.T) {
-	var v any
-	v = "test"
-	var v2 string
-	v2 = "test"
-	ref := reflect.ValueOf(v)
-	res, _ := json.Marshal(v)
-	res2, _ := json.Marshal(v2)
-	ref2 := reflect.ValueOf(v)
-	eq := string(res) == string(res2)
-
-	fmt.Printf("kind: %v\n", ref.Kind())
-	fmt.Printf("kind: %v\n", ref2.Kind())
-	fmt.Printf("eq: %v\n", eq)
 }
 
 func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
