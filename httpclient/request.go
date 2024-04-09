@@ -64,13 +64,13 @@ func WithRequestData(body any) DoOption {
 	}
 }
 
-// WithCreateTokenRequest takes either a struct instance, map, string, bytes, or io.Reader plus
+// WithUrlEncodedData takes either a struct instance, map, string, bytes, or io.Reader plus
 // a content type, and sends it either as query string for GET and DELETE calls, or as request body
-// for POST, PUT, and PATCH calls. The content type is used to set the Content-Type header
-// and to determine how to serialize the body.
+// for POST, PUT, and PATCH calls. The content type is set to "application/x-www-form-urlencoded"
+// and the body is encoded as a query string.
 //
 // Experimental: this method may eventually be split into more granular options.
-func WithCreateTokenRequest(body any) DoOption {
+func WithUrlEncodedData(body any) DoOption {
 	return DoOption{
 		in: func(r *http.Request) error {
 			r.Header.Set("Content-Type", "application/x-www-form-urlencoded")

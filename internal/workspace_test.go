@@ -3,15 +3,12 @@ package internal
 import (
 	"context"
 	"encoding/base64"
-	"fmt"
 	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/service/ml"
-	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -67,44 +64,33 @@ func TestGetOAuthToken(t *testing.T) {
 	assert.True(t, len(all) >= 1)
 
 	// Enable once the API returns the DataplaneInfo
-	endpoint, err := w.ServingEndpoints.Create(ctx, serving.CreateServingEndpoint{
-		Name: RandomName("go-sdk-"),
-		Config: serving.EndpointCoreConfigInput{
-			ServedModels: []serving.ServedModelInput{
-				{
-					ModelName:          model.RegisteredModelDatabricks.Name,
-					ModelVersion:       model.RegisteredModelDatabricks.LatestVersions[0].Version,
-					Name:               RandomName("go-sdk-"),
-					ScaleToZeroEnabled: true,
-					WorkloadSize:       serving.ServedModelInputWorkloadSizeSmall,
-				},
-			},
-		},
-	})
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		err := w.ServingEndpoints.Delete(ctx, serving.DeleteServingEndpointRequest{
-			Name: endpoint.Name,
-		})
-		require.NoError(t, err)
-	})
-	readyEndpoint, err := endpoint.Get()
-	require.NoError(t, err)
+	// endpoint, err := w.ServingEndpoints.Create(ctx, serving.CreateServingEndpoint{
+	// 	Name: RandomName("go-sdk-"),
+	// 	Config: serving.EndpointCoreConfigInput{
+	// 		ServedModels: []serving.ServedModelInput{
+	// 			{
+	// 				ModelName:          model.RegisteredModelDatabricks.Name,
+	// 				ModelVersion:       model.RegisteredModelDatabricks.LatestVersions[0].Version,
+	// 				Name:               RandomName("go-sdk-"),
+	// 				ScaleToZeroEnabled: true,
+	// 				WorkloadSize:       serving.ServedModelInputWorkloadSizeSmall,
+	// 			},
+	// 		},
+	// 	},
+	// })
+	// require.NoError(t, err)
+	// t.Cleanup(func() {
+	// 	err := w.ServingEndpoints.Delete(ctx, serving.DeleteServingEndpointRequest{
+	// 		Name: endpoint.Name,
+	// 	})
+	// 	require.NoError(t, err)
+	// })
+	// readyEndpoint, err := endpoint.Get()
+	// require.NoError(t, err)
 
-	// TODO: Use readyEndpoint.DataplaneInfo.AuthorizationDetails when returned by the API
-	authDetails := []credentials.AuthorizationDetails{{
-		Type:       "workspace_permission",
-		ObjectType: "serving-endpoints",
-		ObjectPath: fmt.Sprintf("/serving-endpoints/%s", readyEndpoint.Id),
-		Actions:    []string{"query_inference_endpoint"},
-	}}
-	//var authDetails []credentials.AuthorizationDetails
-	//err = json.Unmarshal(readyEndpoint.DataplaneInfo.AuthorizationDetails, &authDetails)
-	//require.NoError(t, err)
-
-	_, err = w.GetOAuthToken(authDetails)
-	require.NoError(t, err)
-
+	// _, err = w.GetOAuthToken(readyEndpoint.DataplaneInfo.AuthorizationDetails)
+	// require.NoError(t, err)
+	// // TODO: Query DataPlane API with the token
 }
 
 func TestAccWorkspaceIntegration(t *testing.T) {

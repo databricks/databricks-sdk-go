@@ -936,7 +936,7 @@ type WorkspaceClient struct {
 //
 // **NOTE:** Experimental: This API may change or be removed in a future release
 // without warning.
-func (a *WorkspaceClient) GetOAuthToken(authorizationDetails []credentials.AuthorizationDetails) (*credentials.OAuthToken, error) {
+func (a *WorkspaceClient) GetOAuthToken(authorizationDetails string) (*credentials.OAuthToken, error) {
 	originalToken, err := a.Config.GetToken()
 	if err != nil {
 		return nil, err

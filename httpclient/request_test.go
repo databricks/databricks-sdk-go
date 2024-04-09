@@ -10,7 +10,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
@@ -57,11 +56,9 @@ func TestMakeRequestBodyFromReader(t *testing.T) {
 
 func TestUrlEncoding(t *testing.T) {
 	data := GetOAuthTokenRequest{
-		AuthorizationDetails: []credentials.AuthorizationDetails{
-			{
-				Type: "type",
-			},
-		},
+		Assertion:            "assertion",
+		AuthorizationDetails: "[{\"a\":\"b\"}]",
+		GrantType:            "grant",
 	}
 	requestURL := "/a/b/c"
 	body, err := makeRequestBody("POST", &requestURL, data, "application/x-www-form-urlencoded")
@@ -69,10 +66,7 @@ func TestUrlEncoding(t *testing.T) {
 	bodyBytes, err := io.ReadAll(body.Reader)
 	require.NoError(t, err)
 	require.Equal(t, "/a/b/c", requestURL)
-	// Check that the encoding is json.Marshal based.
-	// Regular query.Value encoding would like
-	//    AuthorizationDetails=%7Btype+++%5B
-	require.True(t, strings.Contains(string(bodyBytes), "authorization_details=%5B%7B%22type%"))
+	require.Equal(t, string(bodyBytes), "assertion=assertion&authorization_details=%5B%7B%22a%22%3A%22b%22%7D%5D&grant_type=grant")
 }
 
 func TestMakeRequestBodyReaderError(t *testing.T) {
