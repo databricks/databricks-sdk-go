@@ -3,25 +3,17 @@ package httpclient
 import (
 	"context"
 	"net/http"
-	"net/url"
 
 	"github.com/databricks/databricks-sdk-go/credentials"
 	"golang.org/x/oauth2"
 )
 
-type authorizationDetails string
-
-func (r authorizationDetails) EncodeValues(key string, v *url.Values) error {
-	v.Set(key, string(r))
-	return nil
-}
-
 type GetOAuthTokenRequest struct {
-	GrantType            string               `url:"grant_type"`
-	AuthorizationDetails authorizationDetails `url:"authorization_details"`
-	Assertion            string               `url:"assertion"`
-	ExpiresIn            int                  `url:"expires_in,omitempty"`
-	RefreshToken         bool                 `url:"refresh_token,omitempty"`
+	GrantType            string `url:"grant_type"`
+	AuthorizationDetails string `url:"authorization_details"`
+	Assertion            string `url:"assertion"`
+	ExpiresIn            int    `url:"expires_in,omitempty"`
+	RefreshToken         bool   `url:"refresh_token,omitempty"`
 }
 
 // Returns a new OAuth token using the provided token. The token must be a JWT token.
@@ -36,7 +28,7 @@ func (c *ApiClient) GetOAuthToken(authDetails string, token *oauth2.Token) (*cre
 	}
 	data := GetOAuthTokenRequest{
 		GrantType:            "urn:ietf:params:oauth:grant-type:jwt-bearer",
-		AuthorizationDetails: authorizationDetails(authDetails),
+		AuthorizationDetails: authDetails,
 		Assertion:            token.AccessToken,
 		// By default, the tokens API does not refresh the token, so you can get a token that is about to expire.
 		// We keep a cache of the Tokens, and only request when a new one is needed
