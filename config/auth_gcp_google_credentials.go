@@ -43,7 +43,7 @@ func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (credenti
 	}
 	logger.Infof(ctx, "Using Google Credentials")
 	visitor := serviceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token")
-	return credentials.NewCredentialsProvider(visitor), nil
+	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }
 
 // Reads credentials as JSON. Credentials can be either a path to JSON file,

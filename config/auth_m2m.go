@@ -39,7 +39,7 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		Scopes:       []string{"all-apis"},
 	}).TokenSource(ctx)
 	visitor := refreshableVisitor(ts)
-	return credentials.NewCredentialsProvider(visitor), nil
+	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
 }
 
 func oidcEndpoints(ctx context.Context, cfg *Config) (*oauthAuthorizationServer, error) {

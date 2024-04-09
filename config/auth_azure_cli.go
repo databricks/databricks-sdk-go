@@ -82,7 +82,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		return nil, err
 	}
 	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
-	return credentials.NewCredentialsProvider(visitor), nil
+	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
 }
 
 // NewAzureCliTokenSource returns [oauth2.TokenSource] for a passwordless authentication via Azure CLI (`az login`)

@@ -46,7 +46,7 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (creden
 	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureApplicationID))
 	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureServiceManagementEndpoint()))
 	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken))
-	return credentials.NewCredentialsProvider(visitor), nil
+	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }
 
 // implementing azureHostResolver for ensureWorkspaceUrl to work
