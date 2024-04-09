@@ -58,31 +58,15 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 			continue
 		}
 		logger.Tracef(ctx, "Attempting to configure auth: %s", p.Name())
-		visitor, err := p.Configure(ctx, cfg)
+		credentialsProvider, err := p.Configure(ctx, cfg)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", p.Name(), err)
 		}
-		if visitor == nil {
+		if credentialsProvider == nil {
 			continue
 		}
 		c.name = p.Name()
-		return visitor, nil
-	}
-	return nil, ErrCannotConfigureAuth
-}
-
-func (c *DefaultCredentials) Token(ctx context.Context, cfg *Config) (*oauth2.Token, error) {
-	// Configure to select credentials provider
-	c.Configure(ctx, cfg)
-	for _, p := range authProviders {
-		if c.name != p.Name() {
-			continue
-		}
-		if provider, ok := p.(HeaderFactory); ok {
-			return provider.Token(ctx, cfg)
-		} else {
-			return nil, fmt.Errorf("cannot get token for %s", p.Name())
-		}
+		return credentialsProvider, nil
 	}
 	return nil, ErrCannotConfigureAuth
 }

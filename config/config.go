@@ -148,7 +148,7 @@ type Config struct {
 	mu sync.Mutex
 
 	// HTTP request interceptor, that assigns Authorization header
-	auth func(r *http.Request) error
+	credentialsProvider credentials.CredentialsProvider
 
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
@@ -205,7 +205,7 @@ func (c *Config) Authenticate(r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	return c.auth(r)
+	return c.credentialsProvider.SetHeaders(r)
 }
 
 // Same as before
@@ -218,11 +218,11 @@ func (c *Config) GetToken() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	ctx := c.refreshClient.InContextForOAuth2(c.refreshCtx)
-	if h, ok := c.Credentials.(HeaderFactory); ok {
-		return h.Token(ctx, c)
+	//ctx := c.refreshClient.InContextForOAuth2(c.refreshCtx)
+	if h, ok := c.credentialsProvider.(credentials.OAuthCredentialsProvider); ok {
+		return h.Token()
 	} else {
-		return nil, fmt.Errorf("cannot cast %T to HeaderProvider", c.auth)
+		return nil, fmt.Errorf("OAuth Token can only be retrieved for OauthCredentialsProvider")
 	}
 }
 
@@ -331,12 +331,12 @@ func (c *Config) wrapDebug(err error) error {
 
 // authenticateIfNeeded lazily authenticates across authorizers or returns error
 func (c *Config) authenticateIfNeeded() error {
-	if c.auth != nil {
+	if c.credentialsProvider != nil {
 		return nil
 	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	if c.auth != nil {
+	if c.credentialsProvider != nil {
 		return nil
 	}
 	if c.Credentials == nil {
@@ -344,14 +344,14 @@ func (c *Config) authenticateIfNeeded() error {
 	}
 	c.fixHostIfNeeded()
 	ctx := c.refreshClient.InContextForOAuth2(c.refreshCtx)
-	visitor, err := c.Credentials.Configure(ctx, c)
+	credentialsProvider, err := c.Credentials.Configure(ctx, c)
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: %w", c.Credentials.Name(), err))
 	}
-	if visitor == nil {
+	if credentialsProvider == nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: not configured", c.Credentials.Name()))
 	}
-	c.auth = visitor.SetHeaders
+	c.credentialsProvider = credentialsProvider
 	c.AuthType = c.Credentials.Name()
 	c.fixHostIfNeeded()
 	// TODO: error customization
