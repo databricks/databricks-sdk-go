@@ -15,8 +15,6 @@ type jobsImpl struct {
 	client *client.DatabricksClient
 }
 
-// (-- AZURE: no functions ~-)
-
 func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {
 	var cancelAllRunsResponse CancelAllRunsResponse
 	path := "/api/2.1/jobs/runs/cancel-all"

@@ -29,12 +29,6 @@ func serviceToServiceVisitor(auth, secondary oauth2.TokenSource, secondaryHeader
 	}
 }
 
-// type HeaderFactory func() http.Header
-
-// func (h *HeaderFactory) Token() (*oauth2.Token, error) {
-// 	return nil, nil
-// }
-
 // The same as serviceToServiceVisitor, but without a secondary token source.
 func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
 	refreshableAuth := oauth2.ReuseTokenSource(nil, inner)

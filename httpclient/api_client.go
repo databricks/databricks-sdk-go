@@ -141,7 +141,6 @@ func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOptio
 	}
 
 	var data any
-	// Default content type for backwars
 	var contentType string
 	for _, o := range opts {
 		if o.body == nil {

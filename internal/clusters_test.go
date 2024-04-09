@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/iam"
@@ -21,30 +20,6 @@ func sharedRunningCluster(t *testing.T, ctx context.Context,
 	err := w.Clusters.EnsureClusterIsRunning(ctx, clusterId)
 	require.NoError(t, err)
 	return clusterId
-}
-
-func testDetails() []credentials.AuthorizationDetails {
-	d := []credentials.AuthorizationDetails{{
-		Type:       "workspace_permission",
-		ObjectType: "serving-endpoints",
-		ObjectPath: "/serving-endpoints/c7725bf656524d3f847feed475770637",
-		Actions:    []string{"query_inference_endpoint"},
-	}}
-	return d
-}
-
-func TestDataPlane(t *testing.T) {
-	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-		DebugTruncateBytes: 2048,
-	}))
-	det := testDetails()
-	token, err := w.GetOAuthToken(det)
-	require.NoError(t, err)
-	assert.Equal(t, token.AuthorizationDetails, testDetails())
-	assert.NotEmpty(t, token.AccessToken)
-	assert.True(t, token.ExpiresIn > 0)
-	//_, w := accountTest(t)
-	//r, _ := w.ApiClient.GetApiClient().GetDatabricksOauthToken([]string{testDetails()})
 }
 
 func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {

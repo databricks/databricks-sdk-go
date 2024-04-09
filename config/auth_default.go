@@ -7,12 +7,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
-	"golang.org/x/oauth2"
 )
-
-type HeaderFactory interface {
-	Token(ctx context.Context, cfg *Config) (*oauth2.Token, error)
-}
 
 var (
 	authProviders = []CredentialsStrategy{

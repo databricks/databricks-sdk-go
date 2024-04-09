@@ -23,8 +23,8 @@ type CredentialsStrategy interface {
 	// Name returns human-addressable name of this credentials provider name
 	Name() string
 
-	// Configure creates HTTP Request Visitor or returns nil if a given credetials
-	// are not configured. It returns an error if credentials are misconfigured.
+	// Configure creates CredentialsProvider or returns nil if a given credetials
+	// strategy ßare not configured. It returns an error if credentials are misconfigured.
 	// Takes a context and a pointer to a Config instance, that holds auth mutex.
 	Configure(context.Context, *Config) (credentials.CredentialsProvider, error)
 }
@@ -38,7 +38,7 @@ type Loader interface {
 // Config represents configuration for Databricks Connectivity
 type Config struct {
 	// Credentials holds an instance of Credentials Strategy to authenticate with Databricks REST APIs.
-	// If no credentials provider is specified, `DefaultCredentials` are implicitly used.
+	// If no credentials strategy is specified, `DefaultCredentials` are implicitly used.
 	Credentials CredentialsStrategy
 
 	// Databricks host (either of workspace endpoint or Accounts API endpoint)
