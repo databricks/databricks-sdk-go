@@ -7,6 +7,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
@@ -24,10 +25,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
-
-func (a *WorkspaceClient) GetCli() *httpclient.ApiClient {
-	return a.apiClient
-}
 
 type WorkspaceClient struct {
 	Config    *config.Config
@@ -934,14 +931,18 @@ type WorkspaceClient struct {
 	WorkspaceConf settings.WorkspaceConfInterface
 }
 
-func (a *WorkspaceClient) GetOAuthToken(authorizationDetails interface{}) (string, error) {
+// Returns a new OAuth scoped to the authorization details provided.
+// It will return an error if the CredentialStrategy does not support OAuth tokens.
+//
+// **NOTE:** Experimental: This API may change or be removed in a future release
+// without warning.
+func (a *WorkspaceClient) GetOAuthToken(authorizationDetails []credentials.AuthorizationDetails) (*credentials.OAuthToken, error) {
 	originalToken, err := a.Config.GetToken()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	return a.apiClient.GetOAuthToken(authorizationDetails, originalToken)
 }
-
 
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")
 

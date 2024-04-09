@@ -1,7 +1,6 @@
 package httpclient
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -62,9 +61,6 @@ func WithRequestData(body any) DoOption {
 	// separate request visitors internally.
 	return DoOption{
 		body: body,
-		encoding: encoding{
-			gRpcEncoding: true,
-		},
 	}
 }
 
@@ -80,15 +76,12 @@ func WithCreateTokenRequest(body any) DoOption {
 			r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 			return nil
 		},
-		body: body,
-		encoding: encoding{
-			contentType:  "application/x-www-form-urlencoded",
-			gRpcEncoding: false,
-		},
+		body:        body,
+		contentType: "application/x-www-form-urlencoded",
 	}
 }
 
-func makeQueryString(data interface{}, gRpcEncoding bool) (string, error) {
+func makeQueryString(data interface{}) (string, error) {
 	inputVal := reflect.ValueOf(data)
 	inputType := reflect.TypeOf(data)
 	if inputType.Kind() == reflect.Map {
@@ -103,30 +96,13 @@ func makeQueryString(data interface{}, gRpcEncoding bool) (string, error) {
 			if v.IsZero() {
 				continue
 			}
-			value := ""
-			vInt := v.Interface()
-			if gRpcEncoding || isBasicType(v.Type()) {
-				value = fmt.Sprintf("%v", vInt)
-			} else {
-				marshalled, err := json.Marshal(vInt)
-				if err != nil {
-					return "", fmt.Errorf("cannot create query string: %w", err)
-				}
-				// String values on map[string]any are considered interfaces marshalled with quotes, so we need to remove them
-				value = string(marshalled)
-				value = strings.TrimPrefix(value, "\"")
-				value = strings.TrimSuffix(value, "\"")
-			}
 			s = append(s, fmt.Sprintf("%s=%s",
 				strings.Replace(url.QueryEscape(fmt.Sprintf("%v", k.Interface())), "+", "%20", -1),
-				strings.Replace(url.QueryEscape(fmt.Sprintf("%v", value)), "+", "%20", -1)))
+				strings.Replace(url.QueryEscape(fmt.Sprintf("%v", v.Interface())), "+", "%20", -1)))
 		}
 		return strings.Join(s, "&"), nil
 	}
 	if inputType.Kind() == reflect.Struct {
-		if !gRpcEncoding {
-			return "", fmt.Errorf("encoding for non map structures is only supported in gRPC mode: %#v", data)
-		}
 		params, err := query.Values(data)
 		if err != nil {
 			return "", fmt.Errorf("cannot create query string: %w", err)
@@ -163,20 +139,20 @@ func EncodeMultiSegmentPathParameter(p string) string {
 	return b.String()
 }
 
-func makeRequestBody(method string, requestURL *string, data interface{}, encoding encoding) (common.RequestBody, error) {
+func makeRequestBody(method string, requestURL *string, data interface{}, contentType string) (common.RequestBody, error) {
 	if data == nil {
 		return common.RequestBody{}, nil
 	}
 	if method == "GET" || method == "DELETE" || method == "HEAD" {
-		qs, err := makeQueryString(data, encoding.gRpcEncoding)
+		qs, err := makeQueryString(data)
 		if err != nil {
 			return common.RequestBody{}, err
 		}
 		*requestURL += "?" + qs
 		return common.NewRequestBody([]byte{})
 	}
-	if encoding.contentType == "application/x-www-form-urlencoded" {
-		qs, err := makeQueryString(data, encoding.gRpcEncoding)
+	if contentType == "application/x-www-form-urlencoded" {
+		qs, err := makeQueryString(data)
 		if err != nil {
 			return common.RequestBody{}, err
 		}

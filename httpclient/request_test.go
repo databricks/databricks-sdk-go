@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
@@ -20,7 +21,7 @@ func TestMakeRequestBody(t *testing.T) {
 		Scope string `json:"scope" url:"scope"`
 	}
 	requestURL := "/a/b/c"
-	body, err := makeRequestBody("GET", &requestURL, x{"test"}, encoding{gRpcEncoding: true})
+	body, err := makeRequestBody("GET", &requestURL, x{"test"}, "")
 	require.NoError(t, err)
 	bodyBytes, err := io.ReadAll(body.Reader)
 	require.NoError(t, err)
@@ -28,7 +29,7 @@ func TestMakeRequestBody(t *testing.T) {
 	require.Equal(t, 0, len(bodyBytes))
 
 	requestURL = "/a/b/c"
-	body, err = makeRequestBody("POST", &requestURL, x{"test"}, encoding{gRpcEncoding: true})
+	body, err = makeRequestBody("POST", &requestURL, x{"test"}, "")
 	require.NoError(t, err)
 	bodyBytes, err = io.ReadAll(body.Reader)
 	require.NoError(t, err)
@@ -37,7 +38,7 @@ func TestMakeRequestBody(t *testing.T) {
 	require.Equal(t, []byte(x1), bodyBytes)
 
 	requestURL = "/a/b/c"
-	body, err = makeRequestBody("HEAD", &requestURL, x{"test"}, encoding{gRpcEncoding: true})
+	body, err = makeRequestBody("HEAD", &requestURL, x{"test"}, "")
 	require.NoError(t, err)
 	bodyBytes, err = io.ReadAll(body.Reader)
 	require.NoError(t, err)
@@ -47,7 +48,7 @@ func TestMakeRequestBody(t *testing.T) {
 
 func TestMakeRequestBodyFromReader(t *testing.T) {
 	requestURL := "/a/b/c"
-	body, err := makeRequestBody("PUT", &requestURL, strings.NewReader("abc"), encoding{gRpcEncoding: true})
+	body, err := makeRequestBody("PUT", &requestURL, strings.NewReader("abc"), "")
 	require.NoError(t, err)
 	bodyBytes, err := io.ReadAll(body.Reader)
 	require.NoError(t, err)
@@ -55,24 +56,28 @@ func TestMakeRequestBodyFromReader(t *testing.T) {
 }
 
 func TestUrlEncoding(t *testing.T) {
-	data := map[string]any{
-		"mapping": map[string]string{
-			"key": "value",
+	data := GetOAuthTokenRequest{
+		AuthorizationDetails: []credentials.AuthorizationDetails{
+			{
+				Type: "type",
+			},
 		},
 	}
 	requestURL := "/a/b/c"
-	body, err := makeRequestBody("POST", &requestURL, data, encoding{contentType: "application/x-www-form-urlencoded", gRpcEncoding: false})
+	body, err := makeRequestBody("POST", &requestURL, data, "application/x-www-form-urlencoded")
 	require.NoError(t, err)
 	bodyBytes, err := io.ReadAll(body.Reader)
 	require.NoError(t, err)
 	require.Equal(t, "/a/b/c", requestURL)
-	// Encoding of mapping={"key":"value"}
-	require.Equal(t, "mapping=%7B%22key%22%3A%22value%22%7D", string(bodyBytes))
+	// Check that the encoding is json.Marshal based.
+	// Regular query.Value encoding would like
+	//    AuthorizationDetails=%7Btype+++%5B
+	require.True(t, strings.Contains(string(bodyBytes), "authorization_details=%5B%7B%22type%"))
 }
 
 func TestMakeRequestBodyReaderError(t *testing.T) {
 	requestURL := "/a/b/c"
-	_, err := makeRequestBody("POST", &requestURL, errReader(false), encoding{gRpcEncoding: true})
+	_, err := makeRequestBody("POST", &requestURL, errReader(false), "")
 	// The request body is only read once the request is sent, so no error
 	// should be returned until then.
 	require.NoError(t, err, "request body reader error should be ignored")
@@ -83,7 +88,7 @@ func TestMakeRequestBodyJsonError(t *testing.T) {
 	type x struct {
 		Foo chan string `json:"foo"`
 	}
-	_, err := makeRequestBody("POST", &requestURL, x{make(chan string)}, encoding{gRpcEncoding: true})
+	_, err := makeRequestBody("POST", &requestURL, x{make(chan string)}, "")
 	require.EqualError(t, err, "request marshal failure: json: unsupported type: chan string")
 }
 
@@ -98,13 +103,13 @@ func TestMakeRequestBodyQueryFailingEncode(t *testing.T) {
 	type x struct {
 		Foo failingUrlEncode `url:"foo"`
 	}
-	_, err := makeRequestBody("GET", &requestURL, x{failingUrlEncode("always failing")}, encoding{gRpcEncoding: true})
+	_, err := makeRequestBody("GET", &requestURL, x{failingUrlEncode("always failing")}, "")
 	require.EqualError(t, err, "cannot create query string: always failing")
 }
 
 func TestMakeRequestBodyQueryUnsupported(t *testing.T) {
 	requestURL := "/a/b/c"
-	_, err := makeRequestBody("GET", &requestURL, true, encoding{gRpcEncoding: true})
+	_, err := makeRequestBody("GET", &requestURL, true, "")
 	require.EqualError(t, err, "unsupported query string data: true")
 }
 

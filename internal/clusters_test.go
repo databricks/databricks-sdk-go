@@ -2,12 +2,12 @@ package internal
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/iam"
@@ -23,18 +23,13 @@ func sharedRunningCluster(t *testing.T, ctx context.Context,
 	return clusterId
 }
 
-func testDetails() any {
-	d := []any{map[string]any{
-		"type":        "workspace_permission",
-		"object_type": "serving-endpoints",
-		"object_path": "/serving-endpoints/c7725bf656524d3f847feed475770637",
-		"actions":     []string{"query_inference_endpoint"},
+func testDetails() []credentials.AuthorizationDetails {
+	d := []credentials.AuthorizationDetails{{
+		Type:       "workspace_permission",
+		ObjectType: "serving-endpoints",
+		ObjectPath: "/serving-endpoints/c7725bf656524d3f847feed475770637",
+		Actions:    []string{"query_inference_endpoint"},
 	}}
-	//b, _ := json.Marshal(d)
-	//s := string(b)
-	//fmt.Printf(s)
-	//panic(s)
-	//return string(b)
 	return d
 }
 
@@ -43,10 +38,13 @@ func TestDataPlane(t *testing.T) {
 		DebugTruncateBytes: 2048,
 	}))
 	det := testDetails()
-	r, _ := w.GetOAuthToken(det)
+	token, err := w.GetOAuthToken(det)
+	require.NoError(t, err)
+	assert.Equal(t, token.AuthorizationDetails, testDetails())
+	assert.NotEmpty(t, token.AccessToken)
+	assert.True(t, token.ExpiresIn > 0)
 	//_, w := accountTest(t)
 	//r, _ := w.ApiClient.GetApiClient().GetDatabricksOauthToken([]string{testDetails()})
-	fmt.Printf("token: %v\n", r)
 }
 
 func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {

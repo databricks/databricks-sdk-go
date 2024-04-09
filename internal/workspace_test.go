@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
@@ -90,14 +91,14 @@ func TestGetOAuthToken(t *testing.T) {
 	readyEndpoint, err := endpoint.Get()
 	require.NoError(t, err)
 
-	var authDetails interface{}
 	// TODO: Use readyEndpoint.DataplaneInfo.AuthorizationDetails when returned by the API
-	authDetails = []any{map[string]any{
-		"type":        "workspace_permission",
-		"object_type": "serving-endpoints",
-		"object_path": fmt.Sprintf("/serving-endpoints/%s", readyEndpoint.Id),
-		"actions":     []string{"query_inference_endpoint"},
+	authDetails := []credentials.AuthorizationDetails{{
+		Type:       "workspace_permission",
+		ObjectType: "serving-endpoints",
+		ObjectPath: fmt.Sprintf("/serving-endpoints/%s", readyEndpoint.Id),
+		Actions:    []string{"query_inference_endpoint"},
 	}}
+	//var authDetails []credentials.AuthorizationDetails
 	//err = json.Unmarshal(readyEndpoint.DataplaneInfo.AuthorizationDetails, &authDetails)
 	//require.NoError(t, err)
 
