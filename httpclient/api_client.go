@@ -95,13 +95,15 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 			Timeout:   0,
 			Transport: transport,
 		},
+		dataPlaneCache: make(dataPlaneCache),
 	}
 }
 
 type ApiClient struct {
-	config      ClientConfig
-	rateLimiter *rate.Limiter
-	httpClient  *http.Client
+	config         ClientConfig
+	rateLimiter    *rate.Limiter
+	httpClient     *http.Client
+	dataPlaneCache dataPlaneCache
 }
 
 type DoOption struct {
