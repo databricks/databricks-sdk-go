@@ -484,5 +484,5 @@ type WorkspaceAssignmentService interface {
 	//
 	// Creates or updates the workspace permissions assignment in a given
 	// account and workspace for the specified principal.
-	Update(ctx context.Context, request UpdateWorkspaceAssignments) error
+	Update(ctx context.Context, request UpdateWorkspaceAssignments) (*PermissionAssignment, error)
 }

@@ -1845,7 +1845,7 @@ type LakehouseMonitorsInterface interface {
 	//
 	// Note that the metric tables and dashboard will not be deleted as part of this
 	// call; those assets must be manually cleaned up (if desired).
-	DeleteByFullName(ctx context.Context, fullName string) error
+	DeleteByTableName(ctx context.Context, tableName string) error
 
 	// Get a table monitor.
 	//
@@ -1877,7 +1877,7 @@ type LakehouseMonitorsInterface interface {
 	// information on assets created by the monitor. Some information (e.g.,
 	// dashboard) may be filtered out if the caller is in a different workspace than
 	// where the monitor was created.
-	GetByFullName(ctx context.Context, fullName string) (*MonitorInfo, error)
+	GetByTableName(ctx context.Context, tableName string) (*MonitorInfo, error)
 
 	// Get refresh.
 	//
@@ -1905,7 +1905,7 @@ type LakehouseMonitorsInterface interface {
 	//
 	// Additionally, the call must be made from the workspace where the monitor was
 	// created.
-	GetRefreshByFullNameAndRefreshId(ctx context.Context, fullName string, refreshId string) (*MonitorRefreshInfo, error)
+	GetRefreshByTableNameAndRefreshId(ctx context.Context, tableName string, refreshId string) (*MonitorRefreshInfo, error)
 
 	// List refreshes.
 	//
@@ -1935,7 +1935,7 @@ type LakehouseMonitorsInterface interface {
 	//
 	// Additionally, the call must be made from the workspace where the monitor was
 	// created.
-	ListRefreshesByFullName(ctx context.Context, fullName string) ([]MonitorRefreshInfo, error)
+	ListRefreshesByTableName(ctx context.Context, tableName string) ([]MonitorRefreshInfo, error)
 
 	// Queue a metric refresh for a monitor.
 	//
@@ -2074,9 +2074,9 @@ func (a *LakehouseMonitorsAPI) Delete(ctx context.Context, request DeleteLakehou
 //
 // Note that the metric tables and dashboard will not be deleted as part of this
 // call; those assets must be manually cleaned up (if desired).
-func (a *LakehouseMonitorsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
+func (a *LakehouseMonitorsAPI) DeleteByTableName(ctx context.Context, tableName string) error {
 	return a.impl.Delete(ctx, DeleteLakehouseMonitorRequest{
-		FullName: fullName,
+		TableName: tableName,
 	})
 }
 
@@ -2112,9 +2112,9 @@ func (a *LakehouseMonitorsAPI) Get(ctx context.Context, request GetLakehouseMoni
 // information on assets created by the monitor. Some information (e.g.,
 // dashboard) may be filtered out if the caller is in a different workspace than
 // where the monitor was created.
-func (a *LakehouseMonitorsAPI) GetByFullName(ctx context.Context, fullName string) (*MonitorInfo, error) {
+func (a *LakehouseMonitorsAPI) GetByTableName(ctx context.Context, tableName string) (*MonitorInfo, error) {
 	return a.impl.Get(ctx, GetLakehouseMonitorRequest{
-		FullName: fullName,
+		TableName: tableName,
 	})
 }
 
@@ -2146,9 +2146,9 @@ func (a *LakehouseMonitorsAPI) GetRefresh(ctx context.Context, request GetRefres
 //
 // Additionally, the call must be made from the workspace where the monitor was
 // created.
-func (a *LakehouseMonitorsAPI) GetRefreshByFullNameAndRefreshId(ctx context.Context, fullName string, refreshId string) (*MonitorRefreshInfo, error) {
+func (a *LakehouseMonitorsAPI) GetRefreshByTableNameAndRefreshId(ctx context.Context, tableName string, refreshId string) (*MonitorRefreshInfo, error) {
 	return a.impl.GetRefresh(ctx, GetRefreshRequest{
-		FullName:  fullName,
+		TableName: tableName,
 		RefreshId: refreshId,
 	})
 }
@@ -2183,9 +2183,9 @@ func (a *LakehouseMonitorsAPI) ListRefreshes(ctx context.Context, request ListRe
 //
 // Additionally, the call must be made from the workspace where the monitor was
 // created.
-func (a *LakehouseMonitorsAPI) ListRefreshesByFullName(ctx context.Context, fullName string) ([]MonitorRefreshInfo, error) {
+func (a *LakehouseMonitorsAPI) ListRefreshesByTableName(ctx context.Context, tableName string) ([]MonitorRefreshInfo, error) {
 	return a.impl.ListRefreshes(ctx, ListRefreshesRequest{
-		FullName: fullName,
+		TableName: tableName,
 	})
 }
 

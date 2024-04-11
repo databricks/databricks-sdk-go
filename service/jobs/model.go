@@ -228,9 +228,6 @@ func (s ClusterInstance) MarshalJSON() ([]byte, error) {
 }
 
 type ClusterSpec struct {
-	// The key of the compute requirement, specified in `job.settings.compute`,
-	// to use for execution of this task.
-	ComputeKey string `json:"compute_key,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
@@ -358,9 +355,6 @@ type Continuous struct {
 type CreateJob struct {
 	// List of permissions to set on the job.
 	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
-	// A list of compute requirements that can be referenced by tasks of this
-	// job.
-	Compute []JobCompute `json:"compute,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -378,6 +372,9 @@ type CreateJob struct {
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// A list of task execution environment specifications that can be
+	// referenced by tasks of this job.
+	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
@@ -956,15 +953,6 @@ type JobCluster struct {
 	NewCluster compute.ClusterSpec `json:"new_cluster"`
 }
 
-type JobCompute struct {
-	// A unique name for the compute requirement. This field is required and
-	// must be unique within the job. `JobTaskSettings` may refer to this field
-	// to determine the compute requirements for the task execution.
-	ComputeKey string `json:"compute_key"`
-
-	Spec compute.ComputeSpec `json:"spec"`
-}
-
 type JobDeployment struct {
 	// The kind of deployment that manages the job.
 	//
@@ -1079,6 +1067,15 @@ func (s *JobEmailNotifications) UnmarshalJSON(b []byte) error {
 
 func (s JobEmailNotifications) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type JobEnvironment struct {
+	// The key of an environment. It has to be unique within a job.
+	EnvironmentKey string `json:"environment_key"`
+	// The a environment entity used to preserve serverless environment side
+	// panel and jobs' environment for non-notebook task. In this minimal
+	// environment spec, only pip dependencies are supported. Next ID: 5
+	Spec *compute.Environment `json:"spec,omitempty"`
 }
 
 type JobNotificationSettings struct {
@@ -1243,9 +1240,6 @@ func (s JobRunAs) MarshalJSON() ([]byte, error) {
 }
 
 type JobSettings struct {
-	// A list of compute requirements that can be referenced by tasks of this
-	// job.
-	Compute []JobCompute `json:"compute,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -1263,6 +1257,9 @@ type JobSettings struct {
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// A list of task execution environment specifications that can be
+	// referenced by tasks of this job.
+	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
@@ -2805,9 +2802,6 @@ type RunTask struct {
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
 	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
-	// The key of the compute requirement, specified in `job.settings.compute`,
-	// to use for execution of this task.
-	ComputeKey string `json:"compute_key,omitempty"`
 	// If condition_task, specifies a condition with an outcome that can be used
 	// to control the execution of other tasks. Does not require a cluster to
 	// execute and does not support retries or notifications.
@@ -3619,7 +3613,7 @@ func (s SubmitTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type TableTriggerConfiguration struct {
+type TableUpdateTriggerConfiguration struct {
 	// The table(s) condition based on which to trigger a job run.
 	Condition Condition `json:"condition,omitempty"`
 	// If set, the trigger starts a run only after the specified amount of time
@@ -3638,18 +3632,15 @@ type TableTriggerConfiguration struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *TableTriggerConfiguration) UnmarshalJSON(b []byte) error {
+func (s *TableUpdateTriggerConfiguration) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s TableTriggerConfiguration) MarshalJSON() ([]byte, error) {
+func (s TableUpdateTriggerConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
 type Task struct {
-	// The key of the compute requirement, specified in `job.settings.compute`,
-	// to use for execution of this task.
-	ComputeKey string `json:"compute_key,omitempty"`
 	// If condition_task, specifies a condition with an outcome that can be used
 	// to control the execution of other tasks. Does not require a cluster to
 	// execute and does not support retries or notifications.
@@ -3671,6 +3662,10 @@ type Task struct {
 	// task begin or complete as well as when this task is deleted. The default
 	// behavior is to not send any emails.
 	EmailNotifications *TaskEmailNotifications `json:"email_notifications,omitempty"`
+	// The key that references an environment spec in a job. This field is
+	// required for Python script, Python wheel and dbt tasks when using
+	// serverless compute.
+	EnvironmentKey string `json:"environment_key,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
@@ -3873,9 +3868,9 @@ type TriggerSettings struct {
 	// Whether this trigger is paused or not.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 	// Old table trigger settings name. Deprecated in favor of `table_update`.
-	Table *TableTriggerConfiguration `json:"table,omitempty"`
+	Table *TableUpdateTriggerConfiguration `json:"table,omitempty"`
 
-	TableUpdate *TableTriggerConfiguration `json:"table_update,omitempty"`
+	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
 }
 
 // The type of trigger that fired this run.

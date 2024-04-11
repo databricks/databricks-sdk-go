@@ -1,4 +1,4 @@
 package version
 
 // Version of the SDK, updated manually before every tag
-const Version = "0.37.0"
+const Version = "0.38.0"
