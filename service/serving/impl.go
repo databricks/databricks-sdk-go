@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 )
 
 // unexported type that holds implementations of just Apps API methods
@@ -74,6 +75,46 @@ func (a *appsImpl) GetEvents(ctx context.Context, request GetEventsRequest) (*Li
 type servingEndpointsImpl struct {
 	client *client.DatabricksClient
 }
+
+
+// Query a serving endpoint.
+func (a *servingEndpointsImpl) QueryDataPlane(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
+	infoRetriever := func() (*httpclient.DataPlaneInfo, error) {
+		res, err := a.Get(ctx, GetServingEndpointRequest{
+			Name: request.Name,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return res.DataPlaneInfo, nil
+	}  
+	//We get the function here, not the token
+	tokenProvider := a.client.Config.GetToken
+	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
+	//Client not public. 
+	dataPlaneToken, err := a.client.client.GetOAuthTokenForDataPlane("serving-endpoint",path, infoRetriever, tokenProvider)
+	if err != nil {
+		return nil, err
+	}
+	var queryEndpointResponse QueryEndpointResponse
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	// Not sure this is the correct visitor
+	auth_visitor := func(r *http.Request) error {
+		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", dataPlaneToken.AccessToken))
+		return nil
+	}
+	opts := []httpclient.DoOption{}
+	opts = append(opts, httpclient.WithAuthVisitor(auth_visitor))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(queryEndpointResponse))
+	
+	err = a.client.client.Do(ctx, http.MethodPost, path, opts)
+	return &queryEndpointResponse, err
+}
+
 
 func (a *servingEndpointsImpl) BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error) {
 	var buildLogsResponse BuildLogsResponse

@@ -31,6 +31,13 @@ func WithRequestHeaders(headers map[string]string) DoOption {
 	})
 }
 
+func WithAuthVisitor(visitor func(*http.Request) error) DoOption {
+	return DoOption{
+		in:           visitor,
+		isAuthOption: true,
+	}
+}
+
 // WithTokenSource uses the specified golang.org/x/oauth2 token source on a request
 func WithTokenSource(ts oauth2.TokenSource) DoOption {
 	return WithRequestVisitor(func(r *http.Request) error {

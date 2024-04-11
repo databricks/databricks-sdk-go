@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/useragent"
@@ -634,6 +636,36 @@ func (a *ServingEndpointsAPI) Put(ctx context.Context, request PutRequest) (*Put
 
 // Query a serving endpoint.
 func (a *ServingEndpointsAPI) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
+	return a.impl.Query(ctx, request)
+}
+
+// Query a serving endpoint.
+func (a *ServingEndpointsAPI) QueryDataPlane(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
+	infoRetriever := func() (*httpclient.DataPlaneInfo, error) {
+		res, err := a.impl.Get(ctx, GetServingEndpointRequest{
+			Name: request.Name,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return res.DataPlaneInfo, nil
+	}  
+	//Client not public. 
+	client := a.impl.client
+	//We get the function here, not the token
+	tokenProvider := client.Config.GetToken
+	path:= fmt.Sprintf("/serving-model/%s", request.Name)
+	dataPlaneToken, err := client.client.GetOAuthTokenForDataPlane("serving-endpoint",path, infoRetriever, tokenProvider)
+	if err != nil {
+		return nil, err
+	}
+	var queryEndpointResponse QueryEndpointResponse
+	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryEndpointResponse)
+	return &queryEndpointResponse, err
 	return a.impl.Query(ctx, request)
 }
 
