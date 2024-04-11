@@ -323,6 +323,11 @@ func (s ClientsTypes) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CloneCluster struct {
+	// The cluster that is being cloned.
+	SourceClusterId string `json:"source_cluster_id"`
+}
+
 type CloudProviderNodeInfo struct {
 	Status []CloudProviderNodeStatus `json:"status,omitempty"`
 }
@@ -1105,6 +1110,9 @@ type ClusterSpec struct {
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
+	// When specified, this clones libraries from a source cluster during the
+	// creation of a new cluster.
+	CloneFrom *CloneCluster `json:"clone_from,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
 	// one destination can be specified for one cluster. If the conf is given,
@@ -1328,37 +1336,6 @@ func (s CommandStatusResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type ComputeSpec struct {
-	// The kind of compute described by this compute specification.
-	Kind ComputeSpecKind `json:"kind,omitempty"`
-}
-
-// The kind of compute described by this compute specification.
-type ComputeSpecKind string
-
-const ComputeSpecKindServerlessPreview ComputeSpecKind = `SERVERLESS_PREVIEW`
-
-// String representation for [fmt.Print]
-func (f *ComputeSpecKind) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ComputeSpecKind) Set(v string) error {
-	switch v {
-	case `SERVERLESS_PREVIEW`:
-		*f = ComputeSpecKind(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "SERVERLESS_PREVIEW"`, v)
-	}
-}
-
-// Type always returns ComputeSpecKind to satisfy [pflag.Value] interface
-func (f *ComputeSpecKind) Type() string {
-	return "ComputeSpecKind"
-}
-
 type ContextStatus string
 
 const ContextStatusError ContextStatus = `Error`
@@ -1429,6 +1406,9 @@ type CreateCluster struct {
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
+	// When specified, this clones libraries from a source cluster during the
+	// creation of a new cluster.
+	CloneFrom *CloneCluster `json:"clone_from,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
 	// one destination can be specified for one cluster. If the conf is given,
@@ -2111,6 +2091,9 @@ type EditCluster struct {
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
+	// When specified, this clones libraries from a source cluster during the
+	// creation of a new cluster.
+	CloneFrom *CloneCluster `json:"clone_from,omitempty"`
 	// ID of the cluser
 	ClusterId string `json:"cluster_id"`
 	// The configuration for delivering spark logs to a long-term storage
@@ -2349,6 +2332,22 @@ type EditPolicyResponse struct {
 }
 
 type EditResponse struct {
+}
+
+// The a environment entity used to preserve serverless environment side panel
+// and jobs' environment for non-notebook task. In this minimal environment
+// spec, only pip dependencies are supported. Next ID: 5
+type Environment struct {
+	// * User-friendly name for the client version: “client”: “1” The
+	// version is a string, consisting of the major client version
+	Client string `json:"client"`
+	// List of pip dependencies, as supported by the version of pip in this
+	// environment. Each dependency is a pip requirement file line
+	// https://pip.pypa.io/en/stable/reference/requirements-file-format/ Allowed
+	// dependency could be <requirement specifier>, <archive url/path>, <local
+	// project path>(WSFS or Volumes in Databricks), <vcs project url> E.g.
+	// dependencies: ["foo==0.0.1", "-r /Workspace/test/requirements.txt"]
+	Dependencies []string `json:"dependencies,omitempty"`
 }
 
 type EventDetails struct {

@@ -14,6 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/serving"
@@ -38,75 +39,87 @@ func NewMockWorkspaceClient(t interface {
 		WorkspaceClient: &databricks.WorkspaceClient{
 			Config: nil,
 
-			AccountAccessControlProxy: iam.NewMockAccountAccessControlProxyInterface(t),
-			Alerts:                    sql.NewMockAlertsInterface(t),
-			Apps:                      serving.NewMockAppsInterface(t),
-			ArtifactAllowlists:        catalog.NewMockArtifactAllowlistsInterface(t),
-			Catalogs:                  catalog.NewMockCatalogsInterface(t),
-			CleanRooms:                sharing.NewMockCleanRoomsInterface(t),
-			ClusterPolicies:           compute.NewMockClusterPoliciesInterface(t),
-			Clusters:                  compute.NewMockClustersInterface(t),
-			CommandExecution:          compute.NewMockCommandExecutionInterface(t),
-			Connections:               catalog.NewMockConnectionsInterface(t),
-			CredentialsManager:        settings.NewMockCredentialsManagerInterface(t),
-			CurrentUser:               iam.NewMockCurrentUserInterface(t),
-			DashboardWidgets:          sql.NewMockDashboardWidgetsInterface(t),
-			Dashboards:                sql.NewMockDashboardsInterface(t),
-			DataSources:               sql.NewMockDataSourcesInterface(t),
-			Dbfs:                      files.NewMockDbfsInterface(t),
-			DbsqlPermissions:          sql.NewMockDbsqlPermissionsInterface(t),
-			Experiments:               ml.NewMockExperimentsInterface(t),
-			ExternalLocations:         catalog.NewMockExternalLocationsInterface(t),
-			Files:                     files.NewMockFilesInterface(t),
-			Functions:                 catalog.NewMockFunctionsInterface(t),
-			GitCredentials:            workspace.NewMockGitCredentialsInterface(t),
-			GlobalInitScripts:         compute.NewMockGlobalInitScriptsInterface(t),
-			Grants:                    catalog.NewMockGrantsInterface(t),
-			Groups:                    iam.NewMockGroupsInterface(t),
-			InstancePools:             compute.NewMockInstancePoolsInterface(t),
-			InstanceProfiles:          compute.NewMockInstanceProfilesInterface(t),
-			IpAccessLists:             settings.NewMockIpAccessListsInterface(t),
-			Jobs:                      jobs.NewMockJobsInterface(t),
-			LakehouseMonitors:         catalog.NewMockLakehouseMonitorsInterface(t),
-			Lakeview:                  dashboards.NewMockLakeviewInterface(t),
-			Libraries:                 compute.NewMockLibrariesInterface(t),
-			Metastores:                catalog.NewMockMetastoresInterface(t),
-			ModelRegistry:             ml.NewMockModelRegistryInterface(t),
-			ModelVersions:             catalog.NewMockModelVersionsInterface(t),
-			OnlineTables:              catalog.NewMockOnlineTablesInterface(t),
-			PermissionMigration:       iam.NewMockPermissionMigrationInterface(t),
-			Permissions:               iam.NewMockPermissionsInterface(t),
-			Pipelines:                 pipelines.NewMockPipelinesInterface(t),
-			PolicyFamilies:            compute.NewMockPolicyFamiliesInterface(t),
-			Providers:                 sharing.NewMockProvidersInterface(t),
-			Queries:                   sql.NewMockQueriesInterface(t),
-			QueryHistory:              sql.NewMockQueryHistoryInterface(t),
-			QueryVisualizations:       sql.NewMockQueryVisualizationsInterface(t),
-			RecipientActivation:       sharing.NewMockRecipientActivationInterface(t),
-			Recipients:                sharing.NewMockRecipientsInterface(t),
-			RegisteredModels:          catalog.NewMockRegisteredModelsInterface(t),
-			Repos:                     workspace.NewMockReposInterface(t),
-			Schemas:                   catalog.NewMockSchemasInterface(t),
-			Secrets:                   workspace.NewMockSecretsInterface(t),
-			ServicePrincipals:         iam.NewMockServicePrincipalsInterface(t),
-			ServingEndpoints:          serving.NewMockServingEndpointsInterface(t),
-			Settings:                  settings.NewMockSettingsInterface(t),
-			Shares:                    sharing.NewMockSharesInterface(t),
-			StatementExecution:        sql.NewMockStatementExecutionInterface(t),
-			StorageCredentials:        catalog.NewMockStorageCredentialsInterface(t),
-			SystemSchemas:             catalog.NewMockSystemSchemasInterface(t),
-			TableConstraints:          catalog.NewMockTableConstraintsInterface(t),
-			Tables:                    catalog.NewMockTablesInterface(t),
-			TokenManagement:           settings.NewMockTokenManagementInterface(t),
-			Tokens:                    settings.NewMockTokensInterface(t),
-			Users:                     iam.NewMockUsersInterface(t),
-			VectorSearchEndpoints:     vectorsearch.NewMockVectorSearchEndpointsInterface(t),
-			VectorSearchIndexes:       vectorsearch.NewMockVectorSearchIndexesInterface(t),
-			Volumes:                   catalog.NewMockVolumesInterface(t),
-			Warehouses:                sql.NewMockWarehousesInterface(t),
-			Workspace:                 workspace.NewMockWorkspaceInterface(t),
-			WorkspaceBindings:         catalog.NewMockWorkspaceBindingsInterface(t),
-			WorkspaceConf:             settings.NewMockWorkspaceConfInterface(t),
+			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
+			Alerts:                              sql.NewMockAlertsInterface(t),
+			Apps:                                serving.NewMockAppsInterface(t),
+			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
+			Catalogs:                            catalog.NewMockCatalogsInterface(t),
+			CleanRooms:                          sharing.NewMockCleanRoomsInterface(t),
+			ClusterPolicies:                     compute.NewMockClusterPoliciesInterface(t),
+			Clusters:                            compute.NewMockClustersInterface(t),
+			CommandExecution:                    compute.NewMockCommandExecutionInterface(t),
+			Connections:                         catalog.NewMockConnectionsInterface(t),
+			ConsumerFulfillments:                marketplace.NewMockConsumerFulfillmentsInterface(t),
+			ConsumerInstallations:               marketplace.NewMockConsumerInstallationsInterface(t),
+			ConsumerListings:                    marketplace.NewMockConsumerListingsInterface(t),
+			ConsumerPersonalizationRequests:     marketplace.NewMockConsumerPersonalizationRequestsInterface(t),
+			ConsumerProviders:                   marketplace.NewMockConsumerProvidersInterface(t),
+			CredentialsManager:                  settings.NewMockCredentialsManagerInterface(t),
+			CurrentUser:                         iam.NewMockCurrentUserInterface(t),
+			DashboardWidgets:                    sql.NewMockDashboardWidgetsInterface(t),
+			Dashboards:                          sql.NewMockDashboardsInterface(t),
+			DataSources:                         sql.NewMockDataSourcesInterface(t),
+			Dbfs:                                files.NewMockDbfsInterface(t),
+			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
+			Experiments:                         ml.NewMockExperimentsInterface(t),
+			ExternalLocations:                   catalog.NewMockExternalLocationsInterface(t),
+			Files:                               files.NewMockFilesInterface(t),
+			Functions:                           catalog.NewMockFunctionsInterface(t),
+			GitCredentials:                      workspace.NewMockGitCredentialsInterface(t),
+			GlobalInitScripts:                   compute.NewMockGlobalInitScriptsInterface(t),
+			Grants:                              catalog.NewMockGrantsInterface(t),
+			Groups:                              iam.NewMockGroupsInterface(t),
+			InstancePools:                       compute.NewMockInstancePoolsInterface(t),
+			InstanceProfiles:                    compute.NewMockInstanceProfilesInterface(t),
+			IpAccessLists:                       settings.NewMockIpAccessListsInterface(t),
+			Jobs:                                jobs.NewMockJobsInterface(t),
+			LakehouseMonitors:                   catalog.NewMockLakehouseMonitorsInterface(t),
+			Lakeview:                            dashboards.NewMockLakeviewInterface(t),
+			Libraries:                           compute.NewMockLibrariesInterface(t),
+			Metastores:                          catalog.NewMockMetastoresInterface(t),
+			ModelRegistry:                       ml.NewMockModelRegistryInterface(t),
+			ModelVersions:                       catalog.NewMockModelVersionsInterface(t),
+			OnlineTables:                        catalog.NewMockOnlineTablesInterface(t),
+			PermissionMigration:                 iam.NewMockPermissionMigrationInterface(t),
+			Permissions:                         iam.NewMockPermissionsInterface(t),
+			Pipelines:                           pipelines.NewMockPipelinesInterface(t),
+			PolicyFamilies:                      compute.NewMockPolicyFamiliesInterface(t),
+			ProviderExchangeFilters:             marketplace.NewMockProviderExchangeFiltersInterface(t),
+			ProviderExchanges:                   marketplace.NewMockProviderExchangesInterface(t),
+			ProviderFiles:                       marketplace.NewMockProviderFilesInterface(t),
+			ProviderListings:                    marketplace.NewMockProviderListingsInterface(t),
+			ProviderPersonalizationRequests:     marketplace.NewMockProviderPersonalizationRequestsInterface(t),
+			ProviderProviderAnalyticsDashboards: marketplace.NewMockProviderProviderAnalyticsDashboardsInterface(t),
+			ProviderProviders:                   marketplace.NewMockProviderProvidersInterface(t),
+			Providers:                           sharing.NewMockProvidersInterface(t),
+			Queries:                             sql.NewMockQueriesInterface(t),
+			QueryHistory:                        sql.NewMockQueryHistoryInterface(t),
+			QueryVisualizations:                 sql.NewMockQueryVisualizationsInterface(t),
+			RecipientActivation:                 sharing.NewMockRecipientActivationInterface(t),
+			Recipients:                          sharing.NewMockRecipientsInterface(t),
+			RegisteredModels:                    catalog.NewMockRegisteredModelsInterface(t),
+			Repos:                               workspace.NewMockReposInterface(t),
+			Schemas:                             catalog.NewMockSchemasInterface(t),
+			Secrets:                             workspace.NewMockSecretsInterface(t),
+			ServicePrincipals:                   iam.NewMockServicePrincipalsInterface(t),
+			ServingEndpoints:                    serving.NewMockServingEndpointsInterface(t),
+			Settings:                            settings.NewMockSettingsInterface(t),
+			Shares:                              sharing.NewMockSharesInterface(t),
+			StatementExecution:                  sql.NewMockStatementExecutionInterface(t),
+			StorageCredentials:                  catalog.NewMockStorageCredentialsInterface(t),
+			SystemSchemas:                       catalog.NewMockSystemSchemasInterface(t),
+			TableConstraints:                    catalog.NewMockTableConstraintsInterface(t),
+			Tables:                              catalog.NewMockTablesInterface(t),
+			TokenManagement:                     settings.NewMockTokenManagementInterface(t),
+			Tokens:                              settings.NewMockTokensInterface(t),
+			Users:                               iam.NewMockUsersInterface(t),
+			VectorSearchEndpoints:               vectorsearch.NewMockVectorSearchEndpointsInterface(t),
+			VectorSearchIndexes:                 vectorsearch.NewMockVectorSearchIndexesInterface(t),
+			Volumes:                             catalog.NewMockVolumesInterface(t),
+			Warehouses:                          sql.NewMockWarehousesInterface(t),
+			Workspace:                           workspace.NewMockWorkspaceInterface(t),
+			WorkspaceBindings:                   catalog.NewMockWorkspaceBindingsInterface(t),
+			WorkspaceConf:                       settings.NewMockWorkspaceConfInterface(t),
 		},
 	}
 
@@ -246,6 +259,46 @@ func (m *MockWorkspaceClient) GetMockConnectionsAPI() *catalog.MockConnectionsIn
 	api, ok := m.WorkspaceClient.Connections.(*catalog.MockConnectionsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Connections to be *catalog.MockConnectionsInterface, actual was %T", m.WorkspaceClient.Connections))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockConsumerFulfillmentsAPI() *marketplace.MockConsumerFulfillmentsInterface {
+	api, ok := m.WorkspaceClient.ConsumerFulfillments.(*marketplace.MockConsumerFulfillmentsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ConsumerFulfillments to be *marketplace.MockConsumerFulfillmentsInterface, actual was %T", m.WorkspaceClient.ConsumerFulfillments))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockConsumerInstallationsAPI() *marketplace.MockConsumerInstallationsInterface {
+	api, ok := m.WorkspaceClient.ConsumerInstallations.(*marketplace.MockConsumerInstallationsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ConsumerInstallations to be *marketplace.MockConsumerInstallationsInterface, actual was %T", m.WorkspaceClient.ConsumerInstallations))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockConsumerListingsAPI() *marketplace.MockConsumerListingsInterface {
+	api, ok := m.WorkspaceClient.ConsumerListings.(*marketplace.MockConsumerListingsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ConsumerListings to be *marketplace.MockConsumerListingsInterface, actual was %T", m.WorkspaceClient.ConsumerListings))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockConsumerPersonalizationRequestsAPI() *marketplace.MockConsumerPersonalizationRequestsInterface {
+	api, ok := m.WorkspaceClient.ConsumerPersonalizationRequests.(*marketplace.MockConsumerPersonalizationRequestsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ConsumerPersonalizationRequests to be *marketplace.MockConsumerPersonalizationRequestsInterface, actual was %T", m.WorkspaceClient.ConsumerPersonalizationRequests))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockConsumerProvidersAPI() *marketplace.MockConsumerProvidersInterface {
+	api, ok := m.WorkspaceClient.ConsumerProviders.(*marketplace.MockConsumerProvidersInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ConsumerProviders to be *marketplace.MockConsumerProvidersInterface, actual was %T", m.WorkspaceClient.ConsumerProviders))
 	}
 	return api
 }
@@ -486,6 +539,62 @@ func (m *MockWorkspaceClient) GetMockPolicyFamiliesAPI() *compute.MockPolicyFami
 	api, ok := m.WorkspaceClient.PolicyFamilies.(*compute.MockPolicyFamiliesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected PolicyFamilies to be *compute.MockPolicyFamiliesInterface, actual was %T", m.WorkspaceClient.PolicyFamilies))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockProviderExchangeFiltersAPI() *marketplace.MockProviderExchangeFiltersInterface {
+	api, ok := m.WorkspaceClient.ProviderExchangeFilters.(*marketplace.MockProviderExchangeFiltersInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ProviderExchangeFilters to be *marketplace.MockProviderExchangeFiltersInterface, actual was %T", m.WorkspaceClient.ProviderExchangeFilters))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockProviderExchangesAPI() *marketplace.MockProviderExchangesInterface {
+	api, ok := m.WorkspaceClient.ProviderExchanges.(*marketplace.MockProviderExchangesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ProviderExchanges to be *marketplace.MockProviderExchangesInterface, actual was %T", m.WorkspaceClient.ProviderExchanges))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockProviderFilesAPI() *marketplace.MockProviderFilesInterface {
+	api, ok := m.WorkspaceClient.ProviderFiles.(*marketplace.MockProviderFilesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ProviderFiles to be *marketplace.MockProviderFilesInterface, actual was %T", m.WorkspaceClient.ProviderFiles))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockProviderListingsAPI() *marketplace.MockProviderListingsInterface {
+	api, ok := m.WorkspaceClient.ProviderListings.(*marketplace.MockProviderListingsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ProviderListings to be *marketplace.MockProviderListingsInterface, actual was %T", m.WorkspaceClient.ProviderListings))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockProviderPersonalizationRequestsAPI() *marketplace.MockProviderPersonalizationRequestsInterface {
+	api, ok := m.WorkspaceClient.ProviderPersonalizationRequests.(*marketplace.MockProviderPersonalizationRequestsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ProviderPersonalizationRequests to be *marketplace.MockProviderPersonalizationRequestsInterface, actual was %T", m.WorkspaceClient.ProviderPersonalizationRequests))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockProviderProviderAnalyticsDashboardsAPI() *marketplace.MockProviderProviderAnalyticsDashboardsInterface {
+	api, ok := m.WorkspaceClient.ProviderProviderAnalyticsDashboards.(*marketplace.MockProviderProviderAnalyticsDashboardsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ProviderProviderAnalyticsDashboards to be *marketplace.MockProviderProviderAnalyticsDashboardsInterface, actual was %T", m.WorkspaceClient.ProviderProviderAnalyticsDashboards))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockProviderProvidersAPI() *marketplace.MockProviderProvidersInterface {
+	api, ok := m.WorkspaceClient.ProviderProviders.(*marketplace.MockProviderProvidersInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ProviderProviders to be *marketplace.MockProviderProvidersInterface, actual was %T", m.WorkspaceClient.ProviderProviders))
 	}
 	return api
 }

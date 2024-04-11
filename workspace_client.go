@@ -15,6 +15,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
+	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/serving"
@@ -142,6 +143,24 @@ type WorkspaceClient struct {
 	// each connection having a unique set of configuration options to support
 	// credential management and other settings.
 	Connections catalog.ConnectionsInterface
+
+	// Fulfillments are entities that allow consumers to preview installations.
+	ConsumerFulfillments marketplace.ConsumerFulfillmentsInterface
+
+	// Installations are entities that allow consumers to interact with
+	// Databricks Marketplace listings.
+	ConsumerInstallations marketplace.ConsumerInstallationsInterface
+
+	// Listings are the core entities in the Marketplace. They represent the
+	// products that are available for consumption.
+	ConsumerListings marketplace.ConsumerListingsInterface
+
+	// Personalization Requests allow customers to interact with the
+	// individualized Marketplace listing flow.
+	ConsumerPersonalizationRequests marketplace.ConsumerPersonalizationRequestsInterface
+
+	// Providers are the entities that publish listings to the Marketplace.
+	ConsumerProviders marketplace.ConsumerProvidersInterface
 
 	// Credentials manager interacts with with Identity Providers to to perform
 	// token exchanges using stored credentials and refresh tokens.
@@ -528,6 +547,31 @@ type WorkspaceClient struct {
 	// create cluster policies using a policy family. Cluster policies created
 	// using a policy family inherit the policy family's policy definition.
 	PolicyFamilies compute.PolicyFamiliesInterface
+
+	// Marketplace exchanges filters curate which groups can access an exchange.
+	ProviderExchangeFilters marketplace.ProviderExchangeFiltersInterface
+
+	// Marketplace exchanges allow providers to share their listings with a
+	// curated set of customers.
+	ProviderExchanges marketplace.ProviderExchangesInterface
+
+	// Marketplace offers a set of file APIs for various purposes such as
+	// preview notebooks and provider icons.
+	ProviderFiles marketplace.ProviderFilesInterface
+
+	// Listings are the core entities in the Marketplace. They represent the
+	// products that are available for consumption.
+	ProviderListings marketplace.ProviderListingsInterface
+
+	// Personalization requests are an alternate to instantly available
+	// listings. Control the lifecycle of personalized solutions.
+	ProviderPersonalizationRequests marketplace.ProviderPersonalizationRequestsInterface
+
+	// Manage templated analytics solution for providers.
+	ProviderProviderAnalyticsDashboards marketplace.ProviderProviderAnalyticsDashboardsInterface
+
+	// Providers are entities that manage assets in Marketplace.
+	ProviderProviders marketplace.ProviderProvidersInterface
 
 	// A data provider is an object representing the organization in the real
 	// world who shares the data. A provider contains shares which further
@@ -962,74 +1006,86 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Config:    cfg,
 		apiClient: apiClient,
 
-		AccountAccessControlProxy: iam.NewAccountAccessControlProxy(databricksClient),
-		Alerts:                    sql.NewAlerts(databricksClient),
-		Apps:                      serving.NewApps(databricksClient),
-		ArtifactAllowlists:        catalog.NewArtifactAllowlists(databricksClient),
-		Catalogs:                  catalog.NewCatalogs(databricksClient),
-		CleanRooms:                sharing.NewCleanRooms(databricksClient),
-		ClusterPolicies:           compute.NewClusterPolicies(databricksClient),
-		Clusters:                  compute.NewClusters(databricksClient),
-		CommandExecution:          compute.NewCommandExecution(databricksClient),
-		Connections:               catalog.NewConnections(databricksClient),
-		CredentialsManager:        settings.NewCredentialsManager(databricksClient),
-		CurrentUser:               iam.NewCurrentUser(databricksClient),
-		DashboardWidgets:          sql.NewDashboardWidgets(databricksClient),
-		Dashboards:                sql.NewDashboards(databricksClient),
-		DataSources:               sql.NewDataSources(databricksClient),
-		Dbfs:                      files.NewDbfs(databricksClient),
-		DbsqlPermissions:          sql.NewDbsqlPermissions(databricksClient),
-		Experiments:               ml.NewExperiments(databricksClient),
-		ExternalLocations:         catalog.NewExternalLocations(databricksClient),
-		Files:                     files.NewFiles(databricksClient),
-		Functions:                 catalog.NewFunctions(databricksClient),
-		GitCredentials:            workspace.NewGitCredentials(databricksClient),
-		GlobalInitScripts:         compute.NewGlobalInitScripts(databricksClient),
-		Grants:                    catalog.NewGrants(databricksClient),
-		Groups:                    iam.NewGroups(databricksClient),
-		InstancePools:             compute.NewInstancePools(databricksClient),
-		InstanceProfiles:          compute.NewInstanceProfiles(databricksClient),
-		IpAccessLists:             settings.NewIpAccessLists(databricksClient),
-		Jobs:                      jobs.NewJobs(databricksClient),
-		LakehouseMonitors:         catalog.NewLakehouseMonitors(databricksClient),
-		Lakeview:                  dashboards.NewLakeview(databricksClient),
-		Libraries:                 compute.NewLibraries(databricksClient),
-		Metastores:                catalog.NewMetastores(databricksClient),
-		ModelRegistry:             ml.NewModelRegistry(databricksClient),
-		ModelVersions:             catalog.NewModelVersions(databricksClient),
-		OnlineTables:              catalog.NewOnlineTables(databricksClient),
-		PermissionMigration:       iam.NewPermissionMigration(databricksClient),
-		Permissions:               iam.NewPermissions(databricksClient),
-		Pipelines:                 pipelines.NewPipelines(databricksClient),
-		PolicyFamilies:            compute.NewPolicyFamilies(databricksClient),
-		Providers:                 sharing.NewProviders(databricksClient),
-		Queries:                   sql.NewQueries(databricksClient),
-		QueryHistory:              sql.NewQueryHistory(databricksClient),
-		QueryVisualizations:       sql.NewQueryVisualizations(databricksClient),
-		RecipientActivation:       sharing.NewRecipientActivation(databricksClient),
-		Recipients:                sharing.NewRecipients(databricksClient),
-		RegisteredModels:          catalog.NewRegisteredModels(databricksClient),
-		Repos:                     workspace.NewRepos(databricksClient),
-		Schemas:                   catalog.NewSchemas(databricksClient),
-		Secrets:                   workspace.NewSecrets(databricksClient),
-		ServicePrincipals:         iam.NewServicePrincipals(databricksClient),
-		ServingEndpoints:          serving.NewServingEndpoints(databricksClient),
-		Settings:                  settings.NewSettings(databricksClient),
-		Shares:                    sharing.NewShares(databricksClient),
-		StatementExecution:        sql.NewStatementExecution(databricksClient),
-		StorageCredentials:        catalog.NewStorageCredentials(databricksClient),
-		SystemSchemas:             catalog.NewSystemSchemas(databricksClient),
-		TableConstraints:          catalog.NewTableConstraints(databricksClient),
-		Tables:                    catalog.NewTables(databricksClient),
-		TokenManagement:           settings.NewTokenManagement(databricksClient),
-		Tokens:                    settings.NewTokens(databricksClient),
-		Users:                     iam.NewUsers(databricksClient),
-		VectorSearchEndpoints:     vectorsearch.NewVectorSearchEndpoints(databricksClient),
-		VectorSearchIndexes:       vectorsearch.NewVectorSearchIndexes(databricksClient),
-		Volumes:                   catalog.NewVolumes(databricksClient),
-		Warehouses:                sql.NewWarehouses(databricksClient),
-		Workspace:                 workspace.NewWorkspace(databricksClient),
-		WorkspaceBindings:         catalog.NewWorkspaceBindings(databricksClient),
-		WorkspaceConf:             settings.NewWorkspaceConf(databricksClient),
+		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
+		Alerts:                              sql.NewAlerts(databricksClient),
+		Apps:                                serving.NewApps(databricksClient),
+		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
+		Catalogs:                            catalog.NewCatalogs(databricksClient),
+		CleanRooms:                          sharing.NewCleanRooms(databricksClient),
+		ClusterPolicies:                     compute.NewClusterPolicies(databricksClient),
+		Clusters:                            compute.NewClusters(databricksClient),
+		CommandExecution:                    compute.NewCommandExecution(databricksClient),
+		Connections:                         catalog.NewConnections(databricksClient),
+		ConsumerFulfillments:                marketplace.NewConsumerFulfillments(databricksClient),
+		ConsumerInstallations:               marketplace.NewConsumerInstallations(databricksClient),
+		ConsumerListings:                    marketplace.NewConsumerListings(databricksClient),
+		ConsumerPersonalizationRequests:     marketplace.NewConsumerPersonalizationRequests(databricksClient),
+		ConsumerProviders:                   marketplace.NewConsumerProviders(databricksClient),
+		CredentialsManager:                  settings.NewCredentialsManager(databricksClient),
+		CurrentUser:                         iam.NewCurrentUser(databricksClient),
+		DashboardWidgets:                    sql.NewDashboardWidgets(databricksClient),
+		Dashboards:                          sql.NewDashboards(databricksClient),
+		DataSources:                         sql.NewDataSources(databricksClient),
+		Dbfs:                                files.NewDbfs(databricksClient),
+		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
+		Experiments:                         ml.NewExperiments(databricksClient),
+		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
+		Files:                               files.NewFiles(databricksClient),
+		Functions:                           catalog.NewFunctions(databricksClient),
+		GitCredentials:                      workspace.NewGitCredentials(databricksClient),
+		GlobalInitScripts:                   compute.NewGlobalInitScripts(databricksClient),
+		Grants:                              catalog.NewGrants(databricksClient),
+		Groups:                              iam.NewGroups(databricksClient),
+		InstancePools:                       compute.NewInstancePools(databricksClient),
+		InstanceProfiles:                    compute.NewInstanceProfiles(databricksClient),
+		IpAccessLists:                       settings.NewIpAccessLists(databricksClient),
+		Jobs:                                jobs.NewJobs(databricksClient),
+		LakehouseMonitors:                   catalog.NewLakehouseMonitors(databricksClient),
+		Lakeview:                            dashboards.NewLakeview(databricksClient),
+		Libraries:                           compute.NewLibraries(databricksClient),
+		Metastores:                          catalog.NewMetastores(databricksClient),
+		ModelRegistry:                       ml.NewModelRegistry(databricksClient),
+		ModelVersions:                       catalog.NewModelVersions(databricksClient),
+		OnlineTables:                        catalog.NewOnlineTables(databricksClient),
+		PermissionMigration:                 iam.NewPermissionMigration(databricksClient),
+		Permissions:                         iam.NewPermissions(databricksClient),
+		Pipelines:                           pipelines.NewPipelines(databricksClient),
+		PolicyFamilies:                      compute.NewPolicyFamilies(databricksClient),
+		ProviderExchangeFilters:             marketplace.NewProviderExchangeFilters(databricksClient),
+		ProviderExchanges:                   marketplace.NewProviderExchanges(databricksClient),
+		ProviderFiles:                       marketplace.NewProviderFiles(databricksClient),
+		ProviderListings:                    marketplace.NewProviderListings(databricksClient),
+		ProviderPersonalizationRequests:     marketplace.NewProviderPersonalizationRequests(databricksClient),
+		ProviderProviderAnalyticsDashboards: marketplace.NewProviderProviderAnalyticsDashboards(databricksClient),
+		ProviderProviders:                   marketplace.NewProviderProviders(databricksClient),
+		Providers:                           sharing.NewProviders(databricksClient),
+		Queries:                             sql.NewQueries(databricksClient),
+		QueryHistory:                        sql.NewQueryHistory(databricksClient),
+		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
+		RecipientActivation:                 sharing.NewRecipientActivation(databricksClient),
+		Recipients:                          sharing.NewRecipients(databricksClient),
+		RegisteredModels:                    catalog.NewRegisteredModels(databricksClient),
+		Repos:                               workspace.NewRepos(databricksClient),
+		Schemas:                             catalog.NewSchemas(databricksClient),
+		Secrets:                             workspace.NewSecrets(databricksClient),
+		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),
+		ServingEndpoints:                    serving.NewServingEndpoints(databricksClient),
+		Settings:                            settings.NewSettings(databricksClient),
+		Shares:                              sharing.NewShares(databricksClient),
+		StatementExecution:                  sql.NewStatementExecution(databricksClient),
+		StorageCredentials:                  catalog.NewStorageCredentials(databricksClient),
+		SystemSchemas:                       catalog.NewSystemSchemas(databricksClient),
+		TableConstraints:                    catalog.NewTableConstraints(databricksClient),
+		Tables:                              catalog.NewTables(databricksClient),
+		TokenManagement:                     settings.NewTokenManagement(databricksClient),
+		Tokens:                              settings.NewTokens(databricksClient),
+		Users:                               iam.NewUsers(databricksClient),
+		VectorSearchEndpoints:               vectorsearch.NewVectorSearchEndpoints(databricksClient),
+		VectorSearchIndexes:                 vectorsearch.NewVectorSearchIndexes(databricksClient),
+		Volumes:                             catalog.NewVolumes(databricksClient),
+		Warehouses:                          sql.NewWarehouses(databricksClient),
+		Workspace:                           workspace.NewWorkspace(databricksClient),
+		WorkspaceBindings:                   catalog.NewWorkspaceBindings(databricksClient),
+		WorkspaceConf:                       settings.NewWorkspaceConf(databricksClient),
 	}, nil
 }

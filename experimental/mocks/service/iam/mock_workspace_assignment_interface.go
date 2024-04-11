@@ -452,21 +452,33 @@ func (_c *MockWorkspaceAssignmentInterface_ListByWorkspaceId_Call) RunAndReturn(
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceAssignmentInterface) Update(ctx context.Context, request iam.UpdateWorkspaceAssignments) error {
+func (_m *MockWorkspaceAssignmentInterface) Update(ctx context.Context, request iam.UpdateWorkspaceAssignments) (*iam.PermissionAssignment, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, iam.UpdateWorkspaceAssignments) error); ok {
+	var r0 *iam.PermissionAssignment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, iam.UpdateWorkspaceAssignments) (*iam.PermissionAssignment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, iam.UpdateWorkspaceAssignments) *iam.PermissionAssignment); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iam.PermissionAssignment)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, iam.UpdateWorkspaceAssignments) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockWorkspaceAssignmentInterface_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
@@ -488,12 +500,12 @@ func (_c *MockWorkspaceAssignmentInterface_Update_Call) Run(run func(ctx context
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_Update_Call) Return(_a0 error) *MockWorkspaceAssignmentInterface_Update_Call {
-	_c.Call.Return(_a0)
+func (_c *MockWorkspaceAssignmentInterface_Update_Call) Return(_a0 *iam.PermissionAssignment, _a1 error) *MockWorkspaceAssignmentInterface_Update_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_Update_Call) RunAndReturn(run func(context.Context, iam.UpdateWorkspaceAssignments) error) *MockWorkspaceAssignmentInterface_Update_Call {
+func (_c *MockWorkspaceAssignmentInterface_Update_Call) RunAndReturn(run func(context.Context, iam.UpdateWorkspaceAssignments) (*iam.PermissionAssignment, error)) *MockWorkspaceAssignmentInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

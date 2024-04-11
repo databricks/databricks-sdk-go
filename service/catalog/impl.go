@@ -438,7 +438,7 @@ type lakehouseMonitorsImpl struct {
 
 func (a *lakehouseMonitorsImpl) CancelRefresh(ctx context.Context, request CancelRefreshRequest) error {
 	var cancelRefreshResponse CancelRefreshResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v/cancel", request.FullName, request.RefreshId)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v/cancel", request.TableName, request.RefreshId)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &cancelRefreshResponse)
 	return err
@@ -446,7 +446,7 @@ func (a *lakehouseMonitorsImpl) CancelRefresh(ctx context.Context, request Cance
 
 func (a *lakehouseMonitorsImpl) Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error) {
 	var monitorInfo MonitorInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -456,7 +456,7 @@ func (a *lakehouseMonitorsImpl) Create(ctx context.Context, request CreateMonito
 
 func (a *lakehouseMonitorsImpl) Delete(ctx context.Context, request DeleteLakehouseMonitorRequest) error {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
@@ -464,7 +464,7 @@ func (a *lakehouseMonitorsImpl) Delete(ctx context.Context, request DeleteLakeho
 
 func (a *lakehouseMonitorsImpl) Get(ctx context.Context, request GetLakehouseMonitorRequest) (*MonitorInfo, error) {
 	var monitorInfo MonitorInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorInfo)
@@ -473,7 +473,7 @@ func (a *lakehouseMonitorsImpl) Get(ctx context.Context, request GetLakehouseMon
 
 func (a *lakehouseMonitorsImpl) GetRefresh(ctx context.Context, request GetRefreshRequest) (*MonitorRefreshInfo, error) {
 	var monitorRefreshInfo MonitorRefreshInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v", request.FullName, request.RefreshId)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v", request.TableName, request.RefreshId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorRefreshInfo)
@@ -482,7 +482,7 @@ func (a *lakehouseMonitorsImpl) GetRefresh(ctx context.Context, request GetRefre
 
 func (a *lakehouseMonitorsImpl) ListRefreshes(ctx context.Context, request ListRefreshesRequest) ([]MonitorRefreshInfo, error) {
 	var monitorRefreshInfoList []MonitorRefreshInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.TableName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorRefreshInfoList)
@@ -491,7 +491,7 @@ func (a *lakehouseMonitorsImpl) ListRefreshes(ctx context.Context, request ListR
 
 func (a *lakehouseMonitorsImpl) RunRefresh(ctx context.Context, request RunRefreshRequest) (*MonitorRefreshInfo, error) {
 	var monitorRefreshInfo MonitorRefreshInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.TableName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &monitorRefreshInfo)
@@ -500,7 +500,7 @@ func (a *lakehouseMonitorsImpl) RunRefresh(ctx context.Context, request RunRefre
 
 func (a *lakehouseMonitorsImpl) Update(ctx context.Context, request UpdateMonitor) (*MonitorInfo, error) {
 	var monitorInfo MonitorInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.FullName)
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
