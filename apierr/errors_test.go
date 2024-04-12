@@ -48,3 +48,11 @@ func TestGetAPIErrorAppliesOverrides(t *testing.T) {
 	err := GetAPIError(ctx, resp)
 	assert.ErrorIs(t, err, ErrResourceDoesNotExist)
 }
+
+func TestApiErrorTransientRegexMatches(t *testing.T) {
+	err := APIError{
+		Message: "worker env WorkerEnvId(workerenv-XXXXX) not found",
+	}
+	ctx := context.Background()
+	assert.True(t, err.IsRetriable(ctx))
+}

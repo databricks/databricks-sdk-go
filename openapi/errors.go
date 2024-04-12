@@ -67,3 +67,12 @@ var ErrorOverrides = []ErrorOverride{
 		OverrideErrorCode: RESOURCE_DOES_NOT_EXIST,
 	},
 }
+
+var TransientErrorRegexes = []*regexp.Regexp{
+	regexp.MustCompile(`com\.databricks\.backend\.manager\.util\.UnknownWorkerEnvironmentException`),
+	regexp.MustCompile(`does not have any associated worker environments`),
+	regexp.MustCompile(`There is no worker environment with id`),
+	regexp.MustCompile(`Unknown worker environment`),
+	regexp.MustCompile(`ClusterNotReadyException`),
+	regexp.MustCompile(`worker env .* not found`),
+}
