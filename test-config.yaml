@@ -1,0 +1,11 @@
+ignored_tests:
+  go:
+    - package: github.com/databricks/databricks-sdk-go/internal
+      test_name: TestAccWorkspaceUsers
+      comment: Failures due to read-after-write inconsistency. Tracked in https://databricks.atlassian.net/browse/ES-1100061
+    - package: github.com/databricks/databricks-sdk-go/internal
+      test_name: TestAccGroups
+      comment: Failures due to read-after-write inconsistency. Tracked in https://databricks.atlassian.net/browse/ES-1100061
+    - package: github.com/databricks/databricks-sdk-go/internal
+      test_name: TestMwsAccAccountClient_GetWorkspaceClient_NoTranspile
+      comment: test comment
