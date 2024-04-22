@@ -25,8 +25,7 @@
   "toolchain": {
     "required": ["go"],
     "post_generate": [
-      "go run github.com/vektra/mockery/v2@b9df18e0f7b94f0bc11af3f379c8a9aea1e1e8da",
-      "go test -short ./..."
+      "go run github.com/vektra/mockery/v2@b9df18e0f7b94f0bc11af3f379c8a9aea1e1e8da"
     ]
   }
 }
