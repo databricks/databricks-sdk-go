@@ -1656,6 +1656,23 @@ type NotebookTask struct {
 	// Notebook is located in Databricks workspace. * `GIT`: Notebook is located
 	// in cloud Git provider.
 	Source Source `json:"source,omitempty"`
+	// Optional `warehouse_id` to run the notebook on a SQL warehouse. Classic
+	// SQL warehouses are NOT supported, please use serverless or pro SQL
+	// warehouses.
+	//
+	// Note that SQL warehouses only support SQL cells; if the notebook contains
+	// non-SQL cells, the run will fail.
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *NotebookTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NotebookTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PauseStatus string
@@ -3298,8 +3315,7 @@ type SqlTask struct {
 	// If dashboard, indicates that this job must refresh a SQL dashboard.
 	Dashboard *SqlTaskDashboard `json:"dashboard,omitempty"`
 	// If file, indicates that this job runs a SQL file in a remote Git
-	// repository. Only one SQL statement is supported in a file. Multiple SQL
-	// statements separated by semicolons (;) are not permitted.
+	// repository.
 	File *SqlTaskFile `json:"file,omitempty"`
 	// Parameters to be used for each run of this job. The SQL alert task does
 	// not support custom parameters.
@@ -3452,6 +3468,9 @@ type SubmitRun struct {
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
 	// The queue settings of the one-time run.
 	Queue *QueueSettings `json:"queue,omitempty"`
+	// Specifies the user or service principal that the job runs as. If not
+	// specified, the job runs as the user who submits the request.
+	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// If run_job_task, indicates that this task must execute another job.
 	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
 	// An optional name for the run. The default value is `Untitled`.

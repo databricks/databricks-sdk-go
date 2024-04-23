@@ -759,6 +759,18 @@ type GetEventsRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Get the schema for a serving endpoint
+type GetOpenApiRequest struct {
+	// The name of the serving endpoint that the served model belongs to. This
+	// field is required.
+	Name string `json:"-" url:"-"`
+}
+
+// The response is an OpenAPI spec in JSON format that typically includes fields
+// like openapi, info, servers and paths, etc.
+type GetOpenApiResponse struct {
+}
+
 // Get serving endpoint permission levels
 type GetServingEndpointPermissionLevelsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
