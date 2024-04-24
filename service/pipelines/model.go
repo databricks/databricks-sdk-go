@@ -27,6 +27,8 @@ type CreatePipeline struct {
 	Configuration map[string]string `json:"configuration,omitempty"`
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
 	Continuous bool `json:"continuous,omitempty"`
+	// Deployment type of this pipeline.
+	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
 	Development bool `json:"development,omitempty"`
 
@@ -37,6 +39,9 @@ type CreatePipeline struct {
 	Filters *Filters `json:"filters,omitempty"`
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
+	// The configuration for a managed ingestion pipeline. These settings cannot
+	// be used with the 'libraries', 'target' or 'catalog' settings.
+	IngestionDefinition *ManagedIngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
@@ -126,6 +131,33 @@ type DeletePipelineRequest struct {
 type DeletePipelineResponse struct {
 }
 
+// The deployment method that manages the pipeline: - BUNDLE: The pipeline is
+// managed by a Databricks Asset Bundle.
+type DeploymentKind string
+
+const DeploymentKindBundle DeploymentKind = `BUNDLE`
+
+// String representation for [fmt.Print]
+func (f *DeploymentKind) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DeploymentKind) Set(v string) error {
+	switch v {
+	case `BUNDLE`:
+		*f = DeploymentKind(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BUNDLE"`, v)
+	}
+}
+
+// Type always returns DeploymentKind to satisfy [pflag.Value] interface
+func (f *DeploymentKind) Type() string {
+	return "DeploymentKind"
+}
+
 type EditPipeline struct {
 	// If false, deployment will fail if name has changed and conflicts the name
 	// of another pipeline.
@@ -144,6 +176,8 @@ type EditPipeline struct {
 	Configuration map[string]string `json:"configuration,omitempty"`
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
 	Continuous bool `json:"continuous,omitempty"`
+	// Deployment type of this pipeline.
+	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
 	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
@@ -156,6 +190,9 @@ type EditPipeline struct {
 	Filters *Filters `json:"filters,omitempty"`
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
+	// The configuration for a managed ingestion pipeline. These settings cannot
+	// be used with the 'libraries', 'target' or 'catalog' settings.
+	IngestionDefinition *ManagedIngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
@@ -362,6 +399,13 @@ type GetUpdateResponse struct {
 	Update *UpdateInfo `json:"update,omitempty"`
 }
 
+type IngestionConfig struct {
+	// Select tables from a specific source schema.
+	Schema *SchemaSpec `json:"schema,omitempty"`
+	// Select tables from a specific source table.
+	Table *TableSpec `json:"table,omitempty"`
+}
+
 // List pipeline events
 type ListPipelineEventsRequest struct {
 	// Criteria to select a subset of results, expressed using a SQL-like
@@ -510,6 +554,30 @@ func (s *ListUpdatesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListUpdatesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ManagedIngestionPipelineDefinition struct {
+	// Immutable. The Unity Catalog connection this ingestion pipeline uses to
+	// communicate with the source. Specify either ingestion_gateway_id or
+	// connection_name.
+	ConnectionName string `json:"connection_name,omitempty"`
+	// Immutable. Identifier for the ingestion gateway used by this ingestion
+	// pipeline to communicate with the source. Specify either
+	// ingestion_gateway_id or connection_name.
+	IngestionGatewayId string `json:"ingestion_gateway_id,omitempty"`
+	// Required. Settings specifying tables to replicate and the destination for
+	// the replicated tables.
+	Objects []IngestionConfig `json:"objects,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ManagedIngestionPipelineDefinition) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ManagedIngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -819,6 +887,23 @@ func (f *PipelineClusterAutoscaleMode) Type() string {
 	return "PipelineClusterAutoscaleMode"
 }
 
+type PipelineDeployment struct {
+	// The deployment method that manages the pipeline.
+	Kind DeploymentKind `json:"kind,omitempty"`
+	// The path to the file containing metadata about the deployment.
+	MetadataFilePath string `json:"metadata_file_path,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelineDeployment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelineDeployment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PipelineEvent struct {
 	// Information about an error captured by the event.
 	Error *ErrorDetail `json:"error,omitempty"`
@@ -978,6 +1063,8 @@ type PipelineSpec struct {
 	Configuration map[string]string `json:"configuration,omitempty"`
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
 	Continuous bool `json:"continuous,omitempty"`
+	// Deployment type of this pipeline.
+	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
 	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
@@ -986,6 +1073,9 @@ type PipelineSpec struct {
 	Filters *Filters `json:"filters,omitempty"`
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
+	// The configuration for a managed ingestion pipeline. These settings cannot
+	// be used with the 'libraries', 'target' or 'catalog' settings.
+	IngestionDefinition *ManagedIngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
@@ -1091,6 +1181,30 @@ type PipelineTrigger struct {
 	Cron *CronTrigger `json:"cron,omitempty"`
 
 	Manual *ManualTrigger `json:"manual,omitempty"`
+}
+
+type SchemaSpec struct {
+	// Required. Destination catalog to store tables.
+	DestinationCatalog string `json:"destination_catalog,omitempty"`
+	// Required. Destination schema to store tables in. Tables with the same
+	// name as the source tables are created in this destination schema. The
+	// pipeline fails If a table with the same name already exists.
+	DestinationSchema string `json:"destination_schema,omitempty"`
+	// The source catalog name. Might be optional depending on the type of
+	// source.
+	SourceCatalog string `json:"source_catalog,omitempty"`
+	// Required. Schema name in the source database.
+	SourceSchema string `json:"source_schema,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SchemaSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SchemaSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Sequencing struct {
@@ -1236,6 +1350,33 @@ type StopPipelineResponse struct {
 // Stop a pipeline
 type StopRequest struct {
 	PipelineId string `json:"-" url:"-"`
+}
+
+type TableSpec struct {
+	// Required. Destination catalog to store table.
+	DestinationCatalog string `json:"destination_catalog,omitempty"`
+	// Required. Destination schema to store table.
+	DestinationSchema string `json:"destination_schema,omitempty"`
+	// Optional. Destination table name. The pipeline fails If a table with that
+	// name already exists. If not set, the source table name is used.
+	DestinationTable string `json:"destination_table,omitempty"`
+	// Source catalog name. Might be optional depending on the type of source.
+	SourceCatalog string `json:"source_catalog,omitempty"`
+	// Schema name in the source database. Might be optional depending on the
+	// type of source.
+	SourceSchema string `json:"source_schema,omitempty"`
+	// Required. Table name in the source database.
+	SourceTable string `json:"source_table,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TableSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TableSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateInfo struct {

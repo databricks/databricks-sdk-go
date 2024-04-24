@@ -86,7 +86,7 @@ func (_c *MockLibrariesInterface_AllClusterStatuses_Call) RunAndReturn(run func(
 }
 
 // ClusterStatus provides a mock function with given fields: ctx, request
-func (_m *MockLibrariesInterface) ClusterStatus(ctx context.Context, request compute.ClusterStatusRequest) listing.Iterator[compute.LibraryFullStatus] {
+func (_m *MockLibrariesInterface) ClusterStatus(ctx context.Context, request compute.ClusterStatus) listing.Iterator[compute.LibraryFullStatus] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -94,7 +94,7 @@ func (_m *MockLibrariesInterface) ClusterStatus(ctx context.Context, request com
 	}
 
 	var r0 listing.Iterator[compute.LibraryFullStatus]
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ClusterStatusRequest) listing.Iterator[compute.LibraryFullStatus]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ClusterStatus) listing.Iterator[compute.LibraryFullStatus]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -112,14 +112,14 @@ type MockLibrariesInterface_ClusterStatus_Call struct {
 
 // ClusterStatus is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request compute.ClusterStatusRequest
+//   - request compute.ClusterStatus
 func (_e *MockLibrariesInterface_Expecter) ClusterStatus(ctx interface{}, request interface{}) *MockLibrariesInterface_ClusterStatus_Call {
 	return &MockLibrariesInterface_ClusterStatus_Call{Call: _e.mock.On("ClusterStatus", ctx, request)}
 }
 
-func (_c *MockLibrariesInterface_ClusterStatus_Call) Run(run func(ctx context.Context, request compute.ClusterStatusRequest)) *MockLibrariesInterface_ClusterStatus_Call {
+func (_c *MockLibrariesInterface_ClusterStatus_Call) Run(run func(ctx context.Context, request compute.ClusterStatus)) *MockLibrariesInterface_ClusterStatus_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(compute.ClusterStatusRequest))
+		run(args[0].(context.Context), args[1].(compute.ClusterStatus))
 	})
 	return _c
 }
@@ -129,13 +129,13 @@ func (_c *MockLibrariesInterface_ClusterStatus_Call) Return(_a0 listing.Iterator
 	return _c
 }
 
-func (_c *MockLibrariesInterface_ClusterStatus_Call) RunAndReturn(run func(context.Context, compute.ClusterStatusRequest) listing.Iterator[compute.LibraryFullStatus]) *MockLibrariesInterface_ClusterStatus_Call {
+func (_c *MockLibrariesInterface_ClusterStatus_Call) RunAndReturn(run func(context.Context, compute.ClusterStatus) listing.Iterator[compute.LibraryFullStatus]) *MockLibrariesInterface_ClusterStatus_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ClusterStatusAll provides a mock function with given fields: ctx, request
-func (_m *MockLibrariesInterface) ClusterStatusAll(ctx context.Context, request compute.ClusterStatusRequest) ([]compute.LibraryFullStatus, error) {
+func (_m *MockLibrariesInterface) ClusterStatusAll(ctx context.Context, request compute.ClusterStatus) ([]compute.LibraryFullStatus, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -144,10 +144,10 @@ func (_m *MockLibrariesInterface) ClusterStatusAll(ctx context.Context, request 
 
 	var r0 []compute.LibraryFullStatus
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ClusterStatusRequest) ([]compute.LibraryFullStatus, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ClusterStatus) ([]compute.LibraryFullStatus, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ClusterStatusRequest) []compute.LibraryFullStatus); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ClusterStatus) []compute.LibraryFullStatus); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -155,7 +155,7 @@ func (_m *MockLibrariesInterface) ClusterStatusAll(ctx context.Context, request 
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, compute.ClusterStatusRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, compute.ClusterStatus) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -171,14 +171,14 @@ type MockLibrariesInterface_ClusterStatusAll_Call struct {
 
 // ClusterStatusAll is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request compute.ClusterStatusRequest
+//   - request compute.ClusterStatus
 func (_e *MockLibrariesInterface_Expecter) ClusterStatusAll(ctx interface{}, request interface{}) *MockLibrariesInterface_ClusterStatusAll_Call {
 	return &MockLibrariesInterface_ClusterStatusAll_Call{Call: _e.mock.On("ClusterStatusAll", ctx, request)}
 }
 
-func (_c *MockLibrariesInterface_ClusterStatusAll_Call) Run(run func(ctx context.Context, request compute.ClusterStatusRequest)) *MockLibrariesInterface_ClusterStatusAll_Call {
+func (_c *MockLibrariesInterface_ClusterStatusAll_Call) Run(run func(ctx context.Context, request compute.ClusterStatus)) *MockLibrariesInterface_ClusterStatusAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(compute.ClusterStatusRequest))
+		run(args[0].(context.Context), args[1].(compute.ClusterStatus))
 	})
 	return _c
 }
@@ -188,29 +188,29 @@ func (_c *MockLibrariesInterface_ClusterStatusAll_Call) Return(_a0 []compute.Lib
 	return _c
 }
 
-func (_c *MockLibrariesInterface_ClusterStatusAll_Call) RunAndReturn(run func(context.Context, compute.ClusterStatusRequest) ([]compute.LibraryFullStatus, error)) *MockLibrariesInterface_ClusterStatusAll_Call {
+func (_c *MockLibrariesInterface_ClusterStatusAll_Call) RunAndReturn(run func(context.Context, compute.ClusterStatus) ([]compute.LibraryFullStatus, error)) *MockLibrariesInterface_ClusterStatusAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ClusterStatusByClusterId provides a mock function with given fields: ctx, clusterId
-func (_m *MockLibrariesInterface) ClusterStatusByClusterId(ctx context.Context, clusterId string) (*compute.ClusterLibraryStatuses, error) {
+func (_m *MockLibrariesInterface) ClusterStatusByClusterId(ctx context.Context, clusterId string) (*compute.ClusterStatusResponse, error) {
 	ret := _m.Called(ctx, clusterId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ClusterStatusByClusterId")
 	}
 
-	var r0 *compute.ClusterLibraryStatuses
+	var r0 *compute.ClusterStatusResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*compute.ClusterLibraryStatuses, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*compute.ClusterStatusResponse, error)); ok {
 		return rf(ctx, clusterId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *compute.ClusterLibraryStatuses); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *compute.ClusterStatusResponse); ok {
 		r0 = rf(ctx, clusterId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*compute.ClusterLibraryStatuses)
+			r0 = ret.Get(0).(*compute.ClusterStatusResponse)
 		}
 	}
 
@@ -242,12 +242,12 @@ func (_c *MockLibrariesInterface_ClusterStatusByClusterId_Call) Run(run func(ctx
 	return _c
 }
 
-func (_c *MockLibrariesInterface_ClusterStatusByClusterId_Call) Return(_a0 *compute.ClusterLibraryStatuses, _a1 error) *MockLibrariesInterface_ClusterStatusByClusterId_Call {
+func (_c *MockLibrariesInterface_ClusterStatusByClusterId_Call) Return(_a0 *compute.ClusterStatusResponse, _a1 error) *MockLibrariesInterface_ClusterStatusByClusterId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockLibrariesInterface_ClusterStatusByClusterId_Call) RunAndReturn(run func(context.Context, string) (*compute.ClusterLibraryStatuses, error)) *MockLibrariesInterface_ClusterStatusByClusterId_Call {
+func (_c *MockLibrariesInterface_ClusterStatusByClusterId_Call) RunAndReturn(run func(context.Context, string) (*compute.ClusterStatusResponse, error)) *MockLibrariesInterface_ClusterStatusByClusterId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -394,7 +394,7 @@ func (_c *MockLibrariesInterface_Uninstall_Call) RunAndReturn(run func(context.C
 }
 
 // UpdateAndWait provides a mock function with given fields: ctx, update, options
-func (_m *MockLibrariesInterface) UpdateAndWait(ctx context.Context, update compute.Update, options ...retries.Option[compute.ClusterLibraryStatuses]) error {
+func (_m *MockLibrariesInterface) UpdateAndWait(ctx context.Context, update compute.Update, options ...retries.Option[compute.ClusterStatusResponse]) error {
 	_va := make([]interface{}, len(options))
 	for _i := range options {
 		_va[_i] = options[_i]
@@ -409,7 +409,7 @@ func (_m *MockLibrariesInterface) UpdateAndWait(ctx context.Context, update comp
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, compute.Update, ...retries.Option[compute.ClusterLibraryStatuses]) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.Update, ...retries.Option[compute.ClusterStatusResponse]) error); ok {
 		r0 = rf(ctx, update, options...)
 	} else {
 		r0 = ret.Error(0)
@@ -426,18 +426,18 @@ type MockLibrariesInterface_UpdateAndWait_Call struct {
 // UpdateAndWait is a helper method to define mock.On call
 //   - ctx context.Context
 //   - update compute.Update
-//   - options ...retries.Option[compute.ClusterLibraryStatuses]
+//   - options ...retries.Option[compute.ClusterStatusResponse]
 func (_e *MockLibrariesInterface_Expecter) UpdateAndWait(ctx interface{}, update interface{}, options ...interface{}) *MockLibrariesInterface_UpdateAndWait_Call {
 	return &MockLibrariesInterface_UpdateAndWait_Call{Call: _e.mock.On("UpdateAndWait",
 		append([]interface{}{ctx, update}, options...)...)}
 }
 
-func (_c *MockLibrariesInterface_UpdateAndWait_Call) Run(run func(ctx context.Context, update compute.Update, options ...retries.Option[compute.ClusterLibraryStatuses])) *MockLibrariesInterface_UpdateAndWait_Call {
+func (_c *MockLibrariesInterface_UpdateAndWait_Call) Run(run func(ctx context.Context, update compute.Update, options ...retries.Option[compute.ClusterStatusResponse])) *MockLibrariesInterface_UpdateAndWait_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		variadicArgs := make([]retries.Option[compute.ClusterLibraryStatuses], len(args)-2)
+		variadicArgs := make([]retries.Option[compute.ClusterStatusResponse], len(args)-2)
 		for i, a := range args[2:] {
 			if a != nil {
-				variadicArgs[i] = a.(retries.Option[compute.ClusterLibraryStatuses])
+				variadicArgs[i] = a.(retries.Option[compute.ClusterStatusResponse])
 			}
 		}
 		run(args[0].(context.Context), args[1].(compute.Update), variadicArgs...)
@@ -450,7 +450,7 @@ func (_c *MockLibrariesInterface_UpdateAndWait_Call) Return(_a0 error) *MockLibr
 	return _c
 }
 
-func (_c *MockLibrariesInterface_UpdateAndWait_Call) RunAndReturn(run func(context.Context, compute.Update, ...retries.Option[compute.ClusterLibraryStatuses]) error) *MockLibrariesInterface_UpdateAndWait_Call {
+func (_c *MockLibrariesInterface_UpdateAndWait_Call) RunAndReturn(run func(context.Context, compute.Update, ...retries.Option[compute.ClusterStatusResponse]) error) *MockLibrariesInterface_UpdateAndWait_Call {
 	_c.Call.Return(run)
 	return _c
 }

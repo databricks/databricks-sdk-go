@@ -247,6 +247,20 @@ type ServingEndpointsInterface interface {
 	// Retrieves the details for a single serving endpoint.
 	GetByName(ctx context.Context, name string) (*ServingEndpointDetailed, error)
 
+	// Get the schema for a serving endpoint.
+	//
+	// Get the query schema of the serving endpoint in OpenAPI format. The schema
+	// contains information for the supported paths, input and output format and
+	// datatypes.
+	GetOpenApi(ctx context.Context, request GetOpenApiRequest) error
+
+	// Get the schema for a serving endpoint.
+	//
+	// Get the query schema of the serving endpoint in OpenAPI format. The schema
+	// contains information for the supported paths, input and output format and
+	// datatypes.
+	GetOpenApiByName(ctx context.Context, name string) error
+
 	// Get serving endpoint permission levels.
 	//
 	// Gets the permission levels that a user can have on an object.
@@ -531,6 +545,26 @@ func (a *ServingEndpointsAPI) Get(ctx context.Context, request GetServingEndpoin
 // Retrieves the details for a single serving endpoint.
 func (a *ServingEndpointsAPI) GetByName(ctx context.Context, name string) (*ServingEndpointDetailed, error) {
 	return a.impl.Get(ctx, GetServingEndpointRequest{
+		Name: name,
+	})
+}
+
+// Get the schema for a serving endpoint.
+//
+// Get the query schema of the serving endpoint in OpenAPI format. The schema
+// contains information for the supported paths, input and output format and
+// datatypes.
+func (a *ServingEndpointsAPI) GetOpenApi(ctx context.Context, request GetOpenApiRequest) error {
+	return a.impl.GetOpenApi(ctx, request)
+}
+
+// Get the schema for a serving endpoint.
+//
+// Get the query schema of the serving endpoint in OpenAPI format. The schema
+// contains information for the supported paths, input and output format and
+// datatypes.
+func (a *ServingEndpointsAPI) GetOpenApiByName(ctx context.Context, name string) error {
+	return a.impl.GetOpenApi(ctx, GetOpenApiRequest{
 		Name: name,
 	})
 }

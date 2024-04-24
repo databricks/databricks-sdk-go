@@ -120,6 +120,15 @@ func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpoi
 	return &servingEndpointDetailed, err
 }
 
+func (a *servingEndpointsImpl) GetOpenApi(ctx context.Context, request GetOpenApiRequest) error {
+	var getOpenApiResponse GetOpenApiResponse
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/openapi", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getOpenApiResponse)
+	return err
+}
+
 func (a *servingEndpointsImpl) GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
 	var getServingEndpointPermissionLevelsResponse GetServingEndpointPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v/permissionLevels", request.ServingEndpointId)

@@ -3807,6 +3807,8 @@ type PrimaryKeyConstraint struct {
 
 type Privilege string
 
+const PrivilegeAccess Privilege = `ACCESS`
+
 const PrivilegeAllPrivileges Privilege = `ALL_PRIVILEGES`
 
 const PrivilegeApplyTag Privilege = `APPLY_TAG`
@@ -3838,6 +3840,8 @@ const PrivilegeCreateProvider Privilege = `CREATE_PROVIDER`
 const PrivilegeCreateRecipient Privilege = `CREATE_RECIPIENT`
 
 const PrivilegeCreateSchema Privilege = `CREATE_SCHEMA`
+
+const PrivilegeCreateServiceCredential Privilege = `CREATE_SERVICE_CREDENTIAL`
 
 const PrivilegeCreateShare Privilege = `CREATE_SHARE`
 
@@ -3897,11 +3901,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -4095,6 +4099,8 @@ type SchemaInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
+	// The unique identifier of the schema.
+	SchemaId string `json:"schema_id,omitempty"`
 	// Storage location for managed tables within schema.
 	StorageLocation string `json:"storage_location,omitempty"`
 	// Storage root URL for managed tables within schema.
@@ -4427,7 +4433,7 @@ type TableInfo struct {
 	// List of table constraints. Note: this field is not set in the output of
 	// the __listTables__ API.
 	TableConstraints []TableConstraint `json:"table_constraints,omitempty"`
-	// Name of table, relative to parent schema.
+	// The unique identifier of the table.
 	TableId string `json:"table_id,omitempty"`
 
 	TableType TableType `json:"table_type,omitempty"`
@@ -5004,14 +5010,10 @@ func (s ValidateStorageCredentialResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ValidationResult struct {
-	// The operation tested.
-	AwsOperation ValidationResultAwsOperation `json:"aws_operation,omitempty"`
-	// The operation tested.
-	AzureOperation ValidationResultAzureOperation `json:"azure_operation,omitempty"`
-	// The operation tested.
-	GcpOperation ValidationResultGcpOperation `json:"gcp_operation,omitempty"`
 	// Error message would exist when the result does not equal to **PASS**.
 	Message string `json:"message,omitempty"`
+	// The operation tested.
+	Operation ValidationResultOperation `json:"operation,omitempty"`
 	// The results of the tested operation.
 	Result ValidationResultResult `json:"result,omitempty"`
 
@@ -5027,107 +5029,37 @@ func (s ValidationResult) MarshalJSON() ([]byte, error) {
 }
 
 // The operation tested.
-type ValidationResultAwsOperation string
+type ValidationResultOperation string
 
-const ValidationResultAwsOperationDelete ValidationResultAwsOperation = `DELETE`
+const ValidationResultOperationDelete ValidationResultOperation = `DELETE`
 
-const ValidationResultAwsOperationList ValidationResultAwsOperation = `LIST`
+const ValidationResultOperationList ValidationResultOperation = `LIST`
 
-const ValidationResultAwsOperationPathExists ValidationResultAwsOperation = `PATH_EXISTS`
+const ValidationResultOperationPathExists ValidationResultOperation = `PATH_EXISTS`
 
-const ValidationResultAwsOperationRead ValidationResultAwsOperation = `READ`
+const ValidationResultOperationRead ValidationResultOperation = `READ`
 
-const ValidationResultAwsOperationWrite ValidationResultAwsOperation = `WRITE`
+const ValidationResultOperationWrite ValidationResultOperation = `WRITE`
 
 // String representation for [fmt.Print]
-func (f *ValidationResultAwsOperation) String() string {
+func (f *ValidationResultOperation) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *ValidationResultAwsOperation) Set(v string) error {
+func (f *ValidationResultOperation) Set(v string) error {
 	switch v {
 	case `DELETE`, `LIST`, `PATH_EXISTS`, `READ`, `WRITE`:
-		*f = ValidationResultAwsOperation(v)
+		*f = ValidationResultOperation(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELETE", "LIST", "PATH_EXISTS", "READ", "WRITE"`, v)
 	}
 }
 
-// Type always returns ValidationResultAwsOperation to satisfy [pflag.Value] interface
-func (f *ValidationResultAwsOperation) Type() string {
-	return "ValidationResultAwsOperation"
-}
-
-// The operation tested.
-type ValidationResultAzureOperation string
-
-const ValidationResultAzureOperationDelete ValidationResultAzureOperation = `DELETE`
-
-const ValidationResultAzureOperationHierarchicalNamespaceEnabled ValidationResultAzureOperation = `HIERARCHICAL_NAMESPACE_ENABLED`
-
-const ValidationResultAzureOperationList ValidationResultAzureOperation = `LIST`
-
-const ValidationResultAzureOperationPathExists ValidationResultAzureOperation = `PATH_EXISTS`
-
-const ValidationResultAzureOperationRead ValidationResultAzureOperation = `READ`
-
-const ValidationResultAzureOperationWrite ValidationResultAzureOperation = `WRITE`
-
-// String representation for [fmt.Print]
-func (f *ValidationResultAzureOperation) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ValidationResultAzureOperation) Set(v string) error {
-	switch v {
-	case `DELETE`, `HIERARCHICAL_NAMESPACE_ENABLED`, `LIST`, `PATH_EXISTS`, `READ`, `WRITE`:
-		*f = ValidationResultAzureOperation(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "DELETE", "HIERARCHICAL_NAMESPACE_ENABLED", "LIST", "PATH_EXISTS", "READ", "WRITE"`, v)
-	}
-}
-
-// Type always returns ValidationResultAzureOperation to satisfy [pflag.Value] interface
-func (f *ValidationResultAzureOperation) Type() string {
-	return "ValidationResultAzureOperation"
-}
-
-// The operation tested.
-type ValidationResultGcpOperation string
-
-const ValidationResultGcpOperationDelete ValidationResultGcpOperation = `DELETE`
-
-const ValidationResultGcpOperationList ValidationResultGcpOperation = `LIST`
-
-const ValidationResultGcpOperationPathExists ValidationResultGcpOperation = `PATH_EXISTS`
-
-const ValidationResultGcpOperationRead ValidationResultGcpOperation = `READ`
-
-const ValidationResultGcpOperationWrite ValidationResultGcpOperation = `WRITE`
-
-// String representation for [fmt.Print]
-func (f *ValidationResultGcpOperation) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ValidationResultGcpOperation) Set(v string) error {
-	switch v {
-	case `DELETE`, `LIST`, `PATH_EXISTS`, `READ`, `WRITE`:
-		*f = ValidationResultGcpOperation(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "DELETE", "LIST", "PATH_EXISTS", "READ", "WRITE"`, v)
-	}
-}
-
-// Type always returns ValidationResultGcpOperation to satisfy [pflag.Value] interface
-func (f *ValidationResultGcpOperation) Type() string {
-	return "ValidationResultGcpOperation"
+// Type always returns ValidationResultOperation to satisfy [pflag.Value] interface
+func (f *ValidationResultOperation) Type() string {
+	return "ValidationResultOperation"
 }
 
 // The results of the tested operation.

@@ -79,6 +79,13 @@ type ServingEndpointsService interface {
 	// Retrieves the details for a single serving endpoint.
 	Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error)
 
+	// Get the schema for a serving endpoint.
+	//
+	// Get the query schema of the serving endpoint in OpenAPI format. The
+	// schema contains information for the supported paths, input and output
+	// format and datatypes.
+	GetOpenApi(ctx context.Context, request GetOpenApiRequest) error
+
 	// Get serving endpoint permission levels.
 	//
 	// Gets the permission levels that a user can have on an object.

@@ -1248,9 +1248,26 @@ func (s ClusterSpec) MarshalJSON() ([]byte, error) {
 }
 
 // Get status
-type ClusterStatusRequest struct {
+type ClusterStatus struct {
 	// Unique identifier of the cluster whose status should be retrieved.
 	ClusterId string `json:"-" url:"cluster_id"`
+}
+
+type ClusterStatusResponse struct {
+	// Unique identifier for the cluster.
+	ClusterId string `json:"cluster_id,omitempty"`
+	// Status of all libraries on the cluster.
+	LibraryStatuses []LibraryFullStatus `json:"library_statuses,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterStatusResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClusterStatusResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Command struct {
@@ -2338,8 +2355,10 @@ type EditResponse struct {
 // and jobs' environment for non-notebook task. In this minimal environment
 // spec, only pip dependencies are supported. Next ID: 5
 type Environment struct {
-	// * User-friendly name for the client version: “client”: “1” The
-	// version is a string, consisting of the major client version
+	// Client version used by the environment The client is the user-facing
+	// environment of the runtime. Each client comes with a specific set of
+	// pre-installed libraries. The version is a string, consisting of the major
+	// client version.
 	Client string `json:"client"`
 	// List of pip dependencies, as supported by the version of pip in this
 	// environment. Each dependency is a pip requirement file line
@@ -3374,6 +3393,15 @@ type InstancePoolGcpAttributes struct {
 	// workspace resides in the "us-east1" region. This is an optional field at
 	// instance pool creation, and if not specified, a default zone will be
 	// used.
+	//
+	// This field can be one of the following: - "HA" => High availability,
+	// spread nodes across availability zones for a Databricks deployment region
+	// - A GCP availability zone => Pick One of the available zones for (machine
+	// type + region) from https://cloud.google.com/compute/docs/regions-zones
+	// (e.g. "us-west1-a").
+	//
+	// If empty, Databricks picks an availability zone to schedule the cluster
+	// on.
 	ZoneId string `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -3595,17 +3623,21 @@ func (f *Language) Type() string {
 type Library struct {
 	// Specification of a CRAN library to be installed as part of the library
 	Cran *RCranLibrary `json:"cran,omitempty"`
-	// URI of the egg to be installed. Currently only DBFS and S3 URIs are
-	// supported. For example: `{ "egg": "dbfs:/my/egg" }` or `{ "egg":
-	// "s3://my-bucket/egg" }`. If S3 is used, please make sure the cluster has
-	// read access on the library. You may need to launch the cluster with an
-	// IAM role to access the S3 URI.
+	// URI of the egg library to install. Supported URIs include Workspace
+	// paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "egg":
+	// "/Workspace/path/to/library.egg" }`, `{ "egg" :
+	// "/Volumes/path/to/library.egg" }` or `{ "egg":
+	// "s3://my-bucket/library.egg" }`. If S3 is used, please make sure the
+	// cluster has read access on the library. You may need to launch the
+	// cluster with an IAM role to access the S3 URI.
 	Egg string `json:"egg,omitempty"`
-	// URI of the jar to be installed. Currently only DBFS and S3 URIs are
-	// supported. For example: `{ "jar": "dbfs:/mnt/databricks/library.jar" }`
-	// or `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used, please make
-	// sure the cluster has read access on the library. You may need to launch
-	// the cluster with an IAM role to access the S3 URI.
+	// URI of the JAR library to install. Supported URIs include Workspace
+	// paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "jar":
+	// "/Workspace/path/to/library.jar" }`, `{ "jar" :
+	// "/Volumes/path/to/library.jar" }` or `{ "jar":
+	// "s3://my-bucket/library.jar" }`. If S3 is used, please make sure the
+	// cluster has read access on the library. You may need to launch the
+	// cluster with an IAM role to access the S3 URI.
 	Jar string `json:"jar,omitempty"`
 	// Specification of a maven library to be installed. For example: `{
 	// "coordinates": "org.jsoup:jsoup:1.7.2" }`
@@ -3613,9 +3645,17 @@ type Library struct {
 	// Specification of a PyPi library to be installed. For example: `{
 	// "package": "simplejson" }`
 	Pypi *PythonPyPiLibrary `json:"pypi,omitempty"`
-	// URI of the wheel to be installed. For example: `{ "whl": "dbfs:/my/whl"
-	// }` or `{ "whl": "s3://my-bucket/whl" }`. If S3 is used, please make sure
-	// the cluster has read access on the library. You may need to launch the
+	// URI of the requirements.txt file to install. Only Workspace paths and
+	// Unity Catalog Volumes paths are supported. For example: `{
+	// "requirements": "/Workspace/path/to/requirements.txt" }` or `{
+	// "requirements" : "/Volumes/path/to/requirements.txt" }`
+	Requirements string `json:"requirements,omitempty"`
+	// URI of the wheel library to install. Supported URIs include Workspace
+	// paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "whl":
+	// "/Workspace/path/to/library.whl" }`, `{ "whl" :
+	// "/Volumes/path/to/library.whl" }` or `{ "whl":
+	// "s3://my-bucket/library.whl" }`. If S3 is used, please make sure the
+	// cluster has read access on the library. You may need to launch the
 	// cluster with an IAM role to access the S3 URI.
 	Whl string `json:"whl,omitempty"`
 
@@ -3630,6 +3670,7 @@ func (s Library) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The status of the library on a specific cluster.
 type LibraryFullStatus struct {
 	// Whether the library was set to be installed on all clusters via the
 	// libraries UI.
@@ -3640,7 +3681,7 @@ type LibraryFullStatus struct {
 	// library.
 	Messages []string `json:"messages,omitempty"`
 	// Status of installing the library on the cluster.
-	Status LibraryFullStatusStatus `json:"status,omitempty"`
+	Status LibraryInstallStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3653,42 +3694,44 @@ func (s LibraryFullStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Status of installing the library on the cluster.
-type LibraryFullStatusStatus string
+// The status of a library on a specific cluster.
+type LibraryInstallStatus string
 
-const LibraryFullStatusStatusFailed LibraryFullStatusStatus = `FAILED`
+const LibraryInstallStatusFailed LibraryInstallStatus = `FAILED`
 
-const LibraryFullStatusStatusInstalled LibraryFullStatusStatus = `INSTALLED`
+const LibraryInstallStatusInstalled LibraryInstallStatus = `INSTALLED`
 
-const LibraryFullStatusStatusInstalling LibraryFullStatusStatus = `INSTALLING`
+const LibraryInstallStatusInstalling LibraryInstallStatus = `INSTALLING`
 
-const LibraryFullStatusStatusPending LibraryFullStatusStatus = `PENDING`
+const LibraryInstallStatusPending LibraryInstallStatus = `PENDING`
 
-const LibraryFullStatusStatusResolving LibraryFullStatusStatus = `RESOLVING`
+const LibraryInstallStatusResolving LibraryInstallStatus = `RESOLVING`
 
-const LibraryFullStatusStatusSkipped LibraryFullStatusStatus = `SKIPPED`
+const LibraryInstallStatusRestored LibraryInstallStatus = `RESTORED`
 
-const LibraryFullStatusStatusUninstallOnRestart LibraryFullStatusStatus = `UNINSTALL_ON_RESTART`
+const LibraryInstallStatusSkipped LibraryInstallStatus = `SKIPPED`
+
+const LibraryInstallStatusUninstallOnRestart LibraryInstallStatus = `UNINSTALL_ON_RESTART`
 
 // String representation for [fmt.Print]
-func (f *LibraryFullStatusStatus) String() string {
+func (f *LibraryInstallStatus) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *LibraryFullStatusStatus) Set(v string) error {
+func (f *LibraryInstallStatus) Set(v string) error {
 	switch v {
-	case `FAILED`, `INSTALLED`, `INSTALLING`, `PENDING`, `RESOLVING`, `SKIPPED`, `UNINSTALL_ON_RESTART`:
-		*f = LibraryFullStatusStatus(v)
+	case `FAILED`, `INSTALLED`, `INSTALLING`, `PENDING`, `RESOLVING`, `RESTORED`, `SKIPPED`, `UNINSTALL_ON_RESTART`:
+		*f = LibraryInstallStatus(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FAILED", "INSTALLED", "INSTALLING", "PENDING", "RESOLVING", "SKIPPED", "UNINSTALL_ON_RESTART"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FAILED", "INSTALLED", "INSTALLING", "PENDING", "RESOLVING", "RESTORED", "SKIPPED", "UNINSTALL_ON_RESTART"`, v)
 	}
 }
 
-// Type always returns LibraryFullStatusStatus to satisfy [pflag.Value] interface
-func (f *LibraryFullStatusStatus) Type() string {
-	return "LibraryFullStatusStatus"
+// Type always returns LibraryInstallStatus to satisfy [pflag.Value] interface
+func (f *LibraryInstallStatus) Type() string {
+	return "LibraryInstallStatus"
 }
 
 type ListAllClusterLibraryStatusesResponse struct {

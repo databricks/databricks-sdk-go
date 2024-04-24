@@ -586,6 +586,100 @@ func (_c *MockServingEndpointsInterface_GetByName_Call) RunAndReturn(run func(co
 	return _c
 }
 
+// GetOpenApi provides a mock function with given fields: ctx, request
+func (_m *MockServingEndpointsInterface) GetOpenApi(ctx context.Context, request serving.GetOpenApiRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetOpenApi")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.GetOpenApiRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockServingEndpointsInterface_GetOpenApi_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetOpenApi'
+type MockServingEndpointsInterface_GetOpenApi_Call struct {
+	*mock.Call
+}
+
+// GetOpenApi is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request serving.GetOpenApiRequest
+func (_e *MockServingEndpointsInterface_Expecter) GetOpenApi(ctx interface{}, request interface{}) *MockServingEndpointsInterface_GetOpenApi_Call {
+	return &MockServingEndpointsInterface_GetOpenApi_Call{Call: _e.mock.On("GetOpenApi", ctx, request)}
+}
+
+func (_c *MockServingEndpointsInterface_GetOpenApi_Call) Run(run func(ctx context.Context, request serving.GetOpenApiRequest)) *MockServingEndpointsInterface_GetOpenApi_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(serving.GetOpenApiRequest))
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_GetOpenApi_Call) Return(_a0 error) *MockServingEndpointsInterface_GetOpenApi_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_GetOpenApi_Call) RunAndReturn(run func(context.Context, serving.GetOpenApiRequest) error) *MockServingEndpointsInterface_GetOpenApi_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetOpenApiByName provides a mock function with given fields: ctx, name
+func (_m *MockServingEndpointsInterface) GetOpenApiByName(ctx context.Context, name string) error {
+	ret := _m.Called(ctx, name)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetOpenApiByName")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, name)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockServingEndpointsInterface_GetOpenApiByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetOpenApiByName'
+type MockServingEndpointsInterface_GetOpenApiByName_Call struct {
+	*mock.Call
+}
+
+// GetOpenApiByName is a helper method to define mock.On call
+//   - ctx context.Context
+//   - name string
+func (_e *MockServingEndpointsInterface_Expecter) GetOpenApiByName(ctx interface{}, name interface{}) *MockServingEndpointsInterface_GetOpenApiByName_Call {
+	return &MockServingEndpointsInterface_GetOpenApiByName_Call{Call: _e.mock.On("GetOpenApiByName", ctx, name)}
+}
+
+func (_c *MockServingEndpointsInterface_GetOpenApiByName_Call) Run(run func(ctx context.Context, name string)) *MockServingEndpointsInterface_GetOpenApiByName_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_GetOpenApiByName_Call) Return(_a0 error) *MockServingEndpointsInterface_GetOpenApiByName_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_GetOpenApiByName_Call) RunAndReturn(run func(context.Context, string) error) *MockServingEndpointsInterface_GetOpenApiByName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetPermissionLevels provides a mock function with given fields: ctx, request
 func (_m *MockServingEndpointsInterface) GetPermissionLevels(ctx context.Context, request serving.GetServingEndpointPermissionLevelsRequest) (*serving.GetServingEndpointPermissionLevelsResponse, error) {
 	ret := _m.Called(ctx, request)
