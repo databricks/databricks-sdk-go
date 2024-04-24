@@ -1,5 +1,51 @@
 # Version changelog
 
+## 0.39.0
+
+* Ignore flaky integration tests ([#894](https://github.com/databricks/databricks-sdk-go/pull/894)).
+* Add retries for "worker env WorkerEnvId(workerenv-XXXXX) not found" ([#890](https://github.com/databricks/databricks-sdk-go/pull/890)).
+* Update SDK to OpenAPI spec ([#899](https://github.com/databricks/databricks-sdk-go/pull/899)).
+
+API Changes:
+
+ * Added `SchemaId` field for [catalog.SchemaInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SchemaInfo).
+ * Removed `AwsOperation` field for [catalog.ValidationResult](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ValidationResult).
+ * Removed `AzureOperation` field for [catalog.ValidationResult](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ValidationResult).
+ * Removed `GcpOperation` field for [catalog.ValidationResult](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ValidationResult).
+ * Added `Operation` field for [catalog.ValidationResult](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ValidationResult).
+ * Removed [catalog.ValidationResultAwsOperation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ValidationResultAwsOperation).
+ * Removed [catalog.ValidationResultAzureOperation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ValidationResultAzureOperation).
+ * Removed [catalog.ValidationResultGcpOperation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ValidationResultGcpOperation).
+ * Added [catalog.ValidationResultOperation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ValidationResultOperation).
+ * Changed `ClusterStatus` method for [w.Libraries](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#LibrariesAPI) workspace-level service . New request type is [compute.ClusterStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterStatus).
+ * Changed `ClusterStatus` method for [w.Libraries](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#LibrariesAPI) workspace-level service to return [compute.ClusterStatusResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterStatusResponse).
+ * Removed [compute.ClusterStatusRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterStatusRequest).
+ * Added `Requirements` field for [compute.Library](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#Library).
+ * Changed `Status` field for [compute.LibraryFullStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#LibraryFullStatus) to [compute.LibraryInstallStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#LibraryInstallStatus).
+ * Removed [compute.LibraryFullStatusStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#LibraryFullStatusStatus).
+ * Added [compute.ClusterStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterStatus).
+ * Added [compute.ClusterStatusResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterStatusResponse).
+ * Added [compute.LibraryInstallStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#LibraryInstallStatus).
+ * Added `WarehouseId` field for [jobs.NotebookTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#NotebookTask).
+ * Added `RunAs` field for [jobs.SubmitRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitRun).
+ * Added `Deployment` field for [pipelines.CreatePipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#CreatePipeline).
+ * Added `IngestionDefinition` field for [pipelines.CreatePipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#CreatePipeline).
+ * Added `Deployment` field for [pipelines.EditPipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#EditPipeline).
+ * Added `IngestionDefinition` field for [pipelines.EditPipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#EditPipeline).
+ * Added `Deployment` field for [pipelines.PipelineSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineSpec).
+ * Added `IngestionDefinition` field for [pipelines.PipelineSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineSpec).
+ * Added [pipelines.DeploymentKind](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#DeploymentKind).
+ * Added [pipelines.IngestionConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionConfig).
+ * Added [pipelines.ManagedIngestionPipelineDefinition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ManagedIngestionPipelineDefinition).
+ * Added [pipelines.PipelineDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineDeployment).
+ * Added [pipelines.SchemaSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#SchemaSpec).
+ * Added [pipelines.TableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpec).
+ * Added `GetOpenApi` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service.
+ * Added [serving.GetOpenApiRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GetOpenApiRequest).
+ * Added `any`.
+
+OpenAPI SHA: 21f9f1482f9d0d15228da59f2cd9f0863d2a6d55, Date: 2024-04-23
+
 ## 0.38.0
 
 ### Behavior Changes
