@@ -41,3 +41,15 @@ func TestTimeoutContextCancel(t *testing.T) {
 	// The context should have timed out.
 	assert.Equal(t, context.Canceled, ctx.Err())
 }
+
+func TestNegativeTimeout(t *testing.T) {
+	ctx := context.Background()
+	ctx, ticker := newTimeoutContext(ctx, -1)
+
+	// assert that the type of ticker is endlessTicker
+	_, ok := ticker.(endlessTicker)
+	assert.True(t, ok)
+
+	// The context should not have timed out.
+	assert.Nil(t, ctx.Err())
+}
