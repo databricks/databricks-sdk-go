@@ -67,6 +67,7 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 	cfg.HTTPTimeout = time.Duration(orDefault(int(cfg.HTTPTimeout), int(30*time.Second)))
 	cfg.DebugTruncateBytes = orDefault(cfg.DebugTruncateBytes, 96)
 	cfg.RetryTimeout = time.Duration(orDefault(int(cfg.RetryTimeout), int(5*time.Minute)))
+	cfg.HTTPTimeout = time.Duration(orDefault(int(cfg.HTTPTimeout), int(30*time.Second)))
 	if cfg.ErrorMapper == nil {
 		// default generic error mapper
 		cfg.ErrorMapper = DefaultErrorMapper

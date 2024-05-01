@@ -100,7 +100,6 @@ type Config struct {
 	InsecureSkipVerify bool `name:"skip_verify" auth:"-"`
 
 	// Number of seconds for HTTP timeout. Default is 300 (5 minutes).
-	// If negative, the client will not timeout requests.
 	HTTPTimeoutSeconds int `name:"http_timeout_seconds" auth:"-"`
 
 	// Truncate JSON fields in JSON above this limit. Default is 96.
