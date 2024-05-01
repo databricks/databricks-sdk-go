@@ -25,8 +25,14 @@ type TimeoutTicker interface {
 	Cancel()
 }
 
+// Return a new context with a timeout and a ticker that updates the deadline.
+// If timeout is less than 0, the context will never timeout.
 func newTimeoutContext(ctx context.Context, timeout time.Duration) (context.Context, TimeoutTicker) {
 	ctx, cancel := context.WithCancel(ctx)
+	if timeout < 0 {
+		return ctx, endlessTicker{cancel}
+	}
+
 	t := &timeoutContext{
 		ctx:      ctx,
 		cancel:   cancel,
@@ -76,6 +82,15 @@ func (t *timeoutContext) run() {
 			return
 		}
 	}
+}
+
+type endlessTicker struct {
+	cancel context.CancelFunc
+}
+
+func (t endlessTicker) Tick() {}
+func (t endlessTicker) Cancel() {
+	t.cancel()
 }
 
 // tickingReadCloser wraps an io.ReadCloser and calls the tick function on each read.
