@@ -681,6 +681,8 @@ type DashboardEditContent struct {
 	// owner" behavior)
 	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
+	Tags []string `json:"tags,omitempty"`
+
 	ForceSendFields []string `json:"-"`
 }
 
@@ -2319,6 +2321,8 @@ type QueryEditContent struct {
 	// owner" behavior)
 	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
+	Tags []string `json:"tags,omitempty"`
+
 	ForceSendFields []string `json:"-"`
 }
 
@@ -2505,12 +2509,16 @@ func (s QueryMetrics) MarshalJSON() ([]byte, error) {
 }
 
 type QueryOptions struct {
+	// The name of the catalog to execute this query in.
+	Catalog string `json:"catalog,omitempty"`
 	// The timestamp when this query was moved to trash. Only present when the
 	// `is_archived` property is `true`. Trashed items are deleted after thirty
 	// days.
 	MovedToTrashAt string `json:"moved_to_trash_at,omitempty"`
 
 	Parameters []Parameter `json:"parameters,omitempty"`
+	// The name of the schema to execute this query in.
+	Schema string `json:"schema,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -2547,6 +2555,8 @@ type QueryPostContent struct {
 	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
 	// owner" behavior)
 	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
+
+	Tags []string `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3524,6 +3534,8 @@ type Visualization struct {
 	// and is unsupported. Databricks does not recommend modifying visualization
 	// settings in JSON.
 	Options any `json:"options,omitempty"`
+
+	Query *Query `json:"query,omitempty"`
 	// The type of visualization: chart, table, pivot table, and so on.
 	Type string `json:"type,omitempty"`
 

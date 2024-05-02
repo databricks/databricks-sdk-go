@@ -101,6 +101,30 @@ func (a *automaticClusterUpdateImpl) Update(ctx context.Context, request UpdateA
 	return &automaticClusterUpdateSetting, err
 }
 
+// unexported type that holds implementations of just ComplianceSecurityProfile API methods
+type complianceSecurityProfileImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *complianceSecurityProfileImpl) Get(ctx context.Context, request GetComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
+	var complianceSecurityProfileSetting ComplianceSecurityProfileSetting
+	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &complianceSecurityProfileSetting)
+	return &complianceSecurityProfileSetting, err
+}
+
+func (a *complianceSecurityProfileImpl) Update(ctx context.Context, request UpdateComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
+	var complianceSecurityProfileSetting ComplianceSecurityProfileSetting
+	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &complianceSecurityProfileSetting)
+	return &complianceSecurityProfileSetting, err
+}
+
 // unexported type that holds implementations of just CredentialsManager API methods
 type credentialsManagerImpl struct {
 	client *client.DatabricksClient
@@ -116,31 +140,7 @@ func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request Exch
 	return &exchangeTokenResponse, err
 }
 
-// unexported type that holds implementations of just CSPEnablement API methods
-type cspEnablementImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *cspEnablementImpl) Get(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error) {
-	var cspEnablementSetting CspEnablementSetting
-	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cspEnablementSetting)
-	return &cspEnablementSetting, err
-}
-
-func (a *cspEnablementImpl) Update(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error) {
-	var cspEnablementSetting CspEnablementSetting
-	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cspEnablementSetting)
-	return &cspEnablementSetting, err
-}
-
-// unexported type that holds implementations of just CSPEnablementAccount API methods
+// unexported type that holds implementations of just CspEnablementAccount API methods
 type cspEnablementAccountImpl struct {
 	client *client.DatabricksClient
 }
@@ -197,31 +197,31 @@ func (a *defaultNamespaceImpl) Update(ctx context.Context, request UpdateDefault
 	return &defaultNamespaceSetting, err
 }
 
-// unexported type that holds implementations of just ESMEnablement API methods
-type esmEnablementImpl struct {
+// unexported type that holds implementations of just EnhancedSecurityMonitoring API methods
+type enhancedSecurityMonitoringImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *esmEnablementImpl) Get(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
-	var esmEnablementSetting EsmEnablementSetting
+func (a *enhancedSecurityMonitoringImpl) Get(ctx context.Context, request GetEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
+	var enhancedSecurityMonitoringSetting EnhancedSecurityMonitoringSetting
 	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &esmEnablementSetting)
-	return &esmEnablementSetting, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &enhancedSecurityMonitoringSetting)
+	return &enhancedSecurityMonitoringSetting, err
 }
 
-func (a *esmEnablementImpl) Update(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
-	var esmEnablementSetting EsmEnablementSetting
+func (a *enhancedSecurityMonitoringImpl) Update(ctx context.Context, request UpdateEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
+	var enhancedSecurityMonitoringSetting EnhancedSecurityMonitoringSetting
 	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &esmEnablementSetting)
-	return &esmEnablementSetting, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &enhancedSecurityMonitoringSetting)
+	return &enhancedSecurityMonitoringSetting, err
 }
 
-// unexported type that holds implementations of just ESMEnablementAccount API methods
+// unexported type that holds implementations of just EsmEnablementAccount API methods
 type esmEnablementAccountImpl struct {
 	client *client.DatabricksClient
 }

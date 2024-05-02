@@ -44,9 +44,9 @@ type WorkspaceClient struct {
 	// :method:jobs/create.
 	Alerts sql.AlertsInterface
 
-	// Lakehouse Apps run directly on a customer’s Databricks instance,
-	// integrate with their data, use and extend Databricks services, and enable
-	// users to interact through single sign-on.
+	// Apps run directly on a customer’s Databricks instance, integrate with
+	// their data, use and extend Databricks services, and enable users to
+	// interact through single sign-on.
 	Apps serving.AppsInterface
 
 	// In Databricks Runtime 13.3 and above, you can add libraries and init

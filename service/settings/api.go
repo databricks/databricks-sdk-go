@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Automatic Cluster Update, Credentials Manager, Csp Enablement, Csp Enablement Account, Default Namespace, Esm Enablement, Esm Enablement Account, Ip Access Lists, Network Connectivity, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -541,6 +541,82 @@ func (a *AutomaticClusterUpdateAPI) Update(ctx context.Context, request UpdateAu
 	return a.impl.Update(ctx, request)
 }
 
+type ComplianceSecurityProfileInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockComplianceSecurityProfileInterface instead.
+	WithImpl(impl ComplianceSecurityProfileService) ComplianceSecurityProfileInterface
+
+	// Impl returns low-level ComplianceSecurityProfile API implementation
+	// Deprecated: use MockComplianceSecurityProfileInterface instead.
+	Impl() ComplianceSecurityProfileService
+
+	// Get the compliance security profile setting.
+	//
+	// Gets the compliance security profile setting.
+	Get(ctx context.Context, request GetComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error)
+
+	// Update the compliance security profile setting.
+	//
+	// Updates the compliance security profile setting for the workspace. A fresh
+	// etag needs to be provided in `PATCH` requests (as part of the setting field).
+	// The etag can be retrieved by making a `GET` request before the `PATCH`
+	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+	// the request must be retried by using the fresh etag in the 409 response.
+	Update(ctx context.Context, request UpdateComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error)
+}
+
+func NewComplianceSecurityProfile(client *client.DatabricksClient) *ComplianceSecurityProfileAPI {
+	return &ComplianceSecurityProfileAPI{
+		impl: &complianceSecurityProfileImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls whether to enable the compliance security profile for the current
+// workspace. Enabling it on a workspace is permanent. By default, it is turned
+// off.
+//
+// This settings can NOT be disabled once it is enabled.
+type ComplianceSecurityProfileAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(ComplianceSecurityProfileService)
+	impl ComplianceSecurityProfileService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockComplianceSecurityProfileInterface instead.
+func (a *ComplianceSecurityProfileAPI) WithImpl(impl ComplianceSecurityProfileService) ComplianceSecurityProfileInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level ComplianceSecurityProfile API implementation
+// Deprecated: use MockComplianceSecurityProfileInterface instead.
+func (a *ComplianceSecurityProfileAPI) Impl() ComplianceSecurityProfileService {
+	return a.impl
+}
+
+// Get the compliance security profile setting.
+//
+// Gets the compliance security profile setting.
+func (a *ComplianceSecurityProfileAPI) Get(ctx context.Context, request GetComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Update the compliance security profile setting.
+//
+// Updates the compliance security profile setting for the workspace. A fresh
+// etag needs to be provided in `PATCH` requests (as part of the setting field).
+// The etag can be retrieved by making a `GET` request before the `PATCH`
+// request. If the setting is updated concurrently, `PATCH` fails with 409 and
+// the request must be retried by using the fresh etag in the 409 response.
+func (a *ComplianceSecurityProfileAPI) Update(ctx context.Context, request UpdateComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
+	return a.impl.Update(ctx, request)
+}
+
 type CredentialsManagerInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
@@ -594,82 +670,6 @@ func (a *CredentialsManagerAPI) Impl() CredentialsManagerService {
 // allows specifying scopes to determine token permissions.
 func (a *CredentialsManagerAPI) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
 	return a.impl.ExchangeToken(ctx, request)
-}
-
-type CspEnablementInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockCspEnablementInterface instead.
-	WithImpl(impl CspEnablementService) CspEnablementInterface
-
-	// Impl returns low-level CspEnablement API implementation
-	// Deprecated: use MockCspEnablementInterface instead.
-	Impl() CspEnablementService
-
-	// Get the compliance security profile setting.
-	//
-	// Gets the compliance security profile setting.
-	Get(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error)
-
-	// Update the compliance security profile setting.
-	//
-	// Updates the compliance security profile setting for the workspace. A fresh
-	// etag needs to be provided in `PATCH` requests (as part of the setting field).
-	// The etag can be retrieved by making a `GET` request before the `PATCH`
-	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
-	// the request must be retried by using the fresh etag in the 409 response.
-	Update(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error)
-}
-
-func NewCspEnablement(client *client.DatabricksClient) *CspEnablementAPI {
-	return &CspEnablementAPI{
-		impl: &cspEnablementImpl{
-			client: client,
-		},
-	}
-}
-
-// Controls whether to enable the compliance security profile for the current
-// workspace. Enabling it on a workspace is permanent. By default, it is turned
-// off.
-//
-// This settings can NOT be disabled once it is enabled.
-type CspEnablementAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(CspEnablementService)
-	impl CspEnablementService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockCspEnablementInterface instead.
-func (a *CspEnablementAPI) WithImpl(impl CspEnablementService) CspEnablementInterface {
-	a.impl = impl
-	return a
-}
-
-// Impl returns low-level CspEnablement API implementation
-// Deprecated: use MockCspEnablementInterface instead.
-func (a *CspEnablementAPI) Impl() CspEnablementService {
-	return a.impl
-}
-
-// Get the compliance security profile setting.
-//
-// Gets the compliance security profile setting.
-func (a *CspEnablementAPI) Get(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Update the compliance security profile setting.
-//
-// Updates the compliance security profile setting for the workspace. A fresh
-// etag needs to be provided in `PATCH` requests (as part of the setting field).
-// The etag can be retrieved by making a `GET` request before the `PATCH`
-// request. If the setting is updated concurrently, `PATCH` fails with 409 and
-// the request must be retried by using the fresh etag in the 409 response.
-func (a *CspEnablementAPI) Update(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error) {
-	return a.impl.Update(ctx, request)
 }
 
 type CspEnablementAccountInterface interface {
@@ -851,20 +851,20 @@ func (a *DefaultNamespaceAPI) Update(ctx context.Context, request UpdateDefaultN
 	return a.impl.Update(ctx, request)
 }
 
-type EsmEnablementInterface interface {
+type EnhancedSecurityMonitoringInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockEsmEnablementInterface instead.
-	WithImpl(impl EsmEnablementService) EsmEnablementInterface
+	// Deprecated: use MockEnhancedSecurityMonitoringInterface instead.
+	WithImpl(impl EnhancedSecurityMonitoringService) EnhancedSecurityMonitoringInterface
 
-	// Impl returns low-level EsmEnablement API implementation
-	// Deprecated: use MockEsmEnablementInterface instead.
-	Impl() EsmEnablementService
+	// Impl returns low-level EnhancedSecurityMonitoring API implementation
+	// Deprecated: use MockEnhancedSecurityMonitoringInterface instead.
+	Impl() EnhancedSecurityMonitoringService
 
 	// Get the enhanced security monitoring setting.
 	//
 	// Gets the enhanced security monitoring setting.
-	Get(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
+	Get(ctx context.Context, request GetEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error)
 
 	// Update the enhanced security monitoring setting.
 	//
@@ -873,12 +873,12 @@ type EsmEnablementInterface interface {
 	// The etag can be retrieved by making a `GET` request before the `PATCH`
 	// request. If the setting is updated concurrently, `PATCH` fails with 409 and
 	// the request must be retried by using the fresh etag in the 409 response.
-	Update(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
+	Update(ctx context.Context, request UpdateEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error)
 }
 
-func NewEsmEnablement(client *client.DatabricksClient) *EsmEnablementAPI {
-	return &EsmEnablementAPI{
-		impl: &esmEnablementImpl{
+func NewEnhancedSecurityMonitoring(client *client.DatabricksClient) *EnhancedSecurityMonitoringAPI {
+	return &EnhancedSecurityMonitoringAPI{
+		impl: &enhancedSecurityMonitoringImpl{
 			client: client,
 		},
 	}
@@ -891,30 +891,30 @@ func NewEsmEnablement(client *client.DatabricksClient) *EsmEnablementAPI {
 //
 // If the compliance security profile is disabled, you can enable or disable
 // this setting and it is not permanent.
-type EsmEnablementAPI struct {
+type EnhancedSecurityMonitoringAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(EsmEnablementService)
-	impl EsmEnablementService
+	// through WithImpl(EnhancedSecurityMonitoringService)
+	impl EnhancedSecurityMonitoringService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockEsmEnablementInterface instead.
-func (a *EsmEnablementAPI) WithImpl(impl EsmEnablementService) EsmEnablementInterface {
+// Deprecated: use MockEnhancedSecurityMonitoringInterface instead.
+func (a *EnhancedSecurityMonitoringAPI) WithImpl(impl EnhancedSecurityMonitoringService) EnhancedSecurityMonitoringInterface {
 	a.impl = impl
 	return a
 }
 
-// Impl returns low-level EsmEnablement API implementation
-// Deprecated: use MockEsmEnablementInterface instead.
-func (a *EsmEnablementAPI) Impl() EsmEnablementService {
+// Impl returns low-level EnhancedSecurityMonitoring API implementation
+// Deprecated: use MockEnhancedSecurityMonitoringInterface instead.
+func (a *EnhancedSecurityMonitoringAPI) Impl() EnhancedSecurityMonitoringService {
 	return a.impl
 }
 
 // Get the enhanced security monitoring setting.
 //
 // Gets the enhanced security monitoring setting.
-func (a *EsmEnablementAPI) Get(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
+func (a *EnhancedSecurityMonitoringAPI) Get(ctx context.Context, request GetEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -925,7 +925,7 @@ func (a *EsmEnablementAPI) Get(ctx context.Context, request GetEsmEnablementSett
 // The etag can be retrieved by making a `GET` request before the `PATCH`
 // request. If the setting is updated concurrently, `PATCH` fails with 409 and
 // the request must be retried by using the fresh etag in the 409 response.
-func (a *EsmEnablementAPI) Update(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error) {
+func (a *EnhancedSecurityMonitoringAPI) Update(ctx context.Context, request UpdateEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
 	return a.impl.Update(ctx, request)
 }
 
@@ -1883,7 +1883,7 @@ type SettingsInterface interface {
 	// it is turned off.
 	//
 	// This settings can NOT be disabled once it is enabled.
-	CspEnablement() CspEnablementInterface
+	ComplianceSecurityProfile() ComplianceSecurityProfileInterface
 
 	// The default namespace setting API allows users to configure the default
 	// namespace for a Databricks workspace.
@@ -1907,7 +1907,7 @@ type SettingsInterface interface {
 	//
 	// If the compliance security profile is disabled, you can enable or disable
 	// this setting and it is not permanent.
-	EsmEnablement() EsmEnablementInterface
+	EnhancedSecurityMonitoring() EnhancedSecurityMonitoringInterface
 
 	// The Restrict Workspace Admins setting lets you control the capabilities
 	// of workspace admins. With the setting status set to ALLOW_ALL, workspace
@@ -1933,11 +1933,11 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 
 		automaticClusterUpdate: NewAutomaticClusterUpdate(client),
 
-		cspEnablement: NewCspEnablement(client),
+		complianceSecurityProfile: NewComplianceSecurityProfile(client),
 
 		defaultNamespace: NewDefaultNamespace(client),
 
-		esmEnablement: NewEsmEnablement(client),
+		enhancedSecurityMonitoring: NewEnhancedSecurityMonitoring(client),
 
 		restrictWorkspaceAdmins: NewRestrictWorkspaceAdmins(client),
 	}
@@ -1959,7 +1959,7 @@ type SettingsAPI struct {
 	// it is turned off.
 	//
 	// This settings can NOT be disabled once it is enabled.
-	cspEnablement CspEnablementInterface
+	complianceSecurityProfile ComplianceSecurityProfileInterface
 
 	// The default namespace setting API allows users to configure the default
 	// namespace for a Databricks workspace.
@@ -1983,7 +1983,7 @@ type SettingsAPI struct {
 	//
 	// If the compliance security profile is disabled, you can enable or disable
 	// this setting and it is not permanent.
-	esmEnablement EsmEnablementInterface
+	enhancedSecurityMonitoring EnhancedSecurityMonitoringInterface
 
 	// The Restrict Workspace Admins setting lets you control the capabilities
 	// of workspace admins. With the setting status set to ALLOW_ALL, workspace
@@ -2005,16 +2005,16 @@ func (a *SettingsAPI) AutomaticClusterUpdate() AutomaticClusterUpdateInterface {
 	return a.automaticClusterUpdate
 }
 
-func (a *SettingsAPI) CspEnablement() CspEnablementInterface {
-	return a.cspEnablement
+func (a *SettingsAPI) ComplianceSecurityProfile() ComplianceSecurityProfileInterface {
+	return a.complianceSecurityProfile
 }
 
 func (a *SettingsAPI) DefaultNamespace() DefaultNamespaceInterface {
 	return a.defaultNamespace
 }
 
-func (a *SettingsAPI) EsmEnablement() EsmEnablementInterface {
-	return a.esmEnablement
+func (a *SettingsAPI) EnhancedSecurityMonitoring() EnhancedSecurityMonitoringInterface {
+	return a.enhancedSecurityMonitoring
 }
 
 func (a *SettingsAPI) RestrictWorkspaceAdmins() RestrictWorkspaceAdminsInterface {

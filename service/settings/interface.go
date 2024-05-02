@@ -127,28 +127,17 @@ type AutomaticClusterUpdateService interface {
 	Update(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
 }
 
-// Credentials manager interacts with with Identity Providers to to perform
-// token exchanges using stored credentials and refresh tokens.
-type CredentialsManagerService interface {
-
-	// Exchange token.
-	//
-	// Exchange tokens with an Identity Provider to get a new access token. It
-	// allows specifying scopes to determine token permissions.
-	ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error)
-}
-
 // Controls whether to enable the compliance security profile for the current
 // workspace. Enabling it on a workspace is permanent. By default, it is turned
 // off.
 //
 // This settings can NOT be disabled once it is enabled.
-type CspEnablementService interface {
+type ComplianceSecurityProfileService interface {
 
 	// Get the compliance security profile setting.
 	//
 	// Gets the compliance security profile setting.
-	Get(ctx context.Context, request GetCspEnablementSettingRequest) (*CspEnablementSetting, error)
+	Get(ctx context.Context, request GetComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error)
 
 	// Update the compliance security profile setting.
 	//
@@ -158,7 +147,18 @@ type CspEnablementService interface {
 	// before the `PATCH` request. If the setting is updated concurrently,
 	// `PATCH` fails with 409 and the request must be retried by using the fresh
 	// etag in the 409 response.
-	Update(ctx context.Context, request UpdateCspEnablementSettingRequest) (*CspEnablementSetting, error)
+	Update(ctx context.Context, request UpdateComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error)
+}
+
+// Credentials manager interacts with with Identity Providers to to perform
+// token exchanges using stored credentials and refresh tokens.
+type CredentialsManagerService interface {
+
+	// Exchange token.
+	//
+	// Exchange tokens with an Identity Provider to get a new access token. It
+	// allows specifying scopes to determine token permissions.
+	ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error)
 }
 
 // The compliance security profile settings at the account level control whether
@@ -231,12 +231,12 @@ type DefaultNamespaceService interface {
 //
 // If the compliance security profile is disabled, you can enable or disable
 // this setting and it is not permanent.
-type EsmEnablementService interface {
+type EnhancedSecurityMonitoringService interface {
 
 	// Get the enhanced security monitoring setting.
 	//
 	// Gets the enhanced security monitoring setting.
-	Get(ctx context.Context, request GetEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
+	Get(ctx context.Context, request GetEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error)
 
 	// Update the enhanced security monitoring setting.
 	//
@@ -246,7 +246,7 @@ type EsmEnablementService interface {
 	// before the `PATCH` request. If the setting is updated concurrently,
 	// `PATCH` fails with 409 and the request must be retried by using the fresh
 	// etag in the 409 response.
-	Update(ctx context.Context, request UpdateEsmEnablementSettingRequest) (*EsmEnablementSetting, error)
+	Update(ctx context.Context, request UpdateEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error)
 }
 
 // The enhanced security monitoring setting at the account level controls

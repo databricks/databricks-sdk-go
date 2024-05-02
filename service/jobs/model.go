@@ -2022,6 +2022,7 @@ type ResolvedValues struct {
 	SqlTask *ResolvedParamPairValues `json:"sql_task,omitempty"`
 }
 
+// Run was retrieved successfully
 type Run struct {
 	// The sequence number of this run attempt for a triggered job run. The
 	// initial attempt of a run has an attempt_number of 0\. If the initial run

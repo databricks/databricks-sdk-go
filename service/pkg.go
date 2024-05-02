@@ -6,7 +6,7 @@
 //
 // - [sql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
-// - [serving.AppsAPI]: Lakehouse Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
+// - [serving.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
 //
 // - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode.
 //
@@ -15,10 +15,6 @@
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
 //
 // - [billing.BudgetsAPI]: These APIs manage budget configuration including notifications for exceeding a budget for a period.
-//
-// - [settings.CspEnablementAPI]: Controls whether to enable the compliance security profile for the current workspace.
-//
-// - [settings.CspEnablementAccountAPI]: The compliance security profile settings at the account level control whether to enable it for new workspaces.
 //
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
@@ -29,6 +25,8 @@
 // - [compute.ClustersAPI]: The Clusters API allows you to create, start, edit, list, terminate, and delete clusters.
 //
 // - [compute.CommandExecutionAPI]: This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters.
+//
+// - [settings.ComplianceSecurityProfileAPI]: Controls whether to enable the compliance security profile for the current workspace.
 //
 // - [catalog.ConnectionsAPI]: Connections allow for creating a connection to an external data source.
 //
@@ -46,6 +44,8 @@
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
+// - [settings.CspEnablementAccountAPI]: The compliance security profile settings at the account level control whether to enable it for new workspaces.
+//
 // - [iam.CurrentUserAPI]: This API allows retrieving information about currently authenticated user or service principal.
 //
 // - [oauth2.CustomAppIntegrationAPI]: These APIs enable administrators to manage custom oauth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
@@ -62,11 +62,11 @@
 //
 // - [settings.DefaultNamespaceAPI]: The default namespace setting API allows users to configure the default namespace for a Databricks workspace.
 //
-// - [settings.EsmEnablementAPI]: Controls whether enhanced security monitoring is enabled for the current workspace.
+// - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
+//
+// - [settings.EnhancedSecurityMonitoringAPI]: Controls whether enhanced security monitoring is enabled for the current workspace.
 //
 // - [settings.EsmEnablementAccountAPI]: The enhanced security monitoring setting at the account level controls whether to enable the feature on new workspaces.
-//
-// - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
 // - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
 //
@@ -263,13 +263,12 @@ var (
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil
 	_ *billing.BudgetsAPI                                 = nil
-	_ *settings.CspEnablementAPI                          = nil
-	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *catalog.CatalogsAPI                                = nil
 	_ *sharing.CleanRoomsAPI                              = nil
 	_ *compute.ClusterPoliciesAPI                         = nil
 	_ *compute.ClustersAPI                                = nil
 	_ *compute.CommandExecutionAPI                        = nil
+	_ *settings.ComplianceSecurityProfileAPI              = nil
 	_ *catalog.ConnectionsAPI                             = nil
 	_ *marketplace.ConsumerFulfillmentsAPI                = nil
 	_ *marketplace.ConsumerInstallationsAPI               = nil
@@ -278,6 +277,7 @@ var (
 	_ *marketplace.ConsumerProvidersAPI                   = nil
 	_ *provisioning.CredentialsAPI                        = nil
 	_ *settings.CredentialsManagerAPI                     = nil
+	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
 	_ *oauth2.CustomAppIntegrationAPI                     = nil
 	_ *sql.DashboardWidgetsAPI                            = nil
@@ -286,9 +286,9 @@ var (
 	_ *files.DbfsAPI                                      = nil
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil
-	_ *settings.EsmEnablementAPI                          = nil
-	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *provisioning.EncryptionKeysAPI                     = nil
+	_ *settings.EnhancedSecurityMonitoringAPI             = nil
+	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *ml.ExperimentsAPI                                  = nil
 	_ *catalog.ExternalLocationsAPI                       = nil
 	_ *files.FilesAPI                                     = nil
