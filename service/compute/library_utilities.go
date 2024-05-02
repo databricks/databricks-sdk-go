@@ -60,6 +60,16 @@ func (cls ClusterLibraryStatuses) ToLibraryList() InstallLibraries {
 	return cll
 }
 
+// ToLibraryList convert to envity for convenient comparison
+func (cls ClusterStatusResponse) ToLibraryList() InstallLibraries {
+	cll := InstallLibraries{ClusterId: cls.ClusterId}
+	for _, lib := range cls.LibraryStatuses {
+		cll.Libraries = append(cll.Libraries, *lib.Library)
+	}
+	cll.Sort()
+	return cll
+}
+
 func (w *Wait) IsNotInScope(lib *Library) bool {
 	// if we don't know concrete libraries
 	if len(w.Libraries) == 0 {
