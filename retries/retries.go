@@ -171,7 +171,8 @@ type Retrier[T any] struct {
 	config RetryConfig
 }
 
-// New creates a new retrier with the given configuration. If no timeout is specified, the default is 20 minutes.
+// New creates a new retrier with the given configuration.
+// If no timeout is specified, the default is 20 minutes. If the timeout is negative, the retrier will run indefinitely.
 // If no retry function is specified, the default is to retry on all errors.
 func New[T any](configOpts ...RetryOption) Retrier[T] {
 	config := RetryConfig{}
@@ -194,8 +195,12 @@ func (r Retrier[T]) Wait(ctx context.Context, fn func(ctx context.Context) error
 // Run runs the given function until it succeeds or the timeout is reached, returning the result.
 // On timeout, it returns an error wrapping the last error returned by the function.
 func (r Retrier[T]) Run(ctx context.Context, fn func(context.Context) (*T, error)) (*T, error) {
-	ctx, cancel := context.WithTimeout(ctx, r.config.Timeout())
-	defer cancel()
+	timeout := r.config.Timeout()
+	if timeout > 0 {
+		var cancel func()
+		ctx, cancel = context.WithTimeout(ctx, r.config.Timeout())
+		defer cancel()
+	}
 	var attempt int
 	var lastErr error
 	for {
