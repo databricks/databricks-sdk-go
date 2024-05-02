@@ -658,7 +658,8 @@ type ModelVersionsService interface {
 	// **USE_SCHEMA** privilege on the parent schema.
 	//
 	// There is no guarantee of a specific ordering of the elements in the
-	// response.
+	// response. The elements in the response will not contain any aliases or
+	// tags.
 	//
 	// Use ListAll() to get all ModelVersionInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListModelVersionsRequest) (*ListModelVersionsResponse, error)

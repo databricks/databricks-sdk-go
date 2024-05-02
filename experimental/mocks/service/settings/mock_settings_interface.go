@@ -67,49 +67,49 @@ func (_c *MockSettingsInterface_AutomaticClusterUpdate_Call) RunAndReturn(run fu
 	return _c
 }
 
-// CspEnablement provides a mock function with given fields:
-func (_m *MockSettingsInterface) CspEnablement() settings.CspEnablementInterface {
+// ComplianceSecurityProfile provides a mock function with given fields:
+func (_m *MockSettingsInterface) ComplianceSecurityProfile() settings.ComplianceSecurityProfileInterface {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for CspEnablement")
+		panic("no return value specified for ComplianceSecurityProfile")
 	}
 
-	var r0 settings.CspEnablementInterface
-	if rf, ok := ret.Get(0).(func() settings.CspEnablementInterface); ok {
+	var r0 settings.ComplianceSecurityProfileInterface
+	if rf, ok := ret.Get(0).(func() settings.ComplianceSecurityProfileInterface); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.CspEnablementInterface)
+			r0 = ret.Get(0).(settings.ComplianceSecurityProfileInterface)
 		}
 	}
 
 	return r0
 }
 
-// MockSettingsInterface_CspEnablement_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CspEnablement'
-type MockSettingsInterface_CspEnablement_Call struct {
+// MockSettingsInterface_ComplianceSecurityProfile_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ComplianceSecurityProfile'
+type MockSettingsInterface_ComplianceSecurityProfile_Call struct {
 	*mock.Call
 }
 
-// CspEnablement is a helper method to define mock.On call
-func (_e *MockSettingsInterface_Expecter) CspEnablement() *MockSettingsInterface_CspEnablement_Call {
-	return &MockSettingsInterface_CspEnablement_Call{Call: _e.mock.On("CspEnablement")}
+// ComplianceSecurityProfile is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) ComplianceSecurityProfile() *MockSettingsInterface_ComplianceSecurityProfile_Call {
+	return &MockSettingsInterface_ComplianceSecurityProfile_Call{Call: _e.mock.On("ComplianceSecurityProfile")}
 }
 
-func (_c *MockSettingsInterface_CspEnablement_Call) Run(run func()) *MockSettingsInterface_CspEnablement_Call {
+func (_c *MockSettingsInterface_ComplianceSecurityProfile_Call) Run(run func()) *MockSettingsInterface_ComplianceSecurityProfile_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run()
 	})
 	return _c
 }
 
-func (_c *MockSettingsInterface_CspEnablement_Call) Return(_a0 settings.CspEnablementInterface) *MockSettingsInterface_CspEnablement_Call {
+func (_c *MockSettingsInterface_ComplianceSecurityProfile_Call) Return(_a0 settings.ComplianceSecurityProfileInterface) *MockSettingsInterface_ComplianceSecurityProfile_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSettingsInterface_CspEnablement_Call) RunAndReturn(run func() settings.CspEnablementInterface) *MockSettingsInterface_CspEnablement_Call {
+func (_c *MockSettingsInterface_ComplianceSecurityProfile_Call) RunAndReturn(run func() settings.ComplianceSecurityProfileInterface) *MockSettingsInterface_ComplianceSecurityProfile_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -161,49 +161,49 @@ func (_c *MockSettingsInterface_DefaultNamespace_Call) RunAndReturn(run func() s
 	return _c
 }
 
-// EsmEnablement provides a mock function with given fields:
-func (_m *MockSettingsInterface) EsmEnablement() settings.EsmEnablementInterface {
+// EnhancedSecurityMonitoring provides a mock function with given fields:
+func (_m *MockSettingsInterface) EnhancedSecurityMonitoring() settings.EnhancedSecurityMonitoringInterface {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for EsmEnablement")
+		panic("no return value specified for EnhancedSecurityMonitoring")
 	}
 
-	var r0 settings.EsmEnablementInterface
-	if rf, ok := ret.Get(0).(func() settings.EsmEnablementInterface); ok {
+	var r0 settings.EnhancedSecurityMonitoringInterface
+	if rf, ok := ret.Get(0).(func() settings.EnhancedSecurityMonitoringInterface); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.EsmEnablementInterface)
+			r0 = ret.Get(0).(settings.EnhancedSecurityMonitoringInterface)
 		}
 	}
 
 	return r0
 }
 
-// MockSettingsInterface_EsmEnablement_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EsmEnablement'
-type MockSettingsInterface_EsmEnablement_Call struct {
+// MockSettingsInterface_EnhancedSecurityMonitoring_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EnhancedSecurityMonitoring'
+type MockSettingsInterface_EnhancedSecurityMonitoring_Call struct {
 	*mock.Call
 }
 
-// EsmEnablement is a helper method to define mock.On call
-func (_e *MockSettingsInterface_Expecter) EsmEnablement() *MockSettingsInterface_EsmEnablement_Call {
-	return &MockSettingsInterface_EsmEnablement_Call{Call: _e.mock.On("EsmEnablement")}
+// EnhancedSecurityMonitoring is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) EnhancedSecurityMonitoring() *MockSettingsInterface_EnhancedSecurityMonitoring_Call {
+	return &MockSettingsInterface_EnhancedSecurityMonitoring_Call{Call: _e.mock.On("EnhancedSecurityMonitoring")}
 }
 
-func (_c *MockSettingsInterface_EsmEnablement_Call) Run(run func()) *MockSettingsInterface_EsmEnablement_Call {
+func (_c *MockSettingsInterface_EnhancedSecurityMonitoring_Call) Run(run func()) *MockSettingsInterface_EnhancedSecurityMonitoring_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run()
 	})
 	return _c
 }
 
-func (_c *MockSettingsInterface_EsmEnablement_Call) Return(_a0 settings.EsmEnablementInterface) *MockSettingsInterface_EsmEnablement_Call {
+func (_c *MockSettingsInterface_EnhancedSecurityMonitoring_Call) Return(_a0 settings.EnhancedSecurityMonitoringInterface) *MockSettingsInterface_EnhancedSecurityMonitoring_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockSettingsInterface_EsmEnablement_Call) RunAndReturn(run func() settings.EsmEnablementInterface) *MockSettingsInterface_EsmEnablement_Call {
+func (_c *MockSettingsInterface_EnhancedSecurityMonitoring_Call) RunAndReturn(run func() settings.EnhancedSecurityMonitoringInterface) *MockSettingsInterface_EnhancedSecurityMonitoring_Call {
 	_c.Call.Return(run)
 	return _c
 }

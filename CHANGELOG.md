@@ -1,5 +1,89 @@
 # Version changelog
 
+## 0.40.0
+
+* Allow unlimited timeouts in retries ([#904](https://github.com/databricks/databricks-sdk-go/pull/904)). By setting RETRY_TIMEOUT_SECONDS to a negative value, WorkspaceClient and AccountClient will retry retriable failures indefinitely. As a reminder, without setting this parameter, the default retry timeout is 5 minutes.
+
+API Changes:
+
+ * Changed `Create` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service . New request type is [serving.CreateAppRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#CreateAppRequest).
+ * Changed `Create` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service to return [serving.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#App).
+ * Removed `DeleteApp` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Removed `GetApp` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Removed `GetAppDeploymentStatus` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Removed `GetApps` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Removed `GetEvents` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `CreateDeployment` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `Delete` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `Get` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `GetDeployment` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `GetEnvironment` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `List` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `ListDeployments` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `Stop` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `Update` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Removed [serving.AppEvents](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppEvents).
+ * Removed [serving.AppManifest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppManifest).
+ * Removed [serving.AppServiceStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppServiceStatus).
+ * Removed [serving.DeleteAppResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#DeleteAppResponse).
+ * Removed [serving.DeployAppRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#DeployAppRequest).
+ * Removed [serving.DeploymentStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#DeploymentStatus).
+ * Removed [serving.DeploymentStatusState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#DeploymentStatusState).
+ * Removed [serving.GetAppDeploymentStatusRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GetAppDeploymentStatusRequest).
+ * Removed [serving.GetAppResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GetAppResponse).
+ * Removed [serving.GetEventsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GetEventsRequest).
+ * Removed [serving.ListAppEventsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ListAppEventsResponse).
+ * Changed `Apps` field for [serving.ListAppsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ListAppsResponse) to [serving.AppList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppList).
+ * Added [serving.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#App).
+ * Added [serving.AppDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppDeployment).
+ * Added [serving.AppDeploymentState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppDeploymentState).
+ * Added [serving.AppDeploymentStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppDeploymentStatus).
+ * Added [serving.AppEnvironment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppEnvironment).
+ * Added [serving.AppState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppState).
+ * Added [serving.AppStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppStatus).
+ * Added [serving.CreateAppDeploymentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#CreateAppDeploymentRequest).
+ * Added [serving.CreateAppRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#CreateAppRequest).
+ * Added [serving.EnvVariable](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#EnvVariable).
+ * Added [serving.GetAppDeploymentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GetAppDeploymentRequest).
+ * Added [serving.GetAppEnvironmentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GetAppEnvironmentRequest).
+ * Added [serving.ListAppDeploymentsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ListAppDeploymentsRequest).
+ * Added [serving.ListAppDeploymentsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ListAppDeploymentsResponse).
+ * Added [serving.ListAppsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ListAppsRequest).
+ * Added [serving.StopAppRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#StopAppRequest).
+ * Added `any`.
+ * Added [serving.UpdateAppRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#UpdateAppRequest).
+ * Removed [w.CspEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementAPI) workspace-level service.
+ * Removed [w.EsmEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementAPI) workspace-level service.
+ * Added [w.ComplianceSecurityProfile](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ComplianceSecurityProfileAPI) workspace-level service.
+ * Added [w.EnhancedSecurityMonitoring](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EnhancedSecurityMonitoringAPI) workspace-level service.
+ * Removed [settings.CspEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablement).
+ * Removed [settings.CspEnablementSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CspEnablementSetting).
+ * Removed [settings.EsmEnablement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablement).
+ * Removed [settings.EsmEnablementSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EsmEnablementSetting).
+ * Removed [settings.GetCspEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetCspEnablementSettingRequest).
+ * Removed [settings.GetEsmEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEsmEnablementSettingRequest).
+ * Removed [settings.UpdateCspEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateCspEnablementSettingRequest).
+ * Removed [settings.UpdateEsmEnablementSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateEsmEnablementSettingRequest).
+ * Added [settings.ComplianceSecurityProfile](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ComplianceSecurityProfile).
+ * Added [settings.ComplianceSecurityProfileSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ComplianceSecurityProfileSetting).
+ * Added [settings.EnhancedSecurityMonitoring](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EnhancedSecurityMonitoring).
+ * Added [settings.EnhancedSecurityMonitoringSetting](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EnhancedSecurityMonitoringSetting).
+ * Added [settings.GetComplianceSecurityProfileSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetComplianceSecurityProfileSettingRequest).
+ * Added [settings.GetEnhancedSecurityMonitoringSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetEnhancedSecurityMonitoringSettingRequest).
+ * Added [settings.UpdateComplianceSecurityProfileSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateComplianceSecurityProfileSettingRequest).
+ * Added [settings.UpdateEnhancedSecurityMonitoringSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateEnhancedSecurityMonitoringSettingRequest).
+ * Added `Tags` field for [sql.DashboardEditContent](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#DashboardEditContent).
+ * Added `Tags` field for [sql.QueryEditContent](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryEditContent).
+ * Added `Catalog` field for [sql.QueryOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryOptions).
+ * Added `Schema` field for [sql.QueryOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryOptions).
+ * Added `Tags` field for [sql.QueryPostContent](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryPostContent).
+ * Added `Query` field for [sql.Visualization](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#Visualization).
+
+OpenAPI SHA: master, Date: 2024-05-02
+Dependency updates:
+
+ * Bump version of mockery ([#907](https://github.com/databricks/databricks-sdk-go/pull/907)).
+
 ## 0.39.0
 
 * Ignored flaky integration tests ([#894](https://github.com/databricks/databricks-sdk-go/pull/894)).

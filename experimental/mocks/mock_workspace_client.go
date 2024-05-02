@@ -128,14 +128,14 @@ func NewMockWorkspaceClient(t interface {
 	mockautomaticClusterUpdate := settings.NewMockAutomaticClusterUpdateInterface(t)
 	mocksettingsAPI.On("AutomaticClusterUpdate").Return(mockautomaticClusterUpdate).Maybe()
 
-	mockcspEnablement := settings.NewMockCspEnablementInterface(t)
-	mocksettingsAPI.On("CspEnablement").Return(mockcspEnablement).Maybe()
+	mockcomplianceSecurityProfile := settings.NewMockComplianceSecurityProfileInterface(t)
+	mocksettingsAPI.On("ComplianceSecurityProfile").Return(mockcomplianceSecurityProfile).Maybe()
 
 	mockdefaultNamespace := settings.NewMockDefaultNamespaceInterface(t)
 	mocksettingsAPI.On("DefaultNamespace").Return(mockdefaultNamespace).Maybe()
 
-	mockesmEnablement := settings.NewMockEsmEnablementInterface(t)
-	mocksettingsAPI.On("EsmEnablement").Return(mockesmEnablement).Maybe()
+	mockenhancedSecurityMonitoring := settings.NewMockEnhancedSecurityMonitoringInterface(t)
+	mocksettingsAPI.On("EnhancedSecurityMonitoring").Return(mockenhancedSecurityMonitoring).Maybe()
 
 	mockrestrictWorkspaceAdmins := settings.NewMockRestrictWorkspaceAdminsInterface(t)
 	mocksettingsAPI.On("RestrictWorkspaceAdmins").Return(mockrestrictWorkspaceAdmins).Maybe()
@@ -151,10 +151,10 @@ func (m *MockWorkspaceClient) GetMockAutomaticClusterUpdateAPI() *settings.MockA
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockCspEnablementAPI() *settings.MockCspEnablementInterface {
-	api, ok := m.GetMockSettingsAPI().CspEnablement().(*settings.MockCspEnablementInterface)
+func (m *MockWorkspaceClient) GetMockComplianceSecurityProfileAPI() *settings.MockComplianceSecurityProfileInterface {
+	api, ok := m.GetMockSettingsAPI().ComplianceSecurityProfile().(*settings.MockComplianceSecurityProfileInterface)
 	if !ok {
-		panic(fmt.Sprintf("expected CspEnablement to be *settings.MockCspEnablementInterface, actual was %T", m.GetMockSettingsAPI().CspEnablement()))
+		panic(fmt.Sprintf("expected ComplianceSecurityProfile to be *settings.MockComplianceSecurityProfileInterface, actual was %T", m.GetMockSettingsAPI().ComplianceSecurityProfile()))
 	}
 	return api
 }
@@ -167,10 +167,10 @@ func (m *MockWorkspaceClient) GetMockDefaultNamespaceAPI() *settings.MockDefault
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockEsmEnablementAPI() *settings.MockEsmEnablementInterface {
-	api, ok := m.GetMockSettingsAPI().EsmEnablement().(*settings.MockEsmEnablementInterface)
+func (m *MockWorkspaceClient) GetMockEnhancedSecurityMonitoringAPI() *settings.MockEnhancedSecurityMonitoringInterface {
+	api, ok := m.GetMockSettingsAPI().EnhancedSecurityMonitoring().(*settings.MockEnhancedSecurityMonitoringInterface)
 	if !ok {
-		panic(fmt.Sprintf("expected EsmEnablement to be *settings.MockEsmEnablementInterface, actual was %T", m.GetMockSettingsAPI().EsmEnablement()))
+		panic(fmt.Sprintf("expected EnhancedSecurityMonitoring to be *settings.MockEnhancedSecurityMonitoringInterface, actual was %T", m.GetMockSettingsAPI().EnhancedSecurityMonitoring()))
 	}
 	return api
 }

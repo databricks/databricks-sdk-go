@@ -24,55 +24,124 @@ type AppsInterface interface {
 	// Deprecated: use MockAppsInterface instead.
 	Impl() AppsService
 
-	// Create and deploy an application.
-	//
-	// Creates and deploys an application.
-	Create(ctx context.Context, request DeployAppRequest) (*DeploymentStatus, error)
+	// WaitGetAppIdle repeatedly calls [AppsAPI.Get] and waits to reach IDLE state
+	WaitGetAppIdle(ctx context.Context, name string,
+		timeout time.Duration, callback func(*App)) (*App, error)
 
-	// Delete an application.
-	//
-	// Delete an application definition
-	DeleteApp(ctx context.Context, request DeleteAppRequest) (*DeleteAppResponse, error)
+	// WaitGetDeploymentAppSucceeded repeatedly calls [AppsAPI.GetDeployment] and waits to reach SUCCEEDED state
+	WaitGetDeploymentAppSucceeded(ctx context.Context, appName string, deploymentId string,
+		timeout time.Duration, callback func(*AppDeployment)) (*AppDeployment, error)
 
-	// Delete an application.
+	// Create an App.
 	//
-	// Delete an application definition
-	DeleteAppByName(ctx context.Context, name string) (*DeleteAppResponse, error)
+	// Creates a new app.
+	Create(ctx context.Context, createAppRequest CreateAppRequest) (*WaitGetAppIdle[App], error)
 
-	// Get definition for an application.
+	// Calls [AppsAPIInterface.Create] and waits to reach IDLE state
 	//
-	// Get an application definition
-	GetApp(ctx context.Context, request GetAppRequest) (*GetAppResponse, error)
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[App](60*time.Minute) functional option.
+	//
+	// Deprecated: use [AppsAPIInterface.Create].Get() or [AppsAPIInterface.WaitGetAppIdle]
+	CreateAndWait(ctx context.Context, createAppRequest CreateAppRequest, options ...retries.Option[App]) (*App, error)
 
-	// Get definition for an application.
+	// Create an App Deployment.
 	//
-	// Get an application definition
-	GetAppByName(ctx context.Context, name string) (*GetAppResponse, error)
+	// Creates an app deployment for the app with the supplied name.
+	CreateDeployment(ctx context.Context, createAppDeploymentRequest CreateAppDeploymentRequest) (*WaitGetDeploymentAppSucceeded[AppDeployment], error)
 
-	// Get deployment status for an application.
+	// Calls [AppsAPIInterface.CreateDeployment] and waits to reach SUCCEEDED state
 	//
-	// Get deployment status for an application
-	GetAppDeploymentStatus(ctx context.Context, request GetAppDeploymentStatusRequest) (*DeploymentStatus, error)
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[AppDeployment](60*time.Minute) functional option.
+	//
+	// Deprecated: use [AppsAPIInterface.CreateDeployment].Get() or [AppsAPIInterface.WaitGetDeploymentAppSucceeded]
+	CreateDeploymentAndWait(ctx context.Context, createAppDeploymentRequest CreateAppDeploymentRequest, options ...retries.Option[AppDeployment]) (*AppDeployment, error)
 
-	// Get deployment status for an application.
+	// Delete an App.
 	//
-	// Get deployment status for an application
-	GetAppDeploymentStatusByDeploymentId(ctx context.Context, deploymentId string) (*DeploymentStatus, error)
+	// Deletes an app.
+	Delete(ctx context.Context, request DeleteAppRequest) error
 
-	// List all applications.
+	// Delete an App.
 	//
-	// List all available applications
-	GetApps(ctx context.Context) (*ListAppsResponse, error)
+	// Deletes an app.
+	DeleteByName(ctx context.Context, name string) error
 
-	// Get deployment events for an application.
+	// Get an App.
 	//
-	// Get deployment events for an application
-	GetEvents(ctx context.Context, request GetEventsRequest) (*ListAppEventsResponse, error)
+	// Retrieves information for the app with the supplied name.
+	Get(ctx context.Context, request GetAppRequest) (*App, error)
 
-	// Get deployment events for an application.
+	// Get an App.
 	//
-	// Get deployment events for an application
-	GetEventsByName(ctx context.Context, name string) (*ListAppEventsResponse, error)
+	// Retrieves information for the app with the supplied name.
+	GetByName(ctx context.Context, name string) (*App, error)
+
+	// Get an App Deployment.
+	//
+	// Retrieves information for the app deployment with the supplied name and
+	// deployment id.
+	GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error)
+
+	// Get an App Deployment.
+	//
+	// Retrieves information for the app deployment with the supplied name and
+	// deployment id.
+	GetDeploymentByAppNameAndDeploymentId(ctx context.Context, appName string, deploymentId string) (*AppDeployment, error)
+
+	// Get App Environment.
+	//
+	// Retrieves app environment.
+	GetEnvironment(ctx context.Context, request GetAppEnvironmentRequest) (*AppEnvironment, error)
+
+	// Get App Environment.
+	//
+	// Retrieves app environment.
+	GetEnvironmentByName(ctx context.Context, name string) (*AppEnvironment, error)
+
+	// List Apps.
+	//
+	// Lists all apps in the workspace.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	List(ctx context.Context, request ListAppsRequest) listing.Iterator[App]
+
+	// List Apps.
+	//
+	// Lists all apps in the workspace.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListAll(ctx context.Context, request ListAppsRequest) ([]App, error)
+
+	// List App Deployments.
+	//
+	// Lists all app deployments for the app with the supplied name.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) listing.Iterator[AppDeployment]
+
+	// List App Deployments.
+	//
+	// Lists all app deployments for the app with the supplied name.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListDeploymentsAll(ctx context.Context, request ListAppDeploymentsRequest) ([]AppDeployment, error)
+
+	// List App Deployments.
+	//
+	// Lists all app deployments for the app with the supplied name.
+	ListDeploymentsByAppName(ctx context.Context, appName string) (*ListAppDeploymentsResponse, error)
+
+	// Stop an App.
+	//
+	// Stops the active deployment of the app in the workspace.
+	Stop(ctx context.Context, request StopAppRequest) error
+
+	// Update an App.
+	//
+	// Updates the app with the supplied name.
+	Update(ctx context.Context, request UpdateAppRequest) (*App, error)
 }
 
 func NewApps(client *client.DatabricksClient) *AppsAPI {
@@ -83,9 +152,9 @@ func NewApps(client *client.DatabricksClient) *AppsAPI {
 	}
 }
 
-// Lakehouse Apps run directly on a customer’s Databricks instance, integrate
-// with their data, use and extend Databricks services, and enable users to
-// interact through single sign-on.
+// Apps run directly on a customer’s Databricks instance, integrate with their
+// data, use and extend Databricks services, and enable users to interact
+// through single sign-on.
 type AppsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AppsService)
@@ -106,82 +175,381 @@ func (a *AppsAPI) Impl() AppsService {
 	return a.impl
 }
 
-// Create and deploy an application.
-//
-// Creates and deploys an application.
-func (a *AppsAPI) Create(ctx context.Context, request DeployAppRequest) (*DeploymentStatus, error) {
-	return a.impl.Create(ctx, request)
+// WaitGetAppIdle repeatedly calls [AppsAPI.Get] and waits to reach IDLE state
+func (a *AppsAPI) WaitGetAppIdle(ctx context.Context, name string,
+	timeout time.Duration, callback func(*App)) (*App, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[App](ctx, timeout, func() (*App, *retries.Err) {
+		app, err := a.Get(ctx, GetAppRequest{
+			Name: name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(app)
+		}
+		status := app.Status.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if app.Status != nil {
+			statusMessage = app.Status.Message
+		}
+		switch status {
+		case AppStateIdle: // target state
+			return app, nil
+		case AppStateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				AppStateIdle, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
 }
 
-// Delete an application.
-//
-// Delete an application definition
-func (a *AppsAPI) DeleteApp(ctx context.Context, request DeleteAppRequest) (*DeleteAppResponse, error) {
-	return a.impl.DeleteApp(ctx, request)
+// WaitGetAppIdle is a wrapper that calls [AppsAPI.WaitGetAppIdle] and waits to reach IDLE state.
+type WaitGetAppIdle[R any] struct {
+	Response *R
+	Name     string `json:"name"`
+	Poll     func(time.Duration, func(*App)) (*App, error)
+	callback func(*App)
+	timeout  time.Duration
 }
 
-// Delete an application.
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetAppIdle[R]) OnProgress(callback func(*App)) *WaitGetAppIdle[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the App with the default timeout of 20 minutes.
+func (w *WaitGetAppIdle[R]) Get() (*App, error) {
+	return w.Poll(w.timeout, w.callback)
+}
+
+// Get the App with custom timeout.
+func (w *WaitGetAppIdle[R]) GetWithTimeout(timeout time.Duration) (*App, error) {
+	return w.Poll(timeout, w.callback)
+}
+
+// WaitGetDeploymentAppSucceeded repeatedly calls [AppsAPI.GetDeployment] and waits to reach SUCCEEDED state
+func (a *AppsAPI) WaitGetDeploymentAppSucceeded(ctx context.Context, appName string, deploymentId string,
+	timeout time.Duration, callback func(*AppDeployment)) (*AppDeployment, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[AppDeployment](ctx, timeout, func() (*AppDeployment, *retries.Err) {
+		appDeployment, err := a.GetDeployment(ctx, GetAppDeploymentRequest{
+			AppName:      appName,
+			DeploymentId: deploymentId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(appDeployment)
+		}
+		status := appDeployment.Status.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if appDeployment.Status != nil {
+			statusMessage = appDeployment.Status.Message
+		}
+		switch status {
+		case AppDeploymentStateSucceeded: // target state
+			return appDeployment, nil
+		case AppDeploymentStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				AppDeploymentStateSucceeded, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetDeploymentAppSucceeded is a wrapper that calls [AppsAPI.WaitGetDeploymentAppSucceeded] and waits to reach SUCCEEDED state.
+type WaitGetDeploymentAppSucceeded[R any] struct {
+	Response     *R
+	AppName      string `json:"app_name"`
+	DeploymentId string `json:"deployment_id"`
+	Poll         func(time.Duration, func(*AppDeployment)) (*AppDeployment, error)
+	callback     func(*AppDeployment)
+	timeout      time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetDeploymentAppSucceeded[R]) OnProgress(callback func(*AppDeployment)) *WaitGetDeploymentAppSucceeded[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the AppDeployment with the default timeout of 20 minutes.
+func (w *WaitGetDeploymentAppSucceeded[R]) Get() (*AppDeployment, error) {
+	return w.Poll(w.timeout, w.callback)
+}
+
+// Get the AppDeployment with custom timeout.
+func (w *WaitGetDeploymentAppSucceeded[R]) GetWithTimeout(timeout time.Duration) (*AppDeployment, error) {
+	return w.Poll(timeout, w.callback)
+}
+
+// Create an App.
 //
-// Delete an application definition
-func (a *AppsAPI) DeleteAppByName(ctx context.Context, name string) (*DeleteAppResponse, error) {
-	return a.impl.DeleteApp(ctx, DeleteAppRequest{
+// Creates a new app.
+func (a *AppsAPI) Create(ctx context.Context, createAppRequest CreateAppRequest) (*WaitGetAppIdle[App], error) {
+	app, err := a.impl.Create(ctx, createAppRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetAppIdle[App]{
+		Response: app,
+		Name:     app.Name,
+		Poll: func(timeout time.Duration, callback func(*App)) (*App, error) {
+			return a.WaitGetAppIdle(ctx, app.Name, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [AppsAPI.Create] and waits to reach IDLE state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[App](60*time.Minute) functional option.
+//
+// Deprecated: use [AppsAPI.Create].Get() or [AppsAPI.WaitGetAppIdle]
+func (a *AppsAPI) CreateAndWait(ctx context.Context, createAppRequest CreateAppRequest, options ...retries.Option[App]) (*App, error) {
+	wait, err := a.Create(ctx, createAppRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[App]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *App) {
+		for _, o := range options {
+			o(&retries.Info[App]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
+}
+
+// Create an App Deployment.
+//
+// Creates an app deployment for the app with the supplied name.
+func (a *AppsAPI) CreateDeployment(ctx context.Context, createAppDeploymentRequest CreateAppDeploymentRequest) (*WaitGetDeploymentAppSucceeded[AppDeployment], error) {
+	appDeployment, err := a.impl.CreateDeployment(ctx, createAppDeploymentRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetDeploymentAppSucceeded[AppDeployment]{
+		Response:     appDeployment,
+		AppName:      createAppDeploymentRequest.AppName,
+		DeploymentId: appDeployment.DeploymentId,
+		Poll: func(timeout time.Duration, callback func(*AppDeployment)) (*AppDeployment, error) {
+			return a.WaitGetDeploymentAppSucceeded(ctx, createAppDeploymentRequest.AppName, appDeployment.DeploymentId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [AppsAPI.CreateDeployment] and waits to reach SUCCEEDED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[AppDeployment](60*time.Minute) functional option.
+//
+// Deprecated: use [AppsAPI.CreateDeployment].Get() or [AppsAPI.WaitGetDeploymentAppSucceeded]
+func (a *AppsAPI) CreateDeploymentAndWait(ctx context.Context, createAppDeploymentRequest CreateAppDeploymentRequest, options ...retries.Option[AppDeployment]) (*AppDeployment, error) {
+	wait, err := a.CreateDeployment(ctx, createAppDeploymentRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[AppDeployment]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *AppDeployment) {
+		for _, o := range options {
+			o(&retries.Info[AppDeployment]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
+}
+
+// Delete an App.
+//
+// Deletes an app.
+func (a *AppsAPI) Delete(ctx context.Context, request DeleteAppRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Delete an App.
+//
+// Deletes an app.
+func (a *AppsAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.impl.Delete(ctx, DeleteAppRequest{
 		Name: name,
 	})
 }
 
-// Get definition for an application.
+// Get an App.
 //
-// Get an application definition
-func (a *AppsAPI) GetApp(ctx context.Context, request GetAppRequest) (*GetAppResponse, error) {
-	return a.impl.GetApp(ctx, request)
+// Retrieves information for the app with the supplied name.
+func (a *AppsAPI) Get(ctx context.Context, request GetAppRequest) (*App, error) {
+	return a.impl.Get(ctx, request)
 }
 
-// Get definition for an application.
+// Get an App.
 //
-// Get an application definition
-func (a *AppsAPI) GetAppByName(ctx context.Context, name string) (*GetAppResponse, error) {
-	return a.impl.GetApp(ctx, GetAppRequest{
+// Retrieves information for the app with the supplied name.
+func (a *AppsAPI) GetByName(ctx context.Context, name string) (*App, error) {
+	return a.impl.Get(ctx, GetAppRequest{
 		Name: name,
 	})
 }
 
-// Get deployment status for an application.
+// Get an App Deployment.
 //
-// Get deployment status for an application
-func (a *AppsAPI) GetAppDeploymentStatus(ctx context.Context, request GetAppDeploymentStatusRequest) (*DeploymentStatus, error) {
-	return a.impl.GetAppDeploymentStatus(ctx, request)
+// Retrieves information for the app deployment with the supplied name and
+// deployment id.
+func (a *AppsAPI) GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error) {
+	return a.impl.GetDeployment(ctx, request)
 }
 
-// Get deployment status for an application.
+// Get an App Deployment.
 //
-// Get deployment status for an application
-func (a *AppsAPI) GetAppDeploymentStatusByDeploymentId(ctx context.Context, deploymentId string) (*DeploymentStatus, error) {
-	return a.impl.GetAppDeploymentStatus(ctx, GetAppDeploymentStatusRequest{
+// Retrieves information for the app deployment with the supplied name and
+// deployment id.
+func (a *AppsAPI) GetDeploymentByAppNameAndDeploymentId(ctx context.Context, appName string, deploymentId string) (*AppDeployment, error) {
+	return a.impl.GetDeployment(ctx, GetAppDeploymentRequest{
+		AppName:      appName,
 		DeploymentId: deploymentId,
 	})
 }
 
-// List all applications.
+// Get App Environment.
 //
-// List all available applications
-func (a *AppsAPI) GetApps(ctx context.Context) (*ListAppsResponse, error) {
-	return a.impl.GetApps(ctx)
+// Retrieves app environment.
+func (a *AppsAPI) GetEnvironment(ctx context.Context, request GetAppEnvironmentRequest) (*AppEnvironment, error) {
+	return a.impl.GetEnvironment(ctx, request)
 }
 
-// Get deployment events for an application.
+// Get App Environment.
 //
-// Get deployment events for an application
-func (a *AppsAPI) GetEvents(ctx context.Context, request GetEventsRequest) (*ListAppEventsResponse, error) {
-	return a.impl.GetEvents(ctx, request)
-}
-
-// Get deployment events for an application.
-//
-// Get deployment events for an application
-func (a *AppsAPI) GetEventsByName(ctx context.Context, name string) (*ListAppEventsResponse, error) {
-	return a.impl.GetEvents(ctx, GetEventsRequest{
+// Retrieves app environment.
+func (a *AppsAPI) GetEnvironmentByName(ctx context.Context, name string) (*AppEnvironment, error) {
+	return a.impl.GetEnvironment(ctx, GetAppEnvironmentRequest{
 		Name: name,
 	})
+}
+
+// List Apps.
+//
+// Lists all apps in the workspace.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *AppsAPI) List(ctx context.Context, request ListAppsRequest) listing.Iterator[App] {
+
+	getNextPage := func(ctx context.Context, req ListAppsRequest) (*ListAppsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.impl.List(ctx, req)
+	}
+	getItems := func(resp *ListAppsResponse) []App {
+		return resp.Apps
+	}
+	getNextReq := func(resp *ListAppsResponse) *ListAppsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Apps.
+//
+// Lists all apps in the workspace.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *AppsAPI) ListAll(ctx context.Context, request ListAppsRequest) ([]App, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[App](ctx, iterator)
+}
+
+// List App Deployments.
+//
+// Lists all app deployments for the app with the supplied name.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *AppsAPI) ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) listing.Iterator[AppDeployment] {
+
+	getNextPage := func(ctx context.Context, req ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.impl.ListDeployments(ctx, req)
+	}
+	getItems := func(resp *ListAppDeploymentsResponse) []AppDeployment {
+		return resp.AppDeployments
+	}
+	getNextReq := func(resp *ListAppDeploymentsResponse) *ListAppDeploymentsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List App Deployments.
+//
+// Lists all app deployments for the app with the supplied name.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *AppsAPI) ListDeploymentsAll(ctx context.Context, request ListAppDeploymentsRequest) ([]AppDeployment, error) {
+	iterator := a.ListDeployments(ctx, request)
+	return listing.ToSlice[AppDeployment](ctx, iterator)
+}
+
+// List App Deployments.
+//
+// Lists all app deployments for the app with the supplied name.
+func (a *AppsAPI) ListDeploymentsByAppName(ctx context.Context, appName string) (*ListAppDeploymentsResponse, error) {
+	return a.impl.ListDeployments(ctx, ListAppDeploymentsRequest{
+		AppName: appName,
+	})
+}
+
+// Stop an App.
+//
+// Stops the active deployment of the app in the workspace.
+func (a *AppsAPI) Stop(ctx context.Context, request StopAppRequest) error {
+	return a.impl.Stop(ctx, request)
+}
+
+// Update an App.
+//
+// Updates the app with the supplied name.
+func (a *AppsAPI) Update(ctx context.Context, request UpdateAppRequest) (*App, error) {
+	return a.impl.Update(ctx, request)
 }
 
 type ServingEndpointsInterface interface {

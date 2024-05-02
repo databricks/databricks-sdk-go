@@ -195,6 +195,53 @@ func (s ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) MarshalJSON()
 	return marshal.Marshal(s)
 }
 
+// SHIELD feature: CSP
+type ComplianceSecurityProfile struct {
+	// Set by customers when they request Compliance Security Profile (CSP)
+	ComplianceStandards []ComplianceStandard `json:"compliance_standards,omitempty"`
+
+	IsEnabled bool `json:"is_enabled,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ComplianceSecurityProfileSetting struct {
+	// SHIELD feature: CSP
+	ComplianceSecurityProfileWorkspace ComplianceSecurityProfile `json:"compliance_security_profile_workspace"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ComplianceSecurityProfileSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ComplianceSecurityProfileSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Compliance stardard for SHIELD customers
 type ComplianceStandard string
 
@@ -387,26 +434,6 @@ func (s CreateTokenResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Compliance Security Profile (CSP) - one of the features in ESC product Tracks
-// if the feature is enabled.
-type CspEnablement struct {
-	// Set by customers when they request Compliance Security Profile (CSP)
-	// Invariants are enforced in Settings policy.
-	ComplianceStandards []ComplianceStandard `json:"compliance_standards,omitempty"`
-
-	IsEnabled bool `json:"is_enabled,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CspEnablement) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CspEnablement) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 // Account level policy for CSP
 type CspEnablementAccount struct {
 	// Set by customers when they request Compliance Security Profile (CSP)
@@ -452,36 +479,6 @@ func (s *CspEnablementAccountSetting) UnmarshalJSON(b []byte) error {
 }
 
 func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type CspEnablementSetting struct {
-	// Compliance Security Profile (CSP) - one of the features in ESC product
-	// Tracks if the feature is enabled.
-	CspEnablementWorkspace CspEnablement `json:"csp_enablement_workspace"`
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// update pattern to perform setting updates in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// PATCH request to identify the setting version you are updating.
-	Etag string `json:"etag,omitempty"`
-	// Name of the corresponding setting. This field is populated in the
-	// response, but it will not be respected even if it's set in the request
-	// body. The setting name in the path parameter will be respected instead.
-	// Setting name is required to be 'default' if the setting only has one
-	// instance per workspace.
-	SettingName string `json:"setting_name,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CspEnablementSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CspEnablementSetting) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -663,19 +660,47 @@ type DeleteTokenManagementRequest struct {
 	TokenId string `json:"-" url:"-"`
 }
 
-// Enhanced Security Monitoring (ESM) - one of the features in ESC product
-// Tracks if the feature is enabled.
-type EsmEnablement struct {
+// SHIELD feature: ESM
+type EnhancedSecurityMonitoring struct {
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *EsmEnablement) UnmarshalJSON(b []byte) error {
+func (s *EnhancedSecurityMonitoring) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s EsmEnablement) MarshalJSON() ([]byte, error) {
+func (s EnhancedSecurityMonitoring) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EnhancedSecurityMonitoringSetting struct {
+	// SHIELD feature: ESM
+	EnhancedSecurityMonitoringWorkspace EnhancedSecurityMonitoring `json:"enhanced_security_monitoring_workspace"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EnhancedSecurityMonitoringSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnhancedSecurityMonitoringSetting) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -720,36 +745,6 @@ func (s *EsmEnablementAccountSetting) UnmarshalJSON(b []byte) error {
 }
 
 func (s EsmEnablementAccountSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type EsmEnablementSetting struct {
-	// Enhanced Security Monitoring (ESM) - one of the features in ESC product
-	// Tracks if the feature is enabled.
-	EsmEnablementWorkspace EsmEnablement `json:"esm_enablement_workspace"`
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// update pattern to perform setting updates in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// PATCH request to identify the setting version you are updating.
-	Etag string `json:"etag,omitempty"`
-	// Name of the corresponding setting. This field is populated in the
-	// response, but it will not be respected even if it's set in the request
-	// body. The setting name in the path parameter will be respected instead.
-	// Setting name is required to be 'default' if the setting only has one
-	// instance per workspace.
-	SettingName string `json:"setting_name,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *EsmEnablementSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s EsmEnablementSetting) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -827,6 +822,28 @@ func (s GetAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Get the compliance security profile setting
+type GetComplianceSecurityProfileSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetComplianceSecurityProfileSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetComplianceSecurityProfileSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get the compliance security profile setting for new workspaces
 type GetCspEnablementAccountSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -846,28 +863,6 @@ func (s *GetCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s GetCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Get the compliance security profile setting
-type GetCspEnablementSettingRequest struct {
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// delete pattern to perform setting deletions in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetCspEnablementSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetCspEnablementSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -893,6 +888,28 @@ func (s GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Get the enhanced security monitoring setting
+type GetEnhancedSecurityMonitoringSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetEnhancedSecurityMonitoringSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetEnhancedSecurityMonitoringSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get the enhanced security monitoring setting for new workspaces
 type GetEsmEnablementAccountSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -912,28 +929,6 @@ func (s *GetEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s GetEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Get the enhanced security monitoring setting
-type GetEsmEnablementSettingRequest struct {
-	// etag used for versioning. The response is at least as fresh as the eTag
-	// provided. This is used for optimistic concurrency control as a way to
-	// help prevent simultaneous writes of a setting overwriting each other. It
-	// is strongly suggested that systems make use of the etag in the read ->
-	// delete pattern to perform setting deletions in order to avoid race
-	// conditions. That is, get an etag from a GET request, and pass it with the
-	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetEsmEnablementSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetEsmEnablementSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1848,6 +1843,20 @@ type UpdateAutomaticClusterUpdateSettingRequest struct {
 }
 
 // Details required to update a setting.
+type UpdateComplianceSecurityProfileSettingRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting ComplianceSecurityProfileSetting `json:"setting"`
+}
+
+// Details required to update a setting.
 type UpdateCspEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
@@ -1859,20 +1868,6 @@ type UpdateCspEnablementAccountSettingRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting CspEnablementAccountSetting `json:"setting"`
-}
-
-// Details required to update a setting.
-type UpdateCspEnablementSettingRequest struct {
-	// This should always be set to true for Settings API. Added for AIP
-	// compliance.
-	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
-	FieldMask string `json:"field_mask"`
-
-	Setting CspEnablementSetting `json:"setting"`
 }
 
 // Details required to update a setting.
@@ -1898,6 +1893,20 @@ type UpdateDefaultNamespaceSettingRequest struct {
 }
 
 // Details required to update a setting.
+type UpdateEnhancedSecurityMonitoringSettingRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting EnhancedSecurityMonitoringSetting `json:"setting"`
+}
+
+// Details required to update a setting.
 type UpdateEsmEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
@@ -1909,20 +1918,6 @@ type UpdateEsmEnablementAccountSettingRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting EsmEnablementAccountSetting `json:"setting"`
-}
-
-// Details required to update a setting.
-type UpdateEsmEnablementSettingRequest struct {
-	// This should always be set to true for Settings API. Added for AIP
-	// compliance.
-	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
-	FieldMask string `json:"field_mask"`
-
-	Setting EsmEnablementSetting `json:"setting"`
 }
 
 // Details required to update an IP access list.
