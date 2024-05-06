@@ -42,7 +42,11 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	if !cfg.IsAzure() {
 		return nil, nil
 	}
-	err := cfg.azureEnsureWorkspaceUrl(ctx, c)
+	err := cfg.loadAzureTenantId(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("load tenant id: %w", err)
+	}
+	err = cfg.azureEnsureWorkspaceUrl(ctx, c)
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}

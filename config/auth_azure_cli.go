@@ -43,7 +43,7 @@ func (c AzureCliCredentials) tokenSourceFor(
 // If the user can't access the service management endpoint, we assume they are in case 2 and do not pass the service
 // management token. Otherwise, we always pass the service management token.
 func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner oauth2.TokenSource) (func(*http.Request) error, error) {
-	ts := &azureCliTokenSource{cfg.Environment().AzureServiceManagementEndpoint(), ""}
+	ts := &azureCliTokenSource{cfg.Environment().AzureServiceManagementEndpoint(), "", cfg.AzureTenantID}
 	t, err := ts.Token()
 	if err != nil {
 		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
@@ -57,8 +57,13 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if !cfg.IsAzure() {
 		return nil, nil
 	}
+	// Set the azure tenant ID if not specified
+	err := cfg.loadAzureTenantId(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("load tenant id: %w", err)
+	}
 	// Eagerly get a token to fail fast in case the user is not logged in with the Azure CLI.
-	ts := &azureCliTokenSource{cfg.Environment().AzureApplicationID, cfg.AzureResourceID}
+	ts := &azureCliTokenSource{cfg.Environment().AzureApplicationID, cfg.AzureResourceID, cfg.AzureTenantID}
 	t, err := ts.Token()
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {
@@ -94,6 +99,7 @@ func NewAzureCliTokenSource(resource string) oauth2.TokenSource {
 type azureCliTokenSource struct {
 	resource            string
 	workspaceResourceId string
+	azureTenantId       string
 }
 
 type internalCliToken struct {
@@ -101,18 +107,6 @@ type internalCliToken struct {
 	RefreshToken string `json:"refreshToken"`
 	TokenType    string `json:"tokenType"`
 	ExpiresOn    string `json:"expiresOn"`
-}
-
-func (ts *azureCliTokenSource) getSubscription() string {
-	if ts.workspaceResourceId == "" {
-		return ""
-	}
-	components := strings.Split(ts.workspaceResourceId, "/")
-	if len(components) < 3 {
-		logger.Warnf(context.Background(), "Invalid azure workspace resource ID")
-		return ""
-	}
-	return components[2]
 }
 
 func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
@@ -146,13 +140,12 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 }
 
 func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
-	subscription := ts.getSubscription()
 	args := []string{"account", "get-access-token", "--resource",
 		ts.resource, "--output", "json"}
-	if subscription != "" {
+	if ts.azureTenantId != "" {
 		extendedArgs := make([]string, len(args))
 		copy(extendedArgs, args)
-		extendedArgs = append(extendedArgs, "--subscription", subscription)
+		extendedArgs = append(extendedArgs, "--tenant", ts.azureTenantId)
 		// This will fail if the user has access to the workspace, but not to the subscription
 		// itself.
 		// In such case, we fall back to not using the subscription.
