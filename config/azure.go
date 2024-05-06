@@ -178,19 +178,14 @@ func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResol
 // Azure Databricks login endpoint). Here, the redirect is not followed, but the
 // tenant ID is extracted from the URL.
 func (c *Config) loadAzureTenantId(ctx context.Context) error {
-	if !c.IsAzure() || c.AzureTenantID != "" {
+	if !c.IsAzure() || c.AzureTenantID != "" || c.Host == "" {
 		return nil
 	}
-	req, err := http.NewRequestWithContext(ctx, "GET", c.Host+"/aad/auth", nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", c.CanonicalHostName()+"/aad/auth", nil)
 	if err != nil {
 		return err
 	}
-	client := &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
-	}
-	res, err := client.Do(req)
+	res, err := c.azureTenantIdFetchClient.Do(req)
 	if err != nil && !errors.Is(err, http.ErrUseLastResponse) {
 		return err
 	}

@@ -112,6 +112,10 @@ func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*Config,
 		AzureTenantID:     cf.AzureTenantID,
 		AzureResourceID:   cf.AzureResourceID,
 		AuthType:          cf.AuthType,
+		azureTenantIdFetchClient: makeClient(&http.Response{
+			StatusCode: http.StatusTemporaryRedirect,
+			Header:     http.Header{"Location": []string{"https://login.microsoftonline.com/tenant_id/abc"}},
+		}),
 	}
 	if client.IsAzure() {
 		client.DatabricksEnvironment = &DatabricksEnvironment{

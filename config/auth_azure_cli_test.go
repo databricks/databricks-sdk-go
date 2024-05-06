@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -13,9 +14,53 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var azDummy = &Config{Host: "https://adb-xyz.c.azuredatabricks.net/"}
-var azDummyWithResourceId = &Config{Host: "https://adb-xyz.c.azuredatabricks.net/", AzureResourceID: "/subscriptions/123/resourceGroups/abc/providers/Microsoft.Databricks/workspaces/abc123"}
-var azDummyWitInvalidResourceId = &Config{Host: "https://adb-xyz.c.azuredatabricks.net/", AzureResourceID: "invalidResourceId"}
+type mockTransport struct {
+	resp *http.Response
+	err  error
+}
+
+func (m mockTransport) RoundTrip(*http.Request) (*http.Response, error) {
+	if m.err != nil {
+		return nil, m.err
+	}
+	return m.resp, nil
+}
+
+func makeClient(r *http.Response) *http.Client {
+	return &http.Client{
+		Transport: mockTransport{resp: r},
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+}
+
+func makeFailingClient(err error) *http.Client {
+	return &http.Client{
+		Transport: mockTransport{err: err},
+	}
+}
+
+var redirectResponse = &http.Response{
+	StatusCode: 302,
+	Header:     http.Header{"Location": []string{"https://login.microsoftonline.com/123-abc/oauth2/token"}},
+}
+var errDummy = errors.New("failed to get login endpoint")
+
+var azDummy = &Config{
+	Host:                     "https://adb-xyz.c.azuredatabricks.net/",
+	azureTenantIdFetchClient: makeClient(redirectResponse),
+}
+var azDummyWithResourceId = &Config{
+	Host:                     "https://adb-xyz.c.azuredatabricks.net/",
+	AzureResourceID:          "/subscriptions/123/resourceGroups/abc/providers/Microsoft.Databricks/workspaces/abc123",
+	azureTenantIdFetchClient: makeClient(redirectResponse),
+}
+var azDummyWitInvalidResourceId = &Config{
+	Host:                     "https://adb-xyz.c.azuredatabricks.net/",
+	AzureResourceID:          "invalidResourceId",
+	azureTenantIdFetchClient: makeClient(redirectResponse),
+}
 
 // testdataPath returns the PATH to use for the duration of a test.
 // It must only return absolute directories because Go refuses to run
@@ -185,6 +230,19 @@ func TestAzureCliCredentials_CorruptExpire(t *testing.T) {
 	aa := AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
 	assert.EqualError(t, err, "cannot parse expiry: parsing time \"\" as \"2006-01-02 15:04:05.999999\": cannot parse \"\" as \"2006\"")
+}
+
+func TestAzureCliCredentials_DoNotFetchIfTenantIdAlreadySet(t *testing.T) {
+	env.CleanupEnvironment(t)
+	os.Setenv("PATH", testdataPath())
+	aa := AzureCliCredentials{}
+	_, err := aa.Configure(context.Background(), &Config{
+		Host:                     "https://adb-xyz.c.azuredatabricks.net/",
+		AzureTenantID:            "123",
+		AzureResourceID:          "/subscriptions/123/resourceGroups/abc/providers/Microsoft.Databricks/workspaces/abc123",
+		azureTenantIdFetchClient: makeFailingClient(errDummy),
+	})
+	assert.NoError(t, err)
 }
 
 // TODO: this test should rather be on sequencing
