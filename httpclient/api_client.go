@@ -238,6 +238,7 @@ func (c *ApiClient) attempt(
 			}
 		}
 		// Set traceparent for distributed tracing.
+		// This must be done after all visitors have run, as they may modify the request.
 		traceparent.AddTraceparent(request)
 
 		// request.Context() holds context potentially enhanced by visitors
