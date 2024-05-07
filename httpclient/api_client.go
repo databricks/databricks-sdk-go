@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/httpclient/traceparent"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/logger/httplog"
 	"github.com/databricks/databricks-sdk-go/retries"
@@ -236,6 +237,9 @@ func (c *ApiClient) attempt(
 				return c.failRequest(ctx, "failed during request visitor", err)
 			}
 		}
+		// Set traceparent for distributed tracing.
+		traceparent.AddTraceparent(request)
+
 		// request.Context() holds context potentially enhanced by visitors
 		request.Header.Set("User-Agent", useragent.FromContext(request.Context()))
 		if request.Header.Get("Content-Type") == "" && requestBody.ContentType != "" {

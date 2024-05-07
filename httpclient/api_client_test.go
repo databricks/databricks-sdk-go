@@ -714,3 +714,24 @@ func TestDefaultAuthVisitor(t *testing.T) {
 	err := c.Do(context.Background(), "GET", "/a/b", WithRequestData(map[string]any{}), authOption)
 	require.NoError(t, err)
 }
+
+func TestTraceparentHeader(t *testing.T) {
+	seenTraceparents := []string{}
+	c := NewApiClient(ClientConfig{
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			tp := r.Header.Get("Traceparent")
+			assert.NotEmpty(t, tp)
+			assert.NotContains(t, seenTraceparents, tp)
+			seenTraceparents = append(seenTraceparents, tp)
+			return &http.Response{
+				StatusCode: 200,
+				Request:    r,
+			}, nil
+		}),
+	})
+
+	for i := 0; i < 10; i++ {
+		err := c.Do(context.Background(), "GET", "/a/b")
+		assert.NoError(t, err)
+	}
+}
