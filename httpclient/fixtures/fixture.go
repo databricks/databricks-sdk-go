@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/textproto"
 	"net/url"
 	"os"
 	"reflect"
 	"strings"
+
+	"github.com/databricks/databricks-sdk-go/httpclient/traceparent"
 )
 
 // HTTPFixture defines request structure for test
@@ -38,12 +41,17 @@ func (f HTTPFixture) AssertHeaders(req *http.Request) error {
 		return nil
 	}
 	actualHeaders := map[string]string{}
-	for k := range req.Header {
-		actualHeaders[k] = req.Header.Get(k)
-	}
-	// remove user agent from comparison, as it'll make fixtures too difficult
+	// remove user agent & traceparent from comparison, as it'll make fixtures too difficult
 	// to maintain in the long term
-	delete(actualHeaders, "User-Agent")
+	toSkip := map[string]struct{}{
+		textproto.CanonicalMIMEHeaderKey("User-Agent"):                   {},
+		textproto.CanonicalMIMEHeaderKey(traceparent.TRACEPARENT_HEADER): {},
+	}
+	for k := range req.Header {
+		if _, skip := toSkip[k]; !skip {
+			actualHeaders[k] = req.Header.Get(k)
+		}
+	}
 	if !reflect.DeepEqual(f.ExpectedHeaders, actualHeaders) {
 		expectedJSON, _ := json.MarshalIndent(f.ExpectedHeaders, "", "  ")
 		actualJSON, _ := json.MarshalIndent(actualHeaders, "", "  ")
