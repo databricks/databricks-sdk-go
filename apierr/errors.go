@@ -224,6 +224,7 @@ func parseUnknownError(resp *http.Response, requestBody, responseBody []byte, er
 
 func MakeUnexpectedError(resp *http.Response, err error, requestBody, responseBody []byte) error {
 	rts := httplog.RoundTripStringer{
+		Request:                  resp.Request,
 		Response:                 resp,
 		Err:                      err,
 		RequestBody:              requestBody,

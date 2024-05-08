@@ -263,26 +263,27 @@ func (c *ApiClient) attempt(
 			if pctx.Err() == nil && uerr.Err == context.Canceled {
 				uerr.Err = fmt.Errorf("request timed out after %s of inactivity", c.config.HTTPTimeout)
 			}
-			return c.handleError(ctx, err, requestBody)
 		}
 
 		// If there is a response body, wrap it to extend the request timeout while it is being read.
 		if response != nil && response.Body != nil {
 			response.Body = newResponseBodyTicker(ticker, response.Body)
 		} else {
-			// If there is no response body, the request has completed and there
-			// is no need to extend the timeout. Cancel the context to clean up
-			// the underlying goroutine.
+			// If there is no response body or an error is returned, the request
+			// has completed and there is no need to extend the timeout. Cancel
+			// the context to clean up the underlying goroutine.
 			ticker.Cancel()
 		}
 
 		// By this point, the request body has certainly been consumed.
-		responseWrapper, err := common.NewResponseWrapper(response, requestBody)
-		if err != nil {
-			return c.failRequest(ctx, "failed while reading response", err)
+		var responseWrapper common.ResponseWrapper
+		if err == nil {
+			responseWrapper, err = common.NewResponseWrapper(response, requestBody)
+		}
+		if err == nil {
+			err = c.config.ErrorMapper(ctx, responseWrapper)
 		}
 
-		err = c.config.ErrorMapper(ctx, responseWrapper)
 		defer c.recordRequestLog(ctx, request, response, err, requestBody.DebugBytes, responseWrapper.DebugBytes)
 
 		if err == nil {
@@ -307,6 +308,7 @@ func (c *ApiClient) recordRequestLog(
 		return
 	}
 	message := httplog.RoundTripStringer{
+		Request:                  request,
 		Response:                 response,
 		Err:                      err,
 		RequestBody:              requestBody,

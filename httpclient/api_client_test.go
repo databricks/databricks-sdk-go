@@ -334,32 +334,37 @@ func (l *BufferLogger) Enabled(_ context.Context, level logger.Level) bool {
 }
 
 func (l *BufferLogger) Tracef(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[TRACE] "+format, v...))
+	l.WriteString(fmt.Sprintf("[TRACE] "+format+"\n", v...))
 }
 
 func (l *BufferLogger) Debugf(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[DEBUG] "+format, v...))
+	l.WriteString(fmt.Sprintf("[DEBUG] "+format+"\n", v...))
 }
 
 func (l *BufferLogger) Infof(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[INFO] "+format, v...))
+	l.WriteString(fmt.Sprintf("[INFO] "+format+"\n", v...))
 }
 
 func (l *BufferLogger) Warnf(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[WARN] "+format, v...))
+	l.WriteString(fmt.Sprintf("[WARN] "+format+"\n", v...))
 }
 
 func (l *BufferLogger) Errorf(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[ERROR] "+format, v...))
+	l.WriteString(fmt.Sprintf("[ERROR] "+format+"\n", v...))
 }
 
-func TestSimpleResponseRedaction(t *testing.T) {
+func configureBufferedLogger() (*BufferLogger, func()) {
 	prevLogger := logger.DefaultLogger
 	bufLogger := &BufferLogger{}
 	logger.DefaultLogger = bufLogger
-	defer func() {
+	return bufLogger, func() {
 		logger.DefaultLogger = prevLogger
-	}()
+	}
+}
+
+func TestSimpleResponseRedaction(t *testing.T) {
+	bufLogger, resetLogger := configureBufferedLogger()
+	defer resetLogger()
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 16,
@@ -402,12 +407,8 @@ func TestSimpleResponseRedaction(t *testing.T) {
 }
 
 func TestInlineArrayDebugging(t *testing.T) {
-	prevLogger := logger.DefaultLogger
-	bufLogger := &BufferLogger{}
-	logger.DefaultLogger = bufLogger
-	defer func() {
-		logger.DefaultLogger = prevLogger
-	}()
+	bufLogger, resetLogger := configureBufferedLogger()
+	defer resetLogger()
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 2048,
@@ -437,16 +438,13 @@ func TestInlineArrayDebugging(t *testing.T) {
 <   {
 <     "foo": "bar"
 <   }
-< ]`, bufLogger.String())
+< ]
+`, bufLogger.String())
 }
 
 func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
-	prevLogger := logger.DefaultLogger
-	bufLogger := &BufferLogger{}
-	logger.DefaultLogger = bufLogger
-	defer func() {
-		logger.DefaultLogger = prevLogger
-	}()
+	bufLogger, resetLogger := configureBufferedLogger()
+	defer resetLogger()
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 2048,
@@ -470,16 +468,13 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 
 	require.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
 <  
-< <Streaming response>`, bufLogger.String())
+< <Streaming response>
+`, bufLogger.String())
 }
 
 func TestLogQueryParametersWithPercent(t *testing.T) {
-	prevLogger := logger.DefaultLogger
-	bufLogger := &BufferLogger{}
-	logger.DefaultLogger = bufLogger
-	defer func() {
-		logger.DefaultLogger = prevLogger
-	}()
+	bufLogger, resetLogger := configureBufferedLogger()
+	defer resetLogger()
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 2048,
@@ -502,7 +497,28 @@ func TestLogQueryParametersWithPercent(t *testing.T) {
 <  
 < {
 <   "foo": "bar"
-< }`, bufLogger.String())
+< }
+`, bufLogger.String())
+}
+
+func TestLogCancelledRequest(t *testing.T) {
+	bufLogger, resetLogger := configureBufferedLogger()
+	defer resetLogger()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	c := NewApiClient(ClientConfig{
+		DebugTruncateBytes: 2048,
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			cancel()
+			return nil, ctx.Err()
+		}),
+	})
+	err := c.Do(context.Background(), "GET", "/a")
+	assert.Error(t, err)
+	assert.Equal(t, `[DEBUG] non-retriable error: Get "/a": request timed out after 30s of inactivity
+[DEBUG] GET /a
+< Error: Get "/a": request timed out after 30s of inactivity
+`, bufLogger.String())
 }
 
 func TestStreamRequestFromFileWithReset(t *testing.T) {
