@@ -435,6 +435,8 @@ func testNonJSONResponseIncludedInError(t *testing.T, statusCode int, status, er
 		Token:      "token",
 		ConfigFile: "/dev/null",
 		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			// Clear traceparent header which is nondeterministic.
+			r.Header.Del("traceparent")
 			return &http.Response{
 				Proto:   "HTTP/2.0",
 				Status:  status,

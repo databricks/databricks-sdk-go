@@ -122,6 +122,11 @@ func TestRetriesRunWithRetryFuncNoRetry(t *testing.T) {
 	assert.Equal(t, err.Error(), "oh no")
 }
 
+func TestRetriesNegativeTimeout(t *testing.T) {
+	r := forTesting[int](WithTimeout(time.Duration(-1)))
+	assert.Equal(t, r.config.Timeout(), time.Duration(-1))
+}
+
 func ExampleNew() {
 	// Default retries for 20 minutes on any error
 	New[int]()

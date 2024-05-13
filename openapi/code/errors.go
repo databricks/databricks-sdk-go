@@ -99,3 +99,10 @@ func (b *Batch) ErrorOverrides() []ErrorOverride {
 	}
 	return res
 }
+
+func (b *Batch) TransientErrorRegexes() (res []string) {
+	for _, r := range openapi.TransientErrorRegexes {
+		res = append(res, r.String())
+	}
+	return res
+}

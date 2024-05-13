@@ -6,7 +6,7 @@
 //
 // - [sql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
-// - [serving.AppsAPI]: Lakehouse Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
+// - [serving.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
 //
 // - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode.
 //
@@ -15,10 +15,6 @@
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
 //
 // - [billing.BudgetsAPI]: These APIs manage budget configuration including notifications for exceeding a budget for a period.
-//
-// - [settings.CspEnablementAPI]: Controls whether to enable the compliance security profile for the current workspace.
-//
-// - [settings.CspEnablementAccountAPI]: The compliance security profile settings at the account level control whether to enable it for new workspaces.
 //
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
@@ -30,11 +26,25 @@
 //
 // - [compute.CommandExecutionAPI]: This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters.
 //
+// - [settings.ComplianceSecurityProfileAPI]: Controls whether to enable the compliance security profile for the current workspace.
+//
 // - [catalog.ConnectionsAPI]: Connections allow for creating a connection to an external data source.
+//
+// - [marketplace.ConsumerFulfillmentsAPI]: Fulfillments are entities that allow consumers to preview installations.
+//
+// - [marketplace.ConsumerInstallationsAPI]: Installations are entities that allow consumers to interact with Databricks Marketplace listings.
+//
+// - [marketplace.ConsumerListingsAPI]: Listings are the core entities in the Marketplace.
+//
+// - [marketplace.ConsumerPersonalizationRequestsAPI]: Personalization Requests allow customers to interact with the individualized Marketplace listing flow.
+//
+// - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
+//
+// - [settings.CspEnablementAccountAPI]: The compliance security profile settings at the account level control whether to enable it for new workspaces.
 //
 // - [iam.CurrentUserAPI]: This API allows retrieving information about currently authenticated user or service principal.
 //
@@ -52,11 +62,11 @@
 //
 // - [settings.DefaultNamespaceAPI]: The default namespace setting API allows users to configure the default namespace for a Databricks workspace.
 //
-// - [settings.EsmEnablementAPI]: Controls whether enhanced security monitoring is enabled for the current workspace.
+// - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
+//
+// - [settings.EnhancedSecurityMonitoringAPI]: Controls whether enhanced security monitoring is enabled for the current workspace.
 //
 // - [settings.EsmEnablementAccountAPI]: The enhanced security monitoring setting at the account level controls whether to enable the feature on new workspaces.
-//
-// - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
 // - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
 //
@@ -123,6 +133,20 @@
 // - [compute.PolicyFamiliesAPI]: View available policy families.
 //
 // - [provisioning.PrivateAccessAPI]: These APIs manage private access settings for this account.
+//
+// - [marketplace.ProviderExchangeFiltersAPI]: Marketplace exchanges filters curate which groups can access an exchange.
+//
+// - [marketplace.ProviderExchangesAPI]: Marketplace exchanges allow providers to share their listings with a curated set of customers.
+//
+// - [marketplace.ProviderFilesAPI]: Marketplace offers a set of file APIs for various purposes such as preview notebooks and provider icons.
+//
+// - [marketplace.ProviderListingsAPI]: Listings are the core entities in the Marketplace.
+//
+// - [marketplace.ProviderPersonalizationRequestsAPI]: Personalization requests are an alternate to instantly available listings.
+//
+// - [marketplace.ProviderProviderAnalyticsDashboardsAPI]: Manage templated analytics solution for providers.
+//
+// - [marketplace.ProviderProvidersAPI]: Providers are entities that manage assets in Marketplace.
 //
 // - [sharing.ProvidersAPI]: A data provider is an object representing the organization in the real world who shares the data.
 //
@@ -213,6 +237,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
+	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
@@ -230,106 +255,118 @@ import (
 // https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service
 // See: https://pkg.go.dev/golang.org/x/tools/internal/imports#ImportPathToAssumedName
 var (
-	_ *iam.AccountAccessControlAPI            = nil
-	_ *iam.AccountAccessControlProxyAPI       = nil
-	_ *sql.AlertsAPI                          = nil
-	_ *serving.AppsAPI                        = nil
-	_ *catalog.ArtifactAllowlistsAPI          = nil
-	_ *settings.AutomaticClusterUpdateAPI     = nil
-	_ *billing.BillableUsageAPI               = nil
-	_ *billing.BudgetsAPI                     = nil
-	_ *settings.CspEnablementAPI              = nil
-	_ *settings.CspEnablementAccountAPI       = nil
-	_ *catalog.CatalogsAPI                    = nil
-	_ *sharing.CleanRoomsAPI                  = nil
-	_ *compute.ClusterPoliciesAPI             = nil
-	_ *compute.ClustersAPI                    = nil
-	_ *compute.CommandExecutionAPI            = nil
-	_ *catalog.ConnectionsAPI                 = nil
-	_ *provisioning.CredentialsAPI            = nil
-	_ *settings.CredentialsManagerAPI         = nil
-	_ *iam.CurrentUserAPI                     = nil
-	_ *oauth2.CustomAppIntegrationAPI         = nil
-	_ *sql.DashboardWidgetsAPI                = nil
-	_ *sql.DashboardsAPI                      = nil
-	_ *sql.DataSourcesAPI                     = nil
-	_ *files.DbfsAPI                          = nil
-	_ *sql.DbsqlPermissionsAPI                = nil
-	_ *settings.DefaultNamespaceAPI           = nil
-	_ *settings.EsmEnablementAPI              = nil
-	_ *settings.EsmEnablementAccountAPI       = nil
-	_ *provisioning.EncryptionKeysAPI         = nil
-	_ *ml.ExperimentsAPI                      = nil
-	_ *catalog.ExternalLocationsAPI           = nil
-	_ *files.FilesAPI                         = nil
-	_ *catalog.FunctionsAPI                   = nil
-	_ *workspace.GitCredentialsAPI            = nil
-	_ *compute.GlobalInitScriptsAPI           = nil
-	_ *catalog.GrantsAPI                      = nil
-	_ *iam.GroupsAPI                          = nil
-	_ *iam.AccountGroupsAPI                   = nil
-	_ *compute.InstancePoolsAPI               = nil
-	_ *compute.InstanceProfilesAPI            = nil
-	_ *settings.IpAccessListsAPI              = nil
-	_ *settings.AccountIpAccessListsAPI       = nil
-	_ *jobs.JobsAPI                           = nil
-	_ *catalog.LakehouseMonitorsAPI           = nil
-	_ *dashboards.LakeviewAPI                 = nil
-	_ *compute.LibrariesAPI                   = nil
-	_ *billing.LogDeliveryAPI                 = nil
-	_ *catalog.AccountMetastoreAssignmentsAPI = nil
-	_ *catalog.MetastoresAPI                  = nil
-	_ *catalog.AccountMetastoresAPI           = nil
-	_ *ml.ModelRegistryAPI                    = nil
-	_ *catalog.ModelVersionsAPI               = nil
-	_ *settings.NetworkConnectivityAPI        = nil
-	_ *provisioning.NetworksAPI               = nil
-	_ *oauth2.OAuthPublishedAppsAPI           = nil
-	_ *catalog.OnlineTablesAPI                = nil
-	_ *iam.PermissionMigrationAPI             = nil
-	_ *iam.PermissionsAPI                     = nil
-	_ *settings.PersonalComputeAPI            = nil
-	_ *pipelines.PipelinesAPI                 = nil
-	_ *compute.PolicyFamiliesAPI              = nil
-	_ *provisioning.PrivateAccessAPI          = nil
-	_ *sharing.ProvidersAPI                   = nil
-	_ *oauth2.PublishedAppIntegrationAPI      = nil
-	_ *sql.QueriesAPI                         = nil
-	_ *sql.QueryHistoryAPI                    = nil
-	_ *sql.QueryVisualizationsAPI             = nil
-	_ *sharing.RecipientActivationAPI         = nil
-	_ *sharing.RecipientsAPI                  = nil
-	_ *catalog.RegisteredModelsAPI            = nil
-	_ *workspace.ReposAPI                     = nil
-	_ *settings.RestrictWorkspaceAdminsAPI    = nil
-	_ *catalog.SchemasAPI                     = nil
-	_ *workspace.SecretsAPI                   = nil
-	_ *oauth2.ServicePrincipalSecretsAPI      = nil
-	_ *iam.ServicePrincipalsAPI               = nil
-	_ *iam.AccountServicePrincipalsAPI        = nil
-	_ *serving.ServingEndpointsAPI            = nil
-	_ *settings.SettingsAPI                   = nil
-	_ *settings.AccountSettingsAPI            = nil
-	_ *sharing.SharesAPI                      = nil
-	_ *sql.StatementExecutionAPI              = nil
-	_ *provisioning.StorageAPI                = nil
-	_ *catalog.StorageCredentialsAPI          = nil
-	_ *catalog.AccountStorageCredentialsAPI   = nil
-	_ *catalog.SystemSchemasAPI               = nil
-	_ *catalog.TableConstraintsAPI            = nil
-	_ *catalog.TablesAPI                      = nil
-	_ *settings.TokenManagementAPI            = nil
-	_ *settings.TokensAPI                     = nil
-	_ *iam.UsersAPI                           = nil
-	_ *iam.AccountUsersAPI                    = nil
-	_ *vectorsearch.VectorSearchEndpointsAPI  = nil
-	_ *vectorsearch.VectorSearchIndexesAPI    = nil
-	_ *catalog.VolumesAPI                     = nil
-	_ *provisioning.VpcEndpointsAPI           = nil
-	_ *sql.WarehousesAPI                      = nil
-	_ *workspace.WorkspaceAPI                 = nil
-	_ *iam.WorkspaceAssignmentAPI             = nil
-	_ *catalog.WorkspaceBindingsAPI           = nil
-	_ *settings.WorkspaceConfAPI              = nil
-	_ *provisioning.WorkspacesAPI             = nil
+	_ *iam.AccountAccessControlAPI                        = nil
+	_ *iam.AccountAccessControlProxyAPI                   = nil
+	_ *sql.AlertsAPI                                      = nil
+	_ *serving.AppsAPI                                    = nil
+	_ *catalog.ArtifactAllowlistsAPI                      = nil
+	_ *settings.AutomaticClusterUpdateAPI                 = nil
+	_ *billing.BillableUsageAPI                           = nil
+	_ *billing.BudgetsAPI                                 = nil
+	_ *catalog.CatalogsAPI                                = nil
+	_ *sharing.CleanRoomsAPI                              = nil
+	_ *compute.ClusterPoliciesAPI                         = nil
+	_ *compute.ClustersAPI                                = nil
+	_ *compute.CommandExecutionAPI                        = nil
+	_ *settings.ComplianceSecurityProfileAPI              = nil
+	_ *catalog.ConnectionsAPI                             = nil
+	_ *marketplace.ConsumerFulfillmentsAPI                = nil
+	_ *marketplace.ConsumerInstallationsAPI               = nil
+	_ *marketplace.ConsumerListingsAPI                    = nil
+	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
+	_ *marketplace.ConsumerProvidersAPI                   = nil
+	_ *provisioning.CredentialsAPI                        = nil
+	_ *settings.CredentialsManagerAPI                     = nil
+	_ *settings.CspEnablementAccountAPI                   = nil
+	_ *iam.CurrentUserAPI                                 = nil
+	_ *oauth2.CustomAppIntegrationAPI                     = nil
+	_ *sql.DashboardWidgetsAPI                            = nil
+	_ *sql.DashboardsAPI                                  = nil
+	_ *sql.DataSourcesAPI                                 = nil
+	_ *files.DbfsAPI                                      = nil
+	_ *sql.DbsqlPermissionsAPI                            = nil
+	_ *settings.DefaultNamespaceAPI                       = nil
+	_ *provisioning.EncryptionKeysAPI                     = nil
+	_ *settings.EnhancedSecurityMonitoringAPI             = nil
+	_ *settings.EsmEnablementAccountAPI                   = nil
+	_ *ml.ExperimentsAPI                                  = nil
+	_ *catalog.ExternalLocationsAPI                       = nil
+	_ *files.FilesAPI                                     = nil
+	_ *catalog.FunctionsAPI                               = nil
+	_ *workspace.GitCredentialsAPI                        = nil
+	_ *compute.GlobalInitScriptsAPI                       = nil
+	_ *catalog.GrantsAPI                                  = nil
+	_ *iam.GroupsAPI                                      = nil
+	_ *iam.AccountGroupsAPI                               = nil
+	_ *compute.InstancePoolsAPI                           = nil
+	_ *compute.InstanceProfilesAPI                        = nil
+	_ *settings.IpAccessListsAPI                          = nil
+	_ *settings.AccountIpAccessListsAPI                   = nil
+	_ *jobs.JobsAPI                                       = nil
+	_ *catalog.LakehouseMonitorsAPI                       = nil
+	_ *dashboards.LakeviewAPI                             = nil
+	_ *compute.LibrariesAPI                               = nil
+	_ *billing.LogDeliveryAPI                             = nil
+	_ *catalog.AccountMetastoreAssignmentsAPI             = nil
+	_ *catalog.MetastoresAPI                              = nil
+	_ *catalog.AccountMetastoresAPI                       = nil
+	_ *ml.ModelRegistryAPI                                = nil
+	_ *catalog.ModelVersionsAPI                           = nil
+	_ *settings.NetworkConnectivityAPI                    = nil
+	_ *provisioning.NetworksAPI                           = nil
+	_ *oauth2.OAuthPublishedAppsAPI                       = nil
+	_ *catalog.OnlineTablesAPI                            = nil
+	_ *iam.PermissionMigrationAPI                         = nil
+	_ *iam.PermissionsAPI                                 = nil
+	_ *settings.PersonalComputeAPI                        = nil
+	_ *pipelines.PipelinesAPI                             = nil
+	_ *compute.PolicyFamiliesAPI                          = nil
+	_ *provisioning.PrivateAccessAPI                      = nil
+	_ *marketplace.ProviderExchangeFiltersAPI             = nil
+	_ *marketplace.ProviderExchangesAPI                   = nil
+	_ *marketplace.ProviderFilesAPI                       = nil
+	_ *marketplace.ProviderListingsAPI                    = nil
+	_ *marketplace.ProviderPersonalizationRequestsAPI     = nil
+	_ *marketplace.ProviderProviderAnalyticsDashboardsAPI = nil
+	_ *marketplace.ProviderProvidersAPI                   = nil
+	_ *sharing.ProvidersAPI                               = nil
+	_ *oauth2.PublishedAppIntegrationAPI                  = nil
+	_ *sql.QueriesAPI                                     = nil
+	_ *sql.QueryHistoryAPI                                = nil
+	_ *sql.QueryVisualizationsAPI                         = nil
+	_ *sharing.RecipientActivationAPI                     = nil
+	_ *sharing.RecipientsAPI                              = nil
+	_ *catalog.RegisteredModelsAPI                        = nil
+	_ *workspace.ReposAPI                                 = nil
+	_ *settings.RestrictWorkspaceAdminsAPI                = nil
+	_ *catalog.SchemasAPI                                 = nil
+	_ *workspace.SecretsAPI                               = nil
+	_ *oauth2.ServicePrincipalSecretsAPI                  = nil
+	_ *iam.ServicePrincipalsAPI                           = nil
+	_ *iam.AccountServicePrincipalsAPI                    = nil
+	_ *serving.ServingEndpointsAPI                        = nil
+	_ *settings.SettingsAPI                               = nil
+	_ *settings.AccountSettingsAPI                        = nil
+	_ *sharing.SharesAPI                                  = nil
+	_ *sql.StatementExecutionAPI                          = nil
+	_ *provisioning.StorageAPI                            = nil
+	_ *catalog.StorageCredentialsAPI                      = nil
+	_ *catalog.AccountStorageCredentialsAPI               = nil
+	_ *catalog.SystemSchemasAPI                           = nil
+	_ *catalog.TableConstraintsAPI                        = nil
+	_ *catalog.TablesAPI                                  = nil
+	_ *settings.TokenManagementAPI                        = nil
+	_ *settings.TokensAPI                                 = nil
+	_ *iam.UsersAPI                                       = nil
+	_ *iam.AccountUsersAPI                                = nil
+	_ *vectorsearch.VectorSearchEndpointsAPI              = nil
+	_ *vectorsearch.VectorSearchIndexesAPI                = nil
+	_ *catalog.VolumesAPI                                 = nil
+	_ *provisioning.VpcEndpointsAPI                       = nil
+	_ *sql.WarehousesAPI                                  = nil
+	_ *workspace.WorkspaceAPI                             = nil
+	_ *iam.WorkspaceAssignmentAPI                         = nil
+	_ *catalog.WorkspaceBindingsAPI                       = nil
+	_ *settings.WorkspaceConfAPI                          = nil
+	_ *provisioning.WorkspacesAPI                         = nil
 )

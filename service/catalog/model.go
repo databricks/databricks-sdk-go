@@ -148,7 +148,31 @@ func (s AwsIamRoleResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type AzureManagedIdentity struct {
+type AzureManagedIdentityRequest struct {
+	// The Azure resource ID of the Azure Databricks Access Connector. Use the
+	// format
+	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}.
+	AccessConnectorId string `json:"access_connector_id"`
+	// The Azure resource ID of the managed identity. Use the format
+	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}.
+	// This is only available for user-assgined identities. For system-assigned
+	// identities, the access_connector_id is used to identify the identity. If
+	// this field is not provided, then we assume the AzureManagedIdentity is
+	// for a system-assigned identity.
+	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AzureManagedIdentityRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AzureManagedIdentityRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AzureManagedIdentityResponse struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
 	// format
 	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}.
@@ -166,11 +190,11 @@ type AzureManagedIdentity struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *AzureManagedIdentity) UnmarshalJSON(b []byte) error {
+func (s *AzureManagedIdentityResponse) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s AzureManagedIdentity) MarshalJSON() ([]byte, error) {
+func (s AzureManagedIdentityResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -187,10 +211,10 @@ type AzureServicePrincipal struct {
 
 // Cancel refresh
 type CancelRefreshRequest struct {
-	// Full name of the table.
-	FullName string `json:"-" url:"-"`
 	// ID of the refresh.
 	RefreshId string `json:"-" url:"-"`
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
 }
 
 type CancelRefreshResponse struct {
@@ -943,15 +967,13 @@ type CreateMonitor struct {
 	// Custom metrics to compute on the monitored table. These can be aggregate
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
-	CustomMetrics []MonitorCustomMetric `json:"custom_metrics,omitempty"`
+	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
 	// The data classification config for the monitor.
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
-	// Full name of the table.
-	FullName string `json:"-" url:"-"`
 	// Configuration for monitoring inference logs.
-	InferenceLog *MonitorInferenceLogProfileType `json:"inference_log,omitempty"`
+	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
 	// The notification settings for the monitor.
-	Notifications *MonitorNotificationsConfig `json:"notifications,omitempty"`
+	Notifications *MonitorNotifications `json:"notifications,omitempty"`
 	// Schema where output metric tables are created.
 	OutputSchemaName string `json:"output_schema_name"`
 	// The schedule for automatically updating and refreshing metric tables.
@@ -966,9 +988,11 @@ type CreateMonitor struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshotProfileType `json:"snapshot,omitempty"`
+	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
 	// Configuration for monitoring time series tables.
-	TimeSeries *MonitorTimeSeriesProfileType `json:"time_series,omitempty"`
+	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
 	// Optional argument to specify the warehouse for dashboard creation. If not
 	// specified, the first running warehouse will be used.
 	WarehouseId string `json:"warehouse_id,omitempty"`
@@ -1056,7 +1080,7 @@ type CreateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
@@ -1335,7 +1359,7 @@ func (s DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
 // Delete a table monitor
 type DeleteLakehouseMonitorRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	TableName string `json:"-" url:"-"`
 }
 
 // Delete a metastore
@@ -2205,7 +2229,7 @@ func (s GetGrantRequest) MarshalJSON() ([]byte, error) {
 // Get a table monitor
 type GetLakehouseMonitorRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	TableName string `json:"-" url:"-"`
 }
 
 // Get a metastore
@@ -2323,10 +2347,10 @@ type GetOnlineTableRequest struct {
 
 // Get refresh
 type GetRefreshRequest struct {
-	// Full name of the table.
-	FullName string `json:"-" url:"-"`
 	// ID of the refresh.
 	RefreshId string `json:"-" url:"-"`
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
 }
 
 // Get a Registered Model
@@ -2623,7 +2647,7 @@ func (s ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
 // List refreshes
 type ListRefreshesRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	TableName string `json:"-" url:"-"`
 }
 
 // List Registered Models
@@ -2634,10 +2658,23 @@ type ListRegisteredModelsRequest struct {
 	// Whether to include registered models in the response for which the
 	// principal can only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-	// Max number of registered models to return. If catalog and schema are
-	// unspecified, max_results must be specified. If max_results is
-	// unspecified, we return all results, starting from the page specified by
-	// page_token.
+	// Max number of registered models to return.
+	//
+	// If both catalog and schema are specified: - when max_results is not
+	// specified, the page length is set to a server configured value (10000, as
+	// of 4/2/2024). - when set to a value greater than 0, the page length is
+	// the minimum of this value and a server configured value (10000, as of
+	// 4/2/2024); - when set to 0, the page length is set to a server configured
+	// value (10000, as of 4/2/2024); - when set to a value less than 0, an
+	// invalid parameter error is returned;
+	//
+	// If neither schema nor catalog is specified: - when max_results is not
+	// specified, the page length is set to a server configured value (100, as
+	// of 4/2/2024). - when set to a value greater than 0, the page length is
+	// the minimum of this value and a server configured value (1000, as of
+	// 4/2/2024); - when set to 0, the page length is set to a server configured
+	// value (100, as of 4/2/2024); - when set to a value less than 0, an
+	// invalid parameter error is returned;
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque token to send for the next page of results (pagination).
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -3156,27 +3193,18 @@ func (f *ModelVersionInfoStatus) Type() string {
 }
 
 type MonitorCronSchedule struct {
-	// Whether the schedule is paused or not
+	// Read only field that indicates whether a schedule is paused or not.
 	PauseStatus MonitorCronSchedulePauseStatus `json:"pause_status,omitempty"`
-	// A cron expression using quartz syntax that describes the schedule for a
-	// job.
-	QuartzCronExpression string `json:"quartz_cron_expression,omitempty"`
-	// A Java timezone id. The schedule for a job will be resolved with respect
-	// to this timezone.
-	TimezoneId string `json:"timezone_id,omitempty"`
-
-	ForceSendFields []string `json:"-"`
+	// The expression that determines when to run the monitor. See [examples].
+	//
+	// [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
+	QuartzCronExpression string `json:"quartz_cron_expression"`
+	// The timezone id (e.g., ``"PST"``) in which to evaluate the quartz
+	// expression.
+	TimezoneId string `json:"timezone_id"`
 }
 
-func (s *MonitorCronSchedule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s MonitorCronSchedule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Whether the schedule is paused or not
+// Read only field that indicates whether a schedule is paused or not.
 type MonitorCronSchedulePauseStatus string
 
 const MonitorCronSchedulePauseStatusPaused MonitorCronSchedulePauseStatus = `PAUSED`
@@ -3204,66 +3232,6 @@ func (f *MonitorCronSchedulePauseStatus) Type() string {
 	return "MonitorCronSchedulePauseStatus"
 }
 
-type MonitorCustomMetric struct {
-	// Jinja template for a SQL expression that specifies how to compute the
-	// metric. See [create metric definition].
-	//
-	// [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
-	Definition string `json:"definition,omitempty"`
-	// Columns on the monitored table to apply the custom metrics to.
-	InputColumns []string `json:"input_columns,omitempty"`
-	// Name of the custom metric.
-	Name string `json:"name,omitempty"`
-	// The output type of the custom metric.
-	OutputDataType string `json:"output_data_type,omitempty"`
-	// The type of the custom metric.
-	Type MonitorCustomMetricType `json:"type,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *MonitorCustomMetric) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s MonitorCustomMetric) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// The type of the custom metric.
-type MonitorCustomMetricType string
-
-const MonitorCustomMetricTypeCustomMetricTypeAggregate MonitorCustomMetricType = `CUSTOM_METRIC_TYPE_AGGREGATE`
-
-const MonitorCustomMetricTypeCustomMetricTypeDerived MonitorCustomMetricType = `CUSTOM_METRIC_TYPE_DERIVED`
-
-const MonitorCustomMetricTypeCustomMetricTypeDrift MonitorCustomMetricType = `CUSTOM_METRIC_TYPE_DRIFT`
-
-const MonitorCustomMetricTypeMonitorStatusError MonitorCustomMetricType = `MONITOR_STATUS_ERROR`
-
-const MonitorCustomMetricTypeMonitorStatusFailed MonitorCustomMetricType = `MONITOR_STATUS_FAILED`
-
-// String representation for [fmt.Print]
-func (f *MonitorCustomMetricType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *MonitorCustomMetricType) Set(v string) error {
-	switch v {
-	case `CUSTOM_METRIC_TYPE_AGGREGATE`, `CUSTOM_METRIC_TYPE_DERIVED`, `CUSTOM_METRIC_TYPE_DRIFT`, `MONITOR_STATUS_ERROR`, `MONITOR_STATUS_FAILED`:
-		*f = MonitorCustomMetricType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CUSTOM_METRIC_TYPE_AGGREGATE", "CUSTOM_METRIC_TYPE_DERIVED", "CUSTOM_METRIC_TYPE_DRIFT", "MONITOR_STATUS_ERROR", "MONITOR_STATUS_FAILED"`, v)
-	}
-}
-
-// Type always returns MonitorCustomMetricType to satisfy [pflag.Value] interface
-func (f *MonitorCustomMetricType) Type() string {
-	return "MonitorCustomMetricType"
-}
-
 type MonitorDataClassificationConfig struct {
 	// Whether data classification is enabled.
 	Enabled bool `json:"enabled,omitempty"`
@@ -3279,66 +3247,80 @@ func (s MonitorDataClassificationConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type MonitorDestinations struct {
+type MonitorDestination struct {
 	// The list of email addresses to send the notification to. A maximum of 5
 	// email addresses is supported.
 	EmailAddresses []string `json:"email_addresses,omitempty"`
 }
 
-type MonitorInferenceLogProfileType struct {
-	// List of granularities to use when aggregating data into time windows
-	// based on their timestamp.
-	Granularities []string `json:"granularities,omitempty"`
-	// Column of the model label.
+type MonitorInferenceLog struct {
+	// Granularities for aggregating data into time windows based on their
+	// timestamp. Currently the following static granularities are supported:
+	// {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``, ``"1 day"``, ``"<n>
+	// week(s)"``, ``"1 month"``, ``"1 year"``}.
+	Granularities []string `json:"granularities"`
+	// Optional column that contains the ground truth for the prediction.
 	LabelCol string `json:"label_col,omitempty"`
-	// Column of the model id or version.
-	ModelIdCol string `json:"model_id_col,omitempty"`
-	// Column of the model prediction.
-	PredictionCol string `json:"prediction_col,omitempty"`
-	// Column of the model prediction probabilities.
+	// Column that contains the id of the model generating the predictions.
+	// Metrics will be computed per model id by default, and also across all
+	// model ids.
+	ModelIdCol string `json:"model_id_col"`
+	// Column that contains the output/prediction from the model.
+	PredictionCol string `json:"prediction_col"`
+	// Optional column that contains the prediction probabilities for each class
+	// in a classification problem type. The values in this column should be a
+	// map, mapping each class label to the prediction probability for a given
+	// sample. The map should be of PySpark MapType().
 	PredictionProbaCol string `json:"prediction_proba_col,omitempty"`
-	// Problem type the model aims to solve.
-	ProblemType MonitorInferenceLogProfileTypeProblemType `json:"problem_type,omitempty"`
-	// Column of the timestamp of predictions.
-	TimestampCol string `json:"timestamp_col,omitempty"`
+	// Problem type the model aims to solve. Determines the type of
+	// model-quality metrics that will be computed.
+	ProblemType MonitorInferenceLogProblemType `json:"problem_type"`
+	// Column that contains the timestamps of requests. The column must be one
+	// of the following: - A ``TimestampType`` column - A column whose values
+	// can be converted to timestamps through the pyspark ``to_timestamp``
+	// [function].
+	//
+	// [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html
+	TimestampCol string `json:"timestamp_col"`
 
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *MonitorInferenceLogProfileType) UnmarshalJSON(b []byte) error {
+func (s *MonitorInferenceLog) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s MonitorInferenceLogProfileType) MarshalJSON() ([]byte, error) {
+func (s MonitorInferenceLog) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Problem type the model aims to solve.
-type MonitorInferenceLogProfileTypeProblemType string
+// Problem type the model aims to solve. Determines the type of model-quality
+// metrics that will be computed.
+type MonitorInferenceLogProblemType string
 
-const MonitorInferenceLogProfileTypeProblemTypeProblemTypeClassification MonitorInferenceLogProfileTypeProblemType = `PROBLEM_TYPE_CLASSIFICATION`
+const MonitorInferenceLogProblemTypeProblemTypeClassification MonitorInferenceLogProblemType = `PROBLEM_TYPE_CLASSIFICATION`
 
-const MonitorInferenceLogProfileTypeProblemTypeProblemTypeRegression MonitorInferenceLogProfileTypeProblemType = `PROBLEM_TYPE_REGRESSION`
+const MonitorInferenceLogProblemTypeProblemTypeRegression MonitorInferenceLogProblemType = `PROBLEM_TYPE_REGRESSION`
 
 // String representation for [fmt.Print]
-func (f *MonitorInferenceLogProfileTypeProblemType) String() string {
+func (f *MonitorInferenceLogProblemType) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *MonitorInferenceLogProfileTypeProblemType) Set(v string) error {
+func (f *MonitorInferenceLogProblemType) Set(v string) error {
 	switch v {
 	case `PROBLEM_TYPE_CLASSIFICATION`, `PROBLEM_TYPE_REGRESSION`:
-		*f = MonitorInferenceLogProfileTypeProblemType(v)
+		*f = MonitorInferenceLogProblemType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PROBLEM_TYPE_CLASSIFICATION", "PROBLEM_TYPE_REGRESSION"`, v)
 	}
 }
 
-// Type always returns MonitorInferenceLogProfileTypeProblemType to satisfy [pflag.Value] interface
-func (f *MonitorInferenceLogProfileTypeProblemType) Type() string {
-	return "MonitorInferenceLogProfileTypeProblemType"
+// Type always returns MonitorInferenceLogProblemType to satisfy [pflag.Value] interface
+func (f *MonitorInferenceLogProblemType) Type() string {
+	return "MonitorInferenceLogProblemType"
 }
 
 type MonitorInfo struct {
@@ -3351,28 +3333,29 @@ type MonitorInfo struct {
 	// Custom metrics to compute on the monitored table. These can be aggregate
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
-	CustomMetrics []MonitorCustomMetric `json:"custom_metrics,omitempty"`
-	// The ID of the generated dashboard.
+	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
+	// Id of dashboard that visualizes the computed metrics. This can be empty
+	// if the monitor is in PENDING state.
 	DashboardId string `json:"dashboard_id,omitempty"`
 	// The data classification config for the monitor.
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
 	// The full name of the drift metrics table. Format:
 	// __catalog_name__.__schema_name__.__table_name__.
-	DriftMetricsTableName string `json:"drift_metrics_table_name,omitempty"`
+	DriftMetricsTableName string `json:"drift_metrics_table_name"`
 	// Configuration for monitoring inference logs.
-	InferenceLog *MonitorInferenceLogProfileType `json:"inference_log,omitempty"`
+	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
 	// The latest failure message of the monitor (if any).
 	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
 	// The version of the monitor config (e.g. 1,2,3). If negative, the monitor
 	// may be corrupted.
-	MonitorVersion string `json:"monitor_version,omitempty"`
+	MonitorVersion string `json:"monitor_version"`
 	// The notification settings for the monitor.
-	Notifications *MonitorNotificationsConfig `json:"notifications,omitempty"`
+	Notifications *MonitorNotifications `json:"notifications,omitempty"`
 	// Schema where output metric tables are created.
 	OutputSchemaName string `json:"output_schema_name,omitempty"`
 	// The full name of the profile metrics table. Format:
 	// __catalog_name__.__schema_name__.__table_name__.
-	ProfileMetricsTableName string `json:"profile_metrics_table_name,omitempty"`
+	ProfileMetricsTableName string `json:"profile_metrics_table_name"`
 	// The schedule for automatically updating and refreshing metric tables.
 	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
 	// List of column expressions to slice data with for targeted analysis. The
@@ -3382,14 +3365,14 @@ type MonitorInfo struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshotProfileType `json:"snapshot,omitempty"`
+	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
 	// The status of the monitor.
-	Status MonitorInfoStatus `json:"status,omitempty"`
+	Status MonitorInfoStatus `json:"status"`
 	// The full name of the table to monitor. Format:
 	// __catalog_name__.__schema_name__.__table_name__.
-	TableName string `json:"table_name,omitempty"`
+	TableName string `json:"table_name"`
 	// Configuration for monitoring time series tables.
-	TimeSeries *MonitorTimeSeriesProfileType `json:"time_series,omitempty"`
+	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3436,23 +3419,96 @@ func (f *MonitorInfoStatus) Type() string {
 	return "MonitorInfoStatus"
 }
 
-type MonitorNotificationsConfig struct {
+type MonitorMetric struct {
+	// Jinja template for a SQL expression that specifies how to compute the
+	// metric. See [create metric definition].
+	//
+	// [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
+	Definition string `json:"definition"`
+	// A list of column names in the input table the metric should be computed
+	// for. Can use ``":table"`` to indicate that the metric needs information
+	// from multiple columns.
+	InputColumns []string `json:"input_columns"`
+	// Name of the metric in the output tables.
+	Name string `json:"name"`
+	// The output type of the custom metric.
+	OutputDataType string `json:"output_data_type"`
+	// Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``,
+	// ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The
+	// ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"``
+	// metrics are computed on a single table, whereas the
+	// ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input
+	// table, or across the two consecutive time windows. -
+	// CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your
+	// table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed
+	// aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously
+	// computed aggregate or derived metrics
+	Type MonitorMetricType `json:"type"`
+}
+
+// Can only be one of “"CUSTOM_METRIC_TYPE_AGGREGATE"“,
+// “"CUSTOM_METRIC_TYPE_DERIVED"“, or “"CUSTOM_METRIC_TYPE_DRIFT"“. The
+// “"CUSTOM_METRIC_TYPE_AGGREGATE"“ and “"CUSTOM_METRIC_TYPE_DERIVED"“
+// metrics are computed on a single table, whereas the
+// “"CUSTOM_METRIC_TYPE_DRIFT"“ compare metrics across baseline and input
+// table, or across the two consecutive time windows. -
+// CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your
+// table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
+// metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate
+// or derived metrics
+type MonitorMetricType string
+
+const MonitorMetricTypeCustomMetricTypeAggregate MonitorMetricType = `CUSTOM_METRIC_TYPE_AGGREGATE`
+
+const MonitorMetricTypeCustomMetricTypeDerived MonitorMetricType = `CUSTOM_METRIC_TYPE_DERIVED`
+
+const MonitorMetricTypeCustomMetricTypeDrift MonitorMetricType = `CUSTOM_METRIC_TYPE_DRIFT`
+
+// String representation for [fmt.Print]
+func (f *MonitorMetricType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *MonitorMetricType) Set(v string) error {
+	switch v {
+	case `CUSTOM_METRIC_TYPE_AGGREGATE`, `CUSTOM_METRIC_TYPE_DERIVED`, `CUSTOM_METRIC_TYPE_DRIFT`:
+		*f = MonitorMetricType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CUSTOM_METRIC_TYPE_AGGREGATE", "CUSTOM_METRIC_TYPE_DERIVED", "CUSTOM_METRIC_TYPE_DRIFT"`, v)
+	}
+}
+
+// Type always returns MonitorMetricType to satisfy [pflag.Value] interface
+func (f *MonitorMetricType) Type() string {
+	return "MonitorMetricType"
+}
+
+type MonitorNotifications struct {
 	// Who to send notifications to on monitor failure.
-	OnFailure *MonitorDestinations `json:"on_failure,omitempty"`
+	OnFailure *MonitorDestination `json:"on_failure,omitempty"`
+	// Who to send notifications to when new data classification tags are
+	// detected.
+	OnNewClassificationTagDetected *MonitorDestination `json:"on_new_classification_tag_detected,omitempty"`
 }
 
 type MonitorRefreshInfo struct {
-	// The time at which the refresh ended, in epoch milliseconds.
+	// Time at which refresh operation completed (milliseconds since 1/1/1970
+	// UTC).
 	EndTimeMs int64 `json:"end_time_ms,omitempty"`
 	// An optional message to give insight into the current state of the job
 	// (e.g. FAILURE messages).
 	Message string `json:"message,omitempty"`
-	// The ID of the refresh.
-	RefreshId int64 `json:"refresh_id,omitempty"`
-	// The time at which the refresh started, in epoch milliseconds.
-	StartTimeMs int64 `json:"start_time_ms,omitempty"`
+	// Unique id of the refresh operation.
+	RefreshId int64 `json:"refresh_id"`
+	// Time at which refresh operation was initiated (milliseconds since
+	// 1/1/1970 UTC).
+	StartTimeMs int64 `json:"start_time_ms"`
 	// The current state of the refresh.
-	State MonitorRefreshInfoState `json:"state,omitempty"`
+	State MonitorRefreshInfoState `json:"state"`
+	// The method by which the refresh was triggered.
+	Trigger MonitorRefreshInfoTrigger `json:"trigger,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3499,26 +3555,50 @@ func (f *MonitorRefreshInfoState) Type() string {
 	return "MonitorRefreshInfoState"
 }
 
-type MonitorSnapshotProfileType struct {
+// The method by which the refresh was triggered.
+type MonitorRefreshInfoTrigger string
+
+const MonitorRefreshInfoTriggerManual MonitorRefreshInfoTrigger = `MANUAL`
+
+const MonitorRefreshInfoTriggerSchedule MonitorRefreshInfoTrigger = `SCHEDULE`
+
+// String representation for [fmt.Print]
+func (f *MonitorRefreshInfoTrigger) String() string {
+	return string(*f)
 }
 
-type MonitorTimeSeriesProfileType struct {
-	// List of granularities to use when aggregating data into time windows
-	// based on their timestamp.
-	Granularities []string `json:"granularities,omitempty"`
-	// The timestamp column. This must be timestamp types or convertible to
-	// timestamp types using the pyspark to_timestamp function.
-	TimestampCol string `json:"timestamp_col,omitempty"`
-
-	ForceSendFields []string `json:"-"`
+// Set raw string value and validate it against allowed values
+func (f *MonitorRefreshInfoTrigger) Set(v string) error {
+	switch v {
+	case `MANUAL`, `SCHEDULE`:
+		*f = MonitorRefreshInfoTrigger(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MANUAL", "SCHEDULE"`, v)
+	}
 }
 
-func (s *MonitorTimeSeriesProfileType) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+// Type always returns MonitorRefreshInfoTrigger to satisfy [pflag.Value] interface
+func (f *MonitorRefreshInfoTrigger) Type() string {
+	return "MonitorRefreshInfoTrigger"
 }
 
-func (s MonitorTimeSeriesProfileType) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+type MonitorSnapshot struct {
+}
+
+type MonitorTimeSeries struct {
+	// Granularities for aggregating data into time windows based on their
+	// timestamp. Currently the following static granularities are supported:
+	// {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``, ``"1 day"``, ``"<n>
+	// week(s)"``, ``"1 month"``, ``"1 year"``}.
+	Granularities []string `json:"granularities"`
+	// Column that contains the timestamps of requests. The column must be one
+	// of the following: - A ``TimestampType`` column - A column whose values
+	// can be converted to timestamps through the pyspark ``to_timestamp``
+	// [function].
+	//
+	// [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html
+	TimestampCol string `json:"timestamp_col"`
 }
 
 type NamedTableConstraint struct {
@@ -3727,6 +3807,8 @@ type PrimaryKeyConstraint struct {
 
 type Privilege string
 
+const PrivilegeAccess Privilege = `ACCESS`
+
 const PrivilegeAllPrivileges Privilege = `ALL_PRIVILEGES`
 
 const PrivilegeApplyTag Privilege = `APPLY_TAG`
@@ -3758,6 +3840,8 @@ const PrivilegeCreateProvider Privilege = `CREATE_PROVIDER`
 const PrivilegeCreateRecipient Privilege = `CREATE_RECIPIENT`
 
 const PrivilegeCreateSchema Privilege = `CREATE_SCHEMA`
+
+const PrivilegeCreateServiceCredential Privilege = `CREATE_SERVICE_CREDENTIAL`
 
 const PrivilegeCreateShare Privilege = `CREATE_SHARE`
 
@@ -3817,11 +3901,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -3982,7 +4066,7 @@ func (s RegisteredModelInfo) MarshalJSON() ([]byte, error) {
 // Queue a metric refresh for a monitor
 type RunRefreshRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	TableName string `json:"-" url:"-"`
 }
 
 type SchemaInfo struct {
@@ -4015,6 +4099,8 @@ type SchemaInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
+	// The unique identifier of the schema.
+	SchemaId string `json:"schema_id,omitempty"`
 	// Storage location for managed tables within schema.
 	StorageLocation string `json:"storage_location,omitempty"`
 	// Storage root URL for managed tables within schema.
@@ -4158,7 +4244,7 @@ type StorageCredentialInfo struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRoleResponse `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	AzureManagedIdentity *AzureManagedIdentityResponse `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
@@ -4347,7 +4433,7 @@ type TableInfo struct {
 	// List of table constraints. Note: this field is not set in the output of
 	// the __listTables__ API.
 	TableConstraints []TableConstraint `json:"table_constraints,omitempty"`
-	// Name of table, relative to parent schema.
+	// The unique identifier of the table.
 	TableId string `json:"table_id,omitempty"`
 
 	TableType TableType `json:"table_type,omitempty"`
@@ -4377,12 +4463,12 @@ func (s TableInfo) MarshalJSON() ([]byte, error) {
 }
 
 type TableRowFilter struct {
+	// The full name of the row filter SQL UDF.
+	FunctionName string `json:"function_name"`
 	// The list of table columns to be passed as input to the row filter
 	// function. The column types should match the types of the filter function
 	// arguments.
 	InputColumnNames []string `json:"input_column_names"`
-	// The full name of the row filter SQL UDF.
-	Name string `json:"name"`
 }
 
 type TableSummary struct {
@@ -4683,15 +4769,13 @@ type UpdateMonitor struct {
 	// Custom metrics to compute on the monitored table. These can be aggregate
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
-	CustomMetrics []MonitorCustomMetric `json:"custom_metrics,omitempty"`
+	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
 	// The data classification config for the monitor.
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
-	// Full name of the table.
-	FullName string `json:"-" url:"-"`
 	// Configuration for monitoring inference logs.
-	InferenceLog *MonitorInferenceLogProfileType `json:"inference_log,omitempty"`
+	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
 	// The notification settings for the monitor.
-	Notifications *MonitorNotificationsConfig `json:"notifications,omitempty"`
+	Notifications *MonitorNotifications `json:"notifications,omitempty"`
 	// Schema where output metric tables are created.
 	OutputSchemaName string `json:"output_schema_name"`
 	// The schedule for automatically updating and refreshing metric tables.
@@ -4703,9 +4787,11 @@ type UpdateMonitor struct {
 	// slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshotProfileType `json:"snapshot,omitempty"`
+	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
 	// Configuration for monitoring time series tables.
-	TimeSeries *MonitorTimeSeriesProfileType `json:"time_series,omitempty"`
+	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -4781,7 +4867,7 @@ type UpdateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	AzureManagedIdentity *AzureManagedIdentityResponse `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
@@ -4879,7 +4965,7 @@ type ValidateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
@@ -4949,6 +5035,8 @@ const ValidationResultOperationDelete ValidationResultOperation = `DELETE`
 
 const ValidationResultOperationList ValidationResultOperation = `LIST`
 
+const ValidationResultOperationPathExists ValidationResultOperation = `PATH_EXISTS`
+
 const ValidationResultOperationRead ValidationResultOperation = `READ`
 
 const ValidationResultOperationWrite ValidationResultOperation = `WRITE`
@@ -4961,11 +5049,11 @@ func (f *ValidationResultOperation) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ValidationResultOperation) Set(v string) error {
 	switch v {
-	case `DELETE`, `LIST`, `READ`, `WRITE`:
+	case `DELETE`, `LIST`, `PATH_EXISTS`, `READ`, `WRITE`:
 		*f = ValidationResultOperation(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DELETE", "LIST", "READ", "WRITE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DELETE", "LIST", "PATH_EXISTS", "READ", "WRITE"`, v)
 	}
 }
 

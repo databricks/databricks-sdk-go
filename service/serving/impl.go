@@ -15,59 +15,98 @@ type appsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *appsImpl) Create(ctx context.Context, request DeployAppRequest) (*DeploymentStatus, error) {
-	var deploymentStatus DeploymentStatus
-	path := "/api/2.0/preview/apps/deployments"
+func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, error) {
+	var app App
+	path := "/api/2.0/preview/apps"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deploymentStatus)
-	return &deploymentStatus, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &app)
+	return &app, err
 }
 
-func (a *appsImpl) DeleteApp(ctx context.Context, request DeleteAppRequest) (*DeleteAppResponse, error) {
-	var deleteAppResponse DeleteAppResponse
-	path := fmt.Sprintf("/api/2.0/preview/apps/instances/%v", request.Name)
+func (a *appsImpl) CreateDeployment(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error) {
+	var appDeployment AppDeployment
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v/deployments", request.AppName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteAppResponse)
-	return &deleteAppResponse, err
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &appDeployment)
+	return &appDeployment, err
 }
 
-func (a *appsImpl) GetApp(ctx context.Context, request GetAppRequest) (*GetAppResponse, error) {
-	var getAppResponse GetAppResponse
-	path := fmt.Sprintf("/api/2.0/preview/apps/instances/%v", request.Name)
+func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) error {
+	var deleteResponse DeleteResponse
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getAppResponse)
-	return &getAppResponse, err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return err
 }
 
-func (a *appsImpl) GetAppDeploymentStatus(ctx context.Context, request GetAppDeploymentStatusRequest) (*DeploymentStatus, error) {
-	var deploymentStatus DeploymentStatus
-	path := fmt.Sprintf("/api/2.0/preview/apps/deployments/%v", request.DeploymentId)
+func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error) {
+	var app App
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &deploymentStatus)
-	return &deploymentStatus, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &app)
+	return &app, err
 }
 
-func (a *appsImpl) GetApps(ctx context.Context) (*ListAppsResponse, error) {
+func (a *appsImpl) GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error) {
+	var appDeployment AppDeployment
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v/deployments/%v", request.AppName, request.DeploymentId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &appDeployment)
+	return &appDeployment, err
+}
+
+func (a *appsImpl) GetEnvironment(ctx context.Context, request GetAppEnvironmentRequest) (*AppEnvironment, error) {
+	var appEnvironment AppEnvironment
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v/environment", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &appEnvironment)
+	return &appEnvironment, err
+}
+
+func (a *appsImpl) List(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error) {
 	var listAppsResponse ListAppsResponse
-	path := "/api/2.0/preview/apps/instances"
+	path := "/api/2.0/preview/apps"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listAppsResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listAppsResponse)
 	return &listAppsResponse, err
 }
 
-func (a *appsImpl) GetEvents(ctx context.Context, request GetEventsRequest) (*ListAppEventsResponse, error) {
-	var listAppEventsResponse ListAppEventsResponse
-	path := fmt.Sprintf("/api/2.0/preview/apps/%v/events", request.Name)
+func (a *appsImpl) ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
+	var listAppDeploymentsResponse ListAppDeploymentsResponse
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v/deployments", request.AppName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listAppEventsResponse)
-	return &listAppEventsResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listAppDeploymentsResponse)
+	return &listAppDeploymentsResponse, err
+}
+
+func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) error {
+	var stopAppResponse StopAppResponse
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v/stop", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &stopAppResponse)
+	return err
+}
+
+func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, error) {
+	var app App
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &app)
+	return &app, err
 }
 
 // unexported type that holds implementations of just ServingEndpoints API methods
@@ -118,6 +157,15 @@ func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpoi
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
+}
+
+func (a *servingEndpointsImpl) GetOpenApi(ctx context.Context, request GetOpenApiRequest) error {
+	var getOpenApiResponse GetOpenApiResponse
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/openapi", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getOpenApiResponse)
+	return err
 }
 
 func (a *servingEndpointsImpl) GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {

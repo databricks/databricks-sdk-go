@@ -16,16 +16,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger/httplog"
 )
 
-var (
-	transientErrorStringMatches = []string{
-		"com.databricks.backend.manager.util.UnknownWorkerEnvironmentException",
-		"does not have any associated worker environments",
-		"There is no worker environment with id",
-		"Unknown worker environment",
-		"ClusterNotReadyException",
-	}
-)
-
 const (
 	errorInfoType string = "type.googleapis.com/google.rpc.ErrorInfo"
 )
@@ -112,9 +102,9 @@ func (apiError *APIError) IsRetriable(ctx context.Context) bool {
 		return true
 	}
 	// Handle transient errors for retries
-	for _, substring := range transientErrorStringMatches {
-		if strings.Contains(apiError.Message, substring) {
-			logger.Debugf(ctx, "Attempting retry because of %#v", substring)
+	for _, regex := range allTransientErrors {
+		if regex.Match([]byte(apiError.Message)) {
+			logger.Debugf(ctx, "Attempting retry because of %s", regex.String())
 			return true
 		}
 	}

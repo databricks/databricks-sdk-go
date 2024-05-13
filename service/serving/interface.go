@@ -6,40 +6,65 @@ import (
 	"context"
 )
 
-// Lakehouse Apps run directly on a customer’s Databricks instance, integrate
-// with their data, use and extend Databricks services, and enable users to
-// interact through single sign-on.
+// Apps run directly on a customer’s Databricks instance, integrate with their
+// data, use and extend Databricks services, and enable users to interact
+// through single sign-on.
 type AppsService interface {
 
-	// Create and deploy an application.
+	// Create an App.
 	//
-	// Creates and deploys an application.
-	Create(ctx context.Context, request DeployAppRequest) (*DeploymentStatus, error)
+	// Creates a new app.
+	Create(ctx context.Context, request CreateAppRequest) (*App, error)
 
-	// Delete an application.
+	// Create an App Deployment.
 	//
-	// Delete an application definition
-	DeleteApp(ctx context.Context, request DeleteAppRequest) (*DeleteAppResponse, error)
+	// Creates an app deployment for the app with the supplied name.
+	CreateDeployment(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error)
 
-	// Get definition for an application.
+	// Delete an App.
 	//
-	// Get an application definition
-	GetApp(ctx context.Context, request GetAppRequest) (*GetAppResponse, error)
+	// Deletes an app.
+	Delete(ctx context.Context, request DeleteAppRequest) error
 
-	// Get deployment status for an application.
+	// Get an App.
 	//
-	// Get deployment status for an application
-	GetAppDeploymentStatus(ctx context.Context, request GetAppDeploymentStatusRequest) (*DeploymentStatus, error)
+	// Retrieves information for the app with the supplied name.
+	Get(ctx context.Context, request GetAppRequest) (*App, error)
 
-	// List all applications.
+	// Get an App Deployment.
 	//
-	// List all available applications
-	GetApps(ctx context.Context) (*ListAppsResponse, error)
+	// Retrieves information for the app deployment with the supplied name and
+	// deployment id.
+	GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error)
 
-	// Get deployment events for an application.
+	// Get App Environment.
 	//
-	// Get deployment events for an application
-	GetEvents(ctx context.Context, request GetEventsRequest) (*ListAppEventsResponse, error)
+	// Retrieves app environment.
+	GetEnvironment(ctx context.Context, request GetAppEnvironmentRequest) (*AppEnvironment, error)
+
+	// List Apps.
+	//
+	// Lists all apps in the workspace.
+	//
+	// Use ListAll() to get all App instances, which will iterate over every result page.
+	List(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error)
+
+	// List App Deployments.
+	//
+	// Lists all app deployments for the app with the supplied name.
+	//
+	// Use ListDeploymentsAll() to get all AppDeployment instances, which will iterate over every result page.
+	ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error)
+
+	// Stop an App.
+	//
+	// Stops the active deployment of the app in the workspace.
+	Stop(ctx context.Context, request StopAppRequest) error
+
+	// Update an App.
+	//
+	// Updates the app with the supplied name.
+	Update(ctx context.Context, request UpdateAppRequest) (*App, error)
 }
 
 // The Serving Endpoints API allows you to create, update, and delete model
@@ -78,6 +103,13 @@ type ServingEndpointsService interface {
 	//
 	// Retrieves the details for a single serving endpoint.
 	Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error)
+
+	// Get the schema for a serving endpoint.
+	//
+	// Get the query schema of the serving endpoint in OpenAPI format. The
+	// schema contains information for the supported paths, input and output
+	// format and datatypes.
+	GetOpenApi(ctx context.Context, request GetOpenApiRequest) error
 
 	// Get serving endpoint permission levels.
 	//

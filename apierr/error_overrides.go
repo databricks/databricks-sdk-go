@@ -25,3 +25,12 @@ var allOverrides = []errorOverride{
 		customError:       ErrResourceDoesNotExist,
 	},
 }
+
+var allTransientErrors = []*regexp.Regexp{
+	regexp.MustCompile(`com\.databricks\.backend\.manager\.util\.UnknownWorkerEnvironmentException`),
+	regexp.MustCompile(`does not have any associated worker environments`),
+	regexp.MustCompile(`There is no worker environment with id`),
+	regexp.MustCompile(`Unknown worker environment`),
+	regexp.MustCompile(`ClusterNotReadyException`),
+	regexp.MustCompile(`worker env .* not found`),
+}

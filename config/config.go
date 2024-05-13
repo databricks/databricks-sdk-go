@@ -101,7 +101,7 @@ type Config struct {
 	// Use at your own risk or for unit testing purposes.
 	InsecureSkipVerify bool `name:"skip_verify" auth:"-"`
 
-	// Number of seconds for HTTP timeout
+	// Number of seconds for HTTP timeout. Default is 60 (1 minute).
 	HTTPTimeoutSeconds int `name:"http_timeout_seconds" auth:"-"`
 
 	// Truncate JSON fields in JSON above this limit. Default is 96.
@@ -110,10 +110,11 @@ type Config struct {
 	// Debug HTTP headers of requests made by the provider. Default is false.
 	DebugHeaders bool `name:"debug_headers" env:"DATABRICKS_DEBUG_HEADERS" auth:"-"`
 
-	// Maximum number of requests per second made to Databricks REST API.
+	// Maximum number of requests per second made to Databricks REST API. Default is 15 RPS.
 	RateLimitPerSecond int `name:"rate_limit" env:"DATABRICKS_RATE_LIMIT" auth:"-"`
 
-	// Number of seconds to keep retrying HTTP requests. Default is 300 (5 minutes)
+	// Number of seconds to keep retrying HTTP requests. Default is 300 (5 minutes).
+	// If negative, the client will retry on retriable errors indefinitely.
 	RetryTimeoutSeconds int `name:"retry_timeout_seconds" auth:"-"`
 
 	// HTTPTransport can be overriden for unit testing and together with tooling like https://github.com/google/go-replayers

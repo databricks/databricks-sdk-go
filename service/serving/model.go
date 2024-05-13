@@ -66,70 +66,181 @@ type AnthropicConfig struct {
 	AnthropicApiKey string `json:"anthropic_api_key"`
 }
 
-type AppEvents struct {
-	EventName string `json:"event_name,omitempty"`
-
-	EventTime string `json:"event_time,omitempty"`
-
-	EventType string `json:"event_type,omitempty"`
-
-	Message string `json:"message,omitempty"`
-
-	ServiceName string `json:"service_name,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *AppEvents) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AppEvents) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type AppManifest struct {
-	// Workspace dependencies.
-	Dependencies []any `json:"dependencies,omitempty"`
-	// application description
+type App struct {
+	// The active deployment of the app.
+	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
+	// The creation time of the app. Formatted timestamp in ISO 6801.
+	CreateTime string `json:"create_time,omitempty"`
+	// The email of the user that created the app.
+	Creator string `json:"creator,omitempty"`
+	// The description of the app.
 	Description string `json:"description,omitempty"`
-	// Ingress rules for app public endpoints
-	Ingress any `json:"ingress,omitempty"`
-	// Only a-z and dashes (-). Max length of 30.
-	Name string `json:"name,omitempty"`
-	// Container private registry
-	Registry any `json:"registry,omitempty"`
-	// list of app services. Restricted to one for now.
-	Services any `json:"services,omitempty"`
-	// The manifest format version. Must be set to 1.
-	Version any `json:"version,omitempty"`
+	// The name of the app. The name must contain only lowercase alphanumeric
+	// characters and hyphens and be between 2 and 30 characters long. It must
+	// be unique within the workspace.
+	Name string `json:"name"`
+	// The pending deployment of the app.
+	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
+
+	Status *AppStatus `json:"status,omitempty"`
+	// The update time of the app. Formatted timestamp in ISO 6801.
+	UpdateTime string `json:"update_time,omitempty"`
+	// The email of the user that last updated the app.
+	Updater string `json:"updater,omitempty"`
+	// The URL of the app once it is deployed.
+	Url string `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *AppManifest) UnmarshalJSON(b []byte) error {
+func (s *App) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s AppManifest) MarshalJSON() ([]byte, error) {
+func (s App) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type AppServiceStatus struct {
-	Deployment any `json:"deployment,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Template any `json:"template,omitempty"`
+type AppDeployment struct {
+	// The creation time of the deployment. Formatted timestamp in ISO 6801.
+	CreateTime string `json:"create_time,omitempty"`
+	// The email of the user creates the deployment.
+	Creator string `json:"creator,omitempty"`
+	// The unique id of the deployment.
+	DeploymentId string `json:"deployment_id,omitempty"`
+	// The source code path of the deployment.
+	SourceCodePath string `json:"source_code_path"`
+	// Status and status message of the deployment
+	Status *AppDeploymentStatus `json:"status,omitempty"`
+	// The update time of the deployment. Formatted timestamp in ISO 6801.
+	UpdateTime string `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *AppServiceStatus) UnmarshalJSON(b []byte) error {
+func (s *AppDeployment) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s AppServiceStatus) MarshalJSON() ([]byte, error) {
+func (s AppDeployment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppDeploymentState string
+
+const AppDeploymentStateCancelled AppDeploymentState = `CANCELLED`
+
+const AppDeploymentStateFailed AppDeploymentState = `FAILED`
+
+const AppDeploymentStateInProgress AppDeploymentState = `IN_PROGRESS`
+
+const AppDeploymentStateStateUnspecified AppDeploymentState = `STATE_UNSPECIFIED`
+
+const AppDeploymentStateSucceeded AppDeploymentState = `SUCCEEDED`
+
+// String representation for [fmt.Print]
+func (f *AppDeploymentState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppDeploymentState) Set(v string) error {
+	switch v {
+	case `CANCELLED`, `FAILED`, `IN_PROGRESS`, `STATE_UNSPECIFIED`, `SUCCEEDED`:
+		*f = AppDeploymentState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "IN_PROGRESS", "STATE_UNSPECIFIED", "SUCCEEDED"`, v)
+	}
+}
+
+// Type always returns AppDeploymentState to satisfy [pflag.Value] interface
+func (f *AppDeploymentState) Type() string {
+	return "AppDeploymentState"
+}
+
+type AppDeploymentStatus struct {
+	// Message corresponding with the deployment state.
+	Message string `json:"message,omitempty"`
+	// State of the deployment.
+	State AppDeploymentState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AppDeploymentStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppDeploymentStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppEnvironment struct {
+	Env []EnvVariable `json:"env,omitempty"`
+}
+
+type AppState string
+
+const AppStateCreating AppState = `CREATING`
+
+const AppStateDeleted AppState = `DELETED`
+
+const AppStateDeleting AppState = `DELETING`
+
+const AppStateDeployed AppState = `DEPLOYED`
+
+const AppStateDeploying AppState = `DEPLOYING`
+
+const AppStateError AppState = `ERROR`
+
+const AppStateIdle AppState = `IDLE`
+
+const AppStateReady AppState = `READY`
+
+const AppStateRunning AppState = `RUNNING`
+
+const AppStateStarting AppState = `STARTING`
+
+const AppStateStateUnspecified AppState = `STATE_UNSPECIFIED`
+
+const AppStateUpdating AppState = `UPDATING`
+
+// String representation for [fmt.Print]
+func (f *AppState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppState) Set(v string) error {
+	switch v {
+	case `CREATING`, `DELETED`, `DELETING`, `DEPLOYED`, `DEPLOYING`, `ERROR`, `IDLE`, `READY`, `RUNNING`, `STARTING`, `STATE_UNSPECIFIED`, `UPDATING`:
+		*f = AppState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CREATING", "DELETED", "DELETING", "DEPLOYED", "DEPLOYING", "ERROR", "IDLE", "READY", "RUNNING", "STARTING", "STATE_UNSPECIFIED", "UPDATING"`, v)
+	}
+}
+
+// Type always returns AppState to satisfy [pflag.Value] interface
+func (f *AppState) Type() string {
+	return "AppState"
+}
+
+type AppStatus struct {
+	// Message corresponding with the app state.
+	Message string `json:"message,omitempty"`
+	// State of the app.
+	State AppState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AppStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -252,6 +363,32 @@ type CohereConfig struct {
 	CohereApiKey string `json:"cohere_api_key"`
 }
 
+type CreateAppDeploymentRequest struct {
+	// The name of the app.
+	AppName string `json:"-" url:"-"`
+	// The source code path of the deployment.
+	SourceCodePath string `json:"source_code_path"`
+}
+
+type CreateAppRequest struct {
+	// The description of the app.
+	Description string `json:"description,omitempty"`
+	// The name of the app. The name must contain only lowercase alphanumeric
+	// characters and hyphens and be between 2 and 30 characters long. It must
+	// be unique within the workspace.
+	Name string `json:"name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateAppRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateServingEndpoint struct {
 	// The core config of the serving endpoint.
 	Config EndpointCoreConfigInput `json:"config"`
@@ -285,24 +422,10 @@ type DataframeSplitInput struct {
 	Index []int `json:"index,omitempty"`
 }
 
-// Delete an application
+// Delete an App
 type DeleteAppRequest struct {
-	// The name of an application. This field is required.
+	// The name of the app.
 	Name string `json:"-" url:"-"`
-}
-
-type DeleteAppResponse struct {
-	Name string `json:"name,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteAppResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteAppResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type DeleteResponse struct {
@@ -312,66 +435,6 @@ type DeleteResponse struct {
 type DeleteServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
 	Name string `json:"-" url:"-"`
-}
-
-type DeployAppRequest struct {
-	// Manifest that specifies the application requirements
-	Manifest AppManifest `json:"manifest"`
-	// Information passed at app deployment time to fulfill app dependencies
-	Resources any `json:"resources,omitempty"`
-}
-
-type DeploymentStatus struct {
-	// Container logs.
-	ContainerLogs []any `json:"container_logs,omitempty"`
-	// description
-	DeploymentId string `json:"deployment_id,omitempty"`
-	// Supplementary information about pod
-	ExtraInfo string `json:"extra_info,omitempty"`
-	// State: one of DEPLOYING,SUCCESS, FAILURE, DEPLOYMENT_STATE_UNSPECIFIED
-	State DeploymentStatusState `json:"state,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeploymentStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeploymentStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// State: one of DEPLOYING,SUCCESS, FAILURE, DEPLOYMENT_STATE_UNSPECIFIED
-type DeploymentStatusState string
-
-const DeploymentStatusStateDeploying DeploymentStatusState = `DEPLOYING`
-
-const DeploymentStatusStateDeploymentStateUnspecified DeploymentStatusState = `DEPLOYMENT_STATE_UNSPECIFIED`
-
-const DeploymentStatusStateFailure DeploymentStatusState = `FAILURE`
-
-const DeploymentStatusStateSuccess DeploymentStatusState = `SUCCESS`
-
-// String representation for [fmt.Print]
-func (f *DeploymentStatusState) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *DeploymentStatusState) Set(v string) error {
-	switch v {
-	case `DEPLOYING`, `DEPLOYMENT_STATE_UNSPECIFIED`, `FAILURE`, `SUCCESS`:
-		*f = DeploymentStatusState(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "DEPLOYING", "DEPLOYMENT_STATE_UNSPECIFIED", "FAILURE", "SUCCESS"`, v)
-	}
-}
-
-// Type always returns DeploymentStatusState to satisfy [pflag.Value] interface
-func (f *DeploymentStatusState) Type() string {
-	return "DeploymentStatusState"
 }
 
 type EmbeddingsV1ResponseEmbeddingElement struct {
@@ -593,6 +656,24 @@ func (s EndpointTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type EnvVariable struct {
+	Name string `json:"name,omitempty"`
+
+	Value string `json:"value,omitempty"`
+
+	ValueFrom string `json:"value_from,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EnvVariable) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvVariable) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get metrics of a serving endpoint
 type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
@@ -709,54 +790,36 @@ func (s FoundationModel) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get deployment status for an application
-type GetAppDeploymentStatusRequest struct {
-	// The deployment id for an application. This field is required.
+// Get an App Deployment
+type GetAppDeploymentRequest struct {
+	// The name of the app.
+	AppName string `json:"-" url:"-"`
+	// The unique id of the deployment.
 	DeploymentId string `json:"-" url:"-"`
-	// Boolean flag to include application logs
-	IncludeAppLog string `json:"-" url:"include_app_log,omitempty"`
-
-	ForceSendFields []string `json:"-"`
 }
 
-func (s *GetAppDeploymentStatusRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+// Get App Environment
+type GetAppEnvironmentRequest struct {
+	// The name of the app.
+	Name string `json:"-" url:"-"`
 }
 
-func (s GetAppDeploymentStatusRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Get definition for an application
+// Get an App
 type GetAppRequest struct {
-	// The name of an application. This field is required.
+	// The name of the app.
 	Name string `json:"-" url:"-"`
 }
 
-type GetAppResponse struct {
-	CurrentServices []AppServiceStatus `json:"current_services,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	PendingServices []AppServiceStatus `json:"pending_services,omitempty"`
-
-	Url string `json:"url,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetAppResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetAppResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Get deployment events for an application
-type GetEventsRequest struct {
-	// The name of an application. This field is required.
+// Get the schema for a serving endpoint
+type GetOpenApiRequest struct {
+	// The name of the serving endpoint that the served model belongs to. This
+	// field is required.
 	Name string `json:"-" url:"-"`
+}
+
+// The response is an OpenAPI spec in JSON format that typically includes fields
+// like openapi, info, servers and paths, etc.
+type GetOpenApiResponse struct {
 }
 
 // Get serving endpoint permission levels
@@ -782,15 +845,66 @@ type GetServingEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-type ListAppEventsResponse struct {
-	// App events
-	Events []AppEvents `json:"events,omitempty"`
+// List App Deployments
+type ListAppDeploymentsRequest struct {
+	// The name of the app.
+	AppName string `json:"-" url:"-"`
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of apps. Requests first page if
+	// absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAppDeploymentsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAppDeploymentsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListAppDeploymentsResponse struct {
+	// Deployment history of the app.
+	AppDeployments []AppDeployment `json:"app_deployments,omitempty"`
+	// Pagination token to request the next page of apps.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAppDeploymentsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List Apps
+type ListAppsRequest struct {
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of apps. Requests first page if
+	// absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAppsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAppsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListAppsResponse struct {
-	// Available apps.
-	Apps []any `json:"apps,omitempty"`
-
+	Apps []App `json:"apps,omitempty"`
+	// Pagination token to request the next page of apps.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -1806,9 +1920,36 @@ type ServingEndpointPermissionsRequest struct {
 	ServingEndpointId string `json:"-" url:"-"`
 }
 
+type StopAppRequest struct {
+	// The name of the app.
+	Name string `json:"-" url:"-"`
+}
+
+type StopAppResponse struct {
+}
+
 type TrafficConfig struct {
 	// The list of routes that define traffic to each served entity.
 	Routes []Route `json:"routes,omitempty"`
+}
+
+type UpdateAppRequest struct {
+	// The description of the app.
+	Description string `json:"description,omitempty"`
+	// The name of the app. The name must contain only lowercase alphanumeric
+	// characters and hyphens and be between 2 and 30 characters long. It must
+	// be unique within the workspace.
+	Name string `json:"name" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateAppRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateAppRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type V1ResponseChoiceElement struct {

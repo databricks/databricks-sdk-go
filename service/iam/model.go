@@ -214,7 +214,7 @@ type GetPermissionRequest struct {
 	// The type of the request object. Can be one of the following:
 	// authorization, clusters, cluster-policies, directories, experiments,
 	// files, instance-pools, jobs, notebooks, pipelines, registered-models,
-	// repos, serving-endpoints, or sql-warehouses.
+	// repos, serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -329,7 +329,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -1135,14 +1135,14 @@ type PermissionsRequest struct {
 	// The type of the request object. Can be one of the following:
 	// authorization, clusters, cluster-policies, directories, experiments,
 	// files, instance-pools, jobs, notebooks, pipelines, registered-models,
-	// repos, serving-endpoints, or sql-warehouses.
+	// repos, serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
 type PrincipalOutput struct {
 	// The display name of the principal.
 	DisplayName string `json:"display_name,omitempty"`
-	// The group name of the groupl. Present only if the principal is a group.
+	// The group name of the group. Present only if the principal is a group.
 	GroupName string `json:"group_name,omitempty"`
 	// The unique, opaque id of the principal.
 	PrincipalId int64 `json:"principal_id,omitempty"`
@@ -1231,7 +1231,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
@@ -1284,7 +1284,9 @@ type UpdateRuleSetRequest struct {
 }
 
 type UpdateWorkspaceAssignments struct {
-	// Array of permissions assignments to update on the workspace.
+	// Array of permissions assignments to update on the workspace. Note that
+	// excluding this field will have the same effect as providing an empty list
+	// which will result in the deletion of all permissions for the principal.
 	Permissions []WorkspacePermission `json:"permissions"`
 	// The ID of the user, service principal, or group.
 	PrincipalId int64 `json:"-" url:"-"`
@@ -1361,9 +1363,6 @@ func (f *UserSchema) Set(v string) error {
 // Type always returns UserSchema to satisfy [pflag.Value] interface
 func (f *UserSchema) Type() string {
 	return "UserSchema"
-}
-
-type WorkspaceAssignmentsUpdated struct {
 }
 
 type WorkspacePermission string

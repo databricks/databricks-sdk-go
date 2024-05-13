@@ -584,12 +584,12 @@ func (a *workspaceAssignmentImpl) List(ctx context.Context, request ListWorkspac
 	return &permissionAssignments, err
 }
 
-func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWorkspaceAssignments) error {
-	var workspaceAssignmentsUpdated WorkspaceAssignmentsUpdated
+func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWorkspaceAssignments) (*PermissionAssignment, error) {
+	var permissionAssignment PermissionAssignment
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &workspaceAssignmentsUpdated)
-	return err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &permissionAssignment)
+	return &permissionAssignment, err
 }

@@ -19,3 +19,9 @@ var allOverrides = []errorOverride{
     },
 {{- end }}
 }
+
+var allTransientErrors = []*regexp.Regexp{
+    {{ range .TransientErrorRegexes -}}
+    regexp.MustCompile(`{{.}}`),
+    {{ end }}
+}

@@ -60,6 +60,16 @@ func (cls ClusterLibraryStatuses) ToLibraryList() InstallLibraries {
 	return cll
 }
 
+// ToLibraryList convert to envity for convenient comparison
+func (cls ClusterStatusResponse) ToLibraryList() InstallLibraries {
+	cll := InstallLibraries{ClusterId: cls.ClusterId}
+	for _, lib := range cls.LibraryStatuses {
+		cll.Libraries = append(cll.Libraries, *lib.Library)
+	}
+	cll.Sort()
+	return cll
+}
+
 func (w *Wait) IsNotInScope(lib *Library) bool {
 	// if we don't know concrete libraries
 	if len(w.Libraries) == 0 {
@@ -77,7 +87,7 @@ func (w *Wait) IsNotInScope(lib *Library) bool {
 // IsRetryNeeded returns first bool if there needs to be retry.
 // If there needs to be retry, error message will explain why.
 // If retry does not need to happen and error is not nil - it failed.
-func (cls ClusterLibraryStatuses) IsRetryNeeded(w Wait) (bool, error) {
+func (cls ClusterStatusResponse) IsRetryNeeded(w Wait) (bool, error) {
 	pending := 0
 	ready := 0
 	errors := []string{}
@@ -136,11 +146,11 @@ type Update struct {
 }
 
 type librariesAPIUtilities interface {
-	UpdateAndWait(ctx context.Context, update Update, options ...retries.Option[ClusterLibraryStatuses]) error
+	UpdateAndWait(ctx context.Context, update Update, options ...retries.Option[ClusterStatusResponse]) error
 }
 
 func (a *LibrariesAPI) UpdateAndWait(ctx context.Context, update Update,
-	options ...retries.Option[ClusterLibraryStatuses]) error {
+	options ...retries.Option[ClusterStatusResponse]) error {
 	ctx = useragent.InContext(ctx, "sdk-feature", "update-libraries")
 	if len(update.Uninstall) > 0 {
 		err := a.Uninstall(ctx, UninstallLibraries{
@@ -176,20 +186,20 @@ func (a *LibrariesAPI) UpdateAndWait(ctx context.Context, update Update,
 
 // clusterID string, timeout time.Duration, isActive bool, refresh bool
 func (a *LibrariesAPI) Wait(ctx context.Context, wait Wait,
-	options ...retries.Option[ClusterLibraryStatuses]) (*ClusterLibraryStatuses, error) {
+	options ...retries.Option[ClusterStatusResponse]) (*ClusterStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "wait-for-libraries")
-	i := retries.Info[ClusterLibraryStatuses]{Timeout: 30 * time.Minute}
+	i := retries.Info[ClusterStatusResponse]{Timeout: 30 * time.Minute}
 	for _, o := range options {
 		o(&i)
 	}
-	result, err := retries.Poll(ctx, i.Timeout, func() (*ClusterLibraryStatuses, *retries.Err) {
+	result, err := retries.Poll(ctx, i.Timeout, func() (*ClusterStatusResponse, *retries.Err) {
 		status, err := a.ClusterStatusByClusterId(ctx, wait.ClusterID)
 		if apierr.IsMissing(err) {
 			// eventual consistency error
 			return nil, retries.Continue(err)
 		}
 		for _, o := range options {
-			o(&retries.Info[ClusterLibraryStatuses]{
+			o(&retries.Info[ClusterStatusResponse]{
 				Timeout: i.Timeout,
 				Info:    status,
 			})
