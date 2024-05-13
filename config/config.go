@@ -220,7 +220,6 @@ func (c *Config) GetToken() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	//ctx := c.refreshClient.InContextForOAuth2(c.refreshCtx)
 	if h, ok := c.credentialsProvider.(credentials.OAuthCredentialsProvider); ok {
 		return h.Token()
 	} else {

@@ -35,7 +35,7 @@ func (c *ApiClient) GetOAuthToken(authDetails string, token *oauth2.Token) (*cre
 		WithUrlEncodedData(data),
 		WithResponseUnmarshal(&response),
 	}
-	err := c.Do(context.Background(), http.MethodPost, path, opts...)
+	err := c.Do(c.InContextForOAuth2(context.Background()), http.MethodPost, path, opts...)
 	if err != nil {
 		return nil, err
 	}
