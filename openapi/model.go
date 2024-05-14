@@ -149,6 +149,7 @@ type Operation struct {
 	Node
 	Wait       *Wait       `json:"x-databricks-wait,omitempty"`
 	Pagination *Pagination `json:"x-databricks-pagination,omitempty"`
+	DataPlane  *DataPlane  `json:"x-databricks-dataplane,omitempty"`
 	Shortcut   bool        `json:"x-databricks-shortcut,omitempty"`
 	Crud       string      `json:"x-databricks-crud,omitempty"`
 	JsonOnly   bool        `json:"x-databricks-cli-json-only,omitempty"`

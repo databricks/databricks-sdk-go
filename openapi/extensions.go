@@ -1,5 +1,11 @@
 package openapi
 
+// DataPlane is the Databricks OpenAPI Extension for direct access to DataPlane APIs
+type DataPlane struct {
+	InfoOperationId string   `json:"configMethod"`
+	InfoField       []string `json:"field"`
+}
+
 // Pagination is the Databricks OpenAPI Extension for retrieving
 // lists of entities through multiple API calls
 type Pagination struct {

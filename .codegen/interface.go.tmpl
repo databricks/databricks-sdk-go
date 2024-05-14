@@ -17,6 +17,10 @@ type {{.PascalName}}Service interface {
 	// 
 	// Use {{.PascalName}}All() to get all {{.Pagination.Entity.PascalName}} instances{{if .Pagination.MultiRequest}}, which will iterate over every result page.{{end}}
 	{{- end}}
+	{{- if .DataPlane}}
+	// 
+	// Use {{.PascalName}}DataPlane() to query this endpoint directly through the DataPlane API.{{end}}
+    {{- end}}
     {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }}
 	{{end}}
 }
