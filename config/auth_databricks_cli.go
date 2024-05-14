@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
@@ -22,7 +22,7 @@ func (c DatabricksCliCredentials) Name() string {
 	return "databricks-cli"
 }
 
-func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.Host == "" {
 		return nil, nil
 	}
@@ -54,7 +54,8 @@ func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (f
 		return nil, err
 	}
 	logger.Debugf(ctx, "Using Databricks CLI authentication with Databricks OAuth tokens")
-	return refreshableVisitor(ts), nil
+	visitor := refreshableVisitor(ts)
+	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
 }
 
 var errLegacyDatabricksCli = errors.New("legacy Databricks CLI detected")

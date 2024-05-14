@@ -3,12 +3,12 @@ package config
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"net/url"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -35,7 +35,7 @@ func (c AzureClientSecretCredentials) tokenSourceFor(
 // as we cannot create AKV backed secret scopes when authenticated as SP.
 // If we are authenticated as SP and wish to create one we want to fail early.
 // Also see https://github.com/databricks/terraform-provider-databricks/issues/1490.
-func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.AzureClientID == "" || cfg.AzureClientSecret == "" || cfg.AzureTenantID == "" {
 		return nil, nil
 	}
@@ -52,5 +52,6 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	managementEndpoint := env.AzureServiceManagementEndpoint()
 	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, aadEndpoint, env.AzureApplicationID))
 	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, aadEndpoint, managementEndpoint))
-	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken)), nil
+	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken))
+	return credentials.NewCredentialsProvider(visitor), nil
 }

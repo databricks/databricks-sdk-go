@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+
+	"github.com/databricks/databricks-sdk-go/credentials"
 )
 
 type PatCredentials struct {
@@ -13,12 +15,13 @@ func (c PatCredentials) Name() string {
 	return "pat"
 }
 
-func (c PatCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+func (c PatCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.Token == "" || cfg.Host == "" {
 		return nil, nil
 	}
-	return func(r *http.Request) error {
+	visitor := func(r *http.Request) error {
 		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", cfg.Token))
 		return nil
-	}, nil
+	}
+	return credentials.NewCredentialsProvider(visitor), nil
 }

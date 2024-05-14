@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -29,6 +30,67 @@ func myNotebookPath(t *testing.T, w *databricks.WorkspaceClient) string {
 	})
 
 	return notebook
+}
+
+// TODO: Enable this testing after testing infrastructure is moved to OAuth
+func TestGetOAuthToken(t *testing.T) {
+	t.Skip("This test only works with OAuth credentials. Automatic testing uses PAT tokens")
+	// Create an Endpoint that can be used to query
+	ctx, w := workspaceTest(t)
+	// For manual testing using Databricks CLI credentials
+	// w = databricks.Must(databricks.NewWorkspaceClient())
+
+	created, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
+		Name: RandomName("go-sdk-"),
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		deleteModel(t, w, ctx, created)
+	})
+
+	model, err := w.ModelRegistry.GetModel(ctx, ml.GetModelRequest{
+		Name: created.RegisteredModel.Name,
+	})
+	require.NoError(t, err)
+
+	err = w.ModelRegistry.UpdateModel(ctx, ml.UpdateModelRequest{
+		Name:        model.RegisteredModelDatabricks.Name,
+		Description: RandomName("comment "),
+	})
+	require.NoError(t, err)
+
+	all, err := w.ModelRegistry.ListModelsAll(ctx, ml.ListModelsRequest{})
+	require.NoError(t, err)
+	assert.True(t, len(all) >= 1)
+
+	// Enable once the API returns the DataplaneInfo
+	// endpoint, err := w.ServingEndpoints.Create(ctx, serving.CreateServingEndpoint{
+	// 	Name: RandomName("go-sdk-"),
+	// 	Config: serving.EndpointCoreConfigInput{
+	// 		ServedModels: []serving.ServedModelInput{
+	// 			{
+	// 				ModelName:          model.RegisteredModelDatabricks.Name,
+	// 				ModelVersion:       model.RegisteredModelDatabricks.LatestVersions[0].Version,
+	// 				Name:               RandomName("go-sdk-"),
+	// 				ScaleToZeroEnabled: true,
+	// 				WorkloadSize:       serving.ServedModelInputWorkloadSizeSmall,
+	// 			},
+	// 		},
+	// 	},
+	// })
+	// require.NoError(t, err)
+	// t.Cleanup(func() {
+	// 	err := w.ServingEndpoints.Delete(ctx, serving.DeleteServingEndpointRequest{
+	// 		Name: endpoint.Name,
+	// 	})
+	// 	require.NoError(t, err)
+	// })
+	// readyEndpoint, err := endpoint.Get()
+	// require.NoError(t, err)
+
+	// _, err = w.GetOAuthToken(readyEndpoint.DataplaneInfo.AuthorizationDetails)
+	// require.NoError(t, err)
+	// // TODO: Query DataPlane API with the token
 }
 
 func TestAccWorkspaceIntegration(t *testing.T) {
