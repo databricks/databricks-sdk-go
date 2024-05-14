@@ -1,5 +1,17 @@
 # Version changelog
 
+## 0.40.1
+
+* Fixed codecov for repository ([#909](https://github.com/databricks/databricks-sdk-go/pull/909)).
+* Add traceparent header to enable distributed tracing. ([#914](https://github.com/databricks/databricks-sdk-go/pull/914)).
+* Log cancelled and failed requests ([#919](https://github.com/databricks/databricks-sdk-go/pull/919)).
+
+Dependency updates:
+
+ * Bump golang.org/x/net from 0.22.0 to 0.24.0 ([#884](https://github.com/databricks/databricks-sdk-go/pull/884)).
+ * Bump golang.org/x/net from 0.17.0 to 0.23.0 in /examples/zerolog ([#896](https://github.com/databricks/databricks-sdk-go/pull/896)).
+ * Bump golang.org/x/net from 0.21.0 to 0.23.0 in /examples/slog ([#897](https://github.com/databricks/databricks-sdk-go/pull/897)).
+
 ## 0.40.0
 
 * Allow unlimited timeouts in retries ([#904](https://github.com/databricks/databricks-sdk-go/pull/904)). By setting RETRY_TIMEOUT_SECONDS to a negative value, WorkspaceClient and AccountClient will retry retriable failures indefinitely. As a reminder, without setting this parameter, the default retry timeout is 5 minutes.
