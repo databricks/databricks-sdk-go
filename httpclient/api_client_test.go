@@ -188,7 +188,7 @@ func TestHaltAttemptForLimit(t *testing.T) {
 	_, rerr := c.attempt(ctx, "GET", "foo", req)()
 	require.NotNil(t, rerr)
 	require.Equal(t, true, rerr.Halt)
-	require.EqualError(t, rerr.Err, "rate: Wait(n=1) exceeds limiter's burst 0")
+	require.EqualError(t, rerr.Err, "failed in rate limiter: rate: Wait(n=1) exceeds limiter's burst 0")
 }
 
 func TestHaltAttemptForNewRequest(t *testing.T) {
@@ -199,7 +199,7 @@ func TestHaltAttemptForNewRequest(t *testing.T) {
 	_, rerr := c.attempt(ctx, "🥱", "/", req)()
 	require.NotNil(t, rerr)
 	require.Equal(t, true, rerr.Halt)
-	require.EqualError(t, rerr.Err, `net/http: invalid method "🥱"`)
+	require.EqualError(t, rerr.Err, `failed creating new request: net/http: invalid method "🥱"`)
 }
 
 func TestHaltAttemptForVisitor(t *testing.T) {
@@ -213,7 +213,7 @@ func TestHaltAttemptForVisitor(t *testing.T) {
 		})()
 	require.NotNil(t, rerr)
 	require.Equal(t, true, rerr.Halt)
-	require.EqualError(t, rerr.Err, "🥱")
+	require.EqualError(t, rerr.Err, "failed during request visitor: 🥱")
 }
 
 func TestFailPerformChannel(t *testing.T) {
@@ -353,18 +353,18 @@ func (l *BufferLogger) Errorf(_ context.Context, format string, v ...interface{}
 	l.WriteString(fmt.Sprintf("[ERROR] "+format+"\n", v...))
 }
 
-func configureBufferedLogger() (*BufferLogger, func()) {
+func configureBufferedLogger(t *testing.T) *BufferLogger {
 	prevLogger := logger.DefaultLogger
 	bufLogger := &BufferLogger{}
 	logger.DefaultLogger = bufLogger
-	return bufLogger, func() {
+	t.Cleanup(func() {
 		logger.DefaultLogger = prevLogger
-	}
+	})
+	return bufLogger
 }
 
 func TestSimpleResponseRedaction(t *testing.T) {
-	bufLogger, resetLogger := configureBufferedLogger()
-	defer resetLogger()
+	bufLogger := configureBufferedLogger(t)
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 16,
@@ -407,8 +407,7 @@ func TestSimpleResponseRedaction(t *testing.T) {
 }
 
 func TestInlineArrayDebugging(t *testing.T) {
-	bufLogger, resetLogger := configureBufferedLogger()
-	defer resetLogger()
+	bufLogger := configureBufferedLogger(t)
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 2048,
@@ -443,8 +442,7 @@ func TestInlineArrayDebugging(t *testing.T) {
 }
 
 func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
-	bufLogger, resetLogger := configureBufferedLogger()
-	defer resetLogger()
+	bufLogger := configureBufferedLogger(t)
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 2048,
@@ -473,8 +471,7 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 }
 
 func TestLogQueryParametersWithPercent(t *testing.T) {
-	bufLogger, resetLogger := configureBufferedLogger()
-	defer resetLogger()
+	bufLogger := configureBufferedLogger(t)
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 2048,
@@ -502,8 +499,7 @@ func TestLogQueryParametersWithPercent(t *testing.T) {
 }
 
 func TestLogCancelledRequest(t *testing.T) {
-	bufLogger, resetLogger := configureBufferedLogger()
-	defer resetLogger()
+	bufLogger := configureBufferedLogger(t)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	c := NewApiClient(ClientConfig{
@@ -515,9 +511,9 @@ func TestLogCancelledRequest(t *testing.T) {
 	})
 	err := c.Do(context.Background(), "GET", "/a")
 	assert.Error(t, err)
-	assert.Equal(t, `[DEBUG] non-retriable error: Get "/a": request timed out after 30s of inactivity
-[DEBUG] GET /a
+	assert.Equal(t, `[DEBUG] GET /a
 < Error: Get "/a": request timed out after 30s of inactivity
+[DEBUG] non-retriable error: Get "/a": request timed out after 30s of inactivity
 `, bufLogger.String())
 }
 

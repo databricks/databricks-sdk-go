@@ -210,6 +210,7 @@ func (r Retrier[T]) Run(ctx context.Context, fn func(context.Context) (*T, error
 			return entity, nil
 		}
 		if !r.config.ShouldRetry(err) {
+			logger.Debugf(ctx, "non-retriable error: %s", err)
 			return nil, err
 		}
 		lastErr = err
