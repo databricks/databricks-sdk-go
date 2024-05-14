@@ -10,6 +10,7 @@ import (
 )
 
 type RoundTripStringer struct {
+	Request                  *http.Request
 	Response                 *http.Response
 	Err                      error
 	RequestBody              []byte
@@ -45,22 +46,21 @@ func (r RoundTripStringer) writeHeaders(sb *strings.Builder, prefix string, head
 }
 
 func (r RoundTripStringer) String() string {
-	request := r.Response.Request
 	sb := strings.Builder{}
-	sb.WriteString(fmt.Sprintf("%s %s", request.Method,
-		escapeNewLines(request.URL.Path)))
-	if request.URL.RawQuery != "" {
+	sb.WriteString(fmt.Sprintf("%s %s", r.Request.Method,
+		escapeNewLines(r.Request.URL.Path)))
+	if r.Request.URL.RawQuery != "" {
 		sb.WriteString("?")
-		q, _ := url.QueryUnescape(request.URL.RawQuery)
+		q, _ := url.QueryUnescape(r.Request.URL.RawQuery)
 		sb.WriteString(q)
 	}
 	sb.WriteString("\n")
 	if r.DebugHeaders {
 		sb.WriteString("> * Host: ")
-		sb.WriteString(escapeNewLines(request.Host))
+		sb.WriteString(escapeNewLines(r.Request.Host))
 		sb.WriteString("\n")
-		if len(request.Header) > 0 {
-			r.writeHeaders(&sb, "> ", request.Header)
+		if len(r.Request.Header) > 0 {
+			r.writeHeaders(&sb, "> ", r.Request.Header)
 			sb.WriteString("\n")
 		}
 	}
@@ -69,15 +69,17 @@ func (r RoundTripStringer) String() string {
 		sb.WriteString("\n")
 	}
 	sb.WriteString("< ")
-	if r.Response != nil {
-		sb.WriteString(fmt.Sprintf("%s %s", r.Response.Proto, r.Response.Status))
-		// Only display error on this line if the response body is empty.
-		// Otherwise the response body will include details about the error.
-		if len(r.ResponseBody) == 0 && r.Err != nil {
-			sb.WriteString(fmt.Sprintf(" (Error: %s)", r.Err))
-		}
-	} else {
+	if r.Response == nil {
 		sb.WriteString(fmt.Sprintf("Error: %s", r.Err))
+		return sb.String()
+	}
+
+	sb.WriteString(fmt.Sprintf("%s %s", r.Response.Proto, r.Response.Status))
+	// Only display error on this line if the response body is empty or the
+	// client failed to read the response body.
+	// Otherwise the response body will include details about the error.
+	if len(r.ResponseBody) == 0 && r.Err != nil {
+		sb.WriteString(fmt.Sprintf(" (Error: %s)", r.Err))
 	}
 	if r.DebugHeaders && len(r.Response.Header) > 0 {
 		sb.WriteString("\n")

@@ -1,6 +1,7 @@
 package httplog
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 	"testing"
@@ -10,14 +11,14 @@ import (
 
 func TestNoHeadersNoBody(t *testing.T) {
 	res := RoundTripStringer{
-		Response: &http.Response{
-			Request: &http.Request{
-				Method: "GET",
-				URL: &url.URL{
-					Path:     "/",
-					RawQuery: "foo=bar&baz=qux",
-				},
+		Request: &http.Request{
+			Method: "GET",
+			URL: &url.URL{
+				Path:     "/",
+				RawQuery: "foo=bar&baz=qux",
 			},
+		},
+		Response: &http.Response{
 			Status: "200 OK",
 			Proto:  "HTTP/1.1",
 		},
@@ -28,15 +29,15 @@ func TestNoHeadersNoBody(t *testing.T) {
 
 func TestRequestAndResponseHaveHeadersAndBody(t *testing.T) {
 	res := RoundTripStringer{
-		Response: &http.Response{
-			Request: &http.Request{
-				Method: "GET",
-				URL:    &url.URL{Path: "/"},
-				Header: http.Header{
-					"Foo": []string{"bar"},
-					"Bar": []string{"baz"},
-				},
+		Request: &http.Request{
+			Method: "GET",
+			URL:    &url.URL{Path: "/"},
+			Header: http.Header{
+				"Foo": []string{"bar"},
+				"Bar": []string{"baz"},
 			},
+		},
+		Response: &http.Response{
 			Status: "200 OK",
 			Proto:  "HTTP/1.1",
 			Header: http.Header{
@@ -62,15 +63,15 @@ func TestRequestAndResponseHaveHeadersAndBody(t *testing.T) {
 
 func TestDoNotPrintHeadersWhenNotConfigured(t *testing.T) {
 	res := RoundTripStringer{
-		Response: &http.Response{
-			Request: &http.Request{
-				Method: "GET",
-				URL:    &url.URL{Path: "/"},
-				Header: http.Header{
-					"Foo": []string{"bar"},
-					"Bar": []string{"baz"},
-				},
+		Request: &http.Request{
+			Method: "GET",
+			URL:    &url.URL{Path: "/"},
+			Header: http.Header{
+				"Foo": []string{"bar"},
+				"Bar": []string{"baz"},
 			},
+		},
+		Response: &http.Response{
 			Status: "200 OK",
 			Proto:  "HTTP/1.1",
 			Header: http.Header{
@@ -91,17 +92,17 @@ func TestDoNotPrintHeadersWhenNotConfigured(t *testing.T) {
 
 func TestHideAuthorizationHeaderWhenConfigured(t *testing.T) {
 	res := RoundTripStringer{
-		Response: &http.Response{
-			Request: &http.Request{
-				Method: "GET",
-				URL:    &url.URL{Path: "/"},
-				Header: http.Header{
-					"Foo":                                    []string{"bar"},
-					"Authorization":                          []string{"baz"},
-					"X-Databricks-Azure-SP-Management-Token": []string{"open sesame"},
-					"X-Databricks-GCP-SA-Access-Token":       []string{"alohamora"},
-				},
+		Request: &http.Request{
+			Method: "GET",
+			URL:    &url.URL{Path: "/"},
+			Header: http.Header{
+				"Foo":                                    []string{"bar"},
+				"Authorization":                          []string{"baz"},
+				"X-Databricks-Azure-SP-Management-Token": []string{"open sesame"},
+				"X-Databricks-GCP-SA-Access-Token":       []string{"alohamora"},
 			},
+		},
+		Response: &http.Response{
 			Status: "200 OK",
 			Proto:  "HTTP/1.1",
 		},
@@ -120,4 +121,42 @@ func TestHideAuthorizationHeaderWhenConfigured(t *testing.T) {
 > request-hello
 < HTTP/1.1 200 OK
 < response-hello`, res)
+}
+
+func TestNilResponse(t *testing.T) {
+	res := RoundTripStringer{
+		Request: &http.Request{
+			Method: "GET",
+			URL:    &url.URL{Path: "/"},
+		},
+		Err: &url.Error{
+			Op:  "Get",
+			URL: "http://example.com",
+			Err: errors.New("request timed out after 1m0s of inactivity"),
+		},
+	}.String()
+	assert.Equal(t, `GET /
+< Error: Get "http://example.com": request timed out after 1m0s of inactivity`, res)
+}
+
+func TestFailureToConsumeResponse(t *testing.T) {
+	res := RoundTripStringer{
+		Request: &http.Request{
+			Method: "GET",
+			URL:    &url.URL{Path: "/"},
+		},
+		Response: &http.Response{
+			Status: "200 OK",
+			Proto:  "HTTP/1.1",
+			Header: http.Header{
+				"Foo": []string{"bar"},
+			},
+		},
+		Err:          errors.New("failed to read response body"),
+		DebugHeaders: true,
+	}.String()
+	assert.Equal(t, `GET /
+> * Host: 
+< HTTP/1.1 200 OK (Error: failed to read response body)
+< * Foo: ... (3 more bytes)`, res)
 }
