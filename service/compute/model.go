@@ -450,8 +450,12 @@ type ClusterAttributes struct {
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
 	// Cluster users are fully isolated so that they cannot see each other's
 	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited. *
-	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
@@ -604,8 +608,12 @@ type ClusterDetails struct {
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
 	// Cluster users are fully isolated so that they cannot see each other's
 	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited. *
-	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
@@ -1147,8 +1155,12 @@ type ClusterSpec struct {
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
 	// Cluster users are fully isolated so that they cannot see each other's
 	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited. *
-	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
@@ -1251,23 +1263,6 @@ func (s ClusterSpec) MarshalJSON() ([]byte, error) {
 type ClusterStatus struct {
 	// Unique identifier of the cluster whose status should be retrieved.
 	ClusterId string `json:"-" url:"cluster_id"`
-}
-
-type ClusterStatusResponse struct {
-	// Unique identifier for the cluster.
-	ClusterId string `json:"cluster_id,omitempty"`
-	// Status of all libraries on the cluster.
-	LibraryStatuses []LibraryFullStatus `json:"library_statuses,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ClusterStatusResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ClusterStatusResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Command struct {
@@ -1460,8 +1455,12 @@ type CreateCluster struct {
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
 	// Cluster users are fully isolated so that they cannot see each other's
 	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited. *
-	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
@@ -1823,11 +1822,15 @@ func (f *DataPlaneEventDetailsEventType) Type() string {
 // cluster that can be shared by multiple users. Cluster users are fully
 // isolated so that they cannot see each other's data and credentials. Most data
 // governance features are supported in this mode. But programming languages and
-// cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for
-// users migrating from legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This
-// mode is for users migrating from legacy Passthrough on high concurrency
-// clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from
-// legacy Passthrough on standard clusters.
+// cluster features might be limited.
+//
+// The following modes are deprecated starting with Databricks Runtime 15.0 and
+// will be removed for future Databricks Runtime versions:
+//
+// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL
+// clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from
+// legacy Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This
+// mode is for users migrating from legacy Passthrough on standard clusters.
 type DataSecurityMode string
 
 // This mode is for users migrating from legacy Passthrough on high concurrency
@@ -2147,8 +2150,12 @@ type EditCluster struct {
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
 	// Cluster users are fully isolated so that they cannot see each other's
 	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited. *
-	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy

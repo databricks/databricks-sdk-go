@@ -96,8 +96,6 @@
 //
 // - [jobs.JobsAPI]: The Jobs API allows you to create, edit, and delete jobs.
 //
-// - [catalog.LakehouseMonitorsAPI]: A monitor computes and monitors data or model quality metrics for a table over time.
-//
 // - [dashboards.LakeviewAPI]: These APIs provide specific management operations for Lakeview dashboards.
 //
 // - [compute.LibrariesAPI]: The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster.
@@ -151,6 +149,8 @@
 // - [sharing.ProvidersAPI]: A data provider is an object representing the organization in the real world who shares the data.
 //
 // - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published oauth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud.
+//
+// - [catalog.QualityMonitorsAPI]: A monitor computes and monitors data or model quality metrics for a table over time.
 //
 // - [sql.QueriesAPI]: These endpoints are used for CRUD operations on query definitions.
 //
@@ -303,7 +303,6 @@ var (
 	_ *settings.IpAccessListsAPI                          = nil
 	_ *settings.AccountIpAccessListsAPI                   = nil
 	_ *jobs.JobsAPI                                       = nil
-	_ *catalog.LakehouseMonitorsAPI                       = nil
 	_ *dashboards.LakeviewAPI                             = nil
 	_ *compute.LibrariesAPI                               = nil
 	_ *billing.LogDeliveryAPI                             = nil
@@ -331,6 +330,7 @@ var (
 	_ *marketplace.ProviderProvidersAPI                   = nil
 	_ *sharing.ProvidersAPI                               = nil
 	_ *oauth2.PublishedAppIntegrationAPI                  = nil
+	_ *catalog.QualityMonitorsAPI                         = nil
 	_ *sql.QueriesAPI                                     = nil
 	_ *sql.QueryHistoryAPI                                = nil
 	_ *sql.QueryVisualizationsAPI                         = nil

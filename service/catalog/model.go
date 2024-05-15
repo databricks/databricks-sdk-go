@@ -1356,12 +1356,6 @@ func (s DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a table monitor
-type DeleteLakehouseMonitorRequest struct {
-	// Full name of the table.
-	TableName string `json:"-" url:"-"`
-}
-
 // Delete a metastore
 type DeleteMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
@@ -1392,6 +1386,12 @@ type DeleteModelVersionRequest struct {
 type DeleteOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
+}
+
+// Delete a table monitor
+type DeleteQualityMonitorRequest struct {
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
 }
 
 // Delete a Registered Model
@@ -2226,12 +2226,6 @@ func (s GetGrantRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a table monitor
-type GetLakehouseMonitorRequest struct {
-	// Full name of the table.
-	TableName string `json:"-" url:"-"`
-}
-
 // Get a metastore
 type GetMetastoreRequest struct {
 	// Unique ID of the metastore.
@@ -2343,6 +2337,12 @@ func (s GetModelVersionRequest) MarshalJSON() ([]byte, error) {
 type GetOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
+}
+
+// Get a table monitor
+type GetQualityMonitorRequest struct {
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
 }
 
 // Get refresh
@@ -2492,9 +2492,46 @@ type ListCatalogsResponse struct {
 	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
 }
 
+// List connections
+type ListConnectionsRequest struct {
+	// Maximum number of connections to return. - If not set, all connections
+	// are returned (not recommended). - when set to a value greater than 0, the
+	// page length is the minimum of this value and a server configured value; -
+	// when set to 0, the page length is set to a server configured value
+	// (recommended); - when set to a value less than 0, an invalid parameter
+	// error is returned;
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListConnectionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListConnectionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListConnectionsResponse struct {
 	// An array of connection information objects.
 	Connections []ConnectionInfo `json:"connections,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListConnectionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListConnectionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List external locations
@@ -4770,6 +4807,9 @@ type UpdateMonitor struct {
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
 	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
+	// Id of dashboard that visualizes the computed metrics. This can be empty
+	// if the monitor is in PENDING state.
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// The data classification config for the monitor.
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
 	// Configuration for monitoring inference logs.

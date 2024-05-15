@@ -561,13 +561,13 @@ func (a *librariesImpl) AllClusterStatuses(ctx context.Context) (*ListAllCluster
 	return &listAllClusterLibraryStatusesResponse, err
 }
 
-func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterStatusResponse, error) {
-	var clusterStatusResponse ClusterStatusResponse
+func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error) {
+	var clusterLibraryStatuses ClusterLibraryStatuses
 	path := "/api/2.0/libraries/cluster-status"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &clusterStatusResponse)
-	return &clusterStatusResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &clusterLibraryStatuses)
+	return &clusterLibraryStatuses, err
 }
 
 func (a *librariesImpl) Install(ctx context.Context, request InstallLibraries) error {

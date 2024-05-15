@@ -517,6 +517,8 @@ type LibrariesService interface {
 	//
 	// Get the status of all libraries on all clusters. A status is returned for
 	// all libraries installed on this cluster via the API or the libraries UI.
+	//
+	// Use AllClusterStatusesAll() to get all ClusterLibraryStatuses instances
 	AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error)
 
 	// Get status.
@@ -530,7 +532,7 @@ type LibrariesService interface {
 	// removal, in no particular order, are returned last.
 	//
 	// Use ClusterStatusAll() to get all LibraryFullStatus instances
-	ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterStatusResponse, error)
+	ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error)
 
 	// Add a library.
 	//

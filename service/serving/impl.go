@@ -142,12 +142,13 @@ func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServing
 	return err
 }
 
-func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) error {
+func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error) {
 	var exportMetricsResponse ExportMetricsResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/metrics", request.Name)
 	headers := make(map[string]string)
+	headers["Accept"] = "text/plain"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &exportMetricsResponse)
-	return err
+	return &exportMetricsResponse, err
 }
 
 func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error) {

@@ -97,7 +97,7 @@ type ServingEndpointsService interface {
 	//
 	// Retrieves the metrics associated with the provided serving endpoint in
 	// either Prometheus or OpenMetrics exposition format.
-	ExportMetrics(ctx context.Context, request ExportMetricsRequest) error
+	ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error)
 
 	// Get a single serving endpoint.
 	//
