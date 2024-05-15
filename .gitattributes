@@ -16,7 +16,6 @@ experimental/mocks/service/catalog/mock_connections_interface.go linguist-genera
 experimental/mocks/service/catalog/mock_external_locations_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_functions_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_grants_interface.go linguist-generated=true
-experimental/mocks/service/catalog/mock_lakehouse_monitors_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_metastores_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_model_versions_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_online_tables_interface.go linguist-generated=true
