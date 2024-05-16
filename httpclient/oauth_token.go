@@ -8,10 +8,17 @@ import (
 	"golang.org/x/oauth2"
 )
 
+const JWTGrantType = "urn:ietf:params:oauth:grant-type:jwt-bearer"
+
+// GetOAuthTokenRequest is the request to get an OAuth token. It follows the OAuth 2.0 Rich Authorization Requests specification.
+// https://datatracker.ietf.org/doc/html/rfc9396
 type GetOAuthTokenRequest struct {
-	GrantType            string `url:"grant_type"`
+	// Defines the method used to get the token.
+	GrantType string `url:"grant_type"`
+	// An array of authorization details that the token should be scoped to. This needs to be passed in string format.
 	AuthorizationDetails string `url:"authorization_details"`
-	Assertion            string `url:"assertion"`
+	// The token that will be exchanged for an OAuth token.
+	Assertion string `url:"assertion"`
 }
 
 // Returns a new OAuth token using the provided token. The token must be a JWT token.
@@ -19,23 +26,19 @@ type GetOAuthTokenRequest struct {
 //
 // **NOTE:** Experimental: This API may change or be removed in a future release
 // without warning.
-func (c *ApiClient) GetOAuthToken(authDetails string, token *oauth2.Token) (*credentials.OAuthToken, error) {
+func (c *ApiClient) GetOAuthToken(ctx context.Context, authDetails string, token *oauth2.Token) (*credentials.OAuthToken, error) {
 	path := "/oidc/v1/token"
-	headers := map[string]string{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
 	data := GetOAuthTokenRequest{
-		GrantType:            "urn:ietf:params:oauth:grant-type:jwt-bearer",
+		GrantType:            JWTGrantType,
 		AuthorizationDetails: authDetails,
 		Assertion:            token.AccessToken,
 	}
 	var response credentials.OAuthToken
 	opts := []DoOption{
-		WithRequestHeaders(headers),
 		WithUrlEncodedData(data),
 		WithResponseUnmarshal(&response),
 	}
-	err := c.Do(c.InContextForOAuth2(context.Background()), http.MethodPost, path, opts...)
+	err := c.Do(ctx, http.MethodPost, path, opts...)
 	if err != nil {
 		return nil, err
 	}

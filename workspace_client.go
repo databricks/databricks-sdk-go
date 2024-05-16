@@ -3,6 +3,7 @@
 package databricks
 
 import (
+	"context"
 	"errors"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -976,12 +977,12 @@ type WorkspaceClient struct {
 //
 // **NOTE:** Experimental: This API may change or be removed in a future release
 // without warning.
-func (a *WorkspaceClient) GetOAuthToken(authorizationDetails string) (*credentials.OAuthToken, error) {
+func (a *WorkspaceClient) GetOAuthToken(ctx context.Context, authorizationDetails string) (*credentials.OAuthToken, error) {
 	originalToken, err := a.Config.GetToken()
 	if err != nil {
 		return nil, err
 	}
-	return a.apiClient.GetOAuthToken(authorizationDetails, originalToken)
+	return a.apiClient.GetOAuthToken(ctx, authorizationDetails, originalToken)
 }
 
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")

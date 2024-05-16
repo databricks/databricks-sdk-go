@@ -61,7 +61,7 @@ func TestUrlEncoding(t *testing.T) {
 		GrantType:            "grant",
 	}
 	requestURL := "/a/b/c"
-	body, err := makeRequestBody("POST", &requestURL, data, "application/x-www-form-urlencoded")
+	body, err := makeRequestBody("POST", &requestURL, data, UrlEncodedContentType)
 	require.NoError(t, err)
 	bodyBytes, err := io.ReadAll(body.Reader)
 	require.NoError(t, err)

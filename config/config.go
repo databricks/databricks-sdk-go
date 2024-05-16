@@ -20,11 +20,11 @@ import (
 // CredentialsStrategy responsible for configuring static or refreshable
 // authentication credentials for Databricks REST APIs
 type CredentialsStrategy interface {
-	// Name returns human-addressable name of this credentials provider name
+	// Name returns human-addressable name of this credentials provider strategy
 	Name() string
 
-	// Configure creates CredentialsProvider or returns nil if a given credetials
-	// strategy ßare not configured. It returns an error if credentials are misconfigured.
+	// Configure creates CredentialsProvider or returns nil if a given credentials
+	// strategy are not configured. It returns an error if credentials are misconfigured.
 	// Takes a context and a pointer to a Config instance, that holds auth mutex.
 	Configure(context.Context, *Config) (credentials.CredentialsProvider, error)
 }
@@ -223,7 +223,7 @@ func (c *Config) GetToken() (*oauth2.Token, error) {
 	if h, ok := c.credentialsProvider.(credentials.OAuthCredentialsProvider); ok {
 		return h.Token()
 	} else {
-		return nil, fmt.Errorf("OAuth Token can only be retrieved for OauthCredentialsProvider")
+		return nil, fmt.Errorf("OAuth Token not supported for current auth type %s", c.AuthType)
 	}
 }
 

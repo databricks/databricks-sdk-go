@@ -4,7 +4,10 @@ import (
 	"net/http"
 )
 
+// CredentialsProvider is an interface for providing credentials to the client.
+// Implementations of this interface should set the necessary headers on the request.
 type CredentialsProvider interface {
+	// SetHeaders sets the necessary headers on the request.
 	SetHeaders(r *http.Request) error
 }
 

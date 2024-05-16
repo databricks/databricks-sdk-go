@@ -13,6 +13,8 @@ import (
 	"golang.org/x/oauth2"
 )
 
+const UrlEncodedContentType = "application/x-www-form-urlencoded"
+
 // WithRequestHeader adds a request visitor, that sets a header on a request
 func WithRequestHeader(k, v string) DoOption {
 	return WithRequestVisitor(func(r *http.Request) error {
@@ -73,11 +75,11 @@ func WithRequestData(body any) DoOption {
 func WithUrlEncodedData(body any) DoOption {
 	return DoOption{
 		in: func(r *http.Request) error {
-			r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			r.Header.Set("Content-Type", UrlEncodedContentType)
 			return nil
 		},
 		body:        body,
-		contentType: "application/x-www-form-urlencoded",
+		contentType: UrlEncodedContentType,
 	}
 }
 
@@ -151,7 +153,7 @@ func makeRequestBody(method string, requestURL *string, data interface{}, conten
 		*requestURL += "?" + qs
 		return common.NewRequestBody([]byte{})
 	}
-	if contentType == "application/x-www-form-urlencoded" {
+	if contentType == UrlEncodedContentType {
 		qs, err := makeQueryString(data)
 		if err != nil {
 			return common.RequestBody{}, err
