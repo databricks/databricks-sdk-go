@@ -4,6 +4,7 @@ package serving
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
@@ -106,6 +107,8 @@ type AppDeployment struct {
 	CreateTime string `json:"create_time,omitempty"`
 	// The email of the user creates the deployment.
 	Creator string `json:"creator,omitempty"`
+	// The deployment artifacts for an app.
+	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
 	// The unique id of the deployment.
 	DeploymentId string `json:"deployment_id,omitempty"`
 	// The source code path of the deployment.
@@ -126,6 +129,21 @@ func (s AppDeployment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type AppDeploymentArtifacts struct {
+	// The source code of the deployment.
+	SourceCodePath string `json:"source_code_path,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AppDeploymentArtifacts) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppDeploymentArtifacts) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AppDeploymentState string
 
 const AppDeploymentStateCancelled AppDeploymentState = `CANCELLED`
@@ -135,6 +153,8 @@ const AppDeploymentStateFailed AppDeploymentState = `FAILED`
 const AppDeploymentStateInProgress AppDeploymentState = `IN_PROGRESS`
 
 const AppDeploymentStateStateUnspecified AppDeploymentState = `STATE_UNSPECIFIED`
+
+const AppDeploymentStateStopped AppDeploymentState = `STOPPED`
 
 const AppDeploymentStateSucceeded AppDeploymentState = `SUCCEEDED`
 
@@ -146,11 +166,11 @@ func (f *AppDeploymentState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppDeploymentState) Set(v string) error {
 	switch v {
-	case `CANCELLED`, `FAILED`, `IN_PROGRESS`, `STATE_UNSPECIFIED`, `SUCCEEDED`:
+	case `CANCELLED`, `FAILED`, `IN_PROGRESS`, `STATE_UNSPECIFIED`, `STOPPED`, `SUCCEEDED`:
 		*f = AppDeploymentState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "IN_PROGRESS", "STATE_UNSPECIFIED", "SUCCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "IN_PROGRESS", "STATE_UNSPECIFIED", "STOPPED", "SUCCEEDED"`, v)
 	}
 }
 
@@ -399,9 +419,21 @@ type CreateServingEndpoint struct {
 	// Rate limits to be applied to the serving endpoint. NOTE: only external
 	// and foundation model endpoints are supported as of now.
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
+	// Enable route optimization for the serving endpoint.
+	RouteOptimized bool `json:"route_optimized,omitempty"`
 	// Tags to be attached to the serving endpoint and automatically propagated
 	// to billing logs.
 	Tags []EndpointTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateServingEndpoint) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateServingEndpoint) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DatabricksModelServingConfig struct {
@@ -682,6 +714,7 @@ type ExportMetricsRequest struct {
 }
 
 type ExportMetricsResponse struct {
+	Contents io.ReadCloser `json:"-"`
 }
 
 type ExternalModel struct {
@@ -1773,6 +1806,8 @@ type ServingEndpointDetailed struct {
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// The email of the user who created the serving endpoint.
 	Creator string `json:"creator,omitempty"`
+	// Endpoint invocation url if route optimization is enabled for endpoint
+	EndpointUrl string `json:"endpoint_url,omitempty"`
 	// System-generated ID of the endpoint. This is used to refer to the
 	// endpoint in the Permissions API
 	Id string `json:"id,omitempty"`
@@ -1784,6 +1819,9 @@ type ServingEndpointDetailed struct {
 	PendingConfig *EndpointPendingConfig `json:"pending_config,omitempty"`
 	// The permission level of the principal making the request.
 	PermissionLevel ServingEndpointDetailedPermissionLevel `json:"permission_level,omitempty"`
+	// Boolean representing if route optimization has been enabled for the
+	// endpoint
+	RouteOptimized bool `json:"route_optimized,omitempty"`
 	// Information corresponding to the state of the serving endpoint.
 	State *EndpointState `json:"state,omitempty"`
 	// Tags attached to the serving endpoint.

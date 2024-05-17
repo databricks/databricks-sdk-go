@@ -143,7 +143,8 @@ type DeleteIndexResponse struct {
 type DeltaSyncVectorIndexSpecRequest struct {
 	// The columns that contain the embedding source.
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
-	// The columns that contain the embedding vectors.
+	// The columns that contain the embedding vectors. The format should be
+	// array[double].
 	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
 	// Pipeline execution mode.
 	//
@@ -425,6 +426,10 @@ func (s ListIndexesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListValue struct {
+	Values []Value `json:"values,omitempty"`
+}
+
 type ListVectorIndexesResponse struct {
 	// A token that can be used to get the next page of results. If not present,
 	// there are no more results to show.
@@ -440,6 +445,24 @@ func (s *ListVectorIndexesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListVectorIndexesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Key-value pair.
+type MapStringValueEntry struct {
+	// Column name.
+	Key string `json:"key,omitempty"`
+	// Column value, nullable.
+	Value *Value `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MapStringValueEntry) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MapStringValueEntry) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -589,6 +612,49 @@ func (s ResultManifest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Request payload for scanning data from a vector index.
+type ScanVectorIndexRequest struct {
+	// Name of the vector index to scan.
+	IndexName string `json:"-" url:"-"`
+	// Primary key of the last entry returned in the previous scan.
+	LastPrimaryKey string `json:"last_primary_key,omitempty"`
+	// Number of results to return. Defaults to 10.
+	NumResults int `json:"num_results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ScanVectorIndexRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ScanVectorIndexRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response to a scan vector index request.
+type ScanVectorIndexResponse struct {
+	// List of data entries
+	Data []Struct `json:"data,omitempty"`
+	// Primary key of the last entry.
+	LastPrimaryKey string `json:"last_primary_key,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ScanVectorIndexResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ScanVectorIndexResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type Struct struct {
+	// Data entry, corresponding to a row in a vector index.
+	Fields []MapStringValueEntry `json:"fields,omitempty"`
+}
+
 // Synchronize an index
 type SyncIndexRequest struct {
 	// Name of the vector index to synchronize. Must be a Delta Sync Index.
@@ -661,6 +727,30 @@ type UpsertDataVectorIndexResponse struct {
 	Result *UpsertDataResult `json:"result,omitempty"`
 	// Status of the upsert operation.
 	Status UpsertDataStatus `json:"status,omitempty"`
+}
+
+type Value struct {
+	BoolValue bool `json:"bool_value,omitempty"`
+
+	ListValue *ListValue `json:"list_value,omitempty"`
+
+	NullValue string `json:"null_value,omitempty"`
+
+	NumberValue float64 `json:"number_value,omitempty"`
+
+	StringValue string `json:"string_value,omitempty"`
+
+	StructValue *Struct `json:"struct_value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Value) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Value) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type VectorIndex struct {

@@ -25,9 +25,9 @@ func (_m *MockConnectionsInterface) EXPECT() *MockConnectionsInterface_Expecter 
 	return &MockConnectionsInterface_Expecter{mock: &_m.Mock}
 }
 
-// ConnectionInfoNameToFullNameMap provides a mock function with given fields: ctx
-func (_m *MockConnectionsInterface) ConnectionInfoNameToFullNameMap(ctx context.Context) (map[string]string, error) {
-	ret := _m.Called(ctx)
+// ConnectionInfoNameToFullNameMap provides a mock function with given fields: ctx, request
+func (_m *MockConnectionsInterface) ConnectionInfoNameToFullNameMap(ctx context.Context, request catalog.ListConnectionsRequest) (map[string]string, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ConnectionInfoNameToFullNameMap")
@@ -35,19 +35,19 @@ func (_m *MockConnectionsInterface) ConnectionInfoNameToFullNameMap(ctx context.
 
 	var r0 map[string]string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) (map[string]string, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListConnectionsRequest) (map[string]string, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) map[string]string); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListConnectionsRequest) map[string]string); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(map[string]string)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListConnectionsRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -62,13 +62,14 @@ type MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call struct {
 
 // ConnectionInfoNameToFullNameMap is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockConnectionsInterface_Expecter) ConnectionInfoNameToFullNameMap(ctx interface{}) *MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call {
-	return &MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call{Call: _e.mock.On("ConnectionInfoNameToFullNameMap", ctx)}
+//   - request catalog.ListConnectionsRequest
+func (_e *MockConnectionsInterface_Expecter) ConnectionInfoNameToFullNameMap(ctx interface{}, request interface{}) *MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call {
+	return &MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call{Call: _e.mock.On("ConnectionInfoNameToFullNameMap", ctx, request)}
 }
 
-func (_c *MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call) Run(run func(ctx context.Context)) *MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call {
+func (_c *MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call) Run(run func(ctx context.Context, request catalog.ListConnectionsRequest)) *MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListConnectionsRequest))
 	})
 	return _c
 }
@@ -78,7 +79,7 @@ func (_c *MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call) Return(
 	return _c
 }
 
-func (_c *MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call) RunAndReturn(run func(context.Context) (map[string]string, error)) *MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call {
+func (_c *MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call) RunAndReturn(run func(context.Context, catalog.ListConnectionsRequest) (map[string]string, error)) *MockConnectionsInterface_ConnectionInfoNameToFullNameMap_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -401,17 +402,17 @@ func (_c *MockConnectionsInterface_Impl_Call) RunAndReturn(run func() catalog.Co
 	return _c
 }
 
-// List provides a mock function with given fields: ctx
-func (_m *MockConnectionsInterface) List(ctx context.Context) listing.Iterator[catalog.ConnectionInfo] {
-	ret := _m.Called(ctx)
+// List provides a mock function with given fields: ctx, request
+func (_m *MockConnectionsInterface) List(ctx context.Context, request catalog.ListConnectionsRequest) listing.Iterator[catalog.ConnectionInfo] {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
 	var r0 listing.Iterator[catalog.ConnectionInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[catalog.ConnectionInfo]); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListConnectionsRequest) listing.Iterator[catalog.ConnectionInfo]); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(listing.Iterator[catalog.ConnectionInfo])
@@ -428,13 +429,14 @@ type MockConnectionsInterface_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockConnectionsInterface_Expecter) List(ctx interface{}) *MockConnectionsInterface_List_Call {
-	return &MockConnectionsInterface_List_Call{Call: _e.mock.On("List", ctx)}
+//   - request catalog.ListConnectionsRequest
+func (_e *MockConnectionsInterface_Expecter) List(ctx interface{}, request interface{}) *MockConnectionsInterface_List_Call {
+	return &MockConnectionsInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
 }
 
-func (_c *MockConnectionsInterface_List_Call) Run(run func(ctx context.Context)) *MockConnectionsInterface_List_Call {
+func (_c *MockConnectionsInterface_List_Call) Run(run func(ctx context.Context, request catalog.ListConnectionsRequest)) *MockConnectionsInterface_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListConnectionsRequest))
 	})
 	return _c
 }
@@ -444,14 +446,14 @@ func (_c *MockConnectionsInterface_List_Call) Return(_a0 listing.Iterator[catalo
 	return _c
 }
 
-func (_c *MockConnectionsInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[catalog.ConnectionInfo]) *MockConnectionsInterface_List_Call {
+func (_c *MockConnectionsInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListConnectionsRequest) listing.Iterator[catalog.ConnectionInfo]) *MockConnectionsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// ListAll provides a mock function with given fields: ctx
-func (_m *MockConnectionsInterface) ListAll(ctx context.Context) ([]catalog.ConnectionInfo, error) {
-	ret := _m.Called(ctx)
+// ListAll provides a mock function with given fields: ctx, request
+func (_m *MockConnectionsInterface) ListAll(ctx context.Context, request catalog.ListConnectionsRequest) ([]catalog.ConnectionInfo, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
@@ -459,19 +461,19 @@ func (_m *MockConnectionsInterface) ListAll(ctx context.Context) ([]catalog.Conn
 
 	var r0 []catalog.ConnectionInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) ([]catalog.ConnectionInfo, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListConnectionsRequest) ([]catalog.ConnectionInfo, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) []catalog.ConnectionInfo); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListConnectionsRequest) []catalog.ConnectionInfo); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]catalog.ConnectionInfo)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListConnectionsRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -486,13 +488,14 @@ type MockConnectionsInterface_ListAll_Call struct {
 
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockConnectionsInterface_Expecter) ListAll(ctx interface{}) *MockConnectionsInterface_ListAll_Call {
-	return &MockConnectionsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx)}
+//   - request catalog.ListConnectionsRequest
+func (_e *MockConnectionsInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockConnectionsInterface_ListAll_Call {
+	return &MockConnectionsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
 }
 
-func (_c *MockConnectionsInterface_ListAll_Call) Run(run func(ctx context.Context)) *MockConnectionsInterface_ListAll_Call {
+func (_c *MockConnectionsInterface_ListAll_Call) Run(run func(ctx context.Context, request catalog.ListConnectionsRequest)) *MockConnectionsInterface_ListAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListConnectionsRequest))
 	})
 	return _c
 }
@@ -502,7 +505,7 @@ func (_c *MockConnectionsInterface_ListAll_Call) Return(_a0 []catalog.Connection
 	return _c
 }
 
-func (_c *MockConnectionsInterface_ListAll_Call) RunAndReturn(run func(context.Context) ([]catalog.ConnectionInfo, error)) *MockConnectionsInterface_ListAll_Call {
+func (_c *MockConnectionsInterface_ListAll_Call) RunAndReturn(run func(context.Context, catalog.ListConnectionsRequest) ([]catalog.ConnectionInfo, error)) *MockConnectionsInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

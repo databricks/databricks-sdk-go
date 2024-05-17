@@ -1256,6 +1256,8 @@ type ListListingsRequest struct {
 	Assets []AssetType `json:"-" url:"assets,omitempty"`
 	// Matches any of the following categories
 	Categories []Category `json:"-" url:"categories,omitempty"`
+
+	IsAscending bool `json:"-" url:"is_ascending,omitempty"`
 	// Filters each listing based on if it is free.
 	IsFree bool `json:"-" url:"is_free,omitempty"`
 	// Filters each listing based on if it is a private exchange.
@@ -1269,7 +1271,7 @@ type ListListingsRequest struct {
 	// Matches any of the following provider ids
 	ProviderIds []string `json:"-" url:"provider_ids,omitempty"`
 	// Criteria for sorting the resulting set of listings.
-	SortBySpec *SortBySpec `json:"-" url:"sort_by_spec,omitempty"`
+	SortBy SortBy `json:"-" url:"sort_by,omitempty"`
 	// Matches any of the following tags
 	Tags []ListingTag `json:"-" url:"tags,omitempty"`
 
@@ -1821,6 +1823,8 @@ type SearchListingsRequest struct {
 	// Matches any of the following categories
 	Categories []Category `json:"-" url:"categories,omitempty"`
 
+	IsAscending bool `json:"-" url:"is_ascending,omitempty"`
+
 	IsFree bool `json:"-" url:"is_free,omitempty"`
 
 	IsPrivateExchange bool `json:"-" url:"is_private_exchange,omitempty"`
@@ -1915,42 +1919,6 @@ func (f *SortBy) Set(v string) error {
 // Type always returns SortBy to satisfy [pflag.Value] interface
 func (f *SortBy) Type() string {
 	return "SortBy"
-}
-
-type SortBySpec struct {
-	// The field on which to sort the listing.
-	SortBy SortBy `json:"sort_by" url:"sort_by"`
-	// The order in which to sort the listing.
-	SortOrder SortOrder `json:"sort_order" url:"sort_order"`
-}
-
-type SortOrder string
-
-const SortOrderSortOrderAscending SortOrder = `SORT_ORDER_ASCENDING`
-
-const SortOrderSortOrderDescending SortOrder = `SORT_ORDER_DESCENDING`
-
-const SortOrderSortOrderUnspecified SortOrder = `SORT_ORDER_UNSPECIFIED`
-
-// String representation for [fmt.Print]
-func (f *SortOrder) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *SortOrder) Set(v string) error {
-	switch v {
-	case `SORT_ORDER_ASCENDING`, `SORT_ORDER_DESCENDING`, `SORT_ORDER_UNSPECIFIED`:
-		*f = SortOrder(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "SORT_ORDER_ASCENDING", "SORT_ORDER_DESCENDING", "SORT_ORDER_UNSPECIFIED"`, v)
-	}
-}
-
-// Type always returns SortOrder to satisfy [pflag.Value] interface
-func (f *SortOrder) Type() string {
-	return "SortOrder"
 }
 
 type TokenDetail struct {

@@ -597,13 +597,13 @@ type ServingEndpointsInterface interface {
 	//
 	// Retrieves the metrics associated with the provided serving endpoint in either
 	// Prometheus or OpenMetrics exposition format.
-	ExportMetrics(ctx context.Context, request ExportMetricsRequest) error
+	ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error)
 
 	// Get metrics of a serving endpoint.
 	//
 	// Retrieves the metrics associated with the provided serving endpoint in either
 	// Prometheus or OpenMetrics exposition format.
-	ExportMetricsByName(ctx context.Context, name string) error
+	ExportMetricsByName(ctx context.Context, name string) (*ExportMetricsResponse, error)
 
 	// Get a single serving endpoint.
 	//
@@ -887,7 +887,7 @@ func (a *ServingEndpointsAPI) DeleteByName(ctx context.Context, name string) err
 //
 // Retrieves the metrics associated with the provided serving endpoint in either
 // Prometheus or OpenMetrics exposition format.
-func (a *ServingEndpointsAPI) ExportMetrics(ctx context.Context, request ExportMetricsRequest) error {
+func (a *ServingEndpointsAPI) ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error) {
 	return a.impl.ExportMetrics(ctx, request)
 }
 
@@ -895,7 +895,7 @@ func (a *ServingEndpointsAPI) ExportMetrics(ctx context.Context, request ExportM
 //
 // Retrieves the metrics associated with the provided serving endpoint in either
 // Prometheus or OpenMetrics exposition format.
-func (a *ServingEndpointsAPI) ExportMetricsByName(ctx context.Context, name string) error {
+func (a *ServingEndpointsAPI) ExportMetricsByName(ctx context.Context, name string) (*ExportMetricsResponse, error) {
 	return a.impl.ExportMetrics(ctx, ExportMetricsRequest{
 		Name: name,
 	})
