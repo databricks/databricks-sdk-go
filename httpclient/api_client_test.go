@@ -221,7 +221,7 @@ func TestFailPerformChannel(t *testing.T) {
 	c := &ApiClient{
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	_, err := c.perform(ctx, "GET", "/", true)
+	err := c.Do(ctx, "GET", "/", WithRequestData(true))
 	require.EqualError(t, err, "request marshal: unsupported query string data: true")
 }
 

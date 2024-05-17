@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -30,7 +31,7 @@ func (c AzureMsiCredentials) Name() string {
 	return "azure-msi"
 }
 
-func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && !cfg.IsAccountClient()) {
 		return nil, nil
 	}
@@ -44,7 +45,8 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
 	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureApplicationID))
 	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureServiceManagementEndpoint()))
-	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken)), nil
+	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken))
+	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }
 
 // implementing azureHostResolver for ensureWorkspaceUrl to work
