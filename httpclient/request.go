@@ -13,6 +13,8 @@ import (
 	"golang.org/x/oauth2"
 )
 
+const UrlEncodedContentType = "application/x-www-form-urlencoded"
+
 // WithRequestHeader adds a request visitor, that sets a header on a request
 func WithRequestHeader(k, v string) DoOption {
 	return WithRequestVisitor(func(r *http.Request) error {
@@ -64,6 +66,23 @@ func WithRequestData(body any) DoOption {
 	}
 }
 
+// WithUrlEncodedData takes either a struct instance, map, string, bytes, or io.Reader plus
+// a content type, and sends it either as query string for GET and DELETE calls, or as request body
+// for POST, PUT, and PATCH calls. The content type is set to "application/x-www-form-urlencoded"
+// and the body is encoded as a query string.
+//
+// Experimental: this method may eventually be split into more granular options.
+func WithUrlEncodedData(body any) DoOption {
+	return DoOption{
+		in: func(r *http.Request) error {
+			r.Header.Set("Content-Type", UrlEncodedContentType)
+			return nil
+		},
+		body:        body,
+		contentType: UrlEncodedContentType,
+	}
+}
+
 func makeQueryString(data interface{}) (string, error) {
 	inputVal := reflect.ValueOf(data)
 	inputType := reflect.TypeOf(data)
@@ -83,7 +102,7 @@ func makeQueryString(data interface{}) (string, error) {
 				strings.Replace(url.QueryEscape(fmt.Sprintf("%v", k.Interface())), "+", "%20", -1),
 				strings.Replace(url.QueryEscape(fmt.Sprintf("%v", v.Interface())), "+", "%20", -1)))
 		}
-		return "?" + strings.Join(s, "&"), nil
+		return strings.Join(s, "&"), nil
 	}
 	if inputType.Kind() == reflect.Struct {
 		params, err := query.Values(data)
@@ -104,7 +123,7 @@ func makeQueryString(data interface{}) (string, error) {
 				protoCompatibleParams.Add(newK, v)
 			}
 		}
-		return "?" + protoCompatibleParams.Encode(), nil
+		return protoCompatibleParams.Encode(), nil
 	}
 	return "", fmt.Errorf("unsupported query string data: %#v", data)
 }
@@ -122,7 +141,7 @@ func EncodeMultiSegmentPathParameter(p string) string {
 	return b.String()
 }
 
-func makeRequestBody(method string, requestURL *string, data interface{}) (common.RequestBody, error) {
+func makeRequestBody(method string, requestURL *string, data interface{}, contentType string) (common.RequestBody, error) {
 	if data == nil {
 		return common.RequestBody{}, nil
 	}
@@ -131,8 +150,15 @@ func makeRequestBody(method string, requestURL *string, data interface{}) (commo
 		if err != nil {
 			return common.RequestBody{}, err
 		}
-		*requestURL += qs
+		*requestURL += "?" + qs
 		return common.NewRequestBody([]byte{})
+	}
+	if contentType == UrlEncodedContentType {
+		qs, err := makeQueryString(data)
+		if err != nil {
+			return common.RequestBody{}, err
+		}
+		return common.NewRequestBody(qs)
 	}
 	return common.NewRequestBody(data)
 }

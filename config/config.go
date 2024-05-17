@@ -12,20 +12,22 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/common/environment"
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"golang.org/x/oauth2"
 )
 
-// CredentialsProvider responsible for configuring static or refreshable
+// CredentialsStrategy responsible for configuring static or refreshable
 // authentication credentials for Databricks REST APIs
-type CredentialsProvider interface {
-	// Name returns human-addressable name of this credentials provider name
+type CredentialsStrategy interface {
+	// Name returns human-addressable name of this credentials provider strategy
 	Name() string
 
-	// Configure creates HTTP Request Visitor or returns nil if a given credetials
-	// are not configured. It returns an error if credentials are misconfigured.
+	// Configure creates CredentialsProvider or returns nil if a given credentials
+	// strategy are not configured. It returns an error if credentials are misconfigured.
 	// Takes a context and a pointer to a Config instance, that holds auth mutex.
-	Configure(context.Context, *Config) (func(*http.Request) error, error)
+	Configure(context.Context, *Config) (credentials.CredentialsProvider, error)
 }
 
 type Loader interface {
@@ -36,9 +38,9 @@ type Loader interface {
 
 // Config represents configuration for Databricks Connectivity
 type Config struct {
-	// Credentials holds an instance of Credentials Provider to authenticate with Databricks REST APIs.
-	// If no credentials provider is specified, `DefaultCredentials` are implicitly used.
-	Credentials CredentialsProvider
+	// Credentials holds an instance of Credentials Strategy to authenticate with Databricks REST APIs.
+	// If no credentials strategy is specified, `DefaultCredentials` are implicitly used.
+	Credentials CredentialsStrategy
 
 	// Databricks host (either of workspace endpoint or Accounts API endpoint)
 	Host string `name:"host" env:"DATABRICKS_HOST"`
@@ -148,7 +150,7 @@ type Config struct {
 	mu sync.Mutex
 
 	// HTTP request interceptor, that assigns Authorization header
-	auth func(r *http.Request) error
+	credentialsProvider credentials.CredentialsProvider
 
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
@@ -205,7 +207,25 @@ func (c *Config) Authenticate(r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	return c.auth(r)
+	return c.credentialsProvider.SetHeaders(r)
+}
+
+// Authenticate returns an OAuth token for the current configuration.
+// It will return an error if the CredentialsStrategy does not support OAuth tokens.
+func (c *Config) GetToken() (*oauth2.Token, error) {
+	err := c.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	err = c.authenticateIfNeeded()
+	if err != nil {
+		return nil, err
+	}
+	if h, ok := c.credentialsProvider.(credentials.OAuthCredentialsProvider); ok {
+		return h.Token()
+	} else {
+		return nil, fmt.Errorf("OAuth Token not supported for current auth type %s", c.AuthType)
+	}
 }
 
 // IsAzure returns if the client is configured for Azure Databricks.
@@ -313,12 +333,12 @@ func (c *Config) wrapDebug(err error) error {
 
 // authenticateIfNeeded lazily authenticates across authorizers or returns error
 func (c *Config) authenticateIfNeeded() error {
-	if c.auth != nil {
+	if c.credentialsProvider != nil {
 		return nil
 	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	if c.auth != nil {
+	if c.credentialsProvider != nil {
 		return nil
 	}
 	if c.Credentials == nil {
@@ -326,14 +346,14 @@ func (c *Config) authenticateIfNeeded() error {
 	}
 	c.fixHostIfNeeded()
 	ctx := c.refreshClient.InContextForOAuth2(c.refreshCtx)
-	visitor, err := c.Credentials.Configure(ctx, c)
+	credentialsProvider, err := c.Credentials.Configure(ctx, c)
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: %w", c.Credentials.Name(), err))
 	}
-	if visitor == nil {
+	if credentialsProvider == nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: not configured", c.Credentials.Name()))
 	}
-	c.auth = visitor
+	c.credentialsProvider = credentialsProvider
 	c.AuthType = c.Credentials.Name()
 	c.fixHostIfNeeded()
 	// TODO: error customization
