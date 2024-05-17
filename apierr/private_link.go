@@ -15,9 +15,10 @@ type privateLinkInfo struct {
 }
 
 func (p privateLinkInfo) errorMessage() string {
-	privateLinkValidationError := fmt.Sprintf(`
-The requested workspace has %[1]s enabled and is not accessible from the current network.
-Ensure that %[1]s your device has access to the %s and try again. For more information, see %s.`,
+	privateLinkValidationError := fmt.Sprintf(
+		`The requested workspace has %[1]s enabled and is not accessible from
+the current network. Ensure that %[1]s is properly configured and that your
+device has access to the %s. For more information, see %s.`,
 		p.serviceName, p.endpointName, p.referencePage)
 	return strings.ReplaceAll(privateLinkValidationError, "\n", " ")
 }

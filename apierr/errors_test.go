@@ -56,3 +56,19 @@ func TestApiErrorTransientRegexMatches(t *testing.T) {
 	ctx := context.Background()
 	assert.True(t, err.IsRetriable(ctx))
 }
+
+func TestApiErrorMapsPrivateLinkRedirect(t *testing.T) {
+	resp := common.ResponseWrapper{
+		Response: &http.Response{
+			Request: &http.Request{
+				URL: &url.URL{
+					Host: "adb-12345678910.1.azuredatabricks.net",
+					RawQuery: "error=private-link-validation-error",
+				},
+			},
+		},
+	}
+	err := GetAPIError(context.Background(), resp)
+	assert.ErrorIs(t, err, ErrPermissionDenied)
+	assert.Equal(t, err.(*APIError).ErrorCode, "PRIVATE_LINK_VALIDATION_ERROR")
+}
