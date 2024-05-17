@@ -74,3 +74,11 @@ func TestFromContext_Custom(t *testing.T) {
 func TestDefaultsAreValid(t *testing.T) {
 	WithProduct(productName, productVersion)
 }
+
+func TestMultiplePartners(t *testing.T) {
+	WithPartner("partner1")
+	WithPartner("partner2")
+	userAgent := FromContext(context.Background())
+	assert.Contains(t, userAgent, "partner/partner1")
+	assert.Contains(t, userAgent, "partner/partner2")
+}
