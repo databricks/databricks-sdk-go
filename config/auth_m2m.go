@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
@@ -22,7 +22,7 @@ func (c M2mCredentials) Name() string {
 	return "oauth-m2m"
 }
 
-func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.ClientID == "" || cfg.ClientSecret == "" {
 		return nil, nil
 	}
@@ -38,7 +38,8 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.
 		TokenURL:     endpoints.TokenEndpoint,
 		Scopes:       []string{"all-apis"},
 	}).TokenSource(ctx)
-	return refreshableVisitor(ts), nil
+	visitor := refreshableVisitor(ts)
+	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
 }
 
 func oidcEndpoints(ctx context.Context, cfg *Config) (*oauthAuthorizationServer, error) {
