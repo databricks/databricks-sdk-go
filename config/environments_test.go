@@ -3,6 +3,7 @@ package config
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,8 +15,8 @@ func TestDefaultEnvironmentIsReturned(t *testing.T) {
 func TestOverriddenEnvironmentIsReturned(t *testing.T) {
 	c := &Config{
 		Host: "something.else",
-		DatabricksEnvironment: &DatabricksEnvironment{
-			Cloud:   CloudAzure,
+		DatabricksEnvironment: &environment.DatabricksEnvironment{
+			Cloud:   environment.CloudAzure,
 			DnsZone: "holla",
 		},
 	}

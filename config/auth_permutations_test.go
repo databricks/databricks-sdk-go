@@ -8,6 +8,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -114,11 +115,11 @@ func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*Config,
 		AuthType:          cf.AuthType,
 	}
 	if client.IsAzure() {
-		client.DatabricksEnvironment = &DatabricksEnvironment{
-			Cloud:              CloudAzure,
+		client.DatabricksEnvironment = &environment.DatabricksEnvironment{
+			Cloud:              environment.CloudAzure,
 			DnsZone:            cf.Host,
 			AzureApplicationID: "abc",
-			AzureEnvironment:   &AzurePublicCloud,
+			AzureEnvironment:   &environment.AzurePublicCloud,
 		}
 	}
 	err := client.Authenticate(&http.Request{Header: http.Header{}})
