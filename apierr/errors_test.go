@@ -62,7 +62,8 @@ func TestApiErrorMapsPrivateLinkRedirect(t *testing.T) {
 		Response: &http.Response{
 			Request: &http.Request{
 				URL: &url.URL{
-					Host: "adb-12345678910.1.azuredatabricks.net",
+					Host:     "adb-12345678910.1.azuredatabricks.net",
+					Path:     "/login.html",
 					RawQuery: "error=private-link-validation-error",
 				},
 			},

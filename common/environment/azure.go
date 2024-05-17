@@ -1,6 +1,5 @@
 package environment
 
-
 type azureEnvironment struct {
 	Name                      string `json:"name"`
 	ServiceManagementEndpoint string `json:"serviceManagementEndpoint"`

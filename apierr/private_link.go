@@ -8,9 +8,24 @@ import (
 	"github.com/databricks/databricks-sdk-go/common/environment"
 )
 
+// Metadata about the private link product. Private link redirects users to the
+// login page with a query parameter that indicates the error. This struct
+// contains information about the private link service, the endpoint name, and a
+// reference page for more information.
+//
+// Eventually, the REST API should return an error directly when a request is
+// made from a network that does not have access to the workspace. Once that
+// happens, this struct can be removed.
 type privateLinkInfo struct {
-	serviceName   string
-	endpointName  string
+	// The name of the private link service (e.g. AWS PrivateLink, Azure Private
+	// Link, etc.)
+	serviceName string
+
+	// The name of the private link endpoint (e.g. AWS VPC endpoint, Azure Private
+	// Link endpoint, etc.)
+	endpointName string
+
+	// A reference page for more information about the private link service.
 	referencePage string
 }
 
@@ -23,6 +38,7 @@ device has access to the %s. For more information, see %s.`,
 	return strings.ReplaceAll(privateLinkValidationError, "\n", " ")
 }
 
+// Map of private link information by cloud.
 var privateLinkInfoMap = map[environment.Cloud]privateLinkInfo{
 	environment.CloudAWS: {
 		serviceName:   "AWS PrivateLink",
@@ -41,7 +57,11 @@ var privateLinkInfoMap = map[environment.Cloud]privateLinkInfo{
 	},
 }
 
-func PrivateLinkValidationError(url *url.URL) *APIError {
+func isPrivateLinkRedirect(url *url.URL) bool {
+	return strings.Contains(url.RawQuery, "error=private-link-validation-error") && url.EscapedPath() == "/login.html"
+}
+
+func privateLinkValidationError(url *url.URL) *APIError {
 	env := environment.GetEnvironmentForHostname(url.Host)
 	info := privateLinkInfoMap[env.Cloud]
 	return &APIError{
