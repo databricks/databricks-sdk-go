@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
@@ -121,7 +122,7 @@ type Config struct {
 	HTTPTransport http.RoundTripper
 
 	// Environment override to return when resolving the current environment.
-	DatabricksEnvironment *DatabricksEnvironment
+	DatabricksEnvironment *environment.DatabricksEnvironment
 
 	Loaders []Loader
 
@@ -232,12 +233,12 @@ func (c *Config) IsAzure() bool {
 	if c.AzureResourceID != "" {
 		return true
 	}
-	return c.Environment().Cloud == CloudAzure
+	return c.Environment().Cloud == environment.CloudAzure
 }
 
 // IsGcp returns if the client is configured for Databricks on Google Cloud.
 func (c *Config) IsGcp() bool {
-	return c.Environment().Cloud == CloudGCP
+	return c.Environment().Cloud == environment.CloudGCP
 }
 
 // IsAws returns if the client is configured for Databricks on AWS.

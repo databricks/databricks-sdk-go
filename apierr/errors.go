@@ -160,6 +160,11 @@ func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 		applyOverrides(ctx, apiError, resp.Response)
 		return apiError
 	}
+	// Attempts to access private link workspaces are redirected to the login page with a specific query parameter.
+	requestUrl := resp.Response.Request.URL
+	if isPrivateLinkRedirect(requestUrl) {
+		return privateLinkValidationError(requestUrl)
+	}
 	return nil
 }
 
