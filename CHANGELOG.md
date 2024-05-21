@@ -1,18 +1,17 @@
 # Version changelog
 
-## 
-Release v0.41.0
+## Release v0.41.0
 
-## Backward incompatible changes
-* `CredentialsProvider` has been renamed to `CredentialsStrategy`. Services using type check on such resources must update their code.
+### Backward incompatible changes
+* Renamed `CredentialsProvider` to `CredentialsStrategy`.
 
-## Improvements and new features
+### Improvements and new features
 
 * Create a method to generate OAuth tokens ([#886](https://github.com/databricks/databricks-sdk-go/pull/886)).
 * Better error message when private link enabled workspaces reject requests ([#924](https://github.com/databricks/databricks-sdk-go/pull/924)).
 * Update OpenAPI spec ([#926](https://github.com/databricks/databricks-sdk-go/pull/926)).
 
-API Changes:
+### API Changes:
 
  * Changed `List` method for [w.Connections](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionsAPI) workspace-level service to require request of [catalog.ListConnectionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListConnectionsRequest).
  * Renamed [w.LakehouseMonitors](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#LakehouseMonitorsAPI) workspace-level service to [w.QualityMonitors](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#QualityMonitorsAPI).
