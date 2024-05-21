@@ -1356,12 +1356,6 @@ func (s DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a table monitor
-type DeleteLakehouseMonitorRequest struct {
-	// Full name of the table.
-	TableName string `json:"-" url:"-"`
-}
-
 // Delete a metastore
 type DeleteMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
@@ -1392,6 +1386,12 @@ type DeleteModelVersionRequest struct {
 type DeleteOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
+}
+
+// Delete a table monitor
+type DeleteQualityMonitorRequest struct {
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
 }
 
 // Delete a Registered Model
@@ -1480,41 +1480,10 @@ type DisableRequest struct {
 	// The metastore ID under which the system schema lives.
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
-	SchemaName DisableSchemaName `json:"-" url:"-"`
+	SchemaName string `json:"-" url:"-"`
 }
 
 type DisableResponse struct {
-}
-
-type DisableSchemaName string
-
-const DisableSchemaNameAccess DisableSchemaName = `access`
-
-const DisableSchemaNameBilling DisableSchemaName = `billing`
-
-const DisableSchemaNameLineage DisableSchemaName = `lineage`
-
-const DisableSchemaNameOperationalData DisableSchemaName = `operational_data`
-
-// String representation for [fmt.Print]
-func (f *DisableSchemaName) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *DisableSchemaName) Set(v string) error {
-	switch v {
-	case `access`, `billing`, `lineage`, `operational_data`:
-		*f = DisableSchemaName(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "access", "billing", "lineage", "operational_data"`, v)
-	}
-}
-
-// Type always returns DisableSchemaName to satisfy [pflag.Value] interface
-func (f *DisableSchemaName) Type() string {
-	return "DisableSchemaName"
 }
 
 type EffectivePermissionsList struct {
@@ -1651,41 +1620,10 @@ type EnableRequest struct {
 	// The metastore ID under which the system schema lives.
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
-	SchemaName EnableSchemaName `json:"-" url:"-"`
+	SchemaName string `json:"-" url:"-"`
 }
 
 type EnableResponse struct {
-}
-
-type EnableSchemaName string
-
-const EnableSchemaNameAccess EnableSchemaName = `access`
-
-const EnableSchemaNameBilling EnableSchemaName = `billing`
-
-const EnableSchemaNameLineage EnableSchemaName = `lineage`
-
-const EnableSchemaNameOperationalData EnableSchemaName = `operational_data`
-
-// String representation for [fmt.Print]
-func (f *EnableSchemaName) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *EnableSchemaName) Set(v string) error {
-	switch v {
-	case `access`, `billing`, `lineage`, `operational_data`:
-		*f = EnableSchemaName(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "access", "billing", "lineage", "operational_data"`, v)
-	}
-}
-
-// Type always returns EnableSchemaName to satisfy [pflag.Value] interface
-func (f *EnableSchemaName) Type() string {
-	return "EnableSchemaName"
 }
 
 // Encryption options that apply to clients connecting to cloud storage.
@@ -2226,12 +2164,6 @@ func (s GetGrantRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a table monitor
-type GetLakehouseMonitorRequest struct {
-	// Full name of the table.
-	TableName string `json:"-" url:"-"`
-}
-
 // Get a metastore
 type GetMetastoreRequest struct {
 	// Unique ID of the metastore.
@@ -2343,6 +2275,12 @@ func (s GetModelVersionRequest) MarshalJSON() ([]byte, error) {
 type GetOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
+}
+
+// Get a table monitor
+type GetQualityMonitorRequest struct {
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
 }
 
 // Get refresh
@@ -2492,9 +2430,46 @@ type ListCatalogsResponse struct {
 	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
 }
 
+// List connections
+type ListConnectionsRequest struct {
+	// Maximum number of connections to return. - If not set, all connections
+	// are returned (not recommended). - when set to a value greater than 0, the
+	// page length is the minimum of this value and a server configured value; -
+	// when set to 0, the page length is set to a server configured value
+	// (recommended); - when set to a value less than 0, an invalid parameter
+	// error is returned;
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListConnectionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListConnectionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListConnectionsResponse struct {
 	// An array of connection information objects.
 	Connections []ConnectionInfo `json:"connections,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListConnectionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListConnectionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List external locations
@@ -3583,6 +3558,11 @@ func (f *MonitorRefreshInfoTrigger) Type() string {
 	return "MonitorRefreshInfoTrigger"
 }
 
+type MonitorRefreshListResponse struct {
+	// List of refreshes.
+	Refreshes []MonitorRefreshInfo `json:"refreshes,omitempty"`
+}
+
 type MonitorSnapshot struct {
 }
 
@@ -3871,6 +3851,8 @@ const PrivilegeSelect Privilege = `SELECT`
 
 const PrivilegeSetSharePermission Privilege = `SET_SHARE_PERMISSION`
 
+const PrivilegeSingleUserAccess Privilege = `SINGLE_USER_ACCESS`
+
 const PrivilegeUsage Privilege = `USAGE`
 
 const PrivilegeUseCatalog Privilege = `USE_CATALOG`
@@ -3901,11 +3883,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `SINGLE_USER_ACCESS`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "SINGLE_USER_ACCESS", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -4770,6 +4752,9 @@ type UpdateMonitor struct {
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
 	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
+	// Id of dashboard that visualizes the computed metrics. This can be empty
+	// if the monitor is in PENDING state.
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// The data classification config for the monitor.
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
 	// Configuration for monitoring inference logs.

@@ -1857,9 +1857,7 @@ type RepairRun struct {
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-	// A map from keys to values for jobs with Python wheel task, for example
-	// `"python_named_params": {"name": "task", "data":
-	// "dbfs:/path/to/data.json"}`.
+
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
@@ -2000,6 +1998,7 @@ type ResolvedStringParamsValues struct {
 	Parameters []string `json:"parameters,omitempty"`
 }
 
+// Next field: 15
 type ResolvedValues struct {
 	ConditionTask *ResolvedConditionTaskValues `json:"condition_task,omitempty"`
 
@@ -2321,9 +2320,7 @@ type RunJobTask struct {
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-	// A map from keys to values for jobs with Python wheel task, for example
-	// `"python_named_params": {"name": "task", "data":
-	// "dbfs:/path/to/data.json"}`.
+
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
@@ -2497,9 +2494,7 @@ type RunNow struct {
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-	// A map from keys to values for jobs with Python wheel task, for example
-	// `"python_named_params": {"name": "task", "data":
-	// "dbfs:/path/to/data.json"}`.
+
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
@@ -2663,9 +2658,7 @@ type RunParameters struct {
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-	// A map from keys to values for jobs with Python wheel task, for example
-	// `"python_named_params": {"name": "task", "data":
-	// "dbfs:/path/to/data.json"}`.
+
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to

@@ -266,6 +266,9 @@ type SharesService interface {
 	// In the case that the share name is changed, **updateShare** requires that
 	// the caller is both the share owner and a metastore admin.
 	//
+	// If there are notebook files in the share, the __storage_root__ field
+	// cannot be updated.
+	//
 	// For each table that is added through this method, the share owner must
 	// also have **SELECT** privilege on the table. This privilege must be
 	// maintained indefinitely for recipients to be able to access the table.

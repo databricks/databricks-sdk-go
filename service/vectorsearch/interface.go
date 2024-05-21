@@ -70,6 +70,12 @@ type VectorSearchIndexesService interface {
 	// Query the specified vector index.
 	QueryIndex(ctx context.Context, request QueryVectorIndexRequest) (*QueryVectorIndexResponse, error)
 
+	// Scan an index.
+	//
+	// Scan the specified vector index and return the first `num_results`
+	// entries after the exclusive `primary_key`.
+	ScanIndex(ctx context.Context, request ScanVectorIndexRequest) (*ScanVectorIndexResponse, error)
+
 	// Synchronize an index.
 	//
 	// Triggers a synchronization process for a specified vector index.

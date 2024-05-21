@@ -375,21 +375,33 @@ func (_c *MockServingEndpointsInterface_DeleteByName_Call) RunAndReturn(run func
 }
 
 // ExportMetrics provides a mock function with given fields: ctx, request
-func (_m *MockServingEndpointsInterface) ExportMetrics(ctx context.Context, request serving.ExportMetricsRequest) error {
+func (_m *MockServingEndpointsInterface) ExportMetrics(ctx context.Context, request serving.ExportMetricsRequest) (*serving.ExportMetricsResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ExportMetrics")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, serving.ExportMetricsRequest) error); ok {
+	var r0 *serving.ExportMetricsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.ExportMetricsRequest) (*serving.ExportMetricsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.ExportMetricsRequest) *serving.ExportMetricsResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.ExportMetricsResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, serving.ExportMetricsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockServingEndpointsInterface_ExportMetrics_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExportMetrics'
@@ -411,32 +423,44 @@ func (_c *MockServingEndpointsInterface_ExportMetrics_Call) Run(run func(ctx con
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_ExportMetrics_Call) Return(_a0 error) *MockServingEndpointsInterface_ExportMetrics_Call {
-	_c.Call.Return(_a0)
+func (_c *MockServingEndpointsInterface_ExportMetrics_Call) Return(_a0 *serving.ExportMetricsResponse, _a1 error) *MockServingEndpointsInterface_ExportMetrics_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_ExportMetrics_Call) RunAndReturn(run func(context.Context, serving.ExportMetricsRequest) error) *MockServingEndpointsInterface_ExportMetrics_Call {
+func (_c *MockServingEndpointsInterface_ExportMetrics_Call) RunAndReturn(run func(context.Context, serving.ExportMetricsRequest) (*serving.ExportMetricsResponse, error)) *MockServingEndpointsInterface_ExportMetrics_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ExportMetricsByName provides a mock function with given fields: ctx, name
-func (_m *MockServingEndpointsInterface) ExportMetricsByName(ctx context.Context, name string) error {
+func (_m *MockServingEndpointsInterface) ExportMetricsByName(ctx context.Context, name string) (*serving.ExportMetricsResponse, error) {
 	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ExportMetricsByName")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+	var r0 *serving.ExportMetricsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*serving.ExportMetricsResponse, error)); ok {
+		return rf(ctx, name)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *serving.ExportMetricsResponse); ok {
 		r0 = rf(ctx, name)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.ExportMetricsResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, name)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockServingEndpointsInterface_ExportMetricsByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExportMetricsByName'
@@ -458,12 +482,12 @@ func (_c *MockServingEndpointsInterface_ExportMetricsByName_Call) Run(run func(c
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_ExportMetricsByName_Call) Return(_a0 error) *MockServingEndpointsInterface_ExportMetricsByName_Call {
-	_c.Call.Return(_a0)
+func (_c *MockServingEndpointsInterface_ExportMetricsByName_Call) Return(_a0 *serving.ExportMetricsResponse, _a1 error) *MockServingEndpointsInterface_ExportMetricsByName_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_ExportMetricsByName_Call) RunAndReturn(run func(context.Context, string) error) *MockServingEndpointsInterface_ExportMetricsByName_Call {
+func (_c *MockServingEndpointsInterface_ExportMetricsByName_Call) RunAndReturn(run func(context.Context, string) (*serving.ExportMetricsResponse, error)) *MockServingEndpointsInterface_ExportMetricsByName_Call {
 	_c.Call.Return(run)
 	return _c
 }

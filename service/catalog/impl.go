@@ -275,12 +275,12 @@ func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest)
 	return &connectionInfo, err
 }
 
-func (a *connectionsImpl) List(ctx context.Context) (*ListConnectionsResponse, error) {
+func (a *connectionsImpl) List(ctx context.Context, request ListConnectionsRequest) (*ListConnectionsResponse, error) {
 	var listConnectionsResponse ListConnectionsResponse
 	path := "/api/2.1/unity-catalog/connections"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listConnectionsResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listConnectionsResponse)
 	return &listConnectionsResponse, err
 }
 
@@ -429,83 +429,6 @@ func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*Pe
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &permissionsList)
 	return &permissionsList, err
-}
-
-// unexported type that holds implementations of just LakehouseMonitors API methods
-type lakehouseMonitorsImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *lakehouseMonitorsImpl) CancelRefresh(ctx context.Context, request CancelRefreshRequest) error {
-	var cancelRefreshResponse CancelRefreshResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v/cancel", request.TableName, request.RefreshId)
-	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &cancelRefreshResponse)
-	return err
-}
-
-func (a *lakehouseMonitorsImpl) Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error) {
-	var monitorInfo MonitorInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &monitorInfo)
-	return &monitorInfo, err
-}
-
-func (a *lakehouseMonitorsImpl) Delete(ctx context.Context, request DeleteLakehouseMonitorRequest) error {
-	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
-	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return err
-}
-
-func (a *lakehouseMonitorsImpl) Get(ctx context.Context, request GetLakehouseMonitorRequest) (*MonitorInfo, error) {
-	var monitorInfo MonitorInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorInfo)
-	return &monitorInfo, err
-}
-
-func (a *lakehouseMonitorsImpl) GetRefresh(ctx context.Context, request GetRefreshRequest) (*MonitorRefreshInfo, error) {
-	var monitorRefreshInfo MonitorRefreshInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v", request.TableName, request.RefreshId)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorRefreshInfo)
-	return &monitorRefreshInfo, err
-}
-
-func (a *lakehouseMonitorsImpl) ListRefreshes(ctx context.Context, request ListRefreshesRequest) ([]MonitorRefreshInfo, error) {
-	var monitorRefreshInfoList []MonitorRefreshInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.TableName)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorRefreshInfoList)
-	return monitorRefreshInfoList, err
-}
-
-func (a *lakehouseMonitorsImpl) RunRefresh(ctx context.Context, request RunRefreshRequest) (*MonitorRefreshInfo, error) {
-	var monitorRefreshInfo MonitorRefreshInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.TableName)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &monitorRefreshInfo)
-	return &monitorRefreshInfo, err
-}
-
-func (a *lakehouseMonitorsImpl) Update(ctx context.Context, request UpdateMonitor) (*MonitorInfo, error) {
-	var monitorInfo MonitorInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &monitorInfo)
-	return &monitorInfo, err
 }
 
 // unexported type that holds implementations of just Metastores API methods
@@ -688,6 +611,83 @@ func (a *onlineTablesImpl) Get(ctx context.Context, request GetOnlineTableReques
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &onlineTable)
 	return &onlineTable, err
+}
+
+// unexported type that holds implementations of just QualityMonitors API methods
+type qualityMonitorsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *qualityMonitorsImpl) CancelRefresh(ctx context.Context, request CancelRefreshRequest) error {
+	var cancelRefreshResponse CancelRefreshResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v/cancel", request.TableName, request.RefreshId)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &cancelRefreshResponse)
+	return err
+}
+
+func (a *qualityMonitorsImpl) Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error) {
+	var monitorInfo MonitorInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &monitorInfo)
+	return &monitorInfo, err
+}
+
+func (a *qualityMonitorsImpl) Delete(ctx context.Context, request DeleteQualityMonitorRequest) error {
+	var deleteResponse DeleteResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return err
+}
+
+func (a *qualityMonitorsImpl) Get(ctx context.Context, request GetQualityMonitorRequest) (*MonitorInfo, error) {
+	var monitorInfo MonitorInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorInfo)
+	return &monitorInfo, err
+}
+
+func (a *qualityMonitorsImpl) GetRefresh(ctx context.Context, request GetRefreshRequest) (*MonitorRefreshInfo, error) {
+	var monitorRefreshInfo MonitorRefreshInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v", request.TableName, request.RefreshId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorRefreshInfo)
+	return &monitorRefreshInfo, err
+}
+
+func (a *qualityMonitorsImpl) ListRefreshes(ctx context.Context, request ListRefreshesRequest) (*MonitorRefreshListResponse, error) {
+	var monitorRefreshListResponse MonitorRefreshListResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.TableName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorRefreshListResponse)
+	return &monitorRefreshListResponse, err
+}
+
+func (a *qualityMonitorsImpl) RunRefresh(ctx context.Context, request RunRefreshRequest) (*MonitorRefreshInfo, error) {
+	var monitorRefreshInfo MonitorRefreshInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.TableName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &monitorRefreshInfo)
+	return &monitorRefreshInfo, err
+}
+
+func (a *qualityMonitorsImpl) Update(ctx context.Context, request UpdateMonitor) (*MonitorInfo, error) {
+	var monitorInfo MonitorInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &monitorInfo)
+	return &monitorInfo, err
 }
 
 // unexported type that holds implementations of just RegisteredModels API methods

@@ -114,8 +114,9 @@ func (s CreateCredentialsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type CreateRepo struct {
-	// Desired path for the repo in the workspace. Must be in the format
-	// /Repos/{folder}/{repo-name}.
+	// Desired path for the repo in the workspace. Almost any path in the
+	// workspace can be chosen. If repo is created in /Repos, path must be in
+	// the format /Repos/{folder}/{repo-name}.
 	Path string `json:"path,omitempty"`
 	// Git provider. This field is case-insensitive. The available Git providers
 	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
@@ -574,7 +575,8 @@ type ListReposRequest struct {
 	// first page of results as well as a next page token if there are more
 	// results.
 	NextPageToken string `json:"-" url:"next_page_token,omitempty"`
-	// Filters repos that have paths starting with the given path prefix.
+	// Filters repos that have paths starting with the given path prefix. If not
+	// provided repos from /Repos will be served.
 	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -823,8 +825,9 @@ type RepoInfo struct {
 	HeadCommitId string `json:"head_commit_id,omitempty"`
 	// ID of the repo object in the workspace.
 	Id int64 `json:"id,omitempty"`
-	// Desired path for the repo in the workspace. Must be in the format
-	// /Repos/{folder}/{repo-name}.
+	// Desired path for the repo in the workspace. Almost any path in the
+	// workspace can be chosen. If repo is created in /Repos, path must be in
+	// the format /Repos/{folder}/{repo-name}.
 	Path string `json:"path,omitempty"`
 	// Git provider. This field is case-insensitive. The available Git providers
 	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
