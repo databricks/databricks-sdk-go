@@ -43,7 +43,7 @@ func TestAccConnections(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, conn.Options, connUpdate.Options)
 
-	connList, err := w.Connections.ListAll(ctx)
+	connList, err := w.Connections.ListAll(ctx, catalog.ListConnectionsRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(connList) >= 1)
 }

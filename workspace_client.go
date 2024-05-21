@@ -384,17 +384,6 @@ type WorkspaceClient struct {
 	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs jobs.JobsInterface
 
-	// A monitor computes and monitors data or model quality metrics for a table
-	// over time. It generates metrics tables and a dashboard that you can use
-	// to monitor table health and set alerts.
-	//
-	// Most write operations require the user to be the owner of the table (or
-	// its parent schema or parent catalog). Viewing the dashboard, computed
-	// metrics, or monitor configuration only requires the user to have
-	// **SELECT** privileges on the table (along with **USE_SCHEMA** and
-	// **USE_CATALOG**).
-	LakehouseMonitors catalog.LakehouseMonitorsInterface
-
 	// These APIs provide specific management operations for Lakeview
 	// dashboards. Generic resource management can be done with Workspace API
 	// (import, export, get-status, list, delete).
@@ -575,6 +564,17 @@ type WorkspaceClient struct {
 	// world who shares the data. A provider contains shares which further
 	// contain the shared data.
 	Providers sharing.ProvidersInterface
+
+	// A monitor computes and monitors data or model quality metrics for a table
+	// over time. It generates metrics tables and a dashboard that you can use
+	// to monitor table health and set alerts.
+	//
+	// Most write operations require the user to be the owner of the table (or
+	// its parent schema or parent catalog). Viewing the dashboard, computed
+	// metrics, or monitor configuration only requires the user to have
+	// **SELECT** privileges on the table (along with **USE_SCHEMA** and
+	// **USE_CATALOG**).
+	QualityMonitors catalog.QualityMonitorsInterface
 
 	// These endpoints are used for CRUD operations on query definitions. Query
 	// definitions include the target SQL warehouse, query text, name,
@@ -1051,7 +1051,6 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		InstanceProfiles:                    compute.NewInstanceProfiles(databricksClient),
 		IpAccessLists:                       settings.NewIpAccessLists(databricksClient),
 		Jobs:                                jobs.NewJobs(databricksClient),
-		LakehouseMonitors:                   catalog.NewLakehouseMonitors(databricksClient),
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),
 		Metastores:                          catalog.NewMetastores(databricksClient),
@@ -1070,6 +1069,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ProviderProviderAnalyticsDashboards: marketplace.NewProviderProviderAnalyticsDashboards(databricksClient),
 		ProviderProviders:                   marketplace.NewProviderProviders(databricksClient),
 		Providers:                           sharing.NewProviders(databricksClient),
+		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
 		QueryHistory:                        sql.NewQueryHistory(databricksClient),
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
