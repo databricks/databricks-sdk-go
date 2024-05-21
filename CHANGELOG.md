@@ -1,5 +1,73 @@
 # Version changelog
 
+## Release v0.41.0
+
+### Backward incompatible changes
+* Renamed `CredentialsProvider` to `CredentialsStrategy`.
+
+### Improvements and new features
+
+* Create a method to generate OAuth tokens ([#886](https://github.com/databricks/databricks-sdk-go/pull/886)).
+* Better error message when private link enabled workspaces reject requests ([#924](https://github.com/databricks/databricks-sdk-go/pull/924)).
+* Update OpenAPI spec ([#926](https://github.com/databricks/databricks-sdk-go/pull/926)).
+
+### API Changes:
+
+ * Changed `List` method for [w.Connections](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionsAPI) workspace-level service to require request of [catalog.ListConnectionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListConnectionsRequest).
+ * Renamed [w.LakehouseMonitors](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#LakehouseMonitorsAPI) workspace-level service to [w.QualityMonitors](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#QualityMonitorsAPI).
+ * Renamed [catalog.DeleteLakehouseMonitorRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteLakehouseMonitorRequest).
+ * Changed `SchemaName` field for [catalog.DisableRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DisableRequest) to `string`.
+ * Removed [catalog.DisableSchemaName](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DisableSchemaName) to [catalog.DeleteQualityMonitorRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteQualityMonitorRequest).
+ * Changed `SchemaName` field for [catalog.EnableRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EnableRequest) to `string`.
+ * Removed [catalog.EnableSchemaName](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EnableSchemaName).
+ * Renamed [catalog.GetLakehouseMonitorRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetLakehouseMonitorRequest) to [catalog.GetQualityMonitorRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetQualityMonitorRequest).
+ * Added `NextPageToken` field for [catalog.ListConnectionsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListConnectionsResponse).
+ * Added `DashboardId` field for [catalog.UpdateMonitor](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateMonitor).
+ * Added [catalog.ListConnectionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListConnectionsRequest).
+ * Added [catalog.MonitorRefreshListResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MonitorRefreshListResponse).
+ * Changed `ClusterStatus` method for [w.Libraries](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#LibrariesAPI) workspace-level service to return [compute.ClusterLibraryStatuses](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterLibraryStatuses).
+ * Removed `ClusterSource` field for [compute.ClusterAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterAttributes).
+ * Changed `Spec` field for [compute.ClusterDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterDetails) to [compute.ClusterSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterSpec).
+ * Removed `CloneFrom` and `ClusterSource` fields for [compute.ClusterSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterSpec).
+ * Removed [compute.ClusterStatusResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterStatusResponse).
+ * Removed `ClusterSource` field for [compute.CreateCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#CreateCluster).
+ * Removed `CloneFrom` and `ClusterSource` fields for [compute.EditCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditCluster).
+ * Rename `SortBySpec` field to `SortBy` for [marketplace.ListListingsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#ListListingsRequest).
+ * Added `IsAscending` field for [marketplace.ListListingsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#ListListingsRequest).
+ * Added `IsAscending` field for [marketplace.SearchListingsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#SearchListingsRequest).
+ * Removed [marketplace.SortBySpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#SortBySpec).
+ * Removed [marketplace.SortOrder](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#SortOrder).
+ * Added `GatewayDefinition` field for [pipelines.CreatePipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#CreatePipeline).
+ * Added `GatewayDefinition` field for [pipelines.EditPipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#EditPipeline).
+ * Added `TableConfiguration` field for [pipelines.ManagedIngestionPipelineDefinition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ManagedIngestionPipelineDefinition).
+ * Added `GatewayDefinition` field for [pipelines.PipelineSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineSpec).
+ * Added `TableConfiguration` field for [pipelines.SchemaSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#SchemaSpec).
+ * Added `TableConfiguration` field for [pipelines.TableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpec).
+ * Added [pipelines.IngestionGatewayPipelineDefinition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionGatewayPipelineDefinition).
+ * Added [pipelines.TableSpecificConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpecificConfig).
+ * Added [pipelines.TableSpecificConfigScdType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpecificConfigScdType).
+ * Added `DeploymentArtifacts` field for [serving.AppDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppDeployment).
+ * Added `RouteOptimized` field for [serving.CreateServingEndpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#CreateServingEndpoint).
+ * Added `Contents` field for [serving.ExportMetricsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExportMetricsResponse).
+ * Changed `OpenaiApiKey` field for [serving.OpenAiConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#OpenAiConfig) to no longer be required.
+ * Added `MicrosoftEntraClientId`, `MicrosoftEntraClientSecret` and `MicrosoftEntraTenantId` fields for [serving.OpenAiConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#OpenAiConfig).
+ * Added `EndpointUrl` and `RouteOptimized` field for [serving.ServingEndpointDetailed](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointDetailed).
+ * Added [serving.AppDeploymentArtifacts](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppDeploymentArtifacts).
+ * Added `StorageRoot` field for [sharing.CreateShare](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CreateShare).
+ * Added `StorageLocation` and `StorageRoot` field for [sharing.ShareInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#ShareInfo).
+ * Added `StorageRoot` field for [sharing.UpdateShare](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#UpdateShare).
+ * Added `ScanIndex` method for [w.VectorSearchIndexes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchIndexesAPI) workspace-level service.
+ * Added `EmbeddingWritebackTable` field for [vectorsearch.DeltaSyncVectorIndexSpecRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#DeltaSyncVectorIndexSpecRequest).
+ * Added `EmbeddingWritebackTable` field for [vectorsearch.DeltaSyncVectorIndexSpecResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#DeltaSyncVectorIndexSpecResponse).
+ * Added [vectorsearch.ListValue](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#ListValue).
+ * Added [vectorsearch.MapStringValueEntry](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#MapStringValueEntry).
+ * Added [vectorsearch.ScanVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#ScanVectorIndexRequest).
+ * Added [vectorsearch.ScanVectorIndexResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#ScanVectorIndexResponse).
+ * Added [vectorsearch.Struct](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#Struct).
+ * Added [vectorsearch.Value](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#Value).
+
+OpenAPI SHA: 7eb5ad9a2ed3e3f1055968a2d1014ac92c06fe92, Date: 2024-05-21
+
 ## 0.40.1
 
 * Fixed codecov for repository ([#909](https://github.com/databricks/databricks-sdk-go/pull/909)).
