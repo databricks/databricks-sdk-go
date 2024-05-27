@@ -32,6 +32,9 @@ func (pkg *Package) FullName() string {
 func (pkg *Package) Services() (types []*Service) {
 	for _, v := range pkg.services {
 		types = append(types, v)
+		if v.HasDataPlaneMethods() {
+			types = append(types, v.DataPlaneService())
+		}
 	}
 	pascalNameSort(types)
 	return types
