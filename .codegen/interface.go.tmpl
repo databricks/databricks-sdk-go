@@ -21,4 +21,17 @@ type {{.PascalName}}Service interface {
 	{{end}}
 }
 
+{{if .HasDataPlaneMethods}}
+type {{.Singular.PascalName}}Service interface {
+	{{range .DataPlaneMethods}}
+    {{.Comment "    // " 80}}
+	{{- if .Pagination}}
+	// 
+	// Use {{.PascalName}}All() to get all {{.Pagination.Entity.PascalName}} instances{{if .Pagination.MultiRequest}}, which will iterate over every result page.{{end}}
+	{{- end}}
+    {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }}
+	{{end}}
+}
+{{end}}
+
 {{end}}

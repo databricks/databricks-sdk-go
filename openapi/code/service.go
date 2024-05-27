@@ -33,6 +33,22 @@ type Service struct {
 	tag                 *openapi.Tag
 }
 
+// Returns whether any method supports direct DataPlane access.
+func (svc *Service) HasDataPlaneMethods() bool {
+	return len(svc.DataPlaneMethods()) > 0
+}
+
+// Returns a sorted slice of methods which support direct DataPlane access.
+func (svc *Service) DataPlaneMethods() (methods []*Method) {
+	for _, v := range svc.methods {
+		if v.DataPlane != nil {
+			methods = append(methods, v)
+		}
+	}
+	pascalNameSort(methods)
+	return methods
+}
+
 // FullName holds package name and service name
 func (svc *Service) FullName() string {
 	return fmt.Sprintf("%s.%s", svc.Package.FullName(), svc.PascalName())
@@ -528,6 +544,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		Operation:           op,
 		pagination:          op.Pagination,
 		shortcut:            op.Shortcut,
+		DataPlane:           op.DataPlane,
 	}, nil
 }
 

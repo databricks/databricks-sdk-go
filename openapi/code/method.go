@@ -46,7 +46,12 @@ type Method struct {
 	wait       *openapi.Wait
 	pagination *openapi.Pagination
 	Operation  *openapi.Operation
+	DataPlane  *openapi.DataPlane
 	shortcut   bool
+}
+
+func (m *Method) HasDataPlaneAPI() bool {
+	return m.DataPlane != nil
 }
 
 // Shortcut holds definition of "shortcut" methods, that are generated for
