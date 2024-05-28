@@ -8,6 +8,10 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/dataplane"
+
+	"github.com/databricks/databricks-sdk-go/service/oauth2"
+	goauth "golang.org/x/oauth2"
 )
 
 // unexported type that holds implementations of just Apps API methods
@@ -111,18 +115,33 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 
 // unexported type that holds implementations of just ServingEndpointDataPlane API methods
 type servingEndpointDataPlaneImpl struct {
-	client       *client.DatabricksClient
+	dataplane.DataPlaneTokenCache
 	controlPlane *ServingEndpointsAPI
+	client       *client.DatabricksClient
 }
 
 func (a *servingEndpointDataPlaneImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
-	var queryEndpointResponse QueryEndpointResponse
-	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryEndpointResponse)
-	return &queryEndpointResponse, err
+	getRequest := GetServingEndpointRequest{
+		Name: request.Name,
+	}
+	token, err := a.client.Config.GetToken()
+	if err != nil {
+		return nil, err
+	}
+	infoGetter := func() (*oauth2.DataPlaneInfo, error) {
+		response, err := a.controlPlane.Get(ctx, getRequest)
+		if err != nil {
+			return nil, err
+		}
+		return response.DataPlaneInfo.QueryInfo, nil //TODO generate
+	}
+	refresh := func(info *oauth2.DataPlaneInfo) (*goauth.Token, error) {
+		return a.client.GetOAuthToken(ctx, info.AuthorizationDetails, token)
+	}
+	endpointUrl, token, err := a.GetDataPlane("Query", []string{request.Name}, refresh, infoGetter) //TODO generate
+	fmt.Println(endpointUrl)
+
+	return nil, nil
 }
 
 // unexported type that holds implementations of just ServingEndpoints API methods

@@ -12,24 +12,44 @@ import (
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	{{range .ImportedPackages}}
 	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
+	goauth "golang.org/x/oauth2"
 )
 {{range .Services}}
 // unexported type that holds implementations of just {{.Name}} API methods
 type {{.CamelName}}Impl struct {
-	client *client.DatabricksClient
 	{{- if .IsDataPlane}}
+	dataplane.DataPlaneTokenCache
 	controlPlane *{{.ParentService.PascalName}}API
 	{{end -}}
+	client *client.DatabricksClient
 }
 
 {{range .Methods}}
 {{if .Service.IsDataPlane}}
 func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
-	{{- template "response-var" . }}
-	path := {{ template "path" . }}
-	{{ template "make-header" . }}
-	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, headers, {{ template "request-param" . }}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
-	return {{ template "response" . }}
+	getRequest := {{.Service.ParentService.DataPlaneInfoMethod.Request.PascalName}}{
+	{{- range .Service.ParentService.DataPlaneInfoMethod.Request.Fields}}
+		{{.PascalName}}: request.{{.PascalName}},
+	{{end}}
+	}
+	token, err := a.client.Config.GetToken()
+	if err != nil {
+		return nil, err
+	}
+	infoGetter := func() (*oauth2.DataPlaneInfo, error) {
+		response, err := a.controlPlane.{{.Service.ParentService.DataPlaneInfoMethod.PascalName}}(ctx, getRequest)
+		if err != nil {
+			return nil, err
+		}
+		return response.DataPlaneInfo.QueryInfo, nil //TODO generate
+	}
+	refresh := func(info *oauth2.DataPlaneInfo) (*goauth.Token, error) {
+		return a.client.GetOAuthToken(ctx, info.AuthorizationDetails, token)
+	}
+	endpointUrl, token, err := a.GetDataPlane("Query", []string{request.Name}, refresh, infoGetter) //TODO generate
+	fmt.Println(endpointUrl)
+
+	return nil, nil
 }
 {{else}}
 func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
