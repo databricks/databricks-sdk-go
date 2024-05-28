@@ -112,7 +112,7 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 // unexported type that holds implementations of just ServingEndpointDataPlane API methods
 type servingEndpointDataPlaneImpl struct {
 	client       *client.DatabricksClient
-	controlPlane *ServingEndpointsInterface
+	controlPlane *ServingEndpointsAPI
 }
 
 func (a *servingEndpointDataPlaneImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {

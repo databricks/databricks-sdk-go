@@ -112,7 +112,7 @@ type {{.PascalName}}Interface interface {
 
 func New{{.PascalName}}(client *client.DatabricksClient,
 {{- if .IsDataPlane}}
-controlPlane *{{.ParentService.PascalName}}Interface,
+controlPlane *{{.ParentService.PascalName}}API,
 {{end -}}
 ) *{{.PascalName}}API {
 	return &{{.PascalName}}API{

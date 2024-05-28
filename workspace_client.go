@@ -3,12 +3,10 @@
 package databricks
 
 import (
-	"context"
 	"errors"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/config"
-	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
@@ -970,19 +968,6 @@ type WorkspaceClient struct {
 
 	// This API allows updating known workspace settings for advanced users.
 	WorkspaceConf settings.WorkspaceConfInterface
-}
-
-// Returns a new OAuth scoped to the authorization details provided.
-// It will return an error if the CredentialStrategy does not support OAuth tokens.
-//
-// **NOTE:** Experimental: This API may change or be removed in a future release
-// without warning.
-func (a *WorkspaceClient) GetOAuthToken(ctx context.Context, authorizationDetails string) (*credentials.OAuthToken, error) {
-	originalToken, err := a.Config.GetToken()
-	if err != nil {
-		return nil, err
-	}
-	return a.apiClient.GetOAuthToken(ctx, authorizationDetails, originalToken)
 }
 
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")

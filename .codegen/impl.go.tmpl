@@ -18,11 +18,12 @@ import (
 type {{.CamelName}}Impl struct {
 	client *client.DatabricksClient
 	{{- if .IsDataPlane}}
-	controlPlane *{{.ParentService.PascalName}}Interface
+	controlPlane *{{.ParentService.PascalName}}API
 	{{end -}}
 }
 
 {{range .Methods}}
+{{if .Service.IsDataPlane}}
 func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
 	{{- template "response-var" . }}
 	path := {{ template "path" . }}
@@ -30,6 +31,15 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, headers, {{ template "request-param" . }}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
 	return {{ template "response" . }}
 }
+{{else}}
+func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
+	{{- template "response-var" . }}
+	path := {{ template "path" . }}
+	{{ template "make-header" . }}
+	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, headers, {{ template "request-param" . }}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
+	return {{ template "response" . }}
+}
+{{end}}
 {{end -}}
 {{end}}
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/httpclient"
+	"golang.org/x/oauth2"
 )
 
 func New(cfg *config.Config) (*DatabricksClient, error) {
@@ -44,6 +45,15 @@ type DatabricksClient struct {
 // empty string otherwise
 func (c *DatabricksClient) ConfiguredAccountID() string {
 	return c.Config.AccountID
+}
+
+// Returns a new OAuth token using the provided token. The token must be a JWT token.
+// The resulting token is scoped to the authorization details provided.
+//
+// **NOTE:** Experimental: This API may change or be removed in a future release
+// without warning.
+func (c *DatabricksClient) GetOAuthToken(ctx context.Context, authDetails string, token *oauth2.Token) (*oauth2.Token, error) {
+	return c.client.GetOAuthToken(ctx, authDetails, token)
 }
 
 // Do sends an HTTP request against path.

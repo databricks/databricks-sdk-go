@@ -567,7 +567,7 @@ type ServingEndpointDataPlaneInterface interface {
 }
 
 func NewServingEndpointDataPlane(client *client.DatabricksClient,
-	controlPlane *ServingEndpointsInterface,
+	controlPlane *ServingEndpointsAPI,
 ) *ServingEndpointDataPlaneAPI {
 	return &ServingEndpointDataPlaneAPI{
 		impl: &servingEndpointDataPlaneImpl{
