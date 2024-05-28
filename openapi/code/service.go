@@ -54,6 +54,7 @@ func (svc *Service) DataPlaneService() *Service {
 	s := &Service{
 		Named:               Named{svc.Named.Singular().Name + "DataPlane", svc.Description},
 		Package:             svc.Package,
+		ParentService:       svc,
 		methods:             svc.dataPlaneMethods(),
 		tag:                 svc.tag,
 		ByPathParamsMethods: svc.ByPathParamsMethods,

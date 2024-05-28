@@ -110,10 +110,17 @@ type {{.PascalName}}Interface interface {
 {{end -}}
 }
 
-func New{{.PascalName}}(client *client.DatabricksClient) *{{.PascalName}}API {
+func New{{.PascalName}}(client *client.DatabricksClient,
+{{- if .IsDataPlane}}
+controlPlane *{{.ParentService.PascalName}}Interface,
+{{end -}}
+) *{{.PascalName}}API {
 	return &{{.PascalName}}API{
 		impl: &{{.CamelName}}Impl{
 			client: client,
+			{{- if .IsDataPlane}}
+			controlPlane: controlPlane,
+			{{end}}
 		},
 		{{range .Subservices}}
 		{{.CamelName}}: New{{.PascalName}}(client),

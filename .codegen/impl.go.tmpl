@@ -17,6 +17,9 @@ import (
 // unexported type that holds implementations of just {{.Name}} API methods
 type {{.CamelName}}Impl struct {
 	client *client.DatabricksClient
+	{{- if .IsDataPlane}}
+	controlPlane *{{.ParentService.PascalName}}Interface
+	{{end -}}
 }
 
 {{range .Methods}}

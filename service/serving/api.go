@@ -566,10 +566,13 @@ type ServingEndpointDataPlaneInterface interface {
 	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 }
 
-func NewServingEndpointDataPlane(client *client.DatabricksClient) *ServingEndpointDataPlaneAPI {
+func NewServingEndpointDataPlane(client *client.DatabricksClient,
+	controlPlane *ServingEndpointsInterface,
+) *ServingEndpointDataPlaneAPI {
 	return &ServingEndpointDataPlaneAPI{
 		impl: &servingEndpointDataPlaneImpl{
-			client: client,
+			client:       client,
+			controlPlane: controlPlane,
 		},
 	}
 }
