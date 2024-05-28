@@ -138,10 +138,19 @@ func (a *servingEndpointDataPlaneImpl) Query(ctx context.Context, request QueryE
 	refresh := func(info *oauth2.DataPlaneInfo) (*goauth.Token, error) {
 		return a.client.GetOAuthToken(ctx, info.AuthorizationDetails, token)
 	}
-	endpointUrl, token, err := a.GetDataPlane("Query", []string{request.Name}, refresh, infoGetter) //TODO generate
-	fmt.Println(endpointUrl)
-
-	return nil, nil
+	getParams := []string{
+		request.Name,
+	}
+	endpointUrl, token, err := a.GetDataPlane("Query", getParams, refresh, infoGetter) //TODO generate
+	if err != nil {
+		return nil, err
+	}
+	var queryEndpointResponse QueryEndpointResponse
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json" //TODO: fix
+	err = a.client.Do(ctx, http.MethodPost, endpointUrl, headers, request, &queryEndpointResponse)
+	return &queryEndpointResponse, err
 }
 
 // unexported type that holds implementations of just ServingEndpoints API methods

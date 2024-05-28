@@ -41,16 +41,26 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 		if err != nil {
 			return nil, err
 		}
-		return response.DataPlaneInfo.QueryInfo, nil //TODO generate
+		return response{{range .DataPlaneInfoFields}}.{{.PascalName}}{{end}}, nil 
 	}
 	refresh := func(info *oauth2.DataPlaneInfo) (*goauth.Token, error) {
 		return a.client.GetOAuthToken(ctx, info.AuthorizationDetails, token)
 	}
-	endpointUrl, token, err := a.GetDataPlane("Query", []string{request.Name}, refresh, infoGetter) //TODO generate
-	fmt.Println(endpointUrl)
-
-	return nil, nil
+	getParams := []string{ 
+	{{- range .Service.ParentService.DataPlaneInfoMethod.Request.Fields}}
+		request.{{.PascalName}},
+	{{end -}}
+	}
+	endpointUrl, token, err := a.GetDataPlane("{{.PascalName}}", getParams, refresh, infoGetter) 
+	if err != nil {
+		return nil, err
+	}
+	{{- template "response-var" . }}
+	{{ template "make-header" . }} //TODO: visitors
+	err = a.client.Do(ctx, http.Method{{.TitleVerb}}, endpointUrl, headers, {{ template "request-param" . }}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
+	return {{ template "response" . }}
 }
+
 {{else}}
 func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
 	{{- template "response-var" . }}

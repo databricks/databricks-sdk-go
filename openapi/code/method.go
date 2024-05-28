@@ -54,6 +54,22 @@ func (m *Method) HasDataPlaneAPI() bool {
 	return m.DataPlane != nil
 }
 
+func (m *Method) DataPlaneInfoFields() []*Field {
+	if m.DataPlane == nil {
+		return nil
+	}
+	method := m.Service.ParentService.DataPlaneInfoMethod()
+	fieldNames := m.DataPlane.Fields
+	currentLevelFields := method.Response.fields
+	fields := []*Field{}
+	for _, name := range fieldNames {
+		field := currentLevelFields[name]
+		fields = append(fields, field)
+		currentLevelFields = field.Entity.fields
+	}
+	return fields
+}
+
 // Shortcut holds definition of "shortcut" methods, that are generated for
 // methods with request entities only with required fields.
 type Shortcut struct {
