@@ -39,6 +39,16 @@ func (svc *Service) HasDataPlaneMethods() bool {
 	return len(svc.dataPlaneMethods()) > 0
 }
 
+func (svc *Service) DataPlaneInfoMethod() *Method {
+	methodName := ""
+	for _, m := range svc.methods {
+		if m.DataPlane != nil {
+			methodName = m.DataPlane.ConfigMethod
+		}
+	}
+	return svc.methods[methodName]
+}
+
 // Returns the corresponding service for DataPlane APIs.
 func (svc *Service) DataPlaneService() *Service {
 	s := &Service{
