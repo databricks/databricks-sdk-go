@@ -67,6 +67,13 @@ type AppsService interface {
 	Update(ctx context.Context, request UpdateAppRequest) (*App, error)
 }
 
+// TODO comment
+type ServingEndpointDataPlaneService interface {
+
+	// Query a serving endpoint.
+	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
+}
+
 // The Serving Endpoints API allows you to create, update, and delete model
 // serving endpoints.
 //
@@ -166,11 +173,4 @@ type ServingEndpointsService interface {
 	// Updates the permissions on a serving endpoint. Serving endpoints can
 	// inherit permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
-}
-
-// TODO comment
-type ServingEndpointsDataPlaneService interface {
-
-	// Query a serving endpoint.
-	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 }

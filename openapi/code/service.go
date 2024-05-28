@@ -42,7 +42,7 @@ func (svc *Service) HasDataPlaneMethods() bool {
 // Returns the corresponding service for DataPlane APIs.
 func (svc *Service) DataPlaneService() *Service {
 	s := &Service{
-		Named:               Named{svc.Name + "DataPlane", svc.Description},
+		Named:               Named{svc.Named.Singular().Name + "DataPlane", svc.Description},
 		Package:             svc.Package,
 		methods:             svc.dataPlaneMethods(),
 		tag:                 svc.tag,
