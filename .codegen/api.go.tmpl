@@ -116,7 +116,11 @@ func New{{.PascalName}}(client *client.DatabricksClient) *{{.PascalName}}API {
 	}
 }
 
+{{- if not .IsDataPlane}}
 {{.Comment "// " 80}}
+{{else}}
+// TODO comment
+{{end -}}
 type {{.PascalName}}API struct {
 	// impl contains low-level REST API interface, that could be overridden 
 	// through WithImpl({{.PascalName}}Service)

@@ -9,7 +9,11 @@ import (
 )
 
 {{range .Services}}
+{{- if not .IsDataPlane}}
 {{.Comment "// " 80}}
+{{else}}
+// TODO comment
+{{end -}}
 type {{.PascalName}}Service interface {
 	{{range .Methods}}
     {{.Comment "    // " 80}}

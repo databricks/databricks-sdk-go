@@ -31,6 +31,7 @@ type Service struct {
 	ByPathParamsMethods []*Shortcut
 	ParentService       *Service
 	tag                 *openapi.Tag
+	IsDataPlane         bool
 }
 
 // Returns whether any method supports direct DataPlane access.
@@ -46,6 +47,7 @@ func (svc *Service) DataPlaneService() *Service {
 		methods:             svc.dataPlaneMethods(),
 		tag:                 svc.tag,
 		ByPathParamsMethods: svc.ByPathParamsMethods,
+		IsDataPlane:         true,
 	}
 	for _, m := range s.methods {
 		m.Service = s

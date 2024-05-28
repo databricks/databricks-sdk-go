@@ -14,7 +14,7 @@ type WorkspaceClient struct {
 	Config *config.Config
 	apiClient *httpclient.ApiClient
 
-	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
+	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane)}}
 	{{.Comment "    // " 80}}
 	{{.Name}} {{.Package.Name}}.{{.Name}}Interface
 	{{end}}{{end}}
@@ -64,7 +64,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	return &WorkspaceClient{
 		Config: cfg,
 		apiClient: apiClient,
-		{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
+		{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane)}}
 		{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient),
 		{{- end}}{{end}}
 	}, nil

@@ -167,3 +167,10 @@ type ServingEndpointsService interface {
 	// inherit permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 }
+
+// TODO comment
+type ServingEndpointsDataPlaneService interface {
+
+	// Query a serving endpoint.
+	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
+}

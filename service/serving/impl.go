@@ -264,3 +264,18 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &servingEndpointPermissions)
 	return &servingEndpointPermissions, err
 }
+
+// unexported type that holds implementations of just ServingEndpointsDataPlane API methods
+type servingEndpointsDataPlaneImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
+	var queryEndpointResponse QueryEndpointResponse
+	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryEndpointResponse)
+	return &queryEndpointResponse, err
+}
