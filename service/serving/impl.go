@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/dataplane"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	goauth "golang.org/x/oauth2"
@@ -133,7 +134,7 @@ func (a *servingEndpointDataPlaneImpl) Query(ctx context.Context, request QueryE
 		if err != nil {
 			return nil, err
 		}
-		return response.DataPlaneInfo.QueryInfo, nil //TODO generate
+		return response.DataPlaneInfo.QueryInfo, nil
 	}
 	refresh := func(info *oauth2.DataPlaneInfo) (*goauth.Token, error) {
 		return a.client.GetOAuthToken(ctx, info.AuthorizationDetails, token)
@@ -141,15 +142,20 @@ func (a *servingEndpointDataPlaneImpl) Query(ctx context.Context, request QueryE
 	getParams := []string{
 		request.Name,
 	}
-	endpointUrl, token, err := a.GetDataPlane("Query", getParams, refresh, infoGetter) //TODO generate
+	endpointUrl, dataPlaneToken, err := a.GetDataPlane("Query", getParams, refresh, infoGetter)
 	if err != nil {
 		return nil, err
 	}
-	var queryEndpointResponse QueryEndpointResponse
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json" //TODO: fix
-	err = a.client.Do(ctx, http.MethodPost, endpointUrl, headers, request, &queryEndpointResponse)
+	headers["Content-Type"] = "application/json"
+	opts := []httpclient.DoOption{}
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	var queryEndpointResponse QueryEndpointResponse
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(&queryEndpointResponse))
+	opts = append(opts, httpclient.WithToken(dataPlaneToken))
+	err = a.client.ApiClient().Do(ctx, http.MethodPost, endpointUrl, opts...)
 	return &queryEndpointResponse, err
 }
 
