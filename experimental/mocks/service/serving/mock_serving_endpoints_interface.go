@@ -940,6 +940,63 @@ func (_c *MockServingEndpointsInterface_GetPermissionsByServingEndpointId_Call) 
 	return _c
 }
 
+// GetServingEndpointDataPlaneClient provides a mock function with given fields:
+func (_m *MockServingEndpointsInterface) GetServingEndpointDataPlaneClient() (serving.ServingEndpointDataPlaneService, error) {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetServingEndpointDataPlaneClient")
+	}
+
+	var r0 serving.ServingEndpointDataPlaneService
+	var r1 error
+	if rf, ok := ret.Get(0).(func() (serving.ServingEndpointDataPlaneService, error)); ok {
+		return rf()
+	}
+	if rf, ok := ret.Get(0).(func() serving.ServingEndpointDataPlaneService); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(serving.ServingEndpointDataPlaneService)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetServingEndpointDataPlaneClient'
+type MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call struct {
+	*mock.Call
+}
+
+// GetServingEndpointDataPlaneClient is a helper method to define mock.On call
+func (_e *MockServingEndpointsInterface_Expecter) GetServingEndpointDataPlaneClient() *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call {
+	return &MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call{Call: _e.mock.On("GetServingEndpointDataPlaneClient")}
+}
+
+func (_c *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call) Run(run func()) *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call) Return(_a0 serving.ServingEndpointDataPlaneService, _a1 error) *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call) RunAndReturn(run func() (serving.ServingEndpointDataPlaneService, error)) *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Impl provides a mock function with given fields:
 func (_m *MockServingEndpointsInterface) Impl() serving.ServingEndpointsService {
 	ret := _m.Called()
