@@ -289,6 +289,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &AccountClient{
 		Config: cfg,
 
@@ -317,5 +318,55 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		VpcEndpoints:            provisioning.NewVpcEndpoints(apiClient),
 		WorkspaceAssignment:     iam.NewWorkspaceAssignment(apiClient),
 		Workspaces:              provisioning.NewWorkspaces(apiClient),
+
+		AccessControl: iam.NewAccountAccessControl(apiClient),
+
+		BillableUsage: billing.NewBillableUsage(apiClient),
+
+		Budgets: billing.NewBudgets(apiClient),
+
+		Credentials: provisioning.NewCredentials(apiClient),
+
+		CustomAppIntegration: oauth2.NewCustomAppIntegration(apiClient),
+
+		EncryptionKeys: provisioning.NewEncryptionKeys(apiClient),
+
+		Groups: iam.NewAccountGroups(apiClient),
+
+		IpAccessLists: settings.NewAccountIpAccessLists(apiClient),
+
+		LogDelivery: billing.NewLogDelivery(apiClient),
+
+		MetastoreAssignments: catalog.NewAccountMetastoreAssignments(apiClient),
+
+		Metastores: catalog.NewAccountMetastores(apiClient),
+
+		NetworkConnectivity: settings.NewNetworkConnectivity(apiClient),
+
+		Networks: provisioning.NewNetworks(apiClient),
+
+		OAuthPublishedApps: oauth2.NewOAuthPublishedApps(apiClient),
+
+		PrivateAccess: provisioning.NewPrivateAccess(apiClient),
+
+		PublishedAppIntegration: oauth2.NewPublishedAppIntegration(apiClient),
+
+		ServicePrincipalSecrets: oauth2.NewServicePrincipalSecrets(apiClient),
+
+		ServicePrincipals: iam.NewAccountServicePrincipals(apiClient),
+
+		Settings: settings.NewAccountSettings(apiClient),
+
+		Storage: provisioning.NewStorage(apiClient),
+
+		StorageCredentials: catalog.NewAccountStorageCredentials(apiClient),
+
+		Users: iam.NewAccountUsers(apiClient),
+
+		VpcEndpoints: provisioning.NewVpcEndpoints(apiClient),
+
+		WorkspaceAssignment: iam.NewWorkspaceAssignment(apiClient),
+
+		Workspaces: provisioning.NewWorkspaces(apiClient),
 	}, nil
 }

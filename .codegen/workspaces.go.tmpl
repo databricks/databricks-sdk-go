@@ -14,7 +14,7 @@ type WorkspaceClient struct {
 	Config *config.Config
 	apiClient *httpclient.ApiClient
 
-	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane)}}
+	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
 	{{.Comment "    // " 80}}
 	{{.Name}} {{.Package.Name}}.{{.Name}}Interface
 	{{end}}{{end}}
@@ -48,11 +48,21 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if err != nil {
 		return nil, err
 	}
+	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (.HasDataPlaneMethods) (not .IsDataPlane)}}
+	{{.CamelName}} := {{.Package.Name}}.New{{.Name}}(databricksClient)
+	{{- end}}{{end}}
 	return &WorkspaceClient{
 		Config: cfg,
 		apiClient: apiClient,
-		{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane)}}
+		{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane) (not .HasDataPlaneMethods)}}
 		{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient),
-		{{- end}}{{end}}
+		{{- end}}
+		{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane) (.HasDataPlaneMethods)}}
+		{{.Name}}: {{.CamelName}},
+		{{- end}}
+		{{if and (not .IsAccounts) (not .HasParent) .IsDataPlane}}
+		{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient,  {{.ParentService.CamelName}}),
+		{{- end}}
+		{{end}}
 	}, nil
 }

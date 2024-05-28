@@ -613,9 +613,6 @@ type ServingEndpointsInterface interface {
 	// Deprecated: use MockServingEndpointsInterface instead.
 	Impl() ServingEndpointsService
 
-	// Returns a client to interact with a specific ServingEndpoint resource via the DataPlane API
-	GetServingEndpointDataPlaneClient(request GetServingEndpointRequest) (ServingEndpointDataPlaneService, error)
-
 	// WaitGetServingEndpointNotUpdating repeatedly calls [ServingEndpointsAPI.Get] and waits to reach NOT_UPDATING state
 	WaitGetServingEndpointNotUpdating(ctx context.Context, name string,
 		timeout time.Duration, callback func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error)
@@ -794,11 +791,6 @@ type ServingEndpointsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ServingEndpointsService)
 	impl ServingEndpointsService
-}
-
-// Returns a client to interact with a specific ServingEndpoint resource via the DataPlane API
-func (a *ServingEndpointsAPI) GetServingEndpointDataPlaneClient(request GetServingEndpointRequest) (ServingEndpointDataPlaneService, error) {
-	return nil, nil
 }
 
 // WithImpl could be used to override low-level API implementations for unit
