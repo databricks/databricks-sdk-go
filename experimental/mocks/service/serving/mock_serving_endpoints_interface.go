@@ -940,9 +940,9 @@ func (_c *MockServingEndpointsInterface_GetPermissionsByServingEndpointId_Call) 
 	return _c
 }
 
-// GetServingEndpointDataPlaneClient provides a mock function with given fields:
-func (_m *MockServingEndpointsInterface) GetServingEndpointDataPlaneClient() (serving.ServingEndpointDataPlaneService, error) {
-	ret := _m.Called()
+// GetServingEndpointDataPlaneClient provides a mock function with given fields: request
+func (_m *MockServingEndpointsInterface) GetServingEndpointDataPlaneClient(request serving.GetServingEndpointRequest) (serving.ServingEndpointDataPlaneService, error) {
+	ret := _m.Called(request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetServingEndpointDataPlaneClient")
@@ -950,19 +950,19 @@ func (_m *MockServingEndpointsInterface) GetServingEndpointDataPlaneClient() (se
 
 	var r0 serving.ServingEndpointDataPlaneService
 	var r1 error
-	if rf, ok := ret.Get(0).(func() (serving.ServingEndpointDataPlaneService, error)); ok {
-		return rf()
+	if rf, ok := ret.Get(0).(func(serving.GetServingEndpointRequest) (serving.ServingEndpointDataPlaneService, error)); ok {
+		return rf(request)
 	}
-	if rf, ok := ret.Get(0).(func() serving.ServingEndpointDataPlaneService); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(serving.GetServingEndpointRequest) serving.ServingEndpointDataPlaneService); ok {
+		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(serving.ServingEndpointDataPlaneService)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(serving.GetServingEndpointRequest) error); ok {
+		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -976,13 +976,14 @@ type MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call struct
 }
 
 // GetServingEndpointDataPlaneClient is a helper method to define mock.On call
-func (_e *MockServingEndpointsInterface_Expecter) GetServingEndpointDataPlaneClient() *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call {
-	return &MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call{Call: _e.mock.On("GetServingEndpointDataPlaneClient")}
+//   - request serving.GetServingEndpointRequest
+func (_e *MockServingEndpointsInterface_Expecter) GetServingEndpointDataPlaneClient(request interface{}) *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call {
+	return &MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call{Call: _e.mock.On("GetServingEndpointDataPlaneClient", request)}
 }
 
-func (_c *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call) Run(run func()) *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call {
+func (_c *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call) Run(run func(request serving.GetServingEndpointRequest)) *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run()
+		run(args[0].(serving.GetServingEndpointRequest))
 	})
 	return _c
 }
@@ -992,7 +993,7 @@ func (_c *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call) 
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call) RunAndReturn(run func() (serving.ServingEndpointDataPlaneService, error)) *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call {
+func (_c *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call) RunAndReturn(run func(serving.GetServingEndpointRequest) (serving.ServingEndpointDataPlaneService, error)) *MockServingEndpointsInterface_GetServingEndpointDataPlaneClient_Call {
 	_c.Call.Return(run)
 	return _c
 }

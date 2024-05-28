@@ -611,7 +611,7 @@ type ServingEndpointsInterface interface {
 	Impl() ServingEndpointsService
 
 	// Returns a client to interact with a specific ServingEndpoint resource via the DataPlane API
-	GetServingEndpointDataPlaneClient() (ServingEndpointDataPlaneService, error)
+	GetServingEndpointDataPlaneClient(request GetServingEndpointRequest) (ServingEndpointDataPlaneService, error)
 
 	// WaitGetServingEndpointNotUpdating repeatedly calls [ServingEndpointsAPI.Get] and waits to reach NOT_UPDATING state
 	WaitGetServingEndpointNotUpdating(ctx context.Context, name string,
@@ -794,7 +794,7 @@ type ServingEndpointsAPI struct {
 }
 
 // Returns a client to interact with a specific ServingEndpoint resource via the DataPlane API
-func (a *ServingEndpointsAPI) GetServingEndpointDataPlaneClient() (ServingEndpointDataPlaneService, error) {
+func (a *ServingEndpointsAPI) GetServingEndpointDataPlaneClient(request GetServingEndpointRequest) (ServingEndpointDataPlaneService, error) {
 	return nil, nil
 }
 

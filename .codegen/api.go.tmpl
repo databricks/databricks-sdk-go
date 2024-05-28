@@ -44,7 +44,7 @@ type {{.PascalName}}Interface interface {
 
 	{{if and (not .IsDataPlane) .HasDataPlaneMethods}}
 	// Returns a client to interact with a specific {{.Singular.PascalName}} resource via the DataPlane API
-	Get{{.Singular.PascalName}}DataPlaneClient() ({{.Singular.PascalName}}DataPlaneService, error)
+	Get{{.Singular.PascalName}}DataPlaneClient(request {{.DataPlaneInfoMethod.Request.PascalName}}) ({{.Singular.PascalName}}DataPlaneService, error)
 	{{end}}
 
 	{{range .Waits}}
@@ -145,7 +145,7 @@ func (a *{{.ParentService.PascalName}}API) {{.PascalName}}() {{.PascalName}}Inte
 
 {{if and (not .IsDataPlane) .HasDataPlaneMethods}}
 	// Returns a client to interact with a specific {{.Singular.PascalName}} resource via the DataPlane API
-func (a *{{.PascalName}}API) Get{{.Singular.PascalName}}DataPlaneClient() ({{.Singular.PascalName}}DataPlaneService, error) {
+func (a *{{.PascalName}}API) Get{{.Singular.PascalName}}DataPlaneClient(request {{.DataPlaneInfoMethod.Request.PascalName}}) ({{.Singular.PascalName}}DataPlaneService, error) {
 	return nil, nil
 }
 {{end}}
