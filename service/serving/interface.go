@@ -67,7 +67,7 @@ type AppsService interface {
 	Update(ctx context.Context, request UpdateAppRequest) (*App, error)
 }
 
-// TODO comment
+// ServingEndpointDataPlaneService provides a set of operations to interact with DataPlane endpoints for ServingEndpoints service.
 type ServingEndpointDataPlaneService interface {
 
 	// Query a serving endpoint.

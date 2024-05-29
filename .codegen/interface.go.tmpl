@@ -12,7 +12,7 @@ import (
 {{- if not .IsDataPlane}}
 {{.Comment "// " 80}}
 {{else}}
-// TODO comment
+// {{.PascalName}}Service provides a set of operations to interact with DataPlane endpoints for {{.ParentService.PascalName}} service.
 {{end -}}
 type {{.PascalName}}Service interface {
 	{{range .Methods}}

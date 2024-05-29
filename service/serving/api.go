@@ -577,7 +577,7 @@ func NewServingEndpointDataPlane(client *client.DatabricksClient,
 	}
 }
 
-// TODO comment
+// ServingEndpointDataPlaneService provides a set of operations to interact with DataPlane endpoints for ServingEndpoints service.
 type ServingEndpointDataPlaneAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ServingEndpointDataPlaneService)
