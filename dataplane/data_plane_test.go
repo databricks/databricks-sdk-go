@@ -49,8 +49,8 @@ func TestTokenNotCached(t *testing.T) {
 		},
 		err: nil,
 	}
-	c := DataPlaneTokenCache{}
-	url, token, err := c.GetDataPlane("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
+	c := DataPlaneHelper{}
+	url, token, err := c.GetDataPlaneDetails("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
 	assert.NoError(t, err)
 	assert.Equal(t, "url", url)
 	assert.Equal(t, "token", token.AccessToken)
@@ -76,12 +76,12 @@ func TestTokenCached(t *testing.T) {
 		},
 		err: nil,
 	}
-	c := DataPlaneTokenCache{}
+	c := DataPlaneHelper{}
 	c.infos = make(map[string]*dp.DataPlaneInfo)
 	c.tokens = make(map[string]*oauth2.Token)
 	c.infos["method/params"] = info.info
 	c.tokens["method/params"] = s.token
-	url, token, err := c.GetDataPlane("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
+	url, token, err := c.GetDataPlaneDetails("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
 	assert.NoError(t, err)
 	assert.Equal(t, "url", url)
 	assert.Equal(t, "token", token.AccessToken)
@@ -113,12 +113,12 @@ func TestTokenExpired(t *testing.T) {
 		},
 		err: nil,
 	}
-	c := DataPlaneTokenCache{}
+	c := DataPlaneHelper{}
 	c.infos = make(map[string]*dp.DataPlaneInfo)
 	c.tokens = make(map[string]*oauth2.Token)
 	c.infos["method/params"] = info.info
 	c.tokens["method/params"] = expired
-	url, token, err := c.GetDataPlane("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
+	url, token, err := c.GetDataPlaneDetails("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
 	assert.NoError(t, err)
 	assert.Equal(t, "url", url)
 	assert.Equal(t, "token", token.AccessToken)
@@ -134,8 +134,8 @@ func TestTokenInfoError(t *testing.T) {
 		err:  assert.AnError,
 	}
 	s := tokenRefreshSpy{}
-	c := DataPlaneTokenCache{}
-	url, token, err := c.GetDataPlane("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
+	c := DataPlaneHelper{}
+	url, token, err := c.GetDataPlaneDetails("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
 	assert.ErrorIs(t, err, assert.AnError)
 	assert.Empty(t, url)
 	assert.Nil(t, token)
@@ -155,8 +155,8 @@ func TestTokenRefreshError(t *testing.T) {
 		token: nil,
 		err:   assert.AnError,
 	}
-	c := DataPlaneTokenCache{}
-	url, token, err := c.GetDataPlane("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
+	c := DataPlaneHelper{}
+	url, token, err := c.GetDataPlaneDetails("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
 	assert.ErrorIs(t, err, assert.AnError)
 	assert.Empty(t, url)
 	assert.Nil(t, token)

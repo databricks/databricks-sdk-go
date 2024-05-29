@@ -117,7 +117,7 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 
 // unexported type that holds implementations of just ServingEndpointDataPlane API methods
 type servingEndpointDataPlaneImpl struct {
-	dataplane.DataPlaneTokenCache
+	dataplane.DataPlaneHelper
 	controlPlane *ServingEndpointsAPI
 	client       *client.DatabricksClient
 }
@@ -146,7 +146,7 @@ func (a *servingEndpointDataPlaneImpl) Query(ctx context.Context, request QueryE
 	getParams := []string{
 		request.Name,
 	}
-	endpointUrl, dataPlaneToken, err := a.GetDataPlane("Query", getParams, refresh, infoGetter)
+	endpointUrl, dataPlaneToken, err := a.GetDataPlaneDetails("Query", getParams, refresh, infoGetter)
 	if err != nil {
 		return nil, err
 	}

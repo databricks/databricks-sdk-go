@@ -7,12 +7,12 @@ import (
 	"golang.org/x/oauth2"
 )
 
-type DataPlaneTokenCache struct {
+type DataPlaneHelper struct {
 	infos  map[string]*dp.DataPlaneInfo
 	tokens map[string]*oauth2.Token
 }
 
-func (o *DataPlaneTokenCache) GetDataPlane(method string, params []string, refresh func(*dp.DataPlaneInfo) (*oauth2.Token, error), infoGetter func() (*dp.DataPlaneInfo, error)) (string, *oauth2.Token, error) {
+func (o *DataPlaneHelper) GetDataPlaneDetails(method string, params []string, refresh func(*dp.DataPlaneInfo) (*oauth2.Token, error), infoGetter func() (*dp.DataPlaneInfo, error)) (string, *oauth2.Token, error) {
 	if o.infos == nil {
 		o.infos = make(map[string]*dp.DataPlaneInfo)
 	}
@@ -44,7 +44,7 @@ func (o *DataPlaneTokenCache) GetDataPlane(method string, params []string, refre
 	return info.EndpointUrl, token, nil
 }
 
-func (o *DataPlaneTokenCache) generateKey(method string, params []string) string {
+func (o *DataPlaneHelper) generateKey(method string, params []string) string {
 	allElements := []string{method}
 	allElements = append(allElements, params...)
 	return strings.Join(allElements, "/")
