@@ -54,11 +54,12 @@ func (m *Method) HasDataPlaneAPI() bool {
 	return m.DataPlane != nil
 }
 
+// Returns the fields which contains the DataPlane info. Each field is nested in the previous one.
 func (m *Method) DataPlaneInfoFields() []*Field {
 	if m.DataPlane == nil {
 		return nil
 	}
-	method := m.Service.ControlPlaneService.DataPlaneInfoMethod()
+	method := m.Service.DataPlaneInfoMethod()
 	fieldNames := m.DataPlane.Fields
 	currentLevelFields := method.Response.fields
 	fields := []*Field{}

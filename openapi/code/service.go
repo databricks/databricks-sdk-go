@@ -40,6 +40,7 @@ func (svc *Service) HasDataPlaneMethods() bool {
 	return len(svc.dataPlaneMethods()) > 0
 }
 
+// Returns the method in the Control Plane which contains the DataInfo object
 func (svc *Service) DataPlaneInfoMethod() *Method {
 	methodName := ""
 	for _, m := range svc.methods {
@@ -47,7 +48,7 @@ func (svc *Service) DataPlaneInfoMethod() *Method {
 			methodName = m.DataPlane.ConfigMethod
 		}
 	}
-	return svc.methods[methodName]
+	return svc.ControlPlaneService.methods[methodName]
 }
 
 // Returns the corresponding service for DataPlane APIs.
