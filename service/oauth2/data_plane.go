@@ -1,20 +1,19 @@
-package dataplane
+package oauth2
 
 import (
 	"strings"
 
-	dp "github.com/databricks/databricks-sdk-go/service/oauth2"
 	"golang.org/x/oauth2"
 )
 
 type DataPlaneHelper struct {
-	infos  map[string]*dp.DataPlaneInfo
+	infos  map[string]*DataPlaneInfo
 	tokens map[string]*oauth2.Token
 }
 
-func (o *DataPlaneHelper) GetDataPlaneDetails(method string, params []string, refresh func(*dp.DataPlaneInfo) (*oauth2.Token, error), infoGetter func() (*dp.DataPlaneInfo, error)) (string, *oauth2.Token, error) {
+func (o *DataPlaneHelper) GetDataPlaneDetails(method string, params []string, refresh func(*DataPlaneInfo) (*oauth2.Token, error), infoGetter func() (*DataPlaneInfo, error)) (string, *oauth2.Token, error) {
 	if o.infos == nil {
-		o.infos = make(map[string]*dp.DataPlaneInfo)
+		o.infos = make(map[string]*DataPlaneInfo)
 	}
 	if o.tokens == nil {
 		o.tokens = make(map[string]*oauth2.Token)

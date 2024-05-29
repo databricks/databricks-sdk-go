@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	goauth "golang.org/x/oauth2"
 	"time"
 	"io"
 	"net/http"
@@ -13,13 +14,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	{{range .ImportedPackages}}
 	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
-	goauth "golang.org/x/oauth2"
 )
 {{range .Services}}
 // unexported type that holds implementations of just {{.Name}} API methods
 type {{.CamelName}}Impl struct {
 	{{- if .IsDataPlane}}
-	dataplane.DataPlaneHelper
+	oauth2.DataPlaneHelper
 	controlPlane *{{.ControlPlaneService.PascalName}}API
 	{{end -}}
 	client *client.DatabricksClient

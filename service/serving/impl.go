@@ -9,11 +9,10 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/dataplane"
 	"github.com/databricks/databricks-sdk-go/httpclient"
+	goauth "golang.org/x/oauth2"
 
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
-	goauth "golang.org/x/oauth2"
 )
 
 // unexported type that holds implementations of just Apps API methods
@@ -117,7 +116,7 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 
 // unexported type that holds implementations of just ServingEndpointDataPlane API methods
 type servingEndpointDataPlaneImpl struct {
-	dataplane.DataPlaneHelper
+	oauth2.DataPlaneHelper
 	controlPlane *ServingEndpointsAPI
 	client       *client.DatabricksClient
 }
