@@ -123,11 +123,7 @@ controlPlane *{{.ControlPlaneService.PascalName}}API,
 	}
 }
 
-{{- if not .IsDataPlane}}
 {{.Comment "// " 80}}
-{{else}}
-// {{.PascalName}}Service provides a set of operations to interact with DataPlane endpoints for {{.ControlPlaneService.PascalName}} service.
-{{end -}}
 type {{.PascalName}}API struct {
 	// impl contains low-level REST API interface, that could be overridden 
 	// through WithImpl({{.PascalName}}Service)

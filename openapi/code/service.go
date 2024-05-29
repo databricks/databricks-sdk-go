@@ -53,18 +53,33 @@ func (svc *Service) DataPlaneInfoMethod() *Method {
 
 // Returns the corresponding service for DataPlane APIs.
 func (svc *Service) generateDataPlaneService() *Service {
+	name := svc.Named.Singular().Name + "DataPlane"
+	description := fmt.Sprintf("%s provides a set of operations to interact with DataPlane endpoints for %s service.", name, svc.Name)
+	named := Named{
+		Name:        name,
+		Description: description,
+	}
 	s := &Service{
-		Named:               Named{svc.Named.Singular().Name + "DataPlane", svc.Description},
+		Named:               named,
 		Package:             svc.Package,
 		ControlPlaneService: svc,
 		methods:             svc.dataPlaneMethods(),
-		tag:                 svc.tag,
+		tag: &openapi.Tag{
+			Node:          svc.tag.Node,
+			Package:       svc.tag.Package,
+			PathStyle:     svc.tag.PathStyle,
+			Service:       svc.tag.Service,
+			ParentService: svc.tag.ParentService,
+			IsAccounts:    svc.tag.IsAccounts,
+			Name:          named.Name,
+		},
 		ByPathParamsMethods: svc.ByPathParamsMethods,
 		IsDataPlane:         true,
 	}
 	for _, m := range s.methods {
 		m.Service = s
 	}
+	s.tag.Service = s.Name
 	return s
 }
 
