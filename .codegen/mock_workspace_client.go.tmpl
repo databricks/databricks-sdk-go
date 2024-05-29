@@ -22,7 +22,7 @@ func NewMockWorkspaceClient(t interface {
 	cli := &MockWorkspaceClient{
 		WorkspaceClient: &databricks.WorkspaceClient{
 			Config: nil,
-			{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane)}}
+			{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
 			{{.Name}}: {{ template "mock-interface-constructor" . }}(t),
 			{{- end}}{{end}}
 		},
@@ -40,7 +40,7 @@ func NewMockWorkspaceClient(t interface {
 	return cli
 }
 
-{{range .Services}}{{if and (not .IsAccounts) (.HasParent) (not .IsDataPlane)}}
+{{range .Services}}{{if and (not .IsAccounts) (.HasParent)}}
 func(m *MockWorkspaceClient) GetMock{{.PascalName}}API() *{{ template "mock-interface-name" . }} {
 	api, ok := m.GetMock{{.ParentService.Name}}API().{{.PascalName}}().(*{{ template "mock-interface-name" . }})
 	if !ok {
@@ -51,7 +51,7 @@ func(m *MockWorkspaceClient) GetMock{{.PascalName}}API() *{{ template "mock-inte
 
 {{end}}{{end}}
 
-{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane)}}
+{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
 func(m *MockWorkspaceClient) GetMock{{.Name}}API() *{{ template "mock-interface-name" . }} {
 	api, ok := m.WorkspaceClient.{{.Name}}.(*{{ template "mock-interface-name" . }})
 	if !ok {
