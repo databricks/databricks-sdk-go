@@ -61,7 +61,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		{{.Name}}: {{.CamelName}},
 		{{- end -}}
 		{{if and (not .IsAccounts) (not .HasParent) .IsDataPlane}}
-		{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient,  {{.ParentService.CamelName}}),
+		{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient,  {{.ControlPlaneService.CamelName}}),
 		{{- end -}}
 		{{end}}
 	}, nil

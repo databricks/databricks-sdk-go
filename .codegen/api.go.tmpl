@@ -107,7 +107,7 @@ type {{.PascalName}}Interface interface {
 
 func New{{.PascalName}}(client *client.DatabricksClient,
 {{- if .IsDataPlane}}
-controlPlane *{{.ParentService.PascalName}}API,
+controlPlane *{{.ControlPlaneService.PascalName}}API,
 {{end -}}
 ) *{{.PascalName}}API {
 	return &{{.PascalName}}API{
@@ -126,7 +126,7 @@ controlPlane *{{.ParentService.PascalName}}API,
 {{- if not .IsDataPlane}}
 {{.Comment "// " 80}}
 {{else}}
-// {{.PascalName}}Service provides a set of operations to interact with DataPlane endpoints for {{.ParentService.PascalName}} service.
+// {{.PascalName}}Service provides a set of operations to interact with DataPlane endpoints for {{.ControlPlaneService.PascalName}} service.
 {{end -}}
 type {{.PascalName}}API struct {
 	// impl contains low-level REST API interface, that could be overridden 

@@ -54,7 +54,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		{{(.TrimPrefix "account").PascalName}}: {{.CamelName}},
 		{{- end -}}
 		{{if and .IsAccounts (not .HasParent) .IsDataPlane}}
-		{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.New{{.Name}}(apiClient,  {{.ParentService.CamelName}}),
+		{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.New{{.Name}}(apiClient,  {{.ControlPlaneService.CamelName}}),
 		{{- end -}}
 		{{end}}
 	}, nil

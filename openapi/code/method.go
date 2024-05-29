@@ -58,7 +58,7 @@ func (m *Method) DataPlaneInfoFields() []*Field {
 	if m.DataPlane == nil {
 		return nil
 	}
-	method := m.Service.ParentService.DataPlaneInfoMethod()
+	method := m.Service.ControlPlaneService.DataPlaneInfoMethod()
 	fieldNames := m.DataPlane.Fields
 	currentLevelFields := method.Response.fields
 	fields := []*Field{}

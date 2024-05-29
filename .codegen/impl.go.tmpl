@@ -20,7 +20,7 @@ import (
 type {{.CamelName}}Impl struct {
 	{{- if .IsDataPlane}}
 	dataplane.DataPlaneTokenCache
-	controlPlane *{{.ParentService.PascalName}}API
+	controlPlane *{{.ControlPlaneService.PascalName}}API
 	{{end -}}
 	client *client.DatabricksClient
 }
@@ -28,8 +28,8 @@ type {{.CamelName}}Impl struct {
 {{range .Methods}}
 {{if .Service.IsDataPlane}}
 func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
-	getRequest := {{.Service.ParentService.DataPlaneInfoMethod.Request.PascalName}}{
-	{{- range .Service.ParentService.DataPlaneInfoMethod.Request.Fields}}
+	getRequest := {{.Service.ControlPlaneService.DataPlaneInfoMethod.Request.PascalName}}{
+	{{- range .Service.ControlPlaneService.DataPlaneInfoMethod.Request.Fields}}
 		{{.PascalName}}: request.{{.PascalName}},
 	{{end}}
 	}
@@ -38,7 +38,7 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 		return nil, err
 	}
 	infoGetter := func() (*oauth2.DataPlaneInfo, error) {
-		response, err := a.controlPlane.{{.Service.ParentService.DataPlaneInfoMethod.PascalName}}(ctx, getRequest)
+		response, err := a.controlPlane.{{.Service.ControlPlaneService.DataPlaneInfoMethod.PascalName}}(ctx, getRequest)
 		if err != nil {
 			return nil, err
 		}
@@ -51,7 +51,7 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 		return a.client.GetOAuthToken(ctx, info.AuthorizationDetails, token)
 	}
 	getParams := []string{ 
-	{{- range .Service.ParentService.DataPlaneInfoMethod.Request.Fields}}
+	{{- range .Service.ControlPlaneService.DataPlaneInfoMethod.Request.Fields}}
 		request.{{.PascalName}},
 	{{end -}}
 	}

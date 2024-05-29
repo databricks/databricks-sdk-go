@@ -32,9 +32,6 @@ func (pkg *Package) FullName() string {
 func (pkg *Package) Services() (types []*Service) {
 	for _, v := range pkg.services {
 		types = append(types, v)
-		if v.HasDataPlaneMethods() {
-			types = append(types, v.DataPlaneService())
-		}
 	}
 	pascalNameSort(types)
 	return types
@@ -423,6 +420,13 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 			svc.methods[method.Name] = method
 		}
 	}
+
+	// Generate DataPlane service
+	if svc.HasDataPlaneMethods() {
+		dataPlaneService := svc.generateDataPlaneService()
+		pkg.services[dataPlaneService.Name] = dataPlaneService
+	}
+
 	return nil
 }
 

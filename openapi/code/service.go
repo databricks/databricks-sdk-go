@@ -30,6 +30,7 @@ type Service struct {
 	subservices         map[string]*Service
 	ByPathParamsMethods []*Shortcut
 	ParentService       *Service
+	ControlPlaneService *Service
 	tag                 *openapi.Tag
 	IsDataPlane         bool
 }
@@ -50,11 +51,11 @@ func (svc *Service) DataPlaneInfoMethod() *Method {
 }
 
 // Returns the corresponding service for DataPlane APIs.
-func (svc *Service) DataPlaneService() *Service {
+func (svc *Service) generateDataPlaneService() *Service {
 	s := &Service{
 		Named:               Named{svc.Named.Singular().Name + "DataPlane", svc.Description},
 		Package:             svc.Package,
-		ParentService:       svc,
+		ControlPlaneService: svc,
 		methods:             svc.dataPlaneMethods(),
 		tag:                 svc.tag,
 		ByPathParamsMethods: svc.ByPathParamsMethods,
@@ -66,7 +67,7 @@ func (svc *Service) DataPlaneService() *Service {
 	return s
 }
 
-// Returns a sorted slice of methods which support direct DataPlane access.
+// Copies methods which implement a DataPlane API.
 func (svc *Service) dataPlaneMethods() map[string]*Method {
 	methods := map[string]*Method{}
 	for _, m := range svc.methods {
