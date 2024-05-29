@@ -13,6 +13,12 @@ type DataPlaneTokenCache struct {
 }
 
 func (o *DataPlaneTokenCache) GetDataPlane(method string, params []string, refresh func(*dp.DataPlaneInfo) (*oauth2.Token, error), infoGetter func() (*dp.DataPlaneInfo, error)) (string, *oauth2.Token, error) {
+	if o.infos == nil {
+		o.infos = make(map[string]*dp.DataPlaneInfo)
+	}
+	if o.tokens == nil {
+		o.tokens = make(map[string]*oauth2.Token)
+	}
 	key := o.generateKey(method, params)
 	info, infoOk := o.infos[key]
 	token, tokenOk := o.tokens[key]
@@ -27,15 +33,19 @@ func (o *DataPlaneTokenCache) GetDataPlane(method string, params []string, refre
 		o.infos[key] = newInfo
 		info = newInfo
 	}
-	newToken, err := refresh(info)
-	if err != nil {
-		return "", nil, err
+	if !tokenOk || !token.Valid() {
+		newToken, err := refresh(info)
+		if err != nil {
+			return "", nil, err
+		}
+		o.tokens[key] = newToken
+		token = newToken
 	}
-	o.tokens[method] = newToken
-	return info.EndpointUrl, newToken, nil
+	return info.EndpointUrl, token, nil
 }
 
 func (o *DataPlaneTokenCache) generateKey(method string, params []string) string {
-	allElements := append(params, method)
+	allElements := []string{method}
+	allElements = append(allElements, params...)
 	return strings.Join(allElements, "/")
 }
