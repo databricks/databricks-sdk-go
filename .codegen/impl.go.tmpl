@@ -4,6 +4,7 @@ package {{.Name}}
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 	"io"
@@ -40,6 +41,9 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 		response, err := a.controlPlane.{{.Service.ParentService.DataPlaneInfoMethod.PascalName}}(ctx, getRequest)
 		if err != nil {
 			return nil, err
+		}
+		if response.{{(index .DataPlaneInfoFields 0).PascalName}} == nil {
+			return nil, errors.New("resource does not support direct Data Plane access")
 		}
 		return response{{range .DataPlaneInfoFields}}.{{.PascalName}}{{end}}, nil 
 	}

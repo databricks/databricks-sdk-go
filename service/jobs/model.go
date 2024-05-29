@@ -650,6 +650,8 @@ type ForEachTaskErrorMessageStats struct {
 	Count int `json:"count,omitempty"`
 	// Describes the error message occured during the iterations.
 	ErrorMessage string `json:"error_message,omitempty"`
+	// Describes the termination reason for the error message.
+	TerminationCategory string `json:"termination_category,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

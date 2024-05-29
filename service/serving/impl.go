@@ -4,6 +4,7 @@ package serving
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -133,6 +134,9 @@ func (a *servingEndpointDataPlaneImpl) Query(ctx context.Context, request QueryE
 		response, err := a.controlPlane.Get(ctx, getRequest)
 		if err != nil {
 			return nil, err
+		}
+		if response.DataPlaneInfo == nil {
+			return nil, errors.New("resource does not support direct Data Plane access")
 		}
 		return response.DataPlaneInfo.QueryInfo, nil
 	}
