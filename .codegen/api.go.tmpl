@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// {{if .Description}}{{.Description}}{{else}}These APIs allow you to manage {{range .Services}}{{.TitleName}}, {{end}}etc.{{end}}
+// {{if .Description}}{{.Description}}{{else}}These APIs allow you to manage {{range .Services}}{{if (not .IsDataPlane)}}{{.TitleName}}, {{end}}{{end}}etc.{{end}}
 package {{.Name}}
 
 import (
@@ -22,6 +22,7 @@ import (
 		"Workspace"
 }}
 {{range .Services}}
+{{if not .IsDataPlane}}
 
 type {{.PascalName}}Interface interface {
 	{{if (in $extendedInterface .PascalName) }}
@@ -411,7 +412,7 @@ func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Conte
 }
 {{end}}
 {{end -}}
-
+{{end}}
 {{- end}}
 {{- define "field-path" -}}
 	{{- range .}}.{{.PascalName}}{{end}}

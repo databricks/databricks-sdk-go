@@ -13,7 +13,7 @@ import (
 	{{range .ImportedPackages}}
 	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
 )
-{{range .Services}}
+{{range .Services}} {{if not .IsDataPlane}}
 // unexported type that holds implementations of just {{.Name}} API methods
 type {{.CamelName}}Impl struct {
 	client *client.DatabricksClient
@@ -28,6 +28,7 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 	return {{ template "response" . }}
 }
 {{end -}}
+{{end}}
 {{end}}
 
 {{- define "path" -}}
