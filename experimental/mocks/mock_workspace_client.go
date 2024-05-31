@@ -102,8 +102,8 @@ func NewMockWorkspaceClient(t interface {
 			Schemas:                             catalog.NewMockSchemasInterface(t),
 			Secrets:                             workspace.NewMockSecretsInterface(t),
 			ServicePrincipals:                   iam.NewMockServicePrincipalsInterface(t),
-			ServingEndpointDataPlane:            serving.NewMockServingEndpointDataPlaneInterface(t),
 			ServingEndpoints:                    serving.NewMockServingEndpointsInterface(t),
+			ServingEndpointsDataPlane:           serving.NewMockServingEndpointsDataPlaneInterface(t),
 			Settings:                            settings.NewMockSettingsInterface(t),
 			Shares:                              sharing.NewMockSharesInterface(t),
 			StatementExecution:                  sql.NewMockStatementExecutionInterface(t),
@@ -688,18 +688,18 @@ func (m *MockWorkspaceClient) GetMockServicePrincipalsAPI() *iam.MockServicePrin
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockServingEndpointDataPlaneAPI() *serving.MockServingEndpointDataPlaneInterface {
-	api, ok := m.WorkspaceClient.ServingEndpointDataPlane.(*serving.MockServingEndpointDataPlaneInterface)
-	if !ok {
-		panic(fmt.Sprintf("expected ServingEndpointDataPlane to be *serving.MockServingEndpointDataPlaneInterface, actual was %T", m.WorkspaceClient.ServingEndpointDataPlane))
-	}
-	return api
-}
-
 func (m *MockWorkspaceClient) GetMockServingEndpointsAPI() *serving.MockServingEndpointsInterface {
 	api, ok := m.WorkspaceClient.ServingEndpoints.(*serving.MockServingEndpointsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ServingEndpoints to be *serving.MockServingEndpointsInterface, actual was %T", m.WorkspaceClient.ServingEndpoints))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockServingEndpointsDataPlaneAPI() *serving.MockServingEndpointsDataPlaneInterface {
+	api, ok := m.WorkspaceClient.ServingEndpointsDataPlane.(*serving.MockServingEndpointsDataPlaneInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ServingEndpointsDataPlane to be *serving.MockServingEndpointsDataPlaneInterface, actual was %T", m.WorkspaceClient.ServingEndpointsDataPlane))
 	}
 	return api
 }

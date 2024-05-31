@@ -696,10 +696,6 @@ type WorkspaceClient struct {
 	// data by accident.
 	ServicePrincipals iam.ServicePrincipalsInterface
 
-	// ServingEndpointDataPlane provides a set of operations to interact with
-	// DataPlane endpoints for ServingEndpoints service.
-	ServingEndpointDataPlane serving.ServingEndpointDataPlaneInterface
-
 	// The Serving Endpoints API allows you to create, update, and delete model
 	// serving endpoints.
 	//
@@ -715,6 +711,10 @@ type WorkspaceClient struct {
 	// Additionally, you can configure the scale of resources that should be
 	// applied to each served entity.
 	ServingEndpoints serving.ServingEndpointsInterface
+
+	// Serving endpoints DataPlane provides a set of operations to interact with
+	// DataPlane endpoints for Serving endpoints service.
+	ServingEndpointsDataPlane serving.ServingEndpointsDataPlaneInterface
 
 	// Workspace Settings API allows users to manage settings at the workspace
 	// level.
@@ -1071,8 +1071,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
 		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),
-		ServingEndpointDataPlane:            serving.NewServingEndpointDataPlane(databricksClient, servingEndpoints),
 		ServingEndpoints:                    servingEndpoints,
+		ServingEndpointsDataPlane:           serving.NewServingEndpointsDataPlane(databricksClient, servingEndpoints),
 		Settings:                            settings.NewSettings(databricksClient),
 		Shares:                              sharing.NewShares(databricksClient),
 		StatementExecution:                  sql.NewStatementExecution(databricksClient),

@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Apps, Serving Endpoint Data Plane, Serving Endpoints, etc.
+// These APIs allow you to manage Apps, Serving Endpoints, Serving Endpoints Data Plane, etc.
 package serving
 
 import (
@@ -550,58 +550,6 @@ func (a *AppsAPI) Stop(ctx context.Context, request StopAppRequest) error {
 // Updates the app with the supplied name.
 func (a *AppsAPI) Update(ctx context.Context, request UpdateAppRequest) (*App, error) {
 	return a.impl.Update(ctx, request)
-}
-
-type ServingEndpointDataPlaneInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockServingEndpointDataPlaneInterface instead.
-	WithImpl(impl ServingEndpointDataPlaneService) ServingEndpointDataPlaneInterface
-
-	// Impl returns low-level ServingEndpointDataPlane API implementation
-	// Deprecated: use MockServingEndpointDataPlaneInterface instead.
-	Impl() ServingEndpointDataPlaneService
-
-	// Query a serving endpoint.
-	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
-}
-
-func NewServingEndpointDataPlane(client *client.DatabricksClient,
-	controlPlane *ServingEndpointsAPI,
-) *ServingEndpointDataPlaneAPI {
-	return &ServingEndpointDataPlaneAPI{
-		impl: &servingEndpointDataPlaneImpl{
-			client:       client,
-			controlPlane: controlPlane,
-		},
-	}
-}
-
-// ServingEndpointDataPlane provides a set of operations to interact with
-// DataPlane endpoints for ServingEndpoints service.
-type ServingEndpointDataPlaneAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ServingEndpointDataPlaneService)
-	impl ServingEndpointDataPlaneService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockServingEndpointDataPlaneInterface instead.
-func (a *ServingEndpointDataPlaneAPI) WithImpl(impl ServingEndpointDataPlaneService) ServingEndpointDataPlaneInterface {
-	a.impl = impl
-	return a
-}
-
-// Impl returns low-level ServingEndpointDataPlane API implementation
-// Deprecated: use MockServingEndpointDataPlaneInterface instead.
-func (a *ServingEndpointDataPlaneAPI) Impl() ServingEndpointDataPlaneService {
-	return a.impl
-}
-
-// Query a serving endpoint.
-func (a *ServingEndpointDataPlaneAPI) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
-	return a.impl.Query(ctx, request)
 }
 
 type ServingEndpointsInterface interface {
@@ -1154,4 +1102,56 @@ func (a *ServingEndpointsAPI) UpdateConfigAndWait(ctx context.Context, endpointC
 // permissions from their root object.
 func (a *ServingEndpointsAPI) UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
 	return a.impl.UpdatePermissions(ctx, request)
+}
+
+type ServingEndpointsDataPlaneInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockServingEndpointsDataPlaneInterface instead.
+	WithImpl(impl ServingEndpointsDataPlaneService) ServingEndpointsDataPlaneInterface
+
+	// Impl returns low-level ServingEndpointsDataPlane API implementation
+	// Deprecated: use MockServingEndpointsDataPlaneInterface instead.
+	Impl() ServingEndpointsDataPlaneService
+
+	// Query a serving endpoint.
+	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
+}
+
+func NewServingEndpointsDataPlane(client *client.DatabricksClient,
+	controlPlane *ServingEndpointsAPI,
+) *ServingEndpointsDataPlaneAPI {
+	return &ServingEndpointsDataPlaneAPI{
+		impl: &servingEndpointsDataPlaneImpl{
+			client:       client,
+			controlPlane: controlPlane,
+		},
+	}
+}
+
+// Serving endpoints DataPlane provides a set of operations to interact with
+// DataPlane endpoints for Serving endpoints service.
+type ServingEndpointsDataPlaneAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(ServingEndpointsDataPlaneService)
+	impl ServingEndpointsDataPlaneService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockServingEndpointsDataPlaneInterface instead.
+func (a *ServingEndpointsDataPlaneAPI) WithImpl(impl ServingEndpointsDataPlaneService) ServingEndpointsDataPlaneInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level ServingEndpointsDataPlane API implementation
+// Deprecated: use MockServingEndpointsDataPlaneInterface instead.
+func (a *ServingEndpointsDataPlaneAPI) Impl() ServingEndpointsDataPlaneService {
+	return a.impl
+}
+
+// Query a serving endpoint.
+func (a *ServingEndpointsDataPlaneAPI) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
+	return a.impl.Query(ctx, request)
 }

@@ -2000,7 +2000,6 @@ type ResolvedStringParamsValues struct {
 	Parameters []string `json:"parameters,omitempty"`
 }
 
-// Next field: 15
 type ResolvedValues struct {
 	ConditionTask *ResolvedConditionTaskValues `json:"condition_task,omitempty"`
 
