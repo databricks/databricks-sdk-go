@@ -431,12 +431,6 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 		}
 	}
 
-	// Generate DataPlane service
-	if svc.HasDataPlaneMethods() {
-		dataPlaneService := svc.generateDataPlaneService()
-		pkg.services[dataPlaneService.Name] = dataPlaneService
-	}
-
 	return nil
 }
 

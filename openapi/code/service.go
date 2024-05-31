@@ -32,7 +32,6 @@ type Service struct {
 	ParentService       *Service
 	ControlPlaneService *Service
 	tag                 *openapi.Tag
-	IsDataPlane         bool
 }
 
 // Returns whether any method supports direct DataPlane access.
@@ -51,62 +50,12 @@ func (svc *Service) DataPlaneInfoMethod() *Method {
 	return svc.ControlPlaneService.methods[methodName]
 }
 
-// Returns the corresponding service for DataPlane APIs.
-func (svc *Service) generateDataPlaneService() *Service {
-	name := svc.Named.Singular().Name + "DataPlane"
-	description := fmt.Sprintf("%s provides a set of operations to interact with DataPlane endpoints for %s service.", name, svc.Name)
-	named := Named{
-		Name:        name,
-		Description: description,
-	}
-	s := &Service{
-		Named:               named,
-		Package:             svc.Package,
-		ControlPlaneService: svc,
-		methods:             svc.dataPlaneMethods(),
-		tag: &openapi.Tag{
-			Node:          svc.tag.Node,
-			Package:       svc.tag.Package,
-			PathStyle:     svc.tag.PathStyle,
-			Service:       svc.tag.Service,
-			ParentService: svc.tag.ParentService,
-			IsAccounts:    svc.tag.IsAccounts,
-			Name:          named.Name,
-		},
-		ByPathParamsMethods: svc.ByPathParamsMethods,
-		IsDataPlane:         true,
-	}
-	for _, m := range s.methods {
-		m.Service = s
-	}
-	s.tag.Service = s.Name
-	return s
-}
-
 // Copies methods which implement a DataPlane API.
 func (svc *Service) dataPlaneMethods() map[string]*Method {
 	methods := map[string]*Method{}
-	for _, m := range svc.methods {
-		if m.DataPlane != nil {
-			methods[m.Name] = &Method{
-				Named:               m.Named,
-				Verb:                m.Verb,
-				Path:                m.Path,
-				Request:             m.Request,
-				PathParts:           m.PathParts,
-				Response:            m.Response,
-				PathStyle:           m.PathStyle,
-				NameFieldPath:       m.NameFieldPath,
-				IdFieldPath:         m.IdFieldPath,
-				RequestBodyField:    m.RequestBodyField,
-				ResponseBodyField:   m.ResponseBodyField,
-				FixedRequestHeaders: m.FixedRequestHeaders,
-				wait:                m.wait,
-				Operation:           m.Operation,
-				pagination:          m.pagination,
-				shortcut:            m.shortcut,
-				DataPlane:           m.DataPlane,
-			}
+	for k, v := range svc.methods {
+		if v.DataPlane != nil {
+			methods[k] = v
 		}
 	}
 	return methods
