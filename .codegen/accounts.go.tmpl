@@ -12,7 +12,7 @@ import (
 type AccountClient struct {
 	Config *config.Config
 
-	{{range .Services}}{{if and .IsAccounts (not .HasParent) (not .IsDataPlane)}}
+	{{range .Services}}{{if and .IsAccounts (not .HasParent)}}
 	{{.Comment "    // " 80}}
 	{{(.TrimPrefix "account").PascalName}} {{.Package.Name}}.{{.Name}}Interface
     {{end}}{{end}}
@@ -44,7 +44,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	}
 	return &AccountClient{
 		Config: cfg,
-		{{range .Services}}{{if and .IsAccounts (not .HasParent) (not .IsDataPlane)}}
+		{{range .Services}}{{if and .IsAccounts (not .HasParent) }}
 		{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.New{{.Name}}(apiClient),{{end}}{{end}}
 	}, nil
 }
