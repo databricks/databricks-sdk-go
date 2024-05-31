@@ -2408,6 +2408,11 @@ type ListAccountStorageCredentialsRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 }
 
+type ListAccountStorageCredentialsResponse struct {
+	// An array of metastore storage credentials.
+	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
+}
+
 // List catalogs
 type ListCatalogsRequest struct {
 	// Whether to include catalogs in the response for which the principal can

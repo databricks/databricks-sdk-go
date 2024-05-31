@@ -178,6 +178,8 @@
 //
 // - [iam.AccountServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
 //
+// - [serving.ServingEndpointDataPlaneAPI]: ServingEndpointDataPlane provides a set of operations to interact with DataPlane endpoints for ServingEndpoints service.
+//
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
 // - [settings.SettingsAPI]: Workspace Settings API allows users to manage settings at the workspace level.
@@ -344,6 +346,7 @@ var (
 	_ *oauth2.ServicePrincipalSecretsAPI                  = nil
 	_ *iam.ServicePrincipalsAPI                           = nil
 	_ *iam.AccountServicePrincipalsAPI                    = nil
+	_ *serving.ServingEndpointDataPlaneAPI                = nil
 	_ *serving.ServingEndpointsAPI                        = nil
 	_ *settings.SettingsAPI                               = nil
 	_ *settings.AccountSettingsAPI                        = nil

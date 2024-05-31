@@ -105,10 +105,17 @@ type {{.PascalName}}Interface interface {
 {{end -}}
 }
 
-func New{{.PascalName}}(client *client.DatabricksClient) *{{.PascalName}}API {
+func New{{.PascalName}}(client *client.DatabricksClient,
+{{- if .IsDataPlane}}
+controlPlane *{{.ControlPlaneService.PascalName}}API,
+{{end -}}
+) *{{.PascalName}}API {
 	return &{{.PascalName}}API{
 		impl: &{{.CamelName}}Impl{
 			client: client,
+			{{- if .IsDataPlane}}
+			controlPlane: controlPlane,
+			{{end}}
 		},
 		{{range .Subservices}}
 		{{.CamelName}}: New{{.PascalName}}(client),
@@ -147,6 +154,8 @@ func (a *{{.PascalName}}API) WithImpl(impl {{.PascalName}}Service) {{.PascalName
 func (a *{{.PascalName}}API) Impl() {{.PascalName}}Service {
 	return a.impl
 }
+
+
 
 {{range .Waits}}
 // {{.PascalName}} repeatedly calls [{{.Method.Service.Name}}API.{{.Poll.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state

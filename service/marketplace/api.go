@@ -440,6 +440,12 @@ type ConsumerListingsInterface interface {
 	// Deprecated: use MockConsumerListingsInterface instead.
 	Impl() ConsumerListingsService
 
+	// Get one batch of listings. One may specify up to 50 IDs per request.
+	//
+	// Batch get a published listing in the Databricks Marketplace that the consumer
+	// has access to.
+	GEt(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error)
+
 	// Get listing.
 	//
 	// Get a published listing in the Databricks Marketplace that the consumer has
@@ -533,6 +539,14 @@ func (a *ConsumerListingsAPI) WithImpl(impl ConsumerListingsService) ConsumerLis
 // Deprecated: use MockConsumerListingsInterface instead.
 func (a *ConsumerListingsAPI) Impl() ConsumerListingsService {
 	return a.impl
+}
+
+// Get one batch of listings. One may specify up to 50 IDs per request.
+//
+// Batch get a published listing in the Databricks Marketplace that the consumer
+// has access to.
+func (a *ConsumerListingsAPI) GEt(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error) {
+	return a.impl.GEt(ctx, request)
 }
 
 // Get listing.
@@ -836,6 +850,12 @@ type ConsumerProvidersInterface interface {
 	// Deprecated: use MockConsumerProvidersInterface instead.
 	Impl() ConsumerProvidersService
 
+	// Get one batch of providers. One may specify up to 50 IDs per request.
+	//
+	// Batch get a provider in the Databricks Marketplace with at least one visible
+	// listing.
+	GEt(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error)
+
 	// Get a provider.
 	//
 	// Get a provider in the Databricks Marketplace with at least one visible
@@ -910,6 +930,14 @@ func (a *ConsumerProvidersAPI) WithImpl(impl ConsumerProvidersService) ConsumerP
 // Deprecated: use MockConsumerProvidersInterface instead.
 func (a *ConsumerProvidersAPI) Impl() ConsumerProvidersService {
 	return a.impl
+}
+
+// Get one batch of providers. One may specify up to 50 IDs per request.
+//
+// Batch get a provider in the Databricks Marketplace with at least one visible
+// listing.
+func (a *ConsumerProvidersAPI) GEt(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error) {
+	return a.impl.GEt(ctx, request)
 }
 
 // Get a provider.

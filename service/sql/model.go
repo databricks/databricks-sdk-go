@@ -2353,8 +2353,7 @@ type QueryInfo struct {
 	CanSubscribeToLiveQuery bool `json:"canSubscribeToLiveQuery,omitempty"`
 	// Channel information for the SQL warehouse at the time of query execution
 	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
-	// Total execution time of the query from the client’s point of view, in
-	// milliseconds.
+	// Total execution time of the statement ( excluding result fetch time ).
 	Duration int `json:"duration,omitempty"`
 	// Alias for `warehouse_id`.
 	EndpointId string `json:"endpoint_id,omitempty"`

@@ -42,9 +42,20 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	if err != nil {
 		return nil, err
 	}
+	{{range .Services}}{{if and .IsAccounts (not .HasParent) (.HasDataPlaneMethods) (not .IsDataPlane)}}
+	{{.CamelName}} := {{.Package.Name}}.New{{.Name}}(apiClient)
+	{{- end}}{{end}}
 	return &AccountClient{
 		Config: cfg,
-		{{range .Services}}{{if and .IsAccounts (not .HasParent) }}
-		{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.New{{.Name}}(apiClient),{{end}}{{end}}
+		{{range .Services}}{{if and .IsAccounts (not .HasParent) (not .IsDataPlane) (not .HasDataPlaneMethods)}}
+		{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.New{{.Name}}(apiClient),
+		{{- end -}}
+		{{if and .IsAccounts (not .HasParent) (not .IsDataPlane) (.HasDataPlaneMethods)}}
+		{{(.TrimPrefix "account").PascalName}}: {{.CamelName}},
+		{{- end -}}
+		{{if and .IsAccounts (not .HasParent) .IsDataPlane}}
+		{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.New{{.Name}}(apiClient,  {{.ControlPlaneService.CamelName}}),
+		{{- end -}}
+		{{end}}
 	}, nil
 }

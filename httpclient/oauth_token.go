@@ -3,6 +3,7 @@ package httpclient
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/credentials"
 	"golang.org/x/oauth2"
@@ -26,7 +27,7 @@ type GetOAuthTokenRequest struct {
 //
 // **NOTE:** Experimental: This API may change or be removed in a future release
 // without warning.
-func (c *ApiClient) GetOAuthToken(ctx context.Context, authDetails string, token *oauth2.Token) (*credentials.OAuthToken, error) {
+func (c *ApiClient) GetOAuthToken(ctx context.Context, authDetails string, token *oauth2.Token) (*oauth2.Token, error) {
 	path := "/oidc/v1/token"
 	data := GetOAuthTokenRequest{
 		GrantType:            JWTGrantType,
@@ -42,6 +43,9 @@ func (c *ApiClient) GetOAuthToken(ctx context.Context, authDetails string, token
 	if err != nil {
 		return nil, err
 	}
-
-	return &response, nil
+	return &oauth2.Token{
+		AccessToken: response.AccessToken,
+		TokenType:   response.TokenType,
+		Expiry:      time.Now().Add(time.Duration(response.ExpiresIn) * time.Second),
+	}, nil
 }

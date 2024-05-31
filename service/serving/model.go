@@ -7,6 +7,7 @@ import (
 	"io"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
+	"github.com/databricks/databricks-sdk-go/service/oauth2"
 )
 
 type Ai21LabsConfig struct {
@@ -966,6 +967,11 @@ type LogsRequest struct {
 	ServedModelName string `json:"-" url:"-"`
 }
 
+type ModelDataPlaneInfo struct {
+	// Information required to query DataPlane API 'query' endpoint.
+	QueryInfo *oauth2.DataPlaneInfo `json:"query_info,omitempty"`
+}
+
 type OpenAiConfig struct {
 	// This field is only required for Azure AD OpenAI and is the Microsoft
 	// Entra Client ID.
@@ -1815,6 +1821,8 @@ type ServingEndpointDetailed struct {
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// The email of the user who created the serving endpoint.
 	Creator string `json:"creator,omitempty"`
+	// Information required to query DataPlane APIs.
+	DataPlaneInfo *ModelDataPlaneInfo `json:"data_plane_info,omitempty"`
 	// Endpoint invocation url if route optimization is enabled for endpoint
 	EndpointUrl string `json:"endpoint_url,omitempty"`
 	// System-generated ID of the endpoint. This is used to refer to the

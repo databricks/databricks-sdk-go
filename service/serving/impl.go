@@ -4,10 +4,15 @@ package serving
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
+	goauth "golang.org/x/oauth2"
+
+	"github.com/databricks/databricks-sdk-go/service/oauth2"
 )
 
 // unexported type that holds implementations of just Apps API methods
@@ -107,6 +112,54 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &app)
 	return &app, err
+}
+
+// unexported type that holds implementations of just ServingEndpointDataPlane API methods
+type servingEndpointDataPlaneImpl struct {
+	oauth2.DataPlaneHelper
+	controlPlane *ServingEndpointsAPI
+	client       *client.DatabricksClient
+}
+
+func (a *servingEndpointDataPlaneImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
+	getRequest := GetServingEndpointRequest{
+		Name: request.Name,
+	}
+	token, err := a.client.Config.GetToken()
+	if err != nil {
+		return nil, err
+	}
+	infoGetter := func() (*oauth2.DataPlaneInfo, error) {
+		response, err := a.controlPlane.Get(ctx, getRequest)
+		if err != nil {
+			return nil, err
+		}
+		if response.DataPlaneInfo == nil {
+			return nil, errors.New("resource does not support direct Data Plane access")
+		}
+		return response.DataPlaneInfo.QueryInfo, nil
+	}
+	refresh := func(info *oauth2.DataPlaneInfo) (*goauth.Token, error) {
+		return a.client.GetOAuthToken(ctx, info.AuthorizationDetails, token)
+	}
+	getParams := []string{
+		request.Name,
+	}
+	endpointUrl, dataPlaneToken, err := a.GetDataPlaneDetails("Query", getParams, refresh, infoGetter)
+	if err != nil {
+		return nil, err
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	opts := []httpclient.DoOption{}
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	var queryEndpointResponse QueryEndpointResponse
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(&queryEndpointResponse))
+	opts = append(opts, httpclient.WithToken(dataPlaneToken))
+	err = a.client.ApiClient().Do(ctx, http.MethodPost, endpointUrl, opts...)
+	return &queryEndpointResponse, err
 }
 
 // unexported type that holds implementations of just ServingEndpoints API methods

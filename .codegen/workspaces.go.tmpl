@@ -20,19 +20,6 @@ type WorkspaceClient struct {
 	{{end}}{{end}}
 }
 
-// Returns a new OAuth scoped to the authorization details provided.
-// It will return an error if the CredentialStrategy does not support OAuth tokens.
-//
-// **NOTE:** Experimental: This API may change or be removed in a future release
-// without warning.
-func (a *WorkspaceClient) GetOAuthToken(ctx context.Context, authorizationDetails string) (*credentials.OAuthToken, error) {
-	originalToken, err := a.Config.GetToken()
-	if err != nil {
-		return nil, err
-	}
-	return a.apiClient.GetOAuthToken(ctx, authorizationDetails, originalToken)
-}
-
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")
 
 // NewWorkspaceClient creates new Databricks SDK client for Workspaces or
@@ -61,11 +48,21 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if err != nil {
 		return nil, err
 	}
+	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (.HasDataPlaneMethods) (not .IsDataPlane)}}
+	{{.CamelName}} := {{.Package.Name}}.New{{.Name}}(databricksClient)
+	{{- end}}{{end}}
 	return &WorkspaceClient{
 		Config: cfg,
 		apiClient: apiClient,
-		{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) }}
+		{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane) (not .HasDataPlaneMethods)}}
 		{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient),
-		{{- end}}{{end}}
+		{{- end -}}
+		{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane) (.HasDataPlaneMethods)}}
+		{{.Name}}: {{.CamelName}},
+		{{- end -}}
+		{{if and (not .IsAccounts) (not .HasParent) .IsDataPlane}}
+		{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient,  {{.ControlPlaneService.CamelName}}),
+		{{- end -}}
+		{{end}}
 	}, nil
 }

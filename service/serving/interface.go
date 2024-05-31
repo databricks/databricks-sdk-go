@@ -67,6 +67,14 @@ type AppsService interface {
 	Update(ctx context.Context, request UpdateAppRequest) (*App, error)
 }
 
+// ServingEndpointDataPlane provides a set of operations to interact with
+// DataPlane endpoints for ServingEndpoints service.
+type ServingEndpointDataPlaneService interface {
+
+	// Query a serving endpoint.
+	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
+}
+
 // The Serving Endpoints API allows you to create, update, and delete model
 // serving endpoints.
 //

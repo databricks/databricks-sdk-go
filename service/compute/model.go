@@ -455,7 +455,8 @@ type ClusterAttributes struct {
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters.
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -613,7 +614,8 @@ type ClusterDetails struct {
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters.
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
@@ -1156,7 +1158,8 @@ type ClusterSpec struct {
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters.
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -1455,7 +1458,8 @@ type CreateCluster struct {
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters.
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -1821,7 +1825,9 @@ func (f *DataPlaneEventDetailsEventType) Type() string {
 // * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL
 // clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from
 // legacy Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This
-// mode is for users migrating from legacy Passthrough on standard clusters.
+// mode is for users migrating from legacy Passthrough on standard clusters. *
+// `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have
+// UC nor passthrough enabled.
 type DataSecurityMode string
 
 // This mode is for users migrating from legacy Passthrough on high concurrency
@@ -1831,6 +1837,9 @@ const DataSecurityModeLegacyPassthrough DataSecurityMode = `LEGACY_PASSTHROUGH`
 // This mode is for users migrating from legacy Passthrough on standard
 // clusters.
 const DataSecurityModeLegacySingleUser DataSecurityMode = `LEGACY_SINGLE_USER`
+
+// This mode provides a way that doesn’t have UC nor passthrough enabled.
+const DataSecurityModeLegacySingleUserStandard DataSecurityMode = `LEGACY_SINGLE_USER_STANDARD`
 
 // This mode is for users migrating from legacy Table ACL clusters.
 const DataSecurityModeLegacyTableAcl DataSecurityMode = `LEGACY_TABLE_ACL`
@@ -1858,11 +1867,11 @@ func (f *DataSecurityMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DataSecurityMode) Set(v string) error {
 	switch v {
-	case `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
+	case `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_SINGLE_USER_STANDARD`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
 		*f = DataSecurityMode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_SINGLE_USER_STANDARD", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
 	}
 }
 
@@ -2146,7 +2155,8 @@ type EditCluster struct {
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters.
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`

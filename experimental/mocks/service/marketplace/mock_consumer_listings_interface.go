@@ -24,6 +24,65 @@ func (_m *MockConsumerListingsInterface) EXPECT() *MockConsumerListingsInterface
 	return &MockConsumerListingsInterface_Expecter{mock: &_m.Mock}
 }
 
+// GEt provides a mock function with given fields: ctx, request
+func (_m *MockConsumerListingsInterface) GEt(ctx context.Context, request marketplace.BatchGetListingsRequest) (*marketplace.BatchGetListingsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GEt")
+	}
+
+	var r0 *marketplace.BatchGetListingsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, marketplace.BatchGetListingsRequest) (*marketplace.BatchGetListingsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, marketplace.BatchGetListingsRequest) *marketplace.BatchGetListingsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*marketplace.BatchGetListingsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, marketplace.BatchGetListingsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockConsumerListingsInterface_GEt_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GEt'
+type MockConsumerListingsInterface_GEt_Call struct {
+	*mock.Call
+}
+
+// GEt is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request marketplace.BatchGetListingsRequest
+func (_e *MockConsumerListingsInterface_Expecter) GEt(ctx interface{}, request interface{}) *MockConsumerListingsInterface_GEt_Call {
+	return &MockConsumerListingsInterface_GEt_Call{Call: _e.mock.On("GEt", ctx, request)}
+}
+
+func (_c *MockConsumerListingsInterface_GEt_Call) Run(run func(ctx context.Context, request marketplace.BatchGetListingsRequest)) *MockConsumerListingsInterface_GEt_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(marketplace.BatchGetListingsRequest))
+	})
+	return _c
+}
+
+func (_c *MockConsumerListingsInterface_GEt_Call) Return(_a0 *marketplace.BatchGetListingsResponse, _a1 error) *MockConsumerListingsInterface_GEt_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockConsumerListingsInterface_GEt_Call) RunAndReturn(run func(context.Context, marketplace.BatchGetListingsRequest) (*marketplace.BatchGetListingsResponse, error)) *MockConsumerListingsInterface_GEt_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function with given fields: ctx, request
 func (_m *MockConsumerListingsInterface) Get(ctx context.Context, request marketplace.GetListingRequest) (*marketplace.GetListingResponse, error) {
 	ret := _m.Called(ctx, request)
