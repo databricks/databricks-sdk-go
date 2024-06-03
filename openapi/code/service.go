@@ -30,6 +30,7 @@ type Service struct {
 	subservices         map[string]*Service
 	ByPathParamsMethods []*Shortcut
 	ParentService       *Service
+	ControlPlaneService *Service
 	tag                 *openapi.Tag
 }
 
@@ -41,6 +42,12 @@ func (svc *Service) FullName() string {
 // Returns whether the service has a parent service
 func (svc *Service) HasParent() bool {
 	return svc.tag.ParentService != ""
+}
+
+// Returns whether the service is a DataPlane service
+// This is determined by the service having a matching control plane service
+func (svc *Service) IsDataPlane() bool {
+	return svc.tag.ControlPlaneService != ""
 }
 
 // Returns the list of subservices
