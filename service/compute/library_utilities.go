@@ -183,10 +183,18 @@ func (a *LibrariesAPI) Wait(ctx context.Context, wait Wait,
 		o(&i)
 	}
 	result, err := retries.Poll(ctx, i.Timeout, func() (*ClusterLibraryStatuses, *retries.Err) {
-		status, err := a.ClusterStatusByClusterId(ctx, wait.ClusterID)
+		all, err := a.ClusterStatusAll(ctx, ClusterStatus{ClusterId: wait.ClusterID})
 		if apierr.IsMissing(err) {
 			// eventual consistency error
 			return nil, retries.Continue(err)
+		}
+		// Synthesize object. This function was written when the waiters were
+		// still using the retries.* API. This approach has since been changed
+		// to return waiter objects directly, but this function hasn't been
+		// updated yet. This is a temporary workaround.
+		status := &ClusterLibraryStatuses{
+			ClusterId:       wait.ClusterID,
+			LibraryStatuses: all,
 		}
 		for _, o := range options {
 			o(&retries.Info[ClusterLibraryStatuses]{

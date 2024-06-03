@@ -128,6 +128,11 @@ func (m *Method) allowShortcut() bool {
 	if m.shortcut {
 		return true
 	}
+	// We do not generate proper pagination (e.g. iterators) for shortcuts,
+	// so don't emit shortcuts if we have pagination.
+	if m.pagination != nil {
+		return false
+	}
 	if m.PathStyle == openapi.PathStyleRpc {
 		return true
 	}
