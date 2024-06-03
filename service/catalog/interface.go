@@ -108,7 +108,9 @@ type AccountStorageCredentialsService interface {
 	//
 	// Gets a list of all storage credentials that have been assigned to given
 	// metastore.
-	List(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error)
+	//
+	// Use ListAll() to get all StorageCredentialInfo instances
+	List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListAccountStorageCredentialsResponse, error)
 
 	// Updates a storage credential.
 	//

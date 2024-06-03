@@ -147,13 +147,13 @@ func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAcco
 	return &accountsStorageCredentialInfo, err
 }
 
-func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error) {
-	var storageCredentialInfoList []StorageCredentialInfo
+func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListAccountStorageCredentialsResponse, error) {
+	var listAccountStorageCredentialsResponse ListAccountStorageCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &storageCredentialInfoList)
-	return storageCredentialInfoList, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listAccountStorageCredentialsResponse)
+	return &listAccountStorageCredentialsResponse, err
 }
 
 func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error) {

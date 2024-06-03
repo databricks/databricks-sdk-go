@@ -72,6 +72,12 @@ type ConsumerInstallationsService interface {
 // products that are available for consumption.
 type ConsumerListingsService interface {
 
+	// Get one batch of listings. One may specify up to 50 IDs per request.
+	//
+	// Batch get a published listing in the Databricks Marketplace that the
+	// consumer has access to.
+	BatchGet(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error)
+
 	// Get listing.
 	//
 	// Get a published listing in the Databricks Marketplace that the consumer
@@ -121,6 +127,12 @@ type ConsumerPersonalizationRequestsService interface {
 
 // Providers are the entities that publish listings to the Marketplace.
 type ConsumerProvidersService interface {
+
+	// Get one batch of providers. One may specify up to 50 IDs per request.
+	//
+	// Batch get a provider in the Databricks Marketplace with at least one
+	// visible listing.
+	BatchGet(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error)
 
 	// Get a provider.
 	//

@@ -25,16 +25,6 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	return &app, err
 }
 
-func (a *appsImpl) CreateDeployment(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error) {
-	var appDeployment AppDeployment
-	path := fmt.Sprintf("/api/2.0/preview/apps/%v/deployments", request.AppName)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &appDeployment)
-	return &appDeployment, err
-}
-
 func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/apps/%v", request.Name)
@@ -42,6 +32,16 @@ func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) error {
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
+}
+
+func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error) {
+	var appDeployment AppDeployment
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v/deployments", request.AppName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &appDeployment)
+	return &appDeployment, err
 }
 
 func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error) {
