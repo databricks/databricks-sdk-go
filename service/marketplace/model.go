@@ -53,6 +53,24 @@ func (f *AssetType) Type() string {
 	return "AssetType"
 }
 
+// Get one batch of listings. One may specify up to 50 IDs per request.
+type BatchGetListingsRequest struct {
+	Ids []string `json:"-" url:"ids,omitempty"`
+}
+
+type BatchGetListingsResponse struct {
+	Listings []Listing `json:"listings,omitempty"`
+}
+
+// Get one batch of providers. One may specify up to 50 IDs per request.
+type BatchGetProvidersRequest struct {
+	Ids []string `json:"-" url:"ids,omitempty"`
+}
+
+type BatchGetProvidersResponse struct {
+	Providers []ProviderInfo `json:"providers,omitempty"`
+}
+
 type Category string
 
 const CategoryAdvertisingAndMarketing Category = `ADVERTISING_AND_MARKETING`

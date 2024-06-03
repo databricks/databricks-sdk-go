@@ -1179,21 +1179,49 @@ type DataSourceFormat string
 
 const DataSourceFormatAvro DataSourceFormat = `AVRO`
 
+const DataSourceFormatBigqueryFormat DataSourceFormat = `BIGQUERY_FORMAT`
+
 const DataSourceFormatCsv DataSourceFormat = `CSV`
+
+const DataSourceFormatDatabricksFormat DataSourceFormat = `DATABRICKS_FORMAT`
 
 const DataSourceFormatDelta DataSourceFormat = `DELTA`
 
 const DataSourceFormatDeltasharing DataSourceFormat = `DELTASHARING`
 
+const DataSourceFormatHiveCustom DataSourceFormat = `HIVE_CUSTOM`
+
+const DataSourceFormatHiveSerde DataSourceFormat = `HIVE_SERDE`
+
 const DataSourceFormatJson DataSourceFormat = `JSON`
+
+const DataSourceFormatMysqlFormat DataSourceFormat = `MYSQL_FORMAT`
+
+const DataSourceFormatNetsuiteFormat DataSourceFormat = `NETSUITE_FORMAT`
 
 const DataSourceFormatOrc DataSourceFormat = `ORC`
 
 const DataSourceFormatParquet DataSourceFormat = `PARQUET`
 
+const DataSourceFormatPostgresqlFormat DataSourceFormat = `POSTGRESQL_FORMAT`
+
+const DataSourceFormatRedshiftFormat DataSourceFormat = `REDSHIFT_FORMAT`
+
+const DataSourceFormatSalesforceFormat DataSourceFormat = `SALESFORCE_FORMAT`
+
+const DataSourceFormatSnowflakeFormat DataSourceFormat = `SNOWFLAKE_FORMAT`
+
+const DataSourceFormatSqldwFormat DataSourceFormat = `SQLDW_FORMAT`
+
+const DataSourceFormatSqlserverFormat DataSourceFormat = `SQLSERVER_FORMAT`
+
 const DataSourceFormatText DataSourceFormat = `TEXT`
 
 const DataSourceFormatUnityCatalog DataSourceFormat = `UNITY_CATALOG`
+
+const DataSourceFormatVectorIndexFormat DataSourceFormat = `VECTOR_INDEX_FORMAT`
+
+const DataSourceFormatWorkdayRaasFormat DataSourceFormat = `WORKDAY_RAAS_FORMAT`
 
 // String representation for [fmt.Print]
 func (f *DataSourceFormat) String() string {
@@ -1203,11 +1231,11 @@ func (f *DataSourceFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DataSourceFormat) Set(v string) error {
 	switch v {
-	case `AVRO`, `CSV`, `DELTA`, `DELTASHARING`, `JSON`, `ORC`, `PARQUET`, `TEXT`, `UNITY_CATALOG`:
+	case `AVRO`, `BIGQUERY_FORMAT`, `CSV`, `DATABRICKS_FORMAT`, `DELTA`, `DELTASHARING`, `HIVE_CUSTOM`, `HIVE_SERDE`, `JSON`, `MYSQL_FORMAT`, `NETSUITE_FORMAT`, `ORC`, `PARQUET`, `POSTGRESQL_FORMAT`, `REDSHIFT_FORMAT`, `SALESFORCE_FORMAT`, `SNOWFLAKE_FORMAT`, `SQLDW_FORMAT`, `SQLSERVER_FORMAT`, `TEXT`, `UNITY_CATALOG`, `VECTOR_INDEX_FORMAT`, `WORKDAY_RAAS_FORMAT`:
 		*f = DataSourceFormat(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AVRO", "CSV", "DELTA", "DELTASHARING", "JSON", "ORC", "PARQUET", "TEXT", "UNITY_CATALOG"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AVRO", "BIGQUERY_FORMAT", "CSV", "DATABRICKS_FORMAT", "DELTA", "DELTASHARING", "HIVE_CUSTOM", "HIVE_SERDE", "JSON", "MYSQL_FORMAT", "NETSUITE_FORMAT", "ORC", "PARQUET", "POSTGRESQL_FORMAT", "REDSHIFT_FORMAT", "SALESFORCE_FORMAT", "SNOWFLAKE_FORMAT", "SQLDW_FORMAT", "SQLSERVER_FORMAT", "TEXT", "UNITY_CATALOG", "VECTOR_INDEX_FORMAT", "WORKDAY_RAAS_FORMAT"`, v)
 	}
 }
 
@@ -2406,6 +2434,11 @@ type ListAccountMetastoreAssignmentsResponse struct {
 type ListAccountStorageCredentialsRequest struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
+}
+
+type ListAccountStorageCredentialsResponse struct {
+	// An array of metastore storage credentials.
+	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 }
 
 // List catalogs
@@ -4474,7 +4507,13 @@ type TableType string
 
 const TableTypeExternal TableType = `EXTERNAL`
 
+const TableTypeExternalShallowClone TableType = `EXTERNAL_SHALLOW_CLONE`
+
+const TableTypeForeign TableType = `FOREIGN`
+
 const TableTypeManaged TableType = `MANAGED`
+
+const TableTypeManagedShallowClone TableType = `MANAGED_SHALLOW_CLONE`
 
 const TableTypeMaterializedView TableType = `MATERIALIZED_VIEW`
 
@@ -4490,11 +4529,11 @@ func (f *TableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TableType) Set(v string) error {
 	switch v {
-	case `EXTERNAL`, `MANAGED`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
+	case `EXTERNAL`, `EXTERNAL_SHALLOW_CLONE`, `FOREIGN`, `MANAGED`, `MANAGED_SHALLOW_CLONE`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
 		*f = TableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "MANAGED", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "EXTERNAL_SHALLOW_CLONE", "FOREIGN", "MANAGED", "MANAGED_SHALLOW_CLONE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
 	}
 }
 
