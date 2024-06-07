@@ -364,7 +364,7 @@ func TestUcAccCatalogWorkspaceBindings(t *testing.T) {
 
 	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{
 		Name:          created.Name,
-		IsolationMode: catalog.IsolationModeIsolated,
+		IsolationMode: catalog.IsolationModeIsolationModeIsolated,
 	})
 	require.NoError(t, err)
 
