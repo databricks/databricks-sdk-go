@@ -113,7 +113,7 @@ func TestDatabricksCliCredentials_InstalledNew(t *testing.T) {
 
 	// Create a dummy databricks executable.
 	tmp := t.TempDir()
-	writeDummyExecutable(t, tmp, largeExecutable, 1024 * 1024)
+	writeDummyExecutable(t, tmp, largeExecutable, 1024*1024)
 	t.Setenv("PATH", tmp+string(os.PathListSeparator)+os.Getenv("PATH"))
 
 	aa := DatabricksCliCredentials{}
