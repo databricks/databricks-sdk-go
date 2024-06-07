@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, External Locations, Functions, Grants, Metastores, Model Versions, Online Tables, Quality Monitors, Registered Models, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Volumes, Workspace Bindings, etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, Endpoints, External Locations, Functions, Grants, Metastores, Model Versions, Online Tables, Quality Monitors, Registered Models, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Volumes, Workspace Bindings, etc.
 package catalog
 
 import (
@@ -1106,6 +1106,90 @@ func (a *ConnectionsAPI) ConnectionInfoNameToFullNameMap(ctx context.Context, re
 // Updates the connection that matches the supplied name.
 func (a *ConnectionsAPI) Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error) {
 	return a.impl.Update(ctx, request)
+}
+
+type EndpointsInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockEndpointsInterface instead.
+	WithImpl(impl EndpointsService) EndpointsInterface
+
+	// Impl returns low-level Endpoints API implementation
+	// Deprecated: use MockEndpointsInterface instead.
+	Impl() EndpointsService
+
+	// Create an Endpoint.
+	Create(ctx context.Context, request CreateEndpointRequest) (*Endpoint, error)
+
+	// Delete an Endpoint.
+	Delete(ctx context.Context, request DeleteEndpointRequest) error
+
+	// Delete an Endpoint.
+	DeleteByName(ctx context.Context, name string) error
+
+	// Get an Endpoint.
+	Get(ctx context.Context, request GetEndpointRequest) (*Endpoint, error)
+
+	// Get an Endpoint.
+	GetByName(ctx context.Context, name string) (*Endpoint, error)
+}
+
+func NewEndpoints(client *client.DatabricksClient) *EndpointsAPI {
+	return &EndpointsAPI{
+		impl: &endpointsImpl{
+			client: client,
+		},
+	}
+}
+
+// Endpoints are used to connect to PG clusters.
+type EndpointsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(EndpointsService)
+	impl EndpointsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockEndpointsInterface instead.
+func (a *EndpointsAPI) WithImpl(impl EndpointsService) EndpointsInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Endpoints API implementation
+// Deprecated: use MockEndpointsInterface instead.
+func (a *EndpointsAPI) Impl() EndpointsService {
+	return a.impl
+}
+
+// Create an Endpoint.
+func (a *EndpointsAPI) Create(ctx context.Context, request CreateEndpointRequest) (*Endpoint, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Delete an Endpoint.
+func (a *EndpointsAPI) Delete(ctx context.Context, request DeleteEndpointRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Delete an Endpoint.
+func (a *EndpointsAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.impl.Delete(ctx, DeleteEndpointRequest{
+		Name: name,
+	})
+}
+
+// Get an Endpoint.
+func (a *EndpointsAPI) Get(ctx context.Context, request GetEndpointRequest) (*Endpoint, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Get an Endpoint.
+func (a *EndpointsAPI) GetByName(ctx context.Context, name string) (*Endpoint, error) {
+	return a.impl.Get(ctx, GetEndpointRequest{
+		Name: name,
+	})
 }
 
 type ExternalLocationsInterface interface {

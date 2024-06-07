@@ -1,5 +1,57 @@
 # Version changelog
 
+## 0.43.0
+
+* Generate from latest spec ([#944](https://github.com/databricks/databricks-sdk-go/pull/944)).
+
+API Changes:
+
+ * Added [w.Endpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EndpointsAPI) workspace-level service.
+ * Added `IsolationMode` field for [catalog.ExternalLocationInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ExternalLocationInfo).
+ * Added `IsolationMode` field for [catalog.StorageCredentialInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#StorageCredentialInfo).
+ * Added [catalog.CreateEndpointRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateEndpointRequest).
+ * Added [catalog.DeleteEndpointRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteEndpointRequest).
+ * Added [catalog.Endpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#Endpoint).
+ * Added [catalog.EndpointState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EndpointState).
+ * Added [catalog.GetEndpointRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetEndpointRequest).
+ * Added `CreateSchedule` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `CreateSubscription` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `DeleteSchedule` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `DeleteSubscription` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `GetSchedule` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `GetSubscription` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `ListSchedules` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `ListSubscriptions` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added `UpdateSchedule` method for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added [dashboards.CreateScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CreateScheduleRequest).
+ * Added [dashboards.CreateSubscriptionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CreateSubscriptionRequest).
+ * Added [dashboards.CronSchedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CronSchedule).
+ * Added [dashboards.DeleteScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#DeleteScheduleRequest).
+ * Added `any`.
+ * Added [dashboards.DeleteSubscriptionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#DeleteSubscriptionRequest).
+ * Added `any`.
+ * Added [dashboards.GetScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetScheduleRequest).
+ * Added [dashboards.GetSubscriptionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetSubscriptionRequest).
+ * Added [dashboards.ListSchedulesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#ListSchedulesRequest).
+ * Added [dashboards.ListSchedulesResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#ListSchedulesResponse).
+ * Added [dashboards.ListSubscriptionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#ListSubscriptionsRequest).
+ * Added [dashboards.ListSubscriptionsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#ListSubscriptionsResponse).
+ * Added [dashboards.Schedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#Schedule).
+ * Added [dashboards.SchedulePauseStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#SchedulePauseStatus).
+ * Added [dashboards.Subscriber](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#Subscriber).
+ * Added [dashboards.Subscription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#Subscription).
+ * Added [dashboards.SubscriptionSubscriberDestination](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#SubscriptionSubscriberDestination).
+ * Added [dashboards.SubscriptionSubscriberUser](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#SubscriptionSubscriberUser).
+ * Added [dashboards.UpdateScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#UpdateScheduleRequest).
+ * Added `Periodic` field for [jobs.TriggerSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerSettings).
+ * Added [jobs.PeriodicTriggerConfiguration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PeriodicTriggerConfiguration).
+ * Added [jobs.PeriodicTriggerConfigurationTimeUnit](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PeriodicTriggerConfigurationTimeUnit).
+ * Added [w.ServingEndpointsDataPlane](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsDataPlaneAPI) workspace-level service.
+ * Added `ServicePrincipalId` field for [serving.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#App).
+ * Added `ServicePrincipalName` field for [serving.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#App).
+
+OpenAPI SHA: 85fc87305325891b500ba62a098615d0a7c9f670, Date: 2024-06-07
+
 ## 0.42.0
 
 * Ignore additional flaky test ([#930](https://github.com/databricks/databricks-sdk-go/pull/930)).
