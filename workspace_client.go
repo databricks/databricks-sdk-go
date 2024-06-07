@@ -217,9 +217,6 @@ type WorkspaceClient struct {
 	// permissions (superset of `CAN_RUN`)
 	DbsqlPermissions sql.DbsqlPermissionsInterface
 
-	// Endpoints are used to connect to PG clusters.
-	Endpoints catalog.EndpointsInterface
-
 	// Experiments are the primary unit of organization in MLflow; all MLflow
 	// runs belong to an experiment. Each experiment lets you visualize, search,
 	// and compare runs, as well as download run artifacts or metadata for
@@ -1042,7 +1039,6 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		DataSources:                         sql.NewDataSources(databricksClient),
 		Dbfs:                                files.NewDbfs(databricksClient),
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
-		Endpoints:                           catalog.NewEndpoints(databricksClient),
 		Experiments:                         ml.NewExperiments(databricksClient),
 		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
 		Files:                               files.NewFiles(databricksClient),

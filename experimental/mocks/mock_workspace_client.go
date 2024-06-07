@@ -61,7 +61,6 @@ func NewMockWorkspaceClient(t interface {
 			DataSources:                         sql.NewMockDataSourcesInterface(t),
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
-			Endpoints:                           catalog.NewMockEndpointsInterface(t),
 			Experiments:                         ml.NewMockExperimentsInterface(t),
 			ExternalLocations:                   catalog.NewMockExternalLocationsInterface(t),
 			Files:                               files.NewMockFilesInterface(t),
@@ -356,14 +355,6 @@ func (m *MockWorkspaceClient) GetMockDbsqlPermissionsAPI() *sql.MockDbsqlPermiss
 	api, ok := m.WorkspaceClient.DbsqlPermissions.(*sql.MockDbsqlPermissionsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DbsqlPermissions to be *sql.MockDbsqlPermissionsInterface, actual was %T", m.WorkspaceClient.DbsqlPermissions))
-	}
-	return api
-}
-
-func (m *MockWorkspaceClient) GetMockEndpointsAPI() *catalog.MockEndpointsInterface {
-	api, ok := m.WorkspaceClient.Endpoints.(*catalog.MockEndpointsInterface)
-	if !ok {
-		panic(fmt.Sprintf("expected Endpoints to be *catalog.MockEndpointsInterface, actual was %T", m.WorkspaceClient.Endpoints))
 	}
 	return api
 }
