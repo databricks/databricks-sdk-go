@@ -287,7 +287,6 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -1327,7 +1326,9 @@ type ExecuteStatementRequest struct {
 	// determines what should happen after the timeout is reached.
 	WaitTimeout string `json:"wait_timeout,omitempty"`
 	// Warehouse upon which to execute a statement. See also [What are SQL
-	// warehouses?](/sql/admin/warehouse-type.html)
+	// warehouses?]
+	//
+	// [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html
 	WarehouseId string `json:"warehouse_id"`
 
 	ForceSendFields []string `json:"-"`
@@ -3066,9 +3067,10 @@ type StatementParameterListItem struct {
 	// The data type, given as a string. For example: `INT`, `STRING`,
 	// `DECIMAL(10,2)`. If no type is given the type is assumed to be `STRING`.
 	// Complex types, such as `ARRAY`, `MAP`, and `STRUCT` are not supported.
-	// For valid types, refer to the section [Data
-	// types](/sql/language-manual/functions/cast.html) of the SQL language
+	// For valid types, refer to the section [Data types] of the SQL language
 	// reference.
+	//
+	// [Data types]: https://docs.databricks.com/sql/language-manual/functions/cast.html
 	Type string `json:"type,omitempty"`
 	// The value to substitute, represented as a string. If omitted, the value
 	// is interpreted as NULL.

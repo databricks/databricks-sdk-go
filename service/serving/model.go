@@ -78,11 +78,14 @@ type App struct {
 	// The description of the app.
 	Description string `json:"description,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens and be between 2 and 30 characters long. It must
-	// be unique within the workspace.
+	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name"`
 	// The pending deployment of the app.
 	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
+
+	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
+
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 
 	Status *AppStatus `json:"status,omitempty"`
 	// The update time of the app. Formatted timestamp in ISO 6801.
@@ -112,7 +115,15 @@ type AppDeployment struct {
 	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
 	// The unique id of the deployment.
 	DeploymentId string `json:"deployment_id,omitempty"`
-	// The source code path of the deployment.
+	// The mode of which the deployment will manage the source code.
+	Mode AppDeploymentMode `json:"mode"`
+	// The workspace file system path of the source code used to create the app
+	// deployment. This is different from
+	// `deployment_artifacts.source_code_path`, which is the path used by the
+	// deployed app. The former refers to the original source code location of
+	// the app in the workspace during deployment creation, whereas the latter
+	// provides a system generated stable snapshotted source code path used by
+	// the deployment.
 	SourceCodePath string `json:"source_code_path"`
 	// Status and status message of the deployment
 	Status *AppDeploymentStatus `json:"status,omitempty"`
@@ -131,7 +142,8 @@ func (s AppDeployment) MarshalJSON() ([]byte, error) {
 }
 
 type AppDeploymentArtifacts struct {
-	// The source code of the deployment.
+	// The snapshotted workspace file system path of the source code loaded by
+	// the deployed app.
 	SourceCodePath string `json:"source_code_path,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -145,9 +157,36 @@ func (s AppDeploymentArtifacts) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type AppDeploymentState string
+type AppDeploymentMode string
 
-const AppDeploymentStateCancelled AppDeploymentState = `CANCELLED`
+const AppDeploymentModeAutoSync AppDeploymentMode = `AUTO_SYNC`
+
+const AppDeploymentModeModeUnspecified AppDeploymentMode = `MODE_UNSPECIFIED`
+
+const AppDeploymentModeSnapshot AppDeploymentMode = `SNAPSHOT`
+
+// String representation for [fmt.Print]
+func (f *AppDeploymentMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppDeploymentMode) Set(v string) error {
+	switch v {
+	case `AUTO_SYNC`, `MODE_UNSPECIFIED`, `SNAPSHOT`:
+		*f = AppDeploymentMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AUTO_SYNC", "MODE_UNSPECIFIED", "SNAPSHOT"`, v)
+	}
+}
+
+// Type always returns AppDeploymentMode to satisfy [pflag.Value] interface
+func (f *AppDeploymentMode) Type() string {
+	return "AppDeploymentMode"
+}
+
+type AppDeploymentState string
 
 const AppDeploymentStateFailed AppDeploymentState = `FAILED`
 
@@ -167,11 +206,11 @@ func (f *AppDeploymentState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppDeploymentState) Set(v string) error {
 	switch v {
-	case `CANCELLED`, `FAILED`, `IN_PROGRESS`, `STATE_UNSPECIFIED`, `STOPPED`, `SUCCEEDED`:
+	case `FAILED`, `IN_PROGRESS`, `STATE_UNSPECIFIED`, `STOPPED`, `SUCCEEDED`:
 		*f = AppDeploymentState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "IN_PROGRESS", "STATE_UNSPECIFIED", "STOPPED", "SUCCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FAILED", "IN_PROGRESS", "STATE_UNSPECIFIED", "STOPPED", "SUCCEEDED"`, v)
 	}
 }
 
@@ -209,23 +248,15 @@ const AppStateDeleted AppState = `DELETED`
 
 const AppStateDeleting AppState = `DELETING`
 
-const AppStateDeployed AppState = `DEPLOYED`
-
-const AppStateDeploying AppState = `DEPLOYING`
-
 const AppStateError AppState = `ERROR`
 
 const AppStateIdle AppState = `IDLE`
-
-const AppStateReady AppState = `READY`
 
 const AppStateRunning AppState = `RUNNING`
 
 const AppStateStarting AppState = `STARTING`
 
 const AppStateStateUnspecified AppState = `STATE_UNSPECIFIED`
-
-const AppStateUpdating AppState = `UPDATING`
 
 // String representation for [fmt.Print]
 func (f *AppState) String() string {
@@ -235,11 +266,11 @@ func (f *AppState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppState) Set(v string) error {
 	switch v {
-	case `CREATING`, `DELETED`, `DELETING`, `DEPLOYED`, `DEPLOYING`, `ERROR`, `IDLE`, `READY`, `RUNNING`, `STARTING`, `STATE_UNSPECIFIED`, `UPDATING`:
+	case `CREATING`, `DELETED`, `DELETING`, `ERROR`, `IDLE`, `RUNNING`, `STARTING`, `STATE_UNSPECIFIED`:
 		*f = AppState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CREATING", "DELETED", "DELETING", "DEPLOYED", "DEPLOYING", "ERROR", "IDLE", "READY", "RUNNING", "STARTING", "STATE_UNSPECIFIED", "UPDATING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CREATING", "DELETED", "DELETING", "ERROR", "IDLE", "RUNNING", "STARTING", "STATE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -387,7 +418,15 @@ type CohereConfig struct {
 type CreateAppDeploymentRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
-	// The source code path of the deployment.
+	// The mode of which the deployment will manage the source code.
+	Mode AppDeploymentMode `json:"mode"`
+	// The workspace file system path of the source code used to create the app
+	// deployment. This is different from
+	// `deployment_artifacts.source_code_path`, which is the path used by the
+	// deployed app. The former refers to the original source code location of
+	// the app in the workspace during deployment creation, whereas the latter
+	// provides a system generated stable snapshotted source code path used by
+	// the deployment.
 	SourceCodePath string `json:"source_code_path"`
 }
 
@@ -395,8 +434,7 @@ type CreateAppRequest struct {
 	// The description of the app.
 	Description string `json:"description,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens and be between 2 and 30 characters long. It must
-	// be unique within the workspace.
+	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name"`
 
 	ForceSendFields []string `json:"-"`
@@ -455,7 +493,7 @@ type DataframeSplitInput struct {
 	Index []int `json:"index,omitempty"`
 }
 
-// Delete an App
+// Delete an app
 type DeleteAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
@@ -824,7 +862,7 @@ func (s FoundationModel) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get an App Deployment
+// Get an app deployment
 type GetAppDeploymentRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
@@ -832,13 +870,13 @@ type GetAppDeploymentRequest struct {
 	DeploymentId string `json:"-" url:"-"`
 }
 
-// Get App Environment
+// Get app environment
 type GetAppEnvironmentRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
 }
 
-// Get an App
+// Get an app
 type GetAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
@@ -879,7 +917,7 @@ type GetServingEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// List App Deployments
+// List app deployments
 type ListAppDeploymentsRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
@@ -917,7 +955,7 @@ func (s ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List Apps
+// List apps
 type ListAppsRequest struct {
 	// Upper bound for items returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -1992,8 +2030,7 @@ type UpdateAppRequest struct {
 	// The description of the app.
 	Description string `json:"description,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens and be between 2 and 30 characters long. It must
-	// be unique within the workspace.
+	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name" url:"-"`
 
 	ForceSendFields []string `json:"-"`

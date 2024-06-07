@@ -90,7 +90,7 @@ type consumerListingsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *consumerListingsImpl) GEt(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error) {
+func (a *consumerListingsImpl) BatchGet(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error) {
 	var batchGetListingsResponse BatchGetListingsResponse
 	path := "/api/2.1/marketplace-consumer/listings:batchGet"
 	headers := make(map[string]string)
@@ -164,7 +164,7 @@ type consumerProvidersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *consumerProvidersImpl) GEt(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error) {
+func (a *consumerProvidersImpl) BatchGet(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error) {
 	var batchGetProvidersResponse BatchGetProvidersResponse
 	path := "/api/2.1/marketplace-consumer/providers:batchGet"
 	headers := make(map[string]string)

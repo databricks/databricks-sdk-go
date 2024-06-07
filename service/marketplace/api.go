@@ -444,7 +444,7 @@ type ConsumerListingsInterface interface {
 	//
 	// Batch get a published listing in the Databricks Marketplace that the consumer
 	// has access to.
-	GEt(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error)
+	BatchGet(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error)
 
 	// Get listing.
 	//
@@ -545,8 +545,8 @@ func (a *ConsumerListingsAPI) Impl() ConsumerListingsService {
 //
 // Batch get a published listing in the Databricks Marketplace that the consumer
 // has access to.
-func (a *ConsumerListingsAPI) GEt(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error) {
-	return a.impl.GEt(ctx, request)
+func (a *ConsumerListingsAPI) BatchGet(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error) {
+	return a.impl.BatchGet(ctx, request)
 }
 
 // Get listing.
@@ -854,7 +854,7 @@ type ConsumerProvidersInterface interface {
 	//
 	// Batch get a provider in the Databricks Marketplace with at least one visible
 	// listing.
-	GEt(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error)
+	BatchGet(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error)
 
 	// Get a provider.
 	//
@@ -936,8 +936,8 @@ func (a *ConsumerProvidersAPI) Impl() ConsumerProvidersService {
 //
 // Batch get a provider in the Databricks Marketplace with at least one visible
 // listing.
-func (a *ConsumerProvidersAPI) GEt(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error) {
-	return a.impl.GEt(ctx, request)
+func (a *ConsumerProvidersAPI) BatchGet(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error) {
+	return a.impl.BatchGet(ctx, request)
 }
 
 // Get a provider.

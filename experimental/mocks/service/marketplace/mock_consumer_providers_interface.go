@@ -24,12 +24,12 @@ func (_m *MockConsumerProvidersInterface) EXPECT() *MockConsumerProvidersInterfa
 	return &MockConsumerProvidersInterface_Expecter{mock: &_m.Mock}
 }
 
-// GEt provides a mock function with given fields: ctx, request
-func (_m *MockConsumerProvidersInterface) GEt(ctx context.Context, request marketplace.BatchGetProvidersRequest) (*marketplace.BatchGetProvidersResponse, error) {
+// BatchGet provides a mock function with given fields: ctx, request
+func (_m *MockConsumerProvidersInterface) BatchGet(ctx context.Context, request marketplace.BatchGetProvidersRequest) (*marketplace.BatchGetProvidersResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GEt")
+		panic("no return value specified for BatchGet")
 	}
 
 	var r0 *marketplace.BatchGetProvidersResponse
@@ -54,31 +54,31 @@ func (_m *MockConsumerProvidersInterface) GEt(ctx context.Context, request marke
 	return r0, r1
 }
 
-// MockConsumerProvidersInterface_GEt_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GEt'
-type MockConsumerProvidersInterface_GEt_Call struct {
+// MockConsumerProvidersInterface_BatchGet_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'BatchGet'
+type MockConsumerProvidersInterface_BatchGet_Call struct {
 	*mock.Call
 }
 
-// GEt is a helper method to define mock.On call
+// BatchGet is a helper method to define mock.On call
 //   - ctx context.Context
 //   - request marketplace.BatchGetProvidersRequest
-func (_e *MockConsumerProvidersInterface_Expecter) GEt(ctx interface{}, request interface{}) *MockConsumerProvidersInterface_GEt_Call {
-	return &MockConsumerProvidersInterface_GEt_Call{Call: _e.mock.On("GEt", ctx, request)}
+func (_e *MockConsumerProvidersInterface_Expecter) BatchGet(ctx interface{}, request interface{}) *MockConsumerProvidersInterface_BatchGet_Call {
+	return &MockConsumerProvidersInterface_BatchGet_Call{Call: _e.mock.On("BatchGet", ctx, request)}
 }
 
-func (_c *MockConsumerProvidersInterface_GEt_Call) Run(run func(ctx context.Context, request marketplace.BatchGetProvidersRequest)) *MockConsumerProvidersInterface_GEt_Call {
+func (_c *MockConsumerProvidersInterface_BatchGet_Call) Run(run func(ctx context.Context, request marketplace.BatchGetProvidersRequest)) *MockConsumerProvidersInterface_BatchGet_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(marketplace.BatchGetProvidersRequest))
 	})
 	return _c
 }
 
-func (_c *MockConsumerProvidersInterface_GEt_Call) Return(_a0 *marketplace.BatchGetProvidersResponse, _a1 error) *MockConsumerProvidersInterface_GEt_Call {
+func (_c *MockConsumerProvidersInterface_BatchGet_Call) Return(_a0 *marketplace.BatchGetProvidersResponse, _a1 error) *MockConsumerProvidersInterface_BatchGet_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockConsumerProvidersInterface_GEt_Call) RunAndReturn(run func(context.Context, marketplace.BatchGetProvidersRequest) (*marketplace.BatchGetProvidersResponse, error)) *MockConsumerProvidersInterface_GEt_Call {
+func (_c *MockConsumerProvidersInterface_BatchGet_Call) RunAndReturn(run func(context.Context, marketplace.BatchGetProvidersRequest) (*marketplace.BatchGetProvidersResponse, error)) *MockConsumerProvidersInterface_BatchGet_Call {
 	_c.Call.Return(run)
 	return _c
 }

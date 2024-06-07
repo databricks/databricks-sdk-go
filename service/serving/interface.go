@@ -11,57 +11,57 @@ import (
 // through single sign-on.
 type AppsService interface {
 
-	// Create an App.
+	// Create an app.
 	//
 	// Creates a new app.
 	Create(ctx context.Context, request CreateAppRequest) (*App, error)
 
-	// Create an App Deployment.
-	//
-	// Creates an app deployment for the app with the supplied name.
-	CreateDeployment(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error)
-
-	// Delete an App.
+	// Delete an app.
 	//
 	// Deletes an app.
 	Delete(ctx context.Context, request DeleteAppRequest) error
 
-	// Get an App.
+	// Create an app deployment.
+	//
+	// Creates an app deployment for the app with the supplied name.
+	Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error)
+
+	// Get an app.
 	//
 	// Retrieves information for the app with the supplied name.
 	Get(ctx context.Context, request GetAppRequest) (*App, error)
 
-	// Get an App Deployment.
+	// Get an app deployment.
 	//
 	// Retrieves information for the app deployment with the supplied name and
 	// deployment id.
 	GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error)
 
-	// Get App Environment.
+	// Get app environment.
 	//
 	// Retrieves app environment.
 	GetEnvironment(ctx context.Context, request GetAppEnvironmentRequest) (*AppEnvironment, error)
 
-	// List Apps.
+	// List apps.
 	//
 	// Lists all apps in the workspace.
 	//
 	// Use ListAll() to get all App instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error)
 
-	// List App Deployments.
+	// List app deployments.
 	//
 	// Lists all app deployments for the app with the supplied name.
 	//
 	// Use ListDeploymentsAll() to get all AppDeployment instances, which will iterate over every result page.
 	ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error)
 
-	// Stop an App.
+	// Stop an app.
 	//
 	// Stops the active deployment of the app in the workspace.
 	Stop(ctx context.Context, request StopAppRequest) error
 
-	// Update an App.
+	// Update an app.
 	//
 	// Updates the app with the supplied name.
 	Update(ctx context.Context, request UpdateAppRequest) (*App, error)

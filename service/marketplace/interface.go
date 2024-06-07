@@ -76,7 +76,7 @@ type ConsumerListingsService interface {
 	//
 	// Batch get a published listing in the Databricks Marketplace that the
 	// consumer has access to.
-	GEt(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error)
+	BatchGet(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error)
 
 	// Get listing.
 	//
@@ -132,7 +132,7 @@ type ConsumerProvidersService interface {
 	//
 	// Batch get a provider in the Databricks Marketplace with at least one
 	// visible listing.
-	GEt(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error)
+	BatchGet(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error)
 
 	// Get a provider.
 	//
