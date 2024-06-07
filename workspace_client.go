@@ -715,10 +715,6 @@ type WorkspaceClient struct {
 	// applied to each served entity.
 	ServingEndpoints serving.ServingEndpointsInterface
 
-	// Serving endpoints DataPlane provides a set of operations to interact with
-	// DataPlane endpoints for Serving endpoints service.
-	ServingEndpointsDataPlane serving.ServingEndpointsDataPlaneInterface
-
 	// Workspace Settings API allows users to manage settings at the workspace
 	// level.
 	Settings settings.SettingsInterface
@@ -1076,7 +1072,6 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Secrets:                             workspace.NewSecrets(databricksClient),
 		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),
 		ServingEndpoints:                    servingEndpoints,
-		ServingEndpointsDataPlane:           serving.NewServingEndpointsDataPlane(databricksClient, servingEndpoints),
 		Settings:                            settings.NewSettings(databricksClient),
 		Shares:                              sharing.NewShares(databricksClient),
 		StatementExecution:                  sql.NewStatementExecution(databricksClient),

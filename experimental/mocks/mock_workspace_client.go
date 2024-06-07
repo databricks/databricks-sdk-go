@@ -104,7 +104,6 @@ func NewMockWorkspaceClient(t interface {
 			Secrets:                             workspace.NewMockSecretsInterface(t),
 			ServicePrincipals:                   iam.NewMockServicePrincipalsInterface(t),
 			ServingEndpoints:                    serving.NewMockServingEndpointsInterface(t),
-			ServingEndpointsDataPlane:           serving.NewMockServingEndpointsDataPlaneInterface(t),
 			Settings:                            settings.NewMockSettingsInterface(t),
 			Shares:                              sharing.NewMockSharesInterface(t),
 			StatementExecution:                  sql.NewMockStatementExecutionInterface(t),
@@ -701,14 +700,6 @@ func (m *MockWorkspaceClient) GetMockServingEndpointsAPI() *serving.MockServingE
 	api, ok := m.WorkspaceClient.ServingEndpoints.(*serving.MockServingEndpointsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ServingEndpoints to be *serving.MockServingEndpointsInterface, actual was %T", m.WorkspaceClient.ServingEndpoints))
-	}
-	return api
-}
-
-func (m *MockWorkspaceClient) GetMockServingEndpointsDataPlaneAPI() *serving.MockServingEndpointsDataPlaneInterface {
-	api, ok := m.WorkspaceClient.ServingEndpointsDataPlane.(*serving.MockServingEndpointsDataPlaneInterface)
-	if !ok {
-		panic(fmt.Sprintf("expected ServingEndpointsDataPlane to be *serving.MockServingEndpointsDataPlaneInterface, actual was %T", m.WorkspaceClient.ServingEndpointsDataPlane))
 	}
 	return api
 }
