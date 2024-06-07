@@ -978,7 +978,7 @@ type PipelineLibrary struct {
 	// Specification of a maven library to be installed.
 	Maven *compute.MavenLibrary `json:"maven,omitempty"`
 	// The path to a notebook that defines a pipeline and is stored in the
-	// <Databricks> workspace.
+	// Databricks workspace.
 	Notebook *NotebookLibrary `json:"notebook,omitempty"`
 
 	ForceSendFields []string `json:"-"`

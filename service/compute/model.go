@@ -633,8 +633,8 @@ type ClusterDetails struct {
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// Node on which the Spark driver resides. The driver node contains the
-	// Spark master and the <Databricks> application that manages the
-	// per-notebook Spark REPLs.
+	// Spark master and the Databricks application that manages the per-notebook
+	// Spark REPLs.
 	Driver *SparkNode `json:"driver,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -4101,7 +4101,7 @@ type Policy struct {
 	Definition string `json:"definition,omitempty"`
 	// Additional human-readable description of the cluster policy.
 	Description string `json:"description,omitempty"`
-	// If true, policy is a default policy created and managed by <Databricks>.
+	// If true, policy is a default policy created and managed by Databricks.
 	// Default policies cannot be deleted, and their policy families cannot be
 	// changed.
 	IsDefault bool `json:"is_default,omitempty"`
