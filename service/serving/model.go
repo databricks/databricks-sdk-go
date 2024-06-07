@@ -83,6 +83,10 @@ type App struct {
 	// The pending deployment of the app.
 	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
 
+	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
+
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+
 	Status *AppStatus `json:"status,omitempty"`
 	// The update time of the app. Formatted timestamp in ISO 6801.
 	UpdateTime string `json:"update_time,omitempty"`

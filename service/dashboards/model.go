@@ -30,6 +30,51 @@ func (s CreateDashboardRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateScheduleRequest struct {
+	// The cron expression describing the frequency of the periodic refresh for
+	// this schedule.
+	CronSchedule CronSchedule `json:"cron_schedule"`
+	// UUID identifying the dashboard to which the schedule belongs.
+	DashboardId string `json:"-" url:"-"`
+	// The display name for schedule.
+	DisplayName string `json:"display_name,omitempty"`
+	// The status indicates whether this schedule is paused or not.
+	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateScheduleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateScheduleRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateSubscriptionRequest struct {
+	// UUID identifying the dashboard to which the subscription belongs.
+	DashboardId string `json:"-" url:"-"`
+	// UUID identifying the schedule to which the subscription belongs.
+	ScheduleId string `json:"-" url:"-"`
+	// Subscriber details for users and destinations to be added as subscribers
+	// to the schedule.
+	Subscriber Subscriber `json:"subscriber"`
+}
+
+type CronSchedule struct {
+	// A cron expression using quartz syntax. EX: `0 0 8 * * ?` represents
+	// everyday at 8am. See [Cron Trigger] for details.
+	//
+	// [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
+	QuartzCronExpression string `json:"quartz_cron_expression"`
+	// A Java timezone id. The schedule will be resolved with respect to this
+	// timezone. See [Java TimeZone] for details.
+	//
+	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
+	TimezoneId string `json:"timezone_id"`
+}
+
 type Dashboard struct {
 	// The timestamp of when the dashboard was created.
 	CreateTime string `json:"create_time,omitempty"`
@@ -65,6 +110,56 @@ func (s Dashboard) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Delete dashboard schedule
+type DeleteScheduleRequest struct {
+	// UUID identifying the dashboard to which the schedule belongs.
+	DashboardId string `json:"-" url:"-"`
+	// The etag for the schedule. Optionally, it can be provided to verify that
+	// the schedule has not been modified from its last retrieval.
+	Etag string `json:"-" url:"etag,omitempty"`
+	// UUID identifying the schedule.
+	ScheduleId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteScheduleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteScheduleRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DeleteScheduleResponse struct {
+}
+
+// Delete schedule subscription
+type DeleteSubscriptionRequest struct {
+	// UUID identifying the dashboard which the subscription belongs.
+	DashboardId string `json:"-" url:"-"`
+	// The etag for the subscription. Can be optionally provided to ensure that
+	// the subscription has not been modified since the last read.
+	Etag string `json:"-" url:"etag,omitempty"`
+	// UUID identifying the schedule which the subscription belongs.
+	ScheduleId string `json:"-" url:"-"`
+	// UUID identifying the subscription.
+	SubscriptionId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteSubscriptionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DeleteSubscriptionResponse struct {
+}
+
 // Get dashboard
 type GetDashboardRequest struct {
 	// UUID identifying the dashboard.
@@ -75,6 +170,24 @@ type GetDashboardRequest struct {
 type GetPublishedDashboardRequest struct {
 	// UUID identifying the dashboard to be published.
 	DashboardId string `json:"-" url:"-"`
+}
+
+// Get dashboard schedule
+type GetScheduleRequest struct {
+	// UUID identifying the dashboard to which the schedule belongs.
+	DashboardId string `json:"-" url:"-"`
+	// UUID identifying the schedule.
+	ScheduleId string `json:"-" url:"-"`
+}
+
+// Get schedule subscription
+type GetSubscriptionRequest struct {
+	// UUID identifying the dashboard which the subscription belongs.
+	DashboardId string `json:"-" url:"-"`
+	// UUID identifying the schedule which the subscription belongs.
+	ScheduleId string `json:"-" url:"-"`
+	// UUID identifying the subscription.
+	SubscriptionId string `json:"-" url:"-"`
 }
 
 type LifecycleState string
@@ -102,6 +215,88 @@ func (f *LifecycleState) Set(v string) error {
 // Type always returns LifecycleState to satisfy [pflag.Value] interface
 func (f *LifecycleState) Type() string {
 	return "LifecycleState"
+}
+
+// List dashboard schedules
+type ListSchedulesRequest struct {
+	// UUID identifying the dashboard to which the schedule belongs.
+	DashboardId string `json:"-" url:"-"`
+	// The number of schedules to return per page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous `ListSchedules` call. Use this to
+	// retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSchedulesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSchedulesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListSchedulesResponse struct {
+	// A token that can be used as a `page_token` in subsequent requests to
+	// retrieve the next page of results. If this field is omitted, there are no
+	// subsequent schedules.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Schedules []Schedule `json:"schedules,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSchedulesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSchedulesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List schedule subscriptions
+type ListSubscriptionsRequest struct {
+	// UUID identifying the dashboard to which the subscription belongs.
+	DashboardId string `json:"-" url:"-"`
+	// The number of subscriptions to return per page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous `ListSubscriptions` call. Use this
+	// to retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// UUID identifying the schedule to which the subscription belongs.
+	ScheduleId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSubscriptionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSubscriptionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListSubscriptionsResponse struct {
+	// A token that can be used as a `page_token` in subsequent requests to
+	// retrieve the next page of results. If this field is omitted, there are no
+	// subsequent subscriptions.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Subscriptions []Subscription `json:"subscriptions,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSubscriptionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSubscriptionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type MigrateDashboardRequest struct {
@@ -167,6 +362,118 @@ func (s PublishedDashboard) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type Schedule struct {
+	// A timestamp indicating when the schedule was created.
+	CreateTime string `json:"create_time,omitempty"`
+	// The cron expression describing the frequency of the periodic refresh for
+	// this schedule.
+	CronSchedule CronSchedule `json:"cron_schedule"`
+	// UUID identifying the dashboard to which the schedule belongs.
+	DashboardId string `json:"dashboard_id,omitempty"`
+	// The display name for schedule.
+	DisplayName string `json:"display_name,omitempty"`
+	// The etag for the schedule. Must be left empty on create, must be provided
+	// on updates to ensure that the schedule has not been modified since the
+	// last read, and can be optionally provided on delete.
+	Etag string `json:"etag,omitempty"`
+	// The status indicates whether this schedule is paused or not.
+	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
+	// UUID identifying the schedule.
+	ScheduleId string `json:"schedule_id,omitempty"`
+	// A timestamp indicating when the schedule was last updated.
+	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Schedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Schedule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SchedulePauseStatus string
+
+const SchedulePauseStatusPaused SchedulePauseStatus = `PAUSED`
+
+const SchedulePauseStatusUnpaused SchedulePauseStatus = `UNPAUSED`
+
+// String representation for [fmt.Print]
+func (f *SchedulePauseStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SchedulePauseStatus) Set(v string) error {
+	switch v {
+	case `PAUSED`, `UNPAUSED`:
+		*f = SchedulePauseStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
+	}
+}
+
+// Type always returns SchedulePauseStatus to satisfy [pflag.Value] interface
+func (f *SchedulePauseStatus) Type() string {
+	return "SchedulePauseStatus"
+}
+
+type Subscriber struct {
+	// The destination to receive the subscription email. This parameter is
+	// mutually exclusive with `user_subscriber`.
+	DestinationSubscriber *SubscriptionSubscriberDestination `json:"destination_subscriber,omitempty"`
+	// The user to receive the subscription email. This parameter is mutually
+	// exclusive with `destination_subscriber`.
+	UserSubscriber *SubscriptionSubscriberUser `json:"user_subscriber,omitempty"`
+}
+
+type Subscription struct {
+	// A timestamp indicating when the subscription was created.
+	CreateTime string `json:"create_time,omitempty"`
+	// UserId of the user who adds subscribers (users or notification
+	// destinations) to the dashboard's schedule.
+	CreatedByUserId int64 `json:"created_by_user_id,omitempty"`
+	// UUID identifying the dashboard to which the subscription belongs.
+	DashboardId string `json:"dashboard_id,omitempty"`
+	// The etag for the subscription. Must be left empty on create, can be
+	// optionally provided on delete to ensure that the subscription has not
+	// been deleted since the last read.
+	Etag string `json:"etag,omitempty"`
+	// UUID identifying the schedule to which the subscription belongs.
+	ScheduleId string `json:"schedule_id,omitempty"`
+	// Subscriber details for users and destinations to be added as subscribers
+	// to the schedule.
+	Subscriber Subscriber `json:"subscriber"`
+	// UUID identifying the subscription.
+	SubscriptionId string `json:"subscription_id,omitempty"`
+	// A timestamp indicating when the subscription was last updated.
+	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Subscription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Subscription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SubscriptionSubscriberDestination struct {
+	// The canonical identifier of the destination to receive email
+	// notification.
+	DestinationId string `json:"destination_id"`
+}
+
+type SubscriptionSubscriberUser struct {
+	// UserId of the subscriber.
+	UserId int64 `json:"user_id"`
+}
+
 // Trash dashboard
 type TrashDashboardRequest struct {
 	// UUID identifying the dashboard.
@@ -206,5 +513,33 @@ func (s *UpdateDashboardRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s UpdateDashboardRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateScheduleRequest struct {
+	// The cron expression describing the frequency of the periodic refresh for
+	// this schedule.
+	CronSchedule CronSchedule `json:"cron_schedule"`
+	// UUID identifying the dashboard to which the schedule belongs.
+	DashboardId string `json:"-" url:"-"`
+	// The display name for schedule.
+	DisplayName string `json:"display_name,omitempty"`
+	// The etag for the schedule. Must be left empty on create, must be provided
+	// on updates to ensure that the schedule has not been modified since the
+	// last read, and can be optionally provided on delete.
+	Etag string `json:"etag,omitempty"`
+	// The status indicates whether this schedule is paused or not.
+	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
+	// UUID identifying the schedule.
+	ScheduleId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateScheduleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateScheduleRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }

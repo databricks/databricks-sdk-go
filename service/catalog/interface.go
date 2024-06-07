@@ -234,6 +234,19 @@ type ConnectionsService interface {
 	Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error)
 }
 
+// Endpoints are used to connect to PG clusters.
+type EndpointsService interface {
+
+	// Create an Endpoint.
+	Create(ctx context.Context, request CreateEndpointRequest) (*Endpoint, error)
+
+	// Delete an Endpoint.
+	Delete(ctx context.Context, request DeleteEndpointRequest) error
+
+	// Get an Endpoint.
+	Get(ctx context.Context, request GetEndpointRequest) (*Endpoint, error)
+}
+
 // An external location is an object that combines a cloud storage path with a
 // storage credential that authorizes access to the cloud storage path. Each
 // external location is subject to Unity Catalog access-control policies that

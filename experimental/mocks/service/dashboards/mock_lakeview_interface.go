@@ -5,7 +5,9 @@ package dashboards
 import (
 	context "context"
 
+	listing "github.com/databricks/databricks-sdk-go/listing"
 	dashboards "github.com/databricks/databricks-sdk-go/service/dashboards"
+
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -77,6 +79,315 @@ func (_c *MockLakeviewInterface_Create_Call) Return(_a0 *dashboards.Dashboard, _
 }
 
 func (_c *MockLakeviewInterface_Create_Call) RunAndReturn(run func(context.Context, dashboards.CreateDashboardRequest) (*dashboards.Dashboard, error)) *MockLakeviewInterface_Create_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateSchedule provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) CreateSchedule(ctx context.Context, request dashboards.CreateScheduleRequest) (*dashboards.Schedule, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateSchedule")
+	}
+
+	var r0 *dashboards.Schedule
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.CreateScheduleRequest) (*dashboards.Schedule, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.CreateScheduleRequest) *dashboards.Schedule); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Schedule)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.CreateScheduleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_CreateSchedule_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateSchedule'
+type MockLakeviewInterface_CreateSchedule_Call struct {
+	*mock.Call
+}
+
+// CreateSchedule is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.CreateScheduleRequest
+func (_e *MockLakeviewInterface_Expecter) CreateSchedule(ctx interface{}, request interface{}) *MockLakeviewInterface_CreateSchedule_Call {
+	return &MockLakeviewInterface_CreateSchedule_Call{Call: _e.mock.On("CreateSchedule", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_CreateSchedule_Call) Run(run func(ctx context.Context, request dashboards.CreateScheduleRequest)) *MockLakeviewInterface_CreateSchedule_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.CreateScheduleRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_CreateSchedule_Call) Return(_a0 *dashboards.Schedule, _a1 error) *MockLakeviewInterface_CreateSchedule_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_CreateSchedule_Call) RunAndReturn(run func(context.Context, dashboards.CreateScheduleRequest) (*dashboards.Schedule, error)) *MockLakeviewInterface_CreateSchedule_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateSubscription provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) CreateSubscription(ctx context.Context, request dashboards.CreateSubscriptionRequest) (*dashboards.Subscription, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateSubscription")
+	}
+
+	var r0 *dashboards.Subscription
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.CreateSubscriptionRequest) (*dashboards.Subscription, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.CreateSubscriptionRequest) *dashboards.Subscription); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Subscription)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.CreateSubscriptionRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_CreateSubscription_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateSubscription'
+type MockLakeviewInterface_CreateSubscription_Call struct {
+	*mock.Call
+}
+
+// CreateSubscription is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.CreateSubscriptionRequest
+func (_e *MockLakeviewInterface_Expecter) CreateSubscription(ctx interface{}, request interface{}) *MockLakeviewInterface_CreateSubscription_Call {
+	return &MockLakeviewInterface_CreateSubscription_Call{Call: _e.mock.On("CreateSubscription", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_CreateSubscription_Call) Run(run func(ctx context.Context, request dashboards.CreateSubscriptionRequest)) *MockLakeviewInterface_CreateSubscription_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.CreateSubscriptionRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_CreateSubscription_Call) Return(_a0 *dashboards.Subscription, _a1 error) *MockLakeviewInterface_CreateSubscription_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_CreateSubscription_Call) RunAndReturn(run func(context.Context, dashboards.CreateSubscriptionRequest) (*dashboards.Subscription, error)) *MockLakeviewInterface_CreateSubscription_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteSchedule provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) DeleteSchedule(ctx context.Context, request dashboards.DeleteScheduleRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteSchedule")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.DeleteScheduleRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLakeviewInterface_DeleteSchedule_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteSchedule'
+type MockLakeviewInterface_DeleteSchedule_Call struct {
+	*mock.Call
+}
+
+// DeleteSchedule is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.DeleteScheduleRequest
+func (_e *MockLakeviewInterface_Expecter) DeleteSchedule(ctx interface{}, request interface{}) *MockLakeviewInterface_DeleteSchedule_Call {
+	return &MockLakeviewInterface_DeleteSchedule_Call{Call: _e.mock.On("DeleteSchedule", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_DeleteSchedule_Call) Run(run func(ctx context.Context, request dashboards.DeleteScheduleRequest)) *MockLakeviewInterface_DeleteSchedule_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.DeleteScheduleRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_DeleteSchedule_Call) Return(_a0 error) *MockLakeviewInterface_DeleteSchedule_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_DeleteSchedule_Call) RunAndReturn(run func(context.Context, dashboards.DeleteScheduleRequest) error) *MockLakeviewInterface_DeleteSchedule_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteScheduleByDashboardIdAndScheduleId provides a mock function with given fields: ctx, dashboardId, scheduleId
+func (_m *MockLakeviewInterface) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) error {
+	ret := _m.Called(ctx, dashboardId, scheduleId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteScheduleByDashboardIdAndScheduleId")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+		r0 = rf(ctx, dashboardId, scheduleId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLakeviewInterface_DeleteScheduleByDashboardIdAndScheduleId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteScheduleByDashboardIdAndScheduleId'
+type MockLakeviewInterface_DeleteScheduleByDashboardIdAndScheduleId_Call struct {
+	*mock.Call
+}
+
+// DeleteScheduleByDashboardIdAndScheduleId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dashboardId string
+//   - scheduleId string
+func (_e *MockLakeviewInterface_Expecter) DeleteScheduleByDashboardIdAndScheduleId(ctx interface{}, dashboardId interface{}, scheduleId interface{}) *MockLakeviewInterface_DeleteScheduleByDashboardIdAndScheduleId_Call {
+	return &MockLakeviewInterface_DeleteScheduleByDashboardIdAndScheduleId_Call{Call: _e.mock.On("DeleteScheduleByDashboardIdAndScheduleId", ctx, dashboardId, scheduleId)}
+}
+
+func (_c *MockLakeviewInterface_DeleteScheduleByDashboardIdAndScheduleId_Call) Run(run func(ctx context.Context, dashboardId string, scheduleId string)) *MockLakeviewInterface_DeleteScheduleByDashboardIdAndScheduleId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_DeleteScheduleByDashboardIdAndScheduleId_Call) Return(_a0 error) *MockLakeviewInterface_DeleteScheduleByDashboardIdAndScheduleId_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_DeleteScheduleByDashboardIdAndScheduleId_Call) RunAndReturn(run func(context.Context, string, string) error) *MockLakeviewInterface_DeleteScheduleByDashboardIdAndScheduleId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteSubscription provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) DeleteSubscription(ctx context.Context, request dashboards.DeleteSubscriptionRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteSubscription")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.DeleteSubscriptionRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLakeviewInterface_DeleteSubscription_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteSubscription'
+type MockLakeviewInterface_DeleteSubscription_Call struct {
+	*mock.Call
+}
+
+// DeleteSubscription is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.DeleteSubscriptionRequest
+func (_e *MockLakeviewInterface_Expecter) DeleteSubscription(ctx interface{}, request interface{}) *MockLakeviewInterface_DeleteSubscription_Call {
+	return &MockLakeviewInterface_DeleteSubscription_Call{Call: _e.mock.On("DeleteSubscription", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_DeleteSubscription_Call) Run(run func(ctx context.Context, request dashboards.DeleteSubscriptionRequest)) *MockLakeviewInterface_DeleteSubscription_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.DeleteSubscriptionRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_DeleteSubscription_Call) Return(_a0 error) *MockLakeviewInterface_DeleteSubscription_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_DeleteSubscription_Call) RunAndReturn(run func(context.Context, dashboards.DeleteSubscriptionRequest) error) *MockLakeviewInterface_DeleteSubscription_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId provides a mock function with given fields: ctx, dashboardId, scheduleId, subscriptionId
+func (_m *MockLakeviewInterface) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) error {
+	ret := _m.Called(ctx, dashboardId, scheduleId, subscriptionId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) error); ok {
+		r0 = rf(ctx, dashboardId, scheduleId, subscriptionId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLakeviewInterface_DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId'
+type MockLakeviewInterface_DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call struct {
+	*mock.Call
+}
+
+// DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dashboardId string
+//   - scheduleId string
+//   - subscriptionId string
+func (_e *MockLakeviewInterface_Expecter) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx interface{}, dashboardId interface{}, scheduleId interface{}, subscriptionId interface{}) *MockLakeviewInterface_DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call {
+	return &MockLakeviewInterface_DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call{Call: _e.mock.On("DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId", ctx, dashboardId, scheduleId, subscriptionId)}
+}
+
+func (_c *MockLakeviewInterface_DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call) Run(run func(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string)) *MockLakeviewInterface_DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call) Return(_a0 error) *MockLakeviewInterface_DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call) RunAndReturn(run func(context.Context, string, string, string) error) *MockLakeviewInterface_DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -317,6 +628,245 @@ func (_c *MockLakeviewInterface_GetPublishedByDashboardId_Call) RunAndReturn(run
 	return _c
 }
 
+// GetSchedule provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) GetSchedule(ctx context.Context, request dashboards.GetScheduleRequest) (*dashboards.Schedule, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSchedule")
+	}
+
+	var r0 *dashboards.Schedule
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetScheduleRequest) (*dashboards.Schedule, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetScheduleRequest) *dashboards.Schedule); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Schedule)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GetScheduleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_GetSchedule_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSchedule'
+type MockLakeviewInterface_GetSchedule_Call struct {
+	*mock.Call
+}
+
+// GetSchedule is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GetScheduleRequest
+func (_e *MockLakeviewInterface_Expecter) GetSchedule(ctx interface{}, request interface{}) *MockLakeviewInterface_GetSchedule_Call {
+	return &MockLakeviewInterface_GetSchedule_Call{Call: _e.mock.On("GetSchedule", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_GetSchedule_Call) Run(run func(ctx context.Context, request dashboards.GetScheduleRequest)) *MockLakeviewInterface_GetSchedule_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GetScheduleRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetSchedule_Call) Return(_a0 *dashboards.Schedule, _a1 error) *MockLakeviewInterface_GetSchedule_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetSchedule_Call) RunAndReturn(run func(context.Context, dashboards.GetScheduleRequest) (*dashboards.Schedule, error)) *MockLakeviewInterface_GetSchedule_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetScheduleByDashboardIdAndScheduleId provides a mock function with given fields: ctx, dashboardId, scheduleId
+func (_m *MockLakeviewInterface) GetScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*dashboards.Schedule, error) {
+	ret := _m.Called(ctx, dashboardId, scheduleId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetScheduleByDashboardIdAndScheduleId")
+	}
+
+	var r0 *dashboards.Schedule
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*dashboards.Schedule, error)); ok {
+		return rf(ctx, dashboardId, scheduleId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *dashboards.Schedule); ok {
+		r0 = rf(ctx, dashboardId, scheduleId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Schedule)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, dashboardId, scheduleId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_GetScheduleByDashboardIdAndScheduleId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetScheduleByDashboardIdAndScheduleId'
+type MockLakeviewInterface_GetScheduleByDashboardIdAndScheduleId_Call struct {
+	*mock.Call
+}
+
+// GetScheduleByDashboardIdAndScheduleId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dashboardId string
+//   - scheduleId string
+func (_e *MockLakeviewInterface_Expecter) GetScheduleByDashboardIdAndScheduleId(ctx interface{}, dashboardId interface{}, scheduleId interface{}) *MockLakeviewInterface_GetScheduleByDashboardIdAndScheduleId_Call {
+	return &MockLakeviewInterface_GetScheduleByDashboardIdAndScheduleId_Call{Call: _e.mock.On("GetScheduleByDashboardIdAndScheduleId", ctx, dashboardId, scheduleId)}
+}
+
+func (_c *MockLakeviewInterface_GetScheduleByDashboardIdAndScheduleId_Call) Run(run func(ctx context.Context, dashboardId string, scheduleId string)) *MockLakeviewInterface_GetScheduleByDashboardIdAndScheduleId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetScheduleByDashboardIdAndScheduleId_Call) Return(_a0 *dashboards.Schedule, _a1 error) *MockLakeviewInterface_GetScheduleByDashboardIdAndScheduleId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetScheduleByDashboardIdAndScheduleId_Call) RunAndReturn(run func(context.Context, string, string) (*dashboards.Schedule, error)) *MockLakeviewInterface_GetScheduleByDashboardIdAndScheduleId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetSubscription provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) GetSubscription(ctx context.Context, request dashboards.GetSubscriptionRequest) (*dashboards.Subscription, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSubscription")
+	}
+
+	var r0 *dashboards.Subscription
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetSubscriptionRequest) (*dashboards.Subscription, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetSubscriptionRequest) *dashboards.Subscription); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Subscription)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GetSubscriptionRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_GetSubscription_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSubscription'
+type MockLakeviewInterface_GetSubscription_Call struct {
+	*mock.Call
+}
+
+// GetSubscription is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GetSubscriptionRequest
+func (_e *MockLakeviewInterface_Expecter) GetSubscription(ctx interface{}, request interface{}) *MockLakeviewInterface_GetSubscription_Call {
+	return &MockLakeviewInterface_GetSubscription_Call{Call: _e.mock.On("GetSubscription", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_GetSubscription_Call) Run(run func(ctx context.Context, request dashboards.GetSubscriptionRequest)) *MockLakeviewInterface_GetSubscription_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GetSubscriptionRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetSubscription_Call) Return(_a0 *dashboards.Subscription, _a1 error) *MockLakeviewInterface_GetSubscription_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetSubscription_Call) RunAndReturn(run func(context.Context, dashboards.GetSubscriptionRequest) (*dashboards.Subscription, error)) *MockLakeviewInterface_GetSubscription_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId provides a mock function with given fields: ctx, dashboardId, scheduleId, subscriptionId
+func (_m *MockLakeviewInterface) GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*dashboards.Subscription, error) {
+	ret := _m.Called(ctx, dashboardId, scheduleId, subscriptionId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId")
+	}
+
+	var r0 *dashboards.Subscription
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) (*dashboards.Subscription, error)); ok {
+		return rf(ctx, dashboardId, scheduleId, subscriptionId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) *dashboards.Subscription); ok {
+		r0 = rf(ctx, dashboardId, scheduleId, subscriptionId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Subscription)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, string) error); ok {
+		r1 = rf(ctx, dashboardId, scheduleId, subscriptionId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId'
+type MockLakeviewInterface_GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call struct {
+	*mock.Call
+}
+
+// GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dashboardId string
+//   - scheduleId string
+//   - subscriptionId string
+func (_e *MockLakeviewInterface_Expecter) GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx interface{}, dashboardId interface{}, scheduleId interface{}, subscriptionId interface{}) *MockLakeviewInterface_GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call {
+	return &MockLakeviewInterface_GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call{Call: _e.mock.On("GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId", ctx, dashboardId, scheduleId, subscriptionId)}
+}
+
+func (_c *MockLakeviewInterface_GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call) Run(run func(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string)) *MockLakeviewInterface_GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call) Return(_a0 *dashboards.Subscription, _a1 error) *MockLakeviewInterface_GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call) RunAndReturn(run func(context.Context, string, string, string) (*dashboards.Subscription, error)) *MockLakeviewInterface_GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Impl provides a mock function with given fields:
 func (_m *MockLakeviewInterface) Impl() dashboards.LakeviewService {
 	ret := _m.Called()
@@ -360,6 +910,341 @@ func (_c *MockLakeviewInterface_Impl_Call) Return(_a0 dashboards.LakeviewService
 }
 
 func (_c *MockLakeviewInterface_Impl_Call) RunAndReturn(run func() dashboards.LakeviewService) *MockLakeviewInterface_Impl_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSchedules provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) ListSchedules(ctx context.Context, request dashboards.ListSchedulesRequest) listing.Iterator[dashboards.Schedule] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSchedules")
+	}
+
+	var r0 listing.Iterator[dashboards.Schedule]
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.ListSchedulesRequest) listing.Iterator[dashboards.Schedule]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[dashboards.Schedule])
+		}
+	}
+
+	return r0
+}
+
+// MockLakeviewInterface_ListSchedules_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSchedules'
+type MockLakeviewInterface_ListSchedules_Call struct {
+	*mock.Call
+}
+
+// ListSchedules is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.ListSchedulesRequest
+func (_e *MockLakeviewInterface_Expecter) ListSchedules(ctx interface{}, request interface{}) *MockLakeviewInterface_ListSchedules_Call {
+	return &MockLakeviewInterface_ListSchedules_Call{Call: _e.mock.On("ListSchedules", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_ListSchedules_Call) Run(run func(ctx context.Context, request dashboards.ListSchedulesRequest)) *MockLakeviewInterface_ListSchedules_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.ListSchedulesRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSchedules_Call) Return(_a0 listing.Iterator[dashboards.Schedule]) *MockLakeviewInterface_ListSchedules_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSchedules_Call) RunAndReturn(run func(context.Context, dashboards.ListSchedulesRequest) listing.Iterator[dashboards.Schedule]) *MockLakeviewInterface_ListSchedules_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSchedulesAll provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) ListSchedulesAll(ctx context.Context, request dashboards.ListSchedulesRequest) ([]dashboards.Schedule, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSchedulesAll")
+	}
+
+	var r0 []dashboards.Schedule
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.ListSchedulesRequest) ([]dashboards.Schedule, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.ListSchedulesRequest) []dashboards.Schedule); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]dashboards.Schedule)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.ListSchedulesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_ListSchedulesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSchedulesAll'
+type MockLakeviewInterface_ListSchedulesAll_Call struct {
+	*mock.Call
+}
+
+// ListSchedulesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.ListSchedulesRequest
+func (_e *MockLakeviewInterface_Expecter) ListSchedulesAll(ctx interface{}, request interface{}) *MockLakeviewInterface_ListSchedulesAll_Call {
+	return &MockLakeviewInterface_ListSchedulesAll_Call{Call: _e.mock.On("ListSchedulesAll", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_ListSchedulesAll_Call) Run(run func(ctx context.Context, request dashboards.ListSchedulesRequest)) *MockLakeviewInterface_ListSchedulesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.ListSchedulesRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSchedulesAll_Call) Return(_a0 []dashboards.Schedule, _a1 error) *MockLakeviewInterface_ListSchedulesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSchedulesAll_Call) RunAndReturn(run func(context.Context, dashboards.ListSchedulesRequest) ([]dashboards.Schedule, error)) *MockLakeviewInterface_ListSchedulesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSchedulesByDashboardId provides a mock function with given fields: ctx, dashboardId
+func (_m *MockLakeviewInterface) ListSchedulesByDashboardId(ctx context.Context, dashboardId string) (*dashboards.ListSchedulesResponse, error) {
+	ret := _m.Called(ctx, dashboardId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSchedulesByDashboardId")
+	}
+
+	var r0 *dashboards.ListSchedulesResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*dashboards.ListSchedulesResponse, error)); ok {
+		return rf(ctx, dashboardId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *dashboards.ListSchedulesResponse); ok {
+		r0 = rf(ctx, dashboardId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.ListSchedulesResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, dashboardId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_ListSchedulesByDashboardId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSchedulesByDashboardId'
+type MockLakeviewInterface_ListSchedulesByDashboardId_Call struct {
+	*mock.Call
+}
+
+// ListSchedulesByDashboardId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dashboardId string
+func (_e *MockLakeviewInterface_Expecter) ListSchedulesByDashboardId(ctx interface{}, dashboardId interface{}) *MockLakeviewInterface_ListSchedulesByDashboardId_Call {
+	return &MockLakeviewInterface_ListSchedulesByDashboardId_Call{Call: _e.mock.On("ListSchedulesByDashboardId", ctx, dashboardId)}
+}
+
+func (_c *MockLakeviewInterface_ListSchedulesByDashboardId_Call) Run(run func(ctx context.Context, dashboardId string)) *MockLakeviewInterface_ListSchedulesByDashboardId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSchedulesByDashboardId_Call) Return(_a0 *dashboards.ListSchedulesResponse, _a1 error) *MockLakeviewInterface_ListSchedulesByDashboardId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSchedulesByDashboardId_Call) RunAndReturn(run func(context.Context, string) (*dashboards.ListSchedulesResponse, error)) *MockLakeviewInterface_ListSchedulesByDashboardId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSubscriptions provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) ListSubscriptions(ctx context.Context, request dashboards.ListSubscriptionsRequest) listing.Iterator[dashboards.Subscription] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSubscriptions")
+	}
+
+	var r0 listing.Iterator[dashboards.Subscription]
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.ListSubscriptionsRequest) listing.Iterator[dashboards.Subscription]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[dashboards.Subscription])
+		}
+	}
+
+	return r0
+}
+
+// MockLakeviewInterface_ListSubscriptions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSubscriptions'
+type MockLakeviewInterface_ListSubscriptions_Call struct {
+	*mock.Call
+}
+
+// ListSubscriptions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.ListSubscriptionsRequest
+func (_e *MockLakeviewInterface_Expecter) ListSubscriptions(ctx interface{}, request interface{}) *MockLakeviewInterface_ListSubscriptions_Call {
+	return &MockLakeviewInterface_ListSubscriptions_Call{Call: _e.mock.On("ListSubscriptions", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_ListSubscriptions_Call) Run(run func(ctx context.Context, request dashboards.ListSubscriptionsRequest)) *MockLakeviewInterface_ListSubscriptions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.ListSubscriptionsRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSubscriptions_Call) Return(_a0 listing.Iterator[dashboards.Subscription]) *MockLakeviewInterface_ListSubscriptions_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSubscriptions_Call) RunAndReturn(run func(context.Context, dashboards.ListSubscriptionsRequest) listing.Iterator[dashboards.Subscription]) *MockLakeviewInterface_ListSubscriptions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSubscriptionsAll provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) ListSubscriptionsAll(ctx context.Context, request dashboards.ListSubscriptionsRequest) ([]dashboards.Subscription, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSubscriptionsAll")
+	}
+
+	var r0 []dashboards.Subscription
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.ListSubscriptionsRequest) ([]dashboards.Subscription, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.ListSubscriptionsRequest) []dashboards.Subscription); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]dashboards.Subscription)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.ListSubscriptionsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_ListSubscriptionsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSubscriptionsAll'
+type MockLakeviewInterface_ListSubscriptionsAll_Call struct {
+	*mock.Call
+}
+
+// ListSubscriptionsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.ListSubscriptionsRequest
+func (_e *MockLakeviewInterface_Expecter) ListSubscriptionsAll(ctx interface{}, request interface{}) *MockLakeviewInterface_ListSubscriptionsAll_Call {
+	return &MockLakeviewInterface_ListSubscriptionsAll_Call{Call: _e.mock.On("ListSubscriptionsAll", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_ListSubscriptionsAll_Call) Run(run func(ctx context.Context, request dashboards.ListSubscriptionsRequest)) *MockLakeviewInterface_ListSubscriptionsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.ListSubscriptionsRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSubscriptionsAll_Call) Return(_a0 []dashboards.Subscription, _a1 error) *MockLakeviewInterface_ListSubscriptionsAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSubscriptionsAll_Call) RunAndReturn(run func(context.Context, dashboards.ListSubscriptionsRequest) ([]dashboards.Subscription, error)) *MockLakeviewInterface_ListSubscriptionsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSubscriptionsByDashboardIdAndScheduleId provides a mock function with given fields: ctx, dashboardId, scheduleId
+func (_m *MockLakeviewInterface) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*dashboards.ListSubscriptionsResponse, error) {
+	ret := _m.Called(ctx, dashboardId, scheduleId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSubscriptionsByDashboardIdAndScheduleId")
+	}
+
+	var r0 *dashboards.ListSubscriptionsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*dashboards.ListSubscriptionsResponse, error)); ok {
+		return rf(ctx, dashboardId, scheduleId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *dashboards.ListSubscriptionsResponse); ok {
+		r0 = rf(ctx, dashboardId, scheduleId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.ListSubscriptionsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, dashboardId, scheduleId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_ListSubscriptionsByDashboardIdAndScheduleId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSubscriptionsByDashboardIdAndScheduleId'
+type MockLakeviewInterface_ListSubscriptionsByDashboardIdAndScheduleId_Call struct {
+	*mock.Call
+}
+
+// ListSubscriptionsByDashboardIdAndScheduleId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dashboardId string
+//   - scheduleId string
+func (_e *MockLakeviewInterface_Expecter) ListSubscriptionsByDashboardIdAndScheduleId(ctx interface{}, dashboardId interface{}, scheduleId interface{}) *MockLakeviewInterface_ListSubscriptionsByDashboardIdAndScheduleId_Call {
+	return &MockLakeviewInterface_ListSubscriptionsByDashboardIdAndScheduleId_Call{Call: _e.mock.On("ListSubscriptionsByDashboardIdAndScheduleId", ctx, dashboardId, scheduleId)}
+}
+
+func (_c *MockLakeviewInterface_ListSubscriptionsByDashboardIdAndScheduleId_Call) Run(run func(ctx context.Context, dashboardId string, scheduleId string)) *MockLakeviewInterface_ListSubscriptionsByDashboardIdAndScheduleId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSubscriptionsByDashboardIdAndScheduleId_Call) Return(_a0 *dashboards.ListSubscriptionsResponse, _a1 error) *MockLakeviewInterface_ListSubscriptionsByDashboardIdAndScheduleId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListSubscriptionsByDashboardIdAndScheduleId_Call) RunAndReturn(run func(context.Context, string, string) (*dashboards.ListSubscriptionsResponse, error)) *MockLakeviewInterface_ListSubscriptionsByDashboardIdAndScheduleId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -725,6 +1610,65 @@ func (_c *MockLakeviewInterface_Update_Call) Return(_a0 *dashboards.Dashboard, _
 }
 
 func (_c *MockLakeviewInterface_Update_Call) RunAndReturn(run func(context.Context, dashboards.UpdateDashboardRequest) (*dashboards.Dashboard, error)) *MockLakeviewInterface_Update_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateSchedule provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) UpdateSchedule(ctx context.Context, request dashboards.UpdateScheduleRequest) (*dashboards.Schedule, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateSchedule")
+	}
+
+	var r0 *dashboards.Schedule
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.UpdateScheduleRequest) (*dashboards.Schedule, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.UpdateScheduleRequest) *dashboards.Schedule); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.Schedule)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.UpdateScheduleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_UpdateSchedule_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateSchedule'
+type MockLakeviewInterface_UpdateSchedule_Call struct {
+	*mock.Call
+}
+
+// UpdateSchedule is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.UpdateScheduleRequest
+func (_e *MockLakeviewInterface_Expecter) UpdateSchedule(ctx interface{}, request interface{}) *MockLakeviewInterface_UpdateSchedule_Call {
+	return &MockLakeviewInterface_UpdateSchedule_Call{Call: _e.mock.On("UpdateSchedule", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_UpdateSchedule_Call) Run(run func(ctx context.Context, request dashboards.UpdateScheduleRequest)) *MockLakeviewInterface_UpdateSchedule_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.UpdateScheduleRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_UpdateSchedule_Call) Return(_a0 *dashboards.Schedule, _a1 error) *MockLakeviewInterface_UpdateSchedule_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_UpdateSchedule_Call) RunAndReturn(run func(context.Context, dashboards.UpdateScheduleRequest) (*dashboards.Schedule, error)) *MockLakeviewInterface_UpdateSchedule_Call {
 	_c.Call.Return(run)
 	return _c
 }

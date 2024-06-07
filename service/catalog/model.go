@@ -311,10 +311,6 @@ const CatalogInfoSecurableKindCatalogForeignSqlserver CatalogInfoSecurableKind =
 
 const CatalogInfoSecurableKindCatalogInternal CatalogInfoSecurableKind = `CATALOG_INTERNAL`
 
-const CatalogInfoSecurableKindCatalogOnline CatalogInfoSecurableKind = `CATALOG_ONLINE`
-
-const CatalogInfoSecurableKindCatalogOnlineIndex CatalogInfoSecurableKind = `CATALOG_ONLINE_INDEX`
-
 const CatalogInfoSecurableKindCatalogStandard CatalogInfoSecurableKind = `CATALOG_STANDARD`
 
 const CatalogInfoSecurableKindCatalogSystem CatalogInfoSecurableKind = `CATALOG_SYSTEM`
@@ -329,11 +325,11 @@ func (f *CatalogInfoSecurableKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CatalogInfoSecurableKind) Set(v string) error {
 	switch v {
-	case `CATALOG_DELTASHARING`, `CATALOG_FOREIGN_BIGQUERY`, `CATALOG_FOREIGN_DATABRICKS`, `CATALOG_FOREIGN_MYSQL`, `CATALOG_FOREIGN_POSTGRESQL`, `CATALOG_FOREIGN_REDSHIFT`, `CATALOG_FOREIGN_SNOWFLAKE`, `CATALOG_FOREIGN_SQLDW`, `CATALOG_FOREIGN_SQLSERVER`, `CATALOG_INTERNAL`, `CATALOG_ONLINE`, `CATALOG_ONLINE_INDEX`, `CATALOG_STANDARD`, `CATALOG_SYSTEM`, `CATALOG_SYSTEM_DELTASHARING`:
+	case `CATALOG_DELTASHARING`, `CATALOG_FOREIGN_BIGQUERY`, `CATALOG_FOREIGN_DATABRICKS`, `CATALOG_FOREIGN_MYSQL`, `CATALOG_FOREIGN_POSTGRESQL`, `CATALOG_FOREIGN_REDSHIFT`, `CATALOG_FOREIGN_SNOWFLAKE`, `CATALOG_FOREIGN_SQLDW`, `CATALOG_FOREIGN_SQLSERVER`, `CATALOG_INTERNAL`, `CATALOG_STANDARD`, `CATALOG_SYSTEM`, `CATALOG_SYSTEM_DELTASHARING`:
 		*f = CatalogInfoSecurableKind(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CATALOG_DELTASHARING", "CATALOG_FOREIGN_BIGQUERY", "CATALOG_FOREIGN_DATABRICKS", "CATALOG_FOREIGN_MYSQL", "CATALOG_FOREIGN_POSTGRESQL", "CATALOG_FOREIGN_REDSHIFT", "CATALOG_FOREIGN_SNOWFLAKE", "CATALOG_FOREIGN_SQLDW", "CATALOG_FOREIGN_SQLSERVER", "CATALOG_INTERNAL", "CATALOG_ONLINE", "CATALOG_ONLINE_INDEX", "CATALOG_STANDARD", "CATALOG_SYSTEM", "CATALOG_SYSTEM_DELTASHARING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CATALOG_DELTASHARING", "CATALOG_FOREIGN_BIGQUERY", "CATALOG_FOREIGN_DATABRICKS", "CATALOG_FOREIGN_MYSQL", "CATALOG_FOREIGN_POSTGRESQL", "CATALOG_FOREIGN_REDSHIFT", "CATALOG_FOREIGN_SNOWFLAKE", "CATALOG_FOREIGN_SQLDW", "CATALOG_FOREIGN_SQLSERVER", "CATALOG_INTERNAL", "CATALOG_STANDARD", "CATALOG_SYSTEM", "CATALOG_SYSTEM_DELTASHARING"`, v)
 	}
 }
 
@@ -720,6 +716,11 @@ func (s CreateConnection) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateEndpointRequest struct {
+	// Endpoint
+	Endpoint *Endpoint `json:"endpoint,omitempty"`
+}
+
 type CreateExternalLocation struct {
 	// The AWS access point to use when accesing s3 for this external location.
 	AccessPoint string `json:"access_point,omitempty"`
@@ -1087,7 +1088,7 @@ type CreateStorageCredential struct {
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
-	// The <Databricks> managed GCP service account configuration.
+	// The Databricks managed GCP service account configuration.
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name"`
@@ -1344,6 +1345,11 @@ func (s DeleteCatalogRequest) MarshalJSON() ([]byte, error) {
 // Delete a connection
 type DeleteConnectionRequest struct {
 	// The name of the connection to be deleted.
+	Name string `json:"-" url:"-"`
+}
+
+// Delete an Endpoint
+type DeleteEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
@@ -1660,6 +1666,56 @@ type EncryptionDetails struct {
 	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
 }
 
+// Endpoint
+type Endpoint struct {
+	Name string `json:"name,omitempty"`
+
+	Status EndpointState `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Endpoint) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Endpoint) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EndpointState string
+
+const EndpointStateEndpointDeleting EndpointState = `ENDPOINT_DELETING`
+
+const EndpointStateEndpointFailed EndpointState = `ENDPOINT_FAILED`
+
+const EndpointStateEndpointOnline EndpointState = `ENDPOINT_ONLINE`
+
+const EndpointStateEndpointProvisioning EndpointState = `ENDPOINT_PROVISIONING`
+
+const EndpointStateEndpointStateUnspecified EndpointState = `ENDPOINT_STATE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (f *EndpointState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EndpointState) Set(v string) error {
+	switch v {
+	case `ENDPOINT_DELETING`, `ENDPOINT_FAILED`, `ENDPOINT_ONLINE`, `ENDPOINT_PROVISIONING`, `ENDPOINT_STATE_UNSPECIFIED`:
+		*f = EndpointState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ENDPOINT_DELETING", "ENDPOINT_FAILED", "ENDPOINT_ONLINE", "ENDPOINT_PROVISIONING", "ENDPOINT_STATE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns EndpointState to satisfy [pflag.Value] interface
+func (f *EndpointState) Type() string {
+	return "EndpointState"
+}
+
 // Get boolean reflecting if table exists
 type ExistsRequest struct {
 	// Full name of the table.
@@ -1685,6 +1741,9 @@ type ExternalLocationInfo struct {
 	CredentialName string `json:"credential_name,omitempty"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of metastore hosting the external location.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of the external location.
@@ -2132,6 +2191,11 @@ func (s GetEffectiveRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Get an Endpoint
+type GetEndpointRequest struct {
+	Name string `json:"-" url:"-"`
+}
+
 // Get an external location
 type GetExternalLocationRequest struct {
 	// Whether to include external locations in the response for which the
@@ -2394,9 +2458,9 @@ type GetWorkspaceBindingRequest struct {
 // set of workspaces.
 type IsolationMode string
 
-const IsolationModeIsolated IsolationMode = `ISOLATED`
+const IsolationModeIsolationModeIsolated IsolationMode = `ISOLATION_MODE_ISOLATED`
 
-const IsolationModeOpen IsolationMode = `OPEN`
+const IsolationModeIsolationModeOpen IsolationMode = `ISOLATION_MODE_OPEN`
 
 // String representation for [fmt.Print]
 func (f *IsolationMode) String() string {
@@ -2406,11 +2470,11 @@ func (f *IsolationMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IsolationMode) Set(v string) error {
 	switch v {
-	case `ISOLATED`, `OPEN`:
+	case `ISOLATION_MODE_ISOLATED`, `ISOLATION_MODE_OPEN`:
 		*f = IsolationMode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ISOLATED", "OPEN"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ISOLATION_MODE_ISOLATED", "ISOLATION_MODE_OPEN"`, v)
 	}
 }
 
@@ -4270,10 +4334,13 @@ type StorageCredentialInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// The <Databricks> managed GCP service account configuration.
+	// The Databricks managed GCP service account configuration.
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountResponse `json:"databricks_gcp_service_account,omitempty"`
 	// The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The credential name. The name must be unique within the metastore.
@@ -4898,7 +4965,7 @@ type UpdateStorageCredential struct {
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
-	// The <Databricks> managed GCP service account configuration.
+	// The Databricks managed GCP service account configuration.
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// Force update even if there are dependent external locations or external
 	// tables.

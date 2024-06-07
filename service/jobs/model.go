@@ -1704,6 +1704,43 @@ func (f *PauseStatus) Type() string {
 	return "PauseStatus"
 }
 
+type PeriodicTriggerConfiguration struct {
+	Interval int `json:"interval"`
+
+	Unit PeriodicTriggerConfigurationTimeUnit `json:"unit"`
+}
+
+type PeriodicTriggerConfigurationTimeUnit string
+
+const PeriodicTriggerConfigurationTimeUnitDays PeriodicTriggerConfigurationTimeUnit = `DAYS`
+
+const PeriodicTriggerConfigurationTimeUnitHours PeriodicTriggerConfigurationTimeUnit = `HOURS`
+
+const PeriodicTriggerConfigurationTimeUnitTimeUnitUnspecified PeriodicTriggerConfigurationTimeUnit = `TIME_UNIT_UNSPECIFIED`
+
+const PeriodicTriggerConfigurationTimeUnitWeeks PeriodicTriggerConfigurationTimeUnit = `WEEKS`
+
+// String representation for [fmt.Print]
+func (f *PeriodicTriggerConfigurationTimeUnit) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PeriodicTriggerConfigurationTimeUnit) Set(v string) error {
+	switch v {
+	case `DAYS`, `HOURS`, `TIME_UNIT_UNSPECIFIED`, `WEEKS`:
+		*f = PeriodicTriggerConfigurationTimeUnit(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DAYS", "HOURS", "TIME_UNIT_UNSPECIFIED", "WEEKS"`, v)
+	}
+}
+
+// Type always returns PeriodicTriggerConfigurationTimeUnit to satisfy [pflag.Value] interface
+func (f *PeriodicTriggerConfigurationTimeUnit) Type() string {
+	return "PeriodicTriggerConfigurationTimeUnit"
+}
+
 type PipelineParams struct {
 	// If true, triggers a full refresh on the delta live table.
 	FullRefresh bool `json:"full_refresh,omitempty"`
@@ -3881,6 +3918,8 @@ type TriggerSettings struct {
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
 	// Whether this trigger is paused or not.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
+
+	Periodic *PeriodicTriggerConfiguration `json:"periodic,omitempty"`
 	// Old table trigger settings name. Deprecated in favor of `table_update`.
 	Table *TableUpdateTriggerConfiguration `json:"table,omitempty"`
 
