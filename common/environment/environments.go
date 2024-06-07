@@ -45,6 +45,10 @@ func (de DatabricksEnvironment) AzureActiveDirectoryEndpoint() string {
 	return de.AzureEnvironment.ActiveDirectoryEndpoint
 }
 
+func (de DatabricksEnvironment) AccountsHost() string {
+	return "https://accounts" + de.DnsZone
+}
+
 // we default to AWS Prod environment since this case will be a hit for PVC
 func DefaultEnvironment() DatabricksEnvironment {
 	return DatabricksEnvironment{
