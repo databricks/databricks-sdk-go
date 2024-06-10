@@ -1,229 +1,121 @@
 {
-
-    "openapi": "3.0.0",
-  
-    "tags": [
-  
-      {
-  
-        "name": "Model",
-  
-        "x-databricks-package": "model",
-  
-        "x-databricks-service": "Model"
-  
-      }
-  
-    ],
-  
-    "paths": {
-  
-      "/api/1.2/model/{name}": {
-  
-        "get": {
-  
-          "operationId": "Model.get",
-  
-          "parameters": [
-  
-            {
-  
-              "name": "name",
-  
-              "in": "path",
-  
-              "required": true,
-  
-              "schema": {
-  
-                "type": "string"
-  
+  "openapi":"3.0.0",
+  "tags":[
+     {
+        "name":"Model",
+        "x-databricks-package":"model",
+        "x-databricks-service":"Model"
+     }
+  ],
+  "paths":{
+     "/api/1.2/model/{name}":{
+        "get":{
+           "operationId":"Model.get",
+           "parameters":[
+              {
+                 "name":"name",
+                 "in":"path",
+                 "required":true,
+                 "schema":{
+                    "type":"string"
+                 }
               }
-  
-            }
-  
-          ],
-  
-          "responses": {
-  
-            "200": {
-  
-              "content": {
-  
-                "application/json": {
-  
-                  "schema": { "$ref": "#/components/schemas/Model" }
-  
-                }
-  
-              },
-  
-              "description": "Model was returned successfully."
-  
-            }
-  
-          },
-  
-          "summary": "Get the model",
-  
-          "tags": [
-  
-            "Model"
-  
-          ]
-  
-        }
-  
-      },
-  
-      "/api/1.2/model-query/{name}": {
-  
-        "get": {
-  
-          "operationId": "Model.query",
-  
-          "parameters": [
-  
-            {
-  
-              "name": "name",
-  
-              "in": "path",
-  
-              "required": true,
-  
-              "schema": {
-  
-                "type": "string"
-  
+           ],
+           "responses":{
+              "200":{
+                 "content":{
+                    "application/json":{
+                       "schema":{
+                          "$ref":"#/components/schemas/Model"
+                       }
+                    }
+                 },
+                 "description":"Model was returned successfully."
               }
-  
-            }
-  
-          ],
-  
-          "responses": {
-  
-            "200": {
-  
-              "content": {
-  
-                "application/json": {}
-  
-              },
-  
-              "description": "Model was queried successfully."
-  
-            }
-  
-          },
-  
-          "summary": "Query the model",
-  
-          "tags": [
-  
-            "Model"
-  
-          ],
-  
-          "x-databricks-dataplane" : {
-  
-            "configMethod": "get",
-  
-            "field": ["dataplaneInfo"]
-  
-          },
-  
-          "x-databricks-wait": {
-  
-            "bind": "commandId",
-  
-            "failure": [
-  
-              "Error"
-  
-            ],
-  
-            "field": [
-  
-              "status"
-  
-            ],
-  
-            "message": [
-  
-              "results",
-  
-              "cause"
-  
-            ],
-  
-            "poll": "commandStatus",
-  
-            "success": [
-  
-              "Cancelled"
-  
-            ]
-  
-          }
-  
+           },
+           "summary":"Get the model",
+           "tags":[
+              "Model"
+           ]
         }
-  
-      }
-  
-    },
-  
-    "components": {
-  
-      "schemas": {
-  
-        "Model": {
-  
-          "type": "object",
-  
-          "properties": {
-  
-            "name": {
-  
-              "type": "string"
-  
-            },
-  
-            "dataplaneInfo": {
-  
-              "$ref": "#/components/schemas/DataPlaneInfo"
-  
-            }
-  
-          }
-  
+     },
+     "/api/1.2/model-query/{name}":{
+        "get":{
+           "operationId":"Model.query",
+           "parameters":[
+              {
+                 "name":"name",
+                 "in":"path",
+                 "required":true,
+                 "schema":{
+                    "type":"string"
+                 }
+              }
+           ],
+           "responses":{
+              "200":{
+                 "content":{
+                    "application/json":{
+                       
+                    }
+                 },
+                 "description":"Model was queried successfully."
+              }
+           },
+           "summary":"Query the model",
+           "tags":[
+              "Model"
+           ],
+           "x-databricks-dataplane":{
+              "configMethod":"get",
+              "field":[
+                 "dataplaneInfo"
+              ]
+           },
+           "x-databricks-wait":{
+              "bind":"commandId",
+              "failure":[
+                 "Error"
+              ],
+              "field":[
+                 "status"
+              ],
+              "message":[
+                 "results",
+                 "cause"
+              ],
+              "poll":"commandStatus",
+              "success":[
+                 "Cancelled"
+              ]
+           }
+        }
+     }
+  },
+  "components":{
+     "schemas":{
+        "Model":{
+           "type":"object",
+           "properties":{
+              "name":{
+                 "type":"string"
+              },
+              "dataplaneInfo":{
+                 "$ref":"#/components/schemas/DataPlaneInfo"
+              }
+           }
         },
-  
-        "DataPlaneInfo": {
-  
-          "type": "object",
-  
-          "properties": {
-  
-            "endpointUrl": {
-  
-              "type": "string"
-  
-            },
-  
-            "authorizationDetails": {
-  
-              "type": "string"
-  
-            }
-  
-          }
-  
+        "DataPlaneInfo":{
+           "type":"object",
+           "properties":{
+              "endpointUrl":{
+                 "type":"string"
+              },
+              "authorizationDetails":{
+                 "type":"string"
+              }
+           }
         }
-  
-      }
-  
-    }
-  
+     }
   }
+}
