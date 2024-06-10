@@ -61,7 +61,6 @@ func NewMockWorkspaceClient(t interface {
 			DataSources:                         sql.NewMockDataSourcesInterface(t),
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
-			Endpoints:                           catalog.NewMockEndpointsInterface(t),
 			Experiments:                         ml.NewMockExperimentsInterface(t),
 			ExternalLocations:                   catalog.NewMockExternalLocationsInterface(t),
 			Files:                               files.NewMockFilesInterface(t),
@@ -104,6 +103,7 @@ func NewMockWorkspaceClient(t interface {
 			Secrets:                             workspace.NewMockSecretsInterface(t),
 			ServicePrincipals:                   iam.NewMockServicePrincipalsInterface(t),
 			ServingEndpoints:                    serving.NewMockServingEndpointsInterface(t),
+			ServingEndpointsDataPlane:           serving.NewMockServingEndpointsDataPlaneInterface(t),
 			Settings:                            settings.NewMockSettingsInterface(t),
 			Shares:                              sharing.NewMockSharesInterface(t),
 			StatementExecution:                  sql.NewMockStatementExecutionInterface(t),
@@ -356,14 +356,6 @@ func (m *MockWorkspaceClient) GetMockDbsqlPermissionsAPI() *sql.MockDbsqlPermiss
 	api, ok := m.WorkspaceClient.DbsqlPermissions.(*sql.MockDbsqlPermissionsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DbsqlPermissions to be *sql.MockDbsqlPermissionsInterface, actual was %T", m.WorkspaceClient.DbsqlPermissions))
-	}
-	return api
-}
-
-func (m *MockWorkspaceClient) GetMockEndpointsAPI() *catalog.MockEndpointsInterface {
-	api, ok := m.WorkspaceClient.Endpoints.(*catalog.MockEndpointsInterface)
-	if !ok {
-		panic(fmt.Sprintf("expected Endpoints to be *catalog.MockEndpointsInterface, actual was %T", m.WorkspaceClient.Endpoints))
 	}
 	return api
 }
@@ -700,6 +692,14 @@ func (m *MockWorkspaceClient) GetMockServingEndpointsAPI() *serving.MockServingE
 	api, ok := m.WorkspaceClient.ServingEndpoints.(*serving.MockServingEndpointsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ServingEndpoints to be *serving.MockServingEndpointsInterface, actual was %T", m.WorkspaceClient.ServingEndpoints))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockServingEndpointsDataPlaneAPI() *serving.MockServingEndpointsDataPlaneInterface {
+	api, ok := m.WorkspaceClient.ServingEndpointsDataPlane.(*serving.MockServingEndpointsDataPlaneInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ServingEndpointsDataPlane to be *serving.MockServingEndpointsDataPlaneInterface, actual was %T", m.WorkspaceClient.ServingEndpointsDataPlane))
 	}
 	return api
 }

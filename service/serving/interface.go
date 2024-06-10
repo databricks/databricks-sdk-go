@@ -167,3 +167,11 @@ type ServingEndpointsService interface {
 	// inherit permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 }
+
+// Serving endpoints DataPlane provides a set of operations to interact with
+// data plane endpoints for Serving endpoints service.
+type ServingEndpointsDataPlaneService interface {
+
+	// Query a serving endpoint.
+	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
+}

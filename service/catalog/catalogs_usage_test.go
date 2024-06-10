@@ -273,12 +273,8 @@ func ExampleCatalogsAPI_Update_catalogWorkspaceBindings() {
 	logger.Infof(ctx, "found %v", created)
 
 	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{
-<<<<<<< HEAD
-		Name: created.Name,
-=======
 		Name:          created.Name,
 		IsolationMode: catalog.IsolationModeIsolationModeIsolated,
->>>>>>> main
 	})
 	if err != nil {
 		panic(err)

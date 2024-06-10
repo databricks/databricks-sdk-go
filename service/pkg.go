@@ -64,8 +64,6 @@
 //
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
-// - [catalog.EndpointsAPI]: Endpoints are used to connect to PG clusters.
-//
 // - [settings.EnhancedSecurityMonitoringAPI]: Controls whether enhanced security monitoring is enabled for the current workspace.
 //
 // - [settings.EsmEnablementAccountAPI]: The enhanced security monitoring setting at the account level controls whether to enable the feature on new workspaces.
@@ -182,6 +180,8 @@
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
+// - [serving.ServingEndpointsDataPlaneAPI]: Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving endpoints service.
+//
 // - [settings.SettingsAPI]: Workspace Settings API allows users to manage settings at the workspace level.
 //
 // - [settings.AccountSettingsAPI]: Accounts Settings API allows users to manage settings at the account level.
@@ -289,7 +289,6 @@ var (
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil
 	_ *provisioning.EncryptionKeysAPI                     = nil
-	_ *catalog.EndpointsAPI                               = nil
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *ml.ExperimentsAPI                                  = nil
@@ -348,6 +347,7 @@ var (
 	_ *iam.ServicePrincipalsAPI                           = nil
 	_ *iam.AccountServicePrincipalsAPI                    = nil
 	_ *serving.ServingEndpointsAPI                        = nil
+	_ *serving.ServingEndpointsDataPlaneAPI               = nil
 	_ *settings.SettingsAPI                               = nil
 	_ *settings.AccountSettingsAPI                        = nil
 	_ *sharing.SharesAPI                                  = nil

@@ -294,39 +294,6 @@ func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) 
 	return &connectionInfo, err
 }
 
-// unexported type that holds implementations of just Endpoints API methods
-type endpointsImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *endpointsImpl) Create(ctx context.Context, request CreateEndpointRequest) (*Endpoint, error) {
-	var endpoint Endpoint
-	path := "/api/2.0/hadron-endpoints"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &endpoint)
-	return &endpoint, err
-}
-
-func (a *endpointsImpl) Delete(ctx context.Context, request DeleteEndpointRequest) error {
-	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/hadron-endpoints/%v", request.Name)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return err
-}
-
-func (a *endpointsImpl) Get(ctx context.Context, request GetEndpointRequest) (*Endpoint, error) {
-	var endpoint Endpoint
-	path := fmt.Sprintf("/api/2.0/hadron-endpoints/%v", request.Name)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &endpoint)
-	return &endpoint, err
-}
-
 // unexported type that holds implementations of just ExternalLocations API methods
 type externalLocationsImpl struct {
 	client *client.DatabricksClient

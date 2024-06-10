@@ -215,9 +215,6 @@ type WorkspaceClient struct {
 	// permissions (superset of `CAN_RUN`)
 	DbsqlPermissions sql.DbsqlPermissionsInterface
 
-	// Endpoints are used to connect to PG clusters.
-	Endpoints catalog.EndpointsInterface
-
 	// Experiments are the primary unit of organization in MLflow; all MLflow
 	// runs belong to an experiment. Each experiment lets you visualize, search,
 	// and compare runs, as well as download run artifacts or metadata for
@@ -715,6 +712,10 @@ type WorkspaceClient struct {
 	// applied to each served entity.
 	ServingEndpoints serving.ServingEndpointsInterface
 
+	// Serving endpoints DataPlane provides a set of operations to interact with
+	// data plane endpoints for Serving endpoints service.
+	ServingEndpointsDataPlane serving.ServingEndpointsDataPlaneInterface
+
 	// Workspace Settings API allows users to manage settings at the workspace
 	// level.
 	Settings settings.SettingsInterface
@@ -1029,7 +1030,6 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		DataSources:                         sql.NewDataSources(databricksClient),
 		Dbfs:                                files.NewDbfs(databricksClient),
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
-		Endpoints:                           catalog.NewEndpoints(databricksClient),
 		Experiments:                         ml.NewExperiments(databricksClient),
 		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
 		Files:                               files.NewFiles(databricksClient),
@@ -1072,6 +1072,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Secrets:                             workspace.NewSecrets(databricksClient),
 		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),
 		ServingEndpoints:                    servingEndpoints,
+		ServingEndpointsDataPlane:           serving.NewServingEndpointsDataPlane(databricksClient, servingEndpoints),
 		Settings:                            settings.NewSettings(databricksClient),
 		Shares:                              sharing.NewShares(databricksClient),
 		StatementExecution:                  sql.NewStatementExecution(databricksClient),
