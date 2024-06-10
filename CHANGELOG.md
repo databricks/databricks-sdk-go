@@ -1,5 +1,34 @@
 # Version changelog
 
+## 0.42.0
+
+* Ignore additional flaky test ([#930](https://github.com/databricks/databricks-sdk-go/pull/930)).
+* Ignore DataPlane Services during generation ([#933](https://github.com/databricks/databricks-sdk-go/pull/933)).
+* Update OpenAPI spec ([#934](https://github.com/databricks/databricks-sdk-go/pull/934)).
+
+API Changes:
+
+ * Changed `List` method for [a.AccountStorageCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountStorageCredentialsAPI) account-level service to return [catalog.ListAccountStorageCredentialsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListAccountStorageCredentialsResponse).
+ * Added [catalog.ListAccountStorageCredentialsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListAccountStorageCredentialsResponse).
+ * Added `TerminationCategory` field for [jobs.ForEachTaskErrorMessageStats](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ForEachTaskErrorMessageStats).
+ * Added [oauth2.DataPlaneInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#DataPlaneInfo).
+ * Removed `CreateDeployment` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `Deploy` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `Mode` field for [serving.AppDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppDeployment).
+ * Added `Mode` field for [serving.CreateAppDeploymentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#CreateAppDeploymentRequest).
+ * Added `DataPlaneInfo` field for [serving.ServingEndpointDetailed](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointDetailed).
+ * Added [serving.AppDeploymentMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppDeploymentMode).
+ * Added [serving.ModelDataPlaneInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ModelDataPlaneInfo).
+
+OpenAPI SHA: 37b925eba37dfb3d7e05b6ba2d458454ce62d3a0, Date: 2024-06-03
+
+Dependency updates:
+
+ * Bump golang.org/x/mod from 0.16.0 to 0.17.0 ([#879](https://github.com/databricks/databricks-sdk-go/pull/879)).
+ * Bump golang.org/x/oauth2 from 0.18.0 to 0.20.0 ([#911](https://github.com/databricks/databricks-sdk-go/pull/911)).
+ * Bump golang.org/x/net from 0.24.0 to 0.25.0 ([#912](https://github.com/databricks/databricks-sdk-go/pull/912)).
+ * Bump google.golang.org/api from 0.169.0 to 0.182.0 ([#932](https://github.com/databricks/databricks-sdk-go/pull/932)).
+
 ## Release v0.41.0
 
 ### Backward incompatible changes
