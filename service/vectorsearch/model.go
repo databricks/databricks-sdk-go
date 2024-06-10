@@ -559,6 +559,8 @@ type QueryVectorIndexRequest struct {
 	NumResults int `json:"num_results,omitempty"`
 	// Query text. Required for Delta Sync Index using model endpoint.
 	QueryText string `json:"query_text,omitempty"`
+	// The query type to use. Choices are `ANN` and `HYBRID`. Defaults to `ANN`.
+	QueryType string `json:"query_type,omitempty"`
 	// Query vector. Required for Direct Vector Access Index and Delta Sync
 	// Index using self-managed vectors.
 	QueryVector []float64 `json:"query_vector,omitempty"`

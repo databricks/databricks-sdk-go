@@ -129,3 +129,12 @@ func TestMethodsReport(t *testing.T) {
 
 	assert.Equal(t, len(batch.packages), 1)
 }
+
+func TestDataPlane(t *testing.T) {
+	ctx := context.Background()
+	batch, err := NewFromFile(ctx, "../testdata/spec_dataplane.json")
+	require.NoError(t, err)
+	dataPlane := batch.packages["model"].services["Model"].methods["query"].DataPlane
+	require.Equal(t, "get", dataPlane.ConfigMethod)
+	require.Equal(t, "dataplaneInfo", dataPlane.Fields[0])
+}
