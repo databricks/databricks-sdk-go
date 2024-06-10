@@ -48,16 +48,16 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (.HasDataPlaneMethods) (not .IsDataPlane)}}
+	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) .HasDataPlaneAPI}}
 	{{.CamelName}} := {{.Package.Name}}.New{{.Name}}(databricksClient)
 	{{- end}}{{end}}
 	return &WorkspaceClient{
 		Config: cfg,
 		apiClient: apiClient,
-		{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane) (not .HasDataPlaneMethods)}}
+		{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane) (not .HasDataPlaneAPI)}}
 		{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient),
 		{{- end -}}
-		{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane) (.HasDataPlaneMethods)}}
+		{{if and (not .IsAccounts) (not .HasParent) .HasDataPlaneAPI}}
 		{{.Name}}: {{.CamelName}},
 		{{- end -}}
 		{{if and (not .IsAccounts) (not .HasParent) .IsDataPlane}}

@@ -50,10 +50,6 @@ type Method struct {
 	shortcut   bool
 }
 
-func (m *Method) HasDataPlaneAPI() bool {
-	return m.DataPlane != nil
-}
-
 // Returns the fields which contains the DataPlane info. Each field is nested in the previous one.
 func (m *Method) DataPlaneInfoFields() []*Field {
 	if m.DataPlane == nil {

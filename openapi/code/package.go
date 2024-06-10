@@ -380,6 +380,7 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 		}
 		controlPlaneService := pkg.getService(controlPlaneTag)
 		svc.ControlPlaneService = controlPlaneService
+		controlPlaneService.DataPlaneServices = append(controlPlaneService.DataPlaneServices, svc)
 	}
 
 	for prefix, path := range spec.Paths {
