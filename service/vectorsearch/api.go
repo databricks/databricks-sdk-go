@@ -314,6 +314,12 @@ type VectorSearchIndexesInterface interface {
 	// Query the specified vector index.
 	QueryIndex(ctx context.Context, request QueryVectorIndexRequest) (*QueryVectorIndexResponse, error)
 
+	// Query next page.
+	//
+	// Use `next_page_token` returned from previous `QueryVectorIndex` or
+	// `QueryVectorIndexNextPage` request to fetch next page of results.
+	QueryNextPage(ctx context.Context, request QueryVectorIndexNextPageRequest) (*QueryVectorIndexResponse, error)
+
 	// Scan an index.
 	//
 	// Scan the specified vector index and return the first `num_results` entries
@@ -459,6 +465,14 @@ func (a *VectorSearchIndexesAPI) ListIndexesAll(ctx context.Context, request Lis
 // Query the specified vector index.
 func (a *VectorSearchIndexesAPI) QueryIndex(ctx context.Context, request QueryVectorIndexRequest) (*QueryVectorIndexResponse, error) {
 	return a.impl.QueryIndex(ctx, request)
+}
+
+// Query next page.
+//
+// Use `next_page_token` returned from previous `QueryVectorIndex` or
+// `QueryVectorIndexNextPage` request to fetch next page of results.
+func (a *VectorSearchIndexesAPI) QueryNextPage(ctx context.Context, request QueryVectorIndexNextPageRequest) (*QueryVectorIndexResponse, error) {
+	return a.impl.QueryNextPage(ctx, request)
 }
 
 // Scan an index.
