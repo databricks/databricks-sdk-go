@@ -543,6 +543,27 @@ func (f *PipelineType) Type() string {
 	return "PipelineType"
 }
 
+// Request payload for getting next page of results.
+type QueryVectorIndexNextPageRequest struct {
+	// Name of the endpoint.
+	EndpointName string `json:"endpoint_name,omitempty"`
+	// Name of the vector index to query.
+	IndexName string `json:"-" url:"-"`
+	// Page token returned from previous `QueryVectorIndex` or
+	// `QueryVectorIndexNextPage` API.
+	PageToken string `json:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryVectorIndexNextPageRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryVectorIndexNextPageRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type QueryVectorIndexRequest struct {
 	// List of column names to include in the response.
 	Columns []string `json:"columns"`
@@ -559,6 +580,8 @@ type QueryVectorIndexRequest struct {
 	NumResults int `json:"num_results,omitempty"`
 	// Query text. Required for Delta Sync Index using model endpoint.
 	QueryText string `json:"query_text,omitempty"`
+	// The query type to use. Choices are `ANN` and `HYBRID`. Defaults to `ANN`.
+	QueryType string `json:"query_type,omitempty"`
 	// Query vector. Required for Direct Vector Access Index and Delta Sync
 	// Index using self-managed vectors.
 	QueryVector []float64 `json:"query_vector,omitempty"`
@@ -579,8 +602,22 @@ func (s QueryVectorIndexRequest) MarshalJSON() ([]byte, error) {
 type QueryVectorIndexResponse struct {
 	// Metadata about the result set.
 	Manifest *ResultManifest `json:"manifest,omitempty"`
+	// [Optional] Token that can be used in `QueryVectorIndexNextPage` API to
+	// get next page of results. If more than 100 results satisfy the query,
+	// they are returned in groups of 100. Empty value means no more results.
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// Data returned in the query result.
 	Result *ResultData `json:"result,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryVectorIndexResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryVectorIndexResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Data returned in the query result.

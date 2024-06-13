@@ -274,7 +274,7 @@ func ExampleCatalogsAPI_Update_catalogWorkspaceBindings() {
 
 	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{
 		Name:          created.Name,
-		IsolationMode: catalog.IsolationModeIsolationModeIsolated,
+		IsolationMode: catalog.CatalogIsolationModeIsolated,
 	})
 	if err != nil {
 		panic(err)
