@@ -35,11 +35,7 @@ func WithRequestHeaders(headers map[string]string) DoOption {
 
 // WithToken uses the specified golang.org/x/oauth2 token on a request
 func WithToken(token *oauth2.Token) DoOption {
-	visitor := WithRequestVisitor(func(r *http.Request) error {
-		auth := fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
-		r.Header.Set("Authorization", auth)
-		return nil
-	})
+	visitor := WithTokenSource(oauth2.StaticTokenSource(token))
 	visitor.isAuthOption = true
 	return visitor
 }

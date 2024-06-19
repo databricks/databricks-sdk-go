@@ -35,12 +35,12 @@ type Service struct {
 	tag                 *openapi.Tag
 }
 
-// Returns whether this API has a DataPlane counterpart.
+// HasDataPlaneAPI returns whether this API has a DataPlane counterpart.
 func (svc *Service) HasDataPlaneAPI() bool {
 	return len(svc.DataPlaneServices) > 0
 }
 
-// Returns the method in the Control Plane which contains the DataInfo object
+// DataPlaneInfoMethod returns the method in the Control Plane which contains the DataInfo object
 func (svc *Service) DataPlaneInfoMethod() *Method {
 	methodName := ""
 	for _, m := range svc.methods {
@@ -61,7 +61,7 @@ func (svc *Service) HasParent() bool {
 	return svc.tag.ParentService != ""
 }
 
-// Returns whether the service is a DataPlane service
+// IsDataPlane returns whether the service is a DataPlane service
 // This is determined by the service having a matching control plane service
 func (svc *Service) IsDataPlane() bool {
 	return svc.tag.ControlPlaneService != ""

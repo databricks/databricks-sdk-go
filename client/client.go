@@ -47,12 +47,12 @@ func (c *DatabricksClient) ConfiguredAccountID() string {
 	return c.Config.AccountID
 }
 
-// Returns the inner Api Client.
+// ApiClient returns the inner Api Client.
 func (c *DatabricksClient) ApiClient() *httpclient.ApiClient {
 	return c.client
 }
 
-// Returns a new OAuth token using the provided token. The token must be a JWT token.
+// GetOAuthToken returns a new OAuth token using the provided token. The token must be a JWT token.
 // The resulting token is scoped to the authorization details provided.
 //
 // **NOTE:** Experimental: This API may change or be removed in a future release

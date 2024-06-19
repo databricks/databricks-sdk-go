@@ -50,7 +50,7 @@ type Method struct {
 	shortcut   bool
 }
 
-// Returns the fields which contains the DataPlane info. Each field is nested in the previous one.
+// DataPlaneInfoFields returns the fields which contains the DataPlane info. Each field is nested in the previous one.
 func (m *Method) DataPlaneInfoFields() []*Field {
 	if m.DataPlane == nil {
 		return nil
