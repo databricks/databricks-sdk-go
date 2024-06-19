@@ -36,7 +36,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 					Cloud: "foo-bar-cloud",
 				},
 			},
-			wantErrPefix: errPrefix("default auth: cannot configure default credentials"),
+			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing azure client ID",
@@ -53,7 +53,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				Host:          "http://host.com/test",
 				AzureTenantID: "test-tenant-id",
 			},
-			wantErrPefix: errPrefix("default auth: cannot configure default credentials"),
+			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing host",
@@ -70,7 +70,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				AzureClientID: "test-client-id",
 				AzureTenantID: "test-tenant-id",
 			},
-			wantErrPefix: errPrefix("default auth: cannot configure default credentials"),
+			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing tenant ID",
@@ -87,7 +87,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				Host:          "http://host.com/test",
 				AzureClientID: "test-client-id",
 			},
-			wantErrPefix: errPrefix("default auth: cannot configure default credentials"),
+			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing env ACTIONS_ID_TOKEN_REQUEST_TOKEN",
@@ -104,7 +104,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				AzureTenantID: "test-tenant-id",
 				Host:          "http://host.com/test",
 			},
-			wantErrPefix: errPrefix("default auth: cannot configure default credentials"),
+			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing env ACTIONS_ID_TOKEN_REQUEST_URL",
@@ -121,7 +121,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				AzureTenantID: "test-tenant-id",
 				Host:          "http://host.com/test",
 			},
-			wantErrPefix: errPrefix("default auth: cannot configure default credentials"),
+			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "azure aad token exchange server error",
@@ -148,7 +148,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 					},
 				},
 			},
-			wantErrPefix: errPrefix("default auth: github-oidc-azure"),
+			wantErrPefix: errPrefix("github-oidc-azure"),
 		},
 		{
 			desc: "azure auth server error",
@@ -294,6 +294,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 			for k, v := range tc.envs {
 				t.Setenv(k, v)
 			}
+			tc.cfg.Credentials = &AzureGithubOIDCCredentials{} // only test this credential strategy
 			tc.cfg.DebugHeaders = true
 			if tc.wantHeaders == nil {
 				tc.wantHeaders = map[string]string{}
