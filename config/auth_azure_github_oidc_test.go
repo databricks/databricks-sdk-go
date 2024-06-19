@@ -325,6 +325,6 @@ func TestAzureGithubOIDCCredentials_Name(t *testing.T) {
 	want := "github-oidc-azure"
 
 	if got := c.Name(); got != want {
-		t.Errorf("Name(): want %s, got %s", want, got)
+		t.Errorf("Name(): got %s, want %s", got, want)
 	}
 }
