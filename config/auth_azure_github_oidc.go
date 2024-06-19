@@ -36,7 +36,7 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 		return nil, nil
 	}
 
-	ts := &azureOICDCredentialsProvider{
+	ts := &azureOIDCTokenSource{
 		aadEndpoint:   fmt.Sprintf("%s%s", cfg.DatabricksEnvironment.AzureActiveDirectoryEndpoint(), cfg.AzureTenantID),
 		clientID:      cfg.AzureClientID,
 		applicationID: cfg.DatabricksEnvironment.AzureApplicationID,
@@ -65,6 +65,9 @@ func requestIDToken(ctx context.Context, cfg *Config) (string, error) {
 		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", token)),
 		httpclient.WithResponseUnmarshal(&resp),
 		httpclient.WithRequestData(map[string]string{
+			// The audience parameter defaults to api://AzureADTokenExchange
+			// and is thus optional. It is added nonetheless so that the intent
+			// is explicit.
 			"audience": "api://AzureADTokenExchange",
 		}),
 	)
@@ -77,7 +80,7 @@ func requestIDToken(ctx context.Context, cfg *Config) (string, error) {
 
 // azureOIDCTokenSource implements [oauth2.TokenSource] to obtain Azure auth
 // tokens from an ID token.
-type azureOICDCredentialsProvider struct {
+type azureOIDCTokenSource struct {
 	aadEndpoint   string
 	clientID      string
 	applicationID string
@@ -88,7 +91,7 @@ type azureOICDCredentialsProvider struct {
 
 const azureOICDTimeout = 10 * time.Second
 
-func (cp *azureOICDCredentialsProvider) Token() (*oauth2.Token, error) {
+func (ts *azureOIDCTokenSource) Token() (*oauth2.Token, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), azureOICDTimeout)
 	defer cancel()
 
@@ -98,14 +101,14 @@ func (cp *azureOICDCredentialsProvider) Token() (*oauth2.Token, error) {
 		RefreshToken string      `json:"refresh_token"`
 		ExpiresOn    json.Number `json:"expires_on"`
 	}{}
-	err := cp.httpClient.Do(ctx, "POST", cp.aadEndpoint,
+	err := ts.httpClient.Do(ctx, "POST", ts.aadEndpoint,
 		httpclient.WithRequestData(map[string]string{
 			"grant_type": "client_credentials",
-			"resource":   cp.applicationID,
-			"client_id":  cp.clientID,
+			"resource":   ts.applicationID,
+			"client_id":  ts.clientID,
 			// Use the ID token instead of a client_secret.
 			"client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-			"client_assertion":      cp.idToken,
+			"client_assertion":      ts.idToken,
 		}),
 		httpclient.WithResponseUnmarshal(&resp),
 	)
