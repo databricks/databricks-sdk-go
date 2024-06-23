@@ -11,7 +11,6 @@ import (
 
 func TestApplyOverrides(t *testing.T) {
 	testCases := []struct {
-		name          string
 		initialError  *APIError
 		path          string
 		method        string
@@ -80,20 +79,18 @@ func TestApplyOverrides(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			resp := &http.Response{
-				Request: &http.Request{
-					URL: &url.URL{
-						Path: tc.path,
-					},
-					Method: tc.method,
+		resp := &http.Response{
+			Request: &http.Request{
+				URL: &url.URL{
+					Path: tc.path,
 				},
-				StatusCode: tc.initialError.StatusCode,
-			}
+				Method: tc.method,
+			},
+			StatusCode: tc.initialError.StatusCode,
+		}
 
-			applyOverrides(context.Background(), tc.initialError, resp)
+		applyOverrides(context.Background(), tc.initialError, resp)
 
-			assert.ErrorIs(t, tc.initialError, tc.expectedError)
-		})
+		assert.ErrorIs(t, tc.initialError, tc.expectedError)
 	}
 }
