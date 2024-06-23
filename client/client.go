@@ -47,9 +47,15 @@ func (c *DatabricksClient) ConfiguredAccountID() string {
 }
 
 // Do sends an HTTP request against path.
-func (c *DatabricksClient) Do(ctx context.Context, method, path string,
-	headers map[string]string, request, response any,
-	visitors ...func(*http.Request) error) error {
+func (c *DatabricksClient) Do(
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
 	opts := []httpclient.DoOption{}
 	for _, v := range visitors {
 		opts = append(opts, httpclient.WithRequestVisitor(v))
