@@ -27,7 +27,7 @@ func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (c
 		return nil, nil
 	}
 
-	ts, err := newDatabricksCliTokenSource(cfg)
+	ts, err := newDatabricksCliTokenSource(ctx, cfg)
 	if err != nil {
 		if errors.Is(err, exec.ErrNotFound) {
 			logger.Debugf(ctx, "Most likely the Databricks CLI is not installed")
@@ -61,17 +61,12 @@ func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (c
 var errLegacyDatabricksCli = errors.New("legacy Databricks CLI detected")
 
 type databricksCliTokenSource struct {
+	ctx  context.Context
 	name string
-	args []string
+	cfg  *Config
 }
 
-func newDatabricksCliTokenSource(cfg *Config) (*databricksCliTokenSource, error) {
-	args := []string{"auth", "token", "--host", cfg.Host}
-
-	if cfg.IsAccountClient() {
-		args = append(args, "--account-id", cfg.AccountID)
-	}
-
+func newDatabricksCliTokenSource(ctx context.Context, cfg *Config) (*databricksCliTokenSource, error) {
 	databricksCliPath := cfg.DatabricksCliPath
 	if databricksCliPath == "" {
 		databricksCliPath = "databricks"
@@ -101,16 +96,43 @@ func newDatabricksCliTokenSource(cfg *Config) (*databricksCliTokenSource, error)
 		return nil, errLegacyDatabricksCli
 	}
 
-	return &databricksCliTokenSource{name: path, args: args}, nil
+	return &databricksCliTokenSource{ctx: ctx, name: path, cfg: cfg}, nil
 }
 
 func (ts *databricksCliTokenSource) Token() (*oauth2.Token, error) {
-	out, err := exec.Command(ts.name, ts.args...).Output()
+	baseArgs := []string{"auth", "token"}
+	if ts.cfg.IsAccountClient() {
+		args := append(baseArgs, "--host", ts.cfg.Host, "--account-id", ts.cfg.AccountID)
+		return ts.tokenInner(args)
+	}
+	// Try workspace-level auth first, falling back to account-level auth if account ID is available
+	args := append(baseArgs, "--host", ts.cfg.Host)
+	t, wsErr := ts.tokenInner(args)
+	if wsErr == nil {
+		return t, nil
+	}
+	if ts.cfg.AccountID == "" {
+		return nil, wsErr
+	}
+	logger.Debugf(ts.ctx, "account ID available, falling back to account-level authentication")
+	args = append(baseArgs, "--host", ts.cfg.Environment().AccountsHost(), "--account-id", ts.cfg.AccountID)
+	t, acctErr := ts.tokenInner(args)
+	if acctErr == nil {
+		return t, nil
+	}
+	return nil, acctErr
+}
+
+func (ts *databricksCliTokenSource) tokenInner(args []string) (*oauth2.Token, error) {
+	logger.Debugf(ts.ctx, "running command: '%s %s'", ts.name, strings.Join(args, " "))
+	out, err := exec.Command(ts.name, args...).Output()
 	if ee, ok := err.(*exec.ExitError); ok {
+		logger.Debugf(ts.ctx, "command '%s %s' failed: %s", ts.name, strings.Join(args, " "), string(ee.Stderr))
 		return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
 	}
 	if err != nil {
-		return nil, fmt.Errorf("cannot get access token: %v", err)
+		logger.Debugf(ts.ctx, "command '%s %s' failed to run: %w", ts.name, strings.Join(args, " "), err)
+		return nil, fmt.Errorf("cannot get access token: %w", err)
 	}
 	var t oauth2.Token
 	err = json.Unmarshal(out, &t)

@@ -44,7 +44,7 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 
 func oidcEndpoints(ctx context.Context, cfg *Config) (*oauthAuthorizationServer, error) {
 	prefix := cfg.Host
-	if cfg.IsAccountClient() && cfg.AccountID != "" {
+	if cfg.IsAccountClient() {
 		// TODO: technically, we could use the same config profile for both workspace
 		// and account, but we have to add logic for determining accounts host from
 		// workspace host.
