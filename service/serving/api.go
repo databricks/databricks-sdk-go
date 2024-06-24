@@ -133,6 +133,11 @@ type AppsInterface interface {
 	// Lists all app deployments for the app with the supplied name.
 	ListDeploymentsByAppName(ctx context.Context, appName string) (*ListAppDeploymentsResponse, error)
 
+	// Start an app.
+	//
+	// Start the last active deployment of the app in the workspace.
+	Start(ctx context.Context, request StartAppRequest) (*AppDeployment, error)
+
 	// Stop an app.
 	//
 	// Stops the active deployment of the app in the workspace.
@@ -536,6 +541,13 @@ func (a *AppsAPI) ListDeploymentsByAppName(ctx context.Context, appName string) 
 	return a.impl.ListDeployments(ctx, ListAppDeploymentsRequest{
 		AppName: appName,
 	})
+}
+
+// Start an app.
+//
+// Start the last active deployment of the app in the workspace.
+func (a *AppsAPI) Start(ctx context.Context, request StartAppRequest) (*AppDeployment, error) {
+	return a.impl.Start(ctx, request)
 }
 
 // Stop an app.

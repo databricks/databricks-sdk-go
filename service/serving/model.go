@@ -298,16 +298,15 @@ func (s AppStatus) MarshalJSON() ([]byte, error) {
 
 type AutoCaptureConfigInput struct {
 	// The name of the catalog in Unity Catalog. NOTE: On update, you cannot
-	// change the catalog name if it was already set.
+	// change the catalog name if the inference table is already enabled.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// If inference tables are enabled or not. NOTE: If you have already
-	// disabled payload logging once, you cannot enable again.
+	// Indicates whether the inference table is enabled.
 	Enabled bool `json:"enabled,omitempty"`
 	// The name of the schema in Unity Catalog. NOTE: On update, you cannot
-	// change the schema name if it was already set.
+	// change the schema name if the inference table is already enabled.
 	SchemaName string `json:"schema_name,omitempty"`
 	// The prefix of the table in Unity Catalog. NOTE: On update, you cannot
-	// change the prefix name if it was already set.
+	// change the prefix name if the inference table is already enabled.
 	TableNamePrefix string `json:"table_name_prefix,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -324,7 +323,7 @@ func (s AutoCaptureConfigInput) MarshalJSON() ([]byte, error) {
 type AutoCaptureConfigOutput struct {
 	// The name of the catalog in Unity Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// If inference tables are enabled or not.
+	// Indicates whether the inference table is enabled.
 	Enabled bool `json:"enabled,omitempty"`
 	// The name of the schema in Unity Catalog.
 	SchemaName string `json:"schema_name,omitempty"`
@@ -2011,6 +2010,11 @@ type ServingEndpointPermissionsRequest struct {
 	AccessControlList []ServingEndpointAccessControlRequest `json:"access_control_list,omitempty"`
 	// The serving endpoint for which to get or manage permissions.
 	ServingEndpointId string `json:"-" url:"-"`
+}
+
+type StartAppRequest struct {
+	// The name of the app.
+	Name string `json:"-" url:"-"`
 }
 
 type StopAppRequest struct {

@@ -11,6 +11,11 @@ import (
 // of its result, and notifies one or more users and/or notification
 // destinations if the condition was met. Alerts can be scheduled using the
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
+//
+// **Note**: A new version of the Databricks SQL API will soon be available.
+// [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 type AlertsService interface {
 
 	// Create an alert.
@@ -18,28 +23,53 @@ type AlertsService interface {
 	// Creates an alert. An alert is a Databricks SQL object that periodically
 	// runs a query, evaluates a condition of its result, and notifies users or
 	// notification destinations if the condition was met.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Create(ctx context.Context, request CreateAlert) (*Alert, error)
 
 	// Delete an alert.
 	//
 	// Deletes an alert. Deleted alerts are no longer accessible and cannot be
-	// restored. **Note:** Unlike queries and dashboards, alerts cannot be moved
+	// restored. **Note**: Unlike queries and dashboards, alerts cannot be moved
 	// to the trash.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Delete(ctx context.Context, request DeleteAlertRequest) error
 
 	// Get an alert.
 	//
 	// Gets an alert.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Get(ctx context.Context, request GetAlertRequest) (*Alert, error)
 
 	// Get alerts.
 	//
 	// Gets a list of alerts.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	List(ctx context.Context) ([]Alert, error)
 
 	// Update an alert.
 	//
 	// Updates an alert.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Update(ctx context.Context, request EditAlert) error
 }
 
@@ -85,8 +115,8 @@ type DashboardsService interface {
 	//
 	// Fetch a paginated list of dashboard objects.
 	//
-	// ### **Warning: Calling this API concurrently 10 or more times could
-	// result in throttling, service degradation, or a temporary ban.**
+	// **Warning**: Calling this API concurrently 10 or more times could result
+	// in throttling, service degradation, or a temporary ban.
 	//
 	// Use ListAll() to get all Dashboard instances, which will iterate over every result page.
 	List(ctx context.Context, request ListDashboardsRequest) (*ListResponse, error)
@@ -116,6 +146,11 @@ type DashboardsService interface {
 // warehouses in your workspace. We advise you to use any text editor, REST
 // client, or `grep` to search the response from this API for the name of your
 // SQL warehouse as it appears in Databricks SQL.
+//
+// **Note**: A new version of the Databricks SQL API will soon be available.
+// [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 type DataSourcesService interface {
 
 	// Get a list of SQL warehouses.
@@ -124,6 +159,11 @@ type DataSourcesService interface {
 	// fields that appear in this API response are enumerated for clarity.
 	// However, you need only a SQL warehouse's `id` to create new queries
 	// against it.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	List(ctx context.Context) ([]DataSource, error)
 }
 
@@ -140,24 +180,44 @@ type DataSourcesService interface {
 //
 // - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
 // permissions (superset of `CAN_RUN`)
+//
+// **Note**: A new version of the Databricks SQL API will soon be available.
+// [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 type DbsqlPermissionsService interface {
 
 	// Get object ACL.
 	//
 	// Gets a JSON representation of the access control list (ACL) for a
 	// specified object.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Get(ctx context.Context, request GetDbsqlPermissionRequest) (*GetResponse, error)
 
 	// Set object ACL.
 	//
 	// Sets the access control list (ACL) for a specified object. This operation
 	// will complete rewrite the ACL.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Set(ctx context.Context, request SetRequest) (*SetResponse, error)
 
 	// Transfer object ownership.
 	//
 	// Transfers ownership of a dashboard, query, or alert to an active user.
 	// Requires an admin API key.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	TransferOwnership(ctx context.Context, request TransferOwnershipRequest) (*Success, error)
 }
 
@@ -165,6 +225,11 @@ type DbsqlPermissionsService interface {
 // definitions include the target SQL warehouse, query text, name, description,
 // tags, parameters, and visualizations. Queries can be scheduled using the
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
+//
+// **Note**: A new version of the Databricks SQL API will soon be available.
+// [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 type QueriesService interface {
 
 	// Create a new query definition.
@@ -178,6 +243,11 @@ type QueriesService interface {
 	// from an existing query.
 	//
 	// **Note**: You cannot add a visualization until you create the query.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Create(ctx context.Context, request QueryPostContent) (*Query, error)
 
 	// Delete a query.
@@ -185,12 +255,22 @@ type QueriesService interface {
 	// Moves a query to the trash. Trashed queries immediately disappear from
 	// searches and list views, and they cannot be used for alerts. The trash is
 	// deleted after 30 days.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Delete(ctx context.Context, request DeleteQueryRequest) error
 
 	// Get a query definition.
 	//
 	// Retrieve a query object definition along with contextual permissions
 	// information about the currently authenticated user.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Get(ctx context.Context, request GetQueryRequest) (*Query, error)
 
 	// Get a list of queries.
@@ -198,8 +278,13 @@ type QueriesService interface {
 	// Gets a list of queries. Optionally, this list can be filtered by a search
 	// term.
 	//
-	// ### **Warning: Calling this API concurrently 10 or more times could
-	// result in throttling, service degradation, or a temporary ban.**
+	// **Warning**: Calling this API concurrently 10 or more times could result
+	// in throttling, service degradation, or a temporary ban.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	//
 	// Use ListAll() to get all Query instances, which will iterate over every result page.
 	List(ctx context.Context, request ListQueriesRequest) (*QueryList, error)
@@ -209,6 +294,11 @@ type QueriesService interface {
 	// Restore a query that has been moved to the trash. A restored query
 	// appears in list views and searches. You can use restored queries for
 	// alerts.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Restore(ctx context.Context, request RestoreQueryRequest) error
 
 	// Change a query definition.
@@ -216,6 +306,11 @@ type QueriesService interface {
 	// Modify this query definition.
 	//
 	// **Note**: You cannot undo this operation.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Update(ctx context.Context, request QueryEditContent) (*Query, error)
 }
 
