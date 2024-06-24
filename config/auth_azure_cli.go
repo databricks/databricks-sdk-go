@@ -31,7 +31,7 @@ func (c AzureCliCredentials) Name() string {
 // implementing azureHostResolver for ensureWorkspaceUrl to work
 func (c AzureCliCredentials) tokenSourceFor(
 	ctx context.Context, cfg *Config, _, resource string) oauth2.TokenSource {
-	return NewAzureCliTokenSource(resource)
+	return NewAzureCliTokenSource(ctx, resource, cfg.AzureTenantID)
 }
 
 // There are three scenarios:
@@ -44,7 +44,7 @@ func (c AzureCliCredentials) tokenSourceFor(
 // If the user can't access the service management endpoint, we assume they are in case 2 and do not pass the service
 // management token. Otherwise, we always pass the service management token.
 func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner oauth2.TokenSource) (func(*http.Request) error, error) {
-	ts := &azureCliTokenSource{cfg.Environment().AzureServiceManagementEndpoint(), ""}
+	ts := &azureCliTokenSource{ctx, cfg.Environment().AzureServiceManagementEndpoint(), cfg.AzureResourceID, cfg.AzureTenantID}
 	t, err := ts.Token()
 	if err != nil {
 		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
@@ -58,8 +58,13 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (creden
 	if !cfg.IsAzure() {
 		return nil, nil
 	}
+	// Set the azure tenant ID from host if available
+	err := cfg.loadAzureTenantId(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("load tenant id: %w", err)
+	}
 	// Eagerly get a token to fail fast in case the user is not logged in with the Azure CLI.
-	ts := &azureCliTokenSource{cfg.Environment().AzureApplicationID, cfg.AzureResourceID}
+	ts := &azureCliTokenSource{ctx, cfg.Environment().AzureApplicationID, cfg.AzureResourceID, cfg.AzureTenantID}
 	t, err := ts.Token()
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {
@@ -86,15 +91,19 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (creden
 }
 
 // NewAzureCliTokenSource returns [oauth2.TokenSource] for a passwordless authentication via Azure CLI (`az login`)
-func NewAzureCliTokenSource(resource string) oauth2.TokenSource {
+func NewAzureCliTokenSource(ctx context.Context, resource, azureTenantId string) oauth2.TokenSource {
 	return &azureCliTokenSource{
-		resource: resource,
+		ctx:           ctx,
+		resource:      resource,
+		azureTenantId: azureTenantId,
 	}
 }
 
 type azureCliTokenSource struct {
+	ctx                 context.Context
 	resource            string
 	workspaceResourceId string
+	azureTenantId       string
 }
 
 type internalCliToken struct {
@@ -130,8 +139,12 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse expiry: %w", err)
 	}
-	logger.Infof(context.Background(), "Refreshed OAuth token for %s from Azure CLI, which expires on %s",
-		ts.resource, it.ExpiresOn)
+	tenantIdDebug := ""
+	if ts.azureTenantId != "" {
+		tenantIdDebug = fmt.Sprintf(" for tenant %s", ts.azureTenantId)
+	}
+	logger.Infof(context.Background(), "Refreshed OAuth token for %s%s from Azure CLI, which expires on %s",
+		ts.resource, tenantIdDebug, it.ExpiresOn)
 
 	var extra map[string]interface{}
 	err = json.Unmarshal(tokenBytes, &extra)
@@ -147,23 +160,24 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 }
 
 func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
-	subscription := ts.getSubscription()
 	args := []string{"account", "get-access-token", "--resource",
 		ts.resource, "--output", "json"}
-	if subscription != "" {
-		extendedArgs := make([]string, len(args))
-		copy(extendedArgs, args)
-		extendedArgs = append(extendedArgs, "--subscription", subscription)
+	if ts.azureTenantId != "" {
+		args = append(args, "--tenant", ts.azureTenantId)
+	}
+	subscription := ts.getSubscription()
+	if subscription != "" && ts.azureTenantId == "" {
 		// This will fail if the user has access to the workspace, but not to the subscription
 		// itself.
 		// In such case, we fall back to not using the subscription.
-		result, err := exec.Command("az", extendedArgs...).Output()
+		// This should only be attempted when the tenant ID is not known.
+		result, err := runCommand(ts.ctx, "az", append(args, "--subscription", subscription))
 		if err == nil {
 			return result, nil
 		}
-		logger.Warnf(context.Background(), "Failed to get token for subscription. Using resource only token.")
+		logger.Infof(ts.ctx, "Failed to get token for subscription. Using resource only token.")
 	}
-	result, err := exec.Command("az", args...).Output()
+	result, err := runCommand(ts.ctx, "az", args)
 	if ee, ok := err.(*exec.ExitError); ok {
 		return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
 	}

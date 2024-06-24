@@ -3,7 +3,9 @@ package config
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strings"
 
@@ -136,5 +138,34 @@ func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResol
 	}
 	c.Host = fmt.Sprintf("https://%s", workspaceMetadata.Properties.WorkspaceURL)
 	logger.Debugf(ctx, "Discovered workspace url: %s", c.Host)
+	return nil
+}
+
+// loadAzureTenantId fetches the Azure tenant ID from the Azure AD endpoint.
+// The tenant ID isn't directly exposed by any API today, but it can be inferred
+// from the URL that a user is redirected to after accessing /aad/auth (the
+// Azure Databricks login endpoint). Here, the redirect is not followed, but the
+// tenant ID is extracted from the URL.
+func (c *Config) loadAzureTenantId(ctx context.Context) error {
+	if !c.IsAzure() || c.AzureTenantID != "" || c.Host == "" {
+		return nil
+	}
+	req, err := http.NewRequestWithContext(ctx, "GET", c.CanonicalHostName()+"/aad/auth", nil)
+	if err != nil {
+		return err
+	}
+	res, err := c.azureTenantIdFetchClient.Do(req)
+	if err != nil && !errors.Is(err, http.ErrUseLastResponse) {
+		return err
+	}
+	location := res.Header.Get("Location")
+	parsedUrl, err := url.ParseRequestURI(location)
+	if err != nil {
+		return err
+	}
+	// Response URL is of the form https://login.microsoftonline.com/<tenantID>/oauth2/authorize?...
+	// or corresponding in other Azure clouds
+	splitPath := strings.SplitN(parsedUrl.Path, "/", 3)
+	c.AzureTenantID = splitPath[1]
 	return nil
 }
