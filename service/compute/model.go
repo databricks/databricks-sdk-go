@@ -2355,9 +2355,9 @@ type EditPolicyResponse struct {
 type EditResponse struct {
 }
 
-// The a environment entity used to preserve serverless environment side panel
-// and jobs' environment for non-notebook task. In this minimal environment
-// spec, only pip dependencies are supported. Next ID: 5
+// The environment entity used to preserve serverless environment side panel and
+// jobs' environment for non-notebook task. In this minimal environment spec,
+// only pip dependencies are supported.
 type Environment struct {
 	// Client version used by the environment The client is the user-facing
 	// environment of the runtime. Each client comes with a specific set of

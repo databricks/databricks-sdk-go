@@ -44,6 +44,11 @@ type LakeviewService interface {
 	// Get schedule subscription.
 	GetSubscription(ctx context.Context, request GetSubscriptionRequest) (*Subscription, error)
 
+	// List dashboards.
+	//
+	// Use ListAll() to get all Dashboard instances, which will iterate over every result page.
+	List(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error)
+
 	// List dashboard schedules.
 	//
 	// Use ListSchedulesAll() to get all Schedule instances, which will iterate over every result page.

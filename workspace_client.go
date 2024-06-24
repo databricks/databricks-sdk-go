@@ -44,6 +44,11 @@ type WorkspaceClient struct {
 	// notification destinations if the condition was met. Alerts can be
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Alerts sql.AlertsInterface
 
 	// Apps run directly on a customer’s Databricks instance, integrate with
@@ -196,6 +201,11 @@ type WorkspaceClient struct {
 	// warehouses in your workspace. We advise you to use any text editor, REST
 	// client, or `grep` to search the response from this API for the name of
 	// your SQL warehouse as it appears in Databricks SQL.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	DataSources sql.DataSourcesInterface
 
 	// DBFS API makes it simple to interact with various data sources without
@@ -215,6 +225,11 @@ type WorkspaceClient struct {
 	//
 	// - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
 	// permissions (superset of `CAN_RUN`)
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	DbsqlPermissions sql.DbsqlPermissionsInterface
 
 	// Experiments are the primary unit of organization in MLflow; all MLflow
@@ -581,6 +596,11 @@ type WorkspaceClient struct {
 	// description, tags, parameters, and visualizations. Queries can be
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Queries sql.QueriesInterface
 
 	// Access the history of queries through SQL warehouses.

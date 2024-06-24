@@ -99,6 +99,15 @@ func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscript
 	return &subscription, err
 }
 
+func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error) {
+	var listDashboardsResponse ListDashboardsResponse
+	path := "/api/2.0/lakeview/dashboards"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listDashboardsResponse)
+	return &listDashboardsResponse, err
+}
+
 func (a *lakeviewImpl) ListSchedules(ctx context.Context, request ListSchedulesRequest) (*ListSchedulesResponse, error) {
 	var listSchedulesResponse ListSchedulesResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules", request.DashboardId)
