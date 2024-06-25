@@ -119,6 +119,16 @@
         ],
         "type": "string"
       },
+      "TerraformCheck": {
+        "properties": {
+          "terraform": {
+            "x-databricks-terraform": {
+              "alias": "new_name"
+            }
+          }
+        },
+        "type": "object"
+      },
       "CommandStatusResponse": {
         "properties": {
           "id": {
