@@ -261,7 +261,7 @@ type Schema struct {
 	Properties       map[string]*Schema `json:"properties,omitempty"`
 	ArrayValue       *Schema            `json:"items,omitempty"`
 	MapValue         *Schema            `json:"additionalProperties,omitempty"`
-	Terraform        Terraform          `json:"x-databricks-terraform,omitempty"`
+	Terraform        *Terraform         `json:"x-databricks-terraform,omitempty"`
 }
 
 type Terraform struct {

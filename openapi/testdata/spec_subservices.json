@@ -122,6 +122,7 @@
       "TerraformCheck": {
         "properties": {
           "terraform": {
+            "$ref": "#/components/schemas/CommandStatus",
             "x-databricks-terraform": {
               "alias": "new_name"
             }
