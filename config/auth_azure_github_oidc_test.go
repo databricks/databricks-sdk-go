@@ -174,7 +174,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 						},
 						Response: `{"value": "id-token-42"}`,
 					},
-					"POST /test-tenant-id": {
+					"POST /test-tenant-id/oauth2/token": {
 						Status: http.StatusInternalServerError,
 						ExpectedHeaders: map[string]string{
 							"Accept":       "application/json",
@@ -216,7 +216,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 						},
 						Response: `{"value": "id-token-42"}`,
 					},
-					"POST /test-tenant-id": {
+					"POST /test-tenant-id/oauth2/token": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Accept":       "application/json",
@@ -261,7 +261,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 						},
 						Response: `{"value": "id-token-42"}`,
 					},
-					"POST /test-tenant-id": {
+					"POST /test-tenant-id/oauth2/token": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Accept":       "application/json",
