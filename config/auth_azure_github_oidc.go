@@ -61,7 +61,7 @@ func requestIDToken(ctx context.Context, cfg *Config) (string, error) {
 	resp := struct { // anonymous struct to parse the response
 		Value string `json:"value"`
 	}{}
-	err := cfg.refreshClient.Do(ctx, "GET", tokenRequestURL,
+	err := cfg.refreshClient.Do(ctx, "GET", fmt.Sprintf("%s&audience=api://AzureADTokenExchange", tokenRequestURL),
 		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", token)),
 		httpclient.WithResponseUnmarshal(&resp),
 	)
