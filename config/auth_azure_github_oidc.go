@@ -39,7 +39,7 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 	ts := &azureOIDCTokenSource{
 		aadEndpoint:   fmt.Sprintf("%s%s", cfg.Environment().AzureActiveDirectoryEndpoint(), cfg.AzureTenantID),
 		clientID:      cfg.AzureClientID,
-		applicationID: cfg.DatabricksEnvironment.AzureApplicationID,
+		applicationID: cfg.Environment().AzureApplicationID,
 		idToken:       idToken,
 		httpClient:    cfg.refreshClient,
 	}
