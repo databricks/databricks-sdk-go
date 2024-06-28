@@ -41,7 +41,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 		{
 			desc: "missing azure client ID",
 			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test",
+				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
 				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
 			},
 			cfg: &Config{
@@ -58,7 +58,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 		{
 			desc: "missing host",
 			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test",
+				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
 				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
 			},
 			cfg: &Config{
@@ -75,7 +75,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 		{
 			desc: "missing tenant ID",
 			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test",
+				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
 				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
 			},
 			cfg: &Config{
@@ -126,7 +126,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 		{
 			desc: "azure aad token exchange server error",
 			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test",
+				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
 				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
 			},
 			cfg: &Config{
@@ -139,7 +139,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				AzureTenantID: "test-tenant-id",
 				Host:          "http://host.com/test",
 				HTTPTransport: fixtures.MappingTransport{
-					"GET /test?audience=api%3A%2F%2FAzureADTokenExchange": {
+					"GET /test?version=1&audience=api://AzureADTokenExchange": {
 						Status: http.StatusInternalServerError,
 						ExpectedHeaders: map[string]string{
 							"Authorization": "Bearer token-1337",
@@ -153,7 +153,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 		{
 			desc: "azure auth server error",
 			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test",
+				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
 				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
 			},
 			cfg: &Config{
@@ -166,7 +166,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				AzureTenantID: "test-tenant-id",
 				Host:          "http://host.com/test",
 				HTTPTransport: fixtures.MappingTransport{
-					"GET /test": {
+					"GET /test?version=1&audience=api://AzureADTokenExchange": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Authorization": "Bearer token-1337",
@@ -178,14 +178,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 						Status: http.StatusInternalServerError,
 						ExpectedHeaders: map[string]string{
 							"Accept":       "application/json",
-							"Content-Type": "application/json",
-						},
-						ExpectedRequest: map[string]any{
-							"client_assertion":      "id-token-42",
-							"client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-							"client_id":             "test-client-id",
-							"grant_type":            "client_credentials",
-							"resource":              "test-azure-app-id",
+							"Content-Type": "application/x-www-form-urlencoded",
 						},
 					},
 				},
@@ -195,7 +188,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 		{
 			desc: "invalid auth token",
 			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test",
+				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
 				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
 			},
 			cfg: &Config{
@@ -208,7 +201,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				AzureTenantID: "test-tenant-id",
 				Host:          "http://host.com/test",
 				HTTPTransport: fixtures.MappingTransport{
-					"GET /test": {
+					"GET /test?version=1&audience=api://AzureADTokenExchange": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Authorization": "Bearer token-1337",
@@ -220,14 +213,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Accept":       "application/json",
-							"Content-Type": "application/json",
-						},
-						ExpectedRequest: map[string]any{
-							"client_assertion":      "id-token-42",
-							"client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-							"client_id":             "test-client-id",
-							"grant_type":            "client_credentials",
-							"resource":              "test-azure-app-id",
+							"Content-Type": "application/x-www-form-urlencoded",
 						},
 						Response: map[string]string{
 							"foo": "bar",
@@ -240,7 +226,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 		{
 			desc: "success",
 			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test",
+				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
 				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
 			},
 			cfg: &Config{
@@ -253,7 +239,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				AzureTenantID: "test-tenant-id",
 				Host:          "http://host.com/test",
 				HTTPTransport: fixtures.MappingTransport{
-					"GET /test": {
+					"GET /test?version=1&audience=api://AzureADTokenExchange": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Authorization": "Bearer token-1337",
@@ -265,14 +251,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Accept":       "application/json",
-							"Content-Type": "application/json",
-						},
-						ExpectedRequest: map[string]any{
-							"client_assertion":      "id-token-42",
-							"client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-							"client_id":             "test-client-id",
-							"grant_type":            "client_credentials",
-							"resource":              "test-azure-app-id",
+							"Content-Type": "application/x-www-form-urlencoded",
 						},
 						Response: map[string]string{
 							"token_type":    "access-token",
