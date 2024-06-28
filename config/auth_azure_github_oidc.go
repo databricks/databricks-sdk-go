@@ -96,7 +96,7 @@ func (ts *azureOIDCTokenSource) Token() (*oauth2.Token, error) {
 		ExpiresOn    json.Number `json:"expires_on"`
 	}{}
 	err := ts.httpClient.Do(ctx, "POST", ts.aadEndpoint,
-		httpclient.WithRequestData(map[string]string{
+		httpclient.WithUrlEncodedData(map[string]string{
 			"grant_type": "client_credentials",
 			"resource":   ts.applicationID,
 			"client_id":  ts.clientID,
