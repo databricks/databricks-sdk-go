@@ -166,7 +166,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				AzureTenantID: "test-tenant-id",
 				Host:          "http://host.com/test",
 				HTTPTransport: fixtures.MappingTransport{
-					"GET /test?audience=api%3A%2F%2FAzureADTokenExchange": {
+					"GET /test": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Authorization": "Bearer token-1337",
@@ -208,7 +208,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				AzureTenantID: "test-tenant-id",
 				Host:          "http://host.com/test",
 				HTTPTransport: fixtures.MappingTransport{
-					"GET /test?audience=api%3A%2F%2FAzureADTokenExchange": {
+					"GET /test": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Authorization": "Bearer token-1337",
@@ -253,7 +253,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				AzureTenantID: "test-tenant-id",
 				Host:          "http://host.com/test",
 				HTTPTransport: fixtures.MappingTransport{
-					"GET /test?audience=api%3A%2F%2FAzureADTokenExchange": {
+					"GET /test": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Authorization": "Bearer token-1337",

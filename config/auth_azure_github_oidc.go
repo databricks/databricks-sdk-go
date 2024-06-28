@@ -37,7 +37,7 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 	}
 
 	ts := &azureOIDCTokenSource{
-		aadEndpoint:   fmt.Sprintf("%s%s", cfg.DatabricksEnvironment.AzureActiveDirectoryEndpoint(), cfg.AzureTenantID),
+		aadEndpoint:   fmt.Sprintf("%s%s", cfg.Environment().AzureActiveDirectoryEndpoint(), cfg.AzureTenantID),
 		clientID:      cfg.AzureClientID,
 		applicationID: cfg.DatabricksEnvironment.AzureApplicationID,
 		idToken:       idToken,
@@ -64,15 +64,9 @@ func requestIDToken(ctx context.Context, cfg *Config) (string, error) {
 	err := cfg.refreshClient.Do(ctx, "GET", tokenRequestURL,
 		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", token)),
 		httpclient.WithResponseUnmarshal(&resp),
-		httpclient.WithRequestData(map[string]string{
-			// The audience parameter defaults to api://AzureADTokenExchange
-			// and is thus optional. It is added nonetheless so that the intent
-			// is explicit.
-			"audience": "api://AzureADTokenExchange",
-		}),
 	)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to request ID token from %s: %w", tokenRequestURL, err)
 	}
 
 	return resp.Value, nil
