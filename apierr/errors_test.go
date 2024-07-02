@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetAPIError_HandlesEmptyResponse(t *testing.T) {
+func TestGetAPIError_handlesEmptyResponse(t *testing.T) {
 	resp := common.ResponseWrapper{
 		Response: &http.Response{
 			Request: &http.Request{
@@ -32,7 +32,7 @@ func TestGetAPIError_HandlesEmptyResponse(t *testing.T) {
 	assert.Equal(t, err.(*APIError).Message, "")
 }
 
-func TestGetAPIError_AppliesOverrides(t *testing.T) {
+func TestGetAPIError_appliesOverrides(t *testing.T) {
 	resp := common.ResponseWrapper{
 		Response: &http.Response{
 			StatusCode: http.StatusBadRequest,
@@ -52,7 +52,7 @@ func TestGetAPIError_AppliesOverrides(t *testing.T) {
 	assert.ErrorIs(t, err, ErrResourceDoesNotExist)
 }
 
-func TestGetAPIError_ParseIntErrorCode(t *testing.T) {
+func TestGetAPIError_parseIntErrorCode(t *testing.T) {
 	resp := common.ResponseWrapper{
 		Response: &http.Response{
 			StatusCode: http.StatusBadRequest,
@@ -73,7 +73,7 @@ func TestGetAPIError_ParseIntErrorCode(t *testing.T) {
 	assert.Equal(t, err.(*APIError).ErrorCode, "500")
 }
 
-func TestGetAPIError_MapsPrivateLinkRedirect(t *testing.T) {
+func TestGetAPIError_mapsPrivateLinkRedirect(t *testing.T) {
 	resp := common.ResponseWrapper{
 		Response: &http.Response{
 			Request: &http.Request{
@@ -92,7 +92,7 @@ func TestGetAPIError_MapsPrivateLinkRedirect(t *testing.T) {
 	assert.Equal(t, err.(*APIError).ErrorCode, "PRIVATE_LINK_VALIDATION_ERROR")
 }
 
-func TestAPIError_TransientRegexMatches(t *testing.T) {
+func TestAPIError_transientRegexMatches(t *testing.T) {
 	err := APIError{
 		Message: "worker env WorkerEnvId(workerenv-XXXXX) not found",
 	}

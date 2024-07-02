@@ -162,11 +162,10 @@ func parseErrorFromResponse(resp *http.Response, requestBody, responseBody []byt
 
 	// Anonymous struct used to unmarshal JSON Databricks API error responses.
 	var errorBody struct {
-		ErrorCode any           `json:"error_code,omitempty"` // int or string
-		Message   string        `json:"message,omitempty"`
-		Details   []ErrorDetail `json:"details,omitempty"`
-
-		API12Error string `json:"error,omitempty"`
+		ErrorCode  any           `json:"error_code,omitempty"` // int or string
+		Message    string        `json:"message,omitempty"`
+		Details    []ErrorDetail `json:"details,omitempty"`
+		API12Error string        `json:"error,omitempty"`
 
 		// The following fields are for scim api only. See RFC7644 section 3.7.3
 		// https://tools.ietf.org/html/rfc7644#section-3.7.3
@@ -209,7 +208,7 @@ func unknownAPIError(resp *http.Response, requestBody, responseBody []byte, err 
 		StatusCode: resp.StatusCode,
 	}
 
-	// This is most likely HTML... since un-marshalling JSON failed
+	// this is most likely HTML... since un-marshalling JSON failed
 	// Status parts first in case html message is not as expected
 	statusParts := strings.SplitN(resp.Status, " ", 2)
 	if len(statusParts) < 2 {
