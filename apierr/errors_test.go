@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetAPIErrorHandlesEmptyResponse(t *testing.T) {
+func TestGetAPIError_HandlesEmptyResponse(t *testing.T) {
 	resp := common.ResponseWrapper{
 		Response: &http.Response{
 			Request: &http.Request{
@@ -26,11 +26,13 @@ func TestGetAPIErrorHandlesEmptyResponse(t *testing.T) {
 		DebugBytes: []byte{},
 		ReadCloser: io.NopCloser(bytes.NewReader([]byte{})),
 	}
+
 	err := GetAPIError(context.Background(), resp)
+
 	assert.Equal(t, err.(*APIError).Message, "")
 }
 
-func TestGetAPIErrorAppliesOverrides(t *testing.T) {
+func TestGetAPIError_AppliesOverrides(t *testing.T) {
 	resp := common.ResponseWrapper{
 		Response: &http.Response{
 			StatusCode: http.StatusBadRequest,
@@ -44,20 +46,34 @@ func TestGetAPIErrorAppliesOverrides(t *testing.T) {
 		DebugBytes: []byte{},
 		ReadCloser: io.NopCloser(bytes.NewReader([]byte(`{"error_code": "INVALID_PARAMETER_VALUE", "message": "Cluster abc does not exist"}`))),
 	}
-	ctx := context.Background()
-	err := GetAPIError(ctx, resp)
+
+	err := GetAPIError(context.Background(), resp)
+
 	assert.ErrorIs(t, err, ErrResourceDoesNotExist)
 }
 
-func TestApiErrorTransientRegexMatches(t *testing.T) {
-	err := APIError{
-		Message: "worker env WorkerEnvId(workerenv-XXXXX) not found",
+func TestGetAPIError_ParseIntErrorCode(t *testing.T) {
+	resp := common.ResponseWrapper{
+		Response: &http.Response{
+			StatusCode: http.StatusBadRequest,
+			Request: &http.Request{
+				Method: "GET",
+				URL: &url.URL{
+					Path: "/api/2.0/clusters/get",
+				},
+			},
+		},
+		DebugBytes: []byte{},
+		ReadCloser: io.NopCloser(bytes.NewReader([]byte(`{"error_code": 500, "status_code": 400, "message": "Cluster abc does not exist"}`))),
 	}
-	ctx := context.Background()
-	assert.True(t, err.IsRetriable(ctx))
+
+	err := GetAPIError(context.Background(), resp)
+
+	assert.ErrorIs(t, err, ErrBadRequest)
+	assert.Equal(t, err.(*APIError).ErrorCode, "500")
 }
 
-func TestApiErrorMapsPrivateLinkRedirect(t *testing.T) {
+func TestGetAPIError_MapsPrivateLinkRedirect(t *testing.T) {
 	resp := common.ResponseWrapper{
 		Response: &http.Response{
 			Request: &http.Request{
@@ -69,7 +85,17 @@ func TestApiErrorMapsPrivateLinkRedirect(t *testing.T) {
 			},
 		},
 	}
+
 	err := GetAPIError(context.Background(), resp)
+
 	assert.ErrorIs(t, err, ErrPermissionDenied)
 	assert.Equal(t, err.(*APIError).ErrorCode, "PRIVATE_LINK_VALIDATION_ERROR")
+}
+
+func TestAPIError_TransientRegexMatches(t *testing.T) {
+	err := APIError{
+		Message: "worker env WorkerEnvId(workerenv-XXXXX) not found",
+	}
+
+	assert.True(t, err.IsRetriable(context.Background()))
 }
