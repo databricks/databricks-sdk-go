@@ -24,7 +24,6 @@ func hasPrefix(err error, prefix string) bool {
 func TestAzureGithubOIDCCredentials(t *testing.T) {
 	testCases := []struct {
 		desc         string
-		envs         map[string]string
 		cfg          *Config
 		wantHeaders  map[string]string
 		wantErrPefix *string
@@ -40,104 +39,92 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 		},
 		{
 			desc: "missing azure client ID",
-			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
-				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
-			},
 			cfg: &Config{
 				DatabricksEnvironment: &environment.DatabricksEnvironment{
 					Cloud:              environment.CloudAzure,
 					AzureApplicationID: "test-azure-app-id",
 					AzureEnvironment:   &environment.AzurePublicCloud,
 				},
-				Host:          "http://host.com/test",
-				AzureTenantID: "test-tenant-id",
+				Host:                       "http://host.com/test",
+				AzureTenantID:              "test-tenant-id",
+				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
+				ActionsIDTokenRequestToken: "token-1337",
 			},
 			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing host",
-			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
-				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
-			},
 			cfg: &Config{
 				DatabricksEnvironment: &environment.DatabricksEnvironment{
 					Cloud:              environment.CloudAzure,
 					AzureApplicationID: "test-azure-app-id",
 					AzureEnvironment:   &environment.AzurePublicCloud,
 				},
-				AzureClientID: "test-client-id",
-				AzureTenantID: "test-tenant-id",
+				AzureClientID:              "test-client-id",
+				AzureTenantID:              "test-tenant-id",
+				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
+				ActionsIDTokenRequestToken: "token-1337",
 			},
 			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing tenant ID",
-			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
-				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
-			},
 			cfg: &Config{
 				DatabricksEnvironment: &environment.DatabricksEnvironment{
 					Cloud:              environment.CloudAzure,
 					AzureApplicationID: "test-azure-app-id",
 					AzureEnvironment:   &environment.AzurePublicCloud,
 				},
-				Host:          "http://host.com/test",
-				AzureClientID: "test-client-id",
+				Host:                       "http://host.com/test",
+				AzureClientID:              "test-client-id",
+				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
+				ActionsIDTokenRequestToken: "token-1337",
 			},
 			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing env ACTIONS_ID_TOKEN_REQUEST_TOKEN",
-			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL": "url",
-			},
 			cfg: &Config{
 				DatabricksEnvironment: &environment.DatabricksEnvironment{
 					Cloud:              environment.CloudAzure,
 					AzureApplicationID: "test-azure-app-id",
 					AzureEnvironment:   &environment.AzurePublicCloud,
 				},
-				AzureClientID: "test-client-id",
-				AzureTenantID: "test-tenant-id",
-				Host:          "http://host.com/test",
+				AzureClientID:            "test-client-id",
+				AzureTenantID:            "test-tenant-id",
+				Host:                     "http://host.com/test",
+				ActionsIDTokenRequestURL: "http://endpoint.com/test?version=1",
 			},
 			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing env ACTIONS_ID_TOKEN_REQUEST_URL",
-			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token",
-			},
 			cfg: &Config{
 				DatabricksEnvironment: &environment.DatabricksEnvironment{
 					Cloud:              environment.CloudAzure,
 					AzureApplicationID: "test-azure-app-id",
 					AzureEnvironment:   &environment.AzurePublicCloud,
 				},
-				AzureClientID: "test-client-id",
-				AzureTenantID: "test-tenant-id",
-				Host:          "http://host.com/test",
+				AzureClientID:              "test-client-id",
+				AzureTenantID:              "test-tenant-id",
+				Host:                       "http://host.com/test",
+				ActionsIDTokenRequestToken: "token-1337",
 			},
 			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "azure aad token exchange server error",
-			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
-				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
-			},
 			cfg: &Config{
 				DatabricksEnvironment: &environment.DatabricksEnvironment{
 					Cloud:              environment.CloudAzure,
 					AzureApplicationID: "test-azure-app-id",
 					AzureEnvironment:   &environment.AzurePublicCloud,
 				},
-				AzureClientID: "test-client-id",
-				AzureTenantID: "test-tenant-id",
-				Host:          "http://host.com/test",
+				AzureClientID:              "test-client-id",
+				AzureTenantID:              "test-tenant-id",
+				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
+				ActionsIDTokenRequestToken: "token-1337",
+				Host:                       "http://host.com/test",
 				HTTPTransport: fixtures.MappingTransport{
 					"GET /test?version=1&audience=api://AzureADTokenExchange": {
 						Status: http.StatusInternalServerError,
@@ -152,19 +139,17 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 		},
 		{
 			desc: "azure auth server error",
-			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
-				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
-			},
 			cfg: &Config{
 				DatabricksEnvironment: &environment.DatabricksEnvironment{
 					Cloud:              environment.CloudAzure,
 					AzureApplicationID: "test-azure-app-id",
 					AzureEnvironment:   &environment.AzurePublicCloud,
 				},
-				AzureClientID: "test-client-id",
-				AzureTenantID: "test-tenant-id",
-				Host:          "http://host.com/test",
+				AzureClientID:              "test-client-id",
+				AzureTenantID:              "test-tenant-id",
+				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
+				ActionsIDTokenRequestToken: "token-1337",
+				Host:                       "http://host.com/test",
 				HTTPTransport: fixtures.MappingTransport{
 					"GET /test?version=1&audience=api://AzureADTokenExchange": {
 						Status: http.StatusOK,
@@ -187,19 +172,17 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 		},
 		{
 			desc: "invalid auth token",
-			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
-				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
-			},
 			cfg: &Config{
 				DatabricksEnvironment: &environment.DatabricksEnvironment{
 					Cloud:              environment.CloudAzure,
 					AzureApplicationID: "test-azure-app-id",
 					AzureEnvironment:   &environment.AzurePublicCloud,
 				},
-				AzureClientID: "test-client-id",
-				AzureTenantID: "test-tenant-id",
-				Host:          "http://host.com/test",
+				AzureClientID:              "test-client-id",
+				AzureTenantID:              "test-tenant-id",
+				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
+				ActionsIDTokenRequestToken: "token-1337",
+				Host:                       "http://host.com/test",
 				HTTPTransport: fixtures.MappingTransport{
 					"GET /test?version=1&audience=api://AzureADTokenExchange": {
 						Status: http.StatusOK,
@@ -225,19 +208,17 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 		},
 		{
 			desc: "success",
-			envs: map[string]string{
-				"ACTIONS_ID_TOKEN_REQUEST_URL":   "http://endpoint.com/test?version=1",
-				"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "token-1337",
-			},
 			cfg: &Config{
 				DatabricksEnvironment: &environment.DatabricksEnvironment{
 					Cloud:              environment.CloudAzure,
 					AzureApplicationID: "test-azure-app-id",
 					AzureEnvironment:   &environment.AzurePublicCloud,
 				},
-				AzureClientID: "test-client-id",
-				AzureTenantID: "test-tenant-id",
-				Host:          "http://host.com/test",
+				AzureClientID:              "test-client-id",
+				AzureTenantID:              "test-tenant-id",
+				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
+				ActionsIDTokenRequestToken: "token-1337",
+				Host:                       "http://host.com/test",
 				HTTPTransport: fixtures.MappingTransport{
 					"GET /test?version=1&audience=api://AzureADTokenExchange": {
 						Status: http.StatusOK,
@@ -270,9 +251,6 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			for k, v := range tc.envs {
-				t.Setenv(k, v)
-			}
 			tc.cfg.Credentials = &AzureGithubOIDCCredentials{} // only test this credential strategy
 			tc.cfg.DebugHeaders = true
 			if tc.wantHeaders == nil {

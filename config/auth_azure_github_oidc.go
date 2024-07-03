@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/credentials"
@@ -49,24 +48,19 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 
 // requestIDToken requests an ID token from the Github Action.
 func requestIDToken(ctx context.Context, cfg *Config) (string, error) {
-	tokenRequestURL := os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
-	if tokenRequestURL == "" {
-		return "", nil
-	}
-	token := os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
-	if token == "" {
+	if cfg.ActionsIDTokenRequestURL == "" || cfg.ActionsIDTokenRequestToken == "" {
 		return "", nil
 	}
 
 	resp := struct { // anonymous struct to parse the response
 		Value string `json:"value"`
 	}{}
-	err := cfg.refreshClient.Do(ctx, "GET", fmt.Sprintf("%s&audience=api://AzureADTokenExchange", tokenRequestURL),
-		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", token)),
+	err := cfg.refreshClient.Do(ctx, "GET", fmt.Sprintf("%s&audience=api://AzureADTokenExchange", cfg.ActionsIDTokenRequestURL),
+		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", cfg.ActionsIDTokenRequestToken)),
 		httpclient.WithResponseUnmarshal(&resp),
 	)
 	if err != nil {
-		return "", fmt.Errorf("failed to request ID token from %s: %w", tokenRequestURL, err)
+		return "", fmt.Errorf("failed to request ID token from %s: %w", cfg.ActionsIDTokenRequestURL, err)
 	}
 
 	return resp.Value, nil
