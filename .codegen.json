@@ -1,5 +1,6 @@
 {
   "formatter": "go fmt ./... && go run golang.org/x/tools/cmd/goimports@latest -w $FILENAMES",
+  "changelog_config": ".codegen/changelog_config.yml",
   "packages": {
     ".codegen/api.go.tmpl": "service/{{.Name}}/api.go",
     ".codegen/impl.go.tmpl": "service/{{.Name}}/impl.go",
