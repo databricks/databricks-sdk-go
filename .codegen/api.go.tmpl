@@ -114,6 +114,7 @@ controlPlane *{{.ControlPlaneService.PascalName}}API,
 		impl: &{{.CamelName}}Impl{
 			client: client,
 			{{- if .IsDataPlane}}
+			DataPlaneService: oauth2.NewDataPlaneService(),
 			controlPlane: controlPlane,
 			{{end}}
 		},

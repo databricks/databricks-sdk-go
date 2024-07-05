@@ -48,7 +48,10 @@ func TestTokenNotCached(t *testing.T) {
 		},
 		err: nil,
 	}
-	c := DataPlaneHelper{}
+	c := dataPlaneServiceImpl{
+		infos:  make(map[string]*DataPlaneInfo),
+		tokens: make(map[string]*oauth2.Token),
+	}
 	url, token, err := c.GetDataPlaneDetails("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
 	assert.NoError(t, err)
 	assert.Equal(t, "url", url)
@@ -75,7 +78,7 @@ func TestTokenCached(t *testing.T) {
 		},
 		err: nil,
 	}
-	c := DataPlaneHelper{}
+	c := dataPlaneServiceImpl{}
 	c.infos = make(map[string]*DataPlaneInfo)
 	c.tokens = make(map[string]*oauth2.Token)
 	c.infos["method/params"] = info.info
@@ -112,7 +115,7 @@ func TestTokenExpired(t *testing.T) {
 		},
 		err: nil,
 	}
-	c := DataPlaneHelper{}
+	c := dataPlaneServiceImpl{}
 	c.infos = make(map[string]*DataPlaneInfo)
 	c.tokens = make(map[string]*oauth2.Token)
 	c.infos["method/params"] = info.info
@@ -133,7 +136,10 @@ func TestTokenInfoError(t *testing.T) {
 		err:  assert.AnError,
 	}
 	s := tokenRefreshSpy{}
-	c := DataPlaneHelper{}
+	c := dataPlaneServiceImpl{
+		infos:  make(map[string]*DataPlaneInfo),
+		tokens: make(map[string]*oauth2.Token),
+	}
 	url, token, err := c.GetDataPlaneDetails("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
 	assert.ErrorIs(t, err, assert.AnError)
 	assert.Empty(t, url)
@@ -154,7 +160,10 @@ func TestTokenRefreshError(t *testing.T) {
 		token: nil,
 		err:   assert.AnError,
 	}
-	c := DataPlaneHelper{}
+	c := dataPlaneServiceImpl{
+		infos:  make(map[string]*DataPlaneInfo),
+		tokens: make(map[string]*oauth2.Token),
+	}
 	url, token, err := c.GetDataPlaneDetails("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
 	assert.ErrorIs(t, err, assert.AnError)
 	assert.Empty(t, url)

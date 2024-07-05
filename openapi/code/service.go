@@ -46,6 +46,9 @@ func (svc *Service) DataPlaneInfoMethod() *Method {
 	for _, m := range svc.methods {
 		if m.DataPlane != nil {
 			methodName = m.DataPlane.ConfigMethod
+			if methodName == "" {
+				panic(fmt.Errorf("DataPlane config for method %q does not have a ConfigMethod", m.Name))
+			}
 		}
 	}
 	return svc.ControlPlaneService.methods[methodName]

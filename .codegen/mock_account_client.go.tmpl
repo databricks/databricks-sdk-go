@@ -40,7 +40,7 @@ func NewMockAccountClient(t interface {
 	return cli
 }
 
-{{range .Services}}{{if and (.IsAccounts) (.HasParent) }}
+{{range .Services}}{{if and .IsAccounts .HasParent }}
 func(m *MockAccountClient) GetMock{{.PascalName}}API() *{{ template "mock-interface-name" . }} {
 	api, ok := m.GetMock{{.ParentService.PascalName}}API().{{.PascalName}}().(*{{ template "mock-interface-name" . }})
 	if !ok {

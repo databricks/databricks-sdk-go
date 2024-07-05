@@ -11,6 +11,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -1135,8 +1136,9 @@ func NewServingEndpointsDataPlane(client *client.DatabricksClient,
 ) *ServingEndpointsDataPlaneAPI {
 	return &ServingEndpointsDataPlaneAPI{
 		impl: &servingEndpointsDataPlaneImpl{
-			client:       client,
-			controlPlane: controlPlane,
+			client:           client,
+			DataPlaneService: oauth2.NewDataPlaneService(),
+			controlPlane:     controlPlane,
 		},
 	}
 }

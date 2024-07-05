@@ -282,7 +282,7 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 
 // unexported type that holds implementations of just ServingEndpointsDataPlane API methods
 type servingEndpointsDataPlaneImpl struct {
-	oauth2.DataPlaneHelper
+	oauth2.DataPlaneService
 	controlPlane *ServingEndpointsAPI
 	client       *client.DatabricksClient
 }
