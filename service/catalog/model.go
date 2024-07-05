@@ -745,11 +745,6 @@ func (s CreateConnection) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CreateEndpointRequest struct {
-	// Endpoint
-	Endpoint *Endpoint `json:"endpoint,omitempty"`
-}
-
 type CreateExternalLocation struct {
 	// The AWS access point to use when accesing s3 for this external location.
 	AccessPoint string `json:"access_point,omitempty"`
@@ -1378,11 +1373,6 @@ type DeleteConnectionRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// Delete an Endpoint
-type DeleteEndpointRequest struct {
-	Name string `json:"-" url:"-"`
-}
-
 // Delete an external location
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
@@ -1694,56 +1684,6 @@ type EnableResponse struct {
 type EncryptionDetails struct {
 	// Server-Side Encryption properties for clients communicating with AWS s3.
 	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
-}
-
-// Endpoint
-type Endpoint struct {
-	Name string `json:"name,omitempty"`
-
-	Status EndpointState `json:"status,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *Endpoint) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s Endpoint) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type EndpointState string
-
-const EndpointStateEndpointDeleting EndpointState = `ENDPOINT_DELETING`
-
-const EndpointStateEndpointFailed EndpointState = `ENDPOINT_FAILED`
-
-const EndpointStateEndpointOnline EndpointState = `ENDPOINT_ONLINE`
-
-const EndpointStateEndpointProvisioning EndpointState = `ENDPOINT_PROVISIONING`
-
-const EndpointStateEndpointStateUnspecified EndpointState = `ENDPOINT_STATE_UNSPECIFIED`
-
-// String representation for [fmt.Print]
-func (f *EndpointState) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *EndpointState) Set(v string) error {
-	switch v {
-	case `ENDPOINT_DELETING`, `ENDPOINT_FAILED`, `ENDPOINT_ONLINE`, `ENDPOINT_PROVISIONING`, `ENDPOINT_STATE_UNSPECIFIED`:
-		*f = EndpointState(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ENDPOINT_DELETING", "ENDPOINT_FAILED", "ENDPOINT_ONLINE", "ENDPOINT_PROVISIONING", "ENDPOINT_STATE_UNSPECIFIED"`, v)
-	}
-}
-
-// Type always returns EndpointState to satisfy [pflag.Value] interface
-func (f *EndpointState) Type() string {
-	return "EndpointState"
 }
 
 // Get boolean reflecting if table exists
@@ -2219,11 +2159,6 @@ func (s *GetEffectiveRequest) UnmarshalJSON(b []byte) error {
 
 func (s GetEffectiveRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-// Get an Endpoint
-type GetEndpointRequest struct {
-	Name string `json:"-" url:"-"`
 }
 
 // Get an external location
