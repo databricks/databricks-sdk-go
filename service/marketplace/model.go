@@ -637,9 +637,9 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 }
 
 type FileParent struct {
-	FileParentType FileParentType `json:"file_parent_type,omitempty" url:"file_parent_type,omitempty"`
+	FileParentType FileParentType `json:"file_parent_type,omitempty"`
 	// TODO make the following fields required
-	ParentId string `json:"parent_id,omitempty" url:"parent_id,omitempty"`
+	ParentId string `json:"parent_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
