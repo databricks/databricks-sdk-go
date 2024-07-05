@@ -23,10 +23,10 @@ func hasPrefix(err error, prefix string) bool {
 
 func TestAzureGithubOIDCCredentials(t *testing.T) {
 	testCases := []struct {
-		desc         string
-		cfg          *Config
-		wantHeaders  map[string]string
-		wantErrPefix *string
+		desc          string
+		cfg           *Config
+		wantHeaders   map[string]string
+		wantErrPrefix *string
 	}{
 		{
 			desc: "not an azure config",
@@ -35,7 +35,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 					Cloud: "foo-bar-cloud",
 				},
 			},
-			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
+			wantErrPrefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing azure client ID",
@@ -50,7 +50,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
 				ActionsIDTokenRequestToken: "token-1337",
 			},
-			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
+			wantErrPrefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing host",
@@ -65,7 +65,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
 				ActionsIDTokenRequestToken: "token-1337",
 			},
-			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
+			wantErrPrefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing tenant ID",
@@ -80,7 +80,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
 				ActionsIDTokenRequestToken: "token-1337",
 			},
-			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
+			wantErrPrefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing env ACTIONS_ID_TOKEN_REQUEST_TOKEN",
@@ -95,7 +95,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				Host:                     "http://host.com/test",
 				ActionsIDTokenRequestURL: "http://endpoint.com/test?version=1",
 			},
-			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
+			wantErrPrefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "missing env ACTIONS_ID_TOKEN_REQUEST_URL",
@@ -110,7 +110,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				Host:                       "http://host.com/test",
 				ActionsIDTokenRequestToken: "token-1337",
 			},
-			wantErrPefix: errPrefix("github-oidc-azure auth: not configured"),
+			wantErrPrefix: errPrefix("github-oidc-azure auth: not configured"),
 		},
 		{
 			desc: "azure aad token exchange server error",
@@ -135,7 +135,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 					},
 				},
 			},
-			wantErrPefix: errPrefix("github-oidc-azure"),
+			wantErrPrefix: errPrefix("github-oidc-azure"),
 		},
 		{
 			desc: "azure auth server error",
@@ -168,7 +168,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 					},
 				},
 			},
-			wantErrPefix: errPrefix("inner token: http 500"),
+			wantErrPrefix: errPrefix("inner token: http 500"),
 		},
 		{
 			desc: "invalid auth token",
@@ -204,7 +204,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 					},
 				},
 			},
-			wantErrPefix: errPrefix("inner token: invalid token"),
+			wantErrPrefix: errPrefix("inner token: invalid token"),
 		},
 		{
 			desc: "success",
@@ -264,11 +264,11 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 				gotHeaders[h] = req.Header.Get(h)
 			}
 
-			if tc.wantErrPefix == nil && gotErr != nil {
+			if tc.wantErrPrefix == nil && gotErr != nil {
 				t.Errorf("Authenticate(): got error %q, want none", gotErr)
 			}
-			if tc.wantErrPefix != nil && !hasPrefix(gotErr, *tc.wantErrPefix) {
-				t.Errorf("Authenticate(): got error %q, want error with prefix %q", gotErr, *tc.wantErrPefix)
+			if tc.wantErrPrefix != nil && !hasPrefix(gotErr, *tc.wantErrPrefix) {
+				t.Errorf("Authenticate(): got error %q, want error with prefix %q", gotErr, *tc.wantErrPrefix)
 			}
 			if diff := cmp.Diff(tc.wantHeaders, gotHeaders); diff != "" {
 				t.Errorf("Authenticate(): mismatch (-want +got):\n%s", diff)
