@@ -282,9 +282,9 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 
 // unexported type that holds implementations of just ServingEndpointsDataPlane API methods
 type servingEndpointsDataPlaneImpl struct {
-	oauth2.DataPlaneService
-	controlPlane *ServingEndpointsAPI
-	client       *client.DatabricksClient
+	dataPlaneService oauth2.DataPlaneService
+	controlPlane     *ServingEndpointsAPI
+	client           *client.DatabricksClient
 }
 
 func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
@@ -311,7 +311,7 @@ func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request Query
 	getParams := []string{
 		request.Name,
 	}
-	endpointUrl, dataPlaneToken, err := a.GetDataPlaneDetails("Query", getParams, refresh, infoGetter)
+	endpointUrl, dataPlaneToken, err := a.dataPlaneService.GetDataPlaneDetails("Query", getParams, refresh, infoGetter)
 	if err != nil {
 		return nil, err
 	}

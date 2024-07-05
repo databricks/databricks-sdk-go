@@ -1137,7 +1137,7 @@ func NewServingEndpointsDataPlane(client *client.DatabricksClient,
 	return &ServingEndpointsDataPlaneAPI{
 		impl: &servingEndpointsDataPlaneImpl{
 			client:           client,
-			DataPlaneService: oauth2.NewDataPlaneService(),
+			dataPlaneService: oauth2.NewDataPlaneService(),
 			controlPlane:     controlPlane,
 		},
 	}

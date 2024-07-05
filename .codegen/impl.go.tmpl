@@ -19,7 +19,7 @@ import (
 // unexported type that holds implementations of just {{.Name}} API methods
 type {{.CamelName}}Impl struct {
 	{{- if .IsDataPlane}}
-	oauth2.DataPlaneService
+	dataPlaneService oauth2.DataPlaneService
 	controlPlane *{{.ControlPlaneService.PascalName}}API
 	{{end -}}
 	client *client.DatabricksClient
@@ -55,7 +55,7 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 		request.{{.PascalName}},
 	{{end -}}
 	}
-	endpointUrl, dataPlaneToken, err := a.GetDataPlaneDetails("{{.PascalName}}", getParams, refresh, infoGetter) 
+	endpointUrl, dataPlaneToken, err := a.dataPlaneService.GetDataPlaneDetails("{{.PascalName}}", getParams, refresh, infoGetter) 
 	if err != nil {
 		return nil, err
 	}
