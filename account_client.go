@@ -289,6 +289,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &AccountClient{
 		Config: cfg,
 

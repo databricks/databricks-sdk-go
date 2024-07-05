@@ -180,6 +180,8 @@
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
+// - [serving.ServingEndpointsDataPlaneAPI]: Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving endpoints service.
+//
 // - [settings.SettingsAPI]: Workspace Settings API allows users to manage settings at the workspace level.
 //
 // - [settings.AccountSettingsAPI]: Accounts Settings API allows users to manage settings at the account level.
@@ -345,29 +347,29 @@ var (
 	_ *iam.ServicePrincipalsAPI                           = nil
 	_ *iam.AccountServicePrincipalsAPI                    = nil
 	_ *serving.ServingEndpointsAPI                        = nil
-
-	_ *settings.SettingsAPI                  = nil
-	_ *settings.AccountSettingsAPI           = nil
-	_ *sharing.SharesAPI                     = nil
-	_ *sql.StatementExecutionAPI             = nil
-	_ *provisioning.StorageAPI               = nil
-	_ *catalog.StorageCredentialsAPI         = nil
-	_ *catalog.AccountStorageCredentialsAPI  = nil
-	_ *catalog.SystemSchemasAPI              = nil
-	_ *catalog.TableConstraintsAPI           = nil
-	_ *catalog.TablesAPI                     = nil
-	_ *settings.TokenManagementAPI           = nil
-	_ *settings.TokensAPI                    = nil
-	_ *iam.UsersAPI                          = nil
-	_ *iam.AccountUsersAPI                   = nil
-	_ *vectorsearch.VectorSearchEndpointsAPI = nil
-	_ *vectorsearch.VectorSearchIndexesAPI   = nil
-	_ *catalog.VolumesAPI                    = nil
-	_ *provisioning.VpcEndpointsAPI          = nil
-	_ *sql.WarehousesAPI                     = nil
-	_ *workspace.WorkspaceAPI                = nil
-	_ *iam.WorkspaceAssignmentAPI            = nil
-	_ *catalog.WorkspaceBindingsAPI          = nil
-	_ *settings.WorkspaceConfAPI             = nil
-	_ *provisioning.WorkspacesAPI            = nil
+	_ *serving.ServingEndpointsDataPlaneAPI               = nil
+	_ *settings.SettingsAPI                               = nil
+	_ *settings.AccountSettingsAPI                        = nil
+	_ *sharing.SharesAPI                                  = nil
+	_ *sql.StatementExecutionAPI                          = nil
+	_ *provisioning.StorageAPI                            = nil
+	_ *catalog.StorageCredentialsAPI                      = nil
+	_ *catalog.AccountStorageCredentialsAPI               = nil
+	_ *catalog.SystemSchemasAPI                           = nil
+	_ *catalog.TableConstraintsAPI                        = nil
+	_ *catalog.TablesAPI                                  = nil
+	_ *settings.TokenManagementAPI                        = nil
+	_ *settings.TokensAPI                                 = nil
+	_ *iam.UsersAPI                                       = nil
+	_ *iam.AccountUsersAPI                                = nil
+	_ *vectorsearch.VectorSearchEndpointsAPI              = nil
+	_ *vectorsearch.VectorSearchIndexesAPI                = nil
+	_ *catalog.VolumesAPI                                 = nil
+	_ *provisioning.VpcEndpointsAPI                       = nil
+	_ *sql.WarehousesAPI                                  = nil
+	_ *workspace.WorkspaceAPI                             = nil
+	_ *iam.WorkspaceAssignmentAPI                         = nil
+	_ *catalog.WorkspaceBindingsAPI                       = nil
+	_ *settings.WorkspaceConfAPI                          = nil
+	_ *provisioning.WorkspacesAPI                         = nil
 )

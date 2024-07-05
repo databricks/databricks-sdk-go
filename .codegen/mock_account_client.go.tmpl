@@ -22,12 +22,12 @@ func NewMockAccountClient(t interface {
 	cli := &MockAccountClient {
 		AccountClient: &databricks.AccountClient{
 			Config: nil,
-			{{range .Services}}{{if and .IsAccounts (not .HasParent) (not .IsDataPlane)}}
+			{{range .Services}}{{if and .IsAccounts (not .HasParent) }}
 			{{(.TrimPrefix "account").PascalName}}: {{ template "mock-interface-constructor" . }}(t),
 			{{- end}}{{end}}
 		},
 	}
-	{{range .ServicesSortedByParent}} {{if and .IsAccounts (not .IsDataPlane)}}
+	{{range .ServicesSortedByParent}} {{if and .IsAccounts }}
 	{{if  .HasSubservices}}
 	mock{{.PascalName}}API := cli.GetMock{{.PascalName}}API()
 	{{end}}
@@ -40,7 +40,7 @@ func NewMockAccountClient(t interface {
 	return cli
 }
 
-{{range .Services}}{{if and (.IsAccounts) (.HasParent) (not .IsDataPlane)}}
+{{range .Services}}{{if and .IsAccounts .HasParent }}
 func(m *MockAccountClient) GetMock{{.PascalName}}API() *{{ template "mock-interface-name" . }} {
 	api, ok := m.GetMock{{.ParentService.PascalName}}API().{{.PascalName}}().(*{{ template "mock-interface-name" . }})
 	if !ok {
@@ -50,7 +50,7 @@ func(m *MockAccountClient) GetMock{{.PascalName}}API() *{{ template "mock-interf
 }
 {{end}}{{end}}
 
-{{range .Services}}{{if and .IsAccounts (not .HasParent) (not .IsDataPlane)}}
+{{range .Services}}{{if and .IsAccounts (not .HasParent) }}
 func(m *MockAccountClient) GetMock{{.Name}}API() *{{ template "mock-interface-name" . }} {
 	api, ok := m.AccountClient.{{(.TrimPrefix "account").PascalName}}.(*{{ template "mock-interface-name" . }})
 	if !ok {
