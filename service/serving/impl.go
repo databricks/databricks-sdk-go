@@ -94,6 +94,16 @@ func (a *appsImpl) ListDeployments(ctx context.Context, request ListAppDeploymen
 	return &listAppDeploymentsResponse, err
 }
 
+func (a *appsImpl) Start(ctx context.Context, request StartAppRequest) (*AppDeployment, error) {
+	var appDeployment AppDeployment
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v/start", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &appDeployment)
+	return &appDeployment, err
+}
+
 func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) error {
 	var stopAppResponse StopAppResponse
 	path := fmt.Sprintf("/api/2.0/preview/apps/%v/stop", request.Name)

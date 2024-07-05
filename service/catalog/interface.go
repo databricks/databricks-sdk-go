@@ -178,7 +178,7 @@ type CatalogsService interface {
 	// privilege) will be retrieved. There is no guarantee of a specific
 	// ordering of the elements in the array.
 	//
-	// Use ListAll() to get all CatalogInfo instances
+	// Use ListAll() to get all CatalogInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListCatalogsRequest) (*ListCatalogsResponse, error)
 
 	// Update a catalog.
@@ -297,6 +297,8 @@ type ExternalLocationsService interface {
 type FunctionsService interface {
 
 	// Create a function.
+	//
+	// **WARNING: This API is experimental and will change in future versions**
 	//
 	// Creates a new function
 	//

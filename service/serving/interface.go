@@ -56,6 +56,11 @@ type AppsService interface {
 	// Use ListDeploymentsAll() to get all AppDeployment instances, which will iterate over every result page.
 	ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error)
 
+	// Start an app.
+	//
+	// Start the last active deployment of the app in the workspace.
+	Start(ctx context.Context, request StartAppRequest) (*AppDeployment, error)
+
 	// Stop an app.
 	//
 	// Stops the active deployment of the app in the workspace.

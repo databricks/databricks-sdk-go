@@ -112,6 +112,16 @@ func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryV
 	return &queryVectorIndexResponse, err
 }
 
+func (a *vectorSearchIndexesImpl) QueryNextPage(ctx context.Context, request QueryVectorIndexNextPageRequest) (*QueryVectorIndexResponse, error) {
+	var queryVectorIndexResponse QueryVectorIndexResponse
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/query-next-page", request.IndexName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryVectorIndexResponse)
+	return &queryVectorIndexResponse, err
+}
+
 func (a *vectorSearchIndexesImpl) ScanIndex(ctx context.Context, request ScanVectorIndexRequest) (*ScanVectorIndexResponse, error) {
 	var scanVectorIndexResponse ScanVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/scan", request.IndexName)

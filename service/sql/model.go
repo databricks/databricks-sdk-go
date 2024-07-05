@@ -138,7 +138,7 @@ type AlertQuery struct {
 	// The timestamp when this query was created.
 	CreatedAt string `json:"created_at,omitempty"`
 	// Data source ID maps to the ID of the data source used by the resource and
-	// is distinct from the warehouse ID. [Learn more].
+	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
@@ -744,7 +744,7 @@ func (s DashboardPostContent) MarshalJSON() ([]byte, error) {
 // A JSON object representing a DBSQL data source / SQL warehouse.
 type DataSource struct {
 	// Data source ID maps to the ID of the data source used by the resource and
-	// is distinct from the warehouse ID. [Learn more].
+	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	Id string `json:"id,omitempty"`
@@ -2225,7 +2225,7 @@ type Query struct {
 	// The timestamp when this query was created.
 	CreatedAt string `json:"created_at,omitempty"`
 	// Data source ID maps to the ID of the data source used by the resource and
-	// is distinct from the warehouse ID. [Learn more].
+	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
@@ -2301,7 +2301,7 @@ func (s Query) MarshalJSON() ([]byte, error) {
 
 type QueryEditContent struct {
 	// Data source ID maps to the ID of the data source used by the resource and
-	// is distinct from the warehouse ID. [Learn more].
+	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
@@ -2535,7 +2535,7 @@ func (s QueryOptions) MarshalJSON() ([]byte, error) {
 
 type QueryPostContent struct {
 	// Data source ID maps to the ID of the data source used by the resource and
-	// is distinct from the warehouse ID. [Learn more].
+	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`

@@ -914,6 +914,114 @@ func (_c *MockLakeviewInterface_Impl_Call) RunAndReturn(run func() dashboards.La
 	return _c
 }
 
+// List provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) List(ctx context.Context, request dashboards.ListDashboardsRequest) listing.Iterator[dashboards.Dashboard] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for List")
+	}
+
+	var r0 listing.Iterator[dashboards.Dashboard]
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.ListDashboardsRequest) listing.Iterator[dashboards.Dashboard]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[dashboards.Dashboard])
+		}
+	}
+
+	return r0
+}
+
+// MockLakeviewInterface_List_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'List'
+type MockLakeviewInterface_List_Call struct {
+	*mock.Call
+}
+
+// List is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.ListDashboardsRequest
+func (_e *MockLakeviewInterface_Expecter) List(ctx interface{}, request interface{}) *MockLakeviewInterface_List_Call {
+	return &MockLakeviewInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_List_Call) Run(run func(ctx context.Context, request dashboards.ListDashboardsRequest)) *MockLakeviewInterface_List_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.ListDashboardsRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_List_Call) Return(_a0 listing.Iterator[dashboards.Dashboard]) *MockLakeviewInterface_List_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_List_Call) RunAndReturn(run func(context.Context, dashboards.ListDashboardsRequest) listing.Iterator[dashboards.Dashboard]) *MockLakeviewInterface_List_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListAll provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewInterface) ListAll(ctx context.Context, request dashboards.ListDashboardsRequest) ([]dashboards.Dashboard, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListAll")
+	}
+
+	var r0 []dashboards.Dashboard
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.ListDashboardsRequest) ([]dashboards.Dashboard, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.ListDashboardsRequest) []dashboards.Dashboard); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]dashboards.Dashboard)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.ListDashboardsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewInterface_ListAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListAll'
+type MockLakeviewInterface_ListAll_Call struct {
+	*mock.Call
+}
+
+// ListAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.ListDashboardsRequest
+func (_e *MockLakeviewInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockLakeviewInterface_ListAll_Call {
+	return &MockLakeviewInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
+}
+
+func (_c *MockLakeviewInterface_ListAll_Call) Run(run func(ctx context.Context, request dashboards.ListDashboardsRequest)) *MockLakeviewInterface_ListAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.ListDashboardsRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListAll_Call) Return(_a0 []dashboards.Dashboard, _a1 error) *MockLakeviewInterface_ListAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewInterface_ListAll_Call) RunAndReturn(run func(context.Context, dashboards.ListDashboardsRequest) ([]dashboards.Dashboard, error)) *MockLakeviewInterface_ListAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListSchedules provides a mock function with given fields: ctx, request
 func (_m *MockLakeviewInterface) ListSchedules(ctx context.Context, request dashboards.ListSchedulesRequest) listing.Iterator[dashboards.Schedule] {
 	ret := _m.Called(ctx, request)

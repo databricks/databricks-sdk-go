@@ -110,6 +110,33 @@ func (s Dashboard) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DashboardView string
+
+const DashboardViewDashboardViewBasic DashboardView = `DASHBOARD_VIEW_BASIC`
+
+const DashboardViewDashboardViewFull DashboardView = `DASHBOARD_VIEW_FULL`
+
+// String representation for [fmt.Print]
+func (f *DashboardView) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DashboardView) Set(v string) error {
+	switch v {
+	case `DASHBOARD_VIEW_BASIC`, `DASHBOARD_VIEW_FULL`:
+		*f = DashboardView(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DASHBOARD_VIEW_BASIC", "DASHBOARD_VIEW_FULL"`, v)
+	}
+}
+
+// Type always returns DashboardView to satisfy [pflag.Value] interface
+func (f *DashboardView) Type() string {
+	return "DashboardView"
+}
+
 // Delete dashboard schedule
 type DeleteScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
@@ -215,6 +242,49 @@ func (f *LifecycleState) Set(v string) error {
 // Type always returns LifecycleState to satisfy [pflag.Value] interface
 func (f *LifecycleState) Type() string {
 	return "LifecycleState"
+}
+
+// List dashboards
+type ListDashboardsRequest struct {
+	// The number of dashboards to return per page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous `ListDashboards` call. This token
+	// can be used to retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The flag to include dashboards located in the trash. If unspecified, only
+	// active dashboards will be returned.
+	ShowTrashed bool `json:"-" url:"show_trashed,omitempty"`
+	// Indicates whether to include all metadata from the dashboard in the
+	// response. If unset, the response defaults to `DASHBOARD_VIEW_BASIC` which
+	// only includes summary metadata from the dashboard.
+	View DashboardView `json:"-" url:"view,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDashboardsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDashboardsResponse struct {
+	Dashboards []Dashboard `json:"dashboards,omitempty"`
+	// A token, which can be sent as `page_token` to retrieve the next page. If
+	// this field is omitted, there are no subsequent dashboards.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListDashboardsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDashboardsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List dashboard schedules

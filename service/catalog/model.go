@@ -244,7 +244,7 @@ type CatalogInfo struct {
 	FullName string `json:"full_name,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of catalog.
@@ -336,6 +336,35 @@ func (f *CatalogInfoSecurableKind) Set(v string) error {
 // Type always returns CatalogInfoSecurableKind to satisfy [pflag.Value] interface
 func (f *CatalogInfoSecurableKind) Type() string {
 	return "CatalogInfoSecurableKind"
+}
+
+// Whether the current securable is accessible from all workspaces or a specific
+// set of workspaces.
+type CatalogIsolationMode string
+
+const CatalogIsolationModeIsolated CatalogIsolationMode = `ISOLATED`
+
+const CatalogIsolationModeOpen CatalogIsolationMode = `OPEN`
+
+// String representation for [fmt.Print]
+func (f *CatalogIsolationMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CatalogIsolationMode) Set(v string) error {
+	switch v {
+	case `ISOLATED`, `OPEN`:
+		*f = CatalogIsolationMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ISOLATED", "OPEN"`, v)
+	}
+}
+
+// Type always returns CatalogIsolationMode to satisfy [pflag.Value] interface
+func (f *CatalogIsolationMode) Type() string {
+	return "CatalogIsolationMode"
 }
 
 // The type of the catalog.
@@ -931,9 +960,10 @@ func (f *CreateFunctionSqlDataAccess) Type() string {
 type CreateMetastore struct {
 	// The user-specified name of the metastore.
 	Name string `json:"name"`
-	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). If
-	// this field is omitted, the region of the workspace receiving the request
-	// will be used.
+	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+	// The field can be omitted in the __workspace-level__ __API__ but not in
+	// the __account-level__ __API__. If this field is omitted, the region of
+	// the workspace receiving the request will be used.
 	Region string `json:"region,omitempty"`
 	// The storage root URL for metastore
 	StorageRoot string `json:"storage_root,omitempty"`
@@ -2510,6 +2540,18 @@ type ListCatalogsRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Maximum number of catalogs to return. - when set to 0, the page length is
+	// set to a server configured value (recommended); - when set to a value
+	// greater than 0, the page length is the minimum of this value and a server
+	// configured value; - when set to a value less than 0, an invalid parameter
+	// error is returned; - If not set, all valid catalogs are returned (not
+	// recommended). - Note: The number of returned catalogs might be less than
+	// the specified max_results size, even zero. The only definitive indication
+	// that no further catalogs can be fetched is when the next_page_token is
+	// unset from the response.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -2525,6 +2567,20 @@ func (s ListCatalogsRequest) MarshalJSON() ([]byte, error) {
 type ListCatalogsResponse struct {
 	// An array of catalog information objects.
 	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListCatalogsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCatalogsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List connections
@@ -3691,6 +3747,8 @@ type OnlineTable struct {
 	Spec *OnlineTableSpec `json:"spec,omitempty"`
 	// Online Table status
 	Status *OnlineTableStatus `json:"status,omitempty"`
+	// Data serving REST API URL for this table
+	TableServingUrl string `json:"table_serving_url,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3948,8 +4006,6 @@ const PrivilegeSelect Privilege = `SELECT`
 
 const PrivilegeSetSharePermission Privilege = `SET_SHARE_PERMISSION`
 
-const PrivilegeSingleUserAccess Privilege = `SINGLE_USER_ACCESS`
-
 const PrivilegeUsage Privilege = `USAGE`
 
 const PrivilegeUseCatalog Privilege = `USE_CATALOG`
@@ -3980,11 +4036,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `SINGLE_USER_ACCESS`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "SINGLE_USER_ACCESS", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -4655,7 +4711,7 @@ type UpdateCatalog struct {
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
 	// New name for the catalog.
@@ -4709,6 +4765,9 @@ type UpdateExternalLocation struct {
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
 	Force bool `json:"force,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the external location.
 	Name string `json:"-" url:"-"`
 	// New name for the external location.
@@ -4970,6 +5029,9 @@ type UpdateStorageCredential struct {
 	// Force update even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"force,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
 	// New name for the storage credential.

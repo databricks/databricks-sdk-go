@@ -1065,6 +1065,65 @@ func (_c *MockAppsInterface_ListDeploymentsByAppName_Call) RunAndReturn(run func
 	return _c
 }
 
+// Start provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) Start(ctx context.Context, request serving.StartAppRequest) (*serving.AppDeployment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Start")
+	}
+
+	var r0 *serving.AppDeployment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.StartAppRequest) (*serving.AppDeployment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.StartAppRequest) *serving.AppDeployment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.AppDeployment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.StartAppRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_Start_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Start'
+type MockAppsInterface_Start_Call struct {
+	*mock.Call
+}
+
+// Start is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request serving.StartAppRequest
+func (_e *MockAppsInterface_Expecter) Start(ctx interface{}, request interface{}) *MockAppsInterface_Start_Call {
+	return &MockAppsInterface_Start_Call{Call: _e.mock.On("Start", ctx, request)}
+}
+
+func (_c *MockAppsInterface_Start_Call) Run(run func(ctx context.Context, request serving.StartAppRequest)) *MockAppsInterface_Start_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(serving.StartAppRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_Start_Call) Return(_a0 *serving.AppDeployment, _a1 error) *MockAppsInterface_Start_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_Start_Call) RunAndReturn(run func(context.Context, serving.StartAppRequest) (*serving.AppDeployment, error)) *MockAppsInterface_Start_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Stop provides a mock function with given fields: ctx, request
 func (_m *MockAppsInterface) Stop(ctx context.Context, request serving.StopAppRequest) error {
 	ret := _m.Called(ctx, request)

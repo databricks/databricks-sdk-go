@@ -1,5 +1,53 @@
 # Version changelog
 
+## 0.43.0
+
+Major Changes and Improvements:
+ * Support partners in user agent for SDK ([#925](https://github.com/databricks/databricks-sdk-go/pull/925)).
+ * Add `serverless_compute_id` field to the config ([#952](https://github.com/databricks/databricks-sdk-go/pull/952)).
+
+Other Changes:
+
+ * Generate from latest spec ([#944](https://github.com/databricks/databricks-sdk-go/pull/944)) and ([#947](https://github.com/databricks/databricks-sdk-go/pull/947)).
+
+API Changes:
+
+ * Changed `IsolationMode` field for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo) to [catalog.CatalogIsolationMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogIsolationMode).
+ * Added `IsolationMode` field for [catalog.ExternalLocationInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ExternalLocationInfo).
+ * Added `MaxResults` and `PageToken` fields for [catalog.ListCatalogsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListCatalogsRequest).
+ * Added `NextPageToken` field for [catalog.ListCatalogsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListCatalogsResponse).
+ * Added `TableServingUrl` field for [catalog.OnlineTable](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#OnlineTable).
+ * Added `IsolationMode` field for [catalog.StorageCredentialInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#StorageCredentialInfo).
+ * Changed `IsolationMode` field for [catalog.UpdateCatalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateCatalog) to [catalog.CatalogIsolationMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogIsolationMode).
+ * Added `IsolationMode` field for [catalog.UpdateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateExternalLocation).
+ * Added `IsolationMode` field for [catalog.UpdateStorageCredential](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateStorageCredential).
+ * Added [catalog.CatalogIsolationMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogIsolationMode).
+ * Added `CreateSchedule`, `CreateSubscription`, `DeleteSchedule`, `DeleteSubscription`, `GetSchedule`, `GetSubscription`, `List`, `ListSchedules`, `ListSubscriptions` and `UpdateSchedule` methods for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added [dashboards.CreateScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CreateScheduleRequest), [dashboards.CreateSubscriptionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CreateSubscriptionRequest), [dashboards.CronSchedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CronSchedule), [dashboards.DashboardView](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#DashboardView), [dashboards.DeleteScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#DeleteScheduleRequest), [dashboards.DeleteSubscriptionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#DeleteSubscriptionRequest), [dashboards.GetScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetScheduleRequest), [dashboards.GetSubscriptionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GetSubscriptionRequest), [dashboards.ListDashboardsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#ListDashboardsRequest), [dashboards.ListDashboardsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#ListDashboardsResponse), [dashboards.ListSchedulesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#ListSchedulesRequest), [dashboards.ListSchedulesResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#ListSchedulesResponse), [dashboards.ListSubscriptionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#ListSubscriptionsRequest), [dashboards.ListSubscriptionsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#ListSubscriptionsResponse), [dashboards.Schedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#Schedule), [dashboards.SchedulePauseStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#SchedulePauseStatus), [dashboards.Subscriber](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#Subscriber), [dashboards.Subscription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#Subscription), [dashboards.SubscriptionSubscriberDestination](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#SubscriptionSubscriberDestination), [dashboards.SubscriptionSubscriberUser](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#SubscriptionSubscriberUser) and [dashboards.UpdateScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#UpdateScheduleRequest) structs.
+ * Added `OnStreamingBacklogExceeded` field for [jobs.JobEmailNotifications](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobEmailNotifications).
+ * Added `EnvironmentKey` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+ * Removed `ConditionTask`, `DbtTask`, `NotebookTask`, `PipelineTask`, `PythonWheelTask`, `RunJobTask`, `SparkJarTask`, `SparkPythonTask`, `SparkSubmitTask`, `SqlTask` and `Environments` fields for [jobs.SubmitRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitRun).
+ * Added `DbtTask` and `EnvironmentKey` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+ * Added `OnStreamingBacklogExceeded` field for [jobs.TaskEmailNotifications](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TaskEmailNotifications).
+ * Added `Periodic` field for [jobs.TriggerSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerSettings).
+ * Added `OnStreamingBacklogExceeded` field for [jobs.WebhookNotifications](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#WebhookNotifications).
+ * Added [jobs.PeriodicTriggerConfiguration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PeriodicTriggerConfiguration).
+ * Added [jobs.PeriodicTriggerConfigurationTimeUnit](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PeriodicTriggerConfigurationTimeUnit).
+ * Added `ProviderSummary` field for [marketplace.Listing](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#Listing).
+ * Added [marketplace.ProviderIconFile](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#ProviderIconFile).
+ * Added [marketplace.ProviderIconType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#ProviderIconType).
+ * Added [marketplace.ProviderListingSummaryInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#ProviderListingSummaryInfo).
+ * Added `Start` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added [w.ServingEndpointsDataPlane](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsDataPlaneAPI) workspace-level service.
+ * Added `ServicePrincipalId` field for [serving.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#App).
+ * Added `ServicePrincipalName` field for [serving.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#App).
+ * Added [serving.StartAppRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#StartAppRequest).
+ * Added `QueryNextPage` method for [w.VectorSearchIndexes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchIndexesAPI) workspace-level service.
+ * Added `QueryType` field for [vectorsearch.QueryVectorIndexRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#QueryVectorIndexRequest).
+ * Added `NextPageToken` field for [vectorsearch.QueryVectorIndexResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#QueryVectorIndexResponse).
+ * Added [vectorsearch.QueryVectorIndexNextPageRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#QueryVectorIndexNextPageRequest).
+
+OpenAPI SHA: 7437dabb9dadee402c1fc060df4c1ce8cc5369f0, Date: 2024-06-25
 ## 0.42.0
 
 * Ignore additional flaky test ([#930](https://github.com/databricks/databricks-sdk-go/pull/930)).
