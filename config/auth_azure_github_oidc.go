@@ -53,7 +53,7 @@ func requestIDToken(ctx context.Context, cfg *Config) (string, error) {
 		logger.Debugf(ctx, "Missing cfg.ActionsIDTokenRequestURL, likely not calling from a Github action")
 		return "", nil
 	}
-	if cfg.ActionsIDTokenRequestURL == "" {
+	if cfg.ActionsIDTokenRequestToken == "" {
 		logger.Debugf(ctx, "Missing cfg.ActionsIDTokenRequestToken, likely not calling from a Github action")
 		return "", nil
 	}
