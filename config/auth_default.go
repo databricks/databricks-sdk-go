@@ -9,24 +9,23 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-var (
-	authProviders = []CredentialsStrategy{
-		PatCredentials{},
-		BasicCredentials{},
-		M2mCredentials{},
-		DatabricksCliCredentials{},
-		MetadataServiceCredentials{},
+var authProviders = []CredentialsStrategy{
+	PatCredentials{},
+	BasicCredentials{},
+	M2mCredentials{},
+	DatabricksCliCredentials{},
+	MetadataServiceCredentials{},
 
-		// Attempt to configure auth from most specific to most generic (the Azure CLI).
-		AzureMsiCredentials{},
-		AzureClientSecretCredentials{},
-		AzureCliCredentials{},
+	// Attempt to configure auth from most specific to most generic (the Azure CLI).
+	AzureGithubOIDCCredentials{},
+	AzureMsiCredentials{},
+	AzureClientSecretCredentials{},
+	AzureCliCredentials{},
 
-		// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
-		GoogleCredentials{},
-		GoogleDefaultCredentials{},
-	}
-)
+	// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
+	GoogleCredentials{},
+	GoogleDefaultCredentials{},
+}
 
 type DefaultCredentials struct {
 	name string
