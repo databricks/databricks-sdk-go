@@ -2,20 +2,16 @@
 
 ## 0.43.1
 
-### Internal Changes
-
- * Improve Changelog by grouping changes ([#962](https://github.com/databricks/databricks-sdk-go/pull/962)).
-
-
-### Other Changes
-
- * Add ChangelogConfig to Generator struct ([#967](https://github.com/databricks/databricks-sdk-go/pull/967)).
- * Add DataPlane API Support ([#936](https://github.com/databricks/databricks-sdk-go/pull/936)).
+### Major Changes and Improvements:
  * Add a credentials provider for Github Azure OIDC ([#965](https://github.com/databricks/databricks-sdk-go/pull/965)).
+ * Add DataPlane API Support ([#936](https://github.com/databricks/databricks-sdk-go/pull/936)).
  * Added more error messages for retriable errors (timeouts, etc.) ([#963](https://github.com/databricks/databricks-sdk-go/pull/963)).
+
+### Internal Changes
+ * Add ChangelogConfig to Generator struct ([#967](https://github.com/databricks/databricks-sdk-go/pull/967)).
+ * Improve Changelog by grouping changes ([#962](https://github.com/databricks/databricks-sdk-go/pull/962)).
  * Parse API Error messages with `int` error codes ([#960](https://github.com/databricks/databricks-sdk-go/pull/960)).
-
-
+ 
 
 ## 0.43.0
 
