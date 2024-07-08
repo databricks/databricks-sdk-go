@@ -78,6 +78,11 @@ type Config struct {
 	AzureClientID     string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure" auth_types:"azure-client-secret,azure-msi"`
 	AzureTenantID     string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure" auth_types:"azure-cli,azure-client-secret"`
 
+	// Parameters to request Azure OIDC token on behalf of Github Actions.
+	// Ref: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers
+	ActionsIDTokenRequestURL   string `name:"actions_id_token_request_url" env:"ACTIONS_ID_TOKEN_REQUEST_URL"`
+	ActionsIDTokenRequestToken string `name:"actions_id_token_request_token" env:"ACTIONS_ID_TOKEN_REQUEST_TOKEN"`
+
 	// AzureEnvironment (PUBLIC, USGOVERNMENT, CHINA) has specific set of API endpoints. Starting from v0.26.0,
 	// the environment is determined based on the workspace hostname, if it's specified.
 	AzureEnvironment string `name:"azure_environment" env:"ARM_ENVIRONMENT"`

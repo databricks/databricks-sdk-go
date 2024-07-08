@@ -3,12 +3,10 @@
 package databricks
 
 import (
-	"context"
 	"errors"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/config"
-	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
@@ -734,6 +732,10 @@ type WorkspaceClient struct {
 	// applied to each served entity.
 	ServingEndpoints serving.ServingEndpointsInterface
 
+	// Serving endpoints DataPlane provides a set of operations to interact with
+	// data plane endpoints for Serving endpoints service.
+	ServingEndpointsDataPlane serving.ServingEndpointsDataPlaneInterface
+
 	// Workspace Settings API allows users to manage settings at the workspace
 	// level.
 	Settings settings.SettingsInterface
@@ -992,19 +994,6 @@ type WorkspaceClient struct {
 	WorkspaceConf settings.WorkspaceConfInterface
 }
 
-// Returns a new OAuth scoped to the authorization details provided.
-// It will return an error if the CredentialStrategy does not support OAuth tokens.
-//
-// **NOTE:** Experimental: This API may change or be removed in a future release
-// without warning.
-func (a *WorkspaceClient) GetOAuthToken(ctx context.Context, authorizationDetails string) (*credentials.OAuthToken, error) {
-	originalToken, err := a.Config.GetToken()
-	if err != nil {
-		return nil, err
-	}
-	return a.apiClient.GetOAuthToken(ctx, authorizationDetails, originalToken)
-}
-
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")
 
 // NewWorkspaceClient creates new Databricks SDK client for Workspaces or
@@ -1033,6 +1022,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	servingEndpoints := serving.NewServingEndpoints(databricksClient)
 	return &WorkspaceClient{
 		Config:    cfg,
 		apiClient: apiClient,
@@ -1100,7 +1091,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
 		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),
-		ServingEndpoints:                    serving.NewServingEndpoints(databricksClient),
+		ServingEndpoints:                    servingEndpoints,
+		ServingEndpointsDataPlane:           serving.NewServingEndpointsDataPlane(databricksClient, servingEndpoints),
 		Settings:                            settings.NewSettings(databricksClient),
 		Shares:                              sharing.NewShares(databricksClient),
 		StatementExecution:                  sql.NewStatementExecution(databricksClient),
