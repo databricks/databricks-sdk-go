@@ -75,4 +75,6 @@ var TransientErrorRegexes = []*regexp.Regexp{
 	regexp.MustCompile(`Unknown worker environment`),
 	regexp.MustCompile(`ClusterNotReadyException`),
 	regexp.MustCompile(`worker env .* not found`),
+	regexp.MustCompile(`Timed out after `),
+	regexp.MustCompile(`deadline exceeded`),
 }
