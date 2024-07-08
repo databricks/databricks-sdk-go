@@ -25,7 +25,8 @@ type Toolchain struct {
 
 type Generator struct {
 	Formatter string `json:"formatter"`
-
+	// Config for changelog generation.
+	ChangelogConfig string `json:"changelog_config,omitempty"`
 	// TemplateLibraries is a list of files containing go template definitions
 	// that are reused in different stages of codegen. E.g. the "type" template
 	// is needed in both the "types" and "services" stages.
