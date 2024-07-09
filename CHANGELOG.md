@@ -3,12 +3,7 @@
 ## 0.43.2
 
 ### Internal Changes
-
  * Enforce Tag on PRs ([#969](https://github.com/databricks/databricks-sdk-go/pull/969)).
-
-
-### Other Changes
-
  * Generate SDK for `apierr` changes ([#970](https://github.com/databricks/databricks-sdk-go/pull/970)).
 
 
