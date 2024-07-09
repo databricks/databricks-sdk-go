@@ -1,5 +1,14 @@
 # Version changelog
 
+## 0.43.2
+
+### Internal Changes
+ * Enforce Tag on PRs ([#969](https://github.com/databricks/databricks-sdk-go/pull/969)).
+ * Generate SDK for `apierr` changes ([#970](https://github.com/databricks/databricks-sdk-go/pull/970)).
+ * Add Release tag and Workflow Fix ([#972](https://github.com/databricks/databricks-sdk-go/pull/972)).
+
+
+
 ## 0.43.1
 
 ### Major Changes and Improvements:
