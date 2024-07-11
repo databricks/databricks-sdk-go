@@ -5,6 +5,7 @@ import (
 	"net/url"
 
 	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
@@ -50,7 +51,7 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 			"assertion":  {idToken},
 		},
 	}
-	ts := tsConfig.TokenSource(ctx)
+	ts := tsConfig.TokenSource(httpclient.WithDebug(ctx, true))
 	visitor := refreshableVisitor(ts)
 	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
 }
