@@ -2,12 +2,15 @@ package config
 
 import (
 	"context"
+	"net/url"
 
 	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 )
+
+const jwtBearerGrantTypeURN = "urn:ietf:params:oauth:grant-type:jwt-bearer"
 
 type DatabricksOIDCCredentials struct{}
 
@@ -38,10 +41,14 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 
 	tsConfig := clientcredentials.Config{
 		ClientID:     cfg.ClientID,
-		ClientSecret: idToken,
-		AuthStyle:    oauth2.AuthStyleInHeader,
+		ClientSecret: "",
+		AuthStyle:    oauth2.AuthStyleInParams,
 		TokenURL:     endpoints.TokenEndpoint,
 		Scopes:       []string{"all-apis"},
+		EndpointParams: url.Values{
+			"grant_type": {jwtBearerGrantTypeURN},
+			"assertion":  {idToken},
+		},
 	}
 	ts := tsConfig.TokenSource(ctx)
 	visitor := refreshableVisitor(ts)
