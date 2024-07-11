@@ -78,6 +78,7 @@ func (o oidcTokenSuppliers) GetOIDCToken(ctx context.Context, audience string) (
 			return "", err
 		}
 		if token != "" {
+			logger.Debugf(ctx, "OIDC token found from %s: %s", s.Name(), token)
 			return token, nil
 		}
 		logger.Debugf(ctx, "No OIDC token found from %s", s.Name())
