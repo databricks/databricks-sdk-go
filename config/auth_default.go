@@ -15,6 +15,7 @@ var authProviders = []CredentialsStrategy{
 	M2mCredentials{},
 	DatabricksCliCredentials{},
 	MetadataServiceCredentials{},
+	DatabricksOIDCCredentials{},
 
 	// Attempt to configure auth from most specific to most generic (the Azure CLI).
 	AzureGithubOIDCCredentials{},

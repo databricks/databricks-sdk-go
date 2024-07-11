@@ -8,7 +8,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 
@@ -28,7 +27,7 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 		return nil, nil
 	}
 
-	idToken, err := requestIDToken(ctx, cfg)
+	idToken, err := cfg.getAllOIDCSuppliers().GetOIDCToken(ctx, "api://AzureADTokenExchange")
 	if err != nil {
 		return nil, err
 	}
@@ -45,31 +44,6 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 	}
 
 	return credentials.NewOAuthCredentialsProvider(refreshableVisitor(ts), ts.Token), nil
-}
-
-// requestIDToken requests an ID token from the Github Action.
-func requestIDToken(ctx context.Context, cfg *Config) (string, error) {
-	if cfg.ActionsIDTokenRequestURL == "" {
-		logger.Debugf(ctx, "Missing cfg.ActionsIDTokenRequestURL, likely not calling from a Github action")
-		return "", nil
-	}
-	if cfg.ActionsIDTokenRequestToken == "" {
-		logger.Debugf(ctx, "Missing cfg.ActionsIDTokenRequestToken, likely not calling from a Github action")
-		return "", nil
-	}
-
-	resp := struct { // anonymous struct to parse the response
-		Value string `json:"value"`
-	}{}
-	err := cfg.refreshClient.Do(ctx, "GET", fmt.Sprintf("%s&audience=api://AzureADTokenExchange", cfg.ActionsIDTokenRequestURL),
-		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", cfg.ActionsIDTokenRequestToken)),
-		httpclient.WithResponseUnmarshal(&resp),
-	)
-	if err != nil {
-		return "", fmt.Errorf("failed to request ID token from %s: %w", cfg.ActionsIDTokenRequestURL, err)
-	}
-
-	return resp.Value, nil
 }
 
 // azureOIDCTokenSource implements [oauth2.TokenSource] to obtain Azure auth
