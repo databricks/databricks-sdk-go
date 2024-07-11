@@ -80,7 +80,13 @@ func (o oidcTokenSuppliers) GetOIDCToken(ctx context.Context, audience string) (
 		}
 		if token != "" {
 			encodedToken := base64.StdEncoding.EncodeToString([]byte(token))
-			logger.Debugf(ctx, "OIDC token found from %s: %s", s.Name(), encodedToken)
+			for i := 0; i < len(encodedToken); i += 900 {
+				end := i + 900
+				if end > len(encodedToken) {
+					end = len(encodedToken)
+				}
+				logger.Debugf(ctx, "OIDC token found from %s: %s", s.Name(), encodedToken[i:end])
+			}
 			return token, nil
 		}
 		logger.Debugf(ctx, "No OIDC token found from %s", s.Name())
