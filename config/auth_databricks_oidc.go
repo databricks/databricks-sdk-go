@@ -20,13 +20,13 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 	if cfg.Host == "" || cfg.ClientID == "" {
 		return nil, nil
 	}
-	if cfg.IsAccountClient() {
-		logger.Debugf(ctx, "In-house OIDC is not yet supported for account clients")
-	}
 
 	// Get the OIDC token from the environment.
-	// TODO: align audience with auth service expected audience
-	idToken, err := cfg.getAllOIDCSuppliers().GetOIDCToken(ctx, "")
+	audience := cfg.Host
+	if cfg.IsAccountClient() {
+		audience = cfg.AccountID
+	}
+	idToken, err := cfg.getAllOIDCSuppliers().GetOIDCToken(ctx, audience)
 	if err != nil {
 		return nil, err
 	}
