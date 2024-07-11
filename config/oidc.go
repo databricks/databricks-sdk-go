@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/httpclient"
@@ -78,7 +79,8 @@ func (o oidcTokenSuppliers) GetOIDCToken(ctx context.Context, audience string) (
 			return "", err
 		}
 		if token != "" {
-			logger.Debugf(ctx, "OIDC token found from %s: %s", s.Name(), token)
+			encodedToken := base64.StdEncoding.EncodeToString([]byte(token))
+			logger.Debugf(ctx, "OIDC token found from %s: %s", s.Name(), encodedToken)
 			return token, nil
 		}
 		logger.Debugf(ctx, "No OIDC token found from %s", s.Name())
