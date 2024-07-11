@@ -337,8 +337,8 @@ func WithDebug(ctx context.Context, debug bool) context.Context {
 }
 
 func IsDebug(ctx context.Context) bool {
-	debug, ok := ctx.Value(debugKey).(debugKeyType)
-	return ok && debug == debugKey
+	debug, ok := ctx.Value(debugKey).(bool)
+	return ok && debug
 }
 
 func getDebugBody(ctx context.Context, body io.Reader) (io.Reader, []byte) {
