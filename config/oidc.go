@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
@@ -63,11 +64,22 @@ func (g githubOIDCTokenSupplier) GetOIDCToken(ctx context.Context, audience stri
 
 var _ oidcTokenSupplier = githubOIDCTokenSupplier{}
 
+type azureDevOpsOIDCTokenSupplier struct{}
+
+func (a azureDevOpsOIDCTokenSupplier) Name() string {
+	return "azure-devops"
+}
+
+func (a azureDevOpsOIDCTokenSupplier) GetOIDCToken(ctx context.Context, audience string) (string, error) {
+	return os.Getenv("idToken"), nil
+}
+
 type oidcTokenSuppliers []oidcTokenSupplier
 
 func (c *Config) getAllOIDCSuppliers() oidcTokenSuppliers {
 	return []oidcTokenSupplier{
 		githubOIDCTokenSupplierFromConfig(c),
+		azureDevOpsOIDCTokenSupplier{},
 	}
 }
 
