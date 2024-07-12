@@ -22,7 +22,8 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 	}
 
 	// Get the OIDC token from the environment.
-	audience := cfg.CanonicalHostName()[8:]
+	// TODO: trim the first 8 characters (https://) from the host
+	audience := cfg.CanonicalHostName()
 	if cfg.IsAccountClient() {
 		audience = cfg.AccountID
 	}
