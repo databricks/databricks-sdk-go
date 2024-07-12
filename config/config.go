@@ -267,7 +267,7 @@ func (c *Config) IsAccountClient() bool {
 			return true
 		}
 	}
-	return false
+	return strings.HasPrefix(c.Host, "https://accounts-")
 }
 
 func (c *Config) EnsureResolved() error {
