@@ -34,6 +34,7 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 		DebugHeaders:       c.DebugHeaders,
 		DebugTruncateBytes: c.DebugTruncateBytes,
 		InsecureSkipVerify: c.InsecureSkipVerify,
+		CABundle:           c.CABundle,
 		Transport:          c.HTTPTransport,
 		AuthVisitor:        c.Authenticate,
 		Visitors: []httpclient.RequestVisitor{
@@ -84,7 +85,7 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 			}
 			return false
 		},
-	}), nil
+	})
 }
 
 func orDefault(configured, _default int) int {

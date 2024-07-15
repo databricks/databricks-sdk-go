@@ -18,11 +18,12 @@ func init() {
 }
 
 func TestSimpleGetErrorStub(t *testing.T) {
-	client := httpclient.NewApiClient(httpclient.ClientConfig{
+	client, err := httpclient.NewApiClient(httpclient.ClientConfig{
 		Transport: fixtures.MappingTransport{},
 	})
+	require.NoError(t, err)
 	ctx := context.Background()
-	err := client.Do(ctx, "GET", "/foo",
+	err = client.Do(ctx, "GET", "/foo",
 		httpclient.WithRequestData(map[string]any{
 			"foo": "bar",
 		}))
@@ -35,7 +36,7 @@ func TestSimpleGetErrorStub(t *testing.T) {
 }
 
 func TestSimplePostErrorStubFilled(t *testing.T) {
-	client := httpclient.NewApiClient(httpclient.ClientConfig{
+	client, err := httpclient.NewApiClient(httpclient.ClientConfig{
 		Transport: fixtures.MappingTransport{
 			"POST /foo": {
 				Status:          203,
@@ -44,9 +45,10 @@ func TestSimplePostErrorStubFilled(t *testing.T) {
 			},
 		},
 	})
+	require.NoError(t, err)
 	var out map[string]string
 	ctx := context.Background()
-	err := client.Do(ctx, "POST", "/foo",
+	err = client.Do(ctx, "POST", "/foo",
 		httpclient.WithResponseUnmarshal(&out),
 		httpclient.WithRequestData(map[string]any{
 			"foo": "bar",
@@ -56,18 +58,19 @@ func TestSimplePostErrorStubFilled(t *testing.T) {
 }
 
 func TestPassFile(t *testing.T) {
-	client := httpclient.NewApiClient(httpclient.ClientConfig{
+	client, err := httpclient.NewApiClient(httpclient.ClientConfig{
 		Transport: fixtures.MappingTransport{
 			"GET /some": {
 				PassFile: "testdata/some.json",
 			},
 		},
 	})
+	require.NoError(t, err)
 	var out struct {
 		Some string `json:"some"`
 	}
 	ctx := context.Background()
-	err := client.Do(ctx, "GET", "/some",
+	err = client.Do(ctx, "GET", "/some",
 		httpclient.WithResponseUnmarshal(&out))
 	require.NoError(t, err)
 	assert.Equal(t, "data", out.Some)
