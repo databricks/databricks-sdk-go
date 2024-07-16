@@ -3,6 +3,8 @@ name: Validate Commit Message
 on:
   pull_request:
     types: [opened, synchronize, edited]
+  merge_group:
+    types: [checks_requested]
 
 jobs:
       
