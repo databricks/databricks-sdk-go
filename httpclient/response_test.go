@@ -8,7 +8,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 )
 
@@ -29,6 +28,7 @@ func mockClient(resp *http.Response) *ApiClient {
 }
 
 func TestWithResponseUnmarshal_structWithContent(t *testing.T) {
+	c := mockClient(make200Response("foo bar"))
 	type structWithContents = struct {
 		Contents io.ReadCloser
 	}
@@ -37,84 +37,61 @@ func TestWithResponseUnmarshal_structWithContent(t *testing.T) {
 	}
 
 	var got structWithContents
-	c := mockClient(make200Response("foo bar"))
 	gotErr := c.Do(context.Background(), "GET", "/a", WithResponseUnmarshal(&got))
 
-	if gotErr != nil {
-		t.Errorf("WithResponseUnmarshal(): want no error, got: %s", gotErr)
-	}
-
+	require.NoError(t, gotErr)
 	wantBytes, _ := io.ReadAll(want.Contents)
 	gotBytes, _ := io.ReadAll(got.Contents)
-	if diff := cmp.Diff(wantBytes, gotBytes); diff != "" {
-		t.Errorf("WithResponseUnmarshal(): want != got: (-want +got):\n%s", diff)
-	}
+	require.Equal(t, wantBytes, gotBytes)
 }
 
 func TestWithResponseUnmarshal_readCloser(t *testing.T) {
+	c := mockClient(make200Response("foo bar"))
 	want := io.NopCloser(strings.NewReader("foo bar"))
 
 	var got io.ReadCloser
-	c := mockClient(make200Response("foo bar"))
 	gotErr := c.Do(context.Background(), "GET", "/a", WithResponseUnmarshal(&got))
 
-	if gotErr != nil {
-		t.Errorf("WithResponseUnmarshal(): want no error, got: %s", gotErr)
-	}
-
+	require.NoError(t, gotErr)
 	wantBytes, _ := io.ReadAll(want)
 	gotBytes, _ := io.ReadAll(got)
-	if diff := cmp.Diff(wantBytes, gotBytes); diff != "" {
-		t.Errorf("WithResponseUnmarshal(): want != got: (-want +got):\n%s", diff)
-	}
+	require.Equal(t, wantBytes, gotBytes)
 }
 
 func TestWithResponseUnmarshal_byteBuffer(t *testing.T) {
+	c := mockClient(make200Response("foo bar"))
 	want := bytes.NewBuffer([]byte("foo bar"))
 
 	var got bytes.Buffer
-	c := mockClient(make200Response("foo bar"))
 	gotErr := c.Do(context.Background(), "GET", "/a", WithResponseUnmarshal(&got))
 
-	if gotErr != nil {
-		t.Errorf("WithResponseUnmarshal(): want no error, got: %s", gotErr)
-	}
-	if diff := cmp.Diff(want.Bytes(), got.Bytes()); diff != "" {
-		t.Errorf("WithResponseUnmarshal(): want != got: (-want +got):\n%s", diff)
-	}
+	require.NoError(t, gotErr)
+	require.Equal(t, want.Bytes(), got.Bytes())
 }
 
 func TestWithResponseUnmarshal_bytes(t *testing.T) {
+	c := mockClient(make200Response("foo bar"))
 	want := []byte("foo bar")
 
 	var got []byte
-	c := mockClient(make200Response("foo bar"))
 	gotErr := c.Do(context.Background(), "GET", "/a", WithResponseUnmarshal(&got))
 
-	if gotErr != nil {
-		t.Errorf("WithResponseUnmarshal(): want no error, got: %s", gotErr)
-	}
-	if diff := cmp.Diff(want, got); diff != "" {
-		t.Errorf("WithResponseUnmarshal(): want != got: (-want +got):\n%s", diff)
-	}
+	require.NoError(t, gotErr)
+	require.Equal(t, want, got)
 }
 
 func TestWithResponseUnmarshal_json(t *testing.T) {
+	c := mockClient(make200Response(`{"foo": "bar"}`))
 	type jsonStruct struct {
 		Foo string `json:"foo"`
 	}
 	want := jsonStruct{Foo: "bar"}
 
 	var got jsonStruct
-	c := mockClient(make200Response(`{"foo": "bar"}`))
 	gotErr := c.Do(context.Background(), "GET", "/a", WithResponseUnmarshal(&got))
 
-	if gotErr != nil {
-		t.Errorf("WithResponseUnmarshal(): want no error, got: %s", gotErr)
-	}
-	if diff := cmp.Diff(want, got); diff != "" {
-		t.Errorf("WithResponseUnmarshal(): want != got: (-want +got):\n%s", diff)
-	}
+	require.NoError(t, gotErr)
+	require.Equal(t, want, got)
 }
 
 func TestWithResponseHeader(t *testing.T) {
