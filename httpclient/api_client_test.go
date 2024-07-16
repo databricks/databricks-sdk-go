@@ -15,7 +15,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 	"golang.org/x/time/rate"
 )
@@ -43,18 +42,18 @@ func (cb hc) RoundTrip(r *http.Request) (*http.Response, error) {
 func TestNew(t *testing.T) {
 	c := NewApiClient(ClientConfig{})
 
-	require.Equal(t, 96, c.config.DebugTruncateBytes)
-	require.Equal(t, 5*time.Minute, c.config.RetryTimeout)
+	assert.Equal(t, 96, c.config.DebugTruncateBytes)
+	assert.Equal(t, 5*time.Minute, c.config.RetryTimeout)
 }
 
 func TestSimpleRequestFailsURLError(t *testing.T) {
 	c := NewApiClient(ClientConfig{
 		RetryTimeout: 1 * time.Millisecond,
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
-			require.Equal(t, "GET", r.Method)
-			require.Equal(t, "/a/b", r.URL.Path)
-			require.Equal(t, "c=d", r.URL.RawQuery)
-			require.Equal(t, "f", r.Header.Get("e"))
+			assert.Equal(t, "GET", r.Method)
+			assert.Equal(t, "/a/b", r.URL.Path)
+			assert.Equal(t, "c=d", r.URL.RawQuery)
+			assert.Equal(t, "f", r.Header.Get("e"))
 			return nil, fmt.Errorf("nope")
 		}),
 	})
@@ -64,16 +63,16 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 		}), WithRequestData(map[string]string{
 			"c": "d",
 		}))
-	require.EqualError(t, err, `Get "/a/b?c=d": nope`)
+	assert.EqualError(t, err, `Get "/a/b?c=d": nope`)
 }
 
 func TestSimpleRequestFailsAPIError(t *testing.T) {
 	c := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
-			require.Equal(t, "GET", r.Method)
-			require.Equal(t, "/a/b", r.URL.Path)
-			require.Equal(t, "c=d", r.URL.RawQuery)
-			require.Equal(t, "f", r.Header.Get("e"))
+			assert.Equal(t, "GET", r.Method)
+			assert.Equal(t, "/a/b", r.URL.Path)
+			assert.Equal(t, "c=d", r.URL.RawQuery)
+			assert.Equal(t, "f", r.Header.Get("e"))
 			return &http.Response{
 				StatusCode: 400,
 				Request:    r,
@@ -87,7 +86,7 @@ func TestSimpleRequestFailsAPIError(t *testing.T) {
 		}), WithRequestData(map[string]string{
 			"c": "d",
 		}))
-	require.EqualError(t, err, "http 400: nope")
+	assert.EqualError(t, err, "http 400: nope")
 }
 
 func TestSimpleRequestSucceeds(t *testing.T) {
@@ -107,8 +106,8 @@ func TestSimpleRequestSucceeds(t *testing.T) {
 	err := c.Do(context.Background(), "POST", "/c",
 		WithRequestData(Dummy{1}),
 		WithResponseUnmarshal(&resp))
-	require.NoError(t, err)
-	require.Equal(t, 2, resp.Foo)
+	assert.NoError(t, err)
+	assert.Equal(t, 2, resp.Foo)
 }
 
 func TestSimpleRequestRetried(t *testing.T) {
@@ -137,9 +136,9 @@ func TestSimpleRequestRetried(t *testing.T) {
 	err := c.Do(context.Background(), "PATCH", "/a",
 		WithRequestData(Dummy{1}),
 		WithResponseUnmarshal(&resp))
-	require.NoError(t, err)
-	require.Equal(t, 2, resp.Foo)
-	require.True(t, retried[0], "request was not retried")
+	assert.NoError(t, err)
+	assert.Equal(t, 2, resp.Foo)
+	assert.True(t, retried[0], "request was not retried")
 }
 
 func TestSimpleRequestNotRetried(t *testing.T) {
@@ -171,10 +170,10 @@ func TestSimpleRequestNotRetried(t *testing.T) {
 	err := c.Do(context.Background(), "PATCH", "/a",
 		WithRequestData(Dummy{1}),
 		WithResponseUnmarshal(&resp))
-	require.Error(t, err)
-	require.ErrorIs(t, err, transportErr)
-	require.True(t, tried, "request was not tried")
-	require.False(t, retried, "request was retried")
+	assert.Error(t, err)
+	assert.ErrorIs(t, err, transportErr)
+	assert.True(t, tried, "request was not tried")
+	assert.False(t, retried, "request was retried")
 }
 
 func TestHaltAttemptForLimit(t *testing.T) {
@@ -184,36 +183,36 @@ func TestHaltAttemptForLimit(t *testing.T) {
 		rateLimiter: &rate.Limiter{},
 	}
 	req, err := common.NewRequestBody([]byte{})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	_, rerr := c.attempt(ctx, "GET", "foo", req)()
-	require.NotNil(t, rerr)
-	require.Equal(t, true, rerr.Halt)
-	require.EqualError(t, rerr.Err, "failed in rate limiter: rate: Wait(n=1) exceeds limiter's burst 0")
+	assert.NotNil(t, rerr)
+	assert.Equal(t, true, rerr.Halt)
+	assert.EqualError(t, rerr.Err, "failed in rate limiter: rate: Wait(n=1) exceeds limiter's burst 0")
 }
 
 func TestHaltAttemptForNewRequest(t *testing.T) {
 	ctx := context.Background()
 	c := NewApiClient(ClientConfig{})
 	req, err := common.NewRequestBody([]byte{})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	_, rerr := c.attempt(ctx, "🥱", "/", req)()
-	require.NotNil(t, rerr)
-	require.Equal(t, true, rerr.Halt)
-	require.EqualError(t, rerr.Err, `failed creating new request: net/http: invalid method "🥱"`)
+	assert.NotNil(t, rerr)
+	assert.Equal(t, true, rerr.Halt)
+	assert.EqualError(t, rerr.Err, `failed creating new request: net/http: invalid method "🥱"`)
 }
 
 func TestHaltAttemptForVisitor(t *testing.T) {
 	ctx := context.Background()
 	c := NewApiClient(ClientConfig{})
 	req, err := common.NewRequestBody([]byte{})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	_, rerr := c.attempt(ctx, "GET", "/", req,
 		func(r *http.Request) error {
 			return fmt.Errorf("🥱")
 		})()
-	require.NotNil(t, rerr)
-	require.Equal(t, true, rerr.Halt)
-	require.EqualError(t, rerr.Err, "failed during request visitor: 🥱")
+	assert.NotNil(t, rerr)
+	assert.Equal(t, true, rerr.Halt)
+	assert.EqualError(t, rerr.Err, "failed during request visitor: 🥱")
 }
 
 func TestFailPerformChannel(t *testing.T) {
@@ -222,7 +221,7 @@ func TestFailPerformChannel(t *testing.T) {
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
 	err := c.Do(ctx, "GET", "/", WithRequestData(true))
-	require.EqualError(t, err, "request marshal: unsupported query string data: true")
+	assert.EqualError(t, err, "request marshal: unsupported query string data: true")
 }
 
 func TestSimpleRequestErrReaderBodyStreamResponse(t *testing.T) {
@@ -239,7 +238,7 @@ func TestSimpleRequestErrReaderBodyStreamResponse(t *testing.T) {
 	err := c.Do(context.Background(), "PATCH", "/a",
 		WithRequestHeaders(headers),
 		WithRequestData(map[string]any{}))
-	require.NoError(t, err, "streaming response bodies are not read")
+	assert.NoError(t, err, "streaming response bodies are not read")
 }
 
 func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
@@ -256,7 +255,7 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 	err := c.Do(context.Background(), "PATCH", "/a",
 		WithRequestHeaders(headers),
 		WithRequestData(map[string]any{}))
-	require.EqualError(t, err, "response body: test error")
+	assert.EqualError(t, err, "response body: test error")
 }
 
 func TestSimpleRequestErrReaderCloseBody_StreamResponse(t *testing.T) {
@@ -273,7 +272,7 @@ func TestSimpleRequestErrReaderCloseBody_StreamResponse(t *testing.T) {
 	err := c.Do(context.Background(), "PATCH", "/a",
 		WithRequestHeaders(headers),
 		WithRequestData(map[string]any{}))
-	require.NoError(t, err, "response body should not be closed for streaming responses")
+	assert.NoError(t, err, "response body should not be closed for streaming responses")
 }
 
 func timeoutTransport(r *http.Request) (*http.Response, error) {
@@ -299,7 +298,7 @@ func TestSimpleRequestContextCancel(t *testing.T) {
 		Transport: hc(timeoutTransport),
 	})
 	err := c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
-	require.ErrorContains(t, err, "context canceled")
+	assert.ErrorContains(t, err, "context canceled")
 }
 
 func TestSimpleRequestContextDeadline(t *testing.T) {
@@ -311,7 +310,7 @@ func TestSimpleRequestContextDeadline(t *testing.T) {
 		Transport: hc(timeoutTransport),
 	})
 	err := c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
-	require.ErrorContains(t, err, "context deadline exceeded")
+	assert.ErrorContains(t, err, "context deadline exceeded")
 }
 
 func TestSimpleRequestTimeout(t *testing.T) {
@@ -322,7 +321,7 @@ func TestSimpleRequestTimeout(t *testing.T) {
 		Transport:   hc(timeoutTransport),
 	})
 	err := c.Do(ctx, "GET", "/a", WithRequestData(map[string]any{}))
-	require.ErrorContains(t, err, "request timed out after 10ms of inactivity")
+	assert.ErrorContains(t, err, "request timed out after 10ms of inactivity")
 }
 
 type BufferLogger struct {
@@ -397,13 +396,13 @@ func TestSimpleResponseRedaction(t *testing.T) {
 			"a": 3,
 			"c": 23,
 		}))
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	// not testing for exact logged lines, as header order is not deterministic
-	require.NotContains(t, bufLogger.String(), "__SENSITIVE01__")
-	require.NotContains(t, bufLogger.String(), "__SENSITIVE02__")
-	require.NotContains(t, bufLogger.String(), "__SENSITIVE03__")
-	require.NotContains(t, bufLogger.String(), "__SENSITIVE04__")
-	require.NotContains(t, bufLogger.String(), "12345678901234567890qwerty")
+	assert.NotContains(t, bufLogger.String(), "__SENSITIVE01__")
+	assert.NotContains(t, bufLogger.String(), "__SENSITIVE02__")
+	assert.NotContains(t, bufLogger.String(), "__SENSITIVE03__")
+	assert.NotContains(t, bufLogger.String(), "__SENSITIVE04__")
+	assert.NotContains(t, bufLogger.String(), "12345678901234567890qwerty")
 }
 
 func TestInlineArrayDebugging(t *testing.T) {
@@ -429,9 +428,9 @@ func TestInlineArrayDebugging(t *testing.T) {
 			"a": 3,
 			"c": 23,
 		}))
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
-	require.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
+	assert.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
 <  
 < [
 <   {
@@ -462,9 +461,9 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 			"a": 3,
 			"c": 23,
 		}))
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
-	require.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
+	assert.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
 <  
 < <Streaming response>
 `, bufLogger.String())
@@ -520,22 +519,22 @@ func TestLogCancelledRequest(t *testing.T) {
 func TestStreamRequestFromFileWithReset(t *testing.T) {
 	// make a temporary file with some content
 	f, err := os.CreateTemp("", "databricks-client-test")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	defer os.Remove(f.Name())
 	_, err = f.WriteString("hello world")
-	require.NoError(t, err)
-	require.NoError(t, f.Close())
+	assert.NoError(t, err)
+	assert.NoError(t, f.Close())
 
 	// Make a reader that reads this file
 	r, err := os.Open(f.Name())
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	defer r.Close()
 
 	succeed := false
 	handler := func(req *http.Request) (*http.Response, error) {
 		bytes, err := io.ReadAll(req.Body)
-		require.NoError(t, err)
-		require.Equal(t, "hello world", string(bytes))
+		assert.NoError(t, err)
+		assert.Equal(t, "hello world", string(bytes))
 		if succeed {
 			return &http.Response{
 				StatusCode: 200,
@@ -559,9 +558,9 @@ func TestStreamRequestFromFileWithReset(t *testing.T) {
 	err = client.Do(context.Background(), "POST", "/a",
 		WithRequestData(r),
 		WithResponseUnmarshal(&respBytes))
-	require.NoError(t, err)
-	require.Equal(t, "succeeded", respBytes.String())
-	require.True(t, succeed)
+	assert.NoError(t, err)
+	assert.Equal(t, "succeeded", respBytes.String())
+	assert.True(t, succeed)
 }
 
 type customReader struct{}
@@ -582,14 +581,14 @@ func TestCannotRetryArbitraryReader(t *testing.T) {
 	})
 	err := client.Do(context.Background(), "POST", "/a",
 		WithRequestData(customReader{}))
-	require.ErrorContains(t, err, "cannot reset reader of type httpclient.customReader")
+	assert.ErrorContains(t, err, "cannot reset reader of type httpclient.customReader")
 }
 
 func TestRetryGetRequest(t *testing.T) {
 	// This test was added in response to https://github.com/databricks/terraform-provider-databricks/issues/2675.
 	succeed := false
 	handler := func(req *http.Request) (*http.Response, error) {
-		require.Nil(t, req.Body)
+		assert.Nil(t, req.Body)
 
 		if succeed {
 			return &http.Response{
@@ -614,9 +613,9 @@ func TestRetryGetRequest(t *testing.T) {
 	respBytes := bytes.Buffer{}
 	err := client.Do(context.Background(), "GET", "/a",
 		WithResponseUnmarshal(&respBytes))
-	require.NoError(t, err)
-	require.Equal(t, "succeeded", respBytes.String())
-	require.True(t, succeed)
+	assert.NoError(t, err)
+	assert.Equal(t, "succeeded", respBytes.String())
+	assert.True(t, succeed)
 }
 
 func TestOAuth2Integration(t *testing.T) {
@@ -637,8 +636,8 @@ func TestOAuth2Integration(t *testing.T) {
 		AccessToken: "abc",
 	}))
 	res, err := outer.Get("abc")
-	require.NoError(t, err)
-	require.Equal(t, 204, res.StatusCode)
+	assert.NoError(t, err)
+	assert.Equal(t, 204, res.StatusCode)
 }
 
 func TestErrorOnMultipleAuthVisitor(t *testing.T) {
@@ -657,8 +656,8 @@ func TestErrorOnMultipleAuthVisitor(t *testing.T) {
 	c := NewApiClient(ClientConfig{
 		AuthVisitor: defaultAuthVisitor,
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
-			require.Equal(t, "", r.Header.Get("X-Auth"))
-			require.Equal(t, "def", r.Header.Get("X-Auth-custom"))
+			assert.Equal(t, "", r.Header.Get("X-Auth"))
+			assert.Equal(t, "def", r.Header.Get("X-Auth-custom"))
 			return &http.Response{
 				StatusCode: 200,
 				Body:       io.NopCloser(strings.NewReader(`{"foo": 2}`)),
@@ -667,7 +666,7 @@ func TestErrorOnMultipleAuthVisitor(t *testing.T) {
 		}),
 	})
 	err := c.Do(context.Background(), "GET", "/a/b", WithRequestData(map[string]any{}), authOption, authOption)
-	require.Error(t, err, "only one auth visitor is allowed")
+	assert.Error(t, err, "only one auth visitor is allowed")
 }
 
 func TestCustomAuthVisitor(t *testing.T) {
@@ -686,8 +685,8 @@ func TestCustomAuthVisitor(t *testing.T) {
 	c := NewApiClient(ClientConfig{
 		AuthVisitor: defaultAuthVisitor,
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
-			require.Equal(t, "", r.Header.Get("X-Auth"))
-			require.Equal(t, "def", r.Header.Get("X-Auth-custom"))
+			assert.Equal(t, "", r.Header.Get("X-Auth"))
+			assert.Equal(t, "def", r.Header.Get("X-Auth-custom"))
 			return &http.Response{
 				StatusCode: 200,
 				Body:       io.NopCloser(strings.NewReader(`{"foo": 2}`)),
@@ -696,7 +695,7 @@ func TestCustomAuthVisitor(t *testing.T) {
 		}),
 	})
 	err := c.Do(context.Background(), "GET", "/a/b", WithRequestData(map[string]any{}), authOption)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }
 
 func TestDefaultAuthVisitor(t *testing.T) {
@@ -714,8 +713,8 @@ func TestDefaultAuthVisitor(t *testing.T) {
 	c := NewApiClient(ClientConfig{
 		AuthVisitor: defaultAuthVisitor,
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
-			require.Equal(t, "abc", r.Header.Get("X-Auth"))
-			require.Equal(t, "def", r.Header.Get("X-Unrelated"))
+			assert.Equal(t, "abc", r.Header.Get("X-Auth"))
+			assert.Equal(t, "def", r.Header.Get("X-Unrelated"))
 			return &http.Response{
 				StatusCode: 200,
 				Body:       io.NopCloser(strings.NewReader(`{"foo": 2}`)),
@@ -724,7 +723,7 @@ func TestDefaultAuthVisitor(t *testing.T) {
 		}),
 	})
 	err := c.Do(context.Background(), "GET", "/a/b", WithRequestData(map[string]any{}), authOption)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }
 
 func TestTraceparentHeader(t *testing.T) {

@@ -9,7 +9,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestAccJobsApiFullIntegration(t *testing.T) {
@@ -27,7 +26,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 			time.sleep(10)
 			dbutils.notebook.exit('hello')`)),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	run, err := w.Jobs.SubmitAndWait(ctx, jobs.SubmitRun{
 		RunName: RandomName("go-sdk-SubmitAndWait-"),
@@ -39,11 +38,11 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 			TaskKey: RandomName(),
 		}},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	defer w.Jobs.DeleteRunByRunId(ctx, run.RunId)
 
 	output, err := w.Jobs.GetRunOutputByRunId(ctx, run.Tasks[0].RunId)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, output.NotebookOutput.Result, "hello")
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
@@ -58,20 +57,20 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 			TimeoutSeconds: 0,
 		}},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	defer w.Jobs.DeleteByJobId(ctx, createdJob.JobId)
 
 	runById, err := w.Jobs.RunNowAndWait(ctx, jobs.RunNow{
 		JobId: createdJob.JobId,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.NotEmpty(t, runById.Tasks)
 
 	exportedView, err := w.Jobs.ExportRun(ctx, jobs.ExportRunRequest{
 		RunId:         runById.Tasks[0].RunId,
 		ViewsToExport: "CODE",
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.NotEmpty(t, exportedView.Views)
 	assert.Equal(t, exportedView.Views[0].Type, jobs.ViewTypeNotebook)
 	assert.NotEmpty(t, exportedView.Views[0].Content)
@@ -79,35 +78,35 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	_, err = w.Jobs.RunNow(ctx, jobs.RunNow{
 		JobId: createdJob.JobId,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	runList, err := w.Jobs.ListRunsAll(ctx, jobs.ListRunsRequest{
 		JobId: createdJob.JobId,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, createdJob.JobId, runList[0].JobId)
 
 	err = w.Jobs.CancelAllRuns(ctx, jobs.CancelAllRuns{
 		JobId: createdJob.JobId,
 	})
 
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	runNowResponse, err := w.Jobs.RunNow(ctx, jobs.RunNow{
 		JobId: createdJob.JobId,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	cancelledRun, err := w.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
 		RunId: runNowResponse.Response.RunId,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	repairedRun, err := w.Jobs.RepairRunAndWait(ctx, jobs.RepairRun{
 		RerunTasks: []string{cancelledRun.Tasks[0].TaskKey},
 		RunId:      runNowResponse.Response.RunId,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.GreaterOrEqual(t, len(repairedRun.Tasks), 1)
 
 	newName := RandomName("updated")
@@ -118,10 +117,10 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 			MaxConcurrentRuns: 5,
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	byId, err := w.Jobs.GetByJobId(ctx, createdJob.JobId)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, byId.Settings.Name, newName)
 	assert.Equal(t, byId.Settings.MaxConcurrentRuns, 5)
@@ -134,20 +133,20 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 			Tasks: byId.Settings.Tasks,
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	byId, err = w.Jobs.GetByJobId(ctx, createdJob.JobId)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byId.Settings.Name, newName)
 
 	byName, err := w.Jobs.GetBySettingsName(ctx, newName)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byId.JobId, byName.JobId)
 
 	jobList, err := w.Jobs.ListAll(ctx, jobs.ListJobsRequest{
 		ExpandTasks: false,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.True(t, len(jobList) >= 1)
 }
 
@@ -162,19 +161,19 @@ func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 
 	// Fetch list of spark runtime versions
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Select the latest LTS version
 	latestLTS, err := sparkVersions.Select(compute.SparkVersionRequest{
 		Latest: true,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Select the smallest node type id
 	smallestWithDisk, err := w.Clusters.SelectNodeType(ctx, compute.NodeTypeRequest{
 		LocalDisk: true,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	for i := 0; i < 34; i++ {
 		createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
@@ -193,14 +192,14 @@ func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 				},
 			}},
 		})
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		t.Cleanup(func() {
 			err := w.Jobs.DeleteByJobId(ctx, createdJob.JobId)
-			require.NoError(t, err)
+			assert.NoError(t, err)
 		})
 	}
 	all, err := w.Jobs.ListAll(ctx, jobs.ListJobsRequest{})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	ids := map[int64]bool{}
 	for _, v := range all {
 		ids[v.JobId] = true

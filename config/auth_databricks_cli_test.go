@@ -8,29 +8,28 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 var cliDummy = &Config{Host: "https://abc.cloud.databricks.com/"}
 
 func writeSmallDummyExecutable(t *testing.T, path string) {
 	f, err := os.Create(filepath.Join(path, "databricks"))
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	defer f.Close()
 	err = os.Chmod(f.Name(), 0755)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	_, err = f.WriteString("#!/bin/sh\necho hello world\n")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }
 
 func writeLargeDummyExecutable(t *testing.T, path string) {
 	f, err := os.Create(filepath.Join(path, "databricks"))
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	defer f.Close()
 	err = os.Chmod(f.Name(), 0755)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	_, err = f.WriteString("#!/bin/sh\n")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	f.WriteString(`
 cat <<EOF
@@ -41,12 +40,12 @@ cat <<EOF
 }
 EOF
 `)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	_, err = f.WriteString("exit 0\n")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	err = f.Truncate(1024 * 1024)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }
 
 func TestDatabricksCliCredentials_SkipAzure(t *testing.T) {
@@ -67,7 +66,7 @@ func TestDatabricksCliCredentials_NotInstalled(t *testing.T) {
 	t.Setenv("PATH", "whatever")
 	aa := DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }
 
 func TestDatabricksCliCredentials_InstalledLegacy(t *testing.T) {
@@ -78,7 +77,7 @@ func TestDatabricksCliCredentials_InstalledLegacy(t *testing.T) {
 
 	aa := DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }
 
 func TestDatabricksCliCredentials_InstalledLegacyWithSymlink(t *testing.T) {
@@ -91,7 +90,7 @@ func TestDatabricksCliCredentials_InstalledLegacyWithSymlink(t *testing.T) {
 
 	aa := DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }
 
 func TestDatabricksCliCredentials_InstalledNew(t *testing.T) {
@@ -104,5 +103,5 @@ func TestDatabricksCliCredentials_InstalledNew(t *testing.T) {
 
 	aa := DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }

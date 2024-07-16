@@ -6,7 +6,6 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestAccTokens(t *testing.T) {
@@ -16,18 +15,18 @@ func TestAccTokens(t *testing.T) {
 		Comment:         RandomName("go-sdk-"),
 		LifetimeSeconds: 300,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	t.Cleanup(func() {
 		err = w.Tokens.DeleteByTokenId(ctx, token.TokenInfo.TokenId)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	})
 
 	all, err := w.Tokens.ListAll(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 
 	byName, err := w.Tokens.GetByComment(ctx, token.TokenInfo.Comment)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, token.TokenInfo.TokenId, byName.TokenId)
 
 	wscInner := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
@@ -37,6 +36,6 @@ func TestAccTokens(t *testing.T) {
 	}))
 
 	me2, err := wscInner.CurrentUser.Me(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, me2.UserName, me(t, w).UserName)
 }

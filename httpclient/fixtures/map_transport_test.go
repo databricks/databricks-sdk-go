@@ -8,7 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func init() {
@@ -51,7 +50,7 @@ func TestSimplePostErrorStubFilled(t *testing.T) {
 		httpclient.WithRequestData(map[string]any{
 			"foo": "bar",
 		}))
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, "reply", out["some"])
 }
 
@@ -69,6 +68,6 @@ func TestPassFile(t *testing.T) {
 	ctx := context.Background()
 	err := client.Do(ctx, "GET", "/some",
 		httpclient.WithResponseUnmarshal(&out))
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, "data", out.Some)
 }

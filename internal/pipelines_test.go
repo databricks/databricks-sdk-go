@@ -7,7 +7,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestAccPipelines(t *testing.T) {
@@ -21,7 +20,7 @@ func TestAccPipelines(t *testing.T) {
 		Overwrite: true,
 		Path:      notebookPath,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	created, err := w.Pipelines.Create(ctx, pipelines.CreatePipeline{
 		Continuous: false,
@@ -44,12 +43,12 @@ func TestAccPipelines(t *testing.T) {
 			},
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	events, err := w.Pipelines.ListPipelineEventsAll(ctx, pipelines.ListPipelineEventsRequest{
 		PipelineId: created.PipelineId,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	// atleast created event should have been emitted
 	assert.Greater(t, len(events), 0)
 
@@ -76,21 +75,21 @@ func TestAccPipelines(t *testing.T) {
 			},
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	byId, err := w.Pipelines.GetByPipelineId(ctx, created.PipelineId)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	all, err := w.Pipelines.ListPipelinesAll(ctx, pipelines.ListPipelinesRequest{})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	names, err := w.Pipelines.PipelineStateInfoNameToPipelineIdMap(ctx, pipelines.ListPipelinesRequest{})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
 	assert.Equal(t, byId.PipelineId, names[byId.Name])
 
 	byName, err := w.Pipelines.GetByName(ctx, byId.Name)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byName.PipelineId, byId.PipelineId)
 }
 

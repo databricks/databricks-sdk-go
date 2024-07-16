@@ -10,7 +10,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type configFixture struct {
@@ -83,12 +82,12 @@ func (cf configFixture) apply(t *testing.T) {
 	env.CleanupEnvironment(t)
 	c, err := cf.configureProviderAndReturnConfig(t)
 	if cf.AssertError != "" {
-		require.NotNilf(t, err, "Expected to have %s error", cf.AssertError)
-		require.Equal(t, cf.AssertError, err.Error())
+		assert.NotNilf(t, err, "Expected to have %s error", cf.AssertError)
+		assert.Equal(t, cf.AssertError, err.Error())
 		return
 	}
 	if err != nil {
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		return
 	}
 	assert.Equal(t, cf.AssertAzure, c.IsAzure(), "Auth is not for Azure")

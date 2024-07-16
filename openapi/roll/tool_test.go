@@ -9,13 +9,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/openapi/code"
 	"github.com/databricks/databricks-sdk-go/openapi/render"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestLoadsFolder(t *testing.T) {
 	// ../../internal is the folder with integration tests
 	s, err := NewSuite("../../internal")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	methods := s.Methods()
 	assert.True(t, len(methods) > 1)
@@ -42,20 +41,20 @@ func TestOptimize(t *testing.T) {
 	home, _ := os.UserHomeDir()
 	batch, err := code.NewFromFile(ctx, filepath.Join(home,
 		"universe/bazel-bin/openapi/all-internal.json"))
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	s, err := NewSuite("../../internal")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	err = s.OptimizeWithApiSpec(batch)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }
 
 func TestRegenerateExamples(t *testing.T) {
 	t.Skip() // temporary measure
 	ctx := context.Background()
 	s, err := NewSuite("../../internal")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	target := "../.."
 	pass := render.NewPass(target, s.ServicesExamples(), map[string]string{
@@ -72,7 +71,7 @@ func TestRegeneratePythonExamples(t *testing.T) {
 	t.Skip()
 	ctx := context.Background()
 	s, err := NewSuite("../../internal")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	target := "../../../databricks-sdk-py"
 	pass := render.NewPass(target, s.Samples(), map[string]string{

@@ -9,33 +9,32 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestNested(t *testing.T) {
 	ctx := context.Background()
 	batch, err := NewFromFile(ctx, "../testdata/spec_subservices.json")
-	require.NoError(t, err)
-	require.Contains(t, batch.packages["settings"].services, "Settings")
-	require.Contains(t, batch.packages["settings"].services["Settings"].subservices, "DefaultNamespace")
-	require.Equal(t, batch.packages["settings"].services["DefaultNamespace"].ParentService.Name, "Settings")
+	assert.NoError(t, err)
+	assert.Contains(t, batch.packages["settings"].services, "Settings")
+	assert.Contains(t, batch.packages["settings"].services["Settings"].subservices, "DefaultNamespace")
+	assert.Equal(t, batch.packages["settings"].services["DefaultNamespace"].ParentService.Name, "Settings")
 }
 
 func TestBasic(t *testing.T) {
 	ctx := context.Background()
 	batch, err := NewFromFile(ctx, "../testdata/spec.json")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
-	require.Len(t, batch.Packages(), 1)
-	require.Len(t, batch.Services(), 1)
-	require.Len(t, batch.Types(), 19)
+	assert.Len(t, batch.Packages(), 1)
+	assert.Len(t, batch.Services(), 1)
+	assert.Len(t, batch.Types(), 19)
 	commands, ok := batch.packages["commands"]
-	require.True(t, ok)
+	assert.True(t, ok)
 
 	assert.Equal(t, "commands", commands.FullName())
 
 	ce, ok := commands.services["CommandExecution"]
-	require.True(t, ok)
+	assert.True(t, ok)
 	assert.Equal(t, "commands.CommandExecution", ce.FullName())
 	assert.Equal(t, "commandExecution", ce.CamelName())
 	assert.Equal(t, "CommandExecution", ce.PascalName())
@@ -51,7 +50,7 @@ func TestBasic(t *testing.T) {
 	assert.Nil(t, execute.Shortcut())
 
 	wait := execute.Wait()
-	require.NotNil(t, wait)
+	assert.NotNil(t, wait)
 	binding := wait.Binding()
 	assert.Equal(t, 3, len(binding))
 
@@ -133,8 +132,8 @@ func TestMethodsReport(t *testing.T) {
 func TestDataPlane(t *testing.T) {
 	ctx := context.Background()
 	batch, err := NewFromFile(ctx, "../testdata/spec_dataplane.json")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	dataPlane := batch.packages["model"].services["Model"].methods["query"].DataPlane
-	require.Equal(t, "get", dataPlane.ConfigMethod)
-	require.Equal(t, "dataplaneInfo", dataPlane.Fields[0])
+	assert.Equal(t, "get", dataPlane.ConfigMethod)
+	assert.Equal(t, "dataplaneInfo", dataPlane.Fields[0])
 }

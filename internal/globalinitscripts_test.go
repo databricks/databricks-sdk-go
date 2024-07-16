@@ -6,7 +6,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestAccGlobalInitScripts(t *testing.T) {
@@ -18,7 +17,7 @@ func TestAccGlobalInitScripts(t *testing.T) {
 		Enabled:  true,
 		Position: 10,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	defer w.GlobalInitScripts.DeleteByScriptId(ctx, created.ScriptId)
 
@@ -27,20 +26,20 @@ func TestAccGlobalInitScripts(t *testing.T) {
 		Name:     RandomName("go-sdk-updated-"),
 		Script:   base64.StdEncoding.EncodeToString([]byte("echo 2")),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	byId, err := w.GlobalInitScripts.GetByScriptId(ctx, created.ScriptId)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	all, err := w.GlobalInitScripts.ListAll(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	names, err := w.GlobalInitScripts.GlobalInitScriptDetailsNameToScriptIdMap(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
 	assert.Equal(t, byId.ScriptId, names[byId.Name])
 
 	byName, err := w.GlobalInitScripts.GetByName(ctx, byId.Name)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byName.ScriptId, byId.ScriptId)
 }

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/sql"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAccSqlQueryHistory(t *testing.T) {
@@ -17,5 +17,5 @@ func TestAccSqlQueryHistory(t *testing.T) {
 			},
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }

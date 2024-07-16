@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 type oneTimeCloser struct {
@@ -38,9 +38,9 @@ func TestNewResponseWrapperBodyCanBeConsumed(t *testing.T) {
 	ctx := context.Background()
 	inner, err := http.NewRequestWithContext(ctx, "GET", "abc", nil)
 	inner.Header.Set("Content-Type", "application/json")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	req, err := NewRequestBody("abc123")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	resp := &http.Response{
 		Body:    newOneTimeCloser(strings.NewReader("Response Body")),
 		Request: inner,
@@ -49,13 +49,13 @@ func TestNewResponseWrapperBodyCanBeConsumed(t *testing.T) {
 	resp.Header.Set("Content-Type", "application/json")
 
 	wrapper, err := NewResponseWrapper(resp, req)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	bs, err := io.ReadAll(wrapper.Response.Body)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	// The response body should be available both in the Body field of the
 	// *http.Response as well as the DebugBytes field of the ResponseWrapper,
 	// because this is a non-streaming response.
-	require.Equal(t, "Response Body", string(bs))
-	require.Equal(t, "Response Body", string(wrapper.DebugBytes))
+	assert.Equal(t, "Response Body", string(bs))
+	assert.Equal(t, "Response Body", string(wrapper.DebugBytes))
 }

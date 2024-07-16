@@ -8,7 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/databricks/databricks-sdk-go/logger"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func init() {
@@ -35,12 +35,12 @@ func authenticateRequest(cfg *Config) (*http.Request, error) {
 
 func assertHeaders(t *testing.T, cfg *Config, expectedHeaders map[string]string) {
 	req, err := authenticateRequest(cfg)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	actualHeaders := map[string]string{}
 	for k := range req.Header {
 		actualHeaders[k] = req.Header.Get(k)
 	}
-	require.Equal(t, expectedHeaders, actualHeaders)
+	assert.Equal(t, expectedHeaders, actualHeaders)
 }
 
 func TestMsiHappyFlow(t *testing.T) {
@@ -100,7 +100,7 @@ func TestMsiFailsOnResolveWorkspace(t *testing.T) {
 			},
 		},
 	})
-	require.ErrorIs(t, err, apierr.ErrNotFound)
+	assert.ErrorIs(t, err, apierr.ErrNotFound)
 }
 
 func TestMsiTokenNotFound(t *testing.T) {
@@ -115,7 +115,7 @@ func TestMsiTokenNotFound(t *testing.T) {
 			},
 		},
 	})
-	require.ErrorIs(t, err, apierr.ErrNotFound)
+	assert.ErrorIs(t, err, apierr.ErrNotFound)
 }
 
 func TestMsiInvalidTokenExpiry(t *testing.T) {
@@ -132,5 +132,5 @@ func TestMsiInvalidTokenExpiry(t *testing.T) {
 			},
 		},
 	})
-	require.ErrorIs(t, err, errInvalidTokenExpiry)
+	assert.ErrorIs(t, err, errInvalidTokenExpiry)
 }

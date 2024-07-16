@@ -9,7 +9,6 @@ import (
 	"github.com/golang/mock/gomock"
 	_ "github.com/golang/mock/mockgen/model"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
@@ -39,7 +38,7 @@ func TestDbfsHighLevelAPI(t *testing.T) {
 	}))
 
 	w, err := databricks.NewWorkspaceClient()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	w.Dbfs.WithImpl(mockDbfs)
 

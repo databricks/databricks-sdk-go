@@ -5,7 +5,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestAccIpAccessLists(t *testing.T) {
@@ -16,7 +15,7 @@ func TestAccIpAccessLists(t *testing.T) {
 		IpAddresses: []string{"1.0.0.0/16"},
 		ListType:    settings.ListTypeBlock,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	defer w.IpAccessLists.DeleteByIpAccessListId(ctx, created.IpAccessList.ListId)
 
@@ -27,20 +26,20 @@ func TestAccIpAccessLists(t *testing.T) {
 		ListType:       settings.ListTypeBlock,
 		Enabled:        false,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	byId, err := w.IpAccessLists.GetByIpAccessListId(ctx, created.IpAccessList.ListId)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	all, err := w.IpAccessLists.ListAll(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	names, err := w.IpAccessLists.IpAccessListInfoLabelToListIdMap(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
 	assert.Equal(t, byId.IpAccessList.ListId, names[byId.IpAccessList.Label])
 
 	byName, err := w.IpAccessLists.GetByLabel(ctx, byId.IpAccessList.Label)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byId.IpAccessList.ListId, byName.ListId)
 }

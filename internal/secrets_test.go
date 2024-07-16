@@ -6,7 +6,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestAccSecrets(t *testing.T) {
@@ -19,14 +18,14 @@ func TestAccSecrets(t *testing.T) {
 	err := w.Secrets.CreateScope(ctx, workspace.CreateScope{
 		Scope: scopeName,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	t.Cleanup(func() {
 		err = w.Secrets.DeleteScopeByScope(ctx, scopeName)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	})
 
 	scopes, err := w.Secrets.ListScopesAll(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.True(t, len(scopes) >= 1)
 
 	// creates keyName
@@ -35,26 +34,26 @@ func TestAccSecrets(t *testing.T) {
 		Key:         keyName,
 		StringValue: RandomName("dummy"),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	t.Cleanup(func() {
 		err = w.Secrets.DeleteSecret(ctx, workspace.DeleteSecret{
 			Scope: scopeName,
 			Key:   keyName,
 		})
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	})
 
 	scrts, err := w.Secrets.ListSecretsByScope(ctx, scopeName)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.True(t, len(scrts.Secrets) == 1)
 
 	group, err := w.Groups.Create(ctx, iam.Group{
 		DisplayName: RandomName("go-sdk-"),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	t.Cleanup(func() {
 		err = w.Groups.DeleteById(ctx, group.Id)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	})
 
 	err = w.Secrets.PutAcl(ctx, workspace.PutAcl{
@@ -62,7 +61,7 @@ func TestAccSecrets(t *testing.T) {
 		Permission: workspace.AclPermissionManage,
 		Principal:  group.DisplayName,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	t.Cleanup(func() {
 		w.Secrets.DeleteAcl(ctx, workspace.DeleteAcl{
 			Scope:     scopeName,
@@ -71,7 +70,7 @@ func TestAccSecrets(t *testing.T) {
 	})
 
 	acls, err := w.Secrets.ListAclsByScope(ctx, scopeName)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, 2, len(acls.Items))
 }

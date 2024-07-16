@@ -7,7 +7,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestAccConnections(t *testing.T) {
@@ -23,10 +22,10 @@ func TestAccConnections(t *testing.T) {
 			"personalAccessToken": RandomName("go-sdk-connection-"),
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	t.Cleanup(func() {
 		err := w.Connections.Delete(ctx, catalog.DeleteConnectionRequest{Name: connCreate.Name})
-		require.True(t, err == nil || apierr.IsMissing(err))
+		assert.True(t, err == nil || apierr.IsMissing(err))
 	})
 
 	connUpdate, err := w.Connections.Update(ctx, catalog.UpdateConnection{
@@ -37,13 +36,13 @@ func TestAccConnections(t *testing.T) {
 			"personalAccessToken": RandomName("go-sdk-connection-"),
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	conn, err := w.Connections.Get(ctx, catalog.GetConnectionRequest{Name: connUpdate.Name})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, conn.Options, connUpdate.Options)
 
 	connList, err := w.Connections.ListAll(ctx, catalog.ListConnectionsRequest{})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.True(t, len(connList) >= 1)
 }

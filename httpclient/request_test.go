@@ -11,7 +11,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 )
 
@@ -21,37 +20,37 @@ func TestMakeRequestBody(t *testing.T) {
 	}
 	requestURL := "/a/b/c"
 	body, err := makeRequestBody("GET", &requestURL, x{"test"}, "")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	bodyBytes, err := io.ReadAll(body.Reader)
-	require.NoError(t, err)
-	require.Equal(t, "/a/b/c?scope=test", requestURL)
-	require.Equal(t, 0, len(bodyBytes))
+	assert.NoError(t, err)
+	assert.Equal(t, "/a/b/c?scope=test", requestURL)
+	assert.Equal(t, 0, len(bodyBytes))
 
 	requestURL = "/a/b/c"
 	body, err = makeRequestBody("POST", &requestURL, x{"test"}, "")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	bodyBytes, err = io.ReadAll(body.Reader)
-	require.NoError(t, err)
-	require.Equal(t, "/a/b/c", requestURL)
+	assert.NoError(t, err)
+	assert.Equal(t, "/a/b/c", requestURL)
 	x1 := `{"scope":"test"}`
-	require.Equal(t, []byte(x1), bodyBytes)
+	assert.Equal(t, []byte(x1), bodyBytes)
 
 	requestURL = "/a/b/c"
 	body, err = makeRequestBody("HEAD", &requestURL, x{"test"}, "")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	bodyBytes, err = io.ReadAll(body.Reader)
-	require.NoError(t, err)
-	require.Equal(t, "/a/b/c?scope=test", requestURL)
-	require.Equal(t, 0, len(bodyBytes))
+	assert.NoError(t, err)
+	assert.Equal(t, "/a/b/c?scope=test", requestURL)
+	assert.Equal(t, 0, len(bodyBytes))
 }
 
 func TestMakeRequestBodyFromReader(t *testing.T) {
 	requestURL := "/a/b/c"
 	body, err := makeRequestBody("PUT", &requestURL, strings.NewReader("abc"), "")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	bodyBytes, err := io.ReadAll(body.Reader)
-	require.NoError(t, err)
-	require.Equal(t, []byte("abc"), bodyBytes)
+	assert.NoError(t, err)
+	assert.Equal(t, []byte("abc"), bodyBytes)
 }
 
 func TestUrlEncoding(t *testing.T) {
@@ -62,11 +61,11 @@ func TestUrlEncoding(t *testing.T) {
 	}
 	requestURL := "/a/b/c"
 	body, err := makeRequestBody("POST", &requestURL, data, UrlEncodedContentType)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	bodyBytes, err := io.ReadAll(body.Reader)
-	require.NoError(t, err)
-	require.Equal(t, "/a/b/c", requestURL)
-	require.Equal(t, string(bodyBytes), "assertion=assertion&authorization_details=%5B%7B%22a%22%3A%22b%22%7D%5D&grant_type=grant")
+	assert.NoError(t, err)
+	assert.Equal(t, "/a/b/c", requestURL)
+	assert.Equal(t, string(bodyBytes), "assertion=assertion&authorization_details=%5B%7B%22a%22%3A%22b%22%7D%5D&grant_type=grant")
 }
 
 func TestMakeRequestBodyReaderError(t *testing.T) {
@@ -74,7 +73,7 @@ func TestMakeRequestBodyReaderError(t *testing.T) {
 	_, err := makeRequestBody("POST", &requestURL, errReader(false), "")
 	// The request body is only read once the request is sent, so no error
 	// should be returned until then.
-	require.NoError(t, err, "request body reader error should be ignored")
+	assert.NoError(t, err, "request body reader error should be ignored")
 }
 
 func TestMakeRequestBodyJsonError(t *testing.T) {
@@ -83,7 +82,7 @@ func TestMakeRequestBodyJsonError(t *testing.T) {
 		Foo chan string `json:"foo"`
 	}
 	_, err := makeRequestBody("POST", &requestURL, x{make(chan string)}, "")
-	require.EqualError(t, err, "request marshal failure: json: unsupported type: chan string")
+	assert.EqualError(t, err, "request marshal failure: json: unsupported type: chan string")
 }
 
 type failingUrlEncode string
@@ -98,20 +97,20 @@ func TestMakeRequestBodyQueryFailingEncode(t *testing.T) {
 		Foo failingUrlEncode `url:"foo"`
 	}
 	_, err := makeRequestBody("GET", &requestURL, x{failingUrlEncode("always failing")}, "")
-	require.EqualError(t, err, "cannot create query string: always failing")
+	assert.EqualError(t, err, "cannot create query string: always failing")
 }
 
 func TestMakeRequestBodyQueryUnsupported(t *testing.T) {
 	requestURL := "/a/b/c"
 	_, err := makeRequestBody("GET", &requestURL, true, "")
-	require.EqualError(t, err, "unsupported query string data: true")
+	assert.EqualError(t, err, "unsupported query string data: true")
 }
 
 func TestWithTokenSource(t *testing.T) {
 	client := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {
 			foo := r.Header.Get("Foo")
-			require.Equal(t, "bar", foo)
+			assert.Equal(t, "bar", foo)
 			token := r.Header.Get("Authorization")
 			reader := strings.NewReader(token)
 			return &http.Response{
@@ -131,8 +130,8 @@ func TestWithTokenSource(t *testing.T) {
 			TokenType:   "awesome",
 			AccessToken: "token",
 		})))
-	require.NoError(t, err)
-	require.Equal(t, "awesome token", buf.String())
+	assert.NoError(t, err)
+	assert.Equal(t, "awesome token", buf.String())
 }
 
 func TestEncodeMultiSegmentPathParameter(t *testing.T) {

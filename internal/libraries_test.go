@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/compute"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAccLibraries(t *testing.T) {
@@ -21,7 +21,7 @@ func TestAccLibraries(t *testing.T) {
 			},
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	err = w.Libraries.UpdateAndWait(ctx, compute.Update{
 		ClusterId: clusterId,
@@ -33,5 +33,5 @@ func TestAccLibraries(t *testing.T) {
 			},
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }

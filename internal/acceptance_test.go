@@ -12,7 +12,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func init() {
@@ -26,7 +25,7 @@ func TestAccDefaultCredentials(t *testing.T) {
 	w := databricks.Must(databricks.NewWorkspaceClient())
 	ctx := context.Background()
 	versions, err := w.Clusters.SparkVersions(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	v, err := versions.Select(compute.SparkVersionRequest{
 		LongTermSupport: true,
@@ -45,7 +44,7 @@ func TestAccExplicitDatabricksCfg(t *testing.T) {
 	}))
 	ctx := context.Background()
 	versions, err := w.Clusters.SparkVersions(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	v, err := versions.Select(compute.SparkVersionRequest{
 		LongTermSupport: true,
@@ -86,7 +85,7 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 	}))
 	ctx := context.Background()
 	versions, err := w.Clusters.SparkVersions(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	v, err := versions.Select(compute.SparkVersionRequest{
 		LongTermSupport: true,
@@ -107,7 +106,7 @@ func TestAccAzureErrorMappingForUnauthenticated(t *testing.T) {
 	}))
 	ctx := context.Background()
 	_, err := w.Clusters.SparkVersions(ctx)
-	require.ErrorIs(t, err, apierr.ErrUnauthenticated)
+	assert.ErrorIs(t, err, apierr.ErrUnauthenticated)
 }
 
 func TestAccExplicitAzureSpnAuth(t *testing.T) {
@@ -121,7 +120,7 @@ func TestAccExplicitAzureSpnAuth(t *testing.T) {
 	}))
 	ctx := context.Background()
 	versions, err := w.Clusters.SparkVersions(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	v, err := versions.Select(compute.SparkVersionRequest{
 		LongTermSupport: true,
@@ -154,5 +153,5 @@ func TestAccAccountsMsiCredentials(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "ARM_USE_MSI"))
 	ctx, a := accountTest(t)
 	_, err := a.IpAccessLists.ListAll(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }

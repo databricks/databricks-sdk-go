@@ -7,7 +7,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestMwsAccUsageDownload(t *testing.T) {
@@ -19,9 +18,9 @@ func TestMwsAccUsageDownload(t *testing.T) {
 		StartMonth: "2023-01",
 		EndMonth:   "2023-02",
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	out, err := io.ReadAll(resp.Contents)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.NotEmpty(t, out)
 }
 
@@ -38,7 +37,7 @@ func TestMwsAccLogDelivery(t *testing.T) {
 			},
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	defer a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
 
 	bucket, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
@@ -47,7 +46,7 @@ func TestMwsAccLogDelivery(t *testing.T) {
 			BucketName: RandomName("sdk-bucket-"),
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	defer a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
 
 	// TODO: OpenAPI: x-databricks-sdk-inline on schema
@@ -60,22 +59,22 @@ func TestMwsAccLogDelivery(t *testing.T) {
 			OutputFormat:           billing.OutputFormatJson,
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	defer a.LogDelivery.PatchStatus(ctx, billing.UpdateLogDeliveryConfigurationStatusRequest{
 		LogDeliveryConfigurationId: created.LogDeliveryConfiguration.ConfigId,
 		Status:                     billing.LogDeliveryConfigStatusDisabled,
 	})
 
 	byId, err := a.LogDelivery.GetByLogDeliveryConfigurationId(ctx, created.LogDeliveryConfiguration.ConfigId)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, billing.LogDeliveryConfigStatusDisabled, byId.LogDeliveryConfiguration.Status)
 
 	all, err := a.LogDelivery.ListAll(ctx, billing.ListLogDeliveryRequest{})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 
 	byName, err := a.LogDelivery.GetByConfigName(ctx, byId.LogDeliveryConfiguration.ConfigName)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, byId.LogDeliveryConfiguration.ConfigId, byName.ConfigId)
 }
@@ -102,7 +101,7 @@ func TestMwsAccBudgets(t *testing.T) {
 			},
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	defer a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetId)
 
 	err = a.Budgets.Update(ctx, billing.WrappedBudget{
@@ -121,22 +120,22 @@ func TestMwsAccBudgets(t *testing.T) {
 			},
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	byId, err := a.Budgets.GetByBudgetId(ctx, created.Budget.BudgetId)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.NotEqual(t, created.Budget.Name, byId.Budget.Name)
 
 	byName, err := a.Budgets.GetByName(ctx, byId.Budget.Name)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byId.Budget.BudgetId, byName.BudgetId)
 
 	all, err := a.Budgets.ListAll(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 
 	names, err := a.Budgets.BudgetWithStatusNameToBudgetIdMap(ctx)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
 	assert.Equal(t, created.Budget.BudgetId, names[byId.Budget.Name])
 }

@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"golang.org/x/exp/maps"
 )
 
@@ -29,7 +28,7 @@ func TestBodyLoggerCommon(t *testing.T) {
 	}
 
 	buf, err := json.Marshal(body)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	dump := bodyLogger{
 		debugTruncateBytes: 4,
@@ -38,7 +37,7 @@ func TestBodyLoggerCommon(t *testing.T) {
 
 	var out any
 	err = json.Unmarshal([]byte(dump), &out)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Top level map contains all keys
 	keys := maps.Keys(out.(map[string]any))

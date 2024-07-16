@@ -6,7 +6,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAuthServerCheckHost(t *testing.T) {
@@ -59,7 +59,7 @@ func TestAuthServerNotLocalhost(t *testing.T) {
 		MetadataServiceURL: "http://otherhost/metadata/token",
 		HTTPTransport:      fixtures.Failures,
 	})
-	require.ErrorIs(t, err, errMetadataServiceNotLocalhost)
+	assert.ErrorIs(t, err, errMetadataServiceNotLocalhost)
 }
 
 func TestAuthServerMalformed(t *testing.T) {
@@ -68,7 +68,7 @@ func TestAuthServerMalformed(t *testing.T) {
 		MetadataServiceURL: "#$%^&*",
 		HTTPTransport:      fixtures.Failures,
 	})
-	require.ErrorIs(t, err, errMetadataServiceMalformed)
+	assert.ErrorIs(t, err, errMetadataServiceMalformed)
 }
 
 func TestAuthServerNoContent(t *testing.T) {
@@ -81,7 +81,7 @@ func TestAuthServerNoContent(t *testing.T) {
 			},
 		},
 	})
-	require.ErrorIs(t, err, errInvalidToken)
+	assert.ErrorIs(t, err, errInvalidToken)
 }
 
 func TestAuthServerFailures(t *testing.T) {
@@ -91,6 +91,6 @@ func TestAuthServerFailures(t *testing.T) {
 		HTTPTransport:      fixtures.Failures,
 	})
 	var httpError *httpclient.HttpError
-	require.ErrorAs(t, err, &httpError)
-	require.Equal(t, 418, httpError.StatusCode)
+	assert.ErrorAs(t, err, &httpError)
+	assert.Equal(t, 418, httpError.StatusCode)
 }

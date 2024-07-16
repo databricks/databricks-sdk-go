@@ -10,7 +10,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 var azDummy = &Config{Host: "https://adb-xyz.c.azuredatabricks.net/"}
@@ -45,7 +44,7 @@ func TestAzureCliCredentials_NotInstalled(t *testing.T) {
 	os.Setenv("PATH", "whatever")
 	aa := AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }
 
 func TestAzureCliCredentials_NotLoggedIn(t *testing.T) {
@@ -94,7 +93,7 @@ func TestAzureCliCredentials_ReuseTokens(t *testing.T) {
 	// We verify the headers in the test above.
 	// This test validates we do not call the AZ CLI more than we need.
 	buf, err := os.ReadFile(count)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, buf, 2, "Expected the AZ CLI to be called twice")
 }
 

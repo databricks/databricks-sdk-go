@@ -17,7 +17,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"github.com/databricks/databricks-sdk-go/version"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type hc func(r *http.Request) (*http.Response, error)
@@ -33,22 +32,22 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 		ConfigFile:          "/dev/null",
 		RetryTimeoutSeconds: 1,
 		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
-			require.Equal(t, "GET", r.Method)
-			require.Equal(t, "/a/b", r.URL.Path)
-			require.Equal(t, "c=d", r.URL.RawQuery)
-			require.Equal(t, "f", r.Header.Get("e"))
+			assert.Equal(t, "GET", r.Method)
+			assert.Equal(t, "/a/b", r.URL.Path)
+			assert.Equal(t, "c=d", r.URL.RawQuery)
+			assert.Equal(t, "f", r.Header.Get("e"))
 			auth := r.Header.Get("Authorization")
-			require.Equal(t, "Bearer token", auth)
+			assert.Equal(t, "Bearer token", auth)
 			return nil, fmt.Errorf("nope")
 		}),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	err = c.Do(context.Background(), "GET", "/a/b", map[string]string{
 		"e": "f",
 	}, map[string]string{
 		"c": "d",
 	}, nil)
-	require.EqualError(t, err, `Get "https://some/a/b?c=d": nope`)
+	assert.EqualError(t, err, `Get "https://some/a/b?c=d": nope`)
 }
 
 func TestSimpleRequestFailsAPIError(t *testing.T) {
@@ -65,14 +64,14 @@ func TestSimpleRequestFailsAPIError(t *testing.T) {
 			}, nil
 		}),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	err = c.Do(context.Background(), "GET", "/a/b", map[string]string{
 		"e": "f",
 	}, map[string]string{
 		"c": "d",
 	}, nil)
-	require.EqualError(t, err, "nope")
-	require.ErrorIs(t, err, apierr.ErrInvalidParameterValue)
+	assert.EqualError(t, err, "nope")
+	assert.ErrorIs(t, err, apierr.ErrInvalidParameterValue)
 }
 
 func TestETag(t *testing.T) {
@@ -114,18 +113,18 @@ func TestETag(t *testing.T) {
 			}, nil
 		}),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	err = c.Do(context.Background(), "GET", "/a/b", map[string]string{
 		"e": "f",
 	}, map[string]string{
 		"c": "d",
 	}, nil)
 	details := apierr.GetErrorInfo(err)
-	require.Equal(t, 1, len(details))
+	assert.Equal(t, 1, len(details))
 	errorDetails := details[0]
-	require.Equal(t, reason, errorDetails.Reason)
-	require.Equal(t, domain, errorDetails.Domain)
-	require.Equal(t, map[string]string{
+	assert.Equal(t, reason, errorDetails.Reason)
+	assert.Equal(t, domain, errorDetails.Domain)
+	assert.Equal(t, map[string]string{
 		"etag": eTag,
 	}, errorDetails.Metadata)
 }
@@ -146,11 +145,11 @@ func TestSimpleRequestSucceeds(t *testing.T) {
 			}, nil
 		}),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	var resp Dummy
 	err = c.Do(context.Background(), "POST", "/c", nil, Dummy{1}, &resp)
-	require.NoError(t, err)
-	require.Equal(t, 2, resp.Foo)
+	assert.NoError(t, err)
+	assert.Equal(t, 2, resp.Foo)
 }
 
 func TestSimpleRequestRetried(t *testing.T) {
@@ -178,12 +177,12 @@ func TestSimpleRequestRetried(t *testing.T) {
 			}, nil
 		}),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	var resp Dummy
 	err = c.Do(context.Background(), "PATCH", "/a", nil, Dummy{1}, &resp)
-	require.NoError(t, err)
-	require.Equal(t, 2, resp.Foo)
-	require.True(t, retried[0], "request was not retried")
+	assert.NoError(t, err)
+	assert.Equal(t, 2, resp.Foo)
+	assert.True(t, retried[0], "request was not retried")
 }
 
 func TestSimpleRequestAPIError(t *testing.T) {
@@ -202,12 +201,12 @@ func TestSimpleRequestAPIError(t *testing.T) {
 			}, nil
 		}),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	err = c.Do(context.Background(), "PATCH", "/a", nil, map[string]any{}, nil)
 	var aerr *apierr.APIError
-	require.ErrorAs(t, err, &aerr)
-	require.Equal(t, "NOT_FOUND", aerr.ErrorCode)
-	require.ErrorIs(t, err, apierr.ErrNotFound)
+	assert.ErrorAs(t, err, &aerr)
+	assert.Equal(t, "NOT_FOUND", aerr.ErrorCode)
+	assert.ErrorIs(t, err, apierr.ErrNotFound)
 }
 
 func TestHttpTransport(t *testing.T) {
@@ -221,11 +220,11 @@ func TestHttpTransport(t *testing.T) {
 		}),
 	}
 	client, err := New(cfg)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	err = client.Do(context.Background(), "GET", "/a", nil, nil, bytes.Buffer{})
-	require.NoError(t, err)
-	require.True(t, calledMock)
+	assert.NoError(t, err)
+	assert.True(t, calledMock)
 }
 
 func TestDoRemovesDoubleSlashesFromFilesAPI(t *testing.T) {
@@ -248,11 +247,11 @@ func TestDoRemovesDoubleSlashesFromFilesAPI(t *testing.T) {
 			}, nil
 		}),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	err = c.Do(context.Background(), "GET", "/api/2.0/fs/files//Volumes/abc/def/ghi", nil, map[string]any{}, nil)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	err = c.Do(context.Background(), "GET", "/api/2.0/anotherservice//test", nil, map[string]any{}, nil)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }
 
 func TestNonJSONResponseIncludedInError(t *testing.T) {
@@ -338,10 +337,10 @@ func captureUserAgent(t *testing.T) string {
 			}, nil
 		}),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	err = c.Do(context.Background(), "GET", "/a", nil, nil, nil)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	return userAgent
 }
@@ -448,10 +447,10 @@ func testNonJSONResponseIncludedInError(t *testing.T, statusCode int, status, er
 			}, nil
 		}),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	var m map[string]string
 	err = c.Do(context.Background(), "GET", "/a", nil, nil, &m)
-	require.EqualError(t, err, errorMessage)
+	assert.EqualError(t, err, errorMessage)
 }
 
 func TestRetryOn503(t *testing.T) {
@@ -476,7 +475,7 @@ func TestRetryOn503(t *testing.T) {
 			}, nil
 		}),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	err = c.Do(context.Background(), "GET", "/a/b", nil, map[string]any{}, nil)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }

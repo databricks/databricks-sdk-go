@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSimpleRequestRawResponse(t *testing.T) {
@@ -22,8 +22,8 @@ func TestSimpleRequestRawResponse(t *testing.T) {
 	})
 	var raw []byte
 	err := c.Do(context.Background(), "GET", "/a", WithResponseUnmarshal(&raw))
-	require.NoError(t, err)
-	require.Equal(t, "Hello, world!", string(raw))
+	assert.NoError(t, err)
+	assert.Equal(t, "Hello, world!", string(raw))
 }
 
 func TestWithResponseHeader(t *testing.T) {
@@ -44,6 +44,6 @@ func TestWithResponseHeader(t *testing.T) {
 	ctx := context.Background()
 	err := client.Do(ctx, "GET", "abc",
 		WithResponseHeader("Foo", &out))
-	require.NoError(t, err)
-	require.Equal(t, "some", out)
+	assert.NoError(t, err)
+	assert.Equal(t, "some", out)
 }

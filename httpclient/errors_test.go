@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestSimpleRequestAPIError(t *testing.T) {
@@ -27,7 +26,7 @@ func TestSimpleRequestAPIError(t *testing.T) {
 	err := c.Do(context.Background(), "PATCH", "/a", WithRequestData(map[string]any{}))
 	var httpErr *HttpError
 	if assert.ErrorAs(t, err, &httpErr) {
-		require.Equal(t, 400, httpErr.StatusCode)
+		assert.Equal(t, 400, httpErr.StatusCode)
 	}
 }
 
@@ -43,5 +42,5 @@ func TestSimpleRequestErrReaderBody(t *testing.T) {
 	})
 	headers := map[string]string{"Accept": "application/json"}
 	err := c.Do(context.Background(), "PATCH", "/a", WithRequestHeaders(headers), WithRequestData(map[string]any{}))
-	require.EqualError(t, err, "response body: test error")
+	assert.EqualError(t, err, "response body: test error")
 }

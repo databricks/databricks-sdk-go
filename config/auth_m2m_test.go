@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"
 )
 
@@ -80,5 +80,5 @@ func TestM2mNotSupported(t *testing.T) {
 			},
 		},
 	})
-	require.ErrorIs(t, err, errOAuthNotSupported)
+	assert.ErrorIs(t, err, errOAuthNotSupported)
 }

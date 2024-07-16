@@ -11,7 +11,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func myNotebookPath(t *testing.T, w *databricks.WorkspaceClient) string {
@@ -20,13 +19,13 @@ func myNotebookPath(t *testing.T, w *databricks.WorkspaceClient) string {
 	notebook := filepath.Join(testDir, RandomName("n-"))
 
 	err := w.Workspace.MkdirsByPath(ctx, testDir)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	t.Cleanup(func() {
 		err = w.Workspace.Delete(ctx, workspace.Delete{
 			Path:      testDir,
 			Recursive: true,
 		})
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	})
 
 	return notebook
@@ -43,7 +42,7 @@ func TestGetOAuthToken(t *testing.T) {
 	created, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
 		Name: RandomName("go-sdk-"),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	t.Cleanup(func() {
 		deleteModel(t, w, ctx, created)
 	})
@@ -51,16 +50,16 @@ func TestGetOAuthToken(t *testing.T) {
 	model, err := w.ModelRegistry.GetModel(ctx, ml.GetModelRequest{
 		Name: created.RegisteredModel.Name,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	err = w.ModelRegistry.UpdateModel(ctx, ml.UpdateModelRequest{
 		Name:        model.RegisteredModelDatabricks.Name,
 		Description: RandomName("comment "),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	all, err := w.ModelRegistry.ListModelsAll(ctx, ml.ListModelsRequest{})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 
 	// Enable once the API returns the DataplaneInfo
@@ -83,7 +82,7 @@ func TestGetOAuthToken(t *testing.T) {
 	// 	err := w.ServingEndpoints.Delete(ctx, serving.DeleteServingEndpointRequest{
 	// 		Name: endpoint.Name,
 	// 	})
-	// 	require.NoError(t, err)
+	// 	assert.NoError(t, err)
 	// })
 	// readyEndpoint, err := endpoint.Get()
 	// require.NoError(t, err)
@@ -105,11 +104,11 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 		Content:   base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")),
 		Overwrite: true,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	// Get test notebook status
 	getStatusResponse, err := w.Workspace.GetStatusByPath(ctx, notebook)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.True(t, getStatusResponse.Language == workspace.LanguagePython)
 	assert.True(t, getStatusResponse.Path == notebook)
 	assert.True(t, getStatusResponse.ObjectType == workspace.ObjectTypeNotebook)
@@ -119,19 +118,19 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 		Format: workspace.ExportFormatSource,
 		Path:   notebook,
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.True(t, exportResponse.Content == base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")))
 
 	// Assert the test notebook is present in test dir using list api
 	objects, err := w.Workspace.ListAll(ctx, workspace.ListWorkspaceRequest{
 		Path: filepath.Dir(notebook),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	paths, err := w.Workspace.ObjectInfoPathToObjectIdMap(ctx, workspace.ListWorkspaceRequest{
 		Path: filepath.Dir(notebook),
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, len(objects), len(paths))
 	assert.Contains(t, paths, notebook)
 }
@@ -148,7 +147,7 @@ func TestAccWorkspaceUploadNotebookWithFileExtensionNoTranspile(t *testing.T) {
 		err = w.Workspace.Delete(ctx, workspace.Delete{
 			Path: notebookPath,
 		})
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	})
 
 	info, err := w.Workspace.GetStatusByPath(ctx, notebookPath)
@@ -175,7 +174,7 @@ func TestAccWorkspaceUploadNotebookWithFileNoExtensionNoTranspile(t *testing.T) 
 		err = w.Workspace.Delete(ctx, workspace.Delete{
 			Path: notebookPath,
 		})
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	})
 
 	info, err := w.Workspace.GetStatusByPath(ctx, notebookPath)
@@ -202,7 +201,7 @@ func TestAccWorkspaceUploadFileNoTranspile(t *testing.T) {
 		err = w.Workspace.Delete(ctx, workspace.Delete{
 			Path: txtPath,
 		})
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	})
 
 	info, err := w.Workspace.GetStatusByPath(ctx, txtPath)
@@ -222,9 +221,9 @@ func TestAccWorkspaceRecursiveListNoTranspile(t *testing.T) {
 	// Import the test notebook
 	err := w.Workspace.Upload(ctx, notebook+".py", strings.NewReader("print(1)"),
 		workspace.UploadOverwrite())
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	allMyNotebooks, err := w.Workspace.RecursiveList(ctx, filepath.Join("/Users", me(t, w).UserName))
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.True(t, len(allMyNotebooks) >= 1)
 }
