@@ -84,6 +84,9 @@ func WithResponseUnmarshal(response any) DoOption {
 			if err != nil {
 				return fmt.Errorf("failed to read response body: %w", err)
 			}
+			if len(bodyBytes) == 0 {
+				return nil
+			}
 			if bs, ok := response.(*[]byte); ok {
 				*bs = bodyBytes
 				return nil
