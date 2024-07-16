@@ -32,6 +32,10 @@ func WithResponseHeader(key string, value *string) DoOption {
 //   - *[]byte,
 //   - a pointer to a struct with a Contents io.ReadCloser field,
 //   - a pointer to a struct representing a JSON object.
+//
+// If response is a pointer to a io.ReadCloser or a struct with a io.ReadCloser
+// field name "Contents", then the response io.ReadCloser is set to the value of
+// the body's reader without actually reading it.
 func WithResponseUnmarshal(response any) DoOption {
 	return DoOption{
 		in: func(r *http.Request) error {
@@ -58,22 +62,14 @@ func WithResponseUnmarshal(response any) DoOption {
 				return err
 			}
 
-			// If the response is a struct with a field "Contents" of type
-			// io.ReadCloser, set that field to the response body ReadCloser.
 			if field, ok := findContentsField(response); ok {
 				field.Set(reflect.ValueOf(body.ReadCloser))
 				return nil
 			}
-
-			// If the response is a ReadCloser, return it directly without
-			// reading the body.
-			if rc, ok := response.(*io.ReadCloser); ok {
-				*rc = body.ReadCloser
+			if reader, ok := response.(*io.ReadCloser); ok {
+				*reader = body.ReadCloser
 				return nil
 			}
-
-			// If the response is a bytes.Buffer, read the entire body directly
-			// into it.
 			if buffer, ok := response.(*bytes.Buffer); ok {
 				defer body.ReadCloser.Close()
 				_, err := buffer.ReadFrom(body.ReadCloser)
