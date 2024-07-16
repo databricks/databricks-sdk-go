@@ -25,6 +25,13 @@ func WithResponseHeader(key string, value *string) DoOption {
 	}
 }
 
+// WithResponseUnmarshal unmarshals the response body into response. The
+// supported response types are the following:
+//   - *bytes.Buffer,
+//   - *io.ReadCloser,
+//   - *[]byte,
+//   - a pointer to a struct with a Contents io.ReadCloser field,
+//   - a pointer to a struct representing a JSON object.
 func WithResponseUnmarshal(response any) DoOption {
 	return DoOption{
 		in: func(r *http.Request) error {
@@ -50,45 +57,50 @@ func WithResponseUnmarshal(response any) DoOption {
 			if err != nil {
 				return err
 			}
-			// If the field contains a "Content" field of type bytes.Buffer, write the body over there and return.
-			if field, ok := findContentsField(response, body); ok {
-				// If so, set the value
+
+			// If the response is a struct with a field "Contents" of type
+			// io.ReadCloser, set that field to the response body ReadCloser.
+			if field, ok := findContentsField(response); ok {
 				field.Set(reflect.ValueOf(body.ReadCloser))
 				return nil
 			}
 
-			// If the destination is bytes.Buffer, write the body over there
-			if raw, ok := response.(*io.ReadCloser); ok {
-				*raw = body.ReadCloser
+			// If the response is a ReadCloser, return it directly without
+			// reading the body.
+			if rc, ok := response.(*io.ReadCloser); ok {
+				*rc = body.ReadCloser
 				return nil
 			}
+
+			// If the response is a bytes.Buffer, read the entire body directly
+			// into it.
+			if buffer, ok := response.(*bytes.Buffer); ok {
+				defer body.ReadCloser.Close()
+				_, err := buffer.ReadFrom(body.ReadCloser)
+				return err
+			}
+
+			// At this point, fully read the content of the body and use it
+			// to populate the response object (whether it is a slice of bytes
+			// or a JSON object).
 			defer body.ReadCloser.Close()
-			bs, err := io.ReadAll(body.ReadCloser)
+			bodyBytes, err := io.ReadAll(body.ReadCloser)
 			if err != nil {
 				return fmt.Errorf("failed to read response body: %w", err)
 			}
-			if len(bs) == 0 {
+			if bs, ok := response.(*[]byte); ok {
+				*bs = bodyBytes
 				return nil
 			}
-			// If the destination is a byte slice or buffer, pass the body verbatim.
-			if raw, ok := response.(*[]byte); ok {
-				*raw = bs
-				return nil
-			}
-			if raw, ok := response.(*bytes.Buffer); ok {
-				_, err := raw.Write(bs)
-				return err
-			}
-			err = json.Unmarshal(bs, &response)
-			if err != nil {
-				return apierr.MakeUnexpectedError(body.Response, err, body.RequestBody.DebugBytes, bs)
+			if err = json.Unmarshal(bodyBytes, &response); err != nil {
+				return apierr.MakeUnexpectedError(body.Response, err, body.RequestBody.DebugBytes, bodyBytes)
 			}
 			return nil
 		},
 	}
 }
 
-func findContentsField(response any, body *common.ResponseWrapper) (*reflect.Value, bool) {
+func findContentsField(response any) (*reflect.Value, bool) {
 	value := reflect.ValueOf(response)
 	value = reflect.Indirect(value)
 	if value.Kind() != reflect.Struct {
