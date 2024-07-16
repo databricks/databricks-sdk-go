@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func make200Response(body string) *http.Response {
@@ -39,10 +39,10 @@ func TestWithResponseUnmarshal_structWithContent(t *testing.T) {
 	var got structWithContents
 	gotErr := c.Do(context.Background(), "GET", "/a", WithResponseUnmarshal(&got))
 
-	require.NoError(t, gotErr)
+	assert.NoError(t, gotErr)
 	wantBytes, _ := io.ReadAll(want.Contents)
 	gotBytes, _ := io.ReadAll(got.Contents)
-	require.Equal(t, wantBytes, gotBytes)
+	assert.Equal(t, wantBytes, gotBytes)
 }
 
 func TestWithResponseUnmarshal_readCloser(t *testing.T) {
@@ -52,10 +52,10 @@ func TestWithResponseUnmarshal_readCloser(t *testing.T) {
 	var got io.ReadCloser
 	gotErr := c.Do(context.Background(), "GET", "/a", WithResponseUnmarshal(&got))
 
-	require.NoError(t, gotErr)
+	assert.NoError(t, gotErr)
 	wantBytes, _ := io.ReadAll(want)
 	gotBytes, _ := io.ReadAll(got)
-	require.Equal(t, wantBytes, gotBytes)
+	assert.Equal(t, wantBytes, gotBytes)
 }
 
 func TestWithResponseUnmarshal_byteBuffer(t *testing.T) {
@@ -65,8 +65,8 @@ func TestWithResponseUnmarshal_byteBuffer(t *testing.T) {
 	var got bytes.Buffer
 	gotErr := c.Do(context.Background(), "GET", "/a", WithResponseUnmarshal(&got))
 
-	require.NoError(t, gotErr)
-	require.Equal(t, want.Bytes(), got.Bytes())
+	assert.NoError(t, gotErr)
+	assert.Equal(t, want.Bytes(), got.Bytes())
 }
 
 func TestWithResponseUnmarshal_bytes(t *testing.T) {
@@ -76,8 +76,8 @@ func TestWithResponseUnmarshal_bytes(t *testing.T) {
 	var got []byte
 	gotErr := c.Do(context.Background(), "GET", "/a", WithResponseUnmarshal(&got))
 
-	require.NoError(t, gotErr)
-	require.Equal(t, want, got)
+	assert.NoError(t, gotErr)
+	assert.Equal(t, want, got)
 }
 
 func TestWithResponseUnmarshal_json(t *testing.T) {
@@ -90,8 +90,8 @@ func TestWithResponseUnmarshal_json(t *testing.T) {
 	var got jsonStruct
 	gotErr := c.Do(context.Background(), "GET", "/a", WithResponseUnmarshal(&got))
 
-	require.NoError(t, gotErr)
-	require.Equal(t, want, got)
+	assert.NoError(t, gotErr)
+	assert.Equal(t, want, got)
 }
 
 func TestWithResponseHeader(t *testing.T) {
@@ -108,10 +108,9 @@ func TestWithResponseHeader(t *testing.T) {
 		}),
 	})
 
-	var out string
-	ctx := context.Background()
-	err := client.Do(ctx, "GET", "abc",
-		WithResponseHeader("Foo", &out))
-	require.NoError(t, err)
-	require.Equal(t, "some", out)
+	var got string
+	gotErr := client.Do(context.Background(), "GET", "abc", WithResponseHeader("Foo", &got))
+
+	assert.NoError(t, gotErr)
+	assert.Equal(t, "some", got)
 }
