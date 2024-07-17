@@ -3,11 +3,13 @@ name: Validate Commit Message
 on:
   pull_request:
     types: [opened, synchronize, edited]
+  merge_group:
+    types: [checks_requested]
 
 jobs:
-      
   validate:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
