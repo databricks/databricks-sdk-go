@@ -426,10 +426,6 @@ type ClusterAttributes struct {
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
 	ClusterName string `json:"cluster_name,omitempty"`
-	// Determines whether the cluster was created by a user through the UI,
-	// created by the Databricks Jobs Scheduler, or through an API request. This
-	// is the same as cluster_creator, but read only.
-	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -450,12 +446,17 @@ type ClusterAttributes struct {
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
 	// Cluster users are fully isolated so that they cannot see each other's
 	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited. *
-	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters.
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -604,12 +605,17 @@ type ClusterDetails struct {
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
 	// Cluster users are fully isolated so that they cannot see each other's
 	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited. *
-	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters.
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
@@ -627,8 +633,8 @@ type ClusterDetails struct {
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// Node on which the Spark driver resides. The driver node contains the
-	// Spark master and the <Databricks> application that manages the
-	// per-notebook Spark REPLs.
+	// Spark master and the Databricks application that manages the per-notebook
+	// Spark REPLs.
 	Driver *SparkNode `json:"driver,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -721,7 +727,7 @@ type ClusterDetails struct {
 	// or edit this cluster. The contents of `spec` can be used in the body of a
 	// create cluster request. This field might not be populated for older
 	// clusters. Note: not included in the response of the ListClusters API.
-	Spec *CreateCluster `json:"spec,omitempty"`
+	Spec *ClusterSpec `json:"spec,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
@@ -1093,6 +1099,9 @@ func (f *ClusterSource) Type() string {
 }
 
 type ClusterSpec struct {
+	// When set to true, fixed and default values from the policy will be used
+	// for fields that are omitted. When set to false, only fixed values from
+	// the policy will be applied.
 	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
@@ -1110,9 +1119,6 @@ type ClusterSpec struct {
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-	// When specified, this clones libraries from a source cluster during the
-	// creation of a new cluster.
-	CloneFrom *CloneCluster `json:"clone_from,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
 	// one destination can be specified for one cluster. If the conf is given,
@@ -1123,10 +1129,6 @@ type ClusterSpec struct {
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
 	ClusterName string `json:"cluster_name,omitempty"`
-	// Determines whether the cluster was created by a user through the UI,
-	// created by the Databricks Jobs Scheduler, or through an API request. This
-	// is the same as cluster_creator, but read only.
-	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -1147,12 +1149,17 @@ type ClusterSpec struct {
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
 	// Cluster users are fully isolated so that they cannot see each other's
 	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited. *
-	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters.
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -1251,23 +1258,6 @@ func (s ClusterSpec) MarshalJSON() ([]byte, error) {
 type ClusterStatus struct {
 	// Unique identifier of the cluster whose status should be retrieved.
 	ClusterId string `json:"-" url:"cluster_id"`
-}
-
-type ClusterStatusResponse struct {
-	// Unique identifier for the cluster.
-	ClusterId string `json:"cluster_id,omitempty"`
-	// Status of all libraries on the cluster.
-	LibraryStatuses []LibraryFullStatus `json:"library_statuses,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ClusterStatusResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ClusterStatusResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Command struct {
@@ -1406,6 +1396,9 @@ func (s ContextStatusResponse) MarshalJSON() ([]byte, error) {
 }
 
 type CreateCluster struct {
+	// When set to true, fixed and default values from the policy will be used
+	// for fields that are omitted. When set to false, only fixed values from
+	// the policy will be applied.
 	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
@@ -1436,10 +1429,6 @@ type CreateCluster struct {
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
 	ClusterName string `json:"cluster_name,omitempty"`
-	// Determines whether the cluster was created by a user through the UI,
-	// created by the Databricks Jobs Scheduler, or through an API request. This
-	// is the same as cluster_creator, but read only.
-	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -1460,12 +1449,17 @@ type CreateCluster struct {
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
 	// Cluster users are fully isolated so that they cannot see each other's
 	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited. *
-	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters.
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -1823,11 +1817,17 @@ func (f *DataPlaneEventDetailsEventType) Type() string {
 // cluster that can be shared by multiple users. Cluster users are fully
 // isolated so that they cannot see each other's data and credentials. Most data
 // governance features are supported in this mode. But programming languages and
-// cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for
-// users migrating from legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This
-// mode is for users migrating from legacy Passthrough on high concurrency
-// clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from
-// legacy Passthrough on standard clusters.
+// cluster features might be limited.
+//
+// The following modes are deprecated starting with Databricks Runtime 15.0 and
+// will be removed for future Databricks Runtime versions:
+//
+// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL
+// clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from
+// legacy Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This
+// mode is for users migrating from legacy Passthrough on standard clusters. *
+// `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have
+// UC nor passthrough enabled.
 type DataSecurityMode string
 
 // This mode is for users migrating from legacy Passthrough on high concurrency
@@ -1837,6 +1837,9 @@ const DataSecurityModeLegacyPassthrough DataSecurityMode = `LEGACY_PASSTHROUGH`
 // This mode is for users migrating from legacy Passthrough on standard
 // clusters.
 const DataSecurityModeLegacySingleUser DataSecurityMode = `LEGACY_SINGLE_USER`
+
+// This mode provides a way that doesn’t have UC nor passthrough enabled.
+const DataSecurityModeLegacySingleUserStandard DataSecurityMode = `LEGACY_SINGLE_USER_STANDARD`
 
 // This mode is for users migrating from legacy Table ACL clusters.
 const DataSecurityModeLegacyTableAcl DataSecurityMode = `LEGACY_TABLE_ACL`
@@ -1864,11 +1867,11 @@ func (f *DataSecurityMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DataSecurityMode) Set(v string) error {
 	switch v {
-	case `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
+	case `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_SINGLE_USER_STANDARD`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
 		*f = DataSecurityMode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_SINGLE_USER_STANDARD", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
 	}
 }
 
@@ -2091,6 +2094,9 @@ func (f *EbsVolumeType) Type() string {
 }
 
 type EditCluster struct {
+	// When set to true, fixed and default values from the policy will be used
+	// for fields that are omitted. When set to false, only fixed values from
+	// the policy will be applied.
 	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
@@ -2108,9 +2114,6 @@ type EditCluster struct {
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-	// When specified, this clones libraries from a source cluster during the
-	// creation of a new cluster.
-	CloneFrom *CloneCluster `json:"clone_from,omitempty"`
 	// ID of the cluser
 	ClusterId string `json:"cluster_id"`
 	// The configuration for delivering spark logs to a long-term storage
@@ -2123,10 +2126,6 @@ type EditCluster struct {
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
 	ClusterName string `json:"cluster_name,omitempty"`
-	// Determines whether the cluster was created by a user through the UI,
-	// created by the Databricks Jobs Scheduler, or through an API request. This
-	// is the same as cluster_creator, but read only.
-	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -2147,12 +2146,17 @@ type EditCluster struct {
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
 	// Cluster users are fully isolated so that they cannot see each other's
 	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited. *
-	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
 	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
 	// from legacy Passthrough on high concurrency clusters. *
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters.
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -2351,9 +2355,9 @@ type EditPolicyResponse struct {
 type EditResponse struct {
 }
 
-// The a environment entity used to preserve serverless environment side panel
-// and jobs' environment for non-notebook task. In this minimal environment
-// spec, only pip dependencies are supported. Next ID: 5
+// The environment entity used to preserve serverless environment side panel and
+// jobs' environment for non-notebook task. In this minimal environment spec,
+// only pip dependencies are supported.
 type Environment struct {
 	// Client version used by the environment The client is the user-facing
 	// environment of the runtime. Each client comes with a specific set of
@@ -4097,7 +4101,7 @@ type Policy struct {
 	Definition string `json:"definition,omitempty"`
 	// Additional human-readable description of the cluster policy.
 	Description string `json:"description,omitempty"`
-	// If true, policy is a default policy created and managed by <Databricks>.
+	// If true, policy is a default policy created and managed by Databricks.
 	// Default policies cannot be deleted, and their policy families cannot be
 	// changed.
 	IsDefault bool `json:"is_default,omitempty"`

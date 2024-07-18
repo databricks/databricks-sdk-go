@@ -138,7 +138,7 @@ type AlertQuery struct {
 	// The timestamp when this query was created.
 	CreatedAt string `json:"created_at,omitempty"`
 	// Data source ID maps to the ID of the data source used by the resource and
-	// is distinct from the warehouse ID. [Learn more].
+	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
@@ -287,6 +287,7 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -743,7 +744,7 @@ func (s DashboardPostContent) MarshalJSON() ([]byte, error) {
 // A JSON object representing a DBSQL data source / SQL warehouse.
 type DataSource struct {
 	// Data source ID maps to the ID of the data source used by the resource and
-	// is distinct from the warehouse ID. [Learn more].
+	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	Id string `json:"id,omitempty"`
@@ -1326,7 +1327,9 @@ type ExecuteStatementRequest struct {
 	// determines what should happen after the timeout is reached.
 	WaitTimeout string `json:"wait_timeout,omitempty"`
 	// Warehouse upon which to execute a statement. See also [What are SQL
-	// warehouses?](/sql/admin/warehouse-type.html)
+	// warehouses?]
+	//
+	// [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html
 	WarehouseId string `json:"warehouse_id"`
 
 	ForceSendFields []string `json:"-"`
@@ -2222,7 +2225,7 @@ type Query struct {
 	// The timestamp when this query was created.
 	CreatedAt string `json:"created_at,omitempty"`
 	// Data source ID maps to the ID of the data source used by the resource and
-	// is distinct from the warehouse ID. [Learn more].
+	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
@@ -2298,7 +2301,7 @@ func (s Query) MarshalJSON() ([]byte, error) {
 
 type QueryEditContent struct {
 	// Data source ID maps to the ID of the data source used by the resource and
-	// is distinct from the warehouse ID. [Learn more].
+	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
@@ -2352,8 +2355,7 @@ type QueryInfo struct {
 	CanSubscribeToLiveQuery bool `json:"canSubscribeToLiveQuery,omitempty"`
 	// Channel information for the SQL warehouse at the time of query execution
 	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
-	// Total execution time of the query from the client’s point of view, in
-	// milliseconds.
+	// Total execution time of the statement ( excluding result fetch time ).
 	Duration int `json:"duration,omitempty"`
 	// Alias for `warehouse_id`.
 	EndpointId string `json:"endpoint_id,omitempty"`
@@ -2533,7 +2535,7 @@ func (s QueryOptions) MarshalJSON() ([]byte, error) {
 
 type QueryPostContent struct {
 	// Data source ID maps to the ID of the data source used by the resource and
-	// is distinct from the warehouse ID. [Learn more].
+	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	DataSourceId string `json:"data_source_id,omitempty"`
@@ -3066,9 +3068,10 @@ type StatementParameterListItem struct {
 	// The data type, given as a string. For example: `INT`, `STRING`,
 	// `DECIMAL(10,2)`. If no type is given the type is assumed to be `STRING`.
 	// Complex types, such as `ARRAY`, `MAP`, and `STRUCT` are not supported.
-	// For valid types, refer to the section [Data
-	// types](/sql/language-manual/functions/cast.html) of the SQL language
+	// For valid types, refer to the section [Data types] of the SQL language
 	// reference.
+	//
+	// [Data types]: https://docs.databricks.com/sql/language-manual/functions/cast.html
 	Type string `json:"type,omitempty"`
 	// The value to substitute, represented as a string. If omitted, the value
 	// is interpreted as NULL.

@@ -52,6 +52,10 @@ func WithUserAgentExtra(key, value string) {
 	extra = extra.With(key, value)
 }
 
+func WithPartner(partner string) {
+	WithUserAgentExtra("partner", partner)
+}
+
 func getUpstreamUserAgentInfo() []info {
 	product := os.Getenv("DATABRICKS_SDK_UPSTREAM")
 	version := os.Getenv("DATABRICKS_SDK_UPSTREAM_VERSION")
@@ -114,19 +118,7 @@ func (d data) With(key, value string) data {
 	if err := matchAlphanumOrSemVer(value); err != nil {
 		panic(err)
 	}
-	var c data
-	var found bool
-	for _, i := range d {
-		if i.Key == key {
-			i.Value = value
-			found = true
-		}
-		c = append(c, i)
-	}
-	if !found {
-		c = append(c, info{key, value})
-	}
-	return c
+	return append(d, info{key, value})
 }
 
 func (d data) String() string {

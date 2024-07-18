@@ -161,139 +161,6 @@ func (_c *MockAppsInterface_CreateAndWait_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
-// CreateDeployment provides a mock function with given fields: ctx, createAppDeploymentRequest
-func (_m *MockAppsInterface) CreateDeployment(ctx context.Context, createAppDeploymentRequest serving.CreateAppDeploymentRequest) (*serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment], error) {
-	ret := _m.Called(ctx, createAppDeploymentRequest)
-
-	if len(ret) == 0 {
-		panic("no return value specified for CreateDeployment")
-	}
-
-	var r0 *serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment]
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, serving.CreateAppDeploymentRequest) (*serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment], error)); ok {
-		return rf(ctx, createAppDeploymentRequest)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, serving.CreateAppDeploymentRequest) *serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment]); ok {
-		r0 = rf(ctx, createAppDeploymentRequest)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment])
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, serving.CreateAppDeploymentRequest) error); ok {
-		r1 = rf(ctx, createAppDeploymentRequest)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockAppsInterface_CreateDeployment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateDeployment'
-type MockAppsInterface_CreateDeployment_Call struct {
-	*mock.Call
-}
-
-// CreateDeployment is a helper method to define mock.On call
-//   - ctx context.Context
-//   - createAppDeploymentRequest serving.CreateAppDeploymentRequest
-func (_e *MockAppsInterface_Expecter) CreateDeployment(ctx interface{}, createAppDeploymentRequest interface{}) *MockAppsInterface_CreateDeployment_Call {
-	return &MockAppsInterface_CreateDeployment_Call{Call: _e.mock.On("CreateDeployment", ctx, createAppDeploymentRequest)}
-}
-
-func (_c *MockAppsInterface_CreateDeployment_Call) Run(run func(ctx context.Context, createAppDeploymentRequest serving.CreateAppDeploymentRequest)) *MockAppsInterface_CreateDeployment_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(serving.CreateAppDeploymentRequest))
-	})
-	return _c
-}
-
-func (_c *MockAppsInterface_CreateDeployment_Call) Return(_a0 *serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment], _a1 error) *MockAppsInterface_CreateDeployment_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockAppsInterface_CreateDeployment_Call) RunAndReturn(run func(context.Context, serving.CreateAppDeploymentRequest) (*serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment], error)) *MockAppsInterface_CreateDeployment_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// CreateDeploymentAndWait provides a mock function with given fields: ctx, createAppDeploymentRequest, options
-func (_m *MockAppsInterface) CreateDeploymentAndWait(ctx context.Context, createAppDeploymentRequest serving.CreateAppDeploymentRequest, options ...retries.Option[serving.AppDeployment]) (*serving.AppDeployment, error) {
-	_va := make([]interface{}, len(options))
-	for _i := range options {
-		_va[_i] = options[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx, createAppDeploymentRequest)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
-
-	if len(ret) == 0 {
-		panic("no return value specified for CreateDeploymentAndWait")
-	}
-
-	var r0 *serving.AppDeployment
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, serving.CreateAppDeploymentRequest, ...retries.Option[serving.AppDeployment]) (*serving.AppDeployment, error)); ok {
-		return rf(ctx, createAppDeploymentRequest, options...)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, serving.CreateAppDeploymentRequest, ...retries.Option[serving.AppDeployment]) *serving.AppDeployment); ok {
-		r0 = rf(ctx, createAppDeploymentRequest, options...)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*serving.AppDeployment)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, serving.CreateAppDeploymentRequest, ...retries.Option[serving.AppDeployment]) error); ok {
-		r1 = rf(ctx, createAppDeploymentRequest, options...)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockAppsInterface_CreateDeploymentAndWait_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateDeploymentAndWait'
-type MockAppsInterface_CreateDeploymentAndWait_Call struct {
-	*mock.Call
-}
-
-// CreateDeploymentAndWait is a helper method to define mock.On call
-//   - ctx context.Context
-//   - createAppDeploymentRequest serving.CreateAppDeploymentRequest
-//   - options ...retries.Option[serving.AppDeployment]
-func (_e *MockAppsInterface_Expecter) CreateDeploymentAndWait(ctx interface{}, createAppDeploymentRequest interface{}, options ...interface{}) *MockAppsInterface_CreateDeploymentAndWait_Call {
-	return &MockAppsInterface_CreateDeploymentAndWait_Call{Call: _e.mock.On("CreateDeploymentAndWait",
-		append([]interface{}{ctx, createAppDeploymentRequest}, options...)...)}
-}
-
-func (_c *MockAppsInterface_CreateDeploymentAndWait_Call) Run(run func(ctx context.Context, createAppDeploymentRequest serving.CreateAppDeploymentRequest, options ...retries.Option[serving.AppDeployment])) *MockAppsInterface_CreateDeploymentAndWait_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		variadicArgs := make([]retries.Option[serving.AppDeployment], len(args)-2)
-		for i, a := range args[2:] {
-			if a != nil {
-				variadicArgs[i] = a.(retries.Option[serving.AppDeployment])
-			}
-		}
-		run(args[0].(context.Context), args[1].(serving.CreateAppDeploymentRequest), variadicArgs...)
-	})
-	return _c
-}
-
-func (_c *MockAppsInterface_CreateDeploymentAndWait_Call) Return(_a0 *serving.AppDeployment, _a1 error) *MockAppsInterface_CreateDeploymentAndWait_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockAppsInterface_CreateDeploymentAndWait_Call) RunAndReturn(run func(context.Context, serving.CreateAppDeploymentRequest, ...retries.Option[serving.AppDeployment]) (*serving.AppDeployment, error)) *MockAppsInterface_CreateDeploymentAndWait_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Delete provides a mock function with given fields: ctx, request
 func (_m *MockAppsInterface) Delete(ctx context.Context, request serving.DeleteAppRequest) error {
 	ret := _m.Called(ctx, request)
@@ -384,6 +251,139 @@ func (_c *MockAppsInterface_DeleteByName_Call) Return(_a0 error) *MockAppsInterf
 }
 
 func (_c *MockAppsInterface_DeleteByName_Call) RunAndReturn(run func(context.Context, string) error) *MockAppsInterface_DeleteByName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Deploy provides a mock function with given fields: ctx, createAppDeploymentRequest
+func (_m *MockAppsInterface) Deploy(ctx context.Context, createAppDeploymentRequest serving.CreateAppDeploymentRequest) (*serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment], error) {
+	ret := _m.Called(ctx, createAppDeploymentRequest)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Deploy")
+	}
+
+	var r0 *serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment]
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.CreateAppDeploymentRequest) (*serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment], error)); ok {
+		return rf(ctx, createAppDeploymentRequest)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.CreateAppDeploymentRequest) *serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment]); ok {
+		r0 = rf(ctx, createAppDeploymentRequest)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment])
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.CreateAppDeploymentRequest) error); ok {
+		r1 = rf(ctx, createAppDeploymentRequest)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_Deploy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Deploy'
+type MockAppsInterface_Deploy_Call struct {
+	*mock.Call
+}
+
+// Deploy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - createAppDeploymentRequest serving.CreateAppDeploymentRequest
+func (_e *MockAppsInterface_Expecter) Deploy(ctx interface{}, createAppDeploymentRequest interface{}) *MockAppsInterface_Deploy_Call {
+	return &MockAppsInterface_Deploy_Call{Call: _e.mock.On("Deploy", ctx, createAppDeploymentRequest)}
+}
+
+func (_c *MockAppsInterface_Deploy_Call) Run(run func(ctx context.Context, createAppDeploymentRequest serving.CreateAppDeploymentRequest)) *MockAppsInterface_Deploy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(serving.CreateAppDeploymentRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_Deploy_Call) Return(_a0 *serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment], _a1 error) *MockAppsInterface_Deploy_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_Deploy_Call) RunAndReturn(run func(context.Context, serving.CreateAppDeploymentRequest) (*serving.WaitGetDeploymentAppSucceeded[serving.AppDeployment], error)) *MockAppsInterface_Deploy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeployAndWait provides a mock function with given fields: ctx, createAppDeploymentRequest, options
+func (_m *MockAppsInterface) DeployAndWait(ctx context.Context, createAppDeploymentRequest serving.CreateAppDeploymentRequest, options ...retries.Option[serving.AppDeployment]) (*serving.AppDeployment, error) {
+	_va := make([]interface{}, len(options))
+	for _i := range options {
+		_va[_i] = options[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, createAppDeploymentRequest)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeployAndWait")
+	}
+
+	var r0 *serving.AppDeployment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.CreateAppDeploymentRequest, ...retries.Option[serving.AppDeployment]) (*serving.AppDeployment, error)); ok {
+		return rf(ctx, createAppDeploymentRequest, options...)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.CreateAppDeploymentRequest, ...retries.Option[serving.AppDeployment]) *serving.AppDeployment); ok {
+		r0 = rf(ctx, createAppDeploymentRequest, options...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.AppDeployment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.CreateAppDeploymentRequest, ...retries.Option[serving.AppDeployment]) error); ok {
+		r1 = rf(ctx, createAppDeploymentRequest, options...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_DeployAndWait_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeployAndWait'
+type MockAppsInterface_DeployAndWait_Call struct {
+	*mock.Call
+}
+
+// DeployAndWait is a helper method to define mock.On call
+//   - ctx context.Context
+//   - createAppDeploymentRequest serving.CreateAppDeploymentRequest
+//   - options ...retries.Option[serving.AppDeployment]
+func (_e *MockAppsInterface_Expecter) DeployAndWait(ctx interface{}, createAppDeploymentRequest interface{}, options ...interface{}) *MockAppsInterface_DeployAndWait_Call {
+	return &MockAppsInterface_DeployAndWait_Call{Call: _e.mock.On("DeployAndWait",
+		append([]interface{}{ctx, createAppDeploymentRequest}, options...)...)}
+}
+
+func (_c *MockAppsInterface_DeployAndWait_Call) Run(run func(ctx context.Context, createAppDeploymentRequest serving.CreateAppDeploymentRequest, options ...retries.Option[serving.AppDeployment])) *MockAppsInterface_DeployAndWait_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := make([]retries.Option[serving.AppDeployment], len(args)-2)
+		for i, a := range args[2:] {
+			if a != nil {
+				variadicArgs[i] = a.(retries.Option[serving.AppDeployment])
+			}
+		}
+		run(args[0].(context.Context), args[1].(serving.CreateAppDeploymentRequest), variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_DeployAndWait_Call) Return(_a0 *serving.AppDeployment, _a1 error) *MockAppsInterface_DeployAndWait_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_DeployAndWait_Call) RunAndReturn(run func(context.Context, serving.CreateAppDeploymentRequest, ...retries.Option[serving.AppDeployment]) (*serving.AppDeployment, error)) *MockAppsInterface_DeployAndWait_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1061,6 +1061,65 @@ func (_c *MockAppsInterface_ListDeploymentsByAppName_Call) Return(_a0 *serving.L
 }
 
 func (_c *MockAppsInterface_ListDeploymentsByAppName_Call) RunAndReturn(run func(context.Context, string) (*serving.ListAppDeploymentsResponse, error)) *MockAppsInterface_ListDeploymentsByAppName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Start provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) Start(ctx context.Context, request serving.StartAppRequest) (*serving.AppDeployment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Start")
+	}
+
+	var r0 *serving.AppDeployment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.StartAppRequest) (*serving.AppDeployment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.StartAppRequest) *serving.AppDeployment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.AppDeployment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.StartAppRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_Start_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Start'
+type MockAppsInterface_Start_Call struct {
+	*mock.Call
+}
+
+// Start is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request serving.StartAppRequest
+func (_e *MockAppsInterface_Expecter) Start(ctx interface{}, request interface{}) *MockAppsInterface_Start_Call {
+	return &MockAppsInterface_Start_Call{Call: _e.mock.On("Start", ctx, request)}
+}
+
+func (_c *MockAppsInterface_Start_Call) Run(run func(ctx context.Context, request serving.StartAppRequest)) *MockAppsInterface_Start_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(serving.StartAppRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_Start_Call) Return(_a0 *serving.AppDeployment, _a1 error) *MockAppsInterface_Start_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_Start_Call) RunAndReturn(run func(context.Context, serving.StartAppRequest) (*serving.AppDeployment, error)) *MockAppsInterface_Start_Call {
 	_c.Call.Return(run)
 	return _c
 }

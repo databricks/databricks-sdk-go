@@ -3,8 +3,8 @@ package config
 import (
 	"context"
 	"fmt"
-	"net/http"
 
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/impersonate"
@@ -20,7 +20,7 @@ func (c GoogleDefaultCredentials) Name() string {
 	return "google-id"
 }
 
-func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.GoogleServiceAccount == "" || !cfg.IsGcp() {
 		return nil, nil
 	}
@@ -30,7 +30,8 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (f
 	}
 	if !cfg.IsAccountClient() {
 		logger.Infof(ctx, "Using Google Default Application Credentials for Workspace")
-		return refreshableVisitor(inner), nil
+		visitor := refreshableVisitor(inner)
+		return credentials.NewCredentialsProvider(visitor), nil
 	}
 	// source for generateAccessToken
 	platform, err := impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
@@ -44,7 +45,8 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (f
 		return nil, err
 	}
 	logger.Infof(ctx, "Using Google Default Application Credentials for Accounts API")
-	return serviceToServiceVisitor(inner, platform, "X-Databricks-GCP-SA-Access-Token"), nil
+	visitor := serviceToServiceVisitor(inner, platform, "X-Databricks-GCP-SA-Access-Token")
+	return credentials.NewOAuthCredentialsProvider(visitor, inner.Token), nil
 }
 
 func (c GoogleDefaultCredentials) idTokenSource(ctx context.Context, host, serviceAccount string,

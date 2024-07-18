@@ -46,7 +46,25 @@ type Method struct {
 	wait       *openapi.Wait
 	pagination *openapi.Pagination
 	Operation  *openapi.Operation
+	DataPlane  *openapi.DataPlane
 	shortcut   bool
+}
+
+// DataPlaneInfoFields returns the fields which contains the DataPlane info. Each field is nested in the previous one.
+func (m *Method) DataPlaneInfoFields() []*Field {
+	if m.DataPlane == nil {
+		return nil
+	}
+	method := m.Service.DataPlaneInfoMethod()
+	fieldNames := m.DataPlane.Fields
+	currentLevelFields := method.Response.fields
+	fields := []*Field{}
+	for _, name := range fieldNames {
+		field := currentLevelFields[name]
+		fields = append(fields, field)
+		currentLevelFields = field.Entity.fields
+	}
+	return fields
 }
 
 // Shortcut holds definition of "shortcut" methods, that are generated for

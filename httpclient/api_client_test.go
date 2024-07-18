@@ -188,7 +188,7 @@ func TestHaltAttemptForLimit(t *testing.T) {
 	_, rerr := c.attempt(ctx, "GET", "foo", req)()
 	require.NotNil(t, rerr)
 	require.Equal(t, true, rerr.Halt)
-	require.EqualError(t, rerr.Err, "rate: Wait(n=1) exceeds limiter's burst 0")
+	require.EqualError(t, rerr.Err, "failed in rate limiter: rate: Wait(n=1) exceeds limiter's burst 0")
 }
 
 func TestHaltAttemptForNewRequest(t *testing.T) {
@@ -199,7 +199,7 @@ func TestHaltAttemptForNewRequest(t *testing.T) {
 	_, rerr := c.attempt(ctx, "🥱", "/", req)()
 	require.NotNil(t, rerr)
 	require.Equal(t, true, rerr.Halt)
-	require.EqualError(t, rerr.Err, `net/http: invalid method "🥱"`)
+	require.EqualError(t, rerr.Err, `failed creating new request: net/http: invalid method "🥱"`)
 }
 
 func TestHaltAttemptForVisitor(t *testing.T) {
@@ -213,7 +213,7 @@ func TestHaltAttemptForVisitor(t *testing.T) {
 		})()
 	require.NotNil(t, rerr)
 	require.Equal(t, true, rerr.Halt)
-	require.EqualError(t, rerr.Err, "🥱")
+	require.EqualError(t, rerr.Err, "failed during request visitor: 🥱")
 }
 
 func TestFailPerformChannel(t *testing.T) {
@@ -221,7 +221,7 @@ func TestFailPerformChannel(t *testing.T) {
 	c := &ApiClient{
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	_, err := c.perform(ctx, "GET", "/", true)
+	err := c.Do(ctx, "GET", "/", WithRequestData(true))
 	require.EqualError(t, err, "request marshal: unsupported query string data: true")
 }
 
@@ -334,32 +334,37 @@ func (l *BufferLogger) Enabled(_ context.Context, level logger.Level) bool {
 }
 
 func (l *BufferLogger) Tracef(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[TRACE] "+format, v...))
+	l.WriteString(fmt.Sprintf("[TRACE] "+format+"\n", v...))
 }
 
 func (l *BufferLogger) Debugf(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[DEBUG] "+format, v...))
+	l.WriteString(fmt.Sprintf("[DEBUG] "+format+"\n", v...))
 }
 
 func (l *BufferLogger) Infof(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[INFO] "+format, v...))
+	l.WriteString(fmt.Sprintf("[INFO] "+format+"\n", v...))
 }
 
 func (l *BufferLogger) Warnf(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[WARN] "+format, v...))
+	l.WriteString(fmt.Sprintf("[WARN] "+format+"\n", v...))
 }
 
 func (l *BufferLogger) Errorf(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[ERROR] "+format, v...))
+	l.WriteString(fmt.Sprintf("[ERROR] "+format+"\n", v...))
 }
 
-func TestSimpleResponseRedaction(t *testing.T) {
+func configureBufferedLogger(t *testing.T) *BufferLogger {
 	prevLogger := logger.DefaultLogger
 	bufLogger := &BufferLogger{}
 	logger.DefaultLogger = bufLogger
-	defer func() {
+	t.Cleanup(func() {
 		logger.DefaultLogger = prevLogger
-	}()
+	})
+	return bufLogger
+}
+
+func TestSimpleResponseRedaction(t *testing.T) {
+	bufLogger := configureBufferedLogger(t)
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 16,
@@ -402,12 +407,7 @@ func TestSimpleResponseRedaction(t *testing.T) {
 }
 
 func TestInlineArrayDebugging(t *testing.T) {
-	prevLogger := logger.DefaultLogger
-	bufLogger := &BufferLogger{}
-	logger.DefaultLogger = bufLogger
-	defer func() {
-		logger.DefaultLogger = prevLogger
-	}()
+	bufLogger := configureBufferedLogger(t)
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 2048,
@@ -437,16 +437,12 @@ func TestInlineArrayDebugging(t *testing.T) {
 <   {
 <     "foo": "bar"
 <   }
-< ]`, bufLogger.String())
+< ]
+`, bufLogger.String())
 }
 
 func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
-	prevLogger := logger.DefaultLogger
-	bufLogger := &BufferLogger{}
-	logger.DefaultLogger = bufLogger
-	defer func() {
-		logger.DefaultLogger = prevLogger
-	}()
+	bufLogger := configureBufferedLogger(t)
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 2048,
@@ -470,16 +466,12 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 
 	require.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
 <  
-< <Streaming response>`, bufLogger.String())
+< <Streaming response>
+`, bufLogger.String())
 }
 
 func TestLogQueryParametersWithPercent(t *testing.T) {
-	prevLogger := logger.DefaultLogger
-	bufLogger := &BufferLogger{}
-	logger.DefaultLogger = bufLogger
-	defer func() {
-		logger.DefaultLogger = prevLogger
-	}()
+	bufLogger := configureBufferedLogger(t)
 
 	c := NewApiClient(ClientConfig{
 		DebugTruncateBytes: 2048,
@@ -502,7 +494,27 @@ func TestLogQueryParametersWithPercent(t *testing.T) {
 <  
 < {
 <   "foo": "bar"
-< }`, bufLogger.String())
+< }
+`, bufLogger.String())
+}
+
+func TestLogCancelledRequest(t *testing.T) {
+	bufLogger := configureBufferedLogger(t)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	c := NewApiClient(ClientConfig{
+		DebugTruncateBytes: 2048,
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			cancel()
+			return nil, ctx.Err()
+		}),
+	})
+	err := c.Do(context.Background(), "GET", "/a")
+	assert.Error(t, err)
+	assert.Equal(t, `[DEBUG] GET /a
+< Error: Get "/a": request timed out after 30s of inactivity
+[DEBUG] non-retriable error: Get "/a": request timed out after 30s of inactivity
+`, bufLogger.String())
 }
 
 func TestStreamRequestFromFileWithReset(t *testing.T) {
@@ -713,4 +725,45 @@ func TestDefaultAuthVisitor(t *testing.T) {
 	})
 	err := c.Do(context.Background(), "GET", "/a/b", WithRequestData(map[string]any{}), authOption)
 	require.NoError(t, err)
+}
+
+func TestTraceparentHeader(t *testing.T) {
+	seenTraceparents := []string{}
+	c := NewApiClient(ClientConfig{
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			tp := r.Header.Get("Traceparent")
+			assert.NotEmpty(t, tp)
+			assert.NotContains(t, seenTraceparents, tp)
+			seenTraceparents = append(seenTraceparents, tp)
+			return &http.Response{
+				StatusCode: 200,
+				Request:    r,
+			}, nil
+		}),
+	})
+
+	for i := 0; i < 10; i++ {
+		err := c.Do(context.Background(), "GET", "/a/b")
+		assert.NoError(t, err)
+	}
+}
+
+func TestTraceparentHeaderDoesNotOverrideUserHeader(t *testing.T) {
+	userTraceparent := "00-thetraceid-theparentid-00"
+	c := NewApiClient(ClientConfig{
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			tp := r.Header.Get("Traceparent")
+			assert.NotEmpty(t, tp)
+			assert.Equal(t, userTraceparent, tp)
+			return &http.Response{
+				StatusCode: 200,
+				Request:    r,
+			}, nil
+		}),
+	})
+
+	err := c.Do(context.Background(), "GET", "/a/b", WithRequestHeaders(map[string]string{
+		"Traceparent": userTraceparent,
+	}))
+	assert.NoError(t, err)
 }

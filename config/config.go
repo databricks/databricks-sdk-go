@@ -11,20 +11,23 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/common/environment"
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"golang.org/x/oauth2"
 )
 
-// CredentialsProvider responsible for configuring static or refreshable
+// CredentialsStrategy responsible for configuring static or refreshable
 // authentication credentials for Databricks REST APIs
-type CredentialsProvider interface {
-	// Name returns human-addressable name of this credentials provider name
+type CredentialsStrategy interface {
+	// Name returns human-addressable name of this credentials provider strategy
 	Name() string
 
-	// Configure creates HTTP Request Visitor or returns nil if a given credetials
-	// are not configured. It returns an error if credentials are misconfigured.
+	// Configure creates CredentialsProvider or returns nil if a given credentials
+	// strategy are not configured. It returns an error if credentials are misconfigured.
 	// Takes a context and a pointer to a Config instance, that holds auth mutex.
-	Configure(context.Context, *Config) (func(*http.Request) error, error)
+	Configure(context.Context, *Config) (credentials.CredentialsProvider, error)
 }
 
 type Loader interface {
@@ -35,15 +38,16 @@ type Loader interface {
 
 // Config represents configuration for Databricks Connectivity
 type Config struct {
-	// Credentials holds an instance of Credentials Provider to authenticate with Databricks REST APIs.
-	// If no credentials provider is specified, `DefaultCredentials` are implicitly used.
-	Credentials CredentialsProvider
+	// Credentials holds an instance of Credentials Strategy to authenticate with Databricks REST APIs.
+	// If no credentials strategy is specified, `DefaultCredentials` are implicitly used.
+	Credentials CredentialsStrategy
 
 	// Databricks host (either of workspace endpoint or Accounts API endpoint)
 	Host string `name:"host" env:"DATABRICKS_HOST"`
 
-	ClusterID   string `name:"cluster_id" env:"DATABRICKS_CLUSTER_ID"`
-	WarehouseID string `name:"warehouse_id" env:"DATABRICKS_WAREHOUSE_ID"`
+	ClusterID           string `name:"cluster_id" env:"DATABRICKS_CLUSTER_ID"`
+	WarehouseID         string `name:"warehouse_id" env:"DATABRICKS_WAREHOUSE_ID"`
+	ServerlessComputeID string `name:"serverless_compute_id" env:"DATABRICKS_SERVERLESS_COMPUTE_ID"`
 
 	// URL of the metadata service that provides authentication credentials.
 	MetadataServiceURL string `name:"metadata_service_url" env:"DATABRICKS_METADATA_SERVICE_URL" auth:"metadata-service,sensitive"`
@@ -74,6 +78,11 @@ type Config struct {
 	AzureClientID     string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure" auth_types:"azure-client-secret,azure-msi"`
 	AzureTenantID     string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure" auth_types:"azure-cli,azure-client-secret"`
 
+	// Parameters to request Azure OIDC token on behalf of Github Actions.
+	// Ref: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers
+	ActionsIDTokenRequestURL   string `name:"actions_id_token_request_url" env:"ACTIONS_ID_TOKEN_REQUEST_URL"`
+	ActionsIDTokenRequestToken string `name:"actions_id_token_request_token" env:"ACTIONS_ID_TOKEN_REQUEST_TOKEN"`
+
 	// AzureEnvironment (PUBLIC, USGOVERNMENT, CHINA) has specific set of API endpoints. Starting from v0.26.0,
 	// the environment is determined based on the workspace hostname, if it's specified.
 	AzureEnvironment string `name:"azure_environment" env:"ARM_ENVIRONMENT"`
@@ -99,7 +108,7 @@ type Config struct {
 	// Use at your own risk or for unit testing purposes.
 	InsecureSkipVerify bool `name:"skip_verify" auth:"-"`
 
-	// Number of seconds for HTTP timeout. Default is 300 (5 minutes).
+	// Number of seconds for HTTP timeout. Default is 60 (1 minute).
 	HTTPTimeoutSeconds int `name:"http_timeout_seconds" auth:"-"`
 
 	// Truncate JSON fields in JSON above this limit. Default is 96.
@@ -119,7 +128,7 @@ type Config struct {
 	HTTPTransport http.RoundTripper
 
 	// Environment override to return when resolving the current environment.
-	DatabricksEnvironment *DatabricksEnvironment
+	DatabricksEnvironment *environment.DatabricksEnvironment
 
 	Loaders []Loader
 
@@ -150,7 +159,7 @@ type Config struct {
 	mu sync.Mutex
 
 	// HTTP request interceptor, that assigns Authorization header
-	auth func(r *http.Request) error
+	credentialsProvider credentials.CredentialsProvider
 
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
@@ -207,7 +216,25 @@ func (c *Config) Authenticate(r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	return c.auth(r)
+	return c.credentialsProvider.SetHeaders(r)
+}
+
+// Authenticate returns an OAuth token for the current configuration.
+// It will return an error if the CredentialsStrategy does not support OAuth tokens.
+func (c *Config) GetToken() (*oauth2.Token, error) {
+	err := c.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	err = c.authenticateIfNeeded()
+	if err != nil {
+		return nil, err
+	}
+	if h, ok := c.credentialsProvider.(credentials.OAuthCredentialsProvider); ok {
+		return h.Token()
+	} else {
+		return nil, fmt.Errorf("OAuth Token not supported for current auth type %s", c.AuthType)
+	}
 }
 
 // IsAzure returns if the client is configured for Azure Databricks.
@@ -215,12 +242,12 @@ func (c *Config) IsAzure() bool {
 	if c.AzureResourceID != "" {
 		return true
 	}
-	return c.Environment().Cloud == CloudAzure
+	return c.Environment().Cloud == environment.CloudAzure
 }
 
 // IsGcp returns if the client is configured for Databricks on Google Cloud.
 func (c *Config) IsGcp() bool {
-	return c.Environment().Cloud == CloudGCP
+	return c.Environment().Cloud == environment.CloudGCP
 }
 
 // IsAws returns if the client is configured for Databricks on AWS.
@@ -323,12 +350,12 @@ func (c *Config) wrapDebug(err error) error {
 
 // authenticateIfNeeded lazily authenticates across authorizers or returns error
 func (c *Config) authenticateIfNeeded() error {
-	if c.auth != nil {
+	if c.credentialsProvider != nil {
 		return nil
 	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	if c.auth != nil {
+	if c.credentialsProvider != nil {
 		return nil
 	}
 	if c.Credentials == nil {
@@ -336,14 +363,14 @@ func (c *Config) authenticateIfNeeded() error {
 	}
 	c.fixHostIfNeeded()
 	ctx := c.refreshClient.InContextForOAuth2(c.refreshCtx)
-	visitor, err := c.Credentials.Configure(ctx, c)
+	credentialsProvider, err := c.Credentials.Configure(ctx, c)
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: %w", c.Credentials.Name(), err))
 	}
-	if visitor == nil {
+	if credentialsProvider == nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: not configured", c.Credentials.Name()))
 	}
-	c.auth = visitor
+	c.credentialsProvider = credentialsProvider
 	c.AuthType = c.Credentials.Name()
 	c.fixHostIfNeeded()
 	// TODO: error customization

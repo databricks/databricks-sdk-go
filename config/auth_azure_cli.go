@@ -11,6 +11,7 @@ import (
 
 	"golang.org/x/oauth2"
 
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -53,7 +54,7 @@ func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner 
 	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken)), nil
 }
 
-func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if !cfg.IsAzure() {
 		return nil, nil
 	}
@@ -86,7 +87,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		return nil, err
 	}
 	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
-	return visitor, nil
+	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
 }
 
 // NewAzureCliTokenSource returns [oauth2.TokenSource] for a passwordless authentication via Azure CLI (`az login`)

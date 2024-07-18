@@ -117,14 +117,6 @@ func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*Config,
 			Header:     http.Header{"Location": []string{"https://login.microsoftonline.com/tenant_id/abc"}},
 		}),
 	}
-	if client.IsAzure() {
-		client.DatabricksEnvironment = &DatabricksEnvironment{
-			Cloud:              CloudAzure,
-			DnsZone:            cf.Host,
-			AzureApplicationID: "abc",
-			AzureEnvironment:   &AzurePublicCloud,
-		}
-	}
 	err := client.Authenticate(&http.Request{Header: http.Header{}})
 	if err != nil {
 		return nil, err
@@ -373,14 +365,14 @@ func TestConfig_AzurePAT(t *testing.T) {
 
 func TestConfig_AzureCliHost(t *testing.T) {
 	configFixture{
-		Host:            "x",          // adb-123.4.azuredatabricks.net
+		Host:            "https://adb-123.4.azuredatabricks.net",
 		AzureResourceID: azResourceID, // skips ensureWorkspaceUrl
 		Env: map[string]string{
 			"PATH": testdataPath(),
 			"HOME": "testdata/azure",
 		},
 		AssertAzure: true,
-		AssertHost:  "https://x",
+		AssertHost:  "https://adb-123.4.azuredatabricks.net",
 		AssertAuth:  "azure-cli",
 	}.apply(t)
 }
@@ -425,13 +417,13 @@ func TestConfig_AzureCliHostAndResourceID(t *testing.T) {
 	configFixture{
 		// omit request to management endpoint to get workspace properties
 		AzureResourceID: azResourceID,
-		Host:            "x",
+		Host:            "https://adb-123.4.azuredatabricks.net",
 		Env: map[string]string{
 			"PATH": testdataPath(),
 			"HOME": "testdata", // .databrickscfg has DEFAULT profile
 		},
 		AssertAzure: true,
-		AssertHost:  "https://x",
+		AssertHost:  "https://adb-123.4.azuredatabricks.net",
 		AssertAuth:  "azure-cli",
 	}.apply(t)
 }
@@ -440,28 +432,28 @@ func TestConfig_AzureCliHostAndResourceID_ConfigurationPrecedence(t *testing.T) 
 	configFixture{
 		// omit request to management endpoint to get workspace properties
 		AzureResourceID: azResourceID,
-		Host:            "x",
+		Host:            "https://adb-123.4.azuredatabricks.net",
 		Env: map[string]string{
 			"PATH":                      testdataPath(),
 			"HOME":                      "testdata/azure",
 			"DATABRICKS_CONFIG_PROFILE": "justhost",
 		},
 		AssertAzure: true,
-		AssertHost:  "https://x",
+		AssertHost:  "https://adb-123.4.azuredatabricks.net",
 		AssertAuth:  "azure-cli",
 	}.apply(t)
 }
 
 func TestConfig_AzureAndPasswordConflict(t *testing.T) { // TODO: this breaks
 	configFixture{
-		Host:            "x",
+		Host:            "https://adb-123.4.azuredatabricks.net",
 		AzureResourceID: azResourceID,
 		Env: map[string]string{
 			"PATH":                testdataPath(),
 			"HOME":                "testdata/azure",
 			"DATABRICKS_USERNAME": "x",
 		},
-		AssertError: "validate: more than one authorization method configured: azure and basic. Config: host=x, username=x, azure_workspace_resource_id=/sub/rg/ws. Env: DATABRICKS_USERNAME",
+		AssertError: "validate: more than one authorization method configured: azure and basic. Config: host=https://adb-123.4.azuredatabricks.net, username=x, azure_workspace_resource_id=/sub/rg/ws. Env: DATABRICKS_USERNAME",
 	}.apply(t)
 }
 

@@ -4,10 +4,15 @@ package serving
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/httpclient"
+	goauth "golang.org/x/oauth2"
+
+	"github.com/databricks/databricks-sdk-go/service/oauth2"
 )
 
 // unexported type that holds implementations of just Apps API methods
@@ -25,16 +30,6 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	return &app, err
 }
 
-func (a *appsImpl) CreateDeployment(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error) {
-	var appDeployment AppDeployment
-	path := fmt.Sprintf("/api/2.0/preview/apps/%v/deployments", request.AppName)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &appDeployment)
-	return &appDeployment, err
-}
-
 func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/apps/%v", request.Name)
@@ -42,6 +37,16 @@ func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) error {
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
 	return err
+}
+
+func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error) {
+	var appDeployment AppDeployment
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v/deployments", request.AppName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &appDeployment)
+	return &appDeployment, err
 }
 
 func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error) {
@@ -87,6 +92,16 @@ func (a *appsImpl) ListDeployments(ctx context.Context, request ListAppDeploymen
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listAppDeploymentsResponse)
 	return &listAppDeploymentsResponse, err
+}
+
+func (a *appsImpl) Start(ctx context.Context, request StartAppRequest) (*AppDeployment, error) {
+	var appDeployment AppDeployment
+	path := fmt.Sprintf("/api/2.0/preview/apps/%v/start", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &appDeployment)
+	return &appDeployment, err
 }
 
 func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) error {
@@ -142,12 +157,13 @@ func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServing
 	return err
 }
 
-func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) error {
+func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error) {
 	var exportMetricsResponse ExportMetricsResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/metrics", request.Name)
 	headers := make(map[string]string)
+	headers["Accept"] = "text/plain"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &exportMetricsResponse)
-	return err
+	return &exportMetricsResponse, err
 }
 
 func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error) {
@@ -262,4 +278,52 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &servingEndpointPermissions)
 	return &servingEndpointPermissions, err
+}
+
+// unexported type that holds implementations of just ServingEndpointsDataPlane API methods
+type servingEndpointsDataPlaneImpl struct {
+	dataPlaneService oauth2.DataPlaneService
+	controlPlane     *ServingEndpointsAPI
+	client           *client.DatabricksClient
+}
+
+func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
+	getRequest := GetServingEndpointRequest{
+		Name: request.Name,
+	}
+	token, err := a.client.Config.GetToken()
+	if err != nil {
+		return nil, err
+	}
+	infoGetter := func() (*oauth2.DataPlaneInfo, error) {
+		response, err := a.controlPlane.Get(ctx, getRequest)
+		if err != nil {
+			return nil, err
+		}
+		if response.DataPlaneInfo == nil {
+			return nil, errors.New("resource does not support direct Data Plane access")
+		}
+		return response.DataPlaneInfo.QueryInfo, nil
+	}
+	refresh := func(info *oauth2.DataPlaneInfo) (*goauth.Token, error) {
+		return a.client.GetOAuthToken(ctx, info.AuthorizationDetails, token)
+	}
+	getParams := []string{
+		request.Name,
+	}
+	endpointUrl, dataPlaneToken, err := a.dataPlaneService.GetDataPlaneDetails("Query", getParams, refresh, infoGetter)
+	if err != nil {
+		return nil, err
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	opts := []httpclient.DoOption{}
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	var queryEndpointResponse QueryEndpointResponse
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(&queryEndpointResponse))
+	opts = append(opts, httpclient.WithToken(dataPlaneToken))
+	err = a.client.ApiClient().Do(ctx, http.MethodPost, endpointUrl, opts...)
+	return &queryEndpointResponse, err
 }

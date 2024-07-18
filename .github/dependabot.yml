@@ -4,3 +4,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "[Internal] "
+    open-pull-requests-limit: 0 # disable version updates

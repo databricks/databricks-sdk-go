@@ -95,12 +95,13 @@ func (r *PathStyle) UnmarshalJSON(data []byte) error {
 
 type Tag struct {
 	Node
-	Package       string    `json:"x-databricks-package"`
-	PathStyle     PathStyle `json:"x-databricks-path-style"`
-	Service       string    `json:"x-databricks-service"`
-	ParentService string    `json:"x-databricks-parent-service"`
-	IsAccounts    bool      `json:"x-databricks-is-accounts"`
-	Name          string    `json:"name"`
+	Package             string    `json:"x-databricks-package"`
+	PathStyle           PathStyle `json:"x-databricks-path-style"`
+	Service             string    `json:"x-databricks-service"`
+	ParentService       string    `json:"x-databricks-parent-service"`
+	ControlPlaneService string    `json:"x-databricks-controlplane"`
+	IsAccounts          bool      `json:"x-databricks-is-accounts"`
+	Name                string    `json:"name"`
 }
 
 type Path struct {
@@ -149,6 +150,7 @@ type Operation struct {
 	Node
 	Wait       *Wait       `json:"x-databricks-wait,omitempty"`
 	Pagination *Pagination `json:"x-databricks-pagination,omitempty"`
+	DataPlane  *DataPlane  `json:"x-databricks-dataplane,omitempty"`
 	Shortcut   bool        `json:"x-databricks-shortcut,omitempty"`
 	Crud       string      `json:"x-databricks-crud,omitempty"`
 	JsonOnly   bool        `json:"x-databricks-cli-json-only,omitempty"`

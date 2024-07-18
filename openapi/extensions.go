@@ -29,3 +29,9 @@ type Binding struct {
 	Request  string `json:"request,omitempty"`
 	Response string `json:"response,omitempty"`
 }
+
+// DataPlane is the Databricks OpenAPI Extension for direct access to DataPlane APIs
+type DataPlane struct {
+	ConfigMethod string   `json:"configMethod"`
+	Fields       []string `json:"field"`
+}

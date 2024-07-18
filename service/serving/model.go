@@ -4,8 +4,10 @@ package serving
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
+	"github.com/databricks/databricks-sdk-go/service/oauth2"
 )
 
 type Ai21LabsConfig struct {
@@ -76,11 +78,14 @@ type App struct {
 	// The description of the app.
 	Description string `json:"description,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens and be between 2 and 30 characters long. It must
-	// be unique within the workspace.
+	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name"`
 	// The pending deployment of the app.
 	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
+
+	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
+
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 
 	Status *AppStatus `json:"status,omitempty"`
 	// The update time of the app. Formatted timestamp in ISO 6801.
@@ -106,9 +111,19 @@ type AppDeployment struct {
 	CreateTime string `json:"create_time,omitempty"`
 	// The email of the user creates the deployment.
 	Creator string `json:"creator,omitempty"`
+	// The deployment artifacts for an app.
+	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
 	// The unique id of the deployment.
 	DeploymentId string `json:"deployment_id,omitempty"`
-	// The source code path of the deployment.
+	// The mode of which the deployment will manage the source code.
+	Mode AppDeploymentMode `json:"mode"`
+	// The workspace file system path of the source code used to create the app
+	// deployment. This is different from
+	// `deployment_artifacts.source_code_path`, which is the path used by the
+	// deployed app. The former refers to the original source code location of
+	// the app in the workspace during deployment creation, whereas the latter
+	// provides a system generated stable snapshotted source code path used by
+	// the deployment.
 	SourceCodePath string `json:"source_code_path"`
 	// Status and status message of the deployment
 	Status *AppDeploymentStatus `json:"status,omitempty"`
@@ -126,15 +141,60 @@ func (s AppDeployment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type AppDeploymentState string
+type AppDeploymentArtifacts struct {
+	// The snapshotted workspace file system path of the source code loaded by
+	// the deployed app.
+	SourceCodePath string `json:"source_code_path,omitempty"`
 
-const AppDeploymentStateCancelled AppDeploymentState = `CANCELLED`
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AppDeploymentArtifacts) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppDeploymentArtifacts) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppDeploymentMode string
+
+const AppDeploymentModeAutoSync AppDeploymentMode = `AUTO_SYNC`
+
+const AppDeploymentModeModeUnspecified AppDeploymentMode = `MODE_UNSPECIFIED`
+
+const AppDeploymentModeSnapshot AppDeploymentMode = `SNAPSHOT`
+
+// String representation for [fmt.Print]
+func (f *AppDeploymentMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppDeploymentMode) Set(v string) error {
+	switch v {
+	case `AUTO_SYNC`, `MODE_UNSPECIFIED`, `SNAPSHOT`:
+		*f = AppDeploymentMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AUTO_SYNC", "MODE_UNSPECIFIED", "SNAPSHOT"`, v)
+	}
+}
+
+// Type always returns AppDeploymentMode to satisfy [pflag.Value] interface
+func (f *AppDeploymentMode) Type() string {
+	return "AppDeploymentMode"
+}
+
+type AppDeploymentState string
 
 const AppDeploymentStateFailed AppDeploymentState = `FAILED`
 
 const AppDeploymentStateInProgress AppDeploymentState = `IN_PROGRESS`
 
 const AppDeploymentStateStateUnspecified AppDeploymentState = `STATE_UNSPECIFIED`
+
+const AppDeploymentStateStopped AppDeploymentState = `STOPPED`
 
 const AppDeploymentStateSucceeded AppDeploymentState = `SUCCEEDED`
 
@@ -146,11 +206,11 @@ func (f *AppDeploymentState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppDeploymentState) Set(v string) error {
 	switch v {
-	case `CANCELLED`, `FAILED`, `IN_PROGRESS`, `STATE_UNSPECIFIED`, `SUCCEEDED`:
+	case `FAILED`, `IN_PROGRESS`, `STATE_UNSPECIFIED`, `STOPPED`, `SUCCEEDED`:
 		*f = AppDeploymentState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "IN_PROGRESS", "STATE_UNSPECIFIED", "SUCCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FAILED", "IN_PROGRESS", "STATE_UNSPECIFIED", "STOPPED", "SUCCEEDED"`, v)
 	}
 }
 
@@ -188,23 +248,15 @@ const AppStateDeleted AppState = `DELETED`
 
 const AppStateDeleting AppState = `DELETING`
 
-const AppStateDeployed AppState = `DEPLOYED`
-
-const AppStateDeploying AppState = `DEPLOYING`
-
 const AppStateError AppState = `ERROR`
 
 const AppStateIdle AppState = `IDLE`
-
-const AppStateReady AppState = `READY`
 
 const AppStateRunning AppState = `RUNNING`
 
 const AppStateStarting AppState = `STARTING`
 
 const AppStateStateUnspecified AppState = `STATE_UNSPECIFIED`
-
-const AppStateUpdating AppState = `UPDATING`
 
 // String representation for [fmt.Print]
 func (f *AppState) String() string {
@@ -214,11 +266,11 @@ func (f *AppState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppState) Set(v string) error {
 	switch v {
-	case `CREATING`, `DELETED`, `DELETING`, `DEPLOYED`, `DEPLOYING`, `ERROR`, `IDLE`, `READY`, `RUNNING`, `STARTING`, `STATE_UNSPECIFIED`, `UPDATING`:
+	case `CREATING`, `DELETED`, `DELETING`, `ERROR`, `IDLE`, `RUNNING`, `STARTING`, `STATE_UNSPECIFIED`:
 		*f = AppState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CREATING", "DELETED", "DELETING", "DEPLOYED", "DEPLOYING", "ERROR", "IDLE", "READY", "RUNNING", "STARTING", "STATE_UNSPECIFIED", "UPDATING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CREATING", "DELETED", "DELETING", "ERROR", "IDLE", "RUNNING", "STARTING", "STATE_UNSPECIFIED"`, v)
 	}
 }
 
@@ -246,16 +298,15 @@ func (s AppStatus) MarshalJSON() ([]byte, error) {
 
 type AutoCaptureConfigInput struct {
 	// The name of the catalog in Unity Catalog. NOTE: On update, you cannot
-	// change the catalog name if it was already set.
+	// change the catalog name if the inference table is already enabled.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// If inference tables are enabled or not. NOTE: If you have already
-	// disabled payload logging once, you cannot enable again.
+	// Indicates whether the inference table is enabled.
 	Enabled bool `json:"enabled,omitempty"`
 	// The name of the schema in Unity Catalog. NOTE: On update, you cannot
-	// change the schema name if it was already set.
+	// change the schema name if the inference table is already enabled.
 	SchemaName string `json:"schema_name,omitempty"`
 	// The prefix of the table in Unity Catalog. NOTE: On update, you cannot
-	// change the prefix name if it was already set.
+	// change the prefix name if the inference table is already enabled.
 	TableNamePrefix string `json:"table_name_prefix,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -272,7 +323,7 @@ func (s AutoCaptureConfigInput) MarshalJSON() ([]byte, error) {
 type AutoCaptureConfigOutput struct {
 	// The name of the catalog in Unity Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// If inference tables are enabled or not.
+	// Indicates whether the inference table is enabled.
 	Enabled bool `json:"enabled,omitempty"`
 	// The name of the schema in Unity Catalog.
 	SchemaName string `json:"schema_name,omitempty"`
@@ -366,7 +417,15 @@ type CohereConfig struct {
 type CreateAppDeploymentRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
-	// The source code path of the deployment.
+	// The mode of which the deployment will manage the source code.
+	Mode AppDeploymentMode `json:"mode"`
+	// The workspace file system path of the source code used to create the app
+	// deployment. This is different from
+	// `deployment_artifacts.source_code_path`, which is the path used by the
+	// deployed app. The former refers to the original source code location of
+	// the app in the workspace during deployment creation, whereas the latter
+	// provides a system generated stable snapshotted source code path used by
+	// the deployment.
 	SourceCodePath string `json:"source_code_path"`
 }
 
@@ -374,8 +433,7 @@ type CreateAppRequest struct {
 	// The description of the app.
 	Description string `json:"description,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens and be between 2 and 30 characters long. It must
-	// be unique within the workspace.
+	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name"`
 
 	ForceSendFields []string `json:"-"`
@@ -399,9 +457,21 @@ type CreateServingEndpoint struct {
 	// Rate limits to be applied to the serving endpoint. NOTE: only external
 	// and foundation model endpoints are supported as of now.
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
+	// Enable route optimization for the serving endpoint.
+	RouteOptimized bool `json:"route_optimized,omitempty"`
 	// Tags to be attached to the serving endpoint and automatically propagated
 	// to billing logs.
 	Tags []EndpointTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateServingEndpoint) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateServingEndpoint) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DatabricksModelServingConfig struct {
@@ -422,7 +492,7 @@ type DataframeSplitInput struct {
 	Index []int `json:"index,omitempty"`
 }
 
-// Delete an App
+// Delete an app
 type DeleteAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
@@ -682,6 +752,7 @@ type ExportMetricsRequest struct {
 }
 
 type ExportMetricsResponse struct {
+	Contents io.ReadCloser `json:"-"`
 }
 
 type ExternalModel struct {
@@ -790,7 +861,7 @@ func (s FoundationModel) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get an App Deployment
+// Get an app deployment
 type GetAppDeploymentRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
@@ -798,13 +869,13 @@ type GetAppDeploymentRequest struct {
 	DeploymentId string `json:"-" url:"-"`
 }
 
-// Get App Environment
+// Get app environment
 type GetAppEnvironmentRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
 }
 
-// Get an App
+// Get an app
 type GetAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
@@ -845,7 +916,7 @@ type GetServingEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// List App Deployments
+// List app deployments
 type ListAppDeploymentsRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
@@ -883,7 +954,7 @@ func (s ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List Apps
+// List apps
 type ListAppsRequest struct {
 	// Upper bound for items returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -933,14 +1004,28 @@ type LogsRequest struct {
 	ServedModelName string `json:"-" url:"-"`
 }
 
+type ModelDataPlaneInfo struct {
+	// Information required to query DataPlane API 'query' endpoint.
+	QueryInfo *oauth2.DataPlaneInfo `json:"query_info,omitempty"`
+}
+
 type OpenAiConfig struct {
+	// This field is only required for Azure AD OpenAI and is the Microsoft
+	// Entra Client ID.
+	MicrosoftEntraClientId string `json:"microsoft_entra_client_id,omitempty"`
+	// The Databricks secret key reference for the Microsoft Entra Client Secret
+	// that is only required for Azure AD OpenAI.
+	MicrosoftEntraClientSecret string `json:"microsoft_entra_client_secret,omitempty"`
+	// This field is only required for Azure AD OpenAI and is the Microsoft
+	// Entra Tenant ID.
+	MicrosoftEntraTenantId string `json:"microsoft_entra_tenant_id,omitempty"`
 	// This is the base URL for the OpenAI API (default:
 	// "https://api.openai.com/v1"). For Azure OpenAI, this field is required,
 	// and is the base URL for the Azure OpenAI API service provided by Azure.
 	OpenaiApiBase string `json:"openai_api_base,omitempty"`
 	// The Databricks secret key reference for an OpenAI or Azure OpenAI API
 	// key.
-	OpenaiApiKey string `json:"openai_api_key"`
+	OpenaiApiKey string `json:"openai_api_key,omitempty"`
 	// This is an optional field to specify the type of OpenAI API to use. For
 	// Azure OpenAI, this field is required, and adjust this parameter to
 	// represent the preferred security access validation protocol. For access
@@ -1773,6 +1858,10 @@ type ServingEndpointDetailed struct {
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// The email of the user who created the serving endpoint.
 	Creator string `json:"creator,omitempty"`
+	// Information required to query DataPlane APIs.
+	DataPlaneInfo *ModelDataPlaneInfo `json:"data_plane_info,omitempty"`
+	// Endpoint invocation url if route optimization is enabled for endpoint
+	EndpointUrl string `json:"endpoint_url,omitempty"`
 	// System-generated ID of the endpoint. This is used to refer to the
 	// endpoint in the Permissions API
 	Id string `json:"id,omitempty"`
@@ -1784,6 +1873,9 @@ type ServingEndpointDetailed struct {
 	PendingConfig *EndpointPendingConfig `json:"pending_config,omitempty"`
 	// The permission level of the principal making the request.
 	PermissionLevel ServingEndpointDetailedPermissionLevel `json:"permission_level,omitempty"`
+	// Boolean representing if route optimization has been enabled for the
+	// endpoint
+	RouteOptimized bool `json:"route_optimized,omitempty"`
 	// Information corresponding to the state of the serving endpoint.
 	State *EndpointState `json:"state,omitempty"`
 	// Tags attached to the serving endpoint.
@@ -1920,6 +2012,11 @@ type ServingEndpointPermissionsRequest struct {
 	ServingEndpointId string `json:"-" url:"-"`
 }
 
+type StartAppRequest struct {
+	// The name of the app.
+	Name string `json:"-" url:"-"`
+}
+
 type StopAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
@@ -1937,8 +2034,7 @@ type UpdateAppRequest struct {
 	// The description of the app.
 	Description string `json:"description,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens and be between 2 and 30 characters long. It must
-	// be unique within the workspace.
+	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name" url:"-"`
 
 	ForceSendFields []string `json:"-"`

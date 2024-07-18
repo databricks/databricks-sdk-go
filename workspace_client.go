@@ -42,6 +42,11 @@ type WorkspaceClient struct {
 	// notification destinations if the condition was met. Alerts can be
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Alerts sql.AlertsInterface
 
 	// Apps run directly on a customer’s Databricks instance, integrate with
@@ -194,6 +199,11 @@ type WorkspaceClient struct {
 	// warehouses in your workspace. We advise you to use any text editor, REST
 	// client, or `grep` to search the response from this API for the name of
 	// your SQL warehouse as it appears in Databricks SQL.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	DataSources sql.DataSourcesInterface
 
 	// DBFS API makes it simple to interact with various data sources without
@@ -213,6 +223,11 @@ type WorkspaceClient struct {
 	//
 	// - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
 	// permissions (superset of `CAN_RUN`)
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	DbsqlPermissions sql.DbsqlPermissionsInterface
 
 	// Experiments are the primary unit of organization in MLflow; all MLflow
@@ -381,17 +396,6 @@ type WorkspaceClient struct {
 	// [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
 	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs jobs.JobsInterface
-
-	// A monitor computes and monitors data or model quality metrics for a table
-	// over time. It generates metrics tables and a dashboard that you can use
-	// to monitor table health and set alerts.
-	//
-	// Most write operations require the user to be the owner of the table (or
-	// its parent schema or parent catalog). Viewing the dashboard, computed
-	// metrics, or monitor configuration only requires the user to have
-	// **SELECT** privileges on the table (along with **USE_SCHEMA** and
-	// **USE_CATALOG**).
-	LakehouseMonitors catalog.LakehouseMonitorsInterface
 
 	// These APIs provide specific management operations for Lakeview
 	// dashboards. Generic resource management can be done with Workspace API
@@ -574,11 +578,27 @@ type WorkspaceClient struct {
 	// contain the shared data.
 	Providers sharing.ProvidersInterface
 
+	// A monitor computes and monitors data or model quality metrics for a table
+	// over time. It generates metrics tables and a dashboard that you can use
+	// to monitor table health and set alerts.
+	//
+	// Most write operations require the user to be the owner of the table (or
+	// its parent schema or parent catalog). Viewing the dashboard, computed
+	// metrics, or monitor configuration only requires the user to have
+	// **SELECT** privileges on the table (along with **USE_SCHEMA** and
+	// **USE_CATALOG**).
+	QualityMonitors catalog.QualityMonitorsInterface
+
 	// These endpoints are used for CRUD operations on query definitions. Query
 	// definitions include the target SQL warehouse, query text, name,
 	// description, tags, parameters, and visualizations. Queries can be
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
+	//
+	// **Note**: A new version of the Databricks SQL API will soon be available.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Queries sql.QueriesInterface
 
 	// Access the history of queries through SQL warehouses.
@@ -711,6 +731,10 @@ type WorkspaceClient struct {
 	// Additionally, you can configure the scale of resources that should be
 	// applied to each served entity.
 	ServingEndpoints serving.ServingEndpointsInterface
+
+	// Serving endpoints DataPlane provides a set of operations to interact with
+	// data plane endpoints for Serving endpoints service.
+	ServingEndpointsDataPlane serving.ServingEndpointsDataPlaneInterface
 
 	// Workspace Settings API allows users to manage settings at the workspace
 	// level.
@@ -998,6 +1022,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	servingEndpoints := serving.NewServingEndpoints(databricksClient)
 	return &WorkspaceClient{
 		Config:    cfg,
 		apiClient: apiClient,
@@ -1036,7 +1062,6 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		InstanceProfiles:                    compute.NewInstanceProfiles(databricksClient),
 		IpAccessLists:                       settings.NewIpAccessLists(databricksClient),
 		Jobs:                                jobs.NewJobs(databricksClient),
-		LakehouseMonitors:                   catalog.NewLakehouseMonitors(databricksClient),
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),
 		Metastores:                          catalog.NewMetastores(databricksClient),
@@ -1055,6 +1080,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ProviderProviderAnalyticsDashboards: marketplace.NewProviderProviderAnalyticsDashboards(databricksClient),
 		ProviderProviders:                   marketplace.NewProviderProviders(databricksClient),
 		Providers:                           sharing.NewProviders(databricksClient),
+		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
 		QueryHistory:                        sql.NewQueryHistory(databricksClient),
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
@@ -1065,7 +1091,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
 		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),
-		ServingEndpoints:                    serving.NewServingEndpoints(databricksClient),
+		ServingEndpoints:                    servingEndpoints,
+		ServingEndpointsDataPlane:           serving.NewServingEndpointsDataPlane(databricksClient, servingEndpoints),
 		Settings:                            settings.NewSettings(databricksClient),
 		Shares:                              sharing.NewShares(databricksClient),
 		StatementExecution:                  sql.NewStatementExecution(databricksClient),

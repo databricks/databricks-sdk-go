@@ -46,7 +46,9 @@ jobs:
         run: make test
 
       - name: Publish test coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   fmt:
     runs-on: ubuntu-latest
@@ -73,3 +75,4 @@ jobs:
         run: |
           # Exit with status code 1 if there are differences (i.e. unformatted files)
           git diff --exit-code
+          

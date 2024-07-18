@@ -96,8 +96,6 @@
 //
 // - [jobs.JobsAPI]: The Jobs API allows you to create, edit, and delete jobs.
 //
-// - [catalog.LakehouseMonitorsAPI]: A monitor computes and monitors data or model quality metrics for a table over time.
-//
 // - [dashboards.LakeviewAPI]: These APIs provide specific management operations for Lakeview dashboards.
 //
 // - [compute.LibrariesAPI]: The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster.
@@ -152,6 +150,8 @@
 //
 // - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published oauth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud.
 //
+// - [catalog.QualityMonitorsAPI]: A monitor computes and monitors data or model quality metrics for a table over time.
+//
 // - [sql.QueriesAPI]: These endpoints are used for CRUD operations on query definitions.
 //
 // - [sql.QueryHistoryAPI]: Access the history of queries through SQL warehouses.
@@ -179,6 +179,8 @@
 // - [iam.AccountServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
+//
+// - [serving.ServingEndpointsDataPlaneAPI]: Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving endpoints service.
 //
 // - [settings.SettingsAPI]: Workspace Settings API allows users to manage settings at the workspace level.
 //
@@ -303,7 +305,6 @@ var (
 	_ *settings.IpAccessListsAPI                          = nil
 	_ *settings.AccountIpAccessListsAPI                   = nil
 	_ *jobs.JobsAPI                                       = nil
-	_ *catalog.LakehouseMonitorsAPI                       = nil
 	_ *dashboards.LakeviewAPI                             = nil
 	_ *compute.LibrariesAPI                               = nil
 	_ *billing.LogDeliveryAPI                             = nil
@@ -331,6 +332,7 @@ var (
 	_ *marketplace.ProviderProvidersAPI                   = nil
 	_ *sharing.ProvidersAPI                               = nil
 	_ *oauth2.PublishedAppIntegrationAPI                  = nil
+	_ *catalog.QualityMonitorsAPI                         = nil
 	_ *sql.QueriesAPI                                     = nil
 	_ *sql.QueryHistoryAPI                                = nil
 	_ *sql.QueryVisualizationsAPI                         = nil
@@ -345,6 +347,7 @@ var (
 	_ *iam.ServicePrincipalsAPI                           = nil
 	_ *iam.AccountServicePrincipalsAPI                    = nil
 	_ *serving.ServingEndpointsAPI                        = nil
+	_ *serving.ServingEndpointsDataPlaneAPI               = nil
 	_ *settings.SettingsAPI                               = nil
 	_ *settings.AccountSettingsAPI                        = nil
 	_ *sharing.SharesAPI                                  = nil

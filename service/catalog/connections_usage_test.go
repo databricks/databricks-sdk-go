@@ -95,7 +95,7 @@ func ExampleConnectionsAPI_ListAll_connections() {
 		panic(err)
 	}
 
-	connList, err := w.Connections.ListAll(ctx)
+	connList, err := w.Connections.ListAll(ctx, catalog.ListConnectionsRequest{})
 	if err != nil {
 		panic(err)
 	}

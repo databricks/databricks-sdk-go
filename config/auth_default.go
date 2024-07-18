@@ -4,29 +4,28 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
 
+	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-var (
-	authProviders = []CredentialsProvider{
-		PatCredentials{},
-		BasicCredentials{},
-		M2mCredentials{},
-		DatabricksCliCredentials{},
-		MetadataServiceCredentials{},
+var authProviders = []CredentialsStrategy{
+	PatCredentials{},
+	BasicCredentials{},
+	M2mCredentials{},
+	DatabricksCliCredentials{},
+	MetadataServiceCredentials{},
 
-		// Attempt to configure auth from most specific to most generic (the Azure CLI).
-		AzureMsiCredentials{},
-		AzureClientSecretCredentials{},
-		AzureCliCredentials{},
+	// Attempt to configure auth from most specific to most generic (the Azure CLI).
+	AzureGithubOIDCCredentials{},
+	AzureMsiCredentials{},
+	AzureClientSecretCredentials{},
+	AzureCliCredentials{},
 
-		// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
-		GoogleCredentials{},
-		GoogleDefaultCredentials{},
-	}
-)
+	// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
+	GoogleCredentials{},
+	GoogleDefaultCredentials{},
+}
 
 type DefaultCredentials struct {
 	name string
@@ -45,7 +44,7 @@ var errorMessage = fmt.Sprintf("cannot configure default credentials, please che
 // ErrCannotConfigureAuth (experimental) is returned when no auth is configured
 var ErrCannotConfigureAuth = errors.New(errorMessage)
 
-func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	for _, p := range authProviders {
 		if cfg.AuthType != "" && p.Name() != cfg.AuthType {
 			// ignore other auth types if one is explicitly enforced
@@ -53,15 +52,15 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 			continue
 		}
 		logger.Tracef(ctx, "Attempting to configure auth: %s", p.Name())
-		visitor, err := p.Configure(ctx, cfg)
+		credentialsProvider, err := p.Configure(ctx, cfg)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", p.Name(), err)
 		}
-		if visitor == nil {
+		if credentialsProvider == nil {
 			continue
 		}
 		c.name = p.Name()
-		return visitor, nil
+		return credentialsProvider, nil
 	}
 	return nil, ErrCannotConfigureAuth
 }

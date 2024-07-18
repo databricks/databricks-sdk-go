@@ -37,6 +37,8 @@ type CreatePipeline struct {
 	Edition string `json:"edition,omitempty"`
 	// Filters on which Pipeline packages to include in the deployed graph.
 	Filters *Filters `json:"filters,omitempty"`
+	// The definition of a gateway pipeline to support CDC.
+	GatewayDefinition *IngestionGatewayPipelineDefinition `json:"gateway_definition,omitempty"`
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
@@ -188,6 +190,8 @@ type EditPipeline struct {
 	ExpectedLastModified int64 `json:"expected_last_modified,omitempty"`
 	// Filters on which Pipeline packages to include in the deployed graph.
 	Filters *Filters `json:"filters,omitempty"`
+	// The definition of a gateway pipeline to support CDC.
+	GatewayDefinition *IngestionGatewayPipelineDefinition `json:"gateway_definition,omitempty"`
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
@@ -406,6 +410,33 @@ type IngestionConfig struct {
 	Table *TableSpec `json:"table,omitempty"`
 }
 
+type IngestionGatewayPipelineDefinition struct {
+	// Immutable. The Unity Catalog connection this gateway pipeline uses to
+	// communicate with the source.
+	ConnectionId string `json:"connection_id,omitempty"`
+	// Required, Immutable. The name of the catalog for the gateway pipeline's
+	// storage location.
+	GatewayStorageCatalog string `json:"gateway_storage_catalog,omitempty"`
+	// Required. The Unity Catalog-compatible naming for the gateway storage
+	// location. This is the destination to use for the data that is extracted
+	// by the gateway. Delta Live Tables system will automatically create the
+	// storage location under the catalog and schema.
+	GatewayStorageName string `json:"gateway_storage_name,omitempty"`
+	// Required, Immutable. The name of the schema for the gateway pipelines's
+	// storage location.
+	GatewayStorageSchema string `json:"gateway_storage_schema,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *IngestionGatewayPipelineDefinition) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionGatewayPipelineDefinition) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // List pipeline events
 type ListPipelineEventsRequest struct {
 	// Criteria to select a subset of results, expressed using a SQL-like
@@ -569,6 +600,9 @@ type ManagedIngestionPipelineDefinition struct {
 	// Required. Settings specifying tables to replicate and the destination for
 	// the replicated tables.
 	Objects []IngestionConfig `json:"objects,omitempty"`
+	// Configuration settings to control the ingestion of tables. These settings
+	// are applied to all tables in the pipeline.
+	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -944,7 +978,7 @@ type PipelineLibrary struct {
 	// Specification of a maven library to be installed.
 	Maven *compute.MavenLibrary `json:"maven,omitempty"`
 	// The path to a notebook that defines a pipeline and is stored in the
-	// <Databricks> workspace.
+	// Databricks workspace.
 	Notebook *NotebookLibrary `json:"notebook,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -1071,6 +1105,8 @@ type PipelineSpec struct {
 	Edition string `json:"edition,omitempty"`
 	// Filters on which Pipeline packages to include in the deployed graph.
 	Filters *Filters `json:"filters,omitempty"`
+	// The definition of a gateway pipeline to support CDC.
+	GatewayDefinition *IngestionGatewayPipelineDefinition `json:"gateway_definition,omitempty"`
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
@@ -1195,6 +1231,11 @@ type SchemaSpec struct {
 	SourceCatalog string `json:"source_catalog,omitempty"`
 	// Required. Schema name in the source database.
 	SourceSchema string `json:"source_schema,omitempty"`
+	// Configuration settings to control the ingestion of tables. These settings
+	// are applied to all tables in this schema and override the
+	// table_configuration defined in the ManagedIngestionPipelineDefinition
+	// object.
+	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1367,6 +1408,10 @@ type TableSpec struct {
 	SourceSchema string `json:"source_schema,omitempty"`
 	// Required. Table name in the source database.
 	SourceTable string `json:"source_table,omitempty"`
+	// Configuration settings to control the ingestion of tables. These settings
+	// override the table_configuration defined in the
+	// ManagedIngestionPipelineDefinition object and the SchemaSpec.
+	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1377,6 +1422,54 @@ func (s *TableSpec) UnmarshalJSON(b []byte) error {
 
 func (s TableSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type TableSpecificConfig struct {
+	// The primary key of the table used to apply changes.
+	PrimaryKeys []string `json:"primary_keys,omitempty"`
+	// If true, formula fields defined in the table are included in the
+	// ingestion. This setting is only valid for the Salesforce connector
+	SalesforceIncludeFormulaFields bool `json:"salesforce_include_formula_fields,omitempty"`
+	// The SCD type to use to ingest the table.
+	ScdType TableSpecificConfigScdType `json:"scd_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TableSpecificConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TableSpecificConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The SCD type to use to ingest the table.
+type TableSpecificConfigScdType string
+
+const TableSpecificConfigScdTypeScdType1 TableSpecificConfigScdType = `SCD_TYPE_1`
+
+const TableSpecificConfigScdTypeScdType2 TableSpecificConfigScdType = `SCD_TYPE_2`
+
+// String representation for [fmt.Print]
+func (f *TableSpecificConfigScdType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TableSpecificConfigScdType) Set(v string) error {
+	switch v {
+	case `SCD_TYPE_1`, `SCD_TYPE_2`:
+		*f = TableSpecificConfigScdType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SCD_TYPE_1", "SCD_TYPE_2"`, v)
+	}
+}
+
+// Type always returns TableSpecificConfigScdType to satisfy [pflag.Value] interface
+func (f *TableSpecificConfigScdType) Type() string {
+	return "TableSpecificConfigScdType"
 }
 
 type UpdateInfo struct {

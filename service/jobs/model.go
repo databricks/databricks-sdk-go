@@ -650,6 +650,8 @@ type ForEachTaskErrorMessageStats struct {
 	Count int `json:"count,omitempty"`
 	// Describes the error message occured during the iterations.
 	ErrorMessage string `json:"error_message,omitempty"`
+	// Describes the termination reason for the error message.
+	TerminationCategory string `json:"termination_category,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1051,6 +1053,14 @@ type JobEmailNotifications struct {
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
 	OnStart []string `json:"on_start,omitempty"`
+	// A list of email addresses to notify when any streaming backlog thresholds
+	// are exceeded for any stream. Streaming backlog thresholds can be set in
+	// the `health` field using the following metrics:
+	// `STREAMING_BACKLOG_BYTES`, `STREAMING_BACKLOG_RECORDS`,
+	// `STREAMING_BACKLOG_SECONDS`, or `STREAMING_BACKLOG_FILES`. Alerting is
+	// based on the 10-minute average of these metrics. If the issue persists,
+	// notifications are resent every 30 minutes.
+	OnStreamingBacklogExceeded []string `json:"on_streaming_backlog_exceeded,omitempty"`
 	// A list of email addresses to be notified when a run successfully
 	// completes. A run is considered to have completed successfully if it ends
 	// with a `TERMINATED` `life_cycle_state` and a `SUCCESS` result_state. If
@@ -1072,9 +1082,9 @@ func (s JobEmailNotifications) MarshalJSON() ([]byte, error) {
 type JobEnvironment struct {
 	// The key of an environment. It has to be unique within a job.
 	EnvironmentKey string `json:"environment_key"`
-	// The a environment entity used to preserve serverless environment side
-	// panel and jobs' environment for non-notebook task. In this minimal
-	// environment spec, only pip dependencies are supported. Next ID: 5
+	// The environment entity used to preserve serverless environment side panel
+	// and jobs' environment for non-notebook task. In this minimal environment
+	// spec, only pip dependencies are supported.
 	Spec *compute.Environment `json:"spec,omitempty"`
 }
 
@@ -1405,9 +1415,36 @@ func (f *JobSourceDirtyState) Type() string {
 
 // Specifies the health metric that is being evaluated for a particular health
 // rule.
+//
+// * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. *
+// `STREAMING_BACKLOG_BYTES`: An estimate of the maximum bytes of data waiting
+// to be consumed across all streams. This metric is in Private Preview. *
+// `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag across all
+// streams. This metric is in Private Preview. * `STREAMING_BACKLOG_SECONDS`: An
+// estimate of the maximum consumer delay across all streams. This metric is in
+// Private Preview. * `STREAMING_BACKLOG_FILES`: An estimate of the maximum
+// number of outstanding files across all streams. This metric is in Private
+// Preview.
 type JobsHealthMetric string
 
+// Expected total time for a run in seconds.
 const JobsHealthMetricRunDurationSeconds JobsHealthMetric = `RUN_DURATION_SECONDS`
+
+// An estimate of the maximum bytes of data waiting to be consumed across all
+// streams. This metric is in Private Preview.
+const JobsHealthMetricStreamingBacklogBytes JobsHealthMetric = `STREAMING_BACKLOG_BYTES`
+
+// An estimate of the maximum number of outstanding files across all streams.
+// This metric is in Private Preview.
+const JobsHealthMetricStreamingBacklogFiles JobsHealthMetric = `STREAMING_BACKLOG_FILES`
+
+// An estimate of the maximum offset lag across all streams. This metric is in
+// Private Preview.
+const JobsHealthMetricStreamingBacklogRecords JobsHealthMetric = `STREAMING_BACKLOG_RECORDS`
+
+// An estimate of the maximum consumer delay across all streams. This metric is
+// in Private Preview.
+const JobsHealthMetricStreamingBacklogSeconds JobsHealthMetric = `STREAMING_BACKLOG_SECONDS`
 
 // String representation for [fmt.Print]
 func (f *JobsHealthMetric) String() string {
@@ -1417,11 +1454,11 @@ func (f *JobsHealthMetric) String() string {
 // Set raw string value and validate it against allowed values
 func (f *JobsHealthMetric) Set(v string) error {
 	switch v {
-	case `RUN_DURATION_SECONDS`:
+	case `RUN_DURATION_SECONDS`, `STREAMING_BACKLOG_BYTES`, `STREAMING_BACKLOG_FILES`, `STREAMING_BACKLOG_RECORDS`, `STREAMING_BACKLOG_SECONDS`:
 		*f = JobsHealthMetric(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "RUN_DURATION_SECONDS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "RUN_DURATION_SECONDS", "STREAMING_BACKLOG_BYTES", "STREAMING_BACKLOG_FILES", "STREAMING_BACKLOG_RECORDS", "STREAMING_BACKLOG_SECONDS"`, v)
 	}
 }
 
@@ -1460,6 +1497,16 @@ func (f *JobsHealthOperator) Type() string {
 type JobsHealthRule struct {
 	// Specifies the health metric that is being evaluated for a particular
 	// health rule.
+	//
+	// * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. *
+	// `STREAMING_BACKLOG_BYTES`: An estimate of the maximum bytes of data
+	// waiting to be consumed across all streams. This metric is in Private
+	// Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset
+	// lag across all streams. This metric is in Private Preview. *
+	// `STREAMING_BACKLOG_SECONDS`: An estimate of the maximum consumer delay
+	// across all streams. This metric is in Private Preview. *
+	// `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of
+	// outstanding files across all streams. This metric is in Private Preview.
 	Metric JobsHealthMetric `json:"metric"`
 	// Specifies the operator used to compare the health metric value with the
 	// specified threshold.
@@ -1702,6 +1749,44 @@ func (f *PauseStatus) Type() string {
 	return "PauseStatus"
 }
 
+type PeriodicTriggerConfiguration struct {
+	// The interval at which the trigger should run.
+	Interval int `json:"interval"`
+	// The unit of time for the interval.
+	Unit PeriodicTriggerConfigurationTimeUnit `json:"unit"`
+}
+
+type PeriodicTriggerConfigurationTimeUnit string
+
+const PeriodicTriggerConfigurationTimeUnitDays PeriodicTriggerConfigurationTimeUnit = `DAYS`
+
+const PeriodicTriggerConfigurationTimeUnitHours PeriodicTriggerConfigurationTimeUnit = `HOURS`
+
+const PeriodicTriggerConfigurationTimeUnitTimeUnitUnspecified PeriodicTriggerConfigurationTimeUnit = `TIME_UNIT_UNSPECIFIED`
+
+const PeriodicTriggerConfigurationTimeUnitWeeks PeriodicTriggerConfigurationTimeUnit = `WEEKS`
+
+// String representation for [fmt.Print]
+func (f *PeriodicTriggerConfigurationTimeUnit) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PeriodicTriggerConfigurationTimeUnit) Set(v string) error {
+	switch v {
+	case `DAYS`, `HOURS`, `TIME_UNIT_UNSPECIFIED`, `WEEKS`:
+		*f = PeriodicTriggerConfigurationTimeUnit(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DAYS", "HOURS", "TIME_UNIT_UNSPECIFIED", "WEEKS"`, v)
+	}
+}
+
+// Type always returns PeriodicTriggerConfigurationTimeUnit to satisfy [pflag.Value] interface
+func (f *PeriodicTriggerConfigurationTimeUnit) Type() string {
+	return "PeriodicTriggerConfigurationTimeUnit"
+}
+
 type PipelineParams struct {
 	// If true, triggers a full refresh on the delta live table.
 	FullRefresh bool `json:"full_refresh,omitempty"`
@@ -1857,9 +1942,7 @@ type RepairRun struct {
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-	// A map from keys to values for jobs with Python wheel task, for example
-	// `"python_named_params": {"name": "task", "data":
-	// "dbfs:/path/to/data.json"}`.
+
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
@@ -2321,9 +2404,7 @@ type RunJobTask struct {
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-	// A map from keys to values for jobs with Python wheel task, for example
-	// `"python_named_params": {"name": "task", "data":
-	// "dbfs:/path/to/data.json"}`.
+
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
@@ -2497,9 +2578,7 @@ type RunNow struct {
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-	// A map from keys to values for jobs with Python wheel task, for example
-	// `"python_named_params": {"name": "task", "data":
-	// "dbfs:/path/to/data.json"}`.
+
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
@@ -2663,9 +2742,7 @@ type RunParameters struct {
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-	// A map from keys to values for jobs with Python wheel task, for example
-	// `"python_named_params": {"name": "task", "data":
-	// "dbfs:/path/to/data.json"}`.
+
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
@@ -2841,6 +2918,10 @@ type RunTask struct {
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	EndTime int64 `json:"end_time,omitempty"`
+	// The key that references an environment spec in a job. This field is
+	// required for Python script, Python wheel and dbt tasks when using
+	// serverless compute.
+	EnvironmentKey string `json:"environment_key,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -3416,17 +3497,12 @@ func (s SqlTaskSubscription) MarshalJSON() ([]byte, error) {
 type SubmitRun struct {
 	// List of permissions to set on the job.
 	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
-	// If condition_task, specifies a condition with an outcome that can be used
-	// to control the execution of other tasks. Does not require a cluster to
-	// execute and does not support retries or notifications.
-	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
-	// If dbt_task, indicates that this must execute a dbt task. It requires
-	// both Databricks SQL and the ability to use a serverless or a pro SQL
-	// warehouse.
-	DbtTask *DbtTask `json:"dbt_task,omitempty"`
 	// An optional set of email addresses notified when the run begins or
 	// completes.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// A list of task execution environment specifications that can be
+	// referenced by tasks of this run.
+	Environments []JobEnvironment `json:"environments,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -3456,50 +3532,17 @@ type SubmitRun struct {
 	//
 	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
-	// If notebook_task, indicates that this task must run a notebook. This
-	// field may not be specified in conjunction with spark_jar_task.
-	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// run.
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
-	// If pipeline_task, indicates that this task must execute a Pipeline.
-	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
-	// If python_wheel_task, indicates that this job must execute a PythonWheel.
-	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
 	// The queue settings of the one-time run.
 	Queue *QueueSettings `json:"queue,omitempty"`
 	// Specifies the user or service principal that the job runs as. If not
 	// specified, the job runs as the user who submits the request.
 	RunAs *JobRunAs `json:"run_as,omitempty"`
-	// If run_job_task, indicates that this task must execute another job.
-	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
 	// An optional name for the run. The default value is `Untitled`.
 	RunName string `json:"run_name,omitempty"`
-	// If spark_jar_task, indicates that this task must run a JAR.
-	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
-	// If spark_python_task, indicates that this task must run a Python file.
-	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If `spark_submit_task`, indicates that this task must be launched by the
-	// spark submit script. This task can run only on new clusters.
-	//
-	// In the `new_cluster` specification, `libraries` and `spark_conf` are not
-	// supported. Instead, use `--jars` and `--py-files` to add Java and Python
-	// libraries and `--conf` to set the Spark configurations.
-	//
-	// `master`, `deploy-mode`, and `executor-cores` are automatically
-	// configured by Databricks; you _cannot_ specify them in parameters.
-	//
-	// By default, the Spark submit job uses all available memory (excluding
-	// reserved memory for Databricks services). You can set `--driver-memory`,
-	// and `--executor-memory` to a smaller value to leave some room for
-	// off-heap usage.
-	//
-	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
-	// paths.
-	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-	// If sql_task, indicates that this job must execute a SQL task.
-	SqlTask *SqlTask `json:"sql_task,omitempty"`
 
 	Tasks []SubmitTask `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. A value of `0` means
@@ -3541,6 +3584,10 @@ type SubmitTask struct {
 	// to control the execution of other tasks. Does not require a cluster to
 	// execute and does not support retries or notifications.
 	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
+	// If dbt_task, indicates that this must execute a dbt task. It requires
+	// both Databricks SQL and the ability to use a serverless or a pro SQL
+	// warehouse.
+	DbtTask *DbtTask `json:"dbt_task,omitempty"`
 	// An optional array of objects specifying the dependency graph of the task.
 	// All tasks specified in this field must complete successfully before
 	// executing this task. The key is `task_key`, and the value is the name
@@ -3551,6 +3598,10 @@ type SubmitTask struct {
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// The key that references an environment spec in a job. This field is
+	// required for Python script, Python wheel and dbt tasks when using
+	// serverless compute.
+	EnvironmentKey string `json:"environment_key,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
@@ -3825,6 +3876,14 @@ type TaskEmailNotifications struct {
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
 	OnStart []string `json:"on_start,omitempty"`
+	// A list of email addresses to notify when any streaming backlog thresholds
+	// are exceeded for any stream. Streaming backlog thresholds can be set in
+	// the `health` field using the following metrics:
+	// `STREAMING_BACKLOG_BYTES`, `STREAMING_BACKLOG_RECORDS`,
+	// `STREAMING_BACKLOG_SECONDS`, or `STREAMING_BACKLOG_FILES`. Alerting is
+	// based on the 10-minute average of these metrics. If the issue persists,
+	// notifications are resent every 30 minutes.
+	OnStreamingBacklogExceeded []string `json:"on_streaming_backlog_exceeded,omitempty"`
 	// A list of email addresses to be notified when a run successfully
 	// completes. A run is considered to have completed successfully if it ends
 	// with a `TERMINATED` `life_cycle_state` and a `SUCCESS` result_state. If
@@ -3887,6 +3946,8 @@ type TriggerSettings struct {
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
 	// Whether this trigger is paused or not.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
+	// Periodic trigger settings.
+	Periodic *PeriodicTriggerConfiguration `json:"periodic,omitempty"`
 	// Old table trigger settings name. Deprecated in favor of `table_update`.
 	Table *TableUpdateTriggerConfiguration `json:"table,omitempty"`
 
@@ -4071,6 +4132,15 @@ type WebhookNotifications struct {
 	// An optional list of system notification IDs to call when the run starts.
 	// A maximum of 3 destinations can be specified for the `on_start` property.
 	OnStart []Webhook `json:"on_start,omitempty"`
+	// An optional list of system notification IDs to call when any streaming
+	// backlog thresholds are exceeded for any stream. Streaming backlog
+	// thresholds can be set in the `health` field using the following metrics:
+	// `STREAMING_BACKLOG_BYTES`, `STREAMING_BACKLOG_RECORDS`,
+	// `STREAMING_BACKLOG_SECONDS`, or `STREAMING_BACKLOG_FILES`. Alerting is
+	// based on the 10-minute average of these metrics. If the issue persists,
+	// notifications are resent every 30 minutes. A maximum of 3 destinations
+	// can be specified for the `on_streaming_backlog_exceeded` property.
+	OnStreamingBacklogExceeded []Webhook `json:"on_streaming_backlog_exceeded,omitempty"`
 	// An optional list of system notification IDs to call when the run
 	// completes successfully. A maximum of 3 destinations can be specified for
 	// the `on_success` property.

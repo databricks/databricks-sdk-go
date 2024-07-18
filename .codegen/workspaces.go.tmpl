@@ -3,6 +3,8 @@
 package databricks
 
 import (
+	"context"
+
 	"github.com/databricks/databricks-sdk-go/client"
 	{{range .Packages}}
 	"github.com/databricks/databricks-sdk-go/service/{{.Name}}"{{end}}
@@ -12,7 +14,7 @@ type WorkspaceClient struct {
 	Config *config.Config
 	apiClient *httpclient.ApiClient
 
-	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
+	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) }}
 	{{.Comment "    // " 80}}
 	{{.Name}} {{.Package.Name}}.{{.Name}}Interface
 	{{end}}{{end}}
@@ -46,11 +48,22 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if err != nil {
 		return nil, err
 	}
+	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) .HasDataPlaneAPI}}
+	{{.CamelName}} := {{.Package.Name}}.New{{.Name}}(databricksClient)
+	{{- end}}{{end}}
 	return &WorkspaceClient{
 		Config: cfg,
 		apiClient: apiClient,
-		{{range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
-		{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient),
-		{{- end}}{{end}}
+		{{range .Services}}
+			{{- if and (not .IsAccounts) (not .HasParent)}}
+				{{- if .HasDataPlaneAPI}}
+					{{.Name}}: {{.CamelName}},
+				{{- else if .IsDataPlane}}
+					{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient,  {{.ControlPlaneService.CamelName}}),
+				{{- else }}
+					{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient),
+				{{- end -}}
+			{{- end -}}
+		{{end}}
 	}, nil
 }

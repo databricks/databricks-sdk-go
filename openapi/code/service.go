@@ -30,7 +30,28 @@ type Service struct {
 	subservices         map[string]*Service
 	ByPathParamsMethods []*Shortcut
 	ParentService       *Service
+	ControlPlaneService *Service
+	DataPlaneServices   []*Service
 	tag                 *openapi.Tag
+}
+
+// HasDataPlaneAPI returns whether this API has a DataPlane counterpart.
+func (svc *Service) HasDataPlaneAPI() bool {
+	return len(svc.DataPlaneServices) > 0
+}
+
+// DataPlaneInfoMethod returns the method in the Control Plane which contains the DataInfo object
+func (svc *Service) DataPlaneInfoMethod() *Method {
+	methodName := ""
+	for _, m := range svc.methods {
+		if m.DataPlane != nil {
+			methodName = m.DataPlane.ConfigMethod
+			if methodName == "" {
+				panic(fmt.Errorf("DataPlane config for method %q does not have a ConfigMethod", m.Name))
+			}
+		}
+	}
+	return svc.ControlPlaneService.methods[methodName]
 }
 
 // FullName holds package name and service name
@@ -41,6 +62,12 @@ func (svc *Service) FullName() string {
 // Returns whether the service has a parent service
 func (svc *Service) HasParent() bool {
 	return svc.tag.ParentService != ""
+}
+
+// IsDataPlane returns whether the service is a DataPlane service
+// This is determined by the service having a matching control plane service
+func (svc *Service) IsDataPlane() bool {
+	return svc.tag.ControlPlaneService != ""
 }
 
 // Returns the list of subservices
@@ -528,6 +555,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		Operation:           op,
 		pagination:          op.Pagination,
 		shortcut:            op.Shortcut,
+		DataPlane:           op.DataPlane,
 	}, nil
 }
 

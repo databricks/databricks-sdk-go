@@ -244,7 +244,7 @@ type CatalogInfo struct {
 	FullName string `json:"full_name,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of catalog.
@@ -311,10 +311,6 @@ const CatalogInfoSecurableKindCatalogForeignSqlserver CatalogInfoSecurableKind =
 
 const CatalogInfoSecurableKindCatalogInternal CatalogInfoSecurableKind = `CATALOG_INTERNAL`
 
-const CatalogInfoSecurableKindCatalogOnline CatalogInfoSecurableKind = `CATALOG_ONLINE`
-
-const CatalogInfoSecurableKindCatalogOnlineIndex CatalogInfoSecurableKind = `CATALOG_ONLINE_INDEX`
-
 const CatalogInfoSecurableKindCatalogStandard CatalogInfoSecurableKind = `CATALOG_STANDARD`
 
 const CatalogInfoSecurableKindCatalogSystem CatalogInfoSecurableKind = `CATALOG_SYSTEM`
@@ -329,17 +325,46 @@ func (f *CatalogInfoSecurableKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CatalogInfoSecurableKind) Set(v string) error {
 	switch v {
-	case `CATALOG_DELTASHARING`, `CATALOG_FOREIGN_BIGQUERY`, `CATALOG_FOREIGN_DATABRICKS`, `CATALOG_FOREIGN_MYSQL`, `CATALOG_FOREIGN_POSTGRESQL`, `CATALOG_FOREIGN_REDSHIFT`, `CATALOG_FOREIGN_SNOWFLAKE`, `CATALOG_FOREIGN_SQLDW`, `CATALOG_FOREIGN_SQLSERVER`, `CATALOG_INTERNAL`, `CATALOG_ONLINE`, `CATALOG_ONLINE_INDEX`, `CATALOG_STANDARD`, `CATALOG_SYSTEM`, `CATALOG_SYSTEM_DELTASHARING`:
+	case `CATALOG_DELTASHARING`, `CATALOG_FOREIGN_BIGQUERY`, `CATALOG_FOREIGN_DATABRICKS`, `CATALOG_FOREIGN_MYSQL`, `CATALOG_FOREIGN_POSTGRESQL`, `CATALOG_FOREIGN_REDSHIFT`, `CATALOG_FOREIGN_SNOWFLAKE`, `CATALOG_FOREIGN_SQLDW`, `CATALOG_FOREIGN_SQLSERVER`, `CATALOG_INTERNAL`, `CATALOG_STANDARD`, `CATALOG_SYSTEM`, `CATALOG_SYSTEM_DELTASHARING`:
 		*f = CatalogInfoSecurableKind(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CATALOG_DELTASHARING", "CATALOG_FOREIGN_BIGQUERY", "CATALOG_FOREIGN_DATABRICKS", "CATALOG_FOREIGN_MYSQL", "CATALOG_FOREIGN_POSTGRESQL", "CATALOG_FOREIGN_REDSHIFT", "CATALOG_FOREIGN_SNOWFLAKE", "CATALOG_FOREIGN_SQLDW", "CATALOG_FOREIGN_SQLSERVER", "CATALOG_INTERNAL", "CATALOG_ONLINE", "CATALOG_ONLINE_INDEX", "CATALOG_STANDARD", "CATALOG_SYSTEM", "CATALOG_SYSTEM_DELTASHARING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CATALOG_DELTASHARING", "CATALOG_FOREIGN_BIGQUERY", "CATALOG_FOREIGN_DATABRICKS", "CATALOG_FOREIGN_MYSQL", "CATALOG_FOREIGN_POSTGRESQL", "CATALOG_FOREIGN_REDSHIFT", "CATALOG_FOREIGN_SNOWFLAKE", "CATALOG_FOREIGN_SQLDW", "CATALOG_FOREIGN_SQLSERVER", "CATALOG_INTERNAL", "CATALOG_STANDARD", "CATALOG_SYSTEM", "CATALOG_SYSTEM_DELTASHARING"`, v)
 	}
 }
 
 // Type always returns CatalogInfoSecurableKind to satisfy [pflag.Value] interface
 func (f *CatalogInfoSecurableKind) Type() string {
 	return "CatalogInfoSecurableKind"
+}
+
+// Whether the current securable is accessible from all workspaces or a specific
+// set of workspaces.
+type CatalogIsolationMode string
+
+const CatalogIsolationModeIsolated CatalogIsolationMode = `ISOLATED`
+
+const CatalogIsolationModeOpen CatalogIsolationMode = `OPEN`
+
+// String representation for [fmt.Print]
+func (f *CatalogIsolationMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CatalogIsolationMode) Set(v string) error {
+	switch v {
+	case `ISOLATED`, `OPEN`:
+		*f = CatalogIsolationMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ISOLATED", "OPEN"`, v)
+	}
+}
+
+// Type always returns CatalogIsolationMode to satisfy [pflag.Value] interface
+func (f *CatalogIsolationMode) Type() string {
+	return "CatalogIsolationMode"
 }
 
 // The type of the catalog.
@@ -930,9 +955,10 @@ func (f *CreateFunctionSqlDataAccess) Type() string {
 type CreateMetastore struct {
 	// The user-specified name of the metastore.
 	Name string `json:"name"`
-	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). If
-	// this field is omitted, the region of the workspace receiving the request
-	// will be used.
+	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+	// The field can be omitted in the __workspace-level__ __API__ but not in
+	// the __account-level__ __API__. If this field is omitted, the region of
+	// the workspace receiving the request will be used.
 	Region string `json:"region,omitempty"`
 	// The storage root URL for metastore
 	StorageRoot string `json:"storage_root,omitempty"`
@@ -1087,7 +1113,7 @@ type CreateStorageCredential struct {
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
-	// The <Databricks> managed GCP service account configuration.
+	// The Databricks managed GCP service account configuration.
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name"`
@@ -1179,21 +1205,49 @@ type DataSourceFormat string
 
 const DataSourceFormatAvro DataSourceFormat = `AVRO`
 
+const DataSourceFormatBigqueryFormat DataSourceFormat = `BIGQUERY_FORMAT`
+
 const DataSourceFormatCsv DataSourceFormat = `CSV`
+
+const DataSourceFormatDatabricksFormat DataSourceFormat = `DATABRICKS_FORMAT`
 
 const DataSourceFormatDelta DataSourceFormat = `DELTA`
 
 const DataSourceFormatDeltasharing DataSourceFormat = `DELTASHARING`
 
+const DataSourceFormatHiveCustom DataSourceFormat = `HIVE_CUSTOM`
+
+const DataSourceFormatHiveSerde DataSourceFormat = `HIVE_SERDE`
+
 const DataSourceFormatJson DataSourceFormat = `JSON`
+
+const DataSourceFormatMysqlFormat DataSourceFormat = `MYSQL_FORMAT`
+
+const DataSourceFormatNetsuiteFormat DataSourceFormat = `NETSUITE_FORMAT`
 
 const DataSourceFormatOrc DataSourceFormat = `ORC`
 
 const DataSourceFormatParquet DataSourceFormat = `PARQUET`
 
+const DataSourceFormatPostgresqlFormat DataSourceFormat = `POSTGRESQL_FORMAT`
+
+const DataSourceFormatRedshiftFormat DataSourceFormat = `REDSHIFT_FORMAT`
+
+const DataSourceFormatSalesforceFormat DataSourceFormat = `SALESFORCE_FORMAT`
+
+const DataSourceFormatSnowflakeFormat DataSourceFormat = `SNOWFLAKE_FORMAT`
+
+const DataSourceFormatSqldwFormat DataSourceFormat = `SQLDW_FORMAT`
+
+const DataSourceFormatSqlserverFormat DataSourceFormat = `SQLSERVER_FORMAT`
+
 const DataSourceFormatText DataSourceFormat = `TEXT`
 
 const DataSourceFormatUnityCatalog DataSourceFormat = `UNITY_CATALOG`
+
+const DataSourceFormatVectorIndexFormat DataSourceFormat = `VECTOR_INDEX_FORMAT`
+
+const DataSourceFormatWorkdayRaasFormat DataSourceFormat = `WORKDAY_RAAS_FORMAT`
 
 // String representation for [fmt.Print]
 func (f *DataSourceFormat) String() string {
@@ -1203,11 +1257,11 @@ func (f *DataSourceFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DataSourceFormat) Set(v string) error {
 	switch v {
-	case `AVRO`, `CSV`, `DELTA`, `DELTASHARING`, `JSON`, `ORC`, `PARQUET`, `TEXT`, `UNITY_CATALOG`:
+	case `AVRO`, `BIGQUERY_FORMAT`, `CSV`, `DATABRICKS_FORMAT`, `DELTA`, `DELTASHARING`, `HIVE_CUSTOM`, `HIVE_SERDE`, `JSON`, `MYSQL_FORMAT`, `NETSUITE_FORMAT`, `ORC`, `PARQUET`, `POSTGRESQL_FORMAT`, `REDSHIFT_FORMAT`, `SALESFORCE_FORMAT`, `SNOWFLAKE_FORMAT`, `SQLDW_FORMAT`, `SQLSERVER_FORMAT`, `TEXT`, `UNITY_CATALOG`, `VECTOR_INDEX_FORMAT`, `WORKDAY_RAAS_FORMAT`:
 		*f = DataSourceFormat(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AVRO", "CSV", "DELTA", "DELTASHARING", "JSON", "ORC", "PARQUET", "TEXT", "UNITY_CATALOG"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AVRO", "BIGQUERY_FORMAT", "CSV", "DATABRICKS_FORMAT", "DELTA", "DELTASHARING", "HIVE_CUSTOM", "HIVE_SERDE", "JSON", "MYSQL_FORMAT", "NETSUITE_FORMAT", "ORC", "PARQUET", "POSTGRESQL_FORMAT", "REDSHIFT_FORMAT", "SALESFORCE_FORMAT", "SNOWFLAKE_FORMAT", "SQLDW_FORMAT", "SQLSERVER_FORMAT", "TEXT", "UNITY_CATALOG", "VECTOR_INDEX_FORMAT", "WORKDAY_RAAS_FORMAT"`, v)
 	}
 }
 
@@ -1356,12 +1410,6 @@ func (s DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a table monitor
-type DeleteLakehouseMonitorRequest struct {
-	// Full name of the table.
-	TableName string `json:"-" url:"-"`
-}
-
 // Delete a metastore
 type DeleteMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
@@ -1392,6 +1440,12 @@ type DeleteModelVersionRequest struct {
 type DeleteOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
+}
+
+// Delete a table monitor
+type DeleteQualityMonitorRequest struct {
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
 }
 
 // Delete a Registered Model
@@ -1480,41 +1534,10 @@ type DisableRequest struct {
 	// The metastore ID under which the system schema lives.
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
-	SchemaName DisableSchemaName `json:"-" url:"-"`
+	SchemaName string `json:"-" url:"-"`
 }
 
 type DisableResponse struct {
-}
-
-type DisableSchemaName string
-
-const DisableSchemaNameAccess DisableSchemaName = `access`
-
-const DisableSchemaNameBilling DisableSchemaName = `billing`
-
-const DisableSchemaNameLineage DisableSchemaName = `lineage`
-
-const DisableSchemaNameOperationalData DisableSchemaName = `operational_data`
-
-// String representation for [fmt.Print]
-func (f *DisableSchemaName) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *DisableSchemaName) Set(v string) error {
-	switch v {
-	case `access`, `billing`, `lineage`, `operational_data`:
-		*f = DisableSchemaName(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "access", "billing", "lineage", "operational_data"`, v)
-	}
-}
-
-// Type always returns DisableSchemaName to satisfy [pflag.Value] interface
-func (f *DisableSchemaName) Type() string {
-	return "DisableSchemaName"
 }
 
 type EffectivePermissionsList struct {
@@ -1651,41 +1674,10 @@ type EnableRequest struct {
 	// The metastore ID under which the system schema lives.
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
-	SchemaName EnableSchemaName `json:"-" url:"-"`
+	SchemaName string `json:"-" url:"-"`
 }
 
 type EnableResponse struct {
-}
-
-type EnableSchemaName string
-
-const EnableSchemaNameAccess EnableSchemaName = `access`
-
-const EnableSchemaNameBilling EnableSchemaName = `billing`
-
-const EnableSchemaNameLineage EnableSchemaName = `lineage`
-
-const EnableSchemaNameOperationalData EnableSchemaName = `operational_data`
-
-// String representation for [fmt.Print]
-func (f *EnableSchemaName) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *EnableSchemaName) Set(v string) error {
-	switch v {
-	case `access`, `billing`, `lineage`, `operational_data`:
-		*f = EnableSchemaName(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "access", "billing", "lineage", "operational_data"`, v)
-	}
-}
-
-// Type always returns EnableSchemaName to satisfy [pflag.Value] interface
-func (f *EnableSchemaName) Type() string {
-	return "EnableSchemaName"
 }
 
 // Encryption options that apply to clients connecting to cloud storage.
@@ -1719,6 +1711,9 @@ type ExternalLocationInfo struct {
 	CredentialName string `json:"credential_name,omitempty"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of metastore hosting the external location.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of the external location.
@@ -2226,12 +2221,6 @@ func (s GetGrantRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a table monitor
-type GetLakehouseMonitorRequest struct {
-	// Full name of the table.
-	TableName string `json:"-" url:"-"`
-}
-
 // Get a metastore
 type GetMetastoreRequest struct {
 	// Unique ID of the metastore.
@@ -2345,6 +2334,12 @@ type GetOnlineTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Get a table monitor
+type GetQualityMonitorRequest struct {
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
+}
+
 // Get refresh
 type GetRefreshRequest struct {
 	// ID of the refresh.
@@ -2428,9 +2423,9 @@ type GetWorkspaceBindingRequest struct {
 // set of workspaces.
 type IsolationMode string
 
-const IsolationModeIsolated IsolationMode = `ISOLATED`
+const IsolationModeIsolationModeIsolated IsolationMode = `ISOLATION_MODE_ISOLATED`
 
-const IsolationModeOpen IsolationMode = `OPEN`
+const IsolationModeIsolationModeOpen IsolationMode = `ISOLATION_MODE_OPEN`
 
 // String representation for [fmt.Print]
 func (f *IsolationMode) String() string {
@@ -2440,11 +2435,11 @@ func (f *IsolationMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IsolationMode) Set(v string) error {
 	switch v {
-	case `ISOLATED`, `OPEN`:
+	case `ISOLATION_MODE_ISOLATED`, `ISOLATION_MODE_OPEN`:
 		*f = IsolationMode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ISOLATED", "OPEN"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ISOLATION_MODE_ISOLATED", "ISOLATION_MODE_OPEN"`, v)
 	}
 }
 
@@ -2470,11 +2465,28 @@ type ListAccountStorageCredentialsRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 }
 
+type ListAccountStorageCredentialsResponse struct {
+	// An array of metastore storage credentials.
+	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
+}
+
 // List catalogs
 type ListCatalogsRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Maximum number of catalogs to return. - when set to 0, the page length is
+	// set to a server configured value (recommended); - when set to a value
+	// greater than 0, the page length is the minimum of this value and a server
+	// configured value; - when set to a value less than 0, an invalid parameter
+	// error is returned; - If not set, all valid catalogs are returned (not
+	// recommended). - Note: The number of returned catalogs might be less than
+	// the specified max_results size, even zero. The only definitive indication
+	// that no further catalogs can be fetched is when the next_page_token is
+	// unset from the response.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -2490,11 +2502,62 @@ func (s ListCatalogsRequest) MarshalJSON() ([]byte, error) {
 type ListCatalogsResponse struct {
 	// An array of catalog information objects.
 	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListCatalogsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCatalogsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List connections
+type ListConnectionsRequest struct {
+	// Maximum number of connections to return. - If not set, all connections
+	// are returned (not recommended). - when set to a value greater than 0, the
+	// page length is the minimum of this value and a server configured value; -
+	// when set to 0, the page length is set to a server configured value
+	// (recommended); - when set to a value less than 0, an invalid parameter
+	// error is returned;
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListConnectionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListConnectionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListConnectionsResponse struct {
 	// An array of connection information objects.
 	Connections []ConnectionInfo `json:"connections,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListConnectionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListConnectionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List external locations
@@ -3583,6 +3646,11 @@ func (f *MonitorRefreshInfoTrigger) Type() string {
 	return "MonitorRefreshInfoTrigger"
 }
 
+type MonitorRefreshListResponse struct {
+	// List of refreshes.
+	Refreshes []MonitorRefreshInfo `json:"refreshes,omitempty"`
+}
+
 type MonitorSnapshot struct {
 }
 
@@ -3614,6 +3682,8 @@ type OnlineTable struct {
 	Spec *OnlineTableSpec `json:"spec,omitempty"`
 	// Online Table status
 	Status *OnlineTableStatus `json:"status,omitempty"`
+	// Data serving REST API URL for this table
+	TableServingUrl string `json:"table_serving_url,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -4255,10 +4325,13 @@ type StorageCredentialInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// The <Databricks> managed GCP service account configuration.
+	// The Databricks managed GCP service account configuration.
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountResponse `json:"databricks_gcp_service_account,omitempty"`
 	// The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The credential name. The name must be unique within the metastore.
@@ -4492,7 +4565,13 @@ type TableType string
 
 const TableTypeExternal TableType = `EXTERNAL`
 
+const TableTypeExternalShallowClone TableType = `EXTERNAL_SHALLOW_CLONE`
+
+const TableTypeForeign TableType = `FOREIGN`
+
 const TableTypeManaged TableType = `MANAGED`
+
+const TableTypeManagedShallowClone TableType = `MANAGED_SHALLOW_CLONE`
 
 const TableTypeMaterializedView TableType = `MATERIALIZED_VIEW`
 
@@ -4508,11 +4587,11 @@ func (f *TableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TableType) Set(v string) error {
 	switch v {
-	case `EXTERNAL`, `MANAGED`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
+	case `EXTERNAL`, `EXTERNAL_SHALLOW_CLONE`, `FOREIGN`, `MANAGED`, `MANAGED_SHALLOW_CLONE`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
 		*f = TableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "MANAGED", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "EXTERNAL_SHALLOW_CLONE", "FOREIGN", "MANAGED", "MANAGED_SHALLOW_CLONE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
 	}
 }
 
@@ -4567,7 +4646,7 @@ type UpdateCatalog struct {
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
 	// New name for the catalog.
@@ -4621,6 +4700,9 @@ type UpdateExternalLocation struct {
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
 	Force bool `json:"force,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the external location.
 	Name string `json:"-" url:"-"`
 	// New name for the external location.
@@ -4770,6 +4852,9 @@ type UpdateMonitor struct {
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
 	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
+	// Id of dashboard that visualizes the computed metrics. This can be empty
+	// if the monitor is in PENDING state.
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// The data classification config for the monitor.
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
 	// Configuration for monitoring inference logs.
@@ -4874,11 +4959,14 @@ type UpdateStorageCredential struct {
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
-	// The <Databricks> managed GCP service account configuration.
+	// The Databricks managed GCP service account configuration.
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// Force update even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"force,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
 	// New name for the storage credential.

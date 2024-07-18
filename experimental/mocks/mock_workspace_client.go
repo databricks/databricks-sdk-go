@@ -73,7 +73,6 @@ func NewMockWorkspaceClient(t interface {
 			InstanceProfiles:                    compute.NewMockInstanceProfilesInterface(t),
 			IpAccessLists:                       settings.NewMockIpAccessListsInterface(t),
 			Jobs:                                jobs.NewMockJobsInterface(t),
-			LakehouseMonitors:                   catalog.NewMockLakehouseMonitorsInterface(t),
 			Lakeview:                            dashboards.NewMockLakeviewInterface(t),
 			Libraries:                           compute.NewMockLibrariesInterface(t),
 			Metastores:                          catalog.NewMockMetastoresInterface(t),
@@ -92,6 +91,7 @@ func NewMockWorkspaceClient(t interface {
 			ProviderProviderAnalyticsDashboards: marketplace.NewMockProviderProviderAnalyticsDashboardsInterface(t),
 			ProviderProviders:                   marketplace.NewMockProviderProvidersInterface(t),
 			Providers:                           sharing.NewMockProvidersInterface(t),
+			QualityMonitors:                     catalog.NewMockQualityMonitorsInterface(t),
 			Queries:                             sql.NewMockQueriesInterface(t),
 			QueryHistory:                        sql.NewMockQueryHistoryInterface(t),
 			QueryVisualizations:                 sql.NewMockQueryVisualizationsInterface(t),
@@ -103,6 +103,7 @@ func NewMockWorkspaceClient(t interface {
 			Secrets:                             workspace.NewMockSecretsInterface(t),
 			ServicePrincipals:                   iam.NewMockServicePrincipalsInterface(t),
 			ServingEndpoints:                    serving.NewMockServingEndpointsInterface(t),
+			ServingEndpointsDataPlane:           serving.NewMockServingEndpointsDataPlaneInterface(t),
 			Settings:                            settings.NewMockSettingsInterface(t),
 			Shares:                              sharing.NewMockSharesInterface(t),
 			StatementExecution:                  sql.NewMockStatementExecutionInterface(t),
@@ -455,14 +456,6 @@ func (m *MockWorkspaceClient) GetMockJobsAPI() *jobs.MockJobsInterface {
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockLakehouseMonitorsAPI() *catalog.MockLakehouseMonitorsInterface {
-	api, ok := m.WorkspaceClient.LakehouseMonitors.(*catalog.MockLakehouseMonitorsInterface)
-	if !ok {
-		panic(fmt.Sprintf("expected LakehouseMonitors to be *catalog.MockLakehouseMonitorsInterface, actual was %T", m.WorkspaceClient.LakehouseMonitors))
-	}
-	return api
-}
-
 func (m *MockWorkspaceClient) GetMockLakeviewAPI() *dashboards.MockLakeviewInterface {
 	api, ok := m.WorkspaceClient.Lakeview.(*dashboards.MockLakeviewInterface)
 	if !ok {
@@ -607,6 +600,14 @@ func (m *MockWorkspaceClient) GetMockProvidersAPI() *sharing.MockProvidersInterf
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockQualityMonitorsAPI() *catalog.MockQualityMonitorsInterface {
+	api, ok := m.WorkspaceClient.QualityMonitors.(*catalog.MockQualityMonitorsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected QualityMonitors to be *catalog.MockQualityMonitorsInterface, actual was %T", m.WorkspaceClient.QualityMonitors))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockQueriesAPI() *sql.MockQueriesInterface {
 	api, ok := m.WorkspaceClient.Queries.(*sql.MockQueriesInterface)
 	if !ok {
@@ -691,6 +692,14 @@ func (m *MockWorkspaceClient) GetMockServingEndpointsAPI() *serving.MockServingE
 	api, ok := m.WorkspaceClient.ServingEndpoints.(*serving.MockServingEndpointsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ServingEndpoints to be *serving.MockServingEndpointsInterface, actual was %T", m.WorkspaceClient.ServingEndpoints))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockServingEndpointsDataPlaneAPI() *serving.MockServingEndpointsDataPlaneInterface {
+	api, ok := m.WorkspaceClient.ServingEndpointsDataPlane.(*serving.MockServingEndpointsDataPlaneInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ServingEndpointsDataPlane to be *serving.MockServingEndpointsDataPlaneInterface, actual was %T", m.WorkspaceClient.ServingEndpointsDataPlane))
 	}
 	return api
 }

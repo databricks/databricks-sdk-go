@@ -16,10 +16,10 @@ experimental/mocks/service/catalog/mock_connections_interface.go linguist-genera
 experimental/mocks/service/catalog/mock_external_locations_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_functions_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_grants_interface.go linguist-generated=true
-experimental/mocks/service/catalog/mock_lakehouse_monitors_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_metastores_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_model_versions_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_online_tables_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_quality_monitors_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_registered_models_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_schemas_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_storage_credentials_interface.go linguist-generated=true
@@ -79,6 +79,7 @@ experimental/mocks/service/provisioning/mock_storage_interface.go linguist-gener
 experimental/mocks/service/provisioning/mock_vpc_endpoints_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_workspaces_interface.go linguist-generated=true
 experimental/mocks/service/serving/mock_apps_interface.go linguist-generated=true
+experimental/mocks/service/serving/mock_serving_endpoints_data_plane_interface.go linguist-generated=true
 experimental/mocks/service/serving/mock_serving_endpoints_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_account_ip_access_lists_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_account_settings_interface.go linguist-generated=true

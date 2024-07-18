@@ -53,6 +53,24 @@ func (f *AssetType) Type() string {
 	return "AssetType"
 }
 
+// Get one batch of listings. One may specify up to 50 IDs per request.
+type BatchGetListingsRequest struct {
+	Ids []string `json:"-" url:"ids,omitempty"`
+}
+
+type BatchGetListingsResponse struct {
+	Listings []Listing `json:"listings,omitempty"`
+}
+
+// Get one batch of providers. One may specify up to 50 IDs per request.
+type BatchGetProvidersRequest struct {
+	Ids []string `json:"-" url:"ids,omitempty"`
+}
+
+type BatchGetProvidersResponse struct {
+	Providers []ProviderInfo `json:"providers,omitempty"`
+}
+
 type Category string
 
 const CategoryAdvertisingAndMarketing Category = `ADVERTISING_AND_MARKETING`
@@ -1256,6 +1274,8 @@ type ListListingsRequest struct {
 	Assets []AssetType `json:"-" url:"assets,omitempty"`
 	// Matches any of the following categories
 	Categories []Category `json:"-" url:"categories,omitempty"`
+
+	IsAscending bool `json:"-" url:"is_ascending,omitempty"`
 	// Filters each listing based on if it is free.
 	IsFree bool `json:"-" url:"is_free,omitempty"`
 	// Filters each listing based on if it is a private exchange.
@@ -1269,7 +1289,7 @@ type ListListingsRequest struct {
 	// Matches any of the following provider ids
 	ProviderIds []string `json:"-" url:"provider_ids,omitempty"`
 	// Criteria for sorting the resulting set of listings.
-	SortBySpec *SortBySpec `json:"-" url:"sort_by_spec,omitempty"`
+	SortBy SortBy `json:"-" url:"sort_by,omitempty"`
 	// Matches any of the following tags
 	Tags []ListingTag `json:"-" url:"tags,omitempty"`
 
@@ -1358,6 +1378,9 @@ type Listing struct {
 	Detail *ListingDetail `json:"detail,omitempty"`
 
 	Id string `json:"id,omitempty"`
+	// we can not use just ProviderListingSummary since we already have same
+	// name on entity side of the state
+	ProviderSummary *ProviderListingSummaryInfo `json:"provider_summary,omitempty"`
 	// Next Number: 26
 	Summary ListingSummary `json:"summary"`
 
@@ -1736,6 +1759,53 @@ type ProviderAnalyticsDashboard struct {
 	Id string `json:"id"`
 }
 
+type ProviderIconFile struct {
+	IconFileId string `json:"icon_file_id,omitempty"`
+
+	IconFilePath string `json:"icon_file_path,omitempty"`
+
+	IconType ProviderIconType `json:"icon_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ProviderIconFile) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ProviderIconFile) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ProviderIconType string
+
+const ProviderIconTypeDark ProviderIconType = `DARK`
+
+const ProviderIconTypePrimary ProviderIconType = `PRIMARY`
+
+const ProviderIconTypeProviderIconTypeUnspecified ProviderIconType = `PROVIDER_ICON_TYPE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (f *ProviderIconType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ProviderIconType) Set(v string) error {
+	switch v {
+	case `DARK`, `PRIMARY`, `PROVIDER_ICON_TYPE_UNSPECIFIED`:
+		*f = ProviderIconType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DARK", "PRIMARY", "PROVIDER_ICON_TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns ProviderIconType to satisfy [pflag.Value] interface
+func (f *ProviderIconType) Type() string {
+	return "ProviderIconType"
+}
+
 type ProviderInfo struct {
 	BusinessContactEmail string `json:"business_contact_email"`
 
@@ -1773,6 +1843,26 @@ func (s *ProviderInfo) UnmarshalJSON(b []byte) error {
 }
 
 func (s ProviderInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// we can not use just ProviderListingSummary since we already have same name on
+// entity side of the state
+type ProviderListingSummaryInfo struct {
+	Description string `json:"description,omitempty"`
+
+	IconFiles []ProviderIconFile `json:"icon_files,omitempty"`
+
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ProviderListingSummaryInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ProviderListingSummaryInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1820,6 +1910,8 @@ type SearchListingsRequest struct {
 	Assets []AssetType `json:"-" url:"assets,omitempty"`
 	// Matches any of the following categories
 	Categories []Category `json:"-" url:"categories,omitempty"`
+
+	IsAscending bool `json:"-" url:"is_ascending,omitempty"`
 
 	IsFree bool `json:"-" url:"is_free,omitempty"`
 
@@ -1915,42 +2007,6 @@ func (f *SortBy) Set(v string) error {
 // Type always returns SortBy to satisfy [pflag.Value] interface
 func (f *SortBy) Type() string {
 	return "SortBy"
-}
-
-type SortBySpec struct {
-	// The field on which to sort the listing.
-	SortBy SortBy `json:"sort_by" url:"sort_by"`
-	// The order in which to sort the listing.
-	SortOrder SortOrder `json:"sort_order" url:"sort_order"`
-}
-
-type SortOrder string
-
-const SortOrderSortOrderAscending SortOrder = `SORT_ORDER_ASCENDING`
-
-const SortOrderSortOrderDescending SortOrder = `SORT_ORDER_DESCENDING`
-
-const SortOrderSortOrderUnspecified SortOrder = `SORT_ORDER_UNSPECIFIED`
-
-// String representation for [fmt.Print]
-func (f *SortOrder) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *SortOrder) Set(v string) error {
-	switch v {
-	case `SORT_ORDER_ASCENDING`, `SORT_ORDER_DESCENDING`, `SORT_ORDER_UNSPECIFIED`:
-		*f = SortOrder(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "SORT_ORDER_ASCENDING", "SORT_ORDER_DESCENDING", "SORT_ORDER_UNSPECIFIED"`, v)
-	}
-}
-
-// Type always returns SortOrder to satisfy [pflag.Value] interface
-func (f *SortOrder) Type() string {
-	return "SortOrder"
 }
 
 type TokenDetail struct {

@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/httpclient/traceparent"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/logger/httplog"
 	"github.com/databricks/databricks-sdk-go/retries"
@@ -108,6 +109,7 @@ type DoOption struct {
 	in           RequestVisitor
 	out          func(body *common.ResponseWrapper) error
 	body         any
+	contentType  string
 	isAuthOption bool
 }
 
@@ -139,12 +141,18 @@ func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOptio
 		visitors = append([]RequestVisitor{authVisitor}, visitors...)
 	}
 
-	var requestBody any
+	var data any
+	var contentType string
 	for _, o := range opts {
 		if o.body == nil {
 			continue
 		}
-		requestBody = o.body
+		data = o.body
+		contentType = o.contentType
+	}
+	requestBody, err := makeRequestBody(method, &path, data, contentType)
+	if err != nil {
+		return fmt.Errorf("request marshal: %w", err)
 	}
 	responseBody, err := c.perform(ctx, method, path, requestBody, visitors...)
 	if err != nil {
@@ -193,7 +201,7 @@ func (c *ApiClient) isRetriable(ctx context.Context, err error) bool {
 // If it is certain that an error should not be retried, use failRequest() instead.
 func (c *ApiClient) handleError(ctx context.Context, err error, body common.RequestBody) (*common.ResponseWrapper, *retries.Err) {
 	if !c.isRetriable(ctx, err) {
-		return c.failRequest(ctx, "non-retriable error", err)
+		return nil, retries.Halt(err)
 	}
 	if resetErr := body.Reset(); resetErr != nil {
 		return nil, retries.Halt(resetErr)
@@ -202,8 +210,8 @@ func (c *ApiClient) handleError(ctx context.Context, err error, body common.Requ
 }
 
 // Fails the request with a retries.Err to halt future retries.
-func (c *ApiClient) failRequest(ctx context.Context, msg string, err error) (*common.ResponseWrapper, *retries.Err) {
-	logger.Debugf(ctx, "%s: %s", msg, err)
+func (c *ApiClient) failRequest(msg string, err error) (*common.ResponseWrapper, *retries.Err) {
+	err = fmt.Errorf("%s: %w", msg, err)
 	return nil, retries.Halt(err)
 }
 
@@ -217,7 +225,7 @@ func (c *ApiClient) attempt(
 	return func() (*common.ResponseWrapper, *retries.Err) {
 		err := c.rateLimiter.Wait(ctx)
 		if err != nil {
-			return c.failRequest(ctx, "failed in rate limiter", err)
+			return c.failRequest("failed in rate limiter", err)
 		}
 
 		pctx := ctx
@@ -228,14 +236,18 @@ func (c *ApiClient) attempt(
 		ctx, ticker := newTimeoutContext(pctx, c.config.HTTPTimeout)
 		request, err := http.NewRequestWithContext(ctx, method, requestURL, requestBody.Reader)
 		if err != nil {
-			return c.failRequest(ctx, "failed creating new request", err)
+			return c.failRequest("failed creating new request", err)
 		}
 		for _, requestVisitor := range visitors {
 			err = requestVisitor(request)
 			if err != nil {
-				return c.failRequest(ctx, "failed during request visitor", err)
+				return c.failRequest("failed during request visitor", err)
 			}
 		}
+		// Set traceparent for distributed tracing.
+		// This must be done after all visitors have run, as they may modify the request.
+		traceparent.AddTraceparent(request)
+
 		// request.Context() holds context potentially enhanced by visitors
 		request.Header.Set("User-Agent", useragent.FromContext(request.Context()))
 		if request.Header.Get("Content-Type") == "" && requestBody.ContentType != "" {
@@ -258,27 +270,28 @@ func (c *ApiClient) attempt(
 			if pctx.Err() == nil && uerr.Err == context.Canceled {
 				uerr.Err = fmt.Errorf("request timed out after %s of inactivity", c.config.HTTPTimeout)
 			}
-			return c.handleError(ctx, err, requestBody)
 		}
 
 		// If there is a response body, wrap it to extend the request timeout while it is being read.
 		if response != nil && response.Body != nil {
 			response.Body = newResponseBodyTicker(ticker, response.Body)
 		} else {
-			// If there is no response body, the request has completed and there
-			// is no need to extend the timeout. Cancel the context to clean up
-			// the underlying goroutine.
+			// If there is no response body or an error is returned, the request
+			// has completed and there is no need to extend the timeout. Cancel
+			// the context to clean up the underlying goroutine.
 			ticker.Cancel()
 		}
 
 		// By this point, the request body has certainly been consumed.
-		responseWrapper, err := common.NewResponseWrapper(response, requestBody)
-		if err != nil {
-			return c.failRequest(ctx, "failed while reading response", err)
+		var responseWrapper common.ResponseWrapper
+		if err == nil {
+			responseWrapper, err = common.NewResponseWrapper(response, requestBody)
+		}
+		if err == nil {
+			err = c.config.ErrorMapper(ctx, responseWrapper)
 		}
 
-		err = c.config.ErrorMapper(ctx, responseWrapper)
-		defer c.recordRequestLog(ctx, request, response, err, requestBody.DebugBytes, responseWrapper.DebugBytes)
+		c.recordRequestLog(ctx, request, response, err, requestBody.DebugBytes, responseWrapper.DebugBytes)
 
 		if err == nil {
 			return &responseWrapper, nil
@@ -302,6 +315,7 @@ func (c *ApiClient) recordRequestLog(
 		return
 	}
 	message := httplog.RoundTripStringer{
+		Request:                  request,
 		Response:                 response,
 		Err:                      err,
 		RequestBody:              requestBody,
@@ -348,13 +362,9 @@ func (c *ApiClient) perform(
 	ctx context.Context,
 	method,
 	requestURL string,
-	data interface{},
+	requestBody common.RequestBody,
 	visitors ...RequestVisitor,
 ) (*common.ResponseWrapper, error) {
-	requestBody, err := makeRequestBody(method, &requestURL, data)
-	if err != nil {
-		return nil, fmt.Errorf("request marshal: %w", err)
-	}
 	resp, err := retries.Poll(ctx, c.config.RetryTimeout,
 		c.attempt(ctx, method, requestURL, requestBody, visitors...))
 	var timedOut *retries.ErrTimedOut

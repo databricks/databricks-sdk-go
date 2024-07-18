@@ -372,6 +372,17 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 		svc.ParentService = parentSvc
 	}
 
+	// Link ControlPlane and DataPlane services
+	if tag.ControlPlaneService != "" {
+		controlPlaneTag, err := spec.GetTagByServiceName(tag.ControlPlaneService)
+		if err != nil {
+			return err
+		}
+		controlPlaneService := pkg.getService(controlPlaneTag)
+		svc.ControlPlaneService = controlPlaneService
+		controlPlaneService.DataPlaneServices = append(controlPlaneService.DataPlaneServices, svc)
+	}
+
 	for prefix, path := range spec.Paths {
 		for verb, op := range path.Verbs() {
 			if op.OperationId == "Files.getStatusHead" {
@@ -420,6 +431,7 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 			svc.methods[method.Name] = method
 		}
 	}
+
 	return nil
 }
 

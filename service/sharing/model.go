@@ -415,6 +415,8 @@ type CreateShare struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of the share.
 	Name string `json:"name"`
+	// Storage root URL for the share.
+	StorageRoot string `json:"storage_root,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1035,6 +1037,10 @@ type ShareInfo struct {
 	Objects []SharedDataObject `json:"objects,omitempty"`
 	// Username of current owner of share.
 	Owner string `json:"owner,omitempty"`
+	// Storage Location URL (full path) for the share.
+	StorageLocation string `json:"storage_location,omitempty"`
+	// Storage root URL for the share.
+	StorageRoot string `json:"storage_root,omitempty"`
 	// Time at which this share was updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of share updater.
@@ -1354,6 +1360,8 @@ type UpdateShare struct {
 	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of share.
 	Owner string `json:"owner,omitempty"`
+	// Storage root URL for the share.
+	StorageRoot string `json:"storage_root,omitempty"`
 	// Array of shared data object updates.
 	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
 

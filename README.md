@@ -22,6 +22,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 - [GetByName utility methods](#getbyname-utility-methods)
 - [Node type and Databricks Runtime selectors](#node-type-and-databricks-runtime-selectors)
 - [Integration with `io` interfaces for DBFS](#integration-with-io-interfaces-for-dbfs)
+- [User Agent Request Attribution](#user-agent-request-attribution)
 - [Error Handling](#error-handling)
 - [Logging](#logging)
 - [Testing](#testing)
@@ -530,6 +531,25 @@ buf, err := w.Dbfs.ReadFile(ctx, "/path/to/remote/file")
 ## `pflag.Value` for enums
 
 Databricks SDK for Go loosely integrates with [spf13/pflag](https://github.com/spf13/pflag) by implementing [pflag.Value](https://pkg.go.dev/github.com/spf13/pflag#Value) for all enum types.
+
+## User Agent Request Attribution
+
+The Databricks SDK for Go uses the `User-Agent` header to include request metadata along with each request. By default, this includes the version of the Go SDK, the version of the Go language used by your application, and the underlying operating system. To statically add additional metadata, you can use the `WithPartner()` and `WithProduct()` functions in the `useragent` package. `WithPartner()` can be used by partners to indicate that code using the Databricks SDK for Go should be attributed to a specific partner. Multiple partners can be registered at once. Partner names can contain any number, digit, `.`, `-`, `_` or `+`.
+
+```go
+useragent.WithPartner("partner-abc")
+useragent.WithPartner("partner-xyz")
+```
+
+`WithProduct()` can be used to define the name and version of the product that is built with the Databricks SDK for Go. The product name has the same restrictions as the partner name above, and the product version must be a valid [SemVer](https://semver.org/). Subsequent calls to `WithProduct()` replace the original product with the new user-specified one.
+
+```go
+useragent.WithProduct("databricks-example-product", "1.2.0")
+```
+
+If both the `DATABRICKS_SDK_UPSTREAM` and `DATABRICKS_SDK_UPSTREAM_VERSION` environment variables are defined, these will also be included in the `User-Agent` header.
+
+If additional metadata needs to be specified that isn't already supported by the above interfaces, you can use the `WithUserAgentExtra()` function to register arbitrary key-value pairs to include in the user agent. Multiple values associated with the same key are allowed. Keys have the same restrictions as the partner name above. Values must be either as described above or SemVer strings.
 
 ## Error handling
 

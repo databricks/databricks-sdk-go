@@ -4,7 +4,9 @@ package {{.Name}}
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	goauth "golang.org/x/oauth2"
 	"time"
 	"io"
 	"net/http"
@@ -16,10 +18,59 @@ import (
 {{range .Services}}
 // unexported type that holds implementations of just {{.Name}} API methods
 type {{.CamelName}}Impl struct {
+	{{- if .IsDataPlane}}
+	dataPlaneService oauth2.DataPlaneService
+	controlPlane *{{.ControlPlaneService.PascalName}}API
+	{{end -}}
 	client *client.DatabricksClient
 }
 
 {{range .Methods}}
+{{if .Service.IsDataPlane}}
+func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
+	getRequest := {{.Service.DataPlaneInfoMethod.Request.PascalName}}{
+	{{- range .Service.DataPlaneInfoMethod.Request.Fields}}
+		{{.PascalName}}: request.{{.PascalName}},
+	{{end}}
+	}
+	token, err := a.client.Config.GetToken()
+	if err != nil {
+		return nil, err
+	}
+	infoGetter := func() (*oauth2.DataPlaneInfo, error) {
+		response, err := a.controlPlane.{{.Service.DataPlaneInfoMethod.PascalName}}(ctx, getRequest)
+		if err != nil {
+			return nil, err
+		}
+		if response.{{(index .DataPlaneInfoFields 0).PascalName}} == nil {
+			return nil, errors.New("resource does not support direct Data Plane access")
+		}
+		return response{{range .DataPlaneInfoFields}}.{{.PascalName}}{{end}}, nil 
+	}
+	refresh := func(info *oauth2.DataPlaneInfo) (*goauth.Token, error) {
+		return a.client.GetOAuthToken(ctx, info.AuthorizationDetails, token)
+	}
+	getParams := []string{ 
+	{{- range .Service.DataPlaneInfoMethod.Request.Fields}}
+		request.{{.PascalName}},
+	{{end -}}
+	}
+	endpointUrl, dataPlaneToken, err := a.dataPlaneService.GetDataPlaneDetails("{{.PascalName}}", getParams, refresh, infoGetter) 
+	if err != nil {
+		return nil, err
+	}
+	{{ template "make-header" . }}
+	opts := []httpclient.DoOption{}
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	{{- template "response-var" . }}
+	{{if .Request}}opts = append(opts, httpclient.WithRequestData(request)){{end}}
+	{{if .Response}}opts = append(opts, httpclient.WithResponseUnmarshal(&{{.Response.CamelName}})){{end}}
+	opts = append(opts, httpclient.WithToken(dataPlaneToken))
+	err = a.client.ApiClient().Do(ctx, http.Method{{.TitleVerb}}, endpointUrl, opts...)
+	return {{ template "response" . }}
+}
+
+{{else}}
 func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
 	{{- template "response-var" . }}
 	path := {{ template "path" . }}
@@ -27,6 +78,7 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, headers, {{ template "request-param" . }}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
 	return {{ template "response" . }}
 }
+{{end}}
 {{end -}}
 {{end}}
 

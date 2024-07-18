@@ -568,6 +568,124 @@ func (_c *MockVectorSearchIndexesInterface_QueryIndex_Call) RunAndReturn(run fun
 	return _c
 }
 
+// QueryNextPage provides a mock function with given fields: ctx, request
+func (_m *MockVectorSearchIndexesInterface) QueryNextPage(ctx context.Context, request vectorsearch.QueryVectorIndexNextPageRequest) (*vectorsearch.QueryVectorIndexResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for QueryNextPage")
+	}
+
+	var r0 *vectorsearch.QueryVectorIndexResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.QueryVectorIndexNextPageRequest) (*vectorsearch.QueryVectorIndexResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.QueryVectorIndexNextPageRequest) *vectorsearch.QueryVectorIndexResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.QueryVectorIndexResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, vectorsearch.QueryVectorIndexNextPageRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchIndexesInterface_QueryNextPage_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'QueryNextPage'
+type MockVectorSearchIndexesInterface_QueryNextPage_Call struct {
+	*mock.Call
+}
+
+// QueryNextPage is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.QueryVectorIndexNextPageRequest
+func (_e *MockVectorSearchIndexesInterface_Expecter) QueryNextPage(ctx interface{}, request interface{}) *MockVectorSearchIndexesInterface_QueryNextPage_Call {
+	return &MockVectorSearchIndexesInterface_QueryNextPage_Call{Call: _e.mock.On("QueryNextPage", ctx, request)}
+}
+
+func (_c *MockVectorSearchIndexesInterface_QueryNextPage_Call) Run(run func(ctx context.Context, request vectorsearch.QueryVectorIndexNextPageRequest)) *MockVectorSearchIndexesInterface_QueryNextPage_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(vectorsearch.QueryVectorIndexNextPageRequest))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchIndexesInterface_QueryNextPage_Call) Return(_a0 *vectorsearch.QueryVectorIndexResponse, _a1 error) *MockVectorSearchIndexesInterface_QueryNextPage_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchIndexesInterface_QueryNextPage_Call) RunAndReturn(run func(context.Context, vectorsearch.QueryVectorIndexNextPageRequest) (*vectorsearch.QueryVectorIndexResponse, error)) *MockVectorSearchIndexesInterface_QueryNextPage_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ScanIndex provides a mock function with given fields: ctx, request
+func (_m *MockVectorSearchIndexesInterface) ScanIndex(ctx context.Context, request vectorsearch.ScanVectorIndexRequest) (*vectorsearch.ScanVectorIndexResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ScanIndex")
+	}
+
+	var r0 *vectorsearch.ScanVectorIndexResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.ScanVectorIndexRequest) (*vectorsearch.ScanVectorIndexResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.ScanVectorIndexRequest) *vectorsearch.ScanVectorIndexResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.ScanVectorIndexResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, vectorsearch.ScanVectorIndexRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchIndexesInterface_ScanIndex_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ScanIndex'
+type MockVectorSearchIndexesInterface_ScanIndex_Call struct {
+	*mock.Call
+}
+
+// ScanIndex is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.ScanVectorIndexRequest
+func (_e *MockVectorSearchIndexesInterface_Expecter) ScanIndex(ctx interface{}, request interface{}) *MockVectorSearchIndexesInterface_ScanIndex_Call {
+	return &MockVectorSearchIndexesInterface_ScanIndex_Call{Call: _e.mock.On("ScanIndex", ctx, request)}
+}
+
+func (_c *MockVectorSearchIndexesInterface_ScanIndex_Call) Run(run func(ctx context.Context, request vectorsearch.ScanVectorIndexRequest)) *MockVectorSearchIndexesInterface_ScanIndex_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(vectorsearch.ScanVectorIndexRequest))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchIndexesInterface_ScanIndex_Call) Return(_a0 *vectorsearch.ScanVectorIndexResponse, _a1 error) *MockVectorSearchIndexesInterface_ScanIndex_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchIndexesInterface_ScanIndex_Call) RunAndReturn(run func(context.Context, vectorsearch.ScanVectorIndexRequest) (*vectorsearch.ScanVectorIndexResponse, error)) *MockVectorSearchIndexesInterface_ScanIndex_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SyncIndex provides a mock function with given fields: ctx, request
 func (_m *MockVectorSearchIndexesInterface) SyncIndex(ctx context.Context, request vectorsearch.SyncIndexRequest) error {
 	ret := _m.Called(ctx, request)
