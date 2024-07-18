@@ -27,7 +27,7 @@ func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (c
 		return nil, nil
 	}
 
-	ts, err := newDatabricksCliTokenSource(cfg)
+	ts, err := newDatabricksCliTokenSource(ctx, cfg)
 	if err != nil {
 		if errors.Is(err, exec.ErrNotFound) {
 			logger.Debugf(ctx, "Most likely the Databricks CLI is not installed")
@@ -61,11 +61,12 @@ func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (c
 var errLegacyDatabricksCli = errors.New("legacy Databricks CLI detected")
 
 type databricksCliTokenSource struct {
+	ctx  context.Context
 	name string
 	args []string
 }
 
-func newDatabricksCliTokenSource(cfg *Config) (*databricksCliTokenSource, error) {
+func newDatabricksCliTokenSource(ctx context.Context, cfg *Config) (*databricksCliTokenSource, error) {
 	args := []string{"auth", "token", "--host", cfg.Host}
 
 	if cfg.IsAccountClient() {
@@ -101,11 +102,11 @@ func newDatabricksCliTokenSource(cfg *Config) (*databricksCliTokenSource, error)
 		return nil, errLegacyDatabricksCli
 	}
 
-	return &databricksCliTokenSource{name: path, args: args}, nil
+	return &databricksCliTokenSource{ctx: ctx, name: path, args: args}, nil
 }
 
 func (ts *databricksCliTokenSource) Token() (*oauth2.Token, error) {
-	out, err := exec.Command(ts.name, ts.args...).Output()
+	out, err := runCommand(ts.ctx, ts.name, ts.args)
 	if ee, ok := err.(*exec.ExitError); ok {
 		return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
 	}

@@ -145,6 +145,9 @@ type Config struct {
 	// internal background context used for authentication purposes together with refreshClient
 	refreshCtx context.Context
 
+	// internal client used to fetch Azure Tenant ID from Databricks Login endpoint
+	azureTenantIdFetchClient *http.Client
+
 	// marker for testing fixture
 	isTesting bool
 
@@ -315,6 +318,14 @@ func (c *Config) EnsureResolved() error {
 			"rate limit",
 		},
 	})
+	if c.azureTenantIdFetchClient == nil {
+		c.azureTenantIdFetchClient = &http.Client{
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				// Do not follow redirects
+				return http.ErrUseLastResponse
+			},
+		}
+	}
 	c.resolved = true
 	return nil
 }

@@ -112,6 +112,10 @@ func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*Config,
 		AzureTenantID:     cf.AzureTenantID,
 		AzureResourceID:   cf.AzureResourceID,
 		AuthType:          cf.AuthType,
+		azureTenantIdFetchClient: makeClient(&http.Response{
+			StatusCode: http.StatusTemporaryRedirect,
+			Header:     http.Header{"Location": []string{"https://login.microsoftonline.com/tenant_id/abc"}},
+		}),
 	}
 	err := client.Authenticate(&http.Request{Header: http.Header{}})
 	if err != nil {
