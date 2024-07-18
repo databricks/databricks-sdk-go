@@ -557,7 +557,7 @@ type workspaceAssignmentImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWorkspacePermissionAssignment) error {
+func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
 	var deleteWorkspacePermissionAssignmentResponse DeleteWorkspacePermissionAssignmentResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	headers := make(map[string]string)
@@ -566,30 +566,30 @@ func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWork
 	return err
 }
 
-func (a *workspaceAssignmentImpl) Get(ctx context.Context, request ListWorkspacePermissions) (*ListWorkspacePermissionsResponse, error) {
-	var listWorkspacePermissionsResponse ListWorkspacePermissionsResponse
+func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error) {
+	var workspacePermissions WorkspacePermissions
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/permissions", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listWorkspacePermissionsResponse)
-	return &listWorkspacePermissionsResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &workspacePermissions)
+	return &workspacePermissions, err
 }
 
-func (a *workspaceAssignmentImpl) List(ctx context.Context, request GetWorkspacePermissionAssignments) (*GetWorkspacePermissionAssignmentsResponse, error) {
-	var getWorkspacePermissionAssignmentsResponse GetWorkspacePermissionAssignmentsResponse
+func (a *workspaceAssignmentImpl) List(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error) {
+	var permissionAssignments PermissionAssignments
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getWorkspacePermissionAssignmentsResponse)
-	return &getWorkspacePermissionAssignmentsResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &permissionAssignments)
+	return &permissionAssignments, err
 }
 
-func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWorkspacePermissionAssignment) (*UpdateWorkspacePermissionAssignmentResponse, error) {
-	var updateWorkspacePermissionAssignmentResponse UpdateWorkspacePermissionAssignmentResponse
+func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWorkspaceAssignments) (*PermissionAssignment, error) {
+	var permissionAssignment PermissionAssignment
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateWorkspacePermissionAssignmentResponse)
-	return &updateWorkspacePermissionAssignmentResponse, err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &permissionAssignment)
+	return &permissionAssignment, err
 }

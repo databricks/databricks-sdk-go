@@ -461,25 +461,25 @@ type WorkspaceAssignmentService interface {
 	//
 	// Deletes the workspace permissions assignment in a given account and
 	// workspace for the specified principal.
-	Delete(ctx context.Context, request DeleteWorkspacePermissionAssignment) error
+	Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error
 
 	// List workspace permissions.
 	//
 	// Get an array of workspace permissions for the specified account and
 	// workspace.
-	Get(ctx context.Context, request ListWorkspacePermissions) (*ListWorkspacePermissionsResponse, error)
+	Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error)
 
 	// Get permission assignments.
 	//
 	// Get the permission assignments for the specified Databricks account and
 	// Databricks workspace.
 	//
-	// Use ListAll() to get all WorkspacePermissionAssignmentOutput instances
-	List(ctx context.Context, request GetWorkspacePermissionAssignments) (*GetWorkspacePermissionAssignmentsResponse, error)
+	// Use ListAll() to get all PermissionAssignment instances
+	List(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error)
 
 	// Create or update permissions assignment.
 	//
 	// Creates or updates the workspace permissions assignment in a given
 	// account and workspace for the specified principal.
-	Update(ctx context.Context, request UpdateWorkspacePermissionAssignment) (*UpdateWorkspacePermissionAssignmentResponse, error)
+	Update(ctx context.Context, request UpdateWorkspaceAssignments) (*PermissionAssignment, error)
 }
