@@ -38,7 +38,7 @@ type APIError struct {
 	unwrap error
 }
 
-// Error returns error message string instead of
+// Error returns the error message string.
 func (apiError *APIError) Error() string {
 	return apiError.Message
 }
@@ -157,7 +157,10 @@ func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 
 func parseErrorFromResponse(resp *http.Response, requestBody, responseBody []byte) *APIError {
 	if len(responseBody) == 0 {
-		return &APIError{StatusCode: resp.StatusCode}
+		return &APIError{
+			Message:    http.StatusText(resp.StatusCode),
+			StatusCode: resp.StatusCode,
+		}
 	}
 
 	// Anonymous struct used to unmarshal JSON Databricks API error responses.

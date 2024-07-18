@@ -29,7 +29,7 @@ func TestGetAPIError_handlesEmptyResponse(t *testing.T) {
 
 	err := GetAPIError(context.Background(), resp)
 
-	assert.Equal(t, err.(*APIError).Message, "")
+	assert.Equal(t, err.(*APIError).Message, "Conflict")
 }
 
 func TestGetAPIError_appliesOverrides(t *testing.T) {
