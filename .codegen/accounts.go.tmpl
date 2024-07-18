@@ -35,7 +35,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	if cfg.AccountID == "" || !cfg.IsAccountClient() {
+	if !cfg.IsAccountClient() {
 		return nil, ErrNotAccountClient
 	}
 	apiClient, err := client.New(cfg)

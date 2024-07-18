@@ -254,18 +254,17 @@ func (c *Config) IsAws() bool {
 
 // IsAccountClient returns true if client is configured for Accounts API
 func (c *Config) IsAccountClient() bool {
-	if c.AccountID != "" && c.isTesting {
+	if c.AccountID == "" {
+		return false
+	}
+	if c.isTesting {
 		return true
 	}
-
-	accountsPrefixes := []string{
-		"https://accounts.",
-		"https://accounts-dod.",
+	if c.Host == c.Environment().AccountsHost() {
+		return true
 	}
-	for _, prefix := range accountsPrefixes {
-		if strings.HasPrefix(c.Host, prefix) {
-			return true
-		}
+	if strings.HasPrefix(c.Host, "https://accounts-dod.") {
+		return true
 	}
 	return false
 }
