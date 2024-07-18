@@ -39,7 +39,7 @@ func TestGetAPIError_appliesOverrides(t *testing.T) {
 			Request: &http.Request{
 				Method: "GET",
 				URL: &url.URL{
-					Path: "/api/2.0/clusters/get",
+					Path: "/api/2.1/clusters/get",
 				},
 			},
 		},
@@ -59,7 +59,7 @@ func TestGetAPIError_parseIntErrorCode(t *testing.T) {
 			Request: &http.Request{
 				Method: "GET",
 				URL: &url.URL{
-					Path: "/api/2.0/clusters/get",
+					Path: "/api/2.1/clusters/get",
 				},
 			},
 		},

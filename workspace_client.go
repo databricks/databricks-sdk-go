@@ -42,12 +42,18 @@ type WorkspaceClient struct {
 	// notification destinations if the condition was met. Alerts can be
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
-	//
-	// **Note**: A new version of the Databricks SQL API will soon be available.
-	// [Learn more]
-	//
-	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 	Alerts sql.AlertsInterface
+
+	// The alerts API can be used to perform CRUD operations on alerts. An alert
+	// is a Databricks SQL object that periodically runs a query, evaluates a
+	// condition of its result, and notifies one or more users and/or
+	// notification destinations if the condition was met. Alerts can be
+	// scheduled using the `sql_task` type of the Jobs API, e.g.
+	// :method:jobs/create.
+	//
+	// **Note**: A new version of the Databricks SQL API is now available.
+	// Please see the latest version.
+	AlertsLegacy sql.AlertsLegacyInterface
 
 	// Apps run directly on a customer’s Databricks instance, integrate with
 	// their data, use and extend Databricks services, and enable users to
@@ -125,15 +131,15 @@ type WorkspaceClient struct {
 	// can manually terminate and restart an all-purpose cluster. Multiple users
 	// can share such clusters to do collaborative interactive analysis.
 	//
-	// IMPORTANT: Databricks retains cluster configuration information for up to
-	// 200 all-purpose clusters terminated in the last 30 days and up to 30 job
-	// clusters recently terminated by the job scheduler. To keep an all-purpose
-	// cluster configuration even after it has been terminated for more than 30
-	// days, an administrator can pin a cluster to the cluster list.
+	// IMPORTANT: Databricks retains cluster configuration information for
+	// terminated clusters for 30 days. To keep an all-purpose cluster
+	// configuration even after it has been terminated for more than 30 days, an
+	// administrator can pin a cluster to the cluster list.
 	Clusters compute.ClustersInterface
 
 	// This API allows execution of Python, Scala, SQL, or R commands on running
-	// Databricks Clusters.
+	// Databricks Clusters. This API only supports (classic) all-purpose
+	// clusters. Serverless compute is not supported.
 	CommandExecution compute.CommandExecutionInterface
 
 	// Connections allow for creating a connection to an external data source.
@@ -200,10 +206,8 @@ type WorkspaceClient struct {
 	// client, or `grep` to search the response from this API for the name of
 	// your SQL warehouse as it appears in Databricks SQL.
 	//
-	// **Note**: A new version of the Databricks SQL API will soon be available.
-	// [Learn more]
-	//
-	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+	// **Note**: A new version of the Databricks SQL API is now available.
+	// Please see the latest version.
 	DataSources sql.DataSourcesInterface
 
 	// DBFS API makes it simple to interact with various data sources without
@@ -224,10 +228,8 @@ type WorkspaceClient struct {
 	// - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
 	// permissions (superset of `CAN_RUN`)
 	//
-	// **Note**: A new version of the Databricks SQL API will soon be available.
-	// [Learn more]
-	//
-	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+	// **Note**: A new version of the Databricks SQL API is now available.
+	// Please see the latest version.
 	DbsqlPermissions sql.DbsqlPermissionsInterface
 
 	// Experiments are the primary unit of organization in MLflow; all MLflow
@@ -282,6 +284,13 @@ type WorkspaceClient struct {
 	// referenced with the form
 	// __catalog_name__.__schema_name__.__function_name__.
 	Functions catalog.FunctionsInterface
+
+	// Genie provides a no-code experience for business users, powered by AI/BI.
+	// Analysts set up spaces that business users can use to ask questions using
+	// natural language. Genie uses data registered to Unity Catalog and
+	// requires at least CAN USE permission on a Pro or Serverless SQL
+	// warehouse. Also, Databricks Assistant must be enabled.
+	Genie dashboards.GenieInterface
 
 	// Registers personal access token for Databricks to do operations on behalf
 	// of the user.
@@ -460,12 +469,19 @@ type WorkspaceClient struct {
 	// API docs](/api/workspace/registeredmodels).
 	ModelVersions catalog.ModelVersionsInterface
 
+	// The notification destinations API lets you programmatically manage a
+	// workspace's notification destinations. Notification destinations are used
+	// to send notifications for query alerts and jobs to destinations outside
+	// of Databricks. Only workspace admins can create, update, and delete
+	// notification destinations.
+	NotificationDestinations settings.NotificationDestinationsInterface
+
 	// Online tables provide lower latency and higher QPS access to data from
 	// Delta tables.
 	OnlineTables catalog.OnlineTablesInterface
 
-	// This spec contains undocumented permission migration APIs used in
-	// https://github.com/databrickslabs/ucx.
+	// APIs for migrating acl permissions, used only by the ucx tool:
+	// https://github.com/databrickslabs/ucx
 	PermissionMigration iam.PermissionMigrationInterface
 
 	// Permissions API are used to create read, write, edit, update and manage
@@ -589,25 +605,39 @@ type WorkspaceClient struct {
 	// **USE_CATALOG**).
 	QualityMonitors catalog.QualityMonitorsInterface
 
+	// The queries API can be used to perform CRUD operations on queries. A
+	// query is a Databricks SQL object that includes the target SQL warehouse,
+	// query text, name, description, tags, and parameters. Queries can be
+	// scheduled using the `sql_task` type of the Jobs API, e.g.
+	// :method:jobs/create.
+	Queries sql.QueriesInterface
+
 	// These endpoints are used for CRUD operations on query definitions. Query
 	// definitions include the target SQL warehouse, query text, name,
 	// description, tags, parameters, and visualizations. Queries can be
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
 	//
-	// **Note**: A new version of the Databricks SQL API will soon be available.
-	// [Learn more]
-	//
-	// [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
-	Queries sql.QueriesInterface
+	// **Note**: A new version of the Databricks SQL API is now available.
+	// Please see the latest version.
+	QueriesLegacy sql.QueriesLegacyInterface
 
-	// Access the history of queries through SQL warehouses.
+	// A service responsible for storing and retrieving the list of queries run
+	// against SQL endpoints, serverless compute, and DLT.
 	QueryHistory sql.QueryHistoryInterface
+
+	// This is an evolving API that facilitates the addition and removal of
+	// visualizations from existing queries in the Databricks Workspace. Data
+	// structures can change over time.
+	QueryVisualizations sql.QueryVisualizationsInterface
 
 	// This is an evolving API that facilitates the addition and removal of
 	// vizualisations from existing queries within the Databricks Workspace.
 	// Data structures may change over time.
-	QueryVisualizations sql.QueryVisualizationsInterface
+	//
+	// **Note**: A new version of the Databricks SQL API is now available.
+	// Please see the latest version.
+	QueryVisualizationsLegacy sql.QueryVisualizationsLegacyInterface
 
 	// The Recipient Activation API is only applicable in the open sharing model
 	// where the recipient object has the authentication type of `TOKEN`. The
@@ -987,7 +1017,8 @@ type WorkspaceClient struct {
 	// introduces the ability to bind a securable in READ_ONLY mode (catalogs
 	// only).
 	//
-	// Securables that support binding: - catalog
+	// Securable types that support binding: - catalog - storage_credential -
+	// external_location
 	WorkspaceBindings catalog.WorkspaceBindingsInterface
 
 	// This API allows updating known workspace settings for advanced users.
@@ -1030,6 +1061,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
+		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),
 		Apps:                                serving.NewApps(databricksClient),
 		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
 		Catalogs:                            catalog.NewCatalogs(databricksClient),
@@ -1054,6 +1086,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
 		Files:                               files.NewFiles(databricksClient),
 		Functions:                           catalog.NewFunctions(databricksClient),
+		Genie:                               dashboards.NewGenie(databricksClient),
 		GitCredentials:                      workspace.NewGitCredentials(databricksClient),
 		GlobalInitScripts:                   compute.NewGlobalInitScripts(databricksClient),
 		Grants:                              catalog.NewGrants(databricksClient),
@@ -1067,6 +1100,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Metastores:                          catalog.NewMetastores(databricksClient),
 		ModelRegistry:                       ml.NewModelRegistry(databricksClient),
 		ModelVersions:                       catalog.NewModelVersions(databricksClient),
+		NotificationDestinations:            settings.NewNotificationDestinations(databricksClient),
 		OnlineTables:                        catalog.NewOnlineTables(databricksClient),
 		PermissionMigration:                 iam.NewPermissionMigration(databricksClient),
 		Permissions:                         iam.NewPermissions(databricksClient),
@@ -1082,8 +1116,10 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Providers:                           sharing.NewProviders(databricksClient),
 		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
+		QueriesLegacy:                       sql.NewQueriesLegacy(databricksClient),
 		QueryHistory:                        sql.NewQueryHistory(databricksClient),
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
+		QueryVisualizationsLegacy:           sql.NewQueryVisualizationsLegacy(databricksClient),
 		RecipientActivation:                 sharing.NewRecipientActivation(databricksClient),
 		Recipients:                          sharing.NewRecipients(databricksClient),
 		RegisteredModels:                    catalog.NewRegisteredModels(databricksClient),

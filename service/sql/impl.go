@@ -15,9 +15,9 @@ type alertsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *alertsImpl) Create(ctx context.Context, request CreateAlert) (*Alert, error) {
+func (a *alertsImpl) Create(ctx context.Context, request CreateAlertRequest) (*Alert, error) {
 	var alert Alert
-	path := "/api/2.0/preview/sql/alerts"
+	path := "/api/2.0/sql/alerts"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -25,7 +25,59 @@ func (a *alertsImpl) Create(ctx context.Context, request CreateAlert) (*Alert, e
 	return &alert, err
 }
 
-func (a *alertsImpl) Delete(ctx context.Context, request DeleteAlertRequest) error {
+func (a *alertsImpl) Delete(ctx context.Context, request TrashAlertRequest) error {
+	var empty Empty
+	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &empty)
+	return err
+}
+
+func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, error) {
+	var alert Alert
+	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &alert)
+	return &alert, err
+}
+
+func (a *alertsImpl) List(ctx context.Context, request ListAlertsRequest) (*ListAlertsResponse, error) {
+	var listAlertsResponse ListAlertsResponse
+	path := "/api/2.0/sql/alerts"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listAlertsResponse)
+	return &listAlertsResponse, err
+}
+
+func (a *alertsImpl) Update(ctx context.Context, request UpdateAlertRequest) (*Alert, error) {
+	var alert Alert
+	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &alert)
+	return &alert, err
+}
+
+// unexported type that holds implementations of just AlertsLegacy API methods
+type alertsLegacyImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *alertsLegacyImpl) Create(ctx context.Context, request CreateAlert) (*LegacyAlert, error) {
+	var legacyAlert LegacyAlert
+	path := "/api/2.0/preview/sql/alerts"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyAlert)
+	return &legacyAlert, err
+}
+
+func (a *alertsLegacyImpl) Delete(ctx context.Context, request DeleteAlertsLegacyRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	headers := make(map[string]string)
@@ -34,25 +86,25 @@ func (a *alertsImpl) Delete(ctx context.Context, request DeleteAlertRequest) err
 	return err
 }
 
-func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, error) {
-	var alert Alert
+func (a *alertsLegacyImpl) Get(ctx context.Context, request GetAlertsLegacyRequest) (*LegacyAlert, error) {
+	var legacyAlert LegacyAlert
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &alert)
-	return &alert, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &legacyAlert)
+	return &legacyAlert, err
 }
 
-func (a *alertsImpl) List(ctx context.Context) ([]Alert, error) {
-	var alertList []Alert
+func (a *alertsLegacyImpl) List(ctx context.Context) ([]LegacyAlert, error) {
+	var legacyAlertList []LegacyAlert
 	path := "/api/2.0/preview/sql/alerts"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &alertList)
-	return alertList, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &legacyAlertList)
+	return legacyAlertList, err
 }
 
-func (a *alertsImpl) Update(ctx context.Context, request EditAlert) error {
+func (a *alertsLegacyImpl) Update(ctx context.Context, request EditAlert) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	headers := make(map[string]string)
@@ -210,9 +262,9 @@ type queriesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *queriesImpl) Create(ctx context.Context, request QueryPostContent) (*Query, error) {
+func (a *queriesImpl) Create(ctx context.Context, request CreateQueryRequest) (*Query, error) {
 	var query Query
-	path := "/api/2.0/preview/sql/queries"
+	path := "/api/2.0/sql/queries"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -220,7 +272,68 @@ func (a *queriesImpl) Create(ctx context.Context, request QueryPostContent) (*Qu
 	return &query, err
 }
 
-func (a *queriesImpl) Delete(ctx context.Context, request DeleteQueryRequest) error {
+func (a *queriesImpl) Delete(ctx context.Context, request TrashQueryRequest) error {
+	var empty Empty
+	path := fmt.Sprintf("/api/2.0/sql/queries/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &empty)
+	return err
+}
+
+func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query, error) {
+	var query Query
+	path := fmt.Sprintf("/api/2.0/sql/queries/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &query)
+	return &query, err
+}
+
+func (a *queriesImpl) List(ctx context.Context, request ListQueriesRequest) (*ListQueryObjectsResponse, error) {
+	var listQueryObjectsResponse ListQueryObjectsResponse
+	path := "/api/2.0/sql/queries"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listQueryObjectsResponse)
+	return &listQueryObjectsResponse, err
+}
+
+func (a *queriesImpl) ListVisualizations(ctx context.Context, request ListVisualizationsForQueryRequest) (*ListVisualizationsForQueryResponse, error) {
+	var listVisualizationsForQueryResponse ListVisualizationsForQueryResponse
+	path := fmt.Sprintf("/api/2.0/sql/queries/%v/visualizations", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listVisualizationsForQueryResponse)
+	return &listVisualizationsForQueryResponse, err
+}
+
+func (a *queriesImpl) Update(ctx context.Context, request UpdateQueryRequest) (*Query, error) {
+	var query Query
+	path := fmt.Sprintf("/api/2.0/sql/queries/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &query)
+	return &query, err
+}
+
+// unexported type that holds implementations of just QueriesLegacy API methods
+type queriesLegacyImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *queriesLegacyImpl) Create(ctx context.Context, request QueryPostContent) (*LegacyQuery, error) {
+	var legacyQuery LegacyQuery
+	path := "/api/2.0/preview/sql/queries"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyQuery)
+	return &legacyQuery, err
+}
+
+func (a *queriesLegacyImpl) Delete(ctx context.Context, request DeleteQueriesLegacyRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	headers := make(map[string]string)
@@ -229,16 +342,16 @@ func (a *queriesImpl) Delete(ctx context.Context, request DeleteQueryRequest) er
 	return err
 }
 
-func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query, error) {
-	var query Query
+func (a *queriesLegacyImpl) Get(ctx context.Context, request GetQueriesLegacyRequest) (*LegacyQuery, error) {
+	var legacyQuery LegacyQuery
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &query)
-	return &query, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &legacyQuery)
+	return &legacyQuery, err
 }
 
-func (a *queriesImpl) List(ctx context.Context, request ListQueriesRequest) (*QueryList, error) {
+func (a *queriesLegacyImpl) List(ctx context.Context, request ListQueriesLegacyRequest) (*QueryList, error) {
 	var queryList QueryList
 	path := "/api/2.0/preview/sql/queries"
 	headers := make(map[string]string)
@@ -247,7 +360,7 @@ func (a *queriesImpl) List(ctx context.Context, request ListQueriesRequest) (*Qu
 	return &queryList, err
 }
 
-func (a *queriesImpl) Restore(ctx context.Context, request RestoreQueryRequest) error {
+func (a *queriesLegacyImpl) Restore(ctx context.Context, request RestoreQueriesLegacyRequest) error {
 	var restoreResponse RestoreResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/trash/%v", request.QueryId)
 	headers := make(map[string]string)
@@ -256,14 +369,14 @@ func (a *queriesImpl) Restore(ctx context.Context, request RestoreQueryRequest) 
 	return err
 }
 
-func (a *queriesImpl) Update(ctx context.Context, request QueryEditContent) (*Query, error) {
-	var query Query
+func (a *queriesLegacyImpl) Update(ctx context.Context, request QueryEditContent) (*LegacyQuery, error) {
+	var legacyQuery LegacyQuery
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &query)
-	return &query, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyQuery)
+	return &legacyQuery, err
 }
 
 // unexported type that holds implementations of just QueryHistory API methods
@@ -285,9 +398,9 @@ type queryVisualizationsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateQueryVisualizationRequest) (*Visualization, error) {
+func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateVisualizationRequest) (*Visualization, error) {
 	var visualization Visualization
-	path := "/api/2.0/preview/sql/visualizations"
+	path := "/api/2.0/sql/visualizations"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -295,7 +408,41 @@ func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateQuer
 	return &visualization, err
 }
 
-func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteQueryVisualizationRequest) error {
+func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteVisualizationRequest) error {
+	var empty Empty
+	path := fmt.Sprintf("/api/2.0/sql/visualizations/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &empty)
+	return err
+}
+
+func (a *queryVisualizationsImpl) Update(ctx context.Context, request UpdateVisualizationRequest) (*Visualization, error) {
+	var visualization Visualization
+	path := fmt.Sprintf("/api/2.0/sql/visualizations/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &visualization)
+	return &visualization, err
+}
+
+// unexported type that holds implementations of just QueryVisualizationsLegacy API methods
+type queryVisualizationsLegacyImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *queryVisualizationsLegacyImpl) Create(ctx context.Context, request CreateQueryVisualizationsLegacyRequest) (*LegacyVisualization, error) {
+	var legacyVisualization LegacyVisualization
+	path := "/api/2.0/preview/sql/visualizations"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyVisualization)
+	return &legacyVisualization, err
+}
+
+func (a *queryVisualizationsLegacyImpl) Delete(ctx context.Context, request DeleteQueryVisualizationsLegacyRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
 	headers := make(map[string]string)
@@ -304,14 +451,14 @@ func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteQuer
 	return err
 }
 
-func (a *queryVisualizationsImpl) Update(ctx context.Context, request Visualization) (*Visualization, error) {
-	var visualization Visualization
+func (a *queryVisualizationsLegacyImpl) Update(ctx context.Context, request LegacyVisualization) (*LegacyVisualization, error) {
+	var legacyVisualization LegacyVisualization
 	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &visualization)
-	return &visualization, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyVisualization)
+	return &legacyVisualization, err
 }
 
 // unexported type that holds implementations of just StatementExecution API methods
@@ -327,23 +474,23 @@ func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request Ca
 	return err
 }
 
-func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*ExecuteStatementResponse, error) {
-	var executeStatementResponse ExecuteStatementResponse
+func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error) {
+	var statementResponse StatementResponse
 	path := "/api/2.0/sql/statements/"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &executeStatementResponse)
-	return &executeStatementResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &statementResponse)
+	return &statementResponse, err
 }
 
-func (a *statementExecutionImpl) GetStatement(ctx context.Context, request GetStatementRequest) (*GetStatementResponse, error) {
-	var getStatementResponse GetStatementResponse
+func (a *statementExecutionImpl) GetStatement(ctx context.Context, request GetStatementRequest) (*StatementResponse, error) {
+	var statementResponse StatementResponse
 	path := fmt.Sprintf("/api/2.0/sql/statements/%v", request.StatementId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getStatementResponse)
-	return &getStatementResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &statementResponse)
+	return &statementResponse, err
 }
 
 func (a *statementExecutionImpl) GetStatementResultChunkN(ctx context.Context, request GetStatementResultChunkNRequest) (*ResultData, error) {

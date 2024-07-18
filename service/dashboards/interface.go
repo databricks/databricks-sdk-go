@@ -6,6 +6,43 @@ import (
 	"context"
 )
 
+// Genie provides a no-code experience for business users, powered by AI/BI.
+// Analysts set up spaces that business users can use to ask questions using
+// natural language. Genie uses data registered to Unity Catalog and requires at
+// least CAN USE permission on a Pro or Serverless SQL warehouse. Also,
+// Databricks Assistant must be enabled.
+type GenieService interface {
+
+	// Create conversation message.
+	//
+	// Create new message in [conversation](:method:genie/startconversation).
+	// The AI response uses all previously created messages in the conversation
+	// to respond.
+	CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error)
+
+	// Execute SQL query in a conversation message.
+	//
+	// Execute the SQL query in the message.
+	ExecuteMessageQuery(ctx context.Context, request ExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
+
+	// Get conversation message.
+	//
+	// Get message from conversation.
+	GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error)
+
+	// Get conversation message SQL query result.
+	//
+	// Get the result of SQL query if the message has a query attachment. This
+	// is only available if a message has a query attachment and the message
+	// status is `EXECUTING_QUERY`.
+	GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
+
+	// Start conversation.
+	//
+	// Start a new conversation.
+	StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error)
+}
+
 // These APIs provide specific management operations for Lakeview dashboards.
 // Generic resource management can be done with Workspace API (import, export,
 // get-status, list, delete).

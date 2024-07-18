@@ -431,6 +431,42 @@ type NetworkConnectivityService interface {
 	ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error)
 }
 
+// The notification destinations API lets you programmatically manage a
+// workspace's notification destinations. Notification destinations are used to
+// send notifications for query alerts and jobs to destinations outside of
+// Databricks. Only workspace admins can create, update, and delete notification
+// destinations.
+type NotificationDestinationsService interface {
+
+	// Create a notification destination.
+	//
+	// Creates a notification destination. Requires workspace admin permissions.
+	Create(ctx context.Context, request CreateNotificationDestinationRequest) (*NotificationDestination, error)
+
+	// Delete a notification destination.
+	//
+	// Deletes a notification destination. Requires workspace admin permissions.
+	Delete(ctx context.Context, request DeleteNotificationDestinationRequest) error
+
+	// Get a notification destination.
+	//
+	// Gets a notification destination.
+	Get(ctx context.Context, request GetNotificationDestinationRequest) (*NotificationDestination, error)
+
+	// List notification destinations.
+	//
+	// Lists notification destinations.
+	//
+	// Use ListAll() to get all ListNotificationDestinationsResult instances, which will iterate over every result page.
+	List(ctx context.Context, request ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error)
+
+	// Update a notification destination.
+	//
+	// Updates a notification destination. Requires workspace admin permissions.
+	// At least one field is required in the request body.
+	Update(ctx context.Context, request UpdateNotificationDestinationRequest) (*NotificationDestination, error)
+}
+
 // The Personal Compute enablement setting lets you control which users can use
 // the Personal Compute default policy to create compute resources. By default
 // all users in all workspaces have access (ON), but you can change the setting

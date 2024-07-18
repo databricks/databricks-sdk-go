@@ -386,6 +386,58 @@ func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, 
 	return &listNccAzurePrivateEndpointRulesResponse, err
 }
 
+// unexported type that holds implementations of just NotificationDestinations API methods
+type notificationDestinationsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *notificationDestinationsImpl) Create(ctx context.Context, request CreateNotificationDestinationRequest) (*NotificationDestination, error) {
+	var notificationDestination NotificationDestination
+	path := "/api/2.0/notification-destinations"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &notificationDestination)
+	return &notificationDestination, err
+}
+
+func (a *notificationDestinationsImpl) Delete(ctx context.Context, request DeleteNotificationDestinationRequest) error {
+	var empty Empty
+	path := fmt.Sprintf("/api/2.0/notification-destinations/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &empty)
+	return err
+}
+
+func (a *notificationDestinationsImpl) Get(ctx context.Context, request GetNotificationDestinationRequest) (*NotificationDestination, error) {
+	var notificationDestination NotificationDestination
+	path := fmt.Sprintf("/api/2.0/notification-destinations/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &notificationDestination)
+	return &notificationDestination, err
+}
+
+func (a *notificationDestinationsImpl) List(ctx context.Context, request ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error) {
+	var listNotificationDestinationsResponse ListNotificationDestinationsResponse
+	path := "/api/2.0/notification-destinations"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listNotificationDestinationsResponse)
+	return &listNotificationDestinationsResponse, err
+}
+
+func (a *notificationDestinationsImpl) Update(ctx context.Context, request UpdateNotificationDestinationRequest) (*NotificationDestination, error) {
+	var notificationDestination NotificationDestination
+	path := fmt.Sprintf("/api/2.0/notification-destinations/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &notificationDestination)
+	return &notificationDestination, err
+}
+
 // unexported type that holds implementations of just PersonalCompute API methods
 type personalComputeImpl struct {
 	client *client.DatabricksClient

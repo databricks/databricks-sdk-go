@@ -142,7 +142,7 @@ func (_c *MockWorkspaceBindingsInterface_GetBindings_Call) RunAndReturn(run func
 }
 
 // GetBindingsBySecurableTypeAndSecurableName provides a mock function with given fields: ctx, securableType, securableName
-func (_m *MockWorkspaceBindingsInterface) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType string, securableName string) (*catalog.WorkspaceBindingsResponse, error) {
+func (_m *MockWorkspaceBindingsInterface) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType catalog.GetBindingsSecurableType, securableName string) (*catalog.WorkspaceBindingsResponse, error) {
 	ret := _m.Called(ctx, securableType, securableName)
 
 	if len(ret) == 0 {
@@ -151,10 +151,10 @@ func (_m *MockWorkspaceBindingsInterface) GetBindingsBySecurableTypeAndSecurable
 
 	var r0 *catalog.WorkspaceBindingsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*catalog.WorkspaceBindingsResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetBindingsSecurableType, string) (*catalog.WorkspaceBindingsResponse, error)); ok {
 		return rf(ctx, securableType, securableName)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) *catalog.WorkspaceBindingsResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetBindingsSecurableType, string) *catalog.WorkspaceBindingsResponse); ok {
 		r0 = rf(ctx, securableType, securableName)
 	} else {
 		if ret.Get(0) != nil {
@@ -162,7 +162,7 @@ func (_m *MockWorkspaceBindingsInterface) GetBindingsBySecurableTypeAndSecurable
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.GetBindingsSecurableType, string) error); ok {
 		r1 = rf(ctx, securableType, securableName)
 	} else {
 		r1 = ret.Error(1)
@@ -178,15 +178,15 @@ type MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_C
 
 // GetBindingsBySecurableTypeAndSecurableName is a helper method to define mock.On call
 //   - ctx context.Context
-//   - securableType string
+//   - securableType catalog.GetBindingsSecurableType
 //   - securableName string
 func (_e *MockWorkspaceBindingsInterface_Expecter) GetBindingsBySecurableTypeAndSecurableName(ctx interface{}, securableType interface{}, securableName interface{}) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
 	return &MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call{Call: _e.mock.On("GetBindingsBySecurableTypeAndSecurableName", ctx, securableType, securableName)}
 }
 
-func (_c *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call) Run(run func(ctx context.Context, securableType string, securableName string)) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
+func (_c *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call) Run(run func(ctx context.Context, securableType catalog.GetBindingsSecurableType, securableName string)) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string))
+		run(args[0].(context.Context), args[1].(catalog.GetBindingsSecurableType), args[2].(string))
 	})
 	return _c
 }
@@ -196,7 +196,7 @@ func (_c *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableN
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call) RunAndReturn(run func(context.Context, string, string) (*catalog.WorkspaceBindingsResponse, error)) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
+func (_c *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call) RunAndReturn(run func(context.Context, catalog.GetBindingsSecurableType, string) (*catalog.WorkspaceBindingsResponse, error)) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// These APIs enable administrators to manage custom oauth app integrations,
+// These APIs enable administrators to manage custom OAuth app integrations,
 // which is required for adding/using Custom OAuth App Integration like Tableau
 // Cloud for Databricks in AWS cloud.
 type CustomAppIntegrationService interface {
@@ -15,14 +15,14 @@ type CustomAppIntegrationService interface {
 	//
 	// Create Custom OAuth App Integration.
 	//
-	// You can retrieve the custom oauth app integration via
+	// You can retrieve the custom OAuth app integration via
 	// :method:CustomAppIntegration/get.
 	Create(ctx context.Context, request CreateCustomAppIntegration) (*CreateCustomAppIntegrationOutput, error)
 
 	// Delete Custom OAuth App Integration.
 	//
 	// Delete an existing Custom OAuth App Integration. You can retrieve the
-	// custom oauth app integration via :method:CustomAppIntegration/get.
+	// custom OAuth app integration via :method:CustomAppIntegration/get.
 	Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error
 
 	// Get OAuth Custom App Integration.
@@ -32,16 +32,16 @@ type CustomAppIntegrationService interface {
 
 	// Get custom oauth app integrations.
 	//
-	// Get the list of custom oauth app integrations for the specified
+	// Get the list of custom OAuth app integrations for the specified
 	// Databricks account
 	//
-	// Use ListAll() to get all GetCustomAppIntegrationOutput instances
-	List(ctx context.Context) (*GetCustomAppIntegrationsOutput, error)
+	// Use ListAll() to get all GetCustomAppIntegrationOutput instances, which will iterate over every result page.
+	List(ctx context.Context, request ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error)
 
 	// Updates Custom OAuth App Integration.
 	//
 	// Updates an existing custom OAuth App Integration. You can retrieve the
-	// custom oauth app integration via :method:CustomAppIntegration/get.
+	// custom OAuth app integration via :method:CustomAppIntegration/get.
 	Update(ctx context.Context, request UpdateCustomAppIntegration) error
 }
 
@@ -59,7 +59,7 @@ type OAuthPublishedAppsService interface {
 	List(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error)
 }
 
-// These APIs enable administrators to manage published oauth app integrations,
+// These APIs enable administrators to manage published OAuth app integrations,
 // which is required for adding/using Published OAuth App Integration like
 // Tableau Desktop for Databricks in AWS cloud.
 type PublishedAppIntegrationService interface {
@@ -68,14 +68,14 @@ type PublishedAppIntegrationService interface {
 	//
 	// Create Published OAuth App Integration.
 	//
-	// You can retrieve the published oauth app integration via
+	// You can retrieve the published OAuth app integration via
 	// :method:PublishedAppIntegration/get.
 	Create(ctx context.Context, request CreatePublishedAppIntegration) (*CreatePublishedAppIntegrationOutput, error)
 
 	// Delete Published OAuth App Integration.
 	//
 	// Delete an existing Published OAuth App Integration. You can retrieve the
-	// published oauth app integration via :method:PublishedAppIntegration/get.
+	// published OAuth app integration via :method:PublishedAppIntegration/get.
 	Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error
 
 	// Get OAuth Published App Integration.
@@ -85,16 +85,16 @@ type PublishedAppIntegrationService interface {
 
 	// Get published oauth app integrations.
 	//
-	// Get the list of published oauth app integrations for the specified
+	// Get the list of published OAuth app integrations for the specified
 	// Databricks account
 	//
-	// Use ListAll() to get all GetPublishedAppIntegrationOutput instances
-	List(ctx context.Context) (*GetPublishedAppIntegrationsOutput, error)
+	// Use ListAll() to get all GetPublishedAppIntegrationOutput instances, which will iterate over every result page.
+	List(ctx context.Context, request ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error)
 
 	// Updates Published OAuth App Integration.
 	//
 	// Updates an existing published OAuth App Integration. You can retrieve the
-	// published oauth app integration via :method:PublishedAppIntegration/get.
+	// published OAuth app integration via :method:PublishedAppIntegration/get.
 	Update(ctx context.Context, request UpdatePublishedAppIntegration) error
 }
 

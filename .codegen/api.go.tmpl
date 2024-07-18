@@ -306,7 +306,7 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 			return nil
 		}
 		request.{{.Pagination.Token.PollField.PascalName}} = resp.{{.Pagination.Token.Bind.PascalName}}
-		{{- else if eq .Path "/api/2.0/clusters/events" -}}
+		{{- else if eq .Path "/api/2.1/clusters/events" -}}
 		if resp.NextPage == nil {
 			return nil
 		}

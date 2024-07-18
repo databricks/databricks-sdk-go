@@ -251,15 +251,12 @@ type GroupsService interface {
 	Update(ctx context.Context, request Group) error
 }
 
-// This spec contains undocumented permission migration APIs used in
-// https://github.com/databrickslabs/ucx.
+// APIs for migrating acl permissions, used only by the ucx tool:
+// https://github.com/databrickslabs/ucx
 type PermissionMigrationService interface {
 
 	// Migrate Permissions.
-	//
-	// Migrate a batch of permissions from a workspace local group to an account
-	// group.
-	MigratePermissions(ctx context.Context, request PermissionMigrationRequest) (*PermissionMigrationResponse, error)
+	MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error)
 }
 
 // Permissions API are used to create read, write, edit, update and manage
@@ -464,25 +461,25 @@ type WorkspaceAssignmentService interface {
 	//
 	// Deletes the workspace permissions assignment in a given account and
 	// workspace for the specified principal.
-	Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error
+	Delete(ctx context.Context, request DeleteWorkspacePermissionAssignment) error
 
 	// List workspace permissions.
 	//
 	// Get an array of workspace permissions for the specified account and
 	// workspace.
-	Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error)
+	Get(ctx context.Context, request ListWorkspacePermissions) (*ListWorkspacePermissionsResponse, error)
 
 	// Get permission assignments.
 	//
 	// Get the permission assignments for the specified Databricks account and
 	// Databricks workspace.
 	//
-	// Use ListAll() to get all PermissionAssignment instances
-	List(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error)
+	// Use ListAll() to get all WorkspacePermissionAssignmentOutput instances
+	List(ctx context.Context, request GetWorkspacePermissionAssignments) (*GetWorkspacePermissionAssignmentsResponse, error)
 
 	// Create or update permissions assignment.
 	//
 	// Creates or updates the workspace permissions assignment in a given
 	// account and workspace for the specified principal.
-	Update(ctx context.Context, request UpdateWorkspaceAssignments) (*PermissionAssignment, error)
+	Update(ctx context.Context, request UpdateWorkspacePermissionAssignment) (*UpdateWorkspacePermissionAssignmentResponse, error)
 }

@@ -114,14 +114,14 @@ type DeleteUserRequest struct {
 }
 
 // Delete permissions assignment
-type DeleteWorkspaceAssignmentRequest struct {
+type DeleteWorkspacePermissionAssignment struct {
 	// The ID of the user, service principal, or group.
 	PrincipalId int64 `json:"-" url:"-"`
-	// The workspace ID.
+	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-type DeleteWorkspaceAssignments struct {
+type DeleteWorkspacePermissionAssignmentResponse struct {
 }
 
 // Get group details
@@ -303,10 +303,15 @@ func (s GetUserRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List workspace permissions
-type GetWorkspaceAssignmentRequest struct {
-	// The workspace ID.
+// Get permission assignments
+type GetWorkspacePermissionAssignments struct {
+	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type GetWorkspacePermissionAssignmentsResponse struct {
+	// Array of permissions assignments defined for a workspace.
+	PermissionAssignments []WorkspacePermissionAssignmentOutput `json:"permission_assignments,omitempty"`
 }
 
 type GrantRule struct {
@@ -329,7 +334,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -705,10 +710,52 @@ func (s ListUsersResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get permission assignments
-type ListWorkspaceAssignmentRequest struct {
-	// The workspace ID for the account.
+// List workspace permissions
+type ListWorkspacePermissions struct {
+	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type ListWorkspacePermissionsResponse struct {
+	// Array of permissions defined for a workspace.
+	Permissions []PermissionOutput `json:"permissions,omitempty"`
+}
+
+type MigratePermissionsRequest struct {
+	// The name of the workspace group that permissions will be migrated from.
+	FromWorkspaceGroupName string `json:"from_workspace_group_name"`
+	// The maximum number of permissions that will be migrated.
+	Size int `json:"size,omitempty"`
+	// The name of the account group that permissions will be migrated to.
+	ToAccountGroupName string `json:"to_account_group_name"`
+	// WorkspaceId of the associated workspace where the permission migration
+	// will occur.
+	WorkspaceId int64 `json:"workspace_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MigratePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MigratePermissionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type MigratePermissionsResponse struct {
+	// Number of permissions migrated.
+	PermissionsMigrated int `json:"permissions_migrated,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MigratePermissionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MigratePermissionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Name struct {
@@ -977,30 +1024,6 @@ func (s Permission) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type PermissionAssignment struct {
-	// Error response associated with a workspace permission assignment, if any.
-	Error string `json:"error,omitempty"`
-	// The permissions level of the principal.
-	Permissions []WorkspacePermission `json:"permissions,omitempty"`
-	// Information about the principal assigned to the workspace.
-	Principal *PrincipalOutput `json:"principal,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PermissionAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PermissionAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type PermissionAssignments struct {
-	// Array of permissions assignments defined for a workspace.
-	PermissionAssignments []PermissionAssignment `json:"permission_assignments,omitempty"`
-}
-
 // Permission level
 type PermissionLevel string
 
@@ -1057,44 +1080,6 @@ func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
 }
 
-type PermissionMigrationRequest struct {
-	// The name of the workspace group that permissions will be migrated from.
-	FromWorkspaceGroupName string `json:"from_workspace_group_name"`
-	// The maximum number of permissions that will be migrated.
-	Size int `json:"size,omitempty"`
-	// The name of the account group that permissions will be migrated to.
-	ToAccountGroupName string `json:"to_account_group_name"`
-	// WorkspaceId of the associated workspace where the permission migration
-	// will occur. Both workspace group and account group must be in this
-	// workspace.
-	WorkspaceId int64 `json:"workspace_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PermissionMigrationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PermissionMigrationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type PermissionMigrationResponse struct {
-	// Number of permissions migrated.
-	PermissionsMigrated int `json:"permissions_migrated,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PermissionMigrationResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PermissionMigrationResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type PermissionOutput struct {
 	// The results of a permissions query.
 	Description string `json:"description,omitempty"`
@@ -1139,6 +1124,7 @@ type PermissionsRequest struct {
 	RequestObjectType string `json:"-" url:"-"`
 }
 
+// Information about the principal assigned to the workspace.
 type PrincipalOutput struct {
 	// The display name of the principal.
 	DisplayName string `json:"display_name,omitempty"`
@@ -1283,15 +1269,34 @@ type UpdateRuleSetRequest struct {
 	RuleSet RuleSetUpdateRequest `json:"rule_set"`
 }
 
-type UpdateWorkspaceAssignments struct {
+type UpdateWorkspacePermissionAssignment struct {
 	// Array of permissions assignments to update on the workspace. Note that
 	// excluding this field will have the same effect as providing an empty list
 	// which will result in the deletion of all permissions for the principal.
-	Permissions []WorkspacePermission `json:"permissions"`
+	Permissions []WorkspacePermission `json:"permissions,omitempty"`
 	// The ID of the user, service principal, or group.
 	PrincipalId int64 `json:"-" url:"-"`
-	// The workspace ID.
+	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type UpdateWorkspacePermissionAssignmentResponse struct {
+	// Error response associated with a workspace permission assignment, if any.
+	Error string `json:"error,omitempty"`
+	// The permissions level of the principal.
+	Permissions []WorkspacePermission `json:"permissions,omitempty"`
+	// Information about the principal assigned to the workspace.
+	Principal *PrincipalOutput `json:"principal,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateWorkspacePermissionAssignmentResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateWorkspacePermissionAssignmentResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type User struct {
@@ -1394,7 +1399,23 @@ func (f *WorkspacePermission) Type() string {
 	return "WorkspacePermission"
 }
 
-type WorkspacePermissions struct {
-	// Array of permissions defined for a workspace.
-	Permissions []PermissionOutput `json:"permissions,omitempty"`
+// The output format for existing workspace PermissionAssignment records, which
+// contains some info for user consumption.
+type WorkspacePermissionAssignmentOutput struct {
+	// Error response associated with a workspace permission assignment, if any.
+	Error string `json:"error,omitempty"`
+	// The permissions level of the principal.
+	Permissions []WorkspacePermission `json:"permissions,omitempty"`
+	// Information about the principal assigned to the workspace.
+	Principal *PrincipalOutput `json:"principal,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WorkspacePermissionAssignmentOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspacePermissionAssignmentOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

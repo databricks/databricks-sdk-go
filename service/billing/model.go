@@ -9,141 +9,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// Budget configuration to be created.
-type Budget struct {
-	Alerts []BudgetAlert `json:"alerts,omitempty"`
-	// Optional end date of the budget.
-	EndDate string `json:"end_date,omitempty"`
-	// SQL-like filter expression with workspaceId, SKU and tag. Usage in your
-	// account that matches this expression will be counted in this budget.
-	//
-	// Supported properties on left-hand side of comparison: * `workspaceId` -
-	// the ID of the workspace * `sku` - SKU of the cluster, e.g.
-	// `STANDARD_ALL_PURPOSE_COMPUTE` * `tag.tagName`, `tag.'tag name'` - tag of
-	// the cluster
-	//
-	// Supported comparison operators: * `=` - equal * `!=` - not equal
-	//
-	// Supported logical operators: `AND`, `OR`.
-	//
-	// Examples: * `workspaceId=123 OR (sku='STANDARD_ALL_PURPOSE_COMPUTE' AND
-	// tag.'my tag'='my value')` * `workspaceId!=456` *
-	// `sku='STANDARD_ALL_PURPOSE_COMPUTE' OR sku='PREMIUM_ALL_PURPOSE_COMPUTE'`
-	// * `tag.name1='value1' AND tag.name2='value2'`
-	Filter string `json:"filter"`
-	// Human-readable name of the budget.
-	Name string `json:"name"`
-	// Period length in years, months, weeks and/or days. Examples: `1 month`,
-	// `30 days`, `1 year, 2 months, 1 week, 2 days`
-	Period string `json:"period"`
-	// Start date of the budget period calculation.
-	StartDate string `json:"start_date"`
-	// Target amount of the budget per period in USD.
-	TargetAmount string `json:"target_amount"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *Budget) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s Budget) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type BudgetAlert struct {
-	// List of email addresses to be notified when budget percentage is exceeded
-	// in the given period.
-	EmailNotifications []string `json:"email_notifications,omitempty"`
-	// Percentage of the target amount used in the currect period that will
-	// trigger a notification.
-	MinPercentage int `json:"min_percentage,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *BudgetAlert) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s BudgetAlert) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// List of budgets.
-type BudgetList struct {
-	Budgets []BudgetWithStatus `json:"budgets,omitempty"`
-}
-
-// Budget configuration with daily status.
-type BudgetWithStatus struct {
-	Alerts []BudgetAlert `json:"alerts,omitempty"`
-
-	BudgetId string `json:"budget_id,omitempty"`
-
-	CreationTime string `json:"creation_time,omitempty"`
-	// Optional end date of the budget.
-	EndDate string `json:"end_date,omitempty"`
-	// SQL-like filter expression with workspaceId, SKU and tag. Usage in your
-	// account that matches this expression will be counted in this budget.
-	//
-	// Supported properties on left-hand side of comparison: * `workspaceId` -
-	// the ID of the workspace * `sku` - SKU of the cluster, e.g.
-	// `STANDARD_ALL_PURPOSE_COMPUTE` * `tag.tagName`, `tag.'tag name'` - tag of
-	// the cluster
-	//
-	// Supported comparison operators: * `=` - equal * `!=` - not equal
-	//
-	// Supported logical operators: `AND`, `OR`.
-	//
-	// Examples: * `workspaceId=123 OR (sku='STANDARD_ALL_PURPOSE_COMPUTE' AND
-	// tag.'my tag'='my value')` * `workspaceId!=456` *
-	// `sku='STANDARD_ALL_PURPOSE_COMPUTE' OR sku='PREMIUM_ALL_PURPOSE_COMPUTE'`
-	// * `tag.name1='value1' AND tag.name2='value2'`
-	Filter string `json:"filter,omitempty"`
-	// Human-readable name of the budget.
-	Name string `json:"name,omitempty"`
-	// Period length in years, months, weeks and/or days. Examples: `1 month`,
-	// `30 days`, `1 year, 2 months, 1 week, 2 days`
-	Period string `json:"period,omitempty"`
-	// Start date of the budget period calculation.
-	StartDate string `json:"start_date,omitempty"`
-	// Amount used in the budget for each day (noncumulative).
-	StatusDaily []BudgetWithStatusStatusDailyItem `json:"status_daily,omitempty"`
-	// Target amount of the budget per period in USD.
-	TargetAmount string `json:"target_amount,omitempty"`
-
-	UpdateTime string `json:"update_time,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *BudgetWithStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s BudgetWithStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type BudgetWithStatusStatusDailyItem struct {
-	// Amount used in this day in USD.
-	Amount string `json:"amount,omitempty"`
-
-	Date string `json:"date,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *BudgetWithStatusStatusDailyItem) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s BudgetWithStatusStatusDailyItem) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type CreateLogDeliveryConfigurationParams struct {
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
@@ -226,15 +91,6 @@ func (s CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete budget
-type DeleteBudgetRequest struct {
-	// Budget ID
-	BudgetId string `json:"-" url:"-"`
-}
-
-type DeleteResponse struct {
-}
-
 // The status string for log delivery. Possible values are: * `CREATED`: There
 // were no log delivery attempts since the config was created. * `SUCCEEDED`:
 // The latest attempt of log delivery has succeeded completely. *
@@ -311,12 +167,6 @@ func (s DownloadRequest) MarshalJSON() ([]byte, error) {
 
 type DownloadResponse struct {
 	Contents io.ReadCloser `json:"-"`
-}
-
-// Get budget and its status
-type GetBudgetRequest struct {
-	// Budget ID
-	BudgetId string `json:"-" url:"-"`
 }
 
 // Get log delivery configuration
@@ -592,21 +442,6 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status"`
-}
-
-type UpdateResponse struct {
-}
-
-type WrappedBudget struct {
-	// Budget configuration to be created.
-	Budget Budget `json:"budget"`
-	// Budget ID
-	BudgetId string `json:"-" url:"-"`
-}
-
-type WrappedBudgetWithStatus struct {
-	// Budget configuration with daily status.
-	Budget BudgetWithStatus `json:"budget"`
 }
 
 type WrappedCreateLogDeliveryConfiguration struct {

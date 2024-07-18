@@ -17,7 +17,7 @@ func ExampleQueryHistoryAPI_ListAll_sqlQueryHistory() {
 		panic(err)
 	}
 
-	_, err = w.QueryHistory.ListAll(ctx, sql.ListQueryHistoryRequest{
+	_, err = w.QueryHistory.List(ctx, sql.ListQueryHistoryRequest{
 		FilterBy: &sql.QueryFilter{
 			QueryStartTimeRange: &sql.TimeRange{
 				StartTimeMs: 1690243200000,

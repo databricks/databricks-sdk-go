@@ -80,63 +80,64 @@ func TestMwsAccLogDelivery(t *testing.T) {
 	assert.Equal(t, byId.LogDeliveryConfiguration.ConfigId, byName.ConfigId)
 }
 
-func TestMwsAccBudgets(t *testing.T) {
-	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
-		t.SkipNow()
-	}
+// TODO: Re-Enable after Budgets service is available
+// func TestMwsAccBudgets(t *testing.T) {
+// 	ctx, a := accountTest(t)
+// 	if !a.Config.IsAws() {
+// 		t.SkipNow()
+// 	}
 
-	// TODO: OpenAPI: x-databricks-sdk-inline on schema
-	created, err := a.Budgets.Create(ctx, billing.WrappedBudget{
-		Budget: billing.Budget{
-			Name:         RandomName("go-sdk-"),
-			Filter:       "tag.tagName = 'all'",
-			Period:       "1 month",
-			StartDate:    "2022-01-01",
-			TargetAmount: "100",
-			Alerts: []billing.BudgetAlert{
-				{
-					EmailNotifications: []string{"admin@example.com"},
-					MinPercentage:      50,
-				},
-			},
-		},
-	})
-	require.NoError(t, err)
-	defer a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetId)
+// 	// TODO: OpenAPI: x-databricks-sdk-inline on schema
+// 	created, err := a.Budgets.Create(ctx, billing.WrappedBudget{
+// 		Budget: billing.Budget{
+// 			Name:         RandomName("go-sdk-"),
+// 			Filter:       "tag.tagName = 'all'",
+// 			Period:       "1 month",
+// 			StartDate:    "2022-01-01",
+// 			TargetAmount: "100",
+// 			Alerts: []billing.BudgetAlert{
+// 				{
+// 					EmailNotifications: []string{"admin@example.com"},
+// 					MinPercentage:      50,
+// 				},
+// 			},
+// 		},
+// 	})
+// 	require.NoError(t, err)
+// 	defer a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetId)
 
-	err = a.Budgets.Update(ctx, billing.WrappedBudget{
-		BudgetId: created.Budget.BudgetId,
-		Budget: billing.Budget{
-			Name:         RandomName("go-sdk-updated-"),
-			Filter:       "tag.tagName = 'all'",
-			Period:       "1 month",
-			StartDate:    "2022-01-01",
-			TargetAmount: "100",
-			Alerts: []billing.BudgetAlert{
-				{
-					EmailNotifications: []string{"admin@example.com"},
-					MinPercentage:      70,
-				},
-			},
-		},
-	})
-	require.NoError(t, err)
+// 	err = a.Budgets.Update(ctx, billing.WrappedBudget{
+// 		BudgetId: created.Budget.BudgetId,
+// 		Budget: billing.Budget{
+// 			Name:         RandomName("go-sdk-updated-"),
+// 			Filter:       "tag.tagName = 'all'",
+// 			Period:       "1 month",
+// 			StartDate:    "2022-01-01",
+// 			TargetAmount: "100",
+// 			Alerts: []billing.BudgetAlert{
+// 				{
+// 					EmailNotifications: []string{"admin@example.com"},
+// 					MinPercentage:      70,
+// 				},
+// 			},
+// 		},
+// 	})
+// 	require.NoError(t, err)
 
-	byId, err := a.Budgets.GetByBudgetId(ctx, created.Budget.BudgetId)
-	require.NoError(t, err)
-	assert.NotEqual(t, created.Budget.Name, byId.Budget.Name)
+// 	byId, err := a.Budgets.GetByBudgetId(ctx, created.Budget.BudgetId)
+// 	require.NoError(t, err)
+// 	assert.NotEqual(t, created.Budget.Name, byId.Budget.Name)
 
-	byName, err := a.Budgets.GetByName(ctx, byId.Budget.Name)
-	require.NoError(t, err)
-	assert.Equal(t, byId.Budget.BudgetId, byName.BudgetId)
+// 	byName, err := a.Budgets.GetByName(ctx, byId.Budget.Name)
+// 	require.NoError(t, err)
+// 	assert.Equal(t, byId.Budget.BudgetId, byName.BudgetId)
 
-	all, err := a.Budgets.ListAll(ctx)
-	require.NoError(t, err)
-	assert.True(t, len(all) >= 1)
+// 	all, err := a.Budgets.ListAll(ctx)
+// 	require.NoError(t, err)
+// 	assert.True(t, len(all) >= 1)
 
-	names, err := a.Budgets.BudgetWithStatusNameToBudgetIdMap(ctx)
-	require.NoError(t, err)
-	assert.Equal(t, len(all), len(names))
-	assert.Equal(t, created.Budget.BudgetId, names[byId.Budget.Name])
-}
+// 	names, err := a.Budgets.BudgetWithStatusNameToBudgetIdMap(ctx)
+// 	require.NoError(t, err)
+// 	assert.Equal(t, len(all), len(names))
+// 	assert.Equal(t, created.Budget.BudgetId, names[byId.Budget.Name])
+// }

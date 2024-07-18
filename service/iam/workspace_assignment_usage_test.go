@@ -69,7 +69,7 @@ func ExampleWorkspaceAssignmentAPI_Update_workspaceAssignmentOnAws() {
 		return i
 	}(os.Getenv("DUMMY_WORKSPACE_ID"))
 
-	_, err = a.WorkspaceAssignment.Update(ctx, iam.UpdateWorkspaceAssignments{
+	_, err = a.WorkspaceAssignment.Update(ctx, iam.UpdateWorkspacePermissionAssignment{
 		WorkspaceId: workspaceId,
 		PrincipalId: spnId,
 		Permissions: []iam.WorkspacePermission{iam.WorkspacePermissionUser},

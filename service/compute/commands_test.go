@@ -16,7 +16,7 @@ func commonFixtureWithStatusResponse(response CommandStatusResponse) qa.HTTPFixt
 		{
 			Method:       "GET",
 			ReuseRequest: true,
-			Resource:     "/api/2.0/clusters/get?cluster_id=abc",
+			Resource:     "/api/2.1/clusters/get?cluster_id=abc",
 			Response: ClusterDetails{
 				ClusterId:              "abc",
 				NumWorkers:             100,
@@ -184,7 +184,7 @@ func TestCommandsAPIExecute_FailGettingCluster(t *testing.T) {
 	qa.HTTPFixtures{
 		{
 			Method:   "GET",
-			Resource: "/api/2.0/clusters/get?cluster_id=abc",
+			Resource: "/api/2.1/clusters/get?cluster_id=abc",
 			Status:   417,
 			Response: apierr.APIError{
 				Message: "Does not compute",
@@ -201,7 +201,7 @@ func TestCommandsAPIExecute_StoppedCluster(t *testing.T) {
 	qa.HTTPFixtures{
 		{
 			Method:   "GET",
-			Resource: "/api/2.0/clusters/get?cluster_id=abc",
+			Resource: "/api/2.1/clusters/get?cluster_id=abc",
 			Response: ClusterDetails{
 				State: "TERMINATED",
 			},
@@ -217,7 +217,7 @@ func TestCommandsAPIExecute_FailToCreateContext(t *testing.T) {
 	qa.HTTPFixtures{
 		{
 			Method:   "GET",
-			Resource: "/api/2.0/clusters/get?cluster_id=abc",
+			Resource: "/api/2.1/clusters/get?cluster_id=abc",
 			Response: ClusterDetails{
 				State: "RUNNING",
 			},
@@ -241,7 +241,7 @@ func TestCommandsAPIExecute_FailToWaitForContext(t *testing.T) {
 	qa.HTTPFixtures{
 		{
 			Method:   "GET",
-			Resource: "/api/2.0/clusters/get?cluster_id=abc",
+			Resource: "/api/2.1/clusters/get?cluster_id=abc",
 			Response: ClusterDetails{
 				State: "RUNNING",
 			},
@@ -272,7 +272,7 @@ func TestCommandsAPIExecute_FailToCreateCommand(t *testing.T) {
 	qa.HTTPFixtures{
 		{
 			Method:   "GET",
-			Resource: "/api/2.0/clusters/get?cluster_id=abc",
+			Resource: "/api/2.1/clusters/get?cluster_id=abc",
 			Response: ClusterDetails{
 				State: "RUNNING",
 			},
@@ -319,7 +319,7 @@ func TestCommandsAPIExecute_FailToWaitForCommand(t *testing.T) {
 	qa.HTTPFixtures{
 		{
 			Method:   "GET",
-			Resource: "/api/2.0/clusters/get?cluster_id=abc",
+			Resource: "/api/2.1/clusters/get?cluster_id=abc",
 			Response: ClusterDetails{
 				State: "RUNNING",
 			},
@@ -373,7 +373,7 @@ func TestCommandsAPIExecute_FailToGetCommand(t *testing.T) {
 	qa.HTTPFixtures{
 		{
 			Method:   "GET",
-			Resource: "/api/2.0/clusters/get?cluster_id=abc",
+			Resource: "/api/2.1/clusters/get?cluster_id=abc",
 			Response: ClusterDetails{
 				State: "RUNNING",
 			},
@@ -427,7 +427,7 @@ func TestCommandsAPIExecute_NoResults(t *testing.T) {
 	qa.HTTPFixtures{
 		{
 			Method:   "GET",
-			Resource: "/api/2.0/clusters/get?cluster_id=abc",
+			Resource: "/api/2.1/clusters/get?cluster_id=abc",
 			Response: ClusterDetails{
 				State: "RUNNING",
 			},

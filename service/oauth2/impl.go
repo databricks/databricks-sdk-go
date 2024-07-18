@@ -43,12 +43,12 @@ func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomApp
 	return &getCustomAppIntegrationOutput, err
 }
 
-func (a *customAppIntegrationImpl) List(ctx context.Context) (*GetCustomAppIntegrationsOutput, error) {
+func (a *customAppIntegrationImpl) List(ctx context.Context, request ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error) {
 	var getCustomAppIntegrationsOutput GetCustomAppIntegrationsOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &getCustomAppIntegrationsOutput)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getCustomAppIntegrationsOutput)
 	return &getCustomAppIntegrationsOutput, err
 }
 
@@ -69,7 +69,7 @@ type oAuthPublishedAppsImpl struct {
 
 func (a *oAuthPublishedAppsImpl) List(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
 	var getPublishedAppsOutput GetPublishedAppsOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-apps/", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-apps", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getPublishedAppsOutput)
@@ -109,12 +109,12 @@ func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublis
 	return &getPublishedAppIntegrationOutput, err
 }
 
-func (a *publishedAppIntegrationImpl) List(ctx context.Context) (*GetPublishedAppIntegrationsOutput, error) {
+func (a *publishedAppIntegrationImpl) List(ctx context.Context, request ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error) {
 	var getPublishedAppIntegrationsOutput GetPublishedAppIntegrationsOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &getPublishedAppIntegrationsOutput)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getPublishedAppIntegrationsOutput)
 	return &getPublishedAppIntegrationsOutput, err
 }
 

@@ -5223,7 +5223,7 @@ type WorkspaceBindingsInterface interface {
 	//
 	// Gets workspace bindings of the securable. The caller must be a metastore
 	// admin or an owner of the securable.
-	GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType string, securableName string) (*WorkspaceBindingsResponse, error)
+	GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType GetBindingsSecurableType, securableName string) (*WorkspaceBindingsResponse, error)
 
 	// Update catalog workspace bindings.
 	//
@@ -5263,7 +5263,8 @@ func NewWorkspaceBindings(client *client.DatabricksClient) *WorkspaceBindingsAPI
 // (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which
 // introduces the ability to bind a securable in READ_ONLY mode (catalogs only).
 //
-// Securables that support binding: - catalog
+// Securable types that support binding: - catalog - storage_credential -
+// external_location
 type WorkspaceBindingsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(WorkspaceBindingsService)
@@ -5314,7 +5315,7 @@ func (a *WorkspaceBindingsAPI) GetBindings(ctx context.Context, request GetBindi
 //
 // Gets workspace bindings of the securable. The caller must be a metastore
 // admin or an owner of the securable.
-func (a *WorkspaceBindingsAPI) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType string, securableName string) (*WorkspaceBindingsResponse, error) {
+func (a *WorkspaceBindingsAPI) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType GetBindingsSecurableType, securableName string) (*WorkspaceBindingsResponse, error) {
 	return a.impl.GetBindings(ctx, GetBindingsRequest{
 		SecurableType: securableType,
 		SecurableName: securableName,

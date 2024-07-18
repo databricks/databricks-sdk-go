@@ -108,7 +108,7 @@ type clustersImpl struct {
 
 func (a *clustersImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
 	var changeClusterOwnerResponse ChangeClusterOwnerResponse
-	path := "/api/2.0/clusters/change-owner"
+	path := "/api/2.1/clusters/change-owner"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -118,7 +118,7 @@ func (a *clustersImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwn
 
 func (a *clustersImpl) Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error) {
 	var createClusterResponse CreateClusterResponse
-	path := "/api/2.0/clusters/create"
+	path := "/api/2.1/clusters/create"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -128,7 +128,7 @@ func (a *clustersImpl) Create(ctx context.Context, request CreateCluster) (*Crea
 
 func (a *clustersImpl) Delete(ctx context.Context, request DeleteCluster) error {
 	var deleteClusterResponse DeleteClusterResponse
-	path := "/api/2.0/clusters/delete"
+	path := "/api/2.1/clusters/delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -138,7 +138,7 @@ func (a *clustersImpl) Delete(ctx context.Context, request DeleteCluster) error 
 
 func (a *clustersImpl) Edit(ctx context.Context, request EditCluster) error {
 	var editClusterResponse EditClusterResponse
-	path := "/api/2.0/clusters/edit"
+	path := "/api/2.1/clusters/edit"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -148,7 +148,7 @@ func (a *clustersImpl) Edit(ctx context.Context, request EditCluster) error {
 
 func (a *clustersImpl) Events(ctx context.Context, request GetEvents) (*GetEventsResponse, error) {
 	var getEventsResponse GetEventsResponse
-	path := "/api/2.0/clusters/events"
+	path := "/api/2.1/clusters/events"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -158,7 +158,7 @@ func (a *clustersImpl) Events(ctx context.Context, request GetEvents) (*GetEvent
 
 func (a *clustersImpl) Get(ctx context.Context, request GetClusterRequest) (*ClusterDetails, error) {
 	var clusterDetails ClusterDetails
-	path := "/api/2.0/clusters/get"
+	path := "/api/2.1/clusters/get"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &clusterDetails)
@@ -185,7 +185,7 @@ func (a *clustersImpl) GetPermissions(ctx context.Context, request GetClusterPer
 
 func (a *clustersImpl) List(ctx context.Context, request ListClustersRequest) (*ListClustersResponse, error) {
 	var listClustersResponse ListClustersResponse
-	path := "/api/2.0/clusters/list"
+	path := "/api/2.1/clusters/list"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listClustersResponse)
@@ -194,7 +194,7 @@ func (a *clustersImpl) List(ctx context.Context, request ListClustersRequest) (*
 
 func (a *clustersImpl) ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse, error) {
 	var listNodeTypesResponse ListNodeTypesResponse
-	path := "/api/2.0/clusters/list-node-types"
+	path := "/api/2.1/clusters/list-node-types"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listNodeTypesResponse)
@@ -203,7 +203,7 @@ func (a *clustersImpl) ListNodeTypes(ctx context.Context) (*ListNodeTypesRespons
 
 func (a *clustersImpl) ListZones(ctx context.Context) (*ListAvailableZonesResponse, error) {
 	var listAvailableZonesResponse ListAvailableZonesResponse
-	path := "/api/2.0/clusters/list-zones"
+	path := "/api/2.1/clusters/list-zones"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listAvailableZonesResponse)
@@ -212,7 +212,7 @@ func (a *clustersImpl) ListZones(ctx context.Context) (*ListAvailableZonesRespon
 
 func (a *clustersImpl) PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error {
 	var permanentDeleteClusterResponse PermanentDeleteClusterResponse
-	path := "/api/2.0/clusters/permanent-delete"
+	path := "/api/2.1/clusters/permanent-delete"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -222,7 +222,7 @@ func (a *clustersImpl) PermanentDelete(ctx context.Context, request PermanentDel
 
 func (a *clustersImpl) Pin(ctx context.Context, request PinCluster) error {
 	var pinClusterResponse PinClusterResponse
-	path := "/api/2.0/clusters/pin"
+	path := "/api/2.1/clusters/pin"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -232,7 +232,7 @@ func (a *clustersImpl) Pin(ctx context.Context, request PinCluster) error {
 
 func (a *clustersImpl) Resize(ctx context.Context, request ResizeCluster) error {
 	var resizeClusterResponse ResizeClusterResponse
-	path := "/api/2.0/clusters/resize"
+	path := "/api/2.1/clusters/resize"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -242,7 +242,7 @@ func (a *clustersImpl) Resize(ctx context.Context, request ResizeCluster) error 
 
 func (a *clustersImpl) Restart(ctx context.Context, request RestartCluster) error {
 	var restartClusterResponse RestartClusterResponse
-	path := "/api/2.0/clusters/restart"
+	path := "/api/2.1/clusters/restart"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -262,7 +262,7 @@ func (a *clustersImpl) SetPermissions(ctx context.Context, request ClusterPermis
 
 func (a *clustersImpl) SparkVersions(ctx context.Context) (*GetSparkVersionsResponse, error) {
 	var getSparkVersionsResponse GetSparkVersionsResponse
-	path := "/api/2.0/clusters/spark-versions"
+	path := "/api/2.1/clusters/spark-versions"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &getSparkVersionsResponse)
@@ -271,7 +271,7 @@ func (a *clustersImpl) SparkVersions(ctx context.Context) (*GetSparkVersionsResp
 
 func (a *clustersImpl) Start(ctx context.Context, request StartCluster) error {
 	var startClusterResponse StartClusterResponse
-	path := "/api/2.0/clusters/start"
+	path := "/api/2.1/clusters/start"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -281,7 +281,7 @@ func (a *clustersImpl) Start(ctx context.Context, request StartCluster) error {
 
 func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 	var unpinClusterResponse UnpinClusterResponse
-	path := "/api/2.0/clusters/unpin"
+	path := "/api/2.1/clusters/unpin"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

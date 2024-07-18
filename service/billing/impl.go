@@ -24,58 +24,6 @@ func (a *billableUsageImpl) Download(ctx context.Context, request DownloadReques
 	return &downloadResponse, err
 }
 
-// unexported type that holds implementations of just Budgets API methods
-type budgetsImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *budgetsImpl) Create(ctx context.Context, request WrappedBudget) (*WrappedBudgetWithStatus, error) {
-	var wrappedBudgetWithStatus WrappedBudgetWithStatus
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &wrappedBudgetWithStatus)
-	return &wrappedBudgetWithStatus, err
-}
-
-func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetRequest) error {
-	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return err
-}
-
-func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetRequest) (*WrappedBudgetWithStatus, error) {
-	var wrappedBudgetWithStatus WrappedBudgetWithStatus
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &wrappedBudgetWithStatus)
-	return &wrappedBudgetWithStatus, err
-}
-
-func (a *budgetsImpl) List(ctx context.Context) (*BudgetList, error) {
-	var budgetList BudgetList
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &budgetList)
-	return &budgetList, err
-}
-
-func (a *budgetsImpl) Update(ctx context.Context, request WrappedBudget) error {
-	var updateResponse UpdateResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
-	return err
-}
-
 // unexported type that holds implementations of just LogDelivery API methods
 type logDeliveryImpl struct {
 	client *client.DatabricksClient

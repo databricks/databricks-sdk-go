@@ -342,17 +342,17 @@ func (_c *MockCustomAppIntegrationInterface_Impl_Call) RunAndReturn(run func() o
 	return _c
 }
 
-// List provides a mock function with given fields: ctx
-func (_m *MockCustomAppIntegrationInterface) List(ctx context.Context) listing.Iterator[oauth2.GetCustomAppIntegrationOutput] {
-	ret := _m.Called(ctx)
+// List provides a mock function with given fields: ctx, request
+func (_m *MockCustomAppIntegrationInterface) List(ctx context.Context, request oauth2.ListCustomAppIntegrationsRequest) listing.Iterator[oauth2.GetCustomAppIntegrationOutput] {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
 	var r0 listing.Iterator[oauth2.GetCustomAppIntegrationOutput]
-	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[oauth2.GetCustomAppIntegrationOutput]); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, oauth2.ListCustomAppIntegrationsRequest) listing.Iterator[oauth2.GetCustomAppIntegrationOutput]); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(listing.Iterator[oauth2.GetCustomAppIntegrationOutput])
@@ -369,13 +369,14 @@ type MockCustomAppIntegrationInterface_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockCustomAppIntegrationInterface_Expecter) List(ctx interface{}) *MockCustomAppIntegrationInterface_List_Call {
-	return &MockCustomAppIntegrationInterface_List_Call{Call: _e.mock.On("List", ctx)}
+//   - request oauth2.ListCustomAppIntegrationsRequest
+func (_e *MockCustomAppIntegrationInterface_Expecter) List(ctx interface{}, request interface{}) *MockCustomAppIntegrationInterface_List_Call {
+	return &MockCustomAppIntegrationInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
 }
 
-func (_c *MockCustomAppIntegrationInterface_List_Call) Run(run func(ctx context.Context)) *MockCustomAppIntegrationInterface_List_Call {
+func (_c *MockCustomAppIntegrationInterface_List_Call) Run(run func(ctx context.Context, request oauth2.ListCustomAppIntegrationsRequest)) *MockCustomAppIntegrationInterface_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(oauth2.ListCustomAppIntegrationsRequest))
 	})
 	return _c
 }
@@ -385,14 +386,14 @@ func (_c *MockCustomAppIntegrationInterface_List_Call) Return(_a0 listing.Iterat
 	return _c
 }
 
-func (_c *MockCustomAppIntegrationInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[oauth2.GetCustomAppIntegrationOutput]) *MockCustomAppIntegrationInterface_List_Call {
+func (_c *MockCustomAppIntegrationInterface_List_Call) RunAndReturn(run func(context.Context, oauth2.ListCustomAppIntegrationsRequest) listing.Iterator[oauth2.GetCustomAppIntegrationOutput]) *MockCustomAppIntegrationInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// ListAll provides a mock function with given fields: ctx
-func (_m *MockCustomAppIntegrationInterface) ListAll(ctx context.Context) ([]oauth2.GetCustomAppIntegrationOutput, error) {
-	ret := _m.Called(ctx)
+// ListAll provides a mock function with given fields: ctx, request
+func (_m *MockCustomAppIntegrationInterface) ListAll(ctx context.Context, request oauth2.ListCustomAppIntegrationsRequest) ([]oauth2.GetCustomAppIntegrationOutput, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
@@ -400,19 +401,19 @@ func (_m *MockCustomAppIntegrationInterface) ListAll(ctx context.Context) ([]oau
 
 	var r0 []oauth2.GetCustomAppIntegrationOutput
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) ([]oauth2.GetCustomAppIntegrationOutput, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, oauth2.ListCustomAppIntegrationsRequest) ([]oauth2.GetCustomAppIntegrationOutput, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) []oauth2.GetCustomAppIntegrationOutput); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, oauth2.ListCustomAppIntegrationsRequest) []oauth2.GetCustomAppIntegrationOutput); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]oauth2.GetCustomAppIntegrationOutput)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, oauth2.ListCustomAppIntegrationsRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -427,13 +428,14 @@ type MockCustomAppIntegrationInterface_ListAll_Call struct {
 
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockCustomAppIntegrationInterface_Expecter) ListAll(ctx interface{}) *MockCustomAppIntegrationInterface_ListAll_Call {
-	return &MockCustomAppIntegrationInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx)}
+//   - request oauth2.ListCustomAppIntegrationsRequest
+func (_e *MockCustomAppIntegrationInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockCustomAppIntegrationInterface_ListAll_Call {
+	return &MockCustomAppIntegrationInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
 }
 
-func (_c *MockCustomAppIntegrationInterface_ListAll_Call) Run(run func(ctx context.Context)) *MockCustomAppIntegrationInterface_ListAll_Call {
+func (_c *MockCustomAppIntegrationInterface_ListAll_Call) Run(run func(ctx context.Context, request oauth2.ListCustomAppIntegrationsRequest)) *MockCustomAppIntegrationInterface_ListAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(oauth2.ListCustomAppIntegrationsRequest))
 	})
 	return _c
 }
@@ -443,7 +445,7 @@ func (_c *MockCustomAppIntegrationInterface_ListAll_Call) Return(_a0 []oauth2.Ge
 	return _c
 }
 
-func (_c *MockCustomAppIntegrationInterface_ListAll_Call) RunAndReturn(run func(context.Context) ([]oauth2.GetCustomAppIntegrationOutput, error)) *MockCustomAppIntegrationInterface_ListAll_Call {
+func (_c *MockCustomAppIntegrationInterface_ListAll_Call) RunAndReturn(run func(context.Context, oauth2.ListCustomAppIntegrationsRequest) ([]oauth2.GetCustomAppIntegrationOutput, error)) *MockCustomAppIntegrationInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

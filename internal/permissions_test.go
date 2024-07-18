@@ -80,7 +80,7 @@ func TestUcAccWorkspaceAssignmentOnAws(t *testing.T) {
 
 	spnId := MustParseInt64(spn.Id)
 
-	_, err = a.WorkspaceAssignment.Update(ctx, iam.UpdateWorkspaceAssignments{
+	_, err = a.WorkspaceAssignment.Update(ctx, iam.UpdateWorkspacePermissionAssignment{
 		WorkspaceId: workspaceId,
 		PrincipalId: spnId,
 		Permissions: []iam.WorkspacePermission{

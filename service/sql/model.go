@@ -28,32 +28,47 @@ func (s AccessControl) MarshalJSON() ([]byte, error) {
 }
 
 type Alert struct {
-	// Timestamp when the alert was created.
-	CreatedAt string `json:"created_at,omitempty"`
-	// Alert ID.
+	// Trigger conditions of the alert.
+	Condition *AlertCondition `json:"condition,omitempty"`
+	// The timestamp indicating when the alert was created.
+	CreateTime string `json:"create_time,omitempty"`
+	// Custom body of alert notification, if it exists. See [here] for custom
+	// templating instructions.
+	//
+	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	CustomBody string `json:"custom_body,omitempty"`
+	// Custom subject of alert notification, if it exists. This can include
+	// email subject entries and Slack notification headers, for example. See
+	// [here] for custom templating instructions.
+	//
+	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	CustomSubject string `json:"custom_subject,omitempty"`
+	// The display name of the alert.
+	DisplayName string `json:"display_name,omitempty"`
+	// UUID identifying the alert.
 	Id string `json:"id,omitempty"`
-	// Timestamp when the alert was last triggered.
-	LastTriggeredAt string `json:"last_triggered_at,omitempty"`
-	// Name of the alert.
-	Name string `json:"name,omitempty"`
-	// Alert configuration options.
-	Options *AlertOptions `json:"options,omitempty"`
-	// The identifier of the workspace folder containing the object.
-	Parent string `json:"parent,omitempty"`
-
-	Query *AlertQuery `json:"query,omitempty"`
-	// Number of seconds after being triggered before the alert rearms itself
-	// and can be triggered again. If `null`, alert will never be triggered
-	// again.
-	Rearm int `json:"rearm,omitempty"`
-	// State of the alert. Possible values are: `unknown` (yet to be evaluated),
-	// `triggered` (evaluated and fulfilled trigger conditions), or `ok`
-	// (evaluated and did not fulfill trigger conditions).
+	// The workspace state of the alert. Used for tracking trashed status.
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// The owner's username. This field is set to "Unavailable" if the user has
+	// been deleted.
+	OwnerUserName string `json:"owner_user_name,omitempty"`
+	// The workspace path of the folder containing the alert.
+	ParentPath string `json:"parent_path,omitempty"`
+	// UUID of the query attached to the alert.
+	QueryId string `json:"query_id,omitempty"`
+	// Number of seconds an alert must wait after being triggered to rearm
+	// itself. After rearming, it can be triggered again. If 0 or not specified,
+	// the alert will not be triggered again.
+	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
+	// Current state of the alert's trigger status. This field is set to UNKNOWN
+	// if the alert has not yet been evaluated or ran into an error during the
+	// last evaluation.
 	State AlertState `json:"state,omitempty"`
-	// Timestamp when the alert was last updated.
-	UpdatedAt string `json:"updated_at,omitempty"`
-
-	User *User `json:"user,omitempty"`
+	// Timestamp when the alert was last triggered, if the alert has been
+	// triggered before.
+	TriggerTime string `json:"trigger_time,omitempty"`
+	// The timestamp indicating when the alert was updated.
+	UpdateTime string `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -64,6 +79,95 @@ func (s *Alert) UnmarshalJSON(b []byte) error {
 
 func (s Alert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type AlertCondition struct {
+	// Alert state if result is empty.
+	EmptyResultState AlertState `json:"empty_result_state,omitempty"`
+	// Operator used for comparison in alert evaluation.
+	Op AlertOperator `json:"op,omitempty"`
+	// Name of the column from the query result to use for comparison in alert
+	// evaluation.
+	Operand *AlertConditionOperand `json:"operand,omitempty"`
+	// Threshold value used for comparison in alert evaluation.
+	Threshold *AlertConditionThreshold `json:"threshold,omitempty"`
+}
+
+type AlertConditionOperand struct {
+	Column *AlertOperandColumn `json:"column,omitempty"`
+}
+
+type AlertConditionThreshold struct {
+	Value *AlertOperandValue `json:"value,omitempty"`
+}
+
+type AlertOperandColumn struct {
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AlertOperandColumn) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertOperandColumn) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AlertOperandValue struct {
+	BoolValue bool `json:"bool_value,omitempty"`
+
+	DoubleValue float64 `json:"double_value,omitempty"`
+
+	StringValue string `json:"string_value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AlertOperandValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertOperandValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AlertOperator string
+
+const AlertOperatorEqual AlertOperator = `EQUAL`
+
+const AlertOperatorGreaterThan AlertOperator = `GREATER_THAN`
+
+const AlertOperatorGreaterThanOrEqual AlertOperator = `GREATER_THAN_OR_EQUAL`
+
+const AlertOperatorIsNull AlertOperator = `IS_NULL`
+
+const AlertOperatorLessThan AlertOperator = `LESS_THAN`
+
+const AlertOperatorLessThanOrEqual AlertOperator = `LESS_THAN_OR_EQUAL`
+
+const AlertOperatorNotEqual AlertOperator = `NOT_EQUAL`
+
+// String representation for [fmt.Print]
+func (f *AlertOperator) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AlertOperator) Set(v string) error {
+	switch v {
+	case `EQUAL`, `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `IS_NULL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL`, `NOT_EQUAL`:
+		*f = AlertOperator(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EQUAL", "GREATER_THAN", "GREATER_THAN_OR_EQUAL", "IS_NULL", "LESS_THAN", "LESS_THAN_OR_EQUAL", "NOT_EQUAL"`, v)
+	}
+}
+
+// Type always returns AlertOperator to satisfy [pflag.Value] interface
+func (f *AlertOperator) Type() string {
+	return "AlertOperator"
 }
 
 // Alert configuration options.
@@ -186,16 +290,13 @@ func (s AlertQuery) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// State of the alert. Possible values are: `unknown` (yet to be evaluated),
-// `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
-// and did not fulfill trigger conditions).
 type AlertState string
 
-const AlertStateOk AlertState = `ok`
+const AlertStateOk AlertState = `OK`
 
-const AlertStateTriggered AlertState = `triggered`
+const AlertStateTriggered AlertState = `TRIGGERED`
 
-const AlertStateUnknown AlertState = `unknown`
+const AlertStateUnknown AlertState = `UNKNOWN`
 
 // String representation for [fmt.Print]
 func (f *AlertState) String() string {
@@ -205,11 +306,11 @@ func (f *AlertState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AlertState) Set(v string) error {
 	switch v {
-	case `ok`, `triggered`, `unknown`:
+	case `OK`, `TRIGGERED`, `UNKNOWN`:
 		*f = AlertState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ok", "triggered", "unknown"`, v)
+		return fmt.Errorf(`value "%s" is not one of "OK", "TRIGGERED", "UNKNOWN"`, v)
 	}
 }
 
@@ -269,9 +370,9 @@ func (s Channel) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Channel information for the SQL warehouse at the time of query execution
+// Details about a Channel.
 type ChannelInfo struct {
-	// DBSQL Version the channel is mapped to
+	// DB SQL Version the Channel is mapped to.
 	DbsqlVersion string `json:"dbsql_version,omitempty"`
 	// Name of the channel
 	Name ChannelName `json:"name,omitempty"`
@@ -287,7 +388,6 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -319,6 +419,25 @@ func (f *ChannelName) Set(v string) error {
 // Type always returns ChannelName to satisfy [pflag.Value] interface
 func (f *ChannelName) Type() string {
 	return "ChannelName"
+}
+
+// Client code that triggered the request
+type ClientCallContext struct {
+	// File name that contains the last line that triggered the request.
+	FileName *EncodedText `json:"file_name,omitempty"`
+	// Last line number within a file or notebook cell that triggered the
+	// request.
+	LineNumber int `json:"line_number,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClientCallContext) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClientCallContext) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ColumnInfo struct {
@@ -414,6 +533,39 @@ func (f *ColumnInfoTypeName) Type() string {
 	return "ColumnInfoTypeName"
 }
 
+type ContextFilter struct {
+	// Databricks SQL Alert id
+	DbsqlAlertId string `json:"dbsql_alert_id,omitempty" url:"dbsql_alert_id,omitempty"`
+	// Databricks SQL Dashboard id
+	DbsqlDashboardId string `json:"dbsql_dashboard_id,omitempty" url:"dbsql_dashboard_id,omitempty"`
+	// Databricks SQL Query id
+	DbsqlQueryId string `json:"dbsql_query_id,omitempty" url:"dbsql_query_id,omitempty"`
+	// Databricks SQL Query session id
+	DbsqlSessionId string `json:"dbsql_session_id,omitempty" url:"dbsql_session_id,omitempty"`
+	// Databricks Workflows id
+	JobId string `json:"job_id,omitempty" url:"job_id,omitempty"`
+	// Databricks Workflows task run id
+	JobRunId string `json:"job_run_id,omitempty" url:"job_run_id,omitempty"`
+	// Databricks Lakeview Dashboard id
+	LakeviewDashboardId string `json:"lakeview_dashboard_id,omitempty" url:"lakeview_dashboard_id,omitempty"`
+	// Databricks Notebook runnableCommandId
+	NotebookCellRunId string `json:"notebook_cell_run_id,omitempty" url:"notebook_cell_run_id,omitempty"`
+	// Databricks Notebook id
+	NotebookId string `json:"notebook_id,omitempty" url:"notebook_id,omitempty"`
+	// Databricks Query History statement ids.
+	StatementIds []string `json:"statement_ids,omitempty" url:"statement_ids,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ContextFilter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ContextFilter) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateAlert struct {
 	// Name of the alert.
 	Name string `json:"name"`
@@ -439,8 +591,89 @@ func (s CreateAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateAlertRequest struct {
+	Alert *CreateAlertRequestAlert `json:"alert,omitempty"`
+}
+
+type CreateAlertRequestAlert struct {
+	// Trigger conditions of the alert.
+	Condition *AlertCondition `json:"condition,omitempty"`
+	// Custom body of alert notification, if it exists. See [here] for custom
+	// templating instructions.
+	//
+	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	CustomBody string `json:"custom_body,omitempty"`
+	// Custom subject of alert notification, if it exists. This can include
+	// email subject entries and Slack notification headers, for example. See
+	// [here] for custom templating instructions.
+	//
+	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	CustomSubject string `json:"custom_subject,omitempty"`
+	// The display name of the alert.
+	DisplayName string `json:"display_name,omitempty"`
+	// The workspace path of the folder containing the alert.
+	ParentPath string `json:"parent_path,omitempty"`
+	// UUID of the query attached to the alert.
+	QueryId string `json:"query_id,omitempty"`
+	// Number of seconds an alert must wait after being triggered to rearm
+	// itself. After rearming, it can be triggered again. If 0 or not specified,
+	// the alert will not be triggered again.
+	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateAlertRequestAlert) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAlertRequestAlert) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateQueryRequest struct {
+	Query *CreateQueryRequestQuery `json:"query,omitempty"`
+}
+
+type CreateQueryRequestQuery struct {
+	// Whether to apply a 1000 row limit to the query result.
+	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
+	// Name of the catalog where this query will be executed.
+	Catalog string `json:"catalog,omitempty"`
+	// General description that conveys additional information about this query
+	// such as usage notes.
+	Description string `json:"description,omitempty"`
+	// Display name of the query that appears in list views, widget headings,
+	// and on the query page.
+	DisplayName string `json:"display_name,omitempty"`
+	// List of query parameter definitions.
+	Parameters []QueryParameter `json:"parameters,omitempty"`
+	// Workspace path of the workspace folder containing the object.
+	ParentPath string `json:"parent_path,omitempty"`
+	// Text of the query to be run.
+	QueryText string `json:"query_text,omitempty"`
+	// Sets the "Run as" role for the object.
+	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
+	// Name of the schema where this query will be executed.
+	Schema string `json:"schema,omitempty"`
+
+	Tags []string `json:"tags,omitempty"`
+	// ID of the SQL warehouse attached to the query.
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateQueryRequestQuery) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateQueryRequestQuery) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Add visualization to a query
-type CreateQueryVisualizationRequest struct {
+type CreateQueryVisualizationsLegacyRequest struct {
 	// A short description of this visualization. This is not displayed in the
 	// UI.
 	Description string `json:"description,omitempty"`
@@ -459,11 +692,42 @@ type CreateQueryVisualizationRequest struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *CreateQueryVisualizationRequest) UnmarshalJSON(b []byte) error {
+func (s *CreateQueryVisualizationsLegacyRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s CreateQueryVisualizationRequest) MarshalJSON() ([]byte, error) {
+func (s CreateQueryVisualizationsLegacyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateVisualizationRequest struct {
+	Visualization *CreateVisualizationRequestVisualization `json:"visualization,omitempty"`
+}
+
+type CreateVisualizationRequestVisualization struct {
+	// The display name of the visualization.
+	DisplayName string `json:"display_name,omitempty"`
+	// UUID of the query that the visualization is attached to.
+	QueryId string `json:"query_id,omitempty"`
+	// The visualization options varies widely from one visualization type to
+	// the next and is unsupported. Databricks does not recommend modifying
+	// visualization options directly.
+	SerializedOptions string `json:"serialized_options,omitempty"`
+	// The visualization query plan varies widely from one visualization type to
+	// the next and is unsupported. Databricks does not recommend modifying the
+	// visualization query plan directly.
+	SerializedQueryPlan string `json:"serialized_query_plan,omitempty"`
+	// The type of visualization: counter, table, funnel, and so on.
+	Type string `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateVisualizationRequestVisualization) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateVisualizationRequestVisualization) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -779,8 +1043,169 @@ func (s DataSource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DatePrecision string
+
+const DatePrecisionDayPrecision DatePrecision = `DAY_PRECISION`
+
+const DatePrecisionMinutePrecision DatePrecision = `MINUTE_PRECISION`
+
+const DatePrecisionSecondPrecision DatePrecision = `SECOND_PRECISION`
+
+// String representation for [fmt.Print]
+func (f *DatePrecision) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DatePrecision) Set(v string) error {
+	switch v {
+	case `DAY_PRECISION`, `MINUTE_PRECISION`, `SECOND_PRECISION`:
+		*f = DatePrecision(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DAY_PRECISION", "MINUTE_PRECISION", "SECOND_PRECISION"`, v)
+	}
+}
+
+// Type always returns DatePrecision to satisfy [pflag.Value] interface
+func (f *DatePrecision) Type() string {
+	return "DatePrecision"
+}
+
+type DateRange struct {
+	End string `json:"end"`
+
+	Start string `json:"start"`
+}
+
+type DateRangeValue struct {
+	// Manually specified date-time range value.
+	DateRangeValue *DateRange `json:"date_range_value,omitempty"`
+	// Dynamic date-time range value based on current date-time.
+	DynamicDateRangeValue DateRangeValueDynamicDateRange `json:"dynamic_date_range_value,omitempty"`
+	// Date-time precision to format the value into when the query is run.
+	// Defaults to DAY_PRECISION (YYYY-MM-DD).
+	Precision DatePrecision `json:"precision,omitempty"`
+
+	StartDayOfWeek int `json:"start_day_of_week,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DateRangeValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DateRangeValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DateRangeValueDynamicDateRange string
+
+const DateRangeValueDynamicDateRangeLast12Months DateRangeValueDynamicDateRange = `LAST_12_MONTHS`
+
+const DateRangeValueDynamicDateRangeLast14Days DateRangeValueDynamicDateRange = `LAST_14_DAYS`
+
+const DateRangeValueDynamicDateRangeLast24Hours DateRangeValueDynamicDateRange = `LAST_24_HOURS`
+
+const DateRangeValueDynamicDateRangeLast30Days DateRangeValueDynamicDateRange = `LAST_30_DAYS`
+
+const DateRangeValueDynamicDateRangeLast60Days DateRangeValueDynamicDateRange = `LAST_60_DAYS`
+
+const DateRangeValueDynamicDateRangeLast7Days DateRangeValueDynamicDateRange = `LAST_7_DAYS`
+
+const DateRangeValueDynamicDateRangeLast8Hours DateRangeValueDynamicDateRange = `LAST_8_HOURS`
+
+const DateRangeValueDynamicDateRangeLast90Days DateRangeValueDynamicDateRange = `LAST_90_DAYS`
+
+const DateRangeValueDynamicDateRangeLastHour DateRangeValueDynamicDateRange = `LAST_HOUR`
+
+const DateRangeValueDynamicDateRangeLastMonth DateRangeValueDynamicDateRange = `LAST_MONTH`
+
+const DateRangeValueDynamicDateRangeLastWeek DateRangeValueDynamicDateRange = `LAST_WEEK`
+
+const DateRangeValueDynamicDateRangeLastYear DateRangeValueDynamicDateRange = `LAST_YEAR`
+
+const DateRangeValueDynamicDateRangeThisMonth DateRangeValueDynamicDateRange = `THIS_MONTH`
+
+const DateRangeValueDynamicDateRangeThisWeek DateRangeValueDynamicDateRange = `THIS_WEEK`
+
+const DateRangeValueDynamicDateRangeThisYear DateRangeValueDynamicDateRange = `THIS_YEAR`
+
+const DateRangeValueDynamicDateRangeToday DateRangeValueDynamicDateRange = `TODAY`
+
+const DateRangeValueDynamicDateRangeYesterday DateRangeValueDynamicDateRange = `YESTERDAY`
+
+// String representation for [fmt.Print]
+func (f *DateRangeValueDynamicDateRange) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DateRangeValueDynamicDateRange) Set(v string) error {
+	switch v {
+	case `LAST_12_MONTHS`, `LAST_14_DAYS`, `LAST_24_HOURS`, `LAST_30_DAYS`, `LAST_60_DAYS`, `LAST_7_DAYS`, `LAST_8_HOURS`, `LAST_90_DAYS`, `LAST_HOUR`, `LAST_MONTH`, `LAST_WEEK`, `LAST_YEAR`, `THIS_MONTH`, `THIS_WEEK`, `THIS_YEAR`, `TODAY`, `YESTERDAY`:
+		*f = DateRangeValueDynamicDateRange(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "LAST_12_MONTHS", "LAST_14_DAYS", "LAST_24_HOURS", "LAST_30_DAYS", "LAST_60_DAYS", "LAST_7_DAYS", "LAST_8_HOURS", "LAST_90_DAYS", "LAST_HOUR", "LAST_MONTH", "LAST_WEEK", "LAST_YEAR", "THIS_MONTH", "THIS_WEEK", "THIS_YEAR", "TODAY", "YESTERDAY"`, v)
+	}
+}
+
+// Type always returns DateRangeValueDynamicDateRange to satisfy [pflag.Value] interface
+func (f *DateRangeValueDynamicDateRange) Type() string {
+	return "DateRangeValueDynamicDateRange"
+}
+
+type DateValue struct {
+	// Manually specified date-time value.
+	DateValue string `json:"date_value,omitempty"`
+	// Dynamic date-time value based on current date-time.
+	DynamicDateValue DateValueDynamicDate `json:"dynamic_date_value,omitempty"`
+	// Date-time precision to format the value into when the query is run.
+	// Defaults to DAY_PRECISION (YYYY-MM-DD).
+	Precision DatePrecision `json:"precision,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DateValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DateValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DateValueDynamicDate string
+
+const DateValueDynamicDateNow DateValueDynamicDate = `NOW`
+
+const DateValueDynamicDateYesterday DateValueDynamicDate = `YESTERDAY`
+
+// String representation for [fmt.Print]
+func (f *DateValueDynamicDate) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DateValueDynamicDate) Set(v string) error {
+	switch v {
+	case `NOW`, `YESTERDAY`:
+		*f = DateValueDynamicDate(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "NOW", "YESTERDAY"`, v)
+	}
+}
+
+// Type always returns DateValueDynamicDate to satisfy [pflag.Value] interface
+func (f *DateValueDynamicDate) Type() string {
+	return "DateValueDynamicDate"
+}
+
 // Delete an alert
-type DeleteAlertRequest struct {
+type DeleteAlertsLegacyRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
 
@@ -796,17 +1221,22 @@ type DeleteDashboardWidgetRequest struct {
 }
 
 // Delete a query
-type DeleteQueryRequest struct {
+type DeleteQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
 // Remove visualization
-type DeleteQueryVisualizationRequest struct {
+type DeleteQueryVisualizationsLegacyRequest struct {
 	// Widget ID returned by :method:queryvizualisations/create
 	Id string `json:"-" url:"-"`
 }
 
 type DeleteResponse struct {
+}
+
+// Remove a visualization
+type DeleteVisualizationRequest struct {
+	Id string `json:"-" url:"-"`
 }
 
 // Delete a warehouse
@@ -1002,6 +1432,56 @@ func (f *EditWarehouseRequestWarehouseType) Type() string {
 type EditWarehouseResponse struct {
 }
 
+// Represents an empty message, similar to google.protobuf.Empty, which is not
+// available in the firm right now.
+type Empty struct {
+}
+
+type EncodedText struct {
+	// Carry text data in different form.
+	Encoding EncodedTextEncoding `json:"encoding,omitempty"`
+	// text data
+	Text string `json:"text,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EncodedText) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EncodedText) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Carry text data in different form.
+type EncodedTextEncoding string
+
+const EncodedTextEncodingBase64 EncodedTextEncoding = `BASE64`
+
+const EncodedTextEncodingPlain EncodedTextEncoding = `PLAIN`
+
+// String representation for [fmt.Print]
+func (f *EncodedTextEncoding) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EncodedTextEncoding) Set(v string) error {
+	switch v {
+	case `BASE64`, `PLAIN`:
+		*f = EncodedTextEncoding(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BASE64", "PLAIN"`, v)
+	}
+}
+
+// Type always returns EncodedTextEncoding to satisfy [pflag.Value] interface
+func (f *EncodedTextEncoding) Type() string {
+	return "EncodedTextEncoding"
+}
+
 type EndpointConfPair struct {
 	Key string `json:"key,omitempty"`
 
@@ -1180,6 +1660,25 @@ func (s EndpointTagPair) MarshalJSON() ([]byte, error) {
 
 type EndpointTags struct {
 	CustomTags []EndpointTagPair `json:"custom_tags,omitempty"`
+}
+
+type EnumValue struct {
+	// List of valid query parameter values, newline delimited.
+	EnumOptions string `json:"enum_options,omitempty"`
+	// If specified, allows multiple values to be selected for this parameter.
+	MultiValuesOptions *MultiValuesOptions `json:"multi_values_options,omitempty"`
+	// List of selected query parameter values.
+	Values []string `json:"values,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EnumValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnumValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ExecuteStatementRequest struct {
@@ -1377,34 +1876,6 @@ func (f *ExecuteStatementRequestOnWaitTimeout) Type() string {
 	return "ExecuteStatementRequestOnWaitTimeout"
 }
 
-type ExecuteStatementResponse struct {
-	// The result manifest provides schema and metadata for the result set.
-	Manifest *ResultManifest `json:"manifest,omitempty"`
-	// Contains the result data of a single chunk when using `INLINE`
-	// disposition. When using `EXTERNAL_LINKS` disposition, the array
-	// `external_links` is used instead to provide presigned URLs to the result
-	// data in cloud storage. Exactly one of these alternatives is used. (While
-	// the `external_links` array prepares the API to return multiple links in a
-	// single response. Currently only a single link is returned.)
-	Result *ResultData `json:"result,omitempty"`
-	// The statement ID is returned upon successfully submitting a SQL
-	// statement, and is a required reference for all subsequent calls.
-	StatementId string `json:"statement_id,omitempty"`
-	// The status response includes execution state and if relevant, error
-	// information.
-	Status *StatementStatus `json:"status,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ExecuteStatementResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ExecuteStatementResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type ExternalLink struct {
 	// The number of bytes in the result chunk. This field is not available when
 	// using `INLINE` disposition.
@@ -1482,6 +1953,11 @@ func (f *Format) Type() string {
 
 // Get an alert
 type GetAlertRequest struct {
+	Id string `json:"-" url:"-"`
+}
+
+// Get an alert
+type GetAlertsLegacyRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
 
@@ -1499,8 +1975,13 @@ type GetDbsqlPermissionRequest struct {
 }
 
 // Get a query definition.
-type GetQueryRequest struct {
+type GetQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
+}
+
+// Get a query
+type GetQueryRequest struct {
+	Id string `json:"-" url:"-"`
 }
 
 type GetResponse struct {
@@ -1526,34 +2007,6 @@ type GetStatementRequest struct {
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
-}
-
-type GetStatementResponse struct {
-	// The result manifest provides schema and metadata for the result set.
-	Manifest *ResultManifest `json:"manifest,omitempty"`
-	// Contains the result data of a single chunk when using `INLINE`
-	// disposition. When using `EXTERNAL_LINKS` disposition, the array
-	// `external_links` is used instead to provide presigned URLs to the result
-	// data in cloud storage. Exactly one of these alternatives is used. (While
-	// the `external_links` array prepares the API to return multiple links in a
-	// single response. Currently only a single link is returned.)
-	Result *ResultData `json:"result,omitempty"`
-	// The statement ID is returned upon successfully submitting a SQL
-	// statement, and is a required reference for all subsequent calls.
-	StatementId string `json:"statement_id,omitempty"`
-	// The status response includes execution state and if relevant, error
-	// information.
-	Status *StatementStatus `json:"status,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetStatementResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetStatementResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get result chunk by index
@@ -1774,6 +2227,307 @@ func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Type() string {
 	return "GetWorkspaceWarehouseConfigResponseSecurityPolicy"
 }
 
+type LegacyAlert struct {
+	// Timestamp when the alert was created.
+	CreatedAt string `json:"created_at,omitempty"`
+	// Alert ID.
+	Id string `json:"id,omitempty"`
+	// Timestamp when the alert was last triggered.
+	LastTriggeredAt string `json:"last_triggered_at,omitempty"`
+	// Name of the alert.
+	Name string `json:"name,omitempty"`
+	// Alert configuration options.
+	Options *AlertOptions `json:"options,omitempty"`
+	// The identifier of the workspace folder containing the object.
+	Parent string `json:"parent,omitempty"`
+
+	Query *AlertQuery `json:"query,omitempty"`
+	// Number of seconds after being triggered before the alert rearms itself
+	// and can be triggered again. If `null`, alert will never be triggered
+	// again.
+	Rearm int `json:"rearm,omitempty"`
+	// State of the alert. Possible values are: `unknown` (yet to be evaluated),
+	// `triggered` (evaluated and fulfilled trigger conditions), or `ok`
+	// (evaluated and did not fulfill trigger conditions).
+	State LegacyAlertState `json:"state,omitempty"`
+	// Timestamp when the alert was last updated.
+	UpdatedAt string `json:"updated_at,omitempty"`
+
+	User *User `json:"user,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LegacyAlert) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LegacyAlert) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// State of the alert. Possible values are: `unknown` (yet to be evaluated),
+// `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
+// and did not fulfill trigger conditions).
+type LegacyAlertState string
+
+const LegacyAlertStateOk LegacyAlertState = `ok`
+
+const LegacyAlertStateTriggered LegacyAlertState = `triggered`
+
+const LegacyAlertStateUnknown LegacyAlertState = `unknown`
+
+// String representation for [fmt.Print]
+func (f *LegacyAlertState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *LegacyAlertState) Set(v string) error {
+	switch v {
+	case `ok`, `triggered`, `unknown`:
+		*f = LegacyAlertState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ok", "triggered", "unknown"`, v)
+	}
+}
+
+// Type always returns LegacyAlertState to satisfy [pflag.Value] interface
+func (f *LegacyAlertState) Type() string {
+	return "LegacyAlertState"
+}
+
+type LegacyQuery struct {
+	// Describes whether the authenticated user is allowed to edit the
+	// definition of this query.
+	CanEdit bool `json:"can_edit,omitempty"`
+	// The timestamp when this query was created.
+	CreatedAt string `json:"created_at,omitempty"`
+	// Data source ID maps to the ID of the data source used by the resource and
+	// is distinct from the warehouse ID. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
+	DataSourceId string `json:"data_source_id,omitempty"`
+	// General description that conveys additional information about this query
+	// such as usage notes.
+	Description string `json:"description,omitempty"`
+	// Query ID.
+	Id string `json:"id,omitempty"`
+	// Indicates whether the query is trashed. Trashed queries can't be used in
+	// dashboards, or appear in search results. If this boolean is `true`, the
+	// `options` property for this query includes a `moved_to_trash_at`
+	// timestamp. Trashed queries are permanently deleted after 30 days.
+	IsArchived bool `json:"is_archived,omitempty"`
+	// Whether the query is a draft. Draft queries only appear in list views for
+	// their owners. Visualizations from draft queries cannot appear on
+	// dashboards.
+	IsDraft bool `json:"is_draft,omitempty"`
+	// Whether this query object appears in the current user's favorites list.
+	// This flag determines whether the star icon for favorites is selected.
+	IsFavorite bool `json:"is_favorite,omitempty"`
+	// Text parameter types are not safe from SQL injection for all types of
+	// data source. Set this Boolean parameter to `true` if a query either does
+	// not use any text type parameters or uses a data source type where text
+	// type parameters are handled safely.
+	IsSafe bool `json:"is_safe,omitempty"`
+
+	LastModifiedBy *User `json:"last_modified_by,omitempty"`
+	// The ID of the user who last saved changes to this query.
+	LastModifiedById int `json:"last_modified_by_id,omitempty"`
+	// If there is a cached result for this query and user, this field includes
+	// the query result ID. If this query uses parameters, this field is always
+	// null.
+	LatestQueryDataId string `json:"latest_query_data_id,omitempty"`
+	// The title of this query that appears in list views, widget headings, and
+	// on the query page.
+	Name string `json:"name,omitempty"`
+
+	Options *QueryOptions `json:"options,omitempty"`
+	// The identifier of the workspace folder containing the object.
+	Parent string `json:"parent,omitempty"`
+	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
+	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
+	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
+	// The text of the query to be run.
+	Query string `json:"query,omitempty"`
+	// A SHA-256 hash of the query text along with the authenticated user ID.
+	QueryHash string `json:"query_hash,omitempty"`
+	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
+	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
+	// owner" behavior)
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
+
+	Tags []string `json:"tags,omitempty"`
+	// The timestamp at which this query was last updated.
+	UpdatedAt string `json:"updated_at,omitempty"`
+
+	User *User `json:"user,omitempty"`
+	// The ID of the user who owns the query.
+	UserId int `json:"user_id,omitempty"`
+
+	Visualizations []LegacyVisualization `json:"visualizations,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LegacyQuery) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LegacyQuery) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The visualization description API changes frequently and is unsupported. You
+// can duplicate a visualization by copying description objects received _from
+// the API_ and then using them to create a new one with a POST request to the
+// same endpoint. Databricks does not recommend constructing ad-hoc
+// visualizations entirely in JSON.
+type LegacyVisualization struct {
+	CreatedAt string `json:"created_at,omitempty"`
+	// A short description of this visualization. This is not displayed in the
+	// UI.
+	Description string `json:"description,omitempty"`
+	// The UUID for this visualization.
+	Id string `json:"id,omitempty"`
+	// The name of the visualization that appears on dashboards and the query
+	// screen.
+	Name string `json:"name,omitempty"`
+	// The options object varies widely from one visualization type to the next
+	// and is unsupported. Databricks does not recommend modifying visualization
+	// settings in JSON.
+	Options any `json:"options,omitempty"`
+
+	Query *LegacyQuery `json:"query,omitempty"`
+	// The type of visualization: chart, table, pivot table, and so on.
+	Type string `json:"type,omitempty"`
+
+	UpdatedAt string `json:"updated_at,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LegacyVisualization) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LegacyVisualization) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type LifecycleState string
+
+const LifecycleStateActive LifecycleState = `ACTIVE`
+
+const LifecycleStateTrashed LifecycleState = `TRASHED`
+
+// String representation for [fmt.Print]
+func (f *LifecycleState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *LifecycleState) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `TRASHED`:
+		*f = LifecycleState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "TRASHED"`, v)
+	}
+}
+
+// Type always returns LifecycleState to satisfy [pflag.Value] interface
+func (f *LifecycleState) Type() string {
+	return "LifecycleState"
+}
+
+// List alerts
+type ListAlertsRequest struct {
+	PageSize int `json:"-" url:"page_size,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAlertsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAlertsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListAlertsResponse struct {
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Results []ListAlertsResponseAlert `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAlertsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAlertsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListAlertsResponseAlert struct {
+	// Trigger conditions of the alert.
+	Condition *AlertCondition `json:"condition,omitempty"`
+	// The timestamp indicating when the alert was created.
+	CreateTime string `json:"create_time,omitempty"`
+	// Custom body of alert notification, if it exists. See [here] for custom
+	// templating instructions.
+	//
+	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	CustomBody string `json:"custom_body,omitempty"`
+	// Custom subject of alert notification, if it exists. This can include
+	// email subject entries and Slack notification headers, for example. See
+	// [here] for custom templating instructions.
+	//
+	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	CustomSubject string `json:"custom_subject,omitempty"`
+	// The display name of the alert.
+	DisplayName string `json:"display_name,omitempty"`
+	// UUID identifying the alert.
+	Id string `json:"id,omitempty"`
+	// The workspace state of the alert. Used for tracking trashed status.
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// The owner's username. This field is set to "Unavailable" if the user has
+	// been deleted.
+	OwnerUserName string `json:"owner_user_name,omitempty"`
+	// UUID of the query attached to the alert.
+	QueryId string `json:"query_id,omitempty"`
+	// Number of seconds an alert must wait after being triggered to rearm
+	// itself. After rearming, it can be triggered again. If 0 or not specified,
+	// the alert will not be triggered again.
+	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
+	// Current state of the alert's trigger status. This field is set to UNKNOWN
+	// if the alert has not yet been evaluated or ran into an error during the
+	// last evaluation.
+	State AlertState `json:"state,omitempty"`
+	// Timestamp when the alert was last triggered, if the alert has been
+	// triggered before.
+	TriggerTime string `json:"trigger_time,omitempty"`
+	// The timestamp indicating when the alert was updated.
+	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAlertsResponseAlert) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAlertsResponseAlert) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get dashboard objects
 type ListDashboardsRequest struct {
 	// Name of dashboard attribute to order by.
@@ -1824,7 +2578,7 @@ func (f *ListOrder) Type() string {
 }
 
 // Get a list of queries
-type ListQueriesRequest struct {
+type ListQueriesLegacyRequest struct {
 	// Name of query attribute to order by. Default sort order is ascending.
 	// Append a dash (`-`) to order descending instead.
 	//
@@ -1846,6 +2600,23 @@ type ListQueriesRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Full text search term
 	Q string `json:"-" url:"q,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQueriesLegacyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List queries
+type ListQueriesRequest struct {
+	PageSize int `json:"-" url:"page_size,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1881,13 +2652,13 @@ func (s ListQueriesResponse) MarshalJSON() ([]byte, error) {
 type ListQueryHistoryRequest struct {
 	// A filter to limit query history results. This field is optional.
 	FilterBy *QueryFilter `json:"-" url:"filter_by,omitempty"`
-	// Whether to include metrics about query.
-	IncludeMetrics bool `json:"-" url:"include_metrics,omitempty"`
-	// Limit the number of results returned in one page. The default is 100.
+	// Limit the number of results returned in one page. Must be less than 1000
+	// and the default is 100.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// A token that can be used to get the next page of results. The token can
 	// contains characters that need to be encoded before using it in a URL. For
-	// example, the character '+' needs to be replaced by %2B.
+	// example, the character '+' needs to be replaced by %2B. This field is
+	// optional.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -1898,6 +2669,69 @@ func (s *ListQueryHistoryRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListQueryHistoryRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListQueryObjectsResponse struct {
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Results []ListQueryObjectsResponseQuery `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQueryObjectsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListQueryObjectsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListQueryObjectsResponseQuery struct {
+	// Whether to apply a 1000 row limit to the query result.
+	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
+	// Name of the catalog where this query will be executed.
+	Catalog string `json:"catalog,omitempty"`
+	// Timestamp when this query was created.
+	CreateTime string `json:"create_time,omitempty"`
+	// General description that conveys additional information about this query
+	// such as usage notes.
+	Description string `json:"description,omitempty"`
+	// Display name of the query that appears in list views, widget headings,
+	// and on the query page.
+	DisplayName string `json:"display_name,omitempty"`
+	// UUID identifying the query.
+	Id string `json:"id,omitempty"`
+	// Username of the user who last saved changes to this query.
+	LastModifierUserName string `json:"last_modifier_user_name,omitempty"`
+	// Indicates whether the query is trashed.
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// Username of the user that owns the query.
+	OwnerUserName string `json:"owner_user_name,omitempty"`
+	// List of query parameter definitions.
+	Parameters []QueryParameter `json:"parameters,omitempty"`
+	// Text of the query to be run.
+	QueryText string `json:"query_text,omitempty"`
+	// Sets the "Run as" role for the object.
+	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
+	// Name of the schema where this query will be executed.
+	Schema string `json:"schema,omitempty"`
+
+	Tags []string `json:"tags,omitempty"`
+	// Timestamp when this query was last updated.
+	UpdateTime string `json:"update_time,omitempty"`
+	// ID of the SQL warehouse attached to the query.
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQueryObjectsResponseQuery) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListQueryObjectsResponseQuery) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1919,6 +2753,41 @@ func (s *ListResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List visualizations on a query
+type ListVisualizationsForQueryRequest struct {
+	Id string `json:"-" url:"-"`
+
+	PageSize int `json:"-" url:"page_size,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListVisualizationsForQueryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListVisualizationsForQueryRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListVisualizationsForQueryResponse struct {
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Results []Visualization `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListVisualizationsForQueryResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListVisualizationsForQueryResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1944,8 +2813,6 @@ type ListWarehousesResponse struct {
 	Warehouses []EndpointInfo `json:"warehouses,omitempty"`
 }
 
-// If specified, allows multiple values to be selected for this parameter. Only
-// applies to dropdown list and query-based dropdown list parameters.
 type MultiValuesOptions struct {
 	// Character that prefixes each selected parameter value.
 	Prefix string `json:"prefix,omitempty"`
@@ -1963,6 +2830,20 @@ func (s *MultiValuesOptions) UnmarshalJSON(b []byte) error {
 }
 
 func (s MultiValuesOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type NumericValue struct {
+	Value float64 `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *NumericValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NumericValue) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2182,7 +3063,7 @@ func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
 }
 
-// Whether plans exist for the execution, or the reason why they are missing
+// Possible Reasons for which we have not saved plans in the database
 type PlansState string
 
 const PlansStateEmpty PlansState = `EMPTY`
@@ -2219,74 +3100,42 @@ func (f *PlansState) Type() string {
 }
 
 type Query struct {
-	// Describes whether the authenticated user is allowed to edit the
-	// definition of this query.
-	CanEdit bool `json:"can_edit,omitempty"`
-	// The timestamp when this query was created.
-	CreatedAt string `json:"created_at,omitempty"`
-	// Data source ID maps to the ID of the data source used by the resource and
-	// is distinct from the warehouse ID. [Learn more]
-	//
-	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
-	DataSourceId string `json:"data_source_id,omitempty"`
+	// Whether to apply a 1000 row limit to the query result.
+	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
+	// Name of the catalog where this query will be executed.
+	Catalog string `json:"catalog,omitempty"`
+	// Timestamp when this query was created.
+	CreateTime string `json:"create_time,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	Description string `json:"description,omitempty"`
-	// Query ID.
+	// Display name of the query that appears in list views, widget headings,
+	// and on the query page.
+	DisplayName string `json:"display_name,omitempty"`
+	// UUID identifying the query.
 	Id string `json:"id,omitempty"`
-	// Indicates whether the query is trashed. Trashed queries can't be used in
-	// dashboards, or appear in search results. If this boolean is `true`, the
-	// `options` property for this query includes a `moved_to_trash_at`
-	// timestamp. Trashed queries are permanently deleted after 30 days.
-	IsArchived bool `json:"is_archived,omitempty"`
-	// Whether the query is a draft. Draft queries only appear in list views for
-	// their owners. Visualizations from draft queries cannot appear on
-	// dashboards.
-	IsDraft bool `json:"is_draft,omitempty"`
-	// Whether this query object appears in the current user's favorites list.
-	// This flag determines whether the star icon for favorites is selected.
-	IsFavorite bool `json:"is_favorite,omitempty"`
-	// Text parameter types are not safe from SQL injection for all types of
-	// data source. Set this Boolean parameter to `true` if a query either does
-	// not use any text type parameters or uses a data source type where text
-	// type parameters are handled safely.
-	IsSafe bool `json:"is_safe,omitempty"`
-
-	LastModifiedBy *User `json:"last_modified_by,omitempty"`
-	// The ID of the user who last saved changes to this query.
-	LastModifiedById int `json:"last_modified_by_id,omitempty"`
-	// If there is a cached result for this query and user, this field includes
-	// the query result ID. If this query uses parameters, this field is always
-	// null.
-	LatestQueryDataId string `json:"latest_query_data_id,omitempty"`
-	// The title of this query that appears in list views, widget headings, and
-	// on the query page.
-	Name string `json:"name,omitempty"`
-
-	Options *QueryOptions `json:"options,omitempty"`
-	// The identifier of the workspace folder containing the object.
-	Parent string `json:"parent,omitempty"`
-	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
-	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
-	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
-	// The text of the query to be run.
-	Query string `json:"query,omitempty"`
-	// A SHA-256 hash of the query text along with the authenticated user ID.
-	QueryHash string `json:"query_hash,omitempty"`
-	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
-	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
-	// owner" behavior)
-	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
+	// Username of the user who last saved changes to this query.
+	LastModifierUserName string `json:"last_modifier_user_name,omitempty"`
+	// Indicates whether the query is trashed.
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// Username of the user that owns the query.
+	OwnerUserName string `json:"owner_user_name,omitempty"`
+	// List of query parameter definitions.
+	Parameters []QueryParameter `json:"parameters,omitempty"`
+	// Workspace path of the workspace folder containing the object.
+	ParentPath string `json:"parent_path,omitempty"`
+	// Text of the query to be run.
+	QueryText string `json:"query_text,omitempty"`
+	// Sets the "Run as" role for the object.
+	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
+	// Name of the schema where this query will be executed.
+	Schema string `json:"schema,omitempty"`
 
 	Tags []string `json:"tags,omitempty"`
-	// The timestamp at which this query was last updated.
-	UpdatedAt string `json:"updated_at,omitempty"`
-
-	User *User `json:"user,omitempty"`
-	// The ID of the user who owns the query.
-	UserId int `json:"user_id,omitempty"`
-
-	Visualizations []Visualization `json:"visualizations,omitempty"`
+	// Timestamp when this query was last updated.
+	UpdateTime string `json:"update_time,omitempty"`
+	// ID of the SQL warehouse attached to the query.
+	WarehouseId string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -2296,6 +3145,25 @@ func (s *Query) UnmarshalJSON(b []byte) error {
 }
 
 func (s Query) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type QueryBackedValue struct {
+	// If specified, allows multiple values to be selected for this parameter.
+	MultiValuesOptions *MultiValuesOptions `json:"multi_values_options,omitempty"`
+	// UUID of the query that provides the parameter values.
+	QueryId string `json:"query_id,omitempty"`
+	// List of selected query parameter values.
+	Values []string `json:"values,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryBackedValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryBackedValue) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2337,37 +3205,36 @@ func (s QueryEditContent) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// A filter to limit query history results. This field is optional.
 type QueryFilter struct {
+	// Filter by one or more property describing where the query was generated
+	ContextFilter *ContextFilter `json:"context_filter,omitempty" url:"context_filter,omitempty"`
+	// A range filter for query submitted time. The time range must be <= 30
+	// days.
 	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty" url:"query_start_time_range,omitempty"`
-	// A list of statement IDs.
-	StatementIds []string `json:"statement_ids,omitempty" url:"statement_ids,omitempty"`
 
 	Statuses []QueryStatus `json:"statuses,omitempty" url:"statuses,omitempty"`
 	// A list of user IDs who ran the queries.
-	UserIds []int `json:"user_ids,omitempty" url:"user_ids,omitempty"`
+	UserIds []int64 `json:"user_ids,omitempty" url:"user_ids,omitempty"`
 	// A list of warehouse IDs.
 	WarehouseIds []string `json:"warehouse_ids,omitempty" url:"warehouse_ids,omitempty"`
 }
 
 type QueryInfo struct {
-	// Reserved for internal use.
-	CanSubscribeToLiveQuery bool `json:"canSubscribeToLiveQuery,omitempty"`
-	// Channel information for the SQL warehouse at the time of query execution
+	// SQL Warehouse channel information at the time of query execution
 	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
 	// Total execution time of the statement ( excluding result fetch time ).
-	Duration int `json:"duration,omitempty"`
+	Duration int64 `json:"duration,omitempty"`
 	// Alias for `warehouse_id`.
 	EndpointId string `json:"endpoint_id,omitempty"`
 	// Message describing why the query could not complete.
 	ErrorMessage string `json:"error_message,omitempty"`
 	// The ID of the user whose credentials were used to run the query.
-	ExecutedAsUserId int `json:"executed_as_user_id,omitempty"`
+	ExecutedAsUserId int64 `json:"executed_as_user_id,omitempty"`
 	// The email address or username of the user whose credentials were used to
 	// run the query.
 	ExecutedAsUserName string `json:"executed_as_user_name,omitempty"`
 	// The time execution of the query ended.
-	ExecutionEndTimeMs int `json:"execution_end_time_ms,omitempty"`
+	ExecutionEndTimeMs int64 `json:"execution_end_time_ms,omitempty"`
 	// Whether more updates for the query are expected.
 	IsFinal bool `json:"is_final,omitempty"`
 	// A key that can be used to look up query details.
@@ -2377,26 +3244,29 @@ type QueryInfo struct {
 	// Whether plans exist for the execution, or the reason why they are missing
 	PlansState PlansState `json:"plans_state,omitempty"`
 	// The time the query ended.
-	QueryEndTimeMs int `json:"query_end_time_ms,omitempty"`
+	QueryEndTimeMs int64 `json:"query_end_time_ms,omitempty"`
 	// The query ID.
 	QueryId string `json:"query_id,omitempty"`
+
+	QuerySource *QuerySource `json:"query_source,omitempty"`
 	// The time the query started.
-	QueryStartTimeMs int `json:"query_start_time_ms,omitempty"`
+	QueryStartTimeMs int64 `json:"query_start_time_ms,omitempty"`
 	// The text of the query.
 	QueryText string `json:"query_text,omitempty"`
 	// The number of results returned by the query.
-	RowsProduced int `json:"rows_produced,omitempty"`
-	// URL to the query plan.
+	RowsProduced int64 `json:"rows_produced,omitempty"`
+	// URL to the Spark UI query plan.
 	SparkUiUrl string `json:"spark_ui_url,omitempty"`
 	// Type of statement for this query
 	StatementType QueryStatementType `json:"statement_type,omitempty"`
-	// Query status with one the following values: * `QUEUED`: Query has been
-	// received and queued. * `RUNNING`: Query has started. * `CANCELED`: Query
-	// has been cancelled by the user. * `FAILED`: Query has failed. *
-	// `FINISHED`: Query has completed.
+	// Query status with one the following values:
+	//
+	// - `QUEUED`: Query has been received and queued. - `RUNNING`: Query has
+	// started. - `CANCELED`: Query has been cancelled by the user. - `FAILED`:
+	// Query has failed. - `FINISHED`: Query has completed.
 	Status QueryStatus `json:"status,omitempty"`
 	// The ID of the user who ran the query.
-	UserId int `json:"user_id,omitempty"`
+	UserId int64 `json:"user_id,omitempty"`
 	// The email address or username of the user who ran the query.
 	UserName string `json:"user_name,omitempty"`
 	// Warehouse ID.
@@ -2421,7 +3291,7 @@ type QueryList struct {
 	// The number of queries per page.
 	PageSize int `json:"page_size,omitempty"`
 	// List of queries returned.
-	Results []Query `json:"results,omitempty"`
+	Results []LegacyQuery `json:"results,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -2434,70 +3304,65 @@ func (s QueryList) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Metrics about query execution.
+// A query metric that encapsulates a set of measurements for a single query.
+// Metrics come from the driver and are stored in the history service database.
 type QueryMetrics struct {
 	// Time spent loading metadata and optimizing the query, in milliseconds.
-	CompilationTimeMs int `json:"compilation_time_ms,omitempty"`
+	CompilationTimeMs int64 `json:"compilation_time_ms,omitempty"`
 	// Time spent executing the query, in milliseconds.
-	ExecutionTimeMs int `json:"execution_time_ms,omitempty"`
-	// Reserved for internal use.
-	MetadataTimeMs int `json:"metadata_time_ms,omitempty"`
+	ExecutionTimeMs int64 `json:"execution_time_ms,omitempty"`
 	// Total amount of data sent over the network between executor nodes during
 	// shuffle, in bytes.
-	NetworkSentBytes int `json:"network_sent_bytes,omitempty"`
+	NetworkSentBytes int64 `json:"network_sent_bytes,omitempty"`
 	// Timestamp of when the query was enqueued waiting while the warehouse was
 	// at max load. This field is optional and will not appear if the query
 	// skipped the overloading queue.
-	OverloadingQueueStartTimestamp int `json:"overloading_queue_start_timestamp,omitempty"`
+	OverloadingQueueStartTimestamp int64 `json:"overloading_queue_start_timestamp,omitempty"`
 	// Total execution time for all individual Photon query engine tasks in the
 	// query, in milliseconds.
-	PhotonTotalTimeMs int `json:"photon_total_time_ms,omitempty"`
-	// Reserved for internal use.
-	PlanningTimeMs int `json:"planning_time_ms,omitempty"`
+	PhotonTotalTimeMs int64 `json:"photon_total_time_ms,omitempty"`
 	// Timestamp of when the query was enqueued waiting for a cluster to be
 	// provisioned for the warehouse. This field is optional and will not appear
 	// if the query skipped the provisioning queue.
-	ProvisioningQueueStartTimestamp int `json:"provisioning_queue_start_timestamp,omitempty"`
+	ProvisioningQueueStartTimestamp int64 `json:"provisioning_queue_start_timestamp,omitempty"`
 	// Total number of bytes in all tables not read due to pruning
-	PrunedBytes int `json:"pruned_bytes,omitempty"`
+	PrunedBytes int64 `json:"pruned_bytes,omitempty"`
 	// Total number of files from all tables not read due to pruning
-	PrunedFilesCount int `json:"pruned_files_count,omitempty"`
+	PrunedFilesCount int64 `json:"pruned_files_count,omitempty"`
 	// Timestamp of when the underlying compute started compilation of the
 	// query.
-	QueryCompilationStartTimestamp int `json:"query_compilation_start_timestamp,omitempty"`
-	// Reserved for internal use.
-	QueryExecutionTimeMs int `json:"query_execution_time_ms,omitempty"`
+	QueryCompilationStartTimestamp int64 `json:"query_compilation_start_timestamp,omitempty"`
 	// Total size of data read by the query, in bytes.
-	ReadBytes int `json:"read_bytes,omitempty"`
+	ReadBytes int64 `json:"read_bytes,omitempty"`
 	// Size of persistent data read from the cache, in bytes.
-	ReadCacheBytes int `json:"read_cache_bytes,omitempty"`
-	// Number of files read after pruning.
-	ReadFilesCount int `json:"read_files_count,omitempty"`
+	ReadCacheBytes int64 `json:"read_cache_bytes,omitempty"`
+	// Number of files read after pruning
+	ReadFilesCount int64 `json:"read_files_count,omitempty"`
 	// Number of partitions read after pruning.
-	ReadPartitionsCount int `json:"read_partitions_count,omitempty"`
+	ReadPartitionsCount int64 `json:"read_partitions_count,omitempty"`
 	// Size of persistent data read from cloud object storage on your cloud
 	// tenant, in bytes.
-	ReadRemoteBytes int `json:"read_remote_bytes,omitempty"`
+	ReadRemoteBytes int64 `json:"read_remote_bytes,omitempty"`
 	// Time spent fetching the query results after the execution finished, in
 	// milliseconds.
-	ResultFetchTimeMs int `json:"result_fetch_time_ms,omitempty"`
-	// true if the query result was fetched from cache, false otherwise.
+	ResultFetchTimeMs int64 `json:"result_fetch_time_ms,omitempty"`
+	// `true` if the query result was fetched from cache, `false` otherwise.
 	ResultFromCache bool `json:"result_from_cache,omitempty"`
 	// Total number of rows returned by the query.
-	RowsProducedCount int `json:"rows_produced_count,omitempty"`
+	RowsProducedCount int64 `json:"rows_produced_count,omitempty"`
 	// Total number of rows read by the query.
-	RowsReadCount int `json:"rows_read_count,omitempty"`
+	RowsReadCount int64 `json:"rows_read_count,omitempty"`
 	// Size of data temporarily written to disk while executing the query, in
 	// bytes.
-	SpillToDiskBytes int `json:"spill_to_disk_bytes,omitempty"`
+	SpillToDiskBytes int64 `json:"spill_to_disk_bytes,omitempty"`
 	// Sum of execution time for all of the query’s tasks, in milliseconds.
-	TaskTotalTimeMs int `json:"task_total_time_ms,omitempty"`
+	TaskTotalTimeMs int64 `json:"task_total_time_ms,omitempty"`
 	// Total execution time of the query from the client’s point of view, in
 	// milliseconds.
-	TotalTimeMs int `json:"total_time_ms,omitempty"`
+	TotalTimeMs int64 `json:"total_time_ms,omitempty"`
 	// Size pf persistent data written to cloud object storage in your cloud
 	// tenant, in bytes.
-	WriteRemoteBytes int `json:"write_remote_bytes,omitempty"`
+	WriteRemoteBytes int64 `json:"write_remote_bytes,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -2530,6 +3395,38 @@ func (s *QueryOptions) UnmarshalJSON(b []byte) error {
 }
 
 func (s QueryOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type QueryParameter struct {
+	// Date-range query parameter value. Can only specify one of
+	// `dynamic_date_range_value` or `date_range_value`.
+	DateRangeValue *DateRangeValue `json:"date_range_value,omitempty"`
+	// Date query parameter value. Can only specify one of `dynamic_date_value`
+	// or `date_value`.
+	DateValue *DateValue `json:"date_value,omitempty"`
+	// Dropdown query parameter value.
+	EnumValue *EnumValue `json:"enum_value,omitempty"`
+	// Literal parameter marker that appears between double curly braces in the
+	// query text.
+	Name string `json:"name,omitempty"`
+	// Numeric query parameter value.
+	NumericValue *NumericValue `json:"numeric_value,omitempty"`
+	// Query-based dropdown query parameter value.
+	QueryBackedValue *QueryBackedValue `json:"query_backed_value,omitempty"`
+	// Text query parameter value.
+	TextValue *TextValue `json:"text_value,omitempty"`
+	// Text displayed in the user-facing parameter widget in the UI.
+	Title string `json:"title,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryParameter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryParameter) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2571,7 +3468,194 @@ func (s QueryPostContent) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Type of statement for this query
+type QuerySource struct {
+	// UUID
+	AlertId string `json:"alert_id,omitempty"`
+	// Client code that triggered the request
+	ClientCallContext *ClientCallContext `json:"client_call_context,omitempty"`
+	// Id associated with a notebook cell
+	CommandId string `json:"command_id,omitempty"`
+	// Id associated with a notebook run or execution
+	CommandRunId string `json:"command_run_id,omitempty"`
+	// UUID
+	DashboardId string `json:"dashboard_id,omitempty"`
+	// UUID for Lakeview Dashboards, separate from DBSQL Dashboards
+	// (dashboard_id)
+	DashboardV3Id string `json:"dashboard_v3_id,omitempty"`
+
+	DriverInfo *QuerySourceDriverInfo `json:"driver_info,omitempty"`
+	// Spark service that received and processed the query
+	EntryPoint QuerySourceEntryPoint `json:"entry_point,omitempty"`
+	// UUID for Genie space
+	GenieSpaceId string `json:"genie_space_id,omitempty"`
+
+	IsCloudFetch bool `json:"is_cloud_fetch,omitempty"`
+
+	IsDatabricksSqlExecApi bool `json:"is_databricks_sql_exec_api,omitempty"`
+
+	JobId string `json:"job_id,omitempty"`
+	// With background compute, jobs can be managed by different internal teams.
+	// When not specified, not a background compute job When specified and the
+	// value is not JOBS, it is a background compute job
+	JobManagedBy QuerySourceJobManager `json:"job_managed_by,omitempty"`
+
+	NotebookId string `json:"notebook_id,omitempty"`
+	// Id associated with a DLT pipeline
+	PipelineId string `json:"pipeline_id,omitempty"`
+	// Id associated with a DLT update
+	PipelineUpdateId string `json:"pipeline_update_id,omitempty"`
+	// String provided by a customer that'll help them identify the query
+	QueryTags string `json:"query_tags,omitempty"`
+	// Id associated with a job run or execution
+	RunId string `json:"run_id,omitempty"`
+	// Id associated with a notebook cell run or execution
+	RunnableCommandId string `json:"runnable_command_id,omitempty"`
+
+	ScheduledBy QuerySourceTrigger `json:"scheduled_by,omitempty"`
+
+	ServerlessChannelInfo *ServerlessChannelInfo `json:"serverless_channel_info,omitempty"`
+	// UUID
+	SourceQueryId string `json:"source_query_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QuerySource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QuerySource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type QuerySourceDriverInfo struct {
+	BiToolEntry string `json:"bi_tool_entry,omitempty"`
+
+	DriverName string `json:"driver_name,omitempty"`
+
+	SimbaBrandingVendor string `json:"simba_branding_vendor,omitempty"`
+
+	VersionNumber string `json:"version_number,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QuerySourceDriverInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QuerySourceDriverInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Spark service that received and processed the query
+type QuerySourceEntryPoint string
+
+const QuerySourceEntryPointDlt QuerySourceEntryPoint = `DLT`
+
+const QuerySourceEntryPointSparkConnect QuerySourceEntryPoint = `SPARK_CONNECT`
+
+const QuerySourceEntryPointThriftServer QuerySourceEntryPoint = `THRIFT_SERVER`
+
+// String representation for [fmt.Print]
+func (f *QuerySourceEntryPoint) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *QuerySourceEntryPoint) Set(v string) error {
+	switch v {
+	case `DLT`, `SPARK_CONNECT`, `THRIFT_SERVER`:
+		*f = QuerySourceEntryPoint(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DLT", "SPARK_CONNECT", "THRIFT_SERVER"`, v)
+	}
+}
+
+// Type always returns QuerySourceEntryPoint to satisfy [pflag.Value] interface
+func (f *QuerySourceEntryPoint) Type() string {
+	return "QuerySourceEntryPoint"
+}
+
+// Copied from elastic-spark-common/api/messages/manager.proto with enum values
+// changed by 1 to accommodate JOB_MANAGER_UNSPECIFIED
+type QuerySourceJobManager string
+
+const QuerySourceJobManagerAppSystemTable QuerySourceJobManager = `APP_SYSTEM_TABLE`
+
+const QuerySourceJobManagerAutoml QuerySourceJobManager = `AUTOML`
+
+const QuerySourceJobManagerAutoMaintenance QuerySourceJobManager = `AUTO_MAINTENANCE`
+
+const QuerySourceJobManagerCleanRooms QuerySourceJobManager = `CLEAN_ROOMS`
+
+const QuerySourceJobManagerDataMonitoring QuerySourceJobManager = `DATA_MONITORING`
+
+const QuerySourceJobManagerDataSharing QuerySourceJobManager = `DATA_SHARING`
+
+const QuerySourceJobManagerEncryption QuerySourceJobManager = `ENCRYPTION`
+
+const QuerySourceJobManagerFabricCrawler QuerySourceJobManager = `FABRIC_CRAWLER`
+
+const QuerySourceJobManagerJobs QuerySourceJobManager = `JOBS`
+
+const QuerySourceJobManagerLakeview QuerySourceJobManager = `LAKEVIEW`
+
+const QuerySourceJobManagerManagedRag QuerySourceJobManager = `MANAGED_RAG`
+
+const QuerySourceJobManagerScheduledMvRefresh QuerySourceJobManager = `SCHEDULED_MV_REFRESH`
+
+const QuerySourceJobManagerTesting QuerySourceJobManager = `TESTING`
+
+// String representation for [fmt.Print]
+func (f *QuerySourceJobManager) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *QuerySourceJobManager) Set(v string) error {
+	switch v {
+	case `APP_SYSTEM_TABLE`, `AUTOML`, `AUTO_MAINTENANCE`, `CLEAN_ROOMS`, `DATA_MONITORING`, `DATA_SHARING`, `ENCRYPTION`, `FABRIC_CRAWLER`, `JOBS`, `LAKEVIEW`, `MANAGED_RAG`, `SCHEDULED_MV_REFRESH`, `TESTING`:
+		*f = QuerySourceJobManager(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "APP_SYSTEM_TABLE", "AUTOML", "AUTO_MAINTENANCE", "CLEAN_ROOMS", "DATA_MONITORING", "DATA_SHARING", "ENCRYPTION", "FABRIC_CRAWLER", "JOBS", "LAKEVIEW", "MANAGED_RAG", "SCHEDULED_MV_REFRESH", "TESTING"`, v)
+	}
+}
+
+// Type always returns QuerySourceJobManager to satisfy [pflag.Value] interface
+func (f *QuerySourceJobManager) Type() string {
+	return "QuerySourceJobManager"
+}
+
+type QuerySourceTrigger string
+
+const QuerySourceTriggerManual QuerySourceTrigger = `MANUAL`
+
+const QuerySourceTriggerScheduled QuerySourceTrigger = `SCHEDULED`
+
+// String representation for [fmt.Print]
+func (f *QuerySourceTrigger) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *QuerySourceTrigger) Set(v string) error {
+	switch v {
+	case `MANUAL`, `SCHEDULED`:
+		*f = QuerySourceTrigger(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MANUAL", "SCHEDULED"`, v)
+	}
+}
+
+// Type always returns QuerySourceTrigger to satisfy [pflag.Value] interface
+func (f *QuerySourceTrigger) Type() string {
+	return "QuerySourceTrigger"
+}
+
 type QueryStatementType string
 
 const QueryStatementTypeAlter QueryStatementType = `ALTER`
@@ -2639,26 +3723,24 @@ func (f *QueryStatementType) Type() string {
 	return "QueryStatementType"
 }
 
-// Query status with one the following values: * `QUEUED`: Query has been
-// received and queued. * `RUNNING`: Query has started. * `CANCELED`: Query has
-// been cancelled by the user. * `FAILED`: Query has failed. * `FINISHED`: Query
-// has completed.
+// Statuses which are also used by OperationStatus in runtime
 type QueryStatus string
 
-// Query has been cancelled by the user.
 const QueryStatusCanceled QueryStatus = `CANCELED`
 
-// Query has failed.
+const QueryStatusCompiled QueryStatus = `COMPILED`
+
+const QueryStatusCompiling QueryStatus = `COMPILING`
+
 const QueryStatusFailed QueryStatus = `FAILED`
 
-// Query has completed.
 const QueryStatusFinished QueryStatus = `FINISHED`
 
-// Query has been received and queued.
 const QueryStatusQueued QueryStatus = `QUEUED`
 
-// Query has started.
 const QueryStatusRunning QueryStatus = `RUNNING`
+
+const QueryStatusStarted QueryStatus = `STARTED`
 
 // String representation for [fmt.Print]
 func (f *QueryStatus) String() string {
@@ -2668,11 +3750,11 @@ func (f *QueryStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *QueryStatus) Set(v string) error {
 	switch v {
-	case `CANCELED`, `FAILED`, `FINISHED`, `QUEUED`, `RUNNING`:
+	case `CANCELED`, `COMPILED`, `COMPILING`, `FAILED`, `FINISHED`, `QUEUED`, `RUNNING`, `STARTED`:
 		*f = QueryStatus(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELED", "FAILED", "FINISHED", "QUEUED", "RUNNING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "COMPILED", "COMPILING", "FAILED", "FINISHED", "QUEUED", "RUNNING", "STARTED"`, v)
 	}
 }
 
@@ -2694,7 +3776,7 @@ type RestoreDashboardRequest struct {
 }
 
 // Restore a query
-type RestoreQueryRequest struct {
+type RestoreQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
@@ -2791,6 +3873,33 @@ func (s ResultSchema) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type RunAsMode string
+
+const RunAsModeOwner RunAsMode = `OWNER`
+
+const RunAsModeViewer RunAsMode = `VIEWER`
+
+// String representation for [fmt.Print]
+func (f *RunAsMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RunAsMode) Set(v string) error {
+	switch v {
+	case `OWNER`, `VIEWER`:
+		*f = RunAsMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "OWNER", "VIEWER"`, v)
+	}
+}
+
+// Type always returns RunAsMode to satisfy [pflag.Value] interface
+func (f *RunAsMode) Type() string {
+	return "RunAsMode"
+}
+
 // Sets the **Run as** role for the object. Must be set to one of `"viewer"`
 // (signifying "run as viewer" behavior) or `"owner"` (signifying "run as owner"
 // behavior)
@@ -2819,6 +3928,11 @@ func (f *RunAsRole) Set(v string) error {
 // Type always returns RunAsRole to satisfy [pflag.Value] interface
 func (f *RunAsRole) Type() string {
 	return "RunAsRole"
+}
+
+type ServerlessChannelInfo struct {
+	// Name of the Channel
+	Name ChannelName `json:"name,omitempty"`
 }
 
 type ServiceError struct {
@@ -3085,6 +4199,34 @@ func (s *StatementParameterListItem) UnmarshalJSON(b []byte) error {
 }
 
 func (s StatementParameterListItem) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type StatementResponse struct {
+	// The result manifest provides schema and metadata for the result set.
+	Manifest *ResultManifest `json:"manifest,omitempty"`
+	// Contains the result data of a single chunk when using `INLINE`
+	// disposition. When using `EXTERNAL_LINKS` disposition, the array
+	// `external_links` is used instead to provide presigned URLs to the result
+	// data in cloud storage. Exactly one of these alternatives is used. (While
+	// the `external_links` array prepares the API to return multiple links in a
+	// single response. Currently only a single link is returned.)
+	Result *ResultData `json:"result,omitempty"`
+	// The statement ID is returned upon successfully submitting a SQL
+	// statement, and is a required reference for all subsequent calls.
+	StatementId string `json:"statement_id,omitempty"`
+	// The status response includes execution state and if relevant, error
+	// information.
+	Status *StatementStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StatementResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StatementResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3445,11 +4587,25 @@ func (f *TerminationReasonType) Type() string {
 	return "TerminationReasonType"
 }
 
+type TextValue struct {
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TextValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TextValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type TimeRange struct {
-	// Limit results to queries that started before this time.
-	EndTimeMs int `json:"end_time_ms,omitempty" url:"end_time_ms,omitempty"`
-	// Limit results to queries that started after this time.
-	StartTimeMs int `json:"start_time_ms,omitempty" url:"start_time_ms,omitempty"`
+	// The end time in milliseconds.
+	EndTimeMs int64 `json:"end_time_ms,omitempty" url:"end_time_ms,omitempty"`
+	// The start time in milliseconds.
+	StartTimeMs int64 `json:"start_time_ms,omitempty" url:"start_time_ms,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3497,7 +4653,149 @@ func (s TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Delete an alert
+type TrashAlertRequest struct {
+	Id string `json:"-" url:"-"`
+}
+
+// Delete a query
+type TrashQueryRequest struct {
+	Id string `json:"-" url:"-"`
+}
+
+type UpdateAlertRequest struct {
+	Alert *UpdateAlertRequestAlert `json:"alert,omitempty"`
+
+	Id string `json:"-" url:"-"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	UpdateMask string `json:"update_mask"`
+}
+
+type UpdateAlertRequestAlert struct {
+	// Trigger conditions of the alert.
+	Condition *AlertCondition `json:"condition,omitempty"`
+	// Custom body of alert notification, if it exists. See [here] for custom
+	// templating instructions.
+	//
+	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	CustomBody string `json:"custom_body,omitempty"`
+	// Custom subject of alert notification, if it exists. This can include
+	// email subject entries and Slack notification headers, for example. See
+	// [here] for custom templating instructions.
+	//
+	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	CustomSubject string `json:"custom_subject,omitempty"`
+	// The display name of the alert.
+	DisplayName string `json:"display_name,omitempty"`
+	// The owner's username. This field is set to "Unavailable" if the user has
+	// been deleted.
+	OwnerUserName string `json:"owner_user_name,omitempty"`
+	// UUID of the query attached to the alert.
+	QueryId string `json:"query_id,omitempty"`
+	// Number of seconds an alert must wait after being triggered to rearm
+	// itself. After rearming, it can be triggered again. If 0 or not specified,
+	// the alert will not be triggered again.
+	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateAlertRequestAlert) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateAlertRequestAlert) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateQueryRequest struct {
+	Id string `json:"-" url:"-"`
+
+	Query *UpdateQueryRequestQuery `json:"query,omitempty"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	UpdateMask string `json:"update_mask"`
+}
+
+type UpdateQueryRequestQuery struct {
+	// Whether to apply a 1000 row limit to the query result.
+	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
+	// Name of the catalog where this query will be executed.
+	Catalog string `json:"catalog,omitempty"`
+	// General description that conveys additional information about this query
+	// such as usage notes.
+	Description string `json:"description,omitempty"`
+	// Display name of the query that appears in list views, widget headings,
+	// and on the query page.
+	DisplayName string `json:"display_name,omitempty"`
+	// Username of the user that owns the query.
+	OwnerUserName string `json:"owner_user_name,omitempty"`
+	// List of query parameter definitions.
+	Parameters []QueryParameter `json:"parameters,omitempty"`
+	// Text of the query to be run.
+	QueryText string `json:"query_text,omitempty"`
+	// Sets the "Run as" role for the object.
+	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
+	// Name of the schema where this query will be executed.
+	Schema string `json:"schema,omitempty"`
+
+	Tags []string `json:"tags,omitempty"`
+	// ID of the SQL warehouse attached to the query.
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateQueryRequestQuery) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateQueryRequestQuery) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpdateResponse struct {
+}
+
+type UpdateVisualizationRequest struct {
+	Id string `json:"-" url:"-"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	UpdateMask string `json:"update_mask"`
+
+	Visualization *UpdateVisualizationRequestVisualization `json:"visualization,omitempty"`
+}
+
+type UpdateVisualizationRequestVisualization struct {
+	// The display name of the visualization.
+	DisplayName string `json:"display_name,omitempty"`
+	// The visualization options varies widely from one visualization type to
+	// the next and is unsupported. Databricks does not recommend modifying
+	// visualization options directly.
+	SerializedOptions string `json:"serialized_options,omitempty"`
+	// The visualization query plan varies widely from one visualization type to
+	// the next and is unsupported. Databricks does not recommend modifying the
+	// visualization query plan directly.
+	SerializedQueryPlan string `json:"serialized_query_plan,omitempty"`
+	// The type of visualization: counter, table, funnel, and so on.
+	Type string `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateVisualizationRequestVisualization) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateVisualizationRequestVisualization) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type User struct {
@@ -3518,31 +4816,27 @@ func (s User) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The visualization description API changes frequently and is unsupported. You
-// can duplicate a visualization by copying description objects received _from
-// the API_ and then using them to create a new one with a POST request to the
-// same endpoint. Databricks does not recommend constructing ad-hoc
-// visualizations entirely in JSON.
 type Visualization struct {
-	CreatedAt string `json:"created_at,omitempty"`
-	// A short description of this visualization. This is not displayed in the
-	// UI.
-	Description string `json:"description,omitempty"`
-	// The UUID for this visualization.
+	// The timestamp indicating when the visualization was created.
+	CreateTime string `json:"create_time,omitempty"`
+	// The display name of the visualization.
+	DisplayName string `json:"display_name,omitempty"`
+	// UUID identifying the visualization.
 	Id string `json:"id,omitempty"`
-	// The name of the visualization that appears on dashboards and the query
-	// screen.
-	Name string `json:"name,omitempty"`
-	// The options object varies widely from one visualization type to the next
-	// and is unsupported. Databricks does not recommend modifying visualization
-	// settings in JSON.
-	Options any `json:"options,omitempty"`
-
-	Query *Query `json:"query,omitempty"`
-	// The type of visualization: chart, table, pivot table, and so on.
+	// UUID of the query that the visualization is attached to.
+	QueryId string `json:"query_id,omitempty"`
+	// The visualization options varies widely from one visualization type to
+	// the next and is unsupported. Databricks does not recommend modifying
+	// visualization options directly.
+	SerializedOptions string `json:"serialized_options,omitempty"`
+	// The visualization query plan varies widely from one visualization type to
+	// the next and is unsupported. Databricks does not recommend modifying the
+	// visualization query plan directly.
+	SerializedQueryPlan string `json:"serialized_query_plan,omitempty"`
+	// The type of visualization: counter, table, funnel, and so on.
 	Type string `json:"type,omitempty"`
-
-	UpdatedAt string `json:"updated_at,omitempty"`
+	// The timestamp indicating when the visualization was updated.
+	UpdateTime string `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3745,7 +5039,7 @@ type Widget struct {
 	// _from the API_ and then using them to create a new one with a POST
 	// request to the same endpoint. Databricks does not recommend constructing
 	// ad-hoc visualizations entirely in JSON.
-	Visualization *Visualization `json:"visualization,omitempty"`
+	Visualization *LegacyVisualization `json:"visualization,omitempty"`
 	// Unused field.
 	Width int `json:"width,omitempty"`
 

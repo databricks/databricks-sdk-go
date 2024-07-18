@@ -1452,65 +1452,6 @@ func (_c *MockClustersInterface_ListAll_Call) RunAndReturn(run func(context.Cont
 	return _c
 }
 
-// ListByCanUseClient provides a mock function with given fields: ctx, canUseClient
-func (_m *MockClustersInterface) ListByCanUseClient(ctx context.Context, canUseClient string) (*compute.ListClustersResponse, error) {
-	ret := _m.Called(ctx, canUseClient)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ListByCanUseClient")
-	}
-
-	var r0 *compute.ListClustersResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*compute.ListClustersResponse, error)); ok {
-		return rf(ctx, canUseClient)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *compute.ListClustersResponse); ok {
-		r0 = rf(ctx, canUseClient)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*compute.ListClustersResponse)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, canUseClient)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockClustersInterface_ListByCanUseClient_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListByCanUseClient'
-type MockClustersInterface_ListByCanUseClient_Call struct {
-	*mock.Call
-}
-
-// ListByCanUseClient is a helper method to define mock.On call
-//   - ctx context.Context
-//   - canUseClient string
-func (_e *MockClustersInterface_Expecter) ListByCanUseClient(ctx interface{}, canUseClient interface{}) *MockClustersInterface_ListByCanUseClient_Call {
-	return &MockClustersInterface_ListByCanUseClient_Call{Call: _e.mock.On("ListByCanUseClient", ctx, canUseClient)}
-}
-
-func (_c *MockClustersInterface_ListByCanUseClient_Call) Run(run func(ctx context.Context, canUseClient string)) *MockClustersInterface_ListByCanUseClient_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockClustersInterface_ListByCanUseClient_Call) Return(_a0 *compute.ListClustersResponse, _a1 error) *MockClustersInterface_ListByCanUseClient_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockClustersInterface_ListByCanUseClient_Call) RunAndReturn(run func(context.Context, string) (*compute.ListClustersResponse, error)) *MockClustersInterface_ListByCanUseClient_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ListNodeTypes provides a mock function with given fields: ctx
 func (_m *MockClustersInterface) ListNodeTypes(ctx context.Context) (*compute.ListNodeTypesResponse, error) {
 	ret := _m.Called(ctx)

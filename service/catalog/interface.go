@@ -1200,7 +1200,8 @@ type VolumesService interface {
 // (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which
 // introduces the ability to bind a securable in READ_ONLY mode (catalogs only).
 //
-// Securables that support binding: - catalog
+// Securable types that support binding: - catalog - storage_credential -
+// external_location
 type WorkspaceBindingsService interface {
 
 	// Get catalog workspace bindings.

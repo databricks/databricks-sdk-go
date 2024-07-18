@@ -95,8 +95,6 @@ type ClusterAutoRestartMessageMaintenanceWindow struct {
 
 type ClusterAutoRestartMessageMaintenanceWindowDayOfWeek string
 
-const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekDayOfWeekUnspecified ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `DAY_OF_WEEK_UNSPECIFIED`
-
 const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekFriday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `FRIDAY`
 
 const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekMonday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `MONDAY`
@@ -119,11 +117,11 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Set(v string) error {
 	switch v {
-	case `DAY_OF_WEEK_UNSPECIFIED`, `FRIDAY`, `MONDAY`, `SATURDAY`, `SUNDAY`, `THURSDAY`, `TUESDAY`, `WEDNESDAY`:
+	case `FRIDAY`, `MONDAY`, `SATURDAY`, `SUNDAY`, `THURSDAY`, `TUESDAY`, `WEDNESDAY`:
 		*f = ClusterAutoRestartMessageMaintenanceWindowDayOfWeek(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DAY_OF_WEEK_UNSPECIFIED", "FRIDAY", "MONDAY", "SATURDAY", "SUNDAY", "THURSDAY", "TUESDAY", "WEDNESDAY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FRIDAY", "MONDAY", "SATURDAY", "SUNDAY", "THURSDAY", "TUESDAY", "WEDNESDAY"`, v)
 	}
 }
 
@@ -156,8 +154,6 @@ const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencySecondOfMonth Cl
 
 const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyThirdOfMonth ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency = `THIRD_OF_MONTH`
 
-const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyWeekDayFrequencyUnspecified ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency = `WEEK_DAY_FREQUENCY_UNSPECIFIED`
-
 // String representation for [fmt.Print]
 func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) String() string {
 	return string(*f)
@@ -166,11 +162,11 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) String() st
 // Set raw string value and validate it against allowed values
 func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) Set(v string) error {
 	switch v {
-	case `EVERY_WEEK`, `FIRST_AND_THIRD_OF_MONTH`, `FIRST_OF_MONTH`, `FOURTH_OF_MONTH`, `SECOND_AND_FOURTH_OF_MONTH`, `SECOND_OF_MONTH`, `THIRD_OF_MONTH`, `WEEK_DAY_FREQUENCY_UNSPECIFIED`:
+	case `EVERY_WEEK`, `FIRST_AND_THIRD_OF_MONTH`, `FIRST_OF_MONTH`, `FOURTH_OF_MONTH`, `SECOND_AND_FOURTH_OF_MONTH`, `SECOND_OF_MONTH`, `THIRD_OF_MONTH`:
 		*f = ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EVERY_WEEK", "FIRST_AND_THIRD_OF_MONTH", "FIRST_OF_MONTH", "FOURTH_OF_MONTH", "SECOND_AND_FOURTH_OF_MONTH", "SECOND_OF_MONTH", "THIRD_OF_MONTH", "WEEK_DAY_FREQUENCY_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EVERY_WEEK", "FIRST_AND_THIRD_OF_MONTH", "FIRST_OF_MONTH", "FOURTH_OF_MONTH", "SECOND_AND_FOURTH_OF_MONTH", "SECOND_OF_MONTH", "THIRD_OF_MONTH"`, v)
 	}
 }
 
@@ -245,7 +241,7 @@ func (s ComplianceSecurityProfileSetting) MarshalJSON() ([]byte, error) {
 // Compliance stardard for SHIELD customers
 type ComplianceStandard string
 
-const ComplianceStandardComplianceStandardUnspecified ComplianceStandard = `COMPLIANCE_STANDARD_UNSPECIFIED`
+const ComplianceStandardCanadaProtectedB ComplianceStandard = `CANADA_PROTECTED_B`
 
 const ComplianceStandardCyberEssentialPlus ComplianceStandard = `CYBER_ESSENTIAL_PLUS`
 
@@ -273,17 +269,29 @@ func (f *ComplianceStandard) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ComplianceStandard) Set(v string) error {
 	switch v {
-	case `COMPLIANCE_STANDARD_UNSPECIFIED`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `HIPAA`, `IRAP_PROTECTED`, `ITAR_EAR`, `NONE`, `PCI_DSS`:
+	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `HIPAA`, `IRAP_PROTECTED`, `ITAR_EAR`, `NONE`, `PCI_DSS`:
 		*f = ComplianceStandard(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "COMPLIANCE_STANDARD_UNSPECIFIED", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "HIPAA", "IRAP_PROTECTED", "ITAR_EAR", "NONE", "PCI_DSS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "HIPAA", "IRAP_PROTECTED", "ITAR_EAR", "NONE", "PCI_DSS"`, v)
 	}
 }
 
 // Type always returns ComplianceStandard to satisfy [pflag.Value] interface
 func (f *ComplianceStandard) Type() string {
 	return "ComplianceStandard"
+}
+
+type Config struct {
+	Email *EmailConfig `json:"email,omitempty"`
+
+	GenericWebhook *GenericWebhookConfig `json:"generic_webhook,omitempty"`
+
+	MicrosoftTeams *MicrosoftTeamsConfig `json:"microsoft_teams,omitempty"`
+
+	Pagerduty *PagerdutyConfig `json:"pagerduty,omitempty"`
+
+	Slack *SlackConfig `json:"slack,omitempty"`
 }
 
 // Details required to configure a block list or allow list.
@@ -316,6 +324,24 @@ type CreateNetworkConnectivityConfigRequest struct {
 	// the same region can be attached to the network connectivity
 	// configuration.
 	Region string `json:"region"`
+}
+
+type CreateNotificationDestinationRequest struct {
+	// The configuration for the notification destination. Must wrap EXACTLY one
+	// of the nested configs.
+	Config *Config `json:"config,omitempty"`
+	// The display name for the notification destination.
+	DisplayName string `json:"display_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Configuration details for creating on-behalf tokens.
@@ -577,6 +603,11 @@ type DeleteNetworkConnectivityConfigurationRequest struct {
 type DeleteNetworkConnectivityConfigurationResponse struct {
 }
 
+// Delete a notification destination
+type DeleteNotificationDestinationRequest struct {
+	Id string `json:"-" url:"-"`
+}
+
 // Delete Personal Compute setting
 type DeletePersonalComputeSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -660,6 +691,47 @@ type DeleteRestrictWorkspaceAdminsSettingResponse struct {
 type DeleteTokenManagementRequest struct {
 	// The ID of the token to get.
 	TokenId string `json:"-" url:"-"`
+}
+
+type DestinationType string
+
+const DestinationTypeEmail DestinationType = `EMAIL`
+
+const DestinationTypeMicrosoftTeams DestinationType = `MICROSOFT_TEAMS`
+
+const DestinationTypePagerduty DestinationType = `PAGERDUTY`
+
+const DestinationTypeSlack DestinationType = `SLACK`
+
+const DestinationTypeWebhook DestinationType = `WEBHOOK`
+
+// String representation for [fmt.Print]
+func (f *DestinationType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DestinationType) Set(v string) error {
+	switch v {
+	case `EMAIL`, `MICROSOFT_TEAMS`, `PAGERDUTY`, `SLACK`, `WEBHOOK`:
+		*f = DestinationType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EMAIL", "MICROSOFT_TEAMS", "PAGERDUTY", "SLACK", "WEBHOOK"`, v)
+	}
+}
+
+// Type always returns DestinationType to satisfy [pflag.Value] interface
+func (f *DestinationType) Type() string {
+	return "DestinationType"
+}
+
+type EmailConfig struct {
+	// Email addresses to notify.
+	Addresses []string `json:"addresses,omitempty"`
+}
+
+type Empty struct {
 }
 
 // SHIELD feature: ESM
@@ -794,6 +866,31 @@ type ExchangeTokenResponse struct {
 type FetchIpAccessListResponse struct {
 	// Definition of an IP Access list
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
+}
+
+type GenericWebhookConfig struct {
+	// [Input-Only][Optional] Password for webhook.
+	Password string `json:"password,omitempty"`
+	// [Output-Only] Whether password is set.
+	PasswordSet bool `json:"password_set,omitempty"`
+	// [Input-Only] URL for webhook.
+	Url string `json:"url,omitempty"`
+	// [Output-Only] Whether URL is set.
+	UrlSet bool `json:"url_set,omitempty"`
+	// [Input-Only][Optional] Username for webhook.
+	Username string `json:"username,omitempty"`
+	// [Output-Only] Whether username is set.
+	UsernameSet bool `json:"username_set,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GenericWebhookConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenericWebhookConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get IP access list
@@ -954,6 +1051,11 @@ type GetIpAccessListsResponse struct {
 type GetNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectvity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
+}
+
+// Get a notification destination
+type GetNotificationDestinationRequest struct {
+	Id string `json:"-" url:"-"`
 }
 
 // Get Personal Compute setting
@@ -1123,6 +1225,60 @@ func (s ListNetworkConnectivityConfigurationsResponse) MarshalJSON() ([]byte, er
 	return marshal.Marshal(s)
 }
 
+// List notification destinations
+type ListNotificationDestinationsRequest struct {
+	PageSize int64 `json:"-" url:"page_size,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListNotificationDestinationsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListNotificationDestinationsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListNotificationDestinationsResponse struct {
+	// Page token for next of results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Results []ListNotificationDestinationsResult `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListNotificationDestinationsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListNotificationDestinationsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListNotificationDestinationsResult struct {
+	// [Output-only] The type of the notification destination. The type can not
+	// be changed once set.
+	DestinationType DestinationType `json:"destination_type,omitempty"`
+	// The display name for the notification destination.
+	DisplayName string `json:"display_name,omitempty"`
+	// UUID identifying notification destination.
+	Id string `json:"id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListNotificationDestinationsResult) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListNotificationDestinationsResult) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // List private endpoint rules
 type ListPrivateEndpointRulesRequest struct {
 	// Your Network Connectvity Configuration ID.
@@ -1203,6 +1359,23 @@ func (f *ListType) Set(v string) error {
 // Type always returns ListType to satisfy [pflag.Value] interface
 func (f *ListType) Type() string {
 	return "ListType"
+}
+
+type MicrosoftTeamsConfig struct {
+	// [Input-Only] URL for Microsoft Teams.
+	Url string `json:"url,omitempty"`
+	// [Output-Only] Whether URL is set.
+	UrlSet bool `json:"url_set,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MicrosoftTeamsConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MicrosoftTeamsConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The stable AWS IP CIDR blocks. You can use these to configure the firewall of
@@ -1428,6 +1601,47 @@ func (s NetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type NotificationDestination struct {
+	// The configuration for the notification destination. Will be exactly one
+	// of the nested configs. Only returns for users with workspace admin
+	// permissions.
+	Config *Config `json:"config,omitempty"`
+	// [Output-only] The type of the notification destination. The type can not
+	// be changed once set.
+	DestinationType DestinationType `json:"destination_type,omitempty"`
+	// The display name for the notification destination.
+	DisplayName string `json:"display_name,omitempty"`
+	// UUID identifying notification destination.
+	Id string `json:"id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *NotificationDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NotificationDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PagerdutyConfig struct {
+	// [Input-Only] Integration key for PagerDuty.
+	IntegrationKey string `json:"integration_key,omitempty"`
+	// [Output-Only] Whether integration key is set.
+	IntegrationKeySet bool `json:"integration_key_set,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PagerdutyConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PagerdutyConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Partition by workspace or account
 type PartitionId struct {
 	// The ID of the workspace.
@@ -1571,8 +1785,6 @@ const RestrictWorkspaceAdminsMessageStatusAllowAll RestrictWorkspaceAdminsMessag
 
 const RestrictWorkspaceAdminsMessageStatusRestrictTokensAndJobRunAs RestrictWorkspaceAdminsMessageStatus = `RESTRICT_TOKENS_AND_JOB_RUN_AS`
 
-const RestrictWorkspaceAdminsMessageStatusStatusUnspecified RestrictWorkspaceAdminsMessageStatus = `STATUS_UNSPECIFIED`
-
 // String representation for [fmt.Print]
 func (f *RestrictWorkspaceAdminsMessageStatus) String() string {
 	return string(*f)
@@ -1581,11 +1793,11 @@ func (f *RestrictWorkspaceAdminsMessageStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RestrictWorkspaceAdminsMessageStatus) Set(v string) error {
 	switch v {
-	case `ALLOW_ALL`, `RESTRICT_TOKENS_AND_JOB_RUN_AS`, `STATUS_UNSPECIFIED`:
+	case `ALLOW_ALL`, `RESTRICT_TOKENS_AND_JOB_RUN_AS`:
 		*f = RestrictWorkspaceAdminsMessageStatus(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ALLOW_ALL", "RESTRICT_TOKENS_AND_JOB_RUN_AS", "STATUS_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ALLOW_ALL", "RESTRICT_TOKENS_AND_JOB_RUN_AS"`, v)
 	}
 }
 
@@ -1632,6 +1844,23 @@ type RevokeTokenResponse struct {
 }
 
 type SetStatusResponse struct {
+}
+
+type SlackConfig struct {
+	// [Input-Only] URL for Slack destination.
+	Url string `json:"url,omitempty"`
+	// [Output-Only] Whether URL is set.
+	UrlSet bool `json:"url_set,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SlackConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SlackConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type StringMessage struct {
@@ -1948,6 +2177,26 @@ func (s *UpdateIpAccessList) UnmarshalJSON(b []byte) error {
 }
 
 func (s UpdateIpAccessList) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateNotificationDestinationRequest struct {
+	// The configuration for the notification destination. Must wrap EXACTLY one
+	// of the nested configs.
+	Config *Config `json:"config,omitempty"`
+	// The display name for the notification destination.
+	DisplayName string `json:"display_name,omitempty"`
+
+	Id string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

@@ -11,23 +11,70 @@ import (
 )
 
 type Ai21LabsConfig struct {
-	// The Databricks secret key reference for an AI21Labs API key.
-	Ai21labsApiKey string `json:"ai21labs_api_key"`
+	// The Databricks secret key reference for an AI21 Labs API key. If you
+	// prefer to paste your API key directly, see `ai21labs_api_key_plaintext`.
+	// You must provide an API key using one of the following fields:
+	// `ai21labs_api_key` or `ai21labs_api_key_plaintext`.
+	Ai21labsApiKey string `json:"ai21labs_api_key,omitempty"`
+	// An AI21 Labs API key provided as a plaintext string. If you prefer to
+	// reference your key using Databricks Secrets, see `ai21labs_api_key`. You
+	// must provide an API key using one of the following fields:
+	// `ai21labs_api_key` or `ai21labs_api_key_plaintext`.
+	Ai21labsApiKeyPlaintext string `json:"ai21labs_api_key_plaintext,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Ai21LabsConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Ai21LabsConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type AmazonBedrockConfig struct {
-	// The Databricks secret key reference for an AWS Access Key ID with
-	// permissions to interact with Bedrock services.
-	AwsAccessKeyId string `json:"aws_access_key_id"`
+	// The Databricks secret key reference for an AWS access key ID with
+	// permissions to interact with Bedrock services. If you prefer to paste
+	// your API key directly, see `aws_access_key_id`. You must provide an API
+	// key using one of the following fields: `aws_access_key_id` or
+	// `aws_access_key_id_plaintext`.
+	AwsAccessKeyId string `json:"aws_access_key_id,omitempty"`
+	// An AWS access key ID with permissions to interact with Bedrock services
+	// provided as a plaintext string. If you prefer to reference your key using
+	// Databricks Secrets, see `aws_access_key_id`. You must provide an API key
+	// using one of the following fields: `aws_access_key_id` or
+	// `aws_access_key_id_plaintext`.
+	AwsAccessKeyIdPlaintext string `json:"aws_access_key_id_plaintext,omitempty"`
 	// The AWS region to use. Bedrock has to be enabled there.
 	AwsRegion string `json:"aws_region"`
-	// The Databricks secret key reference for an AWS Secret Access Key paired
+	// The Databricks secret key reference for an AWS secret access key paired
 	// with the access key ID, with permissions to interact with Bedrock
-	// services.
-	AwsSecretAccessKey string `json:"aws_secret_access_key"`
+	// services. If you prefer to paste your API key directly, see
+	// `aws_secret_access_key_plaintext`. You must provide an API key using one
+	// of the following fields: `aws_secret_access_key` or
+	// `aws_secret_access_key_plaintext`.
+	AwsSecretAccessKey string `json:"aws_secret_access_key,omitempty"`
+	// An AWS secret access key paired with the access key ID, with permissions
+	// to interact with Bedrock services provided as a plaintext string. If you
+	// prefer to reference your key using Databricks Secrets, see
+	// `aws_secret_access_key`. You must provide an API key using one of the
+	// following fields: `aws_secret_access_key` or
+	// `aws_secret_access_key_plaintext`.
+	AwsSecretAccessKeyPlaintext string `json:"aws_secret_access_key_plaintext,omitempty"`
 	// The underlying provider in Amazon Bedrock. Supported values (case
 	// insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
 	BedrockProvider AmazonBedrockConfigBedrockProvider `json:"bedrock_provider"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AmazonBedrockConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AmazonBedrockConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The underlying provider in Amazon Bedrock. Supported values (case
@@ -64,8 +111,26 @@ func (f *AmazonBedrockConfigBedrockProvider) Type() string {
 }
 
 type AnthropicConfig struct {
-	// The Databricks secret key reference for an Anthropic API key.
-	AnthropicApiKey string `json:"anthropic_api_key"`
+	// The Databricks secret key reference for an Anthropic API key. If you
+	// prefer to paste your API key directly, see `anthropic_api_key_plaintext`.
+	// You must provide an API key using one of the following fields:
+	// `anthropic_api_key` or `anthropic_api_key_plaintext`.
+	AnthropicApiKey string `json:"anthropic_api_key,omitempty"`
+	// The Anthropic API key provided as a plaintext string. If you prefer to
+	// reference your key using Databricks Secrets, see `anthropic_api_key`. You
+	// must provide an API key using one of the following fields:
+	// `anthropic_api_key` or `anthropic_api_key_plaintext`.
+	AnthropicApiKeyPlaintext string `json:"anthropic_api_key_plaintext,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AnthropicConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AnthropicConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type App struct {
@@ -161,8 +226,6 @@ type AppDeploymentMode string
 
 const AppDeploymentModeAutoSync AppDeploymentMode = `AUTO_SYNC`
 
-const AppDeploymentModeModeUnspecified AppDeploymentMode = `MODE_UNSPECIFIED`
-
 const AppDeploymentModeSnapshot AppDeploymentMode = `SNAPSHOT`
 
 // String representation for [fmt.Print]
@@ -173,11 +236,11 @@ func (f *AppDeploymentMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppDeploymentMode) Set(v string) error {
 	switch v {
-	case `AUTO_SYNC`, `MODE_UNSPECIFIED`, `SNAPSHOT`:
+	case `AUTO_SYNC`, `SNAPSHOT`:
 		*f = AppDeploymentMode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AUTO_SYNC", "MODE_UNSPECIFIED", "SNAPSHOT"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AUTO_SYNC", "SNAPSHOT"`, v)
 	}
 }
 
@@ -192,8 +255,6 @@ const AppDeploymentStateFailed AppDeploymentState = `FAILED`
 
 const AppDeploymentStateInProgress AppDeploymentState = `IN_PROGRESS`
 
-const AppDeploymentStateStateUnspecified AppDeploymentState = `STATE_UNSPECIFIED`
-
 const AppDeploymentStateStopped AppDeploymentState = `STOPPED`
 
 const AppDeploymentStateSucceeded AppDeploymentState = `SUCCEEDED`
@@ -206,11 +267,11 @@ func (f *AppDeploymentState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppDeploymentState) Set(v string) error {
 	switch v {
-	case `FAILED`, `IN_PROGRESS`, `STATE_UNSPECIFIED`, `STOPPED`, `SUCCEEDED`:
+	case `FAILED`, `IN_PROGRESS`, `STOPPED`, `SUCCEEDED`:
 		*f = AppDeploymentState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FAILED", "IN_PROGRESS", "STATE_UNSPECIFIED", "STOPPED", "SUCCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FAILED", "IN_PROGRESS", "STOPPED", "SUCCEEDED"`, v)
 	}
 }
 
@@ -256,8 +317,6 @@ const AppStateRunning AppState = `RUNNING`
 
 const AppStateStarting AppState = `STARTING`
 
-const AppStateStateUnspecified AppState = `STATE_UNSPECIFIED`
-
 // String representation for [fmt.Print]
 func (f *AppState) String() string {
 	return string(*f)
@@ -266,11 +325,11 @@ func (f *AppState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppState) Set(v string) error {
 	switch v {
-	case `CREATING`, `DELETED`, `DELETING`, `ERROR`, `IDLE`, `RUNNING`, `STARTING`, `STATE_UNSPECIFIED`:
+	case `CREATING`, `DELETED`, `DELETING`, `ERROR`, `IDLE`, `RUNNING`, `STARTING`:
 		*f = AppState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CREATING", "DELETED", "DELETING", "ERROR", "IDLE", "RUNNING", "STARTING", "STATE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CREATING", "DELETED", "DELETING", "ERROR", "IDLE", "RUNNING", "STARTING"`, v)
 	}
 }
 
@@ -410,8 +469,29 @@ func (f *ChatMessageRole) Type() string {
 }
 
 type CohereConfig struct {
-	// The Databricks secret key reference for a Cohere API key.
-	CohereApiKey string `json:"cohere_api_key"`
+	// This is an optional field to provide a customized base URL for the Cohere
+	// API. If left unspecified, the standard Cohere base URL is used.
+	CohereApiBase string `json:"cohere_api_base,omitempty"`
+	// The Databricks secret key reference for a Cohere API key. If you prefer
+	// to paste your API key directly, see `cohere_api_key_plaintext`. You must
+	// provide an API key using one of the following fields: `cohere_api_key` or
+	// `cohere_api_key_plaintext`.
+	CohereApiKey string `json:"cohere_api_key,omitempty"`
+	// The Cohere API key provided as a plaintext string. If you prefer to
+	// reference your key using Databricks Secrets, see `cohere_api_key`. You
+	// must provide an API key using one of the following fields:
+	// `cohere_api_key` or `cohere_api_key_plaintext`.
+	CohereApiKeyPlaintext string `json:"cohere_api_key_plaintext,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CohereConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CohereConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateAppDeploymentRequest struct {
@@ -477,11 +557,31 @@ func (s CreateServingEndpoint) MarshalJSON() ([]byte, error) {
 type DatabricksModelServingConfig struct {
 	// The Databricks secret key reference for a Databricks API token that
 	// corresponds to a user or service principal with Can Query access to the
-	// model serving endpoint pointed to by this external model.
-	DatabricksApiToken string `json:"databricks_api_token"`
+	// model serving endpoint pointed to by this external model. If you prefer
+	// to paste your API key directly, see `databricks_api_token_plaintext`. You
+	// must provide an API key using one of the following fields:
+	// `databricks_api_token` or `databricks_api_token_plaintext`.
+	DatabricksApiToken string `json:"databricks_api_token,omitempty"`
+	// The Databricks API token that corresponds to a user or service principal
+	// with Can Query access to the model serving endpoint pointed to by this
+	// external model provided as a plaintext string. If you prefer to reference
+	// your key using Databricks Secrets, see `databricks_api_token`. You must
+	// provide an API key using one of the following fields:
+	// `databricks_api_token` or `databricks_api_token_plaintext`.
+	DatabricksApiTokenPlaintext string `json:"databricks_api_token_plaintext,omitempty"`
 	// The URL of the Databricks workspace containing the model serving endpoint
 	// pointed to by this external model.
 	DatabricksWorkspaceUrl string `json:"databricks_workspace_url"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DatabricksModelServingConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabricksModelServingConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DataframeSplitInput struct {
@@ -655,6 +755,8 @@ const EndpointStateConfigUpdateInProgress EndpointStateConfigUpdate = `IN_PROGRE
 
 const EndpointStateConfigUpdateNotUpdating EndpointStateConfigUpdate = `NOT_UPDATING`
 
+const EndpointStateConfigUpdateUpdateCanceled EndpointStateConfigUpdate = `UPDATE_CANCELED`
+
 const EndpointStateConfigUpdateUpdateFailed EndpointStateConfigUpdate = `UPDATE_FAILED`
 
 // String representation for [fmt.Print]
@@ -665,11 +767,11 @@ func (f *EndpointStateConfigUpdate) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointStateConfigUpdate) Set(v string) error {
 	switch v {
-	case `IN_PROGRESS`, `NOT_UPDATING`, `UPDATE_FAILED`:
+	case `IN_PROGRESS`, `NOT_UPDATING`, `UPDATE_CANCELED`, `UPDATE_FAILED`:
 		*f = EndpointStateConfigUpdate(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "IN_PROGRESS", "NOT_UPDATING", "UPDATE_FAILED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "IN_PROGRESS", "NOT_UPDATING", "UPDATE_CANCELED", "UPDATE_FAILED"`, v)
 	}
 }
 
@@ -767,6 +869,9 @@ type ExternalModel struct {
 	// Databricks Model Serving Config. Only required if the provider is
 	// 'databricks-model-serving'.
 	DatabricksModelServingConfig *DatabricksModelServingConfig `json:"databricks_model_serving_config,omitempty"`
+	// Google Cloud Vertex AI Config. Only required if the provider is
+	// 'google-cloud-vertex-ai'.
+	GoogleCloudVertexAiConfig *GoogleCloudVertexAiConfig `json:"google_cloud_vertex_ai_config,omitempty"`
 	// The name of the external model.
 	Name string `json:"name"`
 	// OpenAI Config. Only required if the provider is 'openai'.
@@ -775,7 +880,8 @@ type ExternalModel struct {
 	PalmConfig *PaLmConfig `json:"palm_config,omitempty"`
 	// The name of the provider for the external model. Currently, the supported
 	// providers are 'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere',
-	// 'databricks-model-serving', 'openai', and 'palm'.",
+	// 'databricks-model-serving', 'google-cloud-vertex-ai', 'openai', and
+	// 'palm'.",
 	Provider ExternalModelProvider `json:"provider"`
 	// The task type of the external model.
 	Task string `json:"task"`
@@ -783,7 +889,7 @@ type ExternalModel struct {
 
 // The name of the provider for the external model. Currently, the supported
 // providers are 'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere',
-// 'databricks-model-serving', 'openai', and 'palm'.",
+// 'databricks-model-serving', 'google-cloud-vertex-ai', 'openai', and 'palm'.",
 type ExternalModelProvider string
 
 const ExternalModelProviderAi21labs ExternalModelProvider = `ai21labs`
@@ -795,6 +901,8 @@ const ExternalModelProviderAnthropic ExternalModelProvider = `anthropic`
 const ExternalModelProviderCohere ExternalModelProvider = `cohere`
 
 const ExternalModelProviderDatabricksModelServing ExternalModelProvider = `databricks-model-serving`
+
+const ExternalModelProviderGoogleCloudVertexAi ExternalModelProvider = `google-cloud-vertex-ai`
 
 const ExternalModelProviderOpenai ExternalModelProvider = `openai`
 
@@ -808,11 +916,11 @@ func (f *ExternalModelProvider) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ExternalModelProvider) Set(v string) error {
 	switch v {
-	case `ai21labs`, `amazon-bedrock`, `anthropic`, `cohere`, `databricks-model-serving`, `openai`, `palm`:
+	case `ai21labs`, `amazon-bedrock`, `anthropic`, `cohere`, `databricks-model-serving`, `google-cloud-vertex-ai`, `openai`, `palm`:
 		*f = ExternalModelProvider(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ai21labs", "amazon-bedrock", "anthropic", "cohere", "databricks-model-serving", "openai", "palm"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ai21labs", "amazon-bedrock", "anthropic", "cohere", "databricks-model-serving", "google-cloud-vertex-ai", "openai", "palm"`, v)
 	}
 }
 
@@ -916,6 +1024,46 @@ type GetServingEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type GoogleCloudVertexAiConfig struct {
+	// The Databricks secret key reference for a private key for the service
+	// account which has access to the Google Cloud Vertex AI Service. See [Best
+	// practices for managing service account keys]. If you prefer to paste your
+	// API key directly, see `private_key_plaintext`. You must provide an API
+	// key using one of the following fields: `private_key` or
+	// `private_key_plaintext`
+	//
+	// [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys
+	PrivateKey string `json:"private_key,omitempty"`
+	// The private key for the service account which has access to the Google
+	// Cloud Vertex AI Service provided as a plaintext secret. See [Best
+	// practices for managing service account keys]. If you prefer to reference
+	// your key using Databricks Secrets, see `private_key`. You must provide an
+	// API key using one of the following fields: `private_key` or
+	// `private_key_plaintext`.
+	//
+	// [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys
+	PrivateKeyPlaintext string `json:"private_key_plaintext,omitempty"`
+	// This is the Google Cloud project id that the service account is
+	// associated with.
+	ProjectId string `json:"project_id,omitempty"`
+	// This is the region for the Google Cloud Vertex AI Service. See [supported
+	// regions] for more details. Some models are only available in specific
+	// regions.
+	//
+	// [supported regions]: https://cloud.google.com/vertex-ai/docs/general/locations
+	Region string `json:"region,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GoogleCloudVertexAiConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GoogleCloudVertexAiConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // List app deployments
 type ListAppDeploymentsRequest struct {
 	// The name of the app.
@@ -1013,19 +1161,38 @@ type OpenAiConfig struct {
 	// This field is only required for Azure AD OpenAI and is the Microsoft
 	// Entra Client ID.
 	MicrosoftEntraClientId string `json:"microsoft_entra_client_id,omitempty"`
-	// The Databricks secret key reference for the Microsoft Entra Client Secret
-	// that is only required for Azure AD OpenAI.
+	// The Databricks secret key reference for a client secret used for
+	// Microsoft Entra ID authentication. If you prefer to paste your client
+	// secret directly, see `microsoft_entra_client_secret_plaintext`. You must
+	// provide an API key using one of the following fields:
+	// `microsoft_entra_client_secret` or
+	// `microsoft_entra_client_secret_plaintext`.
 	MicrosoftEntraClientSecret string `json:"microsoft_entra_client_secret,omitempty"`
+	// The client secret used for Microsoft Entra ID authentication provided as
+	// a plaintext string. If you prefer to reference your key using Databricks
+	// Secrets, see `microsoft_entra_client_secret`. You must provide an API key
+	// using one of the following fields: `microsoft_entra_client_secret` or
+	// `microsoft_entra_client_secret_plaintext`.
+	MicrosoftEntraClientSecretPlaintext string `json:"microsoft_entra_client_secret_plaintext,omitempty"`
 	// This field is only required for Azure AD OpenAI and is the Microsoft
 	// Entra Tenant ID.
 	MicrosoftEntraTenantId string `json:"microsoft_entra_tenant_id,omitempty"`
-	// This is the base URL for the OpenAI API (default:
-	// "https://api.openai.com/v1"). For Azure OpenAI, this field is required,
-	// and is the base URL for the Azure OpenAI API service provided by Azure.
+	// This is a field to provide a customized base URl for the OpenAI API. For
+	// Azure OpenAI, this field is required, and is the base URL for the Azure
+	// OpenAI API service provided by Azure. For other OpenAI API types, this
+	// field is optional, and if left unspecified, the standard OpenAI base URL
+	// is used.
 	OpenaiApiBase string `json:"openai_api_base,omitempty"`
-	// The Databricks secret key reference for an OpenAI or Azure OpenAI API
-	// key.
+	// The Databricks secret key reference for an OpenAI API key using the
+	// OpenAI or Azure service. If you prefer to paste your API key directly,
+	// see `openai_api_key_plaintext`. You must provide an API key using one of
+	// the following fields: `openai_api_key` or `openai_api_key_plaintext`.
 	OpenaiApiKey string `json:"openai_api_key,omitempty"`
+	// The OpenAI API key using the OpenAI or Azure service provided as a
+	// plaintext string. If you prefer to reference your key using Databricks
+	// Secrets, see `openai_api_key`. You must provide an API key using one of
+	// the following fields: `openai_api_key` or `openai_api_key_plaintext`.
+	OpenaiApiKeyPlaintext string `json:"openai_api_key_plaintext,omitempty"`
 	// This is an optional field to specify the type of OpenAI API to use. For
 	// Azure OpenAI, this field is required, and adjust this parameter to
 	// represent the preferred security access validation protocol. For access
@@ -1055,8 +1222,26 @@ func (s OpenAiConfig) MarshalJSON() ([]byte, error) {
 }
 
 type PaLmConfig struct {
-	// The Databricks secret key reference for a PaLM API key.
-	PalmApiKey string `json:"palm_api_key"`
+	// The Databricks secret key reference for a PaLM API key. If you prefer to
+	// paste your API key directly, see `palm_api_key_plaintext`. You must
+	// provide an API key using one of the following fields: `palm_api_key` or
+	// `palm_api_key_plaintext`.
+	PalmApiKey string `json:"palm_api_key,omitempty"`
+	// The PaLM API key provided as a plaintext string. If you prefer to
+	// reference your key using Databricks Secrets, see `palm_api_key`. You must
+	// provide an API key using one of the following fields: `palm_api_key` or
+	// `palm_api_key_plaintext`.
+	PalmApiKeyPlaintext string `json:"palm_api_key_plaintext,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PaLmConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PaLmConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PatchServingEndpointTags struct {
@@ -1333,12 +1518,11 @@ type ServedEntityInput struct {
 	// The external model to be served. NOTE: Only one of external_model and
 	// (entity_name, entity_version, workload_size, workload_type, and
 	// scale_to_zero_enabled) can be specified with the latter set being used
-	// for custom model serving for a Databricks registered model. When an
-	// external_model is present, the served entities list can only have one
-	// served_entity object. For an existing endpoint with external_model, it
-	// can not be updated to an endpoint without external_model. If the endpoint
-	// is created without external_model, users cannot update it to add
-	// external_model later.
+	// for custom model serving for a Databricks registered model. For an
+	// existing endpoint with external_model, it cannot be updated to an
+	// endpoint without external_model. If the endpoint is created without
+	// external_model, users cannot update it to add external_model later. The
+	// task type of all external models within an endpoint must be the same.
 	ExternalModel *ExternalModel `json:"external_model,omitempty"`
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.

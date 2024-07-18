@@ -70,23 +70,23 @@ func (_c *MockStatementExecutionInterface_CancelExecution_Call) RunAndReturn(run
 }
 
 // ExecuteAndWait provides a mock function with given fields: ctx, request
-func (_m *MockStatementExecutionInterface) ExecuteAndWait(ctx context.Context, request sql.ExecuteStatementRequest) (*sql.ExecuteStatementResponse, error) {
+func (_m *MockStatementExecutionInterface) ExecuteAndWait(ctx context.Context, request sql.ExecuteStatementRequest) (*sql.StatementResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ExecuteAndWait")
 	}
 
-	var r0 *sql.ExecuteStatementResponse
+	var r0 *sql.StatementResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ExecuteStatementRequest) (*sql.ExecuteStatementResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ExecuteStatementRequest) (*sql.StatementResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ExecuteStatementRequest) *sql.ExecuteStatementResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ExecuteStatementRequest) *sql.StatementResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.ExecuteStatementResponse)
+			r0 = ret.Get(0).(*sql.StatementResponse)
 		}
 	}
 
@@ -118,34 +118,34 @@ func (_c *MockStatementExecutionInterface_ExecuteAndWait_Call) Run(run func(ctx 
 	return _c
 }
 
-func (_c *MockStatementExecutionInterface_ExecuteAndWait_Call) Return(_a0 *sql.ExecuteStatementResponse, _a1 error) *MockStatementExecutionInterface_ExecuteAndWait_Call {
+func (_c *MockStatementExecutionInterface_ExecuteAndWait_Call) Return(_a0 *sql.StatementResponse, _a1 error) *MockStatementExecutionInterface_ExecuteAndWait_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockStatementExecutionInterface_ExecuteAndWait_Call) RunAndReturn(run func(context.Context, sql.ExecuteStatementRequest) (*sql.ExecuteStatementResponse, error)) *MockStatementExecutionInterface_ExecuteAndWait_Call {
+func (_c *MockStatementExecutionInterface_ExecuteAndWait_Call) RunAndReturn(run func(context.Context, sql.ExecuteStatementRequest) (*sql.StatementResponse, error)) *MockStatementExecutionInterface_ExecuteAndWait_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ExecuteStatement provides a mock function with given fields: ctx, request
-func (_m *MockStatementExecutionInterface) ExecuteStatement(ctx context.Context, request sql.ExecuteStatementRequest) (*sql.ExecuteStatementResponse, error) {
+func (_m *MockStatementExecutionInterface) ExecuteStatement(ctx context.Context, request sql.ExecuteStatementRequest) (*sql.StatementResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ExecuteStatement")
 	}
 
-	var r0 *sql.ExecuteStatementResponse
+	var r0 *sql.StatementResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ExecuteStatementRequest) (*sql.ExecuteStatementResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ExecuteStatementRequest) (*sql.StatementResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ExecuteStatementRequest) *sql.ExecuteStatementResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ExecuteStatementRequest) *sql.StatementResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.ExecuteStatementResponse)
+			r0 = ret.Get(0).(*sql.StatementResponse)
 		}
 	}
 
@@ -177,34 +177,34 @@ func (_c *MockStatementExecutionInterface_ExecuteStatement_Call) Run(run func(ct
 	return _c
 }
 
-func (_c *MockStatementExecutionInterface_ExecuteStatement_Call) Return(_a0 *sql.ExecuteStatementResponse, _a1 error) *MockStatementExecutionInterface_ExecuteStatement_Call {
+func (_c *MockStatementExecutionInterface_ExecuteStatement_Call) Return(_a0 *sql.StatementResponse, _a1 error) *MockStatementExecutionInterface_ExecuteStatement_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockStatementExecutionInterface_ExecuteStatement_Call) RunAndReturn(run func(context.Context, sql.ExecuteStatementRequest) (*sql.ExecuteStatementResponse, error)) *MockStatementExecutionInterface_ExecuteStatement_Call {
+func (_c *MockStatementExecutionInterface_ExecuteStatement_Call) RunAndReturn(run func(context.Context, sql.ExecuteStatementRequest) (*sql.StatementResponse, error)) *MockStatementExecutionInterface_ExecuteStatement_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetStatement provides a mock function with given fields: ctx, request
-func (_m *MockStatementExecutionInterface) GetStatement(ctx context.Context, request sql.GetStatementRequest) (*sql.GetStatementResponse, error) {
+func (_m *MockStatementExecutionInterface) GetStatement(ctx context.Context, request sql.GetStatementRequest) (*sql.StatementResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetStatement")
 	}
 
-	var r0 *sql.GetStatementResponse
+	var r0 *sql.StatementResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.GetStatementRequest) (*sql.GetStatementResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.GetStatementRequest) (*sql.StatementResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.GetStatementRequest) *sql.GetStatementResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.GetStatementRequest) *sql.StatementResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.GetStatementResponse)
+			r0 = ret.Get(0).(*sql.StatementResponse)
 		}
 	}
 
@@ -236,34 +236,34 @@ func (_c *MockStatementExecutionInterface_GetStatement_Call) Run(run func(ctx co
 	return _c
 }
 
-func (_c *MockStatementExecutionInterface_GetStatement_Call) Return(_a0 *sql.GetStatementResponse, _a1 error) *MockStatementExecutionInterface_GetStatement_Call {
+func (_c *MockStatementExecutionInterface_GetStatement_Call) Return(_a0 *sql.StatementResponse, _a1 error) *MockStatementExecutionInterface_GetStatement_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockStatementExecutionInterface_GetStatement_Call) RunAndReturn(run func(context.Context, sql.GetStatementRequest) (*sql.GetStatementResponse, error)) *MockStatementExecutionInterface_GetStatement_Call {
+func (_c *MockStatementExecutionInterface_GetStatement_Call) RunAndReturn(run func(context.Context, sql.GetStatementRequest) (*sql.StatementResponse, error)) *MockStatementExecutionInterface_GetStatement_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetStatementByStatementId provides a mock function with given fields: ctx, statementId
-func (_m *MockStatementExecutionInterface) GetStatementByStatementId(ctx context.Context, statementId string) (*sql.GetStatementResponse, error) {
+func (_m *MockStatementExecutionInterface) GetStatementByStatementId(ctx context.Context, statementId string) (*sql.StatementResponse, error) {
 	ret := _m.Called(ctx, statementId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetStatementByStatementId")
 	}
 
-	var r0 *sql.GetStatementResponse
+	var r0 *sql.StatementResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*sql.GetStatementResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*sql.StatementResponse, error)); ok {
 		return rf(ctx, statementId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *sql.GetStatementResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *sql.StatementResponse); ok {
 		r0 = rf(ctx, statementId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.GetStatementResponse)
+			r0 = ret.Get(0).(*sql.StatementResponse)
 		}
 	}
 
@@ -295,12 +295,12 @@ func (_c *MockStatementExecutionInterface_GetStatementByStatementId_Call) Run(ru
 	return _c
 }
 
-func (_c *MockStatementExecutionInterface_GetStatementByStatementId_Call) Return(_a0 *sql.GetStatementResponse, _a1 error) *MockStatementExecutionInterface_GetStatementByStatementId_Call {
+func (_c *MockStatementExecutionInterface_GetStatementByStatementId_Call) Return(_a0 *sql.StatementResponse, _a1 error) *MockStatementExecutionInterface_GetStatementByStatementId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockStatementExecutionInterface_GetStatementByStatementId_Call) RunAndReturn(run func(context.Context, string) (*sql.GetStatementResponse, error)) *MockStatementExecutionInterface_GetStatementByStatementId_Call {
+func (_c *MockStatementExecutionInterface_GetStatementByStatementId_Call) RunAndReturn(run func(context.Context, string) (*sql.StatementResponse, error)) *MockStatementExecutionInterface_GetStatementByStatementId_Call {
 	_c.Call.Return(run)
 	return _c
 }

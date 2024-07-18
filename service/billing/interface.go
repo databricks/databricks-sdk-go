@@ -26,41 +26,6 @@ type BillableUsageService interface {
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 }
 
-// These APIs manage budget configuration including notifications for exceeding
-// a budget for a period. They can also retrieve the status of each budget.
-type BudgetsService interface {
-
-	// Create a new budget.
-	//
-	// Creates a new budget in the specified account.
-	Create(ctx context.Context, request WrappedBudget) (*WrappedBudgetWithStatus, error)
-
-	// Delete budget.
-	//
-	// Deletes the budget specified by its UUID.
-	Delete(ctx context.Context, request DeleteBudgetRequest) error
-
-	// Get budget and its status.
-	//
-	// Gets the budget specified by its UUID, including noncumulative status for
-	// each day that the budget is configured to include.
-	Get(ctx context.Context, request GetBudgetRequest) (*WrappedBudgetWithStatus, error)
-
-	// Get all budgets.
-	//
-	// Gets all budgets associated with this account, including noncumulative
-	// status for each day that the budget is configured to include.
-	//
-	// Use ListAll() to get all BudgetWithStatus instances
-	List(ctx context.Context) (*BudgetList, error)
-
-	// Modify budget.
-	//
-	// Modifies a budget in this account. Budget properties are completely
-	// overwritten.
-	Update(ctx context.Context, request WrappedBudget) error
-}
-
 // These APIs manage log delivery configurations for this account. The two
 // supported log types for this API are _billable usage logs_ and _audit logs_.
 // This feature is in Public Preview. This feature works with all account ID

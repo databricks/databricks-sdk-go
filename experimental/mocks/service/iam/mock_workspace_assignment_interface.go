@@ -25,7 +25,7 @@ func (_m *MockWorkspaceAssignmentInterface) EXPECT() *MockWorkspaceAssignmentInt
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceAssignmentInterface) Delete(ctx context.Context, request iam.DeleteWorkspaceAssignmentRequest) error {
+func (_m *MockWorkspaceAssignmentInterface) Delete(ctx context.Context, request iam.DeleteWorkspacePermissionAssignment) error {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -33,7 +33,7 @@ func (_m *MockWorkspaceAssignmentInterface) Delete(ctx context.Context, request 
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, iam.DeleteWorkspaceAssignmentRequest) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.DeleteWorkspacePermissionAssignment) error); ok {
 		r0 = rf(ctx, request)
 	} else {
 		r0 = ret.Error(0)
@@ -49,14 +49,14 @@ type MockWorkspaceAssignmentInterface_Delete_Call struct {
 
 // Delete is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request iam.DeleteWorkspaceAssignmentRequest
+//   - request iam.DeleteWorkspacePermissionAssignment
 func (_e *MockWorkspaceAssignmentInterface_Expecter) Delete(ctx interface{}, request interface{}) *MockWorkspaceAssignmentInterface_Delete_Call {
 	return &MockWorkspaceAssignmentInterface_Delete_Call{Call: _e.mock.On("Delete", ctx, request)}
 }
 
-func (_c *MockWorkspaceAssignmentInterface_Delete_Call) Run(run func(ctx context.Context, request iam.DeleteWorkspaceAssignmentRequest)) *MockWorkspaceAssignmentInterface_Delete_Call {
+func (_c *MockWorkspaceAssignmentInterface_Delete_Call) Run(run func(ctx context.Context, request iam.DeleteWorkspacePermissionAssignment)) *MockWorkspaceAssignmentInterface_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(iam.DeleteWorkspaceAssignmentRequest))
+		run(args[0].(context.Context), args[1].(iam.DeleteWorkspacePermissionAssignment))
 	})
 	return _c
 }
@@ -66,7 +66,7 @@ func (_c *MockWorkspaceAssignmentInterface_Delete_Call) Return(_a0 error) *MockW
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_Delete_Call) RunAndReturn(run func(context.Context, iam.DeleteWorkspaceAssignmentRequest) error) *MockWorkspaceAssignmentInterface_Delete_Call {
+func (_c *MockWorkspaceAssignmentInterface_Delete_Call) RunAndReturn(run func(context.Context, iam.DeleteWorkspacePermissionAssignment) error) *MockWorkspaceAssignmentInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -120,27 +120,27 @@ func (_c *MockWorkspaceAssignmentInterface_DeleteByWorkspaceIdAndPrincipalId_Cal
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceAssignmentInterface) Get(ctx context.Context, request iam.GetWorkspaceAssignmentRequest) (*iam.WorkspacePermissions, error) {
+func (_m *MockWorkspaceAssignmentInterface) Get(ctx context.Context, request iam.ListWorkspacePermissions) (*iam.ListWorkspacePermissionsResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Get")
 	}
 
-	var r0 *iam.WorkspacePermissions
+	var r0 *iam.ListWorkspacePermissionsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, iam.GetWorkspaceAssignmentRequest) (*iam.WorkspacePermissions, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.ListWorkspacePermissions) (*iam.ListWorkspacePermissionsResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, iam.GetWorkspaceAssignmentRequest) *iam.WorkspacePermissions); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.ListWorkspacePermissions) *iam.ListWorkspacePermissionsResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*iam.WorkspacePermissions)
+			r0 = ret.Get(0).(*iam.ListWorkspacePermissionsResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, iam.GetWorkspaceAssignmentRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, iam.ListWorkspacePermissions) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -156,46 +156,46 @@ type MockWorkspaceAssignmentInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request iam.GetWorkspaceAssignmentRequest
+//   - request iam.ListWorkspacePermissions
 func (_e *MockWorkspaceAssignmentInterface_Expecter) Get(ctx interface{}, request interface{}) *MockWorkspaceAssignmentInterface_Get_Call {
 	return &MockWorkspaceAssignmentInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockWorkspaceAssignmentInterface_Get_Call) Run(run func(ctx context.Context, request iam.GetWorkspaceAssignmentRequest)) *MockWorkspaceAssignmentInterface_Get_Call {
+func (_c *MockWorkspaceAssignmentInterface_Get_Call) Run(run func(ctx context.Context, request iam.ListWorkspacePermissions)) *MockWorkspaceAssignmentInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(iam.GetWorkspaceAssignmentRequest))
+		run(args[0].(context.Context), args[1].(iam.ListWorkspacePermissions))
 	})
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_Get_Call) Return(_a0 *iam.WorkspacePermissions, _a1 error) *MockWorkspaceAssignmentInterface_Get_Call {
+func (_c *MockWorkspaceAssignmentInterface_Get_Call) Return(_a0 *iam.ListWorkspacePermissionsResponse, _a1 error) *MockWorkspaceAssignmentInterface_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_Get_Call) RunAndReturn(run func(context.Context, iam.GetWorkspaceAssignmentRequest) (*iam.WorkspacePermissions, error)) *MockWorkspaceAssignmentInterface_Get_Call {
+func (_c *MockWorkspaceAssignmentInterface_Get_Call) RunAndReturn(run func(context.Context, iam.ListWorkspacePermissions) (*iam.ListWorkspacePermissionsResponse, error)) *MockWorkspaceAssignmentInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetByWorkspaceId provides a mock function with given fields: ctx, workspaceId
-func (_m *MockWorkspaceAssignmentInterface) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*iam.WorkspacePermissions, error) {
+func (_m *MockWorkspaceAssignmentInterface) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*iam.ListWorkspacePermissionsResponse, error) {
 	ret := _m.Called(ctx, workspaceId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByWorkspaceId")
 	}
 
-	var r0 *iam.WorkspacePermissions
+	var r0 *iam.ListWorkspacePermissionsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) (*iam.WorkspacePermissions, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (*iam.ListWorkspacePermissionsResponse, error)); ok {
 		return rf(ctx, workspaceId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) *iam.WorkspacePermissions); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) *iam.ListWorkspacePermissionsResponse); ok {
 		r0 = rf(ctx, workspaceId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*iam.WorkspacePermissions)
+			r0 = ret.Get(0).(*iam.ListWorkspacePermissionsResponse)
 		}
 	}
 
@@ -227,12 +227,12 @@ func (_c *MockWorkspaceAssignmentInterface_GetByWorkspaceId_Call) Run(run func(c
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_GetByWorkspaceId_Call) Return(_a0 *iam.WorkspacePermissions, _a1 error) *MockWorkspaceAssignmentInterface_GetByWorkspaceId_Call {
+func (_c *MockWorkspaceAssignmentInterface_GetByWorkspaceId_Call) Return(_a0 *iam.ListWorkspacePermissionsResponse, _a1 error) *MockWorkspaceAssignmentInterface_GetByWorkspaceId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_GetByWorkspaceId_Call) RunAndReturn(run func(context.Context, int64) (*iam.WorkspacePermissions, error)) *MockWorkspaceAssignmentInterface_GetByWorkspaceId_Call {
+func (_c *MockWorkspaceAssignmentInterface_GetByWorkspaceId_Call) RunAndReturn(run func(context.Context, int64) (*iam.ListWorkspacePermissionsResponse, error)) *MockWorkspaceAssignmentInterface_GetByWorkspaceId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -285,19 +285,19 @@ func (_c *MockWorkspaceAssignmentInterface_Impl_Call) RunAndReturn(run func() ia
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceAssignmentInterface) List(ctx context.Context, request iam.ListWorkspaceAssignmentRequest) listing.Iterator[iam.PermissionAssignment] {
+func (_m *MockWorkspaceAssignmentInterface) List(ctx context.Context, request iam.GetWorkspacePermissionAssignments) listing.Iterator[iam.WorkspacePermissionAssignmentOutput] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 listing.Iterator[iam.PermissionAssignment]
-	if rf, ok := ret.Get(0).(func(context.Context, iam.ListWorkspaceAssignmentRequest) listing.Iterator[iam.PermissionAssignment]); ok {
+	var r0 listing.Iterator[iam.WorkspacePermissionAssignmentOutput]
+	if rf, ok := ret.Get(0).(func(context.Context, iam.GetWorkspacePermissionAssignments) listing.Iterator[iam.WorkspacePermissionAssignmentOutput]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(listing.Iterator[iam.PermissionAssignment])
+			r0 = ret.Get(0).(listing.Iterator[iam.WorkspacePermissionAssignmentOutput])
 		}
 	}
 
@@ -311,50 +311,50 @@ type MockWorkspaceAssignmentInterface_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request iam.ListWorkspaceAssignmentRequest
+//   - request iam.GetWorkspacePermissionAssignments
 func (_e *MockWorkspaceAssignmentInterface_Expecter) List(ctx interface{}, request interface{}) *MockWorkspaceAssignmentInterface_List_Call {
 	return &MockWorkspaceAssignmentInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
 }
 
-func (_c *MockWorkspaceAssignmentInterface_List_Call) Run(run func(ctx context.Context, request iam.ListWorkspaceAssignmentRequest)) *MockWorkspaceAssignmentInterface_List_Call {
+func (_c *MockWorkspaceAssignmentInterface_List_Call) Run(run func(ctx context.Context, request iam.GetWorkspacePermissionAssignments)) *MockWorkspaceAssignmentInterface_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(iam.ListWorkspaceAssignmentRequest))
+		run(args[0].(context.Context), args[1].(iam.GetWorkspacePermissionAssignments))
 	})
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_List_Call) Return(_a0 listing.Iterator[iam.PermissionAssignment]) *MockWorkspaceAssignmentInterface_List_Call {
+func (_c *MockWorkspaceAssignmentInterface_List_Call) Return(_a0 listing.Iterator[iam.WorkspacePermissionAssignmentOutput]) *MockWorkspaceAssignmentInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_List_Call) RunAndReturn(run func(context.Context, iam.ListWorkspaceAssignmentRequest) listing.Iterator[iam.PermissionAssignment]) *MockWorkspaceAssignmentInterface_List_Call {
+func (_c *MockWorkspaceAssignmentInterface_List_Call) RunAndReturn(run func(context.Context, iam.GetWorkspacePermissionAssignments) listing.Iterator[iam.WorkspacePermissionAssignmentOutput]) *MockWorkspaceAssignmentInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListAll provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceAssignmentInterface) ListAll(ctx context.Context, request iam.ListWorkspaceAssignmentRequest) ([]iam.PermissionAssignment, error) {
+func (_m *MockWorkspaceAssignmentInterface) ListAll(ctx context.Context, request iam.GetWorkspacePermissionAssignments) ([]iam.WorkspacePermissionAssignmentOutput, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
 	}
 
-	var r0 []iam.PermissionAssignment
+	var r0 []iam.WorkspacePermissionAssignmentOutput
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, iam.ListWorkspaceAssignmentRequest) ([]iam.PermissionAssignment, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.GetWorkspacePermissionAssignments) ([]iam.WorkspacePermissionAssignmentOutput, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, iam.ListWorkspaceAssignmentRequest) []iam.PermissionAssignment); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.GetWorkspacePermissionAssignments) []iam.WorkspacePermissionAssignmentOutput); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]iam.PermissionAssignment)
+			r0 = ret.Get(0).([]iam.WorkspacePermissionAssignmentOutput)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, iam.ListWorkspaceAssignmentRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, iam.GetWorkspacePermissionAssignments) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -370,46 +370,46 @@ type MockWorkspaceAssignmentInterface_ListAll_Call struct {
 
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request iam.ListWorkspaceAssignmentRequest
+//   - request iam.GetWorkspacePermissionAssignments
 func (_e *MockWorkspaceAssignmentInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockWorkspaceAssignmentInterface_ListAll_Call {
 	return &MockWorkspaceAssignmentInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
 }
 
-func (_c *MockWorkspaceAssignmentInterface_ListAll_Call) Run(run func(ctx context.Context, request iam.ListWorkspaceAssignmentRequest)) *MockWorkspaceAssignmentInterface_ListAll_Call {
+func (_c *MockWorkspaceAssignmentInterface_ListAll_Call) Run(run func(ctx context.Context, request iam.GetWorkspacePermissionAssignments)) *MockWorkspaceAssignmentInterface_ListAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(iam.ListWorkspaceAssignmentRequest))
+		run(args[0].(context.Context), args[1].(iam.GetWorkspacePermissionAssignments))
 	})
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_ListAll_Call) Return(_a0 []iam.PermissionAssignment, _a1 error) *MockWorkspaceAssignmentInterface_ListAll_Call {
+func (_c *MockWorkspaceAssignmentInterface_ListAll_Call) Return(_a0 []iam.WorkspacePermissionAssignmentOutput, _a1 error) *MockWorkspaceAssignmentInterface_ListAll_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_ListAll_Call) RunAndReturn(run func(context.Context, iam.ListWorkspaceAssignmentRequest) ([]iam.PermissionAssignment, error)) *MockWorkspaceAssignmentInterface_ListAll_Call {
+func (_c *MockWorkspaceAssignmentInterface_ListAll_Call) RunAndReturn(run func(context.Context, iam.GetWorkspacePermissionAssignments) ([]iam.WorkspacePermissionAssignmentOutput, error)) *MockWorkspaceAssignmentInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListByWorkspaceId provides a mock function with given fields: ctx, workspaceId
-func (_m *MockWorkspaceAssignmentInterface) ListByWorkspaceId(ctx context.Context, workspaceId int64) (*iam.PermissionAssignments, error) {
+func (_m *MockWorkspaceAssignmentInterface) ListByWorkspaceId(ctx context.Context, workspaceId int64) (*iam.GetWorkspacePermissionAssignmentsResponse, error) {
 	ret := _m.Called(ctx, workspaceId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListByWorkspaceId")
 	}
 
-	var r0 *iam.PermissionAssignments
+	var r0 *iam.GetWorkspacePermissionAssignmentsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) (*iam.PermissionAssignments, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (*iam.GetWorkspacePermissionAssignmentsResponse, error)); ok {
 		return rf(ctx, workspaceId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) *iam.PermissionAssignments); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) *iam.GetWorkspacePermissionAssignmentsResponse); ok {
 		r0 = rf(ctx, workspaceId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*iam.PermissionAssignments)
+			r0 = ret.Get(0).(*iam.GetWorkspacePermissionAssignmentsResponse)
 		}
 	}
 
@@ -441,38 +441,38 @@ func (_c *MockWorkspaceAssignmentInterface_ListByWorkspaceId_Call) Run(run func(
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_ListByWorkspaceId_Call) Return(_a0 *iam.PermissionAssignments, _a1 error) *MockWorkspaceAssignmentInterface_ListByWorkspaceId_Call {
+func (_c *MockWorkspaceAssignmentInterface_ListByWorkspaceId_Call) Return(_a0 *iam.GetWorkspacePermissionAssignmentsResponse, _a1 error) *MockWorkspaceAssignmentInterface_ListByWorkspaceId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_ListByWorkspaceId_Call) RunAndReturn(run func(context.Context, int64) (*iam.PermissionAssignments, error)) *MockWorkspaceAssignmentInterface_ListByWorkspaceId_Call {
+func (_c *MockWorkspaceAssignmentInterface_ListByWorkspaceId_Call) RunAndReturn(run func(context.Context, int64) (*iam.GetWorkspacePermissionAssignmentsResponse, error)) *MockWorkspaceAssignmentInterface_ListByWorkspaceId_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceAssignmentInterface) Update(ctx context.Context, request iam.UpdateWorkspaceAssignments) (*iam.PermissionAssignment, error) {
+func (_m *MockWorkspaceAssignmentInterface) Update(ctx context.Context, request iam.UpdateWorkspacePermissionAssignment) (*iam.UpdateWorkspacePermissionAssignmentResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 *iam.PermissionAssignment
+	var r0 *iam.UpdateWorkspacePermissionAssignmentResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, iam.UpdateWorkspaceAssignments) (*iam.PermissionAssignment, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.UpdateWorkspacePermissionAssignment) (*iam.UpdateWorkspacePermissionAssignmentResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, iam.UpdateWorkspaceAssignments) *iam.PermissionAssignment); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.UpdateWorkspacePermissionAssignment) *iam.UpdateWorkspacePermissionAssignmentResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*iam.PermissionAssignment)
+			r0 = ret.Get(0).(*iam.UpdateWorkspacePermissionAssignmentResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, iam.UpdateWorkspaceAssignments) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, iam.UpdateWorkspacePermissionAssignment) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -488,24 +488,24 @@ type MockWorkspaceAssignmentInterface_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request iam.UpdateWorkspaceAssignments
+//   - request iam.UpdateWorkspacePermissionAssignment
 func (_e *MockWorkspaceAssignmentInterface_Expecter) Update(ctx interface{}, request interface{}) *MockWorkspaceAssignmentInterface_Update_Call {
 	return &MockWorkspaceAssignmentInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
 }
 
-func (_c *MockWorkspaceAssignmentInterface_Update_Call) Run(run func(ctx context.Context, request iam.UpdateWorkspaceAssignments)) *MockWorkspaceAssignmentInterface_Update_Call {
+func (_c *MockWorkspaceAssignmentInterface_Update_Call) Run(run func(ctx context.Context, request iam.UpdateWorkspacePermissionAssignment)) *MockWorkspaceAssignmentInterface_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(iam.UpdateWorkspaceAssignments))
+		run(args[0].(context.Context), args[1].(iam.UpdateWorkspacePermissionAssignment))
 	})
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_Update_Call) Return(_a0 *iam.PermissionAssignment, _a1 error) *MockWorkspaceAssignmentInterface_Update_Call {
+func (_c *MockWorkspaceAssignmentInterface_Update_Call) Return(_a0 *iam.UpdateWorkspacePermissionAssignmentResponse, _a1 error) *MockWorkspaceAssignmentInterface_Update_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceAssignmentInterface_Update_Call) RunAndReturn(run func(context.Context, iam.UpdateWorkspaceAssignments) (*iam.PermissionAssignment, error)) *MockWorkspaceAssignmentInterface_Update_Call {
+func (_c *MockWorkspaceAssignmentInterface_Update_Call) RunAndReturn(run func(context.Context, iam.UpdateWorkspacePermissionAssignment) (*iam.UpdateWorkspacePermissionAssignmentResponse, error)) *MockWorkspaceAssignmentInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -107,11 +107,10 @@ type ClusterPoliciesService interface {
 // manually terminate and restart an all-purpose cluster. Multiple users can
 // share such clusters to do collaborative interactive analysis.
 //
-// IMPORTANT: Databricks retains cluster configuration information for up to 200
-// all-purpose clusters terminated in the last 30 days and up to 30 job clusters
-// recently terminated by the job scheduler. To keep an all-purpose cluster
-// configuration even after it has been terminated for more than 30 days, an
-// administrator can pin a cluster to the cluster list.
+// IMPORTANT: Databricks retains cluster configuration information for
+// terminated clusters for 30 days. To keep an all-purpose cluster configuration
+// even after it has been terminated for more than 30 days, an administrator can
+// pin a cluster to the cluster list.
 type ClustersService interface {
 
 	// Change cluster owner.
@@ -185,20 +184,13 @@ type ClustersService interface {
 	// their root object.
 	GetPermissions(ctx context.Context, request GetClusterPermissionsRequest) (*ClusterPermissions, error)
 
-	// List all clusters.
+	// List clusters.
 	//
-	// Return information about all pinned clusters, active clusters, up to 200
-	// of the most recently terminated all-purpose clusters in the past 30 days,
-	// and up to 30 of the most recently terminated job clusters in the past 30
-	// days.
+	// Return information about all pinned and active clusters, and all clusters
+	// terminated within the last 30 days. Clusters terminated prior to this
+	// period are not included.
 	//
-	// For example, if there is 1 pinned cluster, 4 active clusters, 45
-	// terminated all-purpose clusters in the past 30 days, and 50 terminated
-	// job clusters in the past 30 days, then this API returns the 1 pinned
-	// cluster, 4 active clusters, all 45 terminated all-purpose clusters, and
-	// the 30 most recently terminated job clusters.
-	//
-	// Use ListAll() to get all ClusterDetails instances
+	// Use ListAll() to get all ClusterDetails instances, which will iterate over every result page.
 	List(ctx context.Context, request ListClustersRequest) (*ListClustersResponse, error)
 
 	// List node types.
@@ -282,7 +274,8 @@ type ClustersService interface {
 }
 
 // This API allows execution of Python, Scala, SQL, or R commands on running
-// Databricks Clusters.
+// Databricks Clusters. This API only supports (classic) all-purpose clusters.
+// Serverless compute is not supported.
 type CommandExecutionService interface {
 
 	// Cancel a command.

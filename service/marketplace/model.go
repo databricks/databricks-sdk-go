@@ -30,8 +30,6 @@ const AssetTypeAssetTypeModel AssetType = `ASSET_TYPE_MODEL`
 
 const AssetTypeAssetTypeNotebook AssetType = `ASSET_TYPE_NOTEBOOK`
 
-const AssetTypeAssetTypeUnspecified AssetType = `ASSET_TYPE_UNSPECIFIED`
-
 // String representation for [fmt.Print]
 func (f *AssetType) String() string {
 	return string(*f)
@@ -40,11 +38,11 @@ func (f *AssetType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AssetType) Set(v string) error {
 	switch v {
-	case `ASSET_TYPE_DATA_TABLE`, `ASSET_TYPE_GIT_REPO`, `ASSET_TYPE_MEDIA`, `ASSET_TYPE_MODEL`, `ASSET_TYPE_NOTEBOOK`, `ASSET_TYPE_UNSPECIFIED`:
+	case `ASSET_TYPE_DATA_TABLE`, `ASSET_TYPE_GIT_REPO`, `ASSET_TYPE_MEDIA`, `ASSET_TYPE_MODEL`, `ASSET_TYPE_NOTEBOOK`:
 		*f = AssetType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ASSET_TYPE_DATA_TABLE", "ASSET_TYPE_GIT_REPO", "ASSET_TYPE_MEDIA", "ASSET_TYPE_MODEL", "ASSET_TYPE_NOTEBOOK", "ASSET_TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ASSET_TYPE_DATA_TABLE", "ASSET_TYPE_GIT_REPO", "ASSET_TYPE_MEDIA", "ASSET_TYPE_MODEL", "ASSET_TYPE_NOTEBOOK"`, v)
 	}
 }
 
@@ -637,9 +635,9 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 }
 
 type FileParent struct {
-	FileParentType FileParentType `json:"file_parent_type,omitempty"`
+	FileParentType FileParentType `json:"file_parent_type,omitempty" url:"file_parent_type,omitempty"`
 	// TODO make the following fields required
-	ParentId string `json:"parent_id,omitempty"`
+	ParentId string `json:"parent_id,omitempty" url:"parent_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -708,31 +706,6 @@ func (f *FileStatus) Set(v string) error {
 // Type always returns FileStatus to satisfy [pflag.Value] interface
 func (f *FileStatus) Type() string {
 	return "FileStatus"
-}
-
-type FilterType string
-
-const FilterTypeMetastore FilterType = `METASTORE`
-
-// String representation for [fmt.Print]
-func (f *FilterType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *FilterType) Set(v string) error {
-	switch v {
-	case `METASTORE`:
-		*f = FilterType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "METASTORE"`, v)
-	}
-}
-
-// Type always returns FilterType to satisfy [pflag.Value] interface
-func (f *FilterType) Type() string {
-	return "FilterType"
 }
 
 type FulfillmentType string
@@ -1274,8 +1247,6 @@ type ListListingsRequest struct {
 	Assets []AssetType `json:"-" url:"assets,omitempty"`
 	// Matches any of the following categories
 	Categories []Category `json:"-" url:"categories,omitempty"`
-
-	IsAscending bool `json:"-" url:"is_ascending,omitempty"`
 	// Filters each listing based on if it is free.
 	IsFree bool `json:"-" url:"is_free,omitempty"`
 	// Filters each listing based on if it is a private exchange.
@@ -1288,8 +1259,6 @@ type ListListingsRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// Matches any of the following provider ids
 	ProviderIds []string `json:"-" url:"provider_ids,omitempty"`
-	// Criteria for sorting the resulting set of listings.
-	SortBy SortBy `json:"-" url:"sort_by,omitempty"`
 	// Matches any of the following tags
 	Tags []ListingTag `json:"-" url:"tags,omitempty"`
 
@@ -1378,9 +1347,6 @@ type Listing struct {
 	Detail *ListingDetail `json:"detail,omitempty"`
 
 	Id string `json:"id,omitempty"`
-	// we can not use just ProviderListingSummary since we already have same
-	// name on entity side of the state
-	ProviderSummary *ProviderListingSummaryInfo `json:"provider_summary,omitempty"`
 	// Next Number: 26
 	Summary ListingSummary `json:"summary"`
 
@@ -1469,9 +1435,6 @@ type ListingFulfillment struct {
 }
 
 type ListingSetting struct {
-	// filters are joined with `or` conjunction.
-	Filters []VisibilityFilter `json:"filters,omitempty"`
-
 	Visibility Visibility `json:"visibility,omitempty"`
 }
 
@@ -1551,8 +1514,6 @@ type ListingSummary struct {
 
 	ListingType ListingType `json:"listingType"`
 
-	MetastoreId string `json:"metastore_id,omitempty"`
-
 	Name string `json:"name"`
 
 	ProviderId string `json:"provider_id,omitempty"`
@@ -1602,8 +1563,6 @@ const ListingTagTypeListingTagTypeLanguage ListingTagType = `LISTING_TAG_TYPE_LA
 
 const ListingTagTypeListingTagTypeTask ListingTagType = `LISTING_TAG_TYPE_TASK`
 
-const ListingTagTypeListingTagTypeUnspecified ListingTagType = `LISTING_TAG_TYPE_UNSPECIFIED`
-
 // String representation for [fmt.Print]
 func (f *ListingTagType) String() string {
 	return string(*f)
@@ -1612,11 +1571,11 @@ func (f *ListingTagType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ListingTagType) Set(v string) error {
 	switch v {
-	case `LISTING_TAG_TYPE_LANGUAGE`, `LISTING_TAG_TYPE_TASK`, `LISTING_TAG_TYPE_UNSPECIFIED`:
+	case `LISTING_TAG_TYPE_LANGUAGE`, `LISTING_TAG_TYPE_TASK`:
 		*f = ListingTagType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "LISTING_TAG_TYPE_LANGUAGE", "LISTING_TAG_TYPE_TASK", "LISTING_TAG_TYPE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "LISTING_TAG_TYPE_LANGUAGE", "LISTING_TAG_TYPE_TASK"`, v)
 	}
 }
 
@@ -1759,53 +1718,6 @@ type ProviderAnalyticsDashboard struct {
 	Id string `json:"id"`
 }
 
-type ProviderIconFile struct {
-	IconFileId string `json:"icon_file_id,omitempty"`
-
-	IconFilePath string `json:"icon_file_path,omitempty"`
-
-	IconType ProviderIconType `json:"icon_type,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ProviderIconFile) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ProviderIconFile) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type ProviderIconType string
-
-const ProviderIconTypeDark ProviderIconType = `DARK`
-
-const ProviderIconTypePrimary ProviderIconType = `PRIMARY`
-
-const ProviderIconTypeProviderIconTypeUnspecified ProviderIconType = `PROVIDER_ICON_TYPE_UNSPECIFIED`
-
-// String representation for [fmt.Print]
-func (f *ProviderIconType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ProviderIconType) Set(v string) error {
-	switch v {
-	case `DARK`, `PRIMARY`, `PROVIDER_ICON_TYPE_UNSPECIFIED`:
-		*f = ProviderIconType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "DARK", "PRIMARY", "PROVIDER_ICON_TYPE_UNSPECIFIED"`, v)
-	}
-}
-
-// Type always returns ProviderIconType to satisfy [pflag.Value] interface
-func (f *ProviderIconType) Type() string {
-	return "ProviderIconType"
-}
-
 type ProviderInfo struct {
 	BusinessContactEmail string `json:"business_contact_email"`
 
@@ -1843,26 +1755,6 @@ func (s *ProviderInfo) UnmarshalJSON(b []byte) error {
 }
 
 func (s ProviderInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// we can not use just ProviderListingSummary since we already have same name on
-// entity side of the state
-type ProviderListingSummaryInfo struct {
-	Description string `json:"description,omitempty"`
-
-	IconFiles []ProviderIconFile `json:"icon_files,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ProviderListingSummaryInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ProviderListingSummaryInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1911,8 +1803,6 @@ type SearchListingsRequest struct {
 	// Matches any of the following categories
 	Categories []Category `json:"-" url:"categories,omitempty"`
 
-	IsAscending bool `json:"-" url:"is_ascending,omitempty"`
-
 	IsFree bool `json:"-" url:"is_free,omitempty"`
 
 	IsPrivateExchange bool `json:"-" url:"is_private_exchange,omitempty"`
@@ -1924,8 +1814,6 @@ type SearchListingsRequest struct {
 	ProviderIds []string `json:"-" url:"provider_ids,omitempty"`
 	// Fuzzy matches query
 	Query string `json:"-" url:"query"`
-
-	SortBy SortBy `json:"-" url:"sort_by,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1976,37 +1864,6 @@ func (s *SharedDataObject) UnmarshalJSON(b []byte) error {
 
 func (s SharedDataObject) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type SortBy string
-
-const SortBySortByDate SortBy = `SORT_BY_DATE`
-
-const SortBySortByRelevance SortBy = `SORT_BY_RELEVANCE`
-
-const SortBySortByTitle SortBy = `SORT_BY_TITLE`
-
-const SortBySortByUnspecified SortBy = `SORT_BY_UNSPECIFIED`
-
-// String representation for [fmt.Print]
-func (f *SortBy) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *SortBy) Set(v string) error {
-	switch v {
-	case `SORT_BY_DATE`, `SORT_BY_RELEVANCE`, `SORT_BY_TITLE`, `SORT_BY_UNSPECIFIED`:
-		*f = SortBy(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "SORT_BY_DATE", "SORT_BY_RELEVANCE", "SORT_BY_TITLE", "SORT_BY_UNSPECIFIED"`, v)
-	}
-}
-
-// Type always returns SortBy to satisfy [pflag.Value] interface
-func (f *SortBy) Type() string {
-	return "SortBy"
 }
 
 type TokenDetail struct {
@@ -2212,20 +2069,4 @@ func (f *Visibility) Set(v string) error {
 // Type always returns Visibility to satisfy [pflag.Value] interface
 func (f *Visibility) Type() string {
 	return "Visibility"
-}
-
-type VisibilityFilter struct {
-	FilterType FilterType `json:"filterType,omitempty"`
-
-	FilterValue string `json:"filterValue,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *VisibilityFilter) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s VisibilityFilter) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
