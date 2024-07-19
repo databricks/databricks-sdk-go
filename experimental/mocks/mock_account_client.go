@@ -54,6 +54,7 @@ func NewMockAccountClient(t interface {
 			VpcEndpoints:            provisioning.NewMockVpcEndpointsInterface(t),
 			WorkspaceAssignment:     iam.NewMockWorkspaceAssignmentInterface(t),
 			Workspaces:              provisioning.NewMockWorkspacesInterface(t),
+			Budgets:                 billing.NewMockBudgetsInterface(t),
 		},
 	}
 
@@ -283,6 +284,14 @@ func (m *MockAccountClient) GetMockWorkspacesAPI() *provisioning.MockWorkspacesI
 	api, ok := m.AccountClient.Workspaces.(*provisioning.MockWorkspacesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Workspaces to be *provisioning.MockWorkspacesInterface, actual was %T", m.AccountClient.Workspaces))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockbudgetsAPI() *billing.MockBudgetsInterface {
+	api, ok := m.AccountClient.Budgets.(*billing.MockBudgetsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Budgets to be *billing.MockBudgetsInterface, actual was %T", m.AccountClient.Budgets))
 	}
 	return api
 }

@@ -24,6 +24,58 @@ func (a *billableUsageImpl) Download(ctx context.Context, request DownloadReques
 	return &downloadResponse, err
 }
 
+// unexported type that holds implementations of just budgets API methods
+type budgetsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurationRequest) (*CreateBudgetConfigurationResponse, error) {
+	var createBudgetConfigurationResponse CreateBudgetConfigurationResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createBudgetConfigurationResponse)
+	return &createBudgetConfigurationResponse, err
+}
+
+func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error {
+	var deleteBudgetConfigurationResponse DeleteBudgetConfigurationResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteBudgetConfigurationResponse)
+	return err
+}
+
+func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error) {
+	var getBudgetConfigurationResponse GetBudgetConfigurationResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getBudgetConfigurationResponse)
+	return &getBudgetConfigurationResponse, err
+}
+
+func (a *budgetsImpl) List(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
+	var listBudgetConfigurationsResponse ListBudgetConfigurationsResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listBudgetConfigurationsResponse)
+	return &listBudgetConfigurationsResponse, err
+}
+
+func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error) {
+	var updateBudgetConfigurationResponse UpdateBudgetConfigurationResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateBudgetConfigurationResponse)
+	return &updateBudgetConfigurationResponse, err
+}
+
 // unexported type that holds implementations of just LogDelivery API methods
 type logDeliveryImpl struct {
 	client *client.DatabricksClient

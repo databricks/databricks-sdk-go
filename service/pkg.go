@@ -237,6 +237,8 @@
 // - [settings.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
 //
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
+//
+// - [billing.BudgetsAPI]: These APIs manage budget configurations for this account.
 package service
 
 import (
@@ -384,4 +386,5 @@ var (
 	_ *catalog.WorkspaceBindingsAPI                       = nil
 	_ *settings.WorkspaceConfAPI                          = nil
 	_ *provisioning.WorkspacesAPI                         = nil
+	_ *billing.BudgetsAPI                                 = nil
 )

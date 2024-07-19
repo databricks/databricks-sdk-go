@@ -9,6 +9,326 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+type ActionConfiguration struct {
+	// Databricks action configuration ID.
+	ActionConfigurationId string `json:"action_configuration_id,omitempty"`
+	// The type of the action.
+	ActionType ActionConfigurationType `json:"action_type,omitempty"`
+	// Target for the action. For example, an email address.
+	Target string `json:"target,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ActionConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ActionConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ActionConfigurationType string
+
+const ActionConfigurationTypeEmailNotification ActionConfigurationType = `EMAIL_NOTIFICATION`
+
+// String representation for [fmt.Print]
+func (f *ActionConfigurationType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ActionConfigurationType) Set(v string) error {
+	switch v {
+	case `EMAIL_NOTIFICATION`:
+		*f = ActionConfigurationType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EMAIL_NOTIFICATION"`, v)
+	}
+}
+
+// Type always returns ActionConfigurationType to satisfy [pflag.Value] interface
+func (f *ActionConfigurationType) Type() string {
+	return "ActionConfigurationType"
+}
+
+type AlertConfiguration struct {
+	// Configured actions for this alert. These define what happens when an
+	// alert enters a triggered state.
+	ActionConfigurations []ActionConfiguration `json:"action_configurations,omitempty"`
+	// Databricks alert configuration ID.
+	AlertConfigurationId string `json:"alert_configuration_id,omitempty"`
+	// The threshold for the budget alert to determine if it is in a triggered
+	// state. The number is evaluated based on `quantity_type`.
+	QuantityThreshold string `json:"quantity_threshold,omitempty"`
+	// The way to calculate cost for this budget alert. This is what
+	// `quantity_threshold` is measured in.
+	QuantityType AlertConfigurationQuantityType `json:"quantity_type,omitempty"`
+	// The time window of usage data for the budget.
+	TimePeriod AlertConfigurationTimePeriod `json:"time_period,omitempty"`
+	// The evaluation method to determine when this budget alert is in a
+	// triggered state.
+	TriggerType AlertConfigurationTriggerType `json:"trigger_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AlertConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AlertConfigurationQuantityType string
+
+const AlertConfigurationQuantityTypeListPriceDollarsUsd AlertConfigurationQuantityType = `LIST_PRICE_DOLLARS_USD`
+
+// String representation for [fmt.Print]
+func (f *AlertConfigurationQuantityType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AlertConfigurationQuantityType) Set(v string) error {
+	switch v {
+	case `LIST_PRICE_DOLLARS_USD`:
+		*f = AlertConfigurationQuantityType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "LIST_PRICE_DOLLARS_USD"`, v)
+	}
+}
+
+// Type always returns AlertConfigurationQuantityType to satisfy [pflag.Value] interface
+func (f *AlertConfigurationQuantityType) Type() string {
+	return "AlertConfigurationQuantityType"
+}
+
+type AlertConfigurationTimePeriod string
+
+const AlertConfigurationTimePeriodMonth AlertConfigurationTimePeriod = `MONTH`
+
+// String representation for [fmt.Print]
+func (f *AlertConfigurationTimePeriod) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AlertConfigurationTimePeriod) Set(v string) error {
+	switch v {
+	case `MONTH`:
+		*f = AlertConfigurationTimePeriod(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MONTH"`, v)
+	}
+}
+
+// Type always returns AlertConfigurationTimePeriod to satisfy [pflag.Value] interface
+func (f *AlertConfigurationTimePeriod) Type() string {
+	return "AlertConfigurationTimePeriod"
+}
+
+type AlertConfigurationTriggerType string
+
+const AlertConfigurationTriggerTypeCumulativeSpendingExceeded AlertConfigurationTriggerType = `CUMULATIVE_SPENDING_EXCEEDED`
+
+// String representation for [fmt.Print]
+func (f *AlertConfigurationTriggerType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AlertConfigurationTriggerType) Set(v string) error {
+	switch v {
+	case `CUMULATIVE_SPENDING_EXCEEDED`:
+		*f = AlertConfigurationTriggerType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CUMULATIVE_SPENDING_EXCEEDED"`, v)
+	}
+}
+
+// Type always returns AlertConfigurationTriggerType to satisfy [pflag.Value] interface
+func (f *AlertConfigurationTriggerType) Type() string {
+	return "AlertConfigurationTriggerType"
+}
+
+type BudgetConfiguration struct {
+	// Databricks account ID.
+	AccountId string `json:"account_id,omitempty"`
+	// Alerts to configure when this budget is in a triggered state. Budgets
+	// must have exactly one alert configuration.
+	AlertConfigurations []AlertConfiguration `json:"alert_configurations,omitempty"`
+	// Databricks budget configuration ID.
+	BudgetConfigurationId string `json:"budget_configuration_id,omitempty"`
+	// Creation time of this budget configuration.
+	CreateTime int64 `json:"create_time,omitempty"`
+	// Human-readable name of budget configuration. Max Length: 128
+	DisplayName string `json:"display_name,omitempty"`
+	// Configured filters for this budget. These are applied to your account's
+	// usage to limit the scope of what is considered for this budget. Leave
+	// empty to include all usage for this account. All provided filters must be
+	// matched for usage to be included.
+	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	// Update time of this budget configuration.
+	UpdateTime int64 `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BudgetConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BudgetConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type BudgetConfigurationFilter struct {
+	// A list of tag keys and values that will limit the budget to usage that
+	// includes those specific custom tags. Tags are case-sensitive and should
+	// be entered exactly as they appear in your usage data.
+	Tags []BudgetConfigurationFilterTagClause `json:"tags,omitempty"`
+	// If provided, usage must match with the provided Databricks workspace IDs.
+	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause `json:"workspace_id,omitempty"`
+}
+
+type BudgetConfigurationFilterClause struct {
+	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
+
+	Values []string `json:"values,omitempty"`
+}
+
+type BudgetConfigurationFilterOperator string
+
+const BudgetConfigurationFilterOperatorIn BudgetConfigurationFilterOperator = `IN`
+
+// String representation for [fmt.Print]
+func (f *BudgetConfigurationFilterOperator) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *BudgetConfigurationFilterOperator) Set(v string) error {
+	switch v {
+	case `IN`:
+		*f = BudgetConfigurationFilterOperator(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "IN"`, v)
+	}
+}
+
+// Type always returns BudgetConfigurationFilterOperator to satisfy [pflag.Value] interface
+func (f *BudgetConfigurationFilterOperator) Type() string {
+	return "BudgetConfigurationFilterOperator"
+}
+
+type BudgetConfigurationFilterTagClause struct {
+	Key string `json:"key,omitempty"`
+
+	Value *BudgetConfigurationFilterClause `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BudgetConfigurationFilterTagClause) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BudgetConfigurationFilterTagClause) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type BudgetConfigurationFilterWorkspaceIdClause struct {
+	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
+
+	Values []int64 `json:"values,omitempty"`
+}
+
+type CreateBudgetConfigurationBudget struct {
+	// Databricks account ID.
+	AccountId string `json:"account_id,omitempty"`
+	// Alerts to configure when this budget is in a triggered state. Budgets
+	// must have exactly one alert configuration.
+	AlertConfigurations []CreateBudgetConfigurationBudgetAlertConfigurations `json:"alert_configurations,omitempty"`
+	// Human-readable name of budget configuration. Max Length: 128
+	DisplayName string `json:"display_name,omitempty"`
+	// Configured filters for this budget. These are applied to your account's
+	// usage to limit the scope of what is considered for this budget. Leave
+	// empty to include all usage for this account. All provided filters must be
+	// matched for usage to be included.
+	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateBudgetConfigurationBudgetActionConfigurations struct {
+	// The type of the action.
+	ActionType ActionConfigurationType `json:"action_type,omitempty"`
+	// Target for the action. For example, an email address.
+	Target string `json:"target,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateBudgetConfigurationBudgetActionConfigurations) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateBudgetConfigurationBudgetActionConfigurations) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateBudgetConfigurationBudgetAlertConfigurations struct {
+	// Configured actions for this alert. These define what happens when an
+	// alert enters a triggered state.
+	ActionConfigurations []CreateBudgetConfigurationBudgetActionConfigurations `json:"action_configurations,omitempty"`
+	// The threshold for the budget alert to determine if it is in a triggered
+	// state. The number is evaluated based on `quantity_type`.
+	QuantityThreshold string `json:"quantity_threshold,omitempty"`
+	// The way to calculate cost for this budget alert. This is what
+	// `quantity_threshold` is measured in.
+	QuantityType AlertConfigurationQuantityType `json:"quantity_type,omitempty"`
+	// The time window of usage data for the budget.
+	TimePeriod AlertConfigurationTimePeriod `json:"time_period,omitempty"`
+	// The evaluation method to determine when this budget alert is in a
+	// triggered state.
+	TriggerType AlertConfigurationTriggerType `json:"trigger_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateBudgetConfigurationBudgetAlertConfigurations) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateBudgetConfigurationBudgetAlertConfigurations) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateBudgetConfigurationRequest struct {
+	// Properties of the new budget configuration.
+	Budget CreateBudgetConfigurationBudget `json:"budget"`
+}
+
+type CreateBudgetConfigurationResponse struct {
+	// The created budget configuration.
+	Budget *BudgetConfiguration `json:"budget,omitempty"`
+}
+
 type CreateLogDeliveryConfigurationParams struct {
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
@@ -91,6 +411,15 @@ func (s CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Delete budget
+type DeleteBudgetConfigurationRequest struct {
+	// The Databricks budget configuration ID.
+	BudgetId string `json:"-" url:"-"`
+}
+
+type DeleteBudgetConfigurationResponse struct {
+}
+
 // The status string for log delivery. Possible values are: * `CREATED`: There
 // were no log delivery attempts since the config was created. * `SUCCEEDED`:
 // The latest attempt of log delivery has succeeded completely. *
@@ -169,10 +498,55 @@ type DownloadResponse struct {
 	Contents io.ReadCloser `json:"-"`
 }
 
+// Get budget
+type GetBudgetConfigurationRequest struct {
+	// The Databricks budget configuration ID.
+	BudgetId string `json:"-" url:"-"`
+}
+
+type GetBudgetConfigurationResponse struct {
+	Budget *BudgetConfiguration `json:"budget,omitempty"`
+}
+
 // Get log delivery configuration
 type GetLogDeliveryRequest struct {
 	// Databricks log delivery configuration ID
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
+}
+
+// Get all budgets
+type ListBudgetConfigurationsRequest struct {
+	// A page token received from a previous get all budget configurations call.
+	// This token can be used to retrieve the subsequent page. Requests first
+	// page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListBudgetConfigurationsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListBudgetConfigurationsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListBudgetConfigurationsResponse struct {
+	Budgets []BudgetConfiguration `json:"budgets,omitempty"`
+	// Token which can be sent as `page_token` to retrieve the next page of
+	// results. If this field is omitted, there are no subsequent budgets.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListBudgetConfigurationsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListBudgetConfigurationsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get all log delivery configurations
@@ -431,6 +805,46 @@ func (f *OutputFormat) Type() string {
 }
 
 type PatchStatusResponse struct {
+}
+
+type UpdateBudgetConfigurationBudget struct {
+	// Databricks account ID.
+	AccountId string `json:"account_id,omitempty"`
+	// Alerts to configure when this budget is in a triggered state. Budgets
+	// must have exactly one alert configuration.
+	AlertConfigurations []AlertConfiguration `json:"alert_configurations,omitempty"`
+	// Databricks budget configuration ID.
+	BudgetConfigurationId string `json:"budget_configuration_id,omitempty"`
+	// Human-readable name of budget configuration. Max Length: 128
+	DisplayName string `json:"display_name,omitempty"`
+	// Configured filters for this budget. These are applied to your account's
+	// usage to limit the scope of what is considered for this budget. Leave
+	// empty to include all usage for this account. All provided filters must be
+	// matched for usage to be included.
+	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateBudgetConfigurationRequest struct {
+	// The updated budget. This will overwrite the budget specified by the
+	// budget ID.
+	Budget UpdateBudgetConfigurationBudget `json:"budget"`
+	// The Databricks budget configuration ID.
+	BudgetId string `json:"-" url:"-"`
+}
+
+type UpdateBudgetConfigurationResponse struct {
+	// The updated budget.
+	Budget *BudgetConfiguration `json:"budget,omitempty"`
 }
 
 type UpdateLogDeliveryConfigurationStatusRequest struct {

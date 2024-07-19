@@ -26,6 +26,44 @@ type BillableUsageService interface {
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 }
 
+// These APIs manage budget configurations for this account. Budgets enable you
+// to monitor usage across your account. You can set up budgets to either track
+// account-wide spending, or apply filters to track the spending of specific
+// teams, projects, or workspaces.
+type BudgetsService interface {
+
+	// Create new budget.
+	//
+	// Create a new budget configuration for an account. For full details, see
+	// https://docs.databricks.com/en/admin/account-settings/budgets.html.
+	Create(ctx context.Context, request CreateBudgetConfigurationRequest) (*CreateBudgetConfigurationResponse, error)
+
+	// Delete budget.
+	//
+	// Deletes a budget configuration for an account. Both account and budget
+	// configuration are specified by ID. This cannot be undone.
+	Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error
+
+	// Get budget.
+	//
+	// Gets a budget configuration for an account. Both account and budget
+	// configuration are specified by ID.
+	Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error)
+
+	// Get all budgets.
+	//
+	// Gets all budgets associated with this account.
+	//
+	// Use ListAll() to get all BudgetConfiguration instances, which will iterate over every result page.
+	List(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error)
+
+	// Modify budget.
+	//
+	// Updates a budget configuration for an account. Both account and budget
+	// configuration are specified by ID.
+	Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error)
+}
+
 // These APIs manage log delivery configurations for this account. The two
 // supported log types for this API are _billable usage logs_ and _audit logs_.
 // This feature is in Public Preview. This feature works with all account ID

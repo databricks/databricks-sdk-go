@@ -14,7 +14,7 @@ type AccountClient struct {
 
 	{{range .Services}}{{if and .IsAccounts (not .HasParent)}}
 	{{.Comment "    // " 80}}
-	{{(.TrimPrefix "account").PascalName}} {{.Package.Name}}.{{.Name}}Interface
+	{{(.TrimPrefix "account").PascalName}} {{.Package.Name}}.{{.PascalName}}Interface
     {{end}}{{end}}
 }
 
@@ -43,7 +43,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		return nil, err
 	}
 	{{range .Services}}{{if and .IsAccounts (not .HasParent) .HasDataPlaneAPI}}
-	{{.CamelName}} := {{.Package.Name}}.New{{.Name}}(apiClient)
+	{{.CamelName}} := {{.Package.Name}}.New{{.PascalName}}(apiClient)
 	{{- end}}{{end}}
 	return &AccountClient{
 		Config: cfg,
@@ -52,9 +52,9 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 				{{- if .HasDataPlaneAPI}}
 					{{(.TrimPrefix "account").PascalName}}: {{.CamelName}},
 				{{- else if .IsDataPlane}}
-					{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.New{{.Name}}(apiClient,  {{.ControlPlaneService.CamelName}}),
+					{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.New{{.PascalName}}(apiClient,  {{.ControlPlaneService.CamelName}}),
 				{{- else }}
-					{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.New{{.Name}}(apiClient),
+					{{(.TrimPrefix "account").PascalName}}: {{.Package.Name}}.New{{.PascalName}}(apiClient),
 				{{- end -}}
 			{{- end -}}
 		{{end}}

@@ -258,6 +258,12 @@ type AccountClient struct {
 	// platform or on a select custom plan that allows multiple workspaces per
 	// account.
 	Workspaces provisioning.WorkspacesInterface
+
+	// These APIs manage budget configurations for this account. Budgets enable
+	// you to monitor usage across your account. You can set up budgets to
+	// either track account-wide spending, or apply filters to track the
+	// spending of specific teams, projects, or workspaces.
+	Budgets billing.BudgetsInterface
 }
 
 var ErrNotAccountClient = errors.New("invalid Databricks Account configuration")
@@ -312,5 +318,6 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		VpcEndpoints:            provisioning.NewVpcEndpoints(apiClient),
 		WorkspaceAssignment:     iam.NewWorkspaceAssignment(apiClient),
 		Workspaces:              provisioning.NewWorkspaces(apiClient),
+		Budgets:                 billing.NewBudgets(apiClient),
 	}, nil
 }

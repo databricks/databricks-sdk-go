@@ -398,6 +398,8 @@ const ChannelNameChannelNamePreview ChannelName = `CHANNEL_NAME_PREVIEW`
 
 const ChannelNameChannelNamePrevious ChannelName = `CHANNEL_NAME_PREVIOUS`
 
+const ChannelNameChannelNameUnspecified ChannelName = `CHANNEL_NAME_UNSPECIFIED`
+
 // String representation for [fmt.Print]
 func (f *ChannelName) String() string {
 	return string(*f)
@@ -406,11 +408,11 @@ func (f *ChannelName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ChannelName) Set(v string) error {
 	switch v {
-	case `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_PREVIOUS`:
+	case `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_PREVIOUS`, `CHANNEL_NAME_UNSPECIFIED`:
 		*f = ChannelName(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CHANNEL_NAME_CURRENT", "CHANNEL_NAME_CUSTOM", "CHANNEL_NAME_PREVIEW", "CHANNEL_NAME_PREVIOUS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CHANNEL_NAME_CURRENT", "CHANNEL_NAME_CUSTOM", "CHANNEL_NAME_PREVIEW", "CHANNEL_NAME_PREVIOUS", "CHANNEL_NAME_UNSPECIFIED"`, v)
 	}
 }
 
