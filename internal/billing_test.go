@@ -80,64 +80,85 @@ func TestMwsAccLogDelivery(t *testing.T) {
 	assert.Equal(t, byId.LogDeliveryConfiguration.ConfigId, byName.ConfigId)
 }
 
-// TODO: Re-Enable after Budgets service is available
-// func TestMwsAccBudgets(t *testing.T) {
-// 	ctx, a := accountTest(t)
-// 	if !a.Config.IsAws() {
-// 		t.SkipNow()
-// 	}
+func TestMwsAccBudgets(t *testing.T) {
+	// Currently, the API returns errors
+	t.SkipNow()
+	ctx, a := accountTest(t)
+	if !a.Config.IsAws() {
+		t.SkipNow()
+	}
 
-// 	// TODO: OpenAPI: x-databricks-sdk-inline on schema
-// 	created, err := a.Budgets.Create(ctx, billing.WrappedBudget{
-// 		Budget: billing.Budget{
-// 			Name:         RandomName("go-sdk-"),
-// 			Filter:       "tag.tagName = 'all'",
-// 			Period:       "1 month",
-// 			StartDate:    "2022-01-01",
-// 			TargetAmount: "100",
-// 			Alerts: []billing.BudgetAlert{
-// 				{
-// 					EmailNotifications: []string{"admin@example.com"},
-// 					MinPercentage:      50,
-// 				},
-// 			},
-// 		},
-// 	})
-// 	require.NoError(t, err)
-// 	defer a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetId)
+	// TODO: OpenAPI: x-databricks-sdk-inline on schema
+	created, err := a.Budgets.Create(ctx, billing.CreateBudgetConfigurationRequest{
+		Budget: billing.CreateBudgetConfigurationBudget{
+			DisplayName: RandomName("go-sdk-"),
+			Filter: &billing.BudgetConfigurationFilter{
+				Tags: []billing.BudgetConfigurationFilterTagClause{
+					{
+						Key: "tagName",
+						Value: &billing.BudgetConfigurationFilterClause{
+							Operator: billing.BudgetConfigurationFilterOperatorIn,
+							Values:   []string{"all"},
+						},
+					},
+				}},
+			AlertConfigurations: []billing.CreateBudgetConfigurationBudgetAlertConfigurations{
+				{
+					TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
+					QuantityType:      billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
+					TriggerType:       billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
+					QuantityThreshold: "100",
+					ActionConfigurations: []billing.CreateBudgetConfigurationBudgetActionConfigurations{
+						{
+							ActionType: billing.ActionConfigurationTypeEmailNotification,
+							Target:     "admin@example.com",
+						},
+					},
+				},
+			},
+		},
+	})
+	require.NoError(t, err)
+	defer a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetConfigurationId)
 
-// 	err = a.Budgets.Update(ctx, billing.WrappedBudget{
-// 		BudgetId: created.Budget.BudgetId,
-// 		Budget: billing.Budget{
-// 			Name:         RandomName("go-sdk-updated-"),
-// 			Filter:       "tag.tagName = 'all'",
-// 			Period:       "1 month",
-// 			StartDate:    "2022-01-01",
-// 			TargetAmount: "100",
-// 			Alerts: []billing.BudgetAlert{
-// 				{
-// 					EmailNotifications: []string{"admin@example.com"},
-// 					MinPercentage:      70,
-// 				},
-// 			},
-// 		},
-// 	})
-// 	require.NoError(t, err)
+	_, err = a.Budgets.Update(ctx, billing.UpdateBudgetConfigurationRequest{
 
-// 	byId, err := a.Budgets.GetByBudgetId(ctx, created.Budget.BudgetId)
-// 	require.NoError(t, err)
-// 	assert.NotEqual(t, created.Budget.Name, byId.Budget.Name)
+		BudgetId: created.Budget.BudgetConfigurationId,
+		Budget: billing.UpdateBudgetConfigurationBudget{
+			DisplayName: RandomName("go-sdk-updated-"),
+			Filter: &billing.BudgetConfigurationFilter{
+				Tags: []billing.BudgetConfigurationFilterTagClause{
+					{
+						Key: "tagName",
+						Value: &billing.BudgetConfigurationFilterClause{
+							Operator: billing.BudgetConfigurationFilterOperatorIn,
+							Values:   []string{"all"},
+						},
+					},
+				}},
+			AlertConfigurations: []billing.AlertConfiguration{
+				{
+					TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
+					QuantityType:      billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
+					TriggerType:       billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
+					QuantityThreshold: "50",
+					ActionConfigurations: []billing.ActionConfiguration{
+						{
+							ActionType: billing.ActionConfigurationTypeEmailNotification,
+							Target:     "admin@example.com",
+						},
+					},
+				},
+			},
+		},
+	})
+	require.NoError(t, err)
 
-// 	byName, err := a.Budgets.GetByName(ctx, byId.Budget.Name)
-// 	require.NoError(t, err)
-// 	assert.Equal(t, byId.Budget.BudgetId, byName.BudgetId)
+	byId, err := a.Budgets.GetByBudgetId(ctx, created.Budget.BudgetConfigurationId)
+	require.NoError(t, err)
+	assert.NotEqual(t, created.Budget.DisplayName, byId.Budget.DisplayName)
 
-// 	all, err := a.Budgets.ListAll(ctx)
-// 	require.NoError(t, err)
-// 	assert.True(t, len(all) >= 1)
-
-// 	names, err := a.Budgets.BudgetWithStatusNameToBudgetIdMap(ctx)
-// 	require.NoError(t, err)
-// 	assert.Equal(t, len(all), len(names))
-// 	assert.Equal(t, created.Budget.BudgetId, names[byId.Budget.Name])
-// }
+	all, err := a.Budgets.ListAll(ctx, billing.ListBudgetConfigurationsRequest{})
+	require.NoError(t, err)
+	assert.True(t, len(all) >= 1)
+}

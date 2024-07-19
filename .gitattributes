@@ -126,6 +126,7 @@ experimental/mocks/service/workspace/mock_secrets_interface.go linguist-generate
 experimental/mocks/service/workspace/mock_workspace_interface.go linguist-generated=true
 service/billing/api.go linguist-generated=true
 service/billing/billable_usage_usage_test.go linguist-generated=true
+service/billing/budgets_usage_test.go linguist-generated=true
 service/billing/impl.go linguist-generated=true
 service/billing/interface.go linguist-generated=true
 service/billing/log_delivery_usage_test.go linguist-generated=true
