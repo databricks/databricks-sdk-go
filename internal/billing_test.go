@@ -81,8 +81,6 @@ func TestMwsAccLogDelivery(t *testing.T) {
 }
 
 func TestMwsAccBudgets(t *testing.T) {
-	// Currently, the API returns errors
-	t.SkipNow()
 	ctx, a := accountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
