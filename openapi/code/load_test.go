@@ -138,3 +138,14 @@ func TestDataPlane(t *testing.T) {
 	require.Equal(t, "get", dataPlane.ConfigMethod)
 	require.Equal(t, "dataplaneInfo", dataPlane.Fields[0])
 }
+
+func TestJobs2Dot2Compatability(t *testing.T) {
+	ctx := context.Background()
+	batch, err := NewFromFile(ctx, "../testdata/spec_jobs_2.2.json")
+	require.NoError(t, err)
+	jobs := batch.packages["jobs"]
+	require.NotNil(t, jobs)
+	require.NotNil(t, jobs.services["Jobs"])
+	require.Equal(t, "/api/2.1/jobs/get", jobs.services["Jobs"].methods["get"].Path)
+	require.Equal(t, "/api/2.2/jobs/runs/submit", jobs.services["Jobs"].methods["submitRun"].Path)
+}

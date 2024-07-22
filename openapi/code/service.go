@@ -490,7 +490,31 @@ func (svc *Service) getPathStyle(op *openapi.Operation) openapi.PathStyle {
 	return openapi.PathStyleRest
 }
 
+var jobs2Dot1Apis = map[string]struct{}{
+	"/api/2.2/jobs/create":    {},
+	"/api/2.2/jobs/update":    {},
+	"/api/2.2/jobs/list":      {},
+	"/api/2.2/jobs/get":       {},
+	"/api/2.2/jobs/reset":     {},
+	"/api/2.2/jobs/runs/list": {},
+}
+
+func (svc *Service) pinJobsApisTo2Dot1(path string) string {
+	if _, ok := jobs2Dot1Apis[path]; ok {
+		return "/api/2.1" + path[8:]
+	}
+	return path
+}
+
 func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) (*Method, error) {
+	// Jobs is releasing the 2.2 API, but it is not yet supported fully in the
+	// SDKs due to new logic needed for creating, updating and getting jumbo
+	// jobs. For now, we pin the jobs API to 2.1, which is safe because those
+	// APIs are completely compatible in terms of structures and features. The
+	// only other difference is the default behavior for job creation, which
+	// skips triggered jobs in 2.1 by default, whereas they are queued by
+	// default in 2.2.
+	path = svc.pinJobsApisTo2Dot1(path)
 	methodName := op.Name()
 	request, reqMimeType, reqBodyField := svc.newRequest(params, op)
 	response, respMimeType, respBodyField, err := svc.newResponse(op)

@@ -1,0 +1,90 @@
+{
+  "openapi": "3.0.0",
+  "tags": [
+    {
+      "name": "Jobs",
+      "x-databricks-package": "jobs",
+      "x-databricks-service": "Jobs"
+    }
+  ],
+  "paths": {
+    "/api/2.2/jobs/get": {
+      "post": {
+        "operationId": "Jobs.get",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetJobRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Status was returned successfully."
+          }
+        },
+        "summary": "Get a job",
+        "tags": [
+          "Jobs"
+        ]
+      }
+    },
+    "/api/2.2/jobs/runs/submit": {
+      "post": {
+        "operationId": "Jobs.submitRun",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Status was returned successfully."
+          }
+        },
+        "summary": "Submit a run",
+        "tags": [
+          "Jobs"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GetJobRequest": {
+        "properties": {
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SubmitRunRequest": {
+        "properties": {
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}
