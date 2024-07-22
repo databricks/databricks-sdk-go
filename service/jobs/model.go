@@ -361,7 +361,7 @@ type CreateJob struct {
 	Continuous *Continuous `json:"continuous,omitempty"`
 	// Deployment information for jobs managed by external sources.
 	Deployment *JobDeployment `json:"deployment,omitempty"`
-	// An optional description for the job. The maximum length is 1024
+	// An optional description for the job. The maximum length is 27700
 	// characters in UTF-8 encoding.
 	Description string `json:"description,omitempty"`
 	// Edit mode of the job.
@@ -1256,7 +1256,7 @@ type JobSettings struct {
 	Continuous *Continuous `json:"continuous,omitempty"`
 	// Deployment information for jobs managed by external sources.
 	Deployment *JobDeployment `json:"deployment,omitempty"`
-	// An optional description for the job. The maximum length is 1024
+	// An optional description for the job. The maximum length is 27700
 	// characters in UTF-8 encoding.
 	Description string `json:"description,omitempty"`
 	// Edit mode of the job.
@@ -1762,8 +1762,6 @@ const PeriodicTriggerConfigurationTimeUnitDays PeriodicTriggerConfigurationTimeU
 
 const PeriodicTriggerConfigurationTimeUnitHours PeriodicTriggerConfigurationTimeUnit = `HOURS`
 
-const PeriodicTriggerConfigurationTimeUnitTimeUnitUnspecified PeriodicTriggerConfigurationTimeUnit = `TIME_UNIT_UNSPECIFIED`
-
 const PeriodicTriggerConfigurationTimeUnitWeeks PeriodicTriggerConfigurationTimeUnit = `WEEKS`
 
 // String representation for [fmt.Print]
@@ -1774,11 +1772,11 @@ func (f *PeriodicTriggerConfigurationTimeUnit) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PeriodicTriggerConfigurationTimeUnit) Set(v string) error {
 	switch v {
-	case `DAYS`, `HOURS`, `TIME_UNIT_UNSPECIFIED`, `WEEKS`:
+	case `DAYS`, `HOURS`, `WEEKS`:
 		*f = PeriodicTriggerConfigurationTimeUnit(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DAYS", "HOURS", "TIME_UNIT_UNSPECIFIED", "WEEKS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DAYS", "HOURS", "WEEKS"`, v)
 	}
 }
 

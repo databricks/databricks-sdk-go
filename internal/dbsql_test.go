@@ -17,35 +17,39 @@ func TestAccQueries(t *testing.T) {
 		t.Skipf("no sql warehouses found")
 	}
 
-	query, err := w.Queries.Create(ctx, sql.QueryPostContent{
-		Name:         RandomName("go-sdk/test/"),
-		DataSourceId: srcs[0].Id,
-		Description:  "test query from Go SDK",
-		Query:        "SHOW TABLES",
+	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
+		Query: &sql.CreateQueryRequestQuery{
+			DisplayName: RandomName("go-sdk/test/"),
+			WarehouseId: srcs[0].WarehouseId,
+			Description: "test query from Go SDK",
+			QueryText:   "SHOW TABLES",
+		},
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = w.Queries.DeleteByQueryId(ctx, query.Id)
+		err = w.Queries.DeleteById(ctx, query.Id)
 		require.NoError(t, err)
 	})
 
-	byId, err := w.Queries.GetByQueryId(ctx, query.Id)
+	byId, err := w.Queries.GetById(ctx, query.Id)
 	require.NoError(t, err)
-	assert.Equal(t, query.Query, byId.Query)
+	assert.Equal(t, query.QueryText, byId.QueryText)
 
-	byName, err := w.Queries.GetByName(ctx, byId.Name)
+	byName, err := w.Queries.GetByDisplayName(ctx, byId.DisplayName)
 	require.NoError(t, err)
 	assert.Equal(t, byId.Id, byName.Id)
 
-	updated, err := w.Queries.Update(ctx, sql.QueryEditContent{
-		QueryId:      query.Id,
-		Name:         RandomName("go-sdk-updated"),
-		DataSourceId: srcs[0].Id,
-		Description:  "UPDATED: test query from Go SDK",
-		Query:        "SELECT 2+2",
+	updated, err := w.Queries.Update(ctx, sql.UpdateQueryRequest{
+		Id: query.Id,
+		Query: &sql.UpdateQueryRequestQuery{
+			DisplayName: RandomName("go-sdk-updated"),
+			Description: "UPDATED: test query from Go SDK",
+			QueryText:   "SELECT 2+2",
+		},
+		UpdateMask: "display_name,description,query_text",
 	})
 	require.NoError(t, err)
-	assert.NotEqual(t, updated.Query, byId.Query)
+	assert.NotEqual(t, updated.QueryText, byId.QueryText)
 }
 
 func TestAccAlerts(t *testing.T) {
@@ -57,53 +61,62 @@ func TestAccAlerts(t *testing.T) {
 		t.Skipf("no sql warehouses found")
 	}
 
-	query, err := w.Queries.Create(ctx, sql.QueryPostContent{
-		Name:         RandomName("go-sdk/test/"),
-		DataSourceId: srcs[0].Id,
-		Description:  "test query from Go SDK",
-		Query:        "SELECT 1",
-	})
-	require.NoError(t, err)
-	defer w.Queries.DeleteByQueryId(ctx, query.Id)
-
-	alert, err := w.Alerts.Create(ctx, sql.CreateAlert{
-		Options: sql.AlertOptions{
-			Column: "1",
-			Op:     "==",
-			Value:  "1",
+	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
+		Query: &sql.CreateQueryRequestQuery{
+			DisplayName: RandomName("go-sdk/test/"),
+			WarehouseId: srcs[0].WarehouseId,
+			Description: "test query from Go SDK",
+			QueryText:   "SELECT 1",
 		},
-		Name:    RandomName("go-sdk-"),
-		QueryId: query.Id,
 	})
 	require.NoError(t, err)
-	defer w.Alerts.DeleteByAlertId(ctx, alert.Id)
+	defer w.Queries.DeleteById(ctx, query.Id)
 
-	err = w.Alerts.Update(ctx, sql.EditAlert{
-		Options: sql.AlertOptions{
-			Column: "1",
-			Op:     "==",
-			Value:  "1",
+	alert, err := w.Alerts.Create(ctx, sql.CreateAlertRequest{
+		Alert: &sql.CreateAlertRequestAlert{
+			Condition: &sql.AlertCondition{
+				Operand: &sql.AlertConditionOperand{
+					Column: &sql.AlertOperandColumn{
+						Name: "1",
+					},
+				},
+				Op: sql.AlertOperatorEqual,
+				Threshold: &sql.AlertConditionThreshold{
+					Value: &sql.AlertOperandValue{
+						DoubleValue: 1,
+					},
+				},
+			},
+			DisplayName: RandomName("go-sdk-"),
+			QueryId:     query.Id,
 		},
-		AlertId: alert.Id,
-		Name:    RandomName("go-sdk-updated-"),
-		QueryId: query.Id,
+	})
+	require.NoError(t, err)
+	defer w.Alerts.DeleteById(ctx, alert.Id)
+
+	_, err = w.Alerts.Update(ctx, sql.UpdateAlertRequest{
+		Id: alert.Id,
+		Alert: &sql.UpdateAlertRequestAlert{
+			DisplayName: RandomName("go-sdk-updated"),
+		},
+		UpdateMask: "display_name",
 	})
 	require.NoError(t, err)
 
-	byId, err := w.Alerts.GetByAlertId(ctx, alert.Id)
+	byId, err := w.Alerts.GetById(ctx, alert.Id)
 	require.NoError(t, err)
 
-	byName, err := w.Alerts.GetByName(ctx, byId.Name)
+	byName, err := w.Alerts.GetByDisplayName(ctx, byId.DisplayName)
 	require.NoError(t, err)
 	assert.Equal(t, byId.Id, byName.Id)
 
-	all, err := w.Alerts.List(ctx)
+	all, err := w.Alerts.ListAll(ctx, sql.ListAlertsRequest{})
 	require.NoError(t, err)
 
-	names, err := w.Alerts.AlertNameToIdMap(ctx)
+	names, err := w.Alerts.ListAlertsResponseAlertDisplayNameToIdMap(ctx, sql.ListAlertsRequest{})
 	require.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
-	assert.Equal(t, alert.Id, names[byId.Name])
+	assert.Equal(t, alert.Id, names[byId.DisplayName])
 }
 
 func TestAccDashboards(t *testing.T) {

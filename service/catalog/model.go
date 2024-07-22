@@ -1459,8 +1459,20 @@ type DeleteResponse struct {
 
 // Delete a schema
 type DeleteSchemaRequest struct {
+	// Force deletion even if the schema is not empty.
+	Force bool `json:"-" url:"force,omitempty"`
 	// Full name of the schema.
 	FullName string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteSchemaRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteSchemaRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a credential
@@ -2103,8 +2115,37 @@ type GetArtifactAllowlistRequest struct {
 type GetBindingsRequest struct {
 	// The name of the securable.
 	SecurableName string `json:"-" url:"-"`
-	// The type of the securable.
-	SecurableType string `json:"-" url:"-"`
+	// The type of the securable to bind to a workspace.
+	SecurableType GetBindingsSecurableType `json:"-" url:"-"`
+}
+
+type GetBindingsSecurableType string
+
+const GetBindingsSecurableTypeCatalog GetBindingsSecurableType = `catalog`
+
+const GetBindingsSecurableTypeExternalLocation GetBindingsSecurableType = `external_location`
+
+const GetBindingsSecurableTypeStorageCredential GetBindingsSecurableType = `storage_credential`
+
+// String representation for [fmt.Print]
+func (f *GetBindingsSecurableType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *GetBindingsSecurableType) Set(v string) error {
+	switch v {
+	case `catalog`, `external_location`, `storage_credential`:
+		*f = GetBindingsSecurableType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "catalog", "external_location", "storage_credential"`, v)
+	}
+}
+
+// Type always returns GetBindingsSecurableType to satisfy [pflag.Value] interface
+func (f *GetBindingsSecurableType) Type() string {
+	return "GetBindingsSecurableType"
 }
 
 // Get Model Version By Alias
@@ -3754,8 +3795,6 @@ const OnlineTableStateOnlineNoPendingUpdate OnlineTableState = `ONLINE_NO_PENDIN
 
 const OnlineTableStateOnlinePipelineFailed OnlineTableState = `ONLINE_PIPELINE_FAILED`
 
-const OnlineTableStateOnlineTableStateUnspecified OnlineTableState = `ONLINE_TABLE_STATE_UNSPECIFIED`
-
 const OnlineTableStateOnlineTriggeredUpdate OnlineTableState = `ONLINE_TRIGGERED_UPDATE`
 
 const OnlineTableStateOnlineUpdatingPipelineResources OnlineTableState = `ONLINE_UPDATING_PIPELINE_RESOURCES`
@@ -3774,11 +3813,11 @@ func (f *OnlineTableState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *OnlineTableState) Set(v string) error {
 	switch v {
-	case `OFFLINE`, `OFFLINE_FAILED`, `ONLINE`, `ONLINE_CONTINUOUS_UPDATE`, `ONLINE_NO_PENDING_UPDATE`, `ONLINE_PIPELINE_FAILED`, `ONLINE_TABLE_STATE_UNSPECIFIED`, `ONLINE_TRIGGERED_UPDATE`, `ONLINE_UPDATING_PIPELINE_RESOURCES`, `PROVISIONING`, `PROVISIONING_INITIAL_SNAPSHOT`, `PROVISIONING_PIPELINE_RESOURCES`:
+	case `OFFLINE`, `OFFLINE_FAILED`, `ONLINE`, `ONLINE_CONTINUOUS_UPDATE`, `ONLINE_NO_PENDING_UPDATE`, `ONLINE_PIPELINE_FAILED`, `ONLINE_TRIGGERED_UPDATE`, `ONLINE_UPDATING_PIPELINE_RESOURCES`, `PROVISIONING`, `PROVISIONING_INITIAL_SNAPSHOT`, `PROVISIONING_PIPELINE_RESOURCES`:
 		*f = OnlineTableState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "OFFLINE", "OFFLINE_FAILED", "ONLINE", "ONLINE_CONTINUOUS_UPDATE", "ONLINE_NO_PENDING_UPDATE", "ONLINE_PIPELINE_FAILED", "ONLINE_TABLE_STATE_UNSPECIFIED", "ONLINE_TRIGGERED_UPDATE", "ONLINE_UPDATING_PIPELINE_RESOURCES", "PROVISIONING", "PROVISIONING_INITIAL_SNAPSHOT", "PROVISIONING_PIPELINE_RESOURCES"`, v)
+		return fmt.Errorf(`value "%s" is not one of "OFFLINE", "OFFLINE_FAILED", "ONLINE", "ONLINE_CONTINUOUS_UPDATE", "ONLINE_NO_PENDING_UPDATE", "ONLINE_PIPELINE_FAILED", "ONLINE_TRIGGERED_UPDATE", "ONLINE_UPDATING_PIPELINE_RESOURCES", "PROVISIONING", "PROVISIONING_INITIAL_SNAPSHOT", "PROVISIONING_PIPELINE_RESOURCES"`, v)
 	}
 }
 
@@ -3925,6 +3964,8 @@ const PrivilegeCreateVolume Privilege = `CREATE_VOLUME`
 
 const PrivilegeExecute Privilege = `EXECUTE`
 
+const PrivilegeManage Privilege = `MANAGE`
+
 const PrivilegeManageAllowlist Privilege = `MANAGE_ALLOWLIST`
 
 const PrivilegeModify Privilege = `MODIFY`
@@ -3971,11 +4012,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -4638,6 +4679,35 @@ type UnassignResponse struct {
 type UpdateAssignmentResponse struct {
 }
 
+type UpdateBindingsSecurableType string
+
+const UpdateBindingsSecurableTypeCatalog UpdateBindingsSecurableType = `catalog`
+
+const UpdateBindingsSecurableTypeExternalLocation UpdateBindingsSecurableType = `external_location`
+
+const UpdateBindingsSecurableTypeStorageCredential UpdateBindingsSecurableType = `storage_credential`
+
+// String representation for [fmt.Print]
+func (f *UpdateBindingsSecurableType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *UpdateBindingsSecurableType) Set(v string) error {
+	switch v {
+	case `catalog`, `external_location`, `storage_credential`:
+		*f = UpdateBindingsSecurableType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "catalog", "external_location", "storage_credential"`, v)
+	}
+}
+
+// Type always returns UpdateBindingsSecurableType to satisfy [pflag.Value] interface
+func (f *UpdateBindingsSecurableType) Type() string {
+	return "UpdateBindingsSecurableType"
+}
+
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -5045,8 +5115,8 @@ type UpdateWorkspaceBindingsParameters struct {
 	Remove []WorkspaceBinding `json:"remove,omitempty"`
 	// The name of the securable.
 	SecurableName string `json:"-" url:"-"`
-	// The type of the securable.
-	SecurableType string `json:"-" url:"-"`
+	// The type of the securable to bind to a workspace.
+	SecurableType UpdateBindingsSecurableType `json:"-" url:"-"`
 }
 
 type ValidateStorageCredential struct {

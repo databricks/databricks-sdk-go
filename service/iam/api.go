@@ -1354,10 +1354,7 @@ type PermissionMigrationInterface interface {
 	Impl() PermissionMigrationService
 
 	// Migrate Permissions.
-	//
-	// Migrate a batch of permissions from a workspace local group to an account
-	// group.
-	MigratePermissions(ctx context.Context, request PermissionMigrationRequest) (*PermissionMigrationResponse, error)
+	MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error)
 }
 
 func NewPermissionMigration(client *client.DatabricksClient) *PermissionMigrationAPI {
@@ -1368,8 +1365,8 @@ func NewPermissionMigration(client *client.DatabricksClient) *PermissionMigratio
 	}
 }
 
-// This spec contains undocumented permission migration APIs used in
-// https://github.com/databrickslabs/ucx.
+// APIs for migrating acl permissions, used only by the ucx tool:
+// https://github.com/databrickslabs/ucx
 type PermissionMigrationAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(PermissionMigrationService)
@@ -1391,10 +1388,7 @@ func (a *PermissionMigrationAPI) Impl() PermissionMigrationService {
 }
 
 // Migrate Permissions.
-//
-// Migrate a batch of permissions from a workspace local group to an account
-// group.
-func (a *PermissionMigrationAPI) MigratePermissions(ctx context.Context, request PermissionMigrationRequest) (*PermissionMigrationResponse, error) {
+func (a *PermissionMigrationAPI) MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error) {
 	return a.impl.MigratePermissions(ctx, request)
 }
 

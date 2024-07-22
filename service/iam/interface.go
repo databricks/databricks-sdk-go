@@ -251,15 +251,12 @@ type GroupsService interface {
 	Update(ctx context.Context, request Group) error
 }
 
-// This spec contains undocumented permission migration APIs used in
-// https://github.com/databrickslabs/ucx.
+// APIs for migrating acl permissions, used only by the ucx tool:
+// https://github.com/databrickslabs/ucx
 type PermissionMigrationService interface {
 
 	// Migrate Permissions.
-	//
-	// Migrate a batch of permissions from a workspace local group to an account
-	// group.
-	MigratePermissions(ctx context.Context, request PermissionMigrationRequest) (*PermissionMigrationResponse, error)
+	MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error)
 }
 
 // Permissions API are used to create read, write, edit, update and manage

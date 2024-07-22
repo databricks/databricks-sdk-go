@@ -43,7 +43,7 @@ type {{.PascalName}}Interface interface {
 	{{end}}
 
 	{{range .Waits}}
-	// {{.PascalName}} repeatedly calls [{{.Method.Service.Name}}API.{{.Poll.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+	// {{.PascalName}} repeatedly calls [{{.Method.Service.PascalName}}API.{{.Poll.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
 	{{.PascalName}}(ctx context.Context{{range .Binding}}, {{.PollField.CamelName}} {{template "type" .PollField.Entity}}{{end}},
 		timeout time.Duration, callback func(*{{.Poll.Response.PascalName}})) (*{{.Poll.Response.PascalName}}, error)
 	{{end}}
@@ -55,12 +55,12 @@ type {{.PascalName}}Interface interface {
 	{{end}}
 
 	{{if $hasWaiter}}
-	// Calls [{{.Service.Name}}APIInterface.{{.PascalName}}] and waits to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+	// Calls [{{.Service.PascalName}}APIInterface.{{.PascalName}}] and waits to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
 	// 
 	// You can override the default timeout of {{.Wait.Timeout}} minutes by calling adding 
 	// retries.Timeout[{{.Wait.Poll.Response.PascalName}}](60*time.Minute) functional option.
 	//
-	// Deprecated: use [{{.Service.Name}}APIInterface.{{.PascalName}}].Get() or [{{.Service.Name}}APIInterface.{{.Wait.PascalName}}]
+	// Deprecated: use [{{.Service.PascalName}}APIInterface.{{.PascalName}}].Get() or [{{.Service.PascalName}}APIInterface.{{.Wait.PascalName}}]
 	{{.PascalName}}AndWait(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error)
 
 	{{end}}{{if .Pagination}}
@@ -75,7 +75,7 @@ type {{.PascalName}}Interface interface {
 	{{.PascalName}}All(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) ([]{{ template "type" .Pagination.Entity }}, error)
 		
 	{{end}}{{if .NamedIdMap}}
-	// {{.NamedIdMap.PascalName}} calls [{{.Service.Name}}API.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end -}}] and creates a map of results with [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.NamePath }} as key and [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.IdPath}} as value.
+	// {{.NamedIdMap.PascalName}} calls [{{.Service.PascalName}}API.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end -}}] and creates a map of results with [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.NamePath }} as key and [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.IdPath}} as value.
 	//
 	// Returns an error if there's more than one [{{.NamedIdMap.Entity.PascalName}}] with the same {{ template "field-path" .NamedIdMap.NamePath }}.
 	//
@@ -85,7 +85,7 @@ type {{.PascalName}}Interface interface {
 	{{.NamedIdMap.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) (map[string]{{template "type" .NamedIdMap.Id.Entity}}, error)
 	
 	{{end}}{{if .GetByName}}
-	// GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}} calls [{{.Service.Name}}API.{{.NamedIdMap.Entity.PascalName}}{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}}To{{.NamedIdMap.Id.PascalName}}Map] and returns a single [{{.GetByName.PascalName}}].
+	// GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}} calls [{{.Service.PascalName}}API.{{.NamedIdMap.Entity.PascalName}}{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}}To{{.NamedIdMap.Id.PascalName}}Map] and returns a single [{{.GetByName.PascalName}}].
 	//
 	// Returns an error if there's more than one [{{.NamedIdMap.Entity.PascalName}}] with the same {{ template "field-path" .NamedIdMap.NamePath }}.
 	//
@@ -159,7 +159,7 @@ func (a *{{.PascalName}}API) Impl() {{.PascalName}}Service {
 
 
 {{range .Waits}}
-// {{.PascalName}} repeatedly calls [{{.Method.Service.Name}}API.{{.Poll.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+// {{.PascalName}} repeatedly calls [{{.Method.Service.PascalName}}API.{{.Poll.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
 func (a *{{.Method.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{range .Binding}}, {{.PollField.CamelName}} {{template "type" .PollField.Entity}}{{end}},
 	timeout time.Duration, callback func(*{{.Poll.Response.PascalName}})) (*{{.Poll.Response.PascalName}}, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
@@ -199,7 +199,7 @@ func (a *{{.Method.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{
 	})
 }
 
-// {{.PascalName}} is a wrapper that calls [{{.Method.Service.Name}}API.{{.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state.
+// {{.PascalName}} is a wrapper that calls [{{.Method.Service.PascalName}}API.{{.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state.
 type {{.PascalName}}[R any] struct {
 	Response *R{{range .Binding}}
 	{{.PollField.PascalName}} {{template "type" .PollField.Entity}} `json:"{{.PollField.Name}}"`{{end}}
@@ -251,13 +251,13 @@ func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Re
 {{end}}
 
 {{if $hasWaiter}}
-// Calls [{{.Service.Name}}API.{{.PascalName}}] and waits to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+// Calls [{{.Service.PascalName}}API.{{.PascalName}}] and waits to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
 // 
 // You can override the default timeout of {{.Wait.Timeout}} minutes by calling adding 
 // retries.Timeout[{{.Wait.Poll.Response.PascalName}}](60*time.Minute) functional option.
 //
-// Deprecated: use [{{.Service.Name}}API.{{.PascalName}}].Get() or [{{.Service.Name}}API.{{.Wait.PascalName}}]
-func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
+// Deprecated: use [{{.Service.PascalName}}API.{{.PascalName}}].Get() or [{{.Service.PascalName}}API.{{.Wait.PascalName}}]
+func (a *{{.Service.PascalName}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
 	wait, err := a.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
 	if err != nil {
 		return nil, err
@@ -281,7 +281,7 @@ func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .R
 {{.Comment "// " 80}}
 // 
 // This method is generated by Databricks SDK Code Generator.
-func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "paginated-return-type" . }} {
+func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "paginated-return-type" . }} {
 	{{ if not .Request }}request := struct{}{}{{end}}
 	{{if eq .Pagination.Increment 1 -}}
 	request.{{.Pagination.Offset.PascalName}} = 1 // start iterating from the first page
@@ -306,7 +306,7 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 			return nil
 		}
 		request.{{.Pagination.Token.PollField.PascalName}} = resp.{{.Pagination.Token.Bind.PascalName}}
-		{{- else if eq .Path "/api/2.0/clusters/events" -}}
+		{{- else if eq .Path "/api/2.1/clusters/events" -}}
 		if resp.NextPage == nil {
 			return nil
 		}
@@ -343,7 +343,7 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 {{.Comment "// " 80}}
 // 
 // This method is generated by Databricks SDK Code Generator.
-func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) ([]{{ template "type" .Pagination.Entity }}, error) {
+func (a *{{.Service.PascalName}}API) {{.PascalName}}All(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) ([]{{ template "type" .Pagination.Entity }}, error) {
 	iterator := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
 	{{ if .Pagination.Limit -}}
 	return listing.ToSliceN[{{ template "type" .Pagination.Entity }}, {{ template "type" .Pagination.Limit.Entity }}](ctx, iterator, request.{{.Pagination.Limit.PascalName}})
@@ -352,14 +352,14 @@ func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Reque
 	{{- end }}
 }
 {{end}}{{if .NamedIdMap}}
-// {{.NamedIdMap.PascalName}} calls [{{.Service.Name}}API.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end -}}] and creates a map of results with [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.NamePath }} as key and [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.IdPath}} as value.
+// {{.NamedIdMap.PascalName}} calls [{{.Service.PascalName}}API.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end -}}] and creates a map of results with [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.NamePath }} as key and [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.IdPath}} as value.
 //
 // Returns an error if there's more than one [{{.NamedIdMap.Entity.PascalName}}] with the same {{ template "field-path" .NamedIdMap.NamePath }}.
 //
 // Note: All [{{.NamedIdMap.Entity.PascalName}}] instances are loaded into memory before creating a map.
 // 
 // This method is generated by Databricks SDK Code Generator.
-func (a *{{.Service.Name}}API) {{.NamedIdMap.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) (map[string]{{template "type" .NamedIdMap.Id.Entity}}, error) {
+func (a *{{.Service.PascalName}}API) {{.NamedIdMap.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) (map[string]{{template "type" .NamedIdMap.Id.Entity}}, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]{{template "type" .NamedIdMap.Id.Entity}}{}
 	result, err := a.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end}}(ctx{{if .Request}}, request{{end}})
@@ -377,14 +377,14 @@ func (a *{{.Service.Name}}API) {{.NamedIdMap.PascalName}}(ctx context.Context{{i
 	return mapping, nil
 }
 {{end}}{{if .GetByName}}
-// GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}} calls [{{.Service.Name}}API.{{.NamedIdMap.Entity.PascalName}}{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}}To{{.NamedIdMap.Id.PascalName}}Map] and returns a single [{{.GetByName.PascalName}}].
+// GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}} calls [{{.Service.PascalName}}API.{{.NamedIdMap.Entity.PascalName}}{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}}To{{.NamedIdMap.Id.PascalName}}Map] and returns a single [{{.GetByName.PascalName}}].
 //
 // Returns an error if there's more than one [{{.NamedIdMap.Entity.PascalName}}] with the same {{ template "field-path" .NamedIdMap.NamePath }}.
 //
 // Note: All [{{.NamedIdMap.Entity.PascalName}}] instances are loaded into memory before returning matching by name.
 // 
 // This method is generated by Databricks SDK Code Generator.
-func (a *{{.Service.Name}}API) GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}}(ctx context.Context, name string) (*{{template "type" .GetByName}}, error) {
+func (a *{{.Service.PascalName}}API) GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}}(ctx context.Context, name string) (*{{template "type" .GetByName}}, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end}}(ctx{{if .Request}}, {{.Request.PascalName}}{}{{end}})
 	if err != nil {
@@ -406,14 +406,14 @@ func (a *{{.Service.Name}}API) GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}
 }
 {{end}}{{if .Shortcut}}
 {{.Comment "// " 80}}
-func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{ template "response-type" . }} {
+func (a *{{.Service.PascalName}}API) {{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{ template "response-type" . }} {
 	return a.impl.{{.PascalName}}(ctx, {{.Request.PascalName}}{
 		{{- range .Shortcut.Params}}
 		{{.PascalName}}: {{.CamelName}},{{end}}
 	})
 }
 {{end}}{{if and .Shortcut $hasWaiter}}
-func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
+func (a *{{.Service.PascalName}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
 	return a.{{.PascalName}}AndWait(ctx, {{.Request.PascalName}}{
 		{{- range .Shortcut.Params}}
 		{{.PascalName}}: {{.CamelName}},{{end}}

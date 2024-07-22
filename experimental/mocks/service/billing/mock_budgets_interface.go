@@ -25,86 +25,28 @@ func (_m *MockBudgetsInterface) EXPECT() *MockBudgetsInterface_Expecter {
 	return &MockBudgetsInterface_Expecter{mock: &_m.Mock}
 }
 
-// BudgetWithStatusNameToBudgetIdMap provides a mock function with given fields: ctx
-func (_m *MockBudgetsInterface) BudgetWithStatusNameToBudgetIdMap(ctx context.Context) (map[string]string, error) {
-	ret := _m.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for BudgetWithStatusNameToBudgetIdMap")
-	}
-
-	var r0 map[string]string
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) (map[string]string, error)); ok {
-		return rf(ctx)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context) map[string]string); ok {
-		r0 = rf(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]string)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockBudgetsInterface_BudgetWithStatusNameToBudgetIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'BudgetWithStatusNameToBudgetIdMap'
-type MockBudgetsInterface_BudgetWithStatusNameToBudgetIdMap_Call struct {
-	*mock.Call
-}
-
-// BudgetWithStatusNameToBudgetIdMap is a helper method to define mock.On call
-//   - ctx context.Context
-func (_e *MockBudgetsInterface_Expecter) BudgetWithStatusNameToBudgetIdMap(ctx interface{}) *MockBudgetsInterface_BudgetWithStatusNameToBudgetIdMap_Call {
-	return &MockBudgetsInterface_BudgetWithStatusNameToBudgetIdMap_Call{Call: _e.mock.On("BudgetWithStatusNameToBudgetIdMap", ctx)}
-}
-
-func (_c *MockBudgetsInterface_BudgetWithStatusNameToBudgetIdMap_Call) Run(run func(ctx context.Context)) *MockBudgetsInterface_BudgetWithStatusNameToBudgetIdMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
-	})
-	return _c
-}
-
-func (_c *MockBudgetsInterface_BudgetWithStatusNameToBudgetIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockBudgetsInterface_BudgetWithStatusNameToBudgetIdMap_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockBudgetsInterface_BudgetWithStatusNameToBudgetIdMap_Call) RunAndReturn(run func(context.Context) (map[string]string, error)) *MockBudgetsInterface_BudgetWithStatusNameToBudgetIdMap_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Create provides a mock function with given fields: ctx, request
-func (_m *MockBudgetsInterface) Create(ctx context.Context, request billing.WrappedBudget) (*billing.WrappedBudgetWithStatus, error) {
+func (_m *MockBudgetsInterface) Create(ctx context.Context, request billing.CreateBudgetConfigurationRequest) (*billing.CreateBudgetConfigurationResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
 	}
 
-	var r0 *billing.WrappedBudgetWithStatus
+	var r0 *billing.CreateBudgetConfigurationResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, billing.WrappedBudget) (*billing.WrappedBudgetWithStatus, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, billing.CreateBudgetConfigurationRequest) (*billing.CreateBudgetConfigurationResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, billing.WrappedBudget) *billing.WrappedBudgetWithStatus); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, billing.CreateBudgetConfigurationRequest) *billing.CreateBudgetConfigurationResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*billing.WrappedBudgetWithStatus)
+			r0 = ret.Get(0).(*billing.CreateBudgetConfigurationResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, billing.WrappedBudget) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, billing.CreateBudgetConfigurationRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -120,30 +62,30 @@ type MockBudgetsInterface_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request billing.WrappedBudget
+//   - request billing.CreateBudgetConfigurationRequest
 func (_e *MockBudgetsInterface_Expecter) Create(ctx interface{}, request interface{}) *MockBudgetsInterface_Create_Call {
 	return &MockBudgetsInterface_Create_Call{Call: _e.mock.On("Create", ctx, request)}
 }
 
-func (_c *MockBudgetsInterface_Create_Call) Run(run func(ctx context.Context, request billing.WrappedBudget)) *MockBudgetsInterface_Create_Call {
+func (_c *MockBudgetsInterface_Create_Call) Run(run func(ctx context.Context, request billing.CreateBudgetConfigurationRequest)) *MockBudgetsInterface_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(billing.WrappedBudget))
+		run(args[0].(context.Context), args[1].(billing.CreateBudgetConfigurationRequest))
 	})
 	return _c
 }
 
-func (_c *MockBudgetsInterface_Create_Call) Return(_a0 *billing.WrappedBudgetWithStatus, _a1 error) *MockBudgetsInterface_Create_Call {
+func (_c *MockBudgetsInterface_Create_Call) Return(_a0 *billing.CreateBudgetConfigurationResponse, _a1 error) *MockBudgetsInterface_Create_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockBudgetsInterface_Create_Call) RunAndReturn(run func(context.Context, billing.WrappedBudget) (*billing.WrappedBudgetWithStatus, error)) *MockBudgetsInterface_Create_Call {
+func (_c *MockBudgetsInterface_Create_Call) RunAndReturn(run func(context.Context, billing.CreateBudgetConfigurationRequest) (*billing.CreateBudgetConfigurationResponse, error)) *MockBudgetsInterface_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockBudgetsInterface) Delete(ctx context.Context, request billing.DeleteBudgetRequest) error {
+func (_m *MockBudgetsInterface) Delete(ctx context.Context, request billing.DeleteBudgetConfigurationRequest) error {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -151,7 +93,7 @@ func (_m *MockBudgetsInterface) Delete(ctx context.Context, request billing.Dele
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, billing.DeleteBudgetRequest) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, billing.DeleteBudgetConfigurationRequest) error); ok {
 		r0 = rf(ctx, request)
 	} else {
 		r0 = ret.Error(0)
@@ -167,14 +109,14 @@ type MockBudgetsInterface_Delete_Call struct {
 
 // Delete is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request billing.DeleteBudgetRequest
+//   - request billing.DeleteBudgetConfigurationRequest
 func (_e *MockBudgetsInterface_Expecter) Delete(ctx interface{}, request interface{}) *MockBudgetsInterface_Delete_Call {
 	return &MockBudgetsInterface_Delete_Call{Call: _e.mock.On("Delete", ctx, request)}
 }
 
-func (_c *MockBudgetsInterface_Delete_Call) Run(run func(ctx context.Context, request billing.DeleteBudgetRequest)) *MockBudgetsInterface_Delete_Call {
+func (_c *MockBudgetsInterface_Delete_Call) Run(run func(ctx context.Context, request billing.DeleteBudgetConfigurationRequest)) *MockBudgetsInterface_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(billing.DeleteBudgetRequest))
+		run(args[0].(context.Context), args[1].(billing.DeleteBudgetConfigurationRequest))
 	})
 	return _c
 }
@@ -184,7 +126,7 @@ func (_c *MockBudgetsInterface_Delete_Call) Return(_a0 error) *MockBudgetsInterf
 	return _c
 }
 
-func (_c *MockBudgetsInterface_Delete_Call) RunAndReturn(run func(context.Context, billing.DeleteBudgetRequest) error) *MockBudgetsInterface_Delete_Call {
+func (_c *MockBudgetsInterface_Delete_Call) RunAndReturn(run func(context.Context, billing.DeleteBudgetConfigurationRequest) error) *MockBudgetsInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -237,27 +179,27 @@ func (_c *MockBudgetsInterface_DeleteByBudgetId_Call) RunAndReturn(run func(cont
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockBudgetsInterface) Get(ctx context.Context, request billing.GetBudgetRequest) (*billing.WrappedBudgetWithStatus, error) {
+func (_m *MockBudgetsInterface) Get(ctx context.Context, request billing.GetBudgetConfigurationRequest) (*billing.GetBudgetConfigurationResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Get")
 	}
 
-	var r0 *billing.WrappedBudgetWithStatus
+	var r0 *billing.GetBudgetConfigurationResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, billing.GetBudgetRequest) (*billing.WrappedBudgetWithStatus, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, billing.GetBudgetConfigurationRequest) (*billing.GetBudgetConfigurationResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, billing.GetBudgetRequest) *billing.WrappedBudgetWithStatus); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, billing.GetBudgetConfigurationRequest) *billing.GetBudgetConfigurationResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*billing.WrappedBudgetWithStatus)
+			r0 = ret.Get(0).(*billing.GetBudgetConfigurationResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, billing.GetBudgetRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, billing.GetBudgetConfigurationRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -273,46 +215,46 @@ type MockBudgetsInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request billing.GetBudgetRequest
+//   - request billing.GetBudgetConfigurationRequest
 func (_e *MockBudgetsInterface_Expecter) Get(ctx interface{}, request interface{}) *MockBudgetsInterface_Get_Call {
 	return &MockBudgetsInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockBudgetsInterface_Get_Call) Run(run func(ctx context.Context, request billing.GetBudgetRequest)) *MockBudgetsInterface_Get_Call {
+func (_c *MockBudgetsInterface_Get_Call) Run(run func(ctx context.Context, request billing.GetBudgetConfigurationRequest)) *MockBudgetsInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(billing.GetBudgetRequest))
+		run(args[0].(context.Context), args[1].(billing.GetBudgetConfigurationRequest))
 	})
 	return _c
 }
 
-func (_c *MockBudgetsInterface_Get_Call) Return(_a0 *billing.WrappedBudgetWithStatus, _a1 error) *MockBudgetsInterface_Get_Call {
+func (_c *MockBudgetsInterface_Get_Call) Return(_a0 *billing.GetBudgetConfigurationResponse, _a1 error) *MockBudgetsInterface_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockBudgetsInterface_Get_Call) RunAndReturn(run func(context.Context, billing.GetBudgetRequest) (*billing.WrappedBudgetWithStatus, error)) *MockBudgetsInterface_Get_Call {
+func (_c *MockBudgetsInterface_Get_Call) RunAndReturn(run func(context.Context, billing.GetBudgetConfigurationRequest) (*billing.GetBudgetConfigurationResponse, error)) *MockBudgetsInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetByBudgetId provides a mock function with given fields: ctx, budgetId
-func (_m *MockBudgetsInterface) GetByBudgetId(ctx context.Context, budgetId string) (*billing.WrappedBudgetWithStatus, error) {
+func (_m *MockBudgetsInterface) GetByBudgetId(ctx context.Context, budgetId string) (*billing.GetBudgetConfigurationResponse, error) {
 	ret := _m.Called(ctx, budgetId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByBudgetId")
 	}
 
-	var r0 *billing.WrappedBudgetWithStatus
+	var r0 *billing.GetBudgetConfigurationResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*billing.WrappedBudgetWithStatus, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*billing.GetBudgetConfigurationResponse, error)); ok {
 		return rf(ctx, budgetId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *billing.WrappedBudgetWithStatus); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *billing.GetBudgetConfigurationResponse); ok {
 		r0 = rf(ctx, budgetId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*billing.WrappedBudgetWithStatus)
+			r0 = ret.Get(0).(*billing.GetBudgetConfigurationResponse)
 		}
 	}
 
@@ -344,71 +286,12 @@ func (_c *MockBudgetsInterface_GetByBudgetId_Call) Run(run func(ctx context.Cont
 	return _c
 }
 
-func (_c *MockBudgetsInterface_GetByBudgetId_Call) Return(_a0 *billing.WrappedBudgetWithStatus, _a1 error) *MockBudgetsInterface_GetByBudgetId_Call {
+func (_c *MockBudgetsInterface_GetByBudgetId_Call) Return(_a0 *billing.GetBudgetConfigurationResponse, _a1 error) *MockBudgetsInterface_GetByBudgetId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockBudgetsInterface_GetByBudgetId_Call) RunAndReturn(run func(context.Context, string) (*billing.WrappedBudgetWithStatus, error)) *MockBudgetsInterface_GetByBudgetId_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetByName provides a mock function with given fields: ctx, name
-func (_m *MockBudgetsInterface) GetByName(ctx context.Context, name string) (*billing.BudgetWithStatus, error) {
-	ret := _m.Called(ctx, name)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByName")
-	}
-
-	var r0 *billing.BudgetWithStatus
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*billing.BudgetWithStatus, error)); ok {
-		return rf(ctx, name)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *billing.BudgetWithStatus); ok {
-		r0 = rf(ctx, name)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*billing.BudgetWithStatus)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, name)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockBudgetsInterface_GetByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByName'
-type MockBudgetsInterface_GetByName_Call struct {
-	*mock.Call
-}
-
-// GetByName is a helper method to define mock.On call
-//   - ctx context.Context
-//   - name string
-func (_e *MockBudgetsInterface_Expecter) GetByName(ctx interface{}, name interface{}) *MockBudgetsInterface_GetByName_Call {
-	return &MockBudgetsInterface_GetByName_Call{Call: _e.mock.On("GetByName", ctx, name)}
-}
-
-func (_c *MockBudgetsInterface_GetByName_Call) Run(run func(ctx context.Context, name string)) *MockBudgetsInterface_GetByName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockBudgetsInterface_GetByName_Call) Return(_a0 *billing.BudgetWithStatus, _a1 error) *MockBudgetsInterface_GetByName_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockBudgetsInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*billing.BudgetWithStatus, error)) *MockBudgetsInterface_GetByName_Call {
+func (_c *MockBudgetsInterface_GetByBudgetId_Call) RunAndReturn(run func(context.Context, string) (*billing.GetBudgetConfigurationResponse, error)) *MockBudgetsInterface_GetByBudgetId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -460,20 +343,20 @@ func (_c *MockBudgetsInterface_Impl_Call) RunAndReturn(run func() billing.Budget
 	return _c
 }
 
-// List provides a mock function with given fields: ctx
-func (_m *MockBudgetsInterface) List(ctx context.Context) listing.Iterator[billing.BudgetWithStatus] {
-	ret := _m.Called(ctx)
+// List provides a mock function with given fields: ctx, request
+func (_m *MockBudgetsInterface) List(ctx context.Context, request billing.ListBudgetConfigurationsRequest) listing.Iterator[billing.BudgetConfiguration] {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 listing.Iterator[billing.BudgetWithStatus]
-	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[billing.BudgetWithStatus]); ok {
-		r0 = rf(ctx)
+	var r0 listing.Iterator[billing.BudgetConfiguration]
+	if rf, ok := ret.Get(0).(func(context.Context, billing.ListBudgetConfigurationsRequest) listing.Iterator[billing.BudgetConfiguration]); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(listing.Iterator[billing.BudgetWithStatus])
+			r0 = ret.Get(0).(listing.Iterator[billing.BudgetConfiguration])
 		}
 	}
 
@@ -487,50 +370,51 @@ type MockBudgetsInterface_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockBudgetsInterface_Expecter) List(ctx interface{}) *MockBudgetsInterface_List_Call {
-	return &MockBudgetsInterface_List_Call{Call: _e.mock.On("List", ctx)}
+//   - request billing.ListBudgetConfigurationsRequest
+func (_e *MockBudgetsInterface_Expecter) List(ctx interface{}, request interface{}) *MockBudgetsInterface_List_Call {
+	return &MockBudgetsInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
 }
 
-func (_c *MockBudgetsInterface_List_Call) Run(run func(ctx context.Context)) *MockBudgetsInterface_List_Call {
+func (_c *MockBudgetsInterface_List_Call) Run(run func(ctx context.Context, request billing.ListBudgetConfigurationsRequest)) *MockBudgetsInterface_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(billing.ListBudgetConfigurationsRequest))
 	})
 	return _c
 }
 
-func (_c *MockBudgetsInterface_List_Call) Return(_a0 listing.Iterator[billing.BudgetWithStatus]) *MockBudgetsInterface_List_Call {
+func (_c *MockBudgetsInterface_List_Call) Return(_a0 listing.Iterator[billing.BudgetConfiguration]) *MockBudgetsInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockBudgetsInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[billing.BudgetWithStatus]) *MockBudgetsInterface_List_Call {
+func (_c *MockBudgetsInterface_List_Call) RunAndReturn(run func(context.Context, billing.ListBudgetConfigurationsRequest) listing.Iterator[billing.BudgetConfiguration]) *MockBudgetsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// ListAll provides a mock function with given fields: ctx
-func (_m *MockBudgetsInterface) ListAll(ctx context.Context) ([]billing.BudgetWithStatus, error) {
-	ret := _m.Called(ctx)
+// ListAll provides a mock function with given fields: ctx, request
+func (_m *MockBudgetsInterface) ListAll(ctx context.Context, request billing.ListBudgetConfigurationsRequest) ([]billing.BudgetConfiguration, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
 	}
 
-	var r0 []billing.BudgetWithStatus
+	var r0 []billing.BudgetConfiguration
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) ([]billing.BudgetWithStatus, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, billing.ListBudgetConfigurationsRequest) ([]billing.BudgetConfiguration, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) []billing.BudgetWithStatus); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, billing.ListBudgetConfigurationsRequest) []billing.BudgetConfiguration); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]billing.BudgetWithStatus)
+			r0 = ret.Get(0).([]billing.BudgetConfiguration)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, billing.ListBudgetConfigurationsRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -545,43 +429,56 @@ type MockBudgetsInterface_ListAll_Call struct {
 
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockBudgetsInterface_Expecter) ListAll(ctx interface{}) *MockBudgetsInterface_ListAll_Call {
-	return &MockBudgetsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx)}
+//   - request billing.ListBudgetConfigurationsRequest
+func (_e *MockBudgetsInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockBudgetsInterface_ListAll_Call {
+	return &MockBudgetsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
 }
 
-func (_c *MockBudgetsInterface_ListAll_Call) Run(run func(ctx context.Context)) *MockBudgetsInterface_ListAll_Call {
+func (_c *MockBudgetsInterface_ListAll_Call) Run(run func(ctx context.Context, request billing.ListBudgetConfigurationsRequest)) *MockBudgetsInterface_ListAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(billing.ListBudgetConfigurationsRequest))
 	})
 	return _c
 }
 
-func (_c *MockBudgetsInterface_ListAll_Call) Return(_a0 []billing.BudgetWithStatus, _a1 error) *MockBudgetsInterface_ListAll_Call {
+func (_c *MockBudgetsInterface_ListAll_Call) Return(_a0 []billing.BudgetConfiguration, _a1 error) *MockBudgetsInterface_ListAll_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockBudgetsInterface_ListAll_Call) RunAndReturn(run func(context.Context) ([]billing.BudgetWithStatus, error)) *MockBudgetsInterface_ListAll_Call {
+func (_c *MockBudgetsInterface_ListAll_Call) RunAndReturn(run func(context.Context, billing.ListBudgetConfigurationsRequest) ([]billing.BudgetConfiguration, error)) *MockBudgetsInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockBudgetsInterface) Update(ctx context.Context, request billing.WrappedBudget) error {
+func (_m *MockBudgetsInterface) Update(ctx context.Context, request billing.UpdateBudgetConfigurationRequest) (*billing.UpdateBudgetConfigurationResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, billing.WrappedBudget) error); ok {
+	var r0 *billing.UpdateBudgetConfigurationResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, billing.UpdateBudgetConfigurationRequest) (*billing.UpdateBudgetConfigurationResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, billing.UpdateBudgetConfigurationRequest) *billing.UpdateBudgetConfigurationResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*billing.UpdateBudgetConfigurationResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, billing.UpdateBudgetConfigurationRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockBudgetsInterface_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
@@ -591,24 +488,24 @@ type MockBudgetsInterface_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request billing.WrappedBudget
+//   - request billing.UpdateBudgetConfigurationRequest
 func (_e *MockBudgetsInterface_Expecter) Update(ctx interface{}, request interface{}) *MockBudgetsInterface_Update_Call {
 	return &MockBudgetsInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
 }
 
-func (_c *MockBudgetsInterface_Update_Call) Run(run func(ctx context.Context, request billing.WrappedBudget)) *MockBudgetsInterface_Update_Call {
+func (_c *MockBudgetsInterface_Update_Call) Run(run func(ctx context.Context, request billing.UpdateBudgetConfigurationRequest)) *MockBudgetsInterface_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(billing.WrappedBudget))
+		run(args[0].(context.Context), args[1].(billing.UpdateBudgetConfigurationRequest))
 	})
 	return _c
 }
 
-func (_c *MockBudgetsInterface_Update_Call) Return(_a0 error) *MockBudgetsInterface_Update_Call {
-	_c.Call.Return(_a0)
+func (_c *MockBudgetsInterface_Update_Call) Return(_a0 *billing.UpdateBudgetConfigurationResponse, _a1 error) *MockBudgetsInterface_Update_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockBudgetsInterface_Update_Call) RunAndReturn(run func(context.Context, billing.WrappedBudget) error) *MockBudgetsInterface_Update_Call {
+func (_c *MockBudgetsInterface_Update_Call) RunAndReturn(run func(context.Context, billing.UpdateBudgetConfigurationRequest) (*billing.UpdateBudgetConfigurationResponse, error)) *MockBudgetsInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

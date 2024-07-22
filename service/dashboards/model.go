@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
+	"github.com/databricks/databricks-sdk-go/service/sql"
 )
 
 type CreateDashboardRequest struct {
@@ -185,6 +186,149 @@ func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteSubscriptionResponse struct {
+}
+
+// Execute SQL query in a conversation message
+type ExecuteMessageQueryRequest struct {
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+}
+
+// Genie AI Response
+type GenieAttachment struct {
+	Query *QueryAttachment `json:"query,omitempty"`
+
+	Text *TextAttachment `json:"text,omitempty"`
+}
+
+type GenieConversation struct {
+	// Timestamp when the message was created
+	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
+	// Conversation ID
+	Id string `json:"id"`
+	// Timestamp when the message was last updated
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+	// Genie space ID
+	SpaceId string `json:"space_id"`
+	// Conversation title
+	Title string `json:"title"`
+	// ID of the user who created the conversation
+	UserId int `json:"user_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GenieConversation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieConversation) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieCreateConversationMessageRequest struct {
+	// User message content.
+	Content string `json:"content"`
+	// The ID associated with the conversation.
+	ConversationId string `json:"-" url:"-"`
+	// The ID associated with the Genie space where the conversation is started.
+	SpaceId string `json:"-" url:"-"`
+}
+
+// Get conversation message
+type GenieGetConversationMessageRequest struct {
+	// The ID associated with the target conversation.
+	ConversationId string `json:"-" url:"-"`
+	// The ID associated with the target message from the identified
+	// conversation.
+	MessageId string `json:"-" url:"-"`
+	// The ID associated with the Genie space where the target conversation is
+	// located.
+	SpaceId string `json:"-" url:"-"`
+}
+
+// Get conversation message SQL query result
+type GenieGetMessageQueryResultRequest struct {
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieGetMessageQueryResultResponse struct {
+	// SQL Statement Execution response. See [Get status, manifest, and result
+	// first chunk](:method:statementexecution/getstatement) for more details.
+	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
+}
+
+type GenieMessage struct {
+	// AI produced response to the message
+	Attachments []GenieAttachment `json:"attachments,omitempty"`
+	// User message content
+	Content string `json:"content"`
+	// Conversation ID
+	ConversationId string `json:"conversation_id"`
+	// Timestamp when the message was created
+	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
+	// Error message if AI failed to respond to the message
+	Error *MessageError `json:"error,omitempty"`
+	// Message ID
+	Id string `json:"id"`
+	// Timestamp when the message was last updated
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+	// The result of SQL query if the message has a query attachment
+	QueryResult *Result `json:"query_result,omitempty"`
+	// Genie space ID
+	SpaceId string `json:"space_id"`
+	// MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching
+	// metadata from the data sources. * `ASKING_AI`: Waiting for the LLM to
+	// respond to the users question. * `EXECUTING_QUERY`: Executing AI provided
+	// SQL query. Get the SQL query result by calling
+	// [getMessageQueryResult](:method:genie/getMessageQueryResult) API. *
+	// `FAILED`: Generating a response or the executing the query failed. Please
+	// see `error` field. * `COMPLETED`: Message processing is completed.
+	// Results are in the `attachments` field. Get the SQL query result by
+	// calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
+	// * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL
+	// result is not available anymore. The user needs to execute the query
+	// again. * `CANCELLED`: Message has been cancelled.
+	Status MessageStatus `json:"status,omitempty"`
+	// ID of the user who created the message
+	UserId int64 `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GenieMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieMessage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieStartConversationMessageRequest struct {
+	// The text of the message that starts the conversation.
+	Content string `json:"content"`
+	// The ID associated with the Genie space where you want to start a
+	// conversation.
+	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieStartConversationResponse struct {
+	Conversation *GenieConversation `json:"conversation,omitempty"`
+	// Conversation ID
+	ConversationId string `json:"conversation_id"`
+
+	Message *GenieMessage `json:"message,omitempty"`
+	// Message ID
+	MessageId string `json:"message_id"`
 }
 
 // Get dashboard
@@ -369,6 +513,185 @@ func (s ListSubscriptionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type MessageError struct {
+	Error string `json:"error,omitempty"`
+
+	Type MessageErrorType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MessageError) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MessageError) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type MessageErrorType string
+
+const MessageErrorTypeBlockMultipleExecutionsException MessageErrorType = `BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION`
+
+const MessageErrorTypeChatCompletionClientException MessageErrorType = `CHAT_COMPLETION_CLIENT_EXCEPTION`
+
+const MessageErrorTypeChatCompletionClientTimeoutException MessageErrorType = `CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION`
+
+const MessageErrorTypeChatCompletionNetworkException MessageErrorType = `CHAT_COMPLETION_NETWORK_EXCEPTION`
+
+const MessageErrorTypeContentFilterException MessageErrorType = `CONTENT_FILTER_EXCEPTION`
+
+const MessageErrorTypeContextExceededException MessageErrorType = `CONTEXT_EXCEEDED_EXCEPTION`
+
+const MessageErrorTypeCouldNotGetUcSchemaException MessageErrorType = `COULD_NOT_GET_UC_SCHEMA_EXCEPTION`
+
+const MessageErrorTypeDeploymentNotFoundException MessageErrorType = `DEPLOYMENT_NOT_FOUND_EXCEPTION`
+
+const MessageErrorTypeFunctionsNotAvailableException MessageErrorType = `FUNCTIONS_NOT_AVAILABLE_EXCEPTION`
+
+const MessageErrorTypeFunctionArgumentsInvalidException MessageErrorType = `FUNCTION_ARGUMENTS_INVALID_EXCEPTION`
+
+const MessageErrorTypeFunctionArgumentsInvalidJsonException MessageErrorType = `FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION`
+
+const MessageErrorTypeFunctionCallMissingParameterException MessageErrorType = `FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION`
+
+const MessageErrorTypeGenericChatCompletionException MessageErrorType = `GENERIC_CHAT_COMPLETION_EXCEPTION`
+
+const MessageErrorTypeGenericChatCompletionServiceException MessageErrorType = `GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION`
+
+const MessageErrorTypeGenericSqlExecApiCallException MessageErrorType = `GENERIC_SQL_EXEC_API_CALL_EXCEPTION`
+
+const MessageErrorTypeIllegalParameterDefinitionException MessageErrorType = `ILLEGAL_PARAMETER_DEFINITION_EXCEPTION`
+
+const MessageErrorTypeInvalidCertifiedAnswerFunctionException MessageErrorType = `INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION`
+
+const MessageErrorTypeInvalidCertifiedAnswerIdentifierException MessageErrorType = `INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION`
+
+const MessageErrorTypeInvalidChatCompletionJsonException MessageErrorType = `INVALID_CHAT_COMPLETION_JSON_EXCEPTION`
+
+const MessageErrorTypeInvalidCompletionRequestException MessageErrorType = `INVALID_COMPLETION_REQUEST_EXCEPTION`
+
+const MessageErrorTypeInvalidFunctionCallException MessageErrorType = `INVALID_FUNCTION_CALL_EXCEPTION`
+
+const MessageErrorTypeInvalidTableIdentifierException MessageErrorType = `INVALID_TABLE_IDENTIFIER_EXCEPTION`
+
+const MessageErrorTypeLocalContextExceededException MessageErrorType = `LOCAL_CONTEXT_EXCEEDED_EXCEPTION`
+
+const MessageErrorTypeMessageDeletedWhileExecutingException MessageErrorType = `MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION`
+
+const MessageErrorTypeMessageUpdatedWhileExecutingException MessageErrorType = `MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION`
+
+const MessageErrorTypeNoTablesToQueryException MessageErrorType = `NO_TABLES_TO_QUERY_EXCEPTION`
+
+const MessageErrorTypeRateLimitExceededGenericException MessageErrorType = `RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION`
+
+const MessageErrorTypeRateLimitExceededSpecifiedWaitException MessageErrorType = `RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION`
+
+const MessageErrorTypeReplyProcessTimeoutException MessageErrorType = `REPLY_PROCESS_TIMEOUT_EXCEPTION`
+
+const MessageErrorTypeRetryableProcessingException MessageErrorType = `RETRYABLE_PROCESSING_EXCEPTION`
+
+const MessageErrorTypeSqlExecutionException MessageErrorType = `SQL_EXECUTION_EXCEPTION`
+
+const MessageErrorTypeTablesMissingException MessageErrorType = `TABLES_MISSING_EXCEPTION`
+
+const MessageErrorTypeTooManyCertifiedAnswersException MessageErrorType = `TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION`
+
+const MessageErrorTypeTooManyTablesException MessageErrorType = `TOO_MANY_TABLES_EXCEPTION`
+
+const MessageErrorTypeUnexpectedReplyProcessException MessageErrorType = `UNEXPECTED_REPLY_PROCESS_EXCEPTION`
+
+const MessageErrorTypeUnknownAiModel MessageErrorType = `UNKNOWN_AI_MODEL`
+
+const MessageErrorTypeWarehouseAccessMissingException MessageErrorType = `WAREHOUSE_ACCESS_MISSING_EXCEPTION`
+
+const MessageErrorTypeWarehouseNotFoundException MessageErrorType = `WAREHOUSE_NOT_FOUND_EXCEPTION`
+
+// String representation for [fmt.Print]
+func (f *MessageErrorType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *MessageErrorType) Set(v string) error {
+	switch v {
+	case `BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION`, `CHAT_COMPLETION_CLIENT_EXCEPTION`, `CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION`, `CHAT_COMPLETION_NETWORK_EXCEPTION`, `CONTENT_FILTER_EXCEPTION`, `CONTEXT_EXCEEDED_EXCEPTION`, `COULD_NOT_GET_UC_SCHEMA_EXCEPTION`, `DEPLOYMENT_NOT_FOUND_EXCEPTION`, `FUNCTIONS_NOT_AVAILABLE_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION`, `FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION`, `GENERIC_CHAT_COMPLETION_EXCEPTION`, `GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION`, `GENERIC_SQL_EXEC_API_CALL_EXCEPTION`, `ILLEGAL_PARAMETER_DEFINITION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION`, `INVALID_CHAT_COMPLETION_JSON_EXCEPTION`, `INVALID_COMPLETION_REQUEST_EXCEPTION`, `INVALID_FUNCTION_CALL_EXCEPTION`, `INVALID_TABLE_IDENTIFIER_EXCEPTION`, `LOCAL_CONTEXT_EXCEEDED_EXCEPTION`, `MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION`, `NO_TABLES_TO_QUERY_EXCEPTION`, `RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION`, `RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION`, `REPLY_PROCESS_TIMEOUT_EXCEPTION`, `RETRYABLE_PROCESSING_EXCEPTION`, `SQL_EXECUTION_EXCEPTION`, `TABLES_MISSING_EXCEPTION`, `TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION`, `TOO_MANY_TABLES_EXCEPTION`, `UNEXPECTED_REPLY_PROCESS_EXCEPTION`, `UNKNOWN_AI_MODEL`, `WAREHOUSE_ACCESS_MISSING_EXCEPTION`, `WAREHOUSE_NOT_FOUND_EXCEPTION`:
+		*f = MessageErrorType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION", "CHAT_COMPLETION_CLIENT_EXCEPTION", "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION", "CHAT_COMPLETION_NETWORK_EXCEPTION", "CONTENT_FILTER_EXCEPTION", "CONTEXT_EXCEEDED_EXCEPTION", "COULD_NOT_GET_UC_SCHEMA_EXCEPTION", "DEPLOYMENT_NOT_FOUND_EXCEPTION", "FUNCTIONS_NOT_AVAILABLE_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION", "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION", "GENERIC_CHAT_COMPLETION_EXCEPTION", "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION", "GENERIC_SQL_EXEC_API_CALL_EXCEPTION", "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION", "INVALID_CHAT_COMPLETION_JSON_EXCEPTION", "INVALID_COMPLETION_REQUEST_EXCEPTION", "INVALID_FUNCTION_CALL_EXCEPTION", "INVALID_TABLE_IDENTIFIER_EXCEPTION", "LOCAL_CONTEXT_EXCEEDED_EXCEPTION", "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION", "NO_TABLES_TO_QUERY_EXCEPTION", "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION", "RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION", "REPLY_PROCESS_TIMEOUT_EXCEPTION", "RETRYABLE_PROCESSING_EXCEPTION", "SQL_EXECUTION_EXCEPTION", "TABLES_MISSING_EXCEPTION", "TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION", "TOO_MANY_TABLES_EXCEPTION", "UNEXPECTED_REPLY_PROCESS_EXCEPTION", "UNKNOWN_AI_MODEL", "WAREHOUSE_ACCESS_MISSING_EXCEPTION", "WAREHOUSE_NOT_FOUND_EXCEPTION"`, v)
+	}
+}
+
+// Type always returns MessageErrorType to satisfy [pflag.Value] interface
+func (f *MessageErrorType) Type() string {
+	return "MessageErrorType"
+}
+
+// MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching
+// metadata from the data sources. * `ASKING_AI`: Waiting for the LLM to respond
+// to the users question. * `EXECUTING_QUERY`: Executing AI provided SQL query.
+// Get the SQL query result by calling
+// [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`:
+// Generating a response or the executing the query failed. Please see `error`
+// field. * `COMPLETED`: Message processing is completed. Results are in the
+// `attachments` field. Get the SQL query result by calling
+// [getMessageQueryResult](:method:genie/getMessageQueryResult) API. *
+// `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result
+// is not available anymore. The user needs to execute the query again. *
+// `CANCELLED`: Message has been cancelled.
+type MessageStatus string
+
+// Waiting for the LLM to respond to the users question.
+const MessageStatusAskingAi MessageStatus = `ASKING_AI`
+
+// Message has been cancelled.
+const MessageStatusCancelled MessageStatus = `CANCELLED`
+
+// Message processing is completed. Results are in the `attachments` field. Get
+// the SQL query result by calling
+// [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
+const MessageStatusCompleted MessageStatus = `COMPLETED`
+
+// Executing AI provided SQL query. Get the SQL query result by calling
+// [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
+const MessageStatusExecutingQuery MessageStatus = `EXECUTING_QUERY`
+
+// Generating a response or the executing the query failed. Please see `error`
+// field.
+const MessageStatusFailed MessageStatus = `FAILED`
+
+// Fetching metadata from the data sources.
+const MessageStatusFetchingMetadata MessageStatus = `FETCHING_METADATA`
+
+// SQL result is not available anymore. The user needs to execute the query
+// again.
+const MessageStatusQueryResultExpired MessageStatus = `QUERY_RESULT_EXPIRED`
+
+// Message has been submitted.
+const MessageStatusSubmitted MessageStatus = `SUBMITTED`
+
+// String representation for [fmt.Print]
+func (f *MessageStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *MessageStatus) Set(v string) error {
+	switch v {
+	case `ASKING_AI`, `CANCELLED`, `COMPLETED`, `EXECUTING_QUERY`, `FAILED`, `FETCHING_METADATA`, `QUERY_RESULT_EXPIRED`, `SUBMITTED`:
+		*f = MessageStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ASKING_AI", "CANCELLED", "COMPLETED", "EXECUTING_QUERY", "FAILED", "FETCHING_METADATA", "QUERY_RESULT_EXPIRED", "SUBMITTED"`, v)
+	}
+}
+
+// Type always returns MessageStatus to satisfy [pflag.Value] interface
+func (f *MessageStatus) Type() string {
+	return "MessageStatus"
+}
+
 type MigrateDashboardRequest struct {
 	// Display name for the new Lakeview dashboard.
 	DisplayName string `json:"display_name,omitempty"`
@@ -429,6 +752,52 @@ func (s *PublishedDashboard) UnmarshalJSON(b []byte) error {
 }
 
 func (s PublishedDashboard) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type QueryAttachment struct {
+	// Description of the query
+	Description string `json:"description,omitempty"`
+	// If the query was created on an instruction (trusted asset) we link to the
+	// id
+	InstructionId string `json:"instruction_id,omitempty"`
+	// Always store the title next to the id in case the original instruction
+	// title changes or the instruction is deleted.
+	InstructionTitle string `json:"instruction_title,omitempty"`
+	// Time when the user updated the query last
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+	// AI generated SQL query
+	Query string `json:"query,omitempty"`
+	// Name of the query
+	Title string `json:"title,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryAttachment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryAttachment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type Result struct {
+	// Row count of the result
+	RowCount int64 `json:"row_count,omitempty"`
+	// Statement Execution API statement id. Use [Get status, manifest, and
+	// result first chunk](:method:statementexecution/getstatement) to get the
+	// full result data.
+	StatementId string `json:"statement_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Result) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Result) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -542,6 +911,21 @@ type SubscriptionSubscriberDestination struct {
 type SubscriptionSubscriberUser struct {
 	// UserId of the subscriber.
 	UserId int64 `json:"user_id"`
+}
+
+type TextAttachment struct {
+	// AI generated message
+	Content string `json:"content,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TextAttachment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TextAttachment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Trash dashboard

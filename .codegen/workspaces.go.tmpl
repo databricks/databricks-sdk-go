@@ -16,7 +16,7 @@ type WorkspaceClient struct {
 
 	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) }}
 	{{.Comment "    // " 80}}
-	{{.Name}} {{.Package.Name}}.{{.Name}}Interface
+	{{.PascalName}} {{.Package.Name}}.{{.PascalName}}Interface
 	{{end}}{{end}}
 }
 
@@ -49,7 +49,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		return nil, err
 	}
 	{{range .Services}}{{if and (not .IsAccounts) (not .HasParent) .HasDataPlaneAPI}}
-	{{.CamelName}} := {{.Package.Name}}.New{{.Name}}(databricksClient)
+	{{.CamelName}} := {{.Package.Name}}.New{{.PascalName}}(databricksClient)
 	{{- end}}{{end}}
 	return &WorkspaceClient{
 		Config: cfg,
@@ -59,9 +59,9 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 				{{- if .HasDataPlaneAPI}}
 					{{.Name}}: {{.CamelName}},
 				{{- else if .IsDataPlane}}
-					{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient,  {{.ControlPlaneService.CamelName}}),
+					{{.Name}}: {{.Package.Name}}.New{{.PascalName}}(databricksClient,  {{.ControlPlaneService.CamelName}}),
 				{{- else }}
-					{{.Name}}: {{.Package.Name}}.New{{.Name}}(databricksClient),
+					{{.Name}}: {{.Package.Name}}.New{{.PascalName}}(databricksClient),
 				{{- end -}}
 			{{- end -}}
 		{{end}}

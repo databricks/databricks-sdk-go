@@ -10,6 +10,58 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 )
 
+// unexported type that holds implementations of just Genie API methods
+type genieImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error) {
+	var genieMessage GenieMessage
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages", request.SpaceId, request.ConversationId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &genieMessage)
+	return &genieMessage, err
+}
+
+func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request ExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
+	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &genieGetMessageQueryResultResponse)
+	return &genieGetMessageQueryResultResponse, err
+}
+
+func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error) {
+	var genieMessage GenieMessage
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v", request.SpaceId, request.ConversationId, request.MessageId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &genieMessage)
+	return &genieMessage, err
+}
+
+func (a *genieImpl) GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error) {
+	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/query-result", request.SpaceId, request.ConversationId, request.MessageId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &genieGetMessageQueryResultResponse)
+	return &genieGetMessageQueryResultResponse, err
+}
+
+func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error) {
+	var genieStartConversationResponse GenieStartConversationResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/start-conversation", request.SpaceId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &genieStartConversationResponse)
+	return &genieStartConversationResponse, err
+}
+
 // unexported type that holds implementations of just Lakeview API methods
 type lakeviewImpl struct {
 	client *client.DatabricksClient

@@ -6,6 +6,8 @@
 //
 // - [sql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
+// - [sql.AlertsLegacyAPI]: The alerts API can be used to perform CRUD operations on alerts.
+//
 // - [serving.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
 //
 // - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode.
@@ -13,8 +15,6 @@
 // - [settings.AutomaticClusterUpdateAPI]: Controls whether automatic cluster update is enabled for the current workspace.
 //
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
-//
-// - [billing.BudgetsAPI]: These APIs manage budget configuration including notifications for exceeding a budget for a period.
 //
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
@@ -48,7 +48,7 @@
 //
 // - [iam.CurrentUserAPI]: This API allows retrieving information about currently authenticated user or service principal.
 //
-// - [oauth2.CustomAppIntegrationAPI]: These APIs enable administrators to manage custom oauth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
+// - [oauth2.CustomAppIntegrationAPI]: These APIs enable administrators to manage custom OAuth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
 //
 // - [sql.DashboardWidgetsAPI]: This is an evolving API that facilitates the addition and removal of widgets from existing dashboards within the Databricks Workspace.
 //
@@ -75,6 +75,8 @@
 // - [files.FilesAPI]: The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI.
 //
 // - [catalog.FunctionsAPI]: Functions implement User-Defined Functions (UDFs) in Unity Catalog.
+//
+// - [dashboards.GenieAPI]: Genie provides a no-code experience for business users, powered by AI/BI.
 //
 // - [workspace.GitCredentialsAPI]: Registers personal access token for Databricks to do operations on behalf of the user.
 //
@@ -116,11 +118,13 @@
 //
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //
+// - [settings.NotificationDestinationsAPI]: The notification destinations API lets you programmatically manage a workspace's notification destinations.
+//
 // - [oauth2.OAuthPublishedAppsAPI]: These APIs enable administrators to view all the available published OAuth applications in Databricks.
 //
 // - [catalog.OnlineTablesAPI]: Online tables provide lower latency and higher QPS access to data from Delta tables.
 //
-// - [iam.PermissionMigrationAPI]: This spec contains undocumented permission migration APIs used in https://github.com/databrickslabs/ucx.
+// - [iam.PermissionMigrationAPI]: APIs for migrating acl permissions, used only by the ucx tool: https://github.com/databrickslabs/ucx.
 //
 // - [iam.PermissionsAPI]: Permissions API are used to create read, write, edit, update and manage access for various users on different objects and endpoints.
 //
@@ -148,15 +152,19 @@
 //
 // - [sharing.ProvidersAPI]: A data provider is an object representing the organization in the real world who shares the data.
 //
-// - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published oauth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud.
+// - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published OAuth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud.
 //
 // - [catalog.QualityMonitorsAPI]: A monitor computes and monitors data or model quality metrics for a table over time.
 //
-// - [sql.QueriesAPI]: These endpoints are used for CRUD operations on query definitions.
+// - [sql.QueriesAPI]: The queries API can be used to perform CRUD operations on queries.
 //
-// - [sql.QueryHistoryAPI]: Access the history of queries through SQL warehouses.
+// - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
 //
-// - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace.
+// - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints, serverless compute, and DLT.
+//
+// - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of visualizations from existing queries in the Databricks Workspace.
+//
+// - [sql.QueryVisualizationsLegacyAPI]: This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace.
 //
 // - [sharing.RecipientActivationAPI]: The Recipient Activation API is only applicable in the open sharing model where the recipient object has the authentication type of `TOKEN`.
 //
@@ -229,6 +237,8 @@
 // - [settings.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
 //
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
+//
+// - [billing.BudgetsAPI]: These APIs manage budget configurations for this account.
 package service
 
 import (
@@ -260,11 +270,11 @@ var (
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
 	_ *sql.AlertsAPI                                      = nil
+	_ *sql.AlertsLegacyAPI                                = nil
 	_ *serving.AppsAPI                                    = nil
 	_ *catalog.ArtifactAllowlistsAPI                      = nil
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil
-	_ *billing.BudgetsAPI                                 = nil
 	_ *catalog.CatalogsAPI                                = nil
 	_ *sharing.CleanRoomsAPI                              = nil
 	_ *compute.ClusterPoliciesAPI                         = nil
@@ -295,6 +305,7 @@ var (
 	_ *catalog.ExternalLocationsAPI                       = nil
 	_ *files.FilesAPI                                     = nil
 	_ *catalog.FunctionsAPI                               = nil
+	_ *dashboards.GenieAPI                                = nil
 	_ *workspace.GitCredentialsAPI                        = nil
 	_ *compute.GlobalInitScriptsAPI                       = nil
 	_ *catalog.GrantsAPI                                  = nil
@@ -315,6 +326,7 @@ var (
 	_ *catalog.ModelVersionsAPI                           = nil
 	_ *settings.NetworkConnectivityAPI                    = nil
 	_ *provisioning.NetworksAPI                           = nil
+	_ *settings.NotificationDestinationsAPI               = nil
 	_ *oauth2.OAuthPublishedAppsAPI                       = nil
 	_ *catalog.OnlineTablesAPI                            = nil
 	_ *iam.PermissionMigrationAPI                         = nil
@@ -334,8 +346,10 @@ var (
 	_ *oauth2.PublishedAppIntegrationAPI                  = nil
 	_ *catalog.QualityMonitorsAPI                         = nil
 	_ *sql.QueriesAPI                                     = nil
+	_ *sql.QueriesLegacyAPI                               = nil
 	_ *sql.QueryHistoryAPI                                = nil
 	_ *sql.QueryVisualizationsAPI                         = nil
+	_ *sql.QueryVisualizationsLegacyAPI                   = nil
 	_ *sharing.RecipientActivationAPI                     = nil
 	_ *sharing.RecipientsAPI                              = nil
 	_ *catalog.RegisteredModelsAPI                        = nil
@@ -372,4 +386,5 @@ var (
 	_ *catalog.WorkspaceBindingsAPI                       = nil
 	_ *settings.WorkspaceConfAPI                          = nil
 	_ *provisioning.WorkspacesAPI                         = nil
+	_ *billing.BudgetsAPI                                 = nil
 )

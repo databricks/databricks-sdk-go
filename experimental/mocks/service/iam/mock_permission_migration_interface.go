@@ -70,27 +70,27 @@ func (_c *MockPermissionMigrationInterface_Impl_Call) RunAndReturn(run func() ia
 }
 
 // MigratePermissions provides a mock function with given fields: ctx, request
-func (_m *MockPermissionMigrationInterface) MigratePermissions(ctx context.Context, request iam.PermissionMigrationRequest) (*iam.PermissionMigrationResponse, error) {
+func (_m *MockPermissionMigrationInterface) MigratePermissions(ctx context.Context, request iam.MigratePermissionsRequest) (*iam.MigratePermissionsResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for MigratePermissions")
 	}
 
-	var r0 *iam.PermissionMigrationResponse
+	var r0 *iam.MigratePermissionsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, iam.PermissionMigrationRequest) (*iam.PermissionMigrationResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.MigratePermissionsRequest) (*iam.MigratePermissionsResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, iam.PermissionMigrationRequest) *iam.PermissionMigrationResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.MigratePermissionsRequest) *iam.MigratePermissionsResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*iam.PermissionMigrationResponse)
+			r0 = ret.Get(0).(*iam.MigratePermissionsResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, iam.PermissionMigrationRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, iam.MigratePermissionsRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -106,24 +106,24 @@ type MockPermissionMigrationInterface_MigratePermissions_Call struct {
 
 // MigratePermissions is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request iam.PermissionMigrationRequest
+//   - request iam.MigratePermissionsRequest
 func (_e *MockPermissionMigrationInterface_Expecter) MigratePermissions(ctx interface{}, request interface{}) *MockPermissionMigrationInterface_MigratePermissions_Call {
 	return &MockPermissionMigrationInterface_MigratePermissions_Call{Call: _e.mock.On("MigratePermissions", ctx, request)}
 }
 
-func (_c *MockPermissionMigrationInterface_MigratePermissions_Call) Run(run func(ctx context.Context, request iam.PermissionMigrationRequest)) *MockPermissionMigrationInterface_MigratePermissions_Call {
+func (_c *MockPermissionMigrationInterface_MigratePermissions_Call) Run(run func(ctx context.Context, request iam.MigratePermissionsRequest)) *MockPermissionMigrationInterface_MigratePermissions_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(iam.PermissionMigrationRequest))
+		run(args[0].(context.Context), args[1].(iam.MigratePermissionsRequest))
 	})
 	return _c
 }
 
-func (_c *MockPermissionMigrationInterface_MigratePermissions_Call) Return(_a0 *iam.PermissionMigrationResponse, _a1 error) *MockPermissionMigrationInterface_MigratePermissions_Call {
+func (_c *MockPermissionMigrationInterface_MigratePermissions_Call) Return(_a0 *iam.MigratePermissionsResponse, _a1 error) *MockPermissionMigrationInterface_MigratePermissions_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockPermissionMigrationInterface_MigratePermissions_Call) RunAndReturn(run func(context.Context, iam.PermissionMigrationRequest) (*iam.PermissionMigrationResponse, error)) *MockPermissionMigrationInterface_MigratePermissions_Call {
+func (_c *MockPermissionMigrationInterface_MigratePermissions_Call) RunAndReturn(run func(context.Context, iam.MigratePermissionsRequest) (*iam.MigratePermissionsResponse, error)) *MockPermissionMigrationInterface_MigratePermissions_Call {
 	_c.Call.Return(run)
 	return _c
 }

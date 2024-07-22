@@ -117,11 +117,11 @@ type DeleteUserRequest struct {
 type DeleteWorkspaceAssignmentRequest struct {
 	// The ID of the user, service principal, or group.
 	PrincipalId int64 `json:"-" url:"-"`
-	// The workspace ID.
+	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-type DeleteWorkspaceAssignments struct {
+type DeleteWorkspacePermissionAssignmentResponse struct {
 }
 
 // Get group details
@@ -329,7 +329,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -711,6 +711,43 @@ type ListWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+type MigratePermissionsRequest struct {
+	// The name of the workspace group that permissions will be migrated from.
+	FromWorkspaceGroupName string `json:"from_workspace_group_name"`
+	// The maximum number of permissions that will be migrated.
+	Size int `json:"size,omitempty"`
+	// The name of the account group that permissions will be migrated to.
+	ToAccountGroupName string `json:"to_account_group_name"`
+	// WorkspaceId of the associated workspace where the permission migration
+	// will occur.
+	WorkspaceId int64 `json:"workspace_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MigratePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MigratePermissionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type MigratePermissionsResponse struct {
+	// Number of permissions migrated.
+	PermissionsMigrated int `json:"permissions_migrated,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MigratePermissionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MigratePermissionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type Name struct {
 	// Family name of the Databricks user.
 	FamilyName string `json:"familyName,omitempty"`
@@ -977,6 +1014,8 @@ func (s Permission) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The output format for existing workspace PermissionAssignment records, which
+// contains some info for user consumption.
 type PermissionAssignment struct {
 	// Error response associated with a workspace permission assignment, if any.
 	Error string `json:"error,omitempty"`
@@ -1057,44 +1096,6 @@ func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
 }
 
-type PermissionMigrationRequest struct {
-	// The name of the workspace group that permissions will be migrated from.
-	FromWorkspaceGroupName string `json:"from_workspace_group_name"`
-	// The maximum number of permissions that will be migrated.
-	Size int `json:"size,omitempty"`
-	// The name of the account group that permissions will be migrated to.
-	ToAccountGroupName string `json:"to_account_group_name"`
-	// WorkspaceId of the associated workspace where the permission migration
-	// will occur. Both workspace group and account group must be in this
-	// workspace.
-	WorkspaceId int64 `json:"workspace_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PermissionMigrationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PermissionMigrationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type PermissionMigrationResponse struct {
-	// Number of permissions migrated.
-	PermissionsMigrated int `json:"permissions_migrated,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PermissionMigrationResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PermissionMigrationResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type PermissionOutput struct {
 	// The results of a permissions query.
 	Description string `json:"description,omitempty"`
@@ -1139,6 +1140,7 @@ type PermissionsRequest struct {
 	RequestObjectType string `json:"-" url:"-"`
 }
 
+// Information about the principal assigned to the workspace.
 type PrincipalOutput struct {
 	// The display name of the principal.
 	DisplayName string `json:"display_name,omitempty"`
@@ -1231,7 +1233,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
@@ -1287,10 +1289,10 @@ type UpdateWorkspaceAssignments struct {
 	// Array of permissions assignments to update on the workspace. Note that
 	// excluding this field will have the same effect as providing an empty list
 	// which will result in the deletion of all permissions for the principal.
-	Permissions []WorkspacePermission `json:"permissions"`
+	Permissions []WorkspacePermission `json:"permissions,omitempty"`
 	// The ID of the user, service principal, or group.
 	PrincipalId int64 `json:"-" url:"-"`
-	// The workspace ID.
+	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 

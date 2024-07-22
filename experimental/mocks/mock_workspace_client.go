@@ -41,6 +41,7 @@ func NewMockWorkspaceClient(t interface {
 
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
 			Alerts:                              sql.NewMockAlertsInterface(t),
+			AlertsLegacy:                        sql.NewMockAlertsLegacyInterface(t),
 			Apps:                                serving.NewMockAppsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
@@ -65,6 +66,7 @@ func NewMockWorkspaceClient(t interface {
 			ExternalLocations:                   catalog.NewMockExternalLocationsInterface(t),
 			Files:                               files.NewMockFilesInterface(t),
 			Functions:                           catalog.NewMockFunctionsInterface(t),
+			Genie:                               dashboards.NewMockGenieInterface(t),
 			GitCredentials:                      workspace.NewMockGitCredentialsInterface(t),
 			GlobalInitScripts:                   compute.NewMockGlobalInitScriptsInterface(t),
 			Grants:                              catalog.NewMockGrantsInterface(t),
@@ -78,6 +80,7 @@ func NewMockWorkspaceClient(t interface {
 			Metastores:                          catalog.NewMockMetastoresInterface(t),
 			ModelRegistry:                       ml.NewMockModelRegistryInterface(t),
 			ModelVersions:                       catalog.NewMockModelVersionsInterface(t),
+			NotificationDestinations:            settings.NewMockNotificationDestinationsInterface(t),
 			OnlineTables:                        catalog.NewMockOnlineTablesInterface(t),
 			PermissionMigration:                 iam.NewMockPermissionMigrationInterface(t),
 			Permissions:                         iam.NewMockPermissionsInterface(t),
@@ -93,8 +96,10 @@ func NewMockWorkspaceClient(t interface {
 			Providers:                           sharing.NewMockProvidersInterface(t),
 			QualityMonitors:                     catalog.NewMockQualityMonitorsInterface(t),
 			Queries:                             sql.NewMockQueriesInterface(t),
+			QueriesLegacy:                       sql.NewMockQueriesLegacyInterface(t),
 			QueryHistory:                        sql.NewMockQueryHistoryInterface(t),
 			QueryVisualizations:                 sql.NewMockQueryVisualizationsInterface(t),
+			QueryVisualizationsLegacy:           sql.NewMockQueryVisualizationsLegacyInterface(t),
 			RecipientActivation:                 sharing.NewMockRecipientActivationInterface(t),
 			Recipients:                          sharing.NewMockRecipientsInterface(t),
 			RegisteredModels:                    catalog.NewMockRegisteredModelsInterface(t),
@@ -196,6 +201,14 @@ func (m *MockWorkspaceClient) GetMockAlertsAPI() *sql.MockAlertsInterface {
 	api, ok := m.WorkspaceClient.Alerts.(*sql.MockAlertsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Alerts to be *sql.MockAlertsInterface, actual was %T", m.WorkspaceClient.Alerts))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockAlertsLegacyAPI() *sql.MockAlertsLegacyInterface {
+	api, ok := m.WorkspaceClient.AlertsLegacy.(*sql.MockAlertsLegacyInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AlertsLegacy to be *sql.MockAlertsLegacyInterface, actual was %T", m.WorkspaceClient.AlertsLegacy))
 	}
 	return api
 }
@@ -392,6 +405,14 @@ func (m *MockWorkspaceClient) GetMockFunctionsAPI() *catalog.MockFunctionsInterf
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockGenieAPI() *dashboards.MockGenieInterface {
+	api, ok := m.WorkspaceClient.Genie.(*dashboards.MockGenieInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Genie to be *dashboards.MockGenieInterface, actual was %T", m.WorkspaceClient.Genie))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockGitCredentialsAPI() *workspace.MockGitCredentialsInterface {
 	api, ok := m.WorkspaceClient.GitCredentials.(*workspace.MockGitCredentialsInterface)
 	if !ok {
@@ -492,6 +513,14 @@ func (m *MockWorkspaceClient) GetMockModelVersionsAPI() *catalog.MockModelVersio
 	api, ok := m.WorkspaceClient.ModelVersions.(*catalog.MockModelVersionsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ModelVersions to be *catalog.MockModelVersionsInterface, actual was %T", m.WorkspaceClient.ModelVersions))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockNotificationDestinationsAPI() *settings.MockNotificationDestinationsInterface {
+	api, ok := m.WorkspaceClient.NotificationDestinations.(*settings.MockNotificationDestinationsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected NotificationDestinations to be *settings.MockNotificationDestinationsInterface, actual was %T", m.WorkspaceClient.NotificationDestinations))
 	}
 	return api
 }
@@ -616,6 +645,14 @@ func (m *MockWorkspaceClient) GetMockQueriesAPI() *sql.MockQueriesInterface {
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockQueriesLegacyAPI() *sql.MockQueriesLegacyInterface {
+	api, ok := m.WorkspaceClient.QueriesLegacy.(*sql.MockQueriesLegacyInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected QueriesLegacy to be *sql.MockQueriesLegacyInterface, actual was %T", m.WorkspaceClient.QueriesLegacy))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockQueryHistoryAPI() *sql.MockQueryHistoryInterface {
 	api, ok := m.WorkspaceClient.QueryHistory.(*sql.MockQueryHistoryInterface)
 	if !ok {
@@ -628,6 +665,14 @@ func (m *MockWorkspaceClient) GetMockQueryVisualizationsAPI() *sql.MockQueryVisu
 	api, ok := m.WorkspaceClient.QueryVisualizations.(*sql.MockQueryVisualizationsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected QueryVisualizations to be *sql.MockQueryVisualizationsInterface, actual was %T", m.WorkspaceClient.QueryVisualizations))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockQueryVisualizationsLegacyAPI() *sql.MockQueryVisualizationsLegacyInterface {
+	api, ok := m.WorkspaceClient.QueryVisualizationsLegacy.(*sql.MockQueryVisualizationsLegacyInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected QueryVisualizationsLegacy to be *sql.MockQueryVisualizationsLegacyInterface, actual was %T", m.WorkspaceClient.QueryVisualizationsLegacy))
 	}
 	return api
 }

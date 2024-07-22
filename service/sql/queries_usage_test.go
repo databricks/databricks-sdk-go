@@ -26,11 +26,13 @@ func ExampleQueriesAPI_Create_queries() {
 	}
 	logger.Infof(ctx, "found %v", srcs)
 
-	query, err := w.Queries.Create(ctx, sql.QueryPostContent{
-		Name:         fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		DataSourceId: srcs[0].Id,
-		Description:  "test query from Go SDK",
-		Query:        "SHOW TABLES",
+	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
+		Query: &sql.CreateQueryRequestQuery{
+			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+			WarehouseId: srcs[0].WarehouseId,
+			Description: "test query from Go SDK",
+			QueryText:   "SHOW TABLES",
+		},
 	})
 	if err != nil {
 		panic(err)
@@ -39,7 +41,7 @@ func ExampleQueriesAPI_Create_queries() {
 
 	// cleanup
 
-	err = w.Queries.DeleteByQueryId(ctx, query.Id)
+	err = w.Queries.DeleteById(ctx, query.Id)
 	if err != nil {
 		panic(err)
 	}
@@ -59,11 +61,13 @@ func ExampleQueriesAPI_Create_alerts() {
 	}
 	logger.Infof(ctx, "found %v", srcs)
 
-	query, err := w.Queries.Create(ctx, sql.QueryPostContent{
-		Name:         fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		DataSourceId: srcs[0].Id,
-		Description:  "test query from Go SDK",
-		Query:        "SELECT 1",
+	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
+		Query: &sql.CreateQueryRequestQuery{
+			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+			WarehouseId: srcs[0].WarehouseId,
+			Description: "test query from Go SDK",
+			QueryText:   "SELECT 1",
+		},
 	})
 	if err != nil {
 		panic(err)
@@ -72,7 +76,7 @@ func ExampleQueriesAPI_Create_alerts() {
 
 	// cleanup
 
-	err = w.Queries.DeleteByQueryId(ctx, query.Id)
+	err = w.Queries.DeleteById(ctx, query.Id)
 	if err != nil {
 		panic(err)
 	}
@@ -92,18 +96,20 @@ func ExampleQueriesAPI_Get_queries() {
 	}
 	logger.Infof(ctx, "found %v", srcs)
 
-	query, err := w.Queries.Create(ctx, sql.QueryPostContent{
-		Name:         fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		DataSourceId: srcs[0].Id,
-		Description:  "test query from Go SDK",
-		Query:        "SHOW TABLES",
+	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
+		Query: &sql.CreateQueryRequestQuery{
+			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+			WarehouseId: srcs[0].WarehouseId,
+			Description: "test query from Go SDK",
+			QueryText:   "SHOW TABLES",
+		},
 	})
 	if err != nil {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", query)
 
-	byId, err := w.Queries.GetByQueryId(ctx, query.Id)
+	byId, err := w.Queries.GetById(ctx, query.Id)
 	if err != nil {
 		panic(err)
 	}
@@ -111,7 +117,7 @@ func ExampleQueriesAPI_Get_queries() {
 
 	// cleanup
 
-	err = w.Queries.DeleteByQueryId(ctx, query.Id)
+	err = w.Queries.DeleteById(ctx, query.Id)
 	if err != nil {
 		panic(err)
 	}
@@ -131,23 +137,27 @@ func ExampleQueriesAPI_Update_queries() {
 	}
 	logger.Infof(ctx, "found %v", srcs)
 
-	query, err := w.Queries.Create(ctx, sql.QueryPostContent{
-		Name:         fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		DataSourceId: srcs[0].Id,
-		Description:  "test query from Go SDK",
-		Query:        "SHOW TABLES",
+	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
+		Query: &sql.CreateQueryRequestQuery{
+			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+			WarehouseId: srcs[0].WarehouseId,
+			Description: "test query from Go SDK",
+			QueryText:   "SHOW TABLES",
+		},
 	})
 	if err != nil {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", query)
 
-	updated, err := w.Queries.Update(ctx, sql.QueryEditContent{
-		QueryId:      query.Id,
-		Name:         fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		DataSourceId: srcs[0].Id,
-		Description:  "UPDATED: test query from Go SDK",
-		Query:        "SELECT 2+2",
+	updated, err := w.Queries.Update(ctx, sql.UpdateQueryRequest{
+		Id: query.Id,
+		Query: &sql.UpdateQueryRequestQuery{
+			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+			Description: "UPDATED: test query from Go SDK",
+			QueryText:   "SELECT 2+2",
+		},
+		UpdateMask: "display_name,description,query_text",
 	})
 	if err != nil {
 		panic(err)
@@ -156,7 +166,7 @@ func ExampleQueriesAPI_Update_queries() {
 
 	// cleanup
 
-	err = w.Queries.DeleteByQueryId(ctx, query.Id)
+	err = w.Queries.DeleteById(ctx, query.Id)
 	if err != nil {
 		panic(err)
 	}

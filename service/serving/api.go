@@ -788,7 +788,7 @@ func (a *ServingEndpointsAPI) WaitGetServingEndpointNotUpdating(ctx context.Cont
 		switch status {
 		case EndpointStateConfigUpdateNotUpdating: // target state
 			return servingEndpointDetailed, nil
-		case EndpointStateConfigUpdateUpdateFailed:
+		case EndpointStateConfigUpdateUpdateFailed, EndpointStateConfigUpdateUpdateCanceled:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				EndpointStateConfigUpdateNotUpdating, status, statusMessage)
 			return nil, retries.Halt(err)

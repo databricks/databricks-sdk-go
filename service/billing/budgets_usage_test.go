@@ -20,16 +20,27 @@ func ExampleBudgetsAPI_Create_budgets() {
 		panic(err)
 	}
 
-	created, err := a.Budgets.Create(ctx, billing.WrappedBudget{
-		Budget: billing.Budget{
-			Name:         fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-			Filter:       "tag.tagName = 'all'",
-			Period:       "1 month",
-			StartDate:    "2022-01-01",
-			TargetAmount: "100",
-			Alerts: []billing.BudgetAlert{billing.BudgetAlert{
-				EmailNotifications: []string{"admin@example.com"},
-				MinPercentage:      50,
+	created, err := a.Budgets.Create(ctx, billing.CreateBudgetConfigurationRequest{
+		Budget: billing.CreateBudgetConfigurationBudget{
+			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+			Filter: &billing.BudgetConfigurationFilter{
+				Tags: []billing.BudgetConfigurationFilterTagClause{billing.BudgetConfigurationFilterTagClause{
+					Key: "tagName",
+					Value: &billing.BudgetConfigurationFilterClause{
+						Operator: billing.BudgetConfigurationFilterOperatorIn,
+						Values:   []string{"all"},
+					},
+				}},
+			},
+			AlertConfigurations: []billing.CreateBudgetConfigurationBudgetAlertConfigurations{billing.CreateBudgetConfigurationBudgetAlertConfigurations{
+				TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
+				QuantityType:      billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
+				TriggerType:       billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
+				QuantityThreshold: "100",
+				ActionConfigurations: []billing.CreateBudgetConfigurationBudgetActionConfigurations{billing.CreateBudgetConfigurationBudgetActionConfigurations{
+					ActionType: billing.ActionConfigurationTypeEmailNotification,
+					Target:     "admin@example.com",
+				}},
 			}},
 		},
 	})
@@ -40,7 +51,7 @@ func ExampleBudgetsAPI_Create_budgets() {
 
 	// cleanup
 
-	err = a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetId)
+	err = a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetConfigurationId)
 	if err != nil {
 		panic(err)
 	}
@@ -54,16 +65,27 @@ func ExampleBudgetsAPI_Get_budgets() {
 		panic(err)
 	}
 
-	created, err := a.Budgets.Create(ctx, billing.WrappedBudget{
-		Budget: billing.Budget{
-			Name:         fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-			Filter:       "tag.tagName = 'all'",
-			Period:       "1 month",
-			StartDate:    "2022-01-01",
-			TargetAmount: "100",
-			Alerts: []billing.BudgetAlert{billing.BudgetAlert{
-				EmailNotifications: []string{"admin@example.com"},
-				MinPercentage:      50,
+	created, err := a.Budgets.Create(ctx, billing.CreateBudgetConfigurationRequest{
+		Budget: billing.CreateBudgetConfigurationBudget{
+			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+			Filter: &billing.BudgetConfigurationFilter{
+				Tags: []billing.BudgetConfigurationFilterTagClause{billing.BudgetConfigurationFilterTagClause{
+					Key: "tagName",
+					Value: &billing.BudgetConfigurationFilterClause{
+						Operator: billing.BudgetConfigurationFilterOperatorIn,
+						Values:   []string{"all"},
+					},
+				}},
+			},
+			AlertConfigurations: []billing.CreateBudgetConfigurationBudgetAlertConfigurations{billing.CreateBudgetConfigurationBudgetAlertConfigurations{
+				TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
+				QuantityType:      billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
+				TriggerType:       billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
+				QuantityThreshold: "100",
+				ActionConfigurations: []billing.CreateBudgetConfigurationBudgetActionConfigurations{billing.CreateBudgetConfigurationBudgetActionConfigurations{
+					ActionType: billing.ActionConfigurationTypeEmailNotification,
+					Target:     "admin@example.com",
+				}},
 			}},
 		},
 	})
@@ -72,7 +94,7 @@ func ExampleBudgetsAPI_Get_budgets() {
 	}
 	logger.Infof(ctx, "found %v", created)
 
-	byId, err := a.Budgets.GetByBudgetId(ctx, created.Budget.BudgetId)
+	byId, err := a.Budgets.GetByBudgetId(ctx, created.Budget.BudgetConfigurationId)
 	if err != nil {
 		panic(err)
 	}
@@ -80,7 +102,7 @@ func ExampleBudgetsAPI_Get_budgets() {
 
 	// cleanup
 
-	err = a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetId)
+	err = a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetConfigurationId)
 	if err != nil {
 		panic(err)
 	}
@@ -94,7 +116,7 @@ func ExampleBudgetsAPI_ListAll_budgets() {
 		panic(err)
 	}
 
-	all, err := a.Budgets.ListAll(ctx)
+	all, err := a.Budgets.ListAll(ctx, billing.ListBudgetConfigurationsRequest{})
 	if err != nil {
 		panic(err)
 	}
@@ -109,16 +131,27 @@ func ExampleBudgetsAPI_Update_budgets() {
 		panic(err)
 	}
 
-	created, err := a.Budgets.Create(ctx, billing.WrappedBudget{
-		Budget: billing.Budget{
-			Name:         fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-			Filter:       "tag.tagName = 'all'",
-			Period:       "1 month",
-			StartDate:    "2022-01-01",
-			TargetAmount: "100",
-			Alerts: []billing.BudgetAlert{billing.BudgetAlert{
-				EmailNotifications: []string{"admin@example.com"},
-				MinPercentage:      50,
+	created, err := a.Budgets.Create(ctx, billing.CreateBudgetConfigurationRequest{
+		Budget: billing.CreateBudgetConfigurationBudget{
+			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+			Filter: &billing.BudgetConfigurationFilter{
+				Tags: []billing.BudgetConfigurationFilterTagClause{billing.BudgetConfigurationFilterTagClause{
+					Key: "tagName",
+					Value: &billing.BudgetConfigurationFilterClause{
+						Operator: billing.BudgetConfigurationFilterOperatorIn,
+						Values:   []string{"all"},
+					},
+				}},
+			},
+			AlertConfigurations: []billing.CreateBudgetConfigurationBudgetAlertConfigurations{billing.CreateBudgetConfigurationBudgetAlertConfigurations{
+				TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
+				QuantityType:      billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
+				TriggerType:       billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
+				QuantityThreshold: "100",
+				ActionConfigurations: []billing.CreateBudgetConfigurationBudgetActionConfigurations{billing.CreateBudgetConfigurationBudgetActionConfigurations{
+					ActionType: billing.ActionConfigurationTypeEmailNotification,
+					Target:     "admin@example.com",
+				}},
 			}},
 		},
 	})
@@ -127,17 +160,28 @@ func ExampleBudgetsAPI_Update_budgets() {
 	}
 	logger.Infof(ctx, "found %v", created)
 
-	err = a.Budgets.Update(ctx, billing.WrappedBudget{
-		BudgetId: created.Budget.BudgetId,
-		Budget: billing.Budget{
-			Name:         fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-			Filter:       "tag.tagName = 'all'",
-			Period:       "1 month",
-			StartDate:    "2022-01-01",
-			TargetAmount: "100",
-			Alerts: []billing.BudgetAlert{billing.BudgetAlert{
-				EmailNotifications: []string{"admin@example.com"},
-				MinPercentage:      70,
+	_, err = a.Budgets.Update(ctx, billing.UpdateBudgetConfigurationRequest{
+		BudgetId: created.Budget.BudgetConfigurationId,
+		Budget: billing.UpdateBudgetConfigurationBudget{
+			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+			Filter: &billing.BudgetConfigurationFilter{
+				Tags: []billing.BudgetConfigurationFilterTagClause{billing.BudgetConfigurationFilterTagClause{
+					Key: "tagName",
+					Value: &billing.BudgetConfigurationFilterClause{
+						Operator: billing.BudgetConfigurationFilterOperatorIn,
+						Values:   []string{"all"},
+					},
+				}},
+			},
+			AlertConfigurations: []billing.AlertConfiguration{billing.AlertConfiguration{
+				TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
+				QuantityType:      billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
+				TriggerType:       billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
+				QuantityThreshold: "50",
+				ActionConfigurations: []billing.ActionConfiguration{billing.ActionConfiguration{
+					ActionType: billing.ActionConfigurationTypeEmailNotification,
+					Target:     "admin@example.com",
+				}},
 			}},
 		},
 	})
@@ -147,7 +191,7 @@ func ExampleBudgetsAPI_Update_budgets() {
 
 	// cleanup
 
-	err = a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetId)
+	err = a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetConfigurationId)
 	if err != nil {
 		panic(err)
 	}

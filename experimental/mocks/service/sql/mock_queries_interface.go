@@ -25,7 +25,7 @@ func (_m *MockQueriesInterface) EXPECT() *MockQueriesInterface_Expecter {
 }
 
 // Create provides a mock function with given fields: ctx, request
-func (_m *MockQueriesInterface) Create(ctx context.Context, request sql.QueryPostContent) (*sql.Query, error) {
+func (_m *MockQueriesInterface) Create(ctx context.Context, request sql.CreateQueryRequest) (*sql.Query, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -34,10 +34,10 @@ func (_m *MockQueriesInterface) Create(ctx context.Context, request sql.QueryPos
 
 	var r0 *sql.Query
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.QueryPostContent) (*sql.Query, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateQueryRequest) (*sql.Query, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.QueryPostContent) *sql.Query); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateQueryRequest) *sql.Query); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -45,7 +45,7 @@ func (_m *MockQueriesInterface) Create(ctx context.Context, request sql.QueryPos
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, sql.QueryPostContent) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, sql.CreateQueryRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -61,14 +61,14 @@ type MockQueriesInterface_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request sql.QueryPostContent
+//   - request sql.CreateQueryRequest
 func (_e *MockQueriesInterface_Expecter) Create(ctx interface{}, request interface{}) *MockQueriesInterface_Create_Call {
 	return &MockQueriesInterface_Create_Call{Call: _e.mock.On("Create", ctx, request)}
 }
 
-func (_c *MockQueriesInterface_Create_Call) Run(run func(ctx context.Context, request sql.QueryPostContent)) *MockQueriesInterface_Create_Call {
+func (_c *MockQueriesInterface_Create_Call) Run(run func(ctx context.Context, request sql.CreateQueryRequest)) *MockQueriesInterface_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.QueryPostContent))
+		run(args[0].(context.Context), args[1].(sql.CreateQueryRequest))
 	})
 	return _c
 }
@@ -78,13 +78,13 @@ func (_c *MockQueriesInterface_Create_Call) Return(_a0 *sql.Query, _a1 error) *M
 	return _c
 }
 
-func (_c *MockQueriesInterface_Create_Call) RunAndReturn(run func(context.Context, sql.QueryPostContent) (*sql.Query, error)) *MockQueriesInterface_Create_Call {
+func (_c *MockQueriesInterface_Create_Call) RunAndReturn(run func(context.Context, sql.CreateQueryRequest) (*sql.Query, error)) *MockQueriesInterface_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockQueriesInterface) Delete(ctx context.Context, request sql.DeleteQueryRequest) error {
+func (_m *MockQueriesInterface) Delete(ctx context.Context, request sql.TrashQueryRequest) error {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -92,7 +92,7 @@ func (_m *MockQueriesInterface) Delete(ctx context.Context, request sql.DeleteQu
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.DeleteQueryRequest) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.TrashQueryRequest) error); ok {
 		r0 = rf(ctx, request)
 	} else {
 		r0 = ret.Error(0)
@@ -108,14 +108,14 @@ type MockQueriesInterface_Delete_Call struct {
 
 // Delete is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request sql.DeleteQueryRequest
+//   - request sql.TrashQueryRequest
 func (_e *MockQueriesInterface_Expecter) Delete(ctx interface{}, request interface{}) *MockQueriesInterface_Delete_Call {
 	return &MockQueriesInterface_Delete_Call{Call: _e.mock.On("Delete", ctx, request)}
 }
 
-func (_c *MockQueriesInterface_Delete_Call) Run(run func(ctx context.Context, request sql.DeleteQueryRequest)) *MockQueriesInterface_Delete_Call {
+func (_c *MockQueriesInterface_Delete_Call) Run(run func(ctx context.Context, request sql.TrashQueryRequest)) *MockQueriesInterface_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.DeleteQueryRequest))
+		run(args[0].(context.Context), args[1].(sql.TrashQueryRequest))
 	})
 	return _c
 }
@@ -125,22 +125,22 @@ func (_c *MockQueriesInterface_Delete_Call) Return(_a0 error) *MockQueriesInterf
 	return _c
 }
 
-func (_c *MockQueriesInterface_Delete_Call) RunAndReturn(run func(context.Context, sql.DeleteQueryRequest) error) *MockQueriesInterface_Delete_Call {
+func (_c *MockQueriesInterface_Delete_Call) RunAndReturn(run func(context.Context, sql.TrashQueryRequest) error) *MockQueriesInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// DeleteByQueryId provides a mock function with given fields: ctx, queryId
-func (_m *MockQueriesInterface) DeleteByQueryId(ctx context.Context, queryId string) error {
-	ret := _m.Called(ctx, queryId)
+// DeleteById provides a mock function with given fields: ctx, id
+func (_m *MockQueriesInterface) DeleteById(ctx context.Context, id string) error {
+	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteByQueryId")
+		panic("no return value specified for DeleteById")
 	}
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
-		r0 = rf(ctx, queryId)
+		r0 = rf(ctx, id)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -148,31 +148,31 @@ func (_m *MockQueriesInterface) DeleteByQueryId(ctx context.Context, queryId str
 	return r0
 }
 
-// MockQueriesInterface_DeleteByQueryId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByQueryId'
-type MockQueriesInterface_DeleteByQueryId_Call struct {
+// MockQueriesInterface_DeleteById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteById'
+type MockQueriesInterface_DeleteById_Call struct {
 	*mock.Call
 }
 
-// DeleteByQueryId is a helper method to define mock.On call
+// DeleteById is a helper method to define mock.On call
 //   - ctx context.Context
-//   - queryId string
-func (_e *MockQueriesInterface_Expecter) DeleteByQueryId(ctx interface{}, queryId interface{}) *MockQueriesInterface_DeleteByQueryId_Call {
-	return &MockQueriesInterface_DeleteByQueryId_Call{Call: _e.mock.On("DeleteByQueryId", ctx, queryId)}
+//   - id string
+func (_e *MockQueriesInterface_Expecter) DeleteById(ctx interface{}, id interface{}) *MockQueriesInterface_DeleteById_Call {
+	return &MockQueriesInterface_DeleteById_Call{Call: _e.mock.On("DeleteById", ctx, id)}
 }
 
-func (_c *MockQueriesInterface_DeleteByQueryId_Call) Run(run func(ctx context.Context, queryId string)) *MockQueriesInterface_DeleteByQueryId_Call {
+func (_c *MockQueriesInterface_DeleteById_Call) Run(run func(ctx context.Context, id string)) *MockQueriesInterface_DeleteById_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *MockQueriesInterface_DeleteByQueryId_Call) Return(_a0 error) *MockQueriesInterface_DeleteByQueryId_Call {
+func (_c *MockQueriesInterface_DeleteById_Call) Return(_a0 error) *MockQueriesInterface_DeleteById_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockQueriesInterface_DeleteByQueryId_Call) RunAndReturn(run func(context.Context, string) error) *MockQueriesInterface_DeleteByQueryId_Call {
+func (_c *MockQueriesInterface_DeleteById_Call) RunAndReturn(run func(context.Context, string) error) *MockQueriesInterface_DeleteById_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -236,24 +236,24 @@ func (_c *MockQueriesInterface_Get_Call) RunAndReturn(run func(context.Context, 
 	return _c
 }
 
-// GetByName provides a mock function with given fields: ctx, name
-func (_m *MockQueriesInterface) GetByName(ctx context.Context, name string) (*sql.Query, error) {
+// GetByDisplayName provides a mock function with given fields: ctx, name
+func (_m *MockQueriesInterface) GetByDisplayName(ctx context.Context, name string) (*sql.ListQueryObjectsResponseQuery, error) {
 	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetByName")
+		panic("no return value specified for GetByDisplayName")
 	}
 
-	var r0 *sql.Query
+	var r0 *sql.ListQueryObjectsResponseQuery
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*sql.Query, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*sql.ListQueryObjectsResponseQuery, error)); ok {
 		return rf(ctx, name)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *sql.Query); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *sql.ListQueryObjectsResponseQuery); ok {
 		r0 = rf(ctx, name)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.Query)
+			r0 = ret.Get(0).(*sql.ListQueryObjectsResponseQuery)
 		}
 	}
 
@@ -266,50 +266,50 @@ func (_m *MockQueriesInterface) GetByName(ctx context.Context, name string) (*sq
 	return r0, r1
 }
 
-// MockQueriesInterface_GetByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByName'
-type MockQueriesInterface_GetByName_Call struct {
+// MockQueriesInterface_GetByDisplayName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByDisplayName'
+type MockQueriesInterface_GetByDisplayName_Call struct {
 	*mock.Call
 }
 
-// GetByName is a helper method to define mock.On call
+// GetByDisplayName is a helper method to define mock.On call
 //   - ctx context.Context
 //   - name string
-func (_e *MockQueriesInterface_Expecter) GetByName(ctx interface{}, name interface{}) *MockQueriesInterface_GetByName_Call {
-	return &MockQueriesInterface_GetByName_Call{Call: _e.mock.On("GetByName", ctx, name)}
+func (_e *MockQueriesInterface_Expecter) GetByDisplayName(ctx interface{}, name interface{}) *MockQueriesInterface_GetByDisplayName_Call {
+	return &MockQueriesInterface_GetByDisplayName_Call{Call: _e.mock.On("GetByDisplayName", ctx, name)}
 }
 
-func (_c *MockQueriesInterface_GetByName_Call) Run(run func(ctx context.Context, name string)) *MockQueriesInterface_GetByName_Call {
+func (_c *MockQueriesInterface_GetByDisplayName_Call) Run(run func(ctx context.Context, name string)) *MockQueriesInterface_GetByDisplayName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *MockQueriesInterface_GetByName_Call) Return(_a0 *sql.Query, _a1 error) *MockQueriesInterface_GetByName_Call {
+func (_c *MockQueriesInterface_GetByDisplayName_Call) Return(_a0 *sql.ListQueryObjectsResponseQuery, _a1 error) *MockQueriesInterface_GetByDisplayName_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockQueriesInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*sql.Query, error)) *MockQueriesInterface_GetByName_Call {
+func (_c *MockQueriesInterface_GetByDisplayName_Call) RunAndReturn(run func(context.Context, string) (*sql.ListQueryObjectsResponseQuery, error)) *MockQueriesInterface_GetByDisplayName_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetByQueryId provides a mock function with given fields: ctx, queryId
-func (_m *MockQueriesInterface) GetByQueryId(ctx context.Context, queryId string) (*sql.Query, error) {
-	ret := _m.Called(ctx, queryId)
+// GetById provides a mock function with given fields: ctx, id
+func (_m *MockQueriesInterface) GetById(ctx context.Context, id string) (*sql.Query, error) {
+	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetByQueryId")
+		panic("no return value specified for GetById")
 	}
 
 	var r0 *sql.Query
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string) (*sql.Query, error)); ok {
-		return rf(ctx, queryId)
+		return rf(ctx, id)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string) *sql.Query); ok {
-		r0 = rf(ctx, queryId)
+		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*sql.Query)
@@ -317,7 +317,7 @@ func (_m *MockQueriesInterface) GetByQueryId(ctx context.Context, queryId string
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, queryId)
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -325,31 +325,31 @@ func (_m *MockQueriesInterface) GetByQueryId(ctx context.Context, queryId string
 	return r0, r1
 }
 
-// MockQueriesInterface_GetByQueryId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByQueryId'
-type MockQueriesInterface_GetByQueryId_Call struct {
+// MockQueriesInterface_GetById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetById'
+type MockQueriesInterface_GetById_Call struct {
 	*mock.Call
 }
 
-// GetByQueryId is a helper method to define mock.On call
+// GetById is a helper method to define mock.On call
 //   - ctx context.Context
-//   - queryId string
-func (_e *MockQueriesInterface_Expecter) GetByQueryId(ctx interface{}, queryId interface{}) *MockQueriesInterface_GetByQueryId_Call {
-	return &MockQueriesInterface_GetByQueryId_Call{Call: _e.mock.On("GetByQueryId", ctx, queryId)}
+//   - id string
+func (_e *MockQueriesInterface_Expecter) GetById(ctx interface{}, id interface{}) *MockQueriesInterface_GetById_Call {
+	return &MockQueriesInterface_GetById_Call{Call: _e.mock.On("GetById", ctx, id)}
 }
 
-func (_c *MockQueriesInterface_GetByQueryId_Call) Run(run func(ctx context.Context, queryId string)) *MockQueriesInterface_GetByQueryId_Call {
+func (_c *MockQueriesInterface_GetById_Call) Run(run func(ctx context.Context, id string)) *MockQueriesInterface_GetById_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *MockQueriesInterface_GetByQueryId_Call) Return(_a0 *sql.Query, _a1 error) *MockQueriesInterface_GetByQueryId_Call {
+func (_c *MockQueriesInterface_GetById_Call) Return(_a0 *sql.Query, _a1 error) *MockQueriesInterface_GetById_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockQueriesInterface_GetByQueryId_Call) RunAndReturn(run func(context.Context, string) (*sql.Query, error)) *MockQueriesInterface_GetByQueryId_Call {
+func (_c *MockQueriesInterface_GetById_Call) RunAndReturn(run func(context.Context, string) (*sql.Query, error)) *MockQueriesInterface_GetById_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -402,19 +402,19 @@ func (_c *MockQueriesInterface_Impl_Call) RunAndReturn(run func() sql.QueriesSer
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockQueriesInterface) List(ctx context.Context, request sql.ListQueriesRequest) listing.Iterator[sql.Query] {
+func (_m *MockQueriesInterface) List(ctx context.Context, request sql.ListQueriesRequest) listing.Iterator[sql.ListQueryObjectsResponseQuery] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 listing.Iterator[sql.Query]
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueriesRequest) listing.Iterator[sql.Query]); ok {
+	var r0 listing.Iterator[sql.ListQueryObjectsResponseQuery]
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueriesRequest) listing.Iterator[sql.ListQueryObjectsResponseQuery]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(listing.Iterator[sql.Query])
+			r0 = ret.Get(0).(listing.Iterator[sql.ListQueryObjectsResponseQuery])
 		}
 	}
 
@@ -440,34 +440,34 @@ func (_c *MockQueriesInterface_List_Call) Run(run func(ctx context.Context, requ
 	return _c
 }
 
-func (_c *MockQueriesInterface_List_Call) Return(_a0 listing.Iterator[sql.Query]) *MockQueriesInterface_List_Call {
+func (_c *MockQueriesInterface_List_Call) Return(_a0 listing.Iterator[sql.ListQueryObjectsResponseQuery]) *MockQueriesInterface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockQueriesInterface_List_Call) RunAndReturn(run func(context.Context, sql.ListQueriesRequest) listing.Iterator[sql.Query]) *MockQueriesInterface_List_Call {
+func (_c *MockQueriesInterface_List_Call) RunAndReturn(run func(context.Context, sql.ListQueriesRequest) listing.Iterator[sql.ListQueryObjectsResponseQuery]) *MockQueriesInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListAll provides a mock function with given fields: ctx, request
-func (_m *MockQueriesInterface) ListAll(ctx context.Context, request sql.ListQueriesRequest) ([]sql.Query, error) {
+func (_m *MockQueriesInterface) ListAll(ctx context.Context, request sql.ListQueriesRequest) ([]sql.ListQueryObjectsResponseQuery, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
 	}
 
-	var r0 []sql.Query
+	var r0 []sql.ListQueryObjectsResponseQuery
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueriesRequest) ([]sql.Query, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueriesRequest) ([]sql.ListQueryObjectsResponseQuery, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueriesRequest) []sql.Query); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueriesRequest) []sql.ListQueryObjectsResponseQuery); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]sql.Query)
+			r0 = ret.Get(0).([]sql.ListQueryObjectsResponseQuery)
 		}
 	}
 
@@ -499,22 +499,22 @@ func (_c *MockQueriesInterface_ListAll_Call) Run(run func(ctx context.Context, r
 	return _c
 }
 
-func (_c *MockQueriesInterface_ListAll_Call) Return(_a0 []sql.Query, _a1 error) *MockQueriesInterface_ListAll_Call {
+func (_c *MockQueriesInterface_ListAll_Call) Return(_a0 []sql.ListQueryObjectsResponseQuery, _a1 error) *MockQueriesInterface_ListAll_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockQueriesInterface_ListAll_Call) RunAndReturn(run func(context.Context, sql.ListQueriesRequest) ([]sql.Query, error)) *MockQueriesInterface_ListAll_Call {
+func (_c *MockQueriesInterface_ListAll_Call) RunAndReturn(run func(context.Context, sql.ListQueriesRequest) ([]sql.ListQueryObjectsResponseQuery, error)) *MockQueriesInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// QueryNameToIdMap provides a mock function with given fields: ctx, request
-func (_m *MockQueriesInterface) QueryNameToIdMap(ctx context.Context, request sql.ListQueriesRequest) (map[string]string, error) {
+// ListQueryObjectsResponseQueryDisplayNameToIdMap provides a mock function with given fields: ctx, request
+func (_m *MockQueriesInterface) ListQueryObjectsResponseQueryDisplayNameToIdMap(ctx context.Context, request sql.ListQueriesRequest) (map[string]string, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
-		panic("no return value specified for QueryNameToIdMap")
+		panic("no return value specified for ListQueryObjectsResponseQueryDisplayNameToIdMap")
 	}
 
 	var r0 map[string]string
@@ -539,84 +539,204 @@ func (_m *MockQueriesInterface) QueryNameToIdMap(ctx context.Context, request sq
 	return r0, r1
 }
 
-// MockQueriesInterface_QueryNameToIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'QueryNameToIdMap'
-type MockQueriesInterface_QueryNameToIdMap_Call struct {
+// MockQueriesInterface_ListQueryObjectsResponseQueryDisplayNameToIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListQueryObjectsResponseQueryDisplayNameToIdMap'
+type MockQueriesInterface_ListQueryObjectsResponseQueryDisplayNameToIdMap_Call struct {
 	*mock.Call
 }
 
-// QueryNameToIdMap is a helper method to define mock.On call
+// ListQueryObjectsResponseQueryDisplayNameToIdMap is a helper method to define mock.On call
 //   - ctx context.Context
 //   - request sql.ListQueriesRequest
-func (_e *MockQueriesInterface_Expecter) QueryNameToIdMap(ctx interface{}, request interface{}) *MockQueriesInterface_QueryNameToIdMap_Call {
-	return &MockQueriesInterface_QueryNameToIdMap_Call{Call: _e.mock.On("QueryNameToIdMap", ctx, request)}
+func (_e *MockQueriesInterface_Expecter) ListQueryObjectsResponseQueryDisplayNameToIdMap(ctx interface{}, request interface{}) *MockQueriesInterface_ListQueryObjectsResponseQueryDisplayNameToIdMap_Call {
+	return &MockQueriesInterface_ListQueryObjectsResponseQueryDisplayNameToIdMap_Call{Call: _e.mock.On("ListQueryObjectsResponseQueryDisplayNameToIdMap", ctx, request)}
 }
 
-func (_c *MockQueriesInterface_QueryNameToIdMap_Call) Run(run func(ctx context.Context, request sql.ListQueriesRequest)) *MockQueriesInterface_QueryNameToIdMap_Call {
+func (_c *MockQueriesInterface_ListQueryObjectsResponseQueryDisplayNameToIdMap_Call) Run(run func(ctx context.Context, request sql.ListQueriesRequest)) *MockQueriesInterface_ListQueryObjectsResponseQueryDisplayNameToIdMap_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(sql.ListQueriesRequest))
 	})
 	return _c
 }
 
-func (_c *MockQueriesInterface_QueryNameToIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockQueriesInterface_QueryNameToIdMap_Call {
+func (_c *MockQueriesInterface_ListQueryObjectsResponseQueryDisplayNameToIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockQueriesInterface_ListQueryObjectsResponseQueryDisplayNameToIdMap_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockQueriesInterface_QueryNameToIdMap_Call) RunAndReturn(run func(context.Context, sql.ListQueriesRequest) (map[string]string, error)) *MockQueriesInterface_QueryNameToIdMap_Call {
+func (_c *MockQueriesInterface_ListQueryObjectsResponseQueryDisplayNameToIdMap_Call) RunAndReturn(run func(context.Context, sql.ListQueriesRequest) (map[string]string, error)) *MockQueriesInterface_ListQueryObjectsResponseQueryDisplayNameToIdMap_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Restore provides a mock function with given fields: ctx, request
-func (_m *MockQueriesInterface) Restore(ctx context.Context, request sql.RestoreQueryRequest) error {
+// ListVisualizations provides a mock function with given fields: ctx, request
+func (_m *MockQueriesInterface) ListVisualizations(ctx context.Context, request sql.ListVisualizationsForQueryRequest) listing.Iterator[sql.Visualization] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Restore")
+		panic("no return value specified for ListVisualizations")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.RestoreQueryRequest) error); ok {
+	var r0 listing.Iterator[sql.Visualization]
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListVisualizationsForQueryRequest) listing.Iterator[sql.Visualization]); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[sql.Visualization])
+		}
 	}
 
 	return r0
 }
 
-// MockQueriesInterface_Restore_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Restore'
-type MockQueriesInterface_Restore_Call struct {
+// MockQueriesInterface_ListVisualizations_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListVisualizations'
+type MockQueriesInterface_ListVisualizations_Call struct {
 	*mock.Call
 }
 
-// Restore is a helper method to define mock.On call
+// ListVisualizations is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request sql.RestoreQueryRequest
-func (_e *MockQueriesInterface_Expecter) Restore(ctx interface{}, request interface{}) *MockQueriesInterface_Restore_Call {
-	return &MockQueriesInterface_Restore_Call{Call: _e.mock.On("Restore", ctx, request)}
+//   - request sql.ListVisualizationsForQueryRequest
+func (_e *MockQueriesInterface_Expecter) ListVisualizations(ctx interface{}, request interface{}) *MockQueriesInterface_ListVisualizations_Call {
+	return &MockQueriesInterface_ListVisualizations_Call{Call: _e.mock.On("ListVisualizations", ctx, request)}
 }
 
-func (_c *MockQueriesInterface_Restore_Call) Run(run func(ctx context.Context, request sql.RestoreQueryRequest)) *MockQueriesInterface_Restore_Call {
+func (_c *MockQueriesInterface_ListVisualizations_Call) Run(run func(ctx context.Context, request sql.ListVisualizationsForQueryRequest)) *MockQueriesInterface_ListVisualizations_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.RestoreQueryRequest))
+		run(args[0].(context.Context), args[1].(sql.ListVisualizationsForQueryRequest))
 	})
 	return _c
 }
 
-func (_c *MockQueriesInterface_Restore_Call) Return(_a0 error) *MockQueriesInterface_Restore_Call {
+func (_c *MockQueriesInterface_ListVisualizations_Call) Return(_a0 listing.Iterator[sql.Visualization]) *MockQueriesInterface_ListVisualizations_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockQueriesInterface_Restore_Call) RunAndReturn(run func(context.Context, sql.RestoreQueryRequest) error) *MockQueriesInterface_Restore_Call {
+func (_c *MockQueriesInterface_ListVisualizations_Call) RunAndReturn(run func(context.Context, sql.ListVisualizationsForQueryRequest) listing.Iterator[sql.Visualization]) *MockQueriesInterface_ListVisualizations_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListVisualizationsAll provides a mock function with given fields: ctx, request
+func (_m *MockQueriesInterface) ListVisualizationsAll(ctx context.Context, request sql.ListVisualizationsForQueryRequest) ([]sql.Visualization, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListVisualizationsAll")
+	}
+
+	var r0 []sql.Visualization
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListVisualizationsForQueryRequest) ([]sql.Visualization, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListVisualizationsForQueryRequest) []sql.Visualization); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]sql.Visualization)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, sql.ListVisualizationsForQueryRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockQueriesInterface_ListVisualizationsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListVisualizationsAll'
+type MockQueriesInterface_ListVisualizationsAll_Call struct {
+	*mock.Call
+}
+
+// ListVisualizationsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sql.ListVisualizationsForQueryRequest
+func (_e *MockQueriesInterface_Expecter) ListVisualizationsAll(ctx interface{}, request interface{}) *MockQueriesInterface_ListVisualizationsAll_Call {
+	return &MockQueriesInterface_ListVisualizationsAll_Call{Call: _e.mock.On("ListVisualizationsAll", ctx, request)}
+}
+
+func (_c *MockQueriesInterface_ListVisualizationsAll_Call) Run(run func(ctx context.Context, request sql.ListVisualizationsForQueryRequest)) *MockQueriesInterface_ListVisualizationsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sql.ListVisualizationsForQueryRequest))
+	})
+	return _c
+}
+
+func (_c *MockQueriesInterface_ListVisualizationsAll_Call) Return(_a0 []sql.Visualization, _a1 error) *MockQueriesInterface_ListVisualizationsAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockQueriesInterface_ListVisualizationsAll_Call) RunAndReturn(run func(context.Context, sql.ListVisualizationsForQueryRequest) ([]sql.Visualization, error)) *MockQueriesInterface_ListVisualizationsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListVisualizationsById provides a mock function with given fields: ctx, id
+func (_m *MockQueriesInterface) ListVisualizationsById(ctx context.Context, id string) (*sql.ListVisualizationsForQueryResponse, error) {
+	ret := _m.Called(ctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListVisualizationsById")
+	}
+
+	var r0 *sql.ListVisualizationsForQueryResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*sql.ListVisualizationsForQueryResponse, error)); ok {
+		return rf(ctx, id)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *sql.ListVisualizationsForQueryResponse); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*sql.ListVisualizationsForQueryResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockQueriesInterface_ListVisualizationsById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListVisualizationsById'
+type MockQueriesInterface_ListVisualizationsById_Call struct {
+	*mock.Call
+}
+
+// ListVisualizationsById is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id string
+func (_e *MockQueriesInterface_Expecter) ListVisualizationsById(ctx interface{}, id interface{}) *MockQueriesInterface_ListVisualizationsById_Call {
+	return &MockQueriesInterface_ListVisualizationsById_Call{Call: _e.mock.On("ListVisualizationsById", ctx, id)}
+}
+
+func (_c *MockQueriesInterface_ListVisualizationsById_Call) Run(run func(ctx context.Context, id string)) *MockQueriesInterface_ListVisualizationsById_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockQueriesInterface_ListVisualizationsById_Call) Return(_a0 *sql.ListVisualizationsForQueryResponse, _a1 error) *MockQueriesInterface_ListVisualizationsById_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockQueriesInterface_ListVisualizationsById_Call) RunAndReturn(run func(context.Context, string) (*sql.ListVisualizationsForQueryResponse, error)) *MockQueriesInterface_ListVisualizationsById_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockQueriesInterface) Update(ctx context.Context, request sql.QueryEditContent) (*sql.Query, error) {
+func (_m *MockQueriesInterface) Update(ctx context.Context, request sql.UpdateQueryRequest) (*sql.Query, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -625,10 +745,10 @@ func (_m *MockQueriesInterface) Update(ctx context.Context, request sql.QueryEdi
 
 	var r0 *sql.Query
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.QueryEditContent) (*sql.Query, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.UpdateQueryRequest) (*sql.Query, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.QueryEditContent) *sql.Query); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.UpdateQueryRequest) *sql.Query); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -636,7 +756,7 @@ func (_m *MockQueriesInterface) Update(ctx context.Context, request sql.QueryEdi
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, sql.QueryEditContent) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, sql.UpdateQueryRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -652,14 +772,14 @@ type MockQueriesInterface_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request sql.QueryEditContent
+//   - request sql.UpdateQueryRequest
 func (_e *MockQueriesInterface_Expecter) Update(ctx interface{}, request interface{}) *MockQueriesInterface_Update_Call {
 	return &MockQueriesInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
 }
 
-func (_c *MockQueriesInterface_Update_Call) Run(run func(ctx context.Context, request sql.QueryEditContent)) *MockQueriesInterface_Update_Call {
+func (_c *MockQueriesInterface_Update_Call) Run(run func(ctx context.Context, request sql.UpdateQueryRequest)) *MockQueriesInterface_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.QueryEditContent))
+		run(args[0].(context.Context), args[1].(sql.UpdateQueryRequest))
 	})
 	return _c
 }
@@ -669,7 +789,7 @@ func (_c *MockQueriesInterface_Update_Call) Return(_a0 *sql.Query, _a1 error) *M
 	return _c
 }
 
-func (_c *MockQueriesInterface_Update_Call) RunAndReturn(run func(context.Context, sql.QueryEditContent) (*sql.Query, error)) *MockQueriesInterface_Update_Call {
+func (_c *MockQueriesInterface_Update_Call) RunAndReturn(run func(context.Context, sql.UpdateQueryRequest) (*sql.Query, error)) *MockQueriesInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

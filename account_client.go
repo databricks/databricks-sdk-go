@@ -29,11 +29,6 @@ type AccountClient struct {
 	// account and date range. This feature works with all account types.
 	BillableUsage billing.BillableUsageInterface
 
-	// These APIs manage budget configuration including notifications for
-	// exceeding a budget for a period. They can also retrieve the status of
-	// each budget.
-	Budgets billing.BudgetsInterface
-
 	// These APIs manage credential configurations for this workspace.
 	// Databricks needs access to a cross-account service IAM role in your AWS
 	// account so that Databricks can deploy clusters in the appropriate VPC for
@@ -41,7 +36,7 @@ type AccountClient struct {
 	// information, and its ID is used when creating a new workspace.
 	Credentials provisioning.CredentialsInterface
 
-	// These APIs enable administrators to manage custom oauth app integrations,
+	// These APIs enable administrators to manage custom OAuth app integrations,
 	// which is required for adding/using Custom OAuth App Integration like
 	// Tableau Cloud for Databricks in AWS cloud.
 	CustomAppIntegration oauth2.CustomAppIntegrationInterface
@@ -188,7 +183,7 @@ type AccountClient struct {
 	// These APIs manage private access settings for this account.
 	PrivateAccess provisioning.PrivateAccessInterface
 
-	// These APIs enable administrators to manage published oauth app
+	// These APIs enable administrators to manage published OAuth app
 	// integrations, which is required for adding/using Published OAuth App
 	// Integration like Tableau Desktop for Databricks in AWS cloud.
 	PublishedAppIntegration oauth2.PublishedAppIntegrationInterface
@@ -263,6 +258,12 @@ type AccountClient struct {
 	// platform or on a select custom plan that allows multiple workspaces per
 	// account.
 	Workspaces provisioning.WorkspacesInterface
+
+	// These APIs manage budget configurations for this account. Budgets enable
+	// you to monitor usage across your account. You can set up budgets to
+	// either track account-wide spending, or apply filters to track the
+	// spending of specific teams, projects, or workspaces.
+	Budgets billing.BudgetsInterface
 }
 
 var ErrNotAccountClient = errors.New("invalid Databricks Account configuration")
@@ -295,7 +296,6 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 
 		AccessControl:           iam.NewAccountAccessControl(apiClient),
 		BillableUsage:           billing.NewBillableUsage(apiClient),
-		Budgets:                 billing.NewBudgets(apiClient),
 		Credentials:             provisioning.NewCredentials(apiClient),
 		CustomAppIntegration:    oauth2.NewCustomAppIntegration(apiClient),
 		EncryptionKeys:          provisioning.NewEncryptionKeys(apiClient),
@@ -318,5 +318,6 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		VpcEndpoints:            provisioning.NewVpcEndpoints(apiClient),
 		WorkspaceAssignment:     iam.NewWorkspaceAssignment(apiClient),
 		Workspaces:              provisioning.NewWorkspaces(apiClient),
+		Budgets:                 billing.NewBudgets(apiClient),
 	}, nil
 }

@@ -9,11 +9,11 @@ import (
 )
 
 type statementExecutionAPIUtilities interface {
-	ExecuteAndWait(ctx context.Context, request ExecuteStatementRequest) (*ExecuteStatementResponse, error)
+	ExecuteAndWait(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error)
 }
 
 // [EXPERIMENTAL] Execute a query and wait for results to be available
-func (a *StatementExecutionAPI) ExecuteAndWait(ctx context.Context, request ExecuteStatementRequest) (*ExecuteStatementResponse, error) {
+func (a *StatementExecutionAPI) ExecuteAndWait(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error) {
 	immediateResponse, err := a.impl.ExecuteStatement(ctx, request)
 	if err != nil {
 		return nil, err
@@ -30,8 +30,8 @@ func (a *StatementExecutionAPI) ExecuteAndWait(ctx context.Context, request Exec
 		return nil, fmt.Errorf(msg)
 	default:
 		// TODO: parse request.WaitTimeout and use it here
-		return retries.Poll[ExecuteStatementResponse](ctx, 20*time.Minute,
-			func() (*ExecuteStatementResponse, *retries.Err) {
+		return retries.Poll[StatementResponse](ctx, 20*time.Minute,
+			func() (*StatementResponse, *retries.Err) {
 				res, err := a.GetStatementByStatementId(ctx, immediateResponse.StatementId)
 				if err != nil {
 					return nil, retries.Halt(err)
@@ -39,7 +39,7 @@ func (a *StatementExecutionAPI) ExecuteAndWait(ctx context.Context, request Exec
 				status := res.Status
 				switch status.State {
 				case StatementStateSucceeded:
-					return &ExecuteStatementResponse{
+					return &StatementResponse{
 						Manifest:    res.Manifest,
 						Result:      res.Result,
 						StatementId: res.StatementId,

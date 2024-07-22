@@ -3627,13 +3627,9 @@ func (f *Language) Type() string {
 type Library struct {
 	// Specification of a CRAN library to be installed as part of the library
 	Cran *RCranLibrary `json:"cran,omitempty"`
-	// URI of the egg library to install. Supported URIs include Workspace
-	// paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "egg":
-	// "/Workspace/path/to/library.egg" }`, `{ "egg" :
-	// "/Volumes/path/to/library.egg" }` or `{ "egg":
-	// "s3://my-bucket/library.egg" }`. If S3 is used, please make sure the
-	// cluster has read access on the library. You may need to launch the
-	// cluster with an IAM role to access the S3 URI.
+	// Deprecated. URI of the egg library to install. Installing Python egg
+	// files is deprecated and is not supported in Databricks Runtime 14.0 and
+	// above.
 	Egg string `json:"egg,omitempty"`
 	// URI of the JAR library to install. Supported URIs include Workspace
 	// paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "jar":
@@ -3772,12 +3768,40 @@ type ListClusterPoliciesRequest struct {
 	SortOrder ListSortOrder `json:"-" url:"sort_order,omitempty"`
 }
 
-// List all clusters
+type ListClustersFilterBy struct {
+	// The source of cluster creation.
+	ClusterSources []ClusterSource `json:"cluster_sources,omitempty" url:"cluster_sources,omitempty"`
+	// The current state of the clusters.
+	ClusterStates []State `json:"cluster_states,omitempty" url:"cluster_states,omitempty"`
+	// Whether the clusters are pinned or not.
+	IsPinned bool `json:"is_pinned,omitempty" url:"is_pinned,omitempty"`
+	// The ID of the cluster policy used to create the cluster if applicable.
+	PolicyId string `json:"policy_id,omitempty" url:"policy_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListClustersFilterBy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListClustersFilterBy) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List clusters
 type ListClustersRequest struct {
-	// Filter clusters based on what type of client it can be used for. Could be
-	// either NOTEBOOKS or JOBS. No input for this field will get all clusters
-	// in the workspace without filtering on its supported client
-	CanUseClient string `json:"-" url:"can_use_client,omitempty"`
+	// Filters to apply to the list of clusters.
+	FilterBy *ListClustersFilterBy `json:"-" url:"filter_by,omitempty"`
+	// Use this field to specify the maximum number of results to be returned by
+	// the server. The server may further constrain the maximum number of
+	// results returned in a single page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Use next_page_token or prev_page_token returned from the previous request
+	// to list the next or previous page of clusters respectively.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Sort the list of clusters by a specific criteria.
+	SortBy *ListClustersSortBy `json:"-" url:"sort_by,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3793,6 +3817,90 @@ func (s ListClustersRequest) MarshalJSON() ([]byte, error) {
 type ListClustersResponse struct {
 	// <needs content added>
 	Clusters []ClusterDetails `json:"clusters,omitempty"`
+	// This field represents the pagination token to retrieve the next page of
+	// results. If the value is "", it means no further results for the request.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// This field represents the pagination token to retrieve the previous page
+	// of results. If the value is "", it means no further results for the
+	// request.
+	PrevPageToken string `json:"prev_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListClustersResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListClustersResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListClustersSortBy struct {
+	// The direction to sort by.
+	Direction ListClustersSortByDirection `json:"direction,omitempty" url:"direction,omitempty"`
+	// The sorting criteria. By default, clusters are sorted by 3 columns from
+	// highest to lowest precedence: cluster state, pinned or unpinned, then
+	// cluster name.
+	Field ListClustersSortByField `json:"field,omitempty" url:"field,omitempty"`
+}
+
+// The direction to sort by.
+type ListClustersSortByDirection string
+
+const ListClustersSortByDirectionAsc ListClustersSortByDirection = `ASC`
+
+const ListClustersSortByDirectionDesc ListClustersSortByDirection = `DESC`
+
+// String representation for [fmt.Print]
+func (f *ListClustersSortByDirection) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ListClustersSortByDirection) Set(v string) error {
+	switch v {
+	case `ASC`, `DESC`:
+		*f = ListClustersSortByDirection(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ASC", "DESC"`, v)
+	}
+}
+
+// Type always returns ListClustersSortByDirection to satisfy [pflag.Value] interface
+func (f *ListClustersSortByDirection) Type() string {
+	return "ListClustersSortByDirection"
+}
+
+// The sorting criteria. By default, clusters are sorted by 3 columns from
+// highest to lowest precedence: cluster state, pinned or unpinned, then cluster
+// name.
+type ListClustersSortByField string
+
+const ListClustersSortByFieldClusterName ListClustersSortByField = `CLUSTER_NAME`
+
+const ListClustersSortByFieldDefault ListClustersSortByField = `DEFAULT`
+
+// String representation for [fmt.Print]
+func (f *ListClustersSortByField) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ListClustersSortByField) Set(v string) error {
+	switch v {
+	case `CLUSTER_NAME`, `DEFAULT`:
+		*f = ListClustersSortByField(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLUSTER_NAME", "DEFAULT"`, v)
+	}
+}
+
+// Type always returns ListClustersSortByField to satisfy [pflag.Value] interface
+func (f *ListClustersSortByField) Type() string {
+	return "ListClustersSortByField"
 }
 
 type ListGlobalInitScriptsResponse struct {

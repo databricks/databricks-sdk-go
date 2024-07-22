@@ -26,39 +26,42 @@ type BillableUsageService interface {
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 }
 
-// These APIs manage budget configuration including notifications for exceeding
-// a budget for a period. They can also retrieve the status of each budget.
+// These APIs manage budget configurations for this account. Budgets enable you
+// to monitor usage across your account. You can set up budgets to either track
+// account-wide spending, or apply filters to track the spending of specific
+// teams, projects, or workspaces.
 type BudgetsService interface {
 
-	// Create a new budget.
+	// Create new budget.
 	//
-	// Creates a new budget in the specified account.
-	Create(ctx context.Context, request WrappedBudget) (*WrappedBudgetWithStatus, error)
+	// Create a new budget configuration for an account. For full details, see
+	// https://docs.databricks.com/en/admin/account-settings/budgets.html.
+	Create(ctx context.Context, request CreateBudgetConfigurationRequest) (*CreateBudgetConfigurationResponse, error)
 
 	// Delete budget.
 	//
-	// Deletes the budget specified by its UUID.
-	Delete(ctx context.Context, request DeleteBudgetRequest) error
+	// Deletes a budget configuration for an account. Both account and budget
+	// configuration are specified by ID. This cannot be undone.
+	Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error
 
-	// Get budget and its status.
+	// Get budget.
 	//
-	// Gets the budget specified by its UUID, including noncumulative status for
-	// each day that the budget is configured to include.
-	Get(ctx context.Context, request GetBudgetRequest) (*WrappedBudgetWithStatus, error)
+	// Gets a budget configuration for an account. Both account and budget
+	// configuration are specified by ID.
+	Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error)
 
 	// Get all budgets.
 	//
-	// Gets all budgets associated with this account, including noncumulative
-	// status for each day that the budget is configured to include.
+	// Gets all budgets associated with this account.
 	//
-	// Use ListAll() to get all BudgetWithStatus instances
-	List(ctx context.Context) (*BudgetList, error)
+	// Use ListAll() to get all BudgetConfiguration instances, which will iterate over every result page.
+	List(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error)
 
 	// Modify budget.
 	//
-	// Modifies a budget in this account. Budget properties are completely
-	// overwritten.
-	Update(ctx context.Context, request WrappedBudget) error
+	// Updates a budget configuration for an account. Both account and budget
+	// configuration are specified by ID.
+	Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error)
 }
 
 // These APIs manage log delivery configurations for this account. The two

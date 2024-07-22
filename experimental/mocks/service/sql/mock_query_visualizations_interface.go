@@ -23,7 +23,7 @@ func (_m *MockQueryVisualizationsInterface) EXPECT() *MockQueryVisualizationsInt
 }
 
 // Create provides a mock function with given fields: ctx, request
-func (_m *MockQueryVisualizationsInterface) Create(ctx context.Context, request sql.CreateQueryVisualizationRequest) (*sql.Visualization, error) {
+func (_m *MockQueryVisualizationsInterface) Create(ctx context.Context, request sql.CreateVisualizationRequest) (*sql.Visualization, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -32,10 +32,10 @@ func (_m *MockQueryVisualizationsInterface) Create(ctx context.Context, request 
 
 	var r0 *sql.Visualization
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateQueryVisualizationRequest) (*sql.Visualization, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateVisualizationRequest) (*sql.Visualization, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateQueryVisualizationRequest) *sql.Visualization); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateVisualizationRequest) *sql.Visualization); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -43,7 +43,7 @@ func (_m *MockQueryVisualizationsInterface) Create(ctx context.Context, request 
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, sql.CreateQueryVisualizationRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, sql.CreateVisualizationRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -59,14 +59,14 @@ type MockQueryVisualizationsInterface_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request sql.CreateQueryVisualizationRequest
+//   - request sql.CreateVisualizationRequest
 func (_e *MockQueryVisualizationsInterface_Expecter) Create(ctx interface{}, request interface{}) *MockQueryVisualizationsInterface_Create_Call {
 	return &MockQueryVisualizationsInterface_Create_Call{Call: _e.mock.On("Create", ctx, request)}
 }
 
-func (_c *MockQueryVisualizationsInterface_Create_Call) Run(run func(ctx context.Context, request sql.CreateQueryVisualizationRequest)) *MockQueryVisualizationsInterface_Create_Call {
+func (_c *MockQueryVisualizationsInterface_Create_Call) Run(run func(ctx context.Context, request sql.CreateVisualizationRequest)) *MockQueryVisualizationsInterface_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.CreateQueryVisualizationRequest))
+		run(args[0].(context.Context), args[1].(sql.CreateVisualizationRequest))
 	})
 	return _c
 }
@@ -76,13 +76,13 @@ func (_c *MockQueryVisualizationsInterface_Create_Call) Return(_a0 *sql.Visualiz
 	return _c
 }
 
-func (_c *MockQueryVisualizationsInterface_Create_Call) RunAndReturn(run func(context.Context, sql.CreateQueryVisualizationRequest) (*sql.Visualization, error)) *MockQueryVisualizationsInterface_Create_Call {
+func (_c *MockQueryVisualizationsInterface_Create_Call) RunAndReturn(run func(context.Context, sql.CreateVisualizationRequest) (*sql.Visualization, error)) *MockQueryVisualizationsInterface_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockQueryVisualizationsInterface) Delete(ctx context.Context, request sql.DeleteQueryVisualizationRequest) error {
+func (_m *MockQueryVisualizationsInterface) Delete(ctx context.Context, request sql.DeleteVisualizationRequest) error {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -90,7 +90,7 @@ func (_m *MockQueryVisualizationsInterface) Delete(ctx context.Context, request 
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.DeleteQueryVisualizationRequest) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.DeleteVisualizationRequest) error); ok {
 		r0 = rf(ctx, request)
 	} else {
 		r0 = ret.Error(0)
@@ -106,14 +106,14 @@ type MockQueryVisualizationsInterface_Delete_Call struct {
 
 // Delete is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request sql.DeleteQueryVisualizationRequest
+//   - request sql.DeleteVisualizationRequest
 func (_e *MockQueryVisualizationsInterface_Expecter) Delete(ctx interface{}, request interface{}) *MockQueryVisualizationsInterface_Delete_Call {
 	return &MockQueryVisualizationsInterface_Delete_Call{Call: _e.mock.On("Delete", ctx, request)}
 }
 
-func (_c *MockQueryVisualizationsInterface_Delete_Call) Run(run func(ctx context.Context, request sql.DeleteQueryVisualizationRequest)) *MockQueryVisualizationsInterface_Delete_Call {
+func (_c *MockQueryVisualizationsInterface_Delete_Call) Run(run func(ctx context.Context, request sql.DeleteVisualizationRequest)) *MockQueryVisualizationsInterface_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.DeleteQueryVisualizationRequest))
+		run(args[0].(context.Context), args[1].(sql.DeleteVisualizationRequest))
 	})
 	return _c
 }
@@ -123,7 +123,7 @@ func (_c *MockQueryVisualizationsInterface_Delete_Call) Return(_a0 error) *MockQ
 	return _c
 }
 
-func (_c *MockQueryVisualizationsInterface_Delete_Call) RunAndReturn(run func(context.Context, sql.DeleteQueryVisualizationRequest) error) *MockQueryVisualizationsInterface_Delete_Call {
+func (_c *MockQueryVisualizationsInterface_Delete_Call) RunAndReturn(run func(context.Context, sql.DeleteVisualizationRequest) error) *MockQueryVisualizationsInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -223,7 +223,7 @@ func (_c *MockQueryVisualizationsInterface_Impl_Call) RunAndReturn(run func() sq
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockQueryVisualizationsInterface) Update(ctx context.Context, request sql.Visualization) (*sql.Visualization, error) {
+func (_m *MockQueryVisualizationsInterface) Update(ctx context.Context, request sql.UpdateVisualizationRequest) (*sql.Visualization, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -232,10 +232,10 @@ func (_m *MockQueryVisualizationsInterface) Update(ctx context.Context, request 
 
 	var r0 *sql.Visualization
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.Visualization) (*sql.Visualization, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.UpdateVisualizationRequest) (*sql.Visualization, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.Visualization) *sql.Visualization); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.UpdateVisualizationRequest) *sql.Visualization); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -243,7 +243,7 @@ func (_m *MockQueryVisualizationsInterface) Update(ctx context.Context, request 
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, sql.Visualization) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, sql.UpdateVisualizationRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -259,14 +259,14 @@ type MockQueryVisualizationsInterface_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request sql.Visualization
+//   - request sql.UpdateVisualizationRequest
 func (_e *MockQueryVisualizationsInterface_Expecter) Update(ctx interface{}, request interface{}) *MockQueryVisualizationsInterface_Update_Call {
 	return &MockQueryVisualizationsInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
 }
 
-func (_c *MockQueryVisualizationsInterface_Update_Call) Run(run func(ctx context.Context, request sql.Visualization)) *MockQueryVisualizationsInterface_Update_Call {
+func (_c *MockQueryVisualizationsInterface_Update_Call) Run(run func(ctx context.Context, request sql.UpdateVisualizationRequest)) *MockQueryVisualizationsInterface_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.Visualization))
+		run(args[0].(context.Context), args[1].(sql.UpdateVisualizationRequest))
 	})
 	return _c
 }
@@ -276,7 +276,7 @@ func (_c *MockQueryVisualizationsInterface_Update_Call) Return(_a0 *sql.Visualiz
 	return _c
 }
 
-func (_c *MockQueryVisualizationsInterface_Update_Call) RunAndReturn(run func(context.Context, sql.Visualization) (*sql.Visualization, error)) *MockQueryVisualizationsInterface_Update_Call {
+func (_c *MockQueryVisualizationsInterface_Update_Call) RunAndReturn(run func(context.Context, sql.UpdateVisualizationRequest) (*sql.Visualization, error)) *MockQueryVisualizationsInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

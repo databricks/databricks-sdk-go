@@ -38,7 +38,7 @@ var testCases = []applyOverridesTestCase{
 			StatusCode: 400,
 			Message:    "Cluster abc does not exist",
 		},
-		path:          "/api/2.0/clusters/get",
+		path:          "/api/2.1/clusters/get",
 		method:        "GET",
 		expectedError: ErrResourceDoesNotExist,
 	},

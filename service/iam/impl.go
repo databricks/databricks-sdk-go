@@ -339,14 +339,14 @@ type permissionMigrationImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *permissionMigrationImpl) MigratePermissions(ctx context.Context, request PermissionMigrationRequest) (*PermissionMigrationResponse, error) {
-	var permissionMigrationResponse PermissionMigrationResponse
+func (a *permissionMigrationImpl) MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error) {
+	var migratePermissionsResponse MigratePermissionsResponse
 	path := "/api/2.0/permissionmigration"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &permissionMigrationResponse)
-	return &permissionMigrationResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &migratePermissionsResponse)
+	return &migratePermissionsResponse, err
 }
 
 // unexported type that holds implementations of just Permissions API methods
@@ -558,11 +558,11 @@ type workspaceAssignmentImpl struct {
 }
 
 func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
-	var deleteWorkspaceAssignments DeleteWorkspaceAssignments
+	var deleteWorkspacePermissionAssignmentResponse DeleteWorkspacePermissionAssignmentResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteWorkspaceAssignments)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteWorkspacePermissionAssignmentResponse)
 	return err
 }
 
