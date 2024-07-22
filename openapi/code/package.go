@@ -5,6 +5,7 @@ package code
 import (
 	"context"
 	"fmt"
+	"log"
 	"regexp"
 	"sort"
 	"strings"
@@ -119,38 +120,9 @@ func (pkg *Package) ImportedPackages() (res []string) {
 // processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
 func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool, processedEntities map[string]*Entity) *Entity {
 	if s.IsRef() {
-		pair := strings.Split(s.Component(), ".")
-		if len(pair) == 2 && pair[0] != pkg.Name {
-			schemaPackage := pair[0]
-			schemaType := pair[1]
-			if pkg.extImports == nil {
-				pkg.extImports = map[string]*Entity{}
-			}
-			known, ok := pkg.extImports[s.Component()]
-			if ok {
-				return known
-			}
-			// referred entity is declared in another package
-			pkg.extImports[s.Component()] = &Entity{
-				Named: Named{
-					Name: schemaType,
-				},
-				Package: &Package{
-					Named: Named{
-						Name: schemaPackage,
-					},
-				},
-			}
-			return pkg.extImports[s.Component()]
-		}
-		// if schema is src, load it to this package
-		src := pkg.Components.Schemas.Resolve(s)
-		if src == nil {
-			return nil
-		}
-		component := pkg.localComponent(&s.Node)
-		return pkg.definedEntity(component, *src, processedEntities)
+		return pkg.refEntity(s, processedEntities)
 	}
+
 	e := &Entity{
 		Named: Named{
 			Description: s.Description,
@@ -162,40 +134,76 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	if s.JsonPath != "" {
 		processedEntities[s.JsonPath] = e
 	}
-	// pull embedded types up, if they can be defined at package level
+
+	// Some entity are declared anonymously as part of another entity. In this,
+	// declare the entity as if it was explicitly defined with its path as name.
+	//
+	// Deprecated: this is hack to handle anonymous entities until we can ensure
+	// that these do not exist in the specification to begin with.
 	if s.IsDefinable() && !hasName {
-		// TODO: log message or panic when overrides a type
+		log.Printf("[WARNING] declaring anonymous field %q", strings.Join(path, ""))
 		e.Named.Name = strings.Join(path, "")
 		pkg.define(e)
 	}
+
 	e.fields = map[string]*Field{}
 	e.IsAny = s.IsAny
 	e.IsComputed = s.IsComputed
 	e.RequiredOrder = s.Required
-	// enum
-	if len(s.Enum) != 0 {
+
+	switch {
+	case len(s.Enum) != 0:
 		return pkg.makeEnum(e, s, path)
-	}
-	// object
-	if len(s.Properties) != 0 {
+	case len(s.Properties) != 0:
 		return pkg.makeObject(e, s, path, processedEntities)
-	}
-	// array
-	if s.ArrayValue != nil {
+	case s.ArrayValue != nil:
 		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, append(path, "Item"), false, processedEntities)
 		return e
-	}
-	// map
-	if s.MapValue != nil {
+	case s.MapValue != nil:
 		e.MapValue = pkg.schemaToEntity(s.MapValue, path, hasName, processedEntities)
 		return e
+	default:
+		e.IsBool = s.Type == "boolean" || s.Type == "bool"
+		e.IsString = s.Type == "string"
+		e.IsInt64 = s.Type == "integer" && s.Format == "int64"
+		e.IsFloat64 = s.Type == "number" && s.Format == "double"
+		e.IsInt = s.Type == "integer" || s.Type == "int"
+		return e
 	}
-	e.IsBool = s.Type == "boolean" || s.Type == "bool"
-	e.IsString = s.Type == "string"
-	e.IsInt64 = s.Type == "integer" && s.Format == "int64"
-	e.IsFloat64 = s.Type == "number" && s.Format == "double"
-	e.IsInt = s.Type == "integer" || s.Type == "int"
-	return e
+}
+
+func (pkg *Package) refEntity(s *openapi.Schema, processedEntities map[string]*Entity) *Entity {
+	pair := strings.Split(s.Component(), ".")
+	if len(pair) == 2 && pair[0] != pkg.Name {
+		schemaPackage := pair[0]
+		schemaType := pair[1]
+		if pkg.extImports == nil {
+			pkg.extImports = map[string]*Entity{}
+		}
+		known, ok := pkg.extImports[s.Component()]
+		if ok {
+			return known
+		}
+		// referred entity is declared in another package
+		pkg.extImports[s.Component()] = &Entity{
+			Named: Named{
+				Name: schemaType,
+			},
+			Package: &Package{
+				Named: Named{
+					Name: schemaPackage,
+				},
+			},
+		}
+		return pkg.extImports[s.Component()]
+	}
+	// if schema is src, load it to this package
+	src := pkg.Components.Schemas.Resolve(s)
+	if src == nil {
+		return nil
+	}
+	component := pkg.localComponent(&s.Node)
+	return pkg.definedEntity(component, *src, processedEntities)
 }
 
 // makeObject converts OpenAPI Schema into type representation
@@ -255,23 +263,19 @@ func (pkg *Package) localComponent(n *openapi.Node) string {
 // processedEntities keeps track of the entities that are being generated to avoid infinite recursion.
 func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntities map[string]*Entity) *Entity {
 	if s == nil {
-		entity := &Entity{
-			Named: Named{
-				Name:        name,
-				Description: "",
-			},
+		return pkg.define(&Entity{
+			Named:  Named{Name: name, Description: ""},
 			fields: map[string]*Field{},
-		}
-		return pkg.define(entity)
+		})
 	}
+
+	// Return existing entity if it has already been generated.
 	if entity, ok := processedEntities[s.JsonPath]; ok {
-		// Return existing entity if it's already being generated.
 		return entity
 	}
 
 	e := pkg.schemaToEntity(s, []string{name}, true, processedEntities)
-	if e == nil {
-		// gets here when responses are objects with no properties
+	if e == nil { // happens when responses have no properties
 		return nil
 	}
 	if e.ArrayValue != nil {
@@ -280,14 +284,13 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema, processedEntit
 	if e.Name == "" {
 		e.Named = Named{name, s.Description}
 	}
+
 	return pkg.define(e)
 }
 
 func (pkg *Package) define(entity *Entity) *Entity {
 	k := entity.PascalName()
-	_, defined := pkg.types[k]
-	if defined {
-		//panic(fmt.Sprintf("%s is already defined", entity.Name))
+	if _, ok := pkg.types[k]; ok {
 		return entity
 	}
 	if entity.Package == nil {
@@ -354,6 +357,7 @@ func (pkg *Package) getService(tag *openapi.Tag) *Service {
 // Load takes OpenAPI specification and loads a service model
 func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag openapi.Tag) error {
 	svc := pkg.getService(&tag)
+
 	for k, v := range spec.Components.Schemas {
 		split := strings.Split(k, ".")
 		if split[0] != pkg.Name {
@@ -361,6 +365,7 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 		}
 		pkg.definedEntity(split[1], *v, map[string]*Entity{})
 	}
+
 	// Fill in subservice information
 	if tag.ParentService != "" {
 		parentTag, err := spec.GetTagByServiceName(tag.ParentService)
