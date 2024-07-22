@@ -135,14 +135,18 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		processedEntities[s.JsonPath] = e
 	}
 
-	// Some entity are declared anonymously as part of another entity. In this,
-	// declare the entity as if it was explicitly defined with its path as name.
-	//
-	// Deprecated: this is hack to handle anonymous entities until we can ensure
-	// that these do not exist in the specification to begin with.
-	if s.IsDefinable() && !hasName {
-		log.Printf("[WARNING] declaring anonymous field %q", strings.Join(path, ""))
-		e.Named.Name = strings.Join(path, "")
+	// Some entities are declared anonymously as part of another entity (e.g.
+	// an object in an object). This is not a recommended pattern but we need
+	// to handle it. We do that by declaring the entity as if it was explicitly
+	// defined, using its path as name.
+	if (s.IsObject() || s.IsEnum()) && !hasName {
+		fieldType := "enum"
+		if s.IsObject() {
+			fieldType = "object"
+		}
+		name := strings.Join(path, "")
+		log.Printf("[WARN] Found anonymous %s %q. Please update your OpenAPI schema so that this entity is explicitly defined in components.", fieldType, name)
+		e.Named.Name = name
 		pkg.define(e)
 	}
 
