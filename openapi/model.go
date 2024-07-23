@@ -272,12 +272,6 @@ func (s *Schema) IsObject() bool {
 	return len(s.Properties) != 0
 }
 
-// IsDefinable states that type could be translated into a valid top-level type
-// in Go, Python, Java, Scala, and JavaScript
-func (s *Schema) IsDefinable() bool {
-	return s.IsObject() || s.IsEnum()
-}
-
 func (s *Schema) IsMap() bool {
 	return s.MapValue != nil
 }
