@@ -235,7 +235,7 @@ func (svc *Service) updateEntityTypeFromMimeType(entity *Entity, mimeType openap
 // into a field named "contents".
 func (svc *Service) newMethodEntity(op *openapi.Operation) (*Entity, openapi.MimeType, *Field) {
 	if op.RequestBody == nil {
-		return &Entity{fields: map[string]*Field{}}, "", nil
+		return &Entity{fields: map[string]*Field{}, Package: svc.Package}, "", nil
 	}
 	requestSchema, mimeType := svc.getBaseSchemaAndMimeType(op.RequestBody)
 	res := svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true, map[string]*Entity{})
