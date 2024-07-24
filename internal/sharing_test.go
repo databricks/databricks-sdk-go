@@ -199,7 +199,7 @@ func TestUcAccShares(t *testing.T) {
 	_, err = w.Shares.GetByName(ctx, createdShare.Name)
 	require.NoError(t, err)
 
-	all, err := w.Shares.ListAll(ctx)
+	all, err := w.Shares.ListAll(ctx, sharing.ListSharesRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 }

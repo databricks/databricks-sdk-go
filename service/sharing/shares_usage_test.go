@@ -76,7 +76,7 @@ func ExampleSharesAPI_ListAll_shares() {
 		panic(err)
 	}
 
-	all, err := w.Shares.ListAll(ctx)
+	all, err := w.Shares.ListAll(ctx, sharing.ListSharesRequest{})
 	if err != nil {
 		panic(err)
 	}
