@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Billable Usage, Budgets, Log Delivery, etc.
+// These APIs allow you to manage Billable Usage, Budgets, Log Delivery, Usage Dashboards, etc.
 package billing
 
 import (
@@ -597,4 +597,74 @@ func (a *LogDeliveryAPI) GetByConfigName(ctx context.Context, name string) (*Log
 // [Create log delivery](:method:LogDelivery/Create).
 func (a *LogDeliveryAPI) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
 	return a.impl.PatchStatus(ctx, request)
+}
+
+type UsageDashboardsInterface interface {
+	// WithImpl could be used to override low-level API implementations for unit
+	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+	// Deprecated: use MockUsageDashboardsInterface instead.
+	WithImpl(impl UsageDashboardsService) UsageDashboardsInterface
+
+	// Impl returns low-level UsageDashboards API implementation
+	// Deprecated: use MockUsageDashboardsInterface instead.
+	Impl() UsageDashboardsService
+
+	// Create new usage dashboard.
+	//
+	// Create a usage dashboard specified by workspaceId, accountId, and dashboard
+	// type.
+	Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error)
+
+	// Get usage dashboard.
+	//
+	// Get a usage dashboard specified by workspaceId, accountId, and dashboard
+	// type.
+	Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error)
+}
+
+func NewUsageDashboards(client *client.DatabricksClient) *UsageDashboardsAPI {
+	return &UsageDashboardsAPI{
+		impl: &usageDashboardsImpl{
+			client: client,
+		},
+	}
+}
+
+// These APIs manage usage dashboards for this account. Usage dashboards enable
+// you to gain insights into your usage with pre-built dashboards: visualize
+// breakdowns, analyze tag attributions, and identify cost drivers.
+type UsageDashboardsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(UsageDashboardsService)
+	impl UsageDashboardsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+// Deprecated: use MockUsageDashboardsInterface instead.
+func (a *UsageDashboardsAPI) WithImpl(impl UsageDashboardsService) UsageDashboardsInterface {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level UsageDashboards API implementation
+// Deprecated: use MockUsageDashboardsInterface instead.
+func (a *UsageDashboardsAPI) Impl() UsageDashboardsService {
+	return a.impl
+}
+
+// Create new usage dashboard.
+//
+// Create a usage dashboard specified by workspaceId, accountId, and dashboard
+// type.
+func (a *UsageDashboardsAPI) Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Get usage dashboard.
+//
+// Get a usage dashboard specified by workspaceId, accountId, and dashboard
+// type.
+func (a *UsageDashboardsAPI) Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error) {
+	return a.impl.Get(ctx, request)
 }

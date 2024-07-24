@@ -252,12 +252,12 @@ func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareIn
 	return &shareInfo, err
 }
 
-func (a *sharesImpl) List(ctx context.Context) (*ListSharesResponse, error) {
+func (a *sharesImpl) List(ctx context.Context, request ListSharesRequest) (*ListSharesResponse, error) {
 	var listSharesResponse ListSharesResponse
 	path := "/api/2.1/unity-catalog/shares"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listSharesResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listSharesResponse)
 	return &listSharesResponse, err
 }
 

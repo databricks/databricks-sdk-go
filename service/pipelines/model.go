@@ -806,6 +806,8 @@ type PipelineCluster struct {
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
+	// Whether to enable local disk encryption for the cluster.
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	GcpAttributes *compute.GcpAttributes `json:"gcp_attributes,omitempty"`
@@ -980,6 +982,8 @@ type PipelineLibrary struct {
 	// The path to a notebook that defines a pipeline and is stored in the
 	// Databricks workspace.
 	Notebook *NotebookLibrary `json:"notebook,omitempty"`
+	// URI of the whl to be installed.
+	Whl string `json:"whl,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1189,6 +1193,8 @@ type PipelineStateInfo struct {
 	ClusterId string `json:"cluster_id,omitempty"`
 	// The username of the pipeline creator.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// The health of a pipeline.
+	Health PipelineStateInfoHealth `json:"health,omitempty"`
 	// Status of the latest updates for the pipeline. Ordered with the newest
 	// update first.
 	LatestUpdates []UpdateStateInfo `json:"latest_updates,omitempty"`
@@ -1211,6 +1217,34 @@ func (s *PipelineStateInfo) UnmarshalJSON(b []byte) error {
 
 func (s PipelineStateInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The health of a pipeline.
+type PipelineStateInfoHealth string
+
+const PipelineStateInfoHealthHealthy PipelineStateInfoHealth = `HEALTHY`
+
+const PipelineStateInfoHealthUnhealthy PipelineStateInfoHealth = `UNHEALTHY`
+
+// String representation for [fmt.Print]
+func (f *PipelineStateInfoHealth) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PipelineStateInfoHealth) Set(v string) error {
+	switch v {
+	case `HEALTHY`, `UNHEALTHY`:
+		*f = PipelineStateInfoHealth(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "HEALTHY", "UNHEALTHY"`, v)
+	}
+}
+
+// Type always returns PipelineStateInfoHealth to satisfy [pflag.Value] interface
+func (f *PipelineStateInfoHealth) Type() string {
+	return "PipelineStateInfoHealth"
 }
 
 type PipelineTrigger struct {

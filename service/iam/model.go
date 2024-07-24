@@ -329,7 +329,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -1233,7 +1233,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
@@ -1286,9 +1286,12 @@ type UpdateRuleSetRequest struct {
 }
 
 type UpdateWorkspaceAssignments struct {
-	// Array of permissions assignments to update on the workspace. Note that
-	// excluding this field will have the same effect as providing an empty list
-	// which will result in the deletion of all permissions for the principal.
+	// Array of permissions assignments to update on the workspace. Valid values
+	// are "USER" and "ADMIN" (case-sensitive). If both "USER" and "ADMIN" are
+	// provided, "ADMIN" takes precedence. Other values will be ignored. Note
+	// that excluding this field, or providing unsupported values, will have the
+	// same effect as providing an empty list, which will result in the deletion
+	// of all permissions for the principal.
 	Permissions []WorkspacePermission `json:"permissions,omitempty"`
 	// The ID of the user, service principal, or group.
 	PrincipalId int64 `json:"-" url:"-"`

@@ -496,8 +496,22 @@ type GetRecipientRequest struct {
 }
 
 type GetRecipientSharePermissionsResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of data share permissions for a recipient.
 	PermissionsOut []ShareToPrivilegeAssignment `json:"permissions_out,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetRecipientSharePermissionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetRecipientSharePermissionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a share
@@ -566,8 +580,22 @@ func (s ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListProviderSharesResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of provider shares.
 	Shares []ProviderShare `json:"shares,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListProviderSharesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListProviderSharesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List providers
@@ -575,6 +603,18 @@ type ListProvidersRequest struct {
 	// If not provided, all providers will be returned. If no providers exist
 	// with this ID, no results will be returned.
 	DataProviderGlobalMetastoreId string `json:"-" url:"data_provider_global_metastore_id,omitempty"`
+	// Maximum number of providers to return. - when set to 0, the page length
+	// is set to a server configured value (recommended); - when set to a value
+	// greater than 0, the page length is the minimum of this value and a server
+	// configured value; - when set to a value less than 0, an invalid parameter
+	// error is returned; - If not set, all valid providers are returned (not
+	// recommended). - Note: The number of returned providers might be less than
+	// the specified max_results size, even zero. The only definitive indication
+	// that no further providers can be fetched is when the next_page_token is
+	// unset from the response.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -588,8 +628,22 @@ func (s ListProvidersRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListProvidersResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of provider information objects.
 	Providers []ProviderInfo `json:"providers,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListProvidersResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListProvidersResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List share recipients
@@ -597,6 +651,18 @@ type ListRecipientsRequest struct {
 	// If not provided, all recipients will be returned. If no recipients exist
 	// with this ID, no results will be returned.
 	DataRecipientGlobalMetastoreId string `json:"-" url:"data_recipient_global_metastore_id,omitempty"`
+	// Maximum number of recipients to return. - when set to 0, the page length
+	// is set to a server configured value (recommended); - when set to a value
+	// greater than 0, the page length is the minimum of this value and a server
+	// configured value; - when set to a value less than 0, an invalid parameter
+	// error is returned; - If not set, all valid recipients are returned (not
+	// recommended). - Note: The number of returned recipients might be less
+	// than the specified max_results size, even zero. The only definitive
+	// indication that no further recipients can be fetched is when the
+	// next_page_token is unset from the response.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -610,19 +676,69 @@ func (s ListRecipientsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListRecipientsResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of recipient information objects.
 	Recipients []RecipientInfo `json:"recipients,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListRecipientsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListRecipientsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List shares by Provider
 type ListSharesRequest struct {
+	// Maximum number of shares to return. - when set to 0, the page length is
+	// set to a server configured value (recommended); - when set to a value
+	// greater than 0, the page length is the minimum of this value and a server
+	// configured value; - when set to a value less than 0, an invalid parameter
+	// error is returned; - If not set, all valid shares are returned (not
+	// recommended). - Note: The number of returned shares might be less than
+	// the specified max_results size, even zero. The only definitive indication
+	// that no further shares can be fetched is when the next_page_token is
+	// unset from the response.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Name of the provider in which to list shares.
 	Name string `json:"-" url:"-"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSharesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSharesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListSharesResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of data share information objects.
 	Shares []ShareInfo `json:"shares,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSharesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSharesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Partition struct {
@@ -1061,8 +1177,30 @@ func (s ShareInfo) MarshalJSON() ([]byte, error) {
 
 // Get recipient share permissions
 type SharePermissionsRequest struct {
+	// Maximum number of permissions to return. - when set to 0, the page length
+	// is set to a server configured value (recommended); - when set to a value
+	// greater than 0, the page length is the minimum of this value and a server
+	// configured value; - when set to a value less than 0, an invalid parameter
+	// error is returned; - If not set, all valid permissions are returned (not
+	// recommended). - Note: The number of returned permissions might be less
+	// than the specified max_results size, even zero. The only definitive
+	// indication that no further permissions can be fetched is when the
+	// next_page_token is unset from the response.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// The name of the Recipient.
 	Name string `json:"-" url:"-"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SharePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SharePermissionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ShareToPrivilegeAssignment struct {

@@ -227,6 +227,12 @@ type AccountClient struct {
 	// These APIs manage storage credentials for a particular metastore.
 	StorageCredentials catalog.AccountStorageCredentialsInterface
 
+	// These APIs manage usage dashboards for this account. Usage dashboards
+	// enable you to gain insights into your usage with pre-built dashboards:
+	// visualize breakdowns, analyze tag attributions, and identify cost
+	// drivers.
+	UsageDashboards billing.UsageDashboardsInterface
+
 	// User identities recognized by Databricks and represented by email
 	// addresses.
 	//
@@ -314,6 +320,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		Settings:                settings.NewAccountSettings(apiClient),
 		Storage:                 provisioning.NewStorage(apiClient),
 		StorageCredentials:      catalog.NewAccountStorageCredentials(apiClient),
+		UsageDashboards:         billing.NewUsageDashboards(apiClient),
 		Users:                   iam.NewAccountUsers(apiClient),
 		VpcEndpoints:            provisioning.NewVpcEndpoints(apiClient),
 		WorkspaceAssignment:     iam.NewWorkspaceAssignment(apiClient),

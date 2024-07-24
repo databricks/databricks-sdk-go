@@ -96,7 +96,7 @@ type ProvidersService interface {
 	// owned by the caller are not included in the response. There is no
 	// guarantee of a specific ordering of the elements in the array.
 	//
-	// Use ListAll() to get all ProviderInfo instances
+	// Use ListAll() to get all ProviderInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error)
 
 	// List shares by Provider.
@@ -189,7 +189,7 @@ type RecipientsService interface {
 	// * the caller is a metastore admin, or * the caller is the owner. There is
 	// no guarantee of a specific ordering of the elements in the array.
 	//
-	// Use ListAll() to get all RecipientInfo instances
+	// Use ListAll() to get all RecipientInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error)
 
 	// Rotate a token.
@@ -246,8 +246,8 @@ type SharesService interface {
 	// be a metastore admin or the owner of the share. There is no guarantee of
 	// a specific ordering of the elements in the array.
 	//
-	// Use ListAll() to get all ShareInfo instances
-	List(ctx context.Context) (*ListSharesResponse, error)
+	// Use ListAll() to get all ShareInfo instances, which will iterate over every result page.
+	List(ctx context.Context, request ListSharesRequest) (*ListSharesResponse, error)
 
 	// Get permissions.
 	//
