@@ -250,6 +250,41 @@ type BudgetConfigurationFilterWorkspaceIdClause struct {
 	Values []int64 `json:"values,omitempty"`
 }
 
+type CreateBillingUsageDashboardRequest struct {
+	// Workspace level usage dashboard shows usage data for the specified
+	// workspace ID. Global level usage dashboard shows usage data for all
+	// workspaces in the account.
+	DashboardType UsageDashboardType `json:"dashboard_type,omitempty"`
+	// The workspace ID of the workspace in which the usage dashboard is
+	// created.
+	WorkspaceId int64 `json:"workspace_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateBillingUsageDashboardResponse struct {
+	// The unique id of the usage dashboard.
+	DashboardId string `json:"dashboard_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateBudgetConfigurationBudget struct {
 	// Databricks account ID.
 	AccountId string `json:"account_id,omitempty"`
@@ -496,6 +531,44 @@ func (s DownloadRequest) MarshalJSON() ([]byte, error) {
 
 type DownloadResponse struct {
 	Contents io.ReadCloser `json:"-"`
+}
+
+// Get usage dashboard
+type GetBillingUsageDashboardRequest struct {
+	// Workspace level usage dashboard shows usage data for the specified
+	// workspace ID. Global level usage dashboard shows usage data for all
+	// workspaces in the account.
+	DashboardType UsageDashboardType `json:"-" url:"dashboard_type,omitempty"`
+	// The workspace ID of the workspace in which the usage dashboard is
+	// created.
+	WorkspaceId int64 `json:"-" url:"workspace_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GetBillingUsageDashboardResponse struct {
+	// The unique id of the usage dashboard.
+	DashboardId string `json:"dashboard_id,omitempty"`
+	// The URL of the usage dashboard.
+	DashboardUrl string `json:"dashboard_url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get budget
@@ -856,6 +929,33 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status"`
+}
+
+type UsageDashboardType string
+
+const UsageDashboardTypeUsageDashboardTypeGlobal UsageDashboardType = `USAGE_DASHBOARD_TYPE_GLOBAL`
+
+const UsageDashboardTypeUsageDashboardTypeWorkspace UsageDashboardType = `USAGE_DASHBOARD_TYPE_WORKSPACE`
+
+// String representation for [fmt.Print]
+func (f *UsageDashboardType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *UsageDashboardType) Set(v string) error {
+	switch v {
+	case `USAGE_DASHBOARD_TYPE_GLOBAL`, `USAGE_DASHBOARD_TYPE_WORKSPACE`:
+		*f = UsageDashboardType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "USAGE_DASHBOARD_TYPE_GLOBAL", "USAGE_DASHBOARD_TYPE_WORKSPACE"`, v)
+	}
+}
+
+// Type always returns UsageDashboardType to satisfy [pflag.Value] interface
+func (f *UsageDashboardType) Type() string {
+	return "UsageDashboardType"
 }
 
 type WrappedCreateLogDeliveryConfiguration struct {

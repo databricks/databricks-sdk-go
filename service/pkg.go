@@ -214,6 +214,8 @@
 //
 // - [settings.TokensAPI]: The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access Databricks REST APIs.
 //
+// - [billing.UsageDashboardsAPI]: These APIs manage usage dashboards for this account.
+//
 // - [iam.UsersAPI]: User identities recognized by Databricks and represented by email addresses.
 //
 // - [iam.AccountUsersAPI]: User identities recognized by Databricks and represented by email addresses.
@@ -374,6 +376,7 @@ var (
 	_ *catalog.TablesAPI                                  = nil
 	_ *settings.TokenManagementAPI                        = nil
 	_ *settings.TokensAPI                                 = nil
+	_ *billing.UsageDashboardsAPI                         = nil
 	_ *iam.UsersAPI                                       = nil
 	_ *iam.AccountUsersAPI                                = nil
 	_ *vectorsearch.VectorSearchEndpointsAPI              = nil

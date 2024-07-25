@@ -50,6 +50,7 @@ func NewMockAccountClient(t interface {
 			Settings:                settings.NewMockAccountSettingsInterface(t),
 			Storage:                 provisioning.NewMockStorageInterface(t),
 			StorageCredentials:      catalog.NewMockAccountStorageCredentialsInterface(t),
+			UsageDashboards:         billing.NewMockUsageDashboardsInterface(t),
 			Users:                   iam.NewMockAccountUsersInterface(t),
 			VpcEndpoints:            provisioning.NewMockVpcEndpointsInterface(t),
 			WorkspaceAssignment:     iam.NewMockWorkspaceAssignmentInterface(t),
@@ -252,6 +253,14 @@ func (m *MockAccountClient) GetMockAccountStorageCredentialsAPI() *catalog.MockA
 	api, ok := m.AccountClient.StorageCredentials.(*catalog.MockAccountStorageCredentialsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected StorageCredentials to be *catalog.MockAccountStorageCredentialsInterface, actual was %T", m.AccountClient.StorageCredentials))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockUsageDashboardsAPI() *billing.MockUsageDashboardsInterface {
+	api, ok := m.AccountClient.UsageDashboards.(*billing.MockUsageDashboardsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected UsageDashboards to be *billing.MockUsageDashboardsInterface, actual was %T", m.AccountClient.UsageDashboards))
 	}
 	return api
 }

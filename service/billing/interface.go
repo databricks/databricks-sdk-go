@@ -180,3 +180,21 @@ type LogDeliveryService interface {
 	// described under [Create log delivery](:method:LogDelivery/Create).
 	PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error
 }
+
+// These APIs manage usage dashboards for this account. Usage dashboards enable
+// you to gain insights into your usage with pre-built dashboards: visualize
+// breakdowns, analyze tag attributions, and identify cost drivers.
+type UsageDashboardsService interface {
+
+	// Create new usage dashboard.
+	//
+	// Create a usage dashboard specified by workspaceId, accountId, and
+	// dashboard type.
+	Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error)
+
+	// Get usage dashboard.
+	//
+	// Get a usage dashboard specified by workspaceId, accountId, and dashboard
+	// type.
+	Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error)
+}

@@ -118,3 +118,27 @@ func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeli
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchStatusResponse)
 	return err
 }
+
+// unexported type that holds implementations of just UsageDashboards API methods
+type usageDashboardsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *usageDashboardsImpl) Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error) {
+	var createBillingUsageDashboardResponse CreateBillingUsageDashboardResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createBillingUsageDashboardResponse)
+	return &createBillingUsageDashboardResponse, err
+}
+
+func (a *usageDashboardsImpl) Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error) {
+	var getBillingUsageDashboardResponse GetBillingUsageDashboardResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getBillingUsageDashboardResponse)
+	return &getBillingUsageDashboardResponse, err
+}
