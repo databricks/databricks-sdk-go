@@ -7,6 +7,7 @@ experimental/mocks/mock_workspace_client.go linguist-generated=true
 experimental/mocks/service/billing/mock_billable_usage_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_budgets_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_log_delivery_interface.go linguist-generated=true
+experimental/mocks/service/billing/mock_usage_dashboards_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_account_metastore_assignments_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_account_metastores_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_account_storage_credentials_interface.go linguist-generated=true
