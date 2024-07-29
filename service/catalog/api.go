@@ -103,9 +103,8 @@ type AccountMetastoreAssignmentsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountMetastoreAssignmentsInterface instead.
 func (a *AccountMetastoreAssignmentsAPI) WithImpl(impl AccountMetastoreAssignmentsService) AccountMetastoreAssignmentsInterface {
-	return &AccountMetastoreAssignmentsAPI{
-		AccountMetastoreAssignmentsService: impl,
-	}
+	a.AccountMetastoreAssignmentsService = impl
+	return a
 }
 
 // Impl returns low-level AccountMetastoreAssignments API implementation
@@ -257,9 +256,8 @@ type AccountMetastoresAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountMetastoresInterface instead.
 func (a *AccountMetastoresAPI) WithImpl(impl AccountMetastoresService) AccountMetastoresInterface {
-	return &AccountMetastoresAPI{
-		AccountMetastoresService: impl,
-	}
+	a.AccountMetastoresService = impl
+	return a
 }
 
 // Impl returns low-level AccountMetastores API implementation
@@ -417,9 +415,8 @@ type AccountStorageCredentialsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountStorageCredentialsInterface instead.
 func (a *AccountStorageCredentialsAPI) WithImpl(impl AccountStorageCredentialsService) AccountStorageCredentialsInterface {
-	return &AccountStorageCredentialsAPI{
-		AccountStorageCredentialsService: impl,
-	}
+	a.AccountStorageCredentialsService = impl
+	return a
 }
 
 // Impl returns low-level AccountStorageCredentials API implementation
@@ -547,9 +544,8 @@ type ArtifactAllowlistsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockArtifactAllowlistsInterface instead.
 func (a *ArtifactAllowlistsAPI) WithImpl(impl ArtifactAllowlistsService) ArtifactAllowlistsInterface {
-	return &ArtifactAllowlistsAPI{
-		ArtifactAllowlistsService: impl,
-	}
+	a.ArtifactAllowlistsService = impl
+	return a
 }
 
 // Impl returns low-level ArtifactAllowlists API implementation
@@ -666,9 +662,8 @@ type CatalogsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCatalogsInterface instead.
 func (a *CatalogsAPI) WithImpl(impl CatalogsService) CatalogsInterface {
-	return &CatalogsAPI{
-		CatalogsService: impl,
-	}
+	a.CatalogsService = impl
+	return a
 }
 
 // Impl returns low-level Catalogs API implementation
@@ -843,9 +838,8 @@ type ConnectionsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockConnectionsInterface instead.
 func (a *ConnectionsAPI) WithImpl(impl ConnectionsService) ConnectionsInterface {
-	return &ConnectionsAPI{
-		ConnectionsService: impl,
-	}
+	a.ConnectionsService = impl
+	return a
 }
 
 // Impl returns low-level Connections API implementation
@@ -1041,9 +1035,8 @@ type ExternalLocationsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockExternalLocationsInterface instead.
 func (a *ExternalLocationsAPI) WithImpl(impl ExternalLocationsService) ExternalLocationsInterface {
-	return &ExternalLocationsAPI{
-		ExternalLocationsService: impl,
-	}
+	a.ExternalLocationsService = impl
+	return a
 }
 
 // Impl returns low-level ExternalLocations API implementation
@@ -1258,9 +1251,8 @@ type FunctionsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockFunctionsInterface instead.
 func (a *FunctionsAPI) WithImpl(impl FunctionsService) FunctionsInterface {
-	return &FunctionsAPI{
-		FunctionsService: impl,
-	}
+	a.FunctionsService = impl
+	return a
 }
 
 // Impl returns low-level Functions API implementation
@@ -1441,9 +1433,8 @@ type GrantsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockGrantsInterface instead.
 func (a *GrantsAPI) WithImpl(impl GrantsService) GrantsInterface {
-	return &GrantsAPI{
-		GrantsService: impl,
-	}
+	a.GrantsService = impl
+	return a
 }
 
 // Impl returns low-level Grants API implementation
@@ -1626,9 +1617,8 @@ type MetastoresAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockMetastoresInterface instead.
 func (a *MetastoresAPI) WithImpl(impl MetastoresService) MetastoresInterface {
-	return &MetastoresAPI{
-		MetastoresService: impl,
-	}
+	a.MetastoresService = impl
+	return a
 }
 
 // Impl returns low-level Metastores API implementation
@@ -1921,9 +1911,8 @@ type ModelVersionsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockModelVersionsInterface instead.
 func (a *ModelVersionsAPI) WithImpl(impl ModelVersionsService) ModelVersionsInterface {
-	return &ModelVersionsAPI{
-		ModelVersionsService: impl,
-	}
+	a.ModelVersionsService = impl
+	return a
 }
 
 // Impl returns low-level ModelVersions API implementation
@@ -2123,9 +2112,8 @@ type OnlineTablesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockOnlineTablesInterface instead.
 func (a *OnlineTablesAPI) WithImpl(impl OnlineTablesService) OnlineTablesInterface {
-	return &OnlineTablesAPI{
-		OnlineTablesService: impl,
-	}
+	a.OnlineTablesService = impl
+	return a
 }
 
 // Impl returns low-level OnlineTables API implementation
@@ -2377,9 +2365,8 @@ type QualityMonitorsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockQualityMonitorsInterface instead.
 func (a *QualityMonitorsAPI) WithImpl(impl QualityMonitorsService) QualityMonitorsInterface {
-	return &QualityMonitorsAPI{
-		QualityMonitorsService: impl,
-	}
+	a.QualityMonitorsService = impl
+	return a
 }
 
 // Impl returns low-level QualityMonitors API implementation
@@ -2680,9 +2667,8 @@ type RegisteredModelsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockRegisteredModelsInterface instead.
 func (a *RegisteredModelsAPI) WithImpl(impl RegisteredModelsService) RegisteredModelsInterface {
-	return &RegisteredModelsAPI{
-		RegisteredModelsService: impl,
-	}
+	a.RegisteredModelsService = impl
+	return a
 }
 
 // Impl returns low-level RegisteredModels API implementation
@@ -2966,9 +2952,8 @@ type SchemasAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockSchemasInterface instead.
 func (a *SchemasAPI) WithImpl(impl SchemasService) SchemasInterface {
-	return &SchemasAPI{
-		SchemasService: impl,
-	}
+	a.SchemasService = impl
+	return a
 }
 
 // Impl returns low-level Schemas API implementation
@@ -3224,9 +3209,8 @@ type StorageCredentialsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockStorageCredentialsInterface instead.
 func (a *StorageCredentialsAPI) WithImpl(impl StorageCredentialsService) StorageCredentialsInterface {
-	return &StorageCredentialsAPI{
-		StorageCredentialsService: impl,
-	}
+	a.StorageCredentialsService = impl
+	return a
 }
 
 // Impl returns low-level StorageCredentials API implementation
@@ -3401,9 +3385,8 @@ type SystemSchemasAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockSystemSchemasInterface instead.
 func (a *SystemSchemasAPI) WithImpl(impl SystemSchemasService) SystemSchemasInterface {
-	return &SystemSchemasAPI{
-		SystemSchemasService: impl,
-	}
+	a.SystemSchemasService = impl
+	return a
 }
 
 // Impl returns low-level SystemSchemas API implementation
@@ -3550,9 +3533,8 @@ type TableConstraintsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockTableConstraintsInterface instead.
 func (a *TableConstraintsAPI) WithImpl(impl TableConstraintsService) TableConstraintsInterface {
-	return &TableConstraintsAPI{
-		TableConstraintsService: impl,
-	}
+	a.TableConstraintsService = impl
+	return a
 }
 
 // Impl returns low-level TableConstraints API implementation
@@ -3766,9 +3748,8 @@ type TablesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockTablesInterface instead.
 func (a *TablesAPI) WithImpl(impl TablesService) TablesInterface {
-	return &TablesAPI{
-		TablesService: impl,
-	}
+	a.TablesService = impl
+	return a
 }
 
 // Impl returns low-level Tables API implementation
@@ -4148,9 +4129,8 @@ type VolumesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockVolumesInterface instead.
 func (a *VolumesAPI) WithImpl(impl VolumesService) VolumesInterface {
-	return &VolumesAPI{
-		VolumesService: impl,
-	}
+	a.VolumesService = impl
+	return a
 }
 
 // Impl returns low-level Volumes API implementation
@@ -4384,9 +4364,8 @@ type WorkspaceBindingsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockWorkspaceBindingsInterface instead.
 func (a *WorkspaceBindingsAPI) WithImpl(impl WorkspaceBindingsService) WorkspaceBindingsInterface {
-	return &WorkspaceBindingsAPI{
-		WorkspaceBindingsService: impl,
-	}
+	a.WorkspaceBindingsService = impl
+	return a
 }
 
 // Impl returns low-level WorkspaceBindings API implementation

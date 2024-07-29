@@ -57,9 +57,8 @@ type BillableUsageAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockBillableUsageInterface instead.
 func (a *BillableUsageAPI) WithImpl(impl BillableUsageService) BillableUsageInterface {
-	return &BillableUsageAPI{
-		BillableUsageService: impl,
-	}
+	a.BillableUsageService = impl
+	return a
 }
 
 // Impl returns low-level BillableUsage API implementation
@@ -151,9 +150,8 @@ type BudgetsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockBudgetsInterface instead.
 func (a *BudgetsAPI) WithImpl(impl BudgetsService) BudgetsInterface {
-	return &BudgetsAPI{
-		BudgetsService: impl,
-	}
+	a.BudgetsService = impl
+	return a
 }
 
 // Impl returns low-level Budgets API implementation
@@ -395,9 +393,8 @@ type LogDeliveryAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockLogDeliveryInterface instead.
 func (a *LogDeliveryAPI) WithImpl(impl LogDeliveryService) LogDeliveryInterface {
-	return &LogDeliveryAPI{
-		LogDeliveryService: impl,
-	}
+	a.LogDeliveryService = impl
+	return a
 }
 
 // Impl returns low-level LogDelivery API implementation
@@ -548,9 +545,8 @@ type UsageDashboardsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockUsageDashboardsInterface instead.
 func (a *UsageDashboardsAPI) WithImpl(impl UsageDashboardsService) UsageDashboardsInterface {
-	return &UsageDashboardsAPI{
-		UsageDashboardsService: impl,
-	}
+	a.UsageDashboardsService = impl
+	return a
 }
 
 // Impl returns low-level UsageDashboards API implementation

@@ -171,9 +171,8 @@ type AppsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAppsInterface instead.
 func (a *AppsAPI) WithImpl(impl AppsService) AppsInterface {
-	return &AppsAPI{
-		AppsService: impl,
-	}
+	a.AppsService = impl
+	return a
 }
 
 // Impl returns low-level Apps API implementation
@@ -710,9 +709,8 @@ type ServingEndpointsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockServingEndpointsInterface instead.
 func (a *ServingEndpointsAPI) WithImpl(impl ServingEndpointsService) ServingEndpointsInterface {
-	return &ServingEndpointsAPI{
-		ServingEndpointsService: impl,
-	}
+	a.ServingEndpointsService = impl
+	return a
 }
 
 // Impl returns low-level ServingEndpoints API implementation
@@ -1012,9 +1010,8 @@ type ServingEndpointsDataPlaneAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockServingEndpointsDataPlaneInterface instead.
 func (a *ServingEndpointsDataPlaneAPI) WithImpl(impl ServingEndpointsDataPlaneService) ServingEndpointsDataPlaneInterface {
-	return &ServingEndpointsDataPlaneAPI{
-		ServingEndpointsDataPlaneService: impl,
-	}
+	a.ServingEndpointsDataPlaneService = impl
+	return a
 }
 
 // Impl returns low-level ServingEndpointsDataPlane API implementation

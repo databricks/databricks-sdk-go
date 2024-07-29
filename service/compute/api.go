@@ -167,9 +167,8 @@ type ClusterPoliciesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockClusterPoliciesInterface instead.
 func (a *ClusterPoliciesAPI) WithImpl(impl ClusterPoliciesService) ClusterPoliciesInterface {
-	return &ClusterPoliciesAPI{
-		ClusterPoliciesService: impl,
-	}
+	a.ClusterPoliciesService = impl
+	return a
 }
 
 // Impl returns low-level ClusterPolicies API implementation
@@ -672,9 +671,8 @@ type ClustersAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockClustersInterface instead.
 func (a *ClustersAPI) WithImpl(impl ClustersService) ClustersInterface {
-	return &ClustersAPI{
-		ClustersService: impl,
-	}
+	a.ClustersService = impl
+	return a
 }
 
 // Impl returns low-level Clusters API implementation
@@ -1454,9 +1452,8 @@ type CommandExecutionAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCommandExecutionInterface instead.
 func (a *CommandExecutionAPI) WithImpl(impl CommandExecutionService) CommandExecutionInterface {
-	return &CommandExecutionAPI{
-		CommandExecutionService: impl,
-	}
+	a.CommandExecutionService = impl
+	return a
 }
 
 // Impl returns low-level CommandExecution API implementation
@@ -1899,9 +1896,8 @@ type GlobalInitScriptsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockGlobalInitScriptsInterface instead.
 func (a *GlobalInitScriptsAPI) WithImpl(impl GlobalInitScriptsService) GlobalInitScriptsInterface {
-	return &GlobalInitScriptsAPI{
-		GlobalInitScriptsService: impl,
-	}
+	a.GlobalInitScriptsService = impl
+	return a
 }
 
 // Impl returns low-level GlobalInitScripts API implementation
@@ -2166,9 +2162,8 @@ type InstancePoolsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockInstancePoolsInterface instead.
 func (a *InstancePoolsAPI) WithImpl(impl InstancePoolsService) InstancePoolsInterface {
-	return &InstancePoolsAPI{
-		InstancePoolsService: impl,
-	}
+	a.InstancePoolsService = impl
+	return a
 }
 
 // Impl returns low-level InstancePools API implementation
@@ -2396,9 +2391,8 @@ type InstanceProfilesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockInstanceProfilesInterface instead.
 func (a *InstanceProfilesAPI) WithImpl(impl InstanceProfilesService) InstanceProfilesInterface {
-	return &InstanceProfilesAPI{
-		InstanceProfilesService: impl,
-	}
+	a.InstanceProfilesService = impl
+	return a
 }
 
 // Impl returns low-level InstanceProfiles API implementation
@@ -2569,9 +2563,8 @@ type LibrariesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockLibrariesInterface instead.
 func (a *LibrariesAPI) WithImpl(impl LibrariesService) LibrariesInterface {
-	return &LibrariesAPI{
-		LibrariesService: impl,
-	}
+	a.LibrariesService = impl
+	return a
 }
 
 // Impl returns low-level Libraries API implementation
@@ -2738,9 +2731,8 @@ type PolicyFamiliesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockPolicyFamiliesInterface instead.
 func (a *PolicyFamiliesAPI) WithImpl(impl PolicyFamiliesService) PolicyFamiliesInterface {
-	return &PolicyFamiliesAPI{
-		PolicyFamiliesService: impl,
-	}
+	a.PolicyFamiliesService = impl
+	return a
 }
 
 // Impl returns low-level PolicyFamilies API implementation

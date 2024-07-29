@@ -302,9 +302,8 @@ type JobsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockJobsInterface instead.
 func (a *JobsAPI) WithImpl(impl JobsService) JobsInterface {
-	return &JobsAPI{
-		JobsService: impl,
-	}
+	a.JobsService = impl
+	return a
 }
 
 // Impl returns low-level Jobs API implementation

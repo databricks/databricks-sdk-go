@@ -217,9 +217,8 @@ type DbfsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockDbfsInterface instead.
 func (a *DbfsAPI) WithImpl(impl DbfsService) DbfsInterface {
-	return &DbfsAPI{
-		DbfsService: impl,
-	}
+	a.DbfsService = impl
+	return a
 }
 
 // Impl returns low-level Dbfs API implementation
@@ -495,9 +494,8 @@ type FilesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockFilesInterface instead.
 func (a *FilesAPI) WithImpl(impl FilesService) FilesInterface {
-	return &FilesAPI{
-		FilesService: impl,
-	}
+	a.FilesService = impl
+	return a
 }
 
 // Impl returns low-level Files API implementation

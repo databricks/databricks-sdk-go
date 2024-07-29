@@ -92,9 +92,8 @@ type ConsumerFulfillmentsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockConsumerFulfillmentsInterface instead.
 func (a *ConsumerFulfillmentsAPI) WithImpl(impl ConsumerFulfillmentsService) ConsumerFulfillmentsInterface {
-	return &ConsumerFulfillmentsAPI{
-		ConsumerFulfillmentsService: impl,
-	}
+	a.ConsumerFulfillmentsService = impl
+	return a
 }
 
 // Impl returns low-level ConsumerFulfillments API implementation
@@ -299,9 +298,8 @@ type ConsumerInstallationsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockConsumerInstallationsInterface instead.
 func (a *ConsumerInstallationsAPI) WithImpl(impl ConsumerInstallationsService) ConsumerInstallationsInterface {
-	return &ConsumerInstallationsAPI{
-		ConsumerInstallationsService: impl,
-	}
+	a.ConsumerInstallationsService = impl
+	return a
 }
 
 // Impl returns low-level ConsumerInstallations API implementation
@@ -508,9 +506,8 @@ type ConsumerListingsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockConsumerListingsInterface instead.
 func (a *ConsumerListingsAPI) WithImpl(impl ConsumerListingsService) ConsumerListingsInterface {
-	return &ConsumerListingsAPI{
-		ConsumerListingsService: impl,
-	}
+	a.ConsumerListingsService = impl
+	return a
 }
 
 // Impl returns low-level ConsumerListings API implementation
@@ -728,9 +725,8 @@ type ConsumerPersonalizationRequestsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockConsumerPersonalizationRequestsInterface instead.
 func (a *ConsumerPersonalizationRequestsAPI) WithImpl(impl ConsumerPersonalizationRequestsService) ConsumerPersonalizationRequestsInterface {
-	return &ConsumerPersonalizationRequestsAPI{
-		ConsumerPersonalizationRequestsService: impl,
-	}
+	a.ConsumerPersonalizationRequestsService = impl
+	return a
 }
 
 // Impl returns low-level ConsumerPersonalizationRequests API implementation
@@ -870,9 +866,8 @@ type ConsumerProvidersAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockConsumerProvidersInterface instead.
 func (a *ConsumerProvidersAPI) WithImpl(impl ConsumerProvidersService) ConsumerProvidersInterface {
-	return &ConsumerProvidersAPI{
-		ConsumerProvidersService: impl,
-	}
+	a.ConsumerProvidersService = impl
+	return a
 }
 
 // Impl returns low-level ConsumerProviders API implementation
@@ -1067,9 +1062,8 @@ type ProviderExchangeFiltersAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockProviderExchangeFiltersInterface instead.
 func (a *ProviderExchangeFiltersAPI) WithImpl(impl ProviderExchangeFiltersService) ProviderExchangeFiltersInterface {
-	return &ProviderExchangeFiltersAPI{
-		ProviderExchangeFiltersService: impl,
-	}
+	a.ProviderExchangeFiltersService = impl
+	return a
 }
 
 // Impl returns low-level ProviderExchangeFilters API implementation
@@ -1351,9 +1345,8 @@ type ProviderExchangesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockProviderExchangesInterface instead.
 func (a *ProviderExchangesAPI) WithImpl(impl ProviderExchangesService) ProviderExchangesInterface {
-	return &ProviderExchangesAPI{
-		ProviderExchangesService: impl,
-	}
+	a.ProviderExchangesService = impl
+	return a
 }
 
 // Impl returns low-level ProviderExchanges API implementation
@@ -1754,9 +1747,8 @@ type ProviderFilesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockProviderFilesInterface instead.
 func (a *ProviderFilesAPI) WithImpl(impl ProviderFilesService) ProviderFilesInterface {
-	return &ProviderFilesAPI{
-		ProviderFilesService: impl,
-	}
+	a.ProviderFilesService = impl
+	return a
 }
 
 // Impl returns low-level ProviderFiles API implementation
@@ -1968,9 +1960,8 @@ type ProviderListingsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockProviderListingsInterface instead.
 func (a *ProviderListingsAPI) WithImpl(impl ProviderListingsService) ProviderListingsInterface {
-	return &ProviderListingsAPI{
-		ProviderListingsService: impl,
-	}
+	a.ProviderListingsService = impl
+	return a
 }
 
 // Impl returns low-level ProviderListings API implementation
@@ -2142,9 +2133,8 @@ type ProviderPersonalizationRequestsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockProviderPersonalizationRequestsInterface instead.
 func (a *ProviderPersonalizationRequestsAPI) WithImpl(impl ProviderPersonalizationRequestsService) ProviderPersonalizationRequestsInterface {
-	return &ProviderPersonalizationRequestsAPI{
-		ProviderPersonalizationRequestsService: impl,
-	}
+	a.ProviderPersonalizationRequestsService = impl
+	return a
 }
 
 // Impl returns low-level ProviderPersonalizationRequests API implementation
@@ -2245,9 +2235,8 @@ type ProviderProviderAnalyticsDashboardsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockProviderProviderAnalyticsDashboardsInterface instead.
 func (a *ProviderProviderAnalyticsDashboardsAPI) WithImpl(impl ProviderProviderAnalyticsDashboardsService) ProviderProviderAnalyticsDashboardsInterface {
-	return &ProviderProviderAnalyticsDashboardsAPI{
-		ProviderProviderAnalyticsDashboardsService: impl,
-	}
+	a.ProviderProviderAnalyticsDashboardsService = impl
+	return a
 }
 
 // Impl returns low-level ProviderProviderAnalyticsDashboards API implementation
@@ -2348,9 +2337,8 @@ type ProviderProvidersAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockProviderProvidersInterface instead.
 func (a *ProviderProvidersAPI) WithImpl(impl ProviderProvidersService) ProviderProvidersInterface {
-	return &ProviderProvidersAPI{
-		ProviderProvidersService: impl,
-	}
+	a.ProviderProvidersService = impl
+	return a
 }
 
 // Impl returns low-level ProviderProviders API implementation

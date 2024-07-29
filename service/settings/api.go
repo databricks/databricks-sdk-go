@@ -166,9 +166,8 @@ type AccountIpAccessListsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountIpAccessListsInterface instead.
 func (a *AccountIpAccessListsAPI) WithImpl(impl AccountIpAccessListsService) AccountIpAccessListsInterface {
-	return &AccountIpAccessListsAPI{
-		AccountIpAccessListsService: impl,
-	}
+	a.AccountIpAccessListsService = impl
+	return a
 }
 
 // Impl returns low-level AccountIpAccessLists API implementation
@@ -388,12 +387,8 @@ func (a *AccountSettingsAPI) PersonalCompute() PersonalComputeInterface {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountSettingsInterface instead.
 func (a *AccountSettingsAPI) WithImpl(impl AccountSettingsService) AccountSettingsInterface {
-	return &AccountSettingsAPI{
-		AccountSettingsService: impl,
-		cspEnablementAccount:   a.cspEnablementAccount,
-		esmEnablementAccount:   a.esmEnablementAccount,
-		personalCompute:        a.personalCompute,
-	}
+	a.AccountSettingsService = impl
+	return a
 }
 
 // Impl returns low-level AccountSettings API implementation
@@ -447,9 +442,8 @@ type AutomaticClusterUpdateAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAutomaticClusterUpdateInterface instead.
 func (a *AutomaticClusterUpdateAPI) WithImpl(impl AutomaticClusterUpdateService) AutomaticClusterUpdateInterface {
-	return &AutomaticClusterUpdateAPI{
-		AutomaticClusterUpdateService: impl,
-	}
+	a.AutomaticClusterUpdateService = impl
+	return a
 }
 
 // Impl returns low-level AutomaticClusterUpdate API implementation
@@ -506,9 +500,8 @@ type ComplianceSecurityProfileAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockComplianceSecurityProfileInterface instead.
 func (a *ComplianceSecurityProfileAPI) WithImpl(impl ComplianceSecurityProfileService) ComplianceSecurityProfileInterface {
-	return &ComplianceSecurityProfileAPI{
-		ComplianceSecurityProfileService: impl,
-	}
+	a.ComplianceSecurityProfileService = impl
+	return a
 }
 
 // Impl returns low-level ComplianceSecurityProfile API implementation
@@ -554,9 +547,8 @@ type CredentialsManagerAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCredentialsManagerInterface instead.
 func (a *CredentialsManagerAPI) WithImpl(impl CredentialsManagerService) CredentialsManagerInterface {
-	return &CredentialsManagerAPI{
-		CredentialsManagerService: impl,
-	}
+	a.CredentialsManagerService = impl
+	return a
 }
 
 // Impl returns low-level CredentialsManager API implementation
@@ -612,9 +604,8 @@ type CspEnablementAccountAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCspEnablementAccountInterface instead.
 func (a *CspEnablementAccountAPI) WithImpl(impl CspEnablementAccountService) CspEnablementAccountInterface {
-	return &CspEnablementAccountAPI{
-		CspEnablementAccountService: impl,
-	}
+	a.CspEnablementAccountService = impl
+	return a
 }
 
 // Impl returns low-level CspEnablementAccount API implementation
@@ -689,9 +680,8 @@ type DefaultNamespaceAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockDefaultNamespaceInterface instead.
 func (a *DefaultNamespaceAPI) WithImpl(impl DefaultNamespaceService) DefaultNamespaceInterface {
-	return &DefaultNamespaceAPI{
-		DefaultNamespaceService: impl,
-	}
+	a.DefaultNamespaceService = impl
+	return a
 }
 
 // Impl returns low-level DefaultNamespace API implementation
@@ -750,9 +740,8 @@ type EnhancedSecurityMonitoringAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockEnhancedSecurityMonitoringInterface instead.
 func (a *EnhancedSecurityMonitoringAPI) WithImpl(impl EnhancedSecurityMonitoringService) EnhancedSecurityMonitoringInterface {
-	return &EnhancedSecurityMonitoringAPI{
-		EnhancedSecurityMonitoringService: impl,
-	}
+	a.EnhancedSecurityMonitoringService = impl
+	return a
 }
 
 // Impl returns low-level EnhancedSecurityMonitoring API implementation
@@ -806,9 +795,8 @@ type EsmEnablementAccountAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockEsmEnablementAccountInterface instead.
 func (a *EsmEnablementAccountAPI) WithImpl(impl EsmEnablementAccountService) EsmEnablementAccountInterface {
-	return &EsmEnablementAccountAPI{
-		EsmEnablementAccountService: impl,
-	}
+	a.EsmEnablementAccountService = impl
+	return a
 }
 
 // Impl returns low-level EsmEnablementAccount API implementation
@@ -976,9 +964,8 @@ type IpAccessListsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockIpAccessListsInterface instead.
 func (a *IpAccessListsAPI) WithImpl(impl IpAccessListsService) IpAccessListsInterface {
-	return &IpAccessListsAPI{
-		IpAccessListsService: impl,
-	}
+	a.IpAccessListsService = impl
+	return a
 }
 
 // Impl returns low-level IpAccessLists API implementation
@@ -1223,9 +1210,8 @@ type NetworkConnectivityAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockNetworkConnectivityInterface instead.
 func (a *NetworkConnectivityAPI) WithImpl(impl NetworkConnectivityService) NetworkConnectivityInterface {
-	return &NetworkConnectivityAPI{
-		NetworkConnectivityService: impl,
-	}
+	a.NetworkConnectivityService = impl
+	return a
 }
 
 // Impl returns low-level NetworkConnectivity API implementation
@@ -1443,9 +1429,8 @@ type NotificationDestinationsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockNotificationDestinationsInterface instead.
 func (a *NotificationDestinationsAPI) WithImpl(impl NotificationDestinationsService) NotificationDestinationsInterface {
-	return &NotificationDestinationsAPI{
-		NotificationDestinationsService: impl,
-	}
+	a.NotificationDestinationsService = impl
+	return a
 }
 
 // Impl returns low-level NotificationDestinations API implementation
@@ -1564,9 +1549,8 @@ type PersonalComputeAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockPersonalComputeInterface instead.
 func (a *PersonalComputeAPI) WithImpl(impl PersonalComputeService) PersonalComputeInterface {
-	return &PersonalComputeAPI{
-		PersonalComputeService: impl,
-	}
+	a.PersonalComputeService = impl
+	return a
 }
 
 // Impl returns low-level PersonalCompute API implementation
@@ -1640,9 +1624,8 @@ type RestrictWorkspaceAdminsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockRestrictWorkspaceAdminsInterface instead.
 func (a *RestrictWorkspaceAdminsAPI) WithImpl(impl RestrictWorkspaceAdminsService) RestrictWorkspaceAdminsInterface {
-	return &RestrictWorkspaceAdminsAPI{
-		RestrictWorkspaceAdminsService: impl,
-	}
+	a.RestrictWorkspaceAdminsService = impl
+	return a
 }
 
 // Impl returns low-level RestrictWorkspaceAdmins API implementation
@@ -1812,14 +1795,8 @@ func (a *SettingsAPI) RestrictWorkspaceAdmins() RestrictWorkspaceAdminsInterface
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockSettingsInterface instead.
 func (a *SettingsAPI) WithImpl(impl SettingsService) SettingsInterface {
-	return &SettingsAPI{
-		SettingsService:            impl,
-		automaticClusterUpdate:     a.automaticClusterUpdate,
-		complianceSecurityProfile:  a.complianceSecurityProfile,
-		defaultNamespace:           a.defaultNamespace,
-		enhancedSecurityMonitoring: a.enhancedSecurityMonitoring,
-		restrictWorkspaceAdmins:    a.restrictWorkspaceAdmins,
-	}
+	a.SettingsService = impl
+	return a
 }
 
 // Impl returns low-level Settings API implementation
@@ -1940,9 +1917,8 @@ type TokenManagementAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockTokenManagementInterface instead.
 func (a *TokenManagementAPI) WithImpl(impl TokenManagementService) TokenManagementInterface {
-	return &TokenManagementAPI{
-		TokenManagementService: impl,
-	}
+	a.TokenManagementService = impl
+	return a
 }
 
 // Impl returns low-level TokenManagement API implementation
@@ -2142,9 +2118,8 @@ type TokensAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockTokensInterface instead.
 func (a *TokensAPI) WithImpl(impl TokensService) TokensInterface {
-	return &TokensAPI{
-		TokensService: impl,
-	}
+	a.TokensService = impl
+	return a
 }
 
 // Impl returns low-level Tokens API implementation
@@ -2293,9 +2268,8 @@ type WorkspaceConfAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockWorkspaceConfInterface instead.
 func (a *WorkspaceConfAPI) WithImpl(impl WorkspaceConfService) WorkspaceConfInterface {
-	return &WorkspaceConfAPI{
-		WorkspaceConfService: impl,
-	}
+	a.WorkspaceConfService = impl
+	return a
 }
 
 // Impl returns low-level WorkspaceConf API implementation

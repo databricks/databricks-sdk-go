@@ -146,12 +146,8 @@ func (a *{{.ParentService.PascalName}}API) {{.PascalName}}() {{.PascalName}}Inte
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use Mock{{.PascalName}}Interface instead.
 func (a *{{.PascalName}}API) WithImpl(impl {{.PascalName}}Service) {{.PascalName}}Interface {
-	return &{{.PascalName}}API{
-		{{.PascalName}}Service: impl,
-		{{range .Subservices -}}
-		{{.CamelName}}: a.{{.CamelName}},
-		{{end}}
-	}
+	a.{{.PascalName}}Service = impl
+	return a
 }
 
 // Impl returns low-level {{.PascalName}} API implementation

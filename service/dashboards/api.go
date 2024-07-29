@@ -108,9 +108,8 @@ type GenieAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockGenieInterface instead.
 func (a *GenieAPI) WithImpl(impl GenieService) GenieInterface {
-	return &GenieAPI{
-		GenieService: impl,
-	}
+	a.GenieService = impl
+	return a
 }
 
 // Impl returns low-level Genie API implementation
@@ -459,9 +458,8 @@ type LakeviewAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockLakeviewInterface instead.
 func (a *LakeviewAPI) WithImpl(impl LakeviewService) LakeviewInterface {
-	return &LakeviewAPI{
-		LakeviewService: impl,
-	}
+	a.LakeviewService = impl
+	return a
 }
 
 // Impl returns low-level Lakeview API implementation

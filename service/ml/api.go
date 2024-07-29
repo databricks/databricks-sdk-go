@@ -344,9 +344,8 @@ type ExperimentsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockExperimentsInterface instead.
 func (a *ExperimentsAPI) WithImpl(impl ExperimentsService) ExperimentsInterface {
-	return &ExperimentsAPI{
-		ExperimentsService: impl,
-	}
+	a.ExperimentsService = impl
+	return a
 }
 
 // Impl returns low-level Experiments API implementation
@@ -889,9 +888,8 @@ type ModelRegistryAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockModelRegistryInterface instead.
 func (a *ModelRegistryAPI) WithImpl(impl ModelRegistryService) ModelRegistryInterface {
-	return &ModelRegistryAPI{
-		ModelRegistryService: impl,
-	}
+	a.ModelRegistryService = impl
+	return a
 }
 
 // Impl returns low-level ModelRegistry API implementation

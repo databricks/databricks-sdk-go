@@ -115,9 +115,8 @@ type CredentialsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCredentialsInterface instead.
 func (a *CredentialsAPI) WithImpl(impl CredentialsService) CredentialsInterface {
-	return &CredentialsAPI{
-		CredentialsService: impl,
-	}
+	a.CredentialsService = impl
+	return a
 }
 
 // Impl returns low-level Credentials API implementation
@@ -333,9 +332,8 @@ type EncryptionKeysAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockEncryptionKeysInterface instead.
 func (a *EncryptionKeysAPI) WithImpl(impl EncryptionKeysService) EncryptionKeysInterface {
-	return &EncryptionKeysAPI{
-		EncryptionKeysService: impl,
-	}
+	a.EncryptionKeysService = impl
+	return a
 }
 
 // Impl returns low-level EncryptionKeys API implementation
@@ -475,9 +473,8 @@ type NetworksAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockNetworksInterface instead.
 func (a *NetworksAPI) WithImpl(impl NetworksService) NetworksInterface {
-	return &NetworksAPI{
-		NetworksService: impl,
-	}
+	a.NetworksService = impl
+	return a
 }
 
 // Impl returns low-level Networks API implementation
@@ -709,9 +706,8 @@ type PrivateAccessAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockPrivateAccessInterface instead.
 func (a *PrivateAccessAPI) WithImpl(impl PrivateAccessService) PrivateAccessInterface {
-	return &PrivateAccessAPI{
-		PrivateAccessService: impl,
-	}
+	a.PrivateAccessService = impl
+	return a
 }
 
 // Impl returns low-level PrivateAccess API implementation
@@ -900,9 +896,8 @@ type StorageAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockStorageInterface instead.
 func (a *StorageAPI) WithImpl(impl StorageService) StorageInterface {
-	return &StorageAPI{
-		StorageService: impl,
-	}
+	a.StorageService = impl
+	return a
 }
 
 // Impl returns low-level Storage API implementation
@@ -1103,9 +1098,8 @@ type VpcEndpointsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockVpcEndpointsInterface instead.
 func (a *VpcEndpointsAPI) WithImpl(impl VpcEndpointsService) VpcEndpointsInterface {
-	return &VpcEndpointsAPI{
-		VpcEndpointsService: impl,
-	}
+	a.VpcEndpointsService = impl
+	return a
 }
 
 // Impl returns low-level VpcEndpoints API implementation
@@ -1479,9 +1473,8 @@ type WorkspacesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockWorkspacesInterface instead.
 func (a *WorkspacesAPI) WithImpl(impl WorkspacesService) WorkspacesInterface {
-	return &WorkspacesAPI{
-		WorkspacesService: impl,
-	}
+	a.WorkspacesService = impl
+	return a
 }
 
 // Impl returns low-level Workspaces API implementation

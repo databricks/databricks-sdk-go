@@ -65,9 +65,8 @@ type AccountAccessControlAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountAccessControlInterface instead.
 func (a *AccountAccessControlAPI) WithImpl(impl AccountAccessControlService) AccountAccessControlInterface {
-	return &AccountAccessControlAPI{
-		AccountAccessControlService: impl,
-	}
+	a.AccountAccessControlService = impl
+	return a
 }
 
 // Impl returns low-level AccountAccessControl API implementation
@@ -130,9 +129,8 @@ type AccountAccessControlProxyAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountAccessControlProxyInterface instead.
 func (a *AccountAccessControlProxyAPI) WithImpl(impl AccountAccessControlProxyService) AccountAccessControlProxyInterface {
-	return &AccountAccessControlProxyAPI{
-		AccountAccessControlProxyService: impl,
-	}
+	a.AccountAccessControlProxyService = impl
+	return a
 }
 
 // Impl returns low-level AccountAccessControlProxy API implementation
@@ -245,9 +243,8 @@ type AccountGroupsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountGroupsInterface instead.
 func (a *AccountGroupsAPI) WithImpl(impl AccountGroupsService) AccountGroupsInterface {
-	return &AccountGroupsAPI{
-		AccountGroupsService: impl,
-	}
+	a.AccountGroupsService = impl
+	return a
 }
 
 // Impl returns low-level AccountGroups API implementation
@@ -483,9 +480,8 @@ type AccountServicePrincipalsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountServicePrincipalsInterface instead.
 func (a *AccountServicePrincipalsAPI) WithImpl(impl AccountServicePrincipalsService) AccountServicePrincipalsInterface {
-	return &AccountServicePrincipalsAPI{
-		AccountServicePrincipalsService: impl,
-	}
+	a.AccountServicePrincipalsService = impl
+	return a
 }
 
 // Impl returns low-level AccountServicePrincipals API implementation
@@ -726,9 +722,8 @@ type AccountUsersAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountUsersInterface instead.
 func (a *AccountUsersAPI) WithImpl(impl AccountUsersService) AccountUsersInterface {
-	return &AccountUsersAPI{
-		AccountUsersService: impl,
-	}
+	a.AccountUsersService = impl
+	return a
 }
 
 // Impl returns low-level AccountUsers API implementation
@@ -894,9 +889,8 @@ type CurrentUserAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCurrentUserInterface instead.
 func (a *CurrentUserAPI) WithImpl(impl CurrentUserService) CurrentUserInterface {
-	return &CurrentUserAPI{
-		CurrentUserService: impl,
-	}
+	a.CurrentUserService = impl
+	return a
 }
 
 // Impl returns low-level CurrentUser API implementation
@@ -1009,9 +1003,8 @@ type GroupsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockGroupsInterface instead.
 func (a *GroupsAPI) WithImpl(impl GroupsService) GroupsInterface {
-	return &GroupsAPI{
-		GroupsService: impl,
-	}
+	a.GroupsService = impl
+	return a
 }
 
 // Impl returns low-level Groups API implementation
@@ -1174,9 +1167,8 @@ type PermissionMigrationAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockPermissionMigrationInterface instead.
 func (a *PermissionMigrationAPI) WithImpl(impl PermissionMigrationService) PermissionMigrationInterface {
-	return &PermissionMigrationAPI{
-		PermissionMigrationService: impl,
-	}
+	a.PermissionMigrationService = impl
+	return a
 }
 
 // Impl returns low-level PermissionMigration API implementation
@@ -1298,9 +1290,8 @@ type PermissionsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockPermissionsInterface instead.
 func (a *PermissionsAPI) WithImpl(impl PermissionsService) PermissionsInterface {
-	return &PermissionsAPI{
-		PermissionsService: impl,
-	}
+	a.PermissionsService = impl
+	return a
 }
 
 // Impl returns low-level Permissions API implementation
@@ -1437,9 +1428,8 @@ type ServicePrincipalsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockServicePrincipalsInterface instead.
 func (a *ServicePrincipalsAPI) WithImpl(impl ServicePrincipalsService) ServicePrincipalsInterface {
-	return &ServicePrincipalsAPI{
-		ServicePrincipalsService: impl,
-	}
+	a.ServicePrincipalsService = impl
+	return a
 }
 
 // Impl returns low-level ServicePrincipals API implementation
@@ -1703,9 +1693,8 @@ type UsersAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockUsersInterface instead.
 func (a *UsersAPI) WithImpl(impl UsersService) UsersInterface {
-	return &UsersAPI{
-		UsersService: impl,
-	}
+	a.UsersService = impl
+	return a
 }
 
 // Impl returns low-level Users API implementation
@@ -1918,9 +1907,8 @@ type WorkspaceAssignmentAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockWorkspaceAssignmentInterface instead.
 func (a *WorkspaceAssignmentAPI) WithImpl(impl WorkspaceAssignmentService) WorkspaceAssignmentInterface {
-	return &WorkspaceAssignmentAPI{
-		WorkspaceAssignmentService: impl,
-	}
+	a.WorkspaceAssignmentService = impl
+	return a
 }
 
 // Impl returns low-level WorkspaceAssignment API implementation

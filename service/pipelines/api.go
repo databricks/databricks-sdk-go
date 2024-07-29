@@ -218,9 +218,8 @@ type PipelinesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockPipelinesInterface instead.
 func (a *PipelinesAPI) WithImpl(impl PipelinesService) PipelinesInterface {
-	return &PipelinesAPI{
-		PipelinesService: impl,
-	}
+	a.PipelinesService = impl
+	return a
 }
 
 // Impl returns low-level Pipelines API implementation

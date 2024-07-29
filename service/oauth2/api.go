@@ -95,9 +95,8 @@ type CustomAppIntegrationAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCustomAppIntegrationInterface instead.
 func (a *CustomAppIntegrationAPI) WithImpl(impl CustomAppIntegrationService) CustomAppIntegrationInterface {
-	return &CustomAppIntegrationAPI{
-		CustomAppIntegrationService: impl,
-	}
+	a.CustomAppIntegrationService = impl
+	return a
 }
 
 // Impl returns low-level CustomAppIntegration API implementation
@@ -213,9 +212,8 @@ type OAuthPublishedAppsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockOAuthPublishedAppsInterface instead.
 func (a *OAuthPublishedAppsAPI) WithImpl(impl OAuthPublishedAppsService) OAuthPublishedAppsInterface {
-	return &OAuthPublishedAppsAPI{
-		OAuthPublishedAppsService: impl,
-	}
+	a.OAuthPublishedAppsService = impl
+	return a
 }
 
 // Impl returns low-level OAuthPublishedApps API implementation
@@ -347,9 +345,8 @@ type PublishedAppIntegrationAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockPublishedAppIntegrationInterface instead.
 func (a *PublishedAppIntegrationAPI) WithImpl(impl PublishedAppIntegrationService) PublishedAppIntegrationInterface {
-	return &PublishedAppIntegrationAPI{
-		PublishedAppIntegrationService: impl,
-	}
+	a.PublishedAppIntegrationService = impl
+	return a
 }
 
 // Impl returns low-level PublishedAppIntegration API implementation
@@ -500,9 +497,8 @@ type ServicePrincipalSecretsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockServicePrincipalSecretsInterface instead.
 func (a *ServicePrincipalSecretsAPI) WithImpl(impl ServicePrincipalSecretsService) ServicePrincipalSecretsInterface {
-	return &ServicePrincipalSecretsAPI{
-		ServicePrincipalSecretsService: impl,
-	}
+	a.ServicePrincipalSecretsService = impl
+	return a
 }
 
 // Impl returns low-level ServicePrincipalSecrets API implementation

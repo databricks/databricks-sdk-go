@@ -83,9 +83,8 @@ type VectorSearchEndpointsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockVectorSearchEndpointsInterface instead.
 func (a *VectorSearchEndpointsAPI) WithImpl(impl VectorSearchEndpointsService) VectorSearchEndpointsInterface {
-	return &VectorSearchEndpointsAPI{
-		VectorSearchEndpointsService: impl,
-	}
+	a.VectorSearchEndpointsService = impl
+	return a
 }
 
 // Impl returns low-level VectorSearchEndpoints API implementation
@@ -356,9 +355,8 @@ type VectorSearchIndexesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockVectorSearchIndexesInterface instead.
 func (a *VectorSearchIndexesAPI) WithImpl(impl VectorSearchIndexesService) VectorSearchIndexesInterface {
-	return &VectorSearchIndexesAPI{
-		VectorSearchIndexesService: impl,
-	}
+	a.VectorSearchIndexesService = impl
+	return a
 }
 
 // Impl returns low-level VectorSearchIndexes API implementation

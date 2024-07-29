@@ -115,9 +115,8 @@ type CleanRoomsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCleanRoomsInterface instead.
 func (a *CleanRoomsAPI) WithImpl(impl CleanRoomsService) CleanRoomsInterface {
-	return &CleanRoomsAPI{
-		CleanRoomsService: impl,
-	}
+	a.CleanRoomsService = impl
+	return a
 }
 
 // Impl returns low-level CleanRooms API implementation
@@ -316,9 +315,8 @@ type ProvidersAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockProvidersInterface instead.
 func (a *ProvidersAPI) WithImpl(impl ProvidersService) ProvidersInterface {
-	return &ProvidersAPI{
-		ProvidersService: impl,
-	}
+	a.ProvidersService = impl
+	return a
 }
 
 // Impl returns low-level Providers API implementation
@@ -528,9 +526,8 @@ type RecipientActivationAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockRecipientActivationInterface instead.
 func (a *RecipientActivationAPI) WithImpl(impl RecipientActivationService) RecipientActivationInterface {
-	return &RecipientActivationAPI{
-		RecipientActivationService: impl,
-	}
+	a.RecipientActivationService = impl
+	return a
 }
 
 // Impl returns low-level RecipientActivation API implementation
@@ -692,9 +689,8 @@ type RecipientsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockRecipientsInterface instead.
 func (a *RecipientsAPI) WithImpl(impl RecipientsService) RecipientsInterface {
-	return &RecipientsAPI{
-		RecipientsService: impl,
-	}
+	a.RecipientsService = impl
+	return a
 }
 
 // Impl returns low-level Recipients API implementation
@@ -931,9 +927,8 @@ type SharesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockSharesInterface instead.
 func (a *SharesAPI) WithImpl(impl SharesService) SharesInterface {
-	return &SharesAPI{
-		SharesService: impl,
-	}
+	a.SharesService = impl
+	return a
 }
 
 // Impl returns low-level Shares API implementation

@@ -118,9 +118,8 @@ type AlertsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAlertsInterface instead.
 func (a *AlertsAPI) WithImpl(impl AlertsService) AlertsInterface {
-	return &AlertsAPI{
-		AlertsService: impl,
-	}
+	a.AlertsService = impl
+	return a
 }
 
 // Impl returns low-level Alerts API implementation
@@ -362,9 +361,8 @@ type AlertsLegacyAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAlertsLegacyInterface instead.
 func (a *AlertsLegacyAPI) WithImpl(impl AlertsLegacyService) AlertsLegacyInterface {
-	return &AlertsLegacyAPI{
-		AlertsLegacyService: impl,
-	}
+	a.AlertsLegacyService = impl
+	return a
 }
 
 // Impl returns low-level AlertsLegacy API implementation
@@ -496,9 +494,8 @@ type DashboardWidgetsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockDashboardWidgetsInterface instead.
 func (a *DashboardWidgetsAPI) WithImpl(impl DashboardWidgetsService) DashboardWidgetsInterface {
-	return &DashboardWidgetsAPI{
-		DashboardWidgetsService: impl,
-	}
+	a.DashboardWidgetsService = impl
+	return a
 }
 
 // Impl returns low-level DashboardWidgets API implementation
@@ -627,9 +624,8 @@ type DashboardsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockDashboardsInterface instead.
 func (a *DashboardsAPI) WithImpl(impl DashboardsService) DashboardsInterface {
-	return &DashboardsAPI{
-		DashboardsService: impl,
-	}
+	a.DashboardsService = impl
+	return a
 }
 
 // Impl returns low-level Dashboards API implementation
@@ -834,9 +830,8 @@ type DataSourcesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockDataSourcesInterface instead.
 func (a *DataSourcesAPI) WithImpl(impl DataSourcesService) DataSourcesInterface {
-	return &DataSourcesAPI{
-		DataSourcesService: impl,
-	}
+	a.DataSourcesService = impl
+	return a
 }
 
 // Impl returns low-level DataSources API implementation
@@ -971,9 +966,8 @@ type DbsqlPermissionsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockDbsqlPermissionsInterface instead.
 func (a *DbsqlPermissionsAPI) WithImpl(impl DbsqlPermissionsService) DbsqlPermissionsInterface {
-	return &DbsqlPermissionsAPI{
-		DbsqlPermissionsService: impl,
-	}
+	a.DbsqlPermissionsService = impl
+	return a
 }
 
 // Impl returns low-level DbsqlPermissions API implementation
@@ -1117,9 +1111,8 @@ type QueriesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockQueriesInterface instead.
 func (a *QueriesAPI) WithImpl(impl QueriesService) QueriesInterface {
-	return &QueriesAPI{
-		QueriesService: impl,
-	}
+	a.QueriesService = impl
+	return a
 }
 
 // Impl returns low-level Queries API implementation
@@ -1448,9 +1441,8 @@ type QueriesLegacyAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockQueriesLegacyInterface instead.
 func (a *QueriesLegacyAPI) WithImpl(impl QueriesLegacyService) QueriesLegacyInterface {
-	return &QueriesLegacyAPI{
-		QueriesLegacyService: impl,
-	}
+	a.QueriesLegacyService = impl
+	return a
 }
 
 // Impl returns low-level QueriesLegacy API implementation
@@ -1642,9 +1634,8 @@ type QueryHistoryAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockQueryHistoryInterface instead.
 func (a *QueryHistoryAPI) WithImpl(impl QueryHistoryService) QueryHistoryInterface {
-	return &QueryHistoryAPI{
-		QueryHistoryService: impl,
-	}
+	a.QueryHistoryService = impl
+	return a
 }
 
 // Impl returns low-level QueryHistory API implementation
@@ -1705,9 +1696,8 @@ type QueryVisualizationsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockQueryVisualizationsInterface instead.
 func (a *QueryVisualizationsAPI) WithImpl(impl QueryVisualizationsService) QueryVisualizationsInterface {
-	return &QueryVisualizationsAPI{
-		QueryVisualizationsService: impl,
-	}
+	a.QueryVisualizationsService = impl
+	return a
 }
 
 // Impl returns low-level QueryVisualizations API implementation
@@ -1792,9 +1782,8 @@ type QueryVisualizationsLegacyAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockQueryVisualizationsLegacyInterface instead.
 func (a *QueryVisualizationsLegacyAPI) WithImpl(impl QueryVisualizationsLegacyService) QueryVisualizationsLegacyInterface {
-	return &QueryVisualizationsLegacyAPI{
-		QueryVisualizationsLegacyService: impl,
-	}
+	a.QueryVisualizationsLegacyService = impl
+	return a
 }
 
 // Impl returns low-level QueryVisualizationsLegacy API implementation
@@ -2007,9 +1996,8 @@ type StatementExecutionAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockStatementExecutionInterface instead.
 func (a *StatementExecutionAPI) WithImpl(impl StatementExecutionService) StatementExecutionInterface {
-	return &StatementExecutionAPI{
-		StatementExecutionService: impl,
-	}
+	a.StatementExecutionService = impl
+	return a
 }
 
 // Impl returns low-level StatementExecution API implementation
@@ -2242,9 +2230,8 @@ type WarehousesAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockWarehousesInterface instead.
 func (a *WarehousesAPI) WithImpl(impl WarehousesService) WarehousesInterface {
-	return &WarehousesAPI{
-		WarehousesService: impl,
-	}
+	a.WarehousesService = impl
+	return a
 }
 
 // Impl returns low-level Warehouses API implementation

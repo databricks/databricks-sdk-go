@@ -114,9 +114,8 @@ type GitCredentialsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockGitCredentialsInterface instead.
 func (a *GitCredentialsAPI) WithImpl(impl GitCredentialsService) GitCredentialsInterface {
-	return &GitCredentialsAPI{
-		GitCredentialsService: impl,
-	}
+	a.GitCredentialsService = impl
+	return a
 }
 
 // Impl returns low-level GitCredentials API implementation
@@ -372,9 +371,8 @@ type ReposAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockReposInterface instead.
 func (a *ReposAPI) WithImpl(impl ReposService) ReposInterface {
-	return &ReposAPI{
-		ReposService: impl,
-	}
+	a.ReposService = impl
+	return a
 }
 
 // Impl returns low-level Repos API implementation
@@ -772,9 +770,8 @@ type SecretsAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockSecretsInterface instead.
 func (a *SecretsAPI) WithImpl(impl SecretsService) SecretsInterface {
-	return &SecretsAPI{
-		SecretsService: impl,
-	}
+	a.SecretsService = impl
+	return a
 }
 
 // Impl returns low-level Secrets API implementation
@@ -1127,9 +1124,8 @@ type WorkspaceAPI struct {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockWorkspaceInterface instead.
 func (a *WorkspaceAPI) WithImpl(impl WorkspaceService) WorkspaceInterface {
-	return &WorkspaceAPI{
-		WorkspaceService: impl,
-	}
+	a.WorkspaceService = impl
+	return a
 }
 
 // Impl returns low-level Workspace API implementation
