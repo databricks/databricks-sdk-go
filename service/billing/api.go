@@ -39,7 +39,7 @@ type BillableUsageInterface interface {
 
 func NewBillableUsage(client *client.DatabricksClient) *BillableUsageAPI {
 	return &BillableUsageAPI{
-		impl: &billableUsageImpl{
+		BillableUsageService: &billableUsageImpl{
 			client: client,
 		},
 	}
@@ -50,37 +50,22 @@ func NewBillableUsage(client *client.DatabricksClient) *BillableUsageAPI {
 type BillableUsageAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(BillableUsageService)
-	impl BillableUsageService
+	BillableUsageService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockBillableUsageInterface instead.
 func (a *BillableUsageAPI) WithImpl(impl BillableUsageService) BillableUsageInterface {
-	a.impl = impl
-	return a
+	return &BillableUsageAPI{
+		BillableUsageService: impl,
+	}
 }
 
 // Impl returns low-level BillableUsage API implementation
 // Deprecated: use MockBillableUsageInterface instead.
 func (a *BillableUsageAPI) Impl() BillableUsageService {
-	return a.impl
-}
-
-// Return billable usage logs.
-//
-// Returns billable usage logs in CSV format for the specified account and date
-// range. For the data schema, see [CSV file schema]. Note that this method
-// might take multiple minutes to complete.
-//
-// **Warning**: Depending on the queried date range, the number of workspaces in
-// the account, the size of the response and the internet speed of the caller,
-// this API may hit a timeout after a few minutes. If you experience this, try
-// to mitigate by calling the API with narrower date ranges.
-//
-// [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema
-func (a *BillableUsageAPI) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
-	return a.impl.Download(ctx, request)
+	return a.BillableUsageService
 }
 
 type BudgetsInterface interface {
@@ -146,7 +131,7 @@ type BudgetsInterface interface {
 
 func NewBudgets(client *client.DatabricksClient) *BudgetsAPI {
 	return &BudgetsAPI{
-		impl: &budgetsImpl{
+		BudgetsService: &budgetsImpl{
 			client: client,
 		},
 	}
@@ -159,37 +144,22 @@ func NewBudgets(client *client.DatabricksClient) *BudgetsAPI {
 type BudgetsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(BudgetsService)
-	impl BudgetsService
+	BudgetsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockBudgetsInterface instead.
 func (a *BudgetsAPI) WithImpl(impl BudgetsService) BudgetsInterface {
-	a.impl = impl
-	return a
+	return &BudgetsAPI{
+		BudgetsService: impl,
+	}
 }
 
 // Impl returns low-level Budgets API implementation
 // Deprecated: use MockBudgetsInterface instead.
 func (a *BudgetsAPI) Impl() BudgetsService {
-	return a.impl
-}
-
-// Create new budget.
-//
-// Create a new budget configuration for an account. For full details, see
-// https://docs.databricks.com/en/admin/account-settings/budgets.html.
-func (a *BudgetsAPI) Create(ctx context.Context, request CreateBudgetConfigurationRequest) (*CreateBudgetConfigurationResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete budget.
-//
-// Deletes a budget configuration for an account. Both account and budget
-// configuration are specified by ID. This cannot be undone.
-func (a *BudgetsAPI) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.BudgetsService
 }
 
 // Delete budget.
@@ -197,7 +167,7 @@ func (a *BudgetsAPI) Delete(ctx context.Context, request DeleteBudgetConfigurati
 // Deletes a budget configuration for an account. Both account and budget
 // configuration are specified by ID. This cannot be undone.
 func (a *BudgetsAPI) DeleteByBudgetId(ctx context.Context, budgetId string) error {
-	return a.impl.Delete(ctx, DeleteBudgetConfigurationRequest{
+	return a.BudgetsService.Delete(ctx, DeleteBudgetConfigurationRequest{
 		BudgetId: budgetId,
 	})
 }
@@ -206,16 +176,8 @@ func (a *BudgetsAPI) DeleteByBudgetId(ctx context.Context, budgetId string) erro
 //
 // Gets a budget configuration for an account. Both account and budget
 // configuration are specified by ID.
-func (a *BudgetsAPI) Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Get budget.
-//
-// Gets a budget configuration for an account. Both account and budget
-// configuration are specified by ID.
 func (a *BudgetsAPI) GetByBudgetId(ctx context.Context, budgetId string) (*GetBudgetConfigurationResponse, error) {
-	return a.impl.Get(ctx, GetBudgetConfigurationRequest{
+	return a.BudgetsService.Get(ctx, GetBudgetConfigurationRequest{
 		BudgetId: budgetId,
 	})
 }
@@ -229,7 +191,7 @@ func (a *BudgetsAPI) List(ctx context.Context, request ListBudgetConfigurationsR
 
 	getNextPage := func(ctx context.Context, req ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx, req)
+		return a.BudgetsService.List(ctx, req)
 	}
 	getItems := func(resp *ListBudgetConfigurationsResponse) []BudgetConfiguration {
 		return resp.Budgets
@@ -257,14 +219,6 @@ func (a *BudgetsAPI) List(ctx context.Context, request ListBudgetConfigurationsR
 func (a *BudgetsAPI) ListAll(ctx context.Context, request ListBudgetConfigurationsRequest) ([]BudgetConfiguration, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[BudgetConfiguration](ctx, iterator)
-}
-
-// Modify budget.
-//
-// Updates a budget configuration for an account. Both account and budget
-// configuration are specified by ID.
-func (a *BudgetsAPI) Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error) {
-	return a.impl.Update(ctx, request)
 }
 
 type LogDeliveryInterface interface {
@@ -364,7 +318,7 @@ type LogDeliveryInterface interface {
 
 func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 	return &LogDeliveryAPI{
-		impl: &logDeliveryImpl{
+		LogDeliveryService: &logDeliveryImpl{
 			client: client,
 		},
 	}
@@ -434,60 +388,22 @@ func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 type LogDeliveryAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(LogDeliveryService)
-	impl LogDeliveryService
+	LogDeliveryService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockLogDeliveryInterface instead.
 func (a *LogDeliveryAPI) WithImpl(impl LogDeliveryService) LogDeliveryInterface {
-	a.impl = impl
-	return a
+	return &LogDeliveryAPI{
+		LogDeliveryService: impl,
+	}
 }
 
 // Impl returns low-level LogDelivery API implementation
 // Deprecated: use MockLogDeliveryInterface instead.
 func (a *LogDeliveryAPI) Impl() LogDeliveryService {
-	return a.impl
-}
-
-// Create a new log delivery configuration.
-//
-// Creates a new Databricks log delivery configuration to enable delivery of the
-// specified type of logs to your storage location. This requires that you
-// already created a [credential object](:method:Credentials/Create) (which
-// encapsulates a cross-account service IAM role) and a [storage configuration
-// object](:method:Storage/Create) (which encapsulates an S3 bucket).
-//
-// For full details, including the required IAM role policies and bucket
-// policies, see [Deliver and access billable usage logs] or [Configure audit
-// logging].
-//
-// **Note**: There is a limit on the number of log delivery configurations
-// available per account (each limit applies separately to each log type
-// including billable usage and audit logs). You can create a maximum of two
-// enabled account-level delivery configurations (configurations without a
-// workspace filter) per type. Additionally, you can create two enabled
-// workspace-level delivery configurations per workspace for each log type,
-// which means that the same workspace ID can occur in the workspace filter for
-// no more than two delivery configurations per log type.
-//
-// You cannot delete a log delivery configuration, but you can disable it (see
-// [Enable or disable log delivery
-// configuration](:method:LogDelivery/PatchStatus)).
-//
-// [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
-// [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-func (a *LogDeliveryAPI) Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Get log delivery configuration.
-//
-// Gets a Databricks log delivery configuration object for an account, both
-// specified by ID.
-func (a *LogDeliveryAPI) Get(ctx context.Context, request GetLogDeliveryRequest) (*WrappedLogDeliveryConfiguration, error) {
-	return a.impl.Get(ctx, request)
+	return a.LogDeliveryService
 }
 
 // Get log delivery configuration.
@@ -495,7 +411,7 @@ func (a *LogDeliveryAPI) Get(ctx context.Context, request GetLogDeliveryRequest)
 // Gets a Databricks log delivery configuration object for an account, both
 // specified by ID.
 func (a *LogDeliveryAPI) GetByLogDeliveryConfigurationId(ctx context.Context, logDeliveryConfigurationId string) (*WrappedLogDeliveryConfiguration, error) {
-	return a.impl.Get(ctx, GetLogDeliveryRequest{
+	return a.LogDeliveryService.Get(ctx, GetLogDeliveryRequest{
 		LogDeliveryConfigurationId: logDeliveryConfigurationId,
 	})
 }
@@ -510,7 +426,7 @@ func (a *LogDeliveryAPI) List(ctx context.Context, request ListLogDeliveryReques
 
 	getNextPage := func(ctx context.Context, req ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx, req)
+		return a.LogDeliveryService.List(ctx, req)
 	}
 	getItems := func(resp *WrappedLogDeliveryConfigurations) []LogDeliveryConfiguration {
 		return resp.LogDeliveryConfigurations
@@ -588,17 +504,6 @@ func (a *LogDeliveryAPI) GetByConfigName(ctx context.Context, name string) (*Log
 	return &alternatives[0], nil
 }
 
-// Enable or disable log delivery configuration.
-//
-// Enables or disables a log delivery configuration. Deletion of delivery
-// configurations is not supported, so disable log delivery configurations that
-// are no longer needed. Note that you can't re-enable a delivery configuration
-// if this would violate the delivery configuration limits described under
-// [Create log delivery](:method:LogDelivery/Create).
-func (a *LogDeliveryAPI) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
-	return a.impl.PatchStatus(ctx, request)
-}
-
 type UsageDashboardsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
@@ -624,7 +529,7 @@ type UsageDashboardsInterface interface {
 
 func NewUsageDashboards(client *client.DatabricksClient) *UsageDashboardsAPI {
 	return &UsageDashboardsAPI{
-		impl: &usageDashboardsImpl{
+		UsageDashboardsService: &usageDashboardsImpl{
 			client: client,
 		},
 	}
@@ -636,35 +541,20 @@ func NewUsageDashboards(client *client.DatabricksClient) *UsageDashboardsAPI {
 type UsageDashboardsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(UsageDashboardsService)
-	impl UsageDashboardsService
+	UsageDashboardsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockUsageDashboardsInterface instead.
 func (a *UsageDashboardsAPI) WithImpl(impl UsageDashboardsService) UsageDashboardsInterface {
-	a.impl = impl
-	return a
+	return &UsageDashboardsAPI{
+		UsageDashboardsService: impl,
+	}
 }
 
 // Impl returns low-level UsageDashboards API implementation
 // Deprecated: use MockUsageDashboardsInterface instead.
 func (a *UsageDashboardsAPI) Impl() UsageDashboardsService {
-	return a.impl
-}
-
-// Create new usage dashboard.
-//
-// Create a usage dashboard specified by workspaceId, accountId, and dashboard
-// type.
-func (a *UsageDashboardsAPI) Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Get usage dashboard.
-//
-// Get a usage dashboard specified by workspaceId, accountId, and dashboard
-// type.
-func (a *UsageDashboardsAPI) Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error) {
-	return a.impl.Get(ctx, request)
+	return a.UsageDashboardsService
 }

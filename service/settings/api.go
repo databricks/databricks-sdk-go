@@ -128,7 +128,7 @@ type AccountIpAccessListsInterface interface {
 
 func NewAccountIpAccessLists(client *client.DatabricksClient) *AccountIpAccessListsAPI {
 	return &AccountIpAccessListsAPI{
-		impl: &accountIpAccessListsImpl{
+		AccountIpAccessListsService: &accountIpAccessListsImpl{
 			client: client,
 		},
 	}
@@ -159,55 +159,29 @@ func NewAccountIpAccessLists(client *client.DatabricksClient) *AccountIpAccessLi
 type AccountIpAccessListsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AccountIpAccessListsService)
-	impl AccountIpAccessListsService
+	AccountIpAccessListsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountIpAccessListsInterface instead.
 func (a *AccountIpAccessListsAPI) WithImpl(impl AccountIpAccessListsService) AccountIpAccessListsInterface {
-	a.impl = impl
-	return a
+	return &AccountIpAccessListsAPI{
+		AccountIpAccessListsService: impl,
+	}
 }
 
 // Impl returns low-level AccountIpAccessLists API implementation
 // Deprecated: use MockAccountIpAccessListsInterface instead.
 func (a *AccountIpAccessListsAPI) Impl() AccountIpAccessListsService {
-	return a.impl
-}
-
-// Create access list.
-//
-// Creates an IP access list for the account.
-//
-// A list can be an allow list or a block list. See the top of this file for a
-// description of how the server treats allow lists and block lists at runtime.
-//
-// When creating or updating an IP access list:
-//
-// * For all allow lists and block lists combined, the API supports a maximum of
-// 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts to
-// exceed that number return error 400 with `error_code` value `QUOTA_EXCEEDED`.
-// * If the new list would block the calling user's current IP, error 400 is
-// returned with `error_code` value `INVALID_STATE`.
-//
-// It can take a few minutes for the changes to take effect.
-func (a *AccountIpAccessListsAPI) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete access list.
-//
-// Deletes an IP access list, specified by its list ID.
-func (a *AccountIpAccessListsAPI) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.AccountIpAccessListsService
 }
 
 // Delete access list.
 //
 // Deletes an IP access list, specified by its list ID.
 func (a *AccountIpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) error {
-	return a.impl.Delete(ctx, DeleteAccountIpAccessListRequest{
+	return a.AccountIpAccessListsService.Delete(ctx, DeleteAccountIpAccessListRequest{
 		IpAccessListId: ipAccessListId,
 	})
 }
@@ -215,15 +189,8 @@ func (a *AccountIpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ip
 // Get IP access list.
 //
 // Gets an IP access list, specified by its list ID.
-func (a *AccountIpAccessListsAPI) Get(ctx context.Context, request GetAccountIpAccessListRequest) (*GetIpAccessListResponse, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Get IP access list.
-//
-// Gets an IP access list, specified by its list ID.
 func (a *AccountIpAccessListsAPI) GetByIpAccessListId(ctx context.Context, ipAccessListId string) (*GetIpAccessListResponse, error) {
-	return a.impl.Get(ctx, GetAccountIpAccessListRequest{
+	return a.AccountIpAccessListsService.Get(ctx, GetAccountIpAccessListRequest{
 		IpAccessListId: ipAccessListId,
 	})
 }
@@ -238,7 +205,7 @@ func (a *AccountIpAccessListsAPI) List(ctx context.Context) listing.Iterator[IpA
 
 	getNextPage := func(ctx context.Context, req struct{}) (*GetIpAccessListsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx)
+		return a.AccountIpAccessListsService.List(ctx)
 	}
 	getItems := func(resp *GetIpAccessListsResponse) []IpAccessListInfo {
 		return resp.IpAccessLists
@@ -315,43 +282,6 @@ func (a *AccountIpAccessListsAPI) GetByLabel(ctx context.Context, name string) (
 	return &alternatives[0], nil
 }
 
-// Replace access list.
-//
-// Replaces an IP access list, specified by its ID.
-//
-// A list can include allow lists and block lists. See the top of this file for
-// a description of how the server treats allow lists and block lists at run
-// time. When replacing an IP access list: * For all allow lists and block lists
-// combined, the API supports a maximum of 1000 IP/CIDR values, where one CIDR
-// counts as a single value. Attempts to exceed that number return error 400
-// with `error_code` value `QUOTA_EXCEEDED`. * If the resulting list would block
-// the calling user's current IP, error 400 is returned with `error_code` value
-// `INVALID_STATE`. It can take a few minutes for the changes to take effect.
-func (a *AccountIpAccessListsAPI) Replace(ctx context.Context, request ReplaceIpAccessList) error {
-	return a.impl.Replace(ctx, request)
-}
-
-// Update access list.
-//
-// Updates an existing IP access list, specified by its ID.
-//
-// A list can include allow lists and block lists. See the top of this file for
-// a description of how the server treats allow lists and block lists at run
-// time.
-//
-// When updating an IP access list:
-//
-// * For all allow lists and block lists combined, the API supports a maximum of
-// 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts to
-// exceed that number return error 400 with `error_code` value `QUOTA_EXCEEDED`.
-// * If the updated list would block the calling user's current IP, error 400 is
-// returned with `error_code` value `INVALID_STATE`.
-//
-// It can take a few minutes for the changes to take effect.
-func (a *AccountIpAccessListsAPI) Update(ctx context.Context, request UpdateIpAccessList) error {
-	return a.impl.Update(ctx, request)
-}
-
 type AccountSettingsInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
@@ -394,7 +324,7 @@ type AccountSettingsInterface interface {
 
 func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 	return &AccountSettingsAPI{
-		impl: &accountSettingsImpl{
+		AccountSettingsService: &accountSettingsImpl{
 			client: client,
 		},
 
@@ -410,7 +340,7 @@ func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 type AccountSettingsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AccountSettingsService)
-	impl AccountSettingsService
+	AccountSettingsService
 
 	// The compliance security profile settings at the account level control
 	// whether to enable it for new workspaces. By default, this account-level
@@ -458,14 +388,18 @@ func (a *AccountSettingsAPI) PersonalCompute() PersonalComputeInterface {
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAccountSettingsInterface instead.
 func (a *AccountSettingsAPI) WithImpl(impl AccountSettingsService) AccountSettingsInterface {
-	a.impl = impl
-	return a
+	return &AccountSettingsAPI{
+		AccountSettingsService: impl,
+		cspEnablementAccount:   a.cspEnablementAccount,
+		esmEnablementAccount:   a.esmEnablementAccount,
+		personalCompute:        a.personalCompute,
+	}
 }
 
 // Impl returns low-level AccountSettings API implementation
 // Deprecated: use MockAccountSettingsInterface instead.
 func (a *AccountSettingsAPI) Impl() AccountSettingsService {
-	return a.impl
+	return a.AccountSettingsService
 }
 
 type AutomaticClusterUpdateInterface interface {
@@ -495,7 +429,7 @@ type AutomaticClusterUpdateInterface interface {
 
 func NewAutomaticClusterUpdate(client *client.DatabricksClient) *AutomaticClusterUpdateAPI {
 	return &AutomaticClusterUpdateAPI{
-		impl: &automaticClusterUpdateImpl{
+		AutomaticClusterUpdateService: &automaticClusterUpdateImpl{
 			client: client,
 		},
 	}
@@ -506,39 +440,22 @@ func NewAutomaticClusterUpdate(client *client.DatabricksClient) *AutomaticCluste
 type AutomaticClusterUpdateAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AutomaticClusterUpdateService)
-	impl AutomaticClusterUpdateService
+	AutomaticClusterUpdateService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAutomaticClusterUpdateInterface instead.
 func (a *AutomaticClusterUpdateAPI) WithImpl(impl AutomaticClusterUpdateService) AutomaticClusterUpdateInterface {
-	a.impl = impl
-	return a
+	return &AutomaticClusterUpdateAPI{
+		AutomaticClusterUpdateService: impl,
+	}
 }
 
 // Impl returns low-level AutomaticClusterUpdate API implementation
 // Deprecated: use MockAutomaticClusterUpdateInterface instead.
 func (a *AutomaticClusterUpdateAPI) Impl() AutomaticClusterUpdateService {
-	return a.impl
-}
-
-// Get the automatic cluster update setting.
-//
-// Gets the automatic cluster update setting.
-func (a *AutomaticClusterUpdateAPI) Get(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Update the automatic cluster update setting.
-//
-// Updates the automatic cluster update setting for the workspace. A fresh etag
-// needs to be provided in `PATCH` requests (as part of the setting field). The
-// etag can be retrieved by making a `GET` request before the `PATCH` request.
-// If the setting is updated concurrently, `PATCH` fails with 409 and the
-// request must be retried by using the fresh etag in the 409 response.
-func (a *AutomaticClusterUpdateAPI) Update(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
-	return a.impl.Update(ctx, request)
+	return a.AutomaticClusterUpdateService
 }
 
 type ComplianceSecurityProfileInterface interface {
@@ -568,7 +485,7 @@ type ComplianceSecurityProfileInterface interface {
 
 func NewComplianceSecurityProfile(client *client.DatabricksClient) *ComplianceSecurityProfileAPI {
 	return &ComplianceSecurityProfileAPI{
-		impl: &complianceSecurityProfileImpl{
+		ComplianceSecurityProfileService: &complianceSecurityProfileImpl{
 			client: client,
 		},
 	}
@@ -582,39 +499,22 @@ func NewComplianceSecurityProfile(client *client.DatabricksClient) *ComplianceSe
 type ComplianceSecurityProfileAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ComplianceSecurityProfileService)
-	impl ComplianceSecurityProfileService
+	ComplianceSecurityProfileService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockComplianceSecurityProfileInterface instead.
 func (a *ComplianceSecurityProfileAPI) WithImpl(impl ComplianceSecurityProfileService) ComplianceSecurityProfileInterface {
-	a.impl = impl
-	return a
+	return &ComplianceSecurityProfileAPI{
+		ComplianceSecurityProfileService: impl,
+	}
 }
 
 // Impl returns low-level ComplianceSecurityProfile API implementation
 // Deprecated: use MockComplianceSecurityProfileInterface instead.
 func (a *ComplianceSecurityProfileAPI) Impl() ComplianceSecurityProfileService {
-	return a.impl
-}
-
-// Get the compliance security profile setting.
-//
-// Gets the compliance security profile setting.
-func (a *ComplianceSecurityProfileAPI) Get(ctx context.Context, request GetComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Update the compliance security profile setting.
-//
-// Updates the compliance security profile setting for the workspace. A fresh
-// etag needs to be provided in `PATCH` requests (as part of the setting field).
-// The etag can be retrieved by making a `GET` request before the `PATCH`
-// request. If the setting is updated concurrently, `PATCH` fails with 409 and
-// the request must be retried by using the fresh etag in the 409 response.
-func (a *ComplianceSecurityProfileAPI) Update(ctx context.Context, request UpdateComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
-	return a.impl.Update(ctx, request)
+	return a.ComplianceSecurityProfileService
 }
 
 type CredentialsManagerInterface interface {
@@ -636,7 +536,7 @@ type CredentialsManagerInterface interface {
 
 func NewCredentialsManager(client *client.DatabricksClient) *CredentialsManagerAPI {
 	return &CredentialsManagerAPI{
-		impl: &credentialsManagerImpl{
+		CredentialsManagerService: &credentialsManagerImpl{
 			client: client,
 		},
 	}
@@ -647,29 +547,22 @@ func NewCredentialsManager(client *client.DatabricksClient) *CredentialsManagerA
 type CredentialsManagerAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(CredentialsManagerService)
-	impl CredentialsManagerService
+	CredentialsManagerService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCredentialsManagerInterface instead.
 func (a *CredentialsManagerAPI) WithImpl(impl CredentialsManagerService) CredentialsManagerInterface {
-	a.impl = impl
-	return a
+	return &CredentialsManagerAPI{
+		CredentialsManagerService: impl,
+	}
 }
 
 // Impl returns low-level CredentialsManager API implementation
 // Deprecated: use MockCredentialsManagerInterface instead.
 func (a *CredentialsManagerAPI) Impl() CredentialsManagerService {
-	return a.impl
-}
-
-// Exchange token.
-//
-// Exchange tokens with an Identity Provider to get a new access token. It
-// allows specifying scopes to determine token permissions.
-func (a *CredentialsManagerAPI) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
-	return a.impl.ExchangeToken(ctx, request)
+	return a.CredentialsManagerService
 }
 
 type CspEnablementAccountInterface interface {
@@ -696,7 +589,7 @@ type CspEnablementAccountInterface interface {
 
 func NewCspEnablementAccount(client *client.DatabricksClient) *CspEnablementAccountAPI {
 	return &CspEnablementAccountAPI{
-		impl: &cspEnablementAccountImpl{
+		CspEnablementAccountService: &cspEnablementAccountImpl{
 			client: client,
 		},
 	}
@@ -712,36 +605,22 @@ func NewCspEnablementAccount(client *client.DatabricksClient) *CspEnablementAcco
 type CspEnablementAccountAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(CspEnablementAccountService)
-	impl CspEnablementAccountService
+	CspEnablementAccountService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCspEnablementAccountInterface instead.
 func (a *CspEnablementAccountAPI) WithImpl(impl CspEnablementAccountService) CspEnablementAccountInterface {
-	a.impl = impl
-	return a
+	return &CspEnablementAccountAPI{
+		CspEnablementAccountService: impl,
+	}
 }
 
 // Impl returns low-level CspEnablementAccount API implementation
 // Deprecated: use MockCspEnablementAccountInterface instead.
 func (a *CspEnablementAccountAPI) Impl() CspEnablementAccountService {
-	return a.impl
-}
-
-// Get the compliance security profile setting for new workspaces.
-//
-// Gets the compliance security profile setting for new workspaces.
-func (a *CspEnablementAccountAPI) Get(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Update the compliance security profile setting for new workspaces.
-//
-// Updates the value of the compliance security profile setting for new
-// workspaces.
-func (a *CspEnablementAccountAPI) Update(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
-	return a.impl.Update(ctx, request)
+	return a.CspEnablementAccountService
 }
 
 type DefaultNamespaceInterface interface {
@@ -782,7 +661,7 @@ type DefaultNamespaceInterface interface {
 
 func NewDefaultNamespace(client *client.DatabricksClient) *DefaultNamespaceAPI {
 	return &DefaultNamespaceAPI{
-		impl: &defaultNamespaceImpl{
+		DefaultNamespaceService: &defaultNamespaceImpl{
 			client: client,
 		},
 	}
@@ -803,52 +682,22 @@ func NewDefaultNamespace(client *client.DatabricksClient) *DefaultNamespaceAPI {
 type DefaultNamespaceAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(DefaultNamespaceService)
-	impl DefaultNamespaceService
+	DefaultNamespaceService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockDefaultNamespaceInterface instead.
 func (a *DefaultNamespaceAPI) WithImpl(impl DefaultNamespaceService) DefaultNamespaceInterface {
-	a.impl = impl
-	return a
+	return &DefaultNamespaceAPI{
+		DefaultNamespaceService: impl,
+	}
 }
 
 // Impl returns low-level DefaultNamespace API implementation
 // Deprecated: use MockDefaultNamespaceInterface instead.
 func (a *DefaultNamespaceAPI) Impl() DefaultNamespaceService {
-	return a.impl
-}
-
-// Delete the default namespace setting.
-//
-// Deletes the default namespace setting for the workspace. A fresh etag needs
-// to be provided in `DELETE` requests (as a query parameter). The etag can be
-// retrieved by making a `GET` request before the `DELETE` request. If the
-// setting is updated/deleted concurrently, `DELETE` fails with 409 and the
-// request must be retried by using the fresh etag in the 409 response.
-func (a *DefaultNamespaceAPI) Delete(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
-	return a.impl.Delete(ctx, request)
-}
-
-// Get the default namespace setting.
-//
-// Gets the default namespace setting.
-func (a *DefaultNamespaceAPI) Get(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Update the default namespace setting.
-//
-// Updates the default namespace setting for the workspace. A fresh etag needs
-// to be provided in `PATCH` requests (as part of the setting field). The etag
-// can be retrieved by making a `GET` request before the `PATCH` request. Note
-// that if the setting does not exist, `GET` returns a NOT_FOUND error and the
-// etag is present in the error response, which should be set in the `PATCH`
-// request. If the setting is updated concurrently, `PATCH` fails with 409 and
-// the request must be retried by using the fresh etag in the 409 response.
-func (a *DefaultNamespaceAPI) Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	return a.impl.Update(ctx, request)
+	return a.DefaultNamespaceService
 }
 
 type EnhancedSecurityMonitoringInterface interface {
@@ -878,7 +727,7 @@ type EnhancedSecurityMonitoringInterface interface {
 
 func NewEnhancedSecurityMonitoring(client *client.DatabricksClient) *EnhancedSecurityMonitoringAPI {
 	return &EnhancedSecurityMonitoringAPI{
-		impl: &enhancedSecurityMonitoringImpl{
+		EnhancedSecurityMonitoringService: &enhancedSecurityMonitoringImpl{
 			client: client,
 		},
 	}
@@ -894,39 +743,22 @@ func NewEnhancedSecurityMonitoring(client *client.DatabricksClient) *EnhancedSec
 type EnhancedSecurityMonitoringAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(EnhancedSecurityMonitoringService)
-	impl EnhancedSecurityMonitoringService
+	EnhancedSecurityMonitoringService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockEnhancedSecurityMonitoringInterface instead.
 func (a *EnhancedSecurityMonitoringAPI) WithImpl(impl EnhancedSecurityMonitoringService) EnhancedSecurityMonitoringInterface {
-	a.impl = impl
-	return a
+	return &EnhancedSecurityMonitoringAPI{
+		EnhancedSecurityMonitoringService: impl,
+	}
 }
 
 // Impl returns low-level EnhancedSecurityMonitoring API implementation
 // Deprecated: use MockEnhancedSecurityMonitoringInterface instead.
 func (a *EnhancedSecurityMonitoringAPI) Impl() EnhancedSecurityMonitoringService {
-	return a.impl
-}
-
-// Get the enhanced security monitoring setting.
-//
-// Gets the enhanced security monitoring setting.
-func (a *EnhancedSecurityMonitoringAPI) Get(ctx context.Context, request GetEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Update the enhanced security monitoring setting.
-//
-// Updates the enhanced security monitoring setting for the workspace. A fresh
-// etag needs to be provided in `PATCH` requests (as part of the setting field).
-// The etag can be retrieved by making a `GET` request before the `PATCH`
-// request. If the setting is updated concurrently, `PATCH` fails with 409 and
-// the request must be retried by using the fresh etag in the 409 response.
-func (a *EnhancedSecurityMonitoringAPI) Update(ctx context.Context, request UpdateEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
-	return a.impl.Update(ctx, request)
+	return a.EnhancedSecurityMonitoringService
 }
 
 type EsmEnablementAccountInterface interface {
@@ -953,7 +785,7 @@ type EsmEnablementAccountInterface interface {
 
 func NewEsmEnablementAccount(client *client.DatabricksClient) *EsmEnablementAccountAPI {
 	return &EsmEnablementAccountAPI{
-		impl: &esmEnablementAccountImpl{
+		EsmEnablementAccountService: &esmEnablementAccountImpl{
 			client: client,
 		},
 	}
@@ -967,36 +799,22 @@ func NewEsmEnablementAccount(client *client.DatabricksClient) *EsmEnablementAcco
 type EsmEnablementAccountAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(EsmEnablementAccountService)
-	impl EsmEnablementAccountService
+	EsmEnablementAccountService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockEsmEnablementAccountInterface instead.
 func (a *EsmEnablementAccountAPI) WithImpl(impl EsmEnablementAccountService) EsmEnablementAccountInterface {
-	a.impl = impl
-	return a
+	return &EsmEnablementAccountAPI{
+		EsmEnablementAccountService: impl,
+	}
 }
 
 // Impl returns low-level EsmEnablementAccount API implementation
 // Deprecated: use MockEsmEnablementAccountInterface instead.
 func (a *EsmEnablementAccountAPI) Impl() EsmEnablementAccountService {
-	return a.impl
-}
-
-// Get the enhanced security monitoring setting for new workspaces.
-//
-// Gets the enhanced security monitoring setting for new workspaces.
-func (a *EsmEnablementAccountAPI) Get(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Update the enhanced security monitoring setting for new workspaces.
-//
-// Updates the value of the enhanced security monitoring setting for new
-// workspaces.
-func (a *EsmEnablementAccountAPI) Update(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
-	return a.impl.Update(ctx, request)
+	return a.EsmEnablementAccountService
 }
 
 type IpAccessListsInterface interface {
@@ -1121,7 +939,7 @@ type IpAccessListsInterface interface {
 
 func NewIpAccessLists(client *client.DatabricksClient) *IpAccessListsAPI {
 	return &IpAccessListsAPI{
-		impl: &ipAccessListsImpl{
+		IpAccessListsService: &ipAccessListsImpl{
 			client: client,
 		},
 	}
@@ -1151,57 +969,29 @@ func NewIpAccessLists(client *client.DatabricksClient) *IpAccessListsAPI {
 type IpAccessListsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(IpAccessListsService)
-	impl IpAccessListsService
+	IpAccessListsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockIpAccessListsInterface instead.
 func (a *IpAccessListsAPI) WithImpl(impl IpAccessListsService) IpAccessListsInterface {
-	a.impl = impl
-	return a
+	return &IpAccessListsAPI{
+		IpAccessListsService: impl,
+	}
 }
 
 // Impl returns low-level IpAccessLists API implementation
 // Deprecated: use MockIpAccessListsInterface instead.
 func (a *IpAccessListsAPI) Impl() IpAccessListsService {
-	return a.impl
-}
-
-// Create access list.
-//
-// Creates an IP access list for this workspace.
-//
-// A list can be an allow list or a block list. See the top of this file for a
-// description of how the server treats allow lists and block lists at runtime.
-//
-// When creating or updating an IP access list:
-//
-// * For all allow lists and block lists combined, the API supports a maximum of
-// 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts to
-// exceed that number return error 400 with `error_code` value `QUOTA_EXCEEDED`.
-// * If the new list would block the calling user's current IP, error 400 is
-// returned with `error_code` value `INVALID_STATE`.
-//
-// It can take a few minutes for the changes to take effect. **Note**: Your new
-// IP access list has no effect until you enable the feature. See
-// :method:workspaceconf/setStatus
-func (a *IpAccessListsAPI) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete access list.
-//
-// Deletes an IP access list, specified by its list ID.
-func (a *IpAccessListsAPI) Delete(ctx context.Context, request DeleteIpAccessListRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.IpAccessListsService
 }
 
 // Delete access list.
 //
 // Deletes an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) error {
-	return a.impl.Delete(ctx, DeleteIpAccessListRequest{
+	return a.IpAccessListsService.Delete(ctx, DeleteIpAccessListRequest{
 		IpAccessListId: ipAccessListId,
 	})
 }
@@ -1209,15 +999,8 @@ func (a *IpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessL
 // Get access list.
 //
 // Gets an IP access list, specified by its list ID.
-func (a *IpAccessListsAPI) Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Get access list.
-//
-// Gets an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) GetByIpAccessListId(ctx context.Context, ipAccessListId string) (*FetchIpAccessListResponse, error) {
-	return a.impl.Get(ctx, GetIpAccessListRequest{
+	return a.IpAccessListsService.Get(ctx, GetIpAccessListRequest{
 		IpAccessListId: ipAccessListId,
 	})
 }
@@ -1232,7 +1015,7 @@ func (a *IpAccessListsAPI) List(ctx context.Context) listing.Iterator[IpAccessLi
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListIpAccessListResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx)
+		return a.IpAccessListsService.List(ctx)
 	}
 	getItems := func(resp *ListIpAccessListResponse) []IpAccessListInfo {
 		return resp.IpAccessLists
@@ -1307,47 +1090,6 @@ func (a *IpAccessListsAPI) GetByLabel(ctx context.Context, name string) (*IpAcce
 		return nil, fmt.Errorf("there are %d instances of IpAccessListInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
-}
-
-// Replace access list.
-//
-// Replaces an IP access list, specified by its ID.
-//
-// A list can include allow lists and block lists. See the top of this file for
-// a description of how the server treats allow lists and block lists at run
-// time. When replacing an IP access list: * For all allow lists and block lists
-// combined, the API supports a maximum of 1000 IP/CIDR values, where one CIDR
-// counts as a single value. Attempts to exceed that number return error 400
-// with `error_code` value `QUOTA_EXCEEDED`. * If the resulting list would block
-// the calling user's current IP, error 400 is returned with `error_code` value
-// `INVALID_STATE`. It can take a few minutes for the changes to take effect.
-// Note that your resulting IP access list has no effect until you enable the
-// feature. See :method:workspaceconf/setStatus.
-func (a *IpAccessListsAPI) Replace(ctx context.Context, request ReplaceIpAccessList) error {
-	return a.impl.Replace(ctx, request)
-}
-
-// Update access list.
-//
-// Updates an existing IP access list, specified by its ID.
-//
-// A list can include allow lists and block lists. See the top of this file for
-// a description of how the server treats allow lists and block lists at run
-// time.
-//
-// When updating an IP access list:
-//
-// * For all allow lists and block lists combined, the API supports a maximum of
-// 1000 IP/CIDR values, where one CIDR counts as a single value. Attempts to
-// exceed that number return error 400 with `error_code` value `QUOTA_EXCEEDED`.
-// * If the updated list would block the calling user's current IP, error 400 is
-// returned with `error_code` value `INVALID_STATE`.
-//
-// It can take a few minutes for the changes to take effect. Note that your
-// resulting IP access list has no effect until you enable the feature. See
-// :method:workspaceconf/setStatus.
-func (a *IpAccessListsAPI) Update(ctx context.Context, request UpdateIpAccessList) error {
-	return a.impl.Update(ctx, request)
 }
 
 type NetworkConnectivityInterface interface {
@@ -1463,7 +1205,7 @@ type NetworkConnectivityInterface interface {
 
 func NewNetworkConnectivity(client *client.DatabricksClient) *NetworkConnectivityAPI {
 	return &NetworkConnectivityAPI{
-		impl: &networkConnectivityImpl{
+		NetworkConnectivityService: &networkConnectivityImpl{
 			client: client,
 		},
 	}
@@ -1474,70 +1216,31 @@ func NewNetworkConnectivity(client *client.DatabricksClient) *NetworkConnectivit
 type NetworkConnectivityAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(NetworkConnectivityService)
-	impl NetworkConnectivityService
+	NetworkConnectivityService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockNetworkConnectivityInterface instead.
 func (a *NetworkConnectivityAPI) WithImpl(impl NetworkConnectivityService) NetworkConnectivityInterface {
-	a.impl = impl
-	return a
+	return &NetworkConnectivityAPI{
+		NetworkConnectivityService: impl,
+	}
 }
 
 // Impl returns low-level NetworkConnectivity API implementation
 // Deprecated: use MockNetworkConnectivityInterface instead.
 func (a *NetworkConnectivityAPI) Impl() NetworkConnectivityService {
-	return a.impl
-}
-
-// Create a network connectivity configuration.
-func (a *NetworkConnectivityAPI) CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error) {
-	return a.impl.CreateNetworkConnectivityConfiguration(ctx, request)
-}
-
-// Create a private endpoint rule.
-//
-// Create a private endpoint rule for the specified network connectivity config
-// object. Once the object is created, Databricks asynchronously provisions a
-// new Azure private endpoint to your specified Azure resource.
-//
-// **IMPORTANT**: You must use Azure portal or other Azure tools to approve the
-// private endpoint to complete the connection. To get the information of the
-// private endpoint created, make a `GET` request on the new private endpoint
-// rule. See [serverless private link].
-//
-// [serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
-func (a *NetworkConnectivityAPI) CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
-	return a.impl.CreatePrivateEndpointRule(ctx, request)
-}
-
-// Delete a network connectivity configuration.
-//
-// Deletes a network connectivity configuration.
-func (a *NetworkConnectivityAPI) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error {
-	return a.impl.DeleteNetworkConnectivityConfiguration(ctx, request)
+	return a.NetworkConnectivityService
 }
 
 // Delete a network connectivity configuration.
 //
 // Deletes a network connectivity configuration.
 func (a *NetworkConnectivityAPI) DeleteNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) error {
-	return a.impl.DeleteNetworkConnectivityConfiguration(ctx, DeleteNetworkConnectivityConfigurationRequest{
+	return a.NetworkConnectivityService.DeleteNetworkConnectivityConfiguration(ctx, DeleteNetworkConnectivityConfigurationRequest{
 		NetworkConnectivityConfigId: networkConnectivityConfigId,
 	})
-}
-
-// Delete a private endpoint rule.
-//
-// Initiates deleting a private endpoint rule. If the connection state is
-// PENDING or EXPIRED, the private endpoint is immediately deleted. Otherwise,
-// the private endpoint is deactivated and will be deleted after seven days of
-// deactivation. When a private endpoint is deactivated, the `deactivated` field
-// is set to `true` and the private endpoint is not available to your serverless
-// compute resources.
-func (a *NetworkConnectivityAPI) DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
-	return a.impl.DeletePrivateEndpointRule(ctx, request)
 }
 
 // Delete a private endpoint rule.
@@ -1549,7 +1252,7 @@ func (a *NetworkConnectivityAPI) DeletePrivateEndpointRule(ctx context.Context, 
 // is set to `true` and the private endpoint is not available to your serverless
 // compute resources.
 func (a *NetworkConnectivityAPI) DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error) {
-	return a.impl.DeletePrivateEndpointRule(ctx, DeletePrivateEndpointRuleRequest{
+	return a.NetworkConnectivityService.DeletePrivateEndpointRule(ctx, DeletePrivateEndpointRuleRequest{
 		NetworkConnectivityConfigId: networkConnectivityConfigId,
 		PrivateEndpointRuleId:       privateEndpointRuleId,
 	})
@@ -1558,15 +1261,8 @@ func (a *NetworkConnectivityAPI) DeletePrivateEndpointRuleByNetworkConnectivityC
 // Get a network connectivity configuration.
 //
 // Gets a network connectivity configuration.
-func (a *NetworkConnectivityAPI) GetNetworkConnectivityConfiguration(ctx context.Context, request GetNetworkConnectivityConfigurationRequest) (*NetworkConnectivityConfiguration, error) {
-	return a.impl.GetNetworkConnectivityConfiguration(ctx, request)
-}
-
-// Get a network connectivity configuration.
-//
-// Gets a network connectivity configuration.
 func (a *NetworkConnectivityAPI) GetNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*NetworkConnectivityConfiguration, error) {
-	return a.impl.GetNetworkConnectivityConfiguration(ctx, GetNetworkConnectivityConfigurationRequest{
+	return a.NetworkConnectivityService.GetNetworkConnectivityConfiguration(ctx, GetNetworkConnectivityConfigurationRequest{
 		NetworkConnectivityConfigId: networkConnectivityConfigId,
 	})
 }
@@ -1574,15 +1270,8 @@ func (a *NetworkConnectivityAPI) GetNetworkConnectivityConfigurationByNetworkCon
 // Get a private endpoint rule.
 //
 // Gets the private endpoint rule.
-func (a *NetworkConnectivityAPI) GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
-	return a.impl.GetPrivateEndpointRule(ctx, request)
-}
-
-// Get a private endpoint rule.
-//
-// Gets the private endpoint rule.
 func (a *NetworkConnectivityAPI) GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error) {
-	return a.impl.GetPrivateEndpointRule(ctx, GetPrivateEndpointRuleRequest{
+	return a.NetworkConnectivityService.GetPrivateEndpointRule(ctx, GetPrivateEndpointRuleRequest{
 		NetworkConnectivityConfigId: networkConnectivityConfigId,
 		PrivateEndpointRuleId:       privateEndpointRuleId,
 	})
@@ -1597,7 +1286,7 @@ func (a *NetworkConnectivityAPI) ListNetworkConnectivityConfigurations(ctx conte
 
 	getNextPage := func(ctx context.Context, req ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListNetworkConnectivityConfigurations(ctx, req)
+		return a.NetworkConnectivityService.ListNetworkConnectivityConfigurations(ctx, req)
 	}
 	getItems := func(resp *ListNetworkConnectivityConfigurationsResponse) []NetworkConnectivityConfiguration {
 		return resp.Items
@@ -1636,7 +1325,7 @@ func (a *NetworkConnectivityAPI) ListPrivateEndpointRules(ctx context.Context, r
 
 	getNextPage := func(ctx context.Context, req ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListPrivateEndpointRules(ctx, req)
+		return a.NetworkConnectivityService.ListPrivateEndpointRules(ctx, req)
 	}
 	getItems := func(resp *ListNccAzurePrivateEndpointRulesResponse) []NccAzurePrivateEndpointRule {
 		return resp.Items
@@ -1670,7 +1359,7 @@ func (a *NetworkConnectivityAPI) ListPrivateEndpointRulesAll(ctx context.Context
 //
 // Gets an array of private endpoint rules.
 func (a *NetworkConnectivityAPI) ListPrivateEndpointRulesByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*ListNccAzurePrivateEndpointRulesResponse, error) {
-	return a.impl.ListPrivateEndpointRules(ctx, ListPrivateEndpointRulesRequest{
+	return a.NetworkConnectivityService.ListPrivateEndpointRules(ctx, ListPrivateEndpointRulesRequest{
 		NetworkConnectivityConfigId: networkConnectivityConfigId,
 	})
 }
@@ -1733,7 +1422,7 @@ type NotificationDestinationsInterface interface {
 
 func NewNotificationDestinations(client *client.DatabricksClient) *NotificationDestinationsAPI {
 	return &NotificationDestinationsAPI{
-		impl: &notificationDestinationsImpl{
+		NotificationDestinationsService: &notificationDestinationsImpl{
 			client: client,
 		},
 	}
@@ -1747,42 +1436,29 @@ func NewNotificationDestinations(client *client.DatabricksClient) *NotificationD
 type NotificationDestinationsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(NotificationDestinationsService)
-	impl NotificationDestinationsService
+	NotificationDestinationsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockNotificationDestinationsInterface instead.
 func (a *NotificationDestinationsAPI) WithImpl(impl NotificationDestinationsService) NotificationDestinationsInterface {
-	a.impl = impl
-	return a
+	return &NotificationDestinationsAPI{
+		NotificationDestinationsService: impl,
+	}
 }
 
 // Impl returns low-level NotificationDestinations API implementation
 // Deprecated: use MockNotificationDestinationsInterface instead.
 func (a *NotificationDestinationsAPI) Impl() NotificationDestinationsService {
-	return a.impl
-}
-
-// Create a notification destination.
-//
-// Creates a notification destination. Requires workspace admin permissions.
-func (a *NotificationDestinationsAPI) Create(ctx context.Context, request CreateNotificationDestinationRequest) (*NotificationDestination, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete a notification destination.
-//
-// Deletes a notification destination. Requires workspace admin permissions.
-func (a *NotificationDestinationsAPI) Delete(ctx context.Context, request DeleteNotificationDestinationRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.NotificationDestinationsService
 }
 
 // Delete a notification destination.
 //
 // Deletes a notification destination. Requires workspace admin permissions.
 func (a *NotificationDestinationsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.impl.Delete(ctx, DeleteNotificationDestinationRequest{
+	return a.NotificationDestinationsService.Delete(ctx, DeleteNotificationDestinationRequest{
 		Id: id,
 	})
 }
@@ -1790,15 +1466,8 @@ func (a *NotificationDestinationsAPI) DeleteById(ctx context.Context, id string)
 // Get a notification destination.
 //
 // Gets a notification destination.
-func (a *NotificationDestinationsAPI) Get(ctx context.Context, request GetNotificationDestinationRequest) (*NotificationDestination, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Get a notification destination.
-//
-// Gets a notification destination.
 func (a *NotificationDestinationsAPI) GetById(ctx context.Context, id string) (*NotificationDestination, error) {
-	return a.impl.Get(ctx, GetNotificationDestinationRequest{
+	return a.NotificationDestinationsService.Get(ctx, GetNotificationDestinationRequest{
 		Id: id,
 	})
 }
@@ -1812,7 +1481,7 @@ func (a *NotificationDestinationsAPI) List(ctx context.Context, request ListNoti
 
 	getNextPage := func(ctx context.Context, req ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx, req)
+		return a.NotificationDestinationsService.List(ctx, req)
 	}
 	getItems := func(resp *ListNotificationDestinationsResponse) []ListNotificationDestinationsResult {
 		return resp.Results
@@ -1840,14 +1509,6 @@ func (a *NotificationDestinationsAPI) List(ctx context.Context, request ListNoti
 func (a *NotificationDestinationsAPI) ListAll(ctx context.Context, request ListNotificationDestinationsRequest) ([]ListNotificationDestinationsResult, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ListNotificationDestinationsResult](ctx, iterator)
-}
-
-// Update a notification destination.
-//
-// Updates a notification destination. Requires workspace admin permissions. At
-// least one field is required in the request body.
-func (a *NotificationDestinationsAPI) Update(ctx context.Context, request UpdateNotificationDestinationRequest) (*NotificationDestination, error) {
-	return a.impl.Update(ctx, request)
 }
 
 type PersonalComputeInterface interface {
@@ -1878,7 +1539,7 @@ type PersonalComputeInterface interface {
 
 func NewPersonalCompute(client *client.DatabricksClient) *PersonalComputeAPI {
 	return &PersonalComputeAPI{
-		impl: &personalComputeImpl{
+		PersonalComputeService: &personalComputeImpl{
 			client: client,
 		},
 	}
@@ -1896,42 +1557,22 @@ func NewPersonalCompute(client *client.DatabricksClient) *PersonalComputeAPI {
 type PersonalComputeAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(PersonalComputeService)
-	impl PersonalComputeService
+	PersonalComputeService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockPersonalComputeInterface instead.
 func (a *PersonalComputeAPI) WithImpl(impl PersonalComputeService) PersonalComputeInterface {
-	a.impl = impl
-	return a
+	return &PersonalComputeAPI{
+		PersonalComputeService: impl,
+	}
 }
 
 // Impl returns low-level PersonalCompute API implementation
 // Deprecated: use MockPersonalComputeInterface instead.
 func (a *PersonalComputeAPI) Impl() PersonalComputeService {
-	return a.impl
-}
-
-// Delete Personal Compute setting.
-//
-// Reverts back the Personal Compute setting value to default (ON)
-func (a *PersonalComputeAPI) Delete(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
-	return a.impl.Delete(ctx, request)
-}
-
-// Get Personal Compute setting.
-//
-// Gets the value of the Personal Compute setting.
-func (a *PersonalComputeAPI) Get(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Update Personal Compute setting.
-//
-// Updates the value of the Personal Compute setting.
-func (a *PersonalComputeAPI) Update(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	return a.impl.Update(ctx, request)
+	return a.PersonalComputeService
 }
 
 type RestrictWorkspaceAdminsInterface interface {
@@ -1971,7 +1612,7 @@ type RestrictWorkspaceAdminsInterface interface {
 
 func NewRestrictWorkspaceAdmins(client *client.DatabricksClient) *RestrictWorkspaceAdminsAPI {
 	return &RestrictWorkspaceAdminsAPI{
-		impl: &restrictWorkspaceAdminsImpl{
+		RestrictWorkspaceAdminsService: &restrictWorkspaceAdminsImpl{
 			client: client,
 		},
 	}
@@ -1992,51 +1633,22 @@ func NewRestrictWorkspaceAdmins(client *client.DatabricksClient) *RestrictWorksp
 type RestrictWorkspaceAdminsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(RestrictWorkspaceAdminsService)
-	impl RestrictWorkspaceAdminsService
+	RestrictWorkspaceAdminsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockRestrictWorkspaceAdminsInterface instead.
 func (a *RestrictWorkspaceAdminsAPI) WithImpl(impl RestrictWorkspaceAdminsService) RestrictWorkspaceAdminsInterface {
-	a.impl = impl
-	return a
+	return &RestrictWorkspaceAdminsAPI{
+		RestrictWorkspaceAdminsService: impl,
+	}
 }
 
 // Impl returns low-level RestrictWorkspaceAdmins API implementation
 // Deprecated: use MockRestrictWorkspaceAdminsInterface instead.
 func (a *RestrictWorkspaceAdminsAPI) Impl() RestrictWorkspaceAdminsService {
-	return a.impl
-}
-
-// Delete the restrict workspace admins setting.
-//
-// Reverts the restrict workspace admins setting status for the workspace. A
-// fresh etag needs to be provided in `DELETE` requests (as a query parameter).
-// The etag can be retrieved by making a `GET` request before the DELETE
-// request. If the setting is updated/deleted concurrently, `DELETE` fails with
-// 409 and the request must be retried by using the fresh etag in the 409
-// response.
-func (a *RestrictWorkspaceAdminsAPI) Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
-	return a.impl.Delete(ctx, request)
-}
-
-// Get the restrict workspace admins setting.
-//
-// Gets the restrict workspace admins setting.
-func (a *RestrictWorkspaceAdminsAPI) Get(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Update the restrict workspace admins setting.
-//
-// Updates the restrict workspace admins setting for the workspace. A fresh etag
-// needs to be provided in `PATCH` requests (as part of the setting field). The
-// etag can be retrieved by making a GET request before the `PATCH` request. If
-// the setting is updated concurrently, `PATCH` fails with 409 and the request
-// must be retried by using the fresh etag in the 409 response.
-func (a *RestrictWorkspaceAdminsAPI) Update(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
-	return a.impl.Update(ctx, request)
+	return a.RestrictWorkspaceAdminsService
 }
 
 type SettingsInterface interface {
@@ -2102,7 +1714,7 @@ type SettingsInterface interface {
 
 func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 	return &SettingsAPI{
-		impl: &settingsImpl{
+		SettingsService: &settingsImpl{
 			client: client,
 		},
 
@@ -2123,7 +1735,7 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 type SettingsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(SettingsService)
-	impl SettingsService
+	SettingsService
 
 	// Controls whether automatic cluster update is enabled for the current
 	// workspace. By default, it is turned off.
@@ -2200,14 +1812,20 @@ func (a *SettingsAPI) RestrictWorkspaceAdmins() RestrictWorkspaceAdminsInterface
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockSettingsInterface instead.
 func (a *SettingsAPI) WithImpl(impl SettingsService) SettingsInterface {
-	a.impl = impl
-	return a
+	return &SettingsAPI{
+		SettingsService:            impl,
+		automaticClusterUpdate:     a.automaticClusterUpdate,
+		complianceSecurityProfile:  a.complianceSecurityProfile,
+		defaultNamespace:           a.defaultNamespace,
+		enhancedSecurityMonitoring: a.enhancedSecurityMonitoring,
+		restrictWorkspaceAdmins:    a.restrictWorkspaceAdmins,
+	}
 }
 
 // Impl returns low-level Settings API implementation
 // Deprecated: use MockSettingsInterface instead.
 func (a *SettingsAPI) Impl() SettingsService {
-	return a.impl
+	return a.SettingsService
 }
 
 type TokenManagementInterface interface {
@@ -2303,7 +1921,7 @@ type TokenManagementInterface interface {
 
 func NewTokenManagement(client *client.DatabricksClient) *TokenManagementAPI {
 	return &TokenManagementAPI{
-		impl: &tokenManagementImpl{
+		TokenManagementService: &tokenManagementImpl{
 			client: client,
 		},
 	}
@@ -2315,75 +1933,40 @@ func NewTokenManagement(client *client.DatabricksClient) *TokenManagementAPI {
 type TokenManagementAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(TokenManagementService)
-	impl TokenManagementService
+	TokenManagementService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockTokenManagementInterface instead.
 func (a *TokenManagementAPI) WithImpl(impl TokenManagementService) TokenManagementInterface {
-	a.impl = impl
-	return a
+	return &TokenManagementAPI{
+		TokenManagementService: impl,
+	}
 }
 
 // Impl returns low-level TokenManagement API implementation
 // Deprecated: use MockTokenManagementInterface instead.
 func (a *TokenManagementAPI) Impl() TokenManagementService {
-	return a.impl
-}
-
-// Create on-behalf token.
-//
-// Creates a token on behalf of a service principal.
-func (a *TokenManagementAPI) CreateOboToken(ctx context.Context, request CreateOboTokenRequest) (*CreateOboTokenResponse, error) {
-	return a.impl.CreateOboToken(ctx, request)
-}
-
-// Delete a token.
-//
-// Deletes a token, specified by its ID.
-func (a *TokenManagementAPI) Delete(ctx context.Context, request DeleteTokenManagementRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.TokenManagementService
 }
 
 // Delete a token.
 //
 // Deletes a token, specified by its ID.
 func (a *TokenManagementAPI) DeleteByTokenId(ctx context.Context, tokenId string) error {
-	return a.impl.Delete(ctx, DeleteTokenManagementRequest{
+	return a.TokenManagementService.Delete(ctx, DeleteTokenManagementRequest{
 		TokenId: tokenId,
 	})
-}
-
-// Get token info.
-//
-// Gets information about a token, specified by its ID.
-func (a *TokenManagementAPI) Get(ctx context.Context, request GetTokenManagementRequest) (*GetTokenResponse, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get token info.
 //
 // Gets information about a token, specified by its ID.
 func (a *TokenManagementAPI) GetByTokenId(ctx context.Context, tokenId string) (*GetTokenResponse, error) {
-	return a.impl.Get(ctx, GetTokenManagementRequest{
+	return a.TokenManagementService.Get(ctx, GetTokenManagementRequest{
 		TokenId: tokenId,
 	})
-}
-
-// Get token permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *TokenManagementAPI) GetPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx)
-}
-
-// Get token permissions.
-//
-// Gets the permissions of all tokens. Tokens can inherit permissions from their
-// root object.
-func (a *TokenManagementAPI) GetPermissions(ctx context.Context) (*TokenPermissions, error) {
-	return a.impl.GetPermissions(ctx)
 }
 
 // List all tokens.
@@ -2395,7 +1978,7 @@ func (a *TokenManagementAPI) List(ctx context.Context, request ListTokenManageme
 
 	getNextPage := func(ctx context.Context, req ListTokenManagementRequest) (*ListTokensResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx, req)
+		return a.TokenManagementService.List(ctx, req)
 	}
 	getItems := func(resp *ListTokensResponse) []TokenInfo {
 		return resp.TokenInfos
@@ -2472,22 +2055,6 @@ func (a *TokenManagementAPI) GetByComment(ctx context.Context, name string) (*To
 	return &alternatives[0], nil
 }
 
-// Set token permissions.
-//
-// Sets permissions on all tokens. Tokens can inherit permissions from their
-// root object.
-func (a *TokenManagementAPI) SetPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
-	return a.impl.SetPermissions(ctx, request)
-}
-
-// Update token permissions.
-//
-// Updates the permissions on all tokens. Tokens can inherit permissions from
-// their root object.
-func (a *TokenManagementAPI) UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
-	return a.impl.UpdatePermissions(ctx, request)
-}
-
 type TokensInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
@@ -2557,7 +2124,7 @@ type TokensInterface interface {
 
 func NewTokens(client *client.DatabricksClient) *TokensAPI {
 	return &TokensAPI{
-		impl: &tokensImpl{
+		TokensService: &tokensImpl{
 			client: client,
 		},
 	}
@@ -2568,41 +2135,22 @@ func NewTokens(client *client.DatabricksClient) *TokensAPI {
 type TokensAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(TokensService)
-	impl TokensService
+	TokensService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockTokensInterface instead.
 func (a *TokensAPI) WithImpl(impl TokensService) TokensInterface {
-	a.impl = impl
-	return a
+	return &TokensAPI{
+		TokensService: impl,
+	}
 }
 
 // Impl returns low-level Tokens API implementation
 // Deprecated: use MockTokensInterface instead.
 func (a *TokensAPI) Impl() TokensService {
-	return a.impl
-}
-
-// Create a user token.
-//
-// Creates and returns a token for a user. If this call is made through token
-// authentication, it creates a token with the same client ID as the
-// authenticated token. If the user's token quota is exceeded, this call returns
-// an error **QUOTA_EXCEEDED**.
-func (a *TokensAPI) Create(ctx context.Context, request CreateTokenRequest) (*CreateTokenResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Revoke token.
-//
-// Revokes an access token.
-//
-// If a token with the specified ID is not valid, this call returns an error
-// **RESOURCE_DOES_NOT_EXIST**.
-func (a *TokensAPI) Delete(ctx context.Context, request RevokeTokenRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.TokensService
 }
 
 // Revoke token.
@@ -2612,7 +2160,7 @@ func (a *TokensAPI) Delete(ctx context.Context, request RevokeTokenRequest) erro
 // If a token with the specified ID is not valid, this call returns an error
 // **RESOURCE_DOES_NOT_EXIST**.
 func (a *TokensAPI) DeleteByTokenId(ctx context.Context, tokenId string) error {
-	return a.impl.Delete(ctx, RevokeTokenRequest{
+	return a.TokensService.Delete(ctx, RevokeTokenRequest{
 		TokenId: tokenId,
 	})
 }
@@ -2627,7 +2175,7 @@ func (a *TokensAPI) List(ctx context.Context) listing.Iterator[PublicTokenInfo] 
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListPublicTokensResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx)
+		return a.TokensService.List(ctx)
 	}
 	getItems := func(resp *ListPublicTokensResponse) []PublicTokenInfo {
 		return resp.TokenInfos
@@ -2728,7 +2276,7 @@ type WorkspaceConfInterface interface {
 
 func NewWorkspaceConf(client *client.DatabricksClient) *WorkspaceConfAPI {
 	return &WorkspaceConfAPI{
-		impl: &workspaceConfImpl{
+		WorkspaceConfService: &workspaceConfImpl{
 			client: client,
 		},
 	}
@@ -2738,34 +2286,20 @@ func NewWorkspaceConf(client *client.DatabricksClient) *WorkspaceConfAPI {
 type WorkspaceConfAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(WorkspaceConfService)
-	impl WorkspaceConfService
+	WorkspaceConfService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockWorkspaceConfInterface instead.
 func (a *WorkspaceConfAPI) WithImpl(impl WorkspaceConfService) WorkspaceConfInterface {
-	a.impl = impl
-	return a
+	return &WorkspaceConfAPI{
+		WorkspaceConfService: impl,
+	}
 }
 
 // Impl returns low-level WorkspaceConf API implementation
 // Deprecated: use MockWorkspaceConfInterface instead.
 func (a *WorkspaceConfAPI) Impl() WorkspaceConfService {
-	return a.impl
-}
-
-// Check configuration status.
-//
-// Gets the configuration status for a workspace.
-func (a *WorkspaceConfAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*map[string]string, error) {
-	return a.impl.GetStatus(ctx, request)
-}
-
-// Enable/disable features.
-//
-// Sets the configuration status for a workspace, including enabling or
-// disabling it.
-func (a *WorkspaceConfAPI) SetStatus(ctx context.Context, request WorkspaceConf) error {
-	return a.impl.SetStatus(ctx, request)
+	return a.WorkspaceConfService
 }

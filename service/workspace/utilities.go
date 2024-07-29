@@ -204,9 +204,9 @@ func (a *WorkspaceAPI) Upload(ctx context.Context, path string, r io.Reader, opt
 	if err != nil {
 		return fmt.Errorf("write close: %w", err)
 	}
-	impl, ok := a.impl.(*workspaceImpl)
+	impl, ok := a.WorkspaceService.(*workspaceImpl)
 	if !ok {
-		return fmt.Errorf("wrong impl: %v", a.impl)
+		return fmt.Errorf("wrong impl: %v", a.WorkspaceService)
 	}
 	headers := map[string]string{
 		"Content-Type": w.FormDataContentType(),
@@ -239,9 +239,9 @@ func DownloadFormat(f ExportFormat) func(q map[string]any) {
 //
 // Returns [bytes.Buffer] of the path contents.
 func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...DownloadOption) (io.ReadCloser, error) {
-	impl, ok := a.impl.(*workspaceImpl)
+	impl, ok := a.WorkspaceService.(*workspaceImpl)
 	if !ok {
-		return nil, fmt.Errorf("wrong impl: %v", a.impl)
+		return nil, fmt.Errorf("wrong impl: %v", a.WorkspaceService)
 	}
 	var buf bytes.Buffer
 	query := map[string]any{"path": path, "direct_download": true}

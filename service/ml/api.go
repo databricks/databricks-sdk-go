@@ -319,7 +319,7 @@ type ExperimentsInterface interface {
 
 func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {
 	return &ExperimentsAPI{
-		impl: &experimentsImpl{
+		ExperimentsService: &experimentsImpl{
 			client: client,
 		},
 	}
@@ -337,99 +337,22 @@ func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {
 type ExperimentsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ExperimentsService)
-	impl ExperimentsService
+	ExperimentsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockExperimentsInterface instead.
 func (a *ExperimentsAPI) WithImpl(impl ExperimentsService) ExperimentsInterface {
-	a.impl = impl
-	return a
+	return &ExperimentsAPI{
+		ExperimentsService: impl,
+	}
 }
 
 // Impl returns low-level Experiments API implementation
 // Deprecated: use MockExperimentsInterface instead.
 func (a *ExperimentsAPI) Impl() ExperimentsService {
-	return a.impl
-}
-
-// Create experiment.
-//
-// Creates an experiment with a name. Returns the ID of the newly created
-// experiment. Validates that another experiment with the same name does not
-// already exist and fails if another experiment with the same name already
-// exists.
-//
-// Throws `RESOURCE_ALREADY_EXISTS` if a experiment with the given name exists.
-func (a *ExperimentsAPI) CreateExperiment(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error) {
-	return a.impl.CreateExperiment(ctx, request)
-}
-
-// Create a run.
-//
-// Creates a new run within an experiment. A run is usually a single execution
-// of a machine learning or data ETL pipeline. MLflow uses runs to track the
-// `mlflowParam`, `mlflowMetric` and `mlflowRunTag` associated with a single
-// execution.
-func (a *ExperimentsAPI) CreateRun(ctx context.Context, request CreateRun) (*CreateRunResponse, error) {
-	return a.impl.CreateRun(ctx, request)
-}
-
-// Delete an experiment.
-//
-// Marks an experiment and associated metadata, runs, metrics, params, and tags
-// for deletion. If the experiment uses FileStore, artifacts associated with
-// experiment are also deleted.
-func (a *ExperimentsAPI) DeleteExperiment(ctx context.Context, request DeleteExperiment) error {
-	return a.impl.DeleteExperiment(ctx, request)
-}
-
-// Delete a run.
-//
-// Marks a run for deletion.
-func (a *ExperimentsAPI) DeleteRun(ctx context.Context, request DeleteRun) error {
-	return a.impl.DeleteRun(ctx, request)
-}
-
-// Delete runs by creation time.
-//
-// Bulk delete runs in an experiment that were created prior to or at the
-// specified timestamp. Deletes at most max_runs per request. To call this API
-// from a Databricks Notebook in Python, you can use the client code snippet on
-// https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-delete.
-func (a *ExperimentsAPI) DeleteRuns(ctx context.Context, request DeleteRuns) (*DeleteRunsResponse, error) {
-	return a.impl.DeleteRuns(ctx, request)
-}
-
-// Delete a tag.
-//
-// Deletes a tag on a run. Tags are run metadata that can be updated during a
-// run and after a run completes.
-func (a *ExperimentsAPI) DeleteTag(ctx context.Context, request DeleteTag) error {
-	return a.impl.DeleteTag(ctx, request)
-}
-
-// Get metadata.
-//
-// Gets metadata for an experiment.
-//
-// This endpoint will return deleted experiments, but prefers the active
-// experiment if an active and deleted experiment share the same name. If
-// multiple deleted experiments share the same name, the API will return one of
-// them.
-//
-// Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name
-// exists.
-func (a *ExperimentsAPI) GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentResponse, error) {
-	return a.impl.GetByName(ctx, request)
-}
-
-// Get an experiment.
-//
-// Gets metadata for an experiment. This method works on deleted experiments.
-func (a *ExperimentsAPI) GetExperiment(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error) {
-	return a.impl.GetExperiment(ctx, request)
+	return a.ExperimentsService
 }
 
 // Get history of a given metric within a run.
@@ -441,7 +364,7 @@ func (a *ExperimentsAPI) GetHistory(ctx context.Context, request GetHistoryReque
 
 	getNextPage := func(ctx context.Context, req GetHistoryRequest) (*GetMetricHistoryResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.GetHistory(ctx, req)
+		return a.ExperimentsService.GetHistory(ctx, req)
 	}
 	getItems := func(resp *GetMetricHistoryResponse) []Metric {
 		return resp.Metrics
@@ -475,25 +398,10 @@ func (a *ExperimentsAPI) GetHistoryAll(ctx context.Context, request GetHistoryRe
 // Get experiment permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ExperimentsAPI) GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, request)
-}
-
-// Get experiment permission levels.
-//
-// Gets the permission levels that a user can have on an object.
 func (a *ExperimentsAPI) GetPermissionLevelsByExperimentId(ctx context.Context, experimentId string) (*GetExperimentPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, GetExperimentPermissionLevelsRequest{
+	return a.ExperimentsService.GetPermissionLevels(ctx, GetExperimentPermissionLevelsRequest{
 		ExperimentId: experimentId,
 	})
-}
-
-// Get experiment permissions.
-//
-// Gets the permissions of an experiment. Experiments can inherit permissions
-// from their root object.
-func (a *ExperimentsAPI) GetPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error) {
-	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get experiment permissions.
@@ -501,21 +409,9 @@ func (a *ExperimentsAPI) GetPermissions(ctx context.Context, request GetExperime
 // Gets the permissions of an experiment. Experiments can inherit permissions
 // from their root object.
 func (a *ExperimentsAPI) GetPermissionsByExperimentId(ctx context.Context, experimentId string) (*ExperimentPermissions, error) {
-	return a.impl.GetPermissions(ctx, GetExperimentPermissionsRequest{
+	return a.ExperimentsService.GetPermissions(ctx, GetExperimentPermissionsRequest{
 		ExperimentId: experimentId,
 	})
-}
-
-// Get a run.
-//
-// Gets the metadata, metrics, params, and tags for a run. In the case where
-// multiple metrics with the same key are logged for a run, return only the
-// value with the latest timestamp.
-//
-// If there are multiple values with the latest timestamp, return the maximum of
-// these values.
-func (a *ExperimentsAPI) GetRun(ctx context.Context, request GetRunRequest) (*GetRunResponse, error) {
-	return a.impl.GetRun(ctx, request)
 }
 
 // Get all artifacts.
@@ -528,7 +424,7 @@ func (a *ExperimentsAPI) ListArtifacts(ctx context.Context, request ListArtifact
 
 	getNextPage := func(ctx context.Context, req ListArtifactsRequest) (*ListArtifactsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListArtifacts(ctx, req)
+		return a.ExperimentsService.ListArtifacts(ctx, req)
 	}
 	getItems := func(resp *ListArtifactsResponse) []FileInfo {
 		return resp.Files
@@ -568,7 +464,7 @@ func (a *ExperimentsAPI) ListExperiments(ctx context.Context, request ListExperi
 
 	getNextPage := func(ctx context.Context, req ListExperimentsRequest) (*ListExperimentsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListExperiments(ctx, req)
+		return a.ExperimentsService.ListExperiments(ctx, req)
 	}
 	getItems := func(resp *ListExperimentsResponse) []Experiment {
 		return resp.Experiments
@@ -599,113 +495,6 @@ func (a *ExperimentsAPI) ListExperimentsAll(ctx context.Context, request ListExp
 
 }
 
-// Log a batch.
-//
-// Logs a batch of metrics, params, and tags for a run. If any data failed to be
-// persisted, the server will respond with an error (non-200 status code).
-//
-// In case of error (due to internal server error or an invalid request),
-// partial data may be written.
-//
-// You can write metrics, params, and tags in interleaving fashion, but within a
-// given entity type are guaranteed to follow the order specified in the request
-// body.
-//
-// The overwrite behavior for metrics, params, and tags is as follows:
-//
-// * Metrics: metric values are never overwritten. Logging a metric (key, value,
-// timestamp) appends to the set of values for the metric with the provided key.
-//
-// * Tags: tag values can be overwritten by successive writes to the same tag
-// key. That is, if multiple tag values with the same key are provided in the
-// same API request, the last-provided tag value is written. Logging the same
-// tag (key, value) is permitted. Specifically, logging a tag is idempotent.
-//
-// * Parameters: once written, param values cannot be changed (attempting to
-// overwrite a param value will result in an error). However, logging the same
-// param (key, value) is permitted. Specifically, logging a param is idempotent.
-//
-// Request Limits ------------------------------- A single JSON-serialized API
-// request may be up to 1 MB in size and contain:
-//
-// * No more than 1000 metrics, params, and tags in total * Up to 1000 metrics *
-// Up to 100 params * Up to 100 tags
-//
-// For example, a valid request might contain 900 metrics, 50 params, and 50
-// tags, but logging 900 metrics, 50 params, and 51 tags is invalid.
-//
-// The following limits also apply to metric, param, and tag keys and values:
-//
-// * Metric keys, param keys, and tag keys can be up to 250 characters in length
-// * Parameter and tag values can be up to 250 characters in length
-func (a *ExperimentsAPI) LogBatch(ctx context.Context, request LogBatch) error {
-	return a.impl.LogBatch(ctx, request)
-}
-
-// Log inputs to a run.
-//
-// **NOTE:** Experimental: This API may change or be removed in a future release
-// without warning.
-func (a *ExperimentsAPI) LogInputs(ctx context.Context, request LogInputs) error {
-	return a.impl.LogInputs(ctx, request)
-}
-
-// Log a metric.
-//
-// Logs a metric for a run. A metric is a key-value pair (string key, float
-// value) with an associated timestamp. Examples include the various metrics
-// that represent ML model accuracy. A metric can be logged multiple times.
-func (a *ExperimentsAPI) LogMetric(ctx context.Context, request LogMetric) error {
-	return a.impl.LogMetric(ctx, request)
-}
-
-// Log a model.
-//
-// **NOTE:** Experimental: This API may change or be removed in a future release
-// without warning.
-func (a *ExperimentsAPI) LogModel(ctx context.Context, request LogModel) error {
-	return a.impl.LogModel(ctx, request)
-}
-
-// Log a param.
-//
-// Logs a param used for a run. A param is a key-value pair (string key, string
-// value). Examples include hyperparameters used for ML model training and
-// constant dates and values used in an ETL pipeline. A param can be logged only
-// once for a run.
-func (a *ExperimentsAPI) LogParam(ctx context.Context, request LogParam) error {
-	return a.impl.LogParam(ctx, request)
-}
-
-// Restores an experiment.
-//
-// Restore an experiment marked for deletion. This also restores associated
-// metadata, runs, metrics, params, and tags. If experiment uses FileStore,
-// underlying artifacts associated with experiment are also restored.
-//
-// Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was
-// permanently deleted.
-func (a *ExperimentsAPI) RestoreExperiment(ctx context.Context, request RestoreExperiment) error {
-	return a.impl.RestoreExperiment(ctx, request)
-}
-
-// Restore a run.
-//
-// Restores a deleted run.
-func (a *ExperimentsAPI) RestoreRun(ctx context.Context, request RestoreRun) error {
-	return a.impl.RestoreRun(ctx, request)
-}
-
-// Restore runs by deletion time.
-//
-// Bulk restore runs in an experiment that were deleted no earlier than the
-// specified timestamp. Restores at most max_runs per request. To call this API
-// from a Databricks Notebook in Python, you can use the client code snippet on
-// https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-restore.
-func (a *ExperimentsAPI) RestoreRuns(ctx context.Context, request RestoreRuns) (*RestoreRunsResponse, error) {
-	return a.impl.RestoreRuns(ctx, request)
-}
-
 // Search experiments.
 //
 // Searches for experiments that satisfy specified search criteria.
@@ -715,7 +504,7 @@ func (a *ExperimentsAPI) SearchExperiments(ctx context.Context, request SearchEx
 
 	getNextPage := func(ctx context.Context, req SearchExperiments) (*SearchExperimentsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.SearchExperiments(ctx, req)
+		return a.ExperimentsService.SearchExperiments(ctx, req)
 	}
 	getItems := func(resp *SearchExperimentsResponse) []Experiment {
 		return resp.Experiments
@@ -756,7 +545,7 @@ func (a *ExperimentsAPI) SearchRuns(ctx context.Context, request SearchRuns) lis
 
 	getNextPage := func(ctx context.Context, req SearchRuns) (*SearchRunsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.SearchRuns(ctx, req)
+		return a.ExperimentsService.SearchRuns(ctx, req)
 	}
 	getItems := func(resp *SearchRunsResponse) []Run {
 		return resp.Runs
@@ -786,52 +575,6 @@ func (a *ExperimentsAPI) SearchRuns(ctx context.Context, request SearchRuns) lis
 func (a *ExperimentsAPI) SearchRunsAll(ctx context.Context, request SearchRuns) ([]Run, error) {
 	iterator := a.SearchRuns(ctx, request)
 	return listing.ToSlice[Run](ctx, iterator)
-}
-
-// Set a tag.
-//
-// Sets a tag on an experiment. Experiment tags are metadata that can be
-// updated.
-func (a *ExperimentsAPI) SetExperimentTag(ctx context.Context, request SetExperimentTag) error {
-	return a.impl.SetExperimentTag(ctx, request)
-}
-
-// Set experiment permissions.
-//
-// Sets permissions on an experiment. Experiments can inherit permissions from
-// their root object.
-func (a *ExperimentsAPI) SetPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
-	return a.impl.SetPermissions(ctx, request)
-}
-
-// Set a tag.
-//
-// Sets a tag on a run. Tags are run metadata that can be updated during a run
-// and after a run completes.
-func (a *ExperimentsAPI) SetTag(ctx context.Context, request SetTag) error {
-	return a.impl.SetTag(ctx, request)
-}
-
-// Update an experiment.
-//
-// Updates experiment metadata.
-func (a *ExperimentsAPI) UpdateExperiment(ctx context.Context, request UpdateExperiment) error {
-	return a.impl.UpdateExperiment(ctx, request)
-}
-
-// Update experiment permissions.
-//
-// Updates the permissions on an experiment. Experiments can inherit permissions
-// from their root object.
-func (a *ExperimentsAPI) UpdatePermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
-	return a.impl.UpdatePermissions(ctx, request)
-}
-
-// Update a run.
-//
-// Updates run metadata.
-func (a *ExperimentsAPI) UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error) {
-	return a.impl.UpdateRun(ctx, request)
 }
 
 type ModelRegistryInterface interface {
@@ -1122,7 +865,7 @@ type ModelRegistryInterface interface {
 
 func NewModelRegistry(client *client.DatabricksClient) *ModelRegistryAPI {
 	return &ModelRegistryAPI{
-		impl: &modelRegistryImpl{
+		ModelRegistryService: &modelRegistryImpl{
 			client: client,
 		},
 	}
@@ -1139,121 +882,22 @@ func NewModelRegistry(client *client.DatabricksClient) *ModelRegistryAPI {
 type ModelRegistryAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ModelRegistryService)
-	impl ModelRegistryService
+	ModelRegistryService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockModelRegistryInterface instead.
 func (a *ModelRegistryAPI) WithImpl(impl ModelRegistryService) ModelRegistryInterface {
-	a.impl = impl
-	return a
+	return &ModelRegistryAPI{
+		ModelRegistryService: impl,
+	}
 }
 
 // Impl returns low-level ModelRegistry API implementation
 // Deprecated: use MockModelRegistryInterface instead.
 func (a *ModelRegistryAPI) Impl() ModelRegistryService {
-	return a.impl
-}
-
-// Approve transition request.
-//
-// Approves a model version stage transition request.
-func (a *ModelRegistryAPI) ApproveTransitionRequest(ctx context.Context, request ApproveTransitionRequest) (*ApproveTransitionRequestResponse, error) {
-	return a.impl.ApproveTransitionRequest(ctx, request)
-}
-
-// Post a comment.
-//
-// Posts a comment on a model version. A comment can be submitted either by a
-// user or programmatically to display relevant information about the model. For
-// example, test results or deployment errors.
-func (a *ModelRegistryAPI) CreateComment(ctx context.Context, request CreateComment) (*CreateCommentResponse, error) {
-	return a.impl.CreateComment(ctx, request)
-}
-
-// Create a model.
-//
-// Creates a new registered model with the name specified in the request body.
-//
-// Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given name
-// exists.
-func (a *ModelRegistryAPI) CreateModel(ctx context.Context, request CreateModelRequest) (*CreateModelResponse, error) {
-	return a.impl.CreateModel(ctx, request)
-}
-
-// Create a model version.
-//
-// Creates a model version.
-func (a *ModelRegistryAPI) CreateModelVersion(ctx context.Context, request CreateModelVersionRequest) (*CreateModelVersionResponse, error) {
-	return a.impl.CreateModelVersion(ctx, request)
-}
-
-// Make a transition request.
-//
-// Creates a model version stage transition request.
-func (a *ModelRegistryAPI) CreateTransitionRequest(ctx context.Context, request CreateTransitionRequest) (*CreateTransitionRequestResponse, error) {
-	return a.impl.CreateTransitionRequest(ctx, request)
-}
-
-// Create a webhook.
-//
-// **NOTE**: This endpoint is in Public Preview.
-//
-// Creates a registry webhook.
-func (a *ModelRegistryAPI) CreateWebhook(ctx context.Context, request CreateRegistryWebhook) (*CreateWebhookResponse, error) {
-	return a.impl.CreateWebhook(ctx, request)
-}
-
-// Delete a comment.
-//
-// Deletes a comment on a model version.
-func (a *ModelRegistryAPI) DeleteComment(ctx context.Context, request DeleteCommentRequest) error {
-	return a.impl.DeleteComment(ctx, request)
-}
-
-// Delete a model.
-//
-// Deletes a registered model.
-func (a *ModelRegistryAPI) DeleteModel(ctx context.Context, request DeleteModelRequest) error {
-	return a.impl.DeleteModel(ctx, request)
-}
-
-// Delete a model tag.
-//
-// Deletes the tag for a registered model.
-func (a *ModelRegistryAPI) DeleteModelTag(ctx context.Context, request DeleteModelTagRequest) error {
-	return a.impl.DeleteModelTag(ctx, request)
-}
-
-// Delete a model version.
-//
-// Deletes a model version.
-func (a *ModelRegistryAPI) DeleteModelVersion(ctx context.Context, request DeleteModelVersionRequest) error {
-	return a.impl.DeleteModelVersion(ctx, request)
-}
-
-// Delete a model version tag.
-//
-// Deletes a model version tag.
-func (a *ModelRegistryAPI) DeleteModelVersionTag(ctx context.Context, request DeleteModelVersionTagRequest) error {
-	return a.impl.DeleteModelVersionTag(ctx, request)
-}
-
-// Delete a transition request.
-//
-// Cancels a model version stage transition request.
-func (a *ModelRegistryAPI) DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) error {
-	return a.impl.DeleteTransitionRequest(ctx, request)
-}
-
-// Delete a webhook.
-//
-// **NOTE:** This endpoint is in Public Preview.
-//
-// Deletes a registry webhook.
-func (a *ModelRegistryAPI) DeleteWebhook(ctx context.Context, request DeleteWebhookRequest) error {
-	return a.impl.DeleteWebhook(ctx, request)
+	return a.ModelRegistryService
 }
 
 // Get the latest version.
@@ -1265,7 +909,7 @@ func (a *ModelRegistryAPI) GetLatestVersions(ctx context.Context, request GetLat
 
 	getNextPage := func(ctx context.Context, req GetLatestVersionsRequest) (*GetLatestVersionsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.GetLatestVersions(ctx, req)
+		return a.ModelRegistryService.GetLatestVersions(ctx, req)
 	}
 	getItems := func(resp *GetLatestVersionsResponse) []ModelVersion {
 		return resp.ModelVersions
@@ -1289,43 +933,11 @@ func (a *ModelRegistryAPI) GetLatestVersionsAll(ctx context.Context, request Get
 	return listing.ToSlice[ModelVersion](ctx, iterator)
 }
 
-// Get model.
-//
-// Get the details of a model. This is a Databricks workspace version of the
-// [MLflow endpoint] that also returns the model's Databricks workspace ID and
-// the permission level of the requesting user on the model.
-//
-// [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel
-func (a *ModelRegistryAPI) GetModel(ctx context.Context, request GetModelRequest) (*GetModelResponse, error) {
-	return a.impl.GetModel(ctx, request)
-}
-
-// Get a model version.
-//
-// Get a model version.
-func (a *ModelRegistryAPI) GetModelVersion(ctx context.Context, request GetModelVersionRequest) (*GetModelVersionResponse, error) {
-	return a.impl.GetModelVersion(ctx, request)
-}
-
-// Get a model version URI.
-//
-// Gets a URI to download the model version.
-func (a *ModelRegistryAPI) GetModelVersionDownloadUri(ctx context.Context, request GetModelVersionDownloadUriRequest) (*GetModelVersionDownloadUriResponse, error) {
-	return a.impl.GetModelVersionDownloadUri(ctx, request)
-}
-
-// Get registered model permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *ModelRegistryAPI) GetPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, request)
-}
-
 // Get registered model permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *ModelRegistryAPI) GetPermissionLevelsByRegisteredModelId(ctx context.Context, registeredModelId string) (*GetRegisteredModelPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, GetRegisteredModelPermissionLevelsRequest{
+	return a.ModelRegistryService.GetPermissionLevels(ctx, GetRegisteredModelPermissionLevelsRequest{
 		RegisteredModelId: registeredModelId,
 	})
 }
@@ -1334,16 +946,8 @@ func (a *ModelRegistryAPI) GetPermissionLevelsByRegisteredModelId(ctx context.Co
 //
 // Gets the permissions of a registered model. Registered models can inherit
 // permissions from their root object.
-func (a *ModelRegistryAPI) GetPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
-	return a.impl.GetPermissions(ctx, request)
-}
-
-// Get registered model permissions.
-//
-// Gets the permissions of a registered model. Registered models can inherit
-// permissions from their root object.
 func (a *ModelRegistryAPI) GetPermissionsByRegisteredModelId(ctx context.Context, registeredModelId string) (*RegisteredModelPermissions, error) {
-	return a.impl.GetPermissions(ctx, GetRegisteredModelPermissionsRequest{
+	return a.ModelRegistryService.GetPermissions(ctx, GetRegisteredModelPermissionsRequest{
 		RegisteredModelId: registeredModelId,
 	})
 }
@@ -1358,7 +962,7 @@ func (a *ModelRegistryAPI) ListModels(ctx context.Context, request ListModelsReq
 
 	getNextPage := func(ctx context.Context, req ListModelsRequest) (*ListModelsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListModels(ctx, req)
+		return a.ModelRegistryService.ListModels(ctx, req)
 	}
 	getItems := func(resp *ListModelsResponse) []Model {
 		return resp.RegisteredModels
@@ -1399,7 +1003,7 @@ func (a *ModelRegistryAPI) ListTransitionRequests(ctx context.Context, request L
 
 	getNextPage := func(ctx context.Context, req ListTransitionRequestsRequest) (*ListTransitionRequestsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListTransitionRequests(ctx, req)
+		return a.ModelRegistryService.ListTransitionRequests(ctx, req)
 	}
 	getItems := func(resp *ListTransitionRequestsResponse) []Activity {
 		return resp.Requests
@@ -1434,7 +1038,7 @@ func (a *ModelRegistryAPI) ListWebhooks(ctx context.Context, request ListWebhook
 
 	getNextPage := func(ctx context.Context, req ListWebhooksRequest) (*ListRegistryWebhooks, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListWebhooks(ctx, req)
+		return a.ModelRegistryService.ListWebhooks(ctx, req)
 	}
 	getItems := func(resp *ListRegistryWebhooks) []RegistryWebhook {
 		return resp.Webhooks
@@ -1466,20 +1070,6 @@ func (a *ModelRegistryAPI) ListWebhooksAll(ctx context.Context, request ListWebh
 	return listing.ToSlice[RegistryWebhook](ctx, iterator)
 }
 
-// Reject a transition request.
-//
-// Rejects a model version stage transition request.
-func (a *ModelRegistryAPI) RejectTransitionRequest(ctx context.Context, request RejectTransitionRequest) (*RejectTransitionRequestResponse, error) {
-	return a.impl.RejectTransitionRequest(ctx, request)
-}
-
-// Rename a model.
-//
-// Renames a registered model.
-func (a *ModelRegistryAPI) RenameModel(ctx context.Context, request RenameModelRequest) (*RenameModelResponse, error) {
-	return a.impl.RenameModel(ctx, request)
-}
-
 // Searches model versions.
 //
 // Searches for specific model versions based on the supplied __filter__.
@@ -1489,7 +1079,7 @@ func (a *ModelRegistryAPI) SearchModelVersions(ctx context.Context, request Sear
 
 	getNextPage := func(ctx context.Context, req SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.SearchModelVersions(ctx, req)
+		return a.ModelRegistryService.SearchModelVersions(ctx, req)
 	}
 	getItems := func(resp *SearchModelVersionsResponse) []ModelVersion {
 		return resp.ModelVersions
@@ -1529,7 +1119,7 @@ func (a *ModelRegistryAPI) SearchModels(ctx context.Context, request SearchModel
 
 	getNextPage := func(ctx context.Context, req SearchModelsRequest) (*SearchModelsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.SearchModels(ctx, req)
+		return a.ModelRegistryService.SearchModels(ctx, req)
 	}
 	getItems := func(resp *SearchModelsResponse) []Model {
 		return resp.RegisteredModels
@@ -1558,84 +1148,4 @@ func (a *ModelRegistryAPI) SearchModelsAll(ctx context.Context, request SearchMo
 	iterator := a.SearchModels(ctx, request)
 	return listing.ToSliceN[Model, int](ctx, iterator, request.MaxResults)
 
-}
-
-// Set a tag.
-//
-// Sets a tag on a registered model.
-func (a *ModelRegistryAPI) SetModelTag(ctx context.Context, request SetModelTagRequest) error {
-	return a.impl.SetModelTag(ctx, request)
-}
-
-// Set a version tag.
-//
-// Sets a model version tag.
-func (a *ModelRegistryAPI) SetModelVersionTag(ctx context.Context, request SetModelVersionTagRequest) error {
-	return a.impl.SetModelVersionTag(ctx, request)
-}
-
-// Set registered model permissions.
-//
-// Sets permissions on a registered model. Registered models can inherit
-// permissions from their root object.
-func (a *ModelRegistryAPI) SetPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
-	return a.impl.SetPermissions(ctx, request)
-}
-
-// Test a webhook.
-//
-// **NOTE:** This endpoint is in Public Preview.
-//
-// Tests a registry webhook.
-func (a *ModelRegistryAPI) TestRegistryWebhook(ctx context.Context, request TestRegistryWebhookRequest) (*TestRegistryWebhookResponse, error) {
-	return a.impl.TestRegistryWebhook(ctx, request)
-}
-
-// Transition a stage.
-//
-// Transition a model version's stage. This is a Databricks workspace version of
-// the [MLflow endpoint] that also accepts a comment associated with the
-// transition to be recorded.",
-//
-// [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage
-func (a *ModelRegistryAPI) TransitionStage(ctx context.Context, request TransitionModelVersionStageDatabricks) (*TransitionStageResponse, error) {
-	return a.impl.TransitionStage(ctx, request)
-}
-
-// Update a comment.
-//
-// Post an edit to a comment on a model version.
-func (a *ModelRegistryAPI) UpdateComment(ctx context.Context, request UpdateComment) (*UpdateCommentResponse, error) {
-	return a.impl.UpdateComment(ctx, request)
-}
-
-// Update model.
-//
-// Updates a registered model.
-func (a *ModelRegistryAPI) UpdateModel(ctx context.Context, request UpdateModelRequest) error {
-	return a.impl.UpdateModel(ctx, request)
-}
-
-// Update model version.
-//
-// Updates the model version.
-func (a *ModelRegistryAPI) UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) error {
-	return a.impl.UpdateModelVersion(ctx, request)
-}
-
-// Update registered model permissions.
-//
-// Updates the permissions on a registered model. Registered models can inherit
-// permissions from their root object.
-func (a *ModelRegistryAPI) UpdatePermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
-	return a.impl.UpdatePermissions(ctx, request)
-}
-
-// Update a webhook.
-//
-// **NOTE:** This endpoint is in Public Preview.
-//
-// Updates a registry webhook.
-func (a *ModelRegistryAPI) UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) error {
-	return a.impl.UpdateWebhook(ctx, request)
 }

@@ -152,7 +152,7 @@ type AppsInterface interface {
 
 func NewApps(client *client.DatabricksClient) *AppsAPI {
 	return &AppsAPI{
-		impl: &appsImpl{
+		AppsService: &appsImpl{
 			client: client,
 		},
 	}
@@ -164,21 +164,22 @@ func NewApps(client *client.DatabricksClient) *AppsAPI {
 type AppsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AppsService)
-	impl AppsService
+	AppsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockAppsInterface instead.
 func (a *AppsAPI) WithImpl(impl AppsService) AppsInterface {
-	a.impl = impl
-	return a
+	return &AppsAPI{
+		AppsService: impl,
+	}
 }
 
 // Impl returns low-level Apps API implementation
 // Deprecated: use MockAppsInterface instead.
 func (a *AppsAPI) Impl() AppsService {
-	return a.impl
+	return a.AppsService
 }
 
 // WaitGetAppIdle repeatedly calls [AppsAPI.Get] and waits to reach IDLE state
@@ -301,7 +302,7 @@ func (w *WaitGetDeploymentAppSucceeded[R]) GetWithTimeout(timeout time.Duration)
 //
 // Creates a new app.
 func (a *AppsAPI) Create(ctx context.Context, createAppRequest CreateAppRequest) (*WaitGetAppIdle[App], error) {
-	app, err := a.impl.Create(ctx, createAppRequest)
+	app, err := a.AppsService.Create(ctx, createAppRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -346,15 +347,8 @@ func (a *AppsAPI) CreateAndWait(ctx context.Context, createAppRequest CreateAppR
 // Delete an app.
 //
 // Deletes an app.
-func (a *AppsAPI) Delete(ctx context.Context, request DeleteAppRequest) error {
-	return a.impl.Delete(ctx, request)
-}
-
-// Delete an app.
-//
-// Deletes an app.
 func (a *AppsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.impl.Delete(ctx, DeleteAppRequest{
+	return a.AppsService.Delete(ctx, DeleteAppRequest{
 		Name: name,
 	})
 }
@@ -363,7 +357,7 @@ func (a *AppsAPI) DeleteByName(ctx context.Context, name string) error {
 //
 // Creates an app deployment for the app with the supplied name.
 func (a *AppsAPI) Deploy(ctx context.Context, createAppDeploymentRequest CreateAppDeploymentRequest) (*WaitGetDeploymentAppSucceeded[AppDeployment], error) {
-	appDeployment, err := a.impl.Deploy(ctx, createAppDeploymentRequest)
+	appDeployment, err := a.AppsService.Deploy(ctx, createAppDeploymentRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -409,15 +403,8 @@ func (a *AppsAPI) DeployAndWait(ctx context.Context, createAppDeploymentRequest 
 // Get an app.
 //
 // Retrieves information for the app with the supplied name.
-func (a *AppsAPI) Get(ctx context.Context, request GetAppRequest) (*App, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Get an app.
-//
-// Retrieves information for the app with the supplied name.
 func (a *AppsAPI) GetByName(ctx context.Context, name string) (*App, error) {
-	return a.impl.Get(ctx, GetAppRequest{
+	return a.AppsService.Get(ctx, GetAppRequest{
 		Name: name,
 	})
 }
@@ -426,16 +413,8 @@ func (a *AppsAPI) GetByName(ctx context.Context, name string) (*App, error) {
 //
 // Retrieves information for the app deployment with the supplied name and
 // deployment id.
-func (a *AppsAPI) GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error) {
-	return a.impl.GetDeployment(ctx, request)
-}
-
-// Get an app deployment.
-//
-// Retrieves information for the app deployment with the supplied name and
-// deployment id.
 func (a *AppsAPI) GetDeploymentByAppNameAndDeploymentId(ctx context.Context, appName string, deploymentId string) (*AppDeployment, error) {
-	return a.impl.GetDeployment(ctx, GetAppDeploymentRequest{
+	return a.AppsService.GetDeployment(ctx, GetAppDeploymentRequest{
 		AppName:      appName,
 		DeploymentId: deploymentId,
 	})
@@ -444,15 +423,8 @@ func (a *AppsAPI) GetDeploymentByAppNameAndDeploymentId(ctx context.Context, app
 // Get app environment.
 //
 // Retrieves app environment.
-func (a *AppsAPI) GetEnvironment(ctx context.Context, request GetAppEnvironmentRequest) (*AppEnvironment, error) {
-	return a.impl.GetEnvironment(ctx, request)
-}
-
-// Get app environment.
-//
-// Retrieves app environment.
 func (a *AppsAPI) GetEnvironmentByName(ctx context.Context, name string) (*AppEnvironment, error) {
-	return a.impl.GetEnvironment(ctx, GetAppEnvironmentRequest{
+	return a.AppsService.GetEnvironment(ctx, GetAppEnvironmentRequest{
 		Name: name,
 	})
 }
@@ -466,7 +438,7 @@ func (a *AppsAPI) List(ctx context.Context, request ListAppsRequest) listing.Ite
 
 	getNextPage := func(ctx context.Context, req ListAppsRequest) (*ListAppsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx, req)
+		return a.AppsService.List(ctx, req)
 	}
 	getItems := func(resp *ListAppsResponse) []App {
 		return resp.Apps
@@ -505,7 +477,7 @@ func (a *AppsAPI) ListDeployments(ctx context.Context, request ListAppDeployment
 
 	getNextPage := func(ctx context.Context, req ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListDeployments(ctx, req)
+		return a.AppsService.ListDeployments(ctx, req)
 	}
 	getItems := func(resp *ListAppDeploymentsResponse) []AppDeployment {
 		return resp.AppDeployments
@@ -539,30 +511,9 @@ func (a *AppsAPI) ListDeploymentsAll(ctx context.Context, request ListAppDeploym
 //
 // Lists all app deployments for the app with the supplied name.
 func (a *AppsAPI) ListDeploymentsByAppName(ctx context.Context, appName string) (*ListAppDeploymentsResponse, error) {
-	return a.impl.ListDeployments(ctx, ListAppDeploymentsRequest{
+	return a.AppsService.ListDeployments(ctx, ListAppDeploymentsRequest{
 		AppName: appName,
 	})
-}
-
-// Start an app.
-//
-// Start the last active deployment of the app in the workspace.
-func (a *AppsAPI) Start(ctx context.Context, request StartAppRequest) (*AppDeployment, error) {
-	return a.impl.Start(ctx, request)
-}
-
-// Stop an app.
-//
-// Stops the active deployment of the app in the workspace.
-func (a *AppsAPI) Stop(ctx context.Context, request StopAppRequest) error {
-	return a.impl.Stop(ctx, request)
-}
-
-// Update an app.
-//
-// Updates the app with the supplied name.
-func (a *AppsAPI) Update(ctx context.Context, request UpdateAppRequest) (*App, error) {
-	return a.impl.Update(ctx, request)
 }
 
 type ServingEndpointsInterface interface {
@@ -730,7 +681,7 @@ type ServingEndpointsInterface interface {
 
 func NewServingEndpoints(client *client.DatabricksClient) *ServingEndpointsAPI {
 	return &ServingEndpointsAPI{
-		impl: &servingEndpointsImpl{
+		ServingEndpointsService: &servingEndpointsImpl{
 			client: client,
 		},
 	}
@@ -752,21 +703,22 @@ func NewServingEndpoints(client *client.DatabricksClient) *ServingEndpointsAPI {
 type ServingEndpointsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ServingEndpointsService)
-	impl ServingEndpointsService
+	ServingEndpointsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockServingEndpointsInterface instead.
 func (a *ServingEndpointsAPI) WithImpl(impl ServingEndpointsService) ServingEndpointsInterface {
-	a.impl = impl
-	return a
+	return &ServingEndpointsAPI{
+		ServingEndpointsService: impl,
+	}
 }
 
 // Impl returns low-level ServingEndpoints API implementation
 // Deprecated: use MockServingEndpointsInterface instead.
 func (a *ServingEndpointsAPI) Impl() ServingEndpointsService {
-	return a.impl
+	return a.ServingEndpointsService
 }
 
 // WaitGetServingEndpointNotUpdating repeatedly calls [ServingEndpointsAPI.Get] and waits to reach NOT_UPDATING state
@@ -826,15 +778,8 @@ func (w *WaitGetServingEndpointNotUpdating[R]) GetWithTimeout(timeout time.Durat
 // Get build logs for a served model.
 //
 // Retrieves the build logs associated with the provided served model.
-func (a *ServingEndpointsAPI) BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error) {
-	return a.impl.BuildLogs(ctx, request)
-}
-
-// Get build logs for a served model.
-//
-// Retrieves the build logs associated with the provided served model.
 func (a *ServingEndpointsAPI) BuildLogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*BuildLogsResponse, error) {
-	return a.impl.BuildLogs(ctx, BuildLogsRequest{
+	return a.ServingEndpointsService.BuildLogs(ctx, BuildLogsRequest{
 		Name:            name,
 		ServedModelName: servedModelName,
 	})
@@ -842,7 +787,7 @@ func (a *ServingEndpointsAPI) BuildLogsByNameAndServedModelName(ctx context.Cont
 
 // Create a new serving endpoint.
 func (a *ServingEndpointsAPI) Create(ctx context.Context, createServingEndpoint CreateServingEndpoint) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error) {
-	servingEndpointDetailed, err := a.impl.Create(ctx, createServingEndpoint)
+	servingEndpointDetailed, err := a.ServingEndpointsService.Create(ctx, createServingEndpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -885,23 +830,10 @@ func (a *ServingEndpointsAPI) CreateAndWait(ctx context.Context, createServingEn
 }
 
 // Delete a serving endpoint.
-func (a *ServingEndpointsAPI) Delete(ctx context.Context, request DeleteServingEndpointRequest) error {
-	return a.impl.Delete(ctx, request)
-}
-
-// Delete a serving endpoint.
 func (a *ServingEndpointsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.impl.Delete(ctx, DeleteServingEndpointRequest{
+	return a.ServingEndpointsService.Delete(ctx, DeleteServingEndpointRequest{
 		Name: name,
 	})
-}
-
-// Get metrics of a serving endpoint.
-//
-// Retrieves the metrics associated with the provided serving endpoint in either
-// Prometheus or OpenMetrics exposition format.
-func (a *ServingEndpointsAPI) ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error) {
-	return a.impl.ExportMetrics(ctx, request)
 }
 
 // Get metrics of a serving endpoint.
@@ -909,34 +841,18 @@ func (a *ServingEndpointsAPI) ExportMetrics(ctx context.Context, request ExportM
 // Retrieves the metrics associated with the provided serving endpoint in either
 // Prometheus or OpenMetrics exposition format.
 func (a *ServingEndpointsAPI) ExportMetricsByName(ctx context.Context, name string) (*ExportMetricsResponse, error) {
-	return a.impl.ExportMetrics(ctx, ExportMetricsRequest{
+	return a.ServingEndpointsService.ExportMetrics(ctx, ExportMetricsRequest{
 		Name: name,
 	})
-}
-
-// Get a single serving endpoint.
-//
-// Retrieves the details for a single serving endpoint.
-func (a *ServingEndpointsAPI) Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get a single serving endpoint.
 //
 // Retrieves the details for a single serving endpoint.
 func (a *ServingEndpointsAPI) GetByName(ctx context.Context, name string) (*ServingEndpointDetailed, error) {
-	return a.impl.Get(ctx, GetServingEndpointRequest{
+	return a.ServingEndpointsService.Get(ctx, GetServingEndpointRequest{
 		Name: name,
 	})
-}
-
-// Get the schema for a serving endpoint.
-//
-// Get the query schema of the serving endpoint in OpenAPI format. The schema
-// contains information for the supported paths, input and output format and
-// datatypes.
-func (a *ServingEndpointsAPI) GetOpenApi(ctx context.Context, request GetOpenApiRequest) error {
-	return a.impl.GetOpenApi(ctx, request)
 }
 
 // Get the schema for a serving endpoint.
@@ -945,7 +861,7 @@ func (a *ServingEndpointsAPI) GetOpenApi(ctx context.Context, request GetOpenApi
 // contains information for the supported paths, input and output format and
 // datatypes.
 func (a *ServingEndpointsAPI) GetOpenApiByName(ctx context.Context, name string) error {
-	return a.impl.GetOpenApi(ctx, GetOpenApiRequest{
+	return a.ServingEndpointsService.GetOpenApi(ctx, GetOpenApiRequest{
 		Name: name,
 	})
 }
@@ -953,15 +869,8 @@ func (a *ServingEndpointsAPI) GetOpenApiByName(ctx context.Context, name string)
 // Get serving endpoint permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ServingEndpointsAPI) GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, request)
-}
-
-// Get serving endpoint permission levels.
-//
-// Gets the permission levels that a user can have on an object.
 func (a *ServingEndpointsAPI) GetPermissionLevelsByServingEndpointId(ctx context.Context, servingEndpointId string) (*GetServingEndpointPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, GetServingEndpointPermissionLevelsRequest{
+	return a.ServingEndpointsService.GetPermissionLevels(ctx, GetServingEndpointPermissionLevelsRequest{
 		ServingEndpointId: servingEndpointId,
 	})
 }
@@ -970,16 +879,8 @@ func (a *ServingEndpointsAPI) GetPermissionLevelsByServingEndpointId(ctx context
 //
 // Gets the permissions of a serving endpoint. Serving endpoints can inherit
 // permissions from their root object.
-func (a *ServingEndpointsAPI) GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
-	return a.impl.GetPermissions(ctx, request)
-}
-
-// Get serving endpoint permissions.
-//
-// Gets the permissions of a serving endpoint. Serving endpoints can inherit
-// permissions from their root object.
 func (a *ServingEndpointsAPI) GetPermissionsByServingEndpointId(ctx context.Context, servingEndpointId string) (*ServingEndpointPermissions, error) {
-	return a.impl.GetPermissions(ctx, GetServingEndpointPermissionsRequest{
+	return a.ServingEndpointsService.GetPermissions(ctx, GetServingEndpointPermissionsRequest{
 		ServingEndpointId: servingEndpointId,
 	})
 }
@@ -992,7 +893,7 @@ func (a *ServingEndpointsAPI) List(ctx context.Context) listing.Iterator[Serving
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListEndpointsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx)
+		return a.ServingEndpointsService.List(ctx)
 	}
 	getItems := func(resp *ListEndpointsResponse) []ServingEndpoint {
 		return resp.Endpoints
@@ -1017,47 +918,11 @@ func (a *ServingEndpointsAPI) ListAll(ctx context.Context) ([]ServingEndpoint, e
 // Get the latest logs for a served model.
 //
 // Retrieves the service logs associated with the provided served model.
-func (a *ServingEndpointsAPI) Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error) {
-	return a.impl.Logs(ctx, request)
-}
-
-// Get the latest logs for a served model.
-//
-// Retrieves the service logs associated with the provided served model.
 func (a *ServingEndpointsAPI) LogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*ServerLogsResponse, error) {
-	return a.impl.Logs(ctx, LogsRequest{
+	return a.ServingEndpointsService.Logs(ctx, LogsRequest{
 		Name:            name,
 		ServedModelName: servedModelName,
 	})
-}
-
-// Update tags of a serving endpoint.
-//
-// Used to batch add and delete tags from a serving endpoint with a single API
-// call.
-func (a *ServingEndpointsAPI) Patch(ctx context.Context, request PatchServingEndpointTags) ([]EndpointTag, error) {
-	return a.impl.Patch(ctx, request)
-}
-
-// Update rate limits of a serving endpoint.
-//
-// Used to update the rate limits of a serving endpoint. NOTE: only external and
-// foundation model endpoints are supported as of now.
-func (a *ServingEndpointsAPI) Put(ctx context.Context, request PutRequest) (*PutResponse, error) {
-	return a.impl.Put(ctx, request)
-}
-
-// Query a serving endpoint.
-func (a *ServingEndpointsAPI) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
-	return a.impl.Query(ctx, request)
-}
-
-// Set serving endpoint permissions.
-//
-// Sets permissions on a serving endpoint. Serving endpoints can inherit
-// permissions from their root object.
-func (a *ServingEndpointsAPI) SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
-	return a.impl.SetPermissions(ctx, request)
 }
 
 // Update config of a serving endpoint.
@@ -1067,7 +932,7 @@ func (a *ServingEndpointsAPI) SetPermissions(ctx context.Context, request Servin
 // config. An endpoint that already has an update in progress can not be updated
 // until the current update completes or fails.
 func (a *ServingEndpointsAPI) UpdateConfig(ctx context.Context, endpointCoreConfigInput EndpointCoreConfigInput) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error) {
-	servingEndpointDetailed, err := a.impl.UpdateConfig(ctx, endpointCoreConfigInput)
+	servingEndpointDetailed, err := a.ServingEndpointsService.UpdateConfig(ctx, endpointCoreConfigInput)
 	if err != nil {
 		return nil, err
 	}
@@ -1109,14 +974,6 @@ func (a *ServingEndpointsAPI) UpdateConfigAndWait(ctx context.Context, endpointC
 	return wait.Get()
 }
 
-// Update serving endpoint permissions.
-//
-// Updates the permissions on a serving endpoint. Serving endpoints can inherit
-// permissions from their root object.
-func (a *ServingEndpointsAPI) UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
-	return a.impl.UpdatePermissions(ctx, request)
-}
-
 type ServingEndpointsDataPlaneInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
@@ -1135,7 +992,7 @@ func NewServingEndpointsDataPlane(client *client.DatabricksClient,
 	controlPlane *ServingEndpointsAPI,
 ) *ServingEndpointsDataPlaneAPI {
 	return &ServingEndpointsDataPlaneAPI{
-		impl: &servingEndpointsDataPlaneImpl{
+		ServingEndpointsDataPlaneService: &servingEndpointsDataPlaneImpl{
 			client:           client,
 			dataPlaneService: oauth2.NewDataPlaneService(),
 			controlPlane:     controlPlane,
@@ -1148,24 +1005,20 @@ func NewServingEndpointsDataPlane(client *client.DatabricksClient,
 type ServingEndpointsDataPlaneAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ServingEndpointsDataPlaneService)
-	impl ServingEndpointsDataPlaneService
+	ServingEndpointsDataPlaneService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockServingEndpointsDataPlaneInterface instead.
 func (a *ServingEndpointsDataPlaneAPI) WithImpl(impl ServingEndpointsDataPlaneService) ServingEndpointsDataPlaneInterface {
-	a.impl = impl
-	return a
+	return &ServingEndpointsDataPlaneAPI{
+		ServingEndpointsDataPlaneService: impl,
+	}
 }
 
 // Impl returns low-level ServingEndpointsDataPlane API implementation
 // Deprecated: use MockServingEndpointsDataPlaneInterface instead.
 func (a *ServingEndpointsDataPlaneAPI) Impl() ServingEndpointsDataPlaneService {
-	return a.impl
-}
-
-// Query a serving endpoint.
-func (a *ServingEndpointsDataPlaneAPI) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
-	return a.impl.Query(ctx, request)
+	return a.ServingEndpointsDataPlaneService
 }

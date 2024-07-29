@@ -92,7 +92,7 @@ type GitCredentialsInterface interface {
 
 func NewGitCredentials(client *client.DatabricksClient) *GitCredentialsAPI {
 	return &GitCredentialsAPI{
-		impl: &gitCredentialsImpl{
+		GitCredentialsService: &gitCredentialsImpl{
 			client: client,
 		},
 	}
@@ -107,45 +107,29 @@ func NewGitCredentials(client *client.DatabricksClient) *GitCredentialsAPI {
 type GitCredentialsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(GitCredentialsService)
-	impl GitCredentialsService
+	GitCredentialsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockGitCredentialsInterface instead.
 func (a *GitCredentialsAPI) WithImpl(impl GitCredentialsService) GitCredentialsInterface {
-	a.impl = impl
-	return a
+	return &GitCredentialsAPI{
+		GitCredentialsService: impl,
+	}
 }
 
 // Impl returns low-level GitCredentials API implementation
 // Deprecated: use MockGitCredentialsInterface instead.
 func (a *GitCredentialsAPI) Impl() GitCredentialsService {
-	return a.impl
-}
-
-// Create a credential entry.
-//
-// Creates a Git credential entry for the user. Only one Git credential per user
-// is supported, so any attempts to create credentials if an entry already
-// exists will fail. Use the PATCH endpoint to update existing credentials, or
-// the DELETE endpoint to delete existing credentials.
-func (a *GitCredentialsAPI) Create(ctx context.Context, request CreateCredentials) (*CreateCredentialsResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete a credential.
-//
-// Deletes the specified Git credential.
-func (a *GitCredentialsAPI) Delete(ctx context.Context, request DeleteGitCredentialRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.GitCredentialsService
 }
 
 // Delete a credential.
 //
 // Deletes the specified Git credential.
 func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credentialId int64) error {
-	return a.impl.Delete(ctx, DeleteGitCredentialRequest{
+	return a.GitCredentialsService.Delete(ctx, DeleteGitCredentialRequest{
 		CredentialId: credentialId,
 	})
 }
@@ -153,15 +137,8 @@ func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credential
 // Get a credential entry.
 //
 // Gets the Git credential with the specified credential ID.
-func (a *GitCredentialsAPI) Get(ctx context.Context, request GetGitCredentialRequest) (*CredentialInfo, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Get a credential entry.
-//
-// Gets the Git credential with the specified credential ID.
 func (a *GitCredentialsAPI) GetByCredentialId(ctx context.Context, credentialId int64) (*CredentialInfo, error) {
-	return a.impl.Get(ctx, GetGitCredentialRequest{
+	return a.GitCredentialsService.Get(ctx, GetGitCredentialRequest{
 		CredentialId: credentialId,
 	})
 }
@@ -177,7 +154,7 @@ func (a *GitCredentialsAPI) List(ctx context.Context) listing.Iterator[Credentia
 
 	getNextPage := func(ctx context.Context, req struct{}) (*GetCredentialsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx)
+		return a.GitCredentialsService.List(ctx)
 	}
 	getItems := func(resp *GetCredentialsResponse) []CredentialInfo {
 		return resp.Credentials
@@ -253,13 +230,6 @@ func (a *GitCredentialsAPI) GetByGitProvider(ctx context.Context, name string) (
 		return nil, fmt.Errorf("there are %d instances of CredentialInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
-}
-
-// Update a credential.
-//
-// Updates the specified Git credential.
-func (a *GitCredentialsAPI) Update(ctx context.Context, request UpdateCredentials) error {
-	return a.impl.Update(ctx, request)
 }
 
 type ReposInterface interface {
@@ -376,7 +346,7 @@ type ReposInterface interface {
 
 func NewRepos(client *client.DatabricksClient) *ReposAPI {
 	return &ReposAPI{
-		impl: &reposImpl{
+		ReposService: &reposImpl{
 			client: client,
 		},
 	}
@@ -395,86 +365,49 @@ func NewRepos(client *client.DatabricksClient) *ReposAPI {
 type ReposAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ReposService)
-	impl ReposService
+	ReposService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockReposInterface instead.
 func (a *ReposAPI) WithImpl(impl ReposService) ReposInterface {
-	a.impl = impl
-	return a
+	return &ReposAPI{
+		ReposService: impl,
+	}
 }
 
 // Impl returns low-level Repos API implementation
 // Deprecated: use MockReposInterface instead.
 func (a *ReposAPI) Impl() ReposService {
-	return a.impl
-}
-
-// Create a repo.
-//
-// Creates a repo in the workspace and links it to the remote Git repo
-// specified. Note that repos created programmatically must be linked to a
-// remote Git repo, unlike repos created in the browser.
-func (a *ReposAPI) Create(ctx context.Context, request CreateRepo) (*RepoInfo, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete a repo.
-//
-// Deletes the specified repo.
-func (a *ReposAPI) Delete(ctx context.Context, request DeleteRepoRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.ReposService
 }
 
 // Delete a repo.
 //
 // Deletes the specified repo.
 func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
-	return a.impl.Delete(ctx, DeleteRepoRequest{
+	return a.ReposService.Delete(ctx, DeleteRepoRequest{
 		RepoId: repoId,
 	})
-}
-
-// Get a repo.
-//
-// Returns the repo with the given repo ID.
-func (a *ReposAPI) Get(ctx context.Context, request GetRepoRequest) (*RepoInfo, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get a repo.
 //
 // Returns the repo with the given repo ID.
 func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId int64) (*RepoInfo, error) {
-	return a.impl.Get(ctx, GetRepoRequest{
+	return a.ReposService.Get(ctx, GetRepoRequest{
 		RepoId: repoId,
 	})
-}
-
-// Get repo permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *ReposAPI) GetPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get repo permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *ReposAPI) GetPermissionLevelsByRepoId(ctx context.Context, repoId string) (*GetRepoPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, GetRepoPermissionLevelsRequest{
+	return a.ReposService.GetPermissionLevels(ctx, GetRepoPermissionLevelsRequest{
 		RepoId: repoId,
 	})
-}
-
-// Get repo permissions.
-//
-// Gets the permissions of a repo. Repos can inherit permissions from their root
-// object.
-func (a *ReposAPI) GetPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
-	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get repo permissions.
@@ -482,7 +415,7 @@ func (a *ReposAPI) GetPermissions(ctx context.Context, request GetRepoPermission
 // Gets the permissions of a repo. Repos can inherit permissions from their root
 // object.
 func (a *ReposAPI) GetPermissionsByRepoId(ctx context.Context, repoId string) (*RepoPermissions, error) {
-	return a.impl.GetPermissions(ctx, GetRepoPermissionsRequest{
+	return a.ReposService.GetPermissions(ctx, GetRepoPermissionsRequest{
 		RepoId: repoId,
 	})
 }
@@ -497,7 +430,7 @@ func (a *ReposAPI) List(ctx context.Context, request ListReposRequest) listing.I
 
 	getNextPage := func(ctx context.Context, req ListReposRequest) (*ListReposResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx, req)
+		return a.ReposService.List(ctx, req)
 	}
 	getItems := func(resp *ListReposResponse) []RepoInfo {
 		return resp.Repos
@@ -579,30 +512,6 @@ func (a *ReposAPI) GetByPath(ctx context.Context, name string) (*RepoInfo, error
 		return nil, fmt.Errorf("there are %d instances of RepoInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
-}
-
-// Set repo permissions.
-//
-// Sets permissions on a repo. Repos can inherit permissions from their root
-// object.
-func (a *ReposAPI) SetPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
-	return a.impl.SetPermissions(ctx, request)
-}
-
-// Update a repo.
-//
-// Updates the repo to a different branch or tag, or updates the repo to the
-// latest commit on the same branch.
-func (a *ReposAPI) Update(ctx context.Context, request UpdateRepo) error {
-	return a.impl.Update(ctx, request)
-}
-
-// Update repo permissions.
-//
-// Updates the permissions on a repo. Repos can inherit permissions from their
-// root object.
-func (a *ReposAPI) UpdatePermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
-	return a.impl.UpdatePermissions(ctx, request)
 }
 
 type SecretsInterface interface {
@@ -835,7 +744,7 @@ type SecretsInterface interface {
 
 func NewSecrets(client *client.DatabricksClient) *SecretsAPI {
 	return &SecretsAPI{
-		impl: &secretsImpl{
+		SecretsService: &secretsImpl{
 			client: client,
 		},
 	}
@@ -856,52 +765,22 @@ func NewSecrets(client *client.DatabricksClient) *SecretsAPI {
 type SecretsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(SecretsService)
-	impl SecretsService
+	SecretsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockSecretsInterface instead.
 func (a *SecretsAPI) WithImpl(impl SecretsService) SecretsInterface {
-	a.impl = impl
-	return a
+	return &SecretsAPI{
+		SecretsService: impl,
+	}
 }
 
 // Impl returns low-level Secrets API implementation
 // Deprecated: use MockSecretsInterface instead.
 func (a *SecretsAPI) Impl() SecretsService {
-	return a.impl
-}
-
-// Create a new secret scope.
-//
-// The scope name must consist of alphanumeric characters, dashes, underscores,
-// and periods, and may not exceed 128 characters.
-func (a *SecretsAPI) CreateScope(ctx context.Context, request CreateScope) error {
-	return a.impl.CreateScope(ctx, request)
-}
-
-// Delete an ACL.
-//
-// Deletes the given ACL on the given scope.
-//
-// Users must have the `MANAGE` permission to invoke this API. Throws
-// `RESOURCE_DOES_NOT_EXIST` if no such secret scope, principal, or ACL exists.
-// Throws `PERMISSION_DENIED` if the user does not have permission to make this
-// API call.
-func (a *SecretsAPI) DeleteAcl(ctx context.Context, request DeleteAcl) error {
-	return a.impl.DeleteAcl(ctx, request)
-}
-
-// Delete a secret scope.
-//
-// Deletes a secret scope.
-//
-// Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws
-// `PERMISSION_DENIED` if the user does not have permission to make this API
-// call.
-func (a *SecretsAPI) DeleteScope(ctx context.Context, request DeleteScope) error {
-	return a.impl.DeleteScope(ctx, request)
+	return a.SecretsService
 }
 
 // Delete a secret scope.
@@ -912,51 +791,9 @@ func (a *SecretsAPI) DeleteScope(ctx context.Context, request DeleteScope) error
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) DeleteScopeByScope(ctx context.Context, scope string) error {
-	return a.impl.DeleteScope(ctx, DeleteScope{
+	return a.SecretsService.DeleteScope(ctx, DeleteScope{
 		Scope: scope,
 	})
-}
-
-// Delete a secret.
-//
-// Deletes the secret stored in this secret scope. You must have `WRITE` or
-// `MANAGE` permission on the secret scope.
-//
-// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret exists.
-// Throws `PERMISSION_DENIED` if the user does not have permission to make this
-// API call.
-func (a *SecretsAPI) DeleteSecret(ctx context.Context, request DeleteSecret) error {
-	return a.impl.DeleteSecret(ctx, request)
-}
-
-// Get secret ACL details.
-//
-// Gets the details about the given ACL, such as the group and permission. Users
-// must have the `MANAGE` permission to invoke this API.
-//
-// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
-// `PERMISSION_DENIED` if the user does not have permission to make this API
-// call.
-func (a *SecretsAPI) GetAcl(ctx context.Context, request GetAclRequest) (*AclItem, error) {
-	return a.impl.GetAcl(ctx, request)
-}
-
-// Get a secret.
-//
-// Gets the bytes representation of a secret value for the specified scope and
-// key.
-//
-// Users need the READ permission to make this call.
-//
-// Note that the secret value returned is in bytes. The interpretation of the
-// bytes is determined by the caller in DBUtils and the type the data is decoded
-// into.
-//
-// Throws “PERMISSION_DENIED“ if the user does not have permission to make
-// this API call. Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret or secret
-// scope exists.
-func (a *SecretsAPI) GetSecret(ctx context.Context, request GetSecretRequest) (*GetSecretResponse, error) {
-	return a.impl.GetSecret(ctx, request)
 }
 
 // Lists ACLs.
@@ -973,7 +810,7 @@ func (a *SecretsAPI) ListAcls(ctx context.Context, request ListAclsRequest) list
 
 	getNextPage := func(ctx context.Context, req ListAclsRequest) (*ListAclsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListAcls(ctx, req)
+		return a.SecretsService.ListAcls(ctx, req)
 	}
 	getItems := func(resp *ListAclsResponse) []AclItem {
 		return resp.Items
@@ -1011,7 +848,7 @@ func (a *SecretsAPI) ListAclsAll(ctx context.Context, request ListAclsRequest) (
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) ListAclsByScope(ctx context.Context, scope string) (*ListAclsResponse, error) {
-	return a.impl.ListAcls(ctx, ListAclsRequest{
+	return a.SecretsService.ListAcls(ctx, ListAclsRequest{
 		Scope: scope,
 	})
 }
@@ -1029,7 +866,7 @@ func (a *SecretsAPI) ListScopes(ctx context.Context) listing.Iterator[SecretScop
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListScopesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListScopes(ctx)
+		return a.SecretsService.ListScopes(ctx)
 	}
 	getItems := func(resp *ListScopesResponse) []SecretScope {
 		return resp.Scopes
@@ -1072,7 +909,7 @@ func (a *SecretsAPI) ListSecrets(ctx context.Context, request ListSecretsRequest
 
 	getNextPage := func(ctx context.Context, req ListSecretsRequest) (*ListSecretsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListSecrets(ctx, req)
+		return a.SecretsService.ListSecrets(ctx, req)
 	}
 	getItems := func(resp *ListSecretsResponse) []SecretMetadata {
 		return resp.Secrets
@@ -1114,66 +951,9 @@ func (a *SecretsAPI) ListSecretsAll(ctx context.Context, request ListSecretsRequ
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) ListSecretsByScope(ctx context.Context, scope string) (*ListSecretsResponse, error) {
-	return a.impl.ListSecrets(ctx, ListSecretsRequest{
+	return a.SecretsService.ListSecrets(ctx, ListSecretsRequest{
 		Scope: scope,
 	})
-}
-
-// Create/update an ACL.
-//
-// Creates or overwrites the Access Control List (ACL) associated with the given
-// principal (user or group) on the specified scope point.
-//
-// In general, a user or group will use the most powerful permission available
-// to them, and permissions are ordered as follows:
-//
-// * `MANAGE` - Allowed to change ACLs, and read and write to this secret scope.
-// * `WRITE` - Allowed to read and write to this secret scope. * `READ` -
-// Allowed to read this secret scope and list what secrets are available.
-//
-// Note that in general, secret values can only be read from within a command on
-// a cluster (for example, through a notebook). There is no API to read the
-// actual secret value material outside of a cluster. However, the user's
-// permission will be applied based on who is executing the command, and they
-// must have at least READ permission.
-//
-// Users must have the `MANAGE` permission to invoke this API.
-//
-// The principal is a user or group name corresponding to an existing Databricks
-// principal to be granted or revoked access.
-//
-// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
-// `RESOURCE_ALREADY_EXISTS` if a permission for the principal already exists.
-// Throws `INVALID_PARAMETER_VALUE` if the permission or principal is invalid.
-// Throws `PERMISSION_DENIED` if the user does not have permission to make this
-// API call.
-func (a *SecretsAPI) PutAcl(ctx context.Context, request PutAcl) error {
-	return a.impl.PutAcl(ctx, request)
-}
-
-// Add a secret.
-//
-// Inserts a secret under the provided scope with the given name. If a secret
-// already exists with the same name, this command overwrites the existing
-// secret's value. The server encrypts the secret using the secret scope's
-// encryption settings before storing it.
-//
-// You must have `WRITE` or `MANAGE` permission on the secret scope. The secret
-// key must consist of alphanumeric characters, dashes, underscores, and
-// periods, and cannot exceed 128 characters. The maximum allowed secret value
-// size is 128 KB. The maximum number of secrets in a given scope is 1000.
-//
-// The input fields "string_value" or "bytes_value" specify the type of the
-// secret, which will determine the value returned when the secret value is
-// requested. Exactly one must be specified.
-//
-// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
-// `RESOURCE_LIMIT_EXCEEDED` if maximum number of secrets in scope is exceeded.
-// Throws `INVALID_PARAMETER_VALUE` if the key name or value length is invalid.
-// Throws `PERMISSION_DENIED` if the user does not have permission to make this
-// API call.
-func (a *SecretsAPI) PutSecret(ctx context.Context, request PutSecret) error {
-	return a.impl.PutSecret(ctx, request)
 }
 
 type WorkspaceInterface interface {
@@ -1326,7 +1106,7 @@ type WorkspaceInterface interface {
 
 func NewWorkspace(client *client.DatabricksClient) *WorkspaceAPI {
 	return &WorkspaceAPI{
-		impl: &workspaceImpl{
+		WorkspaceService: &workspaceImpl{
 			client: client,
 		},
 	}
@@ -1340,74 +1120,32 @@ func NewWorkspace(client *client.DatabricksClient) *WorkspaceAPI {
 type WorkspaceAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(WorkspaceService)
-	impl WorkspaceService
+	WorkspaceService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockWorkspaceInterface instead.
 func (a *WorkspaceAPI) WithImpl(impl WorkspaceService) WorkspaceInterface {
-	a.impl = impl
-	return a
+	return &WorkspaceAPI{
+		WorkspaceService: impl,
+	}
 }
 
 // Impl returns low-level Workspace API implementation
 // Deprecated: use MockWorkspaceInterface instead.
 func (a *WorkspaceAPI) Impl() WorkspaceService {
-	return a.impl
-}
-
-// Delete a workspace object.
-//
-// Deletes an object or a directory (and optionally recursively deletes all
-// objects in the directory). * If `path` does not exist, this call returns an
-// error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a non-empty directory and
-// `recursive` is set to `false`, this call returns an error
-// `DIRECTORY_NOT_EMPTY`.
-//
-// Object deletion cannot be undone and deleting a directory recursively is not
-// atomic.
-func (a *WorkspaceAPI) Delete(ctx context.Context, request Delete) error {
-	return a.impl.Delete(ctx, request)
-}
-
-// Export a workspace object.
-//
-// Exports an object or the contents of an entire directory.
-//
-// If `path` does not exist, this call returns an error
-// `RESOURCE_DOES_NOT_EXIST`.
-//
-// If the exported data would exceed size limit, this call returns
-// `MAX_NOTEBOOK_SIZE_EXCEEDED`. Currently, this API does not support exporting
-// a library.
-func (a *WorkspaceAPI) Export(ctx context.Context, request ExportRequest) (*ExportResponse, error) {
-	return a.impl.Export(ctx, request)
-}
-
-// Get workspace object permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *WorkspaceAPI) GetPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, request)
+	return a.WorkspaceService
 }
 
 // Get workspace object permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *WorkspaceAPI) GetPermissionLevelsByWorkspaceObjectTypeAndWorkspaceObjectId(ctx context.Context, workspaceObjectType string, workspaceObjectId string) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, GetWorkspaceObjectPermissionLevelsRequest{
+	return a.WorkspaceService.GetPermissionLevels(ctx, GetWorkspaceObjectPermissionLevelsRequest{
 		WorkspaceObjectType: workspaceObjectType,
 		WorkspaceObjectId:   workspaceObjectId,
 	})
-}
-
-// Get workspace object permissions.
-//
-// Gets the permissions of a workspace object. Workspace objects can inherit
-// permissions from their parent objects or root object.
-func (a *WorkspaceAPI) GetPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
-	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get workspace object permissions.
@@ -1415,7 +1153,7 @@ func (a *WorkspaceAPI) GetPermissions(ctx context.Context, request GetWorkspaceO
 // Gets the permissions of a workspace object. Workspace objects can inherit
 // permissions from their parent objects or root object.
 func (a *WorkspaceAPI) GetPermissionsByWorkspaceObjectTypeAndWorkspaceObjectId(ctx context.Context, workspaceObjectType string, workspaceObjectId string) (*WorkspaceObjectPermissions, error) {
-	return a.impl.GetPermissions(ctx, GetWorkspaceObjectPermissionsRequest{
+	return a.WorkspaceService.GetPermissions(ctx, GetWorkspaceObjectPermissionsRequest{
 		WorkspaceObjectType: workspaceObjectType,
 		WorkspaceObjectId:   workspaceObjectId,
 	})
@@ -1425,30 +1163,10 @@ func (a *WorkspaceAPI) GetPermissionsByWorkspaceObjectTypeAndWorkspaceObjectId(c
 //
 // Gets the status of an object or a directory. If `path` does not exist, this
 // call returns an error `RESOURCE_DOES_NOT_EXIST`.
-func (a *WorkspaceAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error) {
-	return a.impl.GetStatus(ctx, request)
-}
-
-// Get status.
-//
-// Gets the status of an object or a directory. If `path` does not exist, this
-// call returns an error `RESOURCE_DOES_NOT_EXIST`.
 func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*ObjectInfo, error) {
-	return a.impl.GetStatus(ctx, GetStatusRequest{
+	return a.WorkspaceService.GetStatus(ctx, GetStatusRequest{
 		Path: path,
 	})
-}
-
-// Import a workspace object.
-//
-// Imports a workspace object (for example, a notebook or file) or the contents
-// of an entire directory. If `path` already exists and `overwrite` is set to
-// `false`, this call returns an error `RESOURCE_ALREADY_EXISTS`. To import a
-// directory, you can use either the `DBC` format or the `SOURCE` format with
-// the `language` field unset. To import a single file as `SOURCE`, you must set
-// the `language` field.
-func (a *WorkspaceAPI) Import(ctx context.Context, request Import) error {
-	return a.impl.Import(ctx, request)
 }
 
 // List contents.
@@ -1462,7 +1180,7 @@ func (a *WorkspaceAPI) List(ctx context.Context, request ListWorkspaceRequest) l
 
 	getNextPage := func(ctx context.Context, req ListWorkspaceRequest) (*ListResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx, req)
+		return a.WorkspaceService.List(ctx, req)
 	}
 	getItems := func(resp *ListResponse) []ObjectInfo {
 		return resp.Objects
@@ -1549,36 +1267,8 @@ func (a *WorkspaceAPI) GetByPath(ctx context.Context, name string) (*ObjectInfo,
 //
 // Note that if this operation fails it may have succeeded in creating some of
 // the necessary parent directories.
-func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
-	return a.impl.Mkdirs(ctx, request)
-}
-
-// Create a directory.
-//
-// Creates the specified directory (and necessary parent directories if they do
-// not exist). If there is an object (not a directory) at any prefix of the
-// input path, this call returns an error `RESOURCE_ALREADY_EXISTS`.
-//
-// Note that if this operation fails it may have succeeded in creating some of
-// the necessary parent directories.
 func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
-	return a.impl.Mkdirs(ctx, Mkdirs{
+	return a.WorkspaceService.Mkdirs(ctx, Mkdirs{
 		Path: path,
 	})
-}
-
-// Set workspace object permissions.
-//
-// Sets permissions on a workspace object. Workspace objects can inherit
-// permissions from their parent objects or root object.
-func (a *WorkspaceAPI) SetPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
-	return a.impl.SetPermissions(ctx, request)
-}
-
-// Update workspace object permissions.
-//
-// Updates the permissions on a workspace object. Workspace objects can inherit
-// permissions from their parent objects or root object.
-func (a *WorkspaceAPI) UpdatePermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
-	return a.impl.UpdatePermissions(ctx, request)
 }

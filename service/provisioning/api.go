@@ -94,7 +94,7 @@ type CredentialsInterface interface {
 
 func NewCredentials(client *client.DatabricksClient) *CredentialsAPI {
 	return &CredentialsAPI{
-		impl: &credentialsImpl{
+		CredentialsService: &credentialsImpl{
 			client: client,
 		},
 	}
@@ -108,50 +108,22 @@ func NewCredentials(client *client.DatabricksClient) *CredentialsAPI {
 type CredentialsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(CredentialsService)
-	impl CredentialsService
+	CredentialsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCredentialsInterface instead.
 func (a *CredentialsAPI) WithImpl(impl CredentialsService) CredentialsInterface {
-	a.impl = impl
-	return a
+	return &CredentialsAPI{
+		CredentialsService: impl,
+	}
 }
 
 // Impl returns low-level Credentials API implementation
 // Deprecated: use MockCredentialsInterface instead.
 func (a *CredentialsAPI) Impl() CredentialsService {
-	return a.impl
-}
-
-// Create credential configuration.
-//
-// Creates a Databricks credential configuration that represents cloud
-// cross-account credentials for a specified account. Databricks uses this to
-// set up network infrastructure properly to host Databricks clusters. For your
-// AWS IAM role, you need to trust the External ID (the Databricks Account API
-// account ID) in the returned credential object, and configure the required
-// access policy.
-//
-// Save the response's `credentials_id` field, which is the ID for your new
-// credential configuration object.
-//
-// For information about how to create a new workspace with this API, see
-// [Create a new workspace using the Account API]
-//
-// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-func (a *CredentialsAPI) Create(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete credential configuration.
-//
-// Deletes a Databricks credential configuration object for an account, both
-// specified by ID. You cannot delete a credential that is associated with any
-// workspace.
-func (a *CredentialsAPI) Delete(ctx context.Context, request DeleteCredentialRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.CredentialsService
 }
 
 // Delete credential configuration.
@@ -160,17 +132,9 @@ func (a *CredentialsAPI) Delete(ctx context.Context, request DeleteCredentialReq
 // specified by ID. You cannot delete a credential that is associated with any
 // workspace.
 func (a *CredentialsAPI) DeleteByCredentialsId(ctx context.Context, credentialsId string) error {
-	return a.impl.Delete(ctx, DeleteCredentialRequest{
+	return a.CredentialsService.Delete(ctx, DeleteCredentialRequest{
 		CredentialsId: credentialsId,
 	})
-}
-
-// Get credential configuration.
-//
-// Gets a Databricks credential configuration object for an account, both
-// specified by ID.
-func (a *CredentialsAPI) Get(ctx context.Context, request GetCredentialRequest) (*Credential, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get credential configuration.
@@ -178,17 +142,9 @@ func (a *CredentialsAPI) Get(ctx context.Context, request GetCredentialRequest) 
 // Gets a Databricks credential configuration object for an account, both
 // specified by ID.
 func (a *CredentialsAPI) GetByCredentialsId(ctx context.Context, credentialsId string) (*Credential, error) {
-	return a.impl.Get(ctx, GetCredentialRequest{
+	return a.CredentialsService.Get(ctx, GetCredentialRequest{
 		CredentialsId: credentialsId,
 	})
-}
-
-// Get all credential configurations.
-//
-// Gets all Databricks credential configurations associated with an account
-// specified by ID.
-func (a *CredentialsAPI) List(ctx context.Context) ([]Credential, error) {
-	return a.impl.List(ctx)
 }
 
 // CredentialCredentialsNameToCredentialsIdMap calls [CredentialsAPI.List] and creates a map of results with [Credential].CredentialsName as key and [Credential].CredentialsId as value.
@@ -345,7 +301,7 @@ type EncryptionKeysInterface interface {
 
 func NewEncryptionKeys(client *client.DatabricksClient) *EncryptionKeysAPI {
 	return &EncryptionKeysAPI{
-		impl: &encryptionKeysImpl{
+		EncryptionKeysService: &encryptionKeysImpl{
 			client: client,
 		},
 	}
@@ -370,52 +326,22 @@ func NewEncryptionKeys(client *client.DatabricksClient) *EncryptionKeysAPI {
 type EncryptionKeysAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(EncryptionKeysService)
-	impl EncryptionKeysService
+	EncryptionKeysService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockEncryptionKeysInterface instead.
 func (a *EncryptionKeysAPI) WithImpl(impl EncryptionKeysService) EncryptionKeysInterface {
-	a.impl = impl
-	return a
+	return &EncryptionKeysAPI{
+		EncryptionKeysService: impl,
+	}
 }
 
 // Impl returns low-level EncryptionKeys API implementation
 // Deprecated: use MockEncryptionKeysInterface instead.
 func (a *EncryptionKeysAPI) Impl() EncryptionKeysService {
-	return a.impl
-}
-
-// Create encryption key configuration.
-//
-// Creates a customer-managed key configuration object for an account, specified
-// by ID. This operation uploads a reference to a customer-managed key to
-// Databricks. If the key is assigned as a workspace's customer-managed key for
-// managed services, Databricks uses the key to encrypt the workspaces notebooks
-// and secrets in the control plane, in addition to Databricks SQL queries and
-// query history. If it is specified as a workspace's customer-managed key for
-// workspace storage, the key encrypts the workspace's root S3 bucket (which
-// contains the workspace's root DBFS and system data) and, optionally, cluster
-// EBS volume data.
-//
-// **Important**: Customer-managed keys are supported only for some deployment
-// types, subscription types, and AWS regions that currently support creation of
-// Databricks workspaces.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform or on a select custom plan that allows multiple workspaces per
-// account.
-func (a *EncryptionKeysAPI) Create(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete encryption key configuration.
-//
-// Deletes a customer-managed key configuration object for an account. You
-// cannot delete a configuration that is associated with a running workspace.
-func (a *EncryptionKeysAPI) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.EncryptionKeysService
 }
 
 // Delete encryption key configuration.
@@ -423,30 +349,9 @@ func (a *EncryptionKeysAPI) Delete(ctx context.Context, request DeleteEncryption
 // Deletes a customer-managed key configuration object for an account. You
 // cannot delete a configuration that is associated with a running workspace.
 func (a *EncryptionKeysAPI) DeleteByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) error {
-	return a.impl.Delete(ctx, DeleteEncryptionKeyRequest{
+	return a.EncryptionKeysService.Delete(ctx, DeleteEncryptionKeyRequest{
 		CustomerManagedKeyId: customerManagedKeyId,
 	})
-}
-
-// Get encryption key configuration.
-//
-// Gets a customer-managed key configuration object for an account, specified by
-// ID. This operation uploads a reference to a customer-managed key to
-// Databricks. If assigned as a workspace's customer-managed key for managed
-// services, Databricks uses the key to encrypt the workspaces notebooks and
-// secrets in the control plane, in addition to Databricks SQL queries and query
-// history. If it is specified as a workspace's customer-managed key for
-// storage, the key encrypts the workspace's root S3 bucket (which contains the
-// workspace's root DBFS and system data) and, optionally, cluster EBS volume
-// data.
-//
-// **Important**: Customer-managed keys are supported only for some deployment
-// types, subscription types, and AWS regions.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform.",
-func (a *EncryptionKeysAPI) Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get encryption key configuration.
@@ -467,28 +372,9 @@ func (a *EncryptionKeysAPI) Get(ctx context.Context, request GetEncryptionKeyReq
 // This operation is available only if your account is on the E2 version of the
 // platform.",
 func (a *EncryptionKeysAPI) GetByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) (*CustomerManagedKey, error) {
-	return a.impl.Get(ctx, GetEncryptionKeyRequest{
+	return a.EncryptionKeysService.Get(ctx, GetEncryptionKeyRequest{
 		CustomerManagedKeyId: customerManagedKeyId,
 	})
-}
-
-// Get all encryption key configurations.
-//
-// Gets all customer-managed key configuration objects for an account. If the
-// key is specified as a workspace's managed services customer-managed key,
-// Databricks uses the key to encrypt the workspace's notebooks and secrets in
-// the control plane, in addition to Databricks SQL queries and query history.
-// If the key is specified as a workspace's storage customer-managed key, the
-// key is used to encrypt the workspace's root S3 bucket and optionally can
-// encrypt cluster EBS volumes data in the data plane.
-//
-// **Important**: Customer-managed keys are supported only for some deployment
-// types, subscription types, and AWS regions.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform.
-func (a *EncryptionKeysAPI) List(ctx context.Context) ([]CustomerManagedKey, error) {
-	return a.impl.List(ctx)
 }
 
 type NetworksInterface interface {
@@ -570,7 +456,7 @@ type NetworksInterface interface {
 
 func NewNetworks(client *client.DatabricksClient) *NetworksAPI {
 	return &NetworksAPI{
-		impl: &networksImpl{
+		NetworksService: &networksImpl{
 			client: client,
 		},
 	}
@@ -582,42 +468,22 @@ func NewNetworks(client *client.DatabricksClient) *NetworksAPI {
 type NetworksAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(NetworksService)
-	impl NetworksService
+	NetworksService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockNetworksInterface instead.
 func (a *NetworksAPI) WithImpl(impl NetworksService) NetworksInterface {
-	a.impl = impl
-	return a
+	return &NetworksAPI{
+		NetworksService: impl,
+	}
 }
 
 // Impl returns low-level Networks API implementation
 // Deprecated: use MockNetworksInterface instead.
 func (a *NetworksAPI) Impl() NetworksService {
-	return a.impl
-}
-
-// Create network configuration.
-//
-// Creates a Databricks network configuration that represents an VPC and its
-// resources. The VPC will be used for new Databricks clusters. This requires a
-// pre-existing VPC and subnets.
-func (a *NetworksAPI) Create(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete a network configuration.
-//
-// Deletes a Databricks network configuration, which represents a cloud VPC and
-// its resources. You cannot delete a network that is associated with a
-// workspace.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform.
-func (a *NetworksAPI) Delete(ctx context.Context, request DeleteNetworkRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.NetworksService
 }
 
 // Delete a network configuration.
@@ -629,17 +495,9 @@ func (a *NetworksAPI) Delete(ctx context.Context, request DeleteNetworkRequest) 
 // This operation is available only if your account is on the E2 version of the
 // platform.
 func (a *NetworksAPI) DeleteByNetworkId(ctx context.Context, networkId string) error {
-	return a.impl.Delete(ctx, DeleteNetworkRequest{
+	return a.NetworksService.Delete(ctx, DeleteNetworkRequest{
 		NetworkId: networkId,
 	})
-}
-
-// Get a network configuration.
-//
-// Gets a Databricks network configuration, which represents a cloud VPC and its
-// resources.
-func (a *NetworksAPI) Get(ctx context.Context, request GetNetworkRequest) (*Network, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get a network configuration.
@@ -647,20 +505,9 @@ func (a *NetworksAPI) Get(ctx context.Context, request GetNetworkRequest) (*Netw
 // Gets a Databricks network configuration, which represents a cloud VPC and its
 // resources.
 func (a *NetworksAPI) GetByNetworkId(ctx context.Context, networkId string) (*Network, error) {
-	return a.impl.Get(ctx, GetNetworkRequest{
+	return a.NetworksService.Get(ctx, GetNetworkRequest{
 		NetworkId: networkId,
 	})
-}
-
-// Get all network configurations.
-//
-// Gets a list of all Databricks network configurations for an account,
-// specified by ID.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform.
-func (a *NetworksAPI) List(ctx context.Context) ([]Network, error) {
-	return a.impl.List(ctx)
 }
 
 // NetworkNetworkNameToNetworkIdMap calls [NetworksAPI.List] and creates a map of results with [Network].NetworkName as key and [Network].NetworkId as value.
@@ -845,7 +692,7 @@ type PrivateAccessInterface interface {
 
 func NewPrivateAccess(client *client.DatabricksClient) *PrivateAccessAPI {
 	return &PrivateAccessAPI{
-		impl: &privateAccessImpl{
+		PrivateAccessService: &privateAccessImpl{
 			client: client,
 		},
 	}
@@ -855,56 +702,22 @@ func NewPrivateAccess(client *client.DatabricksClient) *PrivateAccessAPI {
 type PrivateAccessAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(PrivateAccessService)
-	impl PrivateAccessService
+	PrivateAccessService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockPrivateAccessInterface instead.
 func (a *PrivateAccessAPI) WithImpl(impl PrivateAccessService) PrivateAccessInterface {
-	a.impl = impl
-	return a
+	return &PrivateAccessAPI{
+		PrivateAccessService: impl,
+	}
 }
 
 // Impl returns low-level PrivateAccess API implementation
 // Deprecated: use MockPrivateAccessInterface instead.
 func (a *PrivateAccessAPI) Impl() PrivateAccessService {
-	return a.impl
-}
-
-// Create private access settings.
-//
-// Creates a private access settings object, which specifies how your workspace
-// is accessed over [AWS PrivateLink]. To use AWS PrivateLink, a workspace must
-// have a private access settings object referenced by ID in the workspace's
-// `private_access_settings_id` property.
-//
-// You can share one private access settings with multiple workspaces in a
-// single account. However, private access settings are specific to AWS regions,
-// so only workspaces in the same AWS region can use a given private access
-// settings object.
-//
-// Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink].
-//
-// [AWS PrivateLink]: https://aws.amazon.com/privatelink
-// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-func (a *PrivateAccessAPI) Create(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete a private access settings object.
-//
-// Deletes a private access settings object, which determines how your workspace
-// is accessed over [AWS PrivateLink].
-//
-// Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink].",
-//
-// [AWS PrivateLink]: https://aws.amazon.com/privatelink
-// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-func (a *PrivateAccessAPI) Delete(ctx context.Context, request DeletePrivateAccesRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.PrivateAccessService
 }
 
 // Delete a private access settings object.
@@ -918,23 +731,9 @@ func (a *PrivateAccessAPI) Delete(ctx context.Context, request DeletePrivateAcce
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *PrivateAccessAPI) DeleteByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) error {
-	return a.impl.Delete(ctx, DeletePrivateAccesRequest{
+	return a.PrivateAccessService.Delete(ctx, DeletePrivateAccesRequest{
 		PrivateAccessSettingsId: privateAccessSettingsId,
 	})
-}
-
-// Get a private access settings object.
-//
-// Gets a private access settings object, which specifies how your workspace is
-// accessed over [AWS PrivateLink].
-//
-// Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink].",
-//
-// [AWS PrivateLink]: https://aws.amazon.com/privatelink
-// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-func (a *PrivateAccessAPI) Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get a private access settings object.
@@ -948,17 +747,9 @@ func (a *PrivateAccessAPI) Get(ctx context.Context, request GetPrivateAccesReque
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *PrivateAccessAPI) GetByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) (*PrivateAccessSettings, error) {
-	return a.impl.Get(ctx, GetPrivateAccesRequest{
+	return a.PrivateAccessService.Get(ctx, GetPrivateAccesRequest{
 		PrivateAccessSettingsId: privateAccessSettingsId,
 	})
-}
-
-// Get all private access settings objects.
-//
-// Gets a list of all private access settings objects for an account, specified
-// by ID.
-func (a *PrivateAccessAPI) List(ctx context.Context) ([]PrivateAccessSettings, error) {
-	return a.impl.List(ctx)
 }
 
 // PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap calls [PrivateAccessAPI.List] and creates a map of results with [PrivateAccessSettings].PrivateAccessSettingsName as key and [PrivateAccessSettings].PrivateAccessSettingsId as value.
@@ -1012,33 +803,6 @@ func (a *PrivateAccessAPI) GetByPrivateAccessSettingsName(ctx context.Context, n
 		return nil, fmt.Errorf("there are %d instances of PrivateAccessSettings named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
-}
-
-// Replace private access settings.
-//
-// Updates an existing private access settings object, which specifies how your
-// workspace is accessed over [AWS PrivateLink]. To use AWS PrivateLink, a
-// workspace must have a private access settings object referenced by ID in the
-// workspace's `private_access_settings_id` property.
-//
-// This operation completely overwrites your existing private access settings
-// object attached to your workspaces. All workspaces attached to the private
-// access settings are affected by any change. If `public_access_enabled`,
-// `private_access_level`, or `allowed_vpc_endpoint_ids` are updated, effects of
-// these changes might take several minutes to propagate to the workspace API.
-//
-// You can share one private access settings object with multiple workspaces in
-// a single account. However, private access settings are specific to AWS
-// regions, so only workspaces in the same AWS region can use a given private
-// access settings object.
-//
-// Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink].
-//
-// [AWS PrivateLink]: https://aws.amazon.com/privatelink
-// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-func (a *PrivateAccessAPI) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
-	return a.impl.Replace(ctx, request)
 }
 
 type StorageInterface interface {
@@ -1114,7 +878,7 @@ type StorageInterface interface {
 
 func NewStorage(client *client.DatabricksClient) *StorageAPI {
 	return &StorageAPI{
-		impl: &storageImpl{
+		StorageService: &storageImpl{
 			client: client,
 		},
 	}
@@ -1129,45 +893,22 @@ func NewStorage(client *client.DatabricksClient) *StorageAPI {
 type StorageAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(StorageService)
-	impl StorageService
+	StorageService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockStorageInterface instead.
 func (a *StorageAPI) WithImpl(impl StorageService) StorageInterface {
-	a.impl = impl
-	return a
+	return &StorageAPI{
+		StorageService: impl,
+	}
 }
 
 // Impl returns low-level Storage API implementation
 // Deprecated: use MockStorageInterface instead.
 func (a *StorageAPI) Impl() StorageService {
-	return a.impl
-}
-
-// Create new storage configuration.
-//
-// Creates new storage configuration for an account, specified by ID. Uploads a
-// storage configuration object that represents the root AWS S3 bucket in your
-// account. Databricks stores related workspace assets including DBFS, cluster
-// logs, and job results. For the AWS S3 bucket, you need to configure the
-// required bucket policy.
-//
-// For information about how to create a new workspace with this API, see
-// [Create a new workspace using the Account API]
-//
-// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-func (a *StorageAPI) Create(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete storage configuration.
-//
-// Deletes a Databricks storage configuration. You cannot delete a storage
-// configuration that is associated with any workspace.
-func (a *StorageAPI) Delete(ctx context.Context, request DeleteStorageRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.StorageService
 }
 
 // Delete storage configuration.
@@ -1175,33 +916,18 @@ func (a *StorageAPI) Delete(ctx context.Context, request DeleteStorageRequest) e
 // Deletes a Databricks storage configuration. You cannot delete a storage
 // configuration that is associated with any workspace.
 func (a *StorageAPI) DeleteByStorageConfigurationId(ctx context.Context, storageConfigurationId string) error {
-	return a.impl.Delete(ctx, DeleteStorageRequest{
+	return a.StorageService.Delete(ctx, DeleteStorageRequest{
 		StorageConfigurationId: storageConfigurationId,
 	})
-}
-
-// Get storage configuration.
-//
-// Gets a Databricks storage configuration for an account, both specified by ID.
-func (a *StorageAPI) Get(ctx context.Context, request GetStorageRequest) (*StorageConfiguration, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get storage configuration.
 //
 // Gets a Databricks storage configuration for an account, both specified by ID.
 func (a *StorageAPI) GetByStorageConfigurationId(ctx context.Context, storageConfigurationId string) (*StorageConfiguration, error) {
-	return a.impl.Get(ctx, GetStorageRequest{
+	return a.StorageService.Get(ctx, GetStorageRequest{
 		StorageConfigurationId: storageConfigurationId,
 	})
-}
-
-// Get all storage configurations.
-//
-// Gets a list of all Databricks storage configurations for your account,
-// specified by ID.
-func (a *StorageAPI) List(ctx context.Context) ([]StorageConfiguration, error) {
-	return a.impl.List(ctx)
 }
 
 // StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap calls [StorageAPI.List] and creates a map of results with [StorageConfiguration].StorageConfigurationName as key and [StorageConfiguration].StorageConfigurationId as value.
@@ -1360,7 +1086,7 @@ type VpcEndpointsInterface interface {
 
 func NewVpcEndpoints(client *client.DatabricksClient) *VpcEndpointsAPI {
 	return &VpcEndpointsAPI{
-		impl: &vpcEndpointsImpl{
+		VpcEndpointsService: &vpcEndpointsImpl{
 			client: client,
 		},
 	}
@@ -1370,56 +1096,22 @@ func NewVpcEndpoints(client *client.DatabricksClient) *VpcEndpointsAPI {
 type VpcEndpointsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(VpcEndpointsService)
-	impl VpcEndpointsService
+	VpcEndpointsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockVpcEndpointsInterface instead.
 func (a *VpcEndpointsAPI) WithImpl(impl VpcEndpointsService) VpcEndpointsInterface {
-	a.impl = impl
-	return a
+	return &VpcEndpointsAPI{
+		VpcEndpointsService: impl,
+	}
 }
 
 // Impl returns low-level VpcEndpoints API implementation
 // Deprecated: use MockVpcEndpointsInterface instead.
 func (a *VpcEndpointsAPI) Impl() VpcEndpointsService {
-	return a.impl
-}
-
-// Create VPC endpoint configuration.
-//
-// Creates a VPC endpoint configuration, which represents a [VPC endpoint]
-// object in AWS used to communicate privately with Databricks over [AWS
-// PrivateLink].
-//
-// After you create the VPC endpoint configuration, the Databricks [endpoint
-// service] automatically accepts the VPC endpoint.
-//
-// Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink].
-//
-// [AWS PrivateLink]: https://aws.amazon.com/privatelink
-// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-// [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html
-// [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html
-func (a *VpcEndpointsAPI) Create(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete VPC endpoint configuration.
-//
-// Deletes a VPC endpoint configuration, which represents an [AWS VPC endpoint]
-// that can communicate privately with Databricks over [AWS PrivateLink].
-//
-// Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink].
-//
-// [AWS PrivateLink]: https://aws.amazon.com/privatelink
-// [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
-// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-func (a *VpcEndpointsAPI) Delete(ctx context.Context, request DeleteVpcEndpointRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.VpcEndpointsService
 }
 
 // Delete VPC endpoint configuration.
@@ -1434,20 +1126,9 @@ func (a *VpcEndpointsAPI) Delete(ctx context.Context, request DeleteVpcEndpointR
 // [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *VpcEndpointsAPI) DeleteByVpcEndpointId(ctx context.Context, vpcEndpointId string) error {
-	return a.impl.Delete(ctx, DeleteVpcEndpointRequest{
+	return a.VpcEndpointsService.Delete(ctx, DeleteVpcEndpointRequest{
 		VpcEndpointId: vpcEndpointId,
 	})
-}
-
-// Get a VPC endpoint configuration.
-//
-// Gets a VPC endpoint configuration, which represents a [VPC endpoint] object
-// in AWS used to communicate privately with Databricks over [AWS PrivateLink].
-//
-// [AWS PrivateLink]: https://aws.amazon.com/privatelink
-// [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
-func (a *VpcEndpointsAPI) Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get a VPC endpoint configuration.
@@ -1458,21 +1139,9 @@ func (a *VpcEndpointsAPI) Get(ctx context.Context, request GetVpcEndpointRequest
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 func (a *VpcEndpointsAPI) GetByVpcEndpointId(ctx context.Context, vpcEndpointId string) (*VpcEndpoint, error) {
-	return a.impl.Get(ctx, GetVpcEndpointRequest{
+	return a.VpcEndpointsService.Get(ctx, GetVpcEndpointRequest{
 		VpcEndpointId: vpcEndpointId,
 	})
-}
-
-// Get all VPC endpoint configurations.
-//
-// Gets a list of all VPC endpoints for an account, specified by ID.
-//
-// Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink].
-//
-// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-func (a *VpcEndpointsAPI) List(ctx context.Context) ([]VpcEndpoint, error) {
-	return a.impl.List(ctx)
 }
 
 // VpcEndpointVpcEndpointNameToVpcEndpointIdMap calls [VpcEndpointsAPI.List] and creates a map of results with [VpcEndpoint].VpcEndpointName as key and [VpcEndpoint].VpcEndpointId as value.
@@ -1785,7 +1454,7 @@ type WorkspacesInterface interface {
 
 func NewWorkspaces(client *client.DatabricksClient) *WorkspacesAPI {
 	return &WorkspacesAPI{
-		impl: &workspacesImpl{
+		WorkspacesService: &workspacesImpl{
 			client: client,
 		},
 	}
@@ -1803,21 +1472,22 @@ func NewWorkspaces(client *client.DatabricksClient) *WorkspacesAPI {
 type WorkspacesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(WorkspacesService)
-	impl WorkspacesService
+	WorkspacesService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockWorkspacesInterface instead.
 func (a *WorkspacesAPI) WithImpl(impl WorkspacesService) WorkspacesInterface {
-	a.impl = impl
-	return a
+	return &WorkspacesAPI{
+		WorkspacesService: impl,
+	}
 }
 
 // Impl returns low-level Workspaces API implementation
 // Deprecated: use MockWorkspacesInterface instead.
 func (a *WorkspacesAPI) Impl() WorkspacesService {
-	return a.impl
+	return a.WorkspacesService
 }
 
 // WaitGetWorkspaceRunning repeatedly calls [WorkspacesAPI.Get] and waits to reach RUNNING state
@@ -1886,7 +1556,7 @@ func (w *WaitGetWorkspaceRunning[R]) GetWithTimeout(timeout time.Duration) (*Wor
 // repeated `GET` requests with the workspace ID and check its status. The
 // workspace becomes available when the status changes to `RUNNING`.
 func (a *WorkspacesAPI) Create(ctx context.Context, createWorkspaceRequest CreateWorkspaceRequest) (*WaitGetWorkspaceRunning[Workspace], error) {
-	workspace, err := a.impl.Create(ctx, createWorkspaceRequest)
+	workspace, err := a.WorkspacesService.Create(ctx, createWorkspaceRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1938,44 +1608,10 @@ func (a *WorkspacesAPI) CreateAndWait(ctx context.Context, createWorkspaceReques
 // This operation is available only if your account is on the E2 version of the
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
-func (a *WorkspacesAPI) Delete(ctx context.Context, request DeleteWorkspaceRequest) error {
-	return a.impl.Delete(ctx, request)
-}
-
-// Delete a workspace.
-//
-// Terminates and deletes a Databricks workspace. From an API perspective,
-// deletion is immediate. However, it might take a few minutes for all
-// workspaces resources to be deleted, depending on the size and number of
-// workspace resources.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform or on a select custom plan that allows multiple workspaces per
-// account.
 func (a *WorkspacesAPI) DeleteByWorkspaceId(ctx context.Context, workspaceId int64) error {
-	return a.impl.Delete(ctx, DeleteWorkspaceRequest{
+	return a.WorkspacesService.Delete(ctx, DeleteWorkspaceRequest{
 		WorkspaceId: workspaceId,
 	})
-}
-
-// Get a workspace.
-//
-// Gets information including status for a Databricks workspace, specified by
-// ID. In the response, the `workspace_status` field indicates the current
-// status. After initial workspace creation (which is asynchronous), make
-// repeated `GET` requests with the workspace ID and check its status. The
-// workspace becomes available when the status changes to `RUNNING`.
-//
-// For information about how to create a new workspace with this API **including
-// error handling**, see [Create a new workspace using the Account API].
-//
-// This operation is available only if your account is on the E2 version of the
-// platform or on a select custom plan that allows multiple workspaces per
-// account.
-//
-// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-func (a *WorkspacesAPI) Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get a workspace.
@@ -1995,20 +1631,9 @@ func (a *WorkspacesAPI) Get(ctx context.Context, request GetWorkspaceRequest) (*
 //
 // [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 func (a *WorkspacesAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*Workspace, error) {
-	return a.impl.Get(ctx, GetWorkspaceRequest{
+	return a.WorkspacesService.Get(ctx, GetWorkspaceRequest{
 		WorkspaceId: workspaceId,
 	})
-}
-
-// Get all workspaces.
-//
-// Gets a list of all workspaces associated with an account, specified by ID.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform or on a select custom plan that allows multiple workspaces per
-// account.
-func (a *WorkspacesAPI) List(ctx context.Context) ([]Workspace, error) {
-	return a.impl.List(ctx)
 }
 
 // WorkspaceWorkspaceNameToWorkspaceIdMap calls [WorkspacesAPI.List] and creates a map of results with [Workspace].WorkspaceName as key and [Workspace].WorkspaceId as value.
@@ -2187,7 +1812,7 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 // [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
 // [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 func (a *WorkspacesAPI) Update(ctx context.Context, updateWorkspaceRequest UpdateWorkspaceRequest) (*WaitGetWorkspaceRunning[struct{}], error) {
-	err := a.impl.Update(ctx, updateWorkspaceRequest)
+	err := a.WorkspacesService.Update(ctx, updateWorkspaceRequest)
 	if err != nil {
 		return nil, err
 	}

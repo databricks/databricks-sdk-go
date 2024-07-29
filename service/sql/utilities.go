@@ -14,7 +14,7 @@ type statementExecutionAPIUtilities interface {
 
 // [EXPERIMENTAL] Execute a query and wait for results to be available
 func (a *StatementExecutionAPI) ExecuteAndWait(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error) {
-	immediateResponse, err := a.impl.ExecuteStatement(ctx, request)
+	immediateResponse, err := a.ExecuteStatement(ctx, request)
 	if err != nil {
 		return nil, err
 	}
