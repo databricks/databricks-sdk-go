@@ -14,14 +14,6 @@ import (
 )
 
 type CleanRoomsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockCleanRoomsInterface instead.
-	WithImpl(impl CleanRoomsService) CleanRoomsInterface
-
-	// Impl returns low-level CleanRooms API implementation
-	// Deprecated: use MockCleanRoomsInterface instead.
-	Impl() CleanRoomsService
 
 	// Create a clean room.
 	//
@@ -93,7 +85,7 @@ type CleanRoomsInterface interface {
 
 func NewCleanRooms(client *client.DatabricksClient) *CleanRoomsAPI {
 	return &CleanRoomsAPI{
-		CleanRoomsService: &cleanRoomsImpl{
+		cleanRoomsImpl: cleanRoomsImpl{
 			client: client,
 		},
 	}
@@ -106,23 +98,7 @@ func NewCleanRooms(client *client.DatabricksClient) *CleanRoomsAPI {
 // To create clean rooms, you must be a metastore admin or a user with the
 // **CREATE_CLEAN_ROOM** privilege.
 type CleanRoomsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(CleanRoomsService)
-	CleanRoomsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockCleanRoomsInterface instead.
-func (a *CleanRoomsAPI) WithImpl(impl CleanRoomsService) CleanRoomsInterface {
-	a.CleanRoomsService = impl
-	return a
-}
-
-// Impl returns low-level CleanRooms API implementation
-// Deprecated: use MockCleanRoomsInterface instead.
-func (a *CleanRoomsAPI) Impl() CleanRoomsService {
-	return a.CleanRoomsService
+	cleanRoomsImpl
 }
 
 // Delete a clean room.
@@ -130,7 +106,7 @@ func (a *CleanRoomsAPI) Impl() CleanRoomsService {
 // Deletes a data object clean room from the metastore. The caller must be an
 // owner of the clean room.
 func (a *CleanRoomsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.CleanRoomsService.Delete(ctx, DeleteCleanRoomRequest{
+	return a.cleanRoomsImpl.Delete(ctx, DeleteCleanRoomRequest{
 		Name: name,
 	})
 }
@@ -140,7 +116,7 @@ func (a *CleanRoomsAPI) DeleteByName(ctx context.Context, name string) error {
 // Gets a data object clean room from the metastore. The caller must be a
 // metastore admin or the owner of the clean room.
 func (a *CleanRoomsAPI) GetByName(ctx context.Context, name string) (*CleanRoomInfo, error) {
-	return a.CleanRoomsService.Get(ctx, GetCleanRoomRequest{
+	return a.cleanRoomsImpl.Get(ctx, GetCleanRoomRequest{
 		Name: name,
 	})
 }
@@ -156,7 +132,7 @@ func (a *CleanRoomsAPI) List(ctx context.Context, request ListCleanRoomsRequest)
 
 	getNextPage := func(ctx context.Context, req ListCleanRoomsRequest) (*ListCleanRoomsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.CleanRoomsService.List(ctx, req)
+		return a.cleanRoomsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListCleanRoomsResponse) []CleanRoomInfo {
 		return resp.CleanRooms
@@ -190,14 +166,6 @@ func (a *CleanRoomsAPI) ListAll(ctx context.Context, request ListCleanRoomsReque
 }
 
 type ProvidersInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockProvidersInterface instead.
-	WithImpl(impl ProvidersService) ProvidersInterface
-
-	// Impl returns low-level Providers API implementation
-	// Deprecated: use MockProvidersInterface instead.
-	Impl() ProvidersService
 
 	// Create an auth provider.
 	//
@@ -296,7 +264,7 @@ type ProvidersInterface interface {
 
 func NewProviders(client *client.DatabricksClient) *ProvidersAPI {
 	return &ProvidersAPI{
-		ProvidersService: &providersImpl{
+		providersImpl: providersImpl{
 			client: client,
 		},
 	}
@@ -306,23 +274,7 @@ func NewProviders(client *client.DatabricksClient) *ProvidersAPI {
 // who shares the data. A provider contains shares which further contain the
 // shared data.
 type ProvidersAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ProvidersService)
-	ProvidersService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockProvidersInterface instead.
-func (a *ProvidersAPI) WithImpl(impl ProvidersService) ProvidersInterface {
-	a.ProvidersService = impl
-	return a
-}
-
-// Impl returns low-level Providers API implementation
-// Deprecated: use MockProvidersInterface instead.
-func (a *ProvidersAPI) Impl() ProvidersService {
-	return a.ProvidersService
+	providersImpl
 }
 
 // Delete a provider.
@@ -330,7 +282,7 @@ func (a *ProvidersAPI) Impl() ProvidersService {
 // Deletes an authentication provider, if the caller is a metastore admin or is
 // the owner of the provider.
 func (a *ProvidersAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.ProvidersService.Delete(ctx, DeleteProviderRequest{
+	return a.providersImpl.Delete(ctx, DeleteProviderRequest{
 		Name: name,
 	})
 }
@@ -341,7 +293,7 @@ func (a *ProvidersAPI) DeleteByName(ctx context.Context, name string) error {
 // the provider, and must either be a metastore admin or the owner of the
 // provider.
 func (a *ProvidersAPI) GetByName(ctx context.Context, name string) (*ProviderInfo, error) {
-	return a.ProvidersService.Get(ctx, GetProviderRequest{
+	return a.providersImpl.Get(ctx, GetProviderRequest{
 		Name: name,
 	})
 }
@@ -358,7 +310,7 @@ func (a *ProvidersAPI) List(ctx context.Context, request ListProvidersRequest) l
 
 	getNextPage := func(ctx context.Context, req ListProvidersRequest) (*ListProvidersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ProvidersService.List(ctx, req)
+		return a.providersImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListProvidersResponse) []ProviderInfo {
 		return resp.Providers
@@ -428,7 +380,7 @@ func (a *ProvidersAPI) ListShares(ctx context.Context, request ListSharesRequest
 
 	getNextPage := func(ctx context.Context, req ListSharesRequest) (*ListProviderSharesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ProvidersService.ListShares(ctx, req)
+		return a.providersImpl.ListShares(ctx, req)
 	}
 	getItems := func(resp *ListProviderSharesResponse) []ProviderShare {
 		return resp.Shares
@@ -460,20 +412,12 @@ func (a *ProvidersAPI) ListSharesAll(ctx context.Context, request ListSharesRequ
 //
 // * the caller is a metastore admin, or * the caller is the owner.
 func (a *ProvidersAPI) ListSharesByName(ctx context.Context, name string) (*ListProviderSharesResponse, error) {
-	return a.ProvidersService.ListShares(ctx, ListSharesRequest{
+	return a.providersImpl.ListShares(ctx, ListSharesRequest{
 		Name: name,
 	})
 }
 
 type RecipientActivationInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockRecipientActivationInterface instead.
-	WithImpl(impl RecipientActivationService) RecipientActivationInterface
-
-	// Impl returns low-level RecipientActivation API implementation
-	// Deprecated: use MockRecipientActivationInterface instead.
-	Impl() RecipientActivationService
 
 	// Get a share activation URL.
 	//
@@ -500,7 +444,7 @@ type RecipientActivationInterface interface {
 
 func NewRecipientActivation(client *client.DatabricksClient) *RecipientActivationAPI {
 	return &RecipientActivationAPI{
-		RecipientActivationService: &recipientActivationImpl{
+		recipientActivationImpl: recipientActivationImpl{
 			client: client,
 		},
 	}
@@ -517,30 +461,14 @@ func NewRecipientActivation(client *client.DatabricksClient) *RecipientActivatio
 // treat the downloaded credential as a secret and must not share it outside of
 // their organization.
 type RecipientActivationAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(RecipientActivationService)
-	RecipientActivationService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockRecipientActivationInterface instead.
-func (a *RecipientActivationAPI) WithImpl(impl RecipientActivationService) RecipientActivationInterface {
-	a.RecipientActivationService = impl
-	return a
-}
-
-// Impl returns low-level RecipientActivation API implementation
-// Deprecated: use MockRecipientActivationInterface instead.
-func (a *RecipientActivationAPI) Impl() RecipientActivationService {
-	return a.RecipientActivationService
+	recipientActivationImpl
 }
 
 // Get a share activation URL.
 //
 // Gets an activation URL for a share.
 func (a *RecipientActivationAPI) GetActivationUrlInfoByActivationUrl(ctx context.Context, activationUrl string) error {
-	return a.RecipientActivationService.GetActivationUrlInfo(ctx, GetActivationUrlInfoRequest{
+	return a.recipientActivationImpl.GetActivationUrlInfo(ctx, GetActivationUrlInfoRequest{
 		ActivationUrl: activationUrl,
 	})
 }
@@ -550,20 +478,12 @@ func (a *RecipientActivationAPI) GetActivationUrlInfoByActivationUrl(ctx context
 // Retrieve access token with an activation url. This is a public API without
 // any authentication.
 func (a *RecipientActivationAPI) RetrieveTokenByActivationUrl(ctx context.Context, activationUrl string) (*RetrieveTokenResponse, error) {
-	return a.RecipientActivationService.RetrieveToken(ctx, RetrieveTokenRequest{
+	return a.recipientActivationImpl.RetrieveToken(ctx, RetrieveTokenRequest{
 		ActivationUrl: activationUrl,
 	})
 }
 
 type RecipientsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockRecipientsInterface instead.
-	WithImpl(impl RecipientsService) RecipientsInterface
-
-	// Impl returns low-level Recipients API implementation
-	// Deprecated: use MockRecipientsInterface instead.
-	Impl() RecipientsService
 
 	// Create a share recipient.
 	//
@@ -656,7 +576,7 @@ type RecipientsInterface interface {
 
 func NewRecipients(client *client.DatabricksClient) *RecipientsAPI {
 	return &RecipientsAPI{
-		RecipientsService: &recipientsImpl{
+		recipientsImpl: recipientsImpl{
 			client: client,
 		},
 	}
@@ -680,23 +600,7 @@ func NewRecipients(client *client.DatabricksClient) *RecipientsAPI {
 // file to establish a secure connection to receive the shared data. This
 // sharing mode is called **open sharing**.
 type RecipientsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(RecipientsService)
-	RecipientsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockRecipientsInterface instead.
-func (a *RecipientsAPI) WithImpl(impl RecipientsService) RecipientsInterface {
-	a.RecipientsService = impl
-	return a
-}
-
-// Impl returns low-level Recipients API implementation
-// Deprecated: use MockRecipientsInterface instead.
-func (a *RecipientsAPI) Impl() RecipientsService {
-	return a.RecipientsService
+	recipientsImpl
 }
 
 // Delete a share recipient.
@@ -704,7 +608,7 @@ func (a *RecipientsAPI) Impl() RecipientsService {
 // Deletes the specified recipient from the metastore. The caller must be the
 // owner of the recipient.
 func (a *RecipientsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.RecipientsService.Delete(ctx, DeleteRecipientRequest{
+	return a.recipientsImpl.Delete(ctx, DeleteRecipientRequest{
 		Name: name,
 	})
 }
@@ -715,7 +619,7 @@ func (a *RecipientsAPI) DeleteByName(ctx context.Context, name string) error {
 //
 // * the caller is the owner of the share recipient, or: * is a metastore admin
 func (a *RecipientsAPI) GetByName(ctx context.Context, name string) (*RecipientInfo, error) {
-	return a.RecipientsService.Get(ctx, GetRecipientRequest{
+	return a.recipientsImpl.Get(ctx, GetRecipientRequest{
 		Name: name,
 	})
 }
@@ -732,7 +636,7 @@ func (a *RecipientsAPI) List(ctx context.Context, request ListRecipientsRequest)
 
 	getNextPage := func(ctx context.Context, req ListRecipientsRequest) (*ListRecipientsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.RecipientsService.List(ctx, req)
+		return a.recipientsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListRecipientsResponse) []RecipientInfo {
 		return resp.Recipients
@@ -796,20 +700,12 @@ func (a *RecipientsAPI) RecipientInfoNameToMetastoreIdMap(ctx context.Context, r
 // Gets the share permissions for the specified Recipient. The caller must be a
 // metastore admin or the owner of the Recipient.
 func (a *RecipientsAPI) SharePermissionsByName(ctx context.Context, name string) (*GetRecipientSharePermissionsResponse, error) {
-	return a.RecipientsService.SharePermissions(ctx, SharePermissionsRequest{
+	return a.recipientsImpl.SharePermissions(ctx, SharePermissionsRequest{
 		Name: name,
 	})
 }
 
 type SharesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockSharesInterface instead.
-	WithImpl(impl SharesService) SharesInterface
-
-	// Impl returns low-level Shares API implementation
-	// Deprecated: use MockSharesInterface instead.
-	Impl() SharesService
 
 	// Create a share.
 	//
@@ -906,7 +802,7 @@ type SharesInterface interface {
 
 func NewShares(client *client.DatabricksClient) *SharesAPI {
 	return &SharesAPI{
-		SharesService: &sharesImpl{
+		sharesImpl: sharesImpl{
 			client: client,
 		},
 	}
@@ -918,23 +814,7 @@ func NewShares(client *client.DatabricksClient) *SharesAPI {
 // assets under their original name, qualified by their original schema, or
 // provide alternate exposed names.
 type SharesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(SharesService)
-	SharesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockSharesInterface instead.
-func (a *SharesAPI) WithImpl(impl SharesService) SharesInterface {
-	a.SharesService = impl
-	return a
-}
-
-// Impl returns low-level Shares API implementation
-// Deprecated: use MockSharesInterface instead.
-func (a *SharesAPI) Impl() SharesService {
-	return a.SharesService
+	sharesImpl
 }
 
 // Delete a share.
@@ -942,7 +822,7 @@ func (a *SharesAPI) Impl() SharesService {
 // Deletes a data object share from the metastore. The caller must be an owner
 // of the share.
 func (a *SharesAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.SharesService.Delete(ctx, DeleteShareRequest{
+	return a.sharesImpl.Delete(ctx, DeleteShareRequest{
 		Name: name,
 	})
 }
@@ -952,7 +832,7 @@ func (a *SharesAPI) DeleteByName(ctx context.Context, name string) error {
 // Gets a data object share from the metastore. The caller must be a metastore
 // admin or the owner of the share.
 func (a *SharesAPI) GetByName(ctx context.Context, name string) (*ShareInfo, error) {
-	return a.SharesService.Get(ctx, GetShareRequest{
+	return a.sharesImpl.Get(ctx, GetShareRequest{
 		Name: name,
 	})
 }
@@ -968,7 +848,7 @@ func (a *SharesAPI) List(ctx context.Context, request ListSharesRequest) listing
 
 	getNextPage := func(ctx context.Context, req ListSharesRequest) (*ListSharesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.SharesService.List(ctx, req)
+		return a.sharesImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListSharesResponse) []ShareInfo {
 		return resp.Shares
@@ -1006,7 +886,7 @@ func (a *SharesAPI) ListAll(ctx context.Context, request ListSharesRequest) ([]S
 // Gets the permissions for a data share from the metastore. The caller must be
 // a metastore admin or the owner of the share.
 func (a *SharesAPI) SharePermissionsByName(ctx context.Context, name string) (*catalog.PermissionsList, error) {
-	return a.SharesService.SharePermissions(ctx, SharePermissionsRequest{
+	return a.sharesImpl.SharePermissions(ctx, SharePermissionsRequest{
 		Name: name,
 	})
 }

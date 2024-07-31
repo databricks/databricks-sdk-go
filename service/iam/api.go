@@ -13,14 +13,6 @@ import (
 )
 
 type AccountAccessControlInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockAccountAccessControlInterface instead.
-	WithImpl(impl AccountAccessControlService) AccountAccessControlInterface
-
-	// Impl returns low-level AccountAccessControl API implementation
-	// Deprecated: use MockAccountAccessControlInterface instead.
-	Impl() AccountAccessControlService
 
 	// Get assignable roles for a resource.
 	//
@@ -46,7 +38,7 @@ type AccountAccessControlInterface interface {
 
 func NewAccountAccessControl(client *client.DatabricksClient) *AccountAccessControlAPI {
 	return &AccountAccessControlAPI{
-		AccountAccessControlService: &accountAccessControlImpl{
+		accountAccessControlImpl: accountAccessControlImpl{
 			client: client,
 		},
 	}
@@ -56,34 +48,10 @@ func NewAccountAccessControl(client *client.DatabricksClient) *AccountAccessCont
 // grant rules are supported. A grant rule specifies a role assigned to a set of
 // principals. A list of rules attached to a resource is called a rule set.
 type AccountAccessControlAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AccountAccessControlService)
-	AccountAccessControlService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockAccountAccessControlInterface instead.
-func (a *AccountAccessControlAPI) WithImpl(impl AccountAccessControlService) AccountAccessControlInterface {
-	a.AccountAccessControlService = impl
-	return a
-}
-
-// Impl returns low-level AccountAccessControl API implementation
-// Deprecated: use MockAccountAccessControlInterface instead.
-func (a *AccountAccessControlAPI) Impl() AccountAccessControlService {
-	return a.AccountAccessControlService
+	accountAccessControlImpl
 }
 
 type AccountAccessControlProxyInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockAccountAccessControlProxyInterface instead.
-	WithImpl(impl AccountAccessControlProxyService) AccountAccessControlProxyInterface
-
-	// Impl returns low-level AccountAccessControlProxy API implementation
-	// Deprecated: use MockAccountAccessControlProxyInterface instead.
-	Impl() AccountAccessControlProxyService
 
 	// Get assignable roles for a resource.
 	//
@@ -109,7 +77,7 @@ type AccountAccessControlProxyInterface interface {
 
 func NewAccountAccessControlProxy(client *client.DatabricksClient) *AccountAccessControlProxyAPI {
 	return &AccountAccessControlProxyAPI{
-		AccountAccessControlProxyService: &accountAccessControlProxyImpl{
+		accountAccessControlProxyImpl: accountAccessControlProxyImpl{
 			client: client,
 		},
 	}
@@ -120,34 +88,10 @@ func NewAccountAccessControlProxy(client *client.DatabricksClient) *AccountAcces
 // principals. A list of rules attached to a resource is called a rule set. A
 // workspace must belong to an account for these APIs to work.
 type AccountAccessControlProxyAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AccountAccessControlProxyService)
-	AccountAccessControlProxyService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockAccountAccessControlProxyInterface instead.
-func (a *AccountAccessControlProxyAPI) WithImpl(impl AccountAccessControlProxyService) AccountAccessControlProxyInterface {
-	a.AccountAccessControlProxyService = impl
-	return a
-}
-
-// Impl returns low-level AccountAccessControlProxy API implementation
-// Deprecated: use MockAccountAccessControlProxyInterface instead.
-func (a *AccountAccessControlProxyAPI) Impl() AccountAccessControlProxyService {
-	return a.AccountAccessControlProxyService
+	accountAccessControlProxyImpl
 }
 
 type AccountGroupsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockAccountGroupsInterface instead.
-	WithImpl(impl AccountGroupsService) AccountGroupsInterface
-
-	// Impl returns low-level AccountGroups API implementation
-	// Deprecated: use MockAccountGroupsInterface instead.
-	Impl() AccountGroupsService
 
 	// Create a new group.
 	//
@@ -220,7 +164,7 @@ type AccountGroupsInterface interface {
 
 func NewAccountGroups(client *client.DatabricksClient) *AccountGroupsAPI {
 	return &AccountGroupsAPI{
-		AccountGroupsService: &accountGroupsImpl{
+		accountGroupsImpl: accountGroupsImpl{
 			client: client,
 		},
 	}
@@ -234,30 +178,14 @@ func NewAccountGroups(client *client.DatabricksClient) *AccountGroupsAPI {
 // Databricks account identities can be assigned as members of groups, and
 // members inherit permissions that are assigned to their group.
 type AccountGroupsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AccountGroupsService)
-	AccountGroupsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockAccountGroupsInterface instead.
-func (a *AccountGroupsAPI) WithImpl(impl AccountGroupsService) AccountGroupsInterface {
-	a.AccountGroupsService = impl
-	return a
-}
-
-// Impl returns low-level AccountGroups API implementation
-// Deprecated: use MockAccountGroupsInterface instead.
-func (a *AccountGroupsAPI) Impl() AccountGroupsService {
-	return a.AccountGroupsService
+	accountGroupsImpl
 }
 
 // Delete a group.
 //
 // Deletes a group from the Databricks account.
 func (a *AccountGroupsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.AccountGroupsService.Delete(ctx, DeleteAccountGroupRequest{
+	return a.accountGroupsImpl.Delete(ctx, DeleteAccountGroupRequest{
 		Id: id,
 	})
 }
@@ -266,7 +194,7 @@ func (a *AccountGroupsAPI) DeleteById(ctx context.Context, id string) error {
 //
 // Gets the information for a specific group in the Databricks account.
 func (a *AccountGroupsAPI) GetById(ctx context.Context, id string) (*Group, error) {
-	return a.AccountGroupsService.Get(ctx, GetAccountGroupRequest{
+	return a.accountGroupsImpl.Get(ctx, GetAccountGroupRequest{
 		Id: id,
 	})
 }
@@ -284,7 +212,7 @@ func (a *AccountGroupsAPI) List(ctx context.Context, request ListAccountGroupsRe
 	}
 	getNextPage := func(ctx context.Context, req ListAccountGroupsRequest) (*ListGroupsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.AccountGroupsService.List(ctx, req)
+		return a.accountGroupsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListGroupsResponse) []Group {
 		return resp.Resources
@@ -374,14 +302,6 @@ func (a *AccountGroupsAPI) GetByDisplayName(ctx context.Context, name string) (*
 }
 
 type AccountServicePrincipalsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockAccountServicePrincipalsInterface instead.
-	WithImpl(impl AccountServicePrincipalsService) AccountServicePrincipalsInterface
-
-	// Impl returns low-level AccountServicePrincipals API implementation
-	// Deprecated: use MockAccountServicePrincipalsInterface instead.
-	Impl() AccountServicePrincipalsService
 
 	// Create a service principal.
 	//
@@ -458,7 +378,7 @@ type AccountServicePrincipalsInterface interface {
 
 func NewAccountServicePrincipals(client *client.DatabricksClient) *AccountServicePrincipalsAPI {
 	return &AccountServicePrincipalsAPI{
-		AccountServicePrincipalsService: &accountServicePrincipalsImpl{
+		accountServicePrincipalsImpl: accountServicePrincipalsImpl{
 			client: client,
 		},
 	}
@@ -471,30 +391,14 @@ func NewAccountServicePrincipals(client *client.DatabricksClient) *AccountServic
 // any write, delete, or modify privileges in production. This eliminates the
 // risk of a user overwriting production data by accident.
 type AccountServicePrincipalsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AccountServicePrincipalsService)
-	AccountServicePrincipalsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockAccountServicePrincipalsInterface instead.
-func (a *AccountServicePrincipalsAPI) WithImpl(impl AccountServicePrincipalsService) AccountServicePrincipalsInterface {
-	a.AccountServicePrincipalsService = impl
-	return a
-}
-
-// Impl returns low-level AccountServicePrincipals API implementation
-// Deprecated: use MockAccountServicePrincipalsInterface instead.
-func (a *AccountServicePrincipalsAPI) Impl() AccountServicePrincipalsService {
-	return a.AccountServicePrincipalsService
+	accountServicePrincipalsImpl
 }
 
 // Delete a service principal.
 //
 // Delete a single service principal in the Databricks account.
 func (a *AccountServicePrincipalsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.AccountServicePrincipalsService.Delete(ctx, DeleteAccountServicePrincipalRequest{
+	return a.accountServicePrincipalsImpl.Delete(ctx, DeleteAccountServicePrincipalRequest{
 		Id: id,
 	})
 }
@@ -504,7 +408,7 @@ func (a *AccountServicePrincipalsAPI) DeleteById(ctx context.Context, id string)
 // Gets the details for a single service principal define in the Databricks
 // account.
 func (a *AccountServicePrincipalsAPI) GetById(ctx context.Context, id string) (*ServicePrincipal, error) {
-	return a.AccountServicePrincipalsService.Get(ctx, GetAccountServicePrincipalRequest{
+	return a.accountServicePrincipalsImpl.Get(ctx, GetAccountServicePrincipalRequest{
 		Id: id,
 	})
 }
@@ -522,7 +426,7 @@ func (a *AccountServicePrincipalsAPI) List(ctx context.Context, request ListAcco
 	}
 	getNextPage := func(ctx context.Context, req ListAccountServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.AccountServicePrincipalsService.List(ctx, req)
+		return a.accountServicePrincipalsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListServicePrincipalResponse) []ServicePrincipal {
 		return resp.Resources
@@ -612,14 +516,6 @@ func (a *AccountServicePrincipalsAPI) GetByDisplayName(ctx context.Context, name
 }
 
 type AccountUsersInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockAccountUsersInterface instead.
-	WithImpl(impl AccountUsersService) AccountUsersInterface
-
-	// Impl returns low-level AccountUsers API implementation
-	// Deprecated: use MockAccountUsersInterface instead.
-	Impl() AccountUsersService
 
 	// Create a new user.
 	//
@@ -695,7 +591,7 @@ type AccountUsersInterface interface {
 
 func NewAccountUsers(client *client.DatabricksClient) *AccountUsersAPI {
 	return &AccountUsersAPI{
-		AccountUsersService: &accountUsersImpl{
+		accountUsersImpl: accountUsersImpl{
 			client: client,
 		},
 	}
@@ -713,23 +609,7 @@ func NewAccountUsers(client *client.DatabricksClient) *AccountUsersAPI {
 // account. This ensures a consistent offboarding process and prevents
 // unauthorized users from accessing sensitive data.
 type AccountUsersAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AccountUsersService)
-	AccountUsersService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockAccountUsersInterface instead.
-func (a *AccountUsersAPI) WithImpl(impl AccountUsersService) AccountUsersInterface {
-	a.AccountUsersService = impl
-	return a
-}
-
-// Impl returns low-level AccountUsers API implementation
-// Deprecated: use MockAccountUsersInterface instead.
-func (a *AccountUsersAPI) Impl() AccountUsersService {
-	return a.AccountUsersService
+	accountUsersImpl
 }
 
 // Delete a user.
@@ -737,7 +617,7 @@ func (a *AccountUsersAPI) Impl() AccountUsersService {
 // Deletes a user. Deleting a user from a Databricks account also removes
 // objects associated with the user.
 func (a *AccountUsersAPI) DeleteById(ctx context.Context, id string) error {
-	return a.AccountUsersService.Delete(ctx, DeleteAccountUserRequest{
+	return a.accountUsersImpl.Delete(ctx, DeleteAccountUserRequest{
 		Id: id,
 	})
 }
@@ -746,7 +626,7 @@ func (a *AccountUsersAPI) DeleteById(ctx context.Context, id string) error {
 //
 // Gets information for a specific user in Databricks account.
 func (a *AccountUsersAPI) GetById(ctx context.Context, id string) (*User, error) {
-	return a.AccountUsersService.Get(ctx, GetAccountUserRequest{
+	return a.accountUsersImpl.Get(ctx, GetAccountUserRequest{
 		Id: id,
 	})
 }
@@ -764,7 +644,7 @@ func (a *AccountUsersAPI) List(ctx context.Context, request ListAccountUsersRequ
 	}
 	getNextPage := func(ctx context.Context, req ListAccountUsersRequest) (*ListUsersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.AccountUsersService.List(ctx, req)
+		return a.accountUsersImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListUsersResponse) []User {
 		return resp.Resources
@@ -854,14 +734,6 @@ func (a *AccountUsersAPI) GetByUserName(ctx context.Context, name string) (*User
 }
 
 type CurrentUserInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockCurrentUserInterface instead.
-	WithImpl(impl CurrentUserService) CurrentUserInterface
-
-	// Impl returns low-level CurrentUser API implementation
-	// Deprecated: use MockCurrentUserInterface instead.
-	Impl() CurrentUserService
 
 	// Get current user info.
 	//
@@ -871,7 +743,7 @@ type CurrentUserInterface interface {
 
 func NewCurrentUser(client *client.DatabricksClient) *CurrentUserAPI {
 	return &CurrentUserAPI{
-		CurrentUserService: &currentUserImpl{
+		currentUserImpl: currentUserImpl{
 			client: client,
 		},
 	}
@@ -880,34 +752,10 @@ func NewCurrentUser(client *client.DatabricksClient) *CurrentUserAPI {
 // This API allows retrieving information about currently authenticated user or
 // service principal.
 type CurrentUserAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(CurrentUserService)
-	CurrentUserService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockCurrentUserInterface instead.
-func (a *CurrentUserAPI) WithImpl(impl CurrentUserService) CurrentUserInterface {
-	a.CurrentUserService = impl
-	return a
-}
-
-// Impl returns low-level CurrentUser API implementation
-// Deprecated: use MockCurrentUserInterface instead.
-func (a *CurrentUserAPI) Impl() CurrentUserService {
-	return a.CurrentUserService
+	currentUserImpl
 }
 
 type GroupsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockGroupsInterface instead.
-	WithImpl(impl GroupsService) GroupsInterface
-
-	// Impl returns low-level Groups API implementation
-	// Deprecated: use MockGroupsInterface instead.
-	Impl() GroupsService
 
 	// Create a new group.
 	//
@@ -980,7 +828,7 @@ type GroupsInterface interface {
 
 func NewGroups(client *client.DatabricksClient) *GroupsAPI {
 	return &GroupsAPI{
-		GroupsService: &groupsImpl{
+		groupsImpl: groupsImpl{
 			client: client,
 		},
 	}
@@ -994,30 +842,14 @@ func NewGroups(client *client.DatabricksClient) *GroupsAPI {
 // Databricks workspace identities can be assigned as members of groups, and
 // members inherit permissions that are assigned to their group.
 type GroupsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(GroupsService)
-	GroupsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockGroupsInterface instead.
-func (a *GroupsAPI) WithImpl(impl GroupsService) GroupsInterface {
-	a.GroupsService = impl
-	return a
-}
-
-// Impl returns low-level Groups API implementation
-// Deprecated: use MockGroupsInterface instead.
-func (a *GroupsAPI) Impl() GroupsService {
-	return a.GroupsService
+	groupsImpl
 }
 
 // Delete a group.
 //
 // Deletes a group from the Databricks workspace.
 func (a *GroupsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.GroupsService.Delete(ctx, DeleteGroupRequest{
+	return a.groupsImpl.Delete(ctx, DeleteGroupRequest{
 		Id: id,
 	})
 }
@@ -1026,7 +858,7 @@ func (a *GroupsAPI) DeleteById(ctx context.Context, id string) error {
 //
 // Gets the information for a specific group in the Databricks workspace.
 func (a *GroupsAPI) GetById(ctx context.Context, id string) (*Group, error) {
-	return a.GroupsService.Get(ctx, GetGroupRequest{
+	return a.groupsImpl.Get(ctx, GetGroupRequest{
 		Id: id,
 	})
 }
@@ -1044,7 +876,7 @@ func (a *GroupsAPI) List(ctx context.Context, request ListGroupsRequest) listing
 	}
 	getNextPage := func(ctx context.Context, req ListGroupsRequest) (*ListGroupsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.GroupsService.List(ctx, req)
+		return a.groupsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListGroupsResponse) []Group {
 		return resp.Resources
@@ -1134,14 +966,6 @@ func (a *GroupsAPI) GetByDisplayName(ctx context.Context, name string) (*Group, 
 }
 
 type PermissionMigrationInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockPermissionMigrationInterface instead.
-	WithImpl(impl PermissionMigrationService) PermissionMigrationInterface
-
-	// Impl returns low-level PermissionMigration API implementation
-	// Deprecated: use MockPermissionMigrationInterface instead.
-	Impl() PermissionMigrationService
 
 	// Migrate Permissions.
 	MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error)
@@ -1149,7 +973,7 @@ type PermissionMigrationInterface interface {
 
 func NewPermissionMigration(client *client.DatabricksClient) *PermissionMigrationAPI {
 	return &PermissionMigrationAPI{
-		PermissionMigrationService: &permissionMigrationImpl{
+		permissionMigrationImpl: permissionMigrationImpl{
 			client: client,
 		},
 	}
@@ -1158,34 +982,10 @@ func NewPermissionMigration(client *client.DatabricksClient) *PermissionMigratio
 // APIs for migrating acl permissions, used only by the ucx tool:
 // https://github.com/databrickslabs/ucx
 type PermissionMigrationAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(PermissionMigrationService)
-	PermissionMigrationService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockPermissionMigrationInterface instead.
-func (a *PermissionMigrationAPI) WithImpl(impl PermissionMigrationService) PermissionMigrationInterface {
-	a.PermissionMigrationService = impl
-	return a
-}
-
-// Impl returns low-level PermissionMigration API implementation
-// Deprecated: use MockPermissionMigrationInterface instead.
-func (a *PermissionMigrationAPI) Impl() PermissionMigrationService {
-	return a.PermissionMigrationService
+	permissionMigrationImpl
 }
 
 type PermissionsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockPermissionsInterface instead.
-	WithImpl(impl PermissionsService) PermissionsInterface
-
-	// Impl returns low-level Permissions API implementation
-	// Deprecated: use MockPermissionsInterface instead.
-	Impl() PermissionsService
 
 	// Get object permissions.
 	//
@@ -1224,7 +1024,7 @@ type PermissionsInterface interface {
 
 func NewPermissions(client *client.DatabricksClient) *PermissionsAPI {
 	return &PermissionsAPI{
-		PermissionsService: &permissionsImpl{
+		permissionsImpl: permissionsImpl{
 			client: client,
 		},
 	}
@@ -1281,23 +1081,7 @@ func NewPermissions(client *client.DatabricksClient) *PermissionsAPI {
 //
 // [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 type PermissionsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(PermissionsService)
-	PermissionsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockPermissionsInterface instead.
-func (a *PermissionsAPI) WithImpl(impl PermissionsService) PermissionsInterface {
-	a.PermissionsService = impl
-	return a
-}
-
-// Impl returns low-level Permissions API implementation
-// Deprecated: use MockPermissionsInterface instead.
-func (a *PermissionsAPI) Impl() PermissionsService {
-	return a.PermissionsService
+	permissionsImpl
 }
 
 // Get object permissions.
@@ -1305,7 +1089,7 @@ func (a *PermissionsAPI) Impl() PermissionsService {
 // Gets the permissions of an object. Objects can inherit permissions from their
 // parent objects or root object.
 func (a *PermissionsAPI) GetByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*ObjectPermissions, error) {
-	return a.PermissionsService.Get(ctx, GetPermissionRequest{
+	return a.permissionsImpl.Get(ctx, GetPermissionRequest{
 		RequestObjectType: requestObjectType,
 		RequestObjectId:   requestObjectId,
 	})
@@ -1315,21 +1099,13 @@ func (a *PermissionsAPI) GetByRequestObjectTypeAndRequestObjectId(ctx context.Co
 //
 // Gets the permission levels that a user can have on an object.
 func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
-	return a.PermissionsService.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
+	return a.permissionsImpl.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
 		RequestObjectType: requestObjectType,
 		RequestObjectId:   requestObjectId,
 	})
 }
 
 type ServicePrincipalsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockServicePrincipalsInterface instead.
-	WithImpl(impl ServicePrincipalsService) ServicePrincipalsInterface
-
-	// Impl returns low-level ServicePrincipals API implementation
-	// Deprecated: use MockServicePrincipalsInterface instead.
-	Impl() ServicePrincipalsService
 
 	// Create a service principal.
 	//
@@ -1406,7 +1182,7 @@ type ServicePrincipalsInterface interface {
 
 func NewServicePrincipals(client *client.DatabricksClient) *ServicePrincipalsAPI {
 	return &ServicePrincipalsAPI{
-		ServicePrincipalsService: &servicePrincipalsImpl{
+		servicePrincipalsImpl: servicePrincipalsImpl{
 			client: client,
 		},
 	}
@@ -1419,30 +1195,14 @@ func NewServicePrincipals(client *client.DatabricksClient) *ServicePrincipalsAPI
 // any write, delete, or modify privileges in production. This eliminates the
 // risk of a user overwriting production data by accident.
 type ServicePrincipalsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ServicePrincipalsService)
-	ServicePrincipalsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockServicePrincipalsInterface instead.
-func (a *ServicePrincipalsAPI) WithImpl(impl ServicePrincipalsService) ServicePrincipalsInterface {
-	a.ServicePrincipalsService = impl
-	return a
-}
-
-// Impl returns low-level ServicePrincipals API implementation
-// Deprecated: use MockServicePrincipalsInterface instead.
-func (a *ServicePrincipalsAPI) Impl() ServicePrincipalsService {
-	return a.ServicePrincipalsService
+	servicePrincipalsImpl
 }
 
 // Delete a service principal.
 //
 // Delete a single service principal in the Databricks workspace.
 func (a *ServicePrincipalsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.ServicePrincipalsService.Delete(ctx, DeleteServicePrincipalRequest{
+	return a.servicePrincipalsImpl.Delete(ctx, DeleteServicePrincipalRequest{
 		Id: id,
 	})
 }
@@ -1452,7 +1212,7 @@ func (a *ServicePrincipalsAPI) DeleteById(ctx context.Context, id string) error 
 // Gets the details for a single service principal define in the Databricks
 // workspace.
 func (a *ServicePrincipalsAPI) GetById(ctx context.Context, id string) (*ServicePrincipal, error) {
-	return a.ServicePrincipalsService.Get(ctx, GetServicePrincipalRequest{
+	return a.servicePrincipalsImpl.Get(ctx, GetServicePrincipalRequest{
 		Id: id,
 	})
 }
@@ -1470,7 +1230,7 @@ func (a *ServicePrincipalsAPI) List(ctx context.Context, request ListServicePrin
 	}
 	getNextPage := func(ctx context.Context, req ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ServicePrincipalsService.List(ctx, req)
+		return a.servicePrincipalsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListServicePrincipalResponse) []ServicePrincipal {
 		return resp.Resources
@@ -1560,14 +1320,6 @@ func (a *ServicePrincipalsAPI) GetByDisplayName(ctx context.Context, name string
 }
 
 type UsersInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockUsersInterface instead.
-	WithImpl(impl UsersService) UsersInterface
-
-	// Impl returns low-level Users API implementation
-	// Deprecated: use MockUsersInterface instead.
-	Impl() UsersService
 
 	// Create a new user.
 	//
@@ -1666,7 +1418,7 @@ type UsersInterface interface {
 
 func NewUsers(client *client.DatabricksClient) *UsersAPI {
 	return &UsersAPI{
-		UsersService: &usersImpl{
+		usersImpl: usersImpl{
 			client: client,
 		},
 	}
@@ -1684,23 +1436,7 @@ func NewUsers(client *client.DatabricksClient) *UsersAPI {
 // Databricks workspace. This ensures a consistent offboarding process and
 // prevents unauthorized users from accessing sensitive data.
 type UsersAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(UsersService)
-	UsersService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockUsersInterface instead.
-func (a *UsersAPI) WithImpl(impl UsersService) UsersInterface {
-	a.UsersService = impl
-	return a
-}
-
-// Impl returns low-level Users API implementation
-// Deprecated: use MockUsersInterface instead.
-func (a *UsersAPI) Impl() UsersService {
-	return a.UsersService
+	usersImpl
 }
 
 // Delete a user.
@@ -1708,7 +1444,7 @@ func (a *UsersAPI) Impl() UsersService {
 // Deletes a user. Deleting a user from a Databricks workspace also removes
 // objects associated with the user.
 func (a *UsersAPI) DeleteById(ctx context.Context, id string) error {
-	return a.UsersService.Delete(ctx, DeleteUserRequest{
+	return a.usersImpl.Delete(ctx, DeleteUserRequest{
 		Id: id,
 	})
 }
@@ -1717,7 +1453,7 @@ func (a *UsersAPI) DeleteById(ctx context.Context, id string) error {
 //
 // Gets information for a specific user in Databricks workspace.
 func (a *UsersAPI) GetById(ctx context.Context, id string) (*User, error) {
-	return a.UsersService.Get(ctx, GetUserRequest{
+	return a.usersImpl.Get(ctx, GetUserRequest{
 		Id: id,
 	})
 }
@@ -1735,7 +1471,7 @@ func (a *UsersAPI) List(ctx context.Context, request ListUsersRequest) listing.I
 	}
 	getNextPage := func(ctx context.Context, req ListUsersRequest) (*ListUsersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.UsersService.List(ctx, req)
+		return a.usersImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListUsersResponse) []User {
 		return resp.Resources
@@ -1825,14 +1561,6 @@ func (a *UsersAPI) GetByUserName(ctx context.Context, name string) (*User, error
 }
 
 type WorkspaceAssignmentInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockWorkspaceAssignmentInterface instead.
-	WithImpl(impl WorkspaceAssignmentService) WorkspaceAssignmentInterface
-
-	// Impl returns low-level WorkspaceAssignment API implementation
-	// Deprecated: use MockWorkspaceAssignmentInterface instead.
-	Impl() WorkspaceAssignmentService
 
 	// Delete permissions assignment.
 	//
@@ -1889,7 +1617,7 @@ type WorkspaceAssignmentInterface interface {
 
 func NewWorkspaceAssignment(client *client.DatabricksClient) *WorkspaceAssignmentAPI {
 	return &WorkspaceAssignmentAPI{
-		WorkspaceAssignmentService: &workspaceAssignmentImpl{
+		workspaceAssignmentImpl: workspaceAssignmentImpl{
 			client: client,
 		},
 	}
@@ -1898,23 +1626,7 @@ func NewWorkspaceAssignment(client *client.DatabricksClient) *WorkspaceAssignmen
 // The Workspace Permission Assignment API allows you to manage workspace
 // permissions for principals in your account.
 type WorkspaceAssignmentAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(WorkspaceAssignmentService)
-	WorkspaceAssignmentService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockWorkspaceAssignmentInterface instead.
-func (a *WorkspaceAssignmentAPI) WithImpl(impl WorkspaceAssignmentService) WorkspaceAssignmentInterface {
-	a.WorkspaceAssignmentService = impl
-	return a
-}
-
-// Impl returns low-level WorkspaceAssignment API implementation
-// Deprecated: use MockWorkspaceAssignmentInterface instead.
-func (a *WorkspaceAssignmentAPI) Impl() WorkspaceAssignmentService {
-	return a.WorkspaceAssignmentService
+	workspaceAssignmentImpl
 }
 
 // Delete permissions assignment.
@@ -1922,7 +1634,7 @@ func (a *WorkspaceAssignmentAPI) Impl() WorkspaceAssignmentService {
 // Deletes the workspace permissions assignment in a given account and workspace
 // for the specified principal.
 func (a *WorkspaceAssignmentAPI) DeleteByWorkspaceIdAndPrincipalId(ctx context.Context, workspaceId int64, principalId int64) error {
-	return a.WorkspaceAssignmentService.Delete(ctx, DeleteWorkspaceAssignmentRequest{
+	return a.workspaceAssignmentImpl.Delete(ctx, DeleteWorkspaceAssignmentRequest{
 		WorkspaceId: workspaceId,
 		PrincipalId: principalId,
 	})
@@ -1933,7 +1645,7 @@ func (a *WorkspaceAssignmentAPI) DeleteByWorkspaceIdAndPrincipalId(ctx context.C
 // Get an array of workspace permissions for the specified account and
 // workspace.
 func (a *WorkspaceAssignmentAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*WorkspacePermissions, error) {
-	return a.WorkspaceAssignmentService.Get(ctx, GetWorkspaceAssignmentRequest{
+	return a.workspaceAssignmentImpl.Get(ctx, GetWorkspaceAssignmentRequest{
 		WorkspaceId: workspaceId,
 	})
 }
@@ -1948,7 +1660,7 @@ func (a *WorkspaceAssignmentAPI) List(ctx context.Context, request ListWorkspace
 
 	getNextPage := func(ctx context.Context, req ListWorkspaceAssignmentRequest) (*PermissionAssignments, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.WorkspaceAssignmentService.List(ctx, req)
+		return a.workspaceAssignmentImpl.List(ctx, req)
 	}
 	getItems := func(resp *PermissionAssignments) []PermissionAssignment {
 		return resp.PermissionAssignments
@@ -1978,7 +1690,7 @@ func (a *WorkspaceAssignmentAPI) ListAll(ctx context.Context, request ListWorksp
 // Get the permission assignments for the specified Databricks account and
 // Databricks workspace.
 func (a *WorkspaceAssignmentAPI) ListByWorkspaceId(ctx context.Context, workspaceId int64) (*PermissionAssignments, error) {
-	return a.WorkspaceAssignmentService.List(ctx, ListWorkspaceAssignmentRequest{
+	return a.workspaceAssignmentImpl.List(ctx, ListWorkspaceAssignmentRequest{
 		WorkspaceId: workspaceId,
 	})
 }

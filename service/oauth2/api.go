@@ -12,14 +12,6 @@ import (
 )
 
 type CustomAppIntegrationInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockCustomAppIntegrationInterface instead.
-	WithImpl(impl CustomAppIntegrationService) CustomAppIntegrationInterface
-
-	// Impl returns low-level CustomAppIntegration API implementation
-	// Deprecated: use MockCustomAppIntegrationInterface instead.
-	Impl() CustomAppIntegrationService
 
 	// Create Custom OAuth App Integration.
 	//
@@ -76,7 +68,7 @@ type CustomAppIntegrationInterface interface {
 
 func NewCustomAppIntegration(client *client.DatabricksClient) *CustomAppIntegrationAPI {
 	return &CustomAppIntegrationAPI{
-		CustomAppIntegrationService: &customAppIntegrationImpl{
+		customAppIntegrationImpl: customAppIntegrationImpl{
 			client: client,
 		},
 	}
@@ -86,23 +78,7 @@ func NewCustomAppIntegration(client *client.DatabricksClient) *CustomAppIntegrat
 // which is required for adding/using Custom OAuth App Integration like Tableau
 // Cloud for Databricks in AWS cloud.
 type CustomAppIntegrationAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(CustomAppIntegrationService)
-	CustomAppIntegrationService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockCustomAppIntegrationInterface instead.
-func (a *CustomAppIntegrationAPI) WithImpl(impl CustomAppIntegrationService) CustomAppIntegrationInterface {
-	a.CustomAppIntegrationService = impl
-	return a
-}
-
-// Impl returns low-level CustomAppIntegration API implementation
-// Deprecated: use MockCustomAppIntegrationInterface instead.
-func (a *CustomAppIntegrationAPI) Impl() CustomAppIntegrationService {
-	return a.CustomAppIntegrationService
+	customAppIntegrationImpl
 }
 
 // Delete Custom OAuth App Integration.
@@ -110,7 +86,7 @@ func (a *CustomAppIntegrationAPI) Impl() CustomAppIntegrationService {
 // Delete an existing Custom OAuth App Integration. You can retrieve the custom
 // OAuth app integration via :method:CustomAppIntegration/get.
 func (a *CustomAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
-	return a.CustomAppIntegrationService.Delete(ctx, DeleteCustomAppIntegrationRequest{
+	return a.customAppIntegrationImpl.Delete(ctx, DeleteCustomAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
 }
@@ -119,7 +95,7 @@ func (a *CustomAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, int
 //
 // Gets the Custom OAuth App Integration for the given integration id.
 func (a *CustomAppIntegrationAPI) GetByIntegrationId(ctx context.Context, integrationId string) (*GetCustomAppIntegrationOutput, error) {
-	return a.CustomAppIntegrationService.Get(ctx, GetCustomAppIntegrationRequest{
+	return a.customAppIntegrationImpl.Get(ctx, GetCustomAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
 }
@@ -134,7 +110,7 @@ func (a *CustomAppIntegrationAPI) List(ctx context.Context, request ListCustomAp
 
 	getNextPage := func(ctx context.Context, req ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.CustomAppIntegrationService.List(ctx, req)
+		return a.customAppIntegrationImpl.List(ctx, req)
 	}
 	getItems := func(resp *GetCustomAppIntegrationsOutput) []GetCustomAppIntegrationOutput {
 		return resp.Apps
@@ -166,14 +142,6 @@ func (a *CustomAppIntegrationAPI) ListAll(ctx context.Context, request ListCusto
 }
 
 type OAuthPublishedAppsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockOAuthPublishedAppsInterface instead.
-	WithImpl(impl OAuthPublishedAppsService) OAuthPublishedAppsInterface
-
-	// Impl returns low-level OAuthPublishedApps API implementation
-	// Deprecated: use MockOAuthPublishedAppsInterface instead.
-	Impl() OAuthPublishedAppsService
 
 	// Get all the published OAuth apps.
 	//
@@ -192,7 +160,7 @@ type OAuthPublishedAppsInterface interface {
 
 func NewOAuthPublishedApps(client *client.DatabricksClient) *OAuthPublishedAppsAPI {
 	return &OAuthPublishedAppsAPI{
-		OAuthPublishedAppsService: &oAuthPublishedAppsImpl{
+		oAuthPublishedAppsImpl: oAuthPublishedAppsImpl{
 			client: client,
 		},
 	}
@@ -203,23 +171,7 @@ func NewOAuthPublishedApps(client *client.DatabricksClient) *OAuthPublishedAppsA
 // applications to their account through the OAuth Published App Integration
 // APIs.
 type OAuthPublishedAppsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(OAuthPublishedAppsService)
-	OAuthPublishedAppsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockOAuthPublishedAppsInterface instead.
-func (a *OAuthPublishedAppsAPI) WithImpl(impl OAuthPublishedAppsService) OAuthPublishedAppsInterface {
-	a.OAuthPublishedAppsService = impl
-	return a
-}
-
-// Impl returns low-level OAuthPublishedApps API implementation
-// Deprecated: use MockOAuthPublishedAppsInterface instead.
-func (a *OAuthPublishedAppsAPI) Impl() OAuthPublishedAppsService {
-	return a.OAuthPublishedAppsService
+	oAuthPublishedAppsImpl
 }
 
 // Get all the published OAuth apps.
@@ -231,7 +183,7 @@ func (a *OAuthPublishedAppsAPI) List(ctx context.Context, request ListOAuthPubli
 
 	getNextPage := func(ctx context.Context, req ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.OAuthPublishedAppsService.List(ctx, req)
+		return a.oAuthPublishedAppsImpl.List(ctx, req)
 	}
 	getItems := func(resp *GetPublishedAppsOutput) []PublishedAppOutput {
 		return resp.Apps
@@ -262,14 +214,6 @@ func (a *OAuthPublishedAppsAPI) ListAll(ctx context.Context, request ListOAuthPu
 }
 
 type PublishedAppIntegrationInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockPublishedAppIntegrationInterface instead.
-	WithImpl(impl PublishedAppIntegrationService) PublishedAppIntegrationInterface
-
-	// Impl returns low-level PublishedAppIntegration API implementation
-	// Deprecated: use MockPublishedAppIntegrationInterface instead.
-	Impl() PublishedAppIntegrationService
 
 	// Create Published OAuth App Integration.
 	//
@@ -326,7 +270,7 @@ type PublishedAppIntegrationInterface interface {
 
 func NewPublishedAppIntegration(client *client.DatabricksClient) *PublishedAppIntegrationAPI {
 	return &PublishedAppIntegrationAPI{
-		PublishedAppIntegrationService: &publishedAppIntegrationImpl{
+		publishedAppIntegrationImpl: publishedAppIntegrationImpl{
 			client: client,
 		},
 	}
@@ -336,23 +280,7 @@ func NewPublishedAppIntegration(client *client.DatabricksClient) *PublishedAppIn
 // which is required for adding/using Published OAuth App Integration like
 // Tableau Desktop for Databricks in AWS cloud.
 type PublishedAppIntegrationAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(PublishedAppIntegrationService)
-	PublishedAppIntegrationService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockPublishedAppIntegrationInterface instead.
-func (a *PublishedAppIntegrationAPI) WithImpl(impl PublishedAppIntegrationService) PublishedAppIntegrationInterface {
-	a.PublishedAppIntegrationService = impl
-	return a
-}
-
-// Impl returns low-level PublishedAppIntegration API implementation
-// Deprecated: use MockPublishedAppIntegrationInterface instead.
-func (a *PublishedAppIntegrationAPI) Impl() PublishedAppIntegrationService {
-	return a.PublishedAppIntegrationService
+	publishedAppIntegrationImpl
 }
 
 // Delete Published OAuth App Integration.
@@ -360,7 +288,7 @@ func (a *PublishedAppIntegrationAPI) Impl() PublishedAppIntegrationService {
 // Delete an existing Published OAuth App Integration. You can retrieve the
 // published OAuth app integration via :method:PublishedAppIntegration/get.
 func (a *PublishedAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
-	return a.PublishedAppIntegrationService.Delete(ctx, DeletePublishedAppIntegrationRequest{
+	return a.publishedAppIntegrationImpl.Delete(ctx, DeletePublishedAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
 }
@@ -369,7 +297,7 @@ func (a *PublishedAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, 
 //
 // Gets the Published OAuth App Integration for the given integration id.
 func (a *PublishedAppIntegrationAPI) GetByIntegrationId(ctx context.Context, integrationId string) (*GetPublishedAppIntegrationOutput, error) {
-	return a.PublishedAppIntegrationService.Get(ctx, GetPublishedAppIntegrationRequest{
+	return a.publishedAppIntegrationImpl.Get(ctx, GetPublishedAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
 }
@@ -384,7 +312,7 @@ func (a *PublishedAppIntegrationAPI) List(ctx context.Context, request ListPubli
 
 	getNextPage := func(ctx context.Context, req ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.PublishedAppIntegrationService.List(ctx, req)
+		return a.publishedAppIntegrationImpl.List(ctx, req)
 	}
 	getItems := func(resp *GetPublishedAppIntegrationsOutput) []GetPublishedAppIntegrationOutput {
 		return resp.Apps
@@ -416,14 +344,6 @@ func (a *PublishedAppIntegrationAPI) ListAll(ctx context.Context, request ListPu
 }
 
 type ServicePrincipalSecretsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockServicePrincipalSecretsInterface instead.
-	WithImpl(impl ServicePrincipalSecretsService) ServicePrincipalSecretsInterface
-
-	// Impl returns low-level ServicePrincipalSecrets API implementation
-	// Deprecated: use MockServicePrincipalSecretsInterface instead.
-	Impl() ServicePrincipalSecretsService
 
 	// Create service principal secret.
 	//
@@ -468,7 +388,7 @@ type ServicePrincipalSecretsInterface interface {
 
 func NewServicePrincipalSecrets(client *client.DatabricksClient) *ServicePrincipalSecretsAPI {
 	return &ServicePrincipalSecretsAPI{
-		ServicePrincipalSecretsService: &servicePrincipalSecretsImpl{
+		servicePrincipalSecretsImpl: servicePrincipalSecretsImpl{
 			client: client,
 		},
 	}
@@ -488,30 +408,14 @@ func NewServicePrincipalSecrets(client *client.DatabricksClient) *ServicePrincip
 // [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
 // [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
 type ServicePrincipalSecretsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ServicePrincipalSecretsService)
-	ServicePrincipalSecretsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockServicePrincipalSecretsInterface instead.
-func (a *ServicePrincipalSecretsAPI) WithImpl(impl ServicePrincipalSecretsService) ServicePrincipalSecretsInterface {
-	a.ServicePrincipalSecretsService = impl
-	return a
-}
-
-// Impl returns low-level ServicePrincipalSecrets API implementation
-// Deprecated: use MockServicePrincipalSecretsInterface instead.
-func (a *ServicePrincipalSecretsAPI) Impl() ServicePrincipalSecretsService {
-	return a.ServicePrincipalSecretsService
+	servicePrincipalSecretsImpl
 }
 
 // Delete service principal secret.
 //
 // Delete a secret from the given service principal.
 func (a *ServicePrincipalSecretsAPI) DeleteByServicePrincipalIdAndSecretId(ctx context.Context, servicePrincipalId int64, secretId string) error {
-	return a.ServicePrincipalSecretsService.Delete(ctx, DeleteServicePrincipalSecretRequest{
+	return a.servicePrincipalSecretsImpl.Delete(ctx, DeleteServicePrincipalSecretRequest{
 		ServicePrincipalId: servicePrincipalId,
 		SecretId:           secretId,
 	})
@@ -528,7 +432,7 @@ func (a *ServicePrincipalSecretsAPI) List(ctx context.Context, request ListServi
 
 	getNextPage := func(ctx context.Context, req ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ServicePrincipalSecretsService.List(ctx, req)
+		return a.servicePrincipalSecretsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListServicePrincipalSecretsResponse) []SecretInfo {
 		return resp.Secrets
@@ -560,7 +464,7 @@ func (a *ServicePrincipalSecretsAPI) ListAll(ctx context.Context, request ListSe
 // only returns information about the secrets themselves and does not include
 // the secret values.
 func (a *ServicePrincipalSecretsAPI) ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*ListServicePrincipalSecretsResponse, error) {
-	return a.ServicePrincipalSecretsService.List(ctx, ListServicePrincipalSecretsRequest{
+	return a.servicePrincipalSecretsImpl.List(ctx, ListServicePrincipalSecretsRequest{
 		ServicePrincipalId: servicePrincipalId,
 	})
 }

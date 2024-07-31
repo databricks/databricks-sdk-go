@@ -15,14 +15,6 @@ import (
 )
 
 type VectorSearchEndpointsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockVectorSearchEndpointsInterface instead.
-	WithImpl(impl VectorSearchEndpointsService) VectorSearchEndpointsInterface
-
-	// Impl returns low-level VectorSearchEndpoints API implementation
-	// Deprecated: use MockVectorSearchEndpointsInterface instead.
-	Impl() VectorSearchEndpointsService
 
 	// WaitGetEndpointVectorSearchEndpointOnline repeatedly calls [VectorSearchEndpointsAPI.GetEndpoint] and waits to reach ONLINE state
 	WaitGetEndpointVectorSearchEndpointOnline(ctx context.Context, endpointName string,
@@ -66,7 +58,7 @@ type VectorSearchEndpointsInterface interface {
 
 func NewVectorSearchEndpoints(client *client.DatabricksClient) *VectorSearchEndpointsAPI {
 	return &VectorSearchEndpointsAPI{
-		VectorSearchEndpointsService: &vectorSearchEndpointsImpl{
+		vectorSearchEndpointsImpl: vectorSearchEndpointsImpl{
 			client: client,
 		},
 	}
@@ -74,23 +66,7 @@ func NewVectorSearchEndpoints(client *client.DatabricksClient) *VectorSearchEndp
 
 // **Endpoint**: Represents the compute resources to host vector search indexes.
 type VectorSearchEndpointsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(VectorSearchEndpointsService)
-	VectorSearchEndpointsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockVectorSearchEndpointsInterface instead.
-func (a *VectorSearchEndpointsAPI) WithImpl(impl VectorSearchEndpointsService) VectorSearchEndpointsInterface {
-	a.VectorSearchEndpointsService = impl
-	return a
-}
-
-// Impl returns low-level VectorSearchEndpoints API implementation
-// Deprecated: use MockVectorSearchEndpointsInterface instead.
-func (a *VectorSearchEndpointsAPI) Impl() VectorSearchEndpointsService {
-	return a.VectorSearchEndpointsService
+	vectorSearchEndpointsImpl
 }
 
 // WaitGetEndpointVectorSearchEndpointOnline repeatedly calls [VectorSearchEndpointsAPI.GetEndpoint] and waits to reach ONLINE state
@@ -154,7 +130,7 @@ func (w *WaitGetEndpointVectorSearchEndpointOnline[R]) GetWithTimeout(timeout ti
 //
 // Create a new endpoint.
 func (a *VectorSearchEndpointsAPI) CreateEndpoint(ctx context.Context, createEndpoint CreateEndpoint) (*WaitGetEndpointVectorSearchEndpointOnline[EndpointInfo], error) {
-	endpointInfo, err := a.VectorSearchEndpointsService.CreateEndpoint(ctx, createEndpoint)
+	endpointInfo, err := a.vectorSearchEndpointsImpl.CreateEndpoint(ctx, createEndpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -198,14 +174,14 @@ func (a *VectorSearchEndpointsAPI) CreateEndpointAndWait(ctx context.Context, cr
 
 // Delete an endpoint.
 func (a *VectorSearchEndpointsAPI) DeleteEndpointByEndpointName(ctx context.Context, endpointName string) error {
-	return a.VectorSearchEndpointsService.DeleteEndpoint(ctx, DeleteEndpointRequest{
+	return a.vectorSearchEndpointsImpl.DeleteEndpoint(ctx, DeleteEndpointRequest{
 		EndpointName: endpointName,
 	})
 }
 
 // Get an endpoint.
 func (a *VectorSearchEndpointsAPI) GetEndpointByEndpointName(ctx context.Context, endpointName string) (*EndpointInfo, error) {
-	return a.VectorSearchEndpointsService.GetEndpoint(ctx, GetEndpointRequest{
+	return a.vectorSearchEndpointsImpl.GetEndpoint(ctx, GetEndpointRequest{
 		EndpointName: endpointName,
 	})
 }
@@ -217,7 +193,7 @@ func (a *VectorSearchEndpointsAPI) ListEndpoints(ctx context.Context, request Li
 
 	getNextPage := func(ctx context.Context, req ListEndpointsRequest) (*ListEndpointResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.VectorSearchEndpointsService.ListEndpoints(ctx, req)
+		return a.vectorSearchEndpointsImpl.ListEndpoints(ctx, req)
 	}
 	getItems := func(resp *ListEndpointResponse) []EndpointInfo {
 		return resp.Endpoints
@@ -246,14 +222,6 @@ func (a *VectorSearchEndpointsAPI) ListEndpointsAll(ctx context.Context, request
 }
 
 type VectorSearchIndexesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockVectorSearchIndexesInterface instead.
-	WithImpl(impl VectorSearchIndexesService) VectorSearchIndexesInterface
-
-	// Impl returns low-level VectorSearchIndexes API implementation
-	// Deprecated: use MockVectorSearchIndexesInterface instead.
-	Impl() VectorSearchIndexesService
 
 	// Create an index.
 	//
@@ -329,7 +297,7 @@ type VectorSearchIndexesInterface interface {
 
 func NewVectorSearchIndexes(client *client.DatabricksClient) *VectorSearchIndexesAPI {
 	return &VectorSearchIndexesAPI{
-		VectorSearchIndexesService: &vectorSearchIndexesImpl{
+		vectorSearchIndexesImpl: vectorSearchIndexesImpl{
 			client: client,
 		},
 	}
@@ -346,30 +314,14 @@ func NewVectorSearchIndexes(client *client.DatabricksClient) *VectorSearchIndexe
 // and write of vectors and metadata through our REST and SDK APIs. With this
 // model, the user manages index updates.
 type VectorSearchIndexesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(VectorSearchIndexesService)
-	VectorSearchIndexesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockVectorSearchIndexesInterface instead.
-func (a *VectorSearchIndexesAPI) WithImpl(impl VectorSearchIndexesService) VectorSearchIndexesInterface {
-	a.VectorSearchIndexesService = impl
-	return a
-}
-
-// Impl returns low-level VectorSearchIndexes API implementation
-// Deprecated: use MockVectorSearchIndexesInterface instead.
-func (a *VectorSearchIndexesAPI) Impl() VectorSearchIndexesService {
-	return a.VectorSearchIndexesService
+	vectorSearchIndexesImpl
 }
 
 // Delete an index.
 //
 // Delete an index.
 func (a *VectorSearchIndexesAPI) DeleteIndexByIndexName(ctx context.Context, indexName string) error {
-	return a.VectorSearchIndexesService.DeleteIndex(ctx, DeleteIndexRequest{
+	return a.vectorSearchIndexesImpl.DeleteIndex(ctx, DeleteIndexRequest{
 		IndexName: indexName,
 	})
 }
@@ -378,7 +330,7 @@ func (a *VectorSearchIndexesAPI) DeleteIndexByIndexName(ctx context.Context, ind
 //
 // Get an index.
 func (a *VectorSearchIndexesAPI) GetIndexByIndexName(ctx context.Context, indexName string) (*VectorIndex, error) {
-	return a.VectorSearchIndexesService.GetIndex(ctx, GetIndexRequest{
+	return a.vectorSearchIndexesImpl.GetIndex(ctx, GetIndexRequest{
 		IndexName: indexName,
 	})
 }
@@ -392,7 +344,7 @@ func (a *VectorSearchIndexesAPI) ListIndexes(ctx context.Context, request ListIn
 
 	getNextPage := func(ctx context.Context, req ListIndexesRequest) (*ListVectorIndexesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.VectorSearchIndexesService.ListIndexes(ctx, req)
+		return a.vectorSearchIndexesImpl.ListIndexes(ctx, req)
 	}
 	getItems := func(resp *ListVectorIndexesResponse) []MiniVectorIndex {
 		return resp.VectorIndexes
