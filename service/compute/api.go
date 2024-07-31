@@ -128,7 +128,7 @@ type ClusterPoliciesInterface interface {
 
 func NewClusterPolicies(client *client.DatabricksClient) *ClusterPoliciesAPI {
 	return &ClusterPoliciesAPI{
-		impl: &clusterPoliciesImpl{
+		ClusterPoliciesService: &clusterPoliciesImpl{
 			client: client,
 		},
 	}
@@ -160,36 +160,21 @@ func NewClusterPolicies(client *client.DatabricksClient) *ClusterPoliciesAPI {
 type ClusterPoliciesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ClusterPoliciesService)
-	impl ClusterPoliciesService
+	ClusterPoliciesService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockClusterPoliciesInterface instead.
 func (a *ClusterPoliciesAPI) WithImpl(impl ClusterPoliciesService) ClusterPoliciesInterface {
-	a.impl = impl
+	a.ClusterPoliciesService = impl
 	return a
 }
 
 // Impl returns low-level ClusterPolicies API implementation
 // Deprecated: use MockClusterPoliciesInterface instead.
 func (a *ClusterPoliciesAPI) Impl() ClusterPoliciesService {
-	return a.impl
-}
-
-// Create a new policy.
-//
-// Creates a new policy with prescribed settings.
-func (a *ClusterPoliciesAPI) Create(ctx context.Context, request CreatePolicy) (*CreatePolicyResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete a cluster policy.
-//
-// Delete a policy for a cluster. Clusters governed by this policy can still
-// run, but cannot be edited.
-func (a *ClusterPoliciesAPI) Delete(ctx context.Context, request DeletePolicy) error {
-	return a.impl.Delete(ctx, request)
+	return a.ClusterPoliciesService
 }
 
 // Delete a cluster policy.
@@ -197,25 +182,9 @@ func (a *ClusterPoliciesAPI) Delete(ctx context.Context, request DeletePolicy) e
 // Delete a policy for a cluster. Clusters governed by this policy can still
 // run, but cannot be edited.
 func (a *ClusterPoliciesAPI) DeleteByPolicyId(ctx context.Context, policyId string) error {
-	return a.impl.Delete(ctx, DeletePolicy{
+	return a.ClusterPoliciesService.Delete(ctx, DeletePolicy{
 		PolicyId: policyId,
 	})
-}
-
-// Update a cluster policy.
-//
-// Update an existing policy for cluster. This operation may make some clusters
-// governed by the previous policy invalid.
-func (a *ClusterPoliciesAPI) Edit(ctx context.Context, request EditPolicy) error {
-	return a.impl.Edit(ctx, request)
-}
-
-// Get a cluster policy.
-//
-// Get a cluster policy entity. Creation and editing is available to admins
-// only.
-func (a *ClusterPoliciesAPI) Get(ctx context.Context, request GetClusterPolicyRequest) (*Policy, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get a cluster policy.
@@ -223,7 +192,7 @@ func (a *ClusterPoliciesAPI) Get(ctx context.Context, request GetClusterPolicyRe
 // Get a cluster policy entity. Creation and editing is available to admins
 // only.
 func (a *ClusterPoliciesAPI) GetByPolicyId(ctx context.Context, policyId string) (*Policy, error) {
-	return a.impl.Get(ctx, GetClusterPolicyRequest{
+	return a.ClusterPoliciesService.Get(ctx, GetClusterPolicyRequest{
 		PolicyId: policyId,
 	})
 }
@@ -231,15 +200,8 @@ func (a *ClusterPoliciesAPI) GetByPolicyId(ctx context.Context, policyId string)
 // Get cluster policy permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ClusterPoliciesAPI) GetPermissionLevels(ctx context.Context, request GetClusterPolicyPermissionLevelsRequest) (*GetClusterPolicyPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, request)
-}
-
-// Get cluster policy permission levels.
-//
-// Gets the permission levels that a user can have on an object.
 func (a *ClusterPoliciesAPI) GetPermissionLevelsByClusterPolicyId(ctx context.Context, clusterPolicyId string) (*GetClusterPolicyPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, GetClusterPolicyPermissionLevelsRequest{
+	return a.ClusterPoliciesService.GetPermissionLevels(ctx, GetClusterPolicyPermissionLevelsRequest{
 		ClusterPolicyId: clusterPolicyId,
 	})
 }
@@ -248,16 +210,8 @@ func (a *ClusterPoliciesAPI) GetPermissionLevelsByClusterPolicyId(ctx context.Co
 //
 // Gets the permissions of a cluster policy. Cluster policies can inherit
 // permissions from their root object.
-func (a *ClusterPoliciesAPI) GetPermissions(ctx context.Context, request GetClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
-	return a.impl.GetPermissions(ctx, request)
-}
-
-// Get cluster policy permissions.
-//
-// Gets the permissions of a cluster policy. Cluster policies can inherit
-// permissions from their root object.
 func (a *ClusterPoliciesAPI) GetPermissionsByClusterPolicyId(ctx context.Context, clusterPolicyId string) (*ClusterPolicyPermissions, error) {
-	return a.impl.GetPermissions(ctx, GetClusterPolicyPermissionsRequest{
+	return a.ClusterPoliciesService.GetPermissions(ctx, GetClusterPolicyPermissionsRequest{
 		ClusterPolicyId: clusterPolicyId,
 	})
 }
@@ -271,7 +225,7 @@ func (a *ClusterPoliciesAPI) List(ctx context.Context, request ListClusterPolici
 
 	getNextPage := func(ctx context.Context, req ListClusterPoliciesRequest) (*ListPoliciesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx, req)
+		return a.ClusterPoliciesService.List(ctx, req)
 	}
 	getItems := func(resp *ListPoliciesResponse) []Policy {
 		return resp.Policies
@@ -346,22 +300,6 @@ func (a *ClusterPoliciesAPI) GetByName(ctx context.Context, name string) (*Polic
 		return nil, fmt.Errorf("there are %d instances of Policy named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
-}
-
-// Set cluster policy permissions.
-//
-// Sets permissions on a cluster policy. Cluster policies can inherit
-// permissions from their root object.
-func (a *ClusterPoliciesAPI) SetPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
-	return a.impl.SetPermissions(ctx, request)
-}
-
-// Update cluster policy permissions.
-//
-// Updates the permissions on a cluster policy. Cluster policies can inherit
-// permissions from their root object.
-func (a *ClusterPoliciesAPI) UpdatePermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
-	return a.impl.UpdatePermissions(ctx, request)
 }
 
 type ClustersInterface interface {
@@ -691,7 +629,7 @@ type ClustersInterface interface {
 
 func NewClusters(client *client.DatabricksClient) *ClustersAPI {
 	return &ClustersAPI{
-		impl: &clustersImpl{
+		ClustersService: &clustersImpl{
 			client: client,
 		},
 	}
@@ -726,21 +664,21 @@ func NewClusters(client *client.DatabricksClient) *ClustersAPI {
 type ClustersAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ClustersService)
-	impl ClustersService
+	ClustersService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockClustersInterface instead.
 func (a *ClustersAPI) WithImpl(impl ClustersService) ClustersInterface {
-	a.impl = impl
+	a.ClustersService = impl
 	return a
 }
 
 // Impl returns low-level Clusters API implementation
 // Deprecated: use MockClustersInterface instead.
 func (a *ClustersAPI) Impl() ClustersService {
-	return a.impl
+	return a.ClustersService
 }
 
 // WaitGetClusterRunning repeatedly calls [ClustersAPI.Get] and waits to reach RUNNING state
@@ -851,15 +789,6 @@ func (w *WaitGetClusterTerminated[R]) GetWithTimeout(timeout time.Duration) (*Cl
 	return w.Poll(timeout, w.callback)
 }
 
-// Change cluster owner.
-//
-// Change the owner of the cluster. You must be an admin and the cluster must be
-// terminated to perform this operation. The service principal application ID
-// can be supplied as an argument to `owner_username`.
-func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
-	return a.impl.ChangeOwner(ctx, request)
-}
-
 // Create new cluster.
 //
 // Creates a new Spark cluster. This method will acquire new instances from the
@@ -871,7 +800,7 @@ func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwne
 // creation will succeed. Otherwise the cluster will terminate with an
 // informative error message.
 func (a *ClustersAPI) Create(ctx context.Context, createCluster CreateCluster) (*WaitGetClusterRunning[CreateClusterResponse], error) {
-	createClusterResponse, err := a.impl.Create(ctx, createCluster)
+	createClusterResponse, err := a.ClustersService.Create(ctx, createCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -920,7 +849,7 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 // `TERMINATED` state. If the cluster is already in a `TERMINATING` or
 // `TERMINATED` state, nothing will happen.
 func (a *ClustersAPI) Delete(ctx context.Context, deleteCluster DeleteCluster) (*WaitGetClusterTerminated[struct{}], error) {
-	err := a.impl.Delete(ctx, deleteCluster)
+	err := a.ClustersService.Delete(ctx, deleteCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -969,7 +898,7 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 // `TERMINATED` state. If the cluster is already in a `TERMINATING` or
 // `TERMINATED` state, nothing will happen.
 func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) error {
-	return a.impl.Delete(ctx, DeleteCluster{
+	return a.ClustersService.Delete(ctx, DeleteCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -995,7 +924,7 @@ func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId st
 //
 // Clusters created by the Databricks Jobs service cannot be edited.
 func (a *ClustersAPI) Edit(ctx context.Context, editCluster EditCluster) (*WaitGetClusterRunning[struct{}], error) {
-	err := a.impl.Edit(ctx, editCluster)
+	err := a.ClustersService.Edit(ctx, editCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -1048,7 +977,7 @@ func (a *ClustersAPI) Events(ctx context.Context, request GetEvents) listing.Ite
 
 	getNextPage := func(ctx context.Context, req GetEvents) (*GetEventsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.Events(ctx, req)
+		return a.ClustersService.Events(ctx, req)
 	}
 	getItems := func(resp *GetEventsResponse) []ClusterEvent {
 		return resp.Events
@@ -1086,42 +1015,19 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 //
 // Retrieves the information for a cluster given its identifier. Clusters can be
 // described while they are running, or up to 60 days after they are terminated.
-func (a *ClustersAPI) Get(ctx context.Context, request GetClusterRequest) (*ClusterDetails, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Get cluster info.
-//
-// Retrieves the information for a cluster given its identifier. Clusters can be
-// described while they are running, or up to 60 days after they are terminated.
 func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*ClusterDetails, error) {
-	return a.impl.Get(ctx, GetClusterRequest{
+	return a.ClustersService.Get(ctx, GetClusterRequest{
 		ClusterId: clusterId,
 	})
-}
-
-// Get cluster permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *ClustersAPI) GetPermissionLevels(ctx context.Context, request GetClusterPermissionLevelsRequest) (*GetClusterPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get cluster permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *ClustersAPI) GetPermissionLevelsByClusterId(ctx context.Context, clusterId string) (*GetClusterPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, GetClusterPermissionLevelsRequest{
+	return a.ClustersService.GetPermissionLevels(ctx, GetClusterPermissionLevelsRequest{
 		ClusterId: clusterId,
 	})
-}
-
-// Get cluster permissions.
-//
-// Gets the permissions of a cluster. Clusters can inherit permissions from
-// their root object.
-func (a *ClustersAPI) GetPermissions(ctx context.Context, request GetClusterPermissionsRequest) (*ClusterPermissions, error) {
-	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get cluster permissions.
@@ -1129,7 +1035,7 @@ func (a *ClustersAPI) GetPermissions(ctx context.Context, request GetClusterPerm
 // Gets the permissions of a cluster. Clusters can inherit permissions from
 // their root object.
 func (a *ClustersAPI) GetPermissionsByClusterId(ctx context.Context, clusterId string) (*ClusterPermissions, error) {
-	return a.impl.GetPermissions(ctx, GetClusterPermissionsRequest{
+	return a.ClustersService.GetPermissions(ctx, GetClusterPermissionsRequest{
 		ClusterId: clusterId,
 	})
 }
@@ -1145,7 +1051,7 @@ func (a *ClustersAPI) List(ctx context.Context, request ListClustersRequest) lis
 
 	getNextPage := func(ctx context.Context, req ListClustersRequest) (*ListClustersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx, req)
+		return a.ClustersService.List(ctx, req)
 	}
 	getItems := func(resp *ListClustersResponse) []ClusterDetails {
 		return resp.Clusters
@@ -1231,34 +1137,6 @@ func (a *ClustersAPI) GetByClusterName(ctx context.Context, name string) (*Clust
 	return &alternatives[0], nil
 }
 
-// List node types.
-//
-// Returns a list of supported Spark node types. These node types can be used to
-// launch a cluster.
-func (a *ClustersAPI) ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse, error) {
-	return a.impl.ListNodeTypes(ctx)
-}
-
-// List availability zones.
-//
-// Returns a list of availability zones where clusters can be created in (For
-// example, us-west-2a). These zones can be used to launch a cluster.
-func (a *ClustersAPI) ListZones(ctx context.Context) (*ListAvailableZonesResponse, error) {
-	return a.impl.ListZones(ctx)
-}
-
-// Permanently delete cluster.
-//
-// Permanently deletes a Spark cluster. This cluster is terminated and resources
-// are asynchronously removed.
-//
-// In addition, users will no longer see permanently deleted clusters in the
-// cluster list, and API users can no longer perform any action on permanently
-// deleted clusters.
-func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error {
-	return a.impl.PermanentDelete(ctx, request)
-}
-
 // Permanently delete cluster.
 //
 // Permanently deletes a Spark cluster. This cluster is terminated and resources
@@ -1268,7 +1146,7 @@ func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDele
 // cluster list, and API users can no longer perform any action on permanently
 // deleted clusters.
 func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId string) error {
-	return a.impl.PermanentDelete(ctx, PermanentDeleteCluster{
+	return a.ClustersService.PermanentDelete(ctx, PermanentDeleteCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -1278,17 +1156,8 @@ func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId 
 // Pinning a cluster ensures that the cluster will always be returned by the
 // ListClusters API. Pinning a cluster that is already pinned will have no
 // effect. This API can only be called by workspace admins.
-func (a *ClustersAPI) Pin(ctx context.Context, request PinCluster) error {
-	return a.impl.Pin(ctx, request)
-}
-
-// Pin cluster.
-//
-// Pinning a cluster ensures that the cluster will always be returned by the
-// ListClusters API. Pinning a cluster that is already pinned will have no
-// effect. This API can only be called by workspace admins.
 func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) error {
-	return a.impl.Pin(ctx, PinCluster{
+	return a.ClustersService.Pin(ctx, PinCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -1298,7 +1167,7 @@ func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) erro
 // Resizes a cluster to have a desired number of workers. This will fail unless
 // the cluster is in a `RUNNING` state.
 func (a *ClustersAPI) Resize(ctx context.Context, resizeCluster ResizeCluster) (*WaitGetClusterRunning[struct{}], error) {
-	err := a.impl.Resize(ctx, resizeCluster)
+	err := a.ClustersService.Resize(ctx, resizeCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -1345,7 +1214,7 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 // Restarts a Spark cluster with the supplied ID. If the cluster is not
 // currently in a `RUNNING` state, nothing will happen.
 func (a *ClustersAPI) Restart(ctx context.Context, restartCluster RestartCluster) (*WaitGetClusterRunning[struct{}], error) {
-	err := a.impl.Restart(ctx, restartCluster)
+	err := a.ClustersService.Restart(ctx, restartCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -1387,22 +1256,6 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 	return wait.Get()
 }
 
-// Set cluster permissions.
-//
-// Sets permissions on a cluster. Clusters can inherit permissions from their
-// root object.
-func (a *ClustersAPI) SetPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
-	return a.impl.SetPermissions(ctx, request)
-}
-
-// List available Spark versions.
-//
-// Returns the list of available Spark versions. These versions can be used to
-// launch a cluster.
-func (a *ClustersAPI) SparkVersions(ctx context.Context) (*GetSparkVersionsResponse, error) {
-	return a.impl.SparkVersions(ctx)
-}
-
 // Start terminated cluster.
 //
 // Starts a terminated Spark cluster with the supplied ID. This works similar to
@@ -1414,7 +1267,7 @@ func (a *ClustersAPI) SparkVersions(ctx context.Context) (*GetSparkVersionsRespo
 // nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
 func (a *ClustersAPI) Start(ctx context.Context, startCluster StartCluster) (*WaitGetClusterRunning[struct{}], error) {
-	err := a.impl.Start(ctx, startCluster)
+	err := a.ClustersService.Start(ctx, startCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -1467,7 +1320,7 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 // nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
 func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) error {
-	return a.impl.Start(ctx, StartCluster{
+	return a.ClustersService.Start(ctx, StartCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -1483,27 +1336,10 @@ func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId str
 // Unpinning a cluster will allow the cluster to eventually be removed from the
 // ListClusters API. Unpinning a cluster that is not pinned will have no effect.
 // This API can only be called by workspace admins.
-func (a *ClustersAPI) Unpin(ctx context.Context, request UnpinCluster) error {
-	return a.impl.Unpin(ctx, request)
-}
-
-// Unpin cluster.
-//
-// Unpinning a cluster will allow the cluster to eventually be removed from the
-// ListClusters API. Unpinning a cluster that is not pinned will have no effect.
-// This API can only be called by workspace admins.
 func (a *ClustersAPI) UnpinByClusterId(ctx context.Context, clusterId string) error {
-	return a.impl.Unpin(ctx, UnpinCluster{
+	return a.ClustersService.Unpin(ctx, UnpinCluster{
 		ClusterId: clusterId,
 	})
-}
-
-// Update cluster permissions.
-//
-// Updates the permissions on a cluster. Clusters can inherit permissions from
-// their root object.
-func (a *ClustersAPI) UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
-	return a.impl.UpdatePermissions(ctx, request)
 }
 
 type CommandExecutionInterface interface {
@@ -1597,7 +1433,7 @@ type CommandExecutionInterface interface {
 
 func NewCommandExecution(client *client.DatabricksClient) *CommandExecutionAPI {
 	return &CommandExecutionAPI{
-		impl: &commandExecutionImpl{
+		CommandExecutionService: &commandExecutionImpl{
 			client: client,
 		},
 	}
@@ -1609,21 +1445,21 @@ func NewCommandExecution(client *client.DatabricksClient) *CommandExecutionAPI {
 type CommandExecutionAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(CommandExecutionService)
-	impl CommandExecutionService
+	CommandExecutionService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockCommandExecutionInterface instead.
 func (a *CommandExecutionAPI) WithImpl(impl CommandExecutionService) CommandExecutionInterface {
-	a.impl = impl
+	a.CommandExecutionService = impl
 	return a
 }
 
 // Impl returns low-level CommandExecution API implementation
 // Deprecated: use MockCommandExecutionInterface instead.
 func (a *CommandExecutionAPI) Impl() CommandExecutionService {
-	return a.impl
+	return a.CommandExecutionService
 }
 
 // WaitCommandStatusCommandExecutionCancelled repeatedly calls [CommandExecutionAPI.CommandStatus] and waits to reach Cancelled state
@@ -1807,7 +1643,7 @@ func (w *WaitContextStatusCommandExecutionRunning[R]) GetWithTimeout(timeout tim
 //
 // The command ID is obtained from a prior successful call to __execute__.
 func (a *CommandExecutionAPI) Cancel(ctx context.Context, cancelCommand CancelCommand) (*WaitCommandStatusCommandExecutionCancelled[struct{}], error) {
-	err := a.impl.Cancel(ctx, cancelCommand)
+	err := a.CommandExecutionService.Cancel(ctx, cancelCommand)
 	if err != nil {
 		return nil, err
 	}
@@ -1851,30 +1687,13 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 	return wait.Get()
 }
 
-// Get command info.
-//
-// Gets the status of and, if available, the results from a currently executing
-// command.
-//
-// The command ID is obtained from a prior successful call to __execute__.
-func (a *CommandExecutionAPI) CommandStatus(ctx context.Context, request CommandStatusRequest) (*CommandStatusResponse, error) {
-	return a.impl.CommandStatus(ctx, request)
-}
-
-// Get status.
-//
-// Gets the status for an execution context.
-func (a *CommandExecutionAPI) ContextStatus(ctx context.Context, request ContextStatusRequest) (*ContextStatusResponse, error) {
-	return a.impl.ContextStatus(ctx, request)
-}
-
 // Create an execution context.
 //
 // Creates an execution context for running cluster commands.
 //
 // If successful, this method returns the ID of the new execution context.
 func (a *CommandExecutionAPI) Create(ctx context.Context, createContext CreateContext) (*WaitContextStatusCommandExecutionRunning[Created], error) {
-	created, err := a.impl.Create(ctx, createContext)
+	created, err := a.CommandExecutionService.Create(ctx, createContext)
 	if err != nil {
 		return nil, err
 	}
@@ -1917,13 +1736,6 @@ func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext C
 	return wait.Get()
 }
 
-// Delete an execution context.
-//
-// Deletes an execution context.
-func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContext) error {
-	return a.impl.Destroy(ctx, request)
-}
-
 // Run a command.
 //
 // Runs a cluster command in the given execution context, using the provided
@@ -1932,7 +1744,7 @@ func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContex
 // If successful, it returns an ID for tracking the status of the command's
 // execution.
 func (a *CommandExecutionAPI) Execute(ctx context.Context, command Command) (*WaitCommandStatusCommandExecutionFinishedOrError[Created], error) {
-	created, err := a.impl.Execute(ctx, command)
+	created, err := a.CommandExecutionService.Execute(ctx, command)
 	if err != nil {
 		return nil, err
 	}
@@ -2058,7 +1870,7 @@ type GlobalInitScriptsInterface interface {
 
 func NewGlobalInitScripts(client *client.DatabricksClient) *GlobalInitScriptsAPI {
 	return &GlobalInitScriptsAPI{
-		impl: &globalInitScriptsImpl{
+		GlobalInitScriptsService: &globalInitScriptsImpl{
 			client: client,
 		},
 	}
@@ -2077,42 +1889,28 @@ func NewGlobalInitScripts(client *client.DatabricksClient) *GlobalInitScriptsAPI
 type GlobalInitScriptsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(GlobalInitScriptsService)
-	impl GlobalInitScriptsService
+	GlobalInitScriptsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockGlobalInitScriptsInterface instead.
 func (a *GlobalInitScriptsAPI) WithImpl(impl GlobalInitScriptsService) GlobalInitScriptsInterface {
-	a.impl = impl
+	a.GlobalInitScriptsService = impl
 	return a
 }
 
 // Impl returns low-level GlobalInitScripts API implementation
 // Deprecated: use MockGlobalInitScriptsInterface instead.
 func (a *GlobalInitScriptsAPI) Impl() GlobalInitScriptsService {
-	return a.impl
-}
-
-// Create init script.
-//
-// Creates a new global init script in this workspace.
-func (a *GlobalInitScriptsAPI) Create(ctx context.Context, request GlobalInitScriptCreateRequest) (*CreateResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete init script.
-//
-// Deletes a global init script.
-func (a *GlobalInitScriptsAPI) Delete(ctx context.Context, request DeleteGlobalInitScriptRequest) error {
-	return a.impl.Delete(ctx, request)
+	return a.GlobalInitScriptsService
 }
 
 // Delete init script.
 //
 // Deletes a global init script.
 func (a *GlobalInitScriptsAPI) DeleteByScriptId(ctx context.Context, scriptId string) error {
-	return a.impl.Delete(ctx, DeleteGlobalInitScriptRequest{
+	return a.GlobalInitScriptsService.Delete(ctx, DeleteGlobalInitScriptRequest{
 		ScriptId: scriptId,
 	})
 }
@@ -2120,15 +1918,8 @@ func (a *GlobalInitScriptsAPI) DeleteByScriptId(ctx context.Context, scriptId st
 // Get an init script.
 //
 // Gets all the details of a script, including its Base64-encoded contents.
-func (a *GlobalInitScriptsAPI) Get(ctx context.Context, request GetGlobalInitScriptRequest) (*GlobalInitScriptDetailsWithContent, error) {
-	return a.impl.Get(ctx, request)
-}
-
-// Get an init script.
-//
-// Gets all the details of a script, including its Base64-encoded contents.
 func (a *GlobalInitScriptsAPI) GetByScriptId(ctx context.Context, scriptId string) (*GlobalInitScriptDetailsWithContent, error) {
-	return a.impl.Get(ctx, GetGlobalInitScriptRequest{
+	return a.GlobalInitScriptsService.Get(ctx, GetGlobalInitScriptRequest{
 		ScriptId: scriptId,
 	})
 }
@@ -2146,7 +1937,7 @@ func (a *GlobalInitScriptsAPI) List(ctx context.Context) listing.Iterator[Global
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListGlobalInitScriptsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx)
+		return a.GlobalInitScriptsService.List(ctx)
 	}
 	getItems := func(resp *ListGlobalInitScriptsResponse) []GlobalInitScriptDetails {
 		return resp.Scripts
@@ -2224,14 +2015,6 @@ func (a *GlobalInitScriptsAPI) GetByName(ctx context.Context, name string) (*Glo
 		return nil, fmt.Errorf("there are %d instances of GlobalInitScriptDetails named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
-}
-
-// Update init script.
-//
-// Updates a global init script, specifying only the fields to change. All
-// fields are optional. Unspecified fields retain their current value.
-func (a *GlobalInitScriptsAPI) Update(ctx context.Context, request GlobalInitScriptUpdateRequest) error {
-	return a.impl.Update(ctx, request)
 }
 
 type InstancePoolsInterface interface {
@@ -2345,7 +2128,7 @@ type InstancePoolsInterface interface {
 
 func NewInstancePools(client *client.DatabricksClient) *InstancePoolsAPI {
 	return &InstancePoolsAPI{
-		impl: &instancePoolsImpl{
+		InstancePoolsService: &instancePoolsImpl{
 			client: client,
 		},
 	}
@@ -2372,36 +2155,21 @@ func NewInstancePools(client *client.DatabricksClient) *InstancePoolsAPI {
 type InstancePoolsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(InstancePoolsService)
-	impl InstancePoolsService
+	InstancePoolsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockInstancePoolsInterface instead.
 func (a *InstancePoolsAPI) WithImpl(impl InstancePoolsService) InstancePoolsInterface {
-	a.impl = impl
+	a.InstancePoolsService = impl
 	return a
 }
 
 // Impl returns low-level InstancePools API implementation
 // Deprecated: use MockInstancePoolsInterface instead.
 func (a *InstancePoolsAPI) Impl() InstancePoolsService {
-	return a.impl
-}
-
-// Create a new instance pool.
-//
-// Creates a new instance pool using idle and ready-to-use cloud instances.
-func (a *InstancePoolsAPI) Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete an instance pool.
-//
-// Deletes the instance pool permanently. The idle instances in the pool are
-// terminated asynchronously.
-func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePool) error {
-	return a.impl.Delete(ctx, request)
+	return a.InstancePoolsService
 }
 
 // Delete an instance pool.
@@ -2409,56 +2177,27 @@ func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePoo
 // Deletes the instance pool permanently. The idle instances in the pool are
 // terminated asynchronously.
 func (a *InstancePoolsAPI) DeleteByInstancePoolId(ctx context.Context, instancePoolId string) error {
-	return a.impl.Delete(ctx, DeleteInstancePool{
+	return a.InstancePoolsService.Delete(ctx, DeleteInstancePool{
 		InstancePoolId: instancePoolId,
 	})
-}
-
-// Edit an existing instance pool.
-//
-// Modifies the configuration of an existing instance pool.
-func (a *InstancePoolsAPI) Edit(ctx context.Context, request EditInstancePool) error {
-	return a.impl.Edit(ctx, request)
-}
-
-// Get instance pool information.
-//
-// Retrieve the information for an instance pool based on its identifier.
-func (a *InstancePoolsAPI) Get(ctx context.Context, request GetInstancePoolRequest) (*GetInstancePool, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get instance pool information.
 //
 // Retrieve the information for an instance pool based on its identifier.
 func (a *InstancePoolsAPI) GetByInstancePoolId(ctx context.Context, instancePoolId string) (*GetInstancePool, error) {
-	return a.impl.Get(ctx, GetInstancePoolRequest{
+	return a.InstancePoolsService.Get(ctx, GetInstancePoolRequest{
 		InstancePoolId: instancePoolId,
 	})
-}
-
-// Get instance pool permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *InstancePoolsAPI) GetPermissionLevels(ctx context.Context, request GetInstancePoolPermissionLevelsRequest) (*GetInstancePoolPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get instance pool permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *InstancePoolsAPI) GetPermissionLevelsByInstancePoolId(ctx context.Context, instancePoolId string) (*GetInstancePoolPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, GetInstancePoolPermissionLevelsRequest{
+	return a.InstancePoolsService.GetPermissionLevels(ctx, GetInstancePoolPermissionLevelsRequest{
 		InstancePoolId: instancePoolId,
 	})
-}
-
-// Get instance pool permissions.
-//
-// Gets the permissions of an instance pool. Instance pools can inherit
-// permissions from their root object.
-func (a *InstancePoolsAPI) GetPermissions(ctx context.Context, request GetInstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
-	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get instance pool permissions.
@@ -2466,7 +2205,7 @@ func (a *InstancePoolsAPI) GetPermissions(ctx context.Context, request GetInstan
 // Gets the permissions of an instance pool. Instance pools can inherit
 // permissions from their root object.
 func (a *InstancePoolsAPI) GetPermissionsByInstancePoolId(ctx context.Context, instancePoolId string) (*InstancePoolPermissions, error) {
-	return a.impl.GetPermissions(ctx, GetInstancePoolPermissionsRequest{
+	return a.InstancePoolsService.GetPermissions(ctx, GetInstancePoolPermissionsRequest{
 		InstancePoolId: instancePoolId,
 	})
 }
@@ -2481,7 +2220,7 @@ func (a *InstancePoolsAPI) List(ctx context.Context) listing.Iterator[InstancePo
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListInstancePools, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx)
+		return a.InstancePoolsService.List(ctx)
 	}
 	getItems := func(resp *ListInstancePools) []InstancePoolAndStats {
 		return resp.InstancePools
@@ -2558,22 +2297,6 @@ func (a *InstancePoolsAPI) GetByInstancePoolName(ctx context.Context, name strin
 	return &alternatives[0], nil
 }
 
-// Set instance pool permissions.
-//
-// Sets permissions on an instance pool. Instance pools can inherit permissions
-// from their root object.
-func (a *InstancePoolsAPI) SetPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
-	return a.impl.SetPermissions(ctx, request)
-}
-
-// Update instance pool permissions.
-//
-// Updates the permissions on an instance pool. Instance pools can inherit
-// permissions from their root object.
-func (a *InstancePoolsAPI) UpdatePermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
-	return a.impl.UpdatePermissions(ctx, request)
-}
-
 type InstanceProfilesInterface interface {
 	// WithImpl could be used to override low-level API implementations for unit
 	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
@@ -2646,7 +2369,7 @@ type InstanceProfilesInterface interface {
 
 func NewInstanceProfiles(client *client.DatabricksClient) *InstanceProfilesAPI {
 	return &InstanceProfilesAPI{
-		impl: &instanceProfilesImpl{
+		InstanceProfilesService: &instanceProfilesImpl{
 			client: client,
 		},
 	}
@@ -2661,50 +2384,21 @@ func NewInstanceProfiles(client *client.DatabricksClient) *InstanceProfilesAPI {
 type InstanceProfilesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(InstanceProfilesService)
-	impl InstanceProfilesService
+	InstanceProfilesService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockInstanceProfilesInterface instead.
 func (a *InstanceProfilesAPI) WithImpl(impl InstanceProfilesService) InstanceProfilesInterface {
-	a.impl = impl
+	a.InstanceProfilesService = impl
 	return a
 }
 
 // Impl returns low-level InstanceProfiles API implementation
 // Deprecated: use MockInstanceProfilesInterface instead.
 func (a *InstanceProfilesAPI) Impl() InstanceProfilesService {
-	return a.impl
-}
-
-// Register an instance profile.
-//
-// In the UI, you can select the instance profile when launching clusters. This
-// API is only available to admin users.
-func (a *InstanceProfilesAPI) Add(ctx context.Context, request AddInstanceProfile) error {
-	return a.impl.Add(ctx, request)
-}
-
-// Edit an instance profile.
-//
-// The only supported field to change is the optional IAM role ARN associated
-// with the instance profile. It is required to specify the IAM role ARN if both
-// of the following are true:
-//
-// * Your role name and instance profile name do not match. The name is the part
-// after the last slash in each ARN. * You want to use the instance profile with
-// [Databricks SQL Serverless].
-//
-// To understand where these fields are in the AWS console, see [Enable
-// serverless SQL warehouses].
-//
-// This API is only available to admin users.
-//
-// [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
-// [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html
-func (a *InstanceProfilesAPI) Edit(ctx context.Context, request InstanceProfile) error {
-	return a.impl.Edit(ctx, request)
+	return a.InstanceProfilesService
 }
 
 // List available instance profiles.
@@ -2719,7 +2413,7 @@ func (a *InstanceProfilesAPI) List(ctx context.Context) listing.Iterator[Instanc
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListInstanceProfilesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx)
+		return a.InstanceProfilesService.List(ctx)
 	}
 	getItems := func(resp *ListInstanceProfilesResponse) []InstanceProfile {
 		return resp.InstanceProfiles
@@ -2751,18 +2445,8 @@ func (a *InstanceProfilesAPI) ListAll(ctx context.Context) ([]InstanceProfile, e
 // this instance profile will continue to function.
 //
 // This API is only accessible to admin users.
-func (a *InstanceProfilesAPI) Remove(ctx context.Context, request RemoveInstanceProfile) error {
-	return a.impl.Remove(ctx, request)
-}
-
-// Remove the instance profile.
-//
-// Remove the instance profile with the provided ARN. Existing clusters with
-// this instance profile will continue to function.
-//
-// This API is only accessible to admin users.
 func (a *InstanceProfilesAPI) RemoveByInstanceProfileArn(ctx context.Context, instanceProfileArn string) error {
-	return a.impl.Remove(ctx, RemoveInstanceProfile{
+	return a.InstanceProfilesService.Remove(ctx, RemoveInstanceProfile{
 		InstanceProfileArn: instanceProfileArn,
 	})
 }
@@ -2847,7 +2531,7 @@ type LibrariesInterface interface {
 
 func NewLibraries(client *client.DatabricksClient) *LibrariesAPI {
 	return &LibrariesAPI{
-		impl: &librariesImpl{
+		LibrariesService: &librariesImpl{
 			client: client,
 		},
 	}
@@ -2872,21 +2556,21 @@ func NewLibraries(client *client.DatabricksClient) *LibrariesAPI {
 type LibrariesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(LibrariesService)
-	impl LibrariesService
+	LibrariesService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockLibrariesInterface instead.
 func (a *LibrariesAPI) WithImpl(impl LibrariesService) LibrariesInterface {
-	a.impl = impl
+	a.LibrariesService = impl
 	return a
 }
 
 // Impl returns low-level Libraries API implementation
 // Deprecated: use MockLibrariesInterface instead.
 func (a *LibrariesAPI) Impl() LibrariesService {
-	return a.impl
+	return a.LibrariesService
 }
 
 // Get all statuses.
@@ -2900,7 +2584,7 @@ func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) listing.Iterator[
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListAllClusterLibraryStatusesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.AllClusterStatuses(ctx)
+		return a.LibrariesService.AllClusterStatuses(ctx)
 	}
 	getItems := func(resp *ListAllClusterLibraryStatusesResponse) []ClusterLibraryStatuses {
 		return resp.Statuses
@@ -2940,7 +2624,7 @@ func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatus)
 
 	getNextPage := func(ctx context.Context, req ClusterStatus) (*ClusterLibraryStatuses, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ClusterStatus(ctx, req)
+		return a.LibrariesService.ClusterStatus(ctx, req)
 	}
 	getItems := func(resp *ClusterLibraryStatuses) []LibraryFullStatus {
 		return resp.LibraryStatuses
@@ -2980,26 +2664,9 @@ func (a *LibrariesAPI) ClusterStatusAll(ctx context.Context, request ClusterStat
 // installed on this cluster or, but are now marked for removal, in no
 // particular order, are returned last.
 func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId string) (*ClusterLibraryStatuses, error) {
-	return a.impl.ClusterStatus(ctx, ClusterStatus{
+	return a.LibrariesService.ClusterStatus(ctx, ClusterStatus{
 		ClusterId: clusterId,
 	})
-}
-
-// Add a library.
-//
-// Add libraries to install on a cluster. The installation is asynchronous; it
-// happens in the background after the completion of this request.
-func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibraries) error {
-	return a.impl.Install(ctx, request)
-}
-
-// Uninstall libraries.
-//
-// Set libraries to uninstall from a cluster. The libraries won't be uninstalled
-// until the cluster is restarted. A request to uninstall a library that is not
-// currently installed is ignored.
-func (a *LibrariesAPI) Uninstall(ctx context.Context, request UninstallLibraries) error {
-	return a.impl.Uninstall(ctx, request)
 }
 
 type PolicyFamiliesInterface interface {
@@ -3039,7 +2706,7 @@ type PolicyFamiliesInterface interface {
 
 func NewPolicyFamilies(client *client.DatabricksClient) *PolicyFamiliesAPI {
 	return &PolicyFamiliesAPI{
-		impl: &policyFamiliesImpl{
+		PolicyFamiliesService: &policyFamiliesImpl{
 			client: client,
 		},
 	}
@@ -3057,35 +2724,28 @@ func NewPolicyFamilies(client *client.DatabricksClient) *PolicyFamiliesAPI {
 type PolicyFamiliesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(PolicyFamiliesService)
-	impl PolicyFamiliesService
+	PolicyFamiliesService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockPolicyFamiliesInterface instead.
 func (a *PolicyFamiliesAPI) WithImpl(impl PolicyFamiliesService) PolicyFamiliesInterface {
-	a.impl = impl
+	a.PolicyFamiliesService = impl
 	return a
 }
 
 // Impl returns low-level PolicyFamilies API implementation
 // Deprecated: use MockPolicyFamiliesInterface instead.
 func (a *PolicyFamiliesAPI) Impl() PolicyFamiliesService {
-	return a.impl
-}
-
-// Get policy family information.
-//
-// Retrieve the information for an policy family based on its identifier.
-func (a *PolicyFamiliesAPI) Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error) {
-	return a.impl.Get(ctx, request)
+	return a.PolicyFamiliesService
 }
 
 // Get policy family information.
 //
 // Retrieve the information for an policy family based on its identifier.
 func (a *PolicyFamiliesAPI) GetByPolicyFamilyId(ctx context.Context, policyFamilyId string) (*PolicyFamily, error) {
-	return a.impl.Get(ctx, GetPolicyFamilyRequest{
+	return a.PolicyFamiliesService.Get(ctx, GetPolicyFamilyRequest{
 		PolicyFamilyId: policyFamilyId,
 	})
 }
@@ -3099,7 +2759,7 @@ func (a *PolicyFamiliesAPI) List(ctx context.Context, request ListPolicyFamilies
 
 	getNextPage := func(ctx context.Context, req ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx, req)
+		return a.PolicyFamiliesService.List(ctx, req)
 	}
 	getItems := func(resp *ListPolicyFamiliesResponse) []PolicyFamily {
 		return resp.PolicyFamilies

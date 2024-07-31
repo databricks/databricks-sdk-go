@@ -152,7 +152,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		NodeTypeId:             smallestNodeType,
 		AutoterminationMinutes: 10,
 	}
-	api, ok := a.impl.(*clustersImpl)
+	api, ok := a.ClustersService.(*clustersImpl)
 	if !ok {
 		return nil, fmt.Errorf("cannot get raw clusters API")
 	}

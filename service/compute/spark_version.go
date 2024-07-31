@@ -82,7 +82,7 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 }
 
 func (a *ClustersAPI) SelectSparkVersion(ctx context.Context, r SparkVersionRequest) (string, error) {
-	sv, err := a.impl.SparkVersions(ctx)
+	sv, err := a.SparkVersions(ctx)
 	if err != nil {
 		return "", err
 	}

@@ -268,7 +268,7 @@ type JobsInterface interface {
 
 func NewJobs(client *client.DatabricksClient) *JobsAPI {
 	return &JobsAPI{
-		impl: &jobsImpl{
+		JobsService: &jobsImpl{
 			client: client,
 		},
 	}
@@ -295,21 +295,21 @@ func NewJobs(client *client.DatabricksClient) *JobsAPI {
 type JobsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(JobsService)
-	impl JobsService
+	JobsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockJobsInterface instead.
 func (a *JobsAPI) WithImpl(impl JobsService) JobsInterface {
-	a.impl = impl
+	a.JobsService = impl
 	return a
 }
 
 // Impl returns low-level Jobs API implementation
 // Deprecated: use MockJobsInterface instead.
 func (a *JobsAPI) Impl() JobsService {
-	return a.impl
+	return a.JobsService
 }
 
 // WaitGetRunJobTerminatedOrSkipped repeatedly calls [JobsAPI.GetRun] and waits to reach TERMINATED or SKIPPED state
@@ -369,20 +369,12 @@ func (w *WaitGetRunJobTerminatedOrSkipped[R]) GetWithTimeout(timeout time.Durati
 	return w.Poll(timeout, w.callback)
 }
 
-// Cancel all runs of a job.
-//
-// Cancels all active runs of a job. The runs are canceled asynchronously, so it
-// doesn't prevent new runs from being started.
-func (a *JobsAPI) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {
-	return a.impl.CancelAllRuns(ctx, request)
-}
-
 // Cancel a run.
 //
 // Cancels a job run or a task run. The run is canceled asynchronously, so it
 // may still be running when this request completes.
 func (a *JobsAPI) CancelRun(ctx context.Context, cancelRun CancelRun) (*WaitGetRunJobTerminatedOrSkipped[struct{}], error) {
-	err := a.impl.CancelRun(ctx, cancelRun)
+	err := a.JobsService.CancelRun(ctx, cancelRun)
 	if err != nil {
 		return nil, err
 	}
@@ -429,7 +421,7 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, opt
 // Cancels a job run or a task run. The run is canceled asynchronously, so it
 // may still be running when this request completes.
 func (a *JobsAPI) CancelRunByRunId(ctx context.Context, runId int64) error {
-	return a.impl.CancelRun(ctx, CancelRun{
+	return a.JobsService.CancelRun(ctx, CancelRun{
 		RunId: runId,
 	})
 }
@@ -440,90 +432,40 @@ func (a *JobsAPI) CancelRunByRunIdAndWait(ctx context.Context, runId int64, opti
 	}, options...)
 }
 
-// Create a new job.
-//
-// Create a new job.
-func (a *JobsAPI) Create(ctx context.Context, request CreateJob) (*CreateResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete a job.
-//
-// Deletes a job.
-func (a *JobsAPI) Delete(ctx context.Context, request DeleteJob) error {
-	return a.impl.Delete(ctx, request)
-}
-
 // Delete a job.
 //
 // Deletes a job.
 func (a *JobsAPI) DeleteByJobId(ctx context.Context, jobId int64) error {
-	return a.impl.Delete(ctx, DeleteJob{
+	return a.JobsService.Delete(ctx, DeleteJob{
 		JobId: jobId,
 	})
-}
-
-// Delete a job run.
-//
-// Deletes a non-active run. Returns an error if the run is active.
-func (a *JobsAPI) DeleteRun(ctx context.Context, request DeleteRun) error {
-	return a.impl.DeleteRun(ctx, request)
 }
 
 // Delete a job run.
 //
 // Deletes a non-active run. Returns an error if the run is active.
 func (a *JobsAPI) DeleteRunByRunId(ctx context.Context, runId int64) error {
-	return a.impl.DeleteRun(ctx, DeleteRun{
+	return a.JobsService.DeleteRun(ctx, DeleteRun{
 		RunId: runId,
 	})
-}
-
-// Export and retrieve a job run.
-//
-// Export and retrieve the job run task.
-func (a *JobsAPI) ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error) {
-	return a.impl.ExportRun(ctx, request)
-}
-
-// Get a single job.
-//
-// Retrieves the details for a single job.
-func (a *JobsAPI) Get(ctx context.Context, request GetJobRequest) (*Job, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get a single job.
 //
 // Retrieves the details for a single job.
 func (a *JobsAPI) GetByJobId(ctx context.Context, jobId int64) (*Job, error) {
-	return a.impl.Get(ctx, GetJobRequest{
+	return a.JobsService.Get(ctx, GetJobRequest{
 		JobId: jobId,
 	})
-}
-
-// Get job permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *JobsAPI) GetPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get job permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *JobsAPI) GetPermissionLevelsByJobId(ctx context.Context, jobId string) (*GetJobPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, GetJobPermissionLevelsRequest{
+	return a.JobsService.GetPermissionLevels(ctx, GetJobPermissionLevelsRequest{
 		JobId: jobId,
 	})
-}
-
-// Get job permissions.
-//
-// Gets the permissions of a job. Jobs can inherit permissions from their root
-// object.
-func (a *JobsAPI) GetPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error) {
-	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get job permissions.
@@ -531,32 +473,9 @@ func (a *JobsAPI) GetPermissions(ctx context.Context, request GetJobPermissionsR
 // Gets the permissions of a job. Jobs can inherit permissions from their root
 // object.
 func (a *JobsAPI) GetPermissionsByJobId(ctx context.Context, jobId string) (*JobPermissions, error) {
-	return a.impl.GetPermissions(ctx, GetJobPermissionsRequest{
+	return a.JobsService.GetPermissions(ctx, GetJobPermissionsRequest{
 		JobId: jobId,
 	})
-}
-
-// Get a single job run.
-//
-// Retrieve the metadata of a run.
-func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, error) {
-	return a.impl.GetRun(ctx, request)
-}
-
-// Get the output for a single run.
-//
-// Retrieve the output and metadata of a single task run. When a notebook task
-// returns a value through the `dbutils.notebook.exit()` call, you can use this
-// endpoint to retrieve that value. Databricks restricts this API to returning
-// the first 5 MB of the output. To return a larger result, you can store job
-// results in a cloud storage service.
-//
-// This endpoint validates that the __run_id__ parameter is valid and returns an
-// HTTP status code 400 if the __run_id__ parameter is invalid. Runs are
-// automatically removed after 60 days. If you to want to reference them beyond
-// 60 days, you must save old run results before they expire.
-func (a *JobsAPI) GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error) {
-	return a.impl.GetRunOutput(ctx, request)
 }
 
 // Get the output for a single run.
@@ -572,7 +491,7 @@ func (a *JobsAPI) GetRunOutput(ctx context.Context, request GetRunOutputRequest)
 // automatically removed after 60 days. If you to want to reference them beyond
 // 60 days, you must save old run results before they expire.
 func (a *JobsAPI) GetRunOutputByRunId(ctx context.Context, runId int64) (*RunOutput, error) {
-	return a.impl.GetRunOutput(ctx, GetRunOutputRequest{
+	return a.JobsService.GetRunOutput(ctx, GetRunOutputRequest{
 		RunId: runId,
 	})
 }
@@ -586,7 +505,7 @@ func (a *JobsAPI) List(ctx context.Context, request ListJobsRequest) listing.Ite
 
 	getNextPage := func(ctx context.Context, req ListJobsRequest) (*ListJobsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.List(ctx, req)
+		return a.JobsService.List(ctx, req)
 	}
 	getItems := func(resp *ListJobsResponse) []BaseJob {
 		return resp.Jobs
@@ -678,7 +597,7 @@ func (a *JobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) listing
 
 	getNextPage := func(ctx context.Context, req ListRunsRequest) (*ListRunsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListRuns(ctx, req)
+		return a.JobsService.ListRuns(ctx, req)
 	}
 	getItems := func(resp *ListRunsResponse) []BaseRun {
 		return resp.Runs
@@ -714,7 +633,7 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]B
 // They use the current job and task settings, and can be viewed in the history
 // for the original job run.
 func (a *JobsAPI) RepairRun(ctx context.Context, repairRun RepairRun) (*WaitGetRunJobTerminatedOrSkipped[RepairRunResponse], error) {
-	repairRunResponse, err := a.impl.RepairRun(ctx, repairRun)
+	repairRunResponse, err := a.JobsService.RepairRun(ctx, repairRun)
 	if err != nil {
 		return nil, err
 	}
@@ -756,19 +675,11 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 	return wait.Get()
 }
 
-// Update all job settings (reset).
-//
-// Overwrite all settings for the given job. Use the [_Update_
-// endpoint](:method:jobs/update) to update job settings partially.
-func (a *JobsAPI) Reset(ctx context.Context, request ResetJob) error {
-	return a.impl.Reset(ctx, request)
-}
-
 // Trigger a new job run.
 //
 // Run a job and return the `run_id` of the triggered run.
 func (a *JobsAPI) RunNow(ctx context.Context, runNow RunNow) (*WaitGetRunJobTerminatedOrSkipped[RunNowResponse], error) {
-	runNowResponse, err := a.impl.RunNow(ctx, runNow)
+	runNowResponse, err := a.JobsService.RunNow(ctx, runNow)
 	if err != nil {
 		return nil, err
 	}
@@ -810,14 +721,6 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 	return wait.Get()
 }
 
-// Set job permissions.
-//
-// Sets permissions on a job. Jobs can inherit permissions from their root
-// object.
-func (a *JobsAPI) SetPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
-	return a.impl.SetPermissions(ctx, request)
-}
-
 // Create and trigger a one-time run.
 //
 // Submit a one-time run. This endpoint allows you to submit a workload directly
@@ -825,7 +728,7 @@ func (a *JobsAPI) SetPermissions(ctx context.Context, request JobPermissionsRequ
 // the UI. Use the `jobs/runs/get` API to check the run state after the job is
 // submitted.
 func (a *JobsAPI) Submit(ctx context.Context, submitRun SubmitRun) (*WaitGetRunJobTerminatedOrSkipped[SubmitRunResponse], error) {
-	submitRunResponse, err := a.impl.Submit(ctx, submitRun)
+	submitRunResponse, err := a.JobsService.Submit(ctx, submitRun)
 	if err != nil {
 		return nil, err
 	}
@@ -865,20 +768,4 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 		}
 	}
 	return wait.Get()
-}
-
-// Update job settings partially.
-//
-// Add, update, or remove specific settings of an existing job. Use the [_Reset_
-// endpoint](:method:jobs/reset) to overwrite all job settings.
-func (a *JobsAPI) Update(ctx context.Context, request UpdateJob) error {
-	return a.impl.Update(ctx, request)
-}
-
-// Update job permissions.
-//
-// Updates the permissions on a job. Jobs can inherit permissions from their
-// root object.
-func (a *JobsAPI) UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
-	return a.impl.UpdatePermissions(ctx, request)
 }

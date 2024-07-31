@@ -188,7 +188,7 @@ type PipelinesInterface interface {
 
 func NewPipelines(client *client.DatabricksClient) *PipelinesAPI {
 	return &PipelinesAPI{
-		impl: &pipelinesImpl{
+		PipelinesService: &pipelinesImpl{
 			client: client,
 		},
 	}
@@ -211,21 +211,21 @@ func NewPipelines(client *client.DatabricksClient) *PipelinesAPI {
 type PipelinesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(PipelinesService)
-	impl PipelinesService
+	PipelinesService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
 // Deprecated: use MockPipelinesInterface instead.
 func (a *PipelinesAPI) WithImpl(impl PipelinesService) PipelinesInterface {
-	a.impl = impl
+	a.PipelinesService = impl
 	return a
 }
 
 // Impl returns low-level Pipelines API implementation
 // Deprecated: use MockPipelinesInterface instead.
 func (a *PipelinesAPI) Impl() PipelinesService {
-	return a.impl
+	return a.PipelinesService
 }
 
 // WaitGetPipelineIdle repeatedly calls [PipelinesAPI.Get] and waits to reach IDLE state
@@ -336,64 +336,29 @@ func (w *WaitGetPipelineRunning[R]) GetWithTimeout(timeout time.Duration) (*GetP
 	return w.Poll(timeout, w.callback)
 }
 
-// Create a pipeline.
-//
-// Creates a new data processing pipeline based on the requested configuration.
-// If successful, this method returns the ID of the new pipeline.
-func (a *PipelinesAPI) Create(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Delete a pipeline.
-//
-// Deletes a pipeline.
-func (a *PipelinesAPI) Delete(ctx context.Context, request DeletePipelineRequest) error {
-	return a.impl.Delete(ctx, request)
-}
-
 // Delete a pipeline.
 //
 // Deletes a pipeline.
 func (a *PipelinesAPI) DeleteByPipelineId(ctx context.Context, pipelineId string) error {
-	return a.impl.Delete(ctx, DeletePipelineRequest{
+	return a.PipelinesService.Delete(ctx, DeletePipelineRequest{
 		PipelineId: pipelineId,
 	})
-}
-
-// Get a pipeline.
-func (a *PipelinesAPI) Get(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
-	return a.impl.Get(ctx, request)
 }
 
 // Get a pipeline.
 func (a *PipelinesAPI) GetByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
-	return a.impl.Get(ctx, GetPipelineRequest{
+	return a.PipelinesService.Get(ctx, GetPipelineRequest{
 		PipelineId: pipelineId,
 	})
-}
-
-// Get pipeline permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *PipelinesAPI) GetPermissionLevels(ctx context.Context, request GetPipelinePermissionLevelsRequest) (*GetPipelinePermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get pipeline permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *PipelinesAPI) GetPermissionLevelsByPipelineId(ctx context.Context, pipelineId string) (*GetPipelinePermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, GetPipelinePermissionLevelsRequest{
+	return a.PipelinesService.GetPermissionLevels(ctx, GetPipelinePermissionLevelsRequest{
 		PipelineId: pipelineId,
 	})
-}
-
-// Get pipeline permissions.
-//
-// Gets the permissions of a pipeline. Pipelines can inherit permissions from
-// their root object.
-func (a *PipelinesAPI) GetPermissions(ctx context.Context, request GetPipelinePermissionsRequest) (*PipelinePermissions, error) {
-	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get pipeline permissions.
@@ -401,7 +366,7 @@ func (a *PipelinesAPI) GetPermissions(ctx context.Context, request GetPipelinePe
 // Gets the permissions of a pipeline. Pipelines can inherit permissions from
 // their root object.
 func (a *PipelinesAPI) GetPermissionsByPipelineId(ctx context.Context, pipelineId string) (*PipelinePermissions, error) {
-	return a.impl.GetPermissions(ctx, GetPipelinePermissionsRequest{
+	return a.PipelinesService.GetPermissions(ctx, GetPipelinePermissionsRequest{
 		PipelineId: pipelineId,
 	})
 }
@@ -409,15 +374,8 @@ func (a *PipelinesAPI) GetPermissionsByPipelineId(ctx context.Context, pipelineI
 // Get a pipeline update.
 //
 // Gets an update from an active pipeline.
-func (a *PipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
-	return a.impl.GetUpdate(ctx, request)
-}
-
-// Get a pipeline update.
-//
-// Gets an update from an active pipeline.
 func (a *PipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pipelineId string, updateId string) (*GetUpdateResponse, error) {
-	return a.impl.GetUpdate(ctx, GetUpdateRequest{
+	return a.PipelinesService.GetUpdate(ctx, GetUpdateRequest{
 		PipelineId: pipelineId,
 		UpdateId:   updateId,
 	})
@@ -432,7 +390,7 @@ func (a *PipelinesAPI) ListPipelineEvents(ctx context.Context, request ListPipel
 
 	getNextPage := func(ctx context.Context, req ListPipelineEventsRequest) (*ListPipelineEventsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListPipelineEvents(ctx, req)
+		return a.PipelinesService.ListPipelineEvents(ctx, req)
 	}
 	getItems := func(resp *ListPipelineEventsResponse) []PipelineEvent {
 		return resp.Events
@@ -467,7 +425,7 @@ func (a *PipelinesAPI) ListPipelineEventsAll(ctx context.Context, request ListPi
 //
 // Retrieves events for a pipeline.
 func (a *PipelinesAPI) ListPipelineEventsByPipelineId(ctx context.Context, pipelineId string) (*ListPipelineEventsResponse, error) {
-	return a.impl.ListPipelineEvents(ctx, ListPipelineEventsRequest{
+	return a.PipelinesService.ListPipelineEvents(ctx, ListPipelineEventsRequest{
 		PipelineId: pipelineId,
 	})
 }
@@ -481,7 +439,7 @@ func (a *PipelinesAPI) ListPipelines(ctx context.Context, request ListPipelinesR
 
 	getNextPage := func(ctx context.Context, req ListPipelinesRequest) (*ListPipelinesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.impl.ListPipelines(ctx, req)
+		return a.PipelinesService.ListPipelines(ctx, req)
 	}
 	getItems := func(resp *ListPipelinesResponse) []PipelineStateInfo {
 		return resp.Statuses
@@ -568,34 +526,10 @@ func (a *PipelinesAPI) GetByName(ctx context.Context, name string) (*PipelineSta
 // List pipeline updates.
 //
 // List updates for an active pipeline.
-func (a *PipelinesAPI) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
-	return a.impl.ListUpdates(ctx, request)
-}
-
-// List pipeline updates.
-//
-// List updates for an active pipeline.
 func (a *PipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error) {
-	return a.impl.ListUpdates(ctx, ListUpdatesRequest{
+	return a.PipelinesService.ListUpdates(ctx, ListUpdatesRequest{
 		PipelineId: pipelineId,
 	})
-}
-
-// Set pipeline permissions.
-//
-// Sets permissions on a pipeline. Pipelines can inherit permissions from their
-// root object.
-func (a *PipelinesAPI) SetPermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
-	return a.impl.SetPermissions(ctx, request)
-}
-
-// Start a pipeline.
-//
-// Starts a new update for the pipeline. If there is already an active update
-// for the pipeline, the request will fail and the active update will remain
-// running.
-func (a *PipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error) {
-	return a.impl.StartUpdate(ctx, request)
 }
 
 // Stop a pipeline.
@@ -603,7 +537,7 @@ func (a *PipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate) (*S
 // Stops the pipeline by canceling the active update. If there is no active
 // update for the pipeline, this request is a no-op.
 func (a *PipelinesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*WaitGetPipelineIdle[struct{}], error) {
-	err := a.impl.Stop(ctx, stopRequest)
+	err := a.PipelinesService.Stop(ctx, stopRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -643,19 +577,4 @@ func (a *PipelinesAPI) StopAndWait(ctx context.Context, stopRequest StopRequest,
 		}
 	}
 	return wait.Get()
-}
-
-// Edit a pipeline.
-//
-// Updates a pipeline with the supplied configuration.
-func (a *PipelinesAPI) Update(ctx context.Context, request EditPipeline) error {
-	return a.impl.Update(ctx, request)
-}
-
-// Update pipeline permissions.
-//
-// Updates the permissions on a pipeline. Pipelines can inherit permissions from
-// their root object.
-func (a *PipelinesAPI) UpdatePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
-	return a.impl.UpdatePermissions(ctx, request)
 }
