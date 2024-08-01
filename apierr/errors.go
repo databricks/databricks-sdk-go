@@ -29,10 +29,10 @@ type ErrorDetail struct {
 
 // APIError is a generic struct for an api error on databricks
 type APIError struct {
-	ErrorCode  string
-	Message    string
-	StatusCode int
-	Details    []ErrorDetail
+	ErrorCode  string        `json:"error_code,omitempty"`
+	Message    string        `json:"message,omitempty"`
+	StatusCode int           `json:"status_code,omitempty"`
+	Details    []ErrorDetail `json:"details,omitempty"`
 	// If non-nil, the underlying error that should be returned by calling
 	// errors.Unwrap on this error.
 	unwrap error
