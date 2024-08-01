@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccSqlWarehouses(t *testing.T) {
+func TestUcAccSqlWarehouses(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	created, err := w.Warehouses.CreateAndWait(ctx, sql.CreateWarehouseRequest{
