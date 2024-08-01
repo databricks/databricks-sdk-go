@@ -22,6 +22,7 @@ type SparkVersionRequest struct {
 	Scala           string `json:"scala,omitempty" tf:"optional,default:2.12"`
 	SparkVersion    string `json:"spark_version,omitempty" tf:"optional,default:"`
 	Photon          bool   `json:"photon,omitempty" tf:"optional,default:false"`
+	Graviton        bool   `json:"graviton,omitempty" tf:"optional,default:false"`
 }
 
 type sparkVersionsType []string
@@ -57,6 +58,7 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 				(strings.Contains(version.Key, "-hls-") == req.Genomics) &&
 				(strings.Contains(version.Key, "-gpu-") == req.GPU) &&
 				(strings.Contains(version.Key, "-photon-") == req.Photon) &&
+				(strings.Contains(version.Key, "-aarch64-") == req.Graviton) &&
 				(strings.Contains(version.Name, "Beta") == req.Beta))
 			if matches && req.LongTermSupport {
 				matches = (matches && (strings.Contains(version.Name, "LTS") || strings.Contains(version.Key, "-esr-")))
@@ -75,7 +77,7 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 		if req.Latest {
 			sort.Sort(sparkVersionsType(versions))
 		} else {
-			return "", fmt.Errorf("spark versions query returned multiple results. Please change your search criteria and try again")
+			return "", fmt.Errorf("spark versions query returned multiple results %#v. Please change your search criteria and try again", versions)
 		}
 	}
 	return versions[0], nil
