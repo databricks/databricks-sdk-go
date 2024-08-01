@@ -15,14 +15,6 @@ import (
 )
 
 type GenieInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockGenieInterface instead.
-	WithImpl(impl GenieService) GenieInterface
-
-	// Impl returns low-level Genie API implementation
-	// Deprecated: use MockGenieInterface instead.
-	Impl() GenieService
 
 	// WaitGetMessageGenieCompleted repeatedly calls [GenieAPI.GetMessage] and waits to reach COMPLETED state
 	WaitGetMessageGenieCompleted(ctx context.Context, conversationId string, messageId string, spaceId string,
@@ -87,7 +79,7 @@ type GenieInterface interface {
 
 func NewGenie(client *client.DatabricksClient) *GenieAPI {
 	return &GenieAPI{
-		GenieService: &genieImpl{
+		genieImpl: genieImpl{
 			client: client,
 		},
 	}
@@ -99,23 +91,7 @@ func NewGenie(client *client.DatabricksClient) *GenieAPI {
 // least CAN USE permission on a Pro or Serverless SQL warehouse. Also,
 // Databricks Assistant must be enabled.
 type GenieAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(GenieService)
-	GenieService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockGenieInterface instead.
-func (a *GenieAPI) WithImpl(impl GenieService) GenieInterface {
-	a.GenieService = impl
-	return a
-}
-
-// Impl returns low-level Genie API implementation
-// Deprecated: use MockGenieInterface instead.
-func (a *GenieAPI) Impl() GenieService {
-	return a.GenieService
+	genieImpl
 }
 
 // WaitGetMessageGenieCompleted repeatedly calls [GenieAPI.GetMessage] and waits to reach COMPLETED state
@@ -181,7 +157,7 @@ func (w *WaitGetMessageGenieCompleted[R]) GetWithTimeout(timeout time.Duration) 
 // Create new message in [conversation](:method:genie/startconversation). The AI
 // response uses all previously created messages in the conversation to respond.
 func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieMessage], error) {
-	genieMessage, err := a.GenieService.CreateMessage(ctx, genieCreateConversationMessageRequest)
+	genieMessage, err := a.genieImpl.CreateMessage(ctx, genieCreateConversationMessageRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +205,7 @@ func (a *GenieAPI) CreateMessageAndWait(ctx context.Context, genieCreateConversa
 //
 // Get message from conversation.
 func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error) {
-	return a.GenieService.GetMessage(ctx, GenieGetConversationMessageRequest{
+	return a.genieImpl.GetMessage(ctx, GenieGetConversationMessageRequest{
 		SpaceId:        spaceId,
 		ConversationId: conversationId,
 		MessageId:      messageId,
@@ -242,7 +218,7 @@ func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.
 // only available if a message has a query attachment and the message status is
 // `EXECUTING_QUERY`.
 func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error) {
-	return a.GenieService.GetMessageQueryResult(ctx, GenieGetMessageQueryResultRequest{
+	return a.genieImpl.GetMessageQueryResult(ctx, GenieGetMessageQueryResultRequest{
 		SpaceId:        spaceId,
 		ConversationId: conversationId,
 		MessageId:      messageId,
@@ -253,7 +229,7 @@ func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(c
 //
 // Start a new conversation.
 func (a *GenieAPI) StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieStartConversationResponse], error) {
-	genieStartConversationResponse, err := a.GenieService.StartConversation(ctx, genieStartConversationMessageRequest)
+	genieStartConversationResponse, err := a.genieImpl.StartConversation(ctx, genieStartConversationMessageRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -298,14 +274,6 @@ func (a *GenieAPI) StartConversationAndWait(ctx context.Context, genieStartConve
 }
 
 type LakeviewInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockLakeviewInterface instead.
-	WithImpl(impl LakeviewService) LakeviewInterface
-
-	// Impl returns low-level Lakeview API implementation
-	// Deprecated: use MockLakeviewInterface instead.
-	Impl() LakeviewService
 
 	// Create dashboard.
 	//
@@ -439,7 +407,7 @@ type LakeviewInterface interface {
 
 func NewLakeview(client *client.DatabricksClient) *LakeviewAPI {
 	return &LakeviewAPI{
-		LakeviewService: &lakeviewImpl{
+		lakeviewImpl: lakeviewImpl{
 			client: client,
 		},
 	}
@@ -449,28 +417,12 @@ func NewLakeview(client *client.DatabricksClient) *LakeviewAPI {
 // Generic resource management can be done with Workspace API (import, export,
 // get-status, list, delete).
 type LakeviewAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(LakeviewService)
-	LakeviewService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockLakeviewInterface instead.
-func (a *LakeviewAPI) WithImpl(impl LakeviewService) LakeviewInterface {
-	a.LakeviewService = impl
-	return a
-}
-
-// Impl returns low-level Lakeview API implementation
-// Deprecated: use MockLakeviewInterface instead.
-func (a *LakeviewAPI) Impl() LakeviewService {
-	return a.LakeviewService
+	lakeviewImpl
 }
 
 // Delete dashboard schedule.
 func (a *LakeviewAPI) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) error {
-	return a.LakeviewService.DeleteSchedule(ctx, DeleteScheduleRequest{
+	return a.lakeviewImpl.DeleteSchedule(ctx, DeleteScheduleRequest{
 		DashboardId: dashboardId,
 		ScheduleId:  scheduleId,
 	})
@@ -478,7 +430,7 @@ func (a *LakeviewAPI) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Conte
 
 // Delete schedule subscription.
 func (a *LakeviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) error {
-	return a.LakeviewService.DeleteSubscription(ctx, DeleteSubscriptionRequest{
+	return a.lakeviewImpl.DeleteSubscription(ctx, DeleteSubscriptionRequest{
 		DashboardId:    dashboardId,
 		ScheduleId:     scheduleId,
 		SubscriptionId: subscriptionId,
@@ -489,7 +441,7 @@ func (a *LakeviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptio
 //
 // Get a draft dashboard.
 func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error) {
-	return a.LakeviewService.Get(ctx, GetDashboardRequest{
+	return a.lakeviewImpl.Get(ctx, GetDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
@@ -498,14 +450,14 @@ func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) 
 //
 // Get the current published dashboard.
 func (a *LakeviewAPI) GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error) {
-	return a.LakeviewService.GetPublished(ctx, GetPublishedDashboardRequest{
+	return a.lakeviewImpl.GetPublished(ctx, GetPublishedDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
 
 // Get dashboard schedule.
 func (a *LakeviewAPI) GetScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*Schedule, error) {
-	return a.LakeviewService.GetSchedule(ctx, GetScheduleRequest{
+	return a.lakeviewImpl.GetSchedule(ctx, GetScheduleRequest{
 		DashboardId: dashboardId,
 		ScheduleId:  scheduleId,
 	})
@@ -513,7 +465,7 @@ func (a *LakeviewAPI) GetScheduleByDashboardIdAndScheduleId(ctx context.Context,
 
 // Get schedule subscription.
 func (a *LakeviewAPI) GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*Subscription, error) {
-	return a.LakeviewService.GetSubscription(ctx, GetSubscriptionRequest{
+	return a.lakeviewImpl.GetSubscription(ctx, GetSubscriptionRequest{
 		DashboardId:    dashboardId,
 		ScheduleId:     scheduleId,
 		SubscriptionId: subscriptionId,
@@ -527,7 +479,7 @@ func (a *LakeviewAPI) List(ctx context.Context, request ListDashboardsRequest) l
 
 	getNextPage := func(ctx context.Context, req ListDashboardsRequest) (*ListDashboardsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.LakeviewService.List(ctx, req)
+		return a.lakeviewImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListDashboardsResponse) []Dashboard {
 		return resp.Dashboards
@@ -562,7 +514,7 @@ func (a *LakeviewAPI) ListSchedules(ctx context.Context, request ListSchedulesRe
 
 	getNextPage := func(ctx context.Context, req ListSchedulesRequest) (*ListSchedulesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.LakeviewService.ListSchedules(ctx, req)
+		return a.lakeviewImpl.ListSchedules(ctx, req)
 	}
 	getItems := func(resp *ListSchedulesResponse) []Schedule {
 		return resp.Schedules
@@ -592,7 +544,7 @@ func (a *LakeviewAPI) ListSchedulesAll(ctx context.Context, request ListSchedule
 
 // List dashboard schedules.
 func (a *LakeviewAPI) ListSchedulesByDashboardId(ctx context.Context, dashboardId string) (*ListSchedulesResponse, error) {
-	return a.LakeviewService.ListSchedules(ctx, ListSchedulesRequest{
+	return a.lakeviewImpl.ListSchedules(ctx, ListSchedulesRequest{
 		DashboardId: dashboardId,
 	})
 }
@@ -604,7 +556,7 @@ func (a *LakeviewAPI) ListSubscriptions(ctx context.Context, request ListSubscri
 
 	getNextPage := func(ctx context.Context, req ListSubscriptionsRequest) (*ListSubscriptionsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.LakeviewService.ListSubscriptions(ctx, req)
+		return a.lakeviewImpl.ListSubscriptions(ctx, req)
 	}
 	getItems := func(resp *ListSubscriptionsResponse) []Subscription {
 		return resp.Subscriptions
@@ -634,7 +586,7 @@ func (a *LakeviewAPI) ListSubscriptionsAll(ctx context.Context, request ListSubs
 
 // List schedule subscriptions.
 func (a *LakeviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*ListSubscriptionsResponse, error) {
-	return a.LakeviewService.ListSubscriptions(ctx, ListSubscriptionsRequest{
+	return a.lakeviewImpl.ListSubscriptions(ctx, ListSubscriptionsRequest{
 		DashboardId: dashboardId,
 		ScheduleId:  scheduleId,
 	})
@@ -644,7 +596,7 @@ func (a *LakeviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Co
 //
 // Trash a dashboard.
 func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) error {
-	return a.LakeviewService.Trash(ctx, TrashDashboardRequest{
+	return a.lakeviewImpl.Trash(ctx, TrashDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
@@ -653,7 +605,7 @@ func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string
 //
 // Unpublish the dashboard.
 func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId string) error {
-	return a.LakeviewService.Unpublish(ctx, UnpublishDashboardRequest{
+	return a.lakeviewImpl.Unpublish(ctx, UnpublishDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }

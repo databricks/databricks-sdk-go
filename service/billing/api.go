@@ -13,14 +13,6 @@ import (
 )
 
 type BillableUsageInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockBillableUsageInterface instead.
-	WithImpl(impl BillableUsageService) BillableUsageInterface
-
-	// Impl returns low-level BillableUsage API implementation
-	// Deprecated: use MockBillableUsageInterface instead.
-	Impl() BillableUsageService
 
 	// Return billable usage logs.
 	//
@@ -39,7 +31,7 @@ type BillableUsageInterface interface {
 
 func NewBillableUsage(client *client.DatabricksClient) *BillableUsageAPI {
 	return &BillableUsageAPI{
-		BillableUsageService: &billableUsageImpl{
+		billableUsageImpl: billableUsageImpl{
 			client: client,
 		},
 	}
@@ -48,34 +40,10 @@ func NewBillableUsage(client *client.DatabricksClient) *BillableUsageAPI {
 // This API allows you to download billable usage logs for the specified account
 // and date range. This feature works with all account types.
 type BillableUsageAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(BillableUsageService)
-	BillableUsageService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockBillableUsageInterface instead.
-func (a *BillableUsageAPI) WithImpl(impl BillableUsageService) BillableUsageInterface {
-	a.BillableUsageService = impl
-	return a
-}
-
-// Impl returns low-level BillableUsage API implementation
-// Deprecated: use MockBillableUsageInterface instead.
-func (a *BillableUsageAPI) Impl() BillableUsageService {
-	return a.BillableUsageService
+	billableUsageImpl
 }
 
 type BudgetsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockBudgetsInterface instead.
-	WithImpl(impl BudgetsService) BudgetsInterface
-
-	// Impl returns low-level Budgets API implementation
-	// Deprecated: use MockBudgetsInterface instead.
-	Impl() BudgetsService
 
 	// Create new budget.
 	//
@@ -130,7 +98,7 @@ type BudgetsInterface interface {
 
 func NewBudgets(client *client.DatabricksClient) *BudgetsAPI {
 	return &BudgetsAPI{
-		BudgetsService: &budgetsImpl{
+		budgetsImpl: budgetsImpl{
 			client: client,
 		},
 	}
@@ -141,23 +109,7 @@ func NewBudgets(client *client.DatabricksClient) *BudgetsAPI {
 // account-wide spending, or apply filters to track the spending of specific
 // teams, projects, or workspaces.
 type BudgetsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(BudgetsService)
-	BudgetsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockBudgetsInterface instead.
-func (a *BudgetsAPI) WithImpl(impl BudgetsService) BudgetsInterface {
-	a.BudgetsService = impl
-	return a
-}
-
-// Impl returns low-level Budgets API implementation
-// Deprecated: use MockBudgetsInterface instead.
-func (a *BudgetsAPI) Impl() BudgetsService {
-	return a.BudgetsService
+	budgetsImpl
 }
 
 // Delete budget.
@@ -165,7 +117,7 @@ func (a *BudgetsAPI) Impl() BudgetsService {
 // Deletes a budget configuration for an account. Both account and budget
 // configuration are specified by ID. This cannot be undone.
 func (a *BudgetsAPI) DeleteByBudgetId(ctx context.Context, budgetId string) error {
-	return a.BudgetsService.Delete(ctx, DeleteBudgetConfigurationRequest{
+	return a.budgetsImpl.Delete(ctx, DeleteBudgetConfigurationRequest{
 		BudgetId: budgetId,
 	})
 }
@@ -175,7 +127,7 @@ func (a *BudgetsAPI) DeleteByBudgetId(ctx context.Context, budgetId string) erro
 // Gets a budget configuration for an account. Both account and budget
 // configuration are specified by ID.
 func (a *BudgetsAPI) GetByBudgetId(ctx context.Context, budgetId string) (*GetBudgetConfigurationResponse, error) {
-	return a.BudgetsService.Get(ctx, GetBudgetConfigurationRequest{
+	return a.budgetsImpl.Get(ctx, GetBudgetConfigurationRequest{
 		BudgetId: budgetId,
 	})
 }
@@ -189,7 +141,7 @@ func (a *BudgetsAPI) List(ctx context.Context, request ListBudgetConfigurationsR
 
 	getNextPage := func(ctx context.Context, req ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.BudgetsService.List(ctx, req)
+		return a.budgetsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListBudgetConfigurationsResponse) []BudgetConfiguration {
 		return resp.Budgets
@@ -220,14 +172,6 @@ func (a *BudgetsAPI) ListAll(ctx context.Context, request ListBudgetConfiguratio
 }
 
 type LogDeliveryInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockLogDeliveryInterface instead.
-	WithImpl(impl LogDeliveryService) LogDeliveryInterface
-
-	// Impl returns low-level LogDelivery API implementation
-	// Deprecated: use MockLogDeliveryInterface instead.
-	Impl() LogDeliveryService
 
 	// Create a new log delivery configuration.
 	//
@@ -316,7 +260,7 @@ type LogDeliveryInterface interface {
 
 func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 	return &LogDeliveryAPI{
-		LogDeliveryService: &logDeliveryImpl{
+		logDeliveryImpl: logDeliveryImpl{
 			client: client,
 		},
 	}
@@ -384,23 +328,7 @@ func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 // [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 // [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html
 type LogDeliveryAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(LogDeliveryService)
-	LogDeliveryService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockLogDeliveryInterface instead.
-func (a *LogDeliveryAPI) WithImpl(impl LogDeliveryService) LogDeliveryInterface {
-	a.LogDeliveryService = impl
-	return a
-}
-
-// Impl returns low-level LogDelivery API implementation
-// Deprecated: use MockLogDeliveryInterface instead.
-func (a *LogDeliveryAPI) Impl() LogDeliveryService {
-	return a.LogDeliveryService
+	logDeliveryImpl
 }
 
 // Get log delivery configuration.
@@ -408,7 +336,7 @@ func (a *LogDeliveryAPI) Impl() LogDeliveryService {
 // Gets a Databricks log delivery configuration object for an account, both
 // specified by ID.
 func (a *LogDeliveryAPI) GetByLogDeliveryConfigurationId(ctx context.Context, logDeliveryConfigurationId string) (*WrappedLogDeliveryConfiguration, error) {
-	return a.LogDeliveryService.Get(ctx, GetLogDeliveryRequest{
+	return a.logDeliveryImpl.Get(ctx, GetLogDeliveryRequest{
 		LogDeliveryConfigurationId: logDeliveryConfigurationId,
 	})
 }
@@ -423,7 +351,7 @@ func (a *LogDeliveryAPI) List(ctx context.Context, request ListLogDeliveryReques
 
 	getNextPage := func(ctx context.Context, req ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.LogDeliveryService.List(ctx, req)
+		return a.logDeliveryImpl.List(ctx, req)
 	}
 	getItems := func(resp *WrappedLogDeliveryConfigurations) []LogDeliveryConfiguration {
 		return resp.LogDeliveryConfigurations
@@ -502,14 +430,6 @@ func (a *LogDeliveryAPI) GetByConfigName(ctx context.Context, name string) (*Log
 }
 
 type UsageDashboardsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockUsageDashboardsInterface instead.
-	WithImpl(impl UsageDashboardsService) UsageDashboardsInterface
-
-	// Impl returns low-level UsageDashboards API implementation
-	// Deprecated: use MockUsageDashboardsInterface instead.
-	Impl() UsageDashboardsService
 
 	// Create new usage dashboard.
 	//
@@ -526,7 +446,7 @@ type UsageDashboardsInterface interface {
 
 func NewUsageDashboards(client *client.DatabricksClient) *UsageDashboardsAPI {
 	return &UsageDashboardsAPI{
-		UsageDashboardsService: &usageDashboardsImpl{
+		usageDashboardsImpl: usageDashboardsImpl{
 			client: client,
 		},
 	}
@@ -536,21 +456,5 @@ func NewUsageDashboards(client *client.DatabricksClient) *UsageDashboardsAPI {
 // you to gain insights into your usage with pre-built dashboards: visualize
 // breakdowns, analyze tag attributions, and identify cost drivers.
 type UsageDashboardsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(UsageDashboardsService)
-	UsageDashboardsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockUsageDashboardsInterface instead.
-func (a *UsageDashboardsAPI) WithImpl(impl UsageDashboardsService) UsageDashboardsInterface {
-	a.UsageDashboardsService = impl
-	return a
-}
-
-// Impl returns low-level UsageDashboards API implementation
-// Deprecated: use MockUsageDashboardsInterface instead.
-func (a *UsageDashboardsAPI) Impl() UsageDashboardsService {
-	return a.UsageDashboardsService
+	usageDashboardsImpl
 }

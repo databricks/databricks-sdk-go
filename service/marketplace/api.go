@@ -13,14 +13,6 @@ import (
 )
 
 type ConsumerFulfillmentsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockConsumerFulfillmentsInterface instead.
-	WithImpl(impl ConsumerFulfillmentsService) ConsumerFulfillmentsInterface
-
-	// Impl returns low-level ConsumerFulfillments API implementation
-	// Deprecated: use MockConsumerFulfillmentsInterface instead.
-	Impl() ConsumerFulfillmentsService
 
 	// Get listing content metadata.
 	//
@@ -75,7 +67,7 @@ type ConsumerFulfillmentsInterface interface {
 
 func NewConsumerFulfillments(client *client.DatabricksClient) *ConsumerFulfillmentsAPI {
 	return &ConsumerFulfillmentsAPI{
-		ConsumerFulfillmentsService: &consumerFulfillmentsImpl{
+		consumerFulfillmentsImpl: consumerFulfillmentsImpl{
 			client: client,
 		},
 	}
@@ -83,23 +75,7 @@ func NewConsumerFulfillments(client *client.DatabricksClient) *ConsumerFulfillme
 
 // Fulfillments are entities that allow consumers to preview installations.
 type ConsumerFulfillmentsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ConsumerFulfillmentsService)
-	ConsumerFulfillmentsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockConsumerFulfillmentsInterface instead.
-func (a *ConsumerFulfillmentsAPI) WithImpl(impl ConsumerFulfillmentsService) ConsumerFulfillmentsInterface {
-	a.ConsumerFulfillmentsService = impl
-	return a
-}
-
-// Impl returns low-level ConsumerFulfillments API implementation
-// Deprecated: use MockConsumerFulfillmentsInterface instead.
-func (a *ConsumerFulfillmentsAPI) Impl() ConsumerFulfillmentsService {
-	return a.ConsumerFulfillmentsService
+	consumerFulfillmentsImpl
 }
 
 // Get listing content metadata.
@@ -111,7 +87,7 @@ func (a *ConsumerFulfillmentsAPI) Get(ctx context.Context, request GetListingCon
 
 	getNextPage := func(ctx context.Context, req GetListingContentMetadataRequest) (*GetListingContentMetadataResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ConsumerFulfillmentsService.Get(ctx, req)
+		return a.consumerFulfillmentsImpl.Get(ctx, req)
 	}
 	getItems := func(resp *GetListingContentMetadataResponse) []SharedDataObject {
 		return resp.SharedDataObjects
@@ -145,7 +121,7 @@ func (a *ConsumerFulfillmentsAPI) GetAll(ctx context.Context, request GetListing
 //
 // Get a high level preview of the metadata of listing installable content.
 func (a *ConsumerFulfillmentsAPI) GetByListingId(ctx context.Context, listingId string) (*GetListingContentMetadataResponse, error) {
-	return a.ConsumerFulfillmentsService.Get(ctx, GetListingContentMetadataRequest{
+	return a.consumerFulfillmentsImpl.Get(ctx, GetListingContentMetadataRequest{
 		ListingId: listingId,
 	})
 }
@@ -163,7 +139,7 @@ func (a *ConsumerFulfillmentsAPI) List(ctx context.Context, request ListFulfillm
 
 	getNextPage := func(ctx context.Context, req ListFulfillmentsRequest) (*ListFulfillmentsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ConsumerFulfillmentsService.List(ctx, req)
+		return a.consumerFulfillmentsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListFulfillmentsResponse) []ListingFulfillment {
 		return resp.Fulfillments
@@ -205,20 +181,12 @@ func (a *ConsumerFulfillmentsAPI) ListAll(ctx context.Context, request ListFulfi
 // Personalized installations contain metadata about the attached share or git
 // repo, as well as the Delta Sharing recipient type.
 func (a *ConsumerFulfillmentsAPI) ListByListingId(ctx context.Context, listingId string) (*ListFulfillmentsResponse, error) {
-	return a.ConsumerFulfillmentsService.List(ctx, ListFulfillmentsRequest{
+	return a.consumerFulfillmentsImpl.List(ctx, ListFulfillmentsRequest{
 		ListingId: listingId,
 	})
 }
 
 type ConsumerInstallationsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockConsumerInstallationsInterface instead.
-	WithImpl(impl ConsumerInstallationsService) ConsumerInstallationsInterface
-
-	// Impl returns low-level ConsumerInstallations API implementation
-	// Deprecated: use MockConsumerInstallationsInterface instead.
-	Impl() ConsumerInstallationsService
 
 	// Install from a listing.
 	//
@@ -280,7 +248,7 @@ type ConsumerInstallationsInterface interface {
 
 func NewConsumerInstallations(client *client.DatabricksClient) *ConsumerInstallationsAPI {
 	return &ConsumerInstallationsAPI{
-		ConsumerInstallationsService: &consumerInstallationsImpl{
+		consumerInstallationsImpl: consumerInstallationsImpl{
 			client: client,
 		},
 	}
@@ -289,30 +257,14 @@ func NewConsumerInstallations(client *client.DatabricksClient) *ConsumerInstalla
 // Installations are entities that allow consumers to interact with Databricks
 // Marketplace listings.
 type ConsumerInstallationsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ConsumerInstallationsService)
-	ConsumerInstallationsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockConsumerInstallationsInterface instead.
-func (a *ConsumerInstallationsAPI) WithImpl(impl ConsumerInstallationsService) ConsumerInstallationsInterface {
-	a.ConsumerInstallationsService = impl
-	return a
-}
-
-// Impl returns low-level ConsumerInstallations API implementation
-// Deprecated: use MockConsumerInstallationsInterface instead.
-func (a *ConsumerInstallationsAPI) Impl() ConsumerInstallationsService {
-	return a.ConsumerInstallationsService
+	consumerInstallationsImpl
 }
 
 // Uninstall from a listing.
 //
 // Uninstall an installation associated with a Databricks Marketplace listing.
 func (a *ConsumerInstallationsAPI) DeleteByListingIdAndInstallationId(ctx context.Context, listingId string, installationId string) error {
-	return a.ConsumerInstallationsService.Delete(ctx, DeleteInstallationRequest{
+	return a.consumerInstallationsImpl.Delete(ctx, DeleteInstallationRequest{
 		ListingId:      listingId,
 		InstallationId: installationId,
 	})
@@ -327,7 +279,7 @@ func (a *ConsumerInstallationsAPI) List(ctx context.Context, request ListAllInst
 
 	getNextPage := func(ctx context.Context, req ListAllInstallationsRequest) (*ListAllInstallationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ConsumerInstallationsService.List(ctx, req)
+		return a.consumerInstallationsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListAllInstallationsResponse) []InstallationDetail {
 		return resp.Installations
@@ -366,7 +318,7 @@ func (a *ConsumerInstallationsAPI) ListListingInstallations(ctx context.Context,
 
 	getNextPage := func(ctx context.Context, req ListInstallationsRequest) (*ListInstallationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ConsumerInstallationsService.ListListingInstallations(ctx, req)
+		return a.consumerInstallationsImpl.ListListingInstallations(ctx, req)
 	}
 	getItems := func(resp *ListInstallationsResponse) []InstallationDetail {
 		return resp.Installations
@@ -400,20 +352,12 @@ func (a *ConsumerInstallationsAPI) ListListingInstallationsAll(ctx context.Conte
 //
 // List all installations for a particular listing.
 func (a *ConsumerInstallationsAPI) ListListingInstallationsByListingId(ctx context.Context, listingId string) (*ListInstallationsResponse, error) {
-	return a.ConsumerInstallationsService.ListListingInstallations(ctx, ListInstallationsRequest{
+	return a.consumerInstallationsImpl.ListListingInstallations(ctx, ListInstallationsRequest{
 		ListingId: listingId,
 	})
 }
 
 type ConsumerListingsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockConsumerListingsInterface instead.
-	WithImpl(impl ConsumerListingsService) ConsumerListingsInterface
-
-	// Impl returns low-level ConsumerListings API implementation
-	// Deprecated: use MockConsumerListingsInterface instead.
-	Impl() ConsumerListingsService
 
 	// Get one batch of listings. One may specify up to 50 IDs per request.
 	//
@@ -488,7 +432,7 @@ type ConsumerListingsInterface interface {
 
 func NewConsumerListings(client *client.DatabricksClient) *ConsumerListingsAPI {
 	return &ConsumerListingsAPI{
-		ConsumerListingsService: &consumerListingsImpl{
+		consumerListingsImpl: consumerListingsImpl{
 			client: client,
 		},
 	}
@@ -497,23 +441,7 @@ func NewConsumerListings(client *client.DatabricksClient) *ConsumerListingsAPI {
 // Listings are the core entities in the Marketplace. They represent the
 // products that are available for consumption.
 type ConsumerListingsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ConsumerListingsService)
-	ConsumerListingsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockConsumerListingsInterface instead.
-func (a *ConsumerListingsAPI) WithImpl(impl ConsumerListingsService) ConsumerListingsInterface {
-	a.ConsumerListingsService = impl
-	return a
-}
-
-// Impl returns low-level ConsumerListings API implementation
-// Deprecated: use MockConsumerListingsInterface instead.
-func (a *ConsumerListingsAPI) Impl() ConsumerListingsService {
-	return a.ConsumerListingsService
+	consumerListingsImpl
 }
 
 // Get listing.
@@ -521,7 +449,7 @@ func (a *ConsumerListingsAPI) Impl() ConsumerListingsService {
 // Get a published listing in the Databricks Marketplace that the consumer has
 // access to.
 func (a *ConsumerListingsAPI) GetById(ctx context.Context, id string) (*GetListingResponse, error) {
-	return a.ConsumerListingsService.Get(ctx, GetListingRequest{
+	return a.consumerListingsImpl.Get(ctx, GetListingRequest{
 		Id: id,
 	})
 }
@@ -536,7 +464,7 @@ func (a *ConsumerListingsAPI) List(ctx context.Context, request ListListingsRequ
 
 	getNextPage := func(ctx context.Context, req ListListingsRequest) (*ListListingsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ConsumerListingsService.List(ctx, req)
+		return a.consumerListingsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListListingsResponse) []Listing {
 		return resp.Listings
@@ -631,7 +559,7 @@ func (a *ConsumerListingsAPI) Search(ctx context.Context, request SearchListings
 
 	getNextPage := func(ctx context.Context, req SearchListingsRequest) (*SearchListingsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ConsumerListingsService.Search(ctx, req)
+		return a.consumerListingsImpl.Search(ctx, req)
 	}
 	getItems := func(resp *SearchListingsResponse) []Listing {
 		return resp.Listings
@@ -664,14 +592,6 @@ func (a *ConsumerListingsAPI) SearchAll(ctx context.Context, request SearchListi
 }
 
 type ConsumerPersonalizationRequestsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockConsumerPersonalizationRequestsInterface instead.
-	WithImpl(impl ConsumerPersonalizationRequestsService) ConsumerPersonalizationRequestsInterface
-
-	// Impl returns low-level ConsumerPersonalizationRequests API implementation
-	// Deprecated: use MockConsumerPersonalizationRequestsInterface instead.
-	Impl() ConsumerPersonalizationRequestsService
 
 	// Create a personalization request.
 	//
@@ -707,7 +627,7 @@ type ConsumerPersonalizationRequestsInterface interface {
 
 func NewConsumerPersonalizationRequests(client *client.DatabricksClient) *ConsumerPersonalizationRequestsAPI {
 	return &ConsumerPersonalizationRequestsAPI{
-		ConsumerPersonalizationRequestsService: &consumerPersonalizationRequestsImpl{
+		consumerPersonalizationRequestsImpl: consumerPersonalizationRequestsImpl{
 			client: client,
 		},
 	}
@@ -716,23 +636,7 @@ func NewConsumerPersonalizationRequests(client *client.DatabricksClient) *Consum
 // Personalization Requests allow customers to interact with the individualized
 // Marketplace listing flow.
 type ConsumerPersonalizationRequestsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ConsumerPersonalizationRequestsService)
-	ConsumerPersonalizationRequestsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockConsumerPersonalizationRequestsInterface instead.
-func (a *ConsumerPersonalizationRequestsAPI) WithImpl(impl ConsumerPersonalizationRequestsService) ConsumerPersonalizationRequestsInterface {
-	a.ConsumerPersonalizationRequestsService = impl
-	return a
-}
-
-// Impl returns low-level ConsumerPersonalizationRequests API implementation
-// Deprecated: use MockConsumerPersonalizationRequestsInterface instead.
-func (a *ConsumerPersonalizationRequestsAPI) Impl() ConsumerPersonalizationRequestsService {
-	return a.ConsumerPersonalizationRequestsService
+	consumerPersonalizationRequestsImpl
 }
 
 // Get the personalization request for a listing.
@@ -740,7 +644,7 @@ func (a *ConsumerPersonalizationRequestsAPI) Impl() ConsumerPersonalizationReque
 // Get the personalization request for a listing. Each consumer can make at
 // *most* one personalization request for a listing.
 func (a *ConsumerPersonalizationRequestsAPI) GetByListingId(ctx context.Context, listingId string) (*GetPersonalizationRequestResponse, error) {
-	return a.ConsumerPersonalizationRequestsService.Get(ctx, GetPersonalizationRequestRequest{
+	return a.consumerPersonalizationRequestsImpl.Get(ctx, GetPersonalizationRequestRequest{
 		ListingId: listingId,
 	})
 }
@@ -754,7 +658,7 @@ func (a *ConsumerPersonalizationRequestsAPI) List(ctx context.Context, request L
 
 	getNextPage := func(ctx context.Context, req ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ConsumerPersonalizationRequestsService.List(ctx, req)
+		return a.consumerPersonalizationRequestsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListAllPersonalizationRequestsResponse) []PersonalizationRequest {
 		return resp.PersonalizationRequests
@@ -785,14 +689,6 @@ func (a *ConsumerPersonalizationRequestsAPI) ListAll(ctx context.Context, reques
 }
 
 type ConsumerProvidersInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockConsumerProvidersInterface instead.
-	WithImpl(impl ConsumerProvidersService) ConsumerProvidersInterface
-
-	// Impl returns low-level ConsumerProviders API implementation
-	// Deprecated: use MockConsumerProvidersInterface instead.
-	Impl() ConsumerProvidersService
 
 	// Get one batch of providers. One may specify up to 50 IDs per request.
 	//
@@ -849,7 +745,7 @@ type ConsumerProvidersInterface interface {
 
 func NewConsumerProviders(client *client.DatabricksClient) *ConsumerProvidersAPI {
 	return &ConsumerProvidersAPI{
-		ConsumerProvidersService: &consumerProvidersImpl{
+		consumerProvidersImpl: consumerProvidersImpl{
 			client: client,
 		},
 	}
@@ -857,23 +753,7 @@ func NewConsumerProviders(client *client.DatabricksClient) *ConsumerProvidersAPI
 
 // Providers are the entities that publish listings to the Marketplace.
 type ConsumerProvidersAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ConsumerProvidersService)
-	ConsumerProvidersService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockConsumerProvidersInterface instead.
-func (a *ConsumerProvidersAPI) WithImpl(impl ConsumerProvidersService) ConsumerProvidersInterface {
-	a.ConsumerProvidersService = impl
-	return a
-}
-
-// Impl returns low-level ConsumerProviders API implementation
-// Deprecated: use MockConsumerProvidersInterface instead.
-func (a *ConsumerProvidersAPI) Impl() ConsumerProvidersService {
-	return a.ConsumerProvidersService
+	consumerProvidersImpl
 }
 
 // Get a provider.
@@ -881,7 +761,7 @@ func (a *ConsumerProvidersAPI) Impl() ConsumerProvidersService {
 // Get a provider in the Databricks Marketplace with at least one visible
 // listing.
 func (a *ConsumerProvidersAPI) GetById(ctx context.Context, id string) (*GetProviderResponse, error) {
-	return a.ConsumerProvidersService.Get(ctx, GetProviderRequest{
+	return a.consumerProvidersImpl.Get(ctx, GetProviderRequest{
 		Id: id,
 	})
 }
@@ -896,7 +776,7 @@ func (a *ConsumerProvidersAPI) List(ctx context.Context, request ListProvidersRe
 
 	getNextPage := func(ctx context.Context, req ListProvidersRequest) (*ListProvidersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ConsumerProvidersService.List(ctx, req)
+		return a.consumerProvidersImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListProvidersResponse) []ProviderInfo {
 		return resp.Providers
@@ -981,14 +861,6 @@ func (a *ConsumerProvidersAPI) GetByName(ctx context.Context, name string) (*Pro
 }
 
 type ProviderExchangeFiltersInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockProviderExchangeFiltersInterface instead.
-	WithImpl(impl ProviderExchangeFiltersService) ProviderExchangeFiltersInterface
-
-	// Impl returns low-level ProviderExchangeFilters API implementation
-	// Deprecated: use MockProviderExchangeFiltersInterface instead.
-	Impl() ProviderExchangeFiltersService
 
 	// Create a new exchange filter.
 	//
@@ -1045,7 +917,7 @@ type ProviderExchangeFiltersInterface interface {
 
 func NewProviderExchangeFilters(client *client.DatabricksClient) *ProviderExchangeFiltersAPI {
 	return &ProviderExchangeFiltersAPI{
-		ProviderExchangeFiltersService: &providerExchangeFiltersImpl{
+		providerExchangeFiltersImpl: providerExchangeFiltersImpl{
 			client: client,
 		},
 	}
@@ -1053,30 +925,14 @@ func NewProviderExchangeFilters(client *client.DatabricksClient) *ProviderExchan
 
 // Marketplace exchanges filters curate which groups can access an exchange.
 type ProviderExchangeFiltersAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ProviderExchangeFiltersService)
-	ProviderExchangeFiltersService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockProviderExchangeFiltersInterface instead.
-func (a *ProviderExchangeFiltersAPI) WithImpl(impl ProviderExchangeFiltersService) ProviderExchangeFiltersInterface {
-	a.ProviderExchangeFiltersService = impl
-	return a
-}
-
-// Impl returns low-level ProviderExchangeFilters API implementation
-// Deprecated: use MockProviderExchangeFiltersInterface instead.
-func (a *ProviderExchangeFiltersAPI) Impl() ProviderExchangeFiltersService {
-	return a.ProviderExchangeFiltersService
+	providerExchangeFiltersImpl
 }
 
 // Delete an exchange filter.
 //
 // Delete an exchange filter
 func (a *ProviderExchangeFiltersAPI) DeleteById(ctx context.Context, id string) error {
-	return a.ProviderExchangeFiltersService.Delete(ctx, DeleteExchangeFilterRequest{
+	return a.providerExchangeFiltersImpl.Delete(ctx, DeleteExchangeFilterRequest{
 		Id: id,
 	})
 }
@@ -1090,7 +946,7 @@ func (a *ProviderExchangeFiltersAPI) List(ctx context.Context, request ListExcha
 
 	getNextPage := func(ctx context.Context, req ListExchangeFiltersRequest) (*ListExchangeFiltersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ProviderExchangeFiltersService.List(ctx, req)
+		return a.providerExchangeFiltersImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListExchangeFiltersResponse) []ExchangeFilter {
 		return resp.Filters
@@ -1174,14 +1030,6 @@ func (a *ProviderExchangeFiltersAPI) GetByName(ctx context.Context, name string)
 }
 
 type ProviderExchangesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockProviderExchangesInterface instead.
-	WithImpl(impl ProviderExchangesService) ProviderExchangesInterface
-
-	// Impl returns low-level ProviderExchanges API implementation
-	// Deprecated: use MockProviderExchangesInterface instead.
-	Impl() ProviderExchangesService
 
 	// Add an exchange for listing.
 	//
@@ -1327,7 +1175,7 @@ type ProviderExchangesInterface interface {
 
 func NewProviderExchanges(client *client.DatabricksClient) *ProviderExchangesAPI {
 	return &ProviderExchangesAPI{
-		ProviderExchangesService: &providerExchangesImpl{
+		providerExchangesImpl: providerExchangesImpl{
 			client: client,
 		},
 	}
@@ -1336,30 +1184,14 @@ func NewProviderExchanges(client *client.DatabricksClient) *ProviderExchangesAPI
 // Marketplace exchanges allow providers to share their listings with a curated
 // set of customers.
 type ProviderExchangesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ProviderExchangesService)
-	ProviderExchangesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockProviderExchangesInterface instead.
-func (a *ProviderExchangesAPI) WithImpl(impl ProviderExchangesService) ProviderExchangesInterface {
-	a.ProviderExchangesService = impl
-	return a
-}
-
-// Impl returns low-level ProviderExchanges API implementation
-// Deprecated: use MockProviderExchangesInterface instead.
-func (a *ProviderExchangesAPI) Impl() ProviderExchangesService {
-	return a.ProviderExchangesService
+	providerExchangesImpl
 }
 
 // Delete an exchange.
 //
 // This removes a listing from marketplace.
 func (a *ProviderExchangesAPI) DeleteById(ctx context.Context, id string) error {
-	return a.ProviderExchangesService.Delete(ctx, DeleteExchangeRequest{
+	return a.providerExchangesImpl.Delete(ctx, DeleteExchangeRequest{
 		Id: id,
 	})
 }
@@ -1368,7 +1200,7 @@ func (a *ProviderExchangesAPI) DeleteById(ctx context.Context, id string) error 
 //
 // Disassociate an exchange with a listing
 func (a *ProviderExchangesAPI) DeleteListingFromExchangeById(ctx context.Context, id string) error {
-	return a.ProviderExchangesService.DeleteListingFromExchange(ctx, RemoveExchangeForListingRequest{
+	return a.providerExchangesImpl.DeleteListingFromExchange(ctx, RemoveExchangeForListingRequest{
 		Id: id,
 	})
 }
@@ -1377,7 +1209,7 @@ func (a *ProviderExchangesAPI) DeleteListingFromExchangeById(ctx context.Context
 //
 // Get an exchange.
 func (a *ProviderExchangesAPI) GetById(ctx context.Context, id string) (*GetExchangeResponse, error) {
-	return a.ProviderExchangesService.Get(ctx, GetExchangeRequest{
+	return a.providerExchangesImpl.Get(ctx, GetExchangeRequest{
 		Id: id,
 	})
 }
@@ -1391,7 +1223,7 @@ func (a *ProviderExchangesAPI) List(ctx context.Context, request ListExchangesRe
 
 	getNextPage := func(ctx context.Context, req ListExchangesRequest) (*ListExchangesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ProviderExchangesService.List(ctx, req)
+		return a.providerExchangesImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListExchangesResponse) []Exchange {
 		return resp.Exchanges
@@ -1483,7 +1315,7 @@ func (a *ProviderExchangesAPI) ListExchangesForListing(ctx context.Context, requ
 
 	getNextPage := func(ctx context.Context, req ListExchangesForListingRequest) (*ListExchangesForListingResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ProviderExchangesService.ListExchangesForListing(ctx, req)
+		return a.providerExchangesImpl.ListExchangesForListing(ctx, req)
 	}
 	getItems := func(resp *ListExchangesForListingResponse) []ExchangeListing {
 		return resp.ExchangeListing
@@ -1575,7 +1407,7 @@ func (a *ProviderExchangesAPI) ListListingsForExchange(ctx context.Context, requ
 
 	getNextPage := func(ctx context.Context, req ListListingsForExchangeRequest) (*ListListingsForExchangeResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ProviderExchangesService.ListListingsForExchange(ctx, req)
+		return a.providerExchangesImpl.ListListingsForExchange(ctx, req)
 	}
 	getItems := func(resp *ListListingsForExchangeResponse) []ExchangeListing {
 		return resp.ExchangeListings
@@ -1659,14 +1491,6 @@ func (a *ProviderExchangesAPI) GetByListingName(ctx context.Context, name string
 }
 
 type ProviderFilesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockProviderFilesInterface instead.
-	WithImpl(impl ProviderFilesService) ProviderFilesInterface
-
-	// Impl returns low-level ProviderFiles API implementation
-	// Deprecated: use MockProviderFilesInterface instead.
-	Impl() ProviderFilesService
 
 	// Create a file.
 	//
@@ -1729,7 +1553,7 @@ type ProviderFilesInterface interface {
 
 func NewProviderFiles(client *client.DatabricksClient) *ProviderFilesAPI {
 	return &ProviderFilesAPI{
-		ProviderFilesService: &providerFilesImpl{
+		providerFilesImpl: providerFilesImpl{
 			client: client,
 		},
 	}
@@ -1738,30 +1562,14 @@ func NewProviderFiles(client *client.DatabricksClient) *ProviderFilesAPI {
 // Marketplace offers a set of file APIs for various purposes such as preview
 // notebooks and provider icons.
 type ProviderFilesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ProviderFilesService)
-	ProviderFilesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockProviderFilesInterface instead.
-func (a *ProviderFilesAPI) WithImpl(impl ProviderFilesService) ProviderFilesInterface {
-	a.ProviderFilesService = impl
-	return a
-}
-
-// Impl returns low-level ProviderFiles API implementation
-// Deprecated: use MockProviderFilesInterface instead.
-func (a *ProviderFilesAPI) Impl() ProviderFilesService {
-	return a.ProviderFilesService
+	providerFilesImpl
 }
 
 // Delete a file.
 //
 // Delete a file
 func (a *ProviderFilesAPI) DeleteByFileId(ctx context.Context, fileId string) error {
-	return a.ProviderFilesService.Delete(ctx, DeleteFileRequest{
+	return a.providerFilesImpl.Delete(ctx, DeleteFileRequest{
 		FileId: fileId,
 	})
 }
@@ -1770,7 +1578,7 @@ func (a *ProviderFilesAPI) DeleteByFileId(ctx context.Context, fileId string) er
 //
 // Get a file
 func (a *ProviderFilesAPI) GetByFileId(ctx context.Context, fileId string) (*GetFileResponse, error) {
-	return a.ProviderFilesService.Get(ctx, GetFileRequest{
+	return a.providerFilesImpl.Get(ctx, GetFileRequest{
 		FileId: fileId,
 	})
 }
@@ -1784,7 +1592,7 @@ func (a *ProviderFilesAPI) List(ctx context.Context, request ListFilesRequest) l
 
 	getNextPage := func(ctx context.Context, req ListFilesRequest) (*ListFilesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ProviderFilesService.List(ctx, req)
+		return a.providerFilesImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListFilesResponse) []FileInfo {
 		return resp.FileInfos
@@ -1868,14 +1676,6 @@ func (a *ProviderFilesAPI) GetByDisplayName(ctx context.Context, name string) (*
 }
 
 type ProviderListingsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockProviderListingsInterface instead.
-	WithImpl(impl ProviderListingsService) ProviderListingsInterface
-
-	// Impl returns low-level ProviderListings API implementation
-	// Deprecated: use MockProviderListingsInterface instead.
-	Impl() ProviderListingsService
 
 	// Create a listing.
 	//
@@ -1942,7 +1742,7 @@ type ProviderListingsInterface interface {
 
 func NewProviderListings(client *client.DatabricksClient) *ProviderListingsAPI {
 	return &ProviderListingsAPI{
-		ProviderListingsService: &providerListingsImpl{
+		providerListingsImpl: providerListingsImpl{
 			client: client,
 		},
 	}
@@ -1951,30 +1751,14 @@ func NewProviderListings(client *client.DatabricksClient) *ProviderListingsAPI {
 // Listings are the core entities in the Marketplace. They represent the
 // products that are available for consumption.
 type ProviderListingsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ProviderListingsService)
-	ProviderListingsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockProviderListingsInterface instead.
-func (a *ProviderListingsAPI) WithImpl(impl ProviderListingsService) ProviderListingsInterface {
-	a.ProviderListingsService = impl
-	return a
-}
-
-// Impl returns low-level ProviderListings API implementation
-// Deprecated: use MockProviderListingsInterface instead.
-func (a *ProviderListingsAPI) Impl() ProviderListingsService {
-	return a.ProviderListingsService
+	providerListingsImpl
 }
 
 // Delete a listing.
 //
 // Delete a listing
 func (a *ProviderListingsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.ProviderListingsService.Delete(ctx, DeleteListingRequest{
+	return a.providerListingsImpl.Delete(ctx, DeleteListingRequest{
 		Id: id,
 	})
 }
@@ -1983,7 +1767,7 @@ func (a *ProviderListingsAPI) DeleteById(ctx context.Context, id string) error {
 //
 // Get a listing
 func (a *ProviderListingsAPI) GetById(ctx context.Context, id string) (*GetListingResponse, error) {
-	return a.ProviderListingsService.Get(ctx, GetListingRequest{
+	return a.providerListingsImpl.Get(ctx, GetListingRequest{
 		Id: id,
 	})
 }
@@ -1997,7 +1781,7 @@ func (a *ProviderListingsAPI) List(ctx context.Context, request GetListingsReque
 
 	getNextPage := func(ctx context.Context, req GetListingsRequest) (*GetListingsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ProviderListingsService.List(ctx, req)
+		return a.providerListingsImpl.List(ctx, req)
 	}
 	getItems := func(resp *GetListingsResponse) []Listing {
 		return resp.Listings
@@ -2081,14 +1865,6 @@ func (a *ProviderListingsAPI) GetBySummaryName(ctx context.Context, name string)
 }
 
 type ProviderPersonalizationRequestsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockProviderPersonalizationRequestsInterface instead.
-	WithImpl(impl ProviderPersonalizationRequestsService) ProviderPersonalizationRequestsInterface
-
-	// Impl returns low-level ProviderPersonalizationRequests API implementation
-	// Deprecated: use MockProviderPersonalizationRequestsInterface instead.
-	Impl() ProviderPersonalizationRequestsService
 
 	// All personalization requests across all listings.
 	//
@@ -2115,7 +1891,7 @@ type ProviderPersonalizationRequestsInterface interface {
 
 func NewProviderPersonalizationRequests(client *client.DatabricksClient) *ProviderPersonalizationRequestsAPI {
 	return &ProviderPersonalizationRequestsAPI{
-		ProviderPersonalizationRequestsService: &providerPersonalizationRequestsImpl{
+		providerPersonalizationRequestsImpl: providerPersonalizationRequestsImpl{
 			client: client,
 		},
 	}
@@ -2124,23 +1900,7 @@ func NewProviderPersonalizationRequests(client *client.DatabricksClient) *Provid
 // Personalization requests are an alternate to instantly available listings.
 // Control the lifecycle of personalized solutions.
 type ProviderPersonalizationRequestsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ProviderPersonalizationRequestsService)
-	ProviderPersonalizationRequestsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockProviderPersonalizationRequestsInterface instead.
-func (a *ProviderPersonalizationRequestsAPI) WithImpl(impl ProviderPersonalizationRequestsService) ProviderPersonalizationRequestsInterface {
-	a.ProviderPersonalizationRequestsService = impl
-	return a
-}
-
-// Impl returns low-level ProviderPersonalizationRequests API implementation
-// Deprecated: use MockProviderPersonalizationRequestsInterface instead.
-func (a *ProviderPersonalizationRequestsAPI) Impl() ProviderPersonalizationRequestsService {
-	return a.ProviderPersonalizationRequestsService
+	providerPersonalizationRequestsImpl
 }
 
 // All personalization requests across all listings.
@@ -2153,7 +1913,7 @@ func (a *ProviderPersonalizationRequestsAPI) List(ctx context.Context, request L
 
 	getNextPage := func(ctx context.Context, req ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ProviderPersonalizationRequestsService.List(ctx, req)
+		return a.providerPersonalizationRequestsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListAllPersonalizationRequestsResponse) []PersonalizationRequest {
 		return resp.PersonalizationRequests
@@ -2185,14 +1945,6 @@ func (a *ProviderPersonalizationRequestsAPI) ListAll(ctx context.Context, reques
 }
 
 type ProviderProviderAnalyticsDashboardsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockProviderProviderAnalyticsDashboardsInterface instead.
-	WithImpl(impl ProviderProviderAnalyticsDashboardsService) ProviderProviderAnalyticsDashboardsInterface
-
-	// Impl returns low-level ProviderProviderAnalyticsDashboards API implementation
-	// Deprecated: use MockProviderProviderAnalyticsDashboardsInterface instead.
-	Impl() ProviderProviderAnalyticsDashboardsService
 
 	// Create provider analytics dashboard.
 	//
@@ -2218,7 +1970,7 @@ type ProviderProviderAnalyticsDashboardsInterface interface {
 
 func NewProviderProviderAnalyticsDashboards(client *client.DatabricksClient) *ProviderProviderAnalyticsDashboardsAPI {
 	return &ProviderProviderAnalyticsDashboardsAPI{
-		ProviderProviderAnalyticsDashboardsService: &providerProviderAnalyticsDashboardsImpl{
+		providerProviderAnalyticsDashboardsImpl: providerProviderAnalyticsDashboardsImpl{
 			client: client,
 		},
 	}
@@ -2226,34 +1978,10 @@ func NewProviderProviderAnalyticsDashboards(client *client.DatabricksClient) *Pr
 
 // Manage templated analytics solution for providers.
 type ProviderProviderAnalyticsDashboardsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ProviderProviderAnalyticsDashboardsService)
-	ProviderProviderAnalyticsDashboardsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockProviderProviderAnalyticsDashboardsInterface instead.
-func (a *ProviderProviderAnalyticsDashboardsAPI) WithImpl(impl ProviderProviderAnalyticsDashboardsService) ProviderProviderAnalyticsDashboardsInterface {
-	a.ProviderProviderAnalyticsDashboardsService = impl
-	return a
-}
-
-// Impl returns low-level ProviderProviderAnalyticsDashboards API implementation
-// Deprecated: use MockProviderProviderAnalyticsDashboardsInterface instead.
-func (a *ProviderProviderAnalyticsDashboardsAPI) Impl() ProviderProviderAnalyticsDashboardsService {
-	return a.ProviderProviderAnalyticsDashboardsService
+	providerProviderAnalyticsDashboardsImpl
 }
 
 type ProviderProvidersInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockProviderProvidersInterface instead.
-	WithImpl(impl ProviderProvidersService) ProviderProvidersInterface
-
-	// Impl returns low-level ProviderProviders API implementation
-	// Deprecated: use MockProviderProvidersInterface instead.
-	Impl() ProviderProvidersService
 
 	// Create a provider.
 	//
@@ -2320,7 +2048,7 @@ type ProviderProvidersInterface interface {
 
 func NewProviderProviders(client *client.DatabricksClient) *ProviderProvidersAPI {
 	return &ProviderProvidersAPI{
-		ProviderProvidersService: &providerProvidersImpl{
+		providerProvidersImpl: providerProvidersImpl{
 			client: client,
 		},
 	}
@@ -2328,30 +2056,14 @@ func NewProviderProviders(client *client.DatabricksClient) *ProviderProvidersAPI
 
 // Providers are entities that manage assets in Marketplace.
 type ProviderProvidersAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ProviderProvidersService)
-	ProviderProvidersService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockProviderProvidersInterface instead.
-func (a *ProviderProvidersAPI) WithImpl(impl ProviderProvidersService) ProviderProvidersInterface {
-	a.ProviderProvidersService = impl
-	return a
-}
-
-// Impl returns low-level ProviderProviders API implementation
-// Deprecated: use MockProviderProvidersInterface instead.
-func (a *ProviderProvidersAPI) Impl() ProviderProvidersService {
-	return a.ProviderProvidersService
+	providerProvidersImpl
 }
 
 // Delete provider.
 //
 // Delete provider
 func (a *ProviderProvidersAPI) DeleteById(ctx context.Context, id string) error {
-	return a.ProviderProvidersService.Delete(ctx, DeleteProviderRequest{
+	return a.providerProvidersImpl.Delete(ctx, DeleteProviderRequest{
 		Id: id,
 	})
 }
@@ -2360,7 +2072,7 @@ func (a *ProviderProvidersAPI) DeleteById(ctx context.Context, id string) error 
 //
 // Get provider profile
 func (a *ProviderProvidersAPI) GetById(ctx context.Context, id string) (*GetProviderResponse, error) {
-	return a.ProviderProvidersService.Get(ctx, GetProviderRequest{
+	return a.providerProvidersImpl.Get(ctx, GetProviderRequest{
 		Id: id,
 	})
 }
@@ -2374,7 +2086,7 @@ func (a *ProviderProvidersAPI) List(ctx context.Context, request ListProvidersRe
 
 	getNextPage := func(ctx context.Context, req ListProvidersRequest) (*ListProvidersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ProviderProvidersService.List(ctx, req)
+		return a.providerProvidersImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListProvidersResponse) []ProviderInfo {
 		return resp.Providers

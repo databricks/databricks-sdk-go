@@ -13,14 +13,6 @@ import (
 )
 
 type GitCredentialsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockGitCredentialsInterface instead.
-	WithImpl(impl GitCredentialsService) GitCredentialsInterface
-
-	// Impl returns low-level GitCredentials API implementation
-	// Deprecated: use MockGitCredentialsInterface instead.
-	Impl() GitCredentialsService
 
 	// Create a credential entry.
 	//
@@ -92,7 +84,7 @@ type GitCredentialsInterface interface {
 
 func NewGitCredentials(client *client.DatabricksClient) *GitCredentialsAPI {
 	return &GitCredentialsAPI{
-		GitCredentialsService: &gitCredentialsImpl{
+		gitCredentialsImpl: gitCredentialsImpl{
 			client: client,
 		},
 	}
@@ -105,30 +97,14 @@ func NewGitCredentials(client *client.DatabricksClient) *GitCredentialsAPI {
 //
 // [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 type GitCredentialsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(GitCredentialsService)
-	GitCredentialsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockGitCredentialsInterface instead.
-func (a *GitCredentialsAPI) WithImpl(impl GitCredentialsService) GitCredentialsInterface {
-	a.GitCredentialsService = impl
-	return a
-}
-
-// Impl returns low-level GitCredentials API implementation
-// Deprecated: use MockGitCredentialsInterface instead.
-func (a *GitCredentialsAPI) Impl() GitCredentialsService {
-	return a.GitCredentialsService
+	gitCredentialsImpl
 }
 
 // Delete a credential.
 //
 // Deletes the specified Git credential.
 func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credentialId int64) error {
-	return a.GitCredentialsService.Delete(ctx, DeleteGitCredentialRequest{
+	return a.gitCredentialsImpl.Delete(ctx, DeleteGitCredentialRequest{
 		CredentialId: credentialId,
 	})
 }
@@ -137,7 +113,7 @@ func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credential
 //
 // Gets the Git credential with the specified credential ID.
 func (a *GitCredentialsAPI) GetByCredentialId(ctx context.Context, credentialId int64) (*CredentialInfo, error) {
-	return a.GitCredentialsService.Get(ctx, GetGitCredentialRequest{
+	return a.gitCredentialsImpl.Get(ctx, GetGitCredentialRequest{
 		CredentialId: credentialId,
 	})
 }
@@ -153,7 +129,7 @@ func (a *GitCredentialsAPI) List(ctx context.Context) listing.Iterator[Credentia
 
 	getNextPage := func(ctx context.Context, req struct{}) (*GetCredentialsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.GitCredentialsService.List(ctx)
+		return a.gitCredentialsImpl.List(ctx)
 	}
 	getItems := func(resp *GetCredentialsResponse) []CredentialInfo {
 		return resp.Credentials
@@ -232,14 +208,6 @@ func (a *GitCredentialsAPI) GetByGitProvider(ctx context.Context, name string) (
 }
 
 type ReposInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockReposInterface instead.
-	WithImpl(impl ReposService) ReposInterface
-
-	// Impl returns low-level Repos API implementation
-	// Deprecated: use MockReposInterface instead.
-	Impl() ReposService
 
 	// Create a repo.
 	//
@@ -345,7 +313,7 @@ type ReposInterface interface {
 
 func NewRepos(client *client.DatabricksClient) *ReposAPI {
 	return &ReposAPI{
-		ReposService: &reposImpl{
+		reposImpl: reposImpl{
 			client: client,
 		},
 	}
@@ -362,30 +330,14 @@ func NewRepos(client *client.DatabricksClient) *ReposAPI {
 // science and engineering code development best practices using Git for version
 // control, collaboration, and CI/CD.
 type ReposAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ReposService)
-	ReposService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockReposInterface instead.
-func (a *ReposAPI) WithImpl(impl ReposService) ReposInterface {
-	a.ReposService = impl
-	return a
-}
-
-// Impl returns low-level Repos API implementation
-// Deprecated: use MockReposInterface instead.
-func (a *ReposAPI) Impl() ReposService {
-	return a.ReposService
+	reposImpl
 }
 
 // Delete a repo.
 //
 // Deletes the specified repo.
 func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
-	return a.ReposService.Delete(ctx, DeleteRepoRequest{
+	return a.reposImpl.Delete(ctx, DeleteRepoRequest{
 		RepoId: repoId,
 	})
 }
@@ -394,7 +346,7 @@ func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
 //
 // Returns the repo with the given repo ID.
 func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId int64) (*RepoInfo, error) {
-	return a.ReposService.Get(ctx, GetRepoRequest{
+	return a.reposImpl.Get(ctx, GetRepoRequest{
 		RepoId: repoId,
 	})
 }
@@ -403,7 +355,7 @@ func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId int64) (*RepoInfo, er
 //
 // Gets the permission levels that a user can have on an object.
 func (a *ReposAPI) GetPermissionLevelsByRepoId(ctx context.Context, repoId string) (*GetRepoPermissionLevelsResponse, error) {
-	return a.ReposService.GetPermissionLevels(ctx, GetRepoPermissionLevelsRequest{
+	return a.reposImpl.GetPermissionLevels(ctx, GetRepoPermissionLevelsRequest{
 		RepoId: repoId,
 	})
 }
@@ -413,7 +365,7 @@ func (a *ReposAPI) GetPermissionLevelsByRepoId(ctx context.Context, repoId strin
 // Gets the permissions of a repo. Repos can inherit permissions from their root
 // object.
 func (a *ReposAPI) GetPermissionsByRepoId(ctx context.Context, repoId string) (*RepoPermissions, error) {
-	return a.ReposService.GetPermissions(ctx, GetRepoPermissionsRequest{
+	return a.reposImpl.GetPermissions(ctx, GetRepoPermissionsRequest{
 		RepoId: repoId,
 	})
 }
@@ -428,7 +380,7 @@ func (a *ReposAPI) List(ctx context.Context, request ListReposRequest) listing.I
 
 	getNextPage := func(ctx context.Context, req ListReposRequest) (*ListReposResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ReposService.List(ctx, req)
+		return a.reposImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListReposResponse) []RepoInfo {
 		return resp.Repos
@@ -513,14 +465,6 @@ func (a *ReposAPI) GetByPath(ctx context.Context, name string) (*RepoInfo, error
 }
 
 type SecretsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockSecretsInterface instead.
-	WithImpl(impl SecretsService) SecretsInterface
-
-	// Impl returns low-level Secrets API implementation
-	// Deprecated: use MockSecretsInterface instead.
-	Impl() SecretsService
 
 	// Create a new secret scope.
 	//
@@ -742,7 +686,7 @@ type SecretsInterface interface {
 
 func NewSecrets(client *client.DatabricksClient) *SecretsAPI {
 	return &SecretsAPI{
-		SecretsService: &secretsImpl{
+		secretsImpl: secretsImpl{
 			client: client,
 		},
 	}
@@ -761,23 +705,7 @@ func NewSecrets(client *client.DatabricksClient) *SecretsAPI {
 // that might be displayed in notebooks, it is not possible to prevent such
 // users from reading secrets.
 type SecretsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(SecretsService)
-	SecretsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockSecretsInterface instead.
-func (a *SecretsAPI) WithImpl(impl SecretsService) SecretsInterface {
-	a.SecretsService = impl
-	return a
-}
-
-// Impl returns low-level Secrets API implementation
-// Deprecated: use MockSecretsInterface instead.
-func (a *SecretsAPI) Impl() SecretsService {
-	return a.SecretsService
+	secretsImpl
 }
 
 // Delete a secret scope.
@@ -788,7 +716,7 @@ func (a *SecretsAPI) Impl() SecretsService {
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) DeleteScopeByScope(ctx context.Context, scope string) error {
-	return a.SecretsService.DeleteScope(ctx, DeleteScope{
+	return a.secretsImpl.DeleteScope(ctx, DeleteScope{
 		Scope: scope,
 	})
 }
@@ -807,7 +735,7 @@ func (a *SecretsAPI) ListAcls(ctx context.Context, request ListAclsRequest) list
 
 	getNextPage := func(ctx context.Context, req ListAclsRequest) (*ListAclsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.SecretsService.ListAcls(ctx, req)
+		return a.secretsImpl.ListAcls(ctx, req)
 	}
 	getItems := func(resp *ListAclsResponse) []AclItem {
 		return resp.Items
@@ -845,7 +773,7 @@ func (a *SecretsAPI) ListAclsAll(ctx context.Context, request ListAclsRequest) (
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) ListAclsByScope(ctx context.Context, scope string) (*ListAclsResponse, error) {
-	return a.SecretsService.ListAcls(ctx, ListAclsRequest{
+	return a.secretsImpl.ListAcls(ctx, ListAclsRequest{
 		Scope: scope,
 	})
 }
@@ -863,7 +791,7 @@ func (a *SecretsAPI) ListScopes(ctx context.Context) listing.Iterator[SecretScop
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListScopesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.SecretsService.ListScopes(ctx)
+		return a.secretsImpl.ListScopes(ctx)
 	}
 	getItems := func(resp *ListScopesResponse) []SecretScope {
 		return resp.Scopes
@@ -906,7 +834,7 @@ func (a *SecretsAPI) ListSecrets(ctx context.Context, request ListSecretsRequest
 
 	getNextPage := func(ctx context.Context, req ListSecretsRequest) (*ListSecretsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.SecretsService.ListSecrets(ctx, req)
+		return a.secretsImpl.ListSecrets(ctx, req)
 	}
 	getItems := func(resp *ListSecretsResponse) []SecretMetadata {
 		return resp.Secrets
@@ -948,21 +876,13 @@ func (a *SecretsAPI) ListSecretsAll(ctx context.Context, request ListSecretsRequ
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) ListSecretsByScope(ctx context.Context, scope string) (*ListSecretsResponse, error) {
-	return a.SecretsService.ListSecrets(ctx, ListSecretsRequest{
+	return a.secretsImpl.ListSecrets(ctx, ListSecretsRequest{
 		Scope: scope,
 	})
 }
 
 type WorkspaceInterface interface {
 	workspaceAPIUtilities
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockWorkspaceInterface instead.
-	WithImpl(impl WorkspaceService) WorkspaceInterface
-
-	// Impl returns low-level Workspace API implementation
-	// Deprecated: use MockWorkspaceInterface instead.
-	Impl() WorkspaceService
 
 	// Delete a workspace object.
 	//
@@ -1103,7 +1023,7 @@ type WorkspaceInterface interface {
 
 func NewWorkspace(client *client.DatabricksClient) *WorkspaceAPI {
 	return &WorkspaceAPI{
-		WorkspaceService: &workspaceImpl{
+		workspaceImpl: workspaceImpl{
 			client: client,
 		},
 	}
@@ -1115,30 +1035,14 @@ func NewWorkspace(client *client.DatabricksClient) *WorkspaceAPI {
 // A notebook is a web-based interface to a document that contains runnable
 // code, visualizations, and explanatory text.
 type WorkspaceAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(WorkspaceService)
-	WorkspaceService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockWorkspaceInterface instead.
-func (a *WorkspaceAPI) WithImpl(impl WorkspaceService) WorkspaceInterface {
-	a.WorkspaceService = impl
-	return a
-}
-
-// Impl returns low-level Workspace API implementation
-// Deprecated: use MockWorkspaceInterface instead.
-func (a *WorkspaceAPI) Impl() WorkspaceService {
-	return a.WorkspaceService
+	workspaceImpl
 }
 
 // Get workspace object permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *WorkspaceAPI) GetPermissionLevelsByWorkspaceObjectTypeAndWorkspaceObjectId(ctx context.Context, workspaceObjectType string, workspaceObjectId string) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
-	return a.WorkspaceService.GetPermissionLevels(ctx, GetWorkspaceObjectPermissionLevelsRequest{
+	return a.workspaceImpl.GetPermissionLevels(ctx, GetWorkspaceObjectPermissionLevelsRequest{
 		WorkspaceObjectType: workspaceObjectType,
 		WorkspaceObjectId:   workspaceObjectId,
 	})
@@ -1149,7 +1053,7 @@ func (a *WorkspaceAPI) GetPermissionLevelsByWorkspaceObjectTypeAndWorkspaceObjec
 // Gets the permissions of a workspace object. Workspace objects can inherit
 // permissions from their parent objects or root object.
 func (a *WorkspaceAPI) GetPermissionsByWorkspaceObjectTypeAndWorkspaceObjectId(ctx context.Context, workspaceObjectType string, workspaceObjectId string) (*WorkspaceObjectPermissions, error) {
-	return a.WorkspaceService.GetPermissions(ctx, GetWorkspaceObjectPermissionsRequest{
+	return a.workspaceImpl.GetPermissions(ctx, GetWorkspaceObjectPermissionsRequest{
 		WorkspaceObjectType: workspaceObjectType,
 		WorkspaceObjectId:   workspaceObjectId,
 	})
@@ -1160,7 +1064,7 @@ func (a *WorkspaceAPI) GetPermissionsByWorkspaceObjectTypeAndWorkspaceObjectId(c
 // Gets the status of an object or a directory. If `path` does not exist, this
 // call returns an error `RESOURCE_DOES_NOT_EXIST`.
 func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*ObjectInfo, error) {
-	return a.WorkspaceService.GetStatus(ctx, GetStatusRequest{
+	return a.workspaceImpl.GetStatus(ctx, GetStatusRequest{
 		Path: path,
 	})
 }
@@ -1176,7 +1080,7 @@ func (a *WorkspaceAPI) List(ctx context.Context, request ListWorkspaceRequest) l
 
 	getNextPage := func(ctx context.Context, req ListWorkspaceRequest) (*ListResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.WorkspaceService.List(ctx, req)
+		return a.workspaceImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListResponse) []ObjectInfo {
 		return resp.Objects
@@ -1264,7 +1168,7 @@ func (a *WorkspaceAPI) GetByPath(ctx context.Context, name string) (*ObjectInfo,
 // Note that if this operation fails it may have succeeded in creating some of
 // the necessary parent directories.
 func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
-	return a.WorkspaceService.Mkdirs(ctx, Mkdirs{
+	return a.workspaceImpl.Mkdirs(ctx, Mkdirs{
 		Path: path,
 	})
 }

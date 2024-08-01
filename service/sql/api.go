@@ -15,14 +15,6 @@ import (
 )
 
 type AlertsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockAlertsInterface instead.
-	WithImpl(impl AlertsService) AlertsInterface
-
-	// Impl returns low-level Alerts API implementation
-	// Deprecated: use MockAlertsInterface instead.
-	Impl() AlertsService
 
 	// Create an alert.
 	//
@@ -97,7 +89,7 @@ type AlertsInterface interface {
 
 func NewAlerts(client *client.DatabricksClient) *AlertsAPI {
 	return &AlertsAPI{
-		AlertsService: &alertsImpl{
+		alertsImpl: alertsImpl{
 			client: client,
 		},
 	}
@@ -109,23 +101,7 @@ func NewAlerts(client *client.DatabricksClient) *AlertsAPI {
 // destinations if the condition was met. Alerts can be scheduled using the
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 type AlertsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AlertsService)
-	AlertsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockAlertsInterface instead.
-func (a *AlertsAPI) WithImpl(impl AlertsService) AlertsInterface {
-	a.AlertsService = impl
-	return a
-}
-
-// Impl returns low-level Alerts API implementation
-// Deprecated: use MockAlertsInterface instead.
-func (a *AlertsAPI) Impl() AlertsService {
-	return a.AlertsService
+	alertsImpl
 }
 
 // Delete an alert.
@@ -134,7 +110,7 @@ func (a *AlertsAPI) Impl() AlertsService {
 // searches and list views, and can no longer trigger. You can restore a trashed
 // alert through the UI. A trashed alert is permanently deleted after 30 days.
 func (a *AlertsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.AlertsService.Delete(ctx, TrashAlertRequest{
+	return a.alertsImpl.Delete(ctx, TrashAlertRequest{
 		Id: id,
 	})
 }
@@ -143,7 +119,7 @@ func (a *AlertsAPI) DeleteById(ctx context.Context, id string) error {
 //
 // Gets an alert.
 func (a *AlertsAPI) GetById(ctx context.Context, id string) (*Alert, error) {
-	return a.AlertsService.Get(ctx, GetAlertRequest{
+	return a.alertsImpl.Get(ctx, GetAlertRequest{
 		Id: id,
 	})
 }
@@ -159,7 +135,7 @@ func (a *AlertsAPI) List(ctx context.Context, request ListAlertsRequest) listing
 
 	getNextPage := func(ctx context.Context, req ListAlertsRequest) (*ListAlertsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.AlertsService.List(ctx, req)
+		return a.alertsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListAlertsResponse) []ListAlertsResponseAlert {
 		return resp.Results
@@ -245,14 +221,6 @@ func (a *AlertsAPI) GetByDisplayName(ctx context.Context, name string) (*ListAle
 }
 
 type AlertsLegacyInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockAlertsLegacyInterface instead.
-	WithImpl(impl AlertsLegacyService) AlertsLegacyInterface
-
-	// Impl returns low-level AlertsLegacy API implementation
-	// Deprecated: use MockAlertsLegacyInterface instead.
-	Impl() AlertsLegacyService
 
 	// Create an alert.
 	//
@@ -337,7 +305,7 @@ type AlertsLegacyInterface interface {
 
 func NewAlertsLegacy(client *client.DatabricksClient) *AlertsLegacyAPI {
 	return &AlertsLegacyAPI{
-		AlertsLegacyService: &alertsLegacyImpl{
+		alertsLegacyImpl: alertsLegacyImpl{
 			client: client,
 		},
 	}
@@ -352,23 +320,7 @@ func NewAlertsLegacy(client *client.DatabricksClient) *AlertsLegacyAPI {
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // see the latest version.
 type AlertsLegacyAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AlertsLegacyService)
-	AlertsLegacyService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockAlertsLegacyInterface instead.
-func (a *AlertsLegacyAPI) WithImpl(impl AlertsLegacyService) AlertsLegacyInterface {
-	a.AlertsLegacyService = impl
-	return a
-}
-
-// Impl returns low-level AlertsLegacy API implementation
-// Deprecated: use MockAlertsLegacyInterface instead.
-func (a *AlertsLegacyAPI) Impl() AlertsLegacyService {
-	return a.AlertsLegacyService
+	alertsLegacyImpl
 }
 
 // Delete an alert.
@@ -380,7 +332,7 @@ func (a *AlertsLegacyAPI) Impl() AlertsLegacyService {
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // use :method:alerts/delete instead.
 func (a *AlertsLegacyAPI) DeleteByAlertId(ctx context.Context, alertId string) error {
-	return a.AlertsLegacyService.Delete(ctx, DeleteAlertsLegacyRequest{
+	return a.alertsLegacyImpl.Delete(ctx, DeleteAlertsLegacyRequest{
 		AlertId: alertId,
 	})
 }
@@ -392,7 +344,7 @@ func (a *AlertsLegacyAPI) DeleteByAlertId(ctx context.Context, alertId string) e
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // use :method:alerts/get instead.
 func (a *AlertsLegacyAPI) GetByAlertId(ctx context.Context, alertId string) (*LegacyAlert, error) {
-	return a.AlertsLegacyService.Get(ctx, GetAlertsLegacyRequest{
+	return a.alertsLegacyImpl.Get(ctx, GetAlertsLegacyRequest{
 		AlertId: alertId,
 	})
 }
@@ -451,14 +403,6 @@ func (a *AlertsLegacyAPI) GetByName(ctx context.Context, name string) (*LegacyAl
 }
 
 type DashboardWidgetsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockDashboardWidgetsInterface instead.
-	WithImpl(impl DashboardWidgetsService) DashboardWidgetsInterface
-
-	// Impl returns low-level DashboardWidgets API implementation
-	// Deprecated: use MockDashboardWidgetsInterface instead.
-	Impl() DashboardWidgetsService
 
 	// Add widget to a dashboard.
 	Create(ctx context.Context, request CreateWidget) (*Widget, error)
@@ -475,7 +419,7 @@ type DashboardWidgetsInterface interface {
 
 func NewDashboardWidgets(client *client.DatabricksClient) *DashboardWidgetsAPI {
 	return &DashboardWidgetsAPI{
-		DashboardWidgetsService: &dashboardWidgetsImpl{
+		dashboardWidgetsImpl: dashboardWidgetsImpl{
 			client: client,
 		},
 	}
@@ -485,41 +429,17 @@ func NewDashboardWidgets(client *client.DatabricksClient) *DashboardWidgetsAPI {
 // from existing dashboards within the Databricks Workspace. Data structures may
 // change over time.
 type DashboardWidgetsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(DashboardWidgetsService)
-	DashboardWidgetsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockDashboardWidgetsInterface instead.
-func (a *DashboardWidgetsAPI) WithImpl(impl DashboardWidgetsService) DashboardWidgetsInterface {
-	a.DashboardWidgetsService = impl
-	return a
-}
-
-// Impl returns low-level DashboardWidgets API implementation
-// Deprecated: use MockDashboardWidgetsInterface instead.
-func (a *DashboardWidgetsAPI) Impl() DashboardWidgetsService {
-	return a.DashboardWidgetsService
+	dashboardWidgetsImpl
 }
 
 // Remove widget.
 func (a *DashboardWidgetsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.DashboardWidgetsService.Delete(ctx, DeleteDashboardWidgetRequest{
+	return a.dashboardWidgetsImpl.Delete(ctx, DeleteDashboardWidgetRequest{
 		Id: id,
 	})
 }
 
 type DashboardsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockDashboardsInterface instead.
-	WithImpl(impl DashboardsService) DashboardsInterface
-
-	// Impl returns low-level Dashboards API implementation
-	// Deprecated: use MockDashboardsInterface instead.
-	Impl() DashboardsService
 
 	// Create a dashboard object.
 	Create(ctx context.Context, request DashboardPostContent) (*Dashboard, error)
@@ -602,7 +522,7 @@ type DashboardsInterface interface {
 
 func NewDashboards(client *client.DatabricksClient) *DashboardsAPI {
 	return &DashboardsAPI{
-		DashboardsService: &dashboardsImpl{
+		dashboardsImpl: dashboardsImpl{
 			client: client,
 		},
 	}
@@ -615,23 +535,7 @@ func NewDashboards(client *client.DatabricksClient) *DashboardsAPI {
 // to create a new one. Dashboards can be scheduled using the `sql_task` type of
 // the Jobs API, e.g. :method:jobs/create.
 type DashboardsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(DashboardsService)
-	DashboardsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockDashboardsInterface instead.
-func (a *DashboardsAPI) WithImpl(impl DashboardsService) DashboardsInterface {
-	a.DashboardsService = impl
-	return a
-}
-
-// Impl returns low-level Dashboards API implementation
-// Deprecated: use MockDashboardsInterface instead.
-func (a *DashboardsAPI) Impl() DashboardsService {
-	return a.DashboardsService
+	dashboardsImpl
 }
 
 // Remove a dashboard.
@@ -639,7 +543,7 @@ func (a *DashboardsAPI) Impl() DashboardsService {
 // Moves a dashboard to the trash. Trashed dashboards do not appear in list
 // views or searches, and cannot be shared.
 func (a *DashboardsAPI) DeleteByDashboardId(ctx context.Context, dashboardId string) error {
-	return a.DashboardsService.Delete(ctx, DeleteDashboardRequest{
+	return a.dashboardsImpl.Delete(ctx, DeleteDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
@@ -649,7 +553,7 @@ func (a *DashboardsAPI) DeleteByDashboardId(ctx context.Context, dashboardId str
 // Returns a JSON representation of a dashboard object, including its
 // visualization and query objects.
 func (a *DashboardsAPI) GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error) {
-	return a.DashboardsService.Get(ctx, GetDashboardRequest{
+	return a.dashboardsImpl.Get(ctx, GetDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
@@ -668,7 +572,7 @@ func (a *DashboardsAPI) List(ctx context.Context, request ListDashboardsRequest)
 
 	getNextPage := func(ctx context.Context, req ListDashboardsRequest) (*ListResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.DashboardsService.List(ctx, req)
+		return a.dashboardsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListResponse) []Dashboard {
 		return resp.Results
@@ -761,14 +665,6 @@ func (a *DashboardsAPI) GetByName(ctx context.Context, name string) (*Dashboard,
 }
 
 type DataSourcesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockDataSourcesInterface instead.
-	WithImpl(impl DataSourcesService) DataSourcesInterface
-
-	// Impl returns low-level DataSources API implementation
-	// Deprecated: use MockDataSourcesInterface instead.
-	Impl() DataSourcesService
 
 	// Get a list of SQL warehouses.
 	//
@@ -801,7 +697,7 @@ type DataSourcesInterface interface {
 
 func NewDataSources(client *client.DatabricksClient) *DataSourcesAPI {
 	return &DataSourcesAPI{
-		DataSourcesService: &dataSourcesImpl{
+		dataSourcesImpl: dataSourcesImpl{
 			client: client,
 		},
 	}
@@ -821,23 +717,7 @@ func NewDataSources(client *client.DatabricksClient) *DataSourcesAPI {
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // see the latest version.
 type DataSourcesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(DataSourcesService)
-	DataSourcesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockDataSourcesInterface instead.
-func (a *DataSourcesAPI) WithImpl(impl DataSourcesService) DataSourcesInterface {
-	a.DataSourcesService = impl
-	return a
-}
-
-// Impl returns low-level DataSources API implementation
-// Deprecated: use MockDataSourcesInterface instead.
-func (a *DataSourcesAPI) Impl() DataSourcesService {
-	return a.DataSourcesService
+	dataSourcesImpl
 }
 
 // DataSourceNameToIdMap calls [DataSourcesAPI.List] and creates a map of results with [DataSource].Name as key and [DataSource].Id as value.
@@ -894,14 +774,6 @@ func (a *DataSourcesAPI) GetByName(ctx context.Context, name string) (*DataSourc
 }
 
 type DbsqlPermissionsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockDbsqlPermissionsInterface instead.
-	WithImpl(impl DbsqlPermissionsService) DbsqlPermissionsInterface
-
-	// Impl returns low-level DbsqlPermissions API implementation
-	// Deprecated: use MockDbsqlPermissionsInterface instead.
-	Impl() DbsqlPermissionsService
 
 	// Get object ACL.
 	//
@@ -934,7 +806,7 @@ type DbsqlPermissionsInterface interface {
 
 func NewDbsqlPermissions(client *client.DatabricksClient) *DbsqlPermissionsAPI {
 	return &DbsqlPermissionsAPI{
-		DbsqlPermissionsService: &dbsqlPermissionsImpl{
+		dbsqlPermissionsImpl: dbsqlPermissionsImpl{
 			client: client,
 		},
 	}
@@ -957,23 +829,7 @@ func NewDbsqlPermissions(client *client.DatabricksClient) *DbsqlPermissionsAPI {
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // see the latest version.
 type DbsqlPermissionsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(DbsqlPermissionsService)
-	DbsqlPermissionsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockDbsqlPermissionsInterface instead.
-func (a *DbsqlPermissionsAPI) WithImpl(impl DbsqlPermissionsService) DbsqlPermissionsInterface {
-	a.DbsqlPermissionsService = impl
-	return a
-}
-
-// Impl returns low-level DbsqlPermissions API implementation
-// Deprecated: use MockDbsqlPermissionsInterface instead.
-func (a *DbsqlPermissionsAPI) Impl() DbsqlPermissionsService {
-	return a.DbsqlPermissionsService
+	dbsqlPermissionsImpl
 }
 
 // Get object ACL.
@@ -981,21 +837,13 @@ func (a *DbsqlPermissionsAPI) Impl() DbsqlPermissionsService {
 // Gets a JSON representation of the access control list (ACL) for a specified
 // object.
 func (a *DbsqlPermissionsAPI) GetByObjectTypeAndObjectId(ctx context.Context, objectType ObjectTypePlural, objectId string) (*GetResponse, error) {
-	return a.DbsqlPermissionsService.Get(ctx, GetDbsqlPermissionRequest{
+	return a.dbsqlPermissionsImpl.Get(ctx, GetDbsqlPermissionRequest{
 		ObjectType: objectType,
 		ObjectId:   objectId,
 	})
 }
 
 type QueriesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockQueriesInterface instead.
-	WithImpl(impl QueriesService) QueriesInterface
-
-	// Impl returns low-level Queries API implementation
-	// Deprecated: use MockQueriesInterface instead.
-	Impl() QueriesService
 
 	// Create a query.
 	//
@@ -1091,7 +939,7 @@ type QueriesInterface interface {
 
 func NewQueries(client *client.DatabricksClient) *QueriesAPI {
 	return &QueriesAPI{
-		QueriesService: &queriesImpl{
+		queriesImpl: queriesImpl{
 			client: client,
 		},
 	}
@@ -1102,23 +950,7 @@ func NewQueries(client *client.DatabricksClient) *QueriesAPI {
 // name, description, tags, and parameters. Queries can be scheduled using the
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 type QueriesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(QueriesService)
-	QueriesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockQueriesInterface instead.
-func (a *QueriesAPI) WithImpl(impl QueriesService) QueriesInterface {
-	a.QueriesService = impl
-	return a
-}
-
-// Impl returns low-level Queries API implementation
-// Deprecated: use MockQueriesInterface instead.
-func (a *QueriesAPI) Impl() QueriesService {
-	return a.QueriesService
+	queriesImpl
 }
 
 // Delete a query.
@@ -1128,7 +960,7 @@ func (a *QueriesAPI) Impl() QueriesService {
 // trashed query through the UI. A trashed query is permanently deleted after 30
 // days.
 func (a *QueriesAPI) DeleteById(ctx context.Context, id string) error {
-	return a.QueriesService.Delete(ctx, TrashQueryRequest{
+	return a.queriesImpl.Delete(ctx, TrashQueryRequest{
 		Id: id,
 	})
 }
@@ -1137,7 +969,7 @@ func (a *QueriesAPI) DeleteById(ctx context.Context, id string) error {
 //
 // Gets a query.
 func (a *QueriesAPI) GetById(ctx context.Context, id string) (*Query, error) {
-	return a.QueriesService.Get(ctx, GetQueryRequest{
+	return a.queriesImpl.Get(ctx, GetQueryRequest{
 		Id: id,
 	})
 }
@@ -1153,7 +985,7 @@ func (a *QueriesAPI) List(ctx context.Context, request ListQueriesRequest) listi
 
 	getNextPage := func(ctx context.Context, req ListQueriesRequest) (*ListQueryObjectsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.QueriesService.List(ctx, req)
+		return a.queriesImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListQueryObjectsResponse) []ListQueryObjectsResponseQuery {
 		return resp.Results
@@ -1247,7 +1079,7 @@ func (a *QueriesAPI) ListVisualizations(ctx context.Context, request ListVisuali
 
 	getNextPage := func(ctx context.Context, req ListVisualizationsForQueryRequest) (*ListVisualizationsForQueryResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.QueriesService.ListVisualizations(ctx, req)
+		return a.queriesImpl.ListVisualizations(ctx, req)
 	}
 	getItems := func(resp *ListVisualizationsForQueryResponse) []Visualization {
 		return resp.Results
@@ -1281,20 +1113,12 @@ func (a *QueriesAPI) ListVisualizationsAll(ctx context.Context, request ListVisu
 //
 // Gets a list of visualizations on a query.
 func (a *QueriesAPI) ListVisualizationsById(ctx context.Context, id string) (*ListVisualizationsForQueryResponse, error) {
-	return a.QueriesService.ListVisualizations(ctx, ListVisualizationsForQueryRequest{
+	return a.queriesImpl.ListVisualizations(ctx, ListVisualizationsForQueryRequest{
 		Id: id,
 	})
 }
 
 type QueriesLegacyInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockQueriesLegacyInterface instead.
-	WithImpl(impl QueriesLegacyService) QueriesLegacyInterface
-
-	// Impl returns low-level QueriesLegacy API implementation
-	// Deprecated: use MockQueriesLegacyInterface instead.
-	Impl() QueriesLegacyService
 
 	// Create a new query definition.
 	//
@@ -1418,7 +1242,7 @@ type QueriesLegacyInterface interface {
 
 func NewQueriesLegacy(client *client.DatabricksClient) *QueriesLegacyAPI {
 	return &QueriesLegacyAPI{
-		QueriesLegacyService: &queriesLegacyImpl{
+		queriesLegacyImpl: queriesLegacyImpl{
 			client: client,
 		},
 	}
@@ -1432,23 +1256,7 @@ func NewQueriesLegacy(client *client.DatabricksClient) *QueriesLegacyAPI {
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // see the latest version.
 type QueriesLegacyAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(QueriesLegacyService)
-	QueriesLegacyService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockQueriesLegacyInterface instead.
-func (a *QueriesLegacyAPI) WithImpl(impl QueriesLegacyService) QueriesLegacyInterface {
-	a.QueriesLegacyService = impl
-	return a
-}
-
-// Impl returns low-level QueriesLegacy API implementation
-// Deprecated: use MockQueriesLegacyInterface instead.
-func (a *QueriesLegacyAPI) Impl() QueriesLegacyService {
-	return a.QueriesLegacyService
+	queriesLegacyImpl
 }
 
 // Delete a query.
@@ -1460,7 +1268,7 @@ func (a *QueriesLegacyAPI) Impl() QueriesLegacyService {
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // use :method:queries/delete instead.
 func (a *QueriesLegacyAPI) DeleteByQueryId(ctx context.Context, queryId string) error {
-	return a.QueriesLegacyService.Delete(ctx, DeleteQueriesLegacyRequest{
+	return a.queriesLegacyImpl.Delete(ctx, DeleteQueriesLegacyRequest{
 		QueryId: queryId,
 	})
 }
@@ -1473,7 +1281,7 @@ func (a *QueriesLegacyAPI) DeleteByQueryId(ctx context.Context, queryId string) 
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // use :method:queries/get instead.
 func (a *QueriesLegacyAPI) GetByQueryId(ctx context.Context, queryId string) (*LegacyQuery, error) {
-	return a.QueriesLegacyService.Get(ctx, GetQueriesLegacyRequest{
+	return a.queriesLegacyImpl.Get(ctx, GetQueriesLegacyRequest{
 		QueryId: queryId,
 	})
 }
@@ -1496,7 +1304,7 @@ func (a *QueriesLegacyAPI) List(ctx context.Context, request ListQueriesLegacyRe
 
 	getNextPage := func(ctx context.Context, req ListQueriesLegacyRequest) (*QueryList, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.QueriesLegacyService.List(ctx, req)
+		return a.queriesLegacyImpl.List(ctx, req)
 	}
 	getItems := func(resp *QueryList) []LegacyQuery {
 		return resp.Results
@@ -1593,14 +1401,6 @@ func (a *QueriesLegacyAPI) GetByName(ctx context.Context, name string) (*LegacyQ
 }
 
 type QueryHistoryInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockQueryHistoryInterface instead.
-	WithImpl(impl QueryHistoryService) QueryHistoryInterface
-
-	// Impl returns low-level QueryHistory API implementation
-	// Deprecated: use MockQueryHistoryInterface instead.
-	Impl() QueryHistoryService
 
 	// List Queries.
 	//
@@ -1616,7 +1416,7 @@ type QueryHistoryInterface interface {
 
 func NewQueryHistory(client *client.DatabricksClient) *QueryHistoryAPI {
 	return &QueryHistoryAPI{
-		QueryHistoryService: &queryHistoryImpl{
+		queryHistoryImpl: queryHistoryImpl{
 			client: client,
 		},
 	}
@@ -1625,34 +1425,10 @@ func NewQueryHistory(client *client.DatabricksClient) *QueryHistoryAPI {
 // A service responsible for storing and retrieving the list of queries run
 // against SQL endpoints, serverless compute, and DLT.
 type QueryHistoryAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(QueryHistoryService)
-	QueryHistoryService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockQueryHistoryInterface instead.
-func (a *QueryHistoryAPI) WithImpl(impl QueryHistoryService) QueryHistoryInterface {
-	a.QueryHistoryService = impl
-	return a
-}
-
-// Impl returns low-level QueryHistory API implementation
-// Deprecated: use MockQueryHistoryInterface instead.
-func (a *QueryHistoryAPI) Impl() QueryHistoryService {
-	return a.QueryHistoryService
+	queryHistoryImpl
 }
 
 type QueryVisualizationsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockQueryVisualizationsInterface instead.
-	WithImpl(impl QueryVisualizationsService) QueryVisualizationsInterface
-
-	// Impl returns low-level QueryVisualizations API implementation
-	// Deprecated: use MockQueryVisualizationsInterface instead.
-	Impl() QueryVisualizationsService
 
 	// Add a visualization to a query.
 	//
@@ -1677,7 +1453,7 @@ type QueryVisualizationsInterface interface {
 
 func NewQueryVisualizations(client *client.DatabricksClient) *QueryVisualizationsAPI {
 	return &QueryVisualizationsAPI{
-		QueryVisualizationsService: &queryVisualizationsImpl{
+		queryVisualizationsImpl: queryVisualizationsImpl{
 			client: client,
 		},
 	}
@@ -1687,43 +1463,19 @@ func NewQueryVisualizations(client *client.DatabricksClient) *QueryVisualization
 // visualizations from existing queries in the Databricks Workspace. Data
 // structures can change over time.
 type QueryVisualizationsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(QueryVisualizationsService)
-	QueryVisualizationsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockQueryVisualizationsInterface instead.
-func (a *QueryVisualizationsAPI) WithImpl(impl QueryVisualizationsService) QueryVisualizationsInterface {
-	a.QueryVisualizationsService = impl
-	return a
-}
-
-// Impl returns low-level QueryVisualizations API implementation
-// Deprecated: use MockQueryVisualizationsInterface instead.
-func (a *QueryVisualizationsAPI) Impl() QueryVisualizationsService {
-	return a.QueryVisualizationsService
+	queryVisualizationsImpl
 }
 
 // Remove a visualization.
 //
 // Removes a visualization.
 func (a *QueryVisualizationsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.QueryVisualizationsService.Delete(ctx, DeleteVisualizationRequest{
+	return a.queryVisualizationsImpl.Delete(ctx, DeleteVisualizationRequest{
 		Id: id,
 	})
 }
 
 type QueryVisualizationsLegacyInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockQueryVisualizationsLegacyInterface instead.
-	WithImpl(impl QueryVisualizationsLegacyService) QueryVisualizationsLegacyInterface
-
-	// Impl returns low-level QueryVisualizationsLegacy API implementation
-	// Deprecated: use MockQueryVisualizationsLegacyInterface instead.
-	Impl() QueryVisualizationsLegacyService
 
 	// Add visualization to a query.
 	//
@@ -1760,7 +1512,7 @@ type QueryVisualizationsLegacyInterface interface {
 
 func NewQueryVisualizationsLegacy(client *client.DatabricksClient) *QueryVisualizationsLegacyAPI {
 	return &QueryVisualizationsLegacyAPI{
-		QueryVisualizationsLegacyService: &queryVisualizationsLegacyImpl{
+		queryVisualizationsLegacyImpl: queryVisualizationsLegacyImpl{
 			client: client,
 		},
 	}
@@ -1773,23 +1525,7 @@ func NewQueryVisualizationsLegacy(client *client.DatabricksClient) *QueryVisuali
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // see the latest version.
 type QueryVisualizationsLegacyAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(QueryVisualizationsLegacyService)
-	QueryVisualizationsLegacyService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockQueryVisualizationsLegacyInterface instead.
-func (a *QueryVisualizationsLegacyAPI) WithImpl(impl QueryVisualizationsLegacyService) QueryVisualizationsLegacyInterface {
-	a.QueryVisualizationsLegacyService = impl
-	return a
-}
-
-// Impl returns low-level QueryVisualizationsLegacy API implementation
-// Deprecated: use MockQueryVisualizationsLegacyInterface instead.
-func (a *QueryVisualizationsLegacyAPI) Impl() QueryVisualizationsLegacyService {
-	return a.QueryVisualizationsLegacyService
+	queryVisualizationsLegacyImpl
 }
 
 // Remove visualization.
@@ -1799,21 +1535,13 @@ func (a *QueryVisualizationsLegacyAPI) Impl() QueryVisualizationsLegacyService {
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // use :method:queryvisualizations/delete instead.
 func (a *QueryVisualizationsLegacyAPI) DeleteById(ctx context.Context, id string) error {
-	return a.QueryVisualizationsLegacyService.Delete(ctx, DeleteQueryVisualizationsLegacyRequest{
+	return a.queryVisualizationsLegacyImpl.Delete(ctx, DeleteQueryVisualizationsLegacyRequest{
 		Id: id,
 	})
 }
 
 type StatementExecutionInterface interface {
 	statementExecutionAPIUtilities
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockStatementExecutionInterface instead.
-	WithImpl(impl StatementExecutionService) StatementExecutionInterface
-
-	// Impl returns low-level StatementExecution API implementation
-	// Deprecated: use MockStatementExecutionInterface instead.
-	Impl() StatementExecutionService
 
 	// Cancel statement execution.
 	//
@@ -1877,7 +1605,7 @@ type StatementExecutionInterface interface {
 
 func NewStatementExecution(client *client.DatabricksClient) *StatementExecutionAPI {
 	return &StatementExecutionAPI{
-		StatementExecutionService: &statementExecutionImpl{
+		statementExecutionImpl: statementExecutionImpl{
 			client: client,
 		},
 	}
@@ -1987,23 +1715,7 @@ func NewStatementExecution(client *client.DatabricksClient) *StatementExecutionA
 // [Apache Arrow Columnar]: https://arrow.apache.org/overview/
 // [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
 type StatementExecutionAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(StatementExecutionService)
-	StatementExecutionService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockStatementExecutionInterface instead.
-func (a *StatementExecutionAPI) WithImpl(impl StatementExecutionService) StatementExecutionInterface {
-	a.StatementExecutionService = impl
-	return a
-}
-
-// Impl returns low-level StatementExecution API implementation
-// Deprecated: use MockStatementExecutionInterface instead.
-func (a *StatementExecutionAPI) Impl() StatementExecutionService {
-	return a.StatementExecutionService
+	statementExecutionImpl
 }
 
 // Get status, manifest, and result first chunk.
@@ -2018,7 +1730,7 @@ func (a *StatementExecutionAPI) Impl() StatementExecutionService {
 // **NOTE** This call currently might take up to 5 seconds to get the latest
 // status and result.
 func (a *StatementExecutionAPI) GetStatementByStatementId(ctx context.Context, statementId string) (*StatementResponse, error) {
-	return a.StatementExecutionService.GetStatement(ctx, GetStatementRequest{
+	return a.statementExecutionImpl.GetStatement(ctx, GetStatementRequest{
 		StatementId: statementId,
 	})
 }
@@ -2034,21 +1746,13 @@ func (a *StatementExecutionAPI) GetStatementByStatementId(ctx context.Context, s
 // similarly includes the `next_chunk_index` and `next_chunk_internal_link`
 // fields for simple iteration through the result set.
 func (a *StatementExecutionAPI) GetStatementResultChunkNByStatementIdAndChunkIndex(ctx context.Context, statementId string, chunkIndex int) (*ResultData, error) {
-	return a.StatementExecutionService.GetStatementResultChunkN(ctx, GetStatementResultChunkNRequest{
+	return a.statementExecutionImpl.GetStatementResultChunkN(ctx, GetStatementResultChunkNRequest{
 		StatementId: statementId,
 		ChunkIndex:  chunkIndex,
 	})
 }
 
 type WarehousesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockWarehousesInterface instead.
-	WithImpl(impl WarehousesService) WarehousesInterface
-
-	// Impl returns low-level Warehouses API implementation
-	// Deprecated: use MockWarehousesInterface instead.
-	Impl() WarehousesService
 
 	// WaitGetWarehouseRunning repeatedly calls [WarehousesAPI.Get] and waits to reach RUNNING state
 	WaitGetWarehouseRunning(ctx context.Context, id string,
@@ -2211,7 +1915,7 @@ type WarehousesInterface interface {
 
 func NewWarehouses(client *client.DatabricksClient) *WarehousesAPI {
 	return &WarehousesAPI{
-		WarehousesService: &warehousesImpl{
+		warehousesImpl: warehousesImpl{
 			client: client,
 		},
 	}
@@ -2221,23 +1925,7 @@ func NewWarehouses(client *client.DatabricksClient) *WarehousesAPI {
 // objects within Databricks SQL. Compute resources are infrastructure resources
 // that provide processing capabilities in the cloud.
 type WarehousesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(WarehousesService)
-	WarehousesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockWarehousesInterface instead.
-func (a *WarehousesAPI) WithImpl(impl WarehousesService) WarehousesInterface {
-	a.WarehousesService = impl
-	return a
-}
-
-// Impl returns low-level Warehouses API implementation
-// Deprecated: use MockWarehousesInterface instead.
-func (a *WarehousesAPI) Impl() WarehousesService {
-	return a.WarehousesService
+	warehousesImpl
 }
 
 // WaitGetWarehouseRunning repeatedly calls [WarehousesAPI.Get] and waits to reach RUNNING state
@@ -2354,7 +2042,7 @@ func (w *WaitGetWarehouseStopped[R]) GetWithTimeout(timeout time.Duration) (*Get
 //
 // Creates a new SQL warehouse.
 func (a *WarehousesAPI) Create(ctx context.Context, createWarehouseRequest CreateWarehouseRequest) (*WaitGetWarehouseRunning[CreateWarehouseResponse], error) {
-	createWarehouseResponse, err := a.WarehousesService.Create(ctx, createWarehouseRequest)
+	createWarehouseResponse, err := a.warehousesImpl.Create(ctx, createWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -2400,7 +2088,7 @@ func (a *WarehousesAPI) CreateAndWait(ctx context.Context, createWarehouseReques
 //
 // Deletes a SQL warehouse.
 func (a *WarehousesAPI) DeleteById(ctx context.Context, id string) error {
-	return a.WarehousesService.Delete(ctx, DeleteWarehouseRequest{
+	return a.warehousesImpl.Delete(ctx, DeleteWarehouseRequest{
 		Id: id,
 	})
 }
@@ -2409,7 +2097,7 @@ func (a *WarehousesAPI) DeleteById(ctx context.Context, id string) error {
 //
 // Updates the configuration for a SQL warehouse.
 func (a *WarehousesAPI) Edit(ctx context.Context, editWarehouseRequest EditWarehouseRequest) (*WaitGetWarehouseRunning[struct{}], error) {
-	err := a.WarehousesService.Edit(ctx, editWarehouseRequest)
+	err := a.warehousesImpl.Edit(ctx, editWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -2455,7 +2143,7 @@ func (a *WarehousesAPI) EditAndWait(ctx context.Context, editWarehouseRequest Ed
 //
 // Gets the information for a single SQL warehouse.
 func (a *WarehousesAPI) GetById(ctx context.Context, id string) (*GetWarehouseResponse, error) {
-	return a.WarehousesService.Get(ctx, GetWarehouseRequest{
+	return a.warehousesImpl.Get(ctx, GetWarehouseRequest{
 		Id: id,
 	})
 }
@@ -2464,7 +2152,7 @@ func (a *WarehousesAPI) GetById(ctx context.Context, id string) (*GetWarehouseRe
 //
 // Gets the permission levels that a user can have on an object.
 func (a *WarehousesAPI) GetPermissionLevelsByWarehouseId(ctx context.Context, warehouseId string) (*GetWarehousePermissionLevelsResponse, error) {
-	return a.WarehousesService.GetPermissionLevels(ctx, GetWarehousePermissionLevelsRequest{
+	return a.warehousesImpl.GetPermissionLevels(ctx, GetWarehousePermissionLevelsRequest{
 		WarehouseId: warehouseId,
 	})
 }
@@ -2474,7 +2162,7 @@ func (a *WarehousesAPI) GetPermissionLevelsByWarehouseId(ctx context.Context, wa
 // Gets the permissions of a SQL warehouse. SQL warehouses can inherit
 // permissions from their root object.
 func (a *WarehousesAPI) GetPermissionsByWarehouseId(ctx context.Context, warehouseId string) (*WarehousePermissions, error) {
-	return a.WarehousesService.GetPermissions(ctx, GetWarehousePermissionsRequest{
+	return a.warehousesImpl.GetPermissions(ctx, GetWarehousePermissionsRequest{
 		WarehouseId: warehouseId,
 	})
 }
@@ -2488,7 +2176,7 @@ func (a *WarehousesAPI) List(ctx context.Context, request ListWarehousesRequest)
 
 	getNextPage := func(ctx context.Context, req ListWarehousesRequest) (*ListWarehousesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.WarehousesService.List(ctx, req)
+		return a.warehousesImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListWarehousesResponse) []EndpointInfo {
 		return resp.Warehouses
@@ -2569,7 +2257,7 @@ func (a *WarehousesAPI) GetByName(ctx context.Context, name string) (*EndpointIn
 //
 // Starts a SQL warehouse.
 func (a *WarehousesAPI) Start(ctx context.Context, startRequest StartRequest) (*WaitGetWarehouseRunning[struct{}], error) {
-	err := a.WarehousesService.Start(ctx, startRequest)
+	err := a.warehousesImpl.Start(ctx, startRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -2615,7 +2303,7 @@ func (a *WarehousesAPI) StartAndWait(ctx context.Context, startRequest StartRequ
 //
 // Stops a SQL warehouse.
 func (a *WarehousesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*WaitGetWarehouseStopped[struct{}], error) {
-	err := a.WarehousesService.Stop(ctx, stopRequest)
+	err := a.warehousesImpl.Stop(ctx, stopRequest)
 	if err != nil {
 		return nil, err
 	}

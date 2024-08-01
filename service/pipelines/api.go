@@ -15,14 +15,6 @@ import (
 )
 
 type PipelinesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockPipelinesInterface instead.
-	WithImpl(impl PipelinesService) PipelinesInterface
-
-	// Impl returns low-level Pipelines API implementation
-	// Deprecated: use MockPipelinesInterface instead.
-	Impl() PipelinesService
 
 	// WaitGetPipelineIdle repeatedly calls [PipelinesAPI.Get] and waits to reach IDLE state
 	WaitGetPipelineIdle(ctx context.Context, pipelineId string,
@@ -188,7 +180,7 @@ type PipelinesInterface interface {
 
 func NewPipelines(client *client.DatabricksClient) *PipelinesAPI {
 	return &PipelinesAPI{
-		PipelinesService: &pipelinesImpl{
+		pipelinesImpl: pipelinesImpl{
 			client: client,
 		},
 	}
@@ -209,23 +201,7 @@ func NewPipelines(client *client.DatabricksClient) *PipelinesAPI {
 // define expected data quality and specify how to handle records that fail
 // those expectations.
 type PipelinesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(PipelinesService)
-	PipelinesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockPipelinesInterface instead.
-func (a *PipelinesAPI) WithImpl(impl PipelinesService) PipelinesInterface {
-	a.PipelinesService = impl
-	return a
-}
-
-// Impl returns low-level Pipelines API implementation
-// Deprecated: use MockPipelinesInterface instead.
-func (a *PipelinesAPI) Impl() PipelinesService {
-	return a.PipelinesService
+	pipelinesImpl
 }
 
 // WaitGetPipelineIdle repeatedly calls [PipelinesAPI.Get] and waits to reach IDLE state
@@ -340,14 +316,14 @@ func (w *WaitGetPipelineRunning[R]) GetWithTimeout(timeout time.Duration) (*GetP
 //
 // Deletes a pipeline.
 func (a *PipelinesAPI) DeleteByPipelineId(ctx context.Context, pipelineId string) error {
-	return a.PipelinesService.Delete(ctx, DeletePipelineRequest{
+	return a.pipelinesImpl.Delete(ctx, DeletePipelineRequest{
 		PipelineId: pipelineId,
 	})
 }
 
 // Get a pipeline.
 func (a *PipelinesAPI) GetByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
-	return a.PipelinesService.Get(ctx, GetPipelineRequest{
+	return a.pipelinesImpl.Get(ctx, GetPipelineRequest{
 		PipelineId: pipelineId,
 	})
 }
@@ -356,7 +332,7 @@ func (a *PipelinesAPI) GetByPipelineId(ctx context.Context, pipelineId string) (
 //
 // Gets the permission levels that a user can have on an object.
 func (a *PipelinesAPI) GetPermissionLevelsByPipelineId(ctx context.Context, pipelineId string) (*GetPipelinePermissionLevelsResponse, error) {
-	return a.PipelinesService.GetPermissionLevels(ctx, GetPipelinePermissionLevelsRequest{
+	return a.pipelinesImpl.GetPermissionLevels(ctx, GetPipelinePermissionLevelsRequest{
 		PipelineId: pipelineId,
 	})
 }
@@ -366,7 +342,7 @@ func (a *PipelinesAPI) GetPermissionLevelsByPipelineId(ctx context.Context, pipe
 // Gets the permissions of a pipeline. Pipelines can inherit permissions from
 // their root object.
 func (a *PipelinesAPI) GetPermissionsByPipelineId(ctx context.Context, pipelineId string) (*PipelinePermissions, error) {
-	return a.PipelinesService.GetPermissions(ctx, GetPipelinePermissionsRequest{
+	return a.pipelinesImpl.GetPermissions(ctx, GetPipelinePermissionsRequest{
 		PipelineId: pipelineId,
 	})
 }
@@ -375,7 +351,7 @@ func (a *PipelinesAPI) GetPermissionsByPipelineId(ctx context.Context, pipelineI
 //
 // Gets an update from an active pipeline.
 func (a *PipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pipelineId string, updateId string) (*GetUpdateResponse, error) {
-	return a.PipelinesService.GetUpdate(ctx, GetUpdateRequest{
+	return a.pipelinesImpl.GetUpdate(ctx, GetUpdateRequest{
 		PipelineId: pipelineId,
 		UpdateId:   updateId,
 	})
@@ -390,7 +366,7 @@ func (a *PipelinesAPI) ListPipelineEvents(ctx context.Context, request ListPipel
 
 	getNextPage := func(ctx context.Context, req ListPipelineEventsRequest) (*ListPipelineEventsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.PipelinesService.ListPipelineEvents(ctx, req)
+		return a.pipelinesImpl.ListPipelineEvents(ctx, req)
 	}
 	getItems := func(resp *ListPipelineEventsResponse) []PipelineEvent {
 		return resp.Events
@@ -425,7 +401,7 @@ func (a *PipelinesAPI) ListPipelineEventsAll(ctx context.Context, request ListPi
 //
 // Retrieves events for a pipeline.
 func (a *PipelinesAPI) ListPipelineEventsByPipelineId(ctx context.Context, pipelineId string) (*ListPipelineEventsResponse, error) {
-	return a.PipelinesService.ListPipelineEvents(ctx, ListPipelineEventsRequest{
+	return a.pipelinesImpl.ListPipelineEvents(ctx, ListPipelineEventsRequest{
 		PipelineId: pipelineId,
 	})
 }
@@ -439,7 +415,7 @@ func (a *PipelinesAPI) ListPipelines(ctx context.Context, request ListPipelinesR
 
 	getNextPage := func(ctx context.Context, req ListPipelinesRequest) (*ListPipelinesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.PipelinesService.ListPipelines(ctx, req)
+		return a.pipelinesImpl.ListPipelines(ctx, req)
 	}
 	getItems := func(resp *ListPipelinesResponse) []PipelineStateInfo {
 		return resp.Statuses
@@ -527,7 +503,7 @@ func (a *PipelinesAPI) GetByName(ctx context.Context, name string) (*PipelineSta
 //
 // List updates for an active pipeline.
 func (a *PipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error) {
-	return a.PipelinesService.ListUpdates(ctx, ListUpdatesRequest{
+	return a.pipelinesImpl.ListUpdates(ctx, ListUpdatesRequest{
 		PipelineId: pipelineId,
 	})
 }
@@ -537,7 +513,7 @@ func (a *PipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId s
 // Stops the pipeline by canceling the active update. If there is no active
 // update for the pipeline, this request is a no-op.
 func (a *PipelinesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*WaitGetPipelineIdle[struct{}], error) {
-	err := a.PipelinesService.Stop(ctx, stopRequest)
+	err := a.pipelinesImpl.Stop(ctx, stopRequest)
 	if err != nil {
 		return nil, err
 	}

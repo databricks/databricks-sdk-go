@@ -152,11 +152,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		NodeTypeId:             smallestNodeType,
 		AutoterminationMinutes: 10,
 	}
-	api, ok := a.ClustersService.(*clustersImpl)
-	if !ok {
-		return nil, fmt.Errorf("cannot get raw clusters API")
-	}
-	if api.client.Config.IsAws() {
+	if a.clustersImpl.client.Config.IsAws() {
 		r.AwsAttributes = &AwsAttributes{
 			Availability: "SPOT",
 		}

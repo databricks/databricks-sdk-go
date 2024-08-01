@@ -23,12 +23,8 @@ type commandExecutionAPIUtilities interface {
 
 // Start the command execution context on a cluster and ensure it transitions to a running state
 func (a *CommandExecutionAPI) Start(ctx context.Context, clusterID string, language Language) (*CommandExecutorV2, error) {
-	executionImpl, ok := a.CommandExecutionService.(*commandExecutionImpl)
-	if !ok {
-		return nil, fmt.Errorf("unknown command execution implementation: %v", a.CommandExecutionService)
-	}
 	// re-initializing clusters API here, so that we have less IF's in the generator for WorkspaceClient
-	clustersAPI := NewClusters(executionImpl.client)
+	clustersAPI := NewClusters(a.commandExecutionImpl.client)
 	err := clustersAPI.EnsureClusterIsRunning(ctx, clusterID)
 	if err != nil {
 		return nil, err

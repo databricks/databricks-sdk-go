@@ -13,14 +13,6 @@ import (
 )
 
 type AccountMetastoreAssignmentsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockAccountMetastoreAssignmentsInterface instead.
-	WithImpl(impl AccountMetastoreAssignmentsService) AccountMetastoreAssignmentsInterface
-
-	// Impl returns low-level AccountMetastoreAssignments API implementation
-	// Deprecated: use MockAccountMetastoreAssignmentsInterface instead.
-	Impl() AccountMetastoreAssignmentsService
 
 	// Assigns a workspace to a metastore.
 	//
@@ -86,7 +78,7 @@ type AccountMetastoreAssignmentsInterface interface {
 
 func NewAccountMetastoreAssignments(client *client.DatabricksClient) *AccountMetastoreAssignmentsAPI {
 	return &AccountMetastoreAssignmentsAPI{
-		AccountMetastoreAssignmentsService: &accountMetastoreAssignmentsImpl{
+		accountMetastoreAssignmentsImpl: accountMetastoreAssignmentsImpl{
 			client: client,
 		},
 	}
@@ -94,23 +86,7 @@ func NewAccountMetastoreAssignments(client *client.DatabricksClient) *AccountMet
 
 // These APIs manage metastore assignments to a workspace.
 type AccountMetastoreAssignmentsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AccountMetastoreAssignmentsService)
-	AccountMetastoreAssignmentsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockAccountMetastoreAssignmentsInterface instead.
-func (a *AccountMetastoreAssignmentsAPI) WithImpl(impl AccountMetastoreAssignmentsService) AccountMetastoreAssignmentsInterface {
-	a.AccountMetastoreAssignmentsService = impl
-	return a
-}
-
-// Impl returns low-level AccountMetastoreAssignments API implementation
-// Deprecated: use MockAccountMetastoreAssignmentsInterface instead.
-func (a *AccountMetastoreAssignmentsAPI) Impl() AccountMetastoreAssignmentsService {
-	return a.AccountMetastoreAssignmentsService
+	accountMetastoreAssignmentsImpl
 }
 
 // Delete a metastore assignment.
@@ -118,7 +94,7 @@ func (a *AccountMetastoreAssignmentsAPI) Impl() AccountMetastoreAssignmentsServi
 // Deletes a metastore assignment to a workspace, leaving the workspace with no
 // metastore.
 func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) error {
-	return a.AccountMetastoreAssignmentsService.Delete(ctx, DeleteAccountMetastoreAssignmentRequest{
+	return a.accountMetastoreAssignmentsImpl.Delete(ctx, DeleteAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
 		MetastoreId: metastoreId,
 	})
@@ -131,7 +107,7 @@ func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx c
 // metastore is assigned to the workspace, the assignment will not be found and
 // a 404 returned.
 func (a *AccountMetastoreAssignmentsAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*AccountsMetastoreAssignment, error) {
-	return a.AccountMetastoreAssignmentsService.Get(ctx, GetAccountMetastoreAssignmentRequest{
+	return a.accountMetastoreAssignmentsImpl.Get(ctx, GetAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
 	})
 }
@@ -146,7 +122,7 @@ func (a *AccountMetastoreAssignmentsAPI) List(ctx context.Context, request ListA
 
 	getNextPage := func(ctx context.Context, req ListAccountMetastoreAssignmentsRequest) (*ListAccountMetastoreAssignmentsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.AccountMetastoreAssignmentsService.List(ctx, req)
+		return a.accountMetastoreAssignmentsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListAccountMetastoreAssignmentsResponse) []int64 {
 		return resp.WorkspaceIds
@@ -176,20 +152,12 @@ func (a *AccountMetastoreAssignmentsAPI) ListAll(ctx context.Context, request Li
 // Gets a list of all Databricks workspace IDs that have been assigned to given
 // metastore.
 func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountMetastoreAssignmentsResponse, error) {
-	return a.AccountMetastoreAssignmentsService.List(ctx, ListAccountMetastoreAssignmentsRequest{
+	return a.accountMetastoreAssignmentsImpl.List(ctx, ListAccountMetastoreAssignmentsRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
 type AccountMetastoresInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockAccountMetastoresInterface instead.
-	WithImpl(impl AccountMetastoresService) AccountMetastoresInterface
-
-	// Impl returns low-level AccountMetastores API implementation
-	// Deprecated: use MockAccountMetastoresInterface instead.
-	Impl() AccountMetastoresService
 
 	// Create metastore.
 	//
@@ -238,7 +206,7 @@ type AccountMetastoresInterface interface {
 
 func NewAccountMetastores(client *client.DatabricksClient) *AccountMetastoresAPI {
 	return &AccountMetastoresAPI{
-		AccountMetastoresService: &accountMetastoresImpl{
+		accountMetastoresImpl: accountMetastoresImpl{
 			client: client,
 		},
 	}
@@ -247,30 +215,14 @@ func NewAccountMetastores(client *client.DatabricksClient) *AccountMetastoresAPI
 // These APIs manage Unity Catalog metastores for an account. A metastore
 // contains catalogs that can be associated with workspaces
 type AccountMetastoresAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AccountMetastoresService)
-	AccountMetastoresService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockAccountMetastoresInterface instead.
-func (a *AccountMetastoresAPI) WithImpl(impl AccountMetastoresService) AccountMetastoresInterface {
-	a.AccountMetastoresService = impl
-	return a
-}
-
-// Impl returns low-level AccountMetastores API implementation
-// Deprecated: use MockAccountMetastoresInterface instead.
-func (a *AccountMetastoresAPI) Impl() AccountMetastoresService {
-	return a.AccountMetastoresService
+	accountMetastoresImpl
 }
 
 // Delete a metastore.
 //
 // Deletes a Unity Catalog metastore for an account, both specified by ID.
 func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) error {
-	return a.AccountMetastoresService.Delete(ctx, DeleteAccountMetastoreRequest{
+	return a.accountMetastoresImpl.Delete(ctx, DeleteAccountMetastoreRequest{
 		MetastoreId: metastoreId,
 	})
 }
@@ -279,7 +231,7 @@ func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastor
 //
 // Gets a Unity Catalog metastore from an account, both specified by ID.
 func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsMetastoreInfo, error) {
-	return a.AccountMetastoresService.Get(ctx, GetAccountMetastoreRequest{
+	return a.accountMetastoresImpl.Get(ctx, GetAccountMetastoreRequest{
 		MetastoreId: metastoreId,
 	})
 }
@@ -294,7 +246,7 @@ func (a *AccountMetastoresAPI) List(ctx context.Context) listing.Iterator[Metast
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListMetastoresResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.AccountMetastoresService.List(ctx)
+		return a.accountMetastoresImpl.List(ctx)
 	}
 	getItems := func(resp *ListMetastoresResponse) []MetastoreInfo {
 		return resp.Metastores
@@ -319,14 +271,6 @@ func (a *AccountMetastoresAPI) ListAll(ctx context.Context) ([]MetastoreInfo, er
 }
 
 type AccountStorageCredentialsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockAccountStorageCredentialsInterface instead.
-	WithImpl(impl AccountStorageCredentialsService) AccountStorageCredentialsInterface
-
-	// Impl returns low-level AccountStorageCredentials API implementation
-	// Deprecated: use MockAccountStorageCredentialsInterface instead.
-	Impl() AccountStorageCredentialsService
 
 	// Create a storage credential.
 	//
@@ -398,7 +342,7 @@ type AccountStorageCredentialsInterface interface {
 
 func NewAccountStorageCredentials(client *client.DatabricksClient) *AccountStorageCredentialsAPI {
 	return &AccountStorageCredentialsAPI{
-		AccountStorageCredentialsService: &accountStorageCredentialsImpl{
+		accountStorageCredentialsImpl: accountStorageCredentialsImpl{
 			client: client,
 		},
 	}
@@ -406,23 +350,7 @@ func NewAccountStorageCredentials(client *client.DatabricksClient) *AccountStora
 
 // These APIs manage storage credentials for a particular metastore.
 type AccountStorageCredentialsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AccountStorageCredentialsService)
-	AccountStorageCredentialsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockAccountStorageCredentialsInterface instead.
-func (a *AccountStorageCredentialsAPI) WithImpl(impl AccountStorageCredentialsService) AccountStorageCredentialsInterface {
-	a.AccountStorageCredentialsService = impl
-	return a
-}
-
-// Impl returns low-level AccountStorageCredentials API implementation
-// Deprecated: use MockAccountStorageCredentialsInterface instead.
-func (a *AccountStorageCredentialsAPI) Impl() AccountStorageCredentialsService {
-	return a.AccountStorageCredentialsService
+	accountStorageCredentialsImpl
 }
 
 // Delete a storage credential.
@@ -430,7 +358,7 @@ func (a *AccountStorageCredentialsAPI) Impl() AccountStorageCredentialsService {
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
 func (a *AccountStorageCredentialsAPI) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) error {
-	return a.AccountStorageCredentialsService.Delete(ctx, DeleteAccountStorageCredentialRequest{
+	return a.accountStorageCredentialsImpl.Delete(ctx, DeleteAccountStorageCredentialRequest{
 		MetastoreId:           metastoreId,
 		StorageCredentialName: storageCredentialName,
 	})
@@ -442,7 +370,7 @@ func (a *AccountStorageCredentialsAPI) DeleteByMetastoreIdAndStorageCredentialNa
 // admin, the owner of the storage credential, or have a level of privilege on
 // the storage credential.
 func (a *AccountStorageCredentialsAPI) GetByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*AccountsStorageCredentialInfo, error) {
-	return a.AccountStorageCredentialsService.Get(ctx, GetAccountStorageCredentialRequest{
+	return a.accountStorageCredentialsImpl.Get(ctx, GetAccountStorageCredentialRequest{
 		MetastoreId:           metastoreId,
 		StorageCredentialName: storageCredentialName,
 	})
@@ -458,7 +386,7 @@ func (a *AccountStorageCredentialsAPI) List(ctx context.Context, request ListAcc
 
 	getNextPage := func(ctx context.Context, req ListAccountStorageCredentialsRequest) (*ListAccountStorageCredentialsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.AccountStorageCredentialsService.List(ctx, req)
+		return a.accountStorageCredentialsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListAccountStorageCredentialsResponse) []StorageCredentialInfo {
 		return resp.StorageCredentials
@@ -488,20 +416,12 @@ func (a *AccountStorageCredentialsAPI) ListAll(ctx context.Context, request List
 // Gets a list of all storage credentials that have been assigned to given
 // metastore.
 func (a *AccountStorageCredentialsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountStorageCredentialsResponse, error) {
-	return a.AccountStorageCredentialsService.List(ctx, ListAccountStorageCredentialsRequest{
+	return a.accountStorageCredentialsImpl.List(ctx, ListAccountStorageCredentialsRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
 type ArtifactAllowlistsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockArtifactAllowlistsInterface instead.
-	WithImpl(impl ArtifactAllowlistsService) ArtifactAllowlistsInterface
-
-	// Impl returns low-level ArtifactAllowlists API implementation
-	// Deprecated: use MockArtifactAllowlistsInterface instead.
-	Impl() ArtifactAllowlistsService
 
 	// Get an artifact allowlist.
 	//
@@ -525,7 +445,7 @@ type ArtifactAllowlistsInterface interface {
 
 func NewArtifactAllowlists(client *client.DatabricksClient) *ArtifactAllowlistsAPI {
 	return &ArtifactAllowlistsAPI{
-		ArtifactAllowlistsService: &artifactAllowlistsImpl{
+		artifactAllowlistsImpl: artifactAllowlistsImpl{
 			client: client,
 		},
 	}
@@ -535,23 +455,7 @@ func NewArtifactAllowlists(client *client.DatabricksClient) *ArtifactAllowlistsA
 // to the `allowlist` in UC so that users can leverage these artifacts on
 // compute configured with shared access mode.
 type ArtifactAllowlistsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ArtifactAllowlistsService)
-	ArtifactAllowlistsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockArtifactAllowlistsInterface instead.
-func (a *ArtifactAllowlistsAPI) WithImpl(impl ArtifactAllowlistsService) ArtifactAllowlistsInterface {
-	a.ArtifactAllowlistsService = impl
-	return a
-}
-
-// Impl returns low-level ArtifactAllowlists API implementation
-// Deprecated: use MockArtifactAllowlistsInterface instead.
-func (a *ArtifactAllowlistsAPI) Impl() ArtifactAllowlistsService {
-	return a.ArtifactAllowlistsService
+	artifactAllowlistsImpl
 }
 
 // Get an artifact allowlist.
@@ -559,20 +463,12 @@ func (a *ArtifactAllowlistsAPI) Impl() ArtifactAllowlistsService {
 // Get the artifact allowlist of a certain artifact type. The caller must be a
 // metastore admin or have the **MANAGE ALLOWLIST** privilege on the metastore.
 func (a *ArtifactAllowlistsAPI) GetByArtifactType(ctx context.Context, artifactType ArtifactType) (*ArtifactAllowlistInfo, error) {
-	return a.ArtifactAllowlistsService.Get(ctx, GetArtifactAllowlistRequest{
+	return a.artifactAllowlistsImpl.Get(ctx, GetArtifactAllowlistRequest{
 		ArtifactType: artifactType,
 	})
 }
 
 type CatalogsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockCatalogsInterface instead.
-	WithImpl(impl CatalogsService) CatalogsInterface
-
-	// Impl returns low-level Catalogs API implementation
-	// Deprecated: use MockCatalogsInterface instead.
-	Impl() CatalogsService
 
 	// Create a catalog.
 	//
@@ -638,7 +534,7 @@ type CatalogsInterface interface {
 
 func NewCatalogs(client *client.DatabricksClient) *CatalogsAPI {
 	return &CatalogsAPI{
-		CatalogsService: &catalogsImpl{
+		catalogsImpl: catalogsImpl{
 			client: client,
 		},
 	}
@@ -653,23 +549,7 @@ func NewCatalogs(client *client.DatabricksClient) *CatalogsAPI {
 // different workspaces can share access to the same data, depending on
 // privileges granted centrally in Unity Catalog.
 type CatalogsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(CatalogsService)
-	CatalogsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockCatalogsInterface instead.
-func (a *CatalogsAPI) WithImpl(impl CatalogsService) CatalogsInterface {
-	a.CatalogsService = impl
-	return a
-}
-
-// Impl returns low-level Catalogs API implementation
-// Deprecated: use MockCatalogsInterface instead.
-func (a *CatalogsAPI) Impl() CatalogsService {
-	return a.CatalogsService
+	catalogsImpl
 }
 
 // Delete a catalog.
@@ -677,7 +557,7 @@ func (a *CatalogsAPI) Impl() CatalogsService {
 // Deletes the catalog that matches the supplied name. The caller must be a
 // metastore admin or the owner of the catalog.
 func (a *CatalogsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.CatalogsService.Delete(ctx, DeleteCatalogRequest{
+	return a.catalogsImpl.Delete(ctx, DeleteCatalogRequest{
 		Name: name,
 	})
 }
@@ -688,7 +568,7 @@ func (a *CatalogsAPI) DeleteByName(ctx context.Context, name string) error {
 // admin, the owner of the catalog, or a user that has the **USE_CATALOG**
 // privilege set for their account.
 func (a *CatalogsAPI) GetByName(ctx context.Context, name string) (*CatalogInfo, error) {
-	return a.CatalogsService.Get(ctx, GetCatalogRequest{
+	return a.catalogsImpl.Get(ctx, GetCatalogRequest{
 		Name: name,
 	})
 }
@@ -706,7 +586,7 @@ func (a *CatalogsAPI) List(ctx context.Context, request ListCatalogsRequest) lis
 
 	getNextPage := func(ctx context.Context, req ListCatalogsRequest) (*ListCatalogsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.CatalogsService.List(ctx, req)
+		return a.catalogsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListCatalogsResponse) []CatalogInfo {
 		return resp.Catalogs
@@ -742,14 +622,6 @@ func (a *CatalogsAPI) ListAll(ctx context.Context, request ListCatalogsRequest) 
 }
 
 type ConnectionsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockConnectionsInterface instead.
-	WithImpl(impl ConnectionsService) ConnectionsInterface
-
-	// Impl returns low-level Connections API implementation
-	// Deprecated: use MockConnectionsInterface instead.
-	Impl() ConnectionsService
 
 	// Create a connection.
 	//
@@ -811,7 +683,7 @@ type ConnectionsInterface interface {
 
 func NewConnections(client *client.DatabricksClient) *ConnectionsAPI {
 	return &ConnectionsAPI{
-		ConnectionsService: &connectionsImpl{
+		connectionsImpl: connectionsImpl{
 			client: client,
 		},
 	}
@@ -829,30 +701,14 @@ func NewConnections(client *client.DatabricksClient) *ConnectionsAPI {
 // unique set of configuration options to support credential management and
 // other settings.
 type ConnectionsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ConnectionsService)
-	ConnectionsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockConnectionsInterface instead.
-func (a *ConnectionsAPI) WithImpl(impl ConnectionsService) ConnectionsInterface {
-	a.ConnectionsService = impl
-	return a
-}
-
-// Impl returns low-level Connections API implementation
-// Deprecated: use MockConnectionsInterface instead.
-func (a *ConnectionsAPI) Impl() ConnectionsService {
-	return a.ConnectionsService
+	connectionsImpl
 }
 
 // Delete a connection.
 //
 // Deletes the connection that matches the supplied name.
 func (a *ConnectionsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.ConnectionsService.Delete(ctx, DeleteConnectionRequest{
+	return a.connectionsImpl.Delete(ctx, DeleteConnectionRequest{
 		Name: name,
 	})
 }
@@ -861,7 +717,7 @@ func (a *ConnectionsAPI) DeleteByName(ctx context.Context, name string) error {
 //
 // Gets a connection from it's name.
 func (a *ConnectionsAPI) GetByName(ctx context.Context, name string) (*ConnectionInfo, error) {
-	return a.ConnectionsService.Get(ctx, GetConnectionRequest{
+	return a.connectionsImpl.Get(ctx, GetConnectionRequest{
 		Name: name,
 	})
 }
@@ -875,7 +731,7 @@ func (a *ConnectionsAPI) List(ctx context.Context, request ListConnectionsReques
 
 	getNextPage := func(ctx context.Context, req ListConnectionsRequest) (*ListConnectionsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ConnectionsService.List(ctx, req)
+		return a.connectionsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListConnectionsResponse) []ConnectionInfo {
 		return resp.Connections
@@ -932,14 +788,6 @@ func (a *ConnectionsAPI) ConnectionInfoNameToFullNameMap(ctx context.Context, re
 }
 
 type ExternalLocationsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockExternalLocationsInterface instead.
-	WithImpl(impl ExternalLocationsService) ExternalLocationsInterface
-
-	// Impl returns low-level ExternalLocations API implementation
-	// Deprecated: use MockExternalLocationsInterface instead.
-	Impl() ExternalLocationsService
 
 	// Create an external location.
 	//
@@ -1006,7 +854,7 @@ type ExternalLocationsInterface interface {
 
 func NewExternalLocations(client *client.DatabricksClient) *ExternalLocationsAPI {
 	return &ExternalLocationsAPI{
-		ExternalLocationsService: &externalLocationsImpl{
+		externalLocationsImpl: externalLocationsImpl{
 			client: client,
 		},
 	}
@@ -1026,23 +874,7 @@ func NewExternalLocations(client *client.DatabricksClient) *ExternalLocationsAPI
 // To create external locations, you must be a metastore admin or a user with
 // the **CREATE_EXTERNAL_LOCATION** privilege.
 type ExternalLocationsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ExternalLocationsService)
-	ExternalLocationsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockExternalLocationsInterface instead.
-func (a *ExternalLocationsAPI) WithImpl(impl ExternalLocationsService) ExternalLocationsInterface {
-	a.ExternalLocationsService = impl
-	return a
-}
-
-// Impl returns low-level ExternalLocations API implementation
-// Deprecated: use MockExternalLocationsInterface instead.
-func (a *ExternalLocationsAPI) Impl() ExternalLocationsService {
-	return a.ExternalLocationsService
+	externalLocationsImpl
 }
 
 // Delete an external location.
@@ -1050,7 +882,7 @@ func (a *ExternalLocationsAPI) Impl() ExternalLocationsService {
 // Deletes the specified external location from the metastore. The caller must
 // be the owner of the external location.
 func (a *ExternalLocationsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.ExternalLocationsService.Delete(ctx, DeleteExternalLocationRequest{
+	return a.externalLocationsImpl.Delete(ctx, DeleteExternalLocationRequest{
 		Name: name,
 	})
 }
@@ -1061,7 +893,7 @@ func (a *ExternalLocationsAPI) DeleteByName(ctx context.Context, name string) er
 // metastore admin, the owner of the external location, or a user that has some
 // privilege on the external location.
 func (a *ExternalLocationsAPI) GetByName(ctx context.Context, name string) (*ExternalLocationInfo, error) {
-	return a.ExternalLocationsService.Get(ctx, GetExternalLocationRequest{
+	return a.externalLocationsImpl.Get(ctx, GetExternalLocationRequest{
 		Name: name,
 	})
 }
@@ -1079,7 +911,7 @@ func (a *ExternalLocationsAPI) List(ctx context.Context, request ListExternalLoc
 
 	getNextPage := func(ctx context.Context, req ListExternalLocationsRequest) (*ListExternalLocationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ExternalLocationsService.List(ctx, req)
+		return a.externalLocationsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListExternalLocationsResponse) []ExternalLocationInfo {
 		return resp.ExternalLocations
@@ -1115,14 +947,6 @@ func (a *ExternalLocationsAPI) ListAll(ctx context.Context, request ListExternal
 }
 
 type FunctionsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockFunctionsInterface instead.
-	WithImpl(impl FunctionsService) FunctionsInterface
-
-	// Impl returns low-level Functions API implementation
-	// Deprecated: use MockFunctionsInterface instead.
-	Impl() FunctionsService
 
 	// Create a function.
 	//
@@ -1229,7 +1053,7 @@ type FunctionsInterface interface {
 
 func NewFunctions(client *client.DatabricksClient) *FunctionsAPI {
 	return &FunctionsAPI{
-		FunctionsService: &functionsImpl{
+		functionsImpl: functionsImpl{
 			client: client,
 		},
 	}
@@ -1242,23 +1066,7 @@ func NewFunctions(client *client.DatabricksClient) *FunctionsAPI {
 // function resides at the same level as a table, so it can be referenced with
 // the form __catalog_name__.__schema_name__.__function_name__.
 type FunctionsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(FunctionsService)
-	FunctionsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockFunctionsInterface instead.
-func (a *FunctionsAPI) WithImpl(impl FunctionsService) FunctionsInterface {
-	a.FunctionsService = impl
-	return a
-}
-
-// Impl returns low-level Functions API implementation
-// Deprecated: use MockFunctionsInterface instead.
-func (a *FunctionsAPI) Impl() FunctionsService {
-	return a.FunctionsService
+	functionsImpl
 }
 
 // Delete a function.
@@ -1271,7 +1079,7 @@ func (a *FunctionsAPI) Impl() FunctionsService {
 // privilege on its parent catalog and the **USE_SCHEMA** privilege on its
 // parent schema
 func (a *FunctionsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.FunctionsService.Delete(ctx, DeleteFunctionRequest{
+	return a.functionsImpl.Delete(ctx, DeleteFunctionRequest{
 		Name: name,
 	})
 }
@@ -1286,7 +1094,7 @@ func (a *FunctionsAPI) DeleteByName(ctx context.Context, name string) error {
 // catalog, the **USE_SCHEMA** privilege on the function's parent schema, and
 // the **EXECUTE** privilege on the function itself
 func (a *FunctionsAPI) GetByName(ctx context.Context, name string) (*FunctionInfo, error) {
-	return a.FunctionsService.Get(ctx, GetFunctionRequest{
+	return a.functionsImpl.Get(ctx, GetFunctionRequest{
 		Name: name,
 	})
 }
@@ -1306,7 +1114,7 @@ func (a *FunctionsAPI) List(ctx context.Context, request ListFunctionsRequest) l
 
 	getNextPage := func(ctx context.Context, req ListFunctionsRequest) (*ListFunctionsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.FunctionsService.List(ctx, req)
+		return a.functionsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListFunctionsResponse) []FunctionInfo {
 		return resp.Functions
@@ -1369,14 +1177,6 @@ func (a *FunctionsAPI) FunctionInfoNameToFullNameMap(ctx context.Context, reques
 }
 
 type GrantsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockGrantsInterface instead.
-	WithImpl(impl GrantsService) GrantsInterface
-
-	// Impl returns low-level Grants API implementation
-	// Deprecated: use MockGrantsInterface instead.
-	Impl() GrantsService
 
 	// Get permissions.
 	//
@@ -1406,7 +1206,7 @@ type GrantsInterface interface {
 
 func NewGrants(client *client.DatabricksClient) *GrantsAPI {
 	return &GrantsAPI{
-		GrantsService: &grantsImpl{
+		grantsImpl: grantsImpl{
 			client: client,
 		},
 	}
@@ -1424,30 +1224,14 @@ func NewGrants(client *client.DatabricksClient) *GrantsAPI {
 // the catalog. Similarly, privileges granted on a schema are inherited by all
 // current and future objects within that schema.
 type GrantsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(GrantsService)
-	GrantsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockGrantsInterface instead.
-func (a *GrantsAPI) WithImpl(impl GrantsService) GrantsInterface {
-	a.GrantsService = impl
-	return a
-}
-
-// Impl returns low-level Grants API implementation
-// Deprecated: use MockGrantsInterface instead.
-func (a *GrantsAPI) Impl() GrantsService {
-	return a.GrantsService
+	grantsImpl
 }
 
 // Get permissions.
 //
 // Gets the permissions for a securable.
 func (a *GrantsAPI) GetBySecurableTypeAndFullName(ctx context.Context, securableType SecurableType, fullName string) (*PermissionsList, error) {
-	return a.GrantsService.Get(ctx, GetGrantRequest{
+	return a.grantsImpl.Get(ctx, GetGrantRequest{
 		SecurableType: securableType,
 		FullName:      fullName,
 	})
@@ -1457,21 +1241,13 @@ func (a *GrantsAPI) GetBySecurableTypeAndFullName(ctx context.Context, securable
 //
 // Gets the effective permissions for a securable.
 func (a *GrantsAPI) GetEffectiveBySecurableTypeAndFullName(ctx context.Context, securableType SecurableType, fullName string) (*EffectivePermissionsList, error) {
-	return a.GrantsService.GetEffective(ctx, GetEffectiveRequest{
+	return a.grantsImpl.GetEffective(ctx, GetEffectiveRequest{
 		SecurableType: securableType,
 		FullName:      fullName,
 	})
 }
 
 type MetastoresInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockMetastoresInterface instead.
-	WithImpl(impl MetastoresService) MetastoresInterface
-
-	// Impl returns low-level Metastores API implementation
-	// Deprecated: use MockMetastoresInterface instead.
-	Impl() MetastoresService
 
 	// Create an assignment.
 	//
@@ -1587,7 +1363,7 @@ type MetastoresInterface interface {
 
 func NewMetastores(client *client.DatabricksClient) *MetastoresAPI {
 	return &MetastoresAPI{
-		MetastoresService: &metastoresImpl{
+		metastoresImpl: metastoresImpl{
 			client: client,
 		},
 	}
@@ -1608,30 +1384,14 @@ func NewMetastores(client *client.DatabricksClient) *MetastoresAPI {
 // includes a legacy Hive metastore, the data in that metastore is available in
 // a catalog named hive_metastore.
 type MetastoresAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(MetastoresService)
-	MetastoresService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockMetastoresInterface instead.
-func (a *MetastoresAPI) WithImpl(impl MetastoresService) MetastoresInterface {
-	a.MetastoresService = impl
-	return a
-}
-
-// Impl returns low-level Metastores API implementation
-// Deprecated: use MockMetastoresInterface instead.
-func (a *MetastoresAPI) Impl() MetastoresService {
-	return a.MetastoresService
+	metastoresImpl
 }
 
 // Delete a metastore.
 //
 // Deletes a metastore. The caller must be a metastore admin.
 func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) error {
-	return a.MetastoresService.Delete(ctx, DeleteMetastoreRequest{
+	return a.metastoresImpl.Delete(ctx, DeleteMetastoreRequest{
 		Id: id,
 	})
 }
@@ -1641,7 +1401,7 @@ func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) error {
 // Gets a metastore that matches the supplied ID. The caller must be a metastore
 // admin to retrieve this info.
 func (a *MetastoresAPI) GetById(ctx context.Context, id string) (*MetastoreInfo, error) {
-	return a.MetastoresService.Get(ctx, GetMetastoreRequest{
+	return a.metastoresImpl.Get(ctx, GetMetastoreRequest{
 		Id: id,
 	})
 }
@@ -1658,7 +1418,7 @@ func (a *MetastoresAPI) List(ctx context.Context) listing.Iterator[MetastoreInfo
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListMetastoresResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.MetastoresService.List(ctx)
+		return a.metastoresImpl.List(ctx)
 	}
 	getItems := func(resp *ListMetastoresResponse) []MetastoreInfo {
 		return resp.Metastores
@@ -1741,20 +1501,12 @@ func (a *MetastoresAPI) GetByName(ctx context.Context, name string) (*MetastoreI
 //
 // Deletes a metastore assignment. The caller must be an account administrator.
 func (a *MetastoresAPI) UnassignByWorkspaceId(ctx context.Context, workspaceId int64) error {
-	return a.MetastoresService.Unassign(ctx, UnassignRequest{
+	return a.metastoresImpl.Unassign(ctx, UnassignRequest{
 		WorkspaceId: workspaceId,
 	})
 }
 
 type ModelVersionsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockModelVersionsInterface instead.
-	WithImpl(impl ModelVersionsService) ModelVersionsInterface
-
-	// Impl returns low-level ModelVersions API implementation
-	// Deprecated: use MockModelVersionsInterface instead.
-	Impl() ModelVersionsService
 
 	// Delete a Model Version.
 	//
@@ -1888,7 +1640,7 @@ type ModelVersionsInterface interface {
 
 func NewModelVersions(client *client.DatabricksClient) *ModelVersionsAPI {
 	return &ModelVersionsAPI{
-		ModelVersionsService: &modelVersionsImpl{
+		modelVersionsImpl: modelVersionsImpl{
 			client: client,
 		},
 	}
@@ -1902,23 +1654,7 @@ func NewModelVersions(client *client.DatabricksClient) *ModelVersionsAPI {
 // in Unity Catalog. For more details, see the [registered models API
 // docs](/api/workspace/registeredmodels).
 type ModelVersionsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ModelVersionsService)
-	ModelVersionsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockModelVersionsInterface instead.
-func (a *ModelVersionsAPI) WithImpl(impl ModelVersionsService) ModelVersionsInterface {
-	a.ModelVersionsService = impl
-	return a
-}
-
-// Impl returns low-level ModelVersions API implementation
-// Deprecated: use MockModelVersionsInterface instead.
-func (a *ModelVersionsAPI) Impl() ModelVersionsService {
-	return a.ModelVersionsService
+	modelVersionsImpl
 }
 
 // Delete a Model Version.
@@ -1931,7 +1667,7 @@ func (a *ModelVersionsAPI) Impl() ModelVersionsService {
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
 func (a *ModelVersionsAPI) DeleteByFullNameAndVersion(ctx context.Context, fullName string, version int) error {
-	return a.ModelVersionsService.Delete(ctx, DeleteModelVersionRequest{
+	return a.modelVersionsImpl.Delete(ctx, DeleteModelVersionRequest{
 		FullName: fullName,
 		Version:  version,
 	})
@@ -1946,7 +1682,7 @@ func (a *ModelVersionsAPI) DeleteByFullNameAndVersion(ctx context.Context, fullN
 // must also be the owner or have the **USE_CATALOG** privilege on the parent
 // catalog and the **USE_SCHEMA** privilege on the parent schema.
 func (a *ModelVersionsAPI) GetByFullNameAndVersion(ctx context.Context, fullName string, version int) (*RegisteredModelInfo, error) {
-	return a.ModelVersionsService.Get(ctx, GetModelVersionRequest{
+	return a.modelVersionsImpl.Get(ctx, GetModelVersionRequest{
 		FullName: fullName,
 		Version:  version,
 	})
@@ -1961,7 +1697,7 @@ func (a *ModelVersionsAPI) GetByFullNameAndVersion(ctx context.Context, fullName
 // be the owner or have the **USE_CATALOG** privilege on the parent catalog and
 // the **USE_SCHEMA** privilege on the parent schema.
 func (a *ModelVersionsAPI) GetByAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) (*ModelVersionInfo, error) {
-	return a.ModelVersionsService.GetByAlias(ctx, GetByAliasRequest{
+	return a.modelVersionsImpl.GetByAlias(ctx, GetByAliasRequest{
 		FullName: fullName,
 		Alias:    alias,
 	})
@@ -1988,7 +1724,7 @@ func (a *ModelVersionsAPI) List(ctx context.Context, request ListModelVersionsRe
 
 	getNextPage := func(ctx context.Context, req ListModelVersionsRequest) (*ListModelVersionsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ModelVersionsService.List(ctx, req)
+		return a.modelVersionsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListModelVersionsResponse) []ModelVersionInfo {
 		return resp.ModelVersions
@@ -2047,20 +1783,12 @@ func (a *ModelVersionsAPI) ListAll(ctx context.Context, request ListModelVersion
 // There is no guarantee of a specific ordering of the elements in the response.
 // The elements in the response will not contain any aliases or tags.
 func (a *ModelVersionsAPI) ListByFullName(ctx context.Context, fullName string) (*ListModelVersionsResponse, error) {
-	return a.ModelVersionsService.List(ctx, ListModelVersionsRequest{
+	return a.modelVersionsImpl.List(ctx, ListModelVersionsRequest{
 		FullName: fullName,
 	})
 }
 
 type OnlineTablesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockOnlineTablesInterface instead.
-	WithImpl(impl OnlineTablesService) OnlineTablesInterface
-
-	// Impl returns low-level OnlineTables API implementation
-	// Deprecated: use MockOnlineTablesInterface instead.
-	Impl() OnlineTablesService
 
 	// Create an Online Table.
 	//
@@ -2094,7 +1822,7 @@ type OnlineTablesInterface interface {
 
 func NewOnlineTables(client *client.DatabricksClient) *OnlineTablesAPI {
 	return &OnlineTablesAPI{
-		OnlineTablesService: &onlineTablesImpl{
+		onlineTablesImpl: onlineTablesImpl{
 			client: client,
 		},
 	}
@@ -2103,23 +1831,7 @@ func NewOnlineTables(client *client.DatabricksClient) *OnlineTablesAPI {
 // Online tables provide lower latency and higher QPS access to data from Delta
 // tables.
 type OnlineTablesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(OnlineTablesService)
-	OnlineTablesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockOnlineTablesInterface instead.
-func (a *OnlineTablesAPI) WithImpl(impl OnlineTablesService) OnlineTablesInterface {
-	a.OnlineTablesService = impl
-	return a
-}
-
-// Impl returns low-level OnlineTables API implementation
-// Deprecated: use MockOnlineTablesInterface instead.
-func (a *OnlineTablesAPI) Impl() OnlineTablesService {
-	return a.OnlineTablesService
+	onlineTablesImpl
 }
 
 // Delete an Online Table.
@@ -2128,7 +1840,7 @@ func (a *OnlineTablesAPI) Impl() OnlineTablesService {
 // table. If the source Delta table was deleted or modified since this Online
 // Table was created, this will lose the data forever!
 func (a *OnlineTablesAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.OnlineTablesService.Delete(ctx, DeleteOnlineTableRequest{
+	return a.onlineTablesImpl.Delete(ctx, DeleteOnlineTableRequest{
 		Name: name,
 	})
 }
@@ -2137,20 +1849,12 @@ func (a *OnlineTablesAPI) DeleteByName(ctx context.Context, name string) error {
 //
 // Get information about an existing online table and its status.
 func (a *OnlineTablesAPI) GetByName(ctx context.Context, name string) (*OnlineTable, error) {
-	return a.OnlineTablesService.Get(ctx, GetOnlineTableRequest{
+	return a.onlineTablesImpl.Get(ctx, GetOnlineTableRequest{
 		Name: name,
 	})
 }
 
 type QualityMonitorsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockQualityMonitorsInterface instead.
-	WithImpl(impl QualityMonitorsService) QualityMonitorsInterface
-
-	// Impl returns low-level QualityMonitors API implementation
-	// Deprecated: use MockQualityMonitorsInterface instead.
-	Impl() QualityMonitorsService
 
 	// Cancel refresh.
 	//
@@ -2341,7 +2045,7 @@ type QualityMonitorsInterface interface {
 
 func NewQualityMonitors(client *client.DatabricksClient) *QualityMonitorsAPI {
 	return &QualityMonitorsAPI{
-		QualityMonitorsService: &qualityMonitorsImpl{
+		qualityMonitorsImpl: qualityMonitorsImpl{
 			client: client,
 		},
 	}
@@ -2356,23 +2060,7 @@ func NewQualityMonitors(client *client.DatabricksClient) *QualityMonitorsAPI {
 // monitor configuration only requires the user to have **SELECT** privileges on
 // the table (along with **USE_SCHEMA** and **USE_CATALOG**).
 type QualityMonitorsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(QualityMonitorsService)
-	QualityMonitorsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockQualityMonitorsInterface instead.
-func (a *QualityMonitorsAPI) WithImpl(impl QualityMonitorsService) QualityMonitorsInterface {
-	a.QualityMonitorsService = impl
-	return a
-}
-
-// Impl returns low-level QualityMonitors API implementation
-// Deprecated: use MockQualityMonitorsInterface instead.
-func (a *QualityMonitorsAPI) Impl() QualityMonitorsService {
-	return a.QualityMonitorsService
+	qualityMonitorsImpl
 }
 
 // Delete a table monitor.
@@ -2391,7 +2079,7 @@ func (a *QualityMonitorsAPI) Impl() QualityMonitorsService {
 // Note that the metric tables and dashboard will not be deleted as part of this
 // call; those assets must be manually cleaned up (if desired).
 func (a *QualityMonitorsAPI) DeleteByTableName(ctx context.Context, tableName string) error {
-	return a.QualityMonitorsService.Delete(ctx, DeleteQualityMonitorRequest{
+	return a.qualityMonitorsImpl.Delete(ctx, DeleteQualityMonitorRequest{
 		TableName: tableName,
 	})
 }
@@ -2411,7 +2099,7 @@ func (a *QualityMonitorsAPI) DeleteByTableName(ctx context.Context, tableName st
 // dashboard) may be filtered out if the caller is in a different workspace than
 // where the monitor was created.
 func (a *QualityMonitorsAPI) GetByTableName(ctx context.Context, tableName string) (*MonitorInfo, error) {
-	return a.QualityMonitorsService.Get(ctx, GetQualityMonitorRequest{
+	return a.qualityMonitorsImpl.Get(ctx, GetQualityMonitorRequest{
 		TableName: tableName,
 	})
 }
@@ -2429,7 +2117,7 @@ func (a *QualityMonitorsAPI) GetByTableName(ctx context.Context, tableName strin
 // Additionally, the call must be made from the workspace where the monitor was
 // created.
 func (a *QualityMonitorsAPI) GetRefreshByTableNameAndRefreshId(ctx context.Context, tableName string, refreshId string) (*MonitorRefreshInfo, error) {
-	return a.QualityMonitorsService.GetRefresh(ctx, GetRefreshRequest{
+	return a.qualityMonitorsImpl.GetRefresh(ctx, GetRefreshRequest{
 		TableName: tableName,
 		RefreshId: refreshId,
 	})
@@ -2449,20 +2137,12 @@ func (a *QualityMonitorsAPI) GetRefreshByTableNameAndRefreshId(ctx context.Conte
 // Additionally, the call must be made from the workspace where the monitor was
 // created.
 func (a *QualityMonitorsAPI) ListRefreshesByTableName(ctx context.Context, tableName string) (*MonitorRefreshListResponse, error) {
-	return a.QualityMonitorsService.ListRefreshes(ctx, ListRefreshesRequest{
+	return a.qualityMonitorsImpl.ListRefreshes(ctx, ListRefreshesRequest{
 		TableName: tableName,
 	})
 }
 
 type RegisteredModelsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockRegisteredModelsInterface instead.
-	WithImpl(impl RegisteredModelsService) RegisteredModelsInterface
-
-	// Impl returns low-level RegisteredModels API implementation
-	// Deprecated: use MockRegisteredModelsInterface instead.
-	Impl() RegisteredModelsService
 
 	// Create a Registered Model.
 	//
@@ -2622,7 +2302,7 @@ type RegisteredModelsInterface interface {
 
 func NewRegisteredModels(client *client.DatabricksClient) *RegisteredModelsAPI {
 	return &RegisteredModelsAPI{
-		RegisteredModelsService: &registeredModelsImpl{
+		registeredModelsImpl: registeredModelsImpl{
 			client: client,
 		},
 	}
@@ -2658,23 +2338,7 @@ func NewRegisteredModels(client *client.DatabricksClient) *RegisteredModelsAPI {
 // tagging, grants) that specify a securable type, use "FUNCTION" as the
 // securable type.
 type RegisteredModelsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(RegisteredModelsService)
-	RegisteredModelsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockRegisteredModelsInterface instead.
-func (a *RegisteredModelsAPI) WithImpl(impl RegisteredModelsService) RegisteredModelsInterface {
-	a.RegisteredModelsService = impl
-	return a
-}
-
-// Impl returns low-level RegisteredModels API implementation
-// Deprecated: use MockRegisteredModelsInterface instead.
-func (a *RegisteredModelsAPI) Impl() RegisteredModelsService {
-	return a.RegisteredModelsService
+	registeredModelsImpl
 }
 
 // Delete a Registered Model.
@@ -2687,7 +2351,7 @@ func (a *RegisteredModelsAPI) Impl() RegisteredModelsService {
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
 func (a *RegisteredModelsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	return a.RegisteredModelsService.Delete(ctx, DeleteRegisteredModelRequest{
+	return a.registeredModelsImpl.Delete(ctx, DeleteRegisteredModelRequest{
 		FullName: fullName,
 	})
 }
@@ -2701,7 +2365,7 @@ func (a *RegisteredModelsAPI) DeleteByFullName(ctx context.Context, fullName str
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
 func (a *RegisteredModelsAPI) DeleteAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) error {
-	return a.RegisteredModelsService.DeleteAlias(ctx, DeleteAliasRequest{
+	return a.registeredModelsImpl.DeleteAlias(ctx, DeleteAliasRequest{
 		FullName: fullName,
 		Alias:    alias,
 	})
@@ -2716,7 +2380,7 @@ func (a *RegisteredModelsAPI) DeleteAliasByFullNameAndAlias(ctx context.Context,
 // be the owner or have the **USE_CATALOG** privilege on the parent catalog and
 // the **USE_SCHEMA** privilege on the parent schema.
 func (a *RegisteredModelsAPI) GetByFullName(ctx context.Context, fullName string) (*RegisteredModelInfo, error) {
-	return a.RegisteredModelsService.Get(ctx, GetRegisteredModelRequest{
+	return a.registeredModelsImpl.Get(ctx, GetRegisteredModelRequest{
 		FullName: fullName,
 	})
 }
@@ -2741,7 +2405,7 @@ func (a *RegisteredModelsAPI) List(ctx context.Context, request ListRegisteredMo
 
 	getNextPage := func(ctx context.Context, req ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.RegisteredModelsService.List(ctx, req)
+		return a.registeredModelsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListRegisteredModelsResponse) []RegisteredModelInfo {
 		return resp.RegisteredModels
@@ -2837,14 +2501,6 @@ func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*Regi
 }
 
 type SchemasInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockSchemasInterface instead.
-	WithImpl(impl SchemasService) SchemasInterface
-
-	// Impl returns low-level Schemas API implementation
-	// Deprecated: use MockSchemasInterface instead.
-	Impl() SchemasService
 
 	// Create a schema.
 	//
@@ -2931,7 +2587,7 @@ type SchemasInterface interface {
 
 func NewSchemas(client *client.DatabricksClient) *SchemasAPI {
 	return &SchemasAPI{
-		SchemasService: &schemasImpl{
+		schemasImpl: schemasImpl{
 			client: client,
 		},
 	}
@@ -2943,23 +2599,7 @@ func NewSchemas(client *client.DatabricksClient) *SchemasAPI {
 // data permission on the schema and its parent catalog, and they must have the
 // SELECT permission on the table or view.
 type SchemasAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(SchemasService)
-	SchemasService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockSchemasInterface instead.
-func (a *SchemasAPI) WithImpl(impl SchemasService) SchemasInterface {
-	a.SchemasService = impl
-	return a
-}
-
-// Impl returns low-level Schemas API implementation
-// Deprecated: use MockSchemasInterface instead.
-func (a *SchemasAPI) Impl() SchemasService {
-	return a.SchemasService
+	schemasImpl
 }
 
 // Delete a schema.
@@ -2967,7 +2607,7 @@ func (a *SchemasAPI) Impl() SchemasService {
 // Deletes the specified schema from the parent catalog. The caller must be the
 // owner of the schema or an owner of the parent catalog.
 func (a *SchemasAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	return a.SchemasService.Delete(ctx, DeleteSchemaRequest{
+	return a.schemasImpl.Delete(ctx, DeleteSchemaRequest{
 		FullName: fullName,
 	})
 }
@@ -2978,7 +2618,7 @@ func (a *SchemasAPI) DeleteByFullName(ctx context.Context, fullName string) erro
 // metastore admin, the owner of the schema, or a user that has the
 // **USE_SCHEMA** privilege on the schema.
 func (a *SchemasAPI) GetByFullName(ctx context.Context, fullName string) (*SchemaInfo, error) {
-	return a.SchemasService.Get(ctx, GetSchemaRequest{
+	return a.schemasImpl.Get(ctx, GetSchemaRequest{
 		FullName: fullName,
 	})
 }
@@ -2996,7 +2636,7 @@ func (a *SchemasAPI) List(ctx context.Context, request ListSchemasRequest) listi
 
 	getNextPage := func(ctx context.Context, req ListSchemasRequest) (*ListSchemasResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.SchemasService.List(ctx, req)
+		return a.schemasImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListSchemasResponse) []SchemaInfo {
 		return resp.Schemas
@@ -3085,14 +2725,6 @@ func (a *SchemasAPI) GetByName(ctx context.Context, name string) (*SchemaInfo, e
 }
 
 type StorageCredentialsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockStorageCredentialsInterface instead.
-	WithImpl(impl StorageCredentialsService) StorageCredentialsInterface
-
-	// Impl returns low-level StorageCredentials API implementation
-	// Deprecated: use MockStorageCredentialsInterface instead.
-	Impl() StorageCredentialsService
 
 	// Create a storage credential.
 	//
@@ -3180,7 +2812,7 @@ type StorageCredentialsInterface interface {
 
 func NewStorageCredentials(client *client.DatabricksClient) *StorageCredentialsAPI {
 	return &StorageCredentialsAPI{
-		StorageCredentialsService: &storageCredentialsImpl{
+		storageCredentialsImpl: storageCredentialsImpl{
 			client: client,
 		},
 	}
@@ -3200,23 +2832,7 @@ func NewStorageCredentials(client *client.DatabricksClient) *StorageCredentialsA
 // account admin who creates the storage credential can delegate ownership to
 // another user or group to manage permissions on it.
 type StorageCredentialsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(StorageCredentialsService)
-	StorageCredentialsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockStorageCredentialsInterface instead.
-func (a *StorageCredentialsAPI) WithImpl(impl StorageCredentialsService) StorageCredentialsInterface {
-	a.StorageCredentialsService = impl
-	return a
-}
-
-// Impl returns low-level StorageCredentials API implementation
-// Deprecated: use MockStorageCredentialsInterface instead.
-func (a *StorageCredentialsAPI) Impl() StorageCredentialsService {
-	return a.StorageCredentialsService
+	storageCredentialsImpl
 }
 
 // Delete a credential.
@@ -3224,7 +2840,7 @@ func (a *StorageCredentialsAPI) Impl() StorageCredentialsService {
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
 func (a *StorageCredentialsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.StorageCredentialsService.Delete(ctx, DeleteStorageCredentialRequest{
+	return a.storageCredentialsImpl.Delete(ctx, DeleteStorageCredentialRequest{
 		Name: name,
 	})
 }
@@ -3235,7 +2851,7 @@ func (a *StorageCredentialsAPI) DeleteByName(ctx context.Context, name string) e
 // admin, the owner of the storage credential, or have some permission on the
 // storage credential.
 func (a *StorageCredentialsAPI) GetByName(ctx context.Context, name string) (*StorageCredentialInfo, error) {
-	return a.StorageCredentialsService.Get(ctx, GetStorageCredentialRequest{
+	return a.storageCredentialsImpl.Get(ctx, GetStorageCredentialRequest{
 		Name: name,
 	})
 }
@@ -3253,7 +2869,7 @@ func (a *StorageCredentialsAPI) List(ctx context.Context, request ListStorageCre
 
 	getNextPage := func(ctx context.Context, req ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.StorageCredentialsService.List(ctx, req)
+		return a.storageCredentialsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListStorageCredentialsResponse) []StorageCredentialInfo {
 		return resp.StorageCredentials
@@ -3314,14 +2930,6 @@ func (a *StorageCredentialsAPI) StorageCredentialInfoNameToIdMap(ctx context.Con
 }
 
 type SystemSchemasInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockSystemSchemasInterface instead.
-	WithImpl(impl SystemSchemasService) SystemSchemasInterface
-
-	// Impl returns low-level SystemSchemas API implementation
-	// Deprecated: use MockSystemSchemasInterface instead.
-	Impl() SystemSchemasService
 
 	// Disable a system schema.
 	//
@@ -3366,7 +2974,7 @@ type SystemSchemasInterface interface {
 
 func NewSystemSchemas(client *client.DatabricksClient) *SystemSchemasAPI {
 	return &SystemSchemasAPI{
-		SystemSchemasService: &systemSchemasImpl{
+		systemSchemasImpl: systemSchemasImpl{
 			client: client,
 		},
 	}
@@ -3376,23 +2984,7 @@ func NewSystemSchemas(client *client.DatabricksClient) *SystemSchemasAPI {
 // schema may contain information about customer usage of Unity Catalog such as
 // audit-logs, billing-logs, lineage information, etc.
 type SystemSchemasAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(SystemSchemasService)
-	SystemSchemasService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockSystemSchemasInterface instead.
-func (a *SystemSchemasAPI) WithImpl(impl SystemSchemasService) SystemSchemasInterface {
-	a.SystemSchemasService = impl
-	return a
-}
-
-// Impl returns low-level SystemSchemas API implementation
-// Deprecated: use MockSystemSchemasInterface instead.
-func (a *SystemSchemasAPI) Impl() SystemSchemasService {
-	return a.SystemSchemasService
+	systemSchemasImpl
 }
 
 // Disable a system schema.
@@ -3400,7 +2992,7 @@ func (a *SystemSchemasAPI) Impl() SystemSchemasService {
 // Disables the system schema and removes it from the system catalog. The caller
 // must be an account admin or a metastore admin.
 func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName string) error {
-	return a.SystemSchemasService.Disable(ctx, DisableRequest{
+	return a.systemSchemasImpl.Disable(ctx, DisableRequest{
 		MetastoreId: metastoreId,
 		SchemaName:  schemaName,
 	})
@@ -3416,7 +3008,7 @@ func (a *SystemSchemasAPI) List(ctx context.Context, request ListSystemSchemasRe
 
 	getNextPage := func(ctx context.Context, req ListSystemSchemasRequest) (*ListSystemSchemasResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.SystemSchemasService.List(ctx, req)
+		return a.systemSchemasImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListSystemSchemasResponse) []SystemSchemaInfo {
 		return resp.Schemas
@@ -3446,20 +3038,12 @@ func (a *SystemSchemasAPI) ListAll(ctx context.Context, request ListSystemSchema
 // Gets an array of system schemas for a metastore. The caller must be an
 // account admin or a metastore admin.
 func (a *SystemSchemasAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListSystemSchemasResponse, error) {
-	return a.SystemSchemasService.List(ctx, ListSystemSchemasRequest{
+	return a.systemSchemasImpl.List(ctx, ListSystemSchemasRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
 type TableConstraintsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockTableConstraintsInterface instead.
-	WithImpl(impl TableConstraintsService) TableConstraintsInterface
-
-	// Impl returns low-level TableConstraints API implementation
-	// Deprecated: use MockTableConstraintsInterface instead.
-	Impl() TableConstraintsService
 
 	// Create a table constraint.
 	//
@@ -3504,7 +3088,7 @@ type TableConstraintsInterface interface {
 
 func NewTableConstraints(client *client.DatabricksClient) *TableConstraintsAPI {
 	return &TableConstraintsAPI{
-		TableConstraintsService: &tableConstraintsImpl{
+		tableConstraintsImpl: tableConstraintsImpl{
 			client: client,
 		},
 	}
@@ -3524,23 +3108,7 @@ func NewTableConstraints(client *client.DatabricksClient) *TableConstraintsAPI {
 // specification during table creation. You can also add or drop constraints on
 // existing tables.
 type TableConstraintsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(TableConstraintsService)
-	TableConstraintsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockTableConstraintsInterface instead.
-func (a *TableConstraintsAPI) WithImpl(impl TableConstraintsService) TableConstraintsInterface {
-	a.TableConstraintsService = impl
-	return a
-}
-
-// Impl returns low-level TableConstraints API implementation
-// Deprecated: use MockTableConstraintsInterface instead.
-func (a *TableConstraintsAPI) Impl() TableConstraintsService {
-	return a.TableConstraintsService
+	tableConstraintsImpl
 }
 
 // Delete a table constraint.
@@ -3555,20 +3123,12 @@ func (a *TableConstraintsAPI) Impl() TableConstraintsService {
 // **USE_CATALOG** privilege on the table's catalog, the **USE_SCHEMA**
 // privilege on the table's schema, and be the owner of the table.
 func (a *TableConstraintsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	return a.TableConstraintsService.Delete(ctx, DeleteTableConstraintRequest{
+	return a.tableConstraintsImpl.Delete(ctx, DeleteTableConstraintRequest{
 		FullName: fullName,
 	})
 }
 
 type TablesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockTablesInterface instead.
-	WithImpl(impl TablesService) TablesInterface
-
-	// Impl returns low-level Tables API implementation
-	// Deprecated: use MockTablesInterface instead.
-	Impl() TablesService
 
 	// Delete a table.
 	//
@@ -3722,7 +3282,7 @@ type TablesInterface interface {
 
 func NewTables(client *client.DatabricksClient) *TablesAPI {
 	return &TablesAPI{
-		TablesService: &tablesImpl{
+		tablesImpl: tablesImpl{
 			client: client,
 		},
 	}
@@ -3739,23 +3299,7 @@ func NewTables(client *client.DatabricksClient) *TablesAPI {
 // A table can be managed or external. From an API perspective, a __VIEW__ is a
 // particular kind of table (rather than a managed or external table).
 type TablesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(TablesService)
-	TablesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockTablesInterface instead.
-func (a *TablesAPI) WithImpl(impl TablesService) TablesInterface {
-	a.TablesService = impl
-	return a
-}
-
-// Impl returns low-level Tables API implementation
-// Deprecated: use MockTablesInterface instead.
-func (a *TablesAPI) Impl() TablesService {
-	return a.TablesService
+	tablesImpl
 }
 
 // Delete a table.
@@ -3766,7 +3310,7 @@ func (a *TablesAPI) Impl() TablesService {
 // table and have the **USE_CATALOG** privilege on the parent catalog and the
 // **USE_SCHEMA** privilege on the parent schema.
 func (a *TablesAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	return a.TablesService.Delete(ctx, DeleteTableRequest{
+	return a.tablesImpl.Delete(ctx, DeleteTableRequest{
 		FullName: fullName,
 	})
 }
@@ -3782,7 +3326,7 @@ func (a *TablesAPI) DeleteByFullName(ctx context.Context, fullName string) error
 // SELECT privilege on the table. * Have BROWSE privilege on the parent catalog
 // * Have BROWSE privilege on the parent schema.
 func (a *TablesAPI) ExistsByFullName(ctx context.Context, fullName string) (*TableExistsResponse, error) {
-	return a.TablesService.Exists(ctx, ExistsRequest{
+	return a.tablesImpl.Exists(ctx, ExistsRequest{
 		FullName: fullName,
 	})
 }
@@ -3797,7 +3341,7 @@ func (a *TablesAPI) ExistsByFullName(ctx context.Context, fullName string) (*Tab
 // parent schema, and either be the table owner or have the SELECT privilege on
 // the table.
 func (a *TablesAPI) GetByFullName(ctx context.Context, fullName string) (*TableInfo, error) {
-	return a.TablesService.Get(ctx, GetTableRequest{
+	return a.tablesImpl.Get(ctx, GetTableRequest{
 		FullName: fullName,
 	})
 }
@@ -3816,7 +3360,7 @@ func (a *TablesAPI) List(ctx context.Context, request ListTablesRequest) listing
 
 	getNextPage := func(ctx context.Context, req ListTablesRequest) (*ListTablesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.TablesService.List(ctx, req)
+		return a.tablesImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListTablesResponse) []TableInfo {
 		return resp.Tables
@@ -3924,7 +3468,7 @@ func (a *TablesAPI) ListSummaries(ctx context.Context, request ListSummariesRequ
 
 	getNextPage := func(ctx context.Context, req ListSummariesRequest) (*ListTableSummariesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.TablesService.ListSummaries(ctx, req)
+		return a.tablesImpl.ListSummaries(ctx, req)
 	}
 	getItems := func(resp *ListTableSummariesResponse) []TableSummary {
 		return resp.Tables
@@ -3966,14 +3510,6 @@ func (a *TablesAPI) ListSummariesAll(ctx context.Context, request ListSummariesR
 }
 
 type VolumesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockVolumesInterface instead.
-	WithImpl(impl VolumesService) VolumesInterface
-
-	// Impl returns low-level Volumes API implementation
-	// Deprecated: use MockVolumesInterface instead.
-	Impl() VolumesService
 
 	// Create a Volume.
 	//
@@ -4105,7 +3641,7 @@ type VolumesInterface interface {
 
 func NewVolumes(client *client.DatabricksClient) *VolumesAPI {
 	return &VolumesAPI{
-		VolumesService: &volumesImpl{
+		volumesImpl: volumesImpl{
 			client: client,
 		},
 	}
@@ -4120,23 +3656,7 @@ func NewVolumes(client *client.DatabricksClient) *VolumesAPI {
 // as .whl or .txt centrally and providing secure access across workspaces to
 // it, or transforming and querying non-tabular data files in ETL.
 type VolumesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(VolumesService)
-	VolumesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockVolumesInterface instead.
-func (a *VolumesAPI) WithImpl(impl VolumesService) VolumesInterface {
-	a.VolumesService = impl
-	return a
-}
-
-// Impl returns low-level Volumes API implementation
-// Deprecated: use MockVolumesInterface instead.
-func (a *VolumesAPI) Impl() VolumesService {
-	return a.VolumesService
+	volumesImpl
 }
 
 // Delete a Volume.
@@ -4148,7 +3668,7 @@ func (a *VolumesAPI) Impl() VolumesService {
 // privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 // parent schema.
 func (a *VolumesAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.VolumesService.Delete(ctx, DeleteVolumeRequest{
+	return a.volumesImpl.Delete(ctx, DeleteVolumeRequest{
 		Name: name,
 	})
 }
@@ -4172,7 +3692,7 @@ func (a *VolumesAPI) List(ctx context.Context, request ListVolumesRequest) listi
 
 	getNextPage := func(ctx context.Context, req ListVolumesRequest) (*ListVolumesResponseContent, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.VolumesService.List(ctx, req)
+		return a.volumesImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListVolumesResponseContent) []VolumeInfo {
 		return resp.Volumes
@@ -4275,20 +3795,12 @@ func (a *VolumesAPI) GetByName(ctx context.Context, name string) (*VolumeInfo, e
 // be the owner or have the **USE_CATALOG** privilege on the parent catalog and
 // the **USE_SCHEMA** privilege on the parent schema.
 func (a *VolumesAPI) ReadByName(ctx context.Context, name string) (*VolumeInfo, error) {
-	return a.VolumesService.Read(ctx, ReadVolumeRequest{
+	return a.volumesImpl.Read(ctx, ReadVolumeRequest{
 		Name: name,
 	})
 }
 
 type WorkspaceBindingsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockWorkspaceBindingsInterface instead.
-	WithImpl(impl WorkspaceBindingsService) WorkspaceBindingsInterface
-
-	// Impl returns low-level WorkspaceBindings API implementation
-	// Deprecated: use MockWorkspaceBindingsInterface instead.
-	Impl() WorkspaceBindingsService
 
 	// Get catalog workspace bindings.
 	//
@@ -4329,7 +3841,7 @@ type WorkspaceBindingsInterface interface {
 
 func NewWorkspaceBindings(client *client.DatabricksClient) *WorkspaceBindingsAPI {
 	return &WorkspaceBindingsAPI{
-		WorkspaceBindingsService: &workspaceBindingsImpl{
+		workspaceBindingsImpl: workspaceBindingsImpl{
 			client: client,
 		},
 	}
@@ -4355,23 +3867,7 @@ func NewWorkspaceBindings(client *client.DatabricksClient) *WorkspaceBindingsAPI
 // Securable types that support binding: - catalog - storage_credential -
 // external_location
 type WorkspaceBindingsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(WorkspaceBindingsService)
-	WorkspaceBindingsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockWorkspaceBindingsInterface instead.
-func (a *WorkspaceBindingsAPI) WithImpl(impl WorkspaceBindingsService) WorkspaceBindingsInterface {
-	a.WorkspaceBindingsService = impl
-	return a
-}
-
-// Impl returns low-level WorkspaceBindings API implementation
-// Deprecated: use MockWorkspaceBindingsInterface instead.
-func (a *WorkspaceBindingsAPI) Impl() WorkspaceBindingsService {
-	return a.WorkspaceBindingsService
+	workspaceBindingsImpl
 }
 
 // Get catalog workspace bindings.
@@ -4379,7 +3875,7 @@ func (a *WorkspaceBindingsAPI) Impl() WorkspaceBindingsService {
 // Gets workspace bindings of the catalog. The caller must be a metastore admin
 // or an owner of the catalog.
 func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*CurrentWorkspaceBindings, error) {
-	return a.WorkspaceBindingsService.Get(ctx, GetWorkspaceBindingRequest{
+	return a.workspaceBindingsImpl.Get(ctx, GetWorkspaceBindingRequest{
 		Name: name,
 	})
 }
@@ -4389,7 +3885,7 @@ func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*Cur
 // Gets workspace bindings of the securable. The caller must be a metastore
 // admin or an owner of the securable.
 func (a *WorkspaceBindingsAPI) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType GetBindingsSecurableType, securableName string) (*WorkspaceBindingsResponse, error) {
-	return a.WorkspaceBindingsService.GetBindings(ctx, GetBindingsRequest{
+	return a.workspaceBindingsImpl.GetBindings(ctx, GetBindingsRequest{
 		SecurableType: securableType,
 		SecurableName: securableName,
 	})

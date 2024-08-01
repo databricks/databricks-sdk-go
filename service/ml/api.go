@@ -12,14 +12,6 @@ import (
 )
 
 type ExperimentsInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockExperimentsInterface instead.
-	WithImpl(impl ExperimentsService) ExperimentsInterface
-
-	// Impl returns low-level Experiments API implementation
-	// Deprecated: use MockExperimentsInterface instead.
-	Impl() ExperimentsService
 
 	// Create experiment.
 	//
@@ -319,7 +311,7 @@ type ExperimentsInterface interface {
 
 func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {
 	return &ExperimentsAPI{
-		ExperimentsService: &experimentsImpl{
+		experimentsImpl: experimentsImpl{
 			client: client,
 		},
 	}
@@ -335,23 +327,7 @@ func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {
 // using the same tools you use to manage other workspace objects such as
 // folders, notebooks, and libraries.
 type ExperimentsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ExperimentsService)
-	ExperimentsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockExperimentsInterface instead.
-func (a *ExperimentsAPI) WithImpl(impl ExperimentsService) ExperimentsInterface {
-	a.ExperimentsService = impl
-	return a
-}
-
-// Impl returns low-level Experiments API implementation
-// Deprecated: use MockExperimentsInterface instead.
-func (a *ExperimentsAPI) Impl() ExperimentsService {
-	return a.ExperimentsService
+	experimentsImpl
 }
 
 // Get history of a given metric within a run.
@@ -363,7 +339,7 @@ func (a *ExperimentsAPI) GetHistory(ctx context.Context, request GetHistoryReque
 
 	getNextPage := func(ctx context.Context, req GetHistoryRequest) (*GetMetricHistoryResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ExperimentsService.GetHistory(ctx, req)
+		return a.experimentsImpl.GetHistory(ctx, req)
 	}
 	getItems := func(resp *GetMetricHistoryResponse) []Metric {
 		return resp.Metrics
@@ -398,7 +374,7 @@ func (a *ExperimentsAPI) GetHistoryAll(ctx context.Context, request GetHistoryRe
 //
 // Gets the permission levels that a user can have on an object.
 func (a *ExperimentsAPI) GetPermissionLevelsByExperimentId(ctx context.Context, experimentId string) (*GetExperimentPermissionLevelsResponse, error) {
-	return a.ExperimentsService.GetPermissionLevels(ctx, GetExperimentPermissionLevelsRequest{
+	return a.experimentsImpl.GetPermissionLevels(ctx, GetExperimentPermissionLevelsRequest{
 		ExperimentId: experimentId,
 	})
 }
@@ -408,7 +384,7 @@ func (a *ExperimentsAPI) GetPermissionLevelsByExperimentId(ctx context.Context, 
 // Gets the permissions of an experiment. Experiments can inherit permissions
 // from their root object.
 func (a *ExperimentsAPI) GetPermissionsByExperimentId(ctx context.Context, experimentId string) (*ExperimentPermissions, error) {
-	return a.ExperimentsService.GetPermissions(ctx, GetExperimentPermissionsRequest{
+	return a.experimentsImpl.GetPermissions(ctx, GetExperimentPermissionsRequest{
 		ExperimentId: experimentId,
 	})
 }
@@ -423,7 +399,7 @@ func (a *ExperimentsAPI) ListArtifacts(ctx context.Context, request ListArtifact
 
 	getNextPage := func(ctx context.Context, req ListArtifactsRequest) (*ListArtifactsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ExperimentsService.ListArtifacts(ctx, req)
+		return a.experimentsImpl.ListArtifacts(ctx, req)
 	}
 	getItems := func(resp *ListArtifactsResponse) []FileInfo {
 		return resp.Files
@@ -463,7 +439,7 @@ func (a *ExperimentsAPI) ListExperiments(ctx context.Context, request ListExperi
 
 	getNextPage := func(ctx context.Context, req ListExperimentsRequest) (*ListExperimentsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ExperimentsService.ListExperiments(ctx, req)
+		return a.experimentsImpl.ListExperiments(ctx, req)
 	}
 	getItems := func(resp *ListExperimentsResponse) []Experiment {
 		return resp.Experiments
@@ -503,7 +479,7 @@ func (a *ExperimentsAPI) SearchExperiments(ctx context.Context, request SearchEx
 
 	getNextPage := func(ctx context.Context, req SearchExperiments) (*SearchExperimentsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ExperimentsService.SearchExperiments(ctx, req)
+		return a.experimentsImpl.SearchExperiments(ctx, req)
 	}
 	getItems := func(resp *SearchExperimentsResponse) []Experiment {
 		return resp.Experiments
@@ -544,7 +520,7 @@ func (a *ExperimentsAPI) SearchRuns(ctx context.Context, request SearchRuns) lis
 
 	getNextPage := func(ctx context.Context, req SearchRuns) (*SearchRunsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ExperimentsService.SearchRuns(ctx, req)
+		return a.experimentsImpl.SearchRuns(ctx, req)
 	}
 	getItems := func(resp *SearchRunsResponse) []Run {
 		return resp.Runs
@@ -577,14 +553,6 @@ func (a *ExperimentsAPI) SearchRunsAll(ctx context.Context, request SearchRuns) 
 }
 
 type ModelRegistryInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockModelRegistryInterface instead.
-	WithImpl(impl ModelRegistryService) ModelRegistryInterface
-
-	// Impl returns low-level ModelRegistry API implementation
-	// Deprecated: use MockModelRegistryInterface instead.
-	Impl() ModelRegistryService
 
 	// Approve transition request.
 	//
@@ -864,7 +832,7 @@ type ModelRegistryInterface interface {
 
 func NewModelRegistry(client *client.DatabricksClient) *ModelRegistryAPI {
 	return &ModelRegistryAPI{
-		ModelRegistryService: &modelRegistryImpl{
+		modelRegistryImpl: modelRegistryImpl{
 			client: client,
 		},
 	}
@@ -879,23 +847,7 @@ func NewModelRegistry(client *client.DatabricksClient) *ModelRegistryAPI {
 // The Workspace Model Registry is a centralized model repository and a UI and
 // set of APIs that enable you to manage the full lifecycle of MLflow Models.
 type ModelRegistryAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(ModelRegistryService)
-	ModelRegistryService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockModelRegistryInterface instead.
-func (a *ModelRegistryAPI) WithImpl(impl ModelRegistryService) ModelRegistryInterface {
-	a.ModelRegistryService = impl
-	return a
-}
-
-// Impl returns low-level ModelRegistry API implementation
-// Deprecated: use MockModelRegistryInterface instead.
-func (a *ModelRegistryAPI) Impl() ModelRegistryService {
-	return a.ModelRegistryService
+	modelRegistryImpl
 }
 
 // Get the latest version.
@@ -907,7 +859,7 @@ func (a *ModelRegistryAPI) GetLatestVersions(ctx context.Context, request GetLat
 
 	getNextPage := func(ctx context.Context, req GetLatestVersionsRequest) (*GetLatestVersionsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ModelRegistryService.GetLatestVersions(ctx, req)
+		return a.modelRegistryImpl.GetLatestVersions(ctx, req)
 	}
 	getItems := func(resp *GetLatestVersionsResponse) []ModelVersion {
 		return resp.ModelVersions
@@ -935,7 +887,7 @@ func (a *ModelRegistryAPI) GetLatestVersionsAll(ctx context.Context, request Get
 //
 // Gets the permission levels that a user can have on an object.
 func (a *ModelRegistryAPI) GetPermissionLevelsByRegisteredModelId(ctx context.Context, registeredModelId string) (*GetRegisteredModelPermissionLevelsResponse, error) {
-	return a.ModelRegistryService.GetPermissionLevels(ctx, GetRegisteredModelPermissionLevelsRequest{
+	return a.modelRegistryImpl.GetPermissionLevels(ctx, GetRegisteredModelPermissionLevelsRequest{
 		RegisteredModelId: registeredModelId,
 	})
 }
@@ -945,7 +897,7 @@ func (a *ModelRegistryAPI) GetPermissionLevelsByRegisteredModelId(ctx context.Co
 // Gets the permissions of a registered model. Registered models can inherit
 // permissions from their root object.
 func (a *ModelRegistryAPI) GetPermissionsByRegisteredModelId(ctx context.Context, registeredModelId string) (*RegisteredModelPermissions, error) {
-	return a.ModelRegistryService.GetPermissions(ctx, GetRegisteredModelPermissionsRequest{
+	return a.modelRegistryImpl.GetPermissions(ctx, GetRegisteredModelPermissionsRequest{
 		RegisteredModelId: registeredModelId,
 	})
 }
@@ -960,7 +912,7 @@ func (a *ModelRegistryAPI) ListModels(ctx context.Context, request ListModelsReq
 
 	getNextPage := func(ctx context.Context, req ListModelsRequest) (*ListModelsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ModelRegistryService.ListModels(ctx, req)
+		return a.modelRegistryImpl.ListModels(ctx, req)
 	}
 	getItems := func(resp *ListModelsResponse) []Model {
 		return resp.RegisteredModels
@@ -1001,7 +953,7 @@ func (a *ModelRegistryAPI) ListTransitionRequests(ctx context.Context, request L
 
 	getNextPage := func(ctx context.Context, req ListTransitionRequestsRequest) (*ListTransitionRequestsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ModelRegistryService.ListTransitionRequests(ctx, req)
+		return a.modelRegistryImpl.ListTransitionRequests(ctx, req)
 	}
 	getItems := func(resp *ListTransitionRequestsResponse) []Activity {
 		return resp.Requests
@@ -1036,7 +988,7 @@ func (a *ModelRegistryAPI) ListWebhooks(ctx context.Context, request ListWebhook
 
 	getNextPage := func(ctx context.Context, req ListWebhooksRequest) (*ListRegistryWebhooks, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ModelRegistryService.ListWebhooks(ctx, req)
+		return a.modelRegistryImpl.ListWebhooks(ctx, req)
 	}
 	getItems := func(resp *ListRegistryWebhooks) []RegistryWebhook {
 		return resp.Webhooks
@@ -1077,7 +1029,7 @@ func (a *ModelRegistryAPI) SearchModelVersions(ctx context.Context, request Sear
 
 	getNextPage := func(ctx context.Context, req SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ModelRegistryService.SearchModelVersions(ctx, req)
+		return a.modelRegistryImpl.SearchModelVersions(ctx, req)
 	}
 	getItems := func(resp *SearchModelVersionsResponse) []ModelVersion {
 		return resp.ModelVersions
@@ -1117,7 +1069,7 @@ func (a *ModelRegistryAPI) SearchModels(ctx context.Context, request SearchModel
 
 	getNextPage := func(ctx context.Context, req SearchModelsRequest) (*SearchModelsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.ModelRegistryService.SearchModels(ctx, req)
+		return a.modelRegistryImpl.SearchModels(ctx, req)
 	}
 	getItems := func(resp *SearchModelsResponse) []Model {
 		return resp.RegisteredModels

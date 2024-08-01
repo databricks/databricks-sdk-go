@@ -13,14 +13,6 @@ import (
 
 type DbfsInterface interface {
 	dbfsAPIUtilities
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockDbfsInterface instead.
-	WithImpl(impl DbfsService) DbfsInterface
-
-	// Impl returns low-level Dbfs API implementation
-	// Deprecated: use MockDbfsInterface instead.
-	Impl() DbfsService
 
 	// Append data block.
 	//
@@ -199,7 +191,7 @@ type DbfsInterface interface {
 
 func NewDbfs(client *client.DatabricksClient) *DbfsAPI {
 	return &DbfsAPI{
-		DbfsService: &dbfsImpl{
+		dbfsImpl: dbfsImpl{
 			client: client,
 		},
 	}
@@ -208,23 +200,7 @@ func NewDbfs(client *client.DatabricksClient) *DbfsAPI {
 // DBFS API makes it simple to interact with various data sources without having
 // to include a users credentials every time to read a file.
 type DbfsAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(DbfsService)
-	DbfsService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockDbfsInterface instead.
-func (a *DbfsAPI) WithImpl(impl DbfsService) DbfsInterface {
-	a.DbfsService = impl
-	return a
-}
-
-// Impl returns low-level Dbfs API implementation
-// Deprecated: use MockDbfsInterface instead.
-func (a *DbfsAPI) Impl() DbfsService {
-	return a.DbfsService
+	dbfsImpl
 }
 
 // Close the stream.
@@ -232,7 +208,7 @@ func (a *DbfsAPI) Impl() DbfsService {
 // Closes the stream specified by the input handle. If the handle does not
 // exist, this call throws an exception with “RESOURCE_DOES_NOT_EXIST“.
 func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) error {
-	return a.DbfsService.Close(ctx, Close{
+	return a.dbfsImpl.Close(ctx, Close{
 		Handle: handle,
 	})
 }
@@ -242,7 +218,7 @@ func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) error {
 // Gets the file information for a file or directory. If the file or directory
 // does not exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
 func (a *DbfsAPI) GetStatusByPath(ctx context.Context, path string) (*FileInfo, error) {
-	return a.DbfsService.GetStatus(ctx, GetStatusRequest{
+	return a.dbfsImpl.GetStatus(ctx, GetStatusRequest{
 		Path: path,
 	})
 }
@@ -266,7 +242,7 @@ func (a *DbfsAPI) List(ctx context.Context, request ListDbfsRequest) listing.Ite
 
 	getNextPage := func(ctx context.Context, req ListDbfsRequest) (*ListStatusResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.DbfsService.List(ctx, req)
+		return a.dbfsImpl.List(ctx, req)
 	}
 	getItems := func(resp *ListStatusResponse) []FileInfo {
 		return resp.Files
@@ -314,7 +290,7 @@ func (a *DbfsAPI) ListAll(ctx context.Context, request ListDbfsRequest) ([]FileI
 // system utility (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs),
 // which provides the same functionality without timing out.
 func (a *DbfsAPI) ListByPath(ctx context.Context, path string) (*ListStatusResponse, error) {
-	return a.DbfsService.List(ctx, ListDbfsRequest{
+	return a.dbfsImpl.List(ctx, ListDbfsRequest{
 		Path: path,
 	})
 }
@@ -327,20 +303,12 @@ func (a *DbfsAPI) ListByPath(ctx context.Context, path string) (*ListStatusRespo
 // this operation fails, it might have succeeded in creating some of the
 // necessary parent directories.
 func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) error {
-	return a.DbfsService.Mkdirs(ctx, MkDirs{
+	return a.dbfsImpl.Mkdirs(ctx, MkDirs{
 		Path: path,
 	})
 }
 
 type FilesInterface interface {
-	// WithImpl could be used to override low-level API implementations for unit
-	// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-	// Deprecated: use MockFilesInterface instead.
-	WithImpl(impl FilesService) FilesInterface
-
-	// Impl returns low-level Files API implementation
-	// Deprecated: use MockFilesInterface instead.
-	Impl() FilesService
 
 	// Create a directory.
 	//
@@ -462,7 +430,7 @@ type FilesInterface interface {
 
 func NewFiles(client *client.DatabricksClient) *FilesAPI {
 	return &FilesAPI{
-		FilesService: &filesImpl{
+		filesImpl: filesImpl{
 			client: client,
 		},
 	}
@@ -485,30 +453,14 @@ func NewFiles(client *client.DatabricksClient) *FilesAPI {
 //
 // [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 type FilesAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(FilesService)
-	FilesService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-// Deprecated: use MockFilesInterface instead.
-func (a *FilesAPI) WithImpl(impl FilesService) FilesInterface {
-	a.FilesService = impl
-	return a
-}
-
-// Impl returns low-level Files API implementation
-// Deprecated: use MockFilesInterface instead.
-func (a *FilesAPI) Impl() FilesService {
-	return a.FilesService
+	filesImpl
 }
 
 // Delete a file.
 //
 // Deletes a file. If the request is successful, there is no response body.
 func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) error {
-	return a.FilesService.Delete(ctx, DeleteFileRequest{
+	return a.filesImpl.Delete(ctx, DeleteFileRequest{
 		FilePath: filePath,
 	})
 }
@@ -521,7 +473,7 @@ func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) error 
 // be done by listing the directory contents and deleting each file and
 // subdirectory recursively.
 func (a *FilesAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) error {
-	return a.FilesService.DeleteDirectory(ctx, DeleteDirectoryRequest{
+	return a.filesImpl.DeleteDirectory(ctx, DeleteDirectoryRequest{
 		DirectoryPath: directoryPath,
 	})
 }
@@ -531,7 +483,7 @@ func (a *FilesAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, directory
 // Downloads a file of up to 5 GiB. The file contents are the response body.
 // This is a standard HTTP file download, not a JSON RPC.
 func (a *FilesAPI) DownloadByFilePath(ctx context.Context, filePath string) (*DownloadResponse, error) {
-	return a.FilesService.Download(ctx, DownloadRequest{
+	return a.filesImpl.Download(ctx, DownloadRequest{
 		FilePath: filePath,
 	})
 }
@@ -548,7 +500,7 @@ func (a *FilesAPI) DownloadByFilePath(ctx context.Context, filePath string) (*Do
 // will create the directory if it does not exist, and is idempotent (it will
 // succeed if the directory already exists).
 func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) error {
-	return a.FilesService.GetDirectoryMetadata(ctx, GetDirectoryMetadataRequest{
+	return a.filesImpl.GetDirectoryMetadata(ctx, GetDirectoryMetadataRequest{
 		DirectoryPath: directoryPath,
 	})
 }
@@ -558,7 +510,7 @@ func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, dire
 // Get the metadata of a file. The response HTTP headers contain the metadata.
 // There is no response body.
 func (a *FilesAPI) GetMetadataByFilePath(ctx context.Context, filePath string) (*GetMetadataResponse, error) {
-	return a.FilesService.GetMetadata(ctx, GetMetadataRequest{
+	return a.filesImpl.GetMetadata(ctx, GetMetadataRequest{
 		FilePath: filePath,
 	})
 }
@@ -573,7 +525,7 @@ func (a *FilesAPI) ListDirectoryContents(ctx context.Context, request ListDirect
 
 	getNextPage := func(ctx context.Context, req ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.FilesService.ListDirectoryContents(ctx, req)
+		return a.filesImpl.ListDirectoryContents(ctx, req)
 	}
 	getItems := func(resp *ListDirectoryResponse) []DirectoryEntry {
 		return resp.Contents
@@ -610,7 +562,7 @@ func (a *FilesAPI) ListDirectoryContentsAll(ctx context.Context, request ListDir
 // Returns the contents of a directory. If there is no directory at the
 // specified path, the API returns a HTTP 404 error.
 func (a *FilesAPI) ListDirectoryContentsByDirectoryPath(ctx context.Context, directoryPath string) (*ListDirectoryResponse, error) {
-	return a.FilesService.ListDirectoryContents(ctx, ListDirectoryContentsRequest{
+	return a.filesImpl.ListDirectoryContents(ctx, ListDirectoryContentsRequest{
 		DirectoryPath: directoryPath,
 	})
 }
