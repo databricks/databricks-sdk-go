@@ -22,6 +22,7 @@ type SparkVersionRequest struct {
 	Scala           string `json:"scala,omitempty" tf:"optional,default:2.12"`
 	SparkVersion    string `json:"spark_version,omitempty" tf:"optional,default:"`
 	Photon          bool   `json:"photon,omitempty" tf:"optional,default:false"`
+	Graviton        bool   `json:"graviton,omitempty" tf:"optional,default:false"`
 }
 
 type sparkVersionsType []string
@@ -47,7 +48,6 @@ func (s sparkVersionsType) Less(i, j int) bool {
 	return semver.Compare("v"+extractDbrVersions(s[i]), "v"+extractDbrVersions(s[j])) > 0
 }
 
-// LatestSparkVersion returns latest version matching the request parameters
 func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, error) {
 	var versions []string
 	for _, version := range sv.Versions {
@@ -57,6 +57,7 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 				(strings.Contains(version.Key, "-hls-") == req.Genomics) &&
 				(strings.Contains(version.Key, "-gpu-") == req.GPU) &&
 				(strings.Contains(version.Key, "-photon-") == req.Photon) &&
+				(strings.Contains(version.Key, "-aarch64-") == req.Graviton) &&
 				(strings.Contains(version.Name, "Beta") == req.Beta))
 			if matches && req.LongTermSupport {
 				matches = (matches && (strings.Contains(version.Name, "LTS") || strings.Contains(version.Key, "-esr-")))
@@ -75,12 +76,25 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 		if req.Latest {
 			sort.Sort(sparkVersionsType(versions))
 		} else {
-			return "", fmt.Errorf("spark versions query returned multiple results. Please change your search criteria and try again")
+			return "", fmt.Errorf("spark versions query returned multiple results %#v. Please change your search criteria and try again", versions)
 		}
 	}
 	return versions[0], nil
 }
 
+// SelectSparkVersion returns latest DBR version matching the request parameters.
+// If there are multiple versions matching the request, it will error (if latest = false)
+// or return the latest version.
+// Possible parameters are:
+// - LongTermSupport: LTS versions only
+// - Beta: Beta versions only
+// - ML: ML versions only
+// - Genomics: Genomics versions only
+// - GPU: GPU versions only
+// - Scala: Scala version
+// - SparkVersion: Apache Spark version
+// - Photon: Photon versions only (deprecated)
+// - Graviton: Graviton versions only (deprecated)
 func (a *ClustersAPI) SelectSparkVersion(ctx context.Context, r SparkVersionRequest) (string, error) {
 	sv, err := a.SparkVersions(ctx)
 	if err != nil {
