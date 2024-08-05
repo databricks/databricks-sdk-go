@@ -48,7 +48,6 @@ func (s sparkVersionsType) Less(i, j int) bool {
 	return semver.Compare("v"+extractDbrVersions(s[i]), "v"+extractDbrVersions(s[j])) > 0
 }
 
-// LatestSparkVersion returns latest version matching the request parameters
 func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, error) {
 	var versions []string
 	for _, version := range sv.Versions {
@@ -83,6 +82,19 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 	return versions[0], nil
 }
 
+// SelectSparkVersion returns latest DBR version matching the request parameters.
+// If there are multiple versions matching the request, it will error (if latest = false)
+// or return the latest version.
+// Possible parameters are:
+// - LongTermSupport: LTS versions only
+// - Beta: Beta versions only
+// - ML: ML versions only
+// - Genomics: Genomics versions only
+// - GPU: GPU versions only
+// - Scala: Scala version
+// - SparkVersion: Apache Spark version
+// - Photon: Photon versions only (deprecated)
+// - Graviton: Graviton versions only (deprecated)
 func (a *ClustersAPI) SelectSparkVersion(ctx context.Context, r SparkVersionRequest) (string, error) {
 	sv, err := a.SparkVersions(ctx)
 	if err != nil {
