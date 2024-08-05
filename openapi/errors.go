@@ -66,6 +66,15 @@ var ErrorOverrides = []ErrorOverride{
 		ErrorCodeMatcher:  regexp.MustCompile(INVALID_PARAMETER_VALUE),
 		OverrideErrorCode: RESOURCE_DOES_NOT_EXIST,
 	},
+	{
+		Name:              "Job Runs InvalidParameterValue=>ResourceDoesNotExist",
+		PathRegex:         regexp.MustCompile(`^/api/2\.\d/jobs/runs/get`),
+		Verb:              "GET",
+		StatusCodeMatcher: regexp.MustCompile(`^400$`),
+		MessageMatcher:    regexp.MustCompile("(Run .* does not exist|Run: .* in job: .* doesn't exist)"),
+		ErrorCodeMatcher:  regexp.MustCompile(INVALID_PARAMETER_VALUE),
+		OverrideErrorCode: RESOURCE_DOES_NOT_EXIST,
+	},
 }
 
 var TransientErrorRegexes = []*regexp.Regexp{
