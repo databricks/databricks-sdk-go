@@ -497,6 +497,7 @@ var jobs2Dot1Apis = map[string]struct{}{
 	"/api/2.2/jobs/get":       {},
 	"/api/2.2/jobs/reset":     {},
 	"/api/2.2/jobs/runs/list": {},
+	"/api/2.2/jobs/runs/submit": {},
 }
 
 func (svc *Service) pinJobsApisTo2Dot1(path string) string {
