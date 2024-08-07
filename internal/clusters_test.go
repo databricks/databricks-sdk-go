@@ -150,6 +150,11 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	assert.Equal(t, 10, byId.AutoterminationMinutes)
 	assert.Equal(t, 2, byId.NumWorkers)
 
+	// Test getting the cluster by name
+	byName, err := w.Clusters.GetByClusterName(ctx, byId.ClusterName)
+	require.NoError(t, err)
+	assert.Equal(t, byId.ClusterId, byName.ClusterId)
+
 	// Terminate the cluster
 	_, err = w.Clusters.DeleteByClusterIdAndWait(ctx, clstr.ClusterId)
 	require.NoError(t, err)
@@ -158,10 +163,6 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	byId, err = w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 	assert.Equal(t, byId.State, compute.StateTerminated)
-
-	byName, err := w.Clusters.GetByClusterName(ctx, byId.ClusterName)
-	require.NoError(t, err)
-	assert.Equal(t, byId.ClusterId, byName.ClusterId)
 
 	// Start cluster and wait until it's running again
 	_, err = w.Clusters.StartByClusterIdAndWait(ctx, clstr.ClusterId)
