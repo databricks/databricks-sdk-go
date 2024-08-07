@@ -20,7 +20,7 @@ func TestAccSqlWarehouses(t *testing.T) {
 			CustomTags: []sql.EndpointTagPair{
 				{
 					Key:   "Owner",
-					Value: "eng-dev-ecosystem-team@databricks.com",
+					Value: "eng-dev-ecosystem-team_at_databricks.com",
 				},
 			},
 		},
