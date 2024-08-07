@@ -16,6 +16,14 @@ func TestAccSqlWarehouses(t *testing.T) {
 		ClusterSize:    "2X-Small",
 		MaxNumClusters: 1,
 		AutoStopMins:   10,
+		Tags: &sql.EndpointTags{
+			CustomTags: []sql.EndpointTagPair{
+				{
+					Key:   "Owner",
+					Value: "eng-dev-ecosystem-team@databricks.com",
+				},
+			},
+		},
 	})
 	require.NoError(t, err)
 
