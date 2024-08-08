@@ -13,7 +13,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	for _, c := range all[:10] {
-		println(c.ClusterName)
-	}
+	println("Found %d clusters.", len(all))
 }
