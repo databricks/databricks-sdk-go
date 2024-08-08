@@ -147,5 +147,5 @@ func TestJobs2Dot2Compatability(t *testing.T) {
 	require.NotNil(t, jobs)
 	require.NotNil(t, jobs.services["Jobs"])
 	require.Equal(t, "/api/2.1/jobs/get", jobs.services["Jobs"].methods["get"].Path)
-	require.Equal(t, "/api/2.2/jobs/runs/submit", jobs.services["Jobs"].methods["submitRun"].Path)
+	require.Equal(t, "/api/2.1/jobs/runs/submit", jobs.services["Jobs"].methods["submitRun"].Path)
 }
