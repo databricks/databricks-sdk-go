@@ -140,7 +140,7 @@ func ExampleClusterPoliciesAPI_ListAll_clusterPolicies() {
 		panic(err)
 	}
 
-	all, err := w.ClusterPolicies.ListAll(ctx, compute.ListClusterPoliciesRequest{})
+	all, err := w.ClusterPolicies.ListAll(ctx, compute.ListPolicies{})
 	if err != nil {
 		panic(err)
 	}

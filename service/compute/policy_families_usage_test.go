@@ -18,7 +18,7 @@ func ExamplePolicyFamiliesAPI_Get_clusterPolicyFamilies() {
 		panic(err)
 	}
 
-	all, err := w.PolicyFamilies.ListAll(ctx, compute.ListPolicyFamiliesRequest{})
+	all, err := w.PolicyFamilies.ListAll(ctx, compute.ListPolicyFamilies{})
 	if err != nil {
 		panic(err)
 	}
@@ -41,7 +41,7 @@ func ExamplePolicyFamiliesAPI_ListAll_clusterPolicyFamilies() {
 		panic(err)
 	}
 
-	all, err := w.PolicyFamilies.ListAll(ctx, compute.ListPolicyFamiliesRequest{})
+	all, err := w.PolicyFamilies.ListAll(ctx, compute.ListPolicyFamilies{})
 	if err != nil {
 		panic(err)
 	}
