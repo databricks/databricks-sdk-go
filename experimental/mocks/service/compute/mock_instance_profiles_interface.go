@@ -119,53 +119,6 @@ func (_c *MockInstanceProfilesInterface_Edit_Call) RunAndReturn(run func(context
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockInstanceProfilesInterface) Impl() compute.InstanceProfilesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 compute.InstanceProfilesService
-	if rf, ok := ret.Get(0).(func() compute.InstanceProfilesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.InstanceProfilesService)
-		}
-	}
-
-	return r0
-}
-
-// MockInstanceProfilesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockInstanceProfilesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockInstanceProfilesInterface_Expecter) Impl() *MockInstanceProfilesInterface_Impl_Call {
-	return &MockInstanceProfilesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockInstanceProfilesInterface_Impl_Call) Run(run func()) *MockInstanceProfilesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockInstanceProfilesInterface_Impl_Call) Return(_a0 compute.InstanceProfilesService) *MockInstanceProfilesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockInstanceProfilesInterface_Impl_Call) RunAndReturn(run func() compute.InstanceProfilesService) *MockInstanceProfilesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx
 func (_m *MockInstanceProfilesInterface) List(ctx context.Context) listing.Iterator[compute.InstanceProfile] {
 	ret := _m.Called(ctx)
@@ -362,54 +315,6 @@ func (_c *MockInstanceProfilesInterface_RemoveByInstanceProfileArn_Call) Return(
 }
 
 func (_c *MockInstanceProfilesInterface_RemoveByInstanceProfileArn_Call) RunAndReturn(run func(context.Context, string) error) *MockInstanceProfilesInterface_RemoveByInstanceProfileArn_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockInstanceProfilesInterface) WithImpl(impl compute.InstanceProfilesService) compute.InstanceProfilesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 compute.InstanceProfilesInterface
-	if rf, ok := ret.Get(0).(func(compute.InstanceProfilesService) compute.InstanceProfilesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.InstanceProfilesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockInstanceProfilesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockInstanceProfilesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl compute.InstanceProfilesService
-func (_e *MockInstanceProfilesInterface_Expecter) WithImpl(impl interface{}) *MockInstanceProfilesInterface_WithImpl_Call {
-	return &MockInstanceProfilesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockInstanceProfilesInterface_WithImpl_Call) Run(run func(impl compute.InstanceProfilesService)) *MockInstanceProfilesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(compute.InstanceProfilesService))
-	})
-	return _c
-}
-
-func (_c *MockInstanceProfilesInterface_WithImpl_Call) Return(_a0 compute.InstanceProfilesInterface) *MockInstanceProfilesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockInstanceProfilesInterface_WithImpl_Call) RunAndReturn(run func(compute.InstanceProfilesService) compute.InstanceProfilesInterface) *MockInstanceProfilesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

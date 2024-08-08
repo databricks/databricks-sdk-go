@@ -296,53 +296,6 @@ func (_c *MockBudgetsInterface_GetByBudgetId_Call) RunAndReturn(run func(context
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockBudgetsInterface) Impl() billing.BudgetsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 billing.BudgetsService
-	if rf, ok := ret.Get(0).(func() billing.BudgetsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(billing.BudgetsService)
-		}
-	}
-
-	return r0
-}
-
-// MockBudgetsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockBudgetsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockBudgetsInterface_Expecter) Impl() *MockBudgetsInterface_Impl_Call {
-	return &MockBudgetsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockBudgetsInterface_Impl_Call) Run(run func()) *MockBudgetsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockBudgetsInterface_Impl_Call) Return(_a0 billing.BudgetsService) *MockBudgetsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockBudgetsInterface_Impl_Call) RunAndReturn(run func() billing.BudgetsService) *MockBudgetsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockBudgetsInterface) List(ctx context.Context, request billing.ListBudgetConfigurationsRequest) listing.Iterator[billing.BudgetConfiguration] {
 	ret := _m.Called(ctx, request)
@@ -506,54 +459,6 @@ func (_c *MockBudgetsInterface_Update_Call) Return(_a0 *billing.UpdateBudgetConf
 }
 
 func (_c *MockBudgetsInterface_Update_Call) RunAndReturn(run func(context.Context, billing.UpdateBudgetConfigurationRequest) (*billing.UpdateBudgetConfigurationResponse, error)) *MockBudgetsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockBudgetsInterface) WithImpl(impl billing.BudgetsService) billing.BudgetsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 billing.BudgetsInterface
-	if rf, ok := ret.Get(0).(func(billing.BudgetsService) billing.BudgetsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(billing.BudgetsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockBudgetsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockBudgetsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl billing.BudgetsService
-func (_e *MockBudgetsInterface_Expecter) WithImpl(impl interface{}) *MockBudgetsInterface_WithImpl_Call {
-	return &MockBudgetsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockBudgetsInterface_WithImpl_Call) Run(run func(impl billing.BudgetsService)) *MockBudgetsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(billing.BudgetsService))
-	})
-	return _c
-}
-
-func (_c *MockBudgetsInterface_WithImpl_Call) Return(_a0 billing.BudgetsInterface) *MockBudgetsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockBudgetsInterface_WithImpl_Call) RunAndReturn(run func(billing.BudgetsService) billing.BudgetsInterface) *MockBudgetsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

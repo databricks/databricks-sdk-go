@@ -125,6 +125,10 @@ experimental/mocks/service/workspace/mock_git_credentials_interface.go linguist-
 experimental/mocks/service/workspace/mock_repos_interface.go linguist-generated=true
 experimental/mocks/service/workspace/mock_secrets_interface.go linguist-generated=true
 experimental/mocks/service/workspace/mock_workspace_interface.go linguist-generated=true
+service/apps/api.go linguist-generated=true
+service/apps/impl.go linguist-generated=true
+service/apps/interface.go linguist-generated=true
+service/apps/model.go linguist-generated=true
 service/billing/api.go linguist-generated=true
 service/billing/billable_usage_usage_test.go linguist-generated=true
 service/billing/budgets_usage_test.go linguist-generated=true

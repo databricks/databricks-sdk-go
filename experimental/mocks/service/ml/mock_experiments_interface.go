@@ -863,53 +863,6 @@ func (_c *MockExperimentsInterface_GetRun_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockExperimentsInterface) Impl() ml.ExperimentsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 ml.ExperimentsService
-	if rf, ok := ret.Get(0).(func() ml.ExperimentsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(ml.ExperimentsService)
-		}
-	}
-
-	return r0
-}
-
-// MockExperimentsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockExperimentsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockExperimentsInterface_Expecter) Impl() *MockExperimentsInterface_Impl_Call {
-	return &MockExperimentsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockExperimentsInterface_Impl_Call) Run(run func()) *MockExperimentsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockExperimentsInterface_Impl_Call) Return(_a0 ml.ExperimentsService) *MockExperimentsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockExperimentsInterface_Impl_Call) RunAndReturn(run func() ml.ExperimentsService) *MockExperimentsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ListArtifacts provides a mock function with given fields: ctx, request
 func (_m *MockExperimentsInterface) ListArtifacts(ctx context.Context, request ml.ListArtifactsRequest) listing.Iterator[ml.FileInfo] {
 	ret := _m.Called(ctx, request)
@@ -2044,54 +1997,6 @@ func (_c *MockExperimentsInterface_UpdateRun_Call) Return(_a0 *ml.UpdateRunRespo
 }
 
 func (_c *MockExperimentsInterface_UpdateRun_Call) RunAndReturn(run func(context.Context, ml.UpdateRun) (*ml.UpdateRunResponse, error)) *MockExperimentsInterface_UpdateRun_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockExperimentsInterface) WithImpl(impl ml.ExperimentsService) ml.ExperimentsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 ml.ExperimentsInterface
-	if rf, ok := ret.Get(0).(func(ml.ExperimentsService) ml.ExperimentsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(ml.ExperimentsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockExperimentsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockExperimentsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl ml.ExperimentsService
-func (_e *MockExperimentsInterface_Expecter) WithImpl(impl interface{}) *MockExperimentsInterface_WithImpl_Call {
-	return &MockExperimentsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockExperimentsInterface_WithImpl_Call) Run(run func(impl ml.ExperimentsService)) *MockExperimentsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(ml.ExperimentsService))
-	})
-	return _c
-}
-
-func (_c *MockExperimentsInterface_WithImpl_Call) Return(_a0 ml.ExperimentsInterface) *MockExperimentsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockExperimentsInterface_WithImpl_Call) RunAndReturn(run func(ml.ExperimentsService) ml.ExperimentsInterface) *MockExperimentsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

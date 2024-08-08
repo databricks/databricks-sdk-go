@@ -377,53 +377,6 @@ func (_c *MockSecretsInterface_GetSecret_Call) RunAndReturn(run func(context.Con
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockSecretsInterface) Impl() workspace.SecretsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 workspace.SecretsService
-	if rf, ok := ret.Get(0).(func() workspace.SecretsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(workspace.SecretsService)
-		}
-	}
-
-	return r0
-}
-
-// MockSecretsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockSecretsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockSecretsInterface_Expecter) Impl() *MockSecretsInterface_Impl_Call {
-	return &MockSecretsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockSecretsInterface_Impl_Call) Run(run func()) *MockSecretsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockSecretsInterface_Impl_Call) Return(_a0 workspace.SecretsService) *MockSecretsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockSecretsInterface_Impl_Call) RunAndReturn(run func() workspace.SecretsService) *MockSecretsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ListAcls provides a mock function with given fields: ctx, request
 func (_m *MockSecretsInterface) ListAcls(ctx context.Context, request workspace.ListAclsRequest) listing.Iterator[workspace.AclItem] {
 	ret := _m.Called(ctx, request)
@@ -954,54 +907,6 @@ func (_c *MockSecretsInterface_PutSecret_Call) Return(_a0 error) *MockSecretsInt
 }
 
 func (_c *MockSecretsInterface_PutSecret_Call) RunAndReturn(run func(context.Context, workspace.PutSecret) error) *MockSecretsInterface_PutSecret_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockSecretsInterface) WithImpl(impl workspace.SecretsService) workspace.SecretsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 workspace.SecretsInterface
-	if rf, ok := ret.Get(0).(func(workspace.SecretsService) workspace.SecretsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(workspace.SecretsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockSecretsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockSecretsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl workspace.SecretsService
-func (_e *MockSecretsInterface_Expecter) WithImpl(impl interface{}) *MockSecretsInterface_WithImpl_Call {
-	return &MockSecretsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockSecretsInterface_WithImpl_Call) Run(run func(impl workspace.SecretsService)) *MockSecretsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(workspace.SecretsService))
-	})
-	return _c
-}
-
-func (_c *MockSecretsInterface_WithImpl_Call) Return(_a0 workspace.SecretsInterface) *MockSecretsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockSecretsInterface_WithImpl_Call) RunAndReturn(run func(workspace.SecretsService) workspace.SecretsInterface) *MockSecretsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -355,53 +355,6 @@ func (_c *MockConnectionsInterface_GetByName_Call) RunAndReturn(run func(context
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockConnectionsInterface) Impl() catalog.ConnectionsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.ConnectionsService
-	if rf, ok := ret.Get(0).(func() catalog.ConnectionsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.ConnectionsService)
-		}
-	}
-
-	return r0
-}
-
-// MockConnectionsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockConnectionsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockConnectionsInterface_Expecter) Impl() *MockConnectionsInterface_Impl_Call {
-	return &MockConnectionsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockConnectionsInterface_Impl_Call) Run(run func()) *MockConnectionsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockConnectionsInterface_Impl_Call) Return(_a0 catalog.ConnectionsService) *MockConnectionsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockConnectionsInterface_Impl_Call) RunAndReturn(run func() catalog.ConnectionsService) *MockConnectionsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockConnectionsInterface) List(ctx context.Context, request catalog.ListConnectionsRequest) listing.Iterator[catalog.ConnectionInfo] {
 	ret := _m.Called(ctx, request)
@@ -565,54 +518,6 @@ func (_c *MockConnectionsInterface_Update_Call) Return(_a0 *catalog.ConnectionIn
 }
 
 func (_c *MockConnectionsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdateConnection) (*catalog.ConnectionInfo, error)) *MockConnectionsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockConnectionsInterface) WithImpl(impl catalog.ConnectionsService) catalog.ConnectionsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.ConnectionsInterface
-	if rf, ok := ret.Get(0).(func(catalog.ConnectionsService) catalog.ConnectionsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.ConnectionsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockConnectionsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockConnectionsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.ConnectionsService
-func (_e *MockConnectionsInterface_Expecter) WithImpl(impl interface{}) *MockConnectionsInterface_WithImpl_Call {
-	return &MockConnectionsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockConnectionsInterface_WithImpl_Call) Run(run func(impl catalog.ConnectionsService)) *MockConnectionsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.ConnectionsService))
-	})
-	return _c
-}
-
-func (_c *MockConnectionsInterface_WithImpl_Call) Return(_a0 catalog.ConnectionsInterface) *MockConnectionsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockConnectionsInterface_WithImpl_Call) RunAndReturn(run func(catalog.ConnectionsService) catalog.ConnectionsInterface) *MockConnectionsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

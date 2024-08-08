@@ -52,7 +52,7 @@ type ClusterPoliciesService interface {
 	//
 	// Get a cluster policy entity. Creation and editing is available to admins
 	// only.
-	Get(ctx context.Context, request GetClusterPolicyRequest) (*Policy, error)
+	Get(ctx context.Context, request GetPolicy) (*Policy, error)
 
 	// Get cluster policy permission levels.
 	//
@@ -70,7 +70,7 @@ type ClusterPoliciesService interface {
 	// Returns a list of policies accessible by the requesting user.
 	//
 	// Use ListAll() to get all Policy instances
-	List(ctx context.Context, request ListClusterPoliciesRequest) (*ListPoliciesResponse, error)
+	List(ctx context.Context, request ListPolicies) (*ListPoliciesResponse, error)
 
 	// Set cluster policy permissions.
 	//
@@ -265,6 +265,21 @@ type ClustersService interface {
 	// the ListClusters API. Unpinning a cluster that is not pinned will have no
 	// effect. This API can only be called by workspace admins.
 	Unpin(ctx context.Context, request UnpinCluster) error
+
+	// Update cluster configuration (partial).
+	//
+	// Updates the configuration of a cluster to match the partial set of
+	// attributes and size. Denote which fields to update using the
+	// `update_mask` field in the request body. A cluster can be updated if it
+	// is in a `RUNNING` or `TERMINATED` state. If a cluster is updated while in
+	// a `RUNNING` state, it will be restarted so that the new attributes can
+	// take effect. If a cluster is updated while in a `TERMINATED` state, it
+	// will remain `TERMINATED`. The updated attributes will take effect the
+	// next time the cluster is started using the `clusters/start` API. Attempts
+	// to update a cluster in any other state will be rejected with an
+	// `INVALID_STATE` error code. Clusters created by the Databricks Jobs
+	// service cannot be updated.
+	Update(ctx context.Context, request UpdateCluster) error
 
 	// Update cluster permissions.
 	//
@@ -554,13 +569,15 @@ type PolicyFamiliesService interface {
 
 	// Get policy family information.
 	//
-	// Retrieve the information for an policy family based on its identifier.
+	// Retrieve the information for an policy family based on its identifier and
+	// version
 	Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error)
 
 	// List policy families.
 	//
-	// Retrieve a list of policy families. This API is paginated.
+	// Returns the list of policy definition types available to use at their
+	// latest version. This API is paginated.
 	//
 	// Use ListAll() to get all PolicyFamily instances, which will iterate over every result page.
-	List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error)
+	List(ctx context.Context, request ListPolicyFamilies) (*ListPolicyFamiliesResponse, error)
 }

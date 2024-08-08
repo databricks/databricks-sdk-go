@@ -11,7 +11,7 @@ import (
 func TestAccClusterPolicyFamilies(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	all, err := w.PolicyFamilies.ListAll(ctx, compute.ListPolicyFamiliesRequest{})
+	all, err := w.PolicyFamilies.ListAll(ctx, compute.ListPolicyFamilies{})
 	require.NoError(t, err)
 
 	firstFamily, err := w.PolicyFamilies.Get(ctx, compute.GetPolicyFamilyRequest{
@@ -43,10 +43,10 @@ func TestAccClusterPolicies(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, policy.PolicyId, byName.PolicyId)
 
-	all, err := w.ClusterPolicies.ListAll(ctx, compute.ListClusterPoliciesRequest{})
+	all, err := w.ClusterPolicies.ListAll(ctx, compute.ListPolicies{})
 	require.NoError(t, err)
 
-	names, err := w.ClusterPolicies.PolicyNameToPolicyIdMap(ctx, compute.ListClusterPoliciesRequest{})
+	names, err := w.ClusterPolicies.PolicyNameToPolicyIdMap(ctx, compute.ListPolicies{})
 	require.NoError(t, err)
 	assert.Equal(t, len(names), len(all))
 	assert.Equal(t, policy.PolicyId, names[policy.Name])

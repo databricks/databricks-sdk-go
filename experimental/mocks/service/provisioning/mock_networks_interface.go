@@ -352,53 +352,6 @@ func (_c *MockNetworksInterface_GetByNetworkName_Call) RunAndReturn(run func(con
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockNetworksInterface) Impl() provisioning.NetworksService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 provisioning.NetworksService
-	if rf, ok := ret.Get(0).(func() provisioning.NetworksService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(provisioning.NetworksService)
-		}
-	}
-
-	return r0
-}
-
-// MockNetworksInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockNetworksInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockNetworksInterface_Expecter) Impl() *MockNetworksInterface_Impl_Call {
-	return &MockNetworksInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockNetworksInterface_Impl_Call) Run(run func()) *MockNetworksInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockNetworksInterface_Impl_Call) Return(_a0 provisioning.NetworksService) *MockNetworksInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockNetworksInterface_Impl_Call) RunAndReturn(run func() provisioning.NetworksService) *MockNetworksInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx
 func (_m *MockNetworksInterface) List(ctx context.Context) ([]provisioning.Network, error) {
 	ret := _m.Called(ctx)
@@ -511,54 +464,6 @@ func (_c *MockNetworksInterface_NetworkNetworkNameToNetworkIdMap_Call) Return(_a
 }
 
 func (_c *MockNetworksInterface_NetworkNetworkNameToNetworkIdMap_Call) RunAndReturn(run func(context.Context) (map[string]string, error)) *MockNetworksInterface_NetworkNetworkNameToNetworkIdMap_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockNetworksInterface) WithImpl(impl provisioning.NetworksService) provisioning.NetworksInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 provisioning.NetworksInterface
-	if rf, ok := ret.Get(0).(func(provisioning.NetworksService) provisioning.NetworksInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(provisioning.NetworksInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockNetworksInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockNetworksInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl provisioning.NetworksService
-func (_e *MockNetworksInterface_Expecter) WithImpl(impl interface{}) *MockNetworksInterface_WithImpl_Call {
-	return &MockNetworksInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockNetworksInterface_WithImpl_Call) Run(run func(impl provisioning.NetworksService)) *MockNetworksInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(provisioning.NetworksService))
-	})
-	return _c
-}
-
-func (_c *MockNetworksInterface_WithImpl_Call) Return(_a0 provisioning.NetworksInterface) *MockNetworksInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockNetworksInterface_WithImpl_Call) RunAndReturn(run func(provisioning.NetworksService) provisioning.NetworksInterface) *MockNetworksInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

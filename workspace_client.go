@@ -9,6 +9,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 
+	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
@@ -52,13 +53,15 @@ type WorkspaceClient struct {
 	// :method:jobs/create.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version.
+	// Please see the latest version. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	AlertsLegacy sql.AlertsLegacyInterface
 
 	// Apps run directly on a customer’s Databricks instance, integrate with
 	// their data, use and extend Databricks services, and enable users to
 	// interact through single sign-on.
-	Apps serving.AppsInterface
+	Apps apps.AppsInterface
 
 	// In Databricks Runtime 13.3 and above, you can add libraries and init
 	// scripts to the `allowlist` in UC so that users can leverage these
@@ -207,7 +210,9 @@ type WorkspaceClient struct {
 	// your SQL warehouse as it appears in Databricks SQL.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DataSources sql.DataSourcesInterface
 
 	// DBFS API makes it simple to interact with various data sources without
@@ -229,7 +234,9 @@ type WorkspaceClient struct {
 	// permissions (superset of `CAN_RUN`)
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DbsqlPermissions sql.DbsqlPermissionsInterface
 
 	// Experiments are the primary unit of organization in MLflow; all MLflow
@@ -487,6 +494,9 @@ type WorkspaceClient struct {
 	// Permissions API are used to create read, write, edit, update and manage
 	// access for various users on different objects and endpoints.
 	//
+	// * **[Apps permissions](:service:apps)** — Manage which users can manage
+	// or use apps.
+	//
 	// * **[Cluster permissions](:service:clusters)** — Manage which users can
 	// manage, restart, or attach to clusters.
 	//
@@ -525,7 +535,8 @@ type WorkspaceClient struct {
 	// users can create or use tokens.
 	//
 	// * **[Workspace object permissions](:service:workspace)** — Manage which
-	// users can read, run, edit, or manage directories, files, and notebooks.
+	// users can read, run, edit, or manage alerts, dbsql-dashboards,
+	// directories, files, notebooks and queries.
 	//
 	// For the mapping of the required permissions for specific actions or
 	// abilities and other important information, see [Access Control].
@@ -619,7 +630,9 @@ type WorkspaceClient struct {
 	// :method:jobs/create.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version.
+	// Please see the latest version. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueriesLegacy sql.QueriesLegacyInterface
 
 	// A service responsible for storing and retrieving the list of queries run
@@ -636,7 +649,9 @@ type WorkspaceClient struct {
 	// Data structures may change over time.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version.
+	// Please see the latest version. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueryVisualizationsLegacy sql.QueryVisualizationsLegacyInterface
 
 	// The Recipient Activation API is only applicable in the open sharing model
@@ -1062,7 +1077,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
 		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),
-		Apps:                                serving.NewApps(databricksClient),
+		Apps:                                apps.NewApps(databricksClient),
 		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
 		Catalogs:                            catalog.NewCatalogs(databricksClient),
 		CleanRooms:                          sharing.NewCleanRooms(databricksClient),

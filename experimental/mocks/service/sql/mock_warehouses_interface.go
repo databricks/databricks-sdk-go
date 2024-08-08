@@ -918,53 +918,6 @@ func (_c *MockWarehousesInterface_GetWorkspaceWarehouseConfig_Call) RunAndReturn
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockWarehousesInterface) Impl() sql.WarehousesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sql.WarehousesService
-	if rf, ok := ret.Get(0).(func() sql.WarehousesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.WarehousesService)
-		}
-	}
-
-	return r0
-}
-
-// MockWarehousesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockWarehousesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockWarehousesInterface_Expecter) Impl() *MockWarehousesInterface_Impl_Call {
-	return &MockWarehousesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockWarehousesInterface_Impl_Call) Run(run func()) *MockWarehousesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockWarehousesInterface_Impl_Call) Return(_a0 sql.WarehousesService) *MockWarehousesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockWarehousesInterface_Impl_Call) RunAndReturn(run func() sql.WarehousesService) *MockWarehousesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockWarehousesInterface) List(ctx context.Context, request sql.ListWarehousesRequest) listing.Iterator[sql.EndpointInfo] {
 	ret := _m.Called(ctx, request)
@@ -1622,54 +1575,6 @@ func (_c *MockWarehousesInterface_WaitGetWarehouseStopped_Call) Return(_a0 *sql.
 }
 
 func (_c *MockWarehousesInterface_WaitGetWarehouseStopped_Call) RunAndReturn(run func(context.Context, string, time.Duration, func(*sql.GetWarehouseResponse)) (*sql.GetWarehouseResponse, error)) *MockWarehousesInterface_WaitGetWarehouseStopped_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockWarehousesInterface) WithImpl(impl sql.WarehousesService) sql.WarehousesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sql.WarehousesInterface
-	if rf, ok := ret.Get(0).(func(sql.WarehousesService) sql.WarehousesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.WarehousesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockWarehousesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockWarehousesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sql.WarehousesService
-func (_e *MockWarehousesInterface_Expecter) WithImpl(impl interface{}) *MockWarehousesInterface_WithImpl_Call {
-	return &MockWarehousesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockWarehousesInterface_WithImpl_Call) Run(run func(impl sql.WarehousesService)) *MockWarehousesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sql.WarehousesService))
-	})
-	return _c
-}
-
-func (_c *MockWarehousesInterface_WithImpl_Call) Return(_a0 sql.WarehousesInterface) *MockWarehousesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockWarehousesInterface_WithImpl_Call) RunAndReturn(run func(sql.WarehousesService) sql.WarehousesInterface) *MockWarehousesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

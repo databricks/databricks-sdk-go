@@ -413,53 +413,6 @@ func (_c *MockGroupsInterface_GroupDisplayNameToIdMap_Call) RunAndReturn(run fun
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockGroupsInterface) Impl() iam.GroupsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 iam.GroupsService
-	if rf, ok := ret.Get(0).(func() iam.GroupsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.GroupsService)
-		}
-	}
-
-	return r0
-}
-
-// MockGroupsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockGroupsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockGroupsInterface_Expecter) Impl() *MockGroupsInterface_Impl_Call {
-	return &MockGroupsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockGroupsInterface_Impl_Call) Run(run func()) *MockGroupsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockGroupsInterface_Impl_Call) Return(_a0 iam.GroupsService) *MockGroupsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockGroupsInterface_Impl_Call) RunAndReturn(run func() iam.GroupsService) *MockGroupsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockGroupsInterface) List(ctx context.Context, request iam.ListGroupsRequest) listing.Iterator[iam.Group] {
 	ret := _m.Called(ctx, request)
@@ -658,54 +611,6 @@ func (_c *MockGroupsInterface_Update_Call) Return(_a0 error) *MockGroupsInterfac
 }
 
 func (_c *MockGroupsInterface_Update_Call) RunAndReturn(run func(context.Context, iam.Group) error) *MockGroupsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockGroupsInterface) WithImpl(impl iam.GroupsService) iam.GroupsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 iam.GroupsInterface
-	if rf, ok := ret.Get(0).(func(iam.GroupsService) iam.GroupsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.GroupsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockGroupsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockGroupsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl iam.GroupsService
-func (_e *MockGroupsInterface_Expecter) WithImpl(impl interface{}) *MockGroupsInterface_WithImpl_Call {
-	return &MockGroupsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockGroupsInterface_WithImpl_Call) Run(run func(impl iam.GroupsService)) *MockGroupsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(iam.GroupsService))
-	})
-	return _c
-}
-
-func (_c *MockGroupsInterface_WithImpl_Call) Return(_a0 iam.GroupsInterface) *MockGroupsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockGroupsInterface_WithImpl_Call) RunAndReturn(run func(iam.GroupsService) iam.GroupsInterface) *MockGroupsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

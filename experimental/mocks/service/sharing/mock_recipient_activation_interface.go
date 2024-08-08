@@ -116,53 +116,6 @@ func (_c *MockRecipientActivationInterface_GetActivationUrlInfoByActivationUrl_C
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockRecipientActivationInterface) Impl() sharing.RecipientActivationService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sharing.RecipientActivationService
-	if rf, ok := ret.Get(0).(func() sharing.RecipientActivationService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sharing.RecipientActivationService)
-		}
-	}
-
-	return r0
-}
-
-// MockRecipientActivationInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockRecipientActivationInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockRecipientActivationInterface_Expecter) Impl() *MockRecipientActivationInterface_Impl_Call {
-	return &MockRecipientActivationInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockRecipientActivationInterface_Impl_Call) Run(run func()) *MockRecipientActivationInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockRecipientActivationInterface_Impl_Call) Return(_a0 sharing.RecipientActivationService) *MockRecipientActivationInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockRecipientActivationInterface_Impl_Call) RunAndReturn(run func() sharing.RecipientActivationService) *MockRecipientActivationInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // RetrieveToken provides a mock function with given fields: ctx, request
 func (_m *MockRecipientActivationInterface) RetrieveToken(ctx context.Context, request sharing.RetrieveTokenRequest) (*sharing.RetrieveTokenResponse, error) {
 	ret := _m.Called(ctx, request)
@@ -277,54 +230,6 @@ func (_c *MockRecipientActivationInterface_RetrieveTokenByActivationUrl_Call) Re
 }
 
 func (_c *MockRecipientActivationInterface_RetrieveTokenByActivationUrl_Call) RunAndReturn(run func(context.Context, string) (*sharing.RetrieveTokenResponse, error)) *MockRecipientActivationInterface_RetrieveTokenByActivationUrl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockRecipientActivationInterface) WithImpl(impl sharing.RecipientActivationService) sharing.RecipientActivationInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sharing.RecipientActivationInterface
-	if rf, ok := ret.Get(0).(func(sharing.RecipientActivationService) sharing.RecipientActivationInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sharing.RecipientActivationInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockRecipientActivationInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockRecipientActivationInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sharing.RecipientActivationService
-func (_e *MockRecipientActivationInterface_Expecter) WithImpl(impl interface{}) *MockRecipientActivationInterface_WithImpl_Call {
-	return &MockRecipientActivationInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockRecipientActivationInterface_WithImpl_Call) Run(run func(impl sharing.RecipientActivationService)) *MockRecipientActivationInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sharing.RecipientActivationService))
-	})
-	return _c
-}
-
-func (_c *MockRecipientActivationInterface_WithImpl_Call) Return(_a0 sharing.RecipientActivationInterface) *MockRecipientActivationInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockRecipientActivationInterface_WithImpl_Call) RunAndReturn(run func(sharing.RecipientActivationService) sharing.RecipientActivationInterface) *MockRecipientActivationInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

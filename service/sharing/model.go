@@ -1519,6 +1519,28 @@ func (s UpdateShare) MarshalJSON() ([]byte, error) {
 type UpdateSharePermissions struct {
 	// Array of permission changes.
 	Changes []catalog.PermissionsChange `json:"changes,omitempty"`
+	// Maximum number of permissions to return. - when set to 0, the page length
+	// is set to a server configured value (recommended); - when set to a value
+	// greater than 0, the page length is the minimum of this value and a server
+	// configured value; - when set to a value less than 0, an invalid parameter
+	// error is returned; - If not set, all valid permissions are returned (not
+	// recommended). - Note: The number of returned permissions might be less
+	// than the specified max_results size, even zero. The only definitive
+	// indication that no further permissions can be fetched is when the
+	// next_page_token is unset from the response.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// The name of the share.
 	Name string `json:"-" url:"-"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateSharePermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateSharePermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

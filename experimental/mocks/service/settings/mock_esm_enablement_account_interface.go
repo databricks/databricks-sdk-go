@@ -81,53 +81,6 @@ func (_c *MockEsmEnablementAccountInterface_Get_Call) RunAndReturn(run func(cont
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockEsmEnablementAccountInterface) Impl() settings.EsmEnablementAccountService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.EsmEnablementAccountService
-	if rf, ok := ret.Get(0).(func() settings.EsmEnablementAccountService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.EsmEnablementAccountService)
-		}
-	}
-
-	return r0
-}
-
-// MockEsmEnablementAccountInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockEsmEnablementAccountInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockEsmEnablementAccountInterface_Expecter) Impl() *MockEsmEnablementAccountInterface_Impl_Call {
-	return &MockEsmEnablementAccountInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockEsmEnablementAccountInterface_Impl_Call) Run(run func()) *MockEsmEnablementAccountInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockEsmEnablementAccountInterface_Impl_Call) Return(_a0 settings.EsmEnablementAccountService) *MockEsmEnablementAccountInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockEsmEnablementAccountInterface_Impl_Call) RunAndReturn(run func() settings.EsmEnablementAccountService) *MockEsmEnablementAccountInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockEsmEnablementAccountInterface) Update(ctx context.Context, request settings.UpdateEsmEnablementAccountSettingRequest) (*settings.EsmEnablementAccountSetting, error) {
 	ret := _m.Called(ctx, request)
@@ -183,54 +136,6 @@ func (_c *MockEsmEnablementAccountInterface_Update_Call) Return(_a0 *settings.Es
 }
 
 func (_c *MockEsmEnablementAccountInterface_Update_Call) RunAndReturn(run func(context.Context, settings.UpdateEsmEnablementAccountSettingRequest) (*settings.EsmEnablementAccountSetting, error)) *MockEsmEnablementAccountInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockEsmEnablementAccountInterface) WithImpl(impl settings.EsmEnablementAccountService) settings.EsmEnablementAccountInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.EsmEnablementAccountInterface
-	if rf, ok := ret.Get(0).(func(settings.EsmEnablementAccountService) settings.EsmEnablementAccountInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.EsmEnablementAccountInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockEsmEnablementAccountInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockEsmEnablementAccountInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.EsmEnablementAccountService
-func (_e *MockEsmEnablementAccountInterface_Expecter) WithImpl(impl interface{}) *MockEsmEnablementAccountInterface_WithImpl_Call {
-	return &MockEsmEnablementAccountInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockEsmEnablementAccountInterface_WithImpl_Call) Run(run func(impl settings.EsmEnablementAccountService)) *MockEsmEnablementAccountInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.EsmEnablementAccountService))
-	})
-	return _c
-}
-
-func (_c *MockEsmEnablementAccountInterface_WithImpl_Call) Return(_a0 settings.EsmEnablementAccountInterface) *MockEsmEnablementAccountInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockEsmEnablementAccountInterface_WithImpl_Call) RunAndReturn(run func(settings.EsmEnablementAccountService) settings.EsmEnablementAccountInterface) *MockEsmEnablementAccountInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

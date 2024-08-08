@@ -25,6 +25,12 @@ func ExampleWarehousesAPI_Create_sqlWarehouses() {
 		ClusterSize:    "2X-Small",
 		MaxNumClusters: 1,
 		AutoStopMins:   10,
+		Tags: &sql.EndpointTags{
+			CustomTags: []sql.EndpointTagPair{sql.EndpointTagPair{
+				Key:   "Owner",
+				Value: "eng-dev-ecosystem-team_at_databricks.com",
+			}},
+		},
 	})
 	if err != nil {
 		panic(err)
@@ -52,6 +58,12 @@ func ExampleWarehousesAPI_Edit_sqlWarehouses() {
 		ClusterSize:    "2X-Small",
 		MaxNumClusters: 1,
 		AutoStopMins:   10,
+		Tags: &sql.EndpointTags{
+			CustomTags: []sql.EndpointTagPair{sql.EndpointTagPair{
+				Key:   "Owner",
+				Value: "eng-dev-ecosystem-team_at_databricks.com",
+			}},
+		},
 	})
 	if err != nil {
 		panic(err)
@@ -90,6 +102,12 @@ func ExampleWarehousesAPI_Get_sqlWarehouses() {
 		ClusterSize:    "2X-Small",
 		MaxNumClusters: 1,
 		AutoStopMins:   10,
+		Tags: &sql.EndpointTags{
+			CustomTags: []sql.EndpointTagPair{sql.EndpointTagPair{
+				Key:   "Owner",
+				Value: "eng-dev-ecosystem-team_at_databricks.com",
+			}},
+		},
 	})
 	if err != nil {
 		panic(err)

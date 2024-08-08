@@ -592,53 +592,6 @@ func (_c *MockNetworkConnectivityInterface_GetPrivateEndpointRuleByNetworkConnec
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockNetworkConnectivityInterface) Impl() settings.NetworkConnectivityService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.NetworkConnectivityService
-	if rf, ok := ret.Get(0).(func() settings.NetworkConnectivityService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.NetworkConnectivityService)
-		}
-	}
-
-	return r0
-}
-
-// MockNetworkConnectivityInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockNetworkConnectivityInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockNetworkConnectivityInterface_Expecter) Impl() *MockNetworkConnectivityInterface_Impl_Call {
-	return &MockNetworkConnectivityInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockNetworkConnectivityInterface_Impl_Call) Run(run func()) *MockNetworkConnectivityInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockNetworkConnectivityInterface_Impl_Call) Return(_a0 settings.NetworkConnectivityService) *MockNetworkConnectivityInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockNetworkConnectivityInterface_Impl_Call) RunAndReturn(run func() settings.NetworkConnectivityService) *MockNetworkConnectivityInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ListNetworkConnectivityConfigurations provides a mock function with given fields: ctx, request
 func (_m *MockNetworkConnectivityInterface) ListNetworkConnectivityConfigurations(ctx context.Context, request settings.ListNetworkConnectivityConfigurationsRequest) listing.Iterator[settings.NetworkConnectivityConfiguration] {
 	ret := _m.Called(ctx, request)
@@ -910,54 +863,6 @@ func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConn
 }
 
 func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConnectivityConfigId_Call) RunAndReturn(run func(context.Context, string) (*settings.ListNccAzurePrivateEndpointRulesResponse, error)) *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConnectivityConfigId_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockNetworkConnectivityInterface) WithImpl(impl settings.NetworkConnectivityService) settings.NetworkConnectivityInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.NetworkConnectivityInterface
-	if rf, ok := ret.Get(0).(func(settings.NetworkConnectivityService) settings.NetworkConnectivityInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.NetworkConnectivityInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockNetworkConnectivityInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockNetworkConnectivityInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.NetworkConnectivityService
-func (_e *MockNetworkConnectivityInterface_Expecter) WithImpl(impl interface{}) *MockNetworkConnectivityInterface_WithImpl_Call {
-	return &MockNetworkConnectivityInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockNetworkConnectivityInterface_WithImpl_Call) Run(run func(impl settings.NetworkConnectivityService)) *MockNetworkConnectivityInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.NetworkConnectivityService))
-	})
-	return _c
-}
-
-func (_c *MockNetworkConnectivityInterface_WithImpl_Call) Return(_a0 settings.NetworkConnectivityInterface) *MockNetworkConnectivityInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockNetworkConnectivityInterface_WithImpl_Call) RunAndReturn(run func(settings.NetworkConnectivityService) settings.NetworkConnectivityInterface) *MockNetworkConnectivityInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

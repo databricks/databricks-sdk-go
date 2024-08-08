@@ -8,7 +8,7 @@
 //
 // - [sql.AlertsLegacyAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
-// - [serving.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
+// - [apps.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
 //
 // - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode.
 //
@@ -244,6 +244,7 @@
 package service
 
 import (
+	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/compute"
@@ -273,7 +274,7 @@ var (
 	_ *iam.AccountAccessControlProxyAPI                   = nil
 	_ *sql.AlertsAPI                                      = nil
 	_ *sql.AlertsLegacyAPI                                = nil
-	_ *serving.AppsAPI                                    = nil
+	_ *apps.AppsAPI                                       = nil
 	_ *catalog.ArtifactAllowlistsAPI                      = nil
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil

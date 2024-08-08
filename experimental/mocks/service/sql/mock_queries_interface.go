@@ -354,53 +354,6 @@ func (_c *MockQueriesInterface_GetById_Call) RunAndReturn(run func(context.Conte
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockQueriesInterface) Impl() sql.QueriesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sql.QueriesService
-	if rf, ok := ret.Get(0).(func() sql.QueriesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.QueriesService)
-		}
-	}
-
-	return r0
-}
-
-// MockQueriesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockQueriesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockQueriesInterface_Expecter) Impl() *MockQueriesInterface_Impl_Call {
-	return &MockQueriesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockQueriesInterface_Impl_Call) Run(run func()) *MockQueriesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockQueriesInterface_Impl_Call) Return(_a0 sql.QueriesService) *MockQueriesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockQueriesInterface_Impl_Call) RunAndReturn(run func() sql.QueriesService) *MockQueriesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockQueriesInterface) List(ctx context.Context, request sql.ListQueriesRequest) listing.Iterator[sql.ListQueryObjectsResponseQuery] {
 	ret := _m.Called(ctx, request)
@@ -790,54 +743,6 @@ func (_c *MockQueriesInterface_Update_Call) Return(_a0 *sql.Query, _a1 error) *M
 }
 
 func (_c *MockQueriesInterface_Update_Call) RunAndReturn(run func(context.Context, sql.UpdateQueryRequest) (*sql.Query, error)) *MockQueriesInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockQueriesInterface) WithImpl(impl sql.QueriesService) sql.QueriesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sql.QueriesInterface
-	if rf, ok := ret.Get(0).(func(sql.QueriesService) sql.QueriesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.QueriesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockQueriesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockQueriesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sql.QueriesService
-func (_e *MockQueriesInterface_Expecter) WithImpl(impl interface{}) *MockQueriesInterface_WithImpl_Call {
-	return &MockQueriesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockQueriesInterface_WithImpl_Call) Run(run func(impl sql.QueriesService)) *MockQueriesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sql.QueriesService))
-	})
-	return _c
-}
-
-func (_c *MockQueriesInterface_WithImpl_Call) Return(_a0 sql.QueriesInterface) *MockQueriesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockQueriesInterface_WithImpl_Call) RunAndReturn(run func(sql.QueriesService) sql.QueriesInterface) *MockQueriesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

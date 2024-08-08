@@ -413,53 +413,6 @@ func (_c *MockProviderFilesInterface_GetByFileId_Call) RunAndReturn(run func(con
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockProviderFilesInterface) Impl() marketplace.ProviderFilesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 marketplace.ProviderFilesService
-	if rf, ok := ret.Get(0).(func() marketplace.ProviderFilesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(marketplace.ProviderFilesService)
-		}
-	}
-
-	return r0
-}
-
-// MockProviderFilesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockProviderFilesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockProviderFilesInterface_Expecter) Impl() *MockProviderFilesInterface_Impl_Call {
-	return &MockProviderFilesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockProviderFilesInterface_Impl_Call) Run(run func()) *MockProviderFilesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockProviderFilesInterface_Impl_Call) Return(_a0 marketplace.ProviderFilesService) *MockProviderFilesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockProviderFilesInterface_Impl_Call) RunAndReturn(run func() marketplace.ProviderFilesService) *MockProviderFilesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockProviderFilesInterface) List(ctx context.Context, request marketplace.ListFilesRequest) listing.Iterator[marketplace.FileInfo] {
 	ret := _m.Called(ctx, request)
@@ -564,54 +517,6 @@ func (_c *MockProviderFilesInterface_ListAll_Call) Return(_a0 []marketplace.File
 }
 
 func (_c *MockProviderFilesInterface_ListAll_Call) RunAndReturn(run func(context.Context, marketplace.ListFilesRequest) ([]marketplace.FileInfo, error)) *MockProviderFilesInterface_ListAll_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockProviderFilesInterface) WithImpl(impl marketplace.ProviderFilesService) marketplace.ProviderFilesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 marketplace.ProviderFilesInterface
-	if rf, ok := ret.Get(0).(func(marketplace.ProviderFilesService) marketplace.ProviderFilesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(marketplace.ProviderFilesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockProviderFilesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockProviderFilesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl marketplace.ProviderFilesService
-func (_e *MockProviderFilesInterface_Expecter) WithImpl(impl interface{}) *MockProviderFilesInterface_WithImpl_Call {
-	return &MockProviderFilesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockProviderFilesInterface_WithImpl_Call) Run(run func(impl marketplace.ProviderFilesService)) *MockProviderFilesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(marketplace.ProviderFilesService))
-	})
-	return _c
-}
-
-func (_c *MockProviderFilesInterface_WithImpl_Call) Return(_a0 marketplace.ProviderFilesInterface) *MockProviderFilesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockProviderFilesInterface_WithImpl_Call) RunAndReturn(run func(marketplace.ProviderFilesService) marketplace.ProviderFilesInterface) *MockProviderFilesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

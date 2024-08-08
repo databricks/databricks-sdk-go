@@ -7,6 +7,8 @@ import (
 
 	catalog "github.com/databricks/databricks-sdk-go/service/catalog"
 
+	listing "github.com/databricks/databricks-sdk-go/listing"
+
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -83,33 +85,23 @@ func (_c *MockWorkspaceBindingsInterface_Get_Call) RunAndReturn(run func(context
 }
 
 // GetBindings provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceBindingsInterface) GetBindings(ctx context.Context, request catalog.GetBindingsRequest) (*catalog.WorkspaceBindingsResponse, error) {
+func (_m *MockWorkspaceBindingsInterface) GetBindings(ctx context.Context, request catalog.GetBindingsRequest) listing.Iterator[catalog.WorkspaceBinding] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetBindings")
 	}
 
-	var r0 *catalog.WorkspaceBindingsResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetBindingsRequest) (*catalog.WorkspaceBindingsResponse, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetBindingsRequest) *catalog.WorkspaceBindingsResponse); ok {
+	var r0 listing.Iterator[catalog.WorkspaceBinding]
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetBindingsRequest) listing.Iterator[catalog.WorkspaceBinding]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.WorkspaceBindingsResponse)
+			r0 = ret.Get(0).(listing.Iterator[catalog.WorkspaceBinding])
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, catalog.GetBindingsRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // MockWorkspaceBindingsInterface_GetBindings_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetBindings'
@@ -131,12 +123,71 @@ func (_c *MockWorkspaceBindingsInterface_GetBindings_Call) Run(run func(ctx cont
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_GetBindings_Call) Return(_a0 *catalog.WorkspaceBindingsResponse, _a1 error) *MockWorkspaceBindingsInterface_GetBindings_Call {
+func (_c *MockWorkspaceBindingsInterface_GetBindings_Call) Return(_a0 listing.Iterator[catalog.WorkspaceBinding]) *MockWorkspaceBindingsInterface_GetBindings_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockWorkspaceBindingsInterface_GetBindings_Call) RunAndReturn(run func(context.Context, catalog.GetBindingsRequest) listing.Iterator[catalog.WorkspaceBinding]) *MockWorkspaceBindingsInterface_GetBindings_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetBindingsAll provides a mock function with given fields: ctx, request
+func (_m *MockWorkspaceBindingsInterface) GetBindingsAll(ctx context.Context, request catalog.GetBindingsRequest) ([]catalog.WorkspaceBinding, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBindingsAll")
+	}
+
+	var r0 []catalog.WorkspaceBinding
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetBindingsRequest) ([]catalog.WorkspaceBinding, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetBindingsRequest) []catalog.WorkspaceBinding); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]catalog.WorkspaceBinding)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.GetBindingsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWorkspaceBindingsInterface_GetBindingsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetBindingsAll'
+type MockWorkspaceBindingsInterface_GetBindingsAll_Call struct {
+	*mock.Call
+}
+
+// GetBindingsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.GetBindingsRequest
+func (_e *MockWorkspaceBindingsInterface_Expecter) GetBindingsAll(ctx interface{}, request interface{}) *MockWorkspaceBindingsInterface_GetBindingsAll_Call {
+	return &MockWorkspaceBindingsInterface_GetBindingsAll_Call{Call: _e.mock.On("GetBindingsAll", ctx, request)}
+}
+
+func (_c *MockWorkspaceBindingsInterface_GetBindingsAll_Call) Run(run func(ctx context.Context, request catalog.GetBindingsRequest)) *MockWorkspaceBindingsInterface_GetBindingsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.GetBindingsRequest))
+	})
+	return _c
+}
+
+func (_c *MockWorkspaceBindingsInterface_GetBindingsAll_Call) Return(_a0 []catalog.WorkspaceBinding, _a1 error) *MockWorkspaceBindingsInterface_GetBindingsAll_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_GetBindings_Call) RunAndReturn(run func(context.Context, catalog.GetBindingsRequest) (*catalog.WorkspaceBindingsResponse, error)) *MockWorkspaceBindingsInterface_GetBindings_Call {
+func (_c *MockWorkspaceBindingsInterface_GetBindingsAll_Call) RunAndReturn(run func(context.Context, catalog.GetBindingsRequest) ([]catalog.WorkspaceBinding, error)) *MockWorkspaceBindingsInterface_GetBindingsAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -260,53 +311,6 @@ func (_c *MockWorkspaceBindingsInterface_GetByName_Call) RunAndReturn(run func(c
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockWorkspaceBindingsInterface) Impl() catalog.WorkspaceBindingsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.WorkspaceBindingsService
-	if rf, ok := ret.Get(0).(func() catalog.WorkspaceBindingsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.WorkspaceBindingsService)
-		}
-	}
-
-	return r0
-}
-
-// MockWorkspaceBindingsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockWorkspaceBindingsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockWorkspaceBindingsInterface_Expecter) Impl() *MockWorkspaceBindingsInterface_Impl_Call {
-	return &MockWorkspaceBindingsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockWorkspaceBindingsInterface_Impl_Call) Run(run func()) *MockWorkspaceBindingsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockWorkspaceBindingsInterface_Impl_Call) Return(_a0 catalog.WorkspaceBindingsService) *MockWorkspaceBindingsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockWorkspaceBindingsInterface_Impl_Call) RunAndReturn(run func() catalog.WorkspaceBindingsService) *MockWorkspaceBindingsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockWorkspaceBindingsInterface) Update(ctx context.Context, request catalog.UpdateWorkspaceBindings) (*catalog.CurrentWorkspaceBindings, error) {
 	ret := _m.Called(ctx, request)
@@ -421,54 +425,6 @@ func (_c *MockWorkspaceBindingsInterface_UpdateBindings_Call) Return(_a0 *catalo
 }
 
 func (_c *MockWorkspaceBindingsInterface_UpdateBindings_Call) RunAndReturn(run func(context.Context, catalog.UpdateWorkspaceBindingsParameters) (*catalog.WorkspaceBindingsResponse, error)) *MockWorkspaceBindingsInterface_UpdateBindings_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockWorkspaceBindingsInterface) WithImpl(impl catalog.WorkspaceBindingsService) catalog.WorkspaceBindingsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.WorkspaceBindingsInterface
-	if rf, ok := ret.Get(0).(func(catalog.WorkspaceBindingsService) catalog.WorkspaceBindingsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.WorkspaceBindingsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockWorkspaceBindingsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockWorkspaceBindingsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.WorkspaceBindingsService
-func (_e *MockWorkspaceBindingsInterface_Expecter) WithImpl(impl interface{}) *MockWorkspaceBindingsInterface_WithImpl_Call {
-	return &MockWorkspaceBindingsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockWorkspaceBindingsInterface_WithImpl_Call) Run(run func(impl catalog.WorkspaceBindingsService)) *MockWorkspaceBindingsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.WorkspaceBindingsService))
-	})
-	return _c
-}
-
-func (_c *MockWorkspaceBindingsInterface_WithImpl_Call) Return(_a0 catalog.WorkspaceBindingsInterface) *MockWorkspaceBindingsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockWorkspaceBindingsInterface_WithImpl_Call) RunAndReturn(run func(catalog.WorkspaceBindingsService) catalog.WorkspaceBindingsInterface) *MockWorkspaceBindingsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -285,53 +285,6 @@ func (_c *MockAccountMetastoreAssignmentsInterface_GetByWorkspaceId_Call) RunAnd
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockAccountMetastoreAssignmentsInterface) Impl() catalog.AccountMetastoreAssignmentsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.AccountMetastoreAssignmentsService
-	if rf, ok := ret.Get(0).(func() catalog.AccountMetastoreAssignmentsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.AccountMetastoreAssignmentsService)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountMetastoreAssignmentsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockAccountMetastoreAssignmentsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockAccountMetastoreAssignmentsInterface_Expecter) Impl() *MockAccountMetastoreAssignmentsInterface_Impl_Call {
-	return &MockAccountMetastoreAssignmentsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_Impl_Call) Run(run func()) *MockAccountMetastoreAssignmentsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_Impl_Call) Return(_a0 catalog.AccountMetastoreAssignmentsService) *MockAccountMetastoreAssignmentsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_Impl_Call) RunAndReturn(run func() catalog.AccountMetastoreAssignmentsService) *MockAccountMetastoreAssignmentsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockAccountMetastoreAssignmentsInterface) List(ctx context.Context, request catalog.ListAccountMetastoreAssignmentsRequest) listing.Iterator[int64] {
 	ret := _m.Called(ctx, request)
@@ -542,54 +495,6 @@ func (_c *MockAccountMetastoreAssignmentsInterface_Update_Call) Return(_a0 error
 }
 
 func (_c *MockAccountMetastoreAssignmentsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.AccountsUpdateMetastoreAssignment) error) *MockAccountMetastoreAssignmentsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockAccountMetastoreAssignmentsInterface) WithImpl(impl catalog.AccountMetastoreAssignmentsService) catalog.AccountMetastoreAssignmentsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.AccountMetastoreAssignmentsInterface
-	if rf, ok := ret.Get(0).(func(catalog.AccountMetastoreAssignmentsService) catalog.AccountMetastoreAssignmentsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.AccountMetastoreAssignmentsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountMetastoreAssignmentsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockAccountMetastoreAssignmentsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.AccountMetastoreAssignmentsService
-func (_e *MockAccountMetastoreAssignmentsInterface_Expecter) WithImpl(impl interface{}) *MockAccountMetastoreAssignmentsInterface_WithImpl_Call {
-	return &MockAccountMetastoreAssignmentsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_WithImpl_Call) Run(run func(impl catalog.AccountMetastoreAssignmentsService)) *MockAccountMetastoreAssignmentsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.AccountMetastoreAssignmentsService))
-	})
-	return _c
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_WithImpl_Call) Return(_a0 catalog.AccountMetastoreAssignmentsInterface) *MockAccountMetastoreAssignmentsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_WithImpl_Call) RunAndReturn(run func(catalog.AccountMetastoreAssignmentsService) catalog.AccountMetastoreAssignmentsInterface) *MockAccountMetastoreAssignmentsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }
