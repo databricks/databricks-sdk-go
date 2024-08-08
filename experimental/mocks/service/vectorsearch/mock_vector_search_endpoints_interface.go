@@ -373,53 +373,6 @@ func (_c *MockVectorSearchEndpointsInterface_GetEndpointByEndpointName_Call) Run
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockVectorSearchEndpointsInterface) Impl() vectorsearch.VectorSearchEndpointsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 vectorsearch.VectorSearchEndpointsService
-	if rf, ok := ret.Get(0).(func() vectorsearch.VectorSearchEndpointsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(vectorsearch.VectorSearchEndpointsService)
-		}
-	}
-
-	return r0
-}
-
-// MockVectorSearchEndpointsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockVectorSearchEndpointsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockVectorSearchEndpointsInterface_Expecter) Impl() *MockVectorSearchEndpointsInterface_Impl_Call {
-	return &MockVectorSearchEndpointsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockVectorSearchEndpointsInterface_Impl_Call) Run(run func()) *MockVectorSearchEndpointsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockVectorSearchEndpointsInterface_Impl_Call) Return(_a0 vectorsearch.VectorSearchEndpointsService) *MockVectorSearchEndpointsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockVectorSearchEndpointsInterface_Impl_Call) RunAndReturn(run func() vectorsearch.VectorSearchEndpointsService) *MockVectorSearchEndpointsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ListEndpoints provides a mock function with given fields: ctx, request
 func (_m *MockVectorSearchEndpointsInterface) ListEndpoints(ctx context.Context, request vectorsearch.ListEndpointsRequest) listing.Iterator[vectorsearch.EndpointInfo] {
 	ret := _m.Called(ctx, request)
@@ -585,54 +538,6 @@ func (_c *MockVectorSearchEndpointsInterface_WaitGetEndpointVectorSearchEndpoint
 }
 
 func (_c *MockVectorSearchEndpointsInterface_WaitGetEndpointVectorSearchEndpointOnline_Call) RunAndReturn(run func(context.Context, string, time.Duration, func(*vectorsearch.EndpointInfo)) (*vectorsearch.EndpointInfo, error)) *MockVectorSearchEndpointsInterface_WaitGetEndpointVectorSearchEndpointOnline_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockVectorSearchEndpointsInterface) WithImpl(impl vectorsearch.VectorSearchEndpointsService) vectorsearch.VectorSearchEndpointsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 vectorsearch.VectorSearchEndpointsInterface
-	if rf, ok := ret.Get(0).(func(vectorsearch.VectorSearchEndpointsService) vectorsearch.VectorSearchEndpointsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(vectorsearch.VectorSearchEndpointsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockVectorSearchEndpointsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockVectorSearchEndpointsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl vectorsearch.VectorSearchEndpointsService
-func (_e *MockVectorSearchEndpointsInterface_Expecter) WithImpl(impl interface{}) *MockVectorSearchEndpointsInterface_WithImpl_Call {
-	return &MockVectorSearchEndpointsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockVectorSearchEndpointsInterface_WithImpl_Call) Run(run func(impl vectorsearch.VectorSearchEndpointsService)) *MockVectorSearchEndpointsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(vectorsearch.VectorSearchEndpointsService))
-	})
-	return _c
-}
-
-func (_c *MockVectorSearchEndpointsInterface_WithImpl_Call) Return(_a0 vectorsearch.VectorSearchEndpointsInterface) *MockVectorSearchEndpointsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockVectorSearchEndpointsInterface_WithImpl_Call) RunAndReturn(run func(vectorsearch.VectorSearchEndpointsService) vectorsearch.VectorSearchEndpointsInterface) *MockVectorSearchEndpointsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

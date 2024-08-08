@@ -140,53 +140,6 @@ func (_c *MockPersonalComputeInterface_Get_Call) RunAndReturn(run func(context.C
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockPersonalComputeInterface) Impl() settings.PersonalComputeService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.PersonalComputeService
-	if rf, ok := ret.Get(0).(func() settings.PersonalComputeService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.PersonalComputeService)
-		}
-	}
-
-	return r0
-}
-
-// MockPersonalComputeInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockPersonalComputeInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockPersonalComputeInterface_Expecter) Impl() *MockPersonalComputeInterface_Impl_Call {
-	return &MockPersonalComputeInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockPersonalComputeInterface_Impl_Call) Run(run func()) *MockPersonalComputeInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPersonalComputeInterface_Impl_Call) Return(_a0 settings.PersonalComputeService) *MockPersonalComputeInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPersonalComputeInterface_Impl_Call) RunAndReturn(run func() settings.PersonalComputeService) *MockPersonalComputeInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockPersonalComputeInterface) Update(ctx context.Context, request settings.UpdatePersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error) {
 	ret := _m.Called(ctx, request)
@@ -242,54 +195,6 @@ func (_c *MockPersonalComputeInterface_Update_Call) Return(_a0 *settings.Persona
 }
 
 func (_c *MockPersonalComputeInterface_Update_Call) RunAndReturn(run func(context.Context, settings.UpdatePersonalComputeSettingRequest) (*settings.PersonalComputeSetting, error)) *MockPersonalComputeInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockPersonalComputeInterface) WithImpl(impl settings.PersonalComputeService) settings.PersonalComputeInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.PersonalComputeInterface
-	if rf, ok := ret.Get(0).(func(settings.PersonalComputeService) settings.PersonalComputeInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.PersonalComputeInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockPersonalComputeInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockPersonalComputeInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.PersonalComputeService
-func (_e *MockPersonalComputeInterface_Expecter) WithImpl(impl interface{}) *MockPersonalComputeInterface_WithImpl_Call {
-	return &MockPersonalComputeInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockPersonalComputeInterface_WithImpl_Call) Run(run func(impl settings.PersonalComputeService)) *MockPersonalComputeInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.PersonalComputeService))
-	})
-	return _c
-}
-
-func (_c *MockPersonalComputeInterface_WithImpl_Call) Return(_a0 settings.PersonalComputeInterface) *MockPersonalComputeInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPersonalComputeInterface_WithImpl_Call) RunAndReturn(run func(settings.PersonalComputeService) settings.PersonalComputeInterface) *MockPersonalComputeInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -352,53 +352,6 @@ func (_c *MockAlertsLegacyInterface_GetByName_Call) RunAndReturn(run func(contex
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockAlertsLegacyInterface) Impl() sql.AlertsLegacyService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sql.AlertsLegacyService
-	if rf, ok := ret.Get(0).(func() sql.AlertsLegacyService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.AlertsLegacyService)
-		}
-	}
-
-	return r0
-}
-
-// MockAlertsLegacyInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockAlertsLegacyInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockAlertsLegacyInterface_Expecter) Impl() *MockAlertsLegacyInterface_Impl_Call {
-	return &MockAlertsLegacyInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockAlertsLegacyInterface_Impl_Call) Run(run func()) *MockAlertsLegacyInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockAlertsLegacyInterface_Impl_Call) Return(_a0 sql.AlertsLegacyService) *MockAlertsLegacyInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAlertsLegacyInterface_Impl_Call) RunAndReturn(run func() sql.AlertsLegacyService) *MockAlertsLegacyInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // LegacyAlertNameToIdMap provides a mock function with given fields: ctx
 func (_m *MockAlertsLegacyInterface) LegacyAlertNameToIdMap(ctx context.Context) (map[string]string, error) {
 	ret := _m.Called(ctx)
@@ -558,54 +511,6 @@ func (_c *MockAlertsLegacyInterface_Update_Call) Return(_a0 error) *MockAlertsLe
 }
 
 func (_c *MockAlertsLegacyInterface_Update_Call) RunAndReturn(run func(context.Context, sql.EditAlert) error) *MockAlertsLegacyInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockAlertsLegacyInterface) WithImpl(impl sql.AlertsLegacyService) sql.AlertsLegacyInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sql.AlertsLegacyInterface
-	if rf, ok := ret.Get(0).(func(sql.AlertsLegacyService) sql.AlertsLegacyInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.AlertsLegacyInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockAlertsLegacyInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockAlertsLegacyInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sql.AlertsLegacyService
-func (_e *MockAlertsLegacyInterface_Expecter) WithImpl(impl interface{}) *MockAlertsLegacyInterface_WithImpl_Call {
-	return &MockAlertsLegacyInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockAlertsLegacyInterface_WithImpl_Call) Run(run func(impl sql.AlertsLegacyService)) *MockAlertsLegacyInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sql.AlertsLegacyService))
-	})
-	return _c
-}
-
-func (_c *MockAlertsLegacyInterface_WithImpl_Call) Return(_a0 sql.AlertsLegacyInterface) *MockAlertsLegacyInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAlertsLegacyInterface_WithImpl_Call) RunAndReturn(run func(sql.AlertsLegacyService) sql.AlertsLegacyInterface) *MockAlertsLegacyInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

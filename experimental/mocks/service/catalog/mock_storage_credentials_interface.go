@@ -296,53 +296,6 @@ func (_c *MockStorageCredentialsInterface_GetByName_Call) RunAndReturn(run func(
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockStorageCredentialsInterface) Impl() catalog.StorageCredentialsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.StorageCredentialsService
-	if rf, ok := ret.Get(0).(func() catalog.StorageCredentialsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.StorageCredentialsService)
-		}
-	}
-
-	return r0
-}
-
-// MockStorageCredentialsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockStorageCredentialsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockStorageCredentialsInterface_Expecter) Impl() *MockStorageCredentialsInterface_Impl_Call {
-	return &MockStorageCredentialsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockStorageCredentialsInterface_Impl_Call) Run(run func()) *MockStorageCredentialsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockStorageCredentialsInterface_Impl_Call) Return(_a0 catalog.StorageCredentialsService) *MockStorageCredentialsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockStorageCredentialsInterface_Impl_Call) RunAndReturn(run func() catalog.StorageCredentialsService) *MockStorageCredentialsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockStorageCredentialsInterface) List(ctx context.Context, request catalog.ListStorageCredentialsRequest) listing.Iterator[catalog.StorageCredentialInfo] {
 	ret := _m.Called(ctx, request)
@@ -624,54 +577,6 @@ func (_c *MockStorageCredentialsInterface_Validate_Call) Return(_a0 *catalog.Val
 }
 
 func (_c *MockStorageCredentialsInterface_Validate_Call) RunAndReturn(run func(context.Context, catalog.ValidateStorageCredential) (*catalog.ValidateStorageCredentialResponse, error)) *MockStorageCredentialsInterface_Validate_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockStorageCredentialsInterface) WithImpl(impl catalog.StorageCredentialsService) catalog.StorageCredentialsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.StorageCredentialsInterface
-	if rf, ok := ret.Get(0).(func(catalog.StorageCredentialsService) catalog.StorageCredentialsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.StorageCredentialsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockStorageCredentialsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockStorageCredentialsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.StorageCredentialsService
-func (_e *MockStorageCredentialsInterface_Expecter) WithImpl(impl interface{}) *MockStorageCredentialsInterface_WithImpl_Call {
-	return &MockStorageCredentialsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockStorageCredentialsInterface_WithImpl_Call) Run(run func(impl catalog.StorageCredentialsService)) *MockStorageCredentialsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.StorageCredentialsService))
-	})
-	return _c
-}
-
-func (_c *MockStorageCredentialsInterface_WithImpl_Call) Return(_a0 catalog.StorageCredentialsInterface) *MockStorageCredentialsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockStorageCredentialsInterface_WithImpl_Call) RunAndReturn(run func(catalog.StorageCredentialsService) catalog.StorageCredentialsInterface) *MockStorageCredentialsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

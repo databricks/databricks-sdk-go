@@ -354,53 +354,6 @@ func (_c *MockAccountServicePrincipalsInterface_GetById_Call) RunAndReturn(run f
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockAccountServicePrincipalsInterface) Impl() iam.AccountServicePrincipalsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 iam.AccountServicePrincipalsService
-	if rf, ok := ret.Get(0).(func() iam.AccountServicePrincipalsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.AccountServicePrincipalsService)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountServicePrincipalsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockAccountServicePrincipalsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockAccountServicePrincipalsInterface_Expecter) Impl() *MockAccountServicePrincipalsInterface_Impl_Call {
-	return &MockAccountServicePrincipalsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockAccountServicePrincipalsInterface_Impl_Call) Run(run func()) *MockAccountServicePrincipalsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockAccountServicePrincipalsInterface_Impl_Call) Return(_a0 iam.AccountServicePrincipalsService) *MockAccountServicePrincipalsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountServicePrincipalsInterface_Impl_Call) RunAndReturn(run func() iam.AccountServicePrincipalsService) *MockAccountServicePrincipalsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockAccountServicePrincipalsInterface) List(ctx context.Context, request iam.ListAccountServicePrincipalsRequest) listing.Iterator[iam.ServicePrincipal] {
 	ret := _m.Called(ctx, request)
@@ -658,54 +611,6 @@ func (_c *MockAccountServicePrincipalsInterface_Update_Call) Return(_a0 error) *
 }
 
 func (_c *MockAccountServicePrincipalsInterface_Update_Call) RunAndReturn(run func(context.Context, iam.ServicePrincipal) error) *MockAccountServicePrincipalsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockAccountServicePrincipalsInterface) WithImpl(impl iam.AccountServicePrincipalsService) iam.AccountServicePrincipalsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 iam.AccountServicePrincipalsInterface
-	if rf, ok := ret.Get(0).(func(iam.AccountServicePrincipalsService) iam.AccountServicePrincipalsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.AccountServicePrincipalsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountServicePrincipalsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockAccountServicePrincipalsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl iam.AccountServicePrincipalsService
-func (_e *MockAccountServicePrincipalsInterface_Expecter) WithImpl(impl interface{}) *MockAccountServicePrincipalsInterface_WithImpl_Call {
-	return &MockAccountServicePrincipalsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockAccountServicePrincipalsInterface_WithImpl_Call) Run(run func(impl iam.AccountServicePrincipalsService)) *MockAccountServicePrincipalsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(iam.AccountServicePrincipalsService))
-	})
-	return _c
-}
-
-func (_c *MockAccountServicePrincipalsInterface_WithImpl_Call) Return(_a0 iam.AccountServicePrincipalsInterface) *MockAccountServicePrincipalsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountServicePrincipalsInterface_WithImpl_Call) RunAndReturn(run func(iam.AccountServicePrincipalsService) iam.AccountServicePrincipalsInterface) *MockAccountServicePrincipalsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

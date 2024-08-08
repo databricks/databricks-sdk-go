@@ -295,53 +295,6 @@ func (_c *MockProviderExchangeFiltersInterface_GetByName_Call) RunAndReturn(run 
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockProviderExchangeFiltersInterface) Impl() marketplace.ProviderExchangeFiltersService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 marketplace.ProviderExchangeFiltersService
-	if rf, ok := ret.Get(0).(func() marketplace.ProviderExchangeFiltersService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(marketplace.ProviderExchangeFiltersService)
-		}
-	}
-
-	return r0
-}
-
-// MockProviderExchangeFiltersInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockProviderExchangeFiltersInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockProviderExchangeFiltersInterface_Expecter) Impl() *MockProviderExchangeFiltersInterface_Impl_Call {
-	return &MockProviderExchangeFiltersInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockProviderExchangeFiltersInterface_Impl_Call) Run(run func()) *MockProviderExchangeFiltersInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockProviderExchangeFiltersInterface_Impl_Call) Return(_a0 marketplace.ProviderExchangeFiltersService) *MockProviderExchangeFiltersInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockProviderExchangeFiltersInterface_Impl_Call) RunAndReturn(run func() marketplace.ProviderExchangeFiltersService) *MockProviderExchangeFiltersInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockProviderExchangeFiltersInterface) List(ctx context.Context, request marketplace.ListExchangeFiltersRequest) listing.Iterator[marketplace.ExchangeFilter] {
 	ret := _m.Called(ctx, request)
@@ -505,54 +458,6 @@ func (_c *MockProviderExchangeFiltersInterface_Update_Call) Return(_a0 *marketpl
 }
 
 func (_c *MockProviderExchangeFiltersInterface_Update_Call) RunAndReturn(run func(context.Context, marketplace.UpdateExchangeFilterRequest) (*marketplace.UpdateExchangeFilterResponse, error)) *MockProviderExchangeFiltersInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockProviderExchangeFiltersInterface) WithImpl(impl marketplace.ProviderExchangeFiltersService) marketplace.ProviderExchangeFiltersInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 marketplace.ProviderExchangeFiltersInterface
-	if rf, ok := ret.Get(0).(func(marketplace.ProviderExchangeFiltersService) marketplace.ProviderExchangeFiltersInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(marketplace.ProviderExchangeFiltersInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockProviderExchangeFiltersInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockProviderExchangeFiltersInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl marketplace.ProviderExchangeFiltersService
-func (_e *MockProviderExchangeFiltersInterface_Expecter) WithImpl(impl interface{}) *MockProviderExchangeFiltersInterface_WithImpl_Call {
-	return &MockProviderExchangeFiltersInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockProviderExchangeFiltersInterface_WithImpl_Call) Run(run func(impl marketplace.ProviderExchangeFiltersService)) *MockProviderExchangeFiltersInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(marketplace.ProviderExchangeFiltersService))
-	})
-	return _c
-}
-
-func (_c *MockProviderExchangeFiltersInterface_WithImpl_Call) Return(_a0 marketplace.ProviderExchangeFiltersInterface) *MockProviderExchangeFiltersInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockProviderExchangeFiltersInterface_WithImpl_Call) RunAndReturn(run func(marketplace.ProviderExchangeFiltersService) marketplace.ProviderExchangeFiltersInterface) *MockProviderExchangeFiltersInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

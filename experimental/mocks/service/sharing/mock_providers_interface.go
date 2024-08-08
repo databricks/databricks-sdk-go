@@ -295,53 +295,6 @@ func (_c *MockProvidersInterface_GetByName_Call) RunAndReturn(run func(context.C
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockProvidersInterface) Impl() sharing.ProvidersService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sharing.ProvidersService
-	if rf, ok := ret.Get(0).(func() sharing.ProvidersService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sharing.ProvidersService)
-		}
-	}
-
-	return r0
-}
-
-// MockProvidersInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockProvidersInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockProvidersInterface_Expecter) Impl() *MockProvidersInterface_Impl_Call {
-	return &MockProvidersInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockProvidersInterface_Impl_Call) Run(run func()) *MockProvidersInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockProvidersInterface_Impl_Call) Return(_a0 sharing.ProvidersService) *MockProvidersInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockProvidersInterface_Impl_Call) RunAndReturn(run func() sharing.ProvidersService) *MockProvidersInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockProvidersInterface) List(ctx context.Context, request sharing.ListProvidersRequest) listing.Iterator[sharing.ProviderInfo] {
 	ret := _m.Called(ctx, request)
@@ -731,54 +684,6 @@ func (_c *MockProvidersInterface_Update_Call) Return(_a0 *sharing.ProviderInfo, 
 }
 
 func (_c *MockProvidersInterface_Update_Call) RunAndReturn(run func(context.Context, sharing.UpdateProvider) (*sharing.ProviderInfo, error)) *MockProvidersInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockProvidersInterface) WithImpl(impl sharing.ProvidersService) sharing.ProvidersInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sharing.ProvidersInterface
-	if rf, ok := ret.Get(0).(func(sharing.ProvidersService) sharing.ProvidersInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sharing.ProvidersInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockProvidersInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockProvidersInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sharing.ProvidersService
-func (_e *MockProvidersInterface_Expecter) WithImpl(impl interface{}) *MockProvidersInterface_WithImpl_Call {
-	return &MockProvidersInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockProvidersInterface_WithImpl_Call) Run(run func(impl sharing.ProvidersService)) *MockProvidersInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sharing.ProvidersService))
-	})
-	return _c
-}
-
-func (_c *MockProvidersInterface_WithImpl_Call) Return(_a0 sharing.ProvidersInterface) *MockProvidersInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockProvidersInterface_WithImpl_Call) RunAndReturn(run func(sharing.ProvidersService) sharing.ProvidersInterface) *MockProvidersInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -354,53 +354,6 @@ func (_c *MockIpAccessListsInterface_GetByLabel_Call) RunAndReturn(run func(cont
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockIpAccessListsInterface) Impl() settings.IpAccessListsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.IpAccessListsService
-	if rf, ok := ret.Get(0).(func() settings.IpAccessListsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.IpAccessListsService)
-		}
-	}
-
-	return r0
-}
-
-// MockIpAccessListsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockIpAccessListsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockIpAccessListsInterface_Expecter) Impl() *MockIpAccessListsInterface_Impl_Call {
-	return &MockIpAccessListsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockIpAccessListsInterface_Impl_Call) Run(run func()) *MockIpAccessListsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockIpAccessListsInterface_Impl_Call) Return(_a0 settings.IpAccessListsService) *MockIpAccessListsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockIpAccessListsInterface_Impl_Call) RunAndReturn(run func() settings.IpAccessListsService) *MockIpAccessListsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // IpAccessListInfoLabelToListIdMap provides a mock function with given fields: ctx
 func (_m *MockIpAccessListsInterface) IpAccessListInfoLabelToListIdMap(ctx context.Context) (map[string]string, error) {
 	ret := _m.Called(ctx)
@@ -655,54 +608,6 @@ func (_c *MockIpAccessListsInterface_Update_Call) Return(_a0 error) *MockIpAcces
 }
 
 func (_c *MockIpAccessListsInterface_Update_Call) RunAndReturn(run func(context.Context, settings.UpdateIpAccessList) error) *MockIpAccessListsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockIpAccessListsInterface) WithImpl(impl settings.IpAccessListsService) settings.IpAccessListsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.IpAccessListsInterface
-	if rf, ok := ret.Get(0).(func(settings.IpAccessListsService) settings.IpAccessListsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.IpAccessListsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockIpAccessListsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockIpAccessListsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.IpAccessListsService
-func (_e *MockIpAccessListsInterface_Expecter) WithImpl(impl interface{}) *MockIpAccessListsInterface_WithImpl_Call {
-	return &MockIpAccessListsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockIpAccessListsInterface_WithImpl_Call) Run(run func(impl settings.IpAccessListsService)) *MockIpAccessListsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.IpAccessListsService))
-	})
-	return _c
-}
-
-func (_c *MockIpAccessListsInterface_WithImpl_Call) Return(_a0 settings.IpAccessListsInterface) *MockIpAccessListsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockIpAccessListsInterface_WithImpl_Call) RunAndReturn(run func(settings.IpAccessListsService) settings.IpAccessListsInterface) *MockIpAccessListsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

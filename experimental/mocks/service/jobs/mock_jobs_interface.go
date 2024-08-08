@@ -1284,53 +1284,6 @@ func (_c *MockJobsInterface_GetRunOutputByRunId_Call) RunAndReturn(run func(cont
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockJobsInterface) Impl() jobs.JobsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 jobs.JobsService
-	if rf, ok := ret.Get(0).(func() jobs.JobsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(jobs.JobsService)
-		}
-	}
-
-	return r0
-}
-
-// MockJobsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockJobsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockJobsInterface_Expecter) Impl() *MockJobsInterface_Impl_Call {
-	return &MockJobsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockJobsInterface_Impl_Call) Run(run func()) *MockJobsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockJobsInterface_Impl_Call) Return(_a0 jobs.JobsService) *MockJobsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockJobsInterface_Impl_Call) RunAndReturn(run func() jobs.JobsService) *MockJobsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockJobsInterface) List(ctx context.Context, request jobs.ListJobsRequest) listing.Iterator[jobs.BaseJob] {
 	ret := _m.Called(ctx, request)
@@ -2215,54 +2168,6 @@ func (_c *MockJobsInterface_WaitGetRunJobTerminatedOrSkipped_Call) Return(_a0 *j
 }
 
 func (_c *MockJobsInterface_WaitGetRunJobTerminatedOrSkipped_Call) RunAndReturn(run func(context.Context, int64, time.Duration, func(*jobs.Run)) (*jobs.Run, error)) *MockJobsInterface_WaitGetRunJobTerminatedOrSkipped_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockJobsInterface) WithImpl(impl jobs.JobsService) jobs.JobsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 jobs.JobsInterface
-	if rf, ok := ret.Get(0).(func(jobs.JobsService) jobs.JobsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(jobs.JobsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockJobsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockJobsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl jobs.JobsService
-func (_e *MockJobsInterface_Expecter) WithImpl(impl interface{}) *MockJobsInterface_WithImpl_Call {
-	return &MockJobsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockJobsInterface_WithImpl_Call) Run(run func(impl jobs.JobsService)) *MockJobsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(jobs.JobsService))
-	})
-	return _c
-}
-
-func (_c *MockJobsInterface_WithImpl_Call) Return(_a0 jobs.JobsInterface) *MockJobsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockJobsInterface_WithImpl_Call) RunAndReturn(run func(jobs.JobsService) jobs.JobsInterface) *MockJobsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

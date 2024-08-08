@@ -140,53 +140,6 @@ func (_c *MockDefaultNamespaceInterface_Get_Call) RunAndReturn(run func(context.
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockDefaultNamespaceInterface) Impl() settings.DefaultNamespaceService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.DefaultNamespaceService
-	if rf, ok := ret.Get(0).(func() settings.DefaultNamespaceService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.DefaultNamespaceService)
-		}
-	}
-
-	return r0
-}
-
-// MockDefaultNamespaceInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockDefaultNamespaceInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockDefaultNamespaceInterface_Expecter) Impl() *MockDefaultNamespaceInterface_Impl_Call {
-	return &MockDefaultNamespaceInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockDefaultNamespaceInterface_Impl_Call) Run(run func()) *MockDefaultNamespaceInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDefaultNamespaceInterface_Impl_Call) Return(_a0 settings.DefaultNamespaceService) *MockDefaultNamespaceInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockDefaultNamespaceInterface_Impl_Call) RunAndReturn(run func() settings.DefaultNamespaceService) *MockDefaultNamespaceInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockDefaultNamespaceInterface) Update(ctx context.Context, request settings.UpdateDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error) {
 	ret := _m.Called(ctx, request)
@@ -242,54 +195,6 @@ func (_c *MockDefaultNamespaceInterface_Update_Call) Return(_a0 *settings.Defaul
 }
 
 func (_c *MockDefaultNamespaceInterface_Update_Call) RunAndReturn(run func(context.Context, settings.UpdateDefaultNamespaceSettingRequest) (*settings.DefaultNamespaceSetting, error)) *MockDefaultNamespaceInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockDefaultNamespaceInterface) WithImpl(impl settings.DefaultNamespaceService) settings.DefaultNamespaceInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.DefaultNamespaceInterface
-	if rf, ok := ret.Get(0).(func(settings.DefaultNamespaceService) settings.DefaultNamespaceInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.DefaultNamespaceInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockDefaultNamespaceInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockDefaultNamespaceInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.DefaultNamespaceService
-func (_e *MockDefaultNamespaceInterface_Expecter) WithImpl(impl interface{}) *MockDefaultNamespaceInterface_WithImpl_Call {
-	return &MockDefaultNamespaceInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockDefaultNamespaceInterface_WithImpl_Call) Run(run func(impl settings.DefaultNamespaceService)) *MockDefaultNamespaceInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.DefaultNamespaceService))
-	})
-	return _c
-}
-
-func (_c *MockDefaultNamespaceInterface_WithImpl_Call) Return(_a0 settings.DefaultNamespaceInterface) *MockDefaultNamespaceInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockDefaultNamespaceInterface_WithImpl_Call) RunAndReturn(run func(settings.DefaultNamespaceService) settings.DefaultNamespaceInterface) *MockDefaultNamespaceInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

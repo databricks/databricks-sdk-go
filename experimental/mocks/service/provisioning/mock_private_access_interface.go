@@ -352,53 +352,6 @@ func (_c *MockPrivateAccessInterface_GetByPrivateAccessSettingsName_Call) RunAnd
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockPrivateAccessInterface) Impl() provisioning.PrivateAccessService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 provisioning.PrivateAccessService
-	if rf, ok := ret.Get(0).(func() provisioning.PrivateAccessService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(provisioning.PrivateAccessService)
-		}
-	}
-
-	return r0
-}
-
-// MockPrivateAccessInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockPrivateAccessInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockPrivateAccessInterface_Expecter) Impl() *MockPrivateAccessInterface_Impl_Call {
-	return &MockPrivateAccessInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockPrivateAccessInterface_Impl_Call) Run(run func()) *MockPrivateAccessInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPrivateAccessInterface_Impl_Call) Return(_a0 provisioning.PrivateAccessService) *MockPrivateAccessInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPrivateAccessInterface_Impl_Call) RunAndReturn(run func() provisioning.PrivateAccessService) *MockPrivateAccessInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx
 func (_m *MockPrivateAccessInterface) List(ctx context.Context) ([]provisioning.PrivateAccessSettings, error) {
 	ret := _m.Called(ctx)
@@ -558,54 +511,6 @@ func (_c *MockPrivateAccessInterface_Replace_Call) Return(_a0 error) *MockPrivat
 }
 
 func (_c *MockPrivateAccessInterface_Replace_Call) RunAndReturn(run func(context.Context, provisioning.UpsertPrivateAccessSettingsRequest) error) *MockPrivateAccessInterface_Replace_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockPrivateAccessInterface) WithImpl(impl provisioning.PrivateAccessService) provisioning.PrivateAccessInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 provisioning.PrivateAccessInterface
-	if rf, ok := ret.Get(0).(func(provisioning.PrivateAccessService) provisioning.PrivateAccessInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(provisioning.PrivateAccessInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockPrivateAccessInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockPrivateAccessInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl provisioning.PrivateAccessService
-func (_e *MockPrivateAccessInterface_Expecter) WithImpl(impl interface{}) *MockPrivateAccessInterface_WithImpl_Call {
-	return &MockPrivateAccessInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockPrivateAccessInterface_WithImpl_Call) Run(run func(impl provisioning.PrivateAccessService)) *MockPrivateAccessInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(provisioning.PrivateAccessService))
-	})
-	return _c
-}
-
-func (_c *MockPrivateAccessInterface_WithImpl_Call) Return(_a0 provisioning.PrivateAccessInterface) *MockPrivateAccessInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPrivateAccessInterface_WithImpl_Call) RunAndReturn(run func(provisioning.PrivateAccessService) provisioning.PrivateAccessInterface) *MockPrivateAccessInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

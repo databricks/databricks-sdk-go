@@ -1297,53 +1297,6 @@ func (_c *MockClustersInterface_GetPermissionsByClusterId_Call) RunAndReturn(run
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockClustersInterface) Impl() compute.ClustersService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 compute.ClustersService
-	if rf, ok := ret.Get(0).(func() compute.ClustersService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.ClustersService)
-		}
-	}
-
-	return r0
-}
-
-// MockClustersInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockClustersInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockClustersInterface_Expecter) Impl() *MockClustersInterface_Impl_Call {
-	return &MockClustersInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockClustersInterface_Impl_Call) Run(run func()) *MockClustersInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockClustersInterface_Impl_Call) Return(_a0 compute.ClustersService) *MockClustersInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockClustersInterface_Impl_Call) RunAndReturn(run func() compute.ClustersService) *MockClustersInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockClustersInterface) List(ctx context.Context, request compute.ListClustersRequest) listing.Iterator[compute.ClusterDetails] {
 	ret := _m.Called(ctx, request)
@@ -2601,6 +2554,139 @@ func (_c *MockClustersInterface_UnpinByClusterId_Call) RunAndReturn(run func(con
 	return _c
 }
 
+// Update provides a mock function with given fields: ctx, updateCluster
+func (_m *MockClustersInterface) Update(ctx context.Context, updateCluster compute.UpdateCluster) (*compute.WaitGetClusterRunning[struct{}], error) {
+	ret := _m.Called(ctx, updateCluster)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Update")
+	}
+
+	var r0 *compute.WaitGetClusterRunning[struct{}]
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, compute.UpdateCluster) (*compute.WaitGetClusterRunning[struct{}], error)); ok {
+		return rf(ctx, updateCluster)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, compute.UpdateCluster) *compute.WaitGetClusterRunning[struct{}]); ok {
+		r0 = rf(ctx, updateCluster)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*compute.WaitGetClusterRunning[struct{}])
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, compute.UpdateCluster) error); ok {
+		r1 = rf(ctx, updateCluster)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockClustersInterface_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
+type MockClustersInterface_Update_Call struct {
+	*mock.Call
+}
+
+// Update is a helper method to define mock.On call
+//   - ctx context.Context
+//   - updateCluster compute.UpdateCluster
+func (_e *MockClustersInterface_Expecter) Update(ctx interface{}, updateCluster interface{}) *MockClustersInterface_Update_Call {
+	return &MockClustersInterface_Update_Call{Call: _e.mock.On("Update", ctx, updateCluster)}
+}
+
+func (_c *MockClustersInterface_Update_Call) Run(run func(ctx context.Context, updateCluster compute.UpdateCluster)) *MockClustersInterface_Update_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(compute.UpdateCluster))
+	})
+	return _c
+}
+
+func (_c *MockClustersInterface_Update_Call) Return(_a0 *compute.WaitGetClusterRunning[struct{}], _a1 error) *MockClustersInterface_Update_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockClustersInterface_Update_Call) RunAndReturn(run func(context.Context, compute.UpdateCluster) (*compute.WaitGetClusterRunning[struct{}], error)) *MockClustersInterface_Update_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateAndWait provides a mock function with given fields: ctx, updateCluster, options
+func (_m *MockClustersInterface) UpdateAndWait(ctx context.Context, updateCluster compute.UpdateCluster, options ...retries.Option[compute.ClusterDetails]) (*compute.ClusterDetails, error) {
+	_va := make([]interface{}, len(options))
+	for _i := range options {
+		_va[_i] = options[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, updateCluster)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateAndWait")
+	}
+
+	var r0 *compute.ClusterDetails
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, compute.UpdateCluster, ...retries.Option[compute.ClusterDetails]) (*compute.ClusterDetails, error)); ok {
+		return rf(ctx, updateCluster, options...)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, compute.UpdateCluster, ...retries.Option[compute.ClusterDetails]) *compute.ClusterDetails); ok {
+		r0 = rf(ctx, updateCluster, options...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*compute.ClusterDetails)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, compute.UpdateCluster, ...retries.Option[compute.ClusterDetails]) error); ok {
+		r1 = rf(ctx, updateCluster, options...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockClustersInterface_UpdateAndWait_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateAndWait'
+type MockClustersInterface_UpdateAndWait_Call struct {
+	*mock.Call
+}
+
+// UpdateAndWait is a helper method to define mock.On call
+//   - ctx context.Context
+//   - updateCluster compute.UpdateCluster
+//   - options ...retries.Option[compute.ClusterDetails]
+func (_e *MockClustersInterface_Expecter) UpdateAndWait(ctx interface{}, updateCluster interface{}, options ...interface{}) *MockClustersInterface_UpdateAndWait_Call {
+	return &MockClustersInterface_UpdateAndWait_Call{Call: _e.mock.On("UpdateAndWait",
+		append([]interface{}{ctx, updateCluster}, options...)...)}
+}
+
+func (_c *MockClustersInterface_UpdateAndWait_Call) Run(run func(ctx context.Context, updateCluster compute.UpdateCluster, options ...retries.Option[compute.ClusterDetails])) *MockClustersInterface_UpdateAndWait_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := make([]retries.Option[compute.ClusterDetails], len(args)-2)
+		for i, a := range args[2:] {
+			if a != nil {
+				variadicArgs[i] = a.(retries.Option[compute.ClusterDetails])
+			}
+		}
+		run(args[0].(context.Context), args[1].(compute.UpdateCluster), variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *MockClustersInterface_UpdateAndWait_Call) Return(_a0 *compute.ClusterDetails, _a1 error) *MockClustersInterface_UpdateAndWait_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockClustersInterface_UpdateAndWait_Call) RunAndReturn(run func(context.Context, compute.UpdateCluster, ...retries.Option[compute.ClusterDetails]) (*compute.ClusterDetails, error)) *MockClustersInterface_UpdateAndWait_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdatePermissions provides a mock function with given fields: ctx, request
 func (_m *MockClustersInterface) UpdatePermissions(ctx context.Context, request compute.ClusterPermissionsRequest) (*compute.ClusterPermissions, error) {
 	ret := _m.Called(ctx, request)
@@ -2778,54 +2864,6 @@ func (_c *MockClustersInterface_WaitGetClusterTerminated_Call) Return(_a0 *compu
 }
 
 func (_c *MockClustersInterface_WaitGetClusterTerminated_Call) RunAndReturn(run func(context.Context, string, time.Duration, func(*compute.ClusterDetails)) (*compute.ClusterDetails, error)) *MockClustersInterface_WaitGetClusterTerminated_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockClustersInterface) WithImpl(impl compute.ClustersService) compute.ClustersInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 compute.ClustersInterface
-	if rf, ok := ret.Get(0).(func(compute.ClustersService) compute.ClustersInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.ClustersInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockClustersInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockClustersInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl compute.ClustersService
-func (_e *MockClustersInterface_Expecter) WithImpl(impl interface{}) *MockClustersInterface_WithImpl_Call {
-	return &MockClustersInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockClustersInterface_WithImpl_Call) Run(run func(impl compute.ClustersService)) *MockClustersInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(compute.ClustersService))
-	})
-	return _c
-}
-
-func (_c *MockClustersInterface_WithImpl_Call) Return(_a0 compute.ClustersInterface) *MockClustersInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockClustersInterface_WithImpl_Call) RunAndReturn(run func(compute.ClustersService) compute.ClustersInterface) *MockClustersInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

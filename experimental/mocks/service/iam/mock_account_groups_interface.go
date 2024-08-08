@@ -413,53 +413,6 @@ func (_c *MockAccountGroupsInterface_GroupDisplayNameToIdMap_Call) RunAndReturn(
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockAccountGroupsInterface) Impl() iam.AccountGroupsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 iam.AccountGroupsService
-	if rf, ok := ret.Get(0).(func() iam.AccountGroupsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.AccountGroupsService)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountGroupsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockAccountGroupsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockAccountGroupsInterface_Expecter) Impl() *MockAccountGroupsInterface_Impl_Call {
-	return &MockAccountGroupsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockAccountGroupsInterface_Impl_Call) Run(run func()) *MockAccountGroupsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockAccountGroupsInterface_Impl_Call) Return(_a0 iam.AccountGroupsService) *MockAccountGroupsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountGroupsInterface_Impl_Call) RunAndReturn(run func() iam.AccountGroupsService) *MockAccountGroupsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockAccountGroupsInterface) List(ctx context.Context, request iam.ListAccountGroupsRequest) listing.Iterator[iam.Group] {
 	ret := _m.Called(ctx, request)
@@ -658,54 +611,6 @@ func (_c *MockAccountGroupsInterface_Update_Call) Return(_a0 error) *MockAccount
 }
 
 func (_c *MockAccountGroupsInterface_Update_Call) RunAndReturn(run func(context.Context, iam.Group) error) *MockAccountGroupsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockAccountGroupsInterface) WithImpl(impl iam.AccountGroupsService) iam.AccountGroupsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 iam.AccountGroupsInterface
-	if rf, ok := ret.Get(0).(func(iam.AccountGroupsService) iam.AccountGroupsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.AccountGroupsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountGroupsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockAccountGroupsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl iam.AccountGroupsService
-func (_e *MockAccountGroupsInterface_Expecter) WithImpl(impl interface{}) *MockAccountGroupsInterface_WithImpl_Call {
-	return &MockAccountGroupsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockAccountGroupsInterface_WithImpl_Call) Run(run func(impl iam.AccountGroupsService)) *MockAccountGroupsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(iam.AccountGroupsService))
-	})
-	return _c
-}
-
-func (_c *MockAccountGroupsInterface_WithImpl_Call) Return(_a0 iam.AccountGroupsInterface) *MockAccountGroupsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountGroupsInterface_WithImpl_Call) RunAndReturn(run func(iam.AccountGroupsService) iam.AccountGroupsInterface) *MockAccountGroupsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

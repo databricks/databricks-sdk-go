@@ -226,7 +226,7 @@ func (_c *MockClusterPoliciesInterface_Edit_Call) RunAndReturn(run func(context.
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockClusterPoliciesInterface) Get(ctx context.Context, request compute.GetClusterPolicyRequest) (*compute.Policy, error) {
+func (_m *MockClusterPoliciesInterface) Get(ctx context.Context, request compute.GetPolicy) (*compute.Policy, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -235,10 +235,10 @@ func (_m *MockClusterPoliciesInterface) Get(ctx context.Context, request compute
 
 	var r0 *compute.Policy
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, compute.GetClusterPolicyRequest) (*compute.Policy, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.GetPolicy) (*compute.Policy, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, compute.GetClusterPolicyRequest) *compute.Policy); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.GetPolicy) *compute.Policy); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -246,7 +246,7 @@ func (_m *MockClusterPoliciesInterface) Get(ctx context.Context, request compute
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, compute.GetClusterPolicyRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, compute.GetPolicy) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -262,14 +262,14 @@ type MockClusterPoliciesInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request compute.GetClusterPolicyRequest
+//   - request compute.GetPolicy
 func (_e *MockClusterPoliciesInterface_Expecter) Get(ctx interface{}, request interface{}) *MockClusterPoliciesInterface_Get_Call {
 	return &MockClusterPoliciesInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockClusterPoliciesInterface_Get_Call) Run(run func(ctx context.Context, request compute.GetClusterPolicyRequest)) *MockClusterPoliciesInterface_Get_Call {
+func (_c *MockClusterPoliciesInterface_Get_Call) Run(run func(ctx context.Context, request compute.GetPolicy)) *MockClusterPoliciesInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(compute.GetClusterPolicyRequest))
+		run(args[0].(context.Context), args[1].(compute.GetPolicy))
 	})
 	return _c
 }
@@ -279,7 +279,7 @@ func (_c *MockClusterPoliciesInterface_Get_Call) Return(_a0 *compute.Policy, _a1
 	return _c
 }
 
-func (_c *MockClusterPoliciesInterface_Get_Call) RunAndReturn(run func(context.Context, compute.GetClusterPolicyRequest) (*compute.Policy, error)) *MockClusterPoliciesInterface_Get_Call {
+func (_c *MockClusterPoliciesInterface_Get_Call) RunAndReturn(run func(context.Context, compute.GetPolicy) (*compute.Policy, error)) *MockClusterPoliciesInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -638,55 +638,8 @@ func (_c *MockClusterPoliciesInterface_GetPermissionsByClusterPolicyId_Call) Run
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockClusterPoliciesInterface) Impl() compute.ClusterPoliciesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 compute.ClusterPoliciesService
-	if rf, ok := ret.Get(0).(func() compute.ClusterPoliciesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.ClusterPoliciesService)
-		}
-	}
-
-	return r0
-}
-
-// MockClusterPoliciesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockClusterPoliciesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockClusterPoliciesInterface_Expecter) Impl() *MockClusterPoliciesInterface_Impl_Call {
-	return &MockClusterPoliciesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockClusterPoliciesInterface_Impl_Call) Run(run func()) *MockClusterPoliciesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockClusterPoliciesInterface_Impl_Call) Return(_a0 compute.ClusterPoliciesService) *MockClusterPoliciesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockClusterPoliciesInterface_Impl_Call) RunAndReturn(run func() compute.ClusterPoliciesService) *MockClusterPoliciesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
-func (_m *MockClusterPoliciesInterface) List(ctx context.Context, request compute.ListClusterPoliciesRequest) listing.Iterator[compute.Policy] {
+func (_m *MockClusterPoliciesInterface) List(ctx context.Context, request compute.ListPolicies) listing.Iterator[compute.Policy] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -694,7 +647,7 @@ func (_m *MockClusterPoliciesInterface) List(ctx context.Context, request comput
 	}
 
 	var r0 listing.Iterator[compute.Policy]
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ListClusterPoliciesRequest) listing.Iterator[compute.Policy]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ListPolicies) listing.Iterator[compute.Policy]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -712,14 +665,14 @@ type MockClusterPoliciesInterface_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request compute.ListClusterPoliciesRequest
+//   - request compute.ListPolicies
 func (_e *MockClusterPoliciesInterface_Expecter) List(ctx interface{}, request interface{}) *MockClusterPoliciesInterface_List_Call {
 	return &MockClusterPoliciesInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
 }
 
-func (_c *MockClusterPoliciesInterface_List_Call) Run(run func(ctx context.Context, request compute.ListClusterPoliciesRequest)) *MockClusterPoliciesInterface_List_Call {
+func (_c *MockClusterPoliciesInterface_List_Call) Run(run func(ctx context.Context, request compute.ListPolicies)) *MockClusterPoliciesInterface_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(compute.ListClusterPoliciesRequest))
+		run(args[0].(context.Context), args[1].(compute.ListPolicies))
 	})
 	return _c
 }
@@ -729,13 +682,13 @@ func (_c *MockClusterPoliciesInterface_List_Call) Return(_a0 listing.Iterator[co
 	return _c
 }
 
-func (_c *MockClusterPoliciesInterface_List_Call) RunAndReturn(run func(context.Context, compute.ListClusterPoliciesRequest) listing.Iterator[compute.Policy]) *MockClusterPoliciesInterface_List_Call {
+func (_c *MockClusterPoliciesInterface_List_Call) RunAndReturn(run func(context.Context, compute.ListPolicies) listing.Iterator[compute.Policy]) *MockClusterPoliciesInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListAll provides a mock function with given fields: ctx, request
-func (_m *MockClusterPoliciesInterface) ListAll(ctx context.Context, request compute.ListClusterPoliciesRequest) ([]compute.Policy, error) {
+func (_m *MockClusterPoliciesInterface) ListAll(ctx context.Context, request compute.ListPolicies) ([]compute.Policy, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -744,10 +697,10 @@ func (_m *MockClusterPoliciesInterface) ListAll(ctx context.Context, request com
 
 	var r0 []compute.Policy
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ListClusterPoliciesRequest) ([]compute.Policy, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ListPolicies) ([]compute.Policy, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ListClusterPoliciesRequest) []compute.Policy); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ListPolicies) []compute.Policy); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -755,7 +708,7 @@ func (_m *MockClusterPoliciesInterface) ListAll(ctx context.Context, request com
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, compute.ListClusterPoliciesRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, compute.ListPolicies) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -771,14 +724,14 @@ type MockClusterPoliciesInterface_ListAll_Call struct {
 
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request compute.ListClusterPoliciesRequest
+//   - request compute.ListPolicies
 func (_e *MockClusterPoliciesInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockClusterPoliciesInterface_ListAll_Call {
 	return &MockClusterPoliciesInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
 }
 
-func (_c *MockClusterPoliciesInterface_ListAll_Call) Run(run func(ctx context.Context, request compute.ListClusterPoliciesRequest)) *MockClusterPoliciesInterface_ListAll_Call {
+func (_c *MockClusterPoliciesInterface_ListAll_Call) Run(run func(ctx context.Context, request compute.ListPolicies)) *MockClusterPoliciesInterface_ListAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(compute.ListClusterPoliciesRequest))
+		run(args[0].(context.Context), args[1].(compute.ListPolicies))
 	})
 	return _c
 }
@@ -788,13 +741,13 @@ func (_c *MockClusterPoliciesInterface_ListAll_Call) Return(_a0 []compute.Policy
 	return _c
 }
 
-func (_c *MockClusterPoliciesInterface_ListAll_Call) RunAndReturn(run func(context.Context, compute.ListClusterPoliciesRequest) ([]compute.Policy, error)) *MockClusterPoliciesInterface_ListAll_Call {
+func (_c *MockClusterPoliciesInterface_ListAll_Call) RunAndReturn(run func(context.Context, compute.ListPolicies) ([]compute.Policy, error)) *MockClusterPoliciesInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // PolicyNameToPolicyIdMap provides a mock function with given fields: ctx, request
-func (_m *MockClusterPoliciesInterface) PolicyNameToPolicyIdMap(ctx context.Context, request compute.ListClusterPoliciesRequest) (map[string]string, error) {
+func (_m *MockClusterPoliciesInterface) PolicyNameToPolicyIdMap(ctx context.Context, request compute.ListPolicies) (map[string]string, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -803,10 +756,10 @@ func (_m *MockClusterPoliciesInterface) PolicyNameToPolicyIdMap(ctx context.Cont
 
 	var r0 map[string]string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ListClusterPoliciesRequest) (map[string]string, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ListPolicies) (map[string]string, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, compute.ListClusterPoliciesRequest) map[string]string); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ListPolicies) map[string]string); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -814,7 +767,7 @@ func (_m *MockClusterPoliciesInterface) PolicyNameToPolicyIdMap(ctx context.Cont
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, compute.ListClusterPoliciesRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, compute.ListPolicies) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -830,14 +783,14 @@ type MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call struct {
 
 // PolicyNameToPolicyIdMap is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request compute.ListClusterPoliciesRequest
+//   - request compute.ListPolicies
 func (_e *MockClusterPoliciesInterface_Expecter) PolicyNameToPolicyIdMap(ctx interface{}, request interface{}) *MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call {
 	return &MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call{Call: _e.mock.On("PolicyNameToPolicyIdMap", ctx, request)}
 }
 
-func (_c *MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call) Run(run func(ctx context.Context, request compute.ListClusterPoliciesRequest)) *MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call {
+func (_c *MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call) Run(run func(ctx context.Context, request compute.ListPolicies)) *MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(compute.ListClusterPoliciesRequest))
+		run(args[0].(context.Context), args[1].(compute.ListPolicies))
 	})
 	return _c
 }
@@ -847,7 +800,7 @@ func (_c *MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call) Return(_a0 
 	return _c
 }
 
-func (_c *MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call) RunAndReturn(run func(context.Context, compute.ListClusterPoliciesRequest) (map[string]string, error)) *MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call {
+func (_c *MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call) RunAndReturn(run func(context.Context, compute.ListPolicies) (map[string]string, error)) *MockClusterPoliciesInterface_PolicyNameToPolicyIdMap_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -966,54 +919,6 @@ func (_c *MockClusterPoliciesInterface_UpdatePermissions_Call) Return(_a0 *compu
 }
 
 func (_c *MockClusterPoliciesInterface_UpdatePermissions_Call) RunAndReturn(run func(context.Context, compute.ClusterPolicyPermissionsRequest) (*compute.ClusterPolicyPermissions, error)) *MockClusterPoliciesInterface_UpdatePermissions_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockClusterPoliciesInterface) WithImpl(impl compute.ClusterPoliciesService) compute.ClusterPoliciesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 compute.ClusterPoliciesInterface
-	if rf, ok := ret.Get(0).(func(compute.ClusterPoliciesService) compute.ClusterPoliciesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.ClusterPoliciesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockClusterPoliciesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockClusterPoliciesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl compute.ClusterPoliciesService
-func (_e *MockClusterPoliciesInterface_Expecter) WithImpl(impl interface{}) *MockClusterPoliciesInterface_WithImpl_Call {
-	return &MockClusterPoliciesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockClusterPoliciesInterface_WithImpl_Call) Run(run func(impl compute.ClusterPoliciesService)) *MockClusterPoliciesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(compute.ClusterPoliciesService))
-	})
-	return _c
-}
-
-func (_c *MockClusterPoliciesInterface_WithImpl_Call) Return(_a0 compute.ClusterPoliciesInterface) *MockClusterPoliciesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockClusterPoliciesInterface_WithImpl_Call) RunAndReturn(run func(compute.ClusterPoliciesService) compute.ClusterPoliciesInterface) *MockClusterPoliciesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

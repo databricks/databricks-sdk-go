@@ -758,6 +758,8 @@ func (s PublishedDashboard) MarshalJSON() ([]byte, error) {
 type QueryAttachment struct {
 	// Description of the query
 	Description string `json:"description,omitempty"`
+
+	Id string `json:"id,omitempty"`
 	// If the query was created on an instruction (trusted asset) we link to the
 	// id
 	InstructionId string `json:"instruction_id,omitempty"`
@@ -916,6 +918,8 @@ type SubscriptionSubscriberUser struct {
 type TextAttachment struct {
 	// AI generated message
 	Content string `json:"content,omitempty"`
+
+	Id string `json:"id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

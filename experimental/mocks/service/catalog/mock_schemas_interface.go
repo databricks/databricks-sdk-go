@@ -355,53 +355,6 @@ func (_c *MockSchemasInterface_GetByName_Call) RunAndReturn(run func(context.Con
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockSchemasInterface) Impl() catalog.SchemasService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.SchemasService
-	if rf, ok := ret.Get(0).(func() catalog.SchemasService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.SchemasService)
-		}
-	}
-
-	return r0
-}
-
-// MockSchemasInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockSchemasInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockSchemasInterface_Expecter) Impl() *MockSchemasInterface_Impl_Call {
-	return &MockSchemasInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockSchemasInterface_Impl_Call) Run(run func()) *MockSchemasInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockSchemasInterface_Impl_Call) Return(_a0 catalog.SchemasService) *MockSchemasInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockSchemasInterface_Impl_Call) RunAndReturn(run func() catalog.SchemasService) *MockSchemasInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockSchemasInterface) List(ctx context.Context, request catalog.ListSchemasRequest) listing.Iterator[catalog.SchemaInfo] {
 	ret := _m.Called(ctx, request)
@@ -624,54 +577,6 @@ func (_c *MockSchemasInterface_Update_Call) Return(_a0 *catalog.SchemaInfo, _a1 
 }
 
 func (_c *MockSchemasInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdateSchema) (*catalog.SchemaInfo, error)) *MockSchemasInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockSchemasInterface) WithImpl(impl catalog.SchemasService) catalog.SchemasInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.SchemasInterface
-	if rf, ok := ret.Get(0).(func(catalog.SchemasService) catalog.SchemasInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.SchemasInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockSchemasInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockSchemasInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.SchemasService
-func (_e *MockSchemasInterface_Expecter) WithImpl(impl interface{}) *MockSchemasInterface_WithImpl_Call {
-	return &MockSchemasInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockSchemasInterface_WithImpl_Call) Run(run func(impl catalog.SchemasService)) *MockSchemasInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.SchemasService))
-	})
-	return _c
-}
-
-func (_c *MockSchemasInterface_WithImpl_Call) Return(_a0 catalog.SchemasInterface) *MockSchemasInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockSchemasInterface_WithImpl_Call) RunAndReturn(run func(catalog.SchemasService) catalog.SchemasInterface) *MockSchemasInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -7,7 +7,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/compute"
-	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
 type BaseJob struct {
@@ -354,7 +353,7 @@ type Continuous struct {
 
 type CreateJob struct {
 	// List of permissions to set on the job.
-	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
+	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -753,6 +752,10 @@ type GetRunRequest struct {
 	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
 	// Whether to include resolved parameter values in the response.
 	IncludeResolvedValues bool `json:"-" url:"include_resolved_values,omitempty"`
+	// To list the next page or the previous page of job tasks, set this field
+	// to the value of the `next_page_token` or `prev_page_token` returned in
+	// the GetJob response.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
 	RunId int64 `json:"-" url:"run_id"`
@@ -2153,6 +2156,9 @@ type Run struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
+	// Only populated by for-each iterations. The parent for-each task is
+	// located in tasks array.
+	Iterations []RunTask `json:"iterations,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings.
@@ -2161,6 +2167,8 @@ type Run struct {
 	JobId int64 `json:"job_id,omitempty"`
 	// Job-level parameters used in the run
 	JobParameters []JobParameter `json:"job_parameters,omitempty"`
+	// A token that can be used to list the next page of sub-resources.
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// A unique identifier for this job run. This is set to the same value as
 	// `run_id`.
 	NumberInJob int64 `json:"number_in_job,omitempty"`
@@ -2169,6 +2177,8 @@ type Run struct {
 	OriginalAttemptRunId int64 `json:"original_attempt_run_id,omitempty"`
 	// The parameters used for this run.
 	OverridingParameters *RunParameters `json:"overriding_parameters,omitempty"`
+	// A token that can be used to list the previous page of sub-resources.
+	PrevPageToken string `json:"prev_page_token,omitempty"`
 	// The time in milliseconds that the run has spent in the queue.
 	QueueDuration int64 `json:"queue_duration,omitempty"`
 	// The repair history of the run.
@@ -3494,7 +3504,7 @@ func (s SqlTaskSubscription) MarshalJSON() ([]byte, error) {
 
 type SubmitRun struct {
 	// List of permissions to set on the job.
-	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
+	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional set of email addresses notified when the run begins or
 	// completes.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`

@@ -298,53 +298,6 @@ func (_c *MockAccountStorageCredentialsInterface_GetByMetastoreIdAndStorageCrede
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockAccountStorageCredentialsInterface) Impl() catalog.AccountStorageCredentialsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.AccountStorageCredentialsService
-	if rf, ok := ret.Get(0).(func() catalog.AccountStorageCredentialsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.AccountStorageCredentialsService)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountStorageCredentialsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockAccountStorageCredentialsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockAccountStorageCredentialsInterface_Expecter) Impl() *MockAccountStorageCredentialsInterface_Impl_Call {
-	return &MockAccountStorageCredentialsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockAccountStorageCredentialsInterface_Impl_Call) Run(run func()) *MockAccountStorageCredentialsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockAccountStorageCredentialsInterface_Impl_Call) Return(_a0 catalog.AccountStorageCredentialsService) *MockAccountStorageCredentialsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountStorageCredentialsInterface_Impl_Call) RunAndReturn(run func() catalog.AccountStorageCredentialsService) *MockAccountStorageCredentialsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockAccountStorageCredentialsInterface) List(ctx context.Context, request catalog.ListAccountStorageCredentialsRequest) listing.Iterator[catalog.StorageCredentialInfo] {
 	ret := _m.Called(ctx, request)
@@ -567,54 +520,6 @@ func (_c *MockAccountStorageCredentialsInterface_Update_Call) Return(_a0 *catalo
 }
 
 func (_c *MockAccountStorageCredentialsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.AccountsUpdateStorageCredential) (*catalog.AccountsStorageCredentialInfo, error)) *MockAccountStorageCredentialsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockAccountStorageCredentialsInterface) WithImpl(impl catalog.AccountStorageCredentialsService) catalog.AccountStorageCredentialsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.AccountStorageCredentialsInterface
-	if rf, ok := ret.Get(0).(func(catalog.AccountStorageCredentialsService) catalog.AccountStorageCredentialsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.AccountStorageCredentialsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountStorageCredentialsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockAccountStorageCredentialsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.AccountStorageCredentialsService
-func (_e *MockAccountStorageCredentialsInterface_Expecter) WithImpl(impl interface{}) *MockAccountStorageCredentialsInterface_WithImpl_Call {
-	return &MockAccountStorageCredentialsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockAccountStorageCredentialsInterface_WithImpl_Call) Run(run func(impl catalog.AccountStorageCredentialsService)) *MockAccountStorageCredentialsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.AccountStorageCredentialsService))
-	})
-	return _c
-}
-
-func (_c *MockAccountStorageCredentialsInterface_WithImpl_Call) Return(_a0 catalog.AccountStorageCredentialsInterface) *MockAccountStorageCredentialsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountStorageCredentialsInterface_WithImpl_Call) RunAndReturn(run func(catalog.AccountStorageCredentialsService) catalog.AccountStorageCredentialsInterface) *MockAccountStorageCredentialsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

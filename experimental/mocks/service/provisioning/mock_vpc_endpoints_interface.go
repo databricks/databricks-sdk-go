@@ -352,53 +352,6 @@ func (_c *MockVpcEndpointsInterface_GetByVpcEndpointName_Call) RunAndReturn(run 
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockVpcEndpointsInterface) Impl() provisioning.VpcEndpointsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 provisioning.VpcEndpointsService
-	if rf, ok := ret.Get(0).(func() provisioning.VpcEndpointsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(provisioning.VpcEndpointsService)
-		}
-	}
-
-	return r0
-}
-
-// MockVpcEndpointsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockVpcEndpointsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockVpcEndpointsInterface_Expecter) Impl() *MockVpcEndpointsInterface_Impl_Call {
-	return &MockVpcEndpointsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockVpcEndpointsInterface_Impl_Call) Run(run func()) *MockVpcEndpointsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockVpcEndpointsInterface_Impl_Call) Return(_a0 provisioning.VpcEndpointsService) *MockVpcEndpointsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockVpcEndpointsInterface_Impl_Call) RunAndReturn(run func() provisioning.VpcEndpointsService) *MockVpcEndpointsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx
 func (_m *MockVpcEndpointsInterface) List(ctx context.Context) ([]provisioning.VpcEndpoint, error) {
 	ret := _m.Called(ctx)
@@ -511,54 +464,6 @@ func (_c *MockVpcEndpointsInterface_VpcEndpointVpcEndpointNameToVpcEndpointIdMap
 }
 
 func (_c *MockVpcEndpointsInterface_VpcEndpointVpcEndpointNameToVpcEndpointIdMap_Call) RunAndReturn(run func(context.Context) (map[string]string, error)) *MockVpcEndpointsInterface_VpcEndpointVpcEndpointNameToVpcEndpointIdMap_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockVpcEndpointsInterface) WithImpl(impl provisioning.VpcEndpointsService) provisioning.VpcEndpointsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 provisioning.VpcEndpointsInterface
-	if rf, ok := ret.Get(0).(func(provisioning.VpcEndpointsService) provisioning.VpcEndpointsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(provisioning.VpcEndpointsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockVpcEndpointsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockVpcEndpointsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl provisioning.VpcEndpointsService
-func (_e *MockVpcEndpointsInterface_Expecter) WithImpl(impl interface{}) *MockVpcEndpointsInterface_WithImpl_Call {
-	return &MockVpcEndpointsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockVpcEndpointsInterface_WithImpl_Call) Run(run func(impl provisioning.VpcEndpointsService)) *MockVpcEndpointsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(provisioning.VpcEndpointsService))
-	})
-	return _c
-}
-
-func (_c *MockVpcEndpointsInterface_WithImpl_Call) Return(_a0 provisioning.VpcEndpointsInterface) *MockVpcEndpointsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockVpcEndpointsInterface_WithImpl_Call) RunAndReturn(run func(provisioning.VpcEndpointsService) provisioning.VpcEndpointsInterface) *MockVpcEndpointsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

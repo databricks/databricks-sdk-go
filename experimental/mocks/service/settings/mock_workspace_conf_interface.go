@@ -81,53 +81,6 @@ func (_c *MockWorkspaceConfInterface_GetStatus_Call) RunAndReturn(run func(conte
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockWorkspaceConfInterface) Impl() settings.WorkspaceConfService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.WorkspaceConfService
-	if rf, ok := ret.Get(0).(func() settings.WorkspaceConfService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.WorkspaceConfService)
-		}
-	}
-
-	return r0
-}
-
-// MockWorkspaceConfInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockWorkspaceConfInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockWorkspaceConfInterface_Expecter) Impl() *MockWorkspaceConfInterface_Impl_Call {
-	return &MockWorkspaceConfInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockWorkspaceConfInterface_Impl_Call) Run(run func()) *MockWorkspaceConfInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockWorkspaceConfInterface_Impl_Call) Return(_a0 settings.WorkspaceConfService) *MockWorkspaceConfInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockWorkspaceConfInterface_Impl_Call) RunAndReturn(run func() settings.WorkspaceConfService) *MockWorkspaceConfInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // SetStatus provides a mock function with given fields: ctx, request
 func (_m *MockWorkspaceConfInterface) SetStatus(ctx context.Context, request settings.WorkspaceConf) error {
 	ret := _m.Called(ctx, request)
@@ -171,54 +124,6 @@ func (_c *MockWorkspaceConfInterface_SetStatus_Call) Return(_a0 error) *MockWork
 }
 
 func (_c *MockWorkspaceConfInterface_SetStatus_Call) RunAndReturn(run func(context.Context, settings.WorkspaceConf) error) *MockWorkspaceConfInterface_SetStatus_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockWorkspaceConfInterface) WithImpl(impl settings.WorkspaceConfService) settings.WorkspaceConfInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.WorkspaceConfInterface
-	if rf, ok := ret.Get(0).(func(settings.WorkspaceConfService) settings.WorkspaceConfInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.WorkspaceConfInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockWorkspaceConfInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockWorkspaceConfInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.WorkspaceConfService
-func (_e *MockWorkspaceConfInterface_Expecter) WithImpl(impl interface{}) *MockWorkspaceConfInterface_WithImpl_Call {
-	return &MockWorkspaceConfInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockWorkspaceConfInterface_WithImpl_Call) Run(run func(impl settings.WorkspaceConfService)) *MockWorkspaceConfInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.WorkspaceConfService))
-	})
-	return _c
-}
-
-func (_c *MockWorkspaceConfInterface_WithImpl_Call) Return(_a0 settings.WorkspaceConfInterface) *MockWorkspaceConfInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockWorkspaceConfInterface_WithImpl_Call) RunAndReturn(run func(settings.WorkspaceConfService) settings.WorkspaceConfInterface) *MockWorkspaceConfInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

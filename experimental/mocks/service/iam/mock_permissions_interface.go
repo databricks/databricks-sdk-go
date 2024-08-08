@@ -260,53 +260,6 @@ func (_c *MockPermissionsInterface_GetPermissionLevelsByRequestObjectTypeAndRequ
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockPermissionsInterface) Impl() iam.PermissionsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 iam.PermissionsService
-	if rf, ok := ret.Get(0).(func() iam.PermissionsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.PermissionsService)
-		}
-	}
-
-	return r0
-}
-
-// MockPermissionsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockPermissionsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockPermissionsInterface_Expecter) Impl() *MockPermissionsInterface_Impl_Call {
-	return &MockPermissionsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockPermissionsInterface_Impl_Call) Run(run func()) *MockPermissionsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPermissionsInterface_Impl_Call) Return(_a0 iam.PermissionsService) *MockPermissionsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPermissionsInterface_Impl_Call) RunAndReturn(run func() iam.PermissionsService) *MockPermissionsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Set provides a mock function with given fields: ctx, request
 func (_m *MockPermissionsInterface) Set(ctx context.Context, request iam.PermissionsRequest) (*iam.ObjectPermissions, error) {
 	ret := _m.Called(ctx, request)
@@ -421,54 +374,6 @@ func (_c *MockPermissionsInterface_Update_Call) Return(_a0 *iam.ObjectPermission
 }
 
 func (_c *MockPermissionsInterface_Update_Call) RunAndReturn(run func(context.Context, iam.PermissionsRequest) (*iam.ObjectPermissions, error)) *MockPermissionsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockPermissionsInterface) WithImpl(impl iam.PermissionsService) iam.PermissionsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 iam.PermissionsInterface
-	if rf, ok := ret.Get(0).(func(iam.PermissionsService) iam.PermissionsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.PermissionsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockPermissionsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockPermissionsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl iam.PermissionsService
-func (_e *MockPermissionsInterface_Expecter) WithImpl(impl interface{}) *MockPermissionsInterface_WithImpl_Call {
-	return &MockPermissionsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockPermissionsInterface_WithImpl_Call) Run(run func(impl iam.PermissionsService)) *MockPermissionsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(iam.PermissionsService))
-	})
-	return _c
-}
-
-func (_c *MockPermissionsInterface_WithImpl_Call) Return(_a0 iam.PermissionsInterface) *MockPermissionsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPermissionsInterface_WithImpl_Call) RunAndReturn(run func(iam.PermissionsService) iam.PermissionsInterface) *MockPermissionsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

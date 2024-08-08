@@ -352,53 +352,6 @@ func (_c *MockStorageInterface_GetByStorageConfigurationName_Call) RunAndReturn(
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockStorageInterface) Impl() provisioning.StorageService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 provisioning.StorageService
-	if rf, ok := ret.Get(0).(func() provisioning.StorageService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(provisioning.StorageService)
-		}
-	}
-
-	return r0
-}
-
-// MockStorageInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockStorageInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockStorageInterface_Expecter) Impl() *MockStorageInterface_Impl_Call {
-	return &MockStorageInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockStorageInterface_Impl_Call) Run(run func()) *MockStorageInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockStorageInterface_Impl_Call) Return(_a0 provisioning.StorageService) *MockStorageInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockStorageInterface_Impl_Call) RunAndReturn(run func() provisioning.StorageService) *MockStorageInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx
 func (_m *MockStorageInterface) List(ctx context.Context) ([]provisioning.StorageConfiguration, error) {
 	ret := _m.Called(ctx)
@@ -511,54 +464,6 @@ func (_c *MockStorageInterface_StorageConfigurationStorageConfigurationNameToSto
 }
 
 func (_c *MockStorageInterface_StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap_Call) RunAndReturn(run func(context.Context) (map[string]string, error)) *MockStorageInterface_StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockStorageInterface) WithImpl(impl provisioning.StorageService) provisioning.StorageInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 provisioning.StorageInterface
-	if rf, ok := ret.Get(0).(func(provisioning.StorageService) provisioning.StorageInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(provisioning.StorageInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockStorageInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockStorageInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl provisioning.StorageService
-func (_e *MockStorageInterface_Expecter) WithImpl(impl interface{}) *MockStorageInterface_WithImpl_Call {
-	return &MockStorageInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockStorageInterface_WithImpl_Call) Run(run func(impl provisioning.StorageService)) *MockStorageInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(provisioning.StorageService))
-	})
-	return _c
-}
-
-func (_c *MockStorageInterface_WithImpl_Call) Return(_a0 provisioning.StorageInterface) *MockStorageInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockStorageInterface_WithImpl_Call) RunAndReturn(run func(provisioning.StorageService) provisioning.StorageInterface) *MockStorageInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

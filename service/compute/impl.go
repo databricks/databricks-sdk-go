@@ -45,7 +45,7 @@ func (a *clusterPoliciesImpl) Edit(ctx context.Context, request EditPolicy) erro
 	return err
 }
 
-func (a *clusterPoliciesImpl) Get(ctx context.Context, request GetClusterPolicyRequest) (*Policy, error) {
+func (a *clusterPoliciesImpl) Get(ctx context.Context, request GetPolicy) (*Policy, error) {
 	var policy Policy
 	path := "/api/2.0/policies/clusters/get"
 	headers := make(map[string]string)
@@ -72,7 +72,7 @@ func (a *clusterPoliciesImpl) GetPermissions(ctx context.Context, request GetClu
 	return &clusterPolicyPermissions, err
 }
 
-func (a *clusterPoliciesImpl) List(ctx context.Context, request ListClusterPoliciesRequest) (*ListPoliciesResponse, error) {
+func (a *clusterPoliciesImpl) List(ctx context.Context, request ListPolicies) (*ListPoliciesResponse, error) {
 	var listPoliciesResponse ListPoliciesResponse
 	path := "/api/2.0/policies/clusters/list"
 	headers := make(map[string]string)
@@ -286,6 +286,16 @@ func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &unpinClusterResponse)
+	return err
+}
+
+func (a *clustersImpl) Update(ctx context.Context, request UpdateCluster) error {
+	var updateClusterResponse UpdateClusterResponse
+	path := "/api/2.1/clusters/update"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &updateClusterResponse)
 	return err
 }
 
@@ -604,7 +614,7 @@ func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyReq
 	return &policyFamily, err
 }
 
-func (a *policyFamiliesImpl) List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error) {
+func (a *policyFamiliesImpl) List(ctx context.Context, request ListPolicyFamilies) (*ListPolicyFamiliesResponse, error) {
 	var listPolicyFamiliesResponse ListPolicyFamiliesResponse
 	path := "/api/2.0/policy-families"
 	headers := make(map[string]string)

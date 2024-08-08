@@ -354,53 +354,6 @@ func (_c *MockServicePrincipalsInterface_GetById_Call) RunAndReturn(run func(con
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockServicePrincipalsInterface) Impl() iam.ServicePrincipalsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 iam.ServicePrincipalsService
-	if rf, ok := ret.Get(0).(func() iam.ServicePrincipalsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.ServicePrincipalsService)
-		}
-	}
-
-	return r0
-}
-
-// MockServicePrincipalsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockServicePrincipalsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockServicePrincipalsInterface_Expecter) Impl() *MockServicePrincipalsInterface_Impl_Call {
-	return &MockServicePrincipalsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockServicePrincipalsInterface_Impl_Call) Run(run func()) *MockServicePrincipalsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockServicePrincipalsInterface_Impl_Call) Return(_a0 iam.ServicePrincipalsService) *MockServicePrincipalsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockServicePrincipalsInterface_Impl_Call) RunAndReturn(run func() iam.ServicePrincipalsService) *MockServicePrincipalsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockServicePrincipalsInterface) List(ctx context.Context, request iam.ListServicePrincipalsRequest) listing.Iterator[iam.ServicePrincipal] {
 	ret := _m.Called(ctx, request)
@@ -658,54 +611,6 @@ func (_c *MockServicePrincipalsInterface_Update_Call) Return(_a0 error) *MockSer
 }
 
 func (_c *MockServicePrincipalsInterface_Update_Call) RunAndReturn(run func(context.Context, iam.ServicePrincipal) error) *MockServicePrincipalsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockServicePrincipalsInterface) WithImpl(impl iam.ServicePrincipalsService) iam.ServicePrincipalsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 iam.ServicePrincipalsInterface
-	if rf, ok := ret.Get(0).(func(iam.ServicePrincipalsService) iam.ServicePrincipalsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.ServicePrincipalsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockServicePrincipalsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockServicePrincipalsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl iam.ServicePrincipalsService
-func (_e *MockServicePrincipalsInterface_Expecter) WithImpl(impl interface{}) *MockServicePrincipalsInterface_WithImpl_Call {
-	return &MockServicePrincipalsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockServicePrincipalsInterface_WithImpl_Call) Run(run func(impl iam.ServicePrincipalsService)) *MockServicePrincipalsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(iam.ServicePrincipalsService))
-	})
-	return _c
-}
-
-func (_c *MockServicePrincipalsInterface_WithImpl_Call) Return(_a0 iam.ServicePrincipalsInterface) *MockServicePrincipalsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockServicePrincipalsInterface_WithImpl_Call) RunAndReturn(run func(iam.ServicePrincipalsService) iam.ServicePrincipalsInterface) *MockServicePrincipalsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }
