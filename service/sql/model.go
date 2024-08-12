@@ -1248,30 +1248,6 @@ type DeleteWarehouseRequest struct {
 type DeleteWarehouseResponse struct {
 }
 
-// The fetch disposition provides two modes of fetching results: `INLINE` and
-// `EXTERNAL_LINKS`.
-//
-// Statements executed with `INLINE` disposition will return result data inline,
-// in `JSON_ARRAY` format, in a series of chunks. If a given statement produces
-// a result set with a size larger than 25 MiB, that statement execution is
-// aborted, and no result set will be available.
-//
-// **NOTE** Byte limits are computed based upon internal representations of the
-// result set data, and might not match the sizes visible in JSON responses.
-//
-// Statements executed with `EXTERNAL_LINKS` disposition will return result data
-// as external links: URLs that point to cloud storage internal to the
-// workspace. Using `EXTERNAL_LINKS` disposition allows statements to generate
-// arbitrarily sized result sets for fetching up to 100 GiB. The resulting links
-// have two important properties:
-//
-// 1. They point to resources _external_ to the Databricks compute; therefore
-// any associated authentication information (typically a personal access token,
-// OAuth token, or similar) _must be removed_ when fetching from these links.
-//
-// 2. These are presigned URLs with a specific expiration, indicated in the
-// response. The behavior when attempting to use an expired link is cloud
-// specific.
 type Disposition string
 
 const DispositionExternalLinks Disposition = `EXTERNAL_LINKS`
@@ -1694,32 +1670,7 @@ type ExecuteStatementRequest struct {
 	//
 	// [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
 	Catalog string `json:"catalog,omitempty"`
-	// The fetch disposition provides two modes of fetching results: `INLINE`
-	// and `EXTERNAL_LINKS`.
-	//
-	// Statements executed with `INLINE` disposition will return result data
-	// inline, in `JSON_ARRAY` format, in a series of chunks. If a given
-	// statement produces a result set with a size larger than 25 MiB, that
-	// statement execution is aborted, and no result set will be available.
-	//
-	// **NOTE** Byte limits are computed based upon internal representations of
-	// the result set data, and might not match the sizes visible in JSON
-	// responses.
-	//
-	// Statements executed with `EXTERNAL_LINKS` disposition will return result
-	// data as external links: URLs that point to cloud storage internal to the
-	// workspace. Using `EXTERNAL_LINKS` disposition allows statements to
-	// generate arbitrarily sized result sets for fetching up to 100 GiB. The
-	// resulting links have two important properties:
-	//
-	// 1. They point to resources _external_ to the Databricks compute;
-	// therefore any associated authentication information (typically a personal
-	// access token, OAuth token, or similar) _must be removed_ when fetching
-	// from these links.
-	//
-	// 2. These are presigned URLs with a specific expiration, indicated in the
-	// response. The behavior when attempting to use an expired link is cloud
-	// specific.
+
 	Disposition Disposition `json:"disposition,omitempty"`
 	// Statement execution supports three result formats: `JSON_ARRAY`
 	// (default), `ARROW_STREAM`, and `CSV`.
@@ -1886,10 +1837,7 @@ type ExternalLink struct {
 	// becomes invalid, after which point a new `external_link` must be
 	// requested.
 	Expiration string `json:"expiration,omitempty"`
-	// A presigned URL pointing to a chunk of result data, hosted by an external
-	// service, with a short expiration time (<= 15 minutes). As this URL
-	// contains a temporary credential, it should be considered sensitive and
-	// the client should not expose this URL in a log.
+
 	ExternalLink string `json:"external_link,omitempty"`
 	// HTTP headers that must be included with a GET request to the
 	// `external_link`. Each header is provided as a key-value pair. Headers are
@@ -3783,12 +3731,6 @@ type RestoreQueriesLegacyRequest struct {
 type RestoreResponse struct {
 }
 
-// Contains the result data of a single chunk when using `INLINE` disposition.
-// When using `EXTERNAL_LINKS` disposition, the array `external_links` is used
-// instead to provide presigned URLs to the result data in cloud storage.
-// Exactly one of these alternatives is used. (While the `external_links` array
-// prepares the API to return multiple links in a single response. Currently
-// only a single link is returned.)
 type ResultData struct {
 	// The number of bytes in the result chunk. This field is not available when
 	// using `INLINE` disposition.
@@ -4205,12 +4147,7 @@ func (s StatementParameterListItem) MarshalJSON() ([]byte, error) {
 type StatementResponse struct {
 	// The result manifest provides schema and metadata for the result set.
 	Manifest *ResultManifest `json:"manifest,omitempty"`
-	// Contains the result data of a single chunk when using `INLINE`
-	// disposition. When using `EXTERNAL_LINKS` disposition, the array
-	// `external_links` is used instead to provide presigned URLs to the result
-	// data in cloud storage. Exactly one of these alternatives is used. (While
-	// the `external_links` array prepares the API to return multiple links in a
-	// single response. Currently only a single link is returned.)
+
 	Result *ResultData `json:"result,omitempty"`
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
@@ -4916,6 +4853,8 @@ type WarehousePermissionLevel string
 
 const WarehousePermissionLevelCanManage WarehousePermissionLevel = `CAN_MANAGE`
 
+const WarehousePermissionLevelCanMonitor WarehousePermissionLevel = `CAN_MONITOR`
+
 const WarehousePermissionLevelCanUse WarehousePermissionLevel = `CAN_USE`
 
 const WarehousePermissionLevelIsOwner WarehousePermissionLevel = `IS_OWNER`
@@ -4928,11 +4867,11 @@ func (f *WarehousePermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WarehousePermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_MANAGE`, `CAN_USE`, `IS_OWNER`:
+	case `CAN_MANAGE`, `CAN_MONITOR`, `CAN_USE`, `IS_OWNER`:
 		*f = WarehousePermissionLevel(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_USE", "IS_OWNER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MONITOR", "CAN_USE", "IS_OWNER"`, v)
 	}
 }
 

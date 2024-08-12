@@ -211,10 +211,10 @@ type GetPermissionLevelsResponse struct {
 type GetPermissionRequest struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
-	// The type of the request object. Can be one of the following:
-	// authorization, clusters, cluster-policies, directories, experiments,
-	// files, instance-pools, jobs, notebooks, pipelines, registered-models,
-	// repos, serving-endpoints, or warehouses.
+	// The type of the request object. Can be one of the following: alerts,
+	// authorization, clusters, cluster-policies, dbsql-dashboards, directories,
+	// experiments, files, instance-pools, jobs, notebooks, pipelines, queries,
+	// registered-models, repos, serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1059,6 +1059,8 @@ const PermissionLevelCanManageRun PermissionLevel = `CAN_MANAGE_RUN`
 
 const PermissionLevelCanManageStagingVersions PermissionLevel = `CAN_MANAGE_STAGING_VERSIONS`
 
+const PermissionLevelCanMonitor PermissionLevel = `CAN_MONITOR`
+
 const PermissionLevelCanQuery PermissionLevel = `CAN_QUERY`
 
 const PermissionLevelCanRead PermissionLevel = `CAN_READ`
@@ -1083,11 +1085,11 @@ func (f *PermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_ATTACH_TO`, `CAN_BIND`, `CAN_EDIT`, `CAN_EDIT_METADATA`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_RUN`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_QUERY`, `CAN_READ`, `CAN_RESTART`, `CAN_RUN`, `CAN_USE`, `CAN_VIEW`, `CAN_VIEW_METADATA`, `IS_OWNER`:
+	case `CAN_ATTACH_TO`, `CAN_BIND`, `CAN_EDIT`, `CAN_EDIT_METADATA`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_RUN`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_MONITOR`, `CAN_QUERY`, `CAN_READ`, `CAN_RESTART`, `CAN_RUN`, `CAN_USE`, `CAN_VIEW`, `CAN_VIEW_METADATA`, `IS_OWNER`:
 		*f = PermissionLevel(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_BIND", "CAN_EDIT", "CAN_EDIT_METADATA", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_RUN", "CAN_MANAGE_STAGING_VERSIONS", "CAN_QUERY", "CAN_READ", "CAN_RESTART", "CAN_RUN", "CAN_USE", "CAN_VIEW", "CAN_VIEW_METADATA", "IS_OWNER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_BIND", "CAN_EDIT", "CAN_EDIT_METADATA", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_RUN", "CAN_MANAGE_STAGING_VERSIONS", "CAN_MONITOR", "CAN_QUERY", "CAN_READ", "CAN_RESTART", "CAN_RUN", "CAN_USE", "CAN_VIEW", "CAN_VIEW_METADATA", "IS_OWNER"`, v)
 	}
 }
 
@@ -1133,10 +1135,10 @@ type PermissionsRequest struct {
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
-	// The type of the request object. Can be one of the following:
-	// authorization, clusters, cluster-policies, directories, experiments,
-	// files, instance-pools, jobs, notebooks, pipelines, registered-models,
-	// repos, serving-endpoints, or warehouses.
+	// The type of the request object. Can be one of the following: alerts,
+	// authorization, clusters, cluster-policies, dbsql-dashboards, directories,
+	// experiments, files, instance-pools, jobs, notebooks, pipelines, queries,
+	// registered-models, repos, serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1322,7 +1324,7 @@ type User struct {
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID. This is automatically set by Databricks. Any value
 	// provided by the client will be ignored.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`
 	// Corresponds to AWS instance profile/arn role.

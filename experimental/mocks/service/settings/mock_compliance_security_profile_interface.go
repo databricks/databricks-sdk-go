@@ -81,53 +81,6 @@ func (_c *MockComplianceSecurityProfileInterface_Get_Call) RunAndReturn(run func
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockComplianceSecurityProfileInterface) Impl() settings.ComplianceSecurityProfileService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.ComplianceSecurityProfileService
-	if rf, ok := ret.Get(0).(func() settings.ComplianceSecurityProfileService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.ComplianceSecurityProfileService)
-		}
-	}
-
-	return r0
-}
-
-// MockComplianceSecurityProfileInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockComplianceSecurityProfileInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockComplianceSecurityProfileInterface_Expecter) Impl() *MockComplianceSecurityProfileInterface_Impl_Call {
-	return &MockComplianceSecurityProfileInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockComplianceSecurityProfileInterface_Impl_Call) Run(run func()) *MockComplianceSecurityProfileInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockComplianceSecurityProfileInterface_Impl_Call) Return(_a0 settings.ComplianceSecurityProfileService) *MockComplianceSecurityProfileInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockComplianceSecurityProfileInterface_Impl_Call) RunAndReturn(run func() settings.ComplianceSecurityProfileService) *MockComplianceSecurityProfileInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockComplianceSecurityProfileInterface) Update(ctx context.Context, request settings.UpdateComplianceSecurityProfileSettingRequest) (*settings.ComplianceSecurityProfileSetting, error) {
 	ret := _m.Called(ctx, request)
@@ -183,54 +136,6 @@ func (_c *MockComplianceSecurityProfileInterface_Update_Call) Return(_a0 *settin
 }
 
 func (_c *MockComplianceSecurityProfileInterface_Update_Call) RunAndReturn(run func(context.Context, settings.UpdateComplianceSecurityProfileSettingRequest) (*settings.ComplianceSecurityProfileSetting, error)) *MockComplianceSecurityProfileInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockComplianceSecurityProfileInterface) WithImpl(impl settings.ComplianceSecurityProfileService) settings.ComplianceSecurityProfileInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.ComplianceSecurityProfileInterface
-	if rf, ok := ret.Get(0).(func(settings.ComplianceSecurityProfileService) settings.ComplianceSecurityProfileInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.ComplianceSecurityProfileInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockComplianceSecurityProfileInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockComplianceSecurityProfileInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.ComplianceSecurityProfileService
-func (_e *MockComplianceSecurityProfileInterface_Expecter) WithImpl(impl interface{}) *MockComplianceSecurityProfileInterface_WithImpl_Call {
-	return &MockComplianceSecurityProfileInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockComplianceSecurityProfileInterface_WithImpl_Call) Run(run func(impl settings.ComplianceSecurityProfileService)) *MockComplianceSecurityProfileInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.ComplianceSecurityProfileService))
-	})
-	return _c
-}
-
-func (_c *MockComplianceSecurityProfileInterface_WithImpl_Call) Return(_a0 settings.ComplianceSecurityProfileInterface) *MockComplianceSecurityProfileInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockComplianceSecurityProfileInterface_WithImpl_Call) RunAndReturn(run func(settings.ComplianceSecurityProfileService) settings.ComplianceSecurityProfileInterface) *MockComplianceSecurityProfileInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

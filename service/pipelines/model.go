@@ -43,7 +43,7 @@ type CreatePipeline struct {
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'target' or 'catalog' settings.
-	IngestionDefinition *ManagedIngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
+	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
@@ -196,7 +196,7 @@ type EditPipeline struct {
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'target' or 'catalog' settings.
-	IngestionDefinition *ManagedIngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
+	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
@@ -417,7 +417,7 @@ type IngestionGatewayPipelineDefinition struct {
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
 	GatewayStorageCatalog string `json:"gateway_storage_catalog,omitempty"`
-	// Required. The Unity Catalog-compatible naming for the gateway storage
+	// Optional. The Unity Catalog-compatible name for the gateway storage
 	// location. This is the destination to use for the data that is extracted
 	// by the gateway. Delta Live Tables system will automatically create the
 	// storage location under the catalog and schema.
@@ -434,6 +434,33 @@ func (s *IngestionGatewayPipelineDefinition) UnmarshalJSON(b []byte) error {
 }
 
 func (s IngestionGatewayPipelineDefinition) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type IngestionPipelineDefinition struct {
+	// Immutable. The Unity Catalog connection this ingestion pipeline uses to
+	// communicate with the source. Specify either ingestion_gateway_id or
+	// connection_name.
+	ConnectionName string `json:"connection_name,omitempty"`
+	// Immutable. Identifier for the ingestion gateway used by this ingestion
+	// pipeline to communicate with the source. Specify either
+	// ingestion_gateway_id or connection_name.
+	IngestionGatewayId string `json:"ingestion_gateway_id,omitempty"`
+	// Required. Settings specifying tables to replicate and the destination for
+	// the replicated tables.
+	Objects []IngestionConfig `json:"objects,omitempty"`
+	// Configuration settings to control the ingestion of tables. These settings
+	// are applied to all tables in the pipeline.
+	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *IngestionPipelineDefinition) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -585,33 +612,6 @@ func (s *ListUpdatesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListUpdatesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type ManagedIngestionPipelineDefinition struct {
-	// Immutable. The Unity Catalog connection this ingestion pipeline uses to
-	// communicate with the source. Specify either ingestion_gateway_id or
-	// connection_name.
-	ConnectionName string `json:"connection_name,omitempty"`
-	// Immutable. Identifier for the ingestion gateway used by this ingestion
-	// pipeline to communicate with the source. Specify either
-	// ingestion_gateway_id or connection_name.
-	IngestionGatewayId string `json:"ingestion_gateway_id,omitempty"`
-	// Required. Settings specifying tables to replicate and the destination for
-	// the replicated tables.
-	Objects []IngestionConfig `json:"objects,omitempty"`
-	// Configuration settings to control the ingestion of tables. These settings
-	// are applied to all tables in the pipeline.
-	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ManagedIngestionPipelineDefinition) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ManagedIngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1115,7 +1115,7 @@ type PipelineSpec struct {
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'target' or 'catalog' settings.
-	IngestionDefinition *ManagedIngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
+	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
@@ -1267,8 +1267,7 @@ type SchemaSpec struct {
 	SourceSchema string `json:"source_schema,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in this schema and override the
-	// table_configuration defined in the ManagedIngestionPipelineDefinition
-	// object.
+	// table_configuration defined in the IngestionPipelineDefinition object.
 	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -1444,7 +1443,7 @@ type TableSpec struct {
 	SourceTable string `json:"source_table,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
-	// ManagedIngestionPipelineDefinition object and the SchemaSpec.
+	// IngestionPipelineDefinition object and the SchemaSpec.
 	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
 
 	ForceSendFields []string `json:"-"`

@@ -638,53 +638,6 @@ func (_c *MockClusterPoliciesInterface_GetPermissionsByClusterPolicyId_Call) Run
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockClusterPoliciesInterface) Impl() compute.ClusterPoliciesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 compute.ClusterPoliciesService
-	if rf, ok := ret.Get(0).(func() compute.ClusterPoliciesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.ClusterPoliciesService)
-		}
-	}
-
-	return r0
-}
-
-// MockClusterPoliciesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockClusterPoliciesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockClusterPoliciesInterface_Expecter) Impl() *MockClusterPoliciesInterface_Impl_Call {
-	return &MockClusterPoliciesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockClusterPoliciesInterface_Impl_Call) Run(run func()) *MockClusterPoliciesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockClusterPoliciesInterface_Impl_Call) Return(_a0 compute.ClusterPoliciesService) *MockClusterPoliciesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockClusterPoliciesInterface_Impl_Call) RunAndReturn(run func() compute.ClusterPoliciesService) *MockClusterPoliciesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockClusterPoliciesInterface) List(ctx context.Context, request compute.ListClusterPoliciesRequest) listing.Iterator[compute.Policy] {
 	ret := _m.Called(ctx, request)
@@ -966,54 +919,6 @@ func (_c *MockClusterPoliciesInterface_UpdatePermissions_Call) Return(_a0 *compu
 }
 
 func (_c *MockClusterPoliciesInterface_UpdatePermissions_Call) RunAndReturn(run func(context.Context, compute.ClusterPolicyPermissionsRequest) (*compute.ClusterPolicyPermissions, error)) *MockClusterPoliciesInterface_UpdatePermissions_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockClusterPoliciesInterface) WithImpl(impl compute.ClusterPoliciesService) compute.ClusterPoliciesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 compute.ClusterPoliciesInterface
-	if rf, ok := ret.Get(0).(func(compute.ClusterPoliciesService) compute.ClusterPoliciesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.ClusterPoliciesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockClusterPoliciesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockClusterPoliciesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl compute.ClusterPoliciesService
-func (_e *MockClusterPoliciesInterface_Expecter) WithImpl(impl interface{}) *MockClusterPoliciesInterface_WithImpl_Call {
-	return &MockClusterPoliciesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockClusterPoliciesInterface_WithImpl_Call) Run(run func(impl compute.ClusterPoliciesService)) *MockClusterPoliciesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(compute.ClusterPoliciesService))
-	})
-	return _c
-}
-
-func (_c *MockClusterPoliciesInterface_WithImpl_Call) Return(_a0 compute.ClusterPoliciesInterface) *MockClusterPoliciesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockClusterPoliciesInterface_WithImpl_Call) RunAndReturn(run func(compute.ClusterPoliciesService) compute.ClusterPoliciesInterface) *MockClusterPoliciesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

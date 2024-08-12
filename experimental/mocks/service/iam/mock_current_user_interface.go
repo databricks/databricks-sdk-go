@@ -22,53 +22,6 @@ func (_m *MockCurrentUserInterface) EXPECT() *MockCurrentUserInterface_Expecter 
 	return &MockCurrentUserInterface_Expecter{mock: &_m.Mock}
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockCurrentUserInterface) Impl() iam.CurrentUserService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 iam.CurrentUserService
-	if rf, ok := ret.Get(0).(func() iam.CurrentUserService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.CurrentUserService)
-		}
-	}
-
-	return r0
-}
-
-// MockCurrentUserInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockCurrentUserInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockCurrentUserInterface_Expecter) Impl() *MockCurrentUserInterface_Impl_Call {
-	return &MockCurrentUserInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockCurrentUserInterface_Impl_Call) Run(run func()) *MockCurrentUserInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockCurrentUserInterface_Impl_Call) Return(_a0 iam.CurrentUserService) *MockCurrentUserInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCurrentUserInterface_Impl_Call) RunAndReturn(run func() iam.CurrentUserService) *MockCurrentUserInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Me provides a mock function with given fields: ctx
 func (_m *MockCurrentUserInterface) Me(ctx context.Context) (*iam.User, error) {
 	ret := _m.Called(ctx)
@@ -123,54 +76,6 @@ func (_c *MockCurrentUserInterface_Me_Call) Return(_a0 *iam.User, _a1 error) *Mo
 }
 
 func (_c *MockCurrentUserInterface_Me_Call) RunAndReturn(run func(context.Context) (*iam.User, error)) *MockCurrentUserInterface_Me_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockCurrentUserInterface) WithImpl(impl iam.CurrentUserService) iam.CurrentUserInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 iam.CurrentUserInterface
-	if rf, ok := ret.Get(0).(func(iam.CurrentUserService) iam.CurrentUserInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.CurrentUserInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockCurrentUserInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockCurrentUserInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl iam.CurrentUserService
-func (_e *MockCurrentUserInterface_Expecter) WithImpl(impl interface{}) *MockCurrentUserInterface_WithImpl_Call {
-	return &MockCurrentUserInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockCurrentUserInterface_WithImpl_Call) Run(run func(impl iam.CurrentUserService)) *MockCurrentUserInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(iam.CurrentUserService))
-	})
-	return _c
-}
-
-func (_c *MockCurrentUserInterface_WithImpl_Call) Return(_a0 iam.CurrentUserInterface) *MockCurrentUserInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCurrentUserInterface_WithImpl_Call) RunAndReturn(run func(iam.CurrentUserService) iam.CurrentUserInterface) *MockCurrentUserInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

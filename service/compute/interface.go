@@ -266,6 +266,21 @@ type ClustersService interface {
 	// effect. This API can only be called by workspace admins.
 	Unpin(ctx context.Context, request UnpinCluster) error
 
+	// Update cluster configuration (partial).
+	//
+	// Updates the configuration of a cluster to match the partial set of
+	// attributes and size. Denote which fields to update using the
+	// `update_mask` field in the request body. A cluster can be updated if it
+	// is in a `RUNNING` or `TERMINATED` state. If a cluster is updated while in
+	// a `RUNNING` state, it will be restarted so that the new attributes can
+	// take effect. If a cluster is updated while in a `TERMINATED` state, it
+	// will remain `TERMINATED`. The updated attributes will take effect the
+	// next time the cluster is started using the `clusters/start` API. Attempts
+	// to update a cluster in any other state will be rejected with an
+	// `INVALID_STATE` error code. Clusters created by the Databricks Jobs
+	// service cannot be updated.
+	Update(ctx context.Context, request UpdateCluster) error
+
 	// Update cluster permissions.
 	//
 	// Updates the permissions on a cluster. Clusters can inherit permissions
@@ -554,12 +569,14 @@ type PolicyFamiliesService interface {
 
 	// Get policy family information.
 	//
-	// Retrieve the information for an policy family based on its identifier.
+	// Retrieve the information for an policy family based on its identifier and
+	// version
 	Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error)
 
 	// List policy families.
 	//
-	// Retrieve a list of policy families. This API is paginated.
+	// Returns the list of policy definition types available to use at their
+	// latest version. This API is paginated.
 	//
 	// Use ListAll() to get all PolicyFamily instances, which will iterate over every result page.
 	List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error)

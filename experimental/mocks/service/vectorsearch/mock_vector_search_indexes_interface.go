@@ -354,53 +354,6 @@ func (_c *MockVectorSearchIndexesInterface_GetIndexByIndexName_Call) RunAndRetur
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockVectorSearchIndexesInterface) Impl() vectorsearch.VectorSearchIndexesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 vectorsearch.VectorSearchIndexesService
-	if rf, ok := ret.Get(0).(func() vectorsearch.VectorSearchIndexesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(vectorsearch.VectorSearchIndexesService)
-		}
-	}
-
-	return r0
-}
-
-// MockVectorSearchIndexesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockVectorSearchIndexesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockVectorSearchIndexesInterface_Expecter) Impl() *MockVectorSearchIndexesInterface_Impl_Call {
-	return &MockVectorSearchIndexesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockVectorSearchIndexesInterface_Impl_Call) Run(run func()) *MockVectorSearchIndexesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockVectorSearchIndexesInterface_Impl_Call) Return(_a0 vectorsearch.VectorSearchIndexesService) *MockVectorSearchIndexesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockVectorSearchIndexesInterface_Impl_Call) RunAndReturn(run func() vectorsearch.VectorSearchIndexesService) *MockVectorSearchIndexesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ListIndexes provides a mock function with given fields: ctx, request
 func (_m *MockVectorSearchIndexesInterface) ListIndexes(ctx context.Context, request vectorsearch.ListIndexesRequest) listing.Iterator[vectorsearch.MiniVectorIndex] {
 	ret := _m.Called(ctx, request)
@@ -788,54 +741,6 @@ func (_c *MockVectorSearchIndexesInterface_UpsertDataVectorIndex_Call) Return(_a
 }
 
 func (_c *MockVectorSearchIndexesInterface_UpsertDataVectorIndex_Call) RunAndReturn(run func(context.Context, vectorsearch.UpsertDataVectorIndexRequest) (*vectorsearch.UpsertDataVectorIndexResponse, error)) *MockVectorSearchIndexesInterface_UpsertDataVectorIndex_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockVectorSearchIndexesInterface) WithImpl(impl vectorsearch.VectorSearchIndexesService) vectorsearch.VectorSearchIndexesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 vectorsearch.VectorSearchIndexesInterface
-	if rf, ok := ret.Get(0).(func(vectorsearch.VectorSearchIndexesService) vectorsearch.VectorSearchIndexesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(vectorsearch.VectorSearchIndexesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockVectorSearchIndexesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockVectorSearchIndexesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl vectorsearch.VectorSearchIndexesService
-func (_e *MockVectorSearchIndexesInterface_Expecter) WithImpl(impl interface{}) *MockVectorSearchIndexesInterface_WithImpl_Call {
-	return &MockVectorSearchIndexesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockVectorSearchIndexesInterface_WithImpl_Call) Run(run func(impl vectorsearch.VectorSearchIndexesService)) *MockVectorSearchIndexesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(vectorsearch.VectorSearchIndexesService))
-	})
-	return _c
-}
-
-func (_c *MockVectorSearchIndexesInterface_WithImpl_Call) Return(_a0 vectorsearch.VectorSearchIndexesInterface) *MockVectorSearchIndexesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockVectorSearchIndexesInterface_WithImpl_Call) RunAndReturn(run func(vectorsearch.VectorSearchIndexesService) vectorsearch.VectorSearchIndexesInterface) *MockVectorSearchIndexesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

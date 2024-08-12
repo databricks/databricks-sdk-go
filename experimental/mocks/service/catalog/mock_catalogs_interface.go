@@ -296,53 +296,6 @@ func (_c *MockCatalogsInterface_GetByName_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockCatalogsInterface) Impl() catalog.CatalogsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.CatalogsService
-	if rf, ok := ret.Get(0).(func() catalog.CatalogsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.CatalogsService)
-		}
-	}
-
-	return r0
-}
-
-// MockCatalogsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockCatalogsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockCatalogsInterface_Expecter) Impl() *MockCatalogsInterface_Impl_Call {
-	return &MockCatalogsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockCatalogsInterface_Impl_Call) Run(run func()) *MockCatalogsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockCatalogsInterface_Impl_Call) Return(_a0 catalog.CatalogsService) *MockCatalogsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCatalogsInterface_Impl_Call) RunAndReturn(run func() catalog.CatalogsService) *MockCatalogsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockCatalogsInterface) List(ctx context.Context, request catalog.ListCatalogsRequest) listing.Iterator[catalog.CatalogInfo] {
 	ret := _m.Called(ctx, request)
@@ -506,54 +459,6 @@ func (_c *MockCatalogsInterface_Update_Call) Return(_a0 *catalog.CatalogInfo, _a
 }
 
 func (_c *MockCatalogsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdateCatalog) (*catalog.CatalogInfo, error)) *MockCatalogsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockCatalogsInterface) WithImpl(impl catalog.CatalogsService) catalog.CatalogsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.CatalogsInterface
-	if rf, ok := ret.Get(0).(func(catalog.CatalogsService) catalog.CatalogsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.CatalogsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockCatalogsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockCatalogsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.CatalogsService
-func (_e *MockCatalogsInterface_Expecter) WithImpl(impl interface{}) *MockCatalogsInterface_WithImpl_Call {
-	return &MockCatalogsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockCatalogsInterface_WithImpl_Call) Run(run func(impl catalog.CatalogsService)) *MockCatalogsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.CatalogsService))
-	})
-	return _c
-}
-
-func (_c *MockCatalogsInterface_WithImpl_Call) Return(_a0 catalog.CatalogsInterface) *MockCatalogsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCatalogsInterface_WithImpl_Call) RunAndReturn(run func(catalog.CatalogsService) catalog.CatalogsInterface) *MockCatalogsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

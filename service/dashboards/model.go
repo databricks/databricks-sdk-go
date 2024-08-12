@@ -115,8 +115,6 @@ type DashboardView string
 
 const DashboardViewDashboardViewBasic DashboardView = `DASHBOARD_VIEW_BASIC`
 
-const DashboardViewDashboardViewFull DashboardView = `DASHBOARD_VIEW_FULL`
-
 // String representation for [fmt.Print]
 func (f *DashboardView) String() string {
 	return string(*f)
@@ -125,11 +123,11 @@ func (f *DashboardView) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DashboardView) Set(v string) error {
 	switch v {
-	case `DASHBOARD_VIEW_BASIC`, `DASHBOARD_VIEW_FULL`:
+	case `DASHBOARD_VIEW_BASIC`:
 		*f = DashboardView(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DASHBOARD_VIEW_BASIC", "DASHBOARD_VIEW_FULL"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DASHBOARD_VIEW_BASIC"`, v)
 	}
 }
 
@@ -290,7 +288,10 @@ type GenieMessage struct {
 	// metadata from the data sources. * `ASKING_AI`: Waiting for the LLM to
 	// respond to the users question. * `EXECUTING_QUERY`: Executing AI provided
 	// SQL query. Get the SQL query result by calling
-	// [getMessageQueryResult](:method:genie/getMessageQueryResult) API. *
+	// [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
+	// **Important: The message status will stay in the `EXECUTING_QUERY` until
+	// a client calls
+	// [getMessageQueryResult](:method:genie/getMessageQueryResult)**. *
 	// `FAILED`: Generating a response or the executing the query failed. Please
 	// see `error` field. * `COMPLETED`: Message processing is completed.
 	// Results are in the `attachments` field. Get the SQL query result by
@@ -398,9 +399,7 @@ type ListDashboardsRequest struct {
 	// The flag to include dashboards located in the trash. If unspecified, only
 	// active dashboards will be returned.
 	ShowTrashed bool `json:"-" url:"show_trashed,omitempty"`
-	// Indicates whether to include all metadata from the dashboard in the
-	// response. If unset, the response defaults to `DASHBOARD_VIEW_BASIC` which
-	// only includes summary metadata from the dashboard.
+	// `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
 	View DashboardView `json:"-" url:"view,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -632,10 +631,12 @@ func (f *MessageErrorType) Type() string {
 // metadata from the data sources. * `ASKING_AI`: Waiting for the LLM to respond
 // to the users question. * `EXECUTING_QUERY`: Executing AI provided SQL query.
 // Get the SQL query result by calling
-// [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`:
-// Generating a response or the executing the query failed. Please see `error`
-// field. * `COMPLETED`: Message processing is completed. Results are in the
-// `attachments` field. Get the SQL query result by calling
+// [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
+// **Important: The message status will stay in the `EXECUTING_QUERY` until a
+// client calls [getMessageQueryResult](:method:genie/getMessageQueryResult)**.
+// * `FAILED`: Generating a response or the executing the query failed. Please
+// see `error` field. * `COMPLETED`: Message processing is completed. Results
+// are in the `attachments` field. Get the SQL query result by calling
 // [getMessageQueryResult](:method:genie/getMessageQueryResult) API. *
 // `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result
 // is not available anymore. The user needs to execute the query again. *
@@ -655,6 +656,8 @@ const MessageStatusCompleted MessageStatus = `COMPLETED`
 
 // Executing AI provided SQL query. Get the SQL query result by calling
 // [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
+// **Important: The message status will stay in the `EXECUTING_QUERY` until a
+// client calls [getMessageQueryResult](:method:genie/getMessageQueryResult)**.
 const MessageStatusExecutingQuery MessageStatus = `EXECUTING_QUERY`
 
 // Generating a response or the executing the query failed. Please see `error`
@@ -758,6 +761,8 @@ func (s PublishedDashboard) MarshalJSON() ([]byte, error) {
 type QueryAttachment struct {
 	// Description of the query
 	Description string `json:"description,omitempty"`
+
+	Id string `json:"id,omitempty"`
 	// If the query was created on an instruction (trusted asset) we link to the
 	// id
 	InstructionId string `json:"instruction_id,omitempty"`
@@ -916,6 +921,8 @@ type SubscriptionSubscriberUser struct {
 type TextAttachment struct {
 	// AI generated message
 	Content string `json:"content,omitempty"`
+
+	Id string `json:"id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

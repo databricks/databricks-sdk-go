@@ -143,53 +143,6 @@ func (_c *MockPolicyFamiliesInterface_GetByPolicyFamilyId_Call) RunAndReturn(run
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockPolicyFamiliesInterface) Impl() compute.PolicyFamiliesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 compute.PolicyFamiliesService
-	if rf, ok := ret.Get(0).(func() compute.PolicyFamiliesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.PolicyFamiliesService)
-		}
-	}
-
-	return r0
-}
-
-// MockPolicyFamiliesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockPolicyFamiliesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockPolicyFamiliesInterface_Expecter) Impl() *MockPolicyFamiliesInterface_Impl_Call {
-	return &MockPolicyFamiliesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockPolicyFamiliesInterface_Impl_Call) Run(run func()) *MockPolicyFamiliesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPolicyFamiliesInterface_Impl_Call) Return(_a0 compute.PolicyFamiliesService) *MockPolicyFamiliesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPolicyFamiliesInterface_Impl_Call) RunAndReturn(run func() compute.PolicyFamiliesService) *MockPolicyFamiliesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockPolicyFamiliesInterface) List(ctx context.Context, request compute.ListPolicyFamiliesRequest) listing.Iterator[compute.PolicyFamily] {
 	ret := _m.Called(ctx, request)
@@ -294,54 +247,6 @@ func (_c *MockPolicyFamiliesInterface_ListAll_Call) Return(_a0 []compute.PolicyF
 }
 
 func (_c *MockPolicyFamiliesInterface_ListAll_Call) RunAndReturn(run func(context.Context, compute.ListPolicyFamiliesRequest) ([]compute.PolicyFamily, error)) *MockPolicyFamiliesInterface_ListAll_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockPolicyFamiliesInterface) WithImpl(impl compute.PolicyFamiliesService) compute.PolicyFamiliesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 compute.PolicyFamiliesInterface
-	if rf, ok := ret.Get(0).(func(compute.PolicyFamiliesService) compute.PolicyFamiliesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.PolicyFamiliesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockPolicyFamiliesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockPolicyFamiliesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl compute.PolicyFamiliesService
-func (_e *MockPolicyFamiliesInterface_Expecter) WithImpl(impl interface{}) *MockPolicyFamiliesInterface_WithImpl_Call {
-	return &MockPolicyFamiliesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockPolicyFamiliesInterface_WithImpl_Call) Run(run func(impl compute.PolicyFamiliesService)) *MockPolicyFamiliesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(compute.PolicyFamiliesService))
-	})
-	return _c
-}
-
-func (_c *MockPolicyFamiliesInterface_WithImpl_Call) Return(_a0 compute.PolicyFamiliesInterface) *MockPolicyFamiliesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPolicyFamiliesInterface_WithImpl_Call) RunAndReturn(run func(compute.PolicyFamiliesService) compute.PolicyFamiliesInterface) *MockPolicyFamiliesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }
