@@ -2,8 +2,9 @@ package jobs
 
 import (
 	"context"
-	"github.com/databricks/databricks-sdk-go/qa"
 	"testing"
+
+	"github.com/databricks/databricks-sdk-go/qa"
 
 	"github.com/stretchr/testify/assert"
 )
