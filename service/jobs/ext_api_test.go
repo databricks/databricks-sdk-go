@@ -10,119 +10,200 @@ import (
 )
 
 func commonFixtureWithStatusResponse() qa.HTTPFixtures {
-	return []qa.HTTPFixture{
-		{
-			Method:       "GET",
-			ReuseRequest: true,
-			Resource:     "/api/2.2/jobs/runs/get?run_id=514594995218126",
-			Response: Run{
-				Iterations: []RunTask{},
-				Tasks: []RunTask{
-					{
-						RunId:   123,
-						TaskKey: "task1",
+	return append(
+		// API 2.2 stubs
+		[]qa.HTTPFixture{
+			{
+				Method:       "GET",
+				ReuseRequest: true,
+				Resource:     "/api/2.2/jobs/runs/get?run_id=514594995218126",
+				Response: Run{
+					Iterations: []RunTask{},
+					Tasks: []RunTask{
+						{
+							RunId:   123,
+							TaskKey: "task1",
+						},
+						{
+							RunId:   1234,
+							TaskKey: "task2",
+						},
 					},
-					{
-						RunId:   1234,
-						TaskKey: "task2",
-					},
+					NextPageToken: "",
 				},
-				NextPageToken: "",
+			},
+			{
+				Method:       "GET",
+				ReuseRequest: true,
+				Resource:     "/api/2.2/jobs/runs/get?run_id=111222333",
+				Response: Run{
+					Iterations: []RunTask{},
+					Tasks: []RunTask{
+						{
+							RunId: 123,
+						},
+						{
+							RunId: 1234,
+						},
+					},
+					JobClusters: []JobCluster{
+						{
+							JobClusterKey: "cluster1",
+						},
+						{
+							JobClusterKey: "cluster2",
+						},
+					},
+					NextPageToken: "token1",
+				},
+			},
+			{
+				Method:       "GET",
+				ReuseRequest: true,
+				Resource:     "/api/2.2/jobs/runs/get?page_token=token1&run_id=111222333",
+				Response: Run{
+					Iterations: []RunTask{},
+					Tasks: []RunTask{
+						{
+							RunId: 222,
+						},
+						{
+							RunId: 333,
+						},
+					},
+					JobClusters: []JobCluster{
+						{
+							JobClusterKey: "cluster1",
+						},
+						{
+							JobClusterKey: "cluster2",
+						},
+					},
+					PrevPageToken: "token1-reverse",
+				},
+			},
+			{
+				Method:       "GET",
+				ReuseRequest: true,
+				Resource:     "/api/2.2/jobs/runs/get?run_id=4444",
+				Response: Run{
+					Iterations: []RunTask{
+						{
+							RunId: 123,
+						},
+						{
+							RunId: 1234,
+						},
+					},
+					Tasks: []RunTask{
+						{
+							RunId: 999,
+						},
+					},
+					NextPageToken: "token1",
+				},
+			},
+			{
+				Method:       "GET",
+				ReuseRequest: true,
+				Resource:     "/api/2.2/jobs/runs/get?page_token=token1&run_id=4444",
+				Response: Run{
+					Iterations: []RunTask{
+						{
+							RunId: 222,
+						},
+						{
+							RunId: 333,
+						},
+					},
+					Tasks: []RunTask{
+						{
+							RunId: 999,
+						},
+					},
+					PrevPageToken: "token1-reverse",
+				},
 			},
 		},
-		{
-			Method:       "GET",
-			ReuseRequest: true,
-			Resource:     "/api/2.2/jobs/runs/get?run_id=111222333",
-			Response: Run{
-				Iterations: []RunTask{},
-				Tasks: []RunTask{
-					{
-						RunId: 123,
-					},
-					{
-						RunId: 1234,
-					},
-				},
-				JobClusters: []JobCluster{
-					{
-						JobClusterKey: "cluster1",
-					},
-					{
-						JobClusterKey: "cluster2",
+		//API 2.1 stubs
+		[]qa.HTTPFixture{
+			{
+				Method:       "GET",
+				ReuseRequest: true,
+				Resource:     "/api/2.1/jobs/runs/get?run_id=514594995218126",
+				Response: Run{
+					Iterations: []RunTask{},
+					Tasks: []RunTask{
+						{
+							RunId:   123,
+							TaskKey: "task1",
+						},
+						{
+							RunId:   1234,
+							TaskKey: "task2",
+						},
 					},
 				},
-				NextPageToken: "token1",
 			},
-		},
-		{
-			Method:       "GET",
-			ReuseRequest: true,
-			Resource:     "/api/2.2/jobs/runs/get?page_token=token1&run_id=111222333",
-			Response: Run{
-				Iterations: []RunTask{},
-				Tasks: []RunTask{
-					{
-						RunId: 222,
+			{
+				Method:       "GET",
+				ReuseRequest: true,
+				Resource:     "/api/2.1/jobs/runs/get?run_id=111222333",
+				Response: Run{
+					Iterations: []RunTask{},
+					Tasks: []RunTask{
+						{
+							RunId: 123,
+						},
+						{
+							RunId: 1234,
+						},
+						{
+							RunId: 222,
+						},
+						{
+							RunId: 333,
+						},
 					},
-					{
-						RunId: 333,
+					JobClusters: []JobCluster{
+						{
+							JobClusterKey: "cluster1",
+						},
+						{
+							JobClusterKey: "cluster2",
+						},
 					},
 				},
-				JobClusters: []JobCluster{
-					{
-						JobClusterKey: "cluster1",
-					},
-					{
-						JobClusterKey: "cluster2",
-					},
-				},
-				PrevPageToken: "token1-reverse",
 			},
-		},
-		{
-			Method:       "GET",
-			ReuseRequest: true,
-			Resource:     "/api/2.2/jobs/runs/get?run_id=4444",
-			Response: Run{
-				Iterations: []RunTask{
-					{
-						RunId: 123,
+			{
+				Method:       "GET",
+				ReuseRequest: true,
+				Resource:     "/api/2.1/jobs/runs/get?run_id=4444",
+				Response: Run{
+					Iterations: []RunTask{
+						{
+							RunId: 123,
+						},
+						{
+							RunId: 1234,
+						},
+						{
+							RunId: 222,
+						},
+						{
+							RunId: 333,
+						},
 					},
-					{
-						RunId: 1234,
+					Tasks: []RunTask{
+						{
+							RunId: 999,
+						},
 					},
 				},
-				Tasks: []RunTask{
-					{
-						RunId: 999,
-					},
-				},
-				NextPageToken: "token1",
 			},
-		},
-		{
-			Method:       "GET",
-			ReuseRequest: true,
-			Resource:     "/api/2.2/jobs/runs/get?page_token=token1&run_id=4444",
-			Response: Run{
-				Iterations: []RunTask{
-					{
-						RunId: 222,
-					},
-					{
-						RunId: 333,
-					},
-				},
-				Tasks: []RunTask{
-					{
-						RunId: 999,
-					},
-				},
-				PrevPageToken: "token1-reverse",
-			},
-		},
-	}
+		}...,
+	)
+
 }
 
 func TestGetRun(t *testing.T) {
