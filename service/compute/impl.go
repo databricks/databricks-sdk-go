@@ -289,6 +289,16 @@ func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 	return err
 }
 
+func (a *clustersImpl) Update(ctx context.Context, request UpdateCluster) error {
+	var updateClusterResponse UpdateClusterResponse
+	path := "/api/2.1/clusters/update"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &updateClusterResponse)
+	return err
+}
+
 func (a *clustersImpl) UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)

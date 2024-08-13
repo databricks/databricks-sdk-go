@@ -261,53 +261,6 @@ func (_c *MockLogDeliveryInterface_GetByLogDeliveryConfigurationId_Call) RunAndR
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockLogDeliveryInterface) Impl() billing.LogDeliveryService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 billing.LogDeliveryService
-	if rf, ok := ret.Get(0).(func() billing.LogDeliveryService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(billing.LogDeliveryService)
-		}
-	}
-
-	return r0
-}
-
-// MockLogDeliveryInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockLogDeliveryInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockLogDeliveryInterface_Expecter) Impl() *MockLogDeliveryInterface_Impl_Call {
-	return &MockLogDeliveryInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockLogDeliveryInterface_Impl_Call) Run(run func()) *MockLogDeliveryInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockLogDeliveryInterface_Impl_Call) Return(_a0 billing.LogDeliveryService) *MockLogDeliveryInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockLogDeliveryInterface_Impl_Call) RunAndReturn(run func() billing.LogDeliveryService) *MockLogDeliveryInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockLogDeliveryInterface) List(ctx context.Context, request billing.ListLogDeliveryRequest) listing.Iterator[billing.LogDeliveryConfiguration] {
 	ret := _m.Called(ctx, request)
@@ -518,54 +471,6 @@ func (_c *MockLogDeliveryInterface_PatchStatus_Call) Return(_a0 error) *MockLogD
 }
 
 func (_c *MockLogDeliveryInterface_PatchStatus_Call) RunAndReturn(run func(context.Context, billing.UpdateLogDeliveryConfigurationStatusRequest) error) *MockLogDeliveryInterface_PatchStatus_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockLogDeliveryInterface) WithImpl(impl billing.LogDeliveryService) billing.LogDeliveryInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 billing.LogDeliveryInterface
-	if rf, ok := ret.Get(0).(func(billing.LogDeliveryService) billing.LogDeliveryInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(billing.LogDeliveryInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockLogDeliveryInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockLogDeliveryInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl billing.LogDeliveryService
-func (_e *MockLogDeliveryInterface_Expecter) WithImpl(impl interface{}) *MockLogDeliveryInterface_WithImpl_Call {
-	return &MockLogDeliveryInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockLogDeliveryInterface_WithImpl_Call) Run(run func(impl billing.LogDeliveryService)) *MockLogDeliveryInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(billing.LogDeliveryService))
-	})
-	return _c
-}
-
-func (_c *MockLogDeliveryInterface_WithImpl_Call) Return(_a0 billing.LogDeliveryInterface) *MockLogDeliveryInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockLogDeliveryInterface_WithImpl_Call) RunAndReturn(run func(billing.LogDeliveryService) billing.LogDeliveryInterface) *MockLogDeliveryInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

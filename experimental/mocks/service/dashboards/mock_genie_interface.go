@@ -458,53 +458,6 @@ func (_c *MockGenieInterface_GetMessageQueryResultBySpaceIdAndConversationIdAndM
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockGenieInterface) Impl() dashboards.GenieService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 dashboards.GenieService
-	if rf, ok := ret.Get(0).(func() dashboards.GenieService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(dashboards.GenieService)
-		}
-	}
-
-	return r0
-}
-
-// MockGenieInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockGenieInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockGenieInterface_Expecter) Impl() *MockGenieInterface_Impl_Call {
-	return &MockGenieInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockGenieInterface_Impl_Call) Run(run func()) *MockGenieInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockGenieInterface_Impl_Call) Return(_a0 dashboards.GenieService) *MockGenieInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockGenieInterface_Impl_Call) RunAndReturn(run func() dashboards.GenieService) *MockGenieInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // StartConversation provides a mock function with given fields: ctx, genieStartConversationMessageRequest
 func (_m *MockGenieInterface) StartConversation(ctx context.Context, genieStartConversationMessageRequest dashboards.GenieStartConversationMessageRequest) (*dashboards.WaitGetMessageGenieCompleted[dashboards.GenieStartConversationResponse], error) {
 	ret := _m.Called(ctx, genieStartConversationMessageRequest)
@@ -697,54 +650,6 @@ func (_c *MockGenieInterface_WaitGetMessageGenieCompleted_Call) Return(_a0 *dash
 }
 
 func (_c *MockGenieInterface_WaitGetMessageGenieCompleted_Call) RunAndReturn(run func(context.Context, string, string, string, time.Duration, func(*dashboards.GenieMessage)) (*dashboards.GenieMessage, error)) *MockGenieInterface_WaitGetMessageGenieCompleted_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockGenieInterface) WithImpl(impl dashboards.GenieService) dashboards.GenieInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 dashboards.GenieInterface
-	if rf, ok := ret.Get(0).(func(dashboards.GenieService) dashboards.GenieInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(dashboards.GenieInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockGenieInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockGenieInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl dashboards.GenieService
-func (_e *MockGenieInterface_Expecter) WithImpl(impl interface{}) *MockGenieInterface_WithImpl_Call {
-	return &MockGenieInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockGenieInterface_WithImpl_Call) Run(run func(impl dashboards.GenieService)) *MockGenieInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(dashboards.GenieService))
-	})
-	return _c
-}
-
-func (_c *MockGenieInterface_WithImpl_Call) Return(_a0 dashboards.GenieInterface) *MockGenieInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockGenieInterface_WithImpl_Call) RunAndReturn(run func(dashboards.GenieService) dashboards.GenieInterface) *MockGenieInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

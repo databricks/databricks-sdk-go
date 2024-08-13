@@ -81,53 +81,6 @@ func (_c *MockCspEnablementAccountInterface_Get_Call) RunAndReturn(run func(cont
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockCspEnablementAccountInterface) Impl() settings.CspEnablementAccountService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.CspEnablementAccountService
-	if rf, ok := ret.Get(0).(func() settings.CspEnablementAccountService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.CspEnablementAccountService)
-		}
-	}
-
-	return r0
-}
-
-// MockCspEnablementAccountInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockCspEnablementAccountInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockCspEnablementAccountInterface_Expecter) Impl() *MockCspEnablementAccountInterface_Impl_Call {
-	return &MockCspEnablementAccountInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockCspEnablementAccountInterface_Impl_Call) Run(run func()) *MockCspEnablementAccountInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockCspEnablementAccountInterface_Impl_Call) Return(_a0 settings.CspEnablementAccountService) *MockCspEnablementAccountInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCspEnablementAccountInterface_Impl_Call) RunAndReturn(run func() settings.CspEnablementAccountService) *MockCspEnablementAccountInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockCspEnablementAccountInterface) Update(ctx context.Context, request settings.UpdateCspEnablementAccountSettingRequest) (*settings.CspEnablementAccountSetting, error) {
 	ret := _m.Called(ctx, request)
@@ -183,54 +136,6 @@ func (_c *MockCspEnablementAccountInterface_Update_Call) Return(_a0 *settings.Cs
 }
 
 func (_c *MockCspEnablementAccountInterface_Update_Call) RunAndReturn(run func(context.Context, settings.UpdateCspEnablementAccountSettingRequest) (*settings.CspEnablementAccountSetting, error)) *MockCspEnablementAccountInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockCspEnablementAccountInterface) WithImpl(impl settings.CspEnablementAccountService) settings.CspEnablementAccountInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.CspEnablementAccountInterface
-	if rf, ok := ret.Get(0).(func(settings.CspEnablementAccountService) settings.CspEnablementAccountInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.CspEnablementAccountInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockCspEnablementAccountInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockCspEnablementAccountInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.CspEnablementAccountService
-func (_e *MockCspEnablementAccountInterface_Expecter) WithImpl(impl interface{}) *MockCspEnablementAccountInterface_WithImpl_Call {
-	return &MockCspEnablementAccountInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockCspEnablementAccountInterface_WithImpl_Call) Run(run func(impl settings.CspEnablementAccountService)) *MockCspEnablementAccountInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.CspEnablementAccountService))
-	})
-	return _c
-}
-
-func (_c *MockCspEnablementAccountInterface_WithImpl_Call) Return(_a0 settings.CspEnablementAccountInterface) *MockCspEnablementAccountInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCspEnablementAccountInterface_WithImpl_Call) RunAndReturn(run func(settings.CspEnablementAccountService) settings.CspEnablementAccountInterface) *MockCspEnablementAccountInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

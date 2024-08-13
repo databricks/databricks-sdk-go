@@ -175,53 +175,6 @@ func (_c *MockDashboardWidgetsInterface_DeleteById_Call) RunAndReturn(run func(c
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockDashboardWidgetsInterface) Impl() sql.DashboardWidgetsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sql.DashboardWidgetsService
-	if rf, ok := ret.Get(0).(func() sql.DashboardWidgetsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.DashboardWidgetsService)
-		}
-	}
-
-	return r0
-}
-
-// MockDashboardWidgetsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockDashboardWidgetsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockDashboardWidgetsInterface_Expecter) Impl() *MockDashboardWidgetsInterface_Impl_Call {
-	return &MockDashboardWidgetsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockDashboardWidgetsInterface_Impl_Call) Run(run func()) *MockDashboardWidgetsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDashboardWidgetsInterface_Impl_Call) Return(_a0 sql.DashboardWidgetsService) *MockDashboardWidgetsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockDashboardWidgetsInterface_Impl_Call) RunAndReturn(run func() sql.DashboardWidgetsService) *MockDashboardWidgetsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockDashboardWidgetsInterface) Update(ctx context.Context, request sql.CreateWidget) (*sql.Widget, error) {
 	ret := _m.Called(ctx, request)
@@ -277,54 +230,6 @@ func (_c *MockDashboardWidgetsInterface_Update_Call) Return(_a0 *sql.Widget, _a1
 }
 
 func (_c *MockDashboardWidgetsInterface_Update_Call) RunAndReturn(run func(context.Context, sql.CreateWidget) (*sql.Widget, error)) *MockDashboardWidgetsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockDashboardWidgetsInterface) WithImpl(impl sql.DashboardWidgetsService) sql.DashboardWidgetsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sql.DashboardWidgetsInterface
-	if rf, ok := ret.Get(0).(func(sql.DashboardWidgetsService) sql.DashboardWidgetsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.DashboardWidgetsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockDashboardWidgetsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockDashboardWidgetsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sql.DashboardWidgetsService
-func (_e *MockDashboardWidgetsInterface_Expecter) WithImpl(impl interface{}) *MockDashboardWidgetsInterface_WithImpl_Call {
-	return &MockDashboardWidgetsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockDashboardWidgetsInterface_WithImpl_Call) Run(run func(impl sql.DashboardWidgetsService)) *MockDashboardWidgetsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sql.DashboardWidgetsService))
-	})
-	return _c
-}
-
-func (_c *MockDashboardWidgetsInterface_WithImpl_Call) Return(_a0 sql.DashboardWidgetsInterface) *MockDashboardWidgetsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockDashboardWidgetsInterface_WithImpl_Call) RunAndReturn(run func(sql.DashboardWidgetsService) sql.DashboardWidgetsInterface) *MockDashboardWidgetsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -1228,53 +1228,6 @@ func (_c *MockModelRegistryInterface_GetPermissionsByRegisteredModelId_Call) Run
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockModelRegistryInterface) Impl() ml.ModelRegistryService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 ml.ModelRegistryService
-	if rf, ok := ret.Get(0).(func() ml.ModelRegistryService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(ml.ModelRegistryService)
-		}
-	}
-
-	return r0
-}
-
-// MockModelRegistryInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockModelRegistryInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockModelRegistryInterface_Expecter) Impl() *MockModelRegistryInterface_Impl_Call {
-	return &MockModelRegistryInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockModelRegistryInterface_Impl_Call) Run(run func()) *MockModelRegistryInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockModelRegistryInterface_Impl_Call) Return(_a0 ml.ModelRegistryService) *MockModelRegistryInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockModelRegistryInterface_Impl_Call) RunAndReturn(run func() ml.ModelRegistryService) *MockModelRegistryInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ListModels provides a mock function with given fields: ctx, request
 func (_m *MockModelRegistryInterface) ListModels(ctx context.Context, request ml.ListModelsRequest) listing.Iterator[ml.Model] {
 	ret := _m.Called(ctx, request)
@@ -2459,54 +2412,6 @@ func (_c *MockModelRegistryInterface_UpdateWebhook_Call) Return(_a0 error) *Mock
 }
 
 func (_c *MockModelRegistryInterface_UpdateWebhook_Call) RunAndReturn(run func(context.Context, ml.UpdateRegistryWebhook) error) *MockModelRegistryInterface_UpdateWebhook_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockModelRegistryInterface) WithImpl(impl ml.ModelRegistryService) ml.ModelRegistryInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 ml.ModelRegistryInterface
-	if rf, ok := ret.Get(0).(func(ml.ModelRegistryService) ml.ModelRegistryInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(ml.ModelRegistryInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockModelRegistryInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockModelRegistryInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl ml.ModelRegistryService
-func (_e *MockModelRegistryInterface_Expecter) WithImpl(impl interface{}) *MockModelRegistryInterface_WithImpl_Call {
-	return &MockModelRegistryInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockModelRegistryInterface_WithImpl_Call) Run(run func(impl ml.ModelRegistryService)) *MockModelRegistryInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(ml.ModelRegistryService))
-	})
-	return _c
-}
-
-func (_c *MockModelRegistryInterface_WithImpl_Call) Return(_a0 ml.ModelRegistryInterface) *MockModelRegistryInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockModelRegistryInterface_WithImpl_Call) RunAndReturn(run func(ml.ModelRegistryService) ml.ModelRegistryInterface) *MockModelRegistryInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

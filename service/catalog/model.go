@@ -2113,10 +2113,29 @@ type GetArtifactAllowlistRequest struct {
 
 // Get securable workspace bindings
 type GetBindingsRequest struct {
+	// Maximum number of workspace bindings to return. - When set to 0, the page
+	// length is set to a server configured value (recommended); - When set to a
+	// value greater than 0, the page length is the minimum of this value and a
+	// server configured value; - When set to a value less than 0, an invalid
+	// parameter error is returned; - If not set, all the workspace bindings are
+	// returned (not recommended).
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The name of the securable.
 	SecurableName string `json:"-" url:"-"`
 	// The type of the securable to bind to a workspace.
 	SecurableType GetBindingsSecurableType `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetBindingsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetBindingsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GetBindingsSecurableType string
@@ -2154,6 +2173,19 @@ type GetByAliasRequest struct {
 	Alias string `json:"-" url:"-"`
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
+	// Whether to include aliases associated with the model version in the
+	// response
+	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetByAliasRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetByAliasRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a catalog
@@ -2352,6 +2384,9 @@ func (f *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
 type GetModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
 	FullName string `json:"-" url:"-"`
+	// Whether to include aliases associated with the model version in the
+	// response
+	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
 	// Whether to include model versions in the response for which the principal
 	// can only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
@@ -2393,6 +2428,8 @@ type GetRefreshRequest struct {
 type GetRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
+	// Whether to include registered model aliases in the response
+	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
 	// Whether to include registered models in the response for which the
 	// principal can only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
@@ -2938,13 +2975,46 @@ func (s ListSummariesRequest) MarshalJSON() ([]byte, error) {
 
 // List system schemas
 type ListSystemSchemasRequest struct {
+	// Maximum number of schemas to return. - When set to 0, the page length is
+	// set to a server configured value (recommended); - When set to a value
+	// greater than 0, the page length is the minimum of this value and a server
+	// configured value; - When set to a value less than 0, an invalid parameter
+	// error is returned; - If not set, all the schemas are returned (not
+	// recommended).
+	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// The ID for the metastore in which the system schema resides.
 	MetastoreId string `json:"-" url:"-"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSystemSchemasRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSystemSchemasRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListSystemSchemasResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of system schema information objects.
 	Schemas []SystemSchemaInfo `json:"schemas,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSystemSchemasResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSystemSchemasResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListTableSummariesResponse struct {
@@ -3203,6 +3273,8 @@ func (f *MetastoreInfoDeltaSharingScope) Type() string {
 }
 
 type ModelVersionInfo struct {
+	// List of aliases associated with the model version
+	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
@@ -5373,4 +5445,18 @@ func (f *WorkspaceBindingBindingType) Type() string {
 type WorkspaceBindingsResponse struct {
 	// List of workspace bindings
 	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

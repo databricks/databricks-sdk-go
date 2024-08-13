@@ -1683,7 +1683,7 @@ type CreatePolicy struct {
 	MaxClustersPerUser int64 `json:"max_clusters_per_user,omitempty"`
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 	// Policy definition JSON document expressed in [Databricks Policy
 	// Definition Language]. The JSON document must be passed as a string and
 	// cannot be embedded in the requests.
@@ -2317,7 +2317,7 @@ type EditPolicy struct {
 	MaxClustersPerUser int64 `json:"max_clusters_per_user,omitempty"`
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 	// Policy definition JSON document expressed in [Databricks Policy
 	// Definition Language]. The JSON document must be passed as a string and
 	// cannot be embedded in the requests.
@@ -2656,7 +2656,7 @@ type GetClusterPolicyPermissionsRequest struct {
 
 // Get a cluster policy
 type GetClusterPolicyRequest struct {
-	// Canonical unique identifier for the cluster policy.
+	// Canonical unique identifier for the Cluster Policy.
 	PolicyId string `json:"-" url:"policy_id"`
 }
 
@@ -2865,7 +2865,21 @@ type GetInstancePoolRequest struct {
 
 // Get policy family information
 type GetPolicyFamilyRequest struct {
+	// The family ID about which to retrieve information.
 	PolicyFamilyId string `json:"-" url:"-"`
+	// The version number for the family to fetch. Defaults to the latest
+	// version.
+	Version int64 `json:"-" url:"version,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetPolicyFamilyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetPolicyFamilyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GetSparkVersionsResponse struct {
@@ -3928,7 +3942,7 @@ type ListPoliciesResponse struct {
 
 // List policy families
 type ListPolicyFamiliesRequest struct {
-	// The max number of policy families to return.
+	// Maximum number of policy families to return.
 	MaxResults int64 `json:"-" url:"max_results,omitempty"`
 	// A token that can be used to get the next page of results.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -3949,7 +3963,7 @@ type ListPolicyFamiliesResponse struct {
 	// there are no more results to show.
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of policy families.
-	PolicyFamilies []PolicyFamily `json:"policy_families"`
+	PolicyFamilies []PolicyFamily `json:"policy_families,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3989,6 +4003,7 @@ func (f *ListSortColumn) Type() string {
 	return "ListSortColumn"
 }
 
+// A generic ordering enum for list-based queries.
 type ListSortOrder string
 
 const ListSortOrderAsc ListSortOrder = `ASC`
@@ -4195,6 +4210,7 @@ type PinCluster struct {
 type PinClusterResponse struct {
 }
 
+// Describes a Cluster Policy entity.
 type Policy struct {
 	// Creation time. The timestamp (in millisecond) when this Cluster Policy
 	// was created.
@@ -4232,7 +4248,12 @@ type Policy struct {
 	//
 	// [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	PolicyFamilyDefinitionOverrides string `json:"policy_family_definition_overrides,omitempty"`
-	// ID of the policy family.
+	// ID of the policy family. The cluster policy's policy definition inherits
+	// the policy family's policy definition.
+	//
+	// Cannot be used with `definition`. Use
+	// `policy_family_definition_overrides` instead to customize the policy
+	// definition.
 	PolicyFamilyId string `json:"policy_family_id,omitempty"`
 	// Canonical unique identifier for the Cluster Policy.
 	PolicyId string `json:"policy_id,omitempty"`
@@ -4253,13 +4274,23 @@ type PolicyFamily struct {
 	// Definition Language].
 	//
 	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
-	Definition string `json:"definition"`
+	Definition string `json:"definition,omitempty"`
 	// Human-readable description of the purpose of the policy family.
-	Description string `json:"description"`
+	Description string `json:"description,omitempty"`
 	// Name of the policy family.
-	Name string `json:"name"`
-	// ID of the policy family.
-	PolicyFamilyId string `json:"policy_family_id"`
+	Name string `json:"name,omitempty"`
+	// Unique identifier for the policy family.
+	PolicyFamilyId string `json:"policy_family_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PolicyFamily) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PolicyFamily) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PythonPyPiLibrary struct {
@@ -4864,6 +4895,174 @@ type UnpinCluster struct {
 }
 
 type UnpinClusterResponse struct {
+}
+
+type UpdateCluster struct {
+	// The cluster to be updated.
+	Cluster *UpdateClusterResource `json:"cluster,omitempty"`
+	// ID of the cluster.
+	ClusterId string `json:"cluster_id"`
+	// Specifies which fields of the cluster will be updated. This is required
+	// in the POST request. The update mask should be supplied as a single
+	// string. To specify multiple fields, separate them with commas (no
+	// spaces). To delete a field from a cluster configuration, add it to the
+	// `update_mask` string but omit it from the `cluster` object.
+	UpdateMask string `json:"update_mask"`
+}
+
+type UpdateClusterResource struct {
+	// Parameters needed in order to automatically scale clusters up and down
+	// based on load. Note: autoscaling works best with DB runtime versions 3.0
+	// or later.
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
+	// Automatically terminates the cluster after it is inactive for this time
+	// in minutes. If not set, this cluster will not be automatically
+	// terminated. If specified, the threshold must be between 10 and 10000
+	// minutes. Users can also set this value to 0 to explicitly disable
+	// automatic termination.
+	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
+	// Attributes related to clusters running on Amazon Web Services. If not
+	// specified at cluster creation, a set of default values will be used.
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
+	// Attributes related to clusters running on Microsoft Azure. If not
+	// specified at cluster creation, a set of default values will be used.
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
+	// The configuration for delivering spark logs to a long-term storage
+	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
+	// one destination can be specified for one cluster. If the conf is given,
+	// the logs will be delivered to the destination every `5 mins`. The
+	// destination of driver logs is `$destination/$clusterId/driver`, while the
+	// destination of executor logs is `$destination/$clusterId/executor`.
+	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
+	// Cluster name requested by the user. This doesn't have to be unique. If
+	// not specified at creation, the cluster name will be an empty string.
+	ClusterName string `json:"cluster_name,omitempty"`
+	// Additional tags for cluster resources. Databricks will tag all cluster
+	// resources (e.g., AWS instances and EBS volumes) with these tags in
+	// addition to `default_tags`. Notes:
+	//
+	// - Currently, Databricks allows at most 45 custom tags
+	//
+	// - Clusters can only reuse cloud resources if the resources' tags are a
+	// subset of the cluster tags
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `NONE`: No security isolation for multiple users sharing the cluster.
+	// Data governance features are not available in this mode. * `SINGLE_USER`:
+	// A secure cluster that can only be exclusively used by a single user
+	// specified in `single_user_name`. Most programming languages, cluster
+	// features and data governance features are available in this mode. *
+	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
+	// Cluster users are fully isolated so that they cannot see each other's
+	// data and credentials. Most data governance features are supported in this
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
+	// The optional ID of the instance pool for the driver of the cluster
+	// belongs. The pool cluster uses the instance pool with id
+	// (instance_pool_id) if the driver pool is not assigned.
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
+	// The node type of the Spark driver. Note that this field is optional; if
+	// unset, the driver node type will be set as the same value as
+	// `node_type_id` defined above.
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
+	// Autoscaling Local Storage: when enabled, this cluster will dynamically
+	// acquire additional disk space when its Spark workers are running low on
+	// disk space. This feature requires specific AWS permissions to function
+	// correctly - refer to the User Guide for more details.
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
+	// Whether to enable LUKS on cluster VMs' local disks
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
+	// Attributes related to clusters running on Google Cloud Platform. If not
+	// specified at cluster creation, a set of default values will be used.
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
+	// The configuration for storing init scripts. Any number of destinations
+	// can be specified. The scripts are executed sequentially in the order
+	// provided. If `cluster_log_conf` is specified, init script logs are sent
+	// to `<destination>/<cluster-ID>/init_scripts`.
+	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
+	// The optional ID of the instance pool to which the cluster belongs.
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	// This field encodes, through a single value, the resources available to
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
+	// list of available node types can be retrieved by using the
+	// :method:clusters/listNodeTypes API call.
+	NodeTypeId string `json:"node_type_id,omitempty"`
+	// Number of worker nodes that this cluster should have. A cluster has one
+	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
+	// Spark nodes.
+	//
+	// Note: When reading the properties of a cluster, this field reflects the
+	// desired number of workers rather than the actual current number of
+	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
+	// field will immediately be updated to reflect the target size of 10
+	// workers, whereas the workers listed in `spark_info` will gradually
+	// increase from 5 to 10 as the new nodes are provisioned.
+	NumWorkers int `json:"num_workers,omitempty"`
+	// The ID of the cluster policy used to create the cluster if applicable.
+	PolicyId string `json:"policy_id,omitempty"`
+	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
+	// unspecified, the runtime engine is inferred from spark_version.
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
+	// Single user name if data_security_mode is `SINGLE_USER`
+	SingleUserName string `json:"single_user_name,omitempty"`
+	// An object containing a set of optional, user-specified Spark
+	// configuration key-value pairs. Users can also pass in a string of extra
+	// JVM options to the driver and the executors via
+	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
+	// respectively.
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
+	// An object containing a set of optional, user-specified environment
+	// variable key-value pairs. Please note that key-value pair of the form
+	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
+	// driver and workers.
+	//
+	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
+	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
+	// example below. This ensures that all default databricks managed
+	// environmental variables are included as well.
+	//
+	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
+	// available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
+	SparkVersion string `json:"spark_version,omitempty"`
+	// SSH public key contents that will be added to each Spark node in this
+	// cluster. The corresponding private keys can be used to login with the
+	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+
+	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateClusterResource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateClusterResource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateClusterResponse struct {
 }
 
 type UpdateResponse struct {

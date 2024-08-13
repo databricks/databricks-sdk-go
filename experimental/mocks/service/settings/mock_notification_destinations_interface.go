@@ -295,53 +295,6 @@ func (_c *MockNotificationDestinationsInterface_GetById_Call) RunAndReturn(run f
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockNotificationDestinationsInterface) Impl() settings.NotificationDestinationsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.NotificationDestinationsService
-	if rf, ok := ret.Get(0).(func() settings.NotificationDestinationsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.NotificationDestinationsService)
-		}
-	}
-
-	return r0
-}
-
-// MockNotificationDestinationsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockNotificationDestinationsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockNotificationDestinationsInterface_Expecter) Impl() *MockNotificationDestinationsInterface_Impl_Call {
-	return &MockNotificationDestinationsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockNotificationDestinationsInterface_Impl_Call) Run(run func()) *MockNotificationDestinationsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockNotificationDestinationsInterface_Impl_Call) Return(_a0 settings.NotificationDestinationsService) *MockNotificationDestinationsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockNotificationDestinationsInterface_Impl_Call) RunAndReturn(run func() settings.NotificationDestinationsService) *MockNotificationDestinationsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockNotificationDestinationsInterface) List(ctx context.Context, request settings.ListNotificationDestinationsRequest) listing.Iterator[settings.ListNotificationDestinationsResult] {
 	ret := _m.Called(ctx, request)
@@ -505,54 +458,6 @@ func (_c *MockNotificationDestinationsInterface_Update_Call) Return(_a0 *setting
 }
 
 func (_c *MockNotificationDestinationsInterface_Update_Call) RunAndReturn(run func(context.Context, settings.UpdateNotificationDestinationRequest) (*settings.NotificationDestination, error)) *MockNotificationDestinationsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockNotificationDestinationsInterface) WithImpl(impl settings.NotificationDestinationsService) settings.NotificationDestinationsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.NotificationDestinationsInterface
-	if rf, ok := ret.Get(0).(func(settings.NotificationDestinationsService) settings.NotificationDestinationsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.NotificationDestinationsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockNotificationDestinationsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockNotificationDestinationsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.NotificationDestinationsService
-func (_e *MockNotificationDestinationsInterface_Expecter) WithImpl(impl interface{}) *MockNotificationDestinationsInterface_WithImpl_Call {
-	return &MockNotificationDestinationsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockNotificationDestinationsInterface_WithImpl_Call) Run(run func(impl settings.NotificationDestinationsService)) *MockNotificationDestinationsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.NotificationDestinationsService))
-	})
-	return _c
-}
-
-func (_c *MockNotificationDestinationsInterface_WithImpl_Call) Return(_a0 settings.NotificationDestinationsInterface) *MockNotificationDestinationsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockNotificationDestinationsInterface_WithImpl_Call) RunAndReturn(run func(settings.NotificationDestinationsService) settings.NotificationDestinationsInterface) *MockNotificationDestinationsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

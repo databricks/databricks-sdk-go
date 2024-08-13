@@ -237,53 +237,6 @@ func (_c *MockWorkspaceAssignmentInterface_GetByWorkspaceId_Call) RunAndReturn(r
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockWorkspaceAssignmentInterface) Impl() iam.WorkspaceAssignmentService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 iam.WorkspaceAssignmentService
-	if rf, ok := ret.Get(0).(func() iam.WorkspaceAssignmentService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.WorkspaceAssignmentService)
-		}
-	}
-
-	return r0
-}
-
-// MockWorkspaceAssignmentInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockWorkspaceAssignmentInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockWorkspaceAssignmentInterface_Expecter) Impl() *MockWorkspaceAssignmentInterface_Impl_Call {
-	return &MockWorkspaceAssignmentInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockWorkspaceAssignmentInterface_Impl_Call) Run(run func()) *MockWorkspaceAssignmentInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockWorkspaceAssignmentInterface_Impl_Call) Return(_a0 iam.WorkspaceAssignmentService) *MockWorkspaceAssignmentInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockWorkspaceAssignmentInterface_Impl_Call) RunAndReturn(run func() iam.WorkspaceAssignmentService) *MockWorkspaceAssignmentInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockWorkspaceAssignmentInterface) List(ctx context.Context, request iam.ListWorkspaceAssignmentRequest) listing.Iterator[iam.PermissionAssignment] {
 	ret := _m.Called(ctx, request)
@@ -506,54 +459,6 @@ func (_c *MockWorkspaceAssignmentInterface_Update_Call) Return(_a0 *iam.Permissi
 }
 
 func (_c *MockWorkspaceAssignmentInterface_Update_Call) RunAndReturn(run func(context.Context, iam.UpdateWorkspaceAssignments) (*iam.PermissionAssignment, error)) *MockWorkspaceAssignmentInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockWorkspaceAssignmentInterface) WithImpl(impl iam.WorkspaceAssignmentService) iam.WorkspaceAssignmentInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 iam.WorkspaceAssignmentInterface
-	if rf, ok := ret.Get(0).(func(iam.WorkspaceAssignmentService) iam.WorkspaceAssignmentInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.WorkspaceAssignmentInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockWorkspaceAssignmentInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockWorkspaceAssignmentInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl iam.WorkspaceAssignmentService
-func (_e *MockWorkspaceAssignmentInterface_Expecter) WithImpl(impl interface{}) *MockWorkspaceAssignmentInterface_WithImpl_Call {
-	return &MockWorkspaceAssignmentInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockWorkspaceAssignmentInterface_WithImpl_Call) Run(run func(impl iam.WorkspaceAssignmentService)) *MockWorkspaceAssignmentInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(iam.WorkspaceAssignmentService))
-	})
-	return _c
-}
-
-func (_c *MockWorkspaceAssignmentInterface_WithImpl_Call) Return(_a0 iam.WorkspaceAssignmentInterface) *MockWorkspaceAssignmentInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockWorkspaceAssignmentInterface_WithImpl_Call) RunAndReturn(run func(iam.WorkspaceAssignmentService) iam.WorkspaceAssignmentInterface) *MockWorkspaceAssignmentInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

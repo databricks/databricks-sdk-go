@@ -412,53 +412,6 @@ func (_c *MockGitCredentialsInterface_GetByGitProvider_Call) RunAndReturn(run fu
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockGitCredentialsInterface) Impl() workspace.GitCredentialsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 workspace.GitCredentialsService
-	if rf, ok := ret.Get(0).(func() workspace.GitCredentialsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(workspace.GitCredentialsService)
-		}
-	}
-
-	return r0
-}
-
-// MockGitCredentialsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockGitCredentialsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockGitCredentialsInterface_Expecter) Impl() *MockGitCredentialsInterface_Impl_Call {
-	return &MockGitCredentialsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockGitCredentialsInterface_Impl_Call) Run(run func()) *MockGitCredentialsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockGitCredentialsInterface_Impl_Call) Return(_a0 workspace.GitCredentialsService) *MockGitCredentialsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockGitCredentialsInterface_Impl_Call) RunAndReturn(run func() workspace.GitCredentialsService) *MockGitCredentialsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx
 func (_m *MockGitCredentialsInterface) List(ctx context.Context) listing.Iterator[workspace.CredentialInfo] {
 	ret := _m.Called(ctx)
@@ -608,54 +561,6 @@ func (_c *MockGitCredentialsInterface_Update_Call) Return(_a0 error) *MockGitCre
 }
 
 func (_c *MockGitCredentialsInterface_Update_Call) RunAndReturn(run func(context.Context, workspace.UpdateCredentials) error) *MockGitCredentialsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockGitCredentialsInterface) WithImpl(impl workspace.GitCredentialsService) workspace.GitCredentialsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 workspace.GitCredentialsInterface
-	if rf, ok := ret.Get(0).(func(workspace.GitCredentialsService) workspace.GitCredentialsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(workspace.GitCredentialsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockGitCredentialsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockGitCredentialsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl workspace.GitCredentialsService
-func (_e *MockGitCredentialsInterface_Expecter) WithImpl(impl interface{}) *MockGitCredentialsInterface_WithImpl_Call {
-	return &MockGitCredentialsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockGitCredentialsInterface_WithImpl_Call) Run(run func(impl workspace.GitCredentialsService)) *MockGitCredentialsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(workspace.GitCredentialsService))
-	})
-	return _c
-}
-
-func (_c *MockGitCredentialsInterface_WithImpl_Call) Return(_a0 workspace.GitCredentialsInterface) *MockGitCredentialsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockGitCredentialsInterface_WithImpl_Call) RunAndReturn(run func(workspace.GitCredentialsService) workspace.GitCredentialsInterface) *MockGitCredentialsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

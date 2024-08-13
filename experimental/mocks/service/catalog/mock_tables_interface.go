@@ -414,53 +414,6 @@ func (_c *MockTablesInterface_GetByName_Call) RunAndReturn(run func(context.Cont
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockTablesInterface) Impl() catalog.TablesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.TablesService
-	if rf, ok := ret.Get(0).(func() catalog.TablesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.TablesService)
-		}
-	}
-
-	return r0
-}
-
-// MockTablesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockTablesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockTablesInterface_Expecter) Impl() *MockTablesInterface_Impl_Call {
-	return &MockTablesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockTablesInterface_Impl_Call) Run(run func()) *MockTablesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockTablesInterface_Impl_Call) Return(_a0 catalog.TablesService) *MockTablesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockTablesInterface_Impl_Call) RunAndReturn(run func() catalog.TablesService) *MockTablesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockTablesInterface) List(ctx context.Context, request catalog.ListTablesRequest) listing.Iterator[catalog.TableInfo] {
 	ret := _m.Called(ctx, request)
@@ -779,54 +732,6 @@ func (_c *MockTablesInterface_Update_Call) Return(_a0 error) *MockTablesInterfac
 }
 
 func (_c *MockTablesInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdateTableRequest) error) *MockTablesInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockTablesInterface) WithImpl(impl catalog.TablesService) catalog.TablesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.TablesInterface
-	if rf, ok := ret.Get(0).(func(catalog.TablesService) catalog.TablesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.TablesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockTablesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockTablesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.TablesService
-func (_e *MockTablesInterface_Expecter) WithImpl(impl interface{}) *MockTablesInterface_WithImpl_Call {
-	return &MockTablesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockTablesInterface_WithImpl_Call) Run(run func(impl catalog.TablesService)) *MockTablesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.TablesService))
-	})
-	return _c
-}
-
-func (_c *MockTablesInterface_WithImpl_Call) Return(_a0 catalog.TablesInterface) *MockTablesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockTablesInterface_WithImpl_Call) RunAndReturn(run func(catalog.TablesService) catalog.TablesInterface) *MockTablesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

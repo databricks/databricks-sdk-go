@@ -460,53 +460,6 @@ func (_c *MockMetastoresInterface_GetByName_Call) RunAndReturn(run func(context.
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockMetastoresInterface) Impl() catalog.MetastoresService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.MetastoresService
-	if rf, ok := ret.Get(0).(func() catalog.MetastoresService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.MetastoresService)
-		}
-	}
-
-	return r0
-}
-
-// MockMetastoresInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockMetastoresInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockMetastoresInterface_Expecter) Impl() *MockMetastoresInterface_Impl_Call {
-	return &MockMetastoresInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockMetastoresInterface_Impl_Call) Run(run func()) *MockMetastoresInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockMetastoresInterface_Impl_Call) Return(_a0 catalog.MetastoresService) *MockMetastoresInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockMetastoresInterface_Impl_Call) RunAndReturn(run func() catalog.MetastoresService) *MockMetastoresInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx
 func (_m *MockMetastoresInterface) List(ctx context.Context) listing.Iterator[catalog.MetastoreInfo] {
 	ret := _m.Called(ctx)
@@ -925,54 +878,6 @@ func (_c *MockMetastoresInterface_UpdateAssignment_Call) Return(_a0 error) *Mock
 }
 
 func (_c *MockMetastoresInterface_UpdateAssignment_Call) RunAndReturn(run func(context.Context, catalog.UpdateMetastoreAssignment) error) *MockMetastoresInterface_UpdateAssignment_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockMetastoresInterface) WithImpl(impl catalog.MetastoresService) catalog.MetastoresInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.MetastoresInterface
-	if rf, ok := ret.Get(0).(func(catalog.MetastoresService) catalog.MetastoresInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.MetastoresInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockMetastoresInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockMetastoresInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.MetastoresService
-func (_e *MockMetastoresInterface_Expecter) WithImpl(impl interface{}) *MockMetastoresInterface_WithImpl_Call {
-	return &MockMetastoresInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockMetastoresInterface_WithImpl_Call) Run(run func(impl catalog.MetastoresService)) *MockMetastoresInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.MetastoresService))
-	})
-	return _c
-}
-
-func (_c *MockMetastoresInterface_WithImpl_Call) Return(_a0 catalog.MetastoresInterface) *MockMetastoresInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockMetastoresInterface_WithImpl_Call) RunAndReturn(run func(catalog.MetastoresService) catalog.MetastoresInterface) *MockMetastoresInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

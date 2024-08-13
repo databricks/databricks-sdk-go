@@ -8,6 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/stretchr/testify/mock"
 
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/compute"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dashboards"
@@ -42,7 +43,7 @@ func NewMockWorkspaceClient(t interface {
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
 			Alerts:                              sql.NewMockAlertsInterface(t),
 			AlertsLegacy:                        sql.NewMockAlertsLegacyInterface(t),
-			Apps:                                serving.NewMockAppsInterface(t),
+			Apps:                                apps.NewMockAppsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
 			CleanRooms:                          sharing.NewMockCleanRoomsInterface(t),
@@ -213,10 +214,10 @@ func (m *MockWorkspaceClient) GetMockAlertsLegacyAPI() *sql.MockAlertsLegacyInte
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockAppsAPI() *serving.MockAppsInterface {
-	api, ok := m.WorkspaceClient.Apps.(*serving.MockAppsInterface)
+func (m *MockWorkspaceClient) GetMockAppsAPI() *apps.MockAppsInterface {
+	api, ok := m.WorkspaceClient.Apps.(*apps.MockAppsInterface)
 	if !ok {
-		panic(fmt.Sprintf("expected Apps to be *serving.MockAppsInterface, actual was %T", m.WorkspaceClient.Apps))
+		panic(fmt.Sprintf("expected Apps to be *apps.MockAppsInterface, actual was %T", m.WorkspaceClient.Apps))
 	}
 	return api
 }

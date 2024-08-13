@@ -262,6 +262,9 @@ type PermissionMigrationService interface {
 // Permissions API are used to create read, write, edit, update and manage
 // access for various users on different objects and endpoints.
 //
+// * **[Apps permissions](:service:apps)** — Manage which users can manage or
+// use apps.
+//
 // * **[Cluster permissions](:service:clusters)** — Manage which users can
 // manage, restart, or attach to clusters.
 //
@@ -300,7 +303,8 @@ type PermissionMigrationService interface {
 // can create or use tokens.
 //
 // * **[Workspace object permissions](:service:workspace)** — Manage which
-// users can read, run, edit, or manage directories, files, and notebooks.
+// users can read, run, edit, or manage alerts, dbsql-dashboards, directories,
+// files, notebooks and queries.
 //
 // For the mapping of the required permissions for specific actions or abilities
 // and other important information, see [Access Control].

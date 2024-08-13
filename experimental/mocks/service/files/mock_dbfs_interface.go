@@ -389,53 +389,6 @@ func (_c *MockDbfsInterface_GetStatusByPath_Call) RunAndReturn(run func(context.
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockDbfsInterface) Impl() files.DbfsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 files.DbfsService
-	if rf, ok := ret.Get(0).(func() files.DbfsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(files.DbfsService)
-		}
-	}
-
-	return r0
-}
-
-// MockDbfsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockDbfsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockDbfsInterface_Expecter) Impl() *MockDbfsInterface_Impl_Call {
-	return &MockDbfsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockDbfsInterface_Impl_Call) Run(run func()) *MockDbfsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDbfsInterface_Impl_Call) Return(_a0 files.DbfsService) *MockDbfsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockDbfsInterface_Impl_Call) RunAndReturn(run func() files.DbfsService) *MockDbfsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockDbfsInterface) List(ctx context.Context, request files.ListDbfsRequest) listing.Iterator[files.FileInfo] {
 	ret := _m.Called(ctx, request)
@@ -1024,54 +977,6 @@ func (_c *MockDbfsInterface_RecursiveList_Call) Return(_a0 []files.FileInfo, _a1
 }
 
 func (_c *MockDbfsInterface_RecursiveList_Call) RunAndReturn(run func(context.Context, string) ([]files.FileInfo, error)) *MockDbfsInterface_RecursiveList_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockDbfsInterface) WithImpl(impl files.DbfsService) files.DbfsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 files.DbfsInterface
-	if rf, ok := ret.Get(0).(func(files.DbfsService) files.DbfsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(files.DbfsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockDbfsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockDbfsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl files.DbfsService
-func (_e *MockDbfsInterface_Expecter) WithImpl(impl interface{}) *MockDbfsInterface_WithImpl_Call {
-	return &MockDbfsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockDbfsInterface_WithImpl_Call) Run(run func(impl files.DbfsService)) *MockDbfsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(files.DbfsService))
-	})
-	return _c
-}
-
-func (_c *MockDbfsInterface_WithImpl_Call) Return(_a0 files.DbfsInterface) *MockDbfsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockDbfsInterface_WithImpl_Call) RunAndReturn(run func(files.DbfsService) files.DbfsInterface) *MockDbfsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

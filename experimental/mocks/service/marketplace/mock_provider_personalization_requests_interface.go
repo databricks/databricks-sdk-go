@@ -24,53 +24,6 @@ func (_m *MockProviderPersonalizationRequestsInterface) EXPECT() *MockProviderPe
 	return &MockProviderPersonalizationRequestsInterface_Expecter{mock: &_m.Mock}
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockProviderPersonalizationRequestsInterface) Impl() marketplace.ProviderPersonalizationRequestsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 marketplace.ProviderPersonalizationRequestsService
-	if rf, ok := ret.Get(0).(func() marketplace.ProviderPersonalizationRequestsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(marketplace.ProviderPersonalizationRequestsService)
-		}
-	}
-
-	return r0
-}
-
-// MockProviderPersonalizationRequestsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockProviderPersonalizationRequestsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockProviderPersonalizationRequestsInterface_Expecter) Impl() *MockProviderPersonalizationRequestsInterface_Impl_Call {
-	return &MockProviderPersonalizationRequestsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockProviderPersonalizationRequestsInterface_Impl_Call) Run(run func()) *MockProviderPersonalizationRequestsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockProviderPersonalizationRequestsInterface_Impl_Call) Return(_a0 marketplace.ProviderPersonalizationRequestsService) *MockProviderPersonalizationRequestsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockProviderPersonalizationRequestsInterface_Impl_Call) RunAndReturn(run func() marketplace.ProviderPersonalizationRequestsService) *MockProviderPersonalizationRequestsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockProviderPersonalizationRequestsInterface) List(ctx context.Context, request marketplace.ListAllPersonalizationRequestsRequest) listing.Iterator[marketplace.PersonalizationRequest] {
 	ret := _m.Called(ctx, request)
@@ -234,54 +187,6 @@ func (_c *MockProviderPersonalizationRequestsInterface_Update_Call) Return(_a0 *
 }
 
 func (_c *MockProviderPersonalizationRequestsInterface_Update_Call) RunAndReturn(run func(context.Context, marketplace.UpdatePersonalizationRequestRequest) (*marketplace.UpdatePersonalizationRequestResponse, error)) *MockProviderPersonalizationRequestsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockProviderPersonalizationRequestsInterface) WithImpl(impl marketplace.ProviderPersonalizationRequestsService) marketplace.ProviderPersonalizationRequestsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 marketplace.ProviderPersonalizationRequestsInterface
-	if rf, ok := ret.Get(0).(func(marketplace.ProviderPersonalizationRequestsService) marketplace.ProviderPersonalizationRequestsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(marketplace.ProviderPersonalizationRequestsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockProviderPersonalizationRequestsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockProviderPersonalizationRequestsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl marketplace.ProviderPersonalizationRequestsService
-func (_e *MockProviderPersonalizationRequestsInterface_Expecter) WithImpl(impl interface{}) *MockProviderPersonalizationRequestsInterface_WithImpl_Call {
-	return &MockProviderPersonalizationRequestsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockProviderPersonalizationRequestsInterface_WithImpl_Call) Run(run func(impl marketplace.ProviderPersonalizationRequestsService)) *MockProviderPersonalizationRequestsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(marketplace.ProviderPersonalizationRequestsService))
-	})
-	return _c
-}
-
-func (_c *MockProviderPersonalizationRequestsInterface_WithImpl_Call) Return(_a0 marketplace.ProviderPersonalizationRequestsInterface) *MockProviderPersonalizationRequestsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockProviderPersonalizationRequestsInterface_WithImpl_Call) RunAndReturn(run func(marketplace.ProviderPersonalizationRequestsService) marketplace.ProviderPersonalizationRequestsInterface) *MockProviderPersonalizationRequestsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

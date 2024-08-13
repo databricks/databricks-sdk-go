@@ -543,13 +543,13 @@ func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersi
 	return err
 }
 
-func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequest) (*RegisteredModelInfo, error) {
-	var registeredModelInfo RegisteredModelInfo
+func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequest) (*ModelVersionInfo, error) {
+	var modelVersionInfo ModelVersionInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &registeredModelInfo)
-	return &registeredModelInfo, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &modelVersionInfo)
+	return &modelVersionInfo, err
 }
 
 func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRequest) (*ModelVersionInfo, error) {

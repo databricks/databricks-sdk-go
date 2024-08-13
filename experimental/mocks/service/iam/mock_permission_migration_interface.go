@@ -22,53 +22,6 @@ func (_m *MockPermissionMigrationInterface) EXPECT() *MockPermissionMigrationInt
 	return &MockPermissionMigrationInterface_Expecter{mock: &_m.Mock}
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockPermissionMigrationInterface) Impl() iam.PermissionMigrationService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 iam.PermissionMigrationService
-	if rf, ok := ret.Get(0).(func() iam.PermissionMigrationService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.PermissionMigrationService)
-		}
-	}
-
-	return r0
-}
-
-// MockPermissionMigrationInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockPermissionMigrationInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockPermissionMigrationInterface_Expecter) Impl() *MockPermissionMigrationInterface_Impl_Call {
-	return &MockPermissionMigrationInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockPermissionMigrationInterface_Impl_Call) Run(run func()) *MockPermissionMigrationInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPermissionMigrationInterface_Impl_Call) Return(_a0 iam.PermissionMigrationService) *MockPermissionMigrationInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPermissionMigrationInterface_Impl_Call) RunAndReturn(run func() iam.PermissionMigrationService) *MockPermissionMigrationInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // MigratePermissions provides a mock function with given fields: ctx, request
 func (_m *MockPermissionMigrationInterface) MigratePermissions(ctx context.Context, request iam.MigratePermissionsRequest) (*iam.MigratePermissionsResponse, error) {
 	ret := _m.Called(ctx, request)
@@ -124,54 +77,6 @@ func (_c *MockPermissionMigrationInterface_MigratePermissions_Call) Return(_a0 *
 }
 
 func (_c *MockPermissionMigrationInterface_MigratePermissions_Call) RunAndReturn(run func(context.Context, iam.MigratePermissionsRequest) (*iam.MigratePermissionsResponse, error)) *MockPermissionMigrationInterface_MigratePermissions_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockPermissionMigrationInterface) WithImpl(impl iam.PermissionMigrationService) iam.PermissionMigrationInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 iam.PermissionMigrationInterface
-	if rf, ok := ret.Get(0).(func(iam.PermissionMigrationService) iam.PermissionMigrationInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(iam.PermissionMigrationInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockPermissionMigrationInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockPermissionMigrationInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl iam.PermissionMigrationService
-func (_e *MockPermissionMigrationInterface_Expecter) WithImpl(impl interface{}) *MockPermissionMigrationInterface_WithImpl_Call {
-	return &MockPermissionMigrationInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockPermissionMigrationInterface_WithImpl_Call) Run(run func(impl iam.PermissionMigrationService)) *MockPermissionMigrationInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(iam.PermissionMigrationService))
-	})
-	return _c
-}
-
-func (_c *MockPermissionMigrationInterface_WithImpl_Call) Return(_a0 iam.PermissionMigrationInterface) *MockPermissionMigrationInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPermissionMigrationInterface_WithImpl_Call) RunAndReturn(run func(iam.PermissionMigrationService) iam.PermissionMigrationInterface) *MockPermissionMigrationInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }
