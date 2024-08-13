@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMwsAccAccountClient_GetWorkspaceClient_NoTranspile(t *testing.T) {
+func TestUcAccAccountClient_GetWorkspaceClient_NoTranspile(t *testing.T) {
 	ctx, a := ucacctTest(t)
 	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
 	ws, err := a.Workspaces.GetByWorkspaceId(ctx, int64(workspaceId))

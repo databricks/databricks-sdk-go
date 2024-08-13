@@ -121,23 +121,23 @@ func (_c *MockModelVersionsInterface_DeleteByFullNameAndVersion_Call) RunAndRetu
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockModelVersionsInterface) Get(ctx context.Context, request catalog.GetModelVersionRequest) (*catalog.RegisteredModelInfo, error) {
+func (_m *MockModelVersionsInterface) Get(ctx context.Context, request catalog.GetModelVersionRequest) (*catalog.ModelVersionInfo, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Get")
 	}
 
-	var r0 *catalog.RegisteredModelInfo
+	var r0 *catalog.ModelVersionInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetModelVersionRequest) (*catalog.RegisteredModelInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetModelVersionRequest) (*catalog.ModelVersionInfo, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetModelVersionRequest) *catalog.RegisteredModelInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetModelVersionRequest) *catalog.ModelVersionInfo); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.RegisteredModelInfo)
+			r0 = ret.Get(0).(*catalog.ModelVersionInfo)
 		}
 	}
 
@@ -169,12 +169,12 @@ func (_c *MockModelVersionsInterface_Get_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockModelVersionsInterface_Get_Call) Return(_a0 *catalog.RegisteredModelInfo, _a1 error) *MockModelVersionsInterface_Get_Call {
+func (_c *MockModelVersionsInterface_Get_Call) Return(_a0 *catalog.ModelVersionInfo, _a1 error) *MockModelVersionsInterface_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockModelVersionsInterface_Get_Call) RunAndReturn(run func(context.Context, catalog.GetModelVersionRequest) (*catalog.RegisteredModelInfo, error)) *MockModelVersionsInterface_Get_Call {
+func (_c *MockModelVersionsInterface_Get_Call) RunAndReturn(run func(context.Context, catalog.GetModelVersionRequest) (*catalog.ModelVersionInfo, error)) *MockModelVersionsInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -299,23 +299,23 @@ func (_c *MockModelVersionsInterface_GetByAliasByFullNameAndAlias_Call) RunAndRe
 }
 
 // GetByFullNameAndVersion provides a mock function with given fields: ctx, fullName, version
-func (_m *MockModelVersionsInterface) GetByFullNameAndVersion(ctx context.Context, fullName string, version int) (*catalog.RegisteredModelInfo, error) {
+func (_m *MockModelVersionsInterface) GetByFullNameAndVersion(ctx context.Context, fullName string, version int) (*catalog.ModelVersionInfo, error) {
 	ret := _m.Called(ctx, fullName, version)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByFullNameAndVersion")
 	}
 
-	var r0 *catalog.RegisteredModelInfo
+	var r0 *catalog.ModelVersionInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, int) (*catalog.RegisteredModelInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, int) (*catalog.ModelVersionInfo, error)); ok {
 		return rf(ctx, fullName, version)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, int) *catalog.RegisteredModelInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, int) *catalog.ModelVersionInfo); ok {
 		r0 = rf(ctx, fullName, version)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.RegisteredModelInfo)
+			r0 = ret.Get(0).(*catalog.ModelVersionInfo)
 		}
 	}
 
@@ -348,59 +348,12 @@ func (_c *MockModelVersionsInterface_GetByFullNameAndVersion_Call) Run(run func(
 	return _c
 }
 
-func (_c *MockModelVersionsInterface_GetByFullNameAndVersion_Call) Return(_a0 *catalog.RegisteredModelInfo, _a1 error) *MockModelVersionsInterface_GetByFullNameAndVersion_Call {
+func (_c *MockModelVersionsInterface_GetByFullNameAndVersion_Call) Return(_a0 *catalog.ModelVersionInfo, _a1 error) *MockModelVersionsInterface_GetByFullNameAndVersion_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockModelVersionsInterface_GetByFullNameAndVersion_Call) RunAndReturn(run func(context.Context, string, int) (*catalog.RegisteredModelInfo, error)) *MockModelVersionsInterface_GetByFullNameAndVersion_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// Impl provides a mock function with given fields:
-func (_m *MockModelVersionsInterface) Impl() catalog.ModelVersionsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.ModelVersionsService
-	if rf, ok := ret.Get(0).(func() catalog.ModelVersionsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.ModelVersionsService)
-		}
-	}
-
-	return r0
-}
-
-// MockModelVersionsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockModelVersionsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockModelVersionsInterface_Expecter) Impl() *MockModelVersionsInterface_Impl_Call {
-	return &MockModelVersionsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockModelVersionsInterface_Impl_Call) Run(run func()) *MockModelVersionsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockModelVersionsInterface_Impl_Call) Return(_a0 catalog.ModelVersionsService) *MockModelVersionsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockModelVersionsInterface_Impl_Call) RunAndReturn(run func() catalog.ModelVersionsService) *MockModelVersionsInterface_Impl_Call {
+func (_c *MockModelVersionsInterface_GetByFullNameAndVersion_Call) RunAndReturn(run func(context.Context, string, int) (*catalog.ModelVersionInfo, error)) *MockModelVersionsInterface_GetByFullNameAndVersion_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -627,54 +580,6 @@ func (_c *MockModelVersionsInterface_Update_Call) Return(_a0 *catalog.ModelVersi
 }
 
 func (_c *MockModelVersionsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdateModelVersionRequest) (*catalog.ModelVersionInfo, error)) *MockModelVersionsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockModelVersionsInterface) WithImpl(impl catalog.ModelVersionsService) catalog.ModelVersionsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.ModelVersionsInterface
-	if rf, ok := ret.Get(0).(func(catalog.ModelVersionsService) catalog.ModelVersionsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.ModelVersionsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockModelVersionsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockModelVersionsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.ModelVersionsService
-func (_e *MockModelVersionsInterface_Expecter) WithImpl(impl interface{}) *MockModelVersionsInterface_WithImpl_Call {
-	return &MockModelVersionsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockModelVersionsInterface_WithImpl_Call) Run(run func(impl catalog.ModelVersionsService)) *MockModelVersionsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.ModelVersionsService))
-	})
-	return _c
-}
-
-func (_c *MockModelVersionsInterface_WithImpl_Call) Return(_a0 catalog.ModelVersionsInterface) *MockModelVersionsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockModelVersionsInterface_WithImpl_Call) RunAndReturn(run func(catalog.ModelVersionsService) catalog.ModelVersionsInterface) *MockModelVersionsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

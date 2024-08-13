@@ -354,53 +354,6 @@ func (_c *MockQueriesLegacyInterface_GetByQueryId_Call) RunAndReturn(run func(co
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockQueriesLegacyInterface) Impl() sql.QueriesLegacyService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sql.QueriesLegacyService
-	if rf, ok := ret.Get(0).(func() sql.QueriesLegacyService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.QueriesLegacyService)
-		}
-	}
-
-	return r0
-}
-
-// MockQueriesLegacyInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockQueriesLegacyInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockQueriesLegacyInterface_Expecter) Impl() *MockQueriesLegacyInterface_Impl_Call {
-	return &MockQueriesLegacyInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockQueriesLegacyInterface_Impl_Call) Run(run func()) *MockQueriesLegacyInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockQueriesLegacyInterface_Impl_Call) Return(_a0 sql.QueriesLegacyService) *MockQueriesLegacyInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockQueriesLegacyInterface_Impl_Call) RunAndReturn(run func() sql.QueriesLegacyService) *MockQueriesLegacyInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // LegacyQueryNameToIdMap provides a mock function with given fields: ctx, request
 func (_m *MockQueriesLegacyInterface) LegacyQueryNameToIdMap(ctx context.Context, request sql.ListQueriesLegacyRequest) (map[string]string, error) {
 	ret := _m.Called(ctx, request)
@@ -670,54 +623,6 @@ func (_c *MockQueriesLegacyInterface_Update_Call) Return(_a0 *sql.LegacyQuery, _
 }
 
 func (_c *MockQueriesLegacyInterface_Update_Call) RunAndReturn(run func(context.Context, sql.QueryEditContent) (*sql.LegacyQuery, error)) *MockQueriesLegacyInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockQueriesLegacyInterface) WithImpl(impl sql.QueriesLegacyService) sql.QueriesLegacyInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sql.QueriesLegacyInterface
-	if rf, ok := ret.Get(0).(func(sql.QueriesLegacyService) sql.QueriesLegacyInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.QueriesLegacyInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockQueriesLegacyInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockQueriesLegacyInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sql.QueriesLegacyService
-func (_e *MockQueriesLegacyInterface_Expecter) WithImpl(impl interface{}) *MockQueriesLegacyInterface_WithImpl_Call {
-	return &MockQueriesLegacyInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockQueriesLegacyInterface_WithImpl_Call) Run(run func(impl sql.QueriesLegacyService)) *MockQueriesLegacyInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sql.QueriesLegacyService))
-	})
-	return _c
-}
-
-func (_c *MockQueriesLegacyInterface_WithImpl_Call) Return(_a0 sql.QueriesLegacyInterface) *MockQueriesLegacyInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockQueriesLegacyInterface_WithImpl_Call) RunAndReturn(run func(sql.QueriesLegacyService) sql.QueriesLegacyInterface) *MockQueriesLegacyInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

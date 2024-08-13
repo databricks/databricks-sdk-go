@@ -7,7 +7,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/compute"
-	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
 type BaseJob struct {
@@ -354,7 +353,7 @@ type Continuous struct {
 
 type CreateJob struct {
 	// List of permissions to set on the job.
-	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
+	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -3505,7 +3504,7 @@ func (s SqlTaskSubscription) MarshalJSON() ([]byte, error) {
 
 type SubmitRun struct {
 	// List of permissions to set on the job.
-	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
+	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional set of email addresses notified when the run begins or
 	// completes.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`

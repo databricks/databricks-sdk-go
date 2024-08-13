@@ -501,7 +501,7 @@ type ModelVersionsService interface {
 	// case, the caller must also be the owner or have the **USE_CATALOG**
 	// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 	// parent schema.
-	Get(ctx context.Context, request GetModelVersionRequest) (*RegisteredModelInfo, error)
+	Get(ctx context.Context, request GetModelVersionRequest) (*ModelVersionInfo, error)
 
 	// Get Model Version By Alias.
 	//
@@ -962,7 +962,7 @@ type SystemSchemasService interface {
 	// Gets an array of system schemas for a metastore. The caller must be an
 	// account admin or a metastore admin.
 	//
-	// Use ListAll() to get all SystemSchemaInfo instances
+	// Use ListAll() to get all SystemSchemaInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error)
 }
 
@@ -1214,6 +1214,8 @@ type WorkspaceBindingsService interface {
 	//
 	// Gets workspace bindings of the securable. The caller must be a metastore
 	// admin or an owner of the securable.
+	//
+	// Use GetBindingsAll() to get all WorkspaceBinding instances, which will iterate over every result page.
 	GetBindings(ctx context.Context, request GetBindingsRequest) (*WorkspaceBindingsResponse, error)
 
 	// Update catalog workspace bindings.

@@ -139,53 +139,6 @@ func (_c *MockDataSourcesInterface_GetByName_Call) RunAndReturn(run func(context
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockDataSourcesInterface) Impl() sql.DataSourcesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sql.DataSourcesService
-	if rf, ok := ret.Get(0).(func() sql.DataSourcesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.DataSourcesService)
-		}
-	}
-
-	return r0
-}
-
-// MockDataSourcesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockDataSourcesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockDataSourcesInterface_Expecter) Impl() *MockDataSourcesInterface_Impl_Call {
-	return &MockDataSourcesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockDataSourcesInterface_Impl_Call) Run(run func()) *MockDataSourcesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockDataSourcesInterface_Impl_Call) Return(_a0 sql.DataSourcesService) *MockDataSourcesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockDataSourcesInterface_Impl_Call) RunAndReturn(run func() sql.DataSourcesService) *MockDataSourcesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx
 func (_m *MockDataSourcesInterface) List(ctx context.Context) ([]sql.DataSource, error) {
 	ret := _m.Called(ctx)
@@ -240,54 +193,6 @@ func (_c *MockDataSourcesInterface_List_Call) Return(_a0 []sql.DataSource, _a1 e
 }
 
 func (_c *MockDataSourcesInterface_List_Call) RunAndReturn(run func(context.Context) ([]sql.DataSource, error)) *MockDataSourcesInterface_List_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockDataSourcesInterface) WithImpl(impl sql.DataSourcesService) sql.DataSourcesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sql.DataSourcesInterface
-	if rf, ok := ret.Get(0).(func(sql.DataSourcesService) sql.DataSourcesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.DataSourcesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockDataSourcesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockDataSourcesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sql.DataSourcesService
-func (_e *MockDataSourcesInterface_Expecter) WithImpl(impl interface{}) *MockDataSourcesInterface_WithImpl_Call {
-	return &MockDataSourcesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockDataSourcesInterface_WithImpl_Call) Run(run func(impl sql.DataSourcesService)) *MockDataSourcesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sql.DataSourcesService))
-	})
-	return _c
-}
-
-func (_c *MockDataSourcesInterface_WithImpl_Call) Return(_a0 sql.DataSourcesInterface) *MockDataSourcesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockDataSourcesInterface_WithImpl_Call) RunAndReturn(run func(sql.DataSourcesService) sql.DataSourcesInterface) *MockDataSourcesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

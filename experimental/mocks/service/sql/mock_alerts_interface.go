@@ -354,53 +354,6 @@ func (_c *MockAlertsInterface_GetById_Call) RunAndReturn(run func(context.Contex
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockAlertsInterface) Impl() sql.AlertsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sql.AlertsService
-	if rf, ok := ret.Get(0).(func() sql.AlertsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.AlertsService)
-		}
-	}
-
-	return r0
-}
-
-// MockAlertsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockAlertsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockAlertsInterface_Expecter) Impl() *MockAlertsInterface_Impl_Call {
-	return &MockAlertsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockAlertsInterface_Impl_Call) Run(run func()) *MockAlertsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockAlertsInterface_Impl_Call) Return(_a0 sql.AlertsService) *MockAlertsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAlertsInterface_Impl_Call) RunAndReturn(run func() sql.AlertsService) *MockAlertsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockAlertsInterface) List(ctx context.Context, request sql.ListAlertsRequest) listing.Iterator[sql.ListAlertsResponseAlert] {
 	ret := _m.Called(ctx, request)
@@ -623,54 +576,6 @@ func (_c *MockAlertsInterface_Update_Call) Return(_a0 *sql.Alert, _a1 error) *Mo
 }
 
 func (_c *MockAlertsInterface_Update_Call) RunAndReturn(run func(context.Context, sql.UpdateAlertRequest) (*sql.Alert, error)) *MockAlertsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockAlertsInterface) WithImpl(impl sql.AlertsService) sql.AlertsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sql.AlertsInterface
-	if rf, ok := ret.Get(0).(func(sql.AlertsService) sql.AlertsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.AlertsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockAlertsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockAlertsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sql.AlertsService
-func (_e *MockAlertsInterface_Expecter) WithImpl(impl interface{}) *MockAlertsInterface_WithImpl_Call {
-	return &MockAlertsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockAlertsInterface_WithImpl_Call) Run(run func(impl sql.AlertsService)) *MockAlertsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sql.AlertsService))
-	})
-	return _c
-}
-
-func (_c *MockAlertsInterface_WithImpl_Call) Return(_a0 sql.AlertsInterface) *MockAlertsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAlertsInterface_WithImpl_Call) RunAndReturn(run func(sql.AlertsService) sql.AlertsInterface) *MockAlertsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

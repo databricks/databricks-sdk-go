@@ -261,53 +261,6 @@ func (_c *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call) RunAn
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockGrantsInterface) Impl() catalog.GrantsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.GrantsService
-	if rf, ok := ret.Get(0).(func() catalog.GrantsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.GrantsService)
-		}
-	}
-
-	return r0
-}
-
-// MockGrantsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockGrantsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockGrantsInterface_Expecter) Impl() *MockGrantsInterface_Impl_Call {
-	return &MockGrantsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockGrantsInterface_Impl_Call) Run(run func()) *MockGrantsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockGrantsInterface_Impl_Call) Return(_a0 catalog.GrantsService) *MockGrantsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockGrantsInterface_Impl_Call) RunAndReturn(run func() catalog.GrantsService) *MockGrantsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockGrantsInterface) Update(ctx context.Context, request catalog.UpdatePermissions) (*catalog.PermissionsList, error) {
 	ret := _m.Called(ctx, request)
@@ -363,54 +316,6 @@ func (_c *MockGrantsInterface_Update_Call) Return(_a0 *catalog.PermissionsList, 
 }
 
 func (_c *MockGrantsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdatePermissions) (*catalog.PermissionsList, error)) *MockGrantsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockGrantsInterface) WithImpl(impl catalog.GrantsService) catalog.GrantsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.GrantsInterface
-	if rf, ok := ret.Get(0).(func(catalog.GrantsService) catalog.GrantsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.GrantsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockGrantsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockGrantsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.GrantsService
-func (_e *MockGrantsInterface_Expecter) WithImpl(impl interface{}) *MockGrantsInterface_WithImpl_Call {
-	return &MockGrantsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockGrantsInterface_WithImpl_Call) Run(run func(impl catalog.GrantsService)) *MockGrantsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.GrantsService))
-	})
-	return _c
-}
-
-func (_c *MockGrantsInterface_WithImpl_Call) Return(_a0 catalog.GrantsInterface) *MockGrantsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockGrantsInterface_WithImpl_Call) RunAndReturn(run func(catalog.GrantsService) catalog.GrantsInterface) *MockGrantsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

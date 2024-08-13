@@ -354,53 +354,6 @@ func (_c *MockProviderProvidersInterface_GetByName_Call) RunAndReturn(run func(c
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockProviderProvidersInterface) Impl() marketplace.ProviderProvidersService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 marketplace.ProviderProvidersService
-	if rf, ok := ret.Get(0).(func() marketplace.ProviderProvidersService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(marketplace.ProviderProvidersService)
-		}
-	}
-
-	return r0
-}
-
-// MockProviderProvidersInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockProviderProvidersInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockProviderProvidersInterface_Expecter) Impl() *MockProviderProvidersInterface_Impl_Call {
-	return &MockProviderProvidersInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockProviderProvidersInterface_Impl_Call) Run(run func()) *MockProviderProvidersInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockProviderProvidersInterface_Impl_Call) Return(_a0 marketplace.ProviderProvidersService) *MockProviderProvidersInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockProviderProvidersInterface_Impl_Call) RunAndReturn(run func() marketplace.ProviderProvidersService) *MockProviderProvidersInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockProviderProvidersInterface) List(ctx context.Context, request marketplace.ListProvidersRequest) listing.Iterator[marketplace.ProviderInfo] {
 	ret := _m.Called(ctx, request)
@@ -623,54 +576,6 @@ func (_c *MockProviderProvidersInterface_Update_Call) Return(_a0 *marketplace.Up
 }
 
 func (_c *MockProviderProvidersInterface_Update_Call) RunAndReturn(run func(context.Context, marketplace.UpdateProviderRequest) (*marketplace.UpdateProviderResponse, error)) *MockProviderProvidersInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockProviderProvidersInterface) WithImpl(impl marketplace.ProviderProvidersService) marketplace.ProviderProvidersInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 marketplace.ProviderProvidersInterface
-	if rf, ok := ret.Get(0).(func(marketplace.ProviderProvidersService) marketplace.ProviderProvidersInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(marketplace.ProviderProvidersInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockProviderProvidersInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockProviderProvidersInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl marketplace.ProviderProvidersService
-func (_e *MockProviderProvidersInterface_Expecter) WithImpl(impl interface{}) *MockProviderProvidersInterface_WithImpl_Call {
-	return &MockProviderProvidersInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockProviderProvidersInterface_WithImpl_Call) Run(run func(impl marketplace.ProviderProvidersService)) *MockProviderProvidersInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(marketplace.ProviderProvidersService))
-	})
-	return _c
-}
-
-func (_c *MockProviderProvidersInterface_WithImpl_Call) Return(_a0 marketplace.ProviderProvidersInterface) *MockProviderProvidersInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockProviderProvidersInterface_WithImpl_Call) RunAndReturn(run func(marketplace.ProviderProvidersService) marketplace.ProviderProvidersInterface) *MockProviderProvidersInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

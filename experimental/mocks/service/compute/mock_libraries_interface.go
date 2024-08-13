@@ -300,53 +300,6 @@ func (_c *MockLibrariesInterface_ClusterStatusByClusterId_Call) RunAndReturn(run
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockLibrariesInterface) Impl() compute.LibrariesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 compute.LibrariesService
-	if rf, ok := ret.Get(0).(func() compute.LibrariesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.LibrariesService)
-		}
-	}
-
-	return r0
-}
-
-// MockLibrariesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockLibrariesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockLibrariesInterface_Expecter) Impl() *MockLibrariesInterface_Impl_Call {
-	return &MockLibrariesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockLibrariesInterface_Impl_Call) Run(run func()) *MockLibrariesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockLibrariesInterface_Impl_Call) Return(_a0 compute.LibrariesService) *MockLibrariesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockLibrariesInterface_Impl_Call) RunAndReturn(run func() compute.LibrariesService) *MockLibrariesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Install provides a mock function with given fields: ctx, request
 func (_m *MockLibrariesInterface) Install(ctx context.Context, request compute.InstallLibraries) error {
 	ret := _m.Called(ctx, request)
@@ -499,54 +452,6 @@ func (_c *MockLibrariesInterface_UpdateAndWait_Call) Return(_a0 error) *MockLibr
 }
 
 func (_c *MockLibrariesInterface_UpdateAndWait_Call) RunAndReturn(run func(context.Context, compute.Update, ...retries.Option[compute.ClusterLibraryStatuses]) error) *MockLibrariesInterface_UpdateAndWait_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockLibrariesInterface) WithImpl(impl compute.LibrariesService) compute.LibrariesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 compute.LibrariesInterface
-	if rf, ok := ret.Get(0).(func(compute.LibrariesService) compute.LibrariesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.LibrariesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockLibrariesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockLibrariesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl compute.LibrariesService
-func (_e *MockLibrariesInterface_Expecter) WithImpl(impl interface{}) *MockLibrariesInterface_WithImpl_Call {
-	return &MockLibrariesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockLibrariesInterface_WithImpl_Call) Run(run func(impl compute.LibrariesService)) *MockLibrariesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(compute.LibrariesService))
-	})
-	return _c
-}
-
-func (_c *MockLibrariesInterface_WithImpl_Call) Return(_a0 compute.LibrariesInterface) *MockLibrariesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockLibrariesInterface_WithImpl_Call) RunAndReturn(run func(compute.LibrariesService) compute.LibrariesInterface) *MockLibrariesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

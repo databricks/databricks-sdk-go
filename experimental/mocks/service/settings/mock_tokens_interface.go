@@ -236,53 +236,6 @@ func (_c *MockTokensInterface_GetByComment_Call) RunAndReturn(run func(context.C
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockTokensInterface) Impl() settings.TokensService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.TokensService
-	if rf, ok := ret.Get(0).(func() settings.TokensService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.TokensService)
-		}
-	}
-
-	return r0
-}
-
-// MockTokensInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockTokensInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockTokensInterface_Expecter) Impl() *MockTokensInterface_Impl_Call {
-	return &MockTokensInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockTokensInterface_Impl_Call) Run(run func()) *MockTokensInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockTokensInterface_Impl_Call) Return(_a0 settings.TokensService) *MockTokensInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockTokensInterface_Impl_Call) RunAndReturn(run func() settings.TokensService) *MockTokensInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx
 func (_m *MockTokensInterface) List(ctx context.Context) listing.Iterator[settings.PublicTokenInfo] {
 	ret := _m.Called(ctx)
@@ -443,54 +396,6 @@ func (_c *MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call) Return(_a
 }
 
 func (_c *MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call) RunAndReturn(run func(context.Context) (map[string]string, error)) *MockTokensInterface_PublicTokenInfoCommentToTokenIdMap_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockTokensInterface) WithImpl(impl settings.TokensService) settings.TokensInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.TokensInterface
-	if rf, ok := ret.Get(0).(func(settings.TokensService) settings.TokensInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.TokensInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockTokensInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockTokensInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.TokensService
-func (_e *MockTokensInterface_Expecter) WithImpl(impl interface{}) *MockTokensInterface_WithImpl_Call {
-	return &MockTokensInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockTokensInterface_WithImpl_Call) Run(run func(impl settings.TokensService)) *MockTokensInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.TokensService))
-	})
-	return _c
-}
-
-func (_c *MockTokensInterface_WithImpl_Call) Return(_a0 settings.TokensInterface) *MockTokensInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockTokensInterface_WithImpl_Call) RunAndReturn(run func(settings.TokensService) settings.TokensInterface) *MockTokensInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

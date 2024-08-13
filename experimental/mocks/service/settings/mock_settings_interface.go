@@ -208,53 +208,6 @@ func (_c *MockSettingsInterface_EnhancedSecurityMonitoring_Call) RunAndReturn(ru
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockSettingsInterface) Impl() settings.SettingsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.SettingsService
-	if rf, ok := ret.Get(0).(func() settings.SettingsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.SettingsService)
-		}
-	}
-
-	return r0
-}
-
-// MockSettingsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockSettingsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockSettingsInterface_Expecter) Impl() *MockSettingsInterface_Impl_Call {
-	return &MockSettingsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockSettingsInterface_Impl_Call) Run(run func()) *MockSettingsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockSettingsInterface_Impl_Call) Return(_a0 settings.SettingsService) *MockSettingsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockSettingsInterface_Impl_Call) RunAndReturn(run func() settings.SettingsService) *MockSettingsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // RestrictWorkspaceAdmins provides a mock function with given fields:
 func (_m *MockSettingsInterface) RestrictWorkspaceAdmins() settings.RestrictWorkspaceAdminsInterface {
 	ret := _m.Called()
@@ -298,54 +251,6 @@ func (_c *MockSettingsInterface_RestrictWorkspaceAdmins_Call) Return(_a0 setting
 }
 
 func (_c *MockSettingsInterface_RestrictWorkspaceAdmins_Call) RunAndReturn(run func() settings.RestrictWorkspaceAdminsInterface) *MockSettingsInterface_RestrictWorkspaceAdmins_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockSettingsInterface) WithImpl(impl settings.SettingsService) settings.SettingsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.SettingsInterface
-	if rf, ok := ret.Get(0).(func(settings.SettingsService) settings.SettingsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.SettingsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockSettingsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockSettingsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.SettingsService
-func (_e *MockSettingsInterface_Expecter) WithImpl(impl interface{}) *MockSettingsInterface_WithImpl_Call {
-	return &MockSettingsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockSettingsInterface_WithImpl_Call) Run(run func(impl settings.SettingsService)) *MockSettingsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.SettingsService))
-	})
-	return _c
-}
-
-func (_c *MockSettingsInterface_WithImpl_Call) Return(_a0 settings.SettingsInterface) *MockSettingsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockSettingsInterface_WithImpl_Call) RunAndReturn(run func(settings.SettingsService) settings.SettingsInterface) *MockSettingsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

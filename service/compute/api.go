@@ -588,6 +588,28 @@ type ClustersInterface interface {
 	// This API can only be called by workspace admins.
 	UnpinByClusterId(ctx context.Context, clusterId string) error
 
+	// Update cluster configuration (partial).
+	//
+	// Updates the configuration of a cluster to match the partial set of attributes
+	// and size. Denote which fields to update using the `update_mask` field in the
+	// request body. A cluster can be updated if it is in a `RUNNING` or
+	// `TERMINATED` state. If a cluster is updated while in a `RUNNING` state, it
+	// will be restarted so that the new attributes can take effect. If a cluster is
+	// updated while in a `TERMINATED` state, it will remain `TERMINATED`. The
+	// updated attributes will take effect the next time the cluster is started
+	// using the `clusters/start` API. Attempts to update a cluster in any other
+	// state will be rejected with an `INVALID_STATE` error code. Clusters created
+	// by the Databricks Jobs service cannot be updated.
+	Update(ctx context.Context, updateCluster UpdateCluster) (*WaitGetClusterRunning[struct{}], error)
+
+	// Calls [ClustersAPIInterface.Update] and waits to reach RUNNING state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[ClusterDetails](60*time.Minute) functional option.
+	//
+	// Deprecated: use [ClustersAPIInterface.Update].Get() or [ClustersAPIInterface.WaitGetClusterRunning]
+	UpdateAndWait(ctx context.Context, updateCluster UpdateCluster, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error)
+
 	// Update cluster permissions.
 	//
 	// Updates the permissions on a cluster. Clusters can inherit permissions from
@@ -1292,6 +1314,61 @@ func (a *ClustersAPI) UnpinByClusterId(ctx context.Context, clusterId string) er
 	return a.clustersImpl.Unpin(ctx, UnpinCluster{
 		ClusterId: clusterId,
 	})
+}
+
+// Update cluster configuration (partial).
+//
+// Updates the configuration of a cluster to match the partial set of attributes
+// and size. Denote which fields to update using the `update_mask` field in the
+// request body. A cluster can be updated if it is in a `RUNNING` or
+// `TERMINATED` state. If a cluster is updated while in a `RUNNING` state, it
+// will be restarted so that the new attributes can take effect. If a cluster is
+// updated while in a `TERMINATED` state, it will remain `TERMINATED`. The
+// updated attributes will take effect the next time the cluster is started
+// using the `clusters/start` API. Attempts to update a cluster in any other
+// state will be rejected with an `INVALID_STATE` error code. Clusters created
+// by the Databricks Jobs service cannot be updated.
+func (a *ClustersAPI) Update(ctx context.Context, updateCluster UpdateCluster) (*WaitGetClusterRunning[struct{}], error) {
+	err := a.clustersImpl.Update(ctx, updateCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetClusterRunning[struct{}]{
+
+		ClusterId: updateCluster.ClusterId,
+		Poll: func(timeout time.Duration, callback func(*ClusterDetails)) (*ClusterDetails, error) {
+			return a.WaitGetClusterRunning(ctx, updateCluster.ClusterId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [ClustersAPI.Update] and waits to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[ClusterDetails](60*time.Minute) functional option.
+//
+// Deprecated: use [ClustersAPI.Update].Get() or [ClustersAPI.WaitGetClusterRunning]
+func (a *ClustersAPI) UpdateAndWait(ctx context.Context, updateCluster UpdateCluster, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
+	wait, err := a.Update(ctx, updateCluster)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[ClusterDetails]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *ClusterDetails) {
+		for _, o := range options {
+			o(&retries.Info[ClusterDetails]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
 }
 
 type CommandExecutionInterface interface {
@@ -2505,24 +2582,28 @@ type PolicyFamiliesInterface interface {
 
 	// Get policy family information.
 	//
-	// Retrieve the information for an policy family based on its identifier.
+	// Retrieve the information for an policy family based on its identifier and
+	// version
 	Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error)
 
 	// Get policy family information.
 	//
-	// Retrieve the information for an policy family based on its identifier.
+	// Retrieve the information for an policy family based on its identifier and
+	// version
 	GetByPolicyFamilyId(ctx context.Context, policyFamilyId string) (*PolicyFamily, error)
 
 	// List policy families.
 	//
-	// Retrieve a list of policy families. This API is paginated.
+	// Returns the list of policy definition types available to use at their latest
+	// version. This API is paginated.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	List(ctx context.Context, request ListPolicyFamiliesRequest) listing.Iterator[PolicyFamily]
 
 	// List policy families.
 	//
-	// Retrieve a list of policy families. This API is paginated.
+	// Returns the list of policy definition types available to use at their latest
+	// version. This API is paginated.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListPolicyFamiliesRequest) ([]PolicyFamily, error)
@@ -2551,7 +2632,8 @@ type PolicyFamiliesAPI struct {
 
 // Get policy family information.
 //
-// Retrieve the information for an policy family based on its identifier.
+// Retrieve the information for an policy family based on its identifier and
+// version
 func (a *PolicyFamiliesAPI) GetByPolicyFamilyId(ctx context.Context, policyFamilyId string) (*PolicyFamily, error) {
 	return a.policyFamiliesImpl.Get(ctx, GetPolicyFamilyRequest{
 		PolicyFamilyId: policyFamilyId,
@@ -2560,7 +2642,8 @@ func (a *PolicyFamiliesAPI) GetByPolicyFamilyId(ctx context.Context, policyFamil
 
 // List policy families.
 //
-// Retrieve a list of policy families. This API is paginated.
+// Returns the list of policy definition types available to use at their latest
+// version. This API is paginated.
 //
 // This method is generated by Databricks SDK Code Generator.
 func (a *PolicyFamiliesAPI) List(ctx context.Context, request ListPolicyFamiliesRequest) listing.Iterator[PolicyFamily] {
@@ -2589,11 +2672,11 @@ func (a *PolicyFamiliesAPI) List(ctx context.Context, request ListPolicyFamilies
 
 // List policy families.
 //
-// Retrieve a list of policy families. This API is paginated.
+// Returns the list of policy definition types available to use at their latest
+// version. This API is paginated.
 //
 // This method is generated by Databricks SDK Code Generator.
 func (a *PolicyFamiliesAPI) ListAll(ctx context.Context, request ListPolicyFamiliesRequest) ([]PolicyFamily, error) {
 	iterator := a.List(ctx, request)
-	return listing.ToSliceN[PolicyFamily, int64](ctx, iterator, request.MaxResults)
-
+	return listing.ToSlice[PolicyFamily](ctx, iterator)
 }

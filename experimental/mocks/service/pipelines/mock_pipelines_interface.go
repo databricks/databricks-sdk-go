@@ -713,53 +713,6 @@ func (_c *MockPipelinesInterface_GetUpdateByPipelineIdAndUpdateId_Call) RunAndRe
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockPipelinesInterface) Impl() pipelines.PipelinesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 pipelines.PipelinesService
-	if rf, ok := ret.Get(0).(func() pipelines.PipelinesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(pipelines.PipelinesService)
-		}
-	}
-
-	return r0
-}
-
-// MockPipelinesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockPipelinesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockPipelinesInterface_Expecter) Impl() *MockPipelinesInterface_Impl_Call {
-	return &MockPipelinesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockPipelinesInterface_Impl_Call) Run(run func()) *MockPipelinesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPipelinesInterface_Impl_Call) Return(_a0 pipelines.PipelinesService) *MockPipelinesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPipelinesInterface_Impl_Call) RunAndReturn(run func() pipelines.PipelinesService) *MockPipelinesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ListPipelineEvents provides a mock function with given fields: ctx, request
 func (_m *MockPipelinesInterface) ListPipelineEvents(ctx context.Context, request pipelines.ListPipelineEventsRequest) listing.Iterator[pipelines.PipelineEvent] {
 	ret := _m.Called(ctx, request)
@@ -1687,54 +1640,6 @@ func (_c *MockPipelinesInterface_WaitGetPipelineRunning_Call) Return(_a0 *pipeli
 }
 
 func (_c *MockPipelinesInterface_WaitGetPipelineRunning_Call) RunAndReturn(run func(context.Context, string, time.Duration, func(*pipelines.GetPipelineResponse)) (*pipelines.GetPipelineResponse, error)) *MockPipelinesInterface_WaitGetPipelineRunning_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockPipelinesInterface) WithImpl(impl pipelines.PipelinesService) pipelines.PipelinesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 pipelines.PipelinesInterface
-	if rf, ok := ret.Get(0).(func(pipelines.PipelinesService) pipelines.PipelinesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(pipelines.PipelinesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockPipelinesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockPipelinesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl pipelines.PipelinesService
-func (_e *MockPipelinesInterface_Expecter) WithImpl(impl interface{}) *MockPipelinesInterface_WithImpl_Call {
-	return &MockPipelinesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockPipelinesInterface_WithImpl_Call) Run(run func(impl pipelines.PipelinesService)) *MockPipelinesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(pipelines.PipelinesService))
-	})
-	return _c
-}
-
-func (_c *MockPipelinesInterface_WithImpl_Call) Return(_a0 pipelines.PipelinesInterface) *MockPipelinesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPipelinesInterface_WithImpl_Call) RunAndReturn(run func(pipelines.PipelinesService) pipelines.PipelinesInterface) *MockPipelinesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

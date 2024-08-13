@@ -638,53 +638,6 @@ func (_c *MockInstancePoolsInterface_GetPermissionsByInstancePoolId_Call) RunAnd
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockInstancePoolsInterface) Impl() compute.InstancePoolsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 compute.InstancePoolsService
-	if rf, ok := ret.Get(0).(func() compute.InstancePoolsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.InstancePoolsService)
-		}
-	}
-
-	return r0
-}
-
-// MockInstancePoolsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockInstancePoolsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockInstancePoolsInterface_Expecter) Impl() *MockInstancePoolsInterface_Impl_Call {
-	return &MockInstancePoolsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockInstancePoolsInterface_Impl_Call) Run(run func()) *MockInstancePoolsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockInstancePoolsInterface_Impl_Call) Return(_a0 compute.InstancePoolsService) *MockInstancePoolsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockInstancePoolsInterface_Impl_Call) RunAndReturn(run func() compute.InstancePoolsService) *MockInstancePoolsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // InstancePoolAndStatsInstancePoolNameToInstancePoolIdMap provides a mock function with given fields: ctx
 func (_m *MockInstancePoolsInterface) InstancePoolAndStatsInstancePoolNameToInstancePoolIdMap(ctx context.Context) (map[string]string, error) {
 	ret := _m.Called(ctx)
@@ -963,54 +916,6 @@ func (_c *MockInstancePoolsInterface_UpdatePermissions_Call) Return(_a0 *compute
 }
 
 func (_c *MockInstancePoolsInterface_UpdatePermissions_Call) RunAndReturn(run func(context.Context, compute.InstancePoolPermissionsRequest) (*compute.InstancePoolPermissions, error)) *MockInstancePoolsInterface_UpdatePermissions_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockInstancePoolsInterface) WithImpl(impl compute.InstancePoolsService) compute.InstancePoolsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 compute.InstancePoolsInterface
-	if rf, ok := ret.Get(0).(func(compute.InstancePoolsService) compute.InstancePoolsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.InstancePoolsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockInstancePoolsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockInstancePoolsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl compute.InstancePoolsService
-func (_e *MockInstancePoolsInterface_Expecter) WithImpl(impl interface{}) *MockInstancePoolsInterface_WithImpl_Call {
-	return &MockInstancePoolsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockInstancePoolsInterface_WithImpl_Call) Run(run func(impl compute.InstancePoolsService)) *MockInstancePoolsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(compute.InstancePoolsService))
-	})
-	return _c
-}
-
-func (_c *MockInstancePoolsInterface_WithImpl_Call) Return(_a0 compute.InstancePoolsInterface) *MockInstancePoolsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockInstancePoolsInterface_WithImpl_Call) RunAndReturn(run func(compute.InstancePoolsService) compute.InstancePoolsInterface) *MockInstancePoolsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

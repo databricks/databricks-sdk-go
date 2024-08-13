@@ -354,53 +354,6 @@ func (_c *MockAccountIpAccessListsInterface_GetByLabel_Call) RunAndReturn(run fu
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockAccountIpAccessListsInterface) Impl() settings.AccountIpAccessListsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.AccountIpAccessListsService
-	if rf, ok := ret.Get(0).(func() settings.AccountIpAccessListsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.AccountIpAccessListsService)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountIpAccessListsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockAccountIpAccessListsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockAccountIpAccessListsInterface_Expecter) Impl() *MockAccountIpAccessListsInterface_Impl_Call {
-	return &MockAccountIpAccessListsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockAccountIpAccessListsInterface_Impl_Call) Run(run func()) *MockAccountIpAccessListsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockAccountIpAccessListsInterface_Impl_Call) Return(_a0 settings.AccountIpAccessListsService) *MockAccountIpAccessListsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountIpAccessListsInterface_Impl_Call) RunAndReturn(run func() settings.AccountIpAccessListsService) *MockAccountIpAccessListsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // IpAccessListInfoLabelToListIdMap provides a mock function with given fields: ctx
 func (_m *MockAccountIpAccessListsInterface) IpAccessListInfoLabelToListIdMap(ctx context.Context) (map[string]string, error) {
 	ret := _m.Called(ctx)
@@ -655,54 +608,6 @@ func (_c *MockAccountIpAccessListsInterface_Update_Call) Return(_a0 error) *Mock
 }
 
 func (_c *MockAccountIpAccessListsInterface_Update_Call) RunAndReturn(run func(context.Context, settings.UpdateIpAccessList) error) *MockAccountIpAccessListsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockAccountIpAccessListsInterface) WithImpl(impl settings.AccountIpAccessListsService) settings.AccountIpAccessListsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.AccountIpAccessListsInterface
-	if rf, ok := ret.Get(0).(func(settings.AccountIpAccessListsService) settings.AccountIpAccessListsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.AccountIpAccessListsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountIpAccessListsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockAccountIpAccessListsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.AccountIpAccessListsService
-func (_e *MockAccountIpAccessListsInterface_Expecter) WithImpl(impl interface{}) *MockAccountIpAccessListsInterface_WithImpl_Call {
-	return &MockAccountIpAccessListsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockAccountIpAccessListsInterface_WithImpl_Call) Run(run func(impl settings.AccountIpAccessListsService)) *MockAccountIpAccessListsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.AccountIpAccessListsService))
-	})
-	return _c
-}
-
-func (_c *MockAccountIpAccessListsInterface_WithImpl_Call) Return(_a0 settings.AccountIpAccessListsInterface) *MockAccountIpAccessListsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountIpAccessListsInterface_WithImpl_Call) RunAndReturn(run func(settings.AccountIpAccessListsService) settings.AccountIpAccessListsInterface) *MockAccountIpAccessListsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -178,53 +178,6 @@ func (_c *MockServicePrincipalSecretsInterface_DeleteByServicePrincipalIdAndSecr
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockServicePrincipalSecretsInterface) Impl() oauth2.ServicePrincipalSecretsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 oauth2.ServicePrincipalSecretsService
-	if rf, ok := ret.Get(0).(func() oauth2.ServicePrincipalSecretsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(oauth2.ServicePrincipalSecretsService)
-		}
-	}
-
-	return r0
-}
-
-// MockServicePrincipalSecretsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockServicePrincipalSecretsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockServicePrincipalSecretsInterface_Expecter) Impl() *MockServicePrincipalSecretsInterface_Impl_Call {
-	return &MockServicePrincipalSecretsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockServicePrincipalSecretsInterface_Impl_Call) Run(run func()) *MockServicePrincipalSecretsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockServicePrincipalSecretsInterface_Impl_Call) Return(_a0 oauth2.ServicePrincipalSecretsService) *MockServicePrincipalSecretsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockServicePrincipalSecretsInterface_Impl_Call) RunAndReturn(run func() oauth2.ServicePrincipalSecretsService) *MockServicePrincipalSecretsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockServicePrincipalSecretsInterface) List(ctx context.Context, request oauth2.ListServicePrincipalSecretsRequest) listing.Iterator[oauth2.SecretInfo] {
 	ret := _m.Called(ctx, request)
@@ -388,54 +341,6 @@ func (_c *MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call) Re
 }
 
 func (_c *MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call) RunAndReturn(run func(context.Context, int64) (*oauth2.ListServicePrincipalSecretsResponse, error)) *MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockServicePrincipalSecretsInterface) WithImpl(impl oauth2.ServicePrincipalSecretsService) oauth2.ServicePrincipalSecretsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 oauth2.ServicePrincipalSecretsInterface
-	if rf, ok := ret.Get(0).(func(oauth2.ServicePrincipalSecretsService) oauth2.ServicePrincipalSecretsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(oauth2.ServicePrincipalSecretsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockServicePrincipalSecretsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockServicePrincipalSecretsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl oauth2.ServicePrincipalSecretsService
-func (_e *MockServicePrincipalSecretsInterface_Expecter) WithImpl(impl interface{}) *MockServicePrincipalSecretsInterface_WithImpl_Call {
-	return &MockServicePrincipalSecretsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockServicePrincipalSecretsInterface_WithImpl_Call) Run(run func(impl oauth2.ServicePrincipalSecretsService)) *MockServicePrincipalSecretsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(oauth2.ServicePrincipalSecretsService))
-	})
-	return _c
-}
-
-func (_c *MockServicePrincipalSecretsInterface_WithImpl_Call) Return(_a0 oauth2.ServicePrincipalSecretsInterface) *MockServicePrincipalSecretsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockServicePrincipalSecretsInterface_WithImpl_Call) RunAndReturn(run func(oauth2.ServicePrincipalSecretsService) oauth2.ServicePrincipalSecretsInterface) *MockServicePrincipalSecretsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

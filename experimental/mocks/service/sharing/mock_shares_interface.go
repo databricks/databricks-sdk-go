@@ -298,53 +298,6 @@ func (_c *MockSharesInterface_GetByName_Call) RunAndReturn(run func(context.Cont
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockSharesInterface) Impl() sharing.SharesService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sharing.SharesService
-	if rf, ok := ret.Get(0).(func() sharing.SharesService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sharing.SharesService)
-		}
-	}
-
-	return r0
-}
-
-// MockSharesInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockSharesInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockSharesInterface_Expecter) Impl() *MockSharesInterface_Impl_Call {
-	return &MockSharesInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockSharesInterface_Impl_Call) Run(run func()) *MockSharesInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockSharesInterface_Impl_Call) Return(_a0 sharing.SharesService) *MockSharesInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockSharesInterface_Impl_Call) RunAndReturn(run func() sharing.SharesService) *MockSharesInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockSharesInterface) List(ctx context.Context, request sharing.ListSharesRequest) listing.Iterator[sharing.ShareInfo] {
 	ret := _m.Called(ctx, request)
@@ -673,54 +626,6 @@ func (_c *MockSharesInterface_UpdatePermissions_Call) Return(_a0 error) *MockSha
 }
 
 func (_c *MockSharesInterface_UpdatePermissions_Call) RunAndReturn(run func(context.Context, sharing.UpdateSharePermissions) error) *MockSharesInterface_UpdatePermissions_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockSharesInterface) WithImpl(impl sharing.SharesService) sharing.SharesInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sharing.SharesInterface
-	if rf, ok := ret.Get(0).(func(sharing.SharesService) sharing.SharesInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sharing.SharesInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockSharesInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockSharesInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sharing.SharesService
-func (_e *MockSharesInterface_Expecter) WithImpl(impl interface{}) *MockSharesInterface_WithImpl_Call {
-	return &MockSharesInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockSharesInterface_WithImpl_Call) Run(run func(impl sharing.SharesService)) *MockSharesInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sharing.SharesService))
-	})
-	return _c
-}
-
-func (_c *MockSharesInterface_WithImpl_Call) Return(_a0 sharing.SharesInterface) *MockSharesInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockSharesInterface_WithImpl_Call) RunAndReturn(run func(sharing.SharesService) sharing.SharesInterface) *MockSharesInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }
