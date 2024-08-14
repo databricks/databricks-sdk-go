@@ -8,6 +8,23 @@ type ErrorMappingRule struct {
 	Description string `json:"description"`
 }
 
+// API error rules for the Databricks REST API based on HTTP status codes.
+//
+// The API responds with an error by setting the HTTP status code to 400 or
+// higher and returning a JSON object with an error code and message. Error
+// responses are hierarchical in nature, with the HTTP status code providing
+// the highest level of categorization. The error_code field in the response
+// provides a more granular categorization of the error.
+//
+// The SDK attempts to map these error responses to error objects based on this
+// mapping by applying the following logic:
+//
+//  1. If the error matches an override defined in ErrorOverrides, return the
+//     override.
+//  2. If the error_code field of the response matches a key in
+//     ErrorCodeMapping, return that error.
+//  3. If the HTTP status code matches a rule in ErrorStatusCodeMapping, return
+//     that error.
 var ErrorStatusCodeMapping = []ErrorMappingRule{
 	{400, "BAD_REQUEST", "the request is invalid"},
 	{401, "UNAUTHENTICATED", "the request does not have valid authentication (AuthN) credentials for the operation"},
@@ -22,8 +39,13 @@ var ErrorStatusCodeMapping = []ErrorMappingRule{
 	{504, "DEADLINE_EXCEEDED", "the deadline expired before the operation could complete"},
 }
 
+// Specialized  API error rules based on the error_code field in the error
+// response.
+//
+// See the documentation on ErrorStatusCodeMapping for more information.
 var ErrorCodeMapping = []ErrorMappingRule{
 	{400, INVALID_PARAMETER_VALUE, "supplied value for a parameter was invalid"},
+	{400, "INVALID_STATE", "one or more of the inputs to a given request are not in a valid state for the action"},
 	{404, RESOURCE_DOES_NOT_EXIST, "operation was performed on a resource that does not exist"},
 	{409, "ABORTED", "the operation was aborted, typically due to a concurrency issue such as a sequencer check failure"},
 	{409, "ALREADY_EXISTS", "operation was rejected due a conflict with an existing resource"},
@@ -47,6 +69,12 @@ type ErrorOverride struct {
 const INVALID_PARAMETER_VALUE = "INVALID_PARAMETER_VALUE"
 const RESOURCE_DOES_NOT_EXIST = "RESOURCE_DOES_NOT_EXIST"
 
+// Overrides in the SDK to remap specific error responses to other errors.
+//
+// When certain APIs return a non-standard or inconsistent error response, the
+// SDK can be configured to remap these errors to a more appropriate error.
+// For example, some APIs return a 400 error when a resource doesn't exist. In
+// this case, the SDK can be configured to remap the error to a 404 error.
 var ErrorOverrides = []ErrorOverride{
 	{
 		Name:              "Clusters InvalidParameterValue=>ResourceDoesNotExist",
