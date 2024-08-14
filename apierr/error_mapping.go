@@ -18,6 +18,7 @@ var (
 	ErrNotImplemented         = errors.New("the operation is not implemented or is not supported/enabled in this service")
 	ErrTemporarilyUnavailable = errors.New("the service is currently unavailable")
 	ErrDeadlineExceeded       = errors.New("the deadline expired before the operation could complete")
+	ErrInvalidState           = inheritErr(ErrBadRequest, "unexpected state")
 	ErrInvalidParameterValue  = inheritErr(ErrBadRequest, "supplied value for a parameter was invalid")
 	ErrResourceDoesNotExist   = inheritErr(ErrNotFound, "operation was performed on a resource that does not exist")
 	ErrAborted                = inheritErr(ErrResourceConflict, "the operation was aborted, typically due to a concurrency issue such as a sequencer check failure")
@@ -43,6 +44,7 @@ var (
 	}
 
 	errorCodeMapping = map[string]error{
+		"INVALID_STATE":           ErrInvalidState,
 		"INVALID_PARAMETER_VALUE": ErrInvalidParameterValue,
 		"RESOURCE_DOES_NOT_EXIST": ErrResourceDoesNotExist,
 		"ABORTED":                 ErrAborted,
