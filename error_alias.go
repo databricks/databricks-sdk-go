@@ -27,6 +27,8 @@ var (
 	ErrTemporarilyUnavailable = apierr.ErrTemporarilyUnavailable
 	// the deadline expired before the operation could complete
 	ErrDeadlineExceeded = apierr.ErrDeadlineExceeded
+	// unexpected state
+	ErrInvalidState = apierr.ErrInvalidState
 	// supplied value for a parameter was invalid
 	ErrInvalidParameterValue = apierr.ErrInvalidParameterValue
 	// operation was performed on a resource that does not exist

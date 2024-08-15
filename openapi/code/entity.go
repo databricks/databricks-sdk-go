@@ -87,7 +87,12 @@ type Entity struct {
 	fields        map[string]*Field
 
 	// Schema references the OpenAPI schema this entity was created from.
-	Schema *openapi.Schema
+	Schema    *openapi.Schema
+	Terraform *Terraform
+}
+
+type Terraform struct {
+	Alias string
 }
 
 // Whether the Entity contains a basic GoLang type which is not required
