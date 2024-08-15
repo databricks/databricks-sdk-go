@@ -198,7 +198,10 @@
       "ModificationTime": {
         "description": "Last modification time of given file in milliseconds since unix epoch.",
         "type": "integer",
-        "format": "int64"
+        "format": "int64",
+        "x-databricks-terraform":{
+          "alias": "new_name"
+        }
       },
       "ResultType": {
         "enum": [
