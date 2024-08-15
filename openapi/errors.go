@@ -99,7 +99,7 @@ var ErrorOverrides = []ErrorOverride{
 		PathRegex:         regexp.MustCompile(`^/api/2\.\d/jobs/runs/get`),
 		Verb:              "GET",
 		StatusCodeMatcher: regexp.MustCompile(`^400$`),
-		MessageMatcher:    regexp.MustCompile("(Run .* does not exist|Run: .* in job: .* doesn't exist)"),
+		MessageMatcher:    regexp.MustCompile("(Run .* does not exist|Run: .* in job: .* does not exist)"),
 		ErrorCodeMatcher:  regexp.MustCompile(INVALID_PARAMETER_VALUE),
 		OverrideErrorCode: RESOURCE_DOES_NOT_EXIST,
 	},
