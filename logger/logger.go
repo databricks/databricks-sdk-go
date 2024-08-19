@@ -7,6 +7,8 @@ import (
 // Level maps to the logging levels in [Logger].
 type Level int
 
+var DefaultLogger Logger = &SimpleLogger{}
+
 const (
 	LevelTrace = -8
 	LevelDebug = -4
@@ -42,7 +44,7 @@ type Logger interface {
 func Get(ctx context.Context) Logger {
 	logger, ok := FromContext(ctx)
 	if !ok {
-		logger = &SimpleLogger{}
+		logger = DefaultLogger
 	}
 	return logger
 }

@@ -7,15 +7,8 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/stretchr/testify/require"
 )
-
-func init() {
-	logger.DefaultLogger = &logger.SimpleLogger{
-		Level: logger.LevelDebug,
-	}
-}
 
 func someValidToken(bearer string) any {
 	return map[string]any{
