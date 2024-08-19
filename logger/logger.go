@@ -4,8 +4,6 @@ import (
 	"context"
 )
 
-var DefaultLogger Logger = &SimpleLogger{}
-
 // Level maps to the logging levels in [Logger].
 type Level int
 
@@ -44,7 +42,7 @@ type Logger interface {
 func Get(ctx context.Context) Logger {
 	logger, ok := FromContext(ctx)
 	if !ok {
-		logger = DefaultLogger
+		logger = &SimpleLogger{}
 	}
 	return logger
 }

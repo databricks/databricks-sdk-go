@@ -7,14 +7,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var TestDefaultLogger Logger = &SimpleLogger{}
+
 func TestGetLogger(t *testing.T) {
 	t.Cleanup(func() {
-		DefaultLogger = &SimpleLogger{}
+		TestDefaultLogger = &SimpleLogger{}
 	})
 
 	t1 := &SimpleLogger{}
 	t2 := &SimpleLogger{}
-	DefaultLogger = t1
+	TestDefaultLogger = t1
 
 	logger := Get(context.Background())
 	assert.Equal(t, logger, t1)
@@ -26,7 +28,7 @@ func TestGetLogger(t *testing.T) {
 
 func TestWhenInfoLevelThenDebugDisabled(t *testing.T) {
 	t.Cleanup(func() {
-		DefaultLogger = &SimpleLogger{}
+		TestDefaultLogger = &SimpleLogger{}
 	})
 
 	infoLevelLogger := &SimpleLogger{
