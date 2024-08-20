@@ -82,6 +82,45 @@ func TestMsiHappyFlow(t *testing.T) {
 	})
 }
 
+func TestMsiHappyFlowNoResourceId(t *testing.T) {
+	assertHeaders(t, &Config{
+		AzureUseMSI:     true,
+		AzureResourceID: "/a/b/c",
+		HTTPTransport: fixtures.MappingTransport{
+			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F": {
+				ExpectedHeaders: map[string]string{
+					"Accept":   "application/json",
+					"Metadata": "true",
+				},
+				Response: someValidToken("bcd"),
+			},
+			"GET /a/b/c?api-version=2018-04-01": {
+				Response: `{"properties": {
+					"workspaceUrl": "https://abc"
+				}}`,
+			},
+			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&resource=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d": {
+				ExpectedHeaders: map[string]string{
+					"Accept":   "application/json",
+					"Metadata": "true",
+				},
+				Response: someValidToken("cde"),
+			},
+			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.core.windows.net%2F": {
+				ExpectedHeaders: map[string]string{
+					"Accept":   "application/json",
+					"Metadata": "true",
+				},
+				Response: someValidToken("def"),
+			},
+		},
+	}, map[string]string{
+		"Authorization":                            "Bearer cde",
+		"X-Databricks-Azure-Sp-Management-Token":   "def",
+		"X-Databricks-Azure-Workspace-Resource-Id": "/a/b/c",
+	})
+}
+
 func TestMsiFailsOnResolveWorkspace(t *testing.T) {
 	_, err := authenticateRequest(&Config{
 		AzureUseMSI:     true,
