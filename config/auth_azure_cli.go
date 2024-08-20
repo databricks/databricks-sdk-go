@@ -159,14 +159,28 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	}).WithExtra(extra), nil
 }
 
-const azCliTenantSpecifiedWithManagedIdentityError = `Tenant shouldn't be specified for managed identity account`
-
 func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
-	bs, err := ts.getTokenBytesWithTenantId(ts.azureTenantId)
-	if err != nil && strings.Contains(err.Error(), azCliTenantSpecifiedWithManagedIdentityError) {
-		return ts.getTokenBytesWithTenantId("")
+	// When fetching an access token from the CLI with a managed identity, the tenant ID should not be specified.
+	// https://github.com/hashicorp/go-azure-sdk/pull/910/files demonstrates how to detect whether the CLI is authenticated
+	// using a managed identity.
+	accountRaw, err := runCommand(ts.ctx, "az", []string{"account", "show", "--output", "json"})
+	if err != nil {
+		return nil, fmt.Errorf("cannot get account info: %w", err)
 	}
-	return bs, err
+	var account struct {
+		User struct {
+			Name string `json:"name"`
+			Type string `json:"type"`
+		} `json:"user"`
+	}
+	if err := json.Unmarshal(accountRaw, &account); err != nil {
+		return nil, fmt.Errorf("cannot unmarshal account info: %w", err)
+	}
+	isMsi := account.User.Type == "servicePrincipal" && (account.User.Name == "systemAssignedIdentity" || account.User.Name == "userAssignedIdentity")
+	if !isMsi {
+		return ts.getTokenBytesWithTenantId(ts.azureTenantId)
+	}
+	return ts.getTokenBytesWithTenantId("")
 }
 
 func (ts *azureCliTokenSource) getTokenBytesWithTenantId(tenantId string) ([]byte, error) {

@@ -245,18 +245,28 @@ func TestAzureCliCredentials_DoNotFetchIfTenantIdAlreadySet(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestAzureCliCredentials_RetryIfTenantIdSetWithManagedIdentity(t *testing.T) {
-	env.CleanupEnvironment(t)
-	os.Setenv("PATH", testdataPath())
-	os.Setenv("FAIL_IF_TENANT_ID_SET", "true")
-	aa := AzureCliCredentials{}
-	_, err := aa.Configure(context.Background(), &Config{
-		Host:                     "https://adb-xyz.c.azuredatabricks.net/",
-		AzureTenantID:            "123",
-		// The tenant is specified, so the SDK doesn't need to fetch it.
-		azureTenantIdFetchClient: makeFailingClient(errDummy),
-	})
-	assert.NoError(t, err)
+func TestAzureCliCredentials_DoNotSpecifyTenantIdWithMSI(t *testing.T) {
+	cases := []struct {
+		userName string
+	}{
+		{"systemAssignedIdentity"},
+		{"userAssignedIdentity"},
+	}
+	for _, c := range cases {
+		t.Run(c.userName, func(t *testing.T) {
+			env.CleanupEnvironment(t)
+			os.Setenv("PATH", testdataPath())
+			os.Setenv("FAIL_IF_TENANT_ID_SET", "true")
+			os.Setenv("AZ_USER_NAME", c.userName)
+			os.Setenv("AZ_USER_TYPE", "servicePrincipal")
+			aa := AzureCliCredentials{}
+			_, err := aa.Configure(context.Background(), &Config{
+				Host:          "https://adb-xyz.c.azuredatabricks.net/",
+				AzureTenantID: "123",
+			})
+			assert.NoError(t, err)
+		})
+	}
 }
 
 // TODO: this test should rather be on sequencing
