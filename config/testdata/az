@@ -30,7 +30,7 @@ fi
 # If FAIL_IF_TENANT_ID_SET is set & --tenant-id is passed, fail.
 if [ -n "$FAIL_IF_TENANT_ID_SET" ]; then
     for arg in "$@"; do
-        if [[ "$arg" == "--tenant-id" ]]; then
+        if [[ "$arg" == "--tenant" ]]; then
             echo "ERROR: Tenant shouldn't be specified for managed identity account"
             exit 1
         fi
