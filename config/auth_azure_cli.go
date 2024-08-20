@@ -159,7 +159,7 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	}).WithExtra(extra), nil
 }
 
-const azCliTenantSpecifiedWithManagedIdentityError = `ERROR: Tenant shouldn't be specified for managed identity account`
+const azCliTenantSpecifiedWithManagedIdentityError = `Tenant shouldn't be specified for managed identity account`
 
 func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
 	bs, err := ts.getTokenBytesWithTenantId(ts.azureTenantId)
