@@ -255,10 +255,10 @@ func TestAzureCliCredentials_DoNotSpecifyTenantIdWithMSI(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.userName, func(t *testing.T) {
 			env.CleanupEnvironment(t)
-			os.Setenv("PATH", testdataPath())
-			os.Setenv("FAIL_IF_TENANT_ID_SET", "true")
-			os.Setenv("AZ_USER_NAME", c.userName)
-			os.Setenv("AZ_USER_TYPE", "servicePrincipal")
+			t.Setenv("PATH", testdataPath())
+			t.Setenv("FAIL_IF_TENANT_ID_SET", "true")
+			t.Setenv("AZ_USER_NAME", c.userName)
+			t.Setenv("AZ_USER_TYPE", "servicePrincipal")
 			aa := AzureCliCredentials{}
 			_, err := aa.Configure(context.Background(), &Config{
 				Host:          "https://adb-xyz.c.azuredatabricks.net/",
