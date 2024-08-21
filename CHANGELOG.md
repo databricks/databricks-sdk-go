@@ -1,5 +1,41 @@
 # Version changelog
 
+## [Release] Release v0.45.0
+
+### Bug Fixes
+
+ * Add INVALID_STATE to error code mapping ([#1014](https://github.com/databricks/databricks-sdk-go/pull/1014)).
+ * Do not specify `--tenant` flag when fetching managed identity access token from the CLI ([#1021](https://github.com/databricks/databricks-sdk-go/pull/1021)).
+
+
+### Internal Changes
+
+ * Add terraform aliases to Entity ([#1017](https://github.com/databricks/databricks-sdk-go/pull/1017)).
+ * Added Service.NamedIdMap ([#1016](https://github.com/databricks/databricks-sdk-go/pull/1016)).
+ * Fix billing test for budget configuration update ([#1019](https://github.com/databricks/databricks-sdk-go/pull/1019)).
+
+
+### API Changes:
+
+ * Added [w.PolicyComplianceForClusters](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#PolicyComplianceForClustersAPI) workspace-level service.
+ * Added [w.PolicyComplianceForJobs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PolicyComplianceForJobsAPI) workspace-level service.
+ * Added [w.ResourceQuotas](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ResourceQuotasAPI) workspace-level service.
+ * Added [catalog.GetQuotaRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetQuotaRequest), [catalog.GetQuotaResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetQuotaResponse), [catalog.ListQuotasRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListQuotasRequest), [catalog.ListQuotasResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListQuotasResponse) and [catalog.QuotaInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#QuotaInfo).
+ * Added [compute.ClusterCompliance](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterCompliance), [compute.ClusterSettingsChange](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterSettingsChange), [compute.EnforceClusterComplianceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EnforceClusterComplianceRequest), [compute.EnforceClusterComplianceResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EnforceClusterComplianceResponse), [compute.GetClusterComplianceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetClusterComplianceRequest), [compute.GetClusterComplianceResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetClusterComplianceResponse), [compute.ListClusterCompliancesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ListClusterCompliancesRequest) and [compute.ListClusterCompliancesResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ListClusterCompliancesResponse).
+ * Added [jobs.EnforcePolicyComplianceForJobResponseJobClusterSettingsChange](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#EnforcePolicyComplianceForJobResponseJobClusterSettingsChange), [jobs.EnforcePolicyComplianceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#EnforcePolicyComplianceRequest), [jobs.EnforcePolicyComplianceResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#EnforcePolicyComplianceResponse), [jobs.GetPolicyComplianceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#GetPolicyComplianceRequest), [jobs.GetPolicyComplianceResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#GetPolicyComplianceResponse), [jobs.JobCompliance](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobCompliance), [jobs.ListJobComplianceForPolicyResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ListJobComplianceForPolicyResponse) and [jobs.ListJobComplianceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ListJobComplianceRequest).
+ * Added `Fallback` field for [catalog.CreateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateExternalLocation).
+ * Added `Fallback` field for [catalog.ExternalLocationInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ExternalLocationInfo).
+ * Added `Fallback` field for [catalog.UpdateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateExternalLocation).
+ * Added `JobRunId` field for [jobs.BaseRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseRun).
+ * Added `JobRunId` field for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+ * Added `IncludeMetrics` field for [sql.ListQueryHistoryRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#ListQueryHistoryRequest).
+ * Added `StatementIds` field for [sql.QueryFilter](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryFilter).
+ * Removed [sql.ContextFilter](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#ContextFilter).
+ * Removed `ContextFilter` field for [sql.QueryFilter](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryFilter).
+ * Removed `PipelineId` and `PipelineUpdateId` fields for [sql.QuerySource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QuerySource).
+
+OpenAPI SHA: 3eae49b444cac5a0118a3503e5b7ecef7f96527a, Date: 2024-08-21
+
 ## [Release] Release v0.44.0
 
 ### New Features and Improvements

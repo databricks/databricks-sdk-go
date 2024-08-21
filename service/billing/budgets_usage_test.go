@@ -163,7 +163,8 @@ func ExampleBudgetsAPI_Update_budgets() {
 	_, err = a.Budgets.Update(ctx, billing.UpdateBudgetConfigurationRequest{
 		BudgetId: created.Budget.BudgetConfigurationId,
 		Budget: billing.UpdateBudgetConfigurationBudget{
-			DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+			BudgetConfigurationId: created.Budget.BudgetConfigurationId,
+			DisplayName:           fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 			Filter: &billing.BudgetConfigurationFilter{
 				Tags: []billing.BudgetConfigurationFilterTagClause{billing.BudgetConfigurationFilterTagClause{
 					Key: "tagName",
@@ -174,14 +175,12 @@ func ExampleBudgetsAPI_Update_budgets() {
 				}},
 			},
 			AlertConfigurations: []billing.AlertConfiguration{billing.AlertConfiguration{
-				TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
-				QuantityType:      billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
-				TriggerType:       billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
-				QuantityThreshold: "50",
-				ActionConfigurations: []billing.ActionConfiguration{billing.ActionConfiguration{
-					ActionType: billing.ActionConfigurationTypeEmailNotification,
-					Target:     "admin@example.com",
-				}},
+				AlertConfigurationId: created.Budget.AlertConfigurations[0].AlertConfigurationId,
+				TimePeriod:           billing.AlertConfigurationTimePeriodMonth,
+				QuantityType:         billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
+				TriggerType:          billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
+				QuantityThreshold:    "50",
+				ActionConfigurations: created.Budget.AlertConfigurations[0].ActionConfigurations,
 			}},
 		},
 	})

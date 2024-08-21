@@ -398,8 +398,6 @@ const ChannelNameChannelNamePreview ChannelName = `CHANNEL_NAME_PREVIEW`
 
 const ChannelNameChannelNamePrevious ChannelName = `CHANNEL_NAME_PREVIOUS`
 
-const ChannelNameChannelNameUnspecified ChannelName = `CHANNEL_NAME_UNSPECIFIED`
-
 // String representation for [fmt.Print]
 func (f *ChannelName) String() string {
 	return string(*f)
@@ -408,11 +406,11 @@ func (f *ChannelName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ChannelName) Set(v string) error {
 	switch v {
-	case `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_PREVIOUS`, `CHANNEL_NAME_UNSPECIFIED`:
+	case `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_PREVIOUS`:
 		*f = ChannelName(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CHANNEL_NAME_CURRENT", "CHANNEL_NAME_CUSTOM", "CHANNEL_NAME_PREVIEW", "CHANNEL_NAME_PREVIOUS", "CHANNEL_NAME_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CHANNEL_NAME_CURRENT", "CHANNEL_NAME_CUSTOM", "CHANNEL_NAME_PREVIEW", "CHANNEL_NAME_PREVIOUS"`, v)
 	}
 }
 
@@ -531,39 +529,6 @@ func (f *ColumnInfoTypeName) Set(v string) error {
 // Type always returns ColumnInfoTypeName to satisfy [pflag.Value] interface
 func (f *ColumnInfoTypeName) Type() string {
 	return "ColumnInfoTypeName"
-}
-
-type ContextFilter struct {
-	// Databricks SQL Alert id
-	DbsqlAlertId string `json:"dbsql_alert_id,omitempty" url:"dbsql_alert_id,omitempty"`
-	// Databricks SQL Dashboard id
-	DbsqlDashboardId string `json:"dbsql_dashboard_id,omitempty" url:"dbsql_dashboard_id,omitempty"`
-	// Databricks SQL Query id
-	DbsqlQueryId string `json:"dbsql_query_id,omitempty" url:"dbsql_query_id,omitempty"`
-	// Databricks SQL Query session id
-	DbsqlSessionId string `json:"dbsql_session_id,omitempty" url:"dbsql_session_id,omitempty"`
-	// Databricks Workflows id
-	JobId string `json:"job_id,omitempty" url:"job_id,omitempty"`
-	// Databricks Workflows task run id
-	JobRunId string `json:"job_run_id,omitempty" url:"job_run_id,omitempty"`
-	// Databricks Lakeview Dashboard id
-	LakeviewDashboardId string `json:"lakeview_dashboard_id,omitempty" url:"lakeview_dashboard_id,omitempty"`
-	// Databricks Notebook runnableCommandId
-	NotebookCellRunId string `json:"notebook_cell_run_id,omitempty" url:"notebook_cell_run_id,omitempty"`
-	// Databricks Notebook id
-	NotebookId string `json:"notebook_id,omitempty" url:"notebook_id,omitempty"`
-	// Databricks Query History statement ids.
-	StatementIds []string `json:"statement_ids,omitempty" url:"statement_ids,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ContextFilter) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ContextFilter) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateAlert struct {
@@ -2600,6 +2565,9 @@ func (s ListQueriesResponse) MarshalJSON() ([]byte, error) {
 type ListQueryHistoryRequest struct {
 	// A filter to limit query history results. This field is optional.
 	FilterBy *QueryFilter `json:"-" url:"filter_by,omitempty"`
+	// Whether to include the query metrics with each query. Only use this for a
+	// small subset of queries (max_results). Defaults to false.
+	IncludeMetrics bool `json:"-" url:"include_metrics,omitempty"`
 	// Limit the number of results returned in one page. Must be less than 1000
 	// and the default is 100.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
@@ -3154,11 +3122,11 @@ func (s QueryEditContent) MarshalJSON() ([]byte, error) {
 }
 
 type QueryFilter struct {
-	// Filter by one or more property describing where the query was generated
-	ContextFilter *ContextFilter `json:"context_filter,omitempty" url:"context_filter,omitempty"`
 	// A range filter for query submitted time. The time range must be <= 30
 	// days.
 	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty" url:"query_start_time_range,omitempty"`
+	// A list of statement IDs.
+	StatementIds []string `json:"statement_ids,omitempty" url:"statement_ids,omitempty"`
 
 	Statuses []QueryStatus `json:"statuses,omitempty" url:"statuses,omitempty"`
 	// A list of user IDs who ran the queries.
@@ -3448,10 +3416,6 @@ type QuerySource struct {
 	JobManagedBy QuerySourceJobManager `json:"job_managed_by,omitempty"`
 
 	NotebookId string `json:"notebook_id,omitempty"`
-	// Id associated with a DLT pipeline
-	PipelineId string `json:"pipeline_id,omitempty"`
-	// Id associated with a DLT update
-	PipelineUpdateId string `json:"pipeline_update_id,omitempty"`
 	// String provided by a customer that'll help them identify the query
 	QueryTags string `json:"query_tags,omitempty"`
 	// Id associated with a job run or execution

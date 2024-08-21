@@ -132,6 +132,10 @@
 //
 // - [pipelines.PipelinesAPI]: The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
 //
+// - [compute.PolicyComplianceForClustersAPI]: The policy compliance APIs allow you to view and manage the policy compliance status of clusters in your workspace.
+//
+// - [jobs.PolicyComplianceForJobsAPI]: The compliance APIs allow you to view and manage the policy compliance status of jobs in your workspace.
+//
 // - [compute.PolicyFamiliesAPI]: View available policy families.
 //
 // - [provisioning.PrivateAccessAPI]: These APIs manage private access settings for this account.
@@ -160,7 +164,7 @@
 //
 // - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
 //
-// - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints, serverless compute, and DLT.
+// - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute.
 //
 // - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of visualizations from existing queries in the Databricks Workspace.
 //
@@ -173,6 +177,8 @@
 // - [catalog.RegisteredModelsAPI]: Databricks provides a hosted version of MLflow Model Registry in Unity Catalog.
 //
 // - [workspace.ReposAPI]: The Repos API allows users to manage their git repos.
+//
+// - [catalog.ResourceQuotasAPI]: Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that can be created.
 //
 // - [settings.RestrictWorkspaceAdminsAPI]: The Restrict Workspace Admins setting lets you control the capabilities of workspace admins.
 //
@@ -336,6 +342,8 @@ var (
 	_ *iam.PermissionsAPI                                 = nil
 	_ *settings.PersonalComputeAPI                        = nil
 	_ *pipelines.PipelinesAPI                             = nil
+	_ *compute.PolicyComplianceForClustersAPI             = nil
+	_ *jobs.PolicyComplianceForJobsAPI                    = nil
 	_ *compute.PolicyFamiliesAPI                          = nil
 	_ *provisioning.PrivateAccessAPI                      = nil
 	_ *marketplace.ProviderExchangeFiltersAPI             = nil
@@ -357,6 +365,7 @@ var (
 	_ *sharing.RecipientsAPI                              = nil
 	_ *catalog.RegisteredModelsAPI                        = nil
 	_ *workspace.ReposAPI                                 = nil
+	_ *catalog.ResourceQuotasAPI                          = nil
 	_ *settings.RestrictWorkspaceAdminsAPI                = nil
 	_ *catalog.SchemasAPI                                 = nil
 	_ *workspace.SecretsAPI                               = nil

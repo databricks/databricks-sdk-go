@@ -151,3 +151,45 @@ type JobsService interface {
 	// root object.
 	UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
 }
+
+// The compliance APIs allow you to view and manage the policy compliance status
+// of jobs in your workspace. This API currently only supports compliance
+// controls for cluster policies.
+//
+// A job is in compliance if its cluster configurations satisfy the rules of all
+// their respective cluster policies. A job could be out of compliance if a
+// cluster policy it uses was updated after the job was last edited. The job is
+// considered out of compliance if any of its clusters no longer comply with
+// their updated policies.
+//
+// The get and list compliance APIs allow you to view the policy compliance
+// status of a job. The enforce compliance API allows you to update a job so
+// that it becomes compliant with all of its policies.
+type PolicyComplianceForJobsService interface {
+
+	// Enforce job policy compliance.
+	//
+	// Updates a job so the job clusters that are created when running the job
+	// (specified in `new_cluster`) are compliant with the current versions of
+	// their respective cluster policies. All-purpose clusters used in the job
+	// will not be updated.
+	EnforceCompliance(ctx context.Context, request EnforcePolicyComplianceRequest) (*EnforcePolicyComplianceResponse, error)
+
+	// Get job policy compliance.
+	//
+	// Returns the policy compliance status of a job. Jobs could be out of
+	// compliance if a cluster policy they use was updated after the job was
+	// last edited and some of its job clusters no longer comply with their
+	// updated policies.
+	GetCompliance(ctx context.Context, request GetPolicyComplianceRequest) (*GetPolicyComplianceResponse, error)
+
+	// List job policy compliance.
+	//
+	// Returns the policy compliance status of all jobs that use a given policy.
+	// Jobs could be out of compliance if a cluster policy they use was updated
+	// after the job was last edited and its job clusters no longer comply with
+	// the updated policy.
+	//
+	// Use ListComplianceAll() to get all JobCompliance instances, which will iterate over every result page.
+	ListCompliance(ctx context.Context, request ListJobComplianceRequest) (*ListJobComplianceForPolicyResponse, error)
+}
