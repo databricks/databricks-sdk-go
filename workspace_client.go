@@ -563,6 +563,33 @@ type WorkspaceClient struct {
 	// records that fail those expectations.
 	Pipelines pipelines.PipelinesInterface
 
+	// The policy compliance APIs allow you to view and manage the policy
+	// compliance status of clusters in your workspace.
+	//
+	// A cluster is compliant with its policy if its configuration satisfies all
+	// its policy rules. Clusters could be out of compliance if their policy was
+	// updated after the cluster was last edited.
+	//
+	// The get and list compliance APIs allow you to view the policy compliance
+	// status of a cluster. The enforce compliance API allows you to update a
+	// cluster to be compliant with the current version of its policy.
+	PolicyComplianceForClusters compute.PolicyComplianceForClustersInterface
+
+	// The compliance APIs allow you to view and manage the policy compliance
+	// status of jobs in your workspace. This API currently only supports
+	// compliance controls for cluster policies.
+	//
+	// A job is in compliance if its cluster configurations satisfy the rules of
+	// all their respective cluster policies. A job could be out of compliance
+	// if a cluster policy it uses was updated after the job was last edited.
+	// The job is considered out of compliance if any of its clusters no longer
+	// comply with their updated policies.
+	//
+	// The get and list compliance APIs allow you to view the policy compliance
+	// status of a job. The enforce compliance API allows you to update a job so
+	// that it becomes compliant with all of its policies.
+	PolicyComplianceForJobs jobs.PolicyComplianceForJobsInterface
+
 	// View available policy families. A policy family contains a policy
 	// definition providing best practices for configuring clusters for a
 	// particular use case.
@@ -636,7 +663,7 @@ type WorkspaceClient struct {
 	QueriesLegacy sql.QueriesLegacyInterface
 
 	// A service responsible for storing and retrieving the list of queries run
-	// against SQL endpoints, serverless compute, and DLT.
+	// against SQL endpoints and serverless compute.
 	QueryHistory sql.QueryHistoryInterface
 
 	// This is an evolving API that facilitates the addition and removal of
@@ -730,6 +757,16 @@ type WorkspaceClient struct {
 	// data science and engineering code development best practices using Git
 	// for version control, collaboration, and CI/CD.
 	Repos workspace.ReposInterface
+
+	// Unity Catalog enforces resource quotas on all securable objects, which
+	// limits the number of resources that can be created. Quotas are expressed
+	// in terms of a resource type and a parent (for example, tables per
+	// metastore or schemas per catalog). The resource quota APIs enable you to
+	// monitor your current usage and limits. For more information on resource
+	// quotas see the [Unity Catalog documentation].
+	//
+	// [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
+	ResourceQuotas catalog.ResourceQuotasInterface
 
 	// A schema (also called a database) is the second layer of Unity
 	// Catalog’s three-level namespace. A schema organizes tables, views and
@@ -1120,6 +1157,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		PermissionMigration:                 iam.NewPermissionMigration(databricksClient),
 		Permissions:                         iam.NewPermissions(databricksClient),
 		Pipelines:                           pipelines.NewPipelines(databricksClient),
+		PolicyComplianceForClusters:         compute.NewPolicyComplianceForClusters(databricksClient),
+		PolicyComplianceForJobs:             jobs.NewPolicyComplianceForJobs(databricksClient),
 		PolicyFamilies:                      compute.NewPolicyFamilies(databricksClient),
 		ProviderExchangeFilters:             marketplace.NewProviderExchangeFilters(databricksClient),
 		ProviderExchanges:                   marketplace.NewProviderExchanges(databricksClient),
@@ -1139,6 +1178,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Recipients:                          sharing.NewRecipients(databricksClient),
 		RegisteredModels:                    catalog.NewRegisteredModels(databricksClient),
 		Repos:                               workspace.NewRepos(databricksClient),
+		ResourceQuotas:                      catalog.NewResourceQuotas(databricksClient),
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
 		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),

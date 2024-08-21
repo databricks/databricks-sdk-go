@@ -35,8 +35,8 @@ func (s BaseJob) MarshalJSON() ([]byte, error) {
 
 type BaseRun struct {
 	// The sequence number of this run attempt for a triggered job run. The
-	// initial attempt of a run has an attempt_number of 0\. If the initial run
-	// attempt fails, and the job has a retry policy (`max_retries` \> 0),
+	// initial attempt of a run has an attempt_number of 0. If the initial run
+	// attempt fails, and the job has a retry policy (`max_retries` > 0),
 	// subsequent runs are created with an `original_attempt_run_id` of the
 	// original attempt’s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the
@@ -90,6 +90,11 @@ type BaseRun struct {
 	JobId int64 `json:"job_id,omitempty"`
 	// Job-level parameters used in the run
 	JobParameters []JobParameter `json:"job_parameters,omitempty"`
+	// ID of the job run that this run belongs to. For legacy and single-task
+	// job runs the field is populated with the job run ID. For task runs, the
+	// field is populated with the ID of the job run that the task run belongs
+	// to.
+	JobRunId int64 `json:"job_run_id,omitempty"`
 	// A unique identifier for this job run. This is set to the same value as
 	// `run_id`.
 	NumberInJob int64 `json:"number_in_job,omitempty"`
@@ -572,6 +577,79 @@ type DeleteRun struct {
 type DeleteRunResponse struct {
 }
 
+// Represents a change to the job cluster's settings that would be required for
+// the job clusters to become compliant with their policies.
+type EnforcePolicyComplianceForJobResponseJobClusterSettingsChange struct {
+	// The field where this change would be made, prepended with the job cluster
+	// key.
+	Field string `json:"field,omitempty"`
+	// The new value of this field after enforcing policy compliance (either a
+	// number, a boolean, or a string) converted to a string. This is intended
+	// to be read by a human. The typed new value of this field can be retrieved
+	// by reading the settings field in the API response.
+	NewValue string `json:"new_value,omitempty"`
+	// The previous value of this field before enforcing policy compliance
+	// (either a number, a boolean, or a string) converted to a string. This is
+	// intended to be read by a human. The type of the field can be retrieved by
+	// reading the settings field in the API response.
+	PreviousValue string `json:"previous_value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EnforcePolicyComplianceForJobResponseJobClusterSettingsChange) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnforcePolicyComplianceForJobResponseJobClusterSettingsChange) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EnforcePolicyComplianceRequest struct {
+	// The ID of the job you want to enforce policy compliance on.
+	JobId int64 `json:"job_id"`
+	// If set, previews changes made to the job to comply with its policy, but
+	// does not update the job.
+	ValidateOnly bool `json:"validate_only,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EnforcePolicyComplianceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnforcePolicyComplianceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EnforcePolicyComplianceResponse struct {
+	// Whether any changes have been made to the job cluster settings for the
+	// job to become compliant with its policies.
+	HasChanges bool `json:"has_changes,omitempty"`
+	// A list of job cluster changes that have been made to the job’s cluster
+	// settings in order for all job clusters to become compliant with their
+	// policies.
+	JobClusterChanges []EnforcePolicyComplianceForJobResponseJobClusterSettingsChange `json:"job_cluster_changes,omitempty"`
+	// Updated job settings after policy enforcement. Policy enforcement only
+	// applies to job clusters that are created when running the job (which are
+	// specified in new_cluster) and does not apply to existing all-purpose
+	// clusters. Updated job settings are derived by applying policy default
+	// values to the existing job clusters in order to satisfy policy
+	// requirements.
+	Settings *JobSettings `json:"settings,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EnforcePolicyComplianceResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnforcePolicyComplianceResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Run was exported successfully.
 type ExportRunOutput struct {
 	// The exported content in HTML format (one for every view item). To extract
@@ -623,8 +701,9 @@ type ForEachStats struct {
 }
 
 type ForEachTask struct {
-	// Controls the number of active iterations task runs. Default is 20,
-	// maximum allowed is 100.
+	// An optional maximum allowed number of concurrent runs of the task. Set
+	// this value if you want to be able to execute multiple runs of the task
+	// concurrently.
 	Concurrency int `json:"concurrency,omitempty"`
 	// Array for task to iterate on. This can be a JSON string or a reference to
 	// an array parameter.
@@ -738,6 +817,36 @@ type GetJobRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
 	JobId int64 `json:"-" url:"job_id"`
+}
+
+// Get job policy compliance
+type GetPolicyComplianceRequest struct {
+	// The ID of the job whose compliance status you are requesting.
+	JobId int64 `json:"-" url:"job_id"`
+}
+
+type GetPolicyComplianceResponse struct {
+	// Whether the job is compliant with its policies or not. Jobs could be out
+	// of compliance if a policy they are using was updated after the job was
+	// last edited and some of its job clusters no longer comply with their
+	// updated policies.
+	IsCompliant bool `json:"is_compliant,omitempty"`
+	// An object containing key-value mappings representing the first 200 policy
+	// validation errors. The keys indicate the path where the policy validation
+	// error is occurring. An identifier for the job cluster is prepended to the
+	// path. The values indicate an error message describing the policy
+	// validation error.
+	Violations map[string]string `json:"violations,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetPolicyComplianceResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetPolicyComplianceResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get the output for a single run
@@ -956,6 +1065,29 @@ type JobCluster struct {
 	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
 	NewCluster compute.ClusterSpec `json:"new_cluster"`
+}
+
+type JobCompliance struct {
+	// Whether this job is in compliance with the latest version of its policy.
+	IsCompliant bool `json:"is_compliant,omitempty"`
+	// Canonical unique identifier for a job.
+	JobId int64 `json:"job_id"`
+	// An object containing key-value mappings representing the first 200 policy
+	// validation errors. The keys indicate the path where the policy validation
+	// error is occurring. An identifier for the job cluster is prepended to the
+	// path. The values indicate an error message describing the policy
+	// validation error.
+	Violations map[string]string `json:"violations,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobCompliance) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobCompliance) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type JobDeployment struct {
@@ -1522,6 +1654,52 @@ type JobsHealthRule struct {
 // An optional set of health rules that can be defined for this job.
 type JobsHealthRules struct {
 	Rules []JobsHealthRule `json:"rules,omitempty"`
+}
+
+type ListJobComplianceForPolicyResponse struct {
+	// A list of jobs and their policy compliance statuses.
+	Jobs []JobCompliance `json:"jobs,omitempty"`
+	// This field represents the pagination token to retrieve the next page of
+	// results. If this field is not in the response, it means no further
+	// results for the request.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// This field represents the pagination token to retrieve the previous page
+	// of results. If this field is not in the response, it means no further
+	// results for the request.
+	PrevPageToken string `json:"prev_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListJobComplianceForPolicyResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListJobComplianceForPolicyResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List job policy compliance
+type ListJobComplianceRequest struct {
+	// Use this field to specify the maximum number of results to be returned by
+	// the server. The server may further constrain the maximum number of
+	// results returned in a single page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token that can be used to navigate to the next page or previous
+	// page as returned by `next_page_token` or `prev_page_token`.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Canonical unique identifier for the cluster policy.
+	PolicyId string `json:"-" url:"policy_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListJobComplianceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListJobComplianceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List jobs
@@ -2109,8 +2287,8 @@ type ResolvedValues struct {
 // Run was retrieved successfully
 type Run struct {
 	// The sequence number of this run attempt for a triggered job run. The
-	// initial attempt of a run has an attempt_number of 0\. If the initial run
-	// attempt fails, and the job has a retry policy (`max_retries` \> 0),
+	// initial attempt of a run has an attempt_number of 0. If the initial run
+	// attempt fails, and the job has a retry policy (`max_retries` > 0),
 	// subsequent runs are created with an `original_attempt_run_id` of the
 	// original attempt’s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the
@@ -2167,6 +2345,11 @@ type Run struct {
 	JobId int64 `json:"job_id,omitempty"`
 	// Job-level parameters used in the run
 	JobParameters []JobParameter `json:"job_parameters,omitempty"`
+	// ID of the job run that this run belongs to. For legacy and single-task
+	// job runs the field is populated with the job run ID. For task runs, the
+	// field is populated with the ID of the job run that the task run belongs
+	// to.
+	JobRunId int64 `json:"job_run_id,omitempty"`
 	// A token that can be used to list the next page of sub-resources.
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// A unique identifier for this job run. This is set to the same value as
@@ -2281,8 +2464,9 @@ func (s RunConditionTask) MarshalJSON() ([]byte, error) {
 }
 
 type RunForEachTask struct {
-	// Controls the number of active iterations task runs. Default is 20,
-	// maximum allowed is 100.
+	// An optional maximum allowed number of concurrent runs of the task. Set
+	// this value if you want to be able to execute multiple runs of the task
+	// concurrently.
 	Concurrency int `json:"concurrency,omitempty"`
 	// Array for task to iterate on. This can be a JSON string or a reference to
 	// an array parameter.
@@ -2888,8 +3072,8 @@ func (s RunState) MarshalJSON() ([]byte, error) {
 // Used when outputting a child run, in GetRun or ListRuns.
 type RunTask struct {
 	// The sequence number of this run attempt for a triggered job run. The
-	// initial attempt of a run has an attempt_number of 0\. If the initial run
-	// attempt fails, and the job has a retry policy (`max_retries` \> 0),
+	// initial attempt of a run has an attempt_number of 0. If the initial run
+	// attempt fails, and the job has a retry policy (`max_retries` > 0),
 	// subsequent runs are created with an `original_attempt_run_id` of the
 	// original attempt’s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the

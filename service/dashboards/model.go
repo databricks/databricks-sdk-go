@@ -13,9 +13,11 @@ type CreateDashboardRequest struct {
 	// The display name of the dashboard.
 	DisplayName string `json:"display_name"`
 	// The workspace path of the folder containing the dashboard. Includes
-	// leading slash and no trailing slash.
+	// leading slash and no trailing slash. This field is excluded in List
+	// Dashboards responses.
 	ParentPath string `json:"parent_path,omitempty"`
-	// The contents of the dashboard in serialized string form.
+	// The contents of the dashboard in serialized string form. This field is
+	// excluded in List Dashboards responses.
 	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
 	// The warehouse ID used to run the dashboard.
 	WarehouseId string `json:"warehouse_id,omitempty"`
@@ -84,18 +86,23 @@ type Dashboard struct {
 	// The display name of the dashboard.
 	DisplayName string `json:"display_name,omitempty"`
 	// The etag for the dashboard. Can be optionally provided on updates to
-	// ensure that the dashboard has not been modified since the last read.
+	// ensure that the dashboard has not been modified since the last read. This
+	// field is excluded in List Dashboards responses.
 	Etag string `json:"etag,omitempty"`
 	// The state of the dashboard resource. Used for tracking trashed status.
 	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
 	// The workspace path of the folder containing the dashboard. Includes
-	// leading slash and no trailing slash.
+	// leading slash and no trailing slash. This field is excluded in List
+	// Dashboards responses.
 	ParentPath string `json:"parent_path,omitempty"`
-	// The workspace path of the dashboard asset, including the file name.
+	// The workspace path of the dashboard asset, including the file name. This
+	// field is excluded in List Dashboards responses.
 	Path string `json:"path,omitempty"`
-	// The contents of the dashboard in serialized string form.
+	// The contents of the dashboard in serialized string form. This field is
+	// excluded in List Dashboards responses.
 	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
-	// The timestamp of when the dashboard was last updated by the user.
+	// The timestamp of when the dashboard was last updated by the user. This
+	// field is excluded in List Dashboards responses.
 	UpdateTime string `json:"update_time,omitempty"`
 	// The warehouse ID used to run the dashboard.
 	WarehouseId string `json:"warehouse_id,omitempty"`
@@ -959,9 +966,11 @@ type UpdateDashboardRequest struct {
 	// The display name of the dashboard.
 	DisplayName string `json:"display_name,omitempty"`
 	// The etag for the dashboard. Can be optionally provided on updates to
-	// ensure that the dashboard has not been modified since the last read.
+	// ensure that the dashboard has not been modified since the last read. This
+	// field is excluded in List Dashboards responses.
 	Etag string `json:"etag,omitempty"`
-	// The contents of the dashboard in serialized string form.
+	// The contents of the dashboard in serialized string form. This field is
+	// excluded in List Dashboards responses.
 	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
 	// The warehouse ID used to run the dashboard.
 	WarehouseId string `json:"warehouse_id,omitempty"`

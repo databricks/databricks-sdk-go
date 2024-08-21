@@ -824,6 +824,34 @@ type RegisteredModelsService interface {
 	Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error)
 }
 
+// Unity Catalog enforces resource quotas on all securable objects, which limits
+// the number of resources that can be created. Quotas are expressed in terms of
+// a resource type and a parent (for example, tables per metastore or schemas
+// per catalog). The resource quota APIs enable you to monitor your current
+// usage and limits. For more information on resource quotas see the [Unity
+// Catalog documentation].
+//
+// [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
+type ResourceQuotasService interface {
+
+	// Get information for a single resource quota.
+	//
+	// The GetQuota API returns usage information for a single resource quota,
+	// defined as a child-parent pair. This API also refreshes the quota count
+	// if it is out of date. Refreshes are triggered asynchronously. The updated
+	// count might not be returned in the first call.
+	GetQuota(ctx context.Context, request GetQuotaRequest) (*GetQuotaResponse, error)
+
+	// List all resource quotas under a metastore.
+	//
+	// ListQuotas returns all quota values under the metastore. There are no
+	// SLAs on the freshness of the counts returned. This API does not trigger a
+	// refresh of quota counts.
+	//
+	// Use ListQuotasAll() to get all QuotaInfo instances, which will iterate over every result page.
+	ListQuotas(ctx context.Context, request ListQuotasRequest) (*ListQuotasResponse, error)
+}
+
 // A schema (also called a database) is the second layer of Unity Catalog’s
 // three-level namespace. A schema organizes tables, views and functions. To
 // access (or list) a table or view in a schema, users must have the USE_SCHEMA

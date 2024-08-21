@@ -402,13 +402,13 @@ type QueriesLegacyService interface {
 }
 
 // A service responsible for storing and retrieving the list of queries run
-// against SQL endpoints, serverless compute, and DLT.
+// against SQL endpoints and serverless compute.
 type QueryHistoryService interface {
 
 	// List Queries.
 	//
-	// List the history of queries through SQL warehouses, serverless compute,
-	// and DLT.
+	// List the history of queries through SQL warehouses, and serverless
+	// compute.
 	//
 	// You can filter by user ID, warehouse ID, status, and time range. Most
 	// recently started queries are returned first (up to max_results in

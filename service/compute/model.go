@@ -540,6 +540,29 @@ func (s ClusterAttributes) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ClusterCompliance struct {
+	// Canonical unique identifier for a cluster.
+	ClusterId string `json:"cluster_id"`
+	// Whether this cluster is in compliance with the latest version of its
+	// policy.
+	IsCompliant bool `json:"is_compliant,omitempty"`
+	// An object containing key-value mappings representing the first 200 policy
+	// validation errors. The keys indicate the path where the policy validation
+	// error is occurring. The values indicate an error message describing the
+	// policy validation error.
+	Violations map[string]string `json:"violations,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterCompliance) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClusterCompliance) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ClusterDetails struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
@@ -1028,6 +1051,33 @@ type ClusterPolicyPermissionsRequest struct {
 	AccessControlList []ClusterPolicyAccessControlRequest `json:"access_control_list,omitempty"`
 	// The cluster policy for which to get or manage permissions.
 	ClusterPolicyId string `json:"-" url:"-"`
+}
+
+// Represents a change to the cluster settings required for the cluster to
+// become compliant with its policy.
+type ClusterSettingsChange struct {
+	// The field where this change would be made.
+	Field string `json:"field,omitempty"`
+	// The new value of this field after enforcing policy compliance (either a
+	// number, a boolean, or a string) converted to a string. This is intended
+	// to be read by a human. The typed new value of this field can be retrieved
+	// by reading the settings field in the API response.
+	NewValue string `json:"new_value,omitempty"`
+	// The previous value of this field before enforcing policy compliance
+	// (either a number, a boolean, or a string) converted to a string. This is
+	// intended to be read by a human. The type of the field can be retrieved by
+	// reading the settings field in the API response.
+	PreviousValue string `json:"previous_value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterSettingsChange) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClusterSettingsChange) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ClusterSize struct {
@@ -2355,6 +2405,43 @@ type EditPolicyResponse struct {
 type EditResponse struct {
 }
 
+type EnforceClusterComplianceRequest struct {
+	// The ID of the cluster you want to enforce policy compliance on.
+	ClusterId string `json:"cluster_id"`
+	// If set, previews the changes that would be made to a cluster to enforce
+	// compliance but does not update the cluster.
+	ValidateOnly bool `json:"validate_only,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EnforceClusterComplianceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnforceClusterComplianceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EnforceClusterComplianceResponse struct {
+	// A list of changes that have been made to the cluster settings for the
+	// cluster to become compliant with its policy.
+	Changes []ClusterSettingsChange `json:"changes,omitempty"`
+	// Whether any changes have been made to the cluster settings for the
+	// cluster to become compliant with its policy.
+	HasChanges bool `json:"has_changes,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EnforceClusterComplianceResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnforceClusterComplianceResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // The environment entity used to preserve serverless environment side panel and
 // jobs' environment for non-notebook task. In this minimal environment spec,
 // only pip dependencies are supported.
@@ -2618,6 +2705,34 @@ func (f *GcpAvailability) Type() string {
 type GcsStorageInfo struct {
 	// GCS destination/URI, e.g. `gs://my-bucket/some-prefix`
 	Destination string `json:"destination"`
+}
+
+// Get cluster policy compliance
+type GetClusterComplianceRequest struct {
+	// The ID of the cluster to get the compliance status
+	ClusterId string `json:"-" url:"cluster_id"`
+}
+
+type GetClusterComplianceResponse struct {
+	// Whether the cluster is compliant with its policy or not. Clusters could
+	// be out of compliance if the policy was updated after the cluster was last
+	// edited.
+	IsCompliant bool `json:"is_compliant,omitempty"`
+	// An object containing key-value mappings representing the first 200 policy
+	// validation errors. The keys indicate the path where the policy validation
+	// error is occurring. The values indicate an error message describing the
+	// policy validation error.
+	Violations map[string]string `json:"violations,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetClusterComplianceResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetClusterComplianceResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get cluster permission levels
@@ -3768,6 +3883,51 @@ func (s *ListAvailableZonesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListAvailableZonesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List cluster policy compliance
+type ListClusterCompliancesRequest struct {
+	// Use this field to specify the maximum number of results to be returned by
+	// the server. The server may further constrain the maximum number of
+	// results returned in a single page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token that can be used to navigate to the next page or previous
+	// page as returned by `next_page_token` or `prev_page_token`.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Canonical unique identifier for the cluster policy.
+	PolicyId string `json:"-" url:"policy_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListClusterCompliancesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListClusterCompliancesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListClusterCompliancesResponse struct {
+	// A list of clusters and their policy compliance statuses.
+	Clusters []ClusterCompliance `json:"clusters,omitempty"`
+	// This field represents the pagination token to retrieve the next page of
+	// results. If the value is "", it means no further results for the request.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// This field represents the pagination token to retrieve the previous page
+	// of results. If the value is "", it means no further results for the
+	// request.
+	PrevPageToken string `json:"prev_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListClusterCompliancesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListClusterCompliancesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

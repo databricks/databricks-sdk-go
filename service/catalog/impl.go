@@ -759,6 +759,29 @@ func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegiste
 	return &registeredModelInfo, err
 }
 
+// unexported type that holds implementations of just ResourceQuotas API methods
+type resourceQuotasImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *resourceQuotasImpl) GetQuota(ctx context.Context, request GetQuotaRequest) (*GetQuotaResponse, error) {
+	var getQuotaResponse GetQuotaResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/resource-quotas/%v/%v/%v", request.ParentSecurableType, request.ParentFullName, request.QuotaName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getQuotaResponse)
+	return &getQuotaResponse, err
+}
+
+func (a *resourceQuotasImpl) ListQuotas(ctx context.Context, request ListQuotasRequest) (*ListQuotasResponse, error) {
+	var listQuotasResponse ListQuotasResponse
+	path := "/api/2.1/unity-catalog/resource-quotas/all-resource-quotas"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listQuotasResponse)
+	return &listQuotasResponse, err
+}
+
 // unexported type that holds implementations of just Schemas API methods
 type schemasImpl struct {
 	client *client.DatabricksClient

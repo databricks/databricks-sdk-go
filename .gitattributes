@@ -4,6 +4,7 @@ apierr/error_overrides.go linguist-generated=true
 error_alias.go linguist-generated=true
 experimental/mocks/mock_account_client.go linguist-generated=true
 experimental/mocks/mock_workspace_client.go linguist-generated=true
+experimental/mocks/service/apps/mock_apps_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_billable_usage_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_budgets_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_log_delivery_interface.go linguist-generated=true
@@ -80,7 +81,6 @@ experimental/mocks/service/provisioning/mock_private_access_interface.go linguis
 experimental/mocks/service/provisioning/mock_storage_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_vpc_endpoints_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_workspaces_interface.go linguist-generated=true
-experimental/mocks/service/serving/mock_apps_interface.go linguist-generated=true
 experimental/mocks/service/serving/mock_serving_endpoints_data_plane_interface.go linguist-generated=true
 experimental/mocks/service/serving/mock_serving_endpoints_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_account_ip_access_lists_interface.go linguist-generated=true

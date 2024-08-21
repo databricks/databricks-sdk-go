@@ -86,6 +86,8 @@ func NewMockWorkspaceClient(t interface {
 			PermissionMigration:                 iam.NewMockPermissionMigrationInterface(t),
 			Permissions:                         iam.NewMockPermissionsInterface(t),
 			Pipelines:                           pipelines.NewMockPipelinesInterface(t),
+			PolicyComplianceForClusters:         compute.NewMockPolicyComplianceForClustersInterface(t),
+			PolicyComplianceForJobs:             jobs.NewMockPolicyComplianceForJobsInterface(t),
 			PolicyFamilies:                      compute.NewMockPolicyFamiliesInterface(t),
 			ProviderExchangeFilters:             marketplace.NewMockProviderExchangeFiltersInterface(t),
 			ProviderExchanges:                   marketplace.NewMockProviderExchangesInterface(t),
@@ -105,6 +107,7 @@ func NewMockWorkspaceClient(t interface {
 			Recipients:                          sharing.NewMockRecipientsInterface(t),
 			RegisteredModels:                    catalog.NewMockRegisteredModelsInterface(t),
 			Repos:                               workspace.NewMockReposInterface(t),
+			ResourceQuotas:                      catalog.NewMockResourceQuotasInterface(t),
 			Schemas:                             catalog.NewMockSchemasInterface(t),
 			Secrets:                             workspace.NewMockSecretsInterface(t),
 			ServicePrincipals:                   iam.NewMockServicePrincipalsInterface(t),
@@ -558,6 +561,22 @@ func (m *MockWorkspaceClient) GetMockPipelinesAPI() *pipelines.MockPipelinesInte
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockPolicyComplianceForClustersAPI() *compute.MockPolicyComplianceForClustersInterface {
+	api, ok := m.WorkspaceClient.PolicyComplianceForClusters.(*compute.MockPolicyComplianceForClustersInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected PolicyComplianceForClusters to be *compute.MockPolicyComplianceForClustersInterface, actual was %T", m.WorkspaceClient.PolicyComplianceForClusters))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockPolicyComplianceForJobsAPI() *jobs.MockPolicyComplianceForJobsInterface {
+	api, ok := m.WorkspaceClient.PolicyComplianceForJobs.(*jobs.MockPolicyComplianceForJobsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected PolicyComplianceForJobs to be *jobs.MockPolicyComplianceForJobsInterface, actual was %T", m.WorkspaceClient.PolicyComplianceForJobs))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockPolicyFamiliesAPI() *compute.MockPolicyFamiliesInterface {
 	api, ok := m.WorkspaceClient.PolicyFamilies.(*compute.MockPolicyFamiliesInterface)
 	if !ok {
@@ -706,6 +725,14 @@ func (m *MockWorkspaceClient) GetMockReposAPI() *workspace.MockReposInterface {
 	api, ok := m.WorkspaceClient.Repos.(*workspace.MockReposInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Repos to be *workspace.MockReposInterface, actual was %T", m.WorkspaceClient.Repos))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockResourceQuotasAPI() *catalog.MockResourceQuotasInterface {
+	api, ok := m.WorkspaceClient.ResourceQuotas.(*catalog.MockResourceQuotasInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ResourceQuotas to be *catalog.MockResourceQuotasInterface, actual was %T", m.WorkspaceClient.ResourceQuotas))
 	}
 	return api
 }

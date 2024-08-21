@@ -586,7 +586,13 @@ type ConnectionInfoSecurableKind string
 
 const ConnectionInfoSecurableKindConnectionBigquery ConnectionInfoSecurableKind = `CONNECTION_BIGQUERY`
 
+const ConnectionInfoSecurableKindConnectionBuiltinHiveMetastore ConnectionInfoSecurableKind = `CONNECTION_BUILTIN_HIVE_METASTORE`
+
 const ConnectionInfoSecurableKindConnectionDatabricks ConnectionInfoSecurableKind = `CONNECTION_DATABRICKS`
+
+const ConnectionInfoSecurableKindConnectionExternalHiveMetastore ConnectionInfoSecurableKind = `CONNECTION_EXTERNAL_HIVE_METASTORE`
+
+const ConnectionInfoSecurableKindConnectionGlue ConnectionInfoSecurableKind = `CONNECTION_GLUE`
 
 const ConnectionInfoSecurableKindConnectionMysql ConnectionInfoSecurableKind = `CONNECTION_MYSQL`
 
@@ -610,11 +616,11 @@ func (f *ConnectionInfoSecurableKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionInfoSecurableKind) Set(v string) error {
 	switch v {
-	case `CONNECTION_BIGQUERY`, `CONNECTION_DATABRICKS`, `CONNECTION_MYSQL`, `CONNECTION_ONLINE_CATALOG`, `CONNECTION_POSTGRESQL`, `CONNECTION_REDSHIFT`, `CONNECTION_SNOWFLAKE`, `CONNECTION_SQLDW`, `CONNECTION_SQLSERVER`:
+	case `CONNECTION_BIGQUERY`, `CONNECTION_BUILTIN_HIVE_METASTORE`, `CONNECTION_DATABRICKS`, `CONNECTION_EXTERNAL_HIVE_METASTORE`, `CONNECTION_GLUE`, `CONNECTION_MYSQL`, `CONNECTION_ONLINE_CATALOG`, `CONNECTION_POSTGRESQL`, `CONNECTION_REDSHIFT`, `CONNECTION_SNOWFLAKE`, `CONNECTION_SQLDW`, `CONNECTION_SQLSERVER`:
 		*f = ConnectionInfoSecurableKind(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CONNECTION_BIGQUERY", "CONNECTION_DATABRICKS", "CONNECTION_MYSQL", "CONNECTION_ONLINE_CATALOG", "CONNECTION_POSTGRESQL", "CONNECTION_REDSHIFT", "CONNECTION_SNOWFLAKE", "CONNECTION_SQLDW", "CONNECTION_SQLSERVER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONNECTION_BIGQUERY", "CONNECTION_BUILTIN_HIVE_METASTORE", "CONNECTION_DATABRICKS", "CONNECTION_EXTERNAL_HIVE_METASTORE", "CONNECTION_GLUE", "CONNECTION_MYSQL", "CONNECTION_ONLINE_CATALOG", "CONNECTION_POSTGRESQL", "CONNECTION_REDSHIFT", "CONNECTION_SNOWFLAKE", "CONNECTION_SQLDW", "CONNECTION_SQLSERVER"`, v)
 	}
 }
 
@@ -629,6 +635,10 @@ type ConnectionType string
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
 
 const ConnectionTypeDatabricks ConnectionType = `DATABRICKS`
+
+const ConnectionTypeGlue ConnectionType = `GLUE`
+
+const ConnectionTypeHiveMetastore ConnectionType = `HIVE_METASTORE`
 
 const ConnectionTypeMysql ConnectionType = `MYSQL`
 
@@ -650,11 +660,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `DATABRICKS`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
+	case `BIGQUERY`, `DATABRICKS`, `GLUE`, `HIVE_METASTORE`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "GLUE", "HIVE_METASTORE", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
 	}
 }
 
@@ -754,6 +764,10 @@ type CreateExternalLocation struct {
 	CredentialName string `json:"credential_name"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Indicates whether fallback mode is enabled for this external location.
+	// When fallback mode is enabled, the access to the location falls back to
+	// cluster credentials if UC credentials are not sufficient.
+	Fallback bool `json:"fallback,omitempty"`
 	// Name of the external location.
 	Name string `json:"name"`
 	// Indicates whether the external location is read-only.
@@ -1723,6 +1737,10 @@ type ExternalLocationInfo struct {
 	CredentialName string `json:"credential_name,omitempty"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Indicates whether fallback mode is enabled for this external location.
+	// When fallback mode is enabled, the access to the location falls back to
+	// cluster credentials if UC credentials are not sufficient.
+	Fallback bool `json:"fallback,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
@@ -2416,6 +2434,23 @@ type GetQualityMonitorRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
+// Get information for a single resource quota.
+type GetQuotaRequest struct {
+	// Full name of the parent resource. Provide the metastore ID if the parent
+	// is a metastore.
+	ParentFullName string `json:"-" url:"-"`
+	// Securable type of the quota parent.
+	ParentSecurableType string `json:"-" url:"-"`
+	// Name of the quota. Follows the pattern of the quota type, with "-quota"
+	// added as a suffix.
+	QuotaName string `json:"-" url:"-"`
+}
+
+type GetQuotaResponse struct {
+	// The returned QuotaInfo.
+	QuotaInfo *QuotaInfo `json:"quota_info,omitempty"`
+}
+
 // Get refresh
 type GetRefreshRequest struct {
 	// ID of the refresh.
@@ -2782,6 +2817,43 @@ func (s *ListModelVersionsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List all resource quotas under a metastore.
+type ListQuotasRequest struct {
+	// The number of quotas to return.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque token for the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQuotasRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListQuotasRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListQuotasResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// An array of returned QuotaInfos.
+	Quotas []QuotaInfo `json:"quotas,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQuotasResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListQuotasResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -4163,6 +4235,32 @@ type ProvisioningStatus struct {
 	InitialPipelineSyncProgress *PipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
 }
 
+type QuotaInfo struct {
+	// The timestamp that indicates when the quota count was last updated.
+	LastRefreshedAt int64 `json:"last_refreshed_at,omitempty"`
+	// Name of the parent resource. Returns metastore ID if the parent is a
+	// metastore.
+	ParentFullName string `json:"parent_full_name,omitempty"`
+	// The quota parent securable type.
+	ParentSecurableType SecurableType `json:"parent_securable_type,omitempty"`
+	// The current usage of the resource quota.
+	QuotaCount int `json:"quota_count,omitempty"`
+	// The current limit of the resource quota.
+	QuotaLimit int `json:"quota_limit,omitempty"`
+	// The name of the quota.
+	QuotaName string `json:"quota_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QuotaInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QuotaInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get a Volume
 type ReadVolumeRequest struct {
 	// Whether to include volumes in the response for which the principal can
@@ -4839,6 +4937,10 @@ type UpdateExternalLocation struct {
 	CredentialName string `json:"credential_name,omitempty"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Indicates whether fallback mode is enabled for this external location.
+	// When fallback mode is enabled, the access to the location falls back to
+	// cluster credentials if UC credentials are not sufficient.
+	Fallback bool `json:"fallback,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
 	Force bool `json:"force,omitempty"`
