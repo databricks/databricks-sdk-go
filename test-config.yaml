@@ -15,3 +15,6 @@ ignored_tests:
     - package: github.com/databricks/databricks-sdk-go/internal
       test_name: TestUcAccMetastores
       comment: Metastores are limited in new accounts. Limit increase in https://databricks.atlassian.net/browse/ES-1242706
+    - package: github.com/databricks/databricks-sdk-go/internal
+      test_name: TestAccCreateOboTokenOnAws
+      comment: Flaky test. Tracked in https://databricks.atlassian.net/browse/ES-1243720
