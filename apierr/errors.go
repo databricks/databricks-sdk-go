@@ -159,6 +159,17 @@ func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 // it returns a non-nil *APIError. It returns nil if parsing fails or no error is found.
 type errorParser func(context.Context, *http.Response, []byte) *APIError
 
+// errorParsers is a list of errorParser functions that are tried in order to
+// parse an API error from a response body. Most errors should be parsable by
+// the standardErrorParser, but additional parsers can be added here for
+// specific error formats. The order of the parsers is not important, as the set
+// of errors that can be parsed by each parser should be disjoint.
+var errorParsers = []errorParser{
+	standardErrorParser,
+	stringErrorParser,
+	htmlErrorParser,
+}
+
 func parseErrorFromResponse(ctx context.Context, resp *http.Response, requestBody, responseBody []byte) *APIError {
 	if len(responseBody) == 0 {
 		return &APIError{
@@ -167,13 +178,7 @@ func parseErrorFromResponse(ctx context.Context, resp *http.Response, requestBod
 		}
 	}
 
-	parsers := []errorParser{
-		standardErrorParser,
-		stringErrorParser,
-		htmlErrorParser,
-	}
-
-	for _, parser := range parsers {
+	for _, parser := range errorParsers {
 		if apiError := parser(ctx, resp, responseBody); apiError != nil {
 			return apiError
 		}
