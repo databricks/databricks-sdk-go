@@ -143,7 +143,7 @@ func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 		if err != nil {
 			return ReadError(resp.Response.StatusCode, err)
 		}
-		apiError := parseErrorFromResponse(resp.Response, resp.RequestBody.DebugBytes, responseBodyBytes)
+		apiError := parseErrorFromResponse(ctx, resp.Response, resp.RequestBody.DebugBytes, responseBodyBytes)
 		applyOverrides(ctx, apiError, resp.Response)
 		return apiError
 	}
@@ -155,7 +155,22 @@ func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 	return nil
 }
 
-func parseErrorFromResponse(resp *http.Response, requestBody, responseBody []byte) *APIError {
+// errorParser attempts to parse the error from the response body. If successful,
+// it returns a non-nil *APIError. It returns nil if parsing fails or no error is found.
+type errorParser func(context.Context, *http.Response, []byte) *APIError
+
+// errorParsers is a list of errorParser functions that are tried in order to
+// parse an API error from a response body. Most errors should be parsable by
+// the standardErrorParser, but additional parsers can be added here for
+// specific error formats. The order of the parsers is not important, as the set
+// of errors that can be parsed by each parser should be disjoint.
+var errorParsers = []errorParser{
+	standardErrorParser,
+	stringErrorParser,
+	htmlErrorParser,
+}
+
+func parseErrorFromResponse(ctx context.Context, resp *http.Response, requestBody, responseBody []byte) *APIError {
 	if len(responseBody) == 0 {
 		return &APIError{
 			Message:    http.StatusText(resp.StatusCode),
@@ -163,6 +178,20 @@ func parseErrorFromResponse(resp *http.Response, requestBody, responseBody []byt
 		}
 	}
 
+	for _, parser := range errorParsers {
+		if apiError := parser(ctx, resp, responseBody); apiError != nil {
+			return apiError
+		}
+	}
+
+	return unknownAPIError(resp, requestBody, responseBody)
+}
+
+// standardErrorParser is the default error parser for Databricks API errors.
+// It handles JSON error messages with error code, message, and details fields.
+// It also provides compatibility with the old API 1.2 error format and SCIM API
+// errors.
+func standardErrorParser(ctx context.Context, resp *http.Response, responseBody []byte) *APIError {
 	// Anonymous struct used to unmarshal JSON Databricks API error responses.
 	var errorBody struct {
 		ErrorCode  any           `json:"error_code,omitempty"` // int or string
@@ -177,7 +206,8 @@ func parseErrorFromResponse(resp *http.Response, requestBody, responseBody []byt
 		ScimType   string `json:"scimType,omitempty"`
 	}
 	if err := json.Unmarshal(responseBody, &errorBody); err != nil {
-		return unknownAPIError(resp, requestBody, responseBody, err)
+		logger.Tracef(ctx, "standardErrorParser: failed to unmarshal error response: %s", err)
+		return nil
 	}
 
 	// Convert API 1.2 error (which used a different format) to the new format.
@@ -206,9 +236,40 @@ func parseErrorFromResponse(resp *http.Response, requestBody, responseBody []byt
 	}
 }
 
-func unknownAPIError(resp *http.Response, requestBody, responseBody []byte, err error) *APIError {
+var stringErrorRegex = regexp.MustCompile(`^([A-Z_]+): (.*)$`)
+
+// stringErrorParser parses errors of the form "STATUS_CODE: status message".
+// Some account-level APIs respond with this error code, e.g.
+// https://github.com/databricks/databricks-sdk-go/issues/998
+func stringErrorParser(ctx context.Context, resp *http.Response, responseBody []byte) *APIError {
+	matches := stringErrorRegex.FindSubmatch(responseBody)
+	if len(matches) < 3 {
+		logger.Tracef(ctx, "stringErrorParser: failed to match error response")
+		return nil
+	}
+	return &APIError{
+		Message:    string(matches[2]),
+		ErrorCode:  string(matches[1]),
+		StatusCode: resp.StatusCode,
+	}
+}
+
+var htmlMessageRe = regexp.MustCompile(`<pre>(.*)</pre>`)
+
+// htmlErrorParser parses HTML error responses. Some legacy APIs respond with
+// an HTML page in certain error cases, like when trying to create a cluster
+// before the worker environment is ready.
+func htmlErrorParser(ctx context.Context, resp *http.Response, responseBody []byte) *APIError {
+	messageMatches := htmlMessageRe.FindStringSubmatch(string(responseBody))
+	// No messages with <pre> </pre> format found so return a APIError
+	if len(messageMatches) < 2 {
+		logger.Tracef(ctx, "htmlErrorParser: no <pre> tag found in error response")
+		return nil
+	}
+
 	apiErr := &APIError{
 		StatusCode: resp.StatusCode,
+		Message:    strings.Trim(messageMatches[1], " ."),
 	}
 
 	// this is most likely HTML... since un-marshalling JSON failed
@@ -220,20 +281,28 @@ func unknownAPIError(resp *http.Response, requestBody, responseBody []byte, err 
 		apiErr.ErrorCode = strings.ReplaceAll(strings.ToUpper(strings.Trim(statusParts[1], " .")), " ", "_")
 	}
 
-	stringBody := string(responseBody)
-	messageRE := regexp.MustCompile(`<pre>(.*)</pre>`)
-	messageMatches := messageRE.FindStringSubmatch(stringBody)
-	// No messages with <pre> </pre> format found so return a APIError
-	if len(messageMatches) < 2 {
-		apiErr.Message = MakeUnexpectedError(resp, err, requestBody, responseBody).Error()
+	return apiErr
+}
+
+// unknownAPIError is a fallback error parser for unexpected error formats.
+func unknownAPIError(resp *http.Response, requestBody, responseBody []byte) *APIError {
+	apiErr := &APIError{
+		StatusCode: resp.StatusCode,
+		Message:    "unable to parse response. " + MakeUnexpectedResponse(resp, requestBody, responseBody),
+	}
+
+	// Preserve status computation from htmlErrorParser in case of unknown error
+	statusParts := strings.SplitN(resp.Status, " ", 2)
+	if len(statusParts) < 2 {
+		apiErr.ErrorCode = "UNKNOWN"
 	} else {
-		apiErr.Message = strings.Trim(messageMatches[1], " .")
+		apiErr.ErrorCode = strings.ReplaceAll(strings.ToUpper(strings.Trim(statusParts[1], " .")), " ", "_")
 	}
 
 	return apiErr
 }
 
-func MakeUnexpectedError(resp *http.Response, err error, requestBody, responseBody []byte) error {
+func MakeUnexpectedResponse(resp *http.Response, requestBody, responseBody []byte) string {
 	var req *http.Request
 	if resp != nil {
 		req = resp.Request
@@ -241,12 +310,11 @@ func MakeUnexpectedError(resp *http.Response, err error, requestBody, responseBo
 	rts := httplog.RoundTripStringer{
 		Request:                  req,
 		Response:                 resp,
-		Err:                      err,
 		RequestBody:              requestBody,
 		ResponseBody:             responseBody,
 		DebugHeaders:             true,
 		DebugTruncateBytes:       10 * 1024,
 		DebugAuthorizationHeader: false,
 	}
-	return fmt.Errorf("unexpected error handling request: %w. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\n```\n%s\n```", err, rts.String())
+	return fmt.Sprintf("This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\n```\n%s\n```", rts.String())
 }
