@@ -156,7 +156,7 @@ func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 }
 
 // errorParser attempts to parse the error from the response body. If successful,
-// it returns a non-nil *APIError. If parsing fails, it returns nil.
+// it returns a non-nil *APIError. It returns nil if parsing fails or no error is found.
 type errorParser func(context.Context, *http.Response, []byte) *APIError
 
 func parseErrorFromResponse(ctx context.Context, resp *http.Response, requestBody, responseBody []byte) *APIError {
