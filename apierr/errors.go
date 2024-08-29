@@ -284,7 +284,7 @@ func htmlErrorParser(ctx context.Context, resp *http.Response, responseBody []by
 func unknownAPIError(resp *http.Response, requestBody, responseBody []byte) *APIError {
 	apiErr := &APIError{
 		StatusCode: resp.StatusCode,
-		Message:    MakeUnexpectedError(resp, requestBody, responseBody).Error(),
+		Message:    "unable to parse response. " + MakeUnexpectedResponse(resp, requestBody, responseBody),
 	}
 
 	// Preserve status computation from htmlErrorParser in case of unknown error
@@ -298,7 +298,7 @@ func unknownAPIError(resp *http.Response, requestBody, responseBody []byte) *API
 	return apiErr
 }
 
-func MakeUnexpectedError(resp *http.Response, requestBody, responseBody []byte) error {
+func MakeUnexpectedResponse(resp *http.Response, requestBody, responseBody []byte) string {
 	var req *http.Request
 	if resp != nil {
 		req = resp.Request
@@ -312,5 +312,5 @@ func MakeUnexpectedError(resp *http.Response, requestBody, responseBody []byte) 
 		DebugTruncateBytes:       10 * 1024,
 		DebugAuthorizationHeader: false,
 	}
-	return fmt.Errorf("unable to parse response. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\n```\n%s\n```", rts.String())
+	return fmt.Sprintf("This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\n```\n%s\n```", rts.String())
 }
