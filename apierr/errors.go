@@ -255,8 +255,7 @@ var htmlMessageRe = regexp.MustCompile(`<pre>(.*)</pre>`)
 // an HTML page in certain error cases, like when trying to create a cluster
 // before the worker environment is ready.
 func htmlErrorParser(ctx context.Context, resp *http.Response, responseBody []byte) *APIError {
-	stringBody := string(responseBody)
-	messageMatches := htmlMessageRe.FindStringSubmatch(stringBody)
+	messageMatches := htmlMessageRe.FindStringSubmatch(string(responseBody))
 	// No messages with <pre> </pre> format found so return a APIError
 	if len(messageMatches) < 2 {
 		logger.Tracef(ctx, "htmlErrorParser: no <pre> tag found in error response")
