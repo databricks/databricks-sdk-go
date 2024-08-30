@@ -363,7 +363,7 @@ func (c *Config) authenticateIfNeeded() error {
 	if c.Credentials == nil {
 		c.Credentials = &DefaultCredentials{}
 	}
-	if err := c.fixHostIfNeeded(); !errors.Is(err, ErrNoHostConfigured) {
+	if err := c.fixHostIfNeeded(); err != nil && !errors.Is(err, ErrNoHostConfigured) {
 		return err
 	}
 	ctx := c.refreshClient.InContextForOAuth2(c.refreshCtx)
