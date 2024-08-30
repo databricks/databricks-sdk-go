@@ -373,6 +373,9 @@ func (c *Config) authenticateIfNeeded() error {
 	c.credentialsProvider = credentialsProvider
 	c.AuthType = c.Credentials.Name()
 	c.fixHostIfNeeded()
+	if err := c.assertHostIsSet(); err != nil {
+		return err
+	}
 	// TODO: error customization
 	return nil
 }
@@ -400,6 +403,26 @@ func (c *Config) fixHostIfNeeded() error {
 	}
 	// Store sanitized version of c.Host.
 	c.Host = parsedHost.String()
+	return nil
+}
+
+// ErrNoHostConfigured is the error returned when a user tries to authenticate
+// without a host configured. Applications can check for this error to provide
+// more user-friendly error messages.
+var ErrNoHostConfigured = fmt.Errorf("no host configured")
+
+// assertHostIsSet returns an error if the host is not set or is invalid. It
+// should be called after authentication is resolved.
+func (c *Config) assertHostIsSet() error {
+	// Simply checking for empty string is not enough, as the string may be non-
+	// empty but have no authority (e.g. "https://:443").
+	parsed, err := url.Parse(c.Host)
+	if err != nil {
+		return fmt.Errorf("invalid host: %w", err)
+	}
+	if parsed.Hostname() == "" {
+		return ErrNoHostConfigured
+	}
 	return nil
 }
 
