@@ -337,7 +337,8 @@ func (c *Config) WithTesting() *Config {
 }
 
 func (c *Config) CanonicalHostName() string {
-	c.fixHostIfNeeded()
+	// Missing host is tolerated here.
+	_ = c.fixHostIfNeeded()
 	return c.Host
 }
 
