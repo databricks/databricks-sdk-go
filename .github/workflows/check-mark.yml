@@ -18,8 +18,7 @@ on:
       check_run_id:
         description: "Run ID for the check run"
         required: true
-    
-  pull_request:
+
 
 
 env:
@@ -43,7 +42,7 @@ jobs:
             /repos/${{github.repository}}/check-runs/${{ inputs.check_run_id }}
 
   mark-as-done:
-    if: ${{ github.event.inputs.check_run_id == 'completed' }}
+    if: ${{ github.event.inputs.status == 'completed' }}
     runs-on: ubuntu-latest
     steps:
       - name: Acknowledge Request
@@ -64,7 +63,7 @@ jobs:
           EOF
 
   mark-as-failed:
-      if: ${{ github.event.inputs.check_run_id == 'failed' }}
+      if: ${{ github.event.inputs.status == 'failed' }}
       runs-on: ubuntu-latest
       steps:
         - name: Acknowledge Request
@@ -87,6 +86,8 @@ jobs:
   pr-comment:
         runs-on: ubuntu-latest
         steps:
+          - uses: actions/checkout@v3
+
           - name: Write PR Comment
             env:
               GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

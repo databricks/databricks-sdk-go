@@ -56,10 +56,9 @@ jobs:
           # Add new comment
           gh pr comment ${{ github.event.pull_request.number }} --body \
           "<!-- INTEGRATION_TESTS -->
-          A new approval check has been created. Run integration tests by triggering the following workflow
+          A new approval check has been created. Start integration tests by using the following link.
           
-          Workflow: https://github.com/databricks-eng/eng-dev-ecosystem/actions/workflows/sdk-go-isolated-pr.yml 
-          Check Run ID: ${{ env.CHECK_RUN_ID }}
+          https://github.com/databricks-eng/eng-dev-ecosystem/actions/workflows/sdk-go-isolated-pr.yml/dispatch?pull_request_number=${{github.event.pull_request.number}}&check_run_id=${{ env.CHECK_RUN_ID }}
           
           This check will be approved automatically on success.
           
