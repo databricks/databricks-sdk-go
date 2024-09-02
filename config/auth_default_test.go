@@ -13,7 +13,9 @@ import (
 
 func TestErrCannotConfigureAuth(t *testing.T) {
 	env.CleanupEnvironment(t)
+
 	w := databricks.Must(databricks.NewWorkspaceClient())
 	_, err := w.CurrentUser.Me(context.Background())
+
 	assert.True(t, errors.Is(err, config.ErrCannotConfigureAuth))
 }
