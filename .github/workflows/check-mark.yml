@@ -1,0 +1,113 @@
+name: Mark Check Status
+
+on:
+  workflow_dispatch:
+    inputs:
+      pull_request_number:
+        description: "Pull request number to test (if empty, tests run against main)"
+        required: true
+    
+      test_run_id:
+          description: "Run ID for the integration tests run"
+          required: true
+
+      status:
+        description: "Integration test run status" 
+        required: true
+
+      check_run_id:
+        description: "Run ID for the check run"
+        required: true
+
+
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+
+  mark-as-running:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.status == 'running' }}
+    steps:
+      - name: Acknowledge Request
+        run: |
+          gh api -X PATCH -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -f 'status=in_progress' \
+            -f output[title]="Integration Tests Check" \
+            -f output[summary]="Running." \
+            -f output[text]="Tests running:
+                Details https://github.com/databricks-eng/eng-dev-ecosystem/actions/runs/${{inputs.test_run_id}}" \
+            /repos/${{github.repository}}/check-runs/${{ inputs.check_run_id }}
+
+  mark-as-done:
+    if: ${{ github.event.inputs.status == 'completed' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Acknowledge Request
+        run: |
+          gh api -X PATCH -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{github.repository}}/check-runs/${{ inputs.check_run_id }} \
+            --input - <<- EOF
+            {
+              "conclusion": "success",
+              "details_url": "https://github.com/databricks-eng/eng-dev-ecosystem/actions/runs/${{inputs.test_run_id}}",
+              "output": {
+                "title": "Integration Tests Succeed 🚀",
+                "summary": "**Summary**: The tests succeded.",
+                "text": "Details https://github.com/databricks-eng/eng-dev-ecosystem/actions/runs/${{inputs.test_run_id}}"
+               }
+            }
+          EOF
+
+  mark-as-failed:
+      if: ${{ github.event.inputs.status == 'failed' }}
+      runs-on: ubuntu-latest
+      steps:
+        - name: Acknowledge Request
+          run: |
+            gh api -X PATCH -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              /repos/databricks/databricks-sdk-go/check-runs/${{ inputs.check_run_id }} \
+              --input - <<- EOF
+              {
+                "conclusion": "failure",
+                "details_url": "https://github.com/${{ github.repository }}/actions/runs/${{inputs.test_run_id}}",
+                "output": {
+                  "title": "Integration Tests Failed",
+                  "summary": "**Summary**: The tests failed.",
+                  "text": "Details https://github.com/${{ github.repository }}/actions/runs/${{inputs.test_run_id}}"
+                  }
+              }
+            EOF
+
+  pr-comment:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v3
+
+          - name: Write PR Comment
+            env:
+              GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            run: |
+                # Delete previous comment if it exists
+                previous_comment_id=$(gh api repos/${{ github.repository }}/issues/${{ inputs.pull_request_number }}/comments \
+                  --jq '.[] | select(.body | startswith("<!-- INTEGRATION_TESTS -->")) | .id')
+                if [ ! -z "$previous_comment_id" ]; then
+                  gh api repos/${{ github.repository }}/issues/comments/$previous_comment_id -X DELETE
+                fi
+        
+                # Add new comment
+                gh pr comment ${{ inputs.pull_request_number }} --body \
+                "<!-- INTEGRATION_TESTS -->
+                Test status:  ${{ github.event.inputs.status}}
+                
+                Workflow: https://github.com/databricks-eng/eng-dev-ecosystem/actions/workflows/sdk-go-isolated-pr.yml 
+                Check Run ID: ${{ inputs.check_run_id }}
+                
+                This check will be approved automatically on success.
+                
+                Check URL: ${{ github.server_url }}/${{ github.repository }}/runs/${{ inputs.check_run_id }}
+                "
