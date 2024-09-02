@@ -24,7 +24,6 @@ jobs:
             -f status='queued' \
             -f output[title]="Integration Tests Check" \
             -f output[summary]="This check is being created." \
-            -f output[text]="This check is being created. Refresh for details." \
             --jq '.id' \
             /repos/${{ github.repository }}/check-runs)
               
@@ -35,8 +34,7 @@ jobs:
             -f name='Integration Tests Check' \
             -f output[title]="Integration Tests Check" \
             -f output[summary]="Waiting for test to run." \
-            -f output[text]="Run the following workflow using the provided check_run_id: 
-                Workflow https://github.com/databricks-eng/eng-dev-ecosystem/actions/workflows/sdk-go-isolated-pr.yml 
+            -f output[text]="Run the corresponding workflow using the provided check_run_id: 
                 Check Run ID: $check_run_id " \
             /repos/${{ github.repository }}/check-runs/$check_run_id
            
@@ -56,9 +54,11 @@ jobs:
           # Add new comment
           gh pr comment ${{ github.event.pull_request.number }} --body \
           "<!-- INTEGRATION_TESTS -->
-          A new approval check has been created. Start integration tests by using the following link.
-          
-          https://github.com/databricks-eng/eng-dev-ecosystem/actions/workflows/sdk-go-isolated-pr.yml/dispatch?pull_request_number=${{github.event.pull_request.number}}&check_run_id=${{ env.CHECK_RUN_ID }}
+          Run integration tests using the corresponding workflow:
+                    
+          Inputs:
+          pull_request_number=${{github.event.pull_request.number}}
+          check_run_id=${{ env.CHECK_RUN_ID }}
           
           This check will be approved automatically on success.
           

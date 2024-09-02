@@ -37,8 +37,6 @@ jobs:
             -f 'status=in_progress' \
             -f output[title]="Integration Tests Check" \
             -f output[summary]="Running." \
-            -f output[text]="Tests running:
-                Details https://github.com/databricks-eng/eng-dev-ecosystem/actions/runs/${{inputs.test_run_id}}" \
             /repos/${{github.repository}}/check-runs/${{ inputs.check_run_id }}
 
   mark-as-done:
@@ -53,11 +51,9 @@ jobs:
             --input - <<- EOF
             {
               "conclusion": "success",
-              "details_url": "https://github.com/databricks-eng/eng-dev-ecosystem/actions/runs/${{inputs.test_run_id}}",
               "output": {
                 "title": "Integration Tests Succeed 🚀",
-                "summary": "**Summary**: The tests succeded.",
-                "text": "Details https://github.com/databricks-eng/eng-dev-ecosystem/actions/runs/${{inputs.test_run_id}}"
+                "summary": "**Summary**: The tests succeded."
                }
             }
           EOF
@@ -74,11 +70,9 @@ jobs:
               --input - <<- EOF
               {
                 "conclusion": "failure",
-                "details_url": "https://github.com/${{ github.repository }}/actions/runs/${{inputs.test_run_id}}",
                 "output": {
                   "title": "Integration Tests Failed",
-                  "summary": "**Summary**: The tests failed.",
-                  "text": "Details https://github.com/${{ github.repository }}/actions/runs/${{inputs.test_run_id}}"
+                  "summary": "**Summary**: The tests failed."
                   }
               }
             EOF
@@ -103,9 +97,6 @@ jobs:
                 gh pr comment ${{ inputs.pull_request_number }} --body \
                 "<!-- INTEGRATION_TESTS -->
                 Test status:  ${{ github.event.inputs.status}}
-                
-                Workflow: https://github.com/databricks-eng/eng-dev-ecosystem/actions/workflows/sdk-go-isolated-pr.yml 
-                Check Run ID: ${{ inputs.check_run_id }}
                 
                 This check will be approved automatically on success.
                 
