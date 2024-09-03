@@ -4,19 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       pull_request_number:
-        description: "Pull request number to test (if empty, tests run against main)"
-        required: true
-    
-      test_run_id:
-          description: "Run ID for the integration tests run"
-          required: true
-
-      status:
-        description: "Integration test run status" 
+        description: "Pull request number"
         required: true
 
-      check_run_id:
-        description: "Run ID for the check run"
+      state:
+        description: "Integration test run state" 
+        required: true
+
+      commit_sha:
+        description: "Commit SHA to approve"
         required: true
 
 
@@ -26,79 +22,46 @@ env:
 
 jobs:
 
-  mark-as-running:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.status == 'running' }}
-    steps:
-      - name: Acknowledge Request
-        run: |
-          gh api -X PATCH -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -f 'status=in_progress' \
-            -f output[title]="Integration Tests Check" \
-            -f output[summary]="Running." \
-            /repos/${{github.repository}}/check-runs/${{ inputs.check_run_id }}
-
-  mark-as-done:
-    if: ${{ github.event.inputs.status == 'completed' }}
+  mark-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Acknowledge Request
+      - name: Mark Result
         run: |
-          gh api -X PATCH -H "Accept: application/vnd.github+json" \
+          gh api -X POST -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{github.repository}}/check-runs/${{ inputs.check_run_id }} \
-            --input - <<- EOF
-            {
-              "conclusion": "success",
-              "output": {
-                "title": "Integration Tests Succeed 🚀",
-                "summary": "**Summary**: The tests succeded."
-               }
-            }
-          EOF
-
-  mark-as-failed:
-      if: ${{ github.event.inputs.status == 'failed' }}
-      runs-on: ubuntu-latest
-      steps:
-        - name: Acknowledge Request
-          run: |
-            gh api -X PATCH -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              /repos/databricks/databricks-sdk-go/check-runs/${{ inputs.check_run_id }} \
-              --input - <<- EOF
-              {
-                "conclusion": "failure",
-                "output": {
-                  "title": "Integration Tests Failed",
-                  "summary": "**Summary**: The tests failed."
-                  }
-              }
-            EOF
+            /repos/databricks/databricks-sdk-go/statuses/${{ inputs.commit_sha }} \
+            -f 'state=${{inputs.state}}' \
+            -f 'context=Integration Tests Check'
 
   pr-comment:
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v3
 
-          - name: Write PR Comment
+
+          - name: Delete old comments
             env:
               GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             run: |
                 # Delete previous comment if it exists
-                previous_comment_id=$(gh api repos/${{ github.repository }}/issues/${{ inputs.pull_request_number }}/comments \
+                previous_comment_ids=$(gh api "repos/${{ github.repository }}/issues/${{ inputs.pull_request_number }}/comments" \
                   --jq '.[] | select(.body | startswith("<!-- INTEGRATION_TESTS -->")) | .id')
-                if [ ! -z "$previous_comment_id" ]; then
-                  gh api repos/${{ github.repository }}/issues/comments/$previous_comment_id -X DELETE
+                echo "Previous comment IDs: $previous_comment_ids"
+                # Iterate over each comment ID and delete the comment
+                if [ ! -z "$previous_comment_ids" ]; then
+                  echo "$previous_comment_ids" | while read -r comment_id; do
+                    echo "Deleting comment with ID: $comment_id"
+                    gh api "repos/${{ github.repository }}/issues/comments/$comment_id" -X DELETE
+                  done
                 fi
+              
+          - name: Write new comment
+            env:
+              GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            run: |
         
                 # Add new comment
                 gh pr comment ${{ inputs.pull_request_number }} --body \
                 "<!-- INTEGRATION_TESTS -->
-                Test status:  ${{ github.event.inputs.status}}
-                
-                This check will be approved automatically on success.
-                
-                Check URL: ${{ github.server_url }}/${{ github.repository }}/runs/${{ inputs.check_run_id }}
+                Test status:  ${{ github.event.inputs.state}}
                 "
