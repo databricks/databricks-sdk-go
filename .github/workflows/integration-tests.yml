@@ -3,64 +3,64 @@ name: Integration Tests
 on:
 
   pull_request:
-    branches: [ main ]
+    types: [opened, synchronize]
+
+  merge_group:
+  
 
 jobs:
-  check:
-    name: Run Check
+  write-message:
+    if: github.event_name == 'pull_request'
+    name: Write Message
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v3
 
-    - name: Create Check
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-          check_run_id=$(gh api -X POST -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -f name='Integration Tests Check' \
-            -f head_sha=${{ github.sha }} \
-            -f status='queued' \
-            -f output[title]="Integration Tests Check" \
-            -f output[summary]="This check is being created." \
-            --jq '.id' \
-            /repos/${{ github.repository }}/check-runs)
-              
-          # Adding instructions to the check details.
-           gh api -X PATCH -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -f 'status=queued' \
-            -f name='Integration Tests Check' \
-            -f output[title]="Integration Tests Check" \
-            -f output[summary]="Waiting for test to run." \
-            -f output[text]="Run the corresponding workflow using the provided check_run_id: 
-                Check Run ID: $check_run_id " \
-            /repos/${{ github.repository }}/check-runs/$check_run_id
-           
-          echo "CHECK_RUN_ID=$check_run_id" >> $GITHUB_ENV
-
-    - name: Write PR Comment
+    - name: Delete old comments
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
           # Delete previous comment if it exists
-          previous_comment_id=$(gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
+          previous_comment_ids=$(gh api "repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
             --jq '.[] | select(.body | startswith("<!-- INTEGRATION_TESTS -->")) | .id')
-          if [ ! -z "$previous_comment_id" ]; then
-            gh api repos/${{ github.repository }}/issues/comments/$previous_comment_id -X DELETE
+          echo "Previous comment IDs: $previous_comment_ids"
+          # Iterate over each comment ID and delete the comment
+          if [ ! -z "$previous_comment_ids" ]; then
+            echo "$previous_comment_ids" | while read -r comment_id; do
+              echo "Deleting comment with ID: $comment_id"
+              gh api "repos/${{ github.repository }}/issues/comments/$comment_id" -X DELETE
+            done
           fi
-  
-          # Add new comment
+        
+    - name: Write new comment
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
           gh pr comment ${{ github.event.pull_request.number }} --body \
           "<!-- INTEGRATION_TESTS -->
           Run integration tests using the corresponding workflow:
                     
           Inputs:
-          pull_request_number=${{github.event.pull_request.number}}
-          check_run_id=${{ env.CHECK_RUN_ID }}
+          PR Number:${{github.event.pull_request.number}}
+          Commit SHA:${{ github.event.pull_request.head.sha }}
           
           This check will be approved automatically on success.
-          
-          Check URL: ${{ github.server_url }}/${{ github.repository }}/runs/${{ env.CHECK_RUN_ID }}
           "
+
+  # The hash for the merge queue may not be the same as the hash for the PR.
+  # Auto approve the check for the merge queue to avoid running integration tests twice.
+  auto-approve:
+    if: github.event_name == 'merge_group'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mark Check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+            gh api -X POST -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              /repos/${{ github.repository }}/statuses/${{ github.sha }} \
+              -f 'state=success' \
+              -f 'context=Integration Tests Check'
