@@ -212,9 +212,10 @@ type GetPermissionRequest struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dbsql-dashboards, directories,
-	// experiments, files, instance-pools, jobs, notebooks, pipelines, queries,
-	// registered-models, repos, serving-endpoints, or warehouses.
+	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
+	// directories, experiments, files, instance-pools, jobs, notebooks,
+	// pipelines, queries, registered-models, repos, serving-endpoints, or
+	// warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1136,9 +1137,10 @@ type PermissionsRequest struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dbsql-dashboards, directories,
-	// experiments, files, instance-pools, jobs, notebooks, pipelines, queries,
-	// registered-models, repos, serving-endpoints, or warehouses.
+	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
+	// directories, experiments, files, instance-pools, jobs, notebooks,
+	// pipelines, queries, registered-models, repos, serving-endpoints, or
+	// warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1235,7 +1237,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.

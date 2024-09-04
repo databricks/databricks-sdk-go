@@ -23,6 +23,7 @@ experimental/mocks/service/catalog/mock_model_versions_interface.go linguist-gen
 experimental/mocks/service/catalog/mock_online_tables_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_quality_monitors_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_registered_models_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_resource_quotas_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_schemas_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_storage_credentials_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_system_schemas_interface.go linguist-generated=true
@@ -37,6 +38,7 @@ experimental/mocks/service/compute/mock_global_init_scripts_interface.go linguis
 experimental/mocks/service/compute/mock_instance_pools_interface.go linguist-generated=true
 experimental/mocks/service/compute/mock_instance_profiles_interface.go linguist-generated=true
 experimental/mocks/service/compute/mock_libraries_interface.go linguist-generated=true
+experimental/mocks/service/compute/mock_policy_compliance_for_clusters_interface.go linguist-generated=true
 experimental/mocks/service/compute/mock_policy_families_interface.go linguist-generated=true
 experimental/mocks/service/dashboards/mock_genie_interface.go linguist-generated=true
 experimental/mocks/service/dashboards/mock_lakeview_interface.go linguist-generated=true
@@ -55,6 +57,7 @@ experimental/mocks/service/iam/mock_service_principals_interface.go linguist-gen
 experimental/mocks/service/iam/mock_users_interface.go linguist-generated=true
 experimental/mocks/service/iam/mock_workspace_assignment_interface.go linguist-generated=true
 experimental/mocks/service/jobs/mock_jobs_interface.go linguist-generated=true
+experimental/mocks/service/jobs/mock_policy_compliance_for_jobs_interface.go linguist-generated=true
 experimental/mocks/service/marketplace/mock_consumer_fulfillments_interface.go linguist-generated=true
 experimental/mocks/service/marketplace/mock_consumer_installations_interface.go linguist-generated=true
 experimental/mocks/service/marketplace/mock_consumer_listings_interface.go linguist-generated=true
