@@ -45,7 +45,7 @@ func ExampleWorkspacesAPI_Create_workspaces() {
 	}
 	logger.Infof(ctx, "found %v", role)
 
-	created, err := a.Workspaces.CreateAndWait(ctx, provisioning.CreateWorkspaceRequest{
+	waiter, err := a.Workspaces.Create(ctx, provisioning.CreateWorkspaceRequest{
 		WorkspaceName:          fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		AwsRegion:              os.Getenv("AWS_REGION"),
 		CredentialsId:          role.CredentialsId,
@@ -54,7 +54,7 @@ func ExampleWorkspacesAPI_Create_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	logger.Infof(ctx, "found %v", waiter)
 
 	// cleanup
 
@@ -66,7 +66,7 @@ func ExampleWorkspacesAPI_Create_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
+	err = a.Workspaces.DeleteByWorkspaceId(ctx, waiter.WorkspaceId)
 	if err != nil {
 		panic(err)
 	}
@@ -80,36 +80,7 @@ func ExampleWorkspacesAPI_Get_workspaces() {
 		panic(err)
 	}
 
-	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
-		StorageConfigurationName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		RootBucketInfo: provisioning.RootBucketInfo{
-			BucketName: os.Getenv("TEST_ROOT_BUCKET"),
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", storage)
-
-	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
-		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
-			StsRole: &provisioning.CreateCredentialStsRole{
-				RoleArn: os.Getenv("TEST_CROSSACCOUNT_ARN"),
-			},
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", role)
-
-	created, err := a.Workspaces.CreateAndWait(ctx, provisioning.CreateWorkspaceRequest{
-		WorkspaceName:          fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsRegion:              os.Getenv("AWS_REGION"),
-		CredentialsId:          role.CredentialsId,
-		StorageConfigurationId: storage.StorageConfigurationId,
-	})
+	created, err := a.Waiter.Get(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -120,21 +91,6 @@ func ExampleWorkspacesAPI_Get_workspaces() {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", byId)
-
-	// cleanup
-
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
-	if err != nil {
-		panic(err)
-	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
-	if err != nil {
-		panic(err)
-	}
-	err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
-	if err != nil {
-		panic(err)
-	}
 
 }
 
@@ -160,30 +116,6 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 		panic(err)
 	}
 
-	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
-		StorageConfigurationName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		RootBucketInfo: provisioning.RootBucketInfo{
-			BucketName: os.Getenv("TEST_ROOT_BUCKET"),
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", storage)
-
-	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
-		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
-			StsRole: &provisioning.CreateCredentialStsRole{
-				RoleArn: os.Getenv("TEST_CROSSACCOUNT_ARN"),
-			},
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", role)
-
 	updateRole, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
@@ -197,12 +129,7 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 	}
 	logger.Infof(ctx, "found %v", updateRole)
 
-	created, err := a.Workspaces.CreateAndWait(ctx, provisioning.CreateWorkspaceRequest{
-		WorkspaceName:          fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsRegion:              os.Getenv("AWS_REGION"),
-		CredentialsId:          role.CredentialsId,
-		StorageConfigurationId: storage.StorageConfigurationId,
-	})
+	created, err := a.Waiter.Get(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -218,19 +145,7 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
-	if err != nil {
-		panic(err)
-	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
-	if err != nil {
-		panic(err)
-	}
 	err = a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
-	if err != nil {
-		panic(err)
-	}
-	err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
 	if err != nil {
 		panic(err)
 	}

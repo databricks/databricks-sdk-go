@@ -989,7 +989,9 @@ func (s CreateMetastore) MarshalJSON() ([]byte, error) {
 }
 
 type CreateMetastoreAssignment struct {
-	// The name of the default catalog in the metastore.
+	// The name of the default catalog in the metastore. This field is
+	// depracted. Please use "Default Namespace API" to configure the default
+	// catalog for a Databricks workspace.
 	DefaultCatalogName string `json:"default_catalog_name"`
 	// The unique ID of the metastore.
 	MetastoreId string `json:"metastore_id"`
@@ -4280,6 +4282,41 @@ func (s ReadVolumeRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type RegenerateDashboardRequest struct {
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
+	// Optional argument to specify the warehouse for dashboard regeneration. If
+	// not specified, the first running warehouse will be used.
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegenerateDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RegenerateDashboardRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type RegenerateDashboardResponse struct {
+	// Id of the regenerated monitoring dashboard.
+	DashboardId string `json:"dashboard_id,omitempty"`
+	// The directory where the regenerated dashboard is stored.
+	ParentFolder string `json:"parent_folder,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegenerateDashboardResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RegenerateDashboardResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Registered model alias.
 type RegisteredModelAlias struct {
 	// Name of the alias, e.g. 'champion' or 'latest_stable'
@@ -5022,7 +5059,9 @@ func (s UpdateMetastore) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateMetastoreAssignment struct {
-	// The name of the default catalog for the metastore.
+	// The name of the default catalog in the metastore. This field is
+	// depracted. Please use "Default Namespace API" to configure the default
+	// catalog for a Databricks workspace.
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
 	// The unique ID of the metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`

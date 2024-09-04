@@ -1313,6 +1313,10 @@ type ServedModelInput struct {
 	// ARN of the instance profile that the served model will use to access AWS
 	// resources.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The maximum tokens per second that the endpoint can scale up to.
+	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
+	// The minimum tokens per second that the endpoint can scale down to.
+	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
 	// The name of the model in Databricks Model Registry to be served or if the
 	// model resides in Unity Catalog, the full name of model, in the form of
 	// __catalog_name__.__schema_name__.__model_name__.
@@ -1335,7 +1339,7 @@ type ServedModelInput struct {
 	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
 	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
 	// the provisioned concurrency for each workload size will be 0.
-	WorkloadSize ServedModelInputWorkloadSize `json:"workload_size"`
+	WorkloadSize ServedModelInputWorkloadSize `json:"workload_size,omitempty"`
 	// The workload type of the served model. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
 	// parameter is "CPU". For deep learning workloads, GPU acceleration is
