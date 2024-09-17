@@ -122,6 +122,31 @@ func (f *ArtifactType) Type() string {
 type AssignResponse struct {
 }
 
+// AWS temporary credentials for API authentication. Read more at
+// https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
+type AwsCredentials struct {
+	// The access key ID that identifies the temporary credentials.
+	AccessKeyId string `json:"access_key_id,omitempty"`
+	// The Amazon Resource Name (ARN) of the S3 access point for temporary
+	// credentials related the external location.
+	AccessPoint string `json:"access_point,omitempty"`
+	// The secret access key that can be used to sign AWS API requests.
+	SecretAccessKey string `json:"secret_access_key,omitempty"`
+	// The token that users must pass to AWS API to use the temporary
+	// credentials.
+	SessionToken string `json:"session_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AwsCredentials) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AwsCredentials) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AwsIamRoleRequest struct {
 	// The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
 	RoleArn string `json:"role_arn"`
@@ -207,6 +232,23 @@ type AzureServicePrincipal struct {
 	// The directory ID corresponding to the Azure Active Directory (AAD) tenant
 	// of the application.
 	DirectoryId string `json:"directory_id"`
+}
+
+// Azure temporary credentials for API authentication. Read more at
+// https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
+type AzureUserDelegationSas struct {
+	// The signed URI (SAS Token) used to access blob services for a given path
+	SasToken string `json:"sas_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AzureUserDelegationSas) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AzureUserDelegationSas) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Cancel refresh
@@ -815,7 +857,7 @@ type CreateFunction struct {
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
 	Properties string `json:"properties,omitempty"`
 	// Table function return parameters.
-	ReturnParams FunctionParameterInfos `json:"return_params"`
+	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
@@ -825,7 +867,7 @@ type CreateFunction struct {
 	// Function body.
 	RoutineDefinition string `json:"routine_definition"`
 	// Function dependencies.
-	RoutineDependencies DependencyList `json:"routine_dependencies"`
+	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
 	// Name of parent schema relative to its parent catalog.
 	SchemaName string `json:"schema_name"`
 	// Function security type.
@@ -2105,6 +2147,72 @@ func (f *FunctionParameterType) Type() string {
 	return "FunctionParameterType"
 }
 
+// GCP temporary credentials for API authentication. Read more at
+// https://developers.google.com/identity/protocols/oauth2/service-account
+type GcpOauthToken struct {
+	OauthToken string `json:"oauth_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GcpOauthToken) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GcpOauthToken) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenerateTemporaryTableCredentialRequest struct {
+	// The operation performed against the table data, either READ or
+	// READ_WRITE. If READ_WRITE is specified, the credentials returned will
+	// have write permissions, otherwise, it will be read only.
+	Operation TableOperation `json:"operation,omitempty"`
+	// UUID of the table to read or write.
+	TableId string `json:"table_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GenerateTemporaryTableCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenerateTemporaryTableCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenerateTemporaryTableCredentialResponse struct {
+	// AWS temporary credentials for API authentication. Read more at
+	// https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
+	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
+	// Azure temporary credentials for API authentication. Read more at
+	// https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
+	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
+	// Server time when the credential will expire, in unix epoch milliseconds
+	// since January 1, 1970 at 00:00:00 UTC. The API client is advised to cache
+	// the credential given this expiration time.
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
+	// GCP temporary credentials for API authentication. Read more at
+	// https://developers.google.com/identity/protocols/oauth2/service-account
+	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
+	// R2 temporary credentials for API authentication. Read more at
+	// https://developers.cloudflare.com/r2/api/s3/tokens/.
+	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
+	// The URL of the storage path accessible by the temporary credential.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GenerateTemporaryTableCredentialResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenerateTemporaryTableCredentialResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Gets the metastore assignment for a workspace
 type GetAccountMetastoreAssignmentRequest struct {
 	// Workspace ID.
@@ -2336,6 +2444,9 @@ type GetMetastoreSummaryResponse struct {
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	DeltaSharingScope GetMetastoreSummaryResponseDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
 	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
@@ -3282,6 +3393,9 @@ type MetastoreInfo struct {
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	DeltaSharingScope MetastoreInfoDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
 	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
@@ -4263,6 +4377,27 @@ func (s QuotaInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// R2 temporary credentials for API authentication. Read more at
+// https://developers.cloudflare.com/r2/api/s3/tokens/.
+type R2Credentials struct {
+	// The access key ID that identifies the temporary credentials.
+	AccessKeyId string `json:"access_key_id,omitempty"`
+	// The secret access key associated with the access key.
+	SecretAccessKey string `json:"secret_access_key,omitempty"`
+	// The generated JWT that users must pass to use the temporary credentials.
+	SessionToken string `json:"session_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *R2Credentials) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s R2Credentials) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get a Volume
 type ReadVolumeRequest struct {
 	// Whether to include volumes in the response for which the principal can
@@ -4781,6 +4916,33 @@ func (s *TableInfo) UnmarshalJSON(b []byte) error {
 
 func (s TableInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type TableOperation string
+
+const TableOperationRead TableOperation = `READ`
+
+const TableOperationReadWrite TableOperation = `READ_WRITE`
+
+// String representation for [fmt.Print]
+func (f *TableOperation) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TableOperation) Set(v string) error {
+	switch v {
+	case `READ`, `READ_WRITE`:
+		*f = TableOperation(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "READ", "READ_WRITE"`, v)
+	}
+}
+
+// Type always returns TableOperation to satisfy [pflag.Value] interface
+func (f *TableOperation) Type() string {
+	return "TableOperation"
 }
 
 type TableRowFilter struct {

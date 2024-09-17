@@ -224,6 +224,55 @@ type DefaultNamespaceService interface {
 	Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
 }
 
+// 'Disabling legacy access' has the following impacts:
+//
+// 1. Disables direct access to the Hive Metastore. However, you can still
+// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode (docs
+// link) on any External Location access from the workspace. 3. Alters DBFS path
+// access to use External Location permissions in place of legacy credentials.
+// 4. Enforces Unity Catalog access on all path based access.
+type DisableLegacyAccessService interface {
+
+	// Delete Legacy Access Disablement Status.
+	//
+	// Deletes legacy access disablement status.
+	Delete(ctx context.Context, request DeleteDisableLegacyAccessRequest) (*DeleteDisableLegacyAccessResponse, error)
+
+	// Retrieve Legacy Access Disablement Status.
+	//
+	// Retrieves legacy access disablement Status.
+	Get(ctx context.Context, request GetDisableLegacyAccessRequest) (*DisableLegacyAccess, error)
+
+	// Update Legacy Access Disablement Status.
+	//
+	// Updates legacy access disablement status.
+	Update(ctx context.Context, request UpdateDisableLegacyAccessRequest) (*DisableLegacyAccess, error)
+}
+
+// Disable legacy features for new Databricks workspaces.
+//
+// For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2.
+// Hive Metastore will not be provisioned. 3. Disables the use of
+// ‘No-isolation clusters’. 4. Disables Databricks Runtime versions prior to
+// 13.3LTS.
+type DisableLegacyFeaturesService interface {
+
+	// Delete the disable legacy features setting.
+	//
+	// Deletes the disable legacy features setting.
+	Delete(ctx context.Context, request DeleteDisableLegacyFeaturesRequest) (*DeleteDisableLegacyFeaturesResponse, error)
+
+	// Get the disable legacy features setting.
+	//
+	// Gets the value of the disable legacy features setting.
+	Get(ctx context.Context, request GetDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
+
+	// Update the disable legacy features setting.
+	//
+	// Updates the value of the disable legacy features setting.
+	Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
+}
+
 // Controls whether enhanced security monitoring is enabled for the current
 // workspace. If the compliance security profile is enabled, this is
 // automatically enabled. By default, it is disabled. However, if the compliance

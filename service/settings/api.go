@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Features, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -269,6 +269,14 @@ type AccountSettingsInterface interface {
 	// compliance security profile enabled by default.
 	CspEnablementAccount() CspEnablementAccountInterface
 
+	// Disable legacy features for new Databricks workspaces.
+	//
+	// For newly created workspaces: 1. Disables the use of DBFS root and
+	// mounts. 2. Hive Metastore will not be provisioned. 3. Disables the use of
+	// ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
+	// prior to 13.3LTS.
+	DisableLegacyFeatures() DisableLegacyFeaturesInterface
+
 	// The enhanced security monitoring setting at the account level controls
 	// whether to enable the feature on new workspaces. By default, this
 	// account-level setting is disabled for new workspaces. After workspace
@@ -297,6 +305,8 @@ func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 
 		cspEnablementAccount: NewCspEnablementAccount(client),
 
+		disableLegacyFeatures: NewDisableLegacyFeatures(client),
+
 		esmEnablementAccount: NewEsmEnablementAccount(client),
 
 		personalCompute: NewPersonalCompute(client),
@@ -316,6 +326,14 @@ type AccountSettingsAPI struct {
 	// This settings can be disabled so that new workspaces do not have
 	// compliance security profile enabled by default.
 	cspEnablementAccount CspEnablementAccountInterface
+
+	// Disable legacy features for new Databricks workspaces.
+	//
+	// For newly created workspaces: 1. Disables the use of DBFS root and
+	// mounts. 2. Hive Metastore will not be provisioned. 3. Disables the use of
+	// ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
+	// prior to 13.3LTS.
+	disableLegacyFeatures DisableLegacyFeaturesInterface
 
 	// The enhanced security monitoring setting at the account level controls
 	// whether to enable the feature on new workspaces. By default, this
@@ -339,6 +357,10 @@ type AccountSettingsAPI struct {
 
 func (a *AccountSettingsAPI) CspEnablementAccount() CspEnablementAccountInterface {
 	return a.cspEnablementAccount
+}
+
+func (a *AccountSettingsAPI) DisableLegacyFeatures() DisableLegacyFeaturesInterface {
+	return a.disableLegacyFeatures
 }
 
 func (a *AccountSettingsAPI) EsmEnablementAccount() EsmEnablementAccountInterface {
@@ -520,6 +542,79 @@ func NewDefaultNamespace(client *client.DatabricksClient) *DefaultNamespaceAPI {
 // Catalog-enabled compute.
 type DefaultNamespaceAPI struct {
 	defaultNamespaceImpl
+}
+
+type DisableLegacyAccessInterface interface {
+
+	// Delete Legacy Access Disablement Status.
+	//
+	// Deletes legacy access disablement status.
+	Delete(ctx context.Context, request DeleteDisableLegacyAccessRequest) (*DeleteDisableLegacyAccessResponse, error)
+
+	// Retrieve Legacy Access Disablement Status.
+	//
+	// Retrieves legacy access disablement Status.
+	Get(ctx context.Context, request GetDisableLegacyAccessRequest) (*DisableLegacyAccess, error)
+
+	// Update Legacy Access Disablement Status.
+	//
+	// Updates legacy access disablement status.
+	Update(ctx context.Context, request UpdateDisableLegacyAccessRequest) (*DisableLegacyAccess, error)
+}
+
+func NewDisableLegacyAccess(client *client.DatabricksClient) *DisableLegacyAccessAPI {
+	return &DisableLegacyAccessAPI{
+		disableLegacyAccessImpl: disableLegacyAccessImpl{
+			client: client,
+		},
+	}
+}
+
+// 'Disabling legacy access' has the following impacts:
+//
+// 1. Disables direct access to the Hive Metastore. However, you can still
+// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode (docs
+// link) on any External Location access from the workspace. 3. Alters DBFS path
+// access to use External Location permissions in place of legacy credentials.
+// 4. Enforces Unity Catalog access on all path based access.
+type DisableLegacyAccessAPI struct {
+	disableLegacyAccessImpl
+}
+
+type DisableLegacyFeaturesInterface interface {
+
+	// Delete the disable legacy features setting.
+	//
+	// Deletes the disable legacy features setting.
+	Delete(ctx context.Context, request DeleteDisableLegacyFeaturesRequest) (*DeleteDisableLegacyFeaturesResponse, error)
+
+	// Get the disable legacy features setting.
+	//
+	// Gets the value of the disable legacy features setting.
+	Get(ctx context.Context, request GetDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
+
+	// Update the disable legacy features setting.
+	//
+	// Updates the value of the disable legacy features setting.
+	Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
+}
+
+func NewDisableLegacyFeatures(client *client.DatabricksClient) *DisableLegacyFeaturesAPI {
+	return &DisableLegacyFeaturesAPI{
+		disableLegacyFeaturesImpl: disableLegacyFeaturesImpl{
+			client: client,
+		},
+	}
+}
+
+// Disable legacy features for new Databricks workspaces.
+//
+// For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2.
+// Hive Metastore will not be provisioned. 3. Disables the use of
+// ‘No-isolation clusters’. 4. Disables Databricks Runtime versions prior to
+// 13.3LTS.
+type DisableLegacyFeaturesAPI struct {
+	disableLegacyFeaturesImpl
 }
 
 type EnhancedSecurityMonitoringInterface interface {
@@ -1326,6 +1421,15 @@ type SettingsInterface interface {
 	// Catalog-enabled compute.
 	DefaultNamespace() DefaultNamespaceInterface
 
+	// 'Disabling legacy access' has the following impacts:
+	//
+	// 1. Disables direct access to the Hive Metastore. However, you can still
+	// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode
+	// (docs link) on any External Location access from the workspace. 3. Alters
+	// DBFS path access to use External Location permissions in place of legacy
+	// credentials. 4. Enforces Unity Catalog access on all path based access.
+	DisableLegacyAccess() DisableLegacyAccessInterface
+
 	// Controls whether enhanced security monitoring is enabled for the current
 	// workspace. If the compliance security profile is enabled, this is
 	// automatically enabled. By default, it is disabled. However, if the
@@ -1362,6 +1466,8 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 		complianceSecurityProfile: NewComplianceSecurityProfile(client),
 
 		defaultNamespace: NewDefaultNamespace(client),
+
+		disableLegacyAccess: NewDisableLegacyAccess(client),
 
 		enhancedSecurityMonitoring: NewEnhancedSecurityMonitoring(client),
 
@@ -1400,6 +1506,15 @@ type SettingsAPI struct {
 	// Catalog-enabled compute.
 	defaultNamespace DefaultNamespaceInterface
 
+	// 'Disabling legacy access' has the following impacts:
+	//
+	// 1. Disables direct access to the Hive Metastore. However, you can still
+	// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode
+	// (docs link) on any External Location access from the workspace. 3. Alters
+	// DBFS path access to use External Location permissions in place of legacy
+	// credentials. 4. Enforces Unity Catalog access on all path based access.
+	disableLegacyAccess DisableLegacyAccessInterface
+
 	// Controls whether enhanced security monitoring is enabled for the current
 	// workspace. If the compliance security profile is enabled, this is
 	// automatically enabled. By default, it is disabled. However, if the
@@ -1435,6 +1550,10 @@ func (a *SettingsAPI) ComplianceSecurityProfile() ComplianceSecurityProfileInter
 
 func (a *SettingsAPI) DefaultNamespace() DefaultNamespaceInterface {
 	return a.defaultNamespace
+}
+
+func (a *SettingsAPI) DisableLegacyAccess() DisableLegacyAccessInterface {
+	return a.disableLegacyAccess
 }
 
 func (a *SettingsAPI) EnhancedSecurityMonitoring() EnhancedSecurityMonitoringInterface {

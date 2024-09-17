@@ -13,6 +13,8 @@ type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
+	// Budget policy of this pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
@@ -164,6 +166,8 @@ type EditPipeline struct {
 	// If false, deployment will fail if name has changed and conflicts the name
 	// of another pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
+	// Budget policy of this pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
@@ -332,6 +336,8 @@ type GetPipelineResponse struct {
 	ClusterId string `json:"cluster_id,omitempty"`
 	// The username of the pipeline creator.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// Serverless budget policy ID of this pipeline.
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The health of a pipeline.
 	Health GetPipelineResponseHealth `json:"health,omitempty"`
 	// The last time the pipeline settings were modified or created.
@@ -1087,6 +1093,8 @@ type PipelinePermissionsRequest struct {
 }
 
 type PipelineSpec struct {
+	// Budget policy of this pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
