@@ -222,7 +222,7 @@ func (a *AppsAPI) WaitGetAppActive(ctx context.Context, name string,
 		switch status {
 		case ComputeStateActive: // target state
 			return app, nil
-		case ComputeStateError:
+		case ComputeStateError, ComputeStateStopped:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ComputeStateActive, status, statusMessage)
 			return nil, retries.Halt(err)

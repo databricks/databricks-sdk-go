@@ -2120,6 +2120,8 @@ type TokenInfo struct {
 	OwnerId int64 `json:"owner_id,omitempty"`
 	// ID of the token.
 	TokenId string `json:"token_id,omitempty"`
+	// If applicable, the ID of the workspace that the token was created in.
+	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

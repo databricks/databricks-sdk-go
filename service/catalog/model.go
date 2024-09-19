@@ -2627,6 +2627,8 @@ type GetTableRequest struct {
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Whether delta metadata should be included in the response.
 	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
+	// Whether to include a manifest containing capabilities the table has.
+	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3130,6 +3132,8 @@ func (s ListStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
 type ListSummariesRequest struct {
 	// Name of parent catalog for tables of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
+	// Whether to include a manifest containing capabilities the table has.
+	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 	// Maximum number of summaries for tables to return. If not set, the page
 	// length is set to a server configured value (10000, as of 1/5/2024). -
 	// when set to a value greater than 0, the page length is the minimum of
@@ -3230,6 +3234,8 @@ type ListTablesRequest struct {
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Whether delta metadata should be included in the response.
 	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
+	// Whether to include a manifest containing capabilities the table has.
+	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 	// Maximum number of tables to return. If not set, all the tables are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
