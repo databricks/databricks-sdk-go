@@ -493,8 +493,14 @@ type ClusterAttributes struct {
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	PolicyId string `json:"policy_id,omitempty"`
-	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-	// unspecified, the runtime engine is inferred from spark_version.
+	// Determines the cluster's runtime engine, either standard or Photon.
+	//
+	// This field is not compatible with legacy `spark_version` values that
+	// contain `-photon-`. Remove `-photon-` from the `spark_version` and set
+	// `runtime_engine` to `PHOTON`.
+	//
+	// If left unspecified, the runtime engine defaults to standard unless the
+	// spark_version contains -photon-, in which case Photon will be used.
 	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	SingleUserName string `json:"single_user_name,omitempty"`
@@ -713,8 +719,14 @@ type ClusterDetails struct {
 	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	PolicyId string `json:"policy_id,omitempty"`
-	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-	// unspecified, the runtime engine is inferred from spark_version.
+	// Determines the cluster's runtime engine, either standard or Photon.
+	//
+	// This field is not compatible with legacy `spark_version` values that
+	// contain `-photon-`. Remove `-photon-` from the `spark_version` and set
+	// `runtime_engine` to `PHOTON`.
+	//
+	// If left unspecified, the runtime engine defaults to standard unless the
+	// spark_version contains -photon-, in which case Photon will be used.
 	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	SingleUserName string `json:"single_user_name,omitempty"`
@@ -1257,8 +1269,14 @@ type ClusterSpec struct {
 	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	PolicyId string `json:"policy_id,omitempty"`
-	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-	// unspecified, the runtime engine is inferred from spark_version.
+	// Determines the cluster's runtime engine, either standard or Photon.
+	//
+	// This field is not compatible with legacy `spark_version` values that
+	// contain `-photon-`. Remove `-photon-` from the `spark_version` and set
+	// `runtime_engine` to `PHOTON`.
+	//
+	// If left unspecified, the runtime engine defaults to standard unless the
+	// spark_version contains -photon-, in which case Photon will be used.
 	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	SingleUserName string `json:"single_user_name,omitempty"`
@@ -1557,8 +1575,14 @@ type CreateCluster struct {
 	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	PolicyId string `json:"policy_id,omitempty"`
-	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-	// unspecified, the runtime engine is inferred from spark_version.
+	// Determines the cluster's runtime engine, either standard or Photon.
+	//
+	// This field is not compatible with legacy `spark_version` values that
+	// contain `-photon-`. Remove `-photon-` from the `spark_version` and set
+	// `runtime_engine` to `PHOTON`.
+	//
+	// If left unspecified, the runtime engine defaults to standard unless the
+	// spark_version contains -photon-, in which case Photon will be used.
 	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	SingleUserName string `json:"single_user_name,omitempty"`
@@ -2254,8 +2278,14 @@ type EditCluster struct {
 	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	PolicyId string `json:"policy_id,omitempty"`
-	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-	// unspecified, the runtime engine is inferred from spark_version.
+	// Determines the cluster's runtime engine, either standard or Photon.
+	//
+	// This field is not compatible with legacy `spark_version` values that
+	// contain `-photon-`. Remove `-photon-` from the `spark_version` and set
+	// `runtime_engine` to `PHOTON`.
+	//
+	// If left unspecified, the runtime engine defaults to standard unless the
+	// spark_version contains -photon-, in which case Photon will be used.
 	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	SingleUserName string `json:"single_user_name,omitempty"`
@@ -4619,8 +4649,14 @@ func (s Results) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
+// Determines the cluster's runtime engine, either standard or Photon.
+//
+// This field is not compatible with legacy `spark_version` values that contain
+// `-photon-`. Remove `-photon-` from the `spark_version` and set
+// `runtime_engine` to `PHOTON`.
+//
+// If left unspecified, the runtime engine defaults to standard unless the
+// spark_version contains -photon-, in which case Photon will be used.
 type RuntimeEngine string
 
 const RuntimeEngineNull RuntimeEngine = `NULL`
@@ -5175,8 +5211,14 @@ type UpdateClusterResource struct {
 	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	PolicyId string `json:"policy_id,omitempty"`
-	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-	// unspecified, the runtime engine is inferred from spark_version.
+	// Determines the cluster's runtime engine, either standard or Photon.
+	//
+	// This field is not compatible with legacy `spark_version` values that
+	// contain `-photon-`. Remove `-photon-` from the `spark_version` and set
+	// `runtime_engine` to `PHOTON`.
+	//
+	// If left unspecified, the runtime engine defaults to standard unless the
+	// spark_version contains -photon-, in which case Photon will be used.
 	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	SingleUserName string `json:"single_user_name,omitempty"`

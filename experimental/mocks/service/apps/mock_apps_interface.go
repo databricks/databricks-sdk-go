@@ -30,23 +30,23 @@ func (_m *MockAppsInterface) EXPECT() *MockAppsInterface_Expecter {
 }
 
 // Create provides a mock function with given fields: ctx, createAppRequest
-func (_m *MockAppsInterface) Create(ctx context.Context, createAppRequest apps.CreateAppRequest) (*apps.WaitGetAppIdle[apps.App], error) {
+func (_m *MockAppsInterface) Create(ctx context.Context, createAppRequest apps.CreateAppRequest) (*apps.WaitGetAppActive[apps.App], error) {
 	ret := _m.Called(ctx, createAppRequest)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
 	}
 
-	var r0 *apps.WaitGetAppIdle[apps.App]
+	var r0 *apps.WaitGetAppActive[apps.App]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, apps.CreateAppRequest) (*apps.WaitGetAppIdle[apps.App], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, apps.CreateAppRequest) (*apps.WaitGetAppActive[apps.App], error)); ok {
 		return rf(ctx, createAppRequest)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, apps.CreateAppRequest) *apps.WaitGetAppIdle[apps.App]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, apps.CreateAppRequest) *apps.WaitGetAppActive[apps.App]); ok {
 		r0 = rf(ctx, createAppRequest)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*apps.WaitGetAppIdle[apps.App])
+			r0 = ret.Get(0).(*apps.WaitGetAppActive[apps.App])
 		}
 	}
 
@@ -78,12 +78,12 @@ func (_c *MockAppsInterface_Create_Call) Run(run func(ctx context.Context, creat
 	return _c
 }
 
-func (_c *MockAppsInterface_Create_Call) Return(_a0 *apps.WaitGetAppIdle[apps.App], _a1 error) *MockAppsInterface_Create_Call {
+func (_c *MockAppsInterface_Create_Call) Return(_a0 *apps.WaitGetAppActive[apps.App], _a1 error) *MockAppsInterface_Create_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAppsInterface_Create_Call) RunAndReturn(run func(context.Context, apps.CreateAppRequest) (*apps.WaitGetAppIdle[apps.App], error)) *MockAppsInterface_Create_Call {
+func (_c *MockAppsInterface_Create_Call) RunAndReturn(run func(context.Context, apps.CreateAppRequest) (*apps.WaitGetAppActive[apps.App], error)) *MockAppsInterface_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -163,21 +163,33 @@ func (_c *MockAppsInterface_CreateAndWait_Call) RunAndReturn(run func(context.Co
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockAppsInterface) Delete(ctx context.Context, request apps.DeleteAppRequest) error {
+func (_m *MockAppsInterface) Delete(ctx context.Context, request apps.DeleteAppRequest) (*apps.App, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, apps.DeleteAppRequest) error); ok {
+	var r0 *apps.App
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.DeleteAppRequest) (*apps.App, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.DeleteAppRequest) *apps.App); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.App)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, apps.DeleteAppRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockAppsInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -199,32 +211,44 @@ func (_c *MockAppsInterface_Delete_Call) Run(run func(ctx context.Context, reque
 	return _c
 }
 
-func (_c *MockAppsInterface_Delete_Call) Return(_a0 error) *MockAppsInterface_Delete_Call {
-	_c.Call.Return(_a0)
+func (_c *MockAppsInterface_Delete_Call) Return(_a0 *apps.App, _a1 error) *MockAppsInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAppsInterface_Delete_Call) RunAndReturn(run func(context.Context, apps.DeleteAppRequest) error) *MockAppsInterface_Delete_Call {
+func (_c *MockAppsInterface_Delete_Call) RunAndReturn(run func(context.Context, apps.DeleteAppRequest) (*apps.App, error)) *MockAppsInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteByName provides a mock function with given fields: ctx, name
-func (_m *MockAppsInterface) DeleteByName(ctx context.Context, name string) error {
+func (_m *MockAppsInterface) DeleteByName(ctx context.Context, name string) (*apps.App, error) {
 	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteByName")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+	var r0 *apps.App
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*apps.App, error)); ok {
+		return rf(ctx, name)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *apps.App); ok {
 		r0 = rf(ctx, name)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.App)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, name)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockAppsInterface_DeleteByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByName'
@@ -246,12 +270,12 @@ func (_c *MockAppsInterface_DeleteByName_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockAppsInterface_DeleteByName_Call) Return(_a0 error) *MockAppsInterface_DeleteByName_Call {
-	_c.Call.Return(_a0)
+func (_c *MockAppsInterface_DeleteByName_Call) Return(_a0 *apps.App, _a1 error) *MockAppsInterface_DeleteByName_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAppsInterface_DeleteByName_Call) RunAndReturn(run func(context.Context, string) error) *MockAppsInterface_DeleteByName_Call {
+func (_c *MockAppsInterface_DeleteByName_Call) RunAndReturn(run func(context.Context, string) (*apps.App, error)) *MockAppsInterface_DeleteByName_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1197,23 +1221,23 @@ func (_c *MockAppsInterface_SetPermissions_Call) RunAndReturn(run func(context.C
 }
 
 // Start provides a mock function with given fields: ctx, startAppRequest
-func (_m *MockAppsInterface) Start(ctx context.Context, startAppRequest apps.StartAppRequest) (*apps.WaitGetDeploymentAppSucceeded[apps.AppDeployment], error) {
+func (_m *MockAppsInterface) Start(ctx context.Context, startAppRequest apps.StartAppRequest) (*apps.WaitGetAppActive[apps.App], error) {
 	ret := _m.Called(ctx, startAppRequest)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Start")
 	}
 
-	var r0 *apps.WaitGetDeploymentAppSucceeded[apps.AppDeployment]
+	var r0 *apps.WaitGetAppActive[apps.App]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, apps.StartAppRequest) (*apps.WaitGetDeploymentAppSucceeded[apps.AppDeployment], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, apps.StartAppRequest) (*apps.WaitGetAppActive[apps.App], error)); ok {
 		return rf(ctx, startAppRequest)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, apps.StartAppRequest) *apps.WaitGetDeploymentAppSucceeded[apps.AppDeployment]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, apps.StartAppRequest) *apps.WaitGetAppActive[apps.App]); ok {
 		r0 = rf(ctx, startAppRequest)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*apps.WaitGetDeploymentAppSucceeded[apps.AppDeployment])
+			r0 = ret.Get(0).(*apps.WaitGetAppActive[apps.App])
 		}
 	}
 
@@ -1245,18 +1269,18 @@ func (_c *MockAppsInterface_Start_Call) Run(run func(ctx context.Context, startA
 	return _c
 }
 
-func (_c *MockAppsInterface_Start_Call) Return(_a0 *apps.WaitGetDeploymentAppSucceeded[apps.AppDeployment], _a1 error) *MockAppsInterface_Start_Call {
+func (_c *MockAppsInterface_Start_Call) Return(_a0 *apps.WaitGetAppActive[apps.App], _a1 error) *MockAppsInterface_Start_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAppsInterface_Start_Call) RunAndReturn(run func(context.Context, apps.StartAppRequest) (*apps.WaitGetDeploymentAppSucceeded[apps.AppDeployment], error)) *MockAppsInterface_Start_Call {
+func (_c *MockAppsInterface_Start_Call) RunAndReturn(run func(context.Context, apps.StartAppRequest) (*apps.WaitGetAppActive[apps.App], error)) *MockAppsInterface_Start_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // StartAndWait provides a mock function with given fields: ctx, startAppRequest, options
-func (_m *MockAppsInterface) StartAndWait(ctx context.Context, startAppRequest apps.StartAppRequest, options ...retries.Option[apps.AppDeployment]) (*apps.AppDeployment, error) {
+func (_m *MockAppsInterface) StartAndWait(ctx context.Context, startAppRequest apps.StartAppRequest, options ...retries.Option[apps.App]) (*apps.App, error) {
 	_va := make([]interface{}, len(options))
 	for _i := range options {
 		_va[_i] = options[_i]
@@ -1270,20 +1294,20 @@ func (_m *MockAppsInterface) StartAndWait(ctx context.Context, startAppRequest a
 		panic("no return value specified for StartAndWait")
 	}
 
-	var r0 *apps.AppDeployment
+	var r0 *apps.App
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, apps.StartAppRequest, ...retries.Option[apps.AppDeployment]) (*apps.AppDeployment, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, apps.StartAppRequest, ...retries.Option[apps.App]) (*apps.App, error)); ok {
 		return rf(ctx, startAppRequest, options...)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, apps.StartAppRequest, ...retries.Option[apps.AppDeployment]) *apps.AppDeployment); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, apps.StartAppRequest, ...retries.Option[apps.App]) *apps.App); ok {
 		r0 = rf(ctx, startAppRequest, options...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*apps.AppDeployment)
+			r0 = ret.Get(0).(*apps.App)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, apps.StartAppRequest, ...retries.Option[apps.AppDeployment]) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, apps.StartAppRequest, ...retries.Option[apps.App]) error); ok {
 		r1 = rf(ctx, startAppRequest, options...)
 	} else {
 		r1 = ret.Error(1)
@@ -1300,18 +1324,18 @@ type MockAppsInterface_StartAndWait_Call struct {
 // StartAndWait is a helper method to define mock.On call
 //   - ctx context.Context
 //   - startAppRequest apps.StartAppRequest
-//   - options ...retries.Option[apps.AppDeployment]
+//   - options ...retries.Option[apps.App]
 func (_e *MockAppsInterface_Expecter) StartAndWait(ctx interface{}, startAppRequest interface{}, options ...interface{}) *MockAppsInterface_StartAndWait_Call {
 	return &MockAppsInterface_StartAndWait_Call{Call: _e.mock.On("StartAndWait",
 		append([]interface{}{ctx, startAppRequest}, options...)...)}
 }
 
-func (_c *MockAppsInterface_StartAndWait_Call) Run(run func(ctx context.Context, startAppRequest apps.StartAppRequest, options ...retries.Option[apps.AppDeployment])) *MockAppsInterface_StartAndWait_Call {
+func (_c *MockAppsInterface_StartAndWait_Call) Run(run func(ctx context.Context, startAppRequest apps.StartAppRequest, options ...retries.Option[apps.App])) *MockAppsInterface_StartAndWait_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		variadicArgs := make([]retries.Option[apps.AppDeployment], len(args)-2)
+		variadicArgs := make([]retries.Option[apps.App], len(args)-2)
 		for i, a := range args[2:] {
 			if a != nil {
-				variadicArgs[i] = a.(retries.Option[apps.AppDeployment])
+				variadicArgs[i] = a.(retries.Option[apps.App])
 			}
 		}
 		run(args[0].(context.Context), args[1].(apps.StartAppRequest), variadicArgs...)
@@ -1319,32 +1343,44 @@ func (_c *MockAppsInterface_StartAndWait_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockAppsInterface_StartAndWait_Call) Return(_a0 *apps.AppDeployment, _a1 error) *MockAppsInterface_StartAndWait_Call {
+func (_c *MockAppsInterface_StartAndWait_Call) Return(_a0 *apps.App, _a1 error) *MockAppsInterface_StartAndWait_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAppsInterface_StartAndWait_Call) RunAndReturn(run func(context.Context, apps.StartAppRequest, ...retries.Option[apps.AppDeployment]) (*apps.AppDeployment, error)) *MockAppsInterface_StartAndWait_Call {
+func (_c *MockAppsInterface_StartAndWait_Call) RunAndReturn(run func(context.Context, apps.StartAppRequest, ...retries.Option[apps.App]) (*apps.App, error)) *MockAppsInterface_StartAndWait_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Stop provides a mock function with given fields: ctx, request
-func (_m *MockAppsInterface) Stop(ctx context.Context, request apps.StopAppRequest) error {
-	ret := _m.Called(ctx, request)
+// Stop provides a mock function with given fields: ctx, stopAppRequest
+func (_m *MockAppsInterface) Stop(ctx context.Context, stopAppRequest apps.StopAppRequest) (*apps.WaitGetAppStopped[apps.App], error) {
+	ret := _m.Called(ctx, stopAppRequest)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Stop")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, apps.StopAppRequest) error); ok {
-		r0 = rf(ctx, request)
+	var r0 *apps.WaitGetAppStopped[apps.App]
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.StopAppRequest) (*apps.WaitGetAppStopped[apps.App], error)); ok {
+		return rf(ctx, stopAppRequest)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.StopAppRequest) *apps.WaitGetAppStopped[apps.App]); ok {
+		r0 = rf(ctx, stopAppRequest)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.WaitGetAppStopped[apps.App])
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, apps.StopAppRequest) error); ok {
+		r1 = rf(ctx, stopAppRequest)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockAppsInterface_Stop_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Stop'
@@ -1354,24 +1390,98 @@ type MockAppsInterface_Stop_Call struct {
 
 // Stop is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request apps.StopAppRequest
-func (_e *MockAppsInterface_Expecter) Stop(ctx interface{}, request interface{}) *MockAppsInterface_Stop_Call {
-	return &MockAppsInterface_Stop_Call{Call: _e.mock.On("Stop", ctx, request)}
+//   - stopAppRequest apps.StopAppRequest
+func (_e *MockAppsInterface_Expecter) Stop(ctx interface{}, stopAppRequest interface{}) *MockAppsInterface_Stop_Call {
+	return &MockAppsInterface_Stop_Call{Call: _e.mock.On("Stop", ctx, stopAppRequest)}
 }
 
-func (_c *MockAppsInterface_Stop_Call) Run(run func(ctx context.Context, request apps.StopAppRequest)) *MockAppsInterface_Stop_Call {
+func (_c *MockAppsInterface_Stop_Call) Run(run func(ctx context.Context, stopAppRequest apps.StopAppRequest)) *MockAppsInterface_Stop_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(apps.StopAppRequest))
 	})
 	return _c
 }
 
-func (_c *MockAppsInterface_Stop_Call) Return(_a0 error) *MockAppsInterface_Stop_Call {
-	_c.Call.Return(_a0)
+func (_c *MockAppsInterface_Stop_Call) Return(_a0 *apps.WaitGetAppStopped[apps.App], _a1 error) *MockAppsInterface_Stop_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAppsInterface_Stop_Call) RunAndReturn(run func(context.Context, apps.StopAppRequest) error) *MockAppsInterface_Stop_Call {
+func (_c *MockAppsInterface_Stop_Call) RunAndReturn(run func(context.Context, apps.StopAppRequest) (*apps.WaitGetAppStopped[apps.App], error)) *MockAppsInterface_Stop_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// StopAndWait provides a mock function with given fields: ctx, stopAppRequest, options
+func (_m *MockAppsInterface) StopAndWait(ctx context.Context, stopAppRequest apps.StopAppRequest, options ...retries.Option[apps.App]) (*apps.App, error) {
+	_va := make([]interface{}, len(options))
+	for _i := range options {
+		_va[_i] = options[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, stopAppRequest)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	if len(ret) == 0 {
+		panic("no return value specified for StopAndWait")
+	}
+
+	var r0 *apps.App
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.StopAppRequest, ...retries.Option[apps.App]) (*apps.App, error)); ok {
+		return rf(ctx, stopAppRequest, options...)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.StopAppRequest, ...retries.Option[apps.App]) *apps.App); ok {
+		r0 = rf(ctx, stopAppRequest, options...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.App)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, apps.StopAppRequest, ...retries.Option[apps.App]) error); ok {
+		r1 = rf(ctx, stopAppRequest, options...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_StopAndWait_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'StopAndWait'
+type MockAppsInterface_StopAndWait_Call struct {
+	*mock.Call
+}
+
+// StopAndWait is a helper method to define mock.On call
+//   - ctx context.Context
+//   - stopAppRequest apps.StopAppRequest
+//   - options ...retries.Option[apps.App]
+func (_e *MockAppsInterface_Expecter) StopAndWait(ctx interface{}, stopAppRequest interface{}, options ...interface{}) *MockAppsInterface_StopAndWait_Call {
+	return &MockAppsInterface_StopAndWait_Call{Call: _e.mock.On("StopAndWait",
+		append([]interface{}{ctx, stopAppRequest}, options...)...)}
+}
+
+func (_c *MockAppsInterface_StopAndWait_Call) Run(run func(ctx context.Context, stopAppRequest apps.StopAppRequest, options ...retries.Option[apps.App])) *MockAppsInterface_StopAndWait_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := make([]retries.Option[apps.App], len(args)-2)
+		for i, a := range args[2:] {
+			if a != nil {
+				variadicArgs[i] = a.(retries.Option[apps.App])
+			}
+		}
+		run(args[0].(context.Context), args[1].(apps.StopAppRequest), variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_StopAndWait_Call) Return(_a0 *apps.App, _a1 error) *MockAppsInterface_StopAndWait_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_StopAndWait_Call) RunAndReturn(run func(context.Context, apps.StopAppRequest, ...retries.Option[apps.App]) (*apps.App, error)) *MockAppsInterface_StopAndWait_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1494,12 +1604,12 @@ func (_c *MockAppsInterface_UpdatePermissions_Call) RunAndReturn(run func(contex
 	return _c
 }
 
-// WaitGetAppIdle provides a mock function with given fields: ctx, name, timeout, callback
-func (_m *MockAppsInterface) WaitGetAppIdle(ctx context.Context, name string, timeout time.Duration, callback func(*apps.App)) (*apps.App, error) {
+// WaitGetAppActive provides a mock function with given fields: ctx, name, timeout, callback
+func (_m *MockAppsInterface) WaitGetAppActive(ctx context.Context, name string, timeout time.Duration, callback func(*apps.App)) (*apps.App, error) {
 	ret := _m.Called(ctx, name, timeout, callback)
 
 	if len(ret) == 0 {
-		panic("no return value specified for WaitGetAppIdle")
+		panic("no return value specified for WaitGetAppActive")
 	}
 
 	var r0 *apps.App
@@ -1524,33 +1634,94 @@ func (_m *MockAppsInterface) WaitGetAppIdle(ctx context.Context, name string, ti
 	return r0, r1
 }
 
-// MockAppsInterface_WaitGetAppIdle_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WaitGetAppIdle'
-type MockAppsInterface_WaitGetAppIdle_Call struct {
+// MockAppsInterface_WaitGetAppActive_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WaitGetAppActive'
+type MockAppsInterface_WaitGetAppActive_Call struct {
 	*mock.Call
 }
 
-// WaitGetAppIdle is a helper method to define mock.On call
+// WaitGetAppActive is a helper method to define mock.On call
 //   - ctx context.Context
 //   - name string
 //   - timeout time.Duration
 //   - callback func(*apps.App)
-func (_e *MockAppsInterface_Expecter) WaitGetAppIdle(ctx interface{}, name interface{}, timeout interface{}, callback interface{}) *MockAppsInterface_WaitGetAppIdle_Call {
-	return &MockAppsInterface_WaitGetAppIdle_Call{Call: _e.mock.On("WaitGetAppIdle", ctx, name, timeout, callback)}
+func (_e *MockAppsInterface_Expecter) WaitGetAppActive(ctx interface{}, name interface{}, timeout interface{}, callback interface{}) *MockAppsInterface_WaitGetAppActive_Call {
+	return &MockAppsInterface_WaitGetAppActive_Call{Call: _e.mock.On("WaitGetAppActive", ctx, name, timeout, callback)}
 }
 
-func (_c *MockAppsInterface_WaitGetAppIdle_Call) Run(run func(ctx context.Context, name string, timeout time.Duration, callback func(*apps.App))) *MockAppsInterface_WaitGetAppIdle_Call {
+func (_c *MockAppsInterface_WaitGetAppActive_Call) Run(run func(ctx context.Context, name string, timeout time.Duration, callback func(*apps.App))) *MockAppsInterface_WaitGetAppActive_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(time.Duration), args[3].(func(*apps.App)))
 	})
 	return _c
 }
 
-func (_c *MockAppsInterface_WaitGetAppIdle_Call) Return(_a0 *apps.App, _a1 error) *MockAppsInterface_WaitGetAppIdle_Call {
+func (_c *MockAppsInterface_WaitGetAppActive_Call) Return(_a0 *apps.App, _a1 error) *MockAppsInterface_WaitGetAppActive_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAppsInterface_WaitGetAppIdle_Call) RunAndReturn(run func(context.Context, string, time.Duration, func(*apps.App)) (*apps.App, error)) *MockAppsInterface_WaitGetAppIdle_Call {
+func (_c *MockAppsInterface_WaitGetAppActive_Call) RunAndReturn(run func(context.Context, string, time.Duration, func(*apps.App)) (*apps.App, error)) *MockAppsInterface_WaitGetAppActive_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// WaitGetAppStopped provides a mock function with given fields: ctx, name, timeout, callback
+func (_m *MockAppsInterface) WaitGetAppStopped(ctx context.Context, name string, timeout time.Duration, callback func(*apps.App)) (*apps.App, error) {
+	ret := _m.Called(ctx, name, timeout, callback)
+
+	if len(ret) == 0 {
+		panic("no return value specified for WaitGetAppStopped")
+	}
+
+	var r0 *apps.App
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, time.Duration, func(*apps.App)) (*apps.App, error)); ok {
+		return rf(ctx, name, timeout, callback)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, time.Duration, func(*apps.App)) *apps.App); ok {
+		r0 = rf(ctx, name, timeout, callback)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.App)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, time.Duration, func(*apps.App)) error); ok {
+		r1 = rf(ctx, name, timeout, callback)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_WaitGetAppStopped_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WaitGetAppStopped'
+type MockAppsInterface_WaitGetAppStopped_Call struct {
+	*mock.Call
+}
+
+// WaitGetAppStopped is a helper method to define mock.On call
+//   - ctx context.Context
+//   - name string
+//   - timeout time.Duration
+//   - callback func(*apps.App)
+func (_e *MockAppsInterface_Expecter) WaitGetAppStopped(ctx interface{}, name interface{}, timeout interface{}, callback interface{}) *MockAppsInterface_WaitGetAppStopped_Call {
+	return &MockAppsInterface_WaitGetAppStopped_Call{Call: _e.mock.On("WaitGetAppStopped", ctx, name, timeout, callback)}
+}
+
+func (_c *MockAppsInterface_WaitGetAppStopped_Call) Run(run func(ctx context.Context, name string, timeout time.Duration, callback func(*apps.App))) *MockAppsInterface_WaitGetAppStopped_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(time.Duration), args[3].(func(*apps.App)))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_WaitGetAppStopped_Call) Return(_a0 *apps.App, _a1 error) *MockAppsInterface_WaitGetAppStopped_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_WaitGetAppStopped_Call) RunAndReturn(run func(context.Context, string, time.Duration, func(*apps.App)) (*apps.App, error)) *MockAppsInterface_WaitGetAppStopped_Call {
 	_c.Call.Return(run)
 	return _c
 }

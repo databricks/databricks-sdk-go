@@ -62,6 +62,10 @@
 //
 // - [settings.DefaultNamespaceAPI]: The default namespace setting API allows users to configure the default namespace for a Databricks workspace.
 //
+// - [settings.DisableLegacyAccessAPI]: 'Disabling legacy access' has the following impacts: 1.
+//
+// - [settings.DisableLegacyFeaturesAPI]: Disable legacy features for new Databricks workspaces.
+//
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
 // - [settings.EnhancedSecurityMonitoringAPI]: Controls whether enhanced security monitoring is enabled for the current workspace.
@@ -216,6 +220,8 @@
 //
 // - [catalog.TablesAPI]: A table resides in the third layer of Unity Catalog’s three-level namespace.
 //
+// - [catalog.TemporaryTableCredentialsAPI]: Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locationswhere table data is stored in Databricks.
+//
 // - [settings.TokenManagementAPI]: Enables administrators to get all tokens and delete tokens for other users.
 //
 // - [settings.TokensAPI]: The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access Databricks REST APIs.
@@ -307,6 +313,8 @@ var (
 	_ *files.DbfsAPI                                      = nil
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil
+	_ *settings.DisableLegacyAccessAPI                    = nil
+	_ *settings.DisableLegacyFeaturesAPI                  = nil
 	_ *provisioning.EncryptionKeysAPI                     = nil
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil
@@ -384,6 +392,7 @@ var (
 	_ *catalog.SystemSchemasAPI                           = nil
 	_ *catalog.TableConstraintsAPI                        = nil
 	_ *catalog.TablesAPI                                  = nil
+	_ *catalog.TemporaryTableCredentialsAPI               = nil
 	_ *settings.TokenManagementAPI                        = nil
 	_ *settings.TokensAPI                                 = nil
 	_ *billing.UsageDashboardsAPI                         = nil

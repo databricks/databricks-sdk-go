@@ -1022,6 +1022,21 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) err
 	return err
 }
 
+// unexported type that holds implementations of just TemporaryTableCredentials API methods
+type temporaryTableCredentialsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx context.Context, request GenerateTemporaryTableCredentialRequest) (*GenerateTemporaryTableCredentialResponse, error) {
+	var generateTemporaryTableCredentialResponse GenerateTemporaryTableCredentialResponse
+	path := "/api/2.0/unity-catalog/temporary-table-credentials"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &generateTemporaryTableCredentialResponse)
+	return &generateTemporaryTableCredentialResponse, err
+}
+
 // unexported type that holds implementations of just Volumes API methods
 type volumesImpl struct {
 	client *client.DatabricksClient

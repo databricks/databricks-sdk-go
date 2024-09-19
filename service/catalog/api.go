@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, External Locations, Functions, Grants, Metastores, Model Versions, Online Tables, Quality Monitors, Registered Models, Resource Quotas, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Volumes, Workspace Bindings, etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, External Locations, Functions, Grants, Metastores, Model Versions, Online Tables, Quality Monitors, Registered Models, Resource Quotas, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Temporary Table Credentials, Volumes, Workspace Bindings, etc.
 package catalog
 
 import (
@@ -3632,6 +3632,45 @@ func (a *TablesAPI) ListSummaries(ctx context.Context, request ListSummariesRequ
 func (a *TablesAPI) ListSummariesAll(ctx context.Context, request ListSummariesRequest) ([]TableSummary, error) {
 	iterator := a.ListSummaries(ctx, request)
 	return listing.ToSlice[TableSummary](ctx, iterator)
+}
+
+type TemporaryTableCredentialsInterface interface {
+
+	// Generate a temporary table credential.
+	//
+	// Get a short-lived credential for directly accessing the table data on cloud
+	// storage. The metastore must have external_access_enabled flag set to true
+	// (default false). The caller must have EXTERNAL_USE_SCHEMA privilege on the
+	// parent schema and this privilege can only be granted by catalog owners.
+	GenerateTemporaryTableCredentials(ctx context.Context, request GenerateTemporaryTableCredentialRequest) (*GenerateTemporaryTableCredentialResponse, error)
+}
+
+func NewTemporaryTableCredentials(client *client.DatabricksClient) *TemporaryTableCredentialsAPI {
+	return &TemporaryTableCredentialsAPI{
+		temporaryTableCredentialsImpl: temporaryTableCredentialsImpl{
+			client: client,
+		},
+	}
+}
+
+// Temporary Table Credentials refer to short-lived, downscoped credentials used
+// to access cloud storage locationswhere table data is stored in Databricks.
+// These credentials are employed to provide secure and time-limitedaccess to
+// data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
+// provider has its own typeof credentials: AWS uses temporary session tokens
+// via AWS Security Token Service (STS), Azure utilizesShared Access Signatures
+// (SAS) for its data storage services, and Google Cloud supports temporary
+// credentialsthrough OAuth 2.0.Temporary table credentials ensure that data
+// access is limited in scope and duration, reducing the risk ofunauthorized
+// access or misuse. To use the temporary table credentials API, a metastore
+// admin needs to enable the external_access_enabled flag (off by default) at
+// the metastore level, and user needs to be granted the EXTERNAL USE SCHEMA
+// permission at the schema level by catalog admin. Note that EXTERNAL USE
+// SCHEMA is a schema level permission that can only be granted by catalog admin
+// explicitly and is not included in schema ownership or ALL PRIVILEGES on the
+// schema for security reason.
+type TemporaryTableCredentialsAPI struct {
+	temporaryTableCredentialsImpl
 }
 
 type VolumesInterface interface {

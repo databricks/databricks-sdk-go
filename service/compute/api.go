@@ -306,6 +306,12 @@ type ClustersInterface interface {
 	// If Databricks acquires at least 85% of the requested on-demand nodes, cluster
 	// creation will succeed. Otherwise the cluster will terminate with an
 	// informative error message.
+	//
+	// Rather than authoring the cluster's JSON definition from scratch, Databricks
+	// recommends filling out the [create compute UI] and then copying the generated
+	// JSON definition from the UI.
+	//
+	// [create compute UI]: https://docs.databricks.com/compute/configure.html
 	Create(ctx context.Context, createCluster CreateCluster) (*WaitGetClusterRunning[CreateClusterResponse], error)
 
 	// Calls [ClustersAPIInterface.Create] and waits to reach RUNNING state
@@ -773,6 +779,12 @@ func (w *WaitGetClusterTerminated[R]) GetWithTimeout(timeout time.Duration) (*Cl
 // If Databricks acquires at least 85% of the requested on-demand nodes, cluster
 // creation will succeed. Otherwise the cluster will terminate with an
 // informative error message.
+//
+// Rather than authoring the cluster's JSON definition from scratch, Databricks
+// recommends filling out the [create compute UI] and then copying the generated
+// JSON definition from the UI.
+//
+// [create compute UI]: https://docs.databricks.com/compute/configure.html
 func (a *ClustersAPI) Create(ctx context.Context, createCluster CreateCluster) (*WaitGetClusterRunning[CreateClusterResponse], error) {
 	createClusterResponse, err := a.clustersImpl.Create(ctx, createCluster)
 	if err != nil {
