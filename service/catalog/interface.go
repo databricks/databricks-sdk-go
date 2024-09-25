@@ -670,6 +670,21 @@ type QualityMonitorsService interface {
 	// was created.
 	ListRefreshes(ctx context.Context, request ListRefreshesRequest) (*MonitorRefreshListResponse, error)
 
+	// Regenerate a monitoring dashboard.
+	//
+	// Regenerates the monitoring dashboard for the specified table.
+	//
+	// The caller must either: 1. be an owner of the table's parent catalog 2.
+	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
+	// table's parent schema 3. have the following permissions: -
+	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
+	// table's parent schema - be an owner of the table
+	//
+	// The call must be made from the workspace where the monitor was created.
+	// The dashboard will be regenerated in the assets directory that was
+	// specified when the monitor was created.
+	RegenerateDashboard(ctx context.Context, request RegenerateDashboardRequest) (*RegenerateDashboardResponse, error)
+
 	// Queue a metric refresh for a monitor.
 	//
 	// Queues a metric refresh on the monitor for the specified table. The
@@ -1123,6 +1138,34 @@ type TablesService interface {
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
 	Update(ctx context.Context, request UpdateTableRequest) error
+}
+
+// Temporary Table Credentials refer to short-lived, downscoped credentials used
+// to access cloud storage locationswhere table data is stored in Databricks.
+// These credentials are employed to provide secure and time-limitedaccess to
+// data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
+// provider has its own typeof credentials: AWS uses temporary session tokens
+// via AWS Security Token Service (STS), Azure utilizesShared Access Signatures
+// (SAS) for its data storage services, and Google Cloud supports temporary
+// credentialsthrough OAuth 2.0.Temporary table credentials ensure that data
+// access is limited in scope and duration, reducing the risk ofunauthorized
+// access or misuse. To use the temporary table credentials API, a metastore
+// admin needs to enable the external_access_enabled flag (off by default) at
+// the metastore level, and user needs to be granted the EXTERNAL USE SCHEMA
+// permission at the schema level by catalog admin. Note that EXTERNAL USE
+// SCHEMA is a schema level permission that can only be granted by catalog admin
+// explicitly and is not included in schema ownership or ALL PRIVILEGES on the
+// schema for security reason.
+type TemporaryTableCredentialsService interface {
+
+	// Generate a temporary table credential.
+	//
+	// Get a short-lived credential for directly accessing the table data on
+	// cloud storage. The metastore must have external_access_enabled flag set
+	// to true (default false). The caller must have EXTERNAL_USE_SCHEMA
+	// privilege on the parent schema and this privilege can only be granted by
+	// catalog owners.
+	GenerateTemporaryTableCredentials(ctx context.Context, request GenerateTemporaryTableCredentialRequest) (*GenerateTemporaryTableCredentialResponse, error)
 }
 
 // Volumes are a Unity Catalog (UC) capability for accessing, storing,

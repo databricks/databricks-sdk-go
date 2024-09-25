@@ -114,7 +114,11 @@ type ExperimentsService interface {
 	//
 	// List artifacts for a run. Takes an optional `artifact_path` prefix. If it
 	// is specified, the response contains only artifacts with the specified
-	// prefix.",
+	// prefix. This API does not support pagination when listing artifacts in UC
+	// Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes.
+	// Please call `/api/2.0/fs/directories{directory_path}` for listing
+	// artifacts in UC Volumes, which supports pagination. See [List directory
+	// contents | Files API](/api/workspace/files/listdirectorycontents).
 	//
 	// Use ListArtifactsAll() to get all FileInfo instances, which will iterate over every result page.
 	ListArtifacts(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error)

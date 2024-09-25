@@ -161,6 +161,53 @@ func (_c *MockSettingsInterface_DefaultNamespace_Call) RunAndReturn(run func() s
 	return _c
 }
 
+// DisableLegacyAccess provides a mock function with given fields:
+func (_m *MockSettingsInterface) DisableLegacyAccess() settings.DisableLegacyAccessInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for DisableLegacyAccess")
+	}
+
+	var r0 settings.DisableLegacyAccessInterface
+	if rf, ok := ret.Get(0).(func() settings.DisableLegacyAccessInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.DisableLegacyAccessInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_DisableLegacyAccess_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DisableLegacyAccess'
+type MockSettingsInterface_DisableLegacyAccess_Call struct {
+	*mock.Call
+}
+
+// DisableLegacyAccess is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) DisableLegacyAccess() *MockSettingsInterface_DisableLegacyAccess_Call {
+	return &MockSettingsInterface_DisableLegacyAccess_Call{Call: _e.mock.On("DisableLegacyAccess")}
+}
+
+func (_c *MockSettingsInterface_DisableLegacyAccess_Call) Run(run func()) *MockSettingsInterface_DisableLegacyAccess_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_DisableLegacyAccess_Call) Return(_a0 settings.DisableLegacyAccessInterface) *MockSettingsInterface_DisableLegacyAccess_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_DisableLegacyAccess_Call) RunAndReturn(run func() settings.DisableLegacyAccessInterface) *MockSettingsInterface_DisableLegacyAccess_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // EnhancedSecurityMonitoring provides a mock function with given fields:
 func (_m *MockSettingsInterface) EnhancedSecurityMonitoring() settings.EnhancedSecurityMonitoringInterface {
 	ret := _m.Called()

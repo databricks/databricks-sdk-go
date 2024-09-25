@@ -131,6 +131,16 @@ func (a *servingEndpointsImpl) Put(ctx context.Context, request PutRequest) (*Pu
 	return &putResponse, err
 }
 
+func (a *servingEndpointsImpl) PutAiGateway(ctx context.Context, request PutAiGatewayRequest) (*PutAiGatewayResponse, error) {
+	var putAiGatewayResponse PutAiGatewayResponse
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/ai-gateway", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &putAiGatewayResponse)
+	return &putAiGatewayResponse, err
+}
+
 func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
 	var queryEndpointResponse QueryEndpointResponse
 	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)

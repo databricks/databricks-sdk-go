@@ -251,7 +251,9 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 
 	// TODO: Add DNS reachability utility
-	created, err := a.Workspaces.CreateAndWait(ctx, provisioning.CreateWorkspaceRequest{
+	// Do not use CreateAndWait. If the workspaces is created but does not reach running state,
+	// the cleanup step won't be executed since the test will fail at the `require.NoError(t, err)` line.
+	waiter, err := a.Workspaces.Create(ctx, provisioning.CreateWorkspaceRequest{
 		WorkspaceName:          RandomName("go-sdk-"),
 		AwsRegion:              GetEnvOrSkipTest(t, "AWS_REGION"),
 		CredentialsId:          role.CredentialsId,
@@ -259,9 +261,11 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
+		err := a.Workspaces.DeleteByWorkspaceId(ctx, waiter.WorkspaceId)
 		require.NoError(t, err)
 	})
+	created, err := waiter.Get()
+	require.NoError(t, err)
 
 	// this also takes a while
 	_, err = a.Workspaces.UpdateAndWait(ctx, provisioning.UpdateWorkspaceRequest{

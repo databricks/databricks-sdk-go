@@ -16,8 +16,12 @@ import (
 
 type AppsInterface interface {
 
-	// WaitGetAppIdle repeatedly calls [AppsAPI.Get] and waits to reach IDLE state
-	WaitGetAppIdle(ctx context.Context, name string,
+	// WaitGetAppActive repeatedly calls [AppsAPI.Get] and waits to reach ACTIVE state
+	WaitGetAppActive(ctx context.Context, name string,
+		timeout time.Duration, callback func(*App)) (*App, error)
+
+	// WaitGetAppStopped repeatedly calls [AppsAPI.Get] and waits to reach STOPPED state
+	WaitGetAppStopped(ctx context.Context, name string,
 		timeout time.Duration, callback func(*App)) (*App, error)
 
 	// WaitGetDeploymentAppSucceeded repeatedly calls [AppsAPI.GetDeployment] and waits to reach SUCCEEDED state
@@ -27,25 +31,25 @@ type AppsInterface interface {
 	// Create an app.
 	//
 	// Creates a new app.
-	Create(ctx context.Context, createAppRequest CreateAppRequest) (*WaitGetAppIdle[App], error)
+	Create(ctx context.Context, createAppRequest CreateAppRequest) (*WaitGetAppActive[App], error)
 
-	// Calls [AppsAPIInterface.Create] and waits to reach IDLE state
+	// Calls [AppsAPIInterface.Create] and waits to reach ACTIVE state
 	//
 	// You can override the default timeout of 20 minutes by calling adding
 	// retries.Timeout[App](60*time.Minute) functional option.
 	//
-	// Deprecated: use [AppsAPIInterface.Create].Get() or [AppsAPIInterface.WaitGetAppIdle]
+	// Deprecated: use [AppsAPIInterface.Create].Get() or [AppsAPIInterface.WaitGetAppActive]
 	CreateAndWait(ctx context.Context, createAppRequest CreateAppRequest, options ...retries.Option[App]) (*App, error)
 
 	// Delete an app.
 	//
 	// Deletes an app.
-	Delete(ctx context.Context, request DeleteAppRequest) error
+	Delete(ctx context.Context, request DeleteAppRequest) (*App, error)
 
 	// Delete an app.
 	//
 	// Deletes an app.
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*App, error)
 
 	// Create an app deployment.
 	//
@@ -146,20 +150,28 @@ type AppsInterface interface {
 	// Start an app.
 	//
 	// Start the last active deployment of the app in the workspace.
-	Start(ctx context.Context, startAppRequest StartAppRequest) (*WaitGetDeploymentAppSucceeded[AppDeployment], error)
+	Start(ctx context.Context, startAppRequest StartAppRequest) (*WaitGetAppActive[App], error)
 
-	// Calls [AppsAPIInterface.Start] and waits to reach SUCCEEDED state
+	// Calls [AppsAPIInterface.Start] and waits to reach ACTIVE state
 	//
 	// You can override the default timeout of 20 minutes by calling adding
-	// retries.Timeout[AppDeployment](60*time.Minute) functional option.
+	// retries.Timeout[App](60*time.Minute) functional option.
 	//
-	// Deprecated: use [AppsAPIInterface.Start].Get() or [AppsAPIInterface.WaitGetDeploymentAppSucceeded]
-	StartAndWait(ctx context.Context, startAppRequest StartAppRequest, options ...retries.Option[AppDeployment]) (*AppDeployment, error)
+	// Deprecated: use [AppsAPIInterface.Start].Get() or [AppsAPIInterface.WaitGetAppActive]
+	StartAndWait(ctx context.Context, startAppRequest StartAppRequest, options ...retries.Option[App]) (*App, error)
 
 	// Stop an app.
 	//
 	// Stops the active deployment of the app in the workspace.
-	Stop(ctx context.Context, request StopAppRequest) error
+	Stop(ctx context.Context, stopAppRequest StopAppRequest) (*WaitGetAppStopped[App], error)
+
+	// Calls [AppsAPIInterface.Stop] and waits to reach STOPPED state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[App](60*time.Minute) functional option.
+	//
+	// Deprecated: use [AppsAPIInterface.Stop].Get() or [AppsAPIInterface.WaitGetAppStopped]
+	StopAndWait(ctx context.Context, stopAppRequest StopAppRequest, options ...retries.Option[App]) (*App, error)
 
 	// Update an app.
 	//
@@ -188,8 +200,8 @@ type AppsAPI struct {
 	appsImpl
 }
 
-// WaitGetAppIdle repeatedly calls [AppsAPI.Get] and waits to reach IDLE state
-func (a *AppsAPI) WaitGetAppIdle(ctx context.Context, name string,
+// WaitGetAppActive repeatedly calls [AppsAPI.Get] and waits to reach ACTIVE state
+func (a *AppsAPI) WaitGetAppActive(ctx context.Context, name string,
 	timeout time.Duration, callback func(*App)) (*App, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	return retries.Poll[App](ctx, timeout, func() (*App, *retries.Err) {
@@ -202,17 +214,17 @@ func (a *AppsAPI) WaitGetAppIdle(ctx context.Context, name string,
 		if callback != nil {
 			callback(app)
 		}
-		status := app.Status.State
+		status := app.ComputeStatus.State
 		statusMessage := fmt.Sprintf("current status: %s", status)
-		if app.Status != nil {
-			statusMessage = app.Status.Message
+		if app.ComputeStatus != nil {
+			statusMessage = app.ComputeStatus.Message
 		}
 		switch status {
-		case AppStateIdle: // target state
+		case ComputeStateActive: // target state
 			return app, nil
-		case AppStateError:
+		case ComputeStateError, ComputeStateStopped:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				AppStateIdle, status, statusMessage)
+				ComputeStateActive, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -220,8 +232,8 @@ func (a *AppsAPI) WaitGetAppIdle(ctx context.Context, name string,
 	})
 }
 
-// WaitGetAppIdle is a wrapper that calls [AppsAPI.WaitGetAppIdle] and waits to reach IDLE state.
-type WaitGetAppIdle[R any] struct {
+// WaitGetAppActive is a wrapper that calls [AppsAPI.WaitGetAppActive] and waits to reach ACTIVE state.
+type WaitGetAppActive[R any] struct {
 	Response *R
 	Name     string `json:"name"`
 	Poll     func(time.Duration, func(*App)) (*App, error)
@@ -230,18 +242,75 @@ type WaitGetAppIdle[R any] struct {
 }
 
 // OnProgress invokes a callback every time it polls for the status update.
-func (w *WaitGetAppIdle[R]) OnProgress(callback func(*App)) *WaitGetAppIdle[R] {
+func (w *WaitGetAppActive[R]) OnProgress(callback func(*App)) *WaitGetAppActive[R] {
 	w.callback = callback
 	return w
 }
 
 // Get the App with the default timeout of 20 minutes.
-func (w *WaitGetAppIdle[R]) Get() (*App, error) {
+func (w *WaitGetAppActive[R]) Get() (*App, error) {
 	return w.Poll(w.timeout, w.callback)
 }
 
 // Get the App with custom timeout.
-func (w *WaitGetAppIdle[R]) GetWithTimeout(timeout time.Duration) (*App, error) {
+func (w *WaitGetAppActive[R]) GetWithTimeout(timeout time.Duration) (*App, error) {
+	return w.Poll(timeout, w.callback)
+}
+
+// WaitGetAppStopped repeatedly calls [AppsAPI.Get] and waits to reach STOPPED state
+func (a *AppsAPI) WaitGetAppStopped(ctx context.Context, name string,
+	timeout time.Duration, callback func(*App)) (*App, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[App](ctx, timeout, func() (*App, *retries.Err) {
+		app, err := a.Get(ctx, GetAppRequest{
+			Name: name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(app)
+		}
+		status := app.ComputeStatus.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if app.ComputeStatus != nil {
+			statusMessage = app.ComputeStatus.Message
+		}
+		switch status {
+		case ComputeStateStopped: // target state
+			return app, nil
+		case ComputeStateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ComputeStateStopped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetAppStopped is a wrapper that calls [AppsAPI.WaitGetAppStopped] and waits to reach STOPPED state.
+type WaitGetAppStopped[R any] struct {
+	Response *R
+	Name     string `json:"name"`
+	Poll     func(time.Duration, func(*App)) (*App, error)
+	callback func(*App)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetAppStopped[R]) OnProgress(callback func(*App)) *WaitGetAppStopped[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the App with the default timeout of 20 minutes.
+func (w *WaitGetAppStopped[R]) Get() (*App, error) {
+	return w.Poll(w.timeout, w.callback)
+}
+
+// Get the App with custom timeout.
+func (w *WaitGetAppStopped[R]) GetWithTimeout(timeout time.Duration) (*App, error) {
 	return w.Poll(timeout, w.callback)
 }
 
@@ -307,28 +376,28 @@ func (w *WaitGetDeploymentAppSucceeded[R]) GetWithTimeout(timeout time.Duration)
 // Create an app.
 //
 // Creates a new app.
-func (a *AppsAPI) Create(ctx context.Context, createAppRequest CreateAppRequest) (*WaitGetAppIdle[App], error) {
+func (a *AppsAPI) Create(ctx context.Context, createAppRequest CreateAppRequest) (*WaitGetAppActive[App], error) {
 	app, err := a.appsImpl.Create(ctx, createAppRequest)
 	if err != nil {
 		return nil, err
 	}
-	return &WaitGetAppIdle[App]{
+	return &WaitGetAppActive[App]{
 		Response: app,
 		Name:     app.Name,
 		Poll: func(timeout time.Duration, callback func(*App)) (*App, error) {
-			return a.WaitGetAppIdle(ctx, app.Name, timeout, callback)
+			return a.WaitGetAppActive(ctx, app.Name, timeout, callback)
 		},
 		timeout:  20 * time.Minute,
 		callback: nil,
 	}, nil
 }
 
-// Calls [AppsAPI.Create] and waits to reach IDLE state
+// Calls [AppsAPI.Create] and waits to reach ACTIVE state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[App](60*time.Minute) functional option.
 //
-// Deprecated: use [AppsAPI.Create].Get() or [AppsAPI.WaitGetAppIdle]
+// Deprecated: use [AppsAPI.Create].Get() or [AppsAPI.WaitGetAppActive]
 func (a *AppsAPI) CreateAndWait(ctx context.Context, createAppRequest CreateAppRequest, options ...retries.Option[App]) (*App, error) {
 	wait, err := a.Create(ctx, createAppRequest)
 	if err != nil {
@@ -353,7 +422,7 @@ func (a *AppsAPI) CreateAndWait(ctx context.Context, createAppRequest CreateAppR
 // Delete an app.
 //
 // Deletes an app.
-func (a *AppsAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *AppsAPI) DeleteByName(ctx context.Context, name string) (*App, error) {
 	return a.appsImpl.Delete(ctx, DeleteAppRequest{
 		Name: name,
 	})
@@ -535,42 +604,87 @@ func (a *AppsAPI) ListDeploymentsByAppName(ctx context.Context, appName string) 
 // Start an app.
 //
 // Start the last active deployment of the app in the workspace.
-func (a *AppsAPI) Start(ctx context.Context, startAppRequest StartAppRequest) (*WaitGetDeploymentAppSucceeded[AppDeployment], error) {
-	appDeployment, err := a.appsImpl.Start(ctx, startAppRequest)
+func (a *AppsAPI) Start(ctx context.Context, startAppRequest StartAppRequest) (*WaitGetAppActive[App], error) {
+	app, err := a.appsImpl.Start(ctx, startAppRequest)
 	if err != nil {
 		return nil, err
 	}
-	return &WaitGetDeploymentAppSucceeded[AppDeployment]{
-		Response:     appDeployment,
-		AppName:      startAppRequest.Name,
-		DeploymentId: appDeployment.DeploymentId,
-		Poll: func(timeout time.Duration, callback func(*AppDeployment)) (*AppDeployment, error) {
-			return a.WaitGetDeploymentAppSucceeded(ctx, startAppRequest.Name, appDeployment.DeploymentId, timeout, callback)
+	return &WaitGetAppActive[App]{
+		Response: app,
+		Name:     app.Name,
+		Poll: func(timeout time.Duration, callback func(*App)) (*App, error) {
+			return a.WaitGetAppActive(ctx, app.Name, timeout, callback)
 		},
 		timeout:  20 * time.Minute,
 		callback: nil,
 	}, nil
 }
 
-// Calls [AppsAPI.Start] and waits to reach SUCCEEDED state
+// Calls [AppsAPI.Start] and waits to reach ACTIVE state
 //
 // You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[AppDeployment](60*time.Minute) functional option.
+// retries.Timeout[App](60*time.Minute) functional option.
 //
-// Deprecated: use [AppsAPI.Start].Get() or [AppsAPI.WaitGetDeploymentAppSucceeded]
-func (a *AppsAPI) StartAndWait(ctx context.Context, startAppRequest StartAppRequest, options ...retries.Option[AppDeployment]) (*AppDeployment, error) {
+// Deprecated: use [AppsAPI.Start].Get() or [AppsAPI.WaitGetAppActive]
+func (a *AppsAPI) StartAndWait(ctx context.Context, startAppRequest StartAppRequest, options ...retries.Option[App]) (*App, error) {
 	wait, err := a.Start(ctx, startAppRequest)
 	if err != nil {
 		return nil, err
 	}
-	tmp := &retries.Info[AppDeployment]{Timeout: 20 * time.Minute}
+	tmp := &retries.Info[App]{Timeout: 20 * time.Minute}
 	for _, o := range options {
 		o(tmp)
 	}
 	wait.timeout = tmp.Timeout
-	wait.callback = func(info *AppDeployment) {
+	wait.callback = func(info *App) {
 		for _, o := range options {
-			o(&retries.Info[AppDeployment]{
+			o(&retries.Info[App]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
+}
+
+// Stop an app.
+//
+// Stops the active deployment of the app in the workspace.
+func (a *AppsAPI) Stop(ctx context.Context, stopAppRequest StopAppRequest) (*WaitGetAppStopped[App], error) {
+	app, err := a.appsImpl.Stop(ctx, stopAppRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetAppStopped[App]{
+		Response: app,
+		Name:     app.Name,
+		Poll: func(timeout time.Duration, callback func(*App)) (*App, error) {
+			return a.WaitGetAppStopped(ctx, app.Name, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [AppsAPI.Stop] and waits to reach STOPPED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[App](60*time.Minute) functional option.
+//
+// Deprecated: use [AppsAPI.Stop].Get() or [AppsAPI.WaitGetAppStopped]
+func (a *AppsAPI) StopAndWait(ctx context.Context, stopAppRequest StopAppRequest, options ...retries.Option[App]) (*App, error) {
+	wait, err := a.Stop(ctx, stopAppRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[App]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *App) {
+		for _, o := range options {
+			o(&retries.Info[App]{
 				Info:    info,
 				Timeout: wait.timeout,
 			})

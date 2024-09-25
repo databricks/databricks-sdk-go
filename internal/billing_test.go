@@ -16,8 +16,8 @@ func TestMwsAccUsageDownload(t *testing.T) {
 		t.SkipNow()
 	}
 	resp, err := a.BillableUsage.Download(ctx, billing.DownloadRequest{
-		StartMonth: "2023-01",
-		EndMonth:   "2023-02",
+		StartMonth: "2024-08",
+		EndMonth:   "2024-09",
 	})
 	require.NoError(t, err)
 	out, err := io.ReadAll(resp.Contents)

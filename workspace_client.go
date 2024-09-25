@@ -933,7 +933,10 @@ type WorkspaceClient struct {
 	// caller delays and network latency from caller to service. - The system
 	// will auto-close a statement after one hour if the client stops polling
 	// and thus you must poll at least once an hour. - The results are only
-	// available for one hour after success; polling does not extend this.
+	// available for one hour after success; polling does not extend this. - The
+	// SQL Execution API must be used for the entire lifecycle of the statement.
+	// For example, you cannot use the Jobs API to execute the command, and then
+	// the SQL Execution API to cancel it.
 	//
 	// [Apache Arrow Columnar]: https://arrow.apache.org/overview/
 	// [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
@@ -986,6 +989,25 @@ type WorkspaceClient struct {
 	// A table can be managed or external. From an API perspective, a __VIEW__
 	// is a particular kind of table (rather than a managed or external table).
 	Tables catalog.TablesInterface
+
+	// Temporary Table Credentials refer to short-lived, downscoped credentials
+	// used to access cloud storage locationswhere table data is stored in
+	// Databricks. These credentials are employed to provide secure and
+	// time-limitedaccess to data in cloud environments such as AWS, Azure, and
+	// Google Cloud. Each cloud provider has its own typeof credentials: AWS
+	// uses temporary session tokens via AWS Security Token Service (STS), Azure
+	// utilizesShared Access Signatures (SAS) for its data storage services, and
+	// Google Cloud supports temporary credentialsthrough OAuth 2.0.Temporary
+	// table credentials ensure that data access is limited in scope and
+	// duration, reducing the risk ofunauthorized access or misuse. To use the
+	// temporary table credentials API, a metastore admin needs to enable the
+	// external_access_enabled flag (off by default) at the metastore level, and
+	// user needs to be granted the EXTERNAL USE SCHEMA permission at the schema
+	// level by catalog admin. Note that EXTERNAL USE SCHEMA is a schema level
+	// permission that can only be granted by catalog admin explicitly and is
+	// not included in schema ownership or ALL PRIVILEGES on the schema for
+	// security reason.
+	TemporaryTableCredentials catalog.TemporaryTableCredentialsInterface
 
 	// Enables administrators to get all tokens and delete tokens for other
 	// users. Admins can either get every token, get a specific token by ID, or
@@ -1191,6 +1213,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		SystemSchemas:                       catalog.NewSystemSchemas(databricksClient),
 		TableConstraints:                    catalog.NewTableConstraints(databricksClient),
 		Tables:                              catalog.NewTables(databricksClient),
+		TemporaryTableCredentials:           catalog.NewTemporaryTableCredentials(databricksClient),
 		TokenManagement:                     settings.NewTokenManagement(databricksClient),
 		Tokens:                              settings.NewTokens(databricksClient),
 		Users:                               iam.NewUsers(databricksClient),

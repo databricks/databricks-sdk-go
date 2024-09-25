@@ -1,5 +1,39 @@
 # Version changelog
 
+## [Release] Release v0.46.0
+
+### Bug Fixes
+
+ * Fail fast when authenticating if host is not configured ([#1033](https://github.com/databricks/databricks-sdk-go/pull/1033)).
+ * Improve non-JSON error handling ([#1031](https://github.com/databricks/databricks-sdk-go/pull/1031)).
+
+
+### Internal Changes
+
+ * Add TestAccCreateOboTokenOnAws to flaky test list ([#1029](https://github.com/databricks/databricks-sdk-go/pull/1029)).
+ * Add workflows manage integration tests checks ([#1032](https://github.com/databricks/databricks-sdk-go/pull/1032)).
+ * Fix TestMwsAccWorkspaces cleanup ([#1028](https://github.com/databricks/databricks-sdk-go/pull/1028)).
+ * Improve integration test comment ([#1035](https://github.com/databricks/databricks-sdk-go/pull/1035)).
+ * Temporary ignore Metastore test failures ([#1027](https://github.com/databricks/databricks-sdk-go/pull/1027)).
+ * Update test to support new accounts ([#1026](https://github.com/databricks/databricks-sdk-go/pull/1026)).
+ * Use statuses instead of checks ([#1036](https://github.com/databricks/databricks-sdk-go/pull/1036)).
+
+
+### API Changes:
+
+ * Added `RegenerateDashboard` method for [w.QualityMonitors](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#QualityMonitorsAPI) workspace-level service.
+ * Added [catalog.RegenerateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#RegenerateDashboardRequest) and [catalog.RegenerateDashboardResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#RegenerateDashboardResponse).
+ * Added [jobs.QueueDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#QueueDetails), [jobs.QueueDetailsCodeCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#QueueDetailsCodeCode), [jobs.RunLifecycleStateV2State](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunLifecycleStateV2State), [jobs.RunStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunStatus), [jobs.TerminationCodeCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TerminationCodeCode), [jobs.TerminationDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TerminationDetails) and [jobs.TerminationTypeType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TerminationTypeType).
+ * Added `Status` field for [jobs.BaseRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseRun).
+ * Added `Status` field for [jobs.RepairHistoryItem](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RepairHistoryItem).
+ * Added `Status` field for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+ * Added `Status` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+ * Added `MaxProvisionedThroughput` and `MinProvisionedThroughput` fields for [serving.ServedModelInput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelInput).
+ * Added `ColumnsToSync` field for [vectorsearch.DeltaSyncVectorIndexSpecRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#DeltaSyncVectorIndexSpecRequest).
+ * Changed `WorkloadSize` field for [serving.ServedModelInput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelInput) to no longer be required.
+
+OpenAPI SHA: d05898328669a3f8ab0c2ecee37db2673d3ea3f7, Date: 2024-09-04
+
 ## [Release] Release v0.45.0
 
 ### Bug Fixes
