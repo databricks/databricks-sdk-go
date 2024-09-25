@@ -92,7 +92,7 @@ func WithResponseUnmarshal(response any) DoOption {
 				return nil
 			}
 			if err = json.Unmarshal(bodyBytes, &response); err != nil {
-				return apierr.MakeUnexpectedError(body.Response, err, body.RequestBody.DebugBytes, bodyBytes)
+				return fmt.Errorf("failed to unmarshal response body: %w. %s", err, apierr.MakeUnexpectedResponse(body.Response, body.RequestBody.DebugBytes, bodyBytes))
 			}
 			return nil
 		},

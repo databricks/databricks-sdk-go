@@ -141,8 +141,10 @@ type BaseRun struct {
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
 	StartTime int64 `json:"start_time,omitempty"`
-	// The current state of the run.
+	// Deprecated. Please use the `status` field instead.
 	State *RunState `json:"state,omitempty"`
+	// The current status of the run
+	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
 	Tasks []RunTask `json:"tasks,omitempty"`
@@ -377,7 +379,11 @@ type CreateJob struct {
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// A list of task execution environment specifications that can be
-	// referenced by tasks of this job.
+	// referenced by serverless tasks of this job. An environment is required to
+	// be present for serverless tasks. For serverless notebook tasks, the
+	// environment is accessible in the notebook environment panel. For other
+	// serverless tasks, the task environment is required to be specified using
+	// environment_key in the task settings.
 	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -423,12 +429,12 @@ type CreateJob struct {
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
-	// Write-only setting, available only in Create/Update/Reset and Submit
-	// calls. Specifies the user or service principal that the job runs as. If
-	// not specified, the job runs as the user who created the job.
+	// Write-only setting. Specifies the user, service principal or group that
+	// the job/pipeline runs as. If not specified, the job/pipeline runs as the
+	// user who created the job/pipeline.
 	//
-	// Only `user_name` or `service_principal_name` can be specified. If both
-	// are specified, an error is thrown.
+	// Exactly one of `user_name`, `service_principal_name`, `group_name` should
+	// be specified. If not, an error is thrown.
 	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
@@ -1359,12 +1365,12 @@ type JobPermissionsRequest struct {
 	JobId string `json:"-" url:"-"`
 }
 
-// Write-only setting, available only in Create/Update/Reset and Submit calls.
-// Specifies the user or service principal that the job runs as. If not
-// specified, the job runs as the user who created the job.
+// Write-only setting. Specifies the user, service principal or group that the
+// job/pipeline runs as. If not specified, the job/pipeline runs as the user who
+// created the job/pipeline.
 //
-// Only `user_name` or `service_principal_name` can be specified. If both are
-// specified, an error is thrown.
+// Exactly one of `user_name`, `service_principal_name`, `group_name` should be
+// specified. If not, an error is thrown.
 type JobRunAs struct {
 	// Application ID of an active service principal. Setting this field
 	// requires the `servicePrincipal/user` role.
@@ -1403,7 +1409,11 @@ type JobSettings struct {
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// A list of task execution environment specifications that can be
-	// referenced by tasks of this job.
+	// referenced by serverless tasks of this job. An environment is required to
+	// be present for serverless tasks. For serverless notebook tasks, the
+	// environment is accessible in the notebook environment panel. For other
+	// serverless tasks, the task environment is required to be specified using
+	// environment_key in the task settings.
 	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -1449,12 +1459,12 @@ type JobSettings struct {
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
-	// Write-only setting, available only in Create/Update/Reset and Submit
-	// calls. Specifies the user or service principal that the job runs as. If
-	// not specified, the job runs as the user who created the job.
+	// Write-only setting. Specifies the user, service principal or group that
+	// the job/pipeline runs as. If not specified, the job/pipeline runs as the
+	// user who created the job/pipeline.
 	//
-	// Only `user_name` or `service_principal_name` can be specified. If both
-	// are specified, an error is thrown.
+	// Exactly one of `user_name`, `service_principal_name`, `group_name` should
+	// be specified. If not, an error is thrown.
 	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
@@ -2014,6 +2024,67 @@ type PythonWheelTask struct {
 	Parameters []string `json:"parameters,omitempty"`
 }
 
+type QueueDetails struct {
+	// The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run
+	// was queued due to reaching the workspace limit of active task runs. *
+	// `MAX_CONCURRENT_RUNS_REACHED`: The run was queued due to reaching the
+	// per-job limit of concurrent job runs. *
+	// `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run was queued due to reaching
+	// the workspace limit of active run job tasks.
+	Code QueueDetailsCodeCode `json:"code,omitempty"`
+	// A descriptive message with the queuing details. This field is
+	// unstructured, and its exact format is subject to change.
+	Message string `json:"message,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueueDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueueDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was
+// queued due to reaching the workspace limit of active task runs. *
+// `MAX_CONCURRENT_RUNS_REACHED`: The run was queued due to reaching the per-job
+// limit of concurrent job runs. * `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run
+// was queued due to reaching the workspace limit of active run job tasks.
+type QueueDetailsCodeCode string
+
+// The run was queued due to reaching the workspace limit of active task runs.
+const QueueDetailsCodeCodeActiveRunsLimitReached QueueDetailsCodeCode = `ACTIVE_RUNS_LIMIT_REACHED`
+
+// The run was queued due to reaching the workspace limit of active run job
+// tasks.
+const QueueDetailsCodeCodeActiveRunJobTasksLimitReached QueueDetailsCodeCode = `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`
+
+// The run was queued due to reaching the per-job limit of concurrent job runs.
+const QueueDetailsCodeCodeMaxConcurrentRunsReached QueueDetailsCodeCode = `MAX_CONCURRENT_RUNS_REACHED`
+
+// String representation for [fmt.Print]
+func (f *QueueDetailsCodeCode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *QueueDetailsCodeCode) Set(v string) error {
+	switch v {
+	case `ACTIVE_RUNS_LIMIT_REACHED`, `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`, `MAX_CONCURRENT_RUNS_REACHED`:
+		*f = QueueDetailsCodeCode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE_RUNS_LIMIT_REACHED", "ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED", "MAX_CONCURRENT_RUNS_REACHED"`, v)
+	}
+}
+
+// Type always returns QueueDetailsCodeCode to satisfy [pflag.Value] interface
+func (f *QueueDetailsCodeCode) Type() string {
+	return "QueueDetailsCodeCode"
+}
+
 type QueueSettings struct {
 	// If true, enable queueing for the job. This is a required field.
 	Enabled bool `json:"enabled"`
@@ -2027,8 +2098,10 @@ type RepairHistoryItem struct {
 	Id int64 `json:"id,omitempty"`
 	// The start time of the (repaired) run.
 	StartTime int64 `json:"start_time,omitempty"`
-	// The current state of the run.
+	// Deprecated. Please use the `status` field instead.
 	State *RunState `json:"state,omitempty"`
+	// The current status of the run
+	Status *RunStatus `json:"status,omitempty"`
 	// The run IDs of the task runs that ran as part of this repair history
 	// item.
 	TaskRunIds []int64 `json:"task_run_ids,omitempty"`
@@ -2400,8 +2473,10 @@ type Run struct {
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
 	StartTime int64 `json:"start_time,omitempty"`
-	// The current state of the run.
+	// Deprecated. Please use the `status` field instead.
 	State *RunState `json:"state,omitempty"`
+	// The current status of the run
+	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
 	Tasks []RunTask `json:"tasks,omitempty"`
@@ -2712,6 +2787,42 @@ func (f *RunLifeCycleState) Type() string {
 	return "RunLifeCycleState"
 }
 
+// The current state of the run.
+type RunLifecycleStateV2State string
+
+const RunLifecycleStateV2StateBlocked RunLifecycleStateV2State = `BLOCKED`
+
+const RunLifecycleStateV2StatePending RunLifecycleStateV2State = `PENDING`
+
+const RunLifecycleStateV2StateQueued RunLifecycleStateV2State = `QUEUED`
+
+const RunLifecycleStateV2StateRunning RunLifecycleStateV2State = `RUNNING`
+
+const RunLifecycleStateV2StateTerminated RunLifecycleStateV2State = `TERMINATED`
+
+const RunLifecycleStateV2StateTerminating RunLifecycleStateV2State = `TERMINATING`
+
+// String representation for [fmt.Print]
+func (f *RunLifecycleStateV2State) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RunLifecycleStateV2State) Set(v string) error {
+	switch v {
+	case `BLOCKED`, `PENDING`, `QUEUED`, `RUNNING`, `TERMINATED`, `TERMINATING`:
+		*f = RunLifecycleStateV2State(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "PENDING", "QUEUED", "RUNNING", "TERMINATED", "TERMINATING"`, v)
+	}
+}
+
+// Type always returns RunLifecycleStateV2State to satisfy [pflag.Value] interface
+func (f *RunLifecycleStateV2State) Type() string {
+	return "RunLifecycleStateV2State"
+}
+
 type RunNow struct {
 	// An array of commands to execute for jobs with the dbt task, for example
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
@@ -2989,11 +3100,15 @@ type RunParameters struct {
 // completed successfully with some failures; leaf tasks were successful. *
 // `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. *
 // `UPSTREAM_CANCELED`: The run was skipped because an upstream task was
-// canceled.
+// canceled. * `DISABLED`: The run was skipped because it was disabled
+// explicitly by the user.
 type RunResultState string
 
 // The run was canceled at user request.
 const RunResultStateCanceled RunResultState = `CANCELED`
+
+// The run was skipped because it was disabled explicitly by the user.
+const RunResultStateDisabled RunResultState = `DISABLED`
 
 // The run was skipped because the necessary conditions were not met.
 const RunResultStateExcluded RunResultState = `EXCLUDED`
@@ -3028,11 +3143,11 @@ func (f *RunResultState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunResultState) Set(v string) error {
 	switch v {
-	case `CANCELED`, `EXCLUDED`, `FAILED`, `MAXIMUM_CONCURRENT_RUNS_REACHED`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `TIMEDOUT`, `UPSTREAM_CANCELED`, `UPSTREAM_FAILED`:
+	case `CANCELED`, `DISABLED`, `EXCLUDED`, `FAILED`, `MAXIMUM_CONCURRENT_RUNS_REACHED`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `TIMEDOUT`, `UPSTREAM_CANCELED`, `UPSTREAM_FAILED`:
 		*f = RunResultState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELED", "EXCLUDED", "FAILED", "MAXIMUM_CONCURRENT_RUNS_REACHED", "SUCCESS", "SUCCESS_WITH_FAILURES", "TIMEDOUT", "UPSTREAM_CANCELED", "UPSTREAM_FAILED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "DISABLED", "EXCLUDED", "FAILED", "MAXIMUM_CONCURRENT_RUNS_REACHED", "SUCCESS", "SUCCESS_WITH_FAILURES", "TIMEDOUT", "UPSTREAM_CANCELED", "UPSTREAM_FAILED"`, v)
 	}
 }
 
@@ -3067,6 +3182,17 @@ func (s *RunState) UnmarshalJSON(b []byte) error {
 
 func (s RunState) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The current status of the run
+type RunStatus struct {
+	// If the run was queued, details about the reason for queuing the run.
+	QueueDetails *QueueDetails `json:"queue_details,omitempty"`
+	// The current state of the run.
+	State RunLifecycleStateV2State `json:"state,omitempty"`
+	// If the run is in a TERMINATING or TERMINATED state, details about the
+	// reason for terminating the run.
+	TerminationDetails *TerminationDetails `json:"termination_details,omitempty"`
 }
 
 // Used when outputting a child run, in GetRun or ListRuns.
@@ -3214,8 +3340,10 @@ type RunTask struct {
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
 	StartTime int64 `json:"start_time,omitempty"`
-	// The current state of the run.
+	// Deprecated. Please use the `status` field instead.
 	State *RunState `json:"state,omitempty"`
+	// The current status of the run
+	Status *RunStatus `json:"status,omitempty"`
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
 	// job. On Update or Reset, this field is used to reference the tasks to be
@@ -4115,6 +4243,274 @@ func (s *TaskNotificationSettings) UnmarshalJSON(b []byte) error {
 
 func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The code indicates why the run was terminated. Additional codes might be
+// introduced in future releases. * `SUCCESS`: The run was completed
+// successfully. * `CANCELED`: The run was canceled during execution by the
+// Databricks platform; for example, if the maximum run duration was exceeded. *
+// `SKIPPED`: Run was never executed, for example, if the upstream task run
+// failed, the dependency type condition was not met, or there were no material
+// tasks to execute. * `INTERNAL_ERROR`: The run encountered an unexpected
+// error. Refer to the state message for further details. * `DRIVER_ERROR`: The
+// run encountered an error while communicating with the Spark Driver. *
+// `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state
+// message for further details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to
+// complete the checkout due to an error when communicating with the third party
+// service. * `INVALID_CLUSTER_REQUEST`: The run failed because it issued an
+// invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The
+// workspace has reached the quota for the maximum number of concurrent active
+// runs. Consider scheduling the runs over a larger time frame. *
+// `FEATURE_DISABLED`: The run failed because it tried to access a feature
+// unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number
+// of cluster creation, start, and upsize requests have exceeded the allotted
+// rate limit. Consider spreading the run execution over a larger time frame. *
+// `STORAGE_ACCESS_ERROR`: The run failed due to an error when accessing the
+// customer blob storage. Refer to the state message for further details. *
+// `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more
+// details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`:
+// The run failed due to a permission issue while accessing a resource. Refer to
+// the state message for further details. * `LIBRARY_INSTALLATION_ERROR`: The
+// run failed while installing the user-requested library. Refer to the state
+// message for further details. The causes might include, but are not limited
+// to: The provided library is invalid, there are insufficient permissions to
+// install the library, and so forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The
+// scheduled run exceeds the limit of maximum concurrent runs set for the job. *
+// `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has
+// already reached the maximum number of contexts it is configured to create.
+// See: [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution
+// does not exist. Refer to the state message for further details. *
+// `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid configuration.
+// Refer to the state message for further details. * `CLOUD_FAILURE`: The run
+// failed due to a cloud provider issue. Refer to the state message for further
+// details. * `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching
+// the job level queue size limit.
+//
+// [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
+type TerminationCodeCode string
+
+// The run was canceled during execution by the <Databricks> platform; for
+// example, if the maximum run duration was exceeded.
+const TerminationCodeCodeCanceled TerminationCodeCode = `CANCELED`
+
+// The run failed due to a cloud provider issue. Refer to the state message for
+// further details.
+const TerminationCodeCodeCloudFailure TerminationCodeCode = `CLOUD_FAILURE`
+
+// The run failed due to a cluster error. Refer to the state message for further
+// details.
+const TerminationCodeCodeClusterError TerminationCodeCode = `CLUSTER_ERROR`
+
+// The number of cluster creation, start, and upsize requests have exceeded the
+// allotted rate limit. Consider spreading the run execution over a larger time
+// frame.
+const TerminationCodeCodeClusterRequestLimitExceeded TerminationCodeCode = `CLUSTER_REQUEST_LIMIT_EXCEEDED`
+
+// The run encountered an error while communicating with the Spark Driver.
+const TerminationCodeCodeDriverError TerminationCodeCode = `DRIVER_ERROR`
+
+// The run failed because it tried to access a feature unavailable for the
+// workspace.
+const TerminationCodeCodeFeatureDisabled TerminationCodeCode = `FEATURE_DISABLED`
+
+// The run encountered an unexpected error. Refer to the state message for
+// further details.
+const TerminationCodeCodeInternalError TerminationCodeCode = `INTERNAL_ERROR`
+
+// The run failed because it issued an invalid request to start the cluster.
+const TerminationCodeCodeInvalidClusterRequest TerminationCodeCode = `INVALID_CLUSTER_REQUEST`
+
+// The run failed due to an invalid configuration. Refer to the state message
+// for further details.
+const TerminationCodeCodeInvalidRunConfiguration TerminationCodeCode = `INVALID_RUN_CONFIGURATION`
+
+// The run failed while installing the user-requested library. Refer to the
+// state message for further details. The causes might include, but are not
+// limited to: The provided library is invalid, there are insufficient
+// permissions to install the library, and so forth.
+const TerminationCodeCodeLibraryInstallationError TerminationCodeCode = `LIBRARY_INSTALLATION_ERROR`
+
+// The scheduled run exceeds the limit of maximum concurrent runs set for the
+// job.
+const TerminationCodeCodeMaxConcurrentRunsExceeded TerminationCodeCode = `MAX_CONCURRENT_RUNS_EXCEEDED`
+
+// The run was skipped due to reaching the job level queue size limit.
+const TerminationCodeCodeMaxJobQueueSizeExceeded TerminationCodeCode = `MAX_JOB_QUEUE_SIZE_EXCEEDED`
+
+// The run is scheduled on a cluster that has already reached the maximum number
+// of contexts it is configured to create. See: [Link].
+//
+// [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
+const TerminationCodeCodeMaxSparkContextsExceeded TerminationCodeCode = `MAX_SPARK_CONTEXTS_EXCEEDED`
+
+// Failed to complete the checkout due to an error when communicating with the
+// third party service.
+const TerminationCodeCodeRepositoryCheckoutFailed TerminationCodeCode = `REPOSITORY_CHECKOUT_FAILED`
+
+// A resource necessary for run execution does not exist. Refer to the state
+// message for further details.
+const TerminationCodeCodeResourceNotFound TerminationCodeCode = `RESOURCE_NOT_FOUND`
+
+// The run was completed with task failures. For more details, refer to the
+// state message or run output.
+const TerminationCodeCodeRunExecutionError TerminationCodeCode = `RUN_EXECUTION_ERROR`
+
+// Run was never executed, for example, if the upstream task run failed, the
+// dependency type condition was not met, or there were no material tasks to
+// execute.
+const TerminationCodeCodeSkipped TerminationCodeCode = `SKIPPED`
+
+// The run failed due to an error when accessing the customer blob storage.
+// Refer to the state message for further details.
+const TerminationCodeCodeStorageAccessError TerminationCodeCode = `STORAGE_ACCESS_ERROR`
+
+// The run was completed successfully.
+const TerminationCodeCodeSuccess TerminationCodeCode = `SUCCESS`
+
+// The run failed due to a permission issue while accessing a resource. Refer to
+// the state message for further details.
+const TerminationCodeCodeUnauthorizedError TerminationCodeCode = `UNAUTHORIZED_ERROR`
+
+// The workspace has reached the quota for the maximum number of concurrent
+// active runs. Consider scheduling the runs over a larger time frame.
+const TerminationCodeCodeWorkspaceRunLimitExceeded TerminationCodeCode = `WORKSPACE_RUN_LIMIT_EXCEEDED`
+
+// String representation for [fmt.Print]
+func (f *TerminationCodeCode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TerminationCodeCode) Set(v string) error {
+	switch v {
+	case `CANCELED`, `CLOUD_FAILURE`, `CLUSTER_ERROR`, `CLUSTER_REQUEST_LIMIT_EXCEEDED`, `DRIVER_ERROR`, `FEATURE_DISABLED`, `INTERNAL_ERROR`, `INVALID_CLUSTER_REQUEST`, `INVALID_RUN_CONFIGURATION`, `LIBRARY_INSTALLATION_ERROR`, `MAX_CONCURRENT_RUNS_EXCEEDED`, `MAX_JOB_QUEUE_SIZE_EXCEEDED`, `MAX_SPARK_CONTEXTS_EXCEEDED`, `REPOSITORY_CHECKOUT_FAILED`, `RESOURCE_NOT_FOUND`, `RUN_EXECUTION_ERROR`, `SKIPPED`, `STORAGE_ACCESS_ERROR`, `SUCCESS`, `UNAUTHORIZED_ERROR`, `WORKSPACE_RUN_LIMIT_EXCEEDED`:
+		*f = TerminationCodeCode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "CLOUD_FAILURE", "CLUSTER_ERROR", "CLUSTER_REQUEST_LIMIT_EXCEEDED", "DRIVER_ERROR", "FEATURE_DISABLED", "INTERNAL_ERROR", "INVALID_CLUSTER_REQUEST", "INVALID_RUN_CONFIGURATION", "LIBRARY_INSTALLATION_ERROR", "MAX_CONCURRENT_RUNS_EXCEEDED", "MAX_JOB_QUEUE_SIZE_EXCEEDED", "MAX_SPARK_CONTEXTS_EXCEEDED", "REPOSITORY_CHECKOUT_FAILED", "RESOURCE_NOT_FOUND", "RUN_EXECUTION_ERROR", "SKIPPED", "STORAGE_ACCESS_ERROR", "SUCCESS", "UNAUTHORIZED_ERROR", "WORKSPACE_RUN_LIMIT_EXCEEDED"`, v)
+	}
+}
+
+// Type always returns TerminationCodeCode to satisfy [pflag.Value] interface
+func (f *TerminationCodeCode) Type() string {
+	return "TerminationCodeCode"
+}
+
+type TerminationDetails struct {
+	// The code indicates why the run was terminated. Additional codes might be
+	// introduced in future releases. * `SUCCESS`: The run was completed
+	// successfully. * `CANCELED`: The run was canceled during execution by the
+	// Databricks platform; for example, if the maximum run duration was
+	// exceeded. * `SKIPPED`: Run was never executed, for example, if the
+	// upstream task run failed, the dependency type condition was not met, or
+	// there were no material tasks to execute. * `INTERNAL_ERROR`: The run
+	// encountered an unexpected error. Refer to the state message for further
+	// details. * `DRIVER_ERROR`: The run encountered an error while
+	// communicating with the Spark Driver. * `CLUSTER_ERROR`: The run failed
+	// due to a cluster error. Refer to the state message for further details. *
+	// `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an
+	// error when communicating with the third party service. *
+	// `INVALID_CLUSTER_REQUEST`: The run failed because it issued an invalid
+	// request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The
+	// workspace has reached the quota for the maximum number of concurrent
+	// active runs. Consider scheduling the runs over a larger time frame. *
+	// `FEATURE_DISABLED`: The run failed because it tried to access a feature
+	// unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The
+	// number of cluster creation, start, and upsize requests have exceeded the
+	// allotted rate limit. Consider spreading the run execution over a larger
+	// time frame. * `STORAGE_ACCESS_ERROR`: The run failed due to an error when
+	// accessing the customer blob storage. Refer to the state message for
+	// further details. * `RUN_EXECUTION_ERROR`: The run was completed with task
+	// failures. For more details, refer to the state message or run output. *
+	// `UNAUTHORIZED_ERROR`: The run failed due to a permission issue while
+	// accessing a resource. Refer to the state message for further details. *
+	// `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the
+	// user-requested library. Refer to the state message for further details.
+	// The causes might include, but are not limited to: The provided library is
+	// invalid, there are insufficient permissions to install the library, and
+	// so forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the
+	// limit of maximum concurrent runs set for the job. *
+	// `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has
+	// already reached the maximum number of contexts it is configured to
+	// create. See: [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run
+	// execution does not exist. Refer to the state message for further details.
+	// * `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid
+	// configuration. Refer to the state message for further details. *
+	// `CLOUD_FAILURE`: The run failed due to a cloud provider issue. Refer to
+	// the state message for further details. * `MAX_JOB_QUEUE_SIZE_EXCEEDED`:
+	// The run was skipped due to reaching the job level queue size limit.
+	//
+	// [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
+	Code TerminationCodeCode `json:"code,omitempty"`
+	// A descriptive message with the termination details. This field is
+	// unstructured and the format might change.
+	Message string `json:"message,omitempty"`
+	// * `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An
+	// error occurred in the Databricks platform. Please look at the [status
+	// page] or contact support if the issue persists. * `CLIENT_ERROR`: The run
+	// was terminated because of an error caused by user input or the job
+	// configuration. * `CLOUD_FAILURE`: The run was terminated because of an
+	// issue with your cloud provider.
+	//
+	// [status page]: https://status.databricks.com/
+	Type TerminationTypeType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TerminationDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TerminationDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// * `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An
+// error occurred in the Databricks platform. Please look at the [status page]
+// or contact support if the issue persists. * `CLIENT_ERROR`: The run was
+// terminated because of an error caused by user input or the job configuration.
+// * `CLOUD_FAILURE`: The run was terminated because of an issue with your cloud
+// provider.
+//
+// [status page]: https://status.databricks.com/
+type TerminationTypeType string
+
+// The run was terminated because of an error caused by user input or the job
+// configuration.
+const TerminationTypeTypeClientError TerminationTypeType = `CLIENT_ERROR`
+
+// The run was terminated because of an issue with your cloud provider.
+const TerminationTypeTypeCloudFailure TerminationTypeType = `CLOUD_FAILURE`
+
+// An error occurred in the <Databricks> platform. Please look at the [status
+// page] or contact support if the issue persists.
+//
+// [status page]: https://status.databricks.com/
+const TerminationTypeTypeInternalError TerminationTypeType = `INTERNAL_ERROR`
+
+// The run terminated without any issues
+const TerminationTypeTypeSuccess TerminationTypeType = `SUCCESS`
+
+// String representation for [fmt.Print]
+func (f *TerminationTypeType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TerminationTypeType) Set(v string) error {
+	switch v {
+	case `CLIENT_ERROR`, `CLOUD_FAILURE`, `INTERNAL_ERROR`, `SUCCESS`:
+		*f = TerminationTypeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLIENT_ERROR", "CLOUD_FAILURE", "INTERNAL_ERROR", "SUCCESS"`, v)
+	}
+}
+
+// Type always returns TerminationTypeType to satisfy [pflag.Value] interface
+func (f *TerminationTypeType) Type() string {
+	return "TerminationTypeType"
 }
 
 // Additional details about what triggered the run

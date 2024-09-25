@@ -141,6 +141,11 @@ type DeleteIndexResponse struct {
 }
 
 type DeltaSyncVectorIndexSpecRequest struct {
+	// [Optional] Select the columns to sync with the vector index. If you leave
+	// this field blank, all columns from the source table are synced with the
+	// index. The primary key column and embedding source column or embedding
+	// vector column are always synced.
+	ColumnsToSync []string `json:"columns_to_sync,omitempty"`
 	// The columns that contain the embedding source.
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
 	// The columns that contain the embedding vectors. The format should be

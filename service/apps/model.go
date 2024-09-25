@@ -11,6 +11,10 @@ import (
 type App struct {
 	// The active deployment of the app.
 	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
+
+	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
+
+	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
 	// The creation time of the app. Formatted timestamp in ISO 6801.
 	CreateTime string `json:"create_time,omitempty"`
 	// The email of the user that created the app.
@@ -26,8 +30,6 @@ type App struct {
 	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
 
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	Status *AppStatus `json:"status,omitempty"`
 	// The update time of the app. Formatted timestamp in ISO 6801.
 	UpdateTime string `json:"update_time,omitempty"`
 	// The email of the user that last updated the app.
@@ -108,7 +110,7 @@ type AppDeployment struct {
 	// the app in the workspace during deployment creation, whereas the latter
 	// provides a system generated stable snapshotted source code path used by
 	// the deployment.
-	SourceCodePath string `json:"source_code_path"`
+	SourceCodePath string `json:"source_code_path,omitempty"`
 	// Status and status message of the deployment
 	Status *AppDeploymentStatus `json:"status,omitempty"`
 	// The update time of the deployment. Formatted timestamp in ISO 6801.
@@ -170,11 +172,11 @@ func (f *AppDeploymentMode) Type() string {
 
 type AppDeploymentState string
 
+const AppDeploymentStateCancelled AppDeploymentState = `CANCELLED`
+
 const AppDeploymentStateFailed AppDeploymentState = `FAILED`
 
 const AppDeploymentStateInProgress AppDeploymentState = `IN_PROGRESS`
-
-const AppDeploymentStateStopped AppDeploymentState = `STOPPED`
 
 const AppDeploymentStateSucceeded AppDeploymentState = `SUCCEEDED`
 
@@ -186,11 +188,11 @@ func (f *AppDeploymentState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppDeploymentState) Set(v string) error {
 	switch v {
-	case `FAILED`, `IN_PROGRESS`, `STOPPED`, `SUCCEEDED`:
+	case `CANCELLED`, `FAILED`, `IN_PROGRESS`, `SUCCEEDED`:
 		*f = AppDeploymentState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FAILED", "IN_PROGRESS", "STOPPED", "SUCCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "IN_PROGRESS", "SUCCEEDED"`, v)
 	}
 }
 
@@ -302,63 +304,113 @@ type AppPermissionsRequest struct {
 	AppName string `json:"-" url:"-"`
 }
 
-type AppState string
+type ApplicationState string
 
-const AppStateCreating AppState = `CREATING`
+const ApplicationStateCrashed ApplicationState = `CRASHED`
 
-const AppStateDeleted AppState = `DELETED`
+const ApplicationStateDeploying ApplicationState = `DEPLOYING`
 
-const AppStateDeleting AppState = `DELETING`
+const ApplicationStateRunning ApplicationState = `RUNNING`
 
-const AppStateError AppState = `ERROR`
-
-const AppStateIdle AppState = `IDLE`
-
-const AppStateRunning AppState = `RUNNING`
-
-const AppStateStarting AppState = `STARTING`
+const ApplicationStateUnavailable ApplicationState = `UNAVAILABLE`
 
 // String representation for [fmt.Print]
-func (f *AppState) String() string {
+func (f *ApplicationState) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *AppState) Set(v string) error {
+func (f *ApplicationState) Set(v string) error {
 	switch v {
-	case `CREATING`, `DELETED`, `DELETING`, `ERROR`, `IDLE`, `RUNNING`, `STARTING`:
-		*f = AppState(v)
+	case `CRASHED`, `DEPLOYING`, `RUNNING`, `UNAVAILABLE`:
+		*f = ApplicationState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CREATING", "DELETED", "DELETING", "ERROR", "IDLE", "RUNNING", "STARTING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CRASHED", "DEPLOYING", "RUNNING", "UNAVAILABLE"`, v)
 	}
 }
 
-// Type always returns AppState to satisfy [pflag.Value] interface
-func (f *AppState) Type() string {
-	return "AppState"
+// Type always returns ApplicationState to satisfy [pflag.Value] interface
+func (f *ApplicationState) Type() string {
+	return "ApplicationState"
 }
 
-type AppStatus struct {
-	// Message corresponding with the app state.
+type ApplicationStatus struct {
+	// Application status message
 	Message string `json:"message,omitempty"`
-	// State of the app.
-	State AppState `json:"state,omitempty"`
+	// State of the application.
+	State ApplicationState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *AppStatus) UnmarshalJSON(b []byte) error {
+func (s *ApplicationStatus) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s AppStatus) MarshalJSON() ([]byte, error) {
+func (s ApplicationStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ComputeState string
+
+const ComputeStateActive ComputeState = `ACTIVE`
+
+const ComputeStateDeleting ComputeState = `DELETING`
+
+const ComputeStateError ComputeState = `ERROR`
+
+const ComputeStateStarting ComputeState = `STARTING`
+
+const ComputeStateStopped ComputeState = `STOPPED`
+
+const ComputeStateStopping ComputeState = `STOPPING`
+
+const ComputeStateUpdating ComputeState = `UPDATING`
+
+// String representation for [fmt.Print]
+func (f *ComputeState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ComputeState) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `DELETING`, `ERROR`, `STARTING`, `STOPPED`, `STOPPING`, `UPDATING`:
+		*f = ComputeState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "ERROR", "STARTING", "STOPPED", "STOPPING", "UPDATING"`, v)
+	}
+}
+
+// Type always returns ComputeState to satisfy [pflag.Value] interface
+func (f *ComputeState) Type() string {
+	return "ComputeState"
+}
+
+type ComputeStatus struct {
+	// Compute status message
+	Message string `json:"message,omitempty"`
+	// State of the app compute.
+	State ComputeState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ComputeStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ComputeStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
 type CreateAppDeploymentRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
+	// The unique id of the deployment.
+	DeploymentId string `json:"deployment_id,omitempty"`
 	// The mode of which the deployment will manage the source code.
 	Mode AppDeploymentMode `json:"mode,omitempty"`
 	// The workspace file system path of the source code used to create the app
@@ -368,7 +420,17 @@ type CreateAppDeploymentRequest struct {
 	// the app in the workspace during deployment creation, whereas the latter
 	// provides a system generated stable snapshotted source code path used by
 	// the deployment.
-	SourceCodePath string `json:"source_code_path"`
+	SourceCodePath string `json:"source_code_path,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateAppDeploymentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAppDeploymentRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateAppRequest struct {
@@ -393,9 +455,6 @@ func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
 type DeleteAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
-}
-
-type DeleteResponse struct {
 }
 
 // Get an app deployment
@@ -510,9 +569,6 @@ type StartAppRequest struct {
 type StopAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
-}
-
-type StopAppResponse struct {
 }
 
 type UpdateAppRequest struct {

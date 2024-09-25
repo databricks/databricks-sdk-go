@@ -1,9 +1,12 @@
 package config
 
 import (
+	"context"
+	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestIsAccountClient_AwsAccount(t *testing.T) {
@@ -51,4 +54,15 @@ func TestNewWithWorkspaceHost(t *testing.T) {
 	assert.Equal(t, "http://", c2.MetadataServiceURL)
 	// The new config will not be automatically resolved.
 	assert.False(t, c2.resolved)
+}
+
+func TestAuthenticate_InvalidHostSet(t *testing.T) {
+	c := &Config{
+		Host:  "https://:443",
+		Token: "abcdefg",
+	}
+	req, err := http.NewRequestWithContext(context.Background(), "GET", c.Host, nil)
+	require.NoError(t, err)
+	err = c.Authenticate(req)
+	assert.ErrorIs(t, err, ErrNoHostConfigured)
 }

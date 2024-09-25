@@ -671,6 +671,16 @@ func (a *qualityMonitorsImpl) ListRefreshes(ctx context.Context, request ListRef
 	return &monitorRefreshListResponse, err
 }
 
+func (a *qualityMonitorsImpl) RegenerateDashboard(ctx context.Context, request RegenerateDashboardRequest) (*RegenerateDashboardResponse, error) {
+	var regenerateDashboardResponse RegenerateDashboardResponse
+	path := fmt.Sprintf("/api/2.1/quality-monitoring/tables/%v/monitor/dashboard", request.TableName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &regenerateDashboardResponse)
+	return &regenerateDashboardResponse, err
+}
+
 func (a *qualityMonitorsImpl) RunRefresh(ctx context.Context, request RunRefreshRequest) (*MonitorRefreshInfo, error) {
 	var monitorRefreshInfo MonitorRefreshInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes", request.TableName)
@@ -1010,6 +1020,21 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) err
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
+}
+
+// unexported type that holds implementations of just TemporaryTableCredentials API methods
+type temporaryTableCredentialsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx context.Context, request GenerateTemporaryTableCredentialRequest) (*GenerateTemporaryTableCredentialResponse, error) {
+	var generateTemporaryTableCredentialResponse GenerateTemporaryTableCredentialResponse
+	path := "/api/2.0/unity-catalog/temporary-table-credentials"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &generateTemporaryTableCredentialResponse)
+	return &generateTemporaryTableCredentialResponse, err
 }
 
 // unexported type that holds implementations of just Volumes API methods

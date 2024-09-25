@@ -19,7 +19,7 @@ type AppsService interface {
 	// Delete an app.
 	//
 	// Deletes an app.
-	Delete(ctx context.Context, request DeleteAppRequest) error
+	Delete(ctx context.Context, request DeleteAppRequest) (*App, error)
 
 	// Create an app deployment.
 	//
@@ -71,12 +71,12 @@ type AppsService interface {
 	// Start an app.
 	//
 	// Start the last active deployment of the app in the workspace.
-	Start(ctx context.Context, request StartAppRequest) (*AppDeployment, error)
+	Start(ctx context.Context, request StartAppRequest) (*App, error)
 
 	// Stop an app.
 	//
 	// Stops the active deployment of the app in the workspace.
-	Stop(ctx context.Context, request StopAppRequest) error
+	Stop(ctx context.Context, request StopAppRequest) (*App, error)
 
 	// Update an app.
 	//
