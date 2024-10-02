@@ -2189,9 +2189,8 @@ type GenerateTemporaryTableCredentialResponse struct {
 	// Azure temporary credentials for API authentication. Read more at
 	// https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
 	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
-	// Server time when the credential will expire, in unix epoch milliseconds
-	// since January 1, 1970 at 00:00:00 UTC. The API client is advised to cache
-	// the credential given this expiration time.
+	// Server time when the credential will expire, in epoch milliseconds. The
+	// API client is advised to cache the credential given this expiration time.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
 	// GCP temporary credentials for API authentication. Read more at
 	// https://developers.google.com/identity/protocols/oauth2/service-account
