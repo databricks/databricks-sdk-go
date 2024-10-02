@@ -17,7 +17,12 @@ type CreateDashboardRequest struct {
 	// Dashboards responses.
 	ParentPath string `json:"parent_path,omitempty"`
 	// The contents of the dashboard in serialized string form. This field is
-	// excluded in List Dashboards responses.
+	// excluded in List Dashboards responses. Use the [get dashboard API] to
+	// retrieve an example response, which includes the `serialized_dashboard`
+	// field. This field provides the structure of the JSON string that
+	// represents the dashboard's layout and components.
+	//
+	// [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
 	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
 	// The warehouse ID used to run the dashboard.
 	WarehouseId string `json:"warehouse_id,omitempty"`
@@ -95,11 +100,17 @@ type Dashboard struct {
 	// leading slash and no trailing slash. This field is excluded in List
 	// Dashboards responses.
 	ParentPath string `json:"parent_path,omitempty"`
-	// The workspace path of the dashboard asset, including the file name. This
+	// The workspace path of the dashboard asset, including the file name.
+	// Exported dashboards always have the file extension `.lvdash.json`. This
 	// field is excluded in List Dashboards responses.
 	Path string `json:"path,omitempty"`
 	// The contents of the dashboard in serialized string form. This field is
-	// excluded in List Dashboards responses.
+	// excluded in List Dashboards responses. Use the [get dashboard API] to
+	// retrieve an example response, which includes the `serialized_dashboard`
+	// field. This field provides the structure of the JSON string that
+	// represents the dashboard's layout and components.
+	//
+	// [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
 	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
 	// The timestamp of when the dashboard was last updated by the user. This
 	// field is excluded in List Dashboards responses.
@@ -292,9 +303,10 @@ type GenieMessage struct {
 	// Genie space ID
 	SpaceId string `json:"space_id"`
 	// MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching
-	// metadata from the data sources. * `ASKING_AI`: Waiting for the LLM to
-	// respond to the users question. * `EXECUTING_QUERY`: Executing AI provided
-	// SQL query. Get the SQL query result by calling
+	// metadata from the data sources. * `FILTERING_CONTEXT`: Running smart
+	// context step to determine relevant context. * `ASKING_AI`: Waiting for
+	// the LLM to respond to the users question. * `EXECUTING_QUERY`: Executing
+	// AI provided SQL query. Get the SQL query result by calling
 	// [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
 	// **Important: The message status will stay in the `EXECUTING_QUERY` until
 	// a client calls
@@ -635,9 +647,10 @@ func (f *MessageErrorType) Type() string {
 }
 
 // MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching
-// metadata from the data sources. * `ASKING_AI`: Waiting for the LLM to respond
-// to the users question. * `EXECUTING_QUERY`: Executing AI provided SQL query.
-// Get the SQL query result by calling
+// metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context
+// step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to
+// respond to the users question. * `EXECUTING_QUERY`: Executing AI provided SQL
+// query. Get the SQL query result by calling
 // [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
 // **Important: The message status will stay in the `EXECUTING_QUERY` until a
 // client calls [getMessageQueryResult](:method:genie/getMessageQueryResult)**.
@@ -674,6 +687,9 @@ const MessageStatusFailed MessageStatus = `FAILED`
 // Fetching metadata from the data sources.
 const MessageStatusFetchingMetadata MessageStatus = `FETCHING_METADATA`
 
+// Running smart context step to determine relevant context.
+const MessageStatusFilteringContext MessageStatus = `FILTERING_CONTEXT`
+
 // SQL result is not available anymore. The user needs to execute the query
 // again.
 const MessageStatusQueryResultExpired MessageStatus = `QUERY_RESULT_EXPIRED`
@@ -689,11 +705,11 @@ func (f *MessageStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MessageStatus) Set(v string) error {
 	switch v {
-	case `ASKING_AI`, `CANCELLED`, `COMPLETED`, `EXECUTING_QUERY`, `FAILED`, `FETCHING_METADATA`, `QUERY_RESULT_EXPIRED`, `SUBMITTED`:
+	case `ASKING_AI`, `CANCELLED`, `COMPLETED`, `EXECUTING_QUERY`, `FAILED`, `FETCHING_METADATA`, `FILTERING_CONTEXT`, `QUERY_RESULT_EXPIRED`, `SUBMITTED`:
 		*f = MessageStatus(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ASKING_AI", "CANCELLED", "COMPLETED", "EXECUTING_QUERY", "FAILED", "FETCHING_METADATA", "QUERY_RESULT_EXPIRED", "SUBMITTED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ASKING_AI", "CANCELLED", "COMPLETED", "EXECUTING_QUERY", "FAILED", "FETCHING_METADATA", "FILTERING_CONTEXT", "QUERY_RESULT_EXPIRED", "SUBMITTED"`, v)
 	}
 }
 
@@ -970,7 +986,12 @@ type UpdateDashboardRequest struct {
 	// field is excluded in List Dashboards responses.
 	Etag string `json:"etag,omitempty"`
 	// The contents of the dashboard in serialized string form. This field is
-	// excluded in List Dashboards responses.
+	// excluded in List Dashboards responses. Use the [get dashboard API] to
+	// retrieve an example response, which includes the `serialized_dashboard`
+	// field. This field provides the structure of the JSON string that
+	// represents the dashboard's layout and components.
+	//
+	// [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
 	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
 	// The warehouse ID used to run the dashboard.
 	WarehouseId string `json:"warehouse_id,omitempty"`

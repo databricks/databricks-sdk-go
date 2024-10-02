@@ -24,7 +24,7 @@ func TestAccRepos(t *testing.T) {
 
 	// Synthesize unique path for this checkout in this user's home.
 	root := RandomName(fmt.Sprintf("/Repos/%s/tf-", me(t, w).UserName))
-	ri, err := w.Repos.Create(ctx, workspace.CreateRepo{
+	ri, err := w.Repos.Create(ctx, workspace.CreateRepoRequest{
 		Path:     root,
 		Url:      "https://github.com/shreyas-goenka/empty-repo.git",
 		Provider: "github",
@@ -36,7 +36,7 @@ func TestAccRepos(t *testing.T) {
 	})
 
 	assert.Equal(t, "main", ri.Branch)
-	err = w.Repos.Update(ctx, workspace.UpdateRepo{
+	err = w.Repos.Update(ctx, workspace.UpdateRepoRequest{
 		RepoId: ri.Id,
 		Branch: "foo",
 	})

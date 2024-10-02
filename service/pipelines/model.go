@@ -54,6 +54,10 @@ type CreatePipeline struct {
 	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
+	// The default schema (database) where tables are read from or published to.
+	// The presence of this field implies that the pipeline is in direct
+	// publishing mode.
+	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
@@ -211,6 +215,10 @@ type EditPipeline struct {
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
 	PipelineId string `json:"pipeline_id,omitempty" url:"-"`
+	// The default schema (database) where tables are read from or published to.
+	// The presence of this field implies that the pipeline is in direct
+	// publishing mode.
+	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
@@ -1132,6 +1140,10 @@ type PipelineSpec struct {
 	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
+	// The default schema (database) where tables are read from or published to.
+	// The presence of this field implies that the pipeline is in direct
+	// publishing mode.
+	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
