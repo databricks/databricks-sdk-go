@@ -34,7 +34,7 @@ func TestAccGitCredentials(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	cr, err := w.GitCredentials.Create(ctx, workspace.CreateCredentials{
+	cr, err := w.GitCredentials.Create(ctx, workspace.CreateCredentialsRequest{
 		GitProvider:         "gitHub",
 		GitUsername:         "test",
 		PersonalAccessToken: "test",
@@ -45,7 +45,7 @@ func TestAccGitCredentials(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	err = w.GitCredentials.Update(ctx, workspace.UpdateCredentials{
+	err = w.GitCredentials.Update(ctx, workspace.UpdateCredentialsRequest{
 		CredentialId:        cr.CredentialId,
 		GitProvider:         "gitHub",
 		GitUsername:         RandomEmail(),

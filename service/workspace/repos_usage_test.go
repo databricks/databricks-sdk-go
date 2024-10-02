@@ -22,7 +22,7 @@ func ExampleReposAPI_Create_repos() {
 
 	root := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
-	ri, err := w.Repos.Create(ctx, workspace.CreateRepo{
+	ri, err := w.Repos.Create(ctx, workspace.CreateRepoRequest{
 		Path:     root,
 		Url:      "https://github.com/shreyas-goenka/empty-repo.git",
 		Provider: "github",
@@ -50,7 +50,7 @@ func ExampleReposAPI_Get_repos() {
 
 	root := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
-	ri, err := w.Repos.Create(ctx, workspace.CreateRepo{
+	ri, err := w.Repos.Create(ctx, workspace.CreateRepoRequest{
 		Path:     root,
 		Url:      "https://github.com/shreyas-goenka/empty-repo.git",
 		Provider: "github",
@@ -99,7 +99,7 @@ func ExampleReposAPI_Update_repos() {
 
 	root := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
-	ri, err := w.Repos.Create(ctx, workspace.CreateRepo{
+	ri, err := w.Repos.Create(ctx, workspace.CreateRepoRequest{
 		Path:     root,
 		Url:      "https://github.com/shreyas-goenka/empty-repo.git",
 		Provider: "github",
@@ -109,7 +109,7 @@ func ExampleReposAPI_Update_repos() {
 	}
 	logger.Infof(ctx, "found %v", ri)
 
-	err = w.Repos.Update(ctx, workspace.UpdateRepo{
+	err = w.Repos.Update(ctx, workspace.UpdateRepoRequest{
 		RepoId: ri.Id,
 		Branch: "foo",
 	})

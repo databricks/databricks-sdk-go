@@ -20,7 +20,7 @@ func ExampleGitCredentialsAPI_Create_gitCredentials() {
 		panic(err)
 	}
 
-	cr, err := w.GitCredentials.Create(ctx, workspace.CreateCredentials{
+	cr, err := w.GitCredentials.Create(ctx, workspace.CreateCredentialsRequest{
 		GitProvider:         "gitHub",
 		GitUsername:         "test",
 		PersonalAccessToken: "test",
@@ -46,7 +46,7 @@ func ExampleGitCredentialsAPI_Get_gitCredentials() {
 		panic(err)
 	}
 
-	cr, err := w.GitCredentials.Create(ctx, workspace.CreateCredentials{
+	cr, err := w.GitCredentials.Create(ctx, workspace.CreateCredentialsRequest{
 		GitProvider:         "gitHub",
 		GitUsername:         "test",
 		PersonalAccessToken: "test",
@@ -93,7 +93,7 @@ func ExampleGitCredentialsAPI_Update_gitCredentials() {
 		panic(err)
 	}
 
-	cr, err := w.GitCredentials.Create(ctx, workspace.CreateCredentials{
+	cr, err := w.GitCredentials.Create(ctx, workspace.CreateCredentialsRequest{
 		GitProvider:         "gitHub",
 		GitUsername:         "test",
 		PersonalAccessToken: "test",
@@ -103,7 +103,7 @@ func ExampleGitCredentialsAPI_Update_gitCredentials() {
 	}
 	logger.Infof(ctx, "found %v", cr)
 
-	err = w.GitCredentials.Update(ctx, workspace.UpdateCredentials{
+	err = w.GitCredentials.Update(ctx, workspace.UpdateCredentialsRequest{
 		CredentialId:        cr.CredentialId,
 		GitProvider:         "gitHub",
 		GitUsername:         fmt.Sprintf("sdk-%x@example.com", time.Now().UnixNano()),
