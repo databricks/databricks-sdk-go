@@ -6,6 +6,7 @@
 
  * Update SDK to latest OpenAPI spec ([#1057](https://github.com/databricks/databricks-sdk-go/pull/1057)).
 
+Note: This release contains breaking changes, please see the API changes below for more details.
 
 ### API Changes:
 
