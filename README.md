@@ -1,3 +1,4 @@
+// HI there
 # Databricks SDK for Go
 
 [![lines of code](https://tokei.rs/b1/github/databricks/databricks-sdk-go)](<[https://codecov.io/github/databricks/databricks-sdk-go](https://github.com/databricks/databricks-sdk-go)>)
