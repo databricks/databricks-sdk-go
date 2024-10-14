@@ -16,6 +16,13 @@ type BaseJob struct {
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// The id of the budget policy used by this job for cost attribution
+	// purposes. This may be set through (in order of precedence): 1. Budget
+	// admins through the account or workspace console 2. Jobs UI in the job
+	// details page and Jobs API using `budget_policy_id` 3. Inferred default
+	// based on accessible budget policies of the run_as identity on job
+	// creation or modification.
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The canonical identifier for this job.
 	JobId int64 `json:"job_id,omitempty"`
 	// Settings for this job and all of its runs. These settings can be updated
@@ -361,6 +368,11 @@ type Continuous struct {
 type CreateJob struct {
 	// List of permissions to set on the job.
 	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
+	// The id of the user specified budget policy to use for this job. If not
+	// specified, a default budget policy may be applied when creating or
+	// modifying the job. See `effective_budget_policy_id` for the budget policy
+	// used by this workload.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -995,6 +1007,13 @@ type Job struct {
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// The id of the budget policy used by this job for cost attribution
+	// purposes. This may be set through (in order of precedence): 1. Budget
+	// admins through the account or workspace console 2. Jobs UI in the job
+	// details page and Jobs API using `budget_policy_id` 3. Inferred default
+	// based on accessible budget policies of the run_as identity on job
+	// creation or modification.
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The canonical identifier for this job.
 	JobId int64 `json:"job_id,omitempty"`
 	// The email of an active workspace user or the application ID of a service
@@ -1392,6 +1411,11 @@ func (s JobRunAs) MarshalJSON() ([]byte, error) {
 }
 
 type JobSettings struct {
+	// The id of the user specified budget policy to use for this job. If not
+	// specified, a default budget policy may be applied when creating or
+	// modifying the job. See `effective_budget_policy_id` for the budget policy
+	// used by this workload.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -3818,6 +3842,9 @@ func (s SqlTaskSubscription) MarshalJSON() ([]byte, error) {
 type SubmitRun struct {
 	// List of permissions to set on the job.
 	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
+	// The user specified id of the budget policy to use for this one-time run.
+	// If not specified, the run will be not be attributed to any budget policy.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// An optional set of email addresses notified when the run begins or
 	// completes.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`

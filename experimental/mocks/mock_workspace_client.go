@@ -148,6 +148,9 @@ func NewMockWorkspaceClient(t interface {
 	mockdisableLegacyAccess := settings.NewMockDisableLegacyAccessInterface(t)
 	mocksettingsAPI.On("DisableLegacyAccess").Return(mockdisableLegacyAccess).Maybe()
 
+	mockdisableLegacyDbfs := settings.NewMockDisableLegacyDbfsInterface(t)
+	mocksettingsAPI.On("DisableLegacyDbfs").Return(mockdisableLegacyDbfs).Maybe()
+
 	mockenhancedSecurityMonitoring := settings.NewMockEnhancedSecurityMonitoringInterface(t)
 	mocksettingsAPI.On("EnhancedSecurityMonitoring").Return(mockenhancedSecurityMonitoring).Maybe()
 
@@ -185,6 +188,14 @@ func (m *MockWorkspaceClient) GetMockDisableLegacyAccessAPI() *settings.MockDisa
 	api, ok := m.GetMockSettingsAPI().DisableLegacyAccess().(*settings.MockDisableLegacyAccessInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DisableLegacyAccess to be *settings.MockDisableLegacyAccessInterface, actual was %T", m.GetMockSettingsAPI().DisableLegacyAccess()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDisableLegacyDbfsAPI() *settings.MockDisableLegacyDbfsInterface {
+	api, ok := m.GetMockSettingsAPI().DisableLegacyDbfs().(*settings.MockDisableLegacyDbfsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DisableLegacyDbfs to be *settings.MockDisableLegacyDbfsInterface, actual was %T", m.GetMockSettingsAPI().DisableLegacyDbfs()))
 	}
 	return api
 }
