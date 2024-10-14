@@ -1,5 +1,26 @@
 # Version changelog
 
+## [Release] Release v0.49.0
+
+### API Changes:
+
+ * Added [w.DisableLegacyDbfs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DisableLegacyDbfsAPI) workspace-level service.
+ * Added `UnityCatalogProvisioningState` field for [catalog.OnlineTable](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#OnlineTable).
+ * Added `IsTruncated` field for [dashboards.Result](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#Result).
+ * Added `EffectiveBudgetPolicyId` field for [jobs.BaseJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseJob).
+ * Added `BudgetPolicyId` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
+ * Added `EffectiveBudgetPolicyId` field for [jobs.Job](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Job).
+ * Added `BudgetPolicyId` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+ * Added `BudgetPolicyId` field for [jobs.SubmitRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitRun).
+ * Added `Report` field for [pipelines.IngestionConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionConfig).
+ * Added `SequenceBy` field for [pipelines.TableSpecificConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpecificConfig).
+ * Added `NotifyOnOk` field for [sql.Alert](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#Alert).
+ * Added `NotifyOnOk` field for [sql.CreateAlertRequestAlert](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateAlertRequestAlert).
+ * Added `NotifyOnOk` field for [sql.ListAlertsResponseAlert](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#ListAlertsResponseAlert).
+ * Added `NotifyOnOk` field for [sql.UpdateAlertRequestAlert](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#UpdateAlertRequestAlert).
+
+OpenAPI SHA: cf9c61453990df0f9453670f2fe68e1b128647a2, Date: 2024-10-14
+
 ## [Release] Release v0.48.0
 
 ### Internal Changes

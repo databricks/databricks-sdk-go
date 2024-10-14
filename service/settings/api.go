@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Features, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -579,6 +579,40 @@ func NewDisableLegacyAccess(client *client.DatabricksClient) *DisableLegacyAcces
 // 4. Enforces Unity Catalog access on all path based access.
 type DisableLegacyAccessAPI struct {
 	disableLegacyAccessImpl
+}
+
+type DisableLegacyDbfsInterface interface {
+
+	// Delete the disable legacy DBFS setting.
+	//
+	// Deletes the disable legacy DBFS setting for a workspace, reverting back to
+	// the default.
+	Delete(ctx context.Context, request DeleteDisableLegacyDbfsRequest) (*DeleteDisableLegacyDbfsResponse, error)
+
+	// Get the disable legacy DBFS setting.
+	//
+	// Gets the disable legacy DBFS setting.
+	Get(ctx context.Context, request GetDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error)
+
+	// Update the disable legacy DBFS setting.
+	//
+	// Updates the disable legacy DBFS setting for the workspace.
+	Update(ctx context.Context, request UpdateDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error)
+}
+
+func NewDisableLegacyDbfs(client *client.DatabricksClient) *DisableLegacyDbfsAPI {
+	return &DisableLegacyDbfsAPI{
+		disableLegacyDbfsImpl: disableLegacyDbfsImpl{
+			client: client,
+		},
+	}
+}
+
+// When this setting is on, access to DBFS root and DBFS mounts is disallowed
+// (as well as creation of new mounts). When the setting is off, all DBFS
+// functionality is enabled
+type DisableLegacyDbfsAPI struct {
+	disableLegacyDbfsImpl
 }
 
 type DisableLegacyFeaturesInterface interface {
@@ -1430,6 +1464,11 @@ type SettingsInterface interface {
 	// credentials. 4. Enforces Unity Catalog access on all path based access.
 	DisableLegacyAccess() DisableLegacyAccessInterface
 
+	// When this setting is on, access to DBFS root and DBFS mounts is
+	// disallowed (as well as creation of new mounts). When the setting is off,
+	// all DBFS functionality is enabled
+	DisableLegacyDbfs() DisableLegacyDbfsInterface
+
 	// Controls whether enhanced security monitoring is enabled for the current
 	// workspace. If the compliance security profile is enabled, this is
 	// automatically enabled. By default, it is disabled. However, if the
@@ -1468,6 +1507,8 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 		defaultNamespace: NewDefaultNamespace(client),
 
 		disableLegacyAccess: NewDisableLegacyAccess(client),
+
+		disableLegacyDbfs: NewDisableLegacyDbfs(client),
 
 		enhancedSecurityMonitoring: NewEnhancedSecurityMonitoring(client),
 
@@ -1515,6 +1556,11 @@ type SettingsAPI struct {
 	// credentials. 4. Enforces Unity Catalog access on all path based access.
 	disableLegacyAccess DisableLegacyAccessInterface
 
+	// When this setting is on, access to DBFS root and DBFS mounts is
+	// disallowed (as well as creation of new mounts). When the setting is off,
+	// all DBFS functionality is enabled
+	disableLegacyDbfs DisableLegacyDbfsInterface
+
 	// Controls whether enhanced security monitoring is enabled for the current
 	// workspace. If the compliance security profile is enabled, this is
 	// automatically enabled. By default, it is disabled. However, if the
@@ -1554,6 +1600,10 @@ func (a *SettingsAPI) DefaultNamespace() DefaultNamespaceInterface {
 
 func (a *SettingsAPI) DisableLegacyAccess() DisableLegacyAccessInterface {
 	return a.disableLegacyAccess
+}
+
+func (a *SettingsAPI) DisableLegacyDbfs() DisableLegacyDbfsInterface {
+	return a.disableLegacyDbfs
 }
 
 func (a *SettingsAPI) EnhancedSecurityMonitoring() EnhancedSecurityMonitoringInterface {

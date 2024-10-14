@@ -49,6 +49,8 @@ type Alert struct {
 	Id string `json:"id,omitempty"`
 	// The workspace state of the alert. Used for tracking trashed status.
 	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
@@ -559,6 +561,8 @@ type CreateAlertRequestAlert struct {
 	CustomSubject string `json:"custom_subject,omitempty"`
 	// The display name of the alert.
 	DisplayName string `json:"display_name,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The workspace path of the folder containing the alert.
 	ParentPath string `json:"parent_path,omitempty"`
 	// UUID of the query attached to the alert.
@@ -2351,6 +2355,8 @@ type ListAlertsResponseAlert struct {
 	Id string `json:"id,omitempty"`
 	// The workspace state of the alert. Used for tracking trashed status.
 	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
@@ -4340,6 +4346,8 @@ type UpdateAlertRequestAlert struct {
 	CustomSubject string `json:"custom_subject,omitempty"`
 	// The display name of the alert.
 	DisplayName string `json:"display_name,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`

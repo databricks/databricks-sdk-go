@@ -636,6 +636,40 @@ type DeleteDisableLegacyAccessResponse struct {
 	Etag string `json:"etag"`
 }
 
+// Delete the disable legacy DBFS setting
+type DeleteDisableLegacyDbfsRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteDisableLegacyDbfsResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
+}
+
 // Delete the disable legacy features setting
 type DeleteDisableLegacyFeaturesRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -833,6 +867,34 @@ func (s *DisableLegacyAccess) UnmarshalJSON(b []byte) error {
 }
 
 func (s DisableLegacyAccess) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DisableLegacyDbfs struct {
+	DisableLegacyDbfs BooleanMessage `json:"disable_legacy_dbfs"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DisableLegacyDbfs) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DisableLegacyDbfs) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1144,6 +1206,28 @@ func (s *GetDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s GetDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get the disable legacy DBFS setting
+type GetDisableLegacyDbfsRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2321,6 +2405,20 @@ type UpdateDisableLegacyAccessRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting DisableLegacyAccess `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateDisableLegacyDbfsRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting DisableLegacyDbfs `json:"setting"`
 }
 
 // Details required to update a setting.

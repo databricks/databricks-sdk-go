@@ -9,7 +9,8 @@ import (
 )
 
 type App struct {
-	// The active deployment of the app.
+	// The active deployment of the app. A deployment is considered active when
+	// it has been deployed to the app compute.
 	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
 
 	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
@@ -28,7 +29,8 @@ type App struct {
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name"`
-	// The pending deployment of the app.
+	// The pending deployment of the app. A deployment is considered pending
+	// when it is being prepared for deployment to the app compute.
 	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
 	// Resources for the app.
 	Resources []AppResource `json:"resources,omitempty"`

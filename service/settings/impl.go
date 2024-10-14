@@ -230,6 +230,39 @@ func (a *disableLegacyAccessImpl) Update(ctx context.Context, request UpdateDisa
 	return &disableLegacyAccess, err
 }
 
+// unexported type that holds implementations of just DisableLegacyDbfs API methods
+type disableLegacyDbfsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *disableLegacyDbfsImpl) Delete(ctx context.Context, request DeleteDisableLegacyDbfsRequest) (*DeleteDisableLegacyDbfsResponse, error) {
+	var deleteDisableLegacyDbfsResponse DeleteDisableLegacyDbfsResponse
+	path := "/api/2.0/settings/types/disable_legacy_dbfs/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDisableLegacyDbfsResponse)
+	return &deleteDisableLegacyDbfsResponse, err
+}
+
+func (a *disableLegacyDbfsImpl) Get(ctx context.Context, request GetDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error) {
+	var disableLegacyDbfs DisableLegacyDbfs
+	path := "/api/2.0/settings/types/disable_legacy_dbfs/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &disableLegacyDbfs)
+	return &disableLegacyDbfs, err
+}
+
+func (a *disableLegacyDbfsImpl) Update(ctx context.Context, request UpdateDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error) {
+	var disableLegacyDbfs DisableLegacyDbfs
+	path := "/api/2.0/settings/types/disable_legacy_dbfs/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &disableLegacyDbfs)
+	return &disableLegacyDbfs, err
+}
+
 // unexported type that holds implementations of just DisableLegacyFeatures API methods
 type disableLegacyFeaturesImpl struct {
 	client *client.DatabricksClient
