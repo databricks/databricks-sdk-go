@@ -9,45 +9,34 @@ on:
   
 
 jobs:
-  write-message:
+  trigger-tests:
     if: github.event_name == 'pull_request'
-    name: Write Message
+    name: Trigger Tests
     runs-on: ubuntu-latest
+    environment: "test-trigger-is"
     
     steps:
     - uses: actions/checkout@v3
 
-    - name: Delete old comments
+    - name: Generate GitHub App Token
+      id: generate-token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ secrets.DECO_WORKFLOW_TRIGGER_APP_ID }}
+        private-key: ${{ secrets.DECO_WORKFLOW_TRIGGER_PRIVATE_KEY }}
+        owner: ${{ secrets.ORG_NAME }}
+        repositories: ${{secrets.REPO_NAME}}
+    
+    - name: Trigger Workflow in Another Repo
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
       run: |
-          # Delete previous comment if it exists
-          previous_comment_ids=$(gh api "repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
-            --jq '.[] | select(.body | startswith("<!-- INTEGRATION_TESTS -->")) | .id')
-          echo "Previous comment IDs: $previous_comment_ids"
-          # Iterate over each comment ID and delete the comment
-          if [ ! -z "$previous_comment_ids" ]; then
-            echo "$previous_comment_ids" | while read -r comment_id; do
-              echo "Deleting comment with ID: $comment_id"
-              gh api "repos/${{ github.repository }}/issues/comments/$comment_id" -X DELETE
-            done
-          fi
-        
-    - name: Write new comment
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-          gh pr comment ${{ github.event.pull_request.number }} --body \
-          "<!-- INTEGRATION_TESTS -->
-          Run integration tests using the corresponding workflow:
-                    
-          Inputs:
-          PR Number:${{github.event.pull_request.number}}
-          Commit SHA:${{ github.event.pull_request.head.sha }}
-          
-          This check will be approved automatically on success.
-          "
+        gh workflow run sdk-go-isolated-pr.yml -R ${{ secrets.ORG_NAME }}/${{secrets.REPO_NAME}} \
+        --ref main \
+        -f pull_request_number=${{ github.event.pull_request.number }} \
+        -f commit_sha=${{ github.event.pull_request.head.sha }} 
 
+    
   # The hash for the merge queue may not be the same as the hash for the PR.
   # Auto approve the check for the merge queue to avoid running integration tests twice.
   auto-approve:
