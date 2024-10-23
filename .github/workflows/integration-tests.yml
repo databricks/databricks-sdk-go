@@ -32,7 +32,7 @@ jobs:
         GH_TOKEN: ${{ steps.generate-token.outputs.token }}
       run: |
         gh workflow run sdk-go-isolated-pr.yml -R ${{ secrets.ORG_NAME }}/${{secrets.REPO_NAME}} \
-        --ref main \
+        --ref hectorcast-db/approve-with-app \
         -f pull_request_number=${{ github.event.pull_request.number }} \
         -f commit_sha=${{ github.event.pull_request.head.sha }} 
 
