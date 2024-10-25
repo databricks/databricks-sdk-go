@@ -2,7 +2,7 @@ name: Integration Tests
 
 on:
 
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize]
 
   merge_group:
@@ -10,13 +10,13 @@ on:
 
 jobs:
   trigger-tests:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request_target'
     name: Trigger Tests
     runs-on: ubuntu-latest
     environment: "test-trigger-is"
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Generate GitHub App Token
       id: generate-token
@@ -36,9 +36,14 @@ jobs:
         -f pull_request_number=${{ github.event.pull_request.number }} \
         -f commit_sha=${{ github.event.pull_request.head.sha }} 
 
-    
-  # The hash for the merge queue may not be the same as the hash for the PR.
-  # Auto approve the check for the merge queue to avoid running integration tests twice.
+
+  # Statuses and checks apply to specific commits (by hash).
+  # Enforcement of required checks is done both at the PR level and the merge queue level.
+  # In case of multiple commits in a single PR, the hash of the squashed commit
+  # will not match the one for the latest (approved) commit in the PR.
+  # We auto approve the check for the merge queue for two reasons:
+  # * Queue times out due to duration of tests.
+  # * Avoid running integration tests twice, since it was already run at the tip of the branch before squashing.
   auto-approve:
     if: github.event_name == 'merge_group'
     runs-on: ubuntu-latest
