@@ -636,6 +636,8 @@ const ConnectionInfoSecurableKindConnectionExternalHiveMetastore ConnectionInfoS
 
 const ConnectionInfoSecurableKindConnectionGlue ConnectionInfoSecurableKind = `CONNECTION_GLUE`
 
+const ConnectionInfoSecurableKindConnectionHttpBearer ConnectionInfoSecurableKind = `CONNECTION_HTTP_BEARER`
+
 const ConnectionInfoSecurableKindConnectionMysql ConnectionInfoSecurableKind = `CONNECTION_MYSQL`
 
 const ConnectionInfoSecurableKindConnectionOnlineCatalog ConnectionInfoSecurableKind = `CONNECTION_ONLINE_CATALOG`
@@ -658,11 +660,11 @@ func (f *ConnectionInfoSecurableKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionInfoSecurableKind) Set(v string) error {
 	switch v {
-	case `CONNECTION_BIGQUERY`, `CONNECTION_BUILTIN_HIVE_METASTORE`, `CONNECTION_DATABRICKS`, `CONNECTION_EXTERNAL_HIVE_METASTORE`, `CONNECTION_GLUE`, `CONNECTION_MYSQL`, `CONNECTION_ONLINE_CATALOG`, `CONNECTION_POSTGRESQL`, `CONNECTION_REDSHIFT`, `CONNECTION_SNOWFLAKE`, `CONNECTION_SQLDW`, `CONNECTION_SQLSERVER`:
+	case `CONNECTION_BIGQUERY`, `CONNECTION_BUILTIN_HIVE_METASTORE`, `CONNECTION_DATABRICKS`, `CONNECTION_EXTERNAL_HIVE_METASTORE`, `CONNECTION_GLUE`, `CONNECTION_HTTP_BEARER`, `CONNECTION_MYSQL`, `CONNECTION_ONLINE_CATALOG`, `CONNECTION_POSTGRESQL`, `CONNECTION_REDSHIFT`, `CONNECTION_SNOWFLAKE`, `CONNECTION_SQLDW`, `CONNECTION_SQLSERVER`:
 		*f = ConnectionInfoSecurableKind(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CONNECTION_BIGQUERY", "CONNECTION_BUILTIN_HIVE_METASTORE", "CONNECTION_DATABRICKS", "CONNECTION_EXTERNAL_HIVE_METASTORE", "CONNECTION_GLUE", "CONNECTION_MYSQL", "CONNECTION_ONLINE_CATALOG", "CONNECTION_POSTGRESQL", "CONNECTION_REDSHIFT", "CONNECTION_SNOWFLAKE", "CONNECTION_SQLDW", "CONNECTION_SQLSERVER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONNECTION_BIGQUERY", "CONNECTION_BUILTIN_HIVE_METASTORE", "CONNECTION_DATABRICKS", "CONNECTION_EXTERNAL_HIVE_METASTORE", "CONNECTION_GLUE", "CONNECTION_HTTP_BEARER", "CONNECTION_MYSQL", "CONNECTION_ONLINE_CATALOG", "CONNECTION_POSTGRESQL", "CONNECTION_REDSHIFT", "CONNECTION_SNOWFLAKE", "CONNECTION_SQLDW", "CONNECTION_SQLSERVER"`, v)
 	}
 }
 
@@ -681,6 +683,8 @@ const ConnectionTypeDatabricks ConnectionType = `DATABRICKS`
 const ConnectionTypeGlue ConnectionType = `GLUE`
 
 const ConnectionTypeHiveMetastore ConnectionType = `HIVE_METASTORE`
+
+const ConnectionTypeHttp ConnectionType = `HTTP`
 
 const ConnectionTypeMysql ConnectionType = `MYSQL`
 
@@ -702,11 +706,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `DATABRICKS`, `GLUE`, `HIVE_METASTORE`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
+	case `BIGQUERY`, `DATABRICKS`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "GLUE", "HIVE_METASTORE", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "GLUE", "HIVE_METASTORE", "HTTP", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
 	}
 }
 
@@ -1229,6 +1233,8 @@ func (s CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
 // The type of credential.
 type CredentialType string
 
+const CredentialTypeBearerToken CredentialType = `BEARER_TOKEN`
+
 const CredentialTypeUsernamePassword CredentialType = `USERNAME_PASSWORD`
 
 // String representation for [fmt.Print]
@@ -1239,11 +1245,11 @@ func (f *CredentialType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CredentialType) Set(v string) error {
 	switch v {
-	case `USERNAME_PASSWORD`:
+	case `BEARER_TOKEN`, `USERNAME_PASSWORD`:
 		*f = CredentialType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "USERNAME_PASSWORD"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BEARER_TOKEN", "USERNAME_PASSWORD"`, v)
 	}
 }
 
@@ -2189,9 +2195,8 @@ type GenerateTemporaryTableCredentialResponse struct {
 	// Azure temporary credentials for API authentication. Read more at
 	// https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
 	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
-	// Server time when the credential will expire, in unix epoch milliseconds
-	// since January 1, 1970 at 00:00:00 UTC. The API client is advised to cache
-	// the credential given this expiration time.
+	// Server time when the credential will expire, in epoch milliseconds. The
+	// API client is advised to cache the credential given this expiration time.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
 	// GCP temporary credentials for API authentication. Read more at
 	// https://developers.google.com/identity/protocols/oauth2/service-account
@@ -3987,10 +3992,15 @@ type OnlineTable struct {
 	Name string `json:"name,omitempty"`
 	// Specification of the online table.
 	Spec *OnlineTableSpec `json:"spec,omitempty"`
-	// Online Table status
+	// Online Table data synchronization status
 	Status *OnlineTableStatus `json:"status,omitempty"`
 	// Data serving REST API URL for this table
 	TableServingUrl string `json:"table_serving_url,omitempty"`
+	// The provisioning state of the online table entity in Unity Catalog. This
+	// is distinct from the state of the data synchronization pipeline (i.e. the
+	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
+	// runs asynchronously).
+	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -4326,7 +4336,7 @@ const ProvisioningInfoStateFailed ProvisioningInfoState = `FAILED`
 
 const ProvisioningInfoStateProvisioning ProvisioningInfoState = `PROVISIONING`
 
-const ProvisioningInfoStateStateUnspecified ProvisioningInfoState = `STATE_UNSPECIFIED`
+const ProvisioningInfoStateUpdating ProvisioningInfoState = `UPDATING`
 
 // String representation for [fmt.Print]
 func (f *ProvisioningInfoState) String() string {
@@ -4336,11 +4346,11 @@ func (f *ProvisioningInfoState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ProvisioningInfoState) Set(v string) error {
 	switch v {
-	case `ACTIVE`, `DELETING`, `FAILED`, `PROVISIONING`, `STATE_UNSPECIFIED`:
+	case `ACTIVE`, `DELETING`, `FAILED`, `PROVISIONING`, `UPDATING`:
 		*f = ProvisioningInfoState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "FAILED", "PROVISIONING", "STATE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "FAILED", "PROVISIONING", "UPDATING"`, v)
 	}
 }
 

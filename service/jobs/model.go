@@ -16,6 +16,13 @@ type BaseJob struct {
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// The id of the budget policy used by this job for cost attribution
+	// purposes. This may be set through (in order of precedence): 1. Budget
+	// admins through the account or workspace console 2. Jobs UI in the job
+	// details page and Jobs API using `budget_policy_id` 3. Inferred default
+	// based on accessible budget policies of the run_as identity on job
+	// creation or modification.
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The canonical identifier for this job.
 	JobId int64 `json:"job_id,omitempty"`
 	// Settings for this job and all of its runs. These settings can be updated
@@ -361,6 +368,11 @@ type Continuous struct {
 type CreateJob struct {
 	// List of permissions to set on the job.
 	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
+	// The id of the user specified budget policy to use for this job. If not
+	// specified, a default budget policy may be applied when creating or
+	// modifying the job. See `effective_budget_policy_id` for the budget policy
+	// used by this workload.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -995,6 +1007,13 @@ type Job struct {
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// The id of the budget policy used by this job for cost attribution
+	// purposes. This may be set through (in order of precedence): 1. Budget
+	// admins through the account or workspace console 2. Jobs UI in the job
+	// details page and Jobs API using `budget_policy_id` 3. Inferred default
+	// based on accessible budget policies of the run_as identity on job
+	// creation or modification.
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The canonical identifier for this job.
 	JobId int64 `json:"job_id,omitempty"`
 	// The email of an active workspace user or the application ID of a service
@@ -1177,7 +1196,8 @@ func (f *JobEditMode) Type() string {
 
 type JobEmailNotifications struct {
 	// If true, do not send email to recipients specified in `on_failure` if the
-	// run is skipped.
+	// run is skipped. This field is `deprecated`. Please use the
+	// `notification_settings.no_alert_for_skipped_runs` field.
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
 	// A list of email addresses to be notified when the duration of a run
 	// exceeds the threshold specified for the `RUN_DURATION_SECONDS` metric in
@@ -1391,6 +1411,11 @@ func (s JobRunAs) MarshalJSON() ([]byte, error) {
 }
 
 type JobSettings struct {
+	// The id of the user specified budget policy to use for this job. If not
+	// specified, a default budget policy may be applied when creating or
+	// modifying the job. See `effective_budget_policy_id` for the budget policy
+	// used by this workload.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -2192,7 +2217,7 @@ type RepairRun struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
-
+	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
@@ -2669,7 +2694,7 @@ type RunJobTask struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
-
+	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
@@ -2879,7 +2904,7 @@ type RunNow struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
-
+	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
@@ -3043,7 +3068,7 @@ type RunParameters struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
-
+	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
@@ -3817,6 +3842,9 @@ func (s SqlTaskSubscription) MarshalJSON() ([]byte, error) {
 type SubmitRun struct {
 	// List of permissions to set on the job.
 	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
+	// The user specified id of the budget policy to use for this one-time run.
+	// If not specified, the run will be not be attributed to any budget policy.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// An optional set of email addresses notified when the run begins or
 	// completes.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
@@ -4179,7 +4207,8 @@ func (s TaskDependency) MarshalJSON() ([]byte, error) {
 
 type TaskEmailNotifications struct {
 	// If true, do not send email to recipients specified in `on_failure` if the
-	// run is skipped.
+	// run is skipped. This field is `deprecated`. Please use the
+	// `notification_settings.no_alert_for_skipped_runs` field.
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
 	// A list of email addresses to be notified when the duration of a run
 	// exceeds the threshold specified for the `RUN_DURATION_SECONDS` metric in
@@ -4247,44 +4276,46 @@ func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 
 // The code indicates why the run was terminated. Additional codes might be
 // introduced in future releases. * `SUCCESS`: The run was completed
-// successfully. * `CANCELED`: The run was canceled during execution by the
-// Databricks platform; for example, if the maximum run duration was exceeded. *
-// `SKIPPED`: Run was never executed, for example, if the upstream task run
-// failed, the dependency type condition was not met, or there were no material
-// tasks to execute. * `INTERNAL_ERROR`: The run encountered an unexpected
-// error. Refer to the state message for further details. * `DRIVER_ERROR`: The
-// run encountered an error while communicating with the Spark Driver. *
-// `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state
-// message for further details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to
-// complete the checkout due to an error when communicating with the third party
-// service. * `INVALID_CLUSTER_REQUEST`: The run failed because it issued an
-// invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The
-// workspace has reached the quota for the maximum number of concurrent active
-// runs. Consider scheduling the runs over a larger time frame. *
-// `FEATURE_DISABLED`: The run failed because it tried to access a feature
-// unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number
-// of cluster creation, start, and upsize requests have exceeded the allotted
-// rate limit. Consider spreading the run execution over a larger time frame. *
-// `STORAGE_ACCESS_ERROR`: The run failed due to an error when accessing the
-// customer blob storage. Refer to the state message for further details. *
-// `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more
-// details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`:
-// The run failed due to a permission issue while accessing a resource. Refer to
-// the state message for further details. * `LIBRARY_INSTALLATION_ERROR`: The
-// run failed while installing the user-requested library. Refer to the state
-// message for further details. The causes might include, but are not limited
-// to: The provided library is invalid, there are insufficient permissions to
-// install the library, and so forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The
-// scheduled run exceeds the limit of maximum concurrent runs set for the job. *
-// `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has
-// already reached the maximum number of contexts it is configured to create.
-// See: [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution
-// does not exist. Refer to the state message for further details. *
-// `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid configuration.
-// Refer to the state message for further details. * `CLOUD_FAILURE`: The run
-// failed due to a cloud provider issue. Refer to the state message for further
-// details. * `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching
-// the job level queue size limit.
+// successfully. * `USER_CANCELED`: The run was successfully canceled during
+// execution by a user. * `CANCELED`: The run was canceled during execution by
+// the Databricks platform; for example, if the maximum run duration was
+// exceeded. * `SKIPPED`: Run was never executed, for example, if the upstream
+// task run failed, the dependency type condition was not met, or there were no
+// material tasks to execute. * `INTERNAL_ERROR`: The run encountered an
+// unexpected error. Refer to the state message for further details. *
+// `DRIVER_ERROR`: The run encountered an error while communicating with the
+// Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster error. Refer
+// to the state message for further details. * `REPOSITORY_CHECKOUT_FAILED`:
+// Failed to complete the checkout due to an error when communicating with the
+// third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because it
+// issued an invalid request to start the cluster. *
+// `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for the
+// maximum number of concurrent active runs. Consider scheduling the runs over a
+// larger time frame. * `FEATURE_DISABLED`: The run failed because it tried to
+// access a feature unavailable for the workspace. *
+// `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number of cluster creation, start, and
+// upsize requests have exceeded the allotted rate limit. Consider spreading the
+// run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run
+// failed due to an error when accessing the customer blob storage. Refer to the
+// state message for further details. * `RUN_EXECUTION_ERROR`: The run was
+// completed with task failures. For more details, refer to the state message or
+// run output. * `UNAUTHORIZED_ERROR`: The run failed due to a permission issue
+// while accessing a resource. Refer to the state message for further details. *
+// `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the
+// user-requested library. Refer to the state message for further details. The
+// causes might include, but are not limited to: The provided library is
+// invalid, there are insufficient permissions to install the library, and so
+// forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit
+// of maximum concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`:
+// The run is scheduled on a cluster that has already reached the maximum number
+// of contexts it is configured to create. See: [Link]. * `RESOURCE_NOT_FOUND`:
+// A resource necessary for run execution does not exist. Refer to the state
+// message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed
+// due to an invalid configuration. Refer to the state message for further
+// details. * `CLOUD_FAILURE`: The run failed due to a cloud provider issue.
+// Refer to the state message for further details. *
+// `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job
+// level queue size limit.
 //
 // [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
 type TerminationCodeCode string
@@ -4371,6 +4402,9 @@ const TerminationCodeCodeSuccess TerminationCodeCode = `SUCCESS`
 // the state message for further details.
 const TerminationCodeCodeUnauthorizedError TerminationCodeCode = `UNAUTHORIZED_ERROR`
 
+// The run was successfully canceled during execution by a user.
+const TerminationCodeCodeUserCanceled TerminationCodeCode = `USER_CANCELED`
+
 // The workspace has reached the quota for the maximum number of concurrent
 // active runs. Consider scheduling the runs over a larger time frame.
 const TerminationCodeCodeWorkspaceRunLimitExceeded TerminationCodeCode = `WORKSPACE_RUN_LIMIT_EXCEEDED`
@@ -4383,11 +4417,11 @@ func (f *TerminationCodeCode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationCodeCode) Set(v string) error {
 	switch v {
-	case `CANCELED`, `CLOUD_FAILURE`, `CLUSTER_ERROR`, `CLUSTER_REQUEST_LIMIT_EXCEEDED`, `DRIVER_ERROR`, `FEATURE_DISABLED`, `INTERNAL_ERROR`, `INVALID_CLUSTER_REQUEST`, `INVALID_RUN_CONFIGURATION`, `LIBRARY_INSTALLATION_ERROR`, `MAX_CONCURRENT_RUNS_EXCEEDED`, `MAX_JOB_QUEUE_SIZE_EXCEEDED`, `MAX_SPARK_CONTEXTS_EXCEEDED`, `REPOSITORY_CHECKOUT_FAILED`, `RESOURCE_NOT_FOUND`, `RUN_EXECUTION_ERROR`, `SKIPPED`, `STORAGE_ACCESS_ERROR`, `SUCCESS`, `UNAUTHORIZED_ERROR`, `WORKSPACE_RUN_LIMIT_EXCEEDED`:
+	case `CANCELED`, `CLOUD_FAILURE`, `CLUSTER_ERROR`, `CLUSTER_REQUEST_LIMIT_EXCEEDED`, `DRIVER_ERROR`, `FEATURE_DISABLED`, `INTERNAL_ERROR`, `INVALID_CLUSTER_REQUEST`, `INVALID_RUN_CONFIGURATION`, `LIBRARY_INSTALLATION_ERROR`, `MAX_CONCURRENT_RUNS_EXCEEDED`, `MAX_JOB_QUEUE_SIZE_EXCEEDED`, `MAX_SPARK_CONTEXTS_EXCEEDED`, `REPOSITORY_CHECKOUT_FAILED`, `RESOURCE_NOT_FOUND`, `RUN_EXECUTION_ERROR`, `SKIPPED`, `STORAGE_ACCESS_ERROR`, `SUCCESS`, `UNAUTHORIZED_ERROR`, `USER_CANCELED`, `WORKSPACE_RUN_LIMIT_EXCEEDED`:
 		*f = TerminationCodeCode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELED", "CLOUD_FAILURE", "CLUSTER_ERROR", "CLUSTER_REQUEST_LIMIT_EXCEEDED", "DRIVER_ERROR", "FEATURE_DISABLED", "INTERNAL_ERROR", "INVALID_CLUSTER_REQUEST", "INVALID_RUN_CONFIGURATION", "LIBRARY_INSTALLATION_ERROR", "MAX_CONCURRENT_RUNS_EXCEEDED", "MAX_JOB_QUEUE_SIZE_EXCEEDED", "MAX_SPARK_CONTEXTS_EXCEEDED", "REPOSITORY_CHECKOUT_FAILED", "RESOURCE_NOT_FOUND", "RUN_EXECUTION_ERROR", "SKIPPED", "STORAGE_ACCESS_ERROR", "SUCCESS", "UNAUTHORIZED_ERROR", "WORKSPACE_RUN_LIMIT_EXCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "CLOUD_FAILURE", "CLUSTER_ERROR", "CLUSTER_REQUEST_LIMIT_EXCEEDED", "DRIVER_ERROR", "FEATURE_DISABLED", "INTERNAL_ERROR", "INVALID_CLUSTER_REQUEST", "INVALID_RUN_CONFIGURATION", "LIBRARY_INSTALLATION_ERROR", "MAX_CONCURRENT_RUNS_EXCEEDED", "MAX_JOB_QUEUE_SIZE_EXCEEDED", "MAX_SPARK_CONTEXTS_EXCEEDED", "REPOSITORY_CHECKOUT_FAILED", "RESOURCE_NOT_FOUND", "RUN_EXECUTION_ERROR", "SKIPPED", "STORAGE_ACCESS_ERROR", "SUCCESS", "UNAUTHORIZED_ERROR", "USER_CANCELED", "WORKSPACE_RUN_LIMIT_EXCEEDED"`, v)
 	}
 }
 
@@ -4399,8 +4433,9 @@ func (f *TerminationCodeCode) Type() string {
 type TerminationDetails struct {
 	// The code indicates why the run was terminated. Additional codes might be
 	// introduced in future releases. * `SUCCESS`: The run was completed
-	// successfully. * `CANCELED`: The run was canceled during execution by the
-	// Databricks platform; for example, if the maximum run duration was
+	// successfully. * `USER_CANCELED`: The run was successfully canceled during
+	// execution by a user. * `CANCELED`: The run was canceled during execution
+	// by the Databricks platform; for example, if the maximum run duration was
 	// exceeded. * `SKIPPED`: Run was never executed, for example, if the
 	// upstream task run failed, the dependency type condition was not met, or
 	// there were no material tasks to execute. * `INTERNAL_ERROR`: The run

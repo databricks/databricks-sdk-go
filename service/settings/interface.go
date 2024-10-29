@@ -249,6 +249,28 @@ type DisableLegacyAccessService interface {
 	Update(ctx context.Context, request UpdateDisableLegacyAccessRequest) (*DisableLegacyAccess, error)
 }
 
+// When this setting is on, access to DBFS root and DBFS mounts is disallowed
+// (as well as creation of new mounts). When the setting is off, all DBFS
+// functionality is enabled
+type DisableLegacyDbfsService interface {
+
+	// Delete the disable legacy DBFS setting.
+	//
+	// Deletes the disable legacy DBFS setting for a workspace, reverting back
+	// to the default.
+	Delete(ctx context.Context, request DeleteDisableLegacyDbfsRequest) (*DeleteDisableLegacyDbfsResponse, error)
+
+	// Get the disable legacy DBFS setting.
+	//
+	// Gets the disable legacy DBFS setting.
+	Get(ctx context.Context, request GetDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error)
+
+	// Update the disable legacy DBFS setting.
+	//
+	// Updates the disable legacy DBFS setting for the workspace.
+	Update(ctx context.Context, request UpdateDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error)
+}
+
 // Disable legacy features for new Databricks workspaces.
 //
 // For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2.

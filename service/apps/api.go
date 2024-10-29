@@ -20,13 +20,13 @@ type AppsInterface interface {
 	WaitGetAppActive(ctx context.Context, name string,
 		timeout time.Duration, callback func(*App)) (*App, error)
 
-	// WaitGetAppStopped repeatedly calls [AppsAPI.Get] and waits to reach STOPPED state
-	WaitGetAppStopped(ctx context.Context, name string,
-		timeout time.Duration, callback func(*App)) (*App, error)
-
 	// WaitGetDeploymentAppSucceeded repeatedly calls [AppsAPI.GetDeployment] and waits to reach SUCCEEDED state
 	WaitGetDeploymentAppSucceeded(ctx context.Context, appName string, deploymentId string,
 		timeout time.Duration, callback func(*AppDeployment)) (*AppDeployment, error)
+
+	// WaitGetAppStopped repeatedly calls [AppsAPI.Get] and waits to reach STOPPED state
+	WaitGetAppStopped(ctx context.Context, name string,
+		timeout time.Duration, callback func(*App)) (*App, error)
 
 	// Create an app.
 	//
@@ -257,63 +257,6 @@ func (w *WaitGetAppActive[R]) GetWithTimeout(timeout time.Duration) (*App, error
 	return w.Poll(timeout, w.callback)
 }
 
-// WaitGetAppStopped repeatedly calls [AppsAPI.Get] and waits to reach STOPPED state
-func (a *AppsAPI) WaitGetAppStopped(ctx context.Context, name string,
-	timeout time.Duration, callback func(*App)) (*App, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	return retries.Poll[App](ctx, timeout, func() (*App, *retries.Err) {
-		app, err := a.Get(ctx, GetAppRequest{
-			Name: name,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
-		if callback != nil {
-			callback(app)
-		}
-		status := app.ComputeStatus.State
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		if app.ComputeStatus != nil {
-			statusMessage = app.ComputeStatus.Message
-		}
-		switch status {
-		case ComputeStateStopped: // target state
-			return app, nil
-		case ComputeStateError:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ComputeStateStopped, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
-}
-
-// WaitGetAppStopped is a wrapper that calls [AppsAPI.WaitGetAppStopped] and waits to reach STOPPED state.
-type WaitGetAppStopped[R any] struct {
-	Response *R
-	Name     string `json:"name"`
-	Poll     func(time.Duration, func(*App)) (*App, error)
-	callback func(*App)
-	timeout  time.Duration
-}
-
-// OnProgress invokes a callback every time it polls for the status update.
-func (w *WaitGetAppStopped[R]) OnProgress(callback func(*App)) *WaitGetAppStopped[R] {
-	w.callback = callback
-	return w
-}
-
-// Get the App with the default timeout of 20 minutes.
-func (w *WaitGetAppStopped[R]) Get() (*App, error) {
-	return w.Poll(w.timeout, w.callback)
-}
-
-// Get the App with custom timeout.
-func (w *WaitGetAppStopped[R]) GetWithTimeout(timeout time.Duration) (*App, error) {
-	return w.Poll(timeout, w.callback)
-}
-
 // WaitGetDeploymentAppSucceeded repeatedly calls [AppsAPI.GetDeployment] and waits to reach SUCCEEDED state
 func (a *AppsAPI) WaitGetDeploymentAppSucceeded(ctx context.Context, appName string, deploymentId string,
 	timeout time.Duration, callback func(*AppDeployment)) (*AppDeployment, error) {
@@ -370,6 +313,63 @@ func (w *WaitGetDeploymentAppSucceeded[R]) Get() (*AppDeployment, error) {
 
 // Get the AppDeployment with custom timeout.
 func (w *WaitGetDeploymentAppSucceeded[R]) GetWithTimeout(timeout time.Duration) (*AppDeployment, error) {
+	return w.Poll(timeout, w.callback)
+}
+
+// WaitGetAppStopped repeatedly calls [AppsAPI.Get] and waits to reach STOPPED state
+func (a *AppsAPI) WaitGetAppStopped(ctx context.Context, name string,
+	timeout time.Duration, callback func(*App)) (*App, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[App](ctx, timeout, func() (*App, *retries.Err) {
+		app, err := a.Get(ctx, GetAppRequest{
+			Name: name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(app)
+		}
+		status := app.ComputeStatus.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if app.ComputeStatus != nil {
+			statusMessage = app.ComputeStatus.Message
+		}
+		switch status {
+		case ComputeStateStopped: // target state
+			return app, nil
+		case ComputeStateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ComputeStateStopped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetAppStopped is a wrapper that calls [AppsAPI.WaitGetAppStopped] and waits to reach STOPPED state.
+type WaitGetAppStopped[R any] struct {
+	Response *R
+	Name     string `json:"name"`
+	Poll     func(time.Duration, func(*App)) (*App, error)
+	callback func(*App)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetAppStopped[R]) OnProgress(callback func(*App)) *WaitGetAppStopped[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the App with the default timeout of 20 minutes.
+func (w *WaitGetAppStopped[R]) Get() (*App, error) {
+	return w.Poll(w.timeout, w.callback)
+}
+
+// Get the App with custom timeout.
+func (w *WaitGetAppStopped[R]) GetWithTimeout(timeout time.Duration) (*App, error) {
 	return w.Poll(timeout, w.callback)
 }
 

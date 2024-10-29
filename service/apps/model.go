@@ -9,7 +9,8 @@ import (
 )
 
 type App struct {
-	// The active deployment of the app.
+	// The active deployment of the app. A deployment is considered active when
+	// it has been deployed to the app compute.
 	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
 
 	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
@@ -19,13 +20,20 @@ type App struct {
 	CreateTime string `json:"create_time,omitempty"`
 	// The email of the user that created the app.
 	Creator string `json:"creator,omitempty"`
+	// The default workspace file system path of the source code from which app
+	// deployment are created. This field tracks the workspace source code path
+	// of the last active deployment.
+	DefaultSourceCodePath string `json:"default_source_code_path,omitempty"`
 	// The description of the app.
 	Description string `json:"description,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name"`
-	// The pending deployment of the app.
+	// The pending deployment of the app. A deployment is considered pending
+	// when it is being prepared for deployment to the app compute.
 	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
+	// Resources for the app.
+	Resources []AppResource `json:"resources,omitempty"`
 
 	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
 
@@ -304,6 +312,185 @@ type AppPermissionsRequest struct {
 	AppName string `json:"-" url:"-"`
 }
 
+type AppResource struct {
+	// Description of the App Resource.
+	Description string `json:"description,omitempty"`
+
+	Job *AppResourceJob `json:"job,omitempty"`
+	// Name of the App Resource.
+	Name string `json:"name"`
+
+	Secret *AppResourceSecret `json:"secret,omitempty"`
+
+	ServingEndpoint *AppResourceServingEndpoint `json:"serving_endpoint,omitempty"`
+
+	SqlWarehouse *AppResourceSqlWarehouse `json:"sql_warehouse,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AppResource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppResource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppResourceJob struct {
+	// Id of the job to grant permission on.
+	Id string `json:"id"`
+	// Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE",
+	// "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
+	Permission AppResourceJobJobPermission `json:"permission"`
+}
+
+type AppResourceJobJobPermission string
+
+const AppResourceJobJobPermissionCanManage AppResourceJobJobPermission = `CAN_MANAGE`
+
+const AppResourceJobJobPermissionCanManageRun AppResourceJobJobPermission = `CAN_MANAGE_RUN`
+
+const AppResourceJobJobPermissionCanView AppResourceJobJobPermission = `CAN_VIEW`
+
+const AppResourceJobJobPermissionIsOwner AppResourceJobJobPermission = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (f *AppResourceJobJobPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceJobJobPermission) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_MANAGE_RUN`, `CAN_VIEW`, `IS_OWNER`:
+		*f = AppResourceJobJobPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MANAGE_RUN", "CAN_VIEW", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns AppResourceJobJobPermission to satisfy [pflag.Value] interface
+func (f *AppResourceJobJobPermission) Type() string {
+	return "AppResourceJobJobPermission"
+}
+
+type AppResourceSecret struct {
+	// Key of the secret to grant permission on.
+	Key string `json:"key"`
+	// Permission to grant on the secret scope. For secrets, only one permission
+	// is allowed. Permission must be one of: "READ", "WRITE", "MANAGE".
+	Permission AppResourceSecretSecretPermission `json:"permission"`
+	// Scope of the secret to grant permission on.
+	Scope string `json:"scope"`
+}
+
+// Permission to grant on the secret scope. Supported permissions are: "READ",
+// "WRITE", "MANAGE".
+type AppResourceSecretSecretPermission string
+
+const AppResourceSecretSecretPermissionManage AppResourceSecretSecretPermission = `MANAGE`
+
+const AppResourceSecretSecretPermissionRead AppResourceSecretSecretPermission = `READ`
+
+const AppResourceSecretSecretPermissionWrite AppResourceSecretSecretPermission = `WRITE`
+
+// String representation for [fmt.Print]
+func (f *AppResourceSecretSecretPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceSecretSecretPermission) Set(v string) error {
+	switch v {
+	case `MANAGE`, `READ`, `WRITE`:
+		*f = AppResourceSecretSecretPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MANAGE", "READ", "WRITE"`, v)
+	}
+}
+
+// Type always returns AppResourceSecretSecretPermission to satisfy [pflag.Value] interface
+func (f *AppResourceSecretSecretPermission) Type() string {
+	return "AppResourceSecretSecretPermission"
+}
+
+type AppResourceServingEndpoint struct {
+	// Name of the serving endpoint to grant permission on.
+	Name string `json:"name"`
+	// Permission to grant on the serving endpoint. Supported permissions are:
+	// "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW".
+	Permission AppResourceServingEndpointServingEndpointPermission `json:"permission"`
+}
+
+type AppResourceServingEndpointServingEndpointPermission string
+
+const AppResourceServingEndpointServingEndpointPermissionCanManage AppResourceServingEndpointServingEndpointPermission = `CAN_MANAGE`
+
+const AppResourceServingEndpointServingEndpointPermissionCanQuery AppResourceServingEndpointServingEndpointPermission = `CAN_QUERY`
+
+const AppResourceServingEndpointServingEndpointPermissionCanView AppResourceServingEndpointServingEndpointPermission = `CAN_VIEW`
+
+// String representation for [fmt.Print]
+func (f *AppResourceServingEndpointServingEndpointPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceServingEndpointServingEndpointPermission) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_QUERY`, `CAN_VIEW`:
+		*f = AppResourceServingEndpointServingEndpointPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW"`, v)
+	}
+}
+
+// Type always returns AppResourceServingEndpointServingEndpointPermission to satisfy [pflag.Value] interface
+func (f *AppResourceServingEndpointServingEndpointPermission) Type() string {
+	return "AppResourceServingEndpointServingEndpointPermission"
+}
+
+type AppResourceSqlWarehouse struct {
+	// Id of the SQL warehouse to grant permission on.
+	Id string `json:"id"`
+	// Permission to grant on the SQL warehouse. Supported permissions are:
+	// "CAN_MANAGE", "CAN_USE", "IS_OWNER".
+	Permission AppResourceSqlWarehouseSqlWarehousePermission `json:"permission"`
+}
+
+type AppResourceSqlWarehouseSqlWarehousePermission string
+
+const AppResourceSqlWarehouseSqlWarehousePermissionCanManage AppResourceSqlWarehouseSqlWarehousePermission = `CAN_MANAGE`
+
+const AppResourceSqlWarehouseSqlWarehousePermissionCanUse AppResourceSqlWarehouseSqlWarehousePermission = `CAN_USE`
+
+const AppResourceSqlWarehouseSqlWarehousePermissionIsOwner AppResourceSqlWarehouseSqlWarehousePermission = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (f *AppResourceSqlWarehouseSqlWarehousePermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceSqlWarehouseSqlWarehousePermission) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_USE`, `IS_OWNER`:
+		*f = AppResourceSqlWarehouseSqlWarehousePermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_USE", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns AppResourceSqlWarehouseSqlWarehousePermission to satisfy [pflag.Value] interface
+func (f *AppResourceSqlWarehouseSqlWarehousePermission) Type() string {
+	return "AppResourceSqlWarehouseSqlWarehousePermission"
+}
+
 type ApplicationState string
 
 const ApplicationStateCrashed ApplicationState = `CRASHED`
@@ -439,6 +626,8 @@ type CreateAppRequest struct {
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name"`
+	// Resources for the app.
+	Resources []AppResource `json:"resources,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -577,6 +766,8 @@ type UpdateAppRequest struct {
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name" url:"-"`
+	// Resources for the app.
+	Resources []AppResource `json:"resources,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

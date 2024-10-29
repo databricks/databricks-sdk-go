@@ -64,6 +64,8 @@
 //
 // - [settings.DisableLegacyAccessAPI]: 'Disabling legacy access' has the following impacts: 1.
 //
+// - [settings.DisableLegacyDbfsAPI]: When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new mounts).
+//
 // - [settings.DisableLegacyFeaturesAPI]: Disable legacy features for new Databricks workspaces.
 //
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
@@ -314,6 +316,7 @@ var (
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil
 	_ *settings.DisableLegacyAccessAPI                    = nil
+	_ *settings.DisableLegacyDbfsAPI                      = nil
 	_ *settings.DisableLegacyFeaturesAPI                  = nil
 	_ *provisioning.EncryptionKeysAPI                     = nil
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil

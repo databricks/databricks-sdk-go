@@ -49,6 +49,8 @@ type Alert struct {
 	Id string `json:"id,omitempty"`
 	// The workspace state of the alert. Used for tracking trashed status.
 	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
@@ -354,6 +356,8 @@ type CancelExecutionRequest struct {
 type CancelExecutionResponse struct {
 }
 
+// Configures the channel name and DBSQL version of the warehouse.
+// CHANNEL_NAME_CUSTOM should be chosen only when `dbsql_version` is specified.
 type Channel struct {
 	DbsqlVersion string `json:"dbsql_version,omitempty"`
 
@@ -396,8 +400,6 @@ const ChannelNameChannelNameCustom ChannelName = `CHANNEL_NAME_CUSTOM`
 
 const ChannelNameChannelNamePreview ChannelName = `CHANNEL_NAME_PREVIEW`
 
-const ChannelNameChannelNamePrevious ChannelName = `CHANNEL_NAME_PREVIOUS`
-
 const ChannelNameChannelNameUnspecified ChannelName = `CHANNEL_NAME_UNSPECIFIED`
 
 // String representation for [fmt.Print]
@@ -408,11 +410,11 @@ func (f *ChannelName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ChannelName) Set(v string) error {
 	switch v {
-	case `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_PREVIOUS`, `CHANNEL_NAME_UNSPECIFIED`:
+	case `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_UNSPECIFIED`:
 		*f = ChannelName(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CHANNEL_NAME_CURRENT", "CHANNEL_NAME_CUSTOM", "CHANNEL_NAME_PREVIEW", "CHANNEL_NAME_PREVIOUS", "CHANNEL_NAME_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CHANNEL_NAME_CURRENT", "CHANNEL_NAME_CUSTOM", "CHANNEL_NAME_PREVIEW", "CHANNEL_NAME_UNSPECIFIED"`, v)
 	}
 }
 
@@ -559,6 +561,8 @@ type CreateAlertRequestAlert struct {
 	CustomSubject string `json:"custom_subject,omitempty"`
 	// The display name of the alert.
 	DisplayName string `json:"display_name,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The workspace path of the folder containing the alert.
 	ParentPath string `json:"parent_path,omitempty"`
 	// UUID of the query attached to the alert.
@@ -683,7 +687,9 @@ type CreateWarehouseRequest struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
 	//
-	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+	// Supported values: - Must be >= 0 mins for serverless warehouses - Must be
+	// == 0 or >= 10 mins for non-serverless warehouses - 0 indicates no
+	// autostop.
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
@@ -2349,6 +2355,8 @@ type ListAlertsResponseAlert struct {
 	Id string `json:"id,omitempty"`
 	// The workspace state of the alert. Used for tracking trashed status.
 	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
@@ -4338,6 +4346,8 @@ type UpdateAlertRequestAlert struct {
 	CustomSubject string `json:"custom_subject,omitempty"`
 	// The display name of the alert.
 	DisplayName string `json:"display_name,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
