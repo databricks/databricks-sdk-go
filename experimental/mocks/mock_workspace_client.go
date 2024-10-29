@@ -136,6 +136,12 @@ func NewMockWorkspaceClient(t interface {
 
 	mocksettingsAPI := cli.GetMockSettingsAPI()
 
+	mockaibiDashboardEmbeddingAccessPolicy := settings.NewMockAibiDashboardEmbeddingAccessPolicyInterface(t)
+	mocksettingsAPI.On("AibiDashboardEmbeddingAccessPolicy").Return(mockaibiDashboardEmbeddingAccessPolicy).Maybe()
+
+	mockaibiDashboardEmbeddingApprovedDomains := settings.NewMockAibiDashboardEmbeddingApprovedDomainsInterface(t)
+	mocksettingsAPI.On("AibiDashboardEmbeddingApprovedDomains").Return(mockaibiDashboardEmbeddingApprovedDomains).Maybe()
+
 	mockautomaticClusterUpdate := settings.NewMockAutomaticClusterUpdateInterface(t)
 	mocksettingsAPI.On("AutomaticClusterUpdate").Return(mockautomaticClusterUpdate).Maybe()
 
@@ -158,6 +164,22 @@ func NewMockWorkspaceClient(t interface {
 	mocksettingsAPI.On("RestrictWorkspaceAdmins").Return(mockrestrictWorkspaceAdmins).Maybe()
 
 	return cli
+}
+
+func (m *MockWorkspaceClient) GetMockAibiDashboardEmbeddingAccessPolicyAPI() *settings.MockAibiDashboardEmbeddingAccessPolicyInterface {
+	api, ok := m.GetMockSettingsAPI().AibiDashboardEmbeddingAccessPolicy().(*settings.MockAibiDashboardEmbeddingAccessPolicyInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AibiDashboardEmbeddingAccessPolicy to be *settings.MockAibiDashboardEmbeddingAccessPolicyInterface, actual was %T", m.GetMockSettingsAPI().AibiDashboardEmbeddingAccessPolicy()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockAibiDashboardEmbeddingApprovedDomainsAPI() *settings.MockAibiDashboardEmbeddingApprovedDomainsInterface {
+	api, ok := m.GetMockSettingsAPI().AibiDashboardEmbeddingApprovedDomains().(*settings.MockAibiDashboardEmbeddingApprovedDomainsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AibiDashboardEmbeddingApprovedDomains to be *settings.MockAibiDashboardEmbeddingApprovedDomainsInterface, actual was %T", m.GetMockSettingsAPI().AibiDashboardEmbeddingApprovedDomains()))
+	}
+	return api
 }
 
 func (m *MockWorkspaceClient) GetMockAutomaticClusterUpdateAPI() *settings.MockAutomaticClusterUpdateInterface {

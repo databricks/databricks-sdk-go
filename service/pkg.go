@@ -4,6 +4,10 @@
 //
 // - [iam.AccountAccessControlProxyAPI]: These APIs manage access rules on resources in an account.
 //
+// - [settings.AibiDashboardEmbeddingAccessPolicyAPI]: Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the workspace level.
+//
+// - [settings.AibiDashboardEmbeddingApprovedDomainsAPI]: Controls the list of domains approved to host the embedded AI/BI dashboards.
+//
 // - [sql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
 // - [sql.AlertsLegacyAPI]: The alerts API can be used to perform CRUD operations on alerts.
@@ -286,6 +290,8 @@ import (
 var (
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
+	_ *settings.AibiDashboardEmbeddingAccessPolicyAPI     = nil
+	_ *settings.AibiDashboardEmbeddingApprovedDomainsAPI  = nil
 	_ *sql.AlertsAPI                                      = nil
 	_ *sql.AlertsLegacyAPI                                = nil
 	_ *apps.AppsAPI                                       = nil

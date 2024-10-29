@@ -253,6 +253,8 @@ type CreateWorkspaceRequest struct {
 	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
 	// The configurations for the GKE cluster of a Databricks workspace.
 	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
+	// Whether no public IP is enabled for the workspace.
+	IsNoPublicIpEnabled bool `json:"is_no_public_ip_enabled,omitempty"`
 	// The Google Cloud region of the workspace data plane in your Google
 	// account. For example, `us-east4`.
 	Location string `json:"location,omitempty"`
@@ -1246,6 +1248,8 @@ type Workspace struct {
 	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
 	// The configurations for the GKE cluster of a Databricks workspace.
 	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
+	// Whether no public IP is enabled for the workspace.
+	IsNoPublicIpEnabled bool `json:"is_no_public_ip_enabled,omitempty"`
 	// The Google Cloud region of the workspace data plane in your Google
 	// account (for example, `us-east4`).
 	Location string `json:"location,omitempty"`

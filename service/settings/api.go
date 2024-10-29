@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -369,6 +369,66 @@ func (a *AccountSettingsAPI) EsmEnablementAccount() EsmEnablementAccountInterfac
 
 func (a *AccountSettingsAPI) PersonalCompute() PersonalComputeInterface {
 	return a.personalCompute
+}
+
+type AibiDashboardEmbeddingAccessPolicyInterface interface {
+
+	// Retrieve the AI/BI dashboard embedding access policy.
+	//
+	// Retrieves the AI/BI dashboard embedding access policy. The default setting is
+	// ALLOW_APPROVED_DOMAINS, permitting AI/BI dashboards to be embedded on
+	// approved domains.
+	Get(ctx context.Context, request GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error)
+
+	// Update the AI/BI dashboard embedding access policy.
+	//
+	// Updates the AI/BI dashboard embedding access policy at the workspace level.
+	Update(ctx context.Context, request UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error)
+}
+
+func NewAibiDashboardEmbeddingAccessPolicy(client *client.DatabricksClient) *AibiDashboardEmbeddingAccessPolicyAPI {
+	return &AibiDashboardEmbeddingAccessPolicyAPI{
+		aibiDashboardEmbeddingAccessPolicyImpl: aibiDashboardEmbeddingAccessPolicyImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls whether AI/BI published dashboard embedding is enabled,
+// conditionally enabled, or disabled at the workspace level. By default, this
+// setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
+type AibiDashboardEmbeddingAccessPolicyAPI struct {
+	aibiDashboardEmbeddingAccessPolicyImpl
+}
+
+type AibiDashboardEmbeddingApprovedDomainsInterface interface {
+
+	// Retrieve the list of domains approved to host embedded AI/BI dashboards.
+	//
+	// Retrieves the list of domains approved to host embedded AI/BI dashboards.
+	Get(ctx context.Context, request GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error)
+
+	// Update the list of domains approved to host embedded AI/BI dashboards.
+	//
+	// Updates the list of domains approved to host embedded AI/BI dashboards. This
+	// update will fail if the current workspace access policy is not
+	// ALLOW_APPROVED_DOMAINS.
+	Update(ctx context.Context, request UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error)
+}
+
+func NewAibiDashboardEmbeddingApprovedDomains(client *client.DatabricksClient) *AibiDashboardEmbeddingApprovedDomainsAPI {
+	return &AibiDashboardEmbeddingApprovedDomainsAPI{
+		aibiDashboardEmbeddingApprovedDomainsImpl: aibiDashboardEmbeddingApprovedDomainsImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls the list of domains approved to host the embedded AI/BI dashboards.
+// The approved domains list can't be mutated when the current access policy is
+// not set to ALLOW_APPROVED_DOMAINS.
+type AibiDashboardEmbeddingApprovedDomainsAPI struct {
+	aibiDashboardEmbeddingApprovedDomainsImpl
 }
 
 type AutomaticClusterUpdateInterface interface {
@@ -1429,6 +1489,16 @@ type RestrictWorkspaceAdminsAPI struct {
 
 type SettingsInterface interface {
 
+	// Controls whether AI/BI published dashboard embedding is enabled,
+	// conditionally enabled, or disabled at the workspace level. By default,
+	// this setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
+	AibiDashboardEmbeddingAccessPolicy() AibiDashboardEmbeddingAccessPolicyInterface
+
+	// Controls the list of domains approved to host the embedded AI/BI
+	// dashboards. The approved domains list can't be mutated when the current
+	// access policy is not set to ALLOW_APPROVED_DOMAINS.
+	AibiDashboardEmbeddingApprovedDomains() AibiDashboardEmbeddingApprovedDomainsInterface
+
 	// Controls whether automatic cluster update is enabled for the current
 	// workspace. By default, it is turned off.
 	AutomaticClusterUpdate() AutomaticClusterUpdateInterface
@@ -1500,6 +1570,10 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 			client: client,
 		},
 
+		aibiDashboardEmbeddingAccessPolicy: NewAibiDashboardEmbeddingAccessPolicy(client),
+
+		aibiDashboardEmbeddingApprovedDomains: NewAibiDashboardEmbeddingApprovedDomains(client),
+
 		automaticClusterUpdate: NewAutomaticClusterUpdate(client),
 
 		complianceSecurityProfile: NewComplianceSecurityProfile(client),
@@ -1520,6 +1594,16 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 // level.
 type SettingsAPI struct {
 	settingsImpl
+
+	// Controls whether AI/BI published dashboard embedding is enabled,
+	// conditionally enabled, or disabled at the workspace level. By default,
+	// this setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
+	aibiDashboardEmbeddingAccessPolicy AibiDashboardEmbeddingAccessPolicyInterface
+
+	// Controls the list of domains approved to host the embedded AI/BI
+	// dashboards. The approved domains list can't be mutated when the current
+	// access policy is not set to ALLOW_APPROVED_DOMAINS.
+	aibiDashboardEmbeddingApprovedDomains AibiDashboardEmbeddingApprovedDomainsInterface
 
 	// Controls whether automatic cluster update is enabled for the current
 	// workspace. By default, it is turned off.
@@ -1584,6 +1668,14 @@ type SettingsAPI struct {
 	// themselves or to a service principal on which they have the Service
 	// Principal User role.
 	restrictWorkspaceAdmins RestrictWorkspaceAdminsInterface
+}
+
+func (a *SettingsAPI) AibiDashboardEmbeddingAccessPolicy() AibiDashboardEmbeddingAccessPolicyInterface {
+	return a.aibiDashboardEmbeddingAccessPolicy
+}
+
+func (a *SettingsAPI) AibiDashboardEmbeddingApprovedDomains() AibiDashboardEmbeddingApprovedDomainsInterface {
+	return a.aibiDashboardEmbeddingApprovedDomains
 }
 
 func (a *SettingsAPI) AutomaticClusterUpdate() AutomaticClusterUpdateInterface {
