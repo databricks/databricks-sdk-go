@@ -9,8 +9,9 @@ on:
   
 
 jobs:
+  # Secrets are not available for forks.
   trigger-tests:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
     name: Trigger Tests
     runs-on: ubuntu-latest
     environment: "test-trigger-is"
