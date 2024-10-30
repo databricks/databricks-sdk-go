@@ -160,7 +160,7 @@ func (_c *MockGenieInterface_CreateMessageAndWait_Call) RunAndReturn(run func(co
 }
 
 // ExecuteMessageQuery provides a mock function with given fields: ctx, request
-func (_m *MockGenieInterface) ExecuteMessageQuery(ctx context.Context, request dashboards.ExecuteMessageQueryRequest) (*dashboards.GenieGetMessageQueryResultResponse, error) {
+func (_m *MockGenieInterface) ExecuteMessageQuery(ctx context.Context, request dashboards.GenieExecuteMessageQueryRequest) (*dashboards.GenieGetMessageQueryResultResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -169,10 +169,10 @@ func (_m *MockGenieInterface) ExecuteMessageQuery(ctx context.Context, request d
 
 	var r0 *dashboards.GenieGetMessageQueryResultResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, dashboards.ExecuteMessageQueryRequest) (*dashboards.GenieGetMessageQueryResultResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieExecuteMessageQueryRequest) (*dashboards.GenieGetMessageQueryResultResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, dashboards.ExecuteMessageQueryRequest) *dashboards.GenieGetMessageQueryResultResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieExecuteMessageQueryRequest) *dashboards.GenieGetMessageQueryResultResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -180,7 +180,7 @@ func (_m *MockGenieInterface) ExecuteMessageQuery(ctx context.Context, request d
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, dashboards.ExecuteMessageQueryRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieExecuteMessageQueryRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -196,14 +196,14 @@ type MockGenieInterface_ExecuteMessageQuery_Call struct {
 
 // ExecuteMessageQuery is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request dashboards.ExecuteMessageQueryRequest
+//   - request dashboards.GenieExecuteMessageQueryRequest
 func (_e *MockGenieInterface_Expecter) ExecuteMessageQuery(ctx interface{}, request interface{}) *MockGenieInterface_ExecuteMessageQuery_Call {
 	return &MockGenieInterface_ExecuteMessageQuery_Call{Call: _e.mock.On("ExecuteMessageQuery", ctx, request)}
 }
 
-func (_c *MockGenieInterface_ExecuteMessageQuery_Call) Run(run func(ctx context.Context, request dashboards.ExecuteMessageQueryRequest)) *MockGenieInterface_ExecuteMessageQuery_Call {
+func (_c *MockGenieInterface_ExecuteMessageQuery_Call) Run(run func(ctx context.Context, request dashboards.GenieExecuteMessageQueryRequest)) *MockGenieInterface_ExecuteMessageQuery_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(dashboards.ExecuteMessageQueryRequest))
+		run(args[0].(context.Context), args[1].(dashboards.GenieExecuteMessageQueryRequest))
 	})
 	return _c
 }
@@ -213,7 +213,7 @@ func (_c *MockGenieInterface_ExecuteMessageQuery_Call) Return(_a0 *dashboards.Ge
 	return _c
 }
 
-func (_c *MockGenieInterface_ExecuteMessageQuery_Call) RunAndReturn(run func(context.Context, dashboards.ExecuteMessageQueryRequest) (*dashboards.GenieGetMessageQueryResultResponse, error)) *MockGenieInterface_ExecuteMessageQuery_Call {
+func (_c *MockGenieInterface_ExecuteMessageQuery_Call) RunAndReturn(run func(context.Context, dashboards.GenieExecuteMessageQueryRequest) (*dashboards.GenieGetMessageQueryResultResponse, error)) *MockGenieInterface_ExecuteMessageQuery_Call {
 	_c.Call.Return(run)
 	return _c
 }

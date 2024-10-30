@@ -89,6 +89,8 @@ experimental/mocks/service/serving/mock_serving_endpoints_data_plane_interface.g
 experimental/mocks/service/serving/mock_serving_endpoints_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_account_ip_access_lists_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_account_settings_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_aibi_dashboard_embedding_access_policy_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_aibi_dashboard_embedding_approved_domains_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_automatic_cluster_update_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_compliance_security_profile_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_credentials_manager_interface.go linguist-generated=true

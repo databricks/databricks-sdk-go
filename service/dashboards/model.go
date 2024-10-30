@@ -9,65 +9,27 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
 
+// Create dashboard
 type CreateDashboardRequest struct {
-	// The display name of the dashboard.
-	DisplayName string `json:"display_name"`
-	// The workspace path of the folder containing the dashboard. Includes
-	// leading slash and no trailing slash. This field is excluded in List
-	// Dashboards responses.
-	ParentPath string `json:"parent_path,omitempty"`
-	// The contents of the dashboard in serialized string form. This field is
-	// excluded in List Dashboards responses. Use the [get dashboard API] to
-	// retrieve an example response, which includes the `serialized_dashboard`
-	// field. This field provides the structure of the JSON string that
-	// represents the dashboard's layout and components.
-	//
-	// [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
-	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
-	// The warehouse ID used to run the dashboard.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-"`
+	Dashboard *Dashboard `json:"dashboard,omitempty"`
 }
 
-func (s *CreateDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
+// Create dashboard schedule
 type CreateScheduleRequest struct {
-	// The cron expression describing the frequency of the periodic refresh for
-	// this schedule.
-	CronSchedule CronSchedule `json:"cron_schedule"`
 	// UUID identifying the dashboard to which the schedule belongs.
 	DashboardId string `json:"-" url:"-"`
-	// The display name for schedule.
-	DisplayName string `json:"display_name,omitempty"`
-	// The status indicates whether this schedule is paused or not.
-	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	Schedule *Schedule `json:"schedule,omitempty"`
 }
 
-func (s *CreateScheduleRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateScheduleRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
+// Create schedule subscription
 type CreateSubscriptionRequest struct {
 	// UUID identifying the dashboard to which the subscription belongs.
 	DashboardId string `json:"-" url:"-"`
 	// UUID identifying the schedule to which the subscription belongs.
 	ScheduleId string `json:"-" url:"-"`
-	// Subscriber details for users and destinations to be added as subscribers
-	// to the schedule.
-	Subscriber Subscriber `json:"subscriber"`
+
+	Subscription *Subscription `json:"subscription,omitempty"`
 }
 
 type CronSchedule struct {
@@ -204,16 +166,6 @@ func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
 type DeleteSubscriptionResponse struct {
 }
 
-// Execute SQL query in a conversation message
-type ExecuteMessageQueryRequest struct {
-	// Conversation ID
-	ConversationId string `json:"-" url:"-"`
-	// Message ID
-	MessageId string `json:"-" url:"-"`
-	// Genie space ID
-	SpaceId string `json:"-" url:"-"`
-}
-
 // Genie AI Response
 type GenieAttachment struct {
 	Query *QueryAttachment `json:"query,omitempty"`
@@ -252,6 +204,16 @@ type GenieCreateConversationMessageRequest struct {
 	// The ID associated with the conversation.
 	ConversationId string `json:"-" url:"-"`
 	// The ID associated with the Genie space where the conversation is started.
+	SpaceId string `json:"-" url:"-"`
+}
+
+// Execute SQL query in a conversation message
+type GenieExecuteMessageQueryRequest struct {
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
 	SpaceId string `json:"-" url:"-"`
 }
 
@@ -980,61 +942,19 @@ type UnpublishDashboardRequest struct {
 type UnpublishDashboardResponse struct {
 }
 
+// Update dashboard
 type UpdateDashboardRequest struct {
+	Dashboard *Dashboard `json:"dashboard,omitempty"`
 	// UUID identifying the dashboard.
 	DashboardId string `json:"-" url:"-"`
-	// The display name of the dashboard.
-	DisplayName string `json:"display_name,omitempty"`
-	// The etag for the dashboard. Can be optionally provided on updates to
-	// ensure that the dashboard has not been modified since the last read. This
-	// field is excluded in List Dashboards responses.
-	Etag string `json:"etag,omitempty"`
-	// The contents of the dashboard in serialized string form. This field is
-	// excluded in List Dashboards responses. Use the [get dashboard API] to
-	// retrieve an example response, which includes the `serialized_dashboard`
-	// field. This field provides the structure of the JSON string that
-	// represents the dashboard's layout and components.
-	//
-	// [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
-	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
-	// The warehouse ID used to run the dashboard.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-"`
 }
 
-func (s *UpdateDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
+// Update dashboard schedule
 type UpdateScheduleRequest struct {
-	// The cron expression describing the frequency of the periodic refresh for
-	// this schedule.
-	CronSchedule CronSchedule `json:"cron_schedule"`
 	// UUID identifying the dashboard to which the schedule belongs.
 	DashboardId string `json:"-" url:"-"`
-	// The display name for schedule.
-	DisplayName string `json:"display_name,omitempty"`
-	// The etag for the schedule. Must be left empty on create, must be provided
-	// on updates to ensure that the schedule has not been modified since the
-	// last read, and can be optionally provided on delete.
-	Etag string `json:"etag,omitempty"`
-	// The status indicates whether this schedule is paused or not.
-	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
+
+	Schedule *Schedule `json:"schedule,omitempty"`
 	// UUID identifying the schedule.
 	ScheduleId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateScheduleRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateScheduleRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }

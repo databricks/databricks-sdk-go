@@ -25,7 +25,7 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 	return &genieMessage, err
 }
 
-func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request ExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
+func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId)
 	headers := make(map[string]string)
@@ -73,7 +73,7 @@ func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardReques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &dashboard)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Dashboard, &dashboard)
 	return &dashboard, err
 }
 
@@ -83,7 +83,7 @@ func (a *lakeviewImpl) CreateSchedule(ctx context.Context, request CreateSchedul
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &schedule)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Schedule, &schedule)
 	return &schedule, err
 }
 
@@ -93,7 +93,7 @@ func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSub
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &subscription)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Subscription, &subscription)
 	return &subscription, err
 }
 
@@ -222,7 +222,7 @@ func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardReques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &dashboard)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request.Dashboard, &dashboard)
 	return &dashboard, err
 }
 
@@ -232,6 +232,6 @@ func (a *lakeviewImpl) UpdateSchedule(ctx context.Context, request UpdateSchedul
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &schedule)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request.Schedule, &schedule)
 	return &schedule, err
 }
