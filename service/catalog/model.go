@@ -1096,22 +1096,10 @@ func (s CreateMonitor) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Online Table information.
+// Create an Online Table
 type CreateOnlineTableRequest struct {
-	// Full three-part (catalog, schema, table) name of the table.
-	Name string `json:"name,omitempty"`
-	// Specification of the online table.
-	Spec *OnlineTableSpec `json:"spec,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateOnlineTableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateOnlineTableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	// Online Table information.
+	Table *OnlineTable `json:"table,omitempty"`
 }
 
 type CreateRegisteredModelRequest struct {

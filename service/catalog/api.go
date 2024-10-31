@@ -6,9 +6,11 @@ package catalog
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -1785,10 +1787,22 @@ func (a *ModelVersionsAPI) ListByFullName(ctx context.Context, fullName string) 
 
 type OnlineTablesInterface interface {
 
+	// WaitGetOnlineTableActive repeatedly calls [OnlineTablesAPI.Get] and waits to reach ACTIVE state
+	WaitGetOnlineTableActive(ctx context.Context, name string,
+		timeout time.Duration, callback func(*OnlineTable)) (*OnlineTable, error)
+
 	// Create an Online Table.
 	//
 	// Create a new Online Table.
-	Create(ctx context.Context, request CreateOnlineTableRequest) (*OnlineTable, error)
+	Create(ctx context.Context, createOnlineTableRequest CreateOnlineTableRequest) (*WaitGetOnlineTableActive[OnlineTable], error)
+
+	// Calls [OnlineTablesAPIInterface.Create] and waits to reach ACTIVE state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[OnlineTable](60*time.Minute) functional option.
+	//
+	// Deprecated: use [OnlineTablesAPIInterface.Create].Get() or [OnlineTablesAPIInterface.WaitGetOnlineTableActive]
+	CreateAndWait(ctx context.Context, createOnlineTableRequest CreateOnlineTableRequest, options ...retries.Option[OnlineTable]) (*OnlineTable, error)
 
 	// Delete an Online Table.
 	//
@@ -1827,6 +1841,106 @@ func NewOnlineTables(client *client.DatabricksClient) *OnlineTablesAPI {
 // tables.
 type OnlineTablesAPI struct {
 	onlineTablesImpl
+}
+
+// WaitGetOnlineTableActive repeatedly calls [OnlineTablesAPI.Get] and waits to reach ACTIVE state
+func (a *OnlineTablesAPI) WaitGetOnlineTableActive(ctx context.Context, name string,
+	timeout time.Duration, callback func(*OnlineTable)) (*OnlineTable, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[OnlineTable](ctx, timeout, func() (*OnlineTable, *retries.Err) {
+		onlineTable, err := a.Get(ctx, GetOnlineTableRequest{
+			Name: name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(onlineTable)
+		}
+		status := onlineTable.UnityCatalogProvisioningState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case ProvisioningInfoStateActive: // target state
+			return onlineTable, nil
+		case ProvisioningInfoStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ProvisioningInfoStateActive, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetOnlineTableActive is a wrapper that calls [OnlineTablesAPI.WaitGetOnlineTableActive] and waits to reach ACTIVE state.
+type WaitGetOnlineTableActive[R any] struct {
+	Response *R
+	Name     string `json:"name"`
+	Poll     func(time.Duration, func(*OnlineTable)) (*OnlineTable, error)
+	callback func(*OnlineTable)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetOnlineTableActive[R]) OnProgress(callback func(*OnlineTable)) *WaitGetOnlineTableActive[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the OnlineTable with the default timeout of 20 minutes.
+func (w *WaitGetOnlineTableActive[R]) Get() (*OnlineTable, error) {
+	return w.Poll(w.timeout, w.callback)
+}
+
+// Get the OnlineTable with custom timeout.
+func (w *WaitGetOnlineTableActive[R]) GetWithTimeout(timeout time.Duration) (*OnlineTable, error) {
+	return w.Poll(timeout, w.callback)
+}
+
+// Create an Online Table.
+//
+// Create a new Online Table.
+func (a *OnlineTablesAPI) Create(ctx context.Context, createOnlineTableRequest CreateOnlineTableRequest) (*WaitGetOnlineTableActive[OnlineTable], error) {
+	onlineTable, err := a.onlineTablesImpl.Create(ctx, createOnlineTableRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetOnlineTableActive[OnlineTable]{
+		Response: onlineTable,
+		Name:     onlineTable.Name,
+		Poll: func(timeout time.Duration, callback func(*OnlineTable)) (*OnlineTable, error) {
+			return a.WaitGetOnlineTableActive(ctx, onlineTable.Name, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [OnlineTablesAPI.Create] and waits to reach ACTIVE state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[OnlineTable](60*time.Minute) functional option.
+//
+// Deprecated: use [OnlineTablesAPI.Create].Get() or [OnlineTablesAPI.WaitGetOnlineTableActive]
+func (a *OnlineTablesAPI) CreateAndWait(ctx context.Context, createOnlineTableRequest CreateOnlineTableRequest, options ...retries.Option[OnlineTable]) (*OnlineTable, error) {
+	wait, err := a.Create(ctx, createOnlineTableRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[OnlineTable]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *OnlineTable) {
+		for _, o := range options {
+			o(&retries.Info[OnlineTable]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
 }
 
 // Delete an Online Table.

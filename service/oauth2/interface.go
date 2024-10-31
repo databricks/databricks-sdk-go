@@ -129,6 +129,6 @@ type ServicePrincipalSecretsService interface {
 	// operation only returns information about the secrets themselves and does
 	// not include the secret values.
 	//
-	// Use ListAll() to get all SecretInfo instances
+	// Use ListAll() to get all SecretInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error)
 }

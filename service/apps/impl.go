@@ -21,7 +21,7 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &app)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request.App, &app)
 	return &app, err
 }
 
@@ -40,7 +40,7 @@ func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentReques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &appDeployment)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request.AppDeployment, &appDeployment)
 	return &appDeployment, err
 }
 
@@ -134,7 +134,7 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &app)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request.App, &app)
 	return &app, err
 }
 

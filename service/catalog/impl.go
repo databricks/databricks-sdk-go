@@ -591,7 +591,7 @@ func (a *onlineTablesImpl) Create(ctx context.Context, request CreateOnlineTable
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &onlineTable)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Table, &onlineTable)
 	return &onlineTable, err
 }
 

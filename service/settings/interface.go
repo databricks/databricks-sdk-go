@@ -107,6 +107,43 @@ type AccountIpAccessListsService interface {
 type AccountSettingsService interface {
 }
 
+// Controls whether AI/BI published dashboard embedding is enabled,
+// conditionally enabled, or disabled at the workspace level. By default, this
+// setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
+type AibiDashboardEmbeddingAccessPolicyService interface {
+
+	// Retrieve the AI/BI dashboard embedding access policy.
+	//
+	// Retrieves the AI/BI dashboard embedding access policy. The default
+	// setting is ALLOW_APPROVED_DOMAINS, permitting AI/BI dashboards to be
+	// embedded on approved domains.
+	Get(ctx context.Context, request GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error)
+
+	// Update the AI/BI dashboard embedding access policy.
+	//
+	// Updates the AI/BI dashboard embedding access policy at the workspace
+	// level.
+	Update(ctx context.Context, request UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error)
+}
+
+// Controls the list of domains approved to host the embedded AI/BI dashboards.
+// The approved domains list can't be mutated when the current access policy is
+// not set to ALLOW_APPROVED_DOMAINS.
+type AibiDashboardEmbeddingApprovedDomainsService interface {
+
+	// Retrieve the list of domains approved to host embedded AI/BI dashboards.
+	//
+	// Retrieves the list of domains approved to host embedded AI/BI dashboards.
+	Get(ctx context.Context, request GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error)
+
+	// Update the list of domains approved to host embedded AI/BI dashboards.
+	//
+	// Updates the list of domains approved to host embedded AI/BI dashboards.
+	// This update will fail if the current workspace access policy is not
+	// ALLOW_APPROVED_DOMAINS.
+	Update(ctx context.Context, request UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error)
+}
+
 // Controls whether automatic cluster update is enabled for the current
 // workspace. By default, it is turned off.
 type AutomaticClusterUpdateService interface {

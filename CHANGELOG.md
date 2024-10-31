@@ -1,5 +1,50 @@
 # Version changelog
 
+## [Release] Release v0.50.0
+
+### Internal Changes
+
+ * Add DCO guidelines ([#1047](https://github.com/databricks/databricks-sdk-go/pull/1047)).
+ * Add test instructions for external contributors ([#1073](https://github.com/databricks/databricks-sdk-go/pull/1073)).
+ * Automatically trigger integration tests ([#1067](https://github.com/databricks/databricks-sdk-go/pull/1067)).
+ * Move templates in the code generator ([#1075](https://github.com/databricks/databricks-sdk-go/pull/1075)).
+ * Remove unnecessary test ([#1071](https://github.com/databricks/databricks-sdk-go/pull/1071)).
+
+
+### API Changes:
+
+ * Added [w.AibiDashboardEmbeddingAccessPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AibiDashboardEmbeddingAccessPolicyAPI) workspace-level service and [w.AibiDashboardEmbeddingApprovedDomains](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AibiDashboardEmbeddingApprovedDomainsAPI) workspace-level service.
+ * Added `AppDeployment` field for [apps.CreateAppDeploymentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#CreateAppDeploymentRequest).
+ * Added `App` field for [apps.CreateAppRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#CreateAppRequest).
+ * Added `App` field for [apps.UpdateAppRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#UpdateAppRequest).
+ * Added `Table` field for [catalog.CreateOnlineTableRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateOnlineTableRequest).
+ * Added `Dashboard` field for [dashboards.CreateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CreateDashboardRequest).
+ * Added `Schedule` field for [dashboards.CreateScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CreateScheduleRequest).
+ * Added `Subscription` field for [dashboards.CreateSubscriptionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CreateSubscriptionRequest).
+ * Added `Dashboard` field for [dashboards.UpdateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#UpdateDashboardRequest).
+ * Added `Schedule` field for [dashboards.UpdateScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#UpdateScheduleRequest).
+ * Added `PageToken` field for [oauth2.ListServicePrincipalSecretsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#ListServicePrincipalSecretsRequest).
+ * Added `NextPageToken` field for [oauth2.ListServicePrincipalSecretsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#ListServicePrincipalSecretsResponse).
+ * Added `IsNoPublicIpEnabled` field for [provisioning.CreateWorkspaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#CreateWorkspaceRequest).
+ * Added `ExternalCustomerInfo` and `IsNoPublicIpEnabled` fields for [provisioning.Workspace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#Workspace).
+ * Added `LastUsedDay` field for [settings.TokenInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenInfo).
+ * Changed `Create` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppsAPI) workspace-level service with new required argument order.
+ * Changed `ExecuteMessageQuery` method for [w.Genie](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAPI) workspace-level service . New request type is [dashboards.GenieExecuteMessageQueryRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieExecuteMessageQueryRequest).
+ * Changed `ExecuteMessageQuery` method for [w.Genie](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAPI) workspace-level service to type `ExecuteMessageQuery` method for [w.Genie](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAPI) workspace-level service.
+ * Changed `Create`, `CreateSchedule`, `CreateSubscription` and `UpdateSchedule` methods for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service with new required argument order.
+ * Removed `DeploymentId`, `Mode` and `SourceCodePath` fields for [apps.CreateAppDeploymentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#CreateAppDeploymentRequest).
+ * Removed `Description`, `Name` and `Resources` fields for [apps.CreateAppRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#CreateAppRequest).
+ * Removed `Description` and `Resources` fields for [apps.UpdateAppRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#UpdateAppRequest).
+ * Removed `Name` and `Spec` fields for [catalog.CreateOnlineTableRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateOnlineTableRequest).
+ * Removed `DisplayName`, `ParentPath`, `SerializedDashboard` and `WarehouseId` fields for [dashboards.CreateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CreateDashboardRequest).
+ * Removed `CronSchedule`, `DisplayName` and `PauseStatus` fields for [dashboards.CreateScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CreateScheduleRequest).
+ * Removed `Subscriber` field for [dashboards.CreateSubscriptionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#CreateSubscriptionRequest).
+ * Removed `DisplayName`, `Etag`, `SerializedDashboard` and `WarehouseId` fields for [dashboards.UpdateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#UpdateDashboardRequest).
+ * Removed `CronSchedule`, `DisplayName`, `Etag` and `PauseStatus` fields for [dashboards.UpdateScheduleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#UpdateScheduleRequest).
+ * Removed `PrevPageToken` field for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+
+OpenAPI SHA: 25b2478e5a18c888f0d423249abde5499dc58424, Date: 2024-10-31
+
 ## [Release] Release v0.49.0
 
 ### API Changes:
