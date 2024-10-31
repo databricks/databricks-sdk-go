@@ -879,9 +879,8 @@ type GetRunRequest struct {
 	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
 	// Whether to include resolved parameter values in the response.
 	IncludeResolvedValues bool `json:"-" url:"include_resolved_values,omitempty"`
-	// To list the next page or the previous page of job tasks, set this field
-	// to the value of the `next_page_token` or `prev_page_token` returned in
-	// the GetJob response.
+	// To list the next page of job tasks, set this field to the value of the
+	// `next_page_token` returned in the GetJob response.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
@@ -2187,8 +2186,10 @@ type RepairRun struct {
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables](/jobs.html\"#parameter-variables\") to set
-	// parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	JarParams []string `json:"jar_params,omitempty"`
 	// Job-level parameters used in the run. for example `"param":
 	// "overriding_val"`
@@ -2458,8 +2459,6 @@ type Run struct {
 	OriginalAttemptRunId int64 `json:"original_attempt_run_id,omitempty"`
 	// The parameters used for this run.
 	OverridingParameters *RunParameters `json:"overriding_parameters,omitempty"`
-	// A token that can be used to list the previous page of sub-resources.
-	PrevPageToken string `json:"prev_page_token,omitempty"`
 	// The time in milliseconds that the run has spent in the queue.
 	QueueDuration int64 `json:"queue_duration,omitempty"`
 	// The repair history of the run.
@@ -2667,8 +2666,10 @@ type RunJobTask struct {
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables](/jobs.html\"#parameter-variables\") to set
-	// parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	JarParams []string `json:"jar_params,omitempty"`
 	// ID of the job to trigger.
 	JobId int64 `json:"job_id"`
@@ -2876,8 +2877,10 @@ type RunNow struct {
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables](/jobs.html\"#parameter-variables\") to set
-	// parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	JarParams []string `json:"jar_params,omitempty"`
 	// The ID of the job to be executed
 	JobId int64 `json:"job_id"`
@@ -3045,8 +3048,10 @@ type RunParameters struct {
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables](/jobs.html\"#parameter-variables\") to set
-	// parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	JarParams []string `json:"jar_params,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
@@ -3240,13 +3245,14 @@ type RunTask struct {
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
 	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
-	// If condition_task, specifies a condition with an outcome that can be used
-	// to control the execution of other tasks. Does not require a cluster to
-	// execute and does not support retries or notifications.
+	// The task evaluates a condition that can be used to control the execution
+	// of other tasks when the `condition_task` field is present. The condition
+	// task does not require a cluster to execute and does not support retries
+	// or notifications.
 	ConditionTask *RunConditionTask `json:"condition_task,omitempty"`
-	// If dbt_task, indicates that this must execute a dbt task. It requires
-	// both Databricks SQL and the ability to use a serverless or a pro SQL
-	// warehouse.
+	// The task runs one or more dbt commands when the `dbt_task` field is
+	// present. The dbt task requires both Databricks SQL and the ability to use
+	// a serverless or a pro SQL warehouse.
 	DbtTask *DbtTask `json:"dbt_task,omitempty"`
 	// An optional array of objects specifying the dependency graph of the task.
 	// All tasks specified in this field must complete successfully before
@@ -3278,8 +3284,8 @@ type RunTask struct {
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-	// If for_each_task, indicates that this task must execute the nested task
-	// within it.
+	// The task executes a nested task for every input provided when the
+	// `for_each_task` field is present.
 	ForEachTask *RunForEachTask `json:"for_each_task,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
@@ -3299,16 +3305,17 @@ type RunTask struct {
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
 	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
-	// If notebook_task, indicates that this task must run a notebook. This
-	// field may not be specified in conjunction with spark_jar_task.
+	// The task runs a notebook when the `notebook_task` field is present.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// task run.
 	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
-	// If pipeline_task, indicates that this task must execute a Pipeline.
+	// The task triggers a pipeline update when the `pipeline_task` field is
+	// present. Only pipelines configured to use triggered more are supported.
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
-	// If python_wheel_task, indicates that this job must execute a PythonWheel.
+	// The task runs a Python wheel when the `python_wheel_task` field is
+	// present.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
 	// The time in milliseconds that the run has spent in the queue.
 	QueueDuration int64 `json:"queue_duration,omitempty"`
@@ -3324,7 +3331,7 @@ type RunTask struct {
 	// omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of
 	// possible values.
 	RunIf RunIf `json:"run_if,omitempty"`
-	// If run_job_task, indicates that this task must execute another job.
+	// The task triggers another job when the `run_job_task` field is present.
 	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
 
 	RunPageUrl string `json:"run_page_url,omitempty"`
@@ -3336,12 +3343,14 @@ type RunTask struct {
 	// job runs. The total duration of a multitask job run is the value of the
 	// `run_duration` field.
 	SetupDuration int64 `json:"setup_duration,omitempty"`
-	// If spark_jar_task, indicates that this task must run a JAR.
+	// The task runs a JAR when the `spark_jar_task` field is present.
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
-	// If spark_python_task, indicates that this task must run a Python file.
+	// The task runs a Python file when the `spark_python_task` field is
+	// present.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If `spark_submit_task`, indicates that this task must be launched by the
-	// spark submit script. This task can run only on new clusters.
+	// (Legacy) The task runs the spark-submit script when the
+	// `spark_submit_task` field is present. This task can run only on new
+	// clusters and is not compatible with serverless compute.
 	//
 	// In the `new_cluster` specification, `libraries` and `spark_conf` are not
 	// supported. Instead, use `--jars` and `--py-files` to add Java and Python
@@ -3358,7 +3367,8 @@ type RunTask struct {
 	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
 	// paths.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-	// If sql_task, indicates that this job must execute a SQL task.
+	// The task runs a SQL query or file, or it refreshes a SQL alert or a
+	// legacy SQL dashboard when the `sql_task` field is present.
 	SqlTask *SqlTask `json:"sql_task,omitempty"`
 	// The time at which this run was started in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC). This may not be the time when the job
@@ -3928,13 +3938,14 @@ func (s SubmitRunResponse) MarshalJSON() ([]byte, error) {
 }
 
 type SubmitTask struct {
-	// If condition_task, specifies a condition with an outcome that can be used
-	// to control the execution of other tasks. Does not require a cluster to
-	// execute and does not support retries or notifications.
+	// The task evaluates a condition that can be used to control the execution
+	// of other tasks when the `condition_task` field is present. The condition
+	// task does not require a cluster to execute and does not support retries
+	// or notifications.
 	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
-	// If dbt_task, indicates that this must execute a dbt task. It requires
-	// both Databricks SQL and the ability to use a serverless or a pro SQL
-	// warehouse.
+	// The task runs one or more dbt commands when the `dbt_task` field is
+	// present. The dbt task requires both Databricks SQL and the ability to use
+	// a serverless or a pro SQL warehouse.
 	DbtTask *DbtTask `json:"dbt_task,omitempty"`
 	// An optional array of objects specifying the dependency graph of the task.
 	// All tasks specified in this field must complete successfully before
@@ -3955,8 +3966,8 @@ type SubmitTask struct {
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-	// If for_each_task, indicates that this task must execute the nested task
-	// within it.
+	// The task executes a nested task for every input provided when the
+	// `for_each_task` field is present.
 	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
@@ -3966,30 +3977,33 @@ type SubmitTask struct {
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
 	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
-	// If notebook_task, indicates that this task must run a notebook. This
-	// field may not be specified in conjunction with spark_jar_task.
+	// The task runs a notebook when the `notebook_task` field is present.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// task run.
 	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
-	// If pipeline_task, indicates that this task must execute a Pipeline.
+	// The task triggers a pipeline update when the `pipeline_task` field is
+	// present. Only pipelines configured to use triggered more are supported.
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
-	// If python_wheel_task, indicates that this job must execute a PythonWheel.
+	// The task runs a Python wheel when the `python_wheel_task` field is
+	// present.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
 	// An optional value indicating the condition that determines whether the
 	// task should be run once its dependencies have been completed. When
 	// omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of
 	// possible values.
 	RunIf RunIf `json:"run_if,omitempty"`
-	// If run_job_task, indicates that this task must execute another job.
+	// The task triggers another job when the `run_job_task` field is present.
 	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
-	// If spark_jar_task, indicates that this task must run a JAR.
+	// The task runs a JAR when the `spark_jar_task` field is present.
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
-	// If spark_python_task, indicates that this task must run a Python file.
+	// The task runs a Python file when the `spark_python_task` field is
+	// present.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If `spark_submit_task`, indicates that this task must be launched by the
-	// spark submit script. This task can run only on new clusters.
+	// (Legacy) The task runs the spark-submit script when the
+	// `spark_submit_task` field is present. This task can run only on new
+	// clusters and is not compatible with serverless compute.
 	//
 	// In the `new_cluster` specification, `libraries` and `spark_conf` are not
 	// supported. Instead, use `--jars` and `--py-files` to add Java and Python
@@ -4006,7 +4020,8 @@ type SubmitTask struct {
 	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
 	// paths.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-	// If sql_task, indicates that this job must execute a SQL task.
+	// The task runs a SQL query or file, or it refreshes a SQL alert or a
+	// legacy SQL dashboard when the `sql_task` field is present.
 	SqlTask *SqlTask `json:"sql_task,omitempty"`
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
@@ -4060,13 +4075,14 @@ func (s TableUpdateTriggerConfiguration) MarshalJSON() ([]byte, error) {
 }
 
 type Task struct {
-	// If condition_task, specifies a condition with an outcome that can be used
-	// to control the execution of other tasks. Does not require a cluster to
-	// execute and does not support retries or notifications.
+	// The task evaluates a condition that can be used to control the execution
+	// of other tasks when the `condition_task` field is present. The condition
+	// task does not require a cluster to execute and does not support retries
+	// or notifications.
 	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
-	// If dbt_task, indicates that this must execute a dbt task. It requires
-	// both Databricks SQL and the ability to use a serverless or a pro SQL
-	// warehouse.
+	// The task runs one or more dbt commands when the `dbt_task` field is
+	// present. The dbt task requires both Databricks SQL and the ability to use
+	// a serverless or a pro SQL warehouse.
 	DbtTask *DbtTask `json:"dbt_task,omitempty"`
 	// An optional array of objects specifying the dependency graph of the task.
 	// All tasks specified in this field must complete before executing this
@@ -4090,8 +4106,8 @@ type Task struct {
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-	// If for_each_task, indicates that this task must execute the nested task
-	// within it.
+	// The task executes a nested task for every input provided when the
+	// `for_each_task` field is present.
 	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
@@ -4113,16 +4129,17 @@ type Task struct {
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
 	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
-	// If notebook_task, indicates that this task must run a notebook. This
-	// field may not be specified in conjunction with spark_jar_task.
+	// The task runs a notebook when the `notebook_task` field is present.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// task.
 	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
-	// If pipeline_task, indicates that this task must execute a Pipeline.
+	// The task triggers a pipeline update when the `pipeline_task` field is
+	// present. Only pipelines configured to use triggered more are supported.
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
-	// If python_wheel_task, indicates that this job must execute a PythonWheel.
+	// The task runs a Python wheel when the `python_wheel_task` field is
+	// present.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
 	// An optional policy to specify whether to retry a job when it times out.
 	// The default behavior is to not retry on timeout.
@@ -4137,14 +4154,16 @@ type Task struct {
 	// `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl
 	// dependencies have failed
 	RunIf RunIf `json:"run_if,omitempty"`
-	// If run_job_task, indicates that this task must execute another job.
+	// The task triggers another job when the `run_job_task` field is present.
 	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
-	// If spark_jar_task, indicates that this task must run a JAR.
+	// The task runs a JAR when the `spark_jar_task` field is present.
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
-	// If spark_python_task, indicates that this task must run a Python file.
+	// The task runs a Python file when the `spark_python_task` field is
+	// present.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If `spark_submit_task`, indicates that this task must be launched by the
-	// spark submit script. This task can run only on new clusters.
+	// (Legacy) The task runs the spark-submit script when the
+	// `spark_submit_task` field is present. This task can run only on new
+	// clusters and is not compatible with serverless compute.
 	//
 	// In the `new_cluster` specification, `libraries` and `spark_conf` are not
 	// supported. Instead, use `--jars` and `--py-files` to add Java and Python
@@ -4161,7 +4180,8 @@ type Task struct {
 	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
 	// paths.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-	// If sql_task, indicates that this job must execute a SQL task.
+	// The task runs a SQL query or file, or it refreshes a SQL alert or a
+	// legacy SQL dashboard when the `sql_task` field is present.
 	SqlTask *SqlTask `json:"sql_task,omitempty"`
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent

@@ -336,13 +336,45 @@ func (s ListPublishedAppIntegrationsRequest) MarshalJSON() ([]byte, error) {
 
 // List service principal secrets
 type ListServicePrincipalSecretsRequest struct {
+	// An opaque page token which was the `next_page_token` in the response of
+	// the previous request to list the secrets for this service principal.
+	// Provide this token to retrieve the next page of secret entries. When
+	// providing a `page_token`, all other parameters provided to the request
+	// must match the previous request. To list all of the secrets for a service
+	// principal, it is necessary to continue requesting pages of entries until
+	// the response contains no `next_page_token`. Note that the number of
+	// entries returned must not be used to determine when the listing is
+	// complete.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The service principal ID.
 	ServicePrincipalId int64 `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListServicePrincipalSecretsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListServicePrincipalSecretsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListServicePrincipalSecretsResponse struct {
+	// A token, which can be sent as `page_token` to retrieve the next page.
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of the secrets
 	Secrets []SecretInfo `json:"secrets,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListServicePrincipalSecretsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListServicePrincipalSecretsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PublishedAppOutput struct {

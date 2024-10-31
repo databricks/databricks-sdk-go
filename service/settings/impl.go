@@ -77,6 +77,54 @@ type accountSettingsImpl struct {
 	client *client.DatabricksClient
 }
 
+// unexported type that holds implementations of just AibiDashboardEmbeddingAccessPolicy API methods
+type aibiDashboardEmbeddingAccessPolicyImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *aibiDashboardEmbeddingAccessPolicyImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error) {
+	var aibiDashboardEmbeddingAccessPolicySetting AibiDashboardEmbeddingAccessPolicySetting
+	path := "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &aibiDashboardEmbeddingAccessPolicySetting)
+	return &aibiDashboardEmbeddingAccessPolicySetting, err
+}
+
+func (a *aibiDashboardEmbeddingAccessPolicyImpl) Update(ctx context.Context, request UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error) {
+	var aibiDashboardEmbeddingAccessPolicySetting AibiDashboardEmbeddingAccessPolicySetting
+	path := "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &aibiDashboardEmbeddingAccessPolicySetting)
+	return &aibiDashboardEmbeddingAccessPolicySetting, err
+}
+
+// unexported type that holds implementations of just AibiDashboardEmbeddingApprovedDomains API methods
+type aibiDashboardEmbeddingApprovedDomainsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error) {
+	var aibiDashboardEmbeddingApprovedDomainsSetting AibiDashboardEmbeddingApprovedDomainsSetting
+	path := "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &aibiDashboardEmbeddingApprovedDomainsSetting)
+	return &aibiDashboardEmbeddingApprovedDomainsSetting, err
+}
+
+func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Update(ctx context.Context, request UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error) {
+	var aibiDashboardEmbeddingApprovedDomainsSetting AibiDashboardEmbeddingApprovedDomainsSetting
+	path := "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &aibiDashboardEmbeddingApprovedDomainsSetting)
+	return &aibiDashboardEmbeddingApprovedDomainsSetting, err
+}
+
 // unexported type that holds implementations of just AutomaticClusterUpdate API methods
 type automaticClusterUpdateImpl struct {
 	client *client.DatabricksClient

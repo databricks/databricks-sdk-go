@@ -30,6 +30,8 @@ const AssetTypeAssetTypeModel AssetType = `ASSET_TYPE_MODEL`
 
 const AssetTypeAssetTypeNotebook AssetType = `ASSET_TYPE_NOTEBOOK`
 
+const AssetTypeAssetTypePartnerIntegration AssetType = `ASSET_TYPE_PARTNER_INTEGRATION`
+
 // String representation for [fmt.Print]
 func (f *AssetType) String() string {
 	return string(*f)
@@ -38,11 +40,11 @@ func (f *AssetType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AssetType) Set(v string) error {
 	switch v {
-	case `ASSET_TYPE_DATA_TABLE`, `ASSET_TYPE_GIT_REPO`, `ASSET_TYPE_MEDIA`, `ASSET_TYPE_MODEL`, `ASSET_TYPE_NOTEBOOK`:
+	case `ASSET_TYPE_DATA_TABLE`, `ASSET_TYPE_GIT_REPO`, `ASSET_TYPE_MEDIA`, `ASSET_TYPE_MODEL`, `ASSET_TYPE_NOTEBOOK`, `ASSET_TYPE_PARTNER_INTEGRATION`:
 		*f = AssetType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ASSET_TYPE_DATA_TABLE", "ASSET_TYPE_GIT_REPO", "ASSET_TYPE_MEDIA", "ASSET_TYPE_MODEL", "ASSET_TYPE_NOTEBOOK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ASSET_TYPE_DATA_TABLE", "ASSET_TYPE_GIT_REPO", "ASSET_TYPE_MEDIA", "ASSET_TYPE_MODEL", "ASSET_TYPE_NOTEBOOK", "ASSET_TYPE_PARTNER_INTEGRATION"`, v)
 	}
 }
 

@@ -593,51 +593,16 @@ func (s ComputeStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Create an app deployment
 type CreateAppDeploymentRequest struct {
+	AppDeployment *AppDeployment `json:"app_deployment,omitempty"`
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
-	// The unique id of the deployment.
-	DeploymentId string `json:"deployment_id,omitempty"`
-	// The mode of which the deployment will manage the source code.
-	Mode AppDeploymentMode `json:"mode,omitempty"`
-	// The workspace file system path of the source code used to create the app
-	// deployment. This is different from
-	// `deployment_artifacts.source_code_path`, which is the path used by the
-	// deployed app. The former refers to the original source code location of
-	// the app in the workspace during deployment creation, whereas the latter
-	// provides a system generated stable snapshotted source code path used by
-	// the deployment.
-	SourceCodePath string `json:"source_code_path,omitempty"`
-
-	ForceSendFields []string `json:"-"`
 }
 
-func (s *CreateAppDeploymentRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateAppDeploymentRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
+// Create an app
 type CreateAppRequest struct {
-	// The description of the app.
-	Description string `json:"description,omitempty"`
-	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens. It must be unique within the workspace.
-	Name string `json:"name"`
-	// Resources for the app.
-	Resources []AppResource `json:"resources,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateAppRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	App *App `json:"app,omitempty"`
 }
 
 // Delete an app
@@ -760,22 +725,9 @@ type StopAppRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Update an app
 type UpdateAppRequest struct {
-	// The description of the app.
-	Description string `json:"description,omitempty"`
-	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens. It must be unique within the workspace.
-	Name string `json:"name" url:"-"`
-	// Resources for the app.
-	Resources []AppResource `json:"resources,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateAppRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateAppRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	App *App `json:"app,omitempty"`
+	// The name of the app.
+	Name string `json:"-" url:"-"`
 }

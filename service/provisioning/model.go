@@ -253,6 +253,8 @@ type CreateWorkspaceRequest struct {
 	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
 	// The configurations for the GKE cluster of a Databricks workspace.
 	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
+	// Whether no public IP is enabled for the workspace.
+	IsNoPublicIpEnabled bool `json:"is_no_public_ip_enabled,omitempty"`
 	// The Google Cloud region of the workspace data plane in your Google
 	// account. For example, `us-east4`.
 	Location string `json:"location,omitempty"`
@@ -482,6 +484,25 @@ func (f *ErrorType) Set(v string) error {
 // Type always returns ErrorType to satisfy [pflag.Value] interface
 func (f *ErrorType) Type() string {
 	return "ErrorType"
+}
+
+type ExternalCustomerInfo struct {
+	// Email of the authoritative user.
+	AuthoritativeUserEmail string `json:"authoritative_user_email,omitempty"`
+	// The authoritative user full name.
+	AuthoritativeUserFullName string `json:"authoritative_user_full_name,omitempty"`
+	// The legal entity name for the external workspace
+	CustomerName string `json:"customer_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExternalCustomerInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalCustomerInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GcpKeyInfo struct {
@@ -1220,6 +1241,10 @@ type Workspace struct {
 	// This value must be unique across all non-deleted deployments across all
 	// AWS regions.
 	DeploymentName string `json:"deployment_name,omitempty"`
+	// If this workspace is for a external customer, then external_customer_info
+	// is populated. If this workspace is not for a external customer, then
+	// external_customer_info is empty.
+	ExternalCustomerInfo *ExternalCustomerInfo `json:"external_customer_info,omitempty"`
 	// The network settings for the workspace. The configurations are only for
 	// Databricks-managed VPCs. It is ignored if you specify a customer-managed
 	// VPC in the `network_id` field.", All the IP range configurations must be
@@ -1246,6 +1271,8 @@ type Workspace struct {
 	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
 	// The configurations for the GKE cluster of a Databricks workspace.
 	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
+	// Whether no public IP is enabled for the workspace.
+	IsNoPublicIpEnabled bool `json:"is_no_public_ip_enabled,omitempty"`
 	// The Google Cloud region of the workspace data plane in your Google
 	// account (for example, `us-east4`).
 	Location string `json:"location,omitempty"`
