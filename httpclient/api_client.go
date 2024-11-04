@@ -34,8 +34,12 @@ type ClientConfig struct {
 	DebugTruncateBytes int
 	RateLimitPerSecond int
 
-	ErrorMapper    func(ctx context.Context, resp common.ResponseWrapper) error
-	ErrorRetriable ErrorRetryer
+	// ErrorMapper converts the API response into a Go error if the response is an error.
+	ErrorMapper func(ctx context.Context, resp common.ResponseWrapper) error
+
+	// ErrorRetriable determines if the API request should be retried. It is not
+	// called if the context is cancelled or if the request succeeded.
+	ErrorRetriable ErrorRetrier
 
 	Transport http.RoundTripper
 }
