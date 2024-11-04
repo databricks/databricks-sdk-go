@@ -311,13 +311,16 @@ func (c *Config) EnsureResolved() error {
 		HTTPTimeout:        time.Duration(c.HTTPTimeoutSeconds) * time.Second,
 		Transport:          c.HTTPTransport,
 		ErrorMapper:        c.refreshTokenErrorMapper,
-		TransientErrors: []string{
-			"throttled",
-			"too many requests",
-			"429",
-			"request limit exceeded",
-			"rate limit",
-		},
+		ErrorRetriable: httpclient.CombineRetriers(
+			httpclient.DefaultErrorRetriable,
+			httpclient.RetryTransientErrors([]string{
+				"throttled",
+				"too many requests",
+				"429",
+				"request limit exceeded",
+				"rate limit",
+			}),
+		),
 	})
 	if c.azureTenantIdFetchClient == nil {
 		c.azureTenantIdFetchClient = &http.Client{

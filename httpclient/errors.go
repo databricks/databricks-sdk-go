@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/logger"
 )
 
 type HttpError struct {
@@ -45,17 +46,39 @@ func DefaultErrorMapper(ctx context.Context, resp common.ResponseWrapper) error 
 	}
 }
 
-func DefaultErrorRetriable(ctx context.Context, err error) bool {
-	var httpError *HttpError
-	if errors.As(err, &httpError) {
-		if httpError.StatusCode == http.StatusTooManyRequests {
-			return true
-		}
-		if httpError.StatusCode == http.StatusGatewayTimeout {
-			return true
-		}
+type ErrorRetryer func(context.Context, *http.Request, *common.ResponseWrapper, error) bool
+
+func DefaultErrorRetriable(ctx context.Context, req *http.Request, resp *common.ResponseWrapper, err error) bool {
+	return CombineRetriers(
+		RetryOnTooManyRequests,
+		RetryOnGatewayTimeout,
+		RetryUrlErrors,
+	)(ctx, req, resp, err)
+}
+
+func RetryOnTooManyRequests(ctx context.Context, _ *http.Request, resp *common.ResponseWrapper, err error) bool {
+	if resp.Response == nil {
+		return false
 	}
-	return false
+	return resp.Response.StatusCode == http.StatusTooManyRequests
+}
+
+func RetryOnGatewayTimeout(ctx context.Context, _ *http.Request, resp *common.ResponseWrapper, err error) bool {
+	if resp.Response == nil {
+		return false
+	}
+	return resp.Response.StatusCode == http.StatusGatewayTimeout
+}
+
+func CombineRetriers(retriers ...ErrorRetryer) ErrorRetryer {
+	return func(ctx context.Context, req *http.Request, resp *common.ResponseWrapper, err error) bool {
+		for _, retrier := range retriers {
+			if retrier(ctx, req, resp, err) {
+				return true
+			}
+		}
+		return false
+	}
 }
 
 var urlErrorTransientErrorMessages = []string{
@@ -66,15 +89,30 @@ var urlErrorTransientErrorMessages = []string{
 	"i/o timeout",
 }
 
-func isRetriableUrlError(err error) bool {
+func RetryUrlErrors(ctx context.Context, _ *http.Request, _ *common.ResponseWrapper, err error) bool {
 	var urlError *url.Error
 	if !errors.As(err, &urlError) {
 		return false
 	}
 	for _, msg := range urlErrorTransientErrorMessages {
 		if strings.Contains(err.Error(), msg) {
+			logger.Debugf(ctx, "Attempting retry because of IO error: %s", err)
 			return true
 		}
 	}
 	return false
+}
+
+func RetryTransientErrors(errors []string) ErrorRetryer {
+	return func(ctx context.Context, _ *http.Request, _ *common.ResponseWrapper, err error) bool {
+		message := err.Error()
+		// Handle transient errors for retries
+		for _, substring := range errors {
+			if strings.Contains(message, substring) {
+				logger.Debugf(ctx, "Attempting retry because of %#v", substring)
+				return true
+			}
+		}
+		return false
+	}
 }

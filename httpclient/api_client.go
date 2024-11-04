@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"runtime"
-	"strings"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
@@ -35,9 +34,8 @@ type ClientConfig struct {
 	DebugTruncateBytes int
 	RateLimitPerSecond int
 
-	ErrorMapper     func(ctx context.Context, resp common.ResponseWrapper) error
-	ErrorRetriable  func(ctx context.Context, err error) bool
-	TransientErrors []string
+	ErrorMapper    func(ctx context.Context, resp common.ResponseWrapper) error
+	ErrorRetriable ErrorRetryer
 
 	Transport http.RoundTripper
 }
@@ -130,7 +128,6 @@ func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOptio
 			// merge client-wide and request-specific visitors
 			visitors = append(visitors, o.in)
 		}
-
 	}
 	// Use default AuthVisitor if none is provided
 	if authVisitor == nil {
@@ -168,45 +165,6 @@ func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOptio
 		}
 	}
 	return nil
-}
-
-func (c *ApiClient) isRetriable(ctx context.Context, err error) bool {
-	if c.config.ErrorRetriable(ctx, err) {
-		return true
-	}
-	if isRetriableUrlError(err) {
-		// all IO errors are retriable
-		logger.Debugf(ctx, "Attempting retry because of IO error: %s", err)
-		return true
-	}
-	message := err.Error()
-	// Handle transient errors for retries
-	for _, substring := range c.config.TransientErrors {
-		if strings.Contains(message, substring) {
-			logger.Debugf(ctx, "Attempting retry because of %#v", substring)
-			return true
-		}
-	}
-	// some API's recommend retries on HTTP 500, but we'll add that later
-	return false
-}
-
-// Common error-handling logic for all responses that may need to be retried.
-//
-// If the error is retriable, return a retries.Err to retry the request. However, as the request body will have been consumed
-// by the first attempt, the body must be reset before retrying. If the body cannot be reset, return a retries.Err to halt.
-//
-// Always returns nil for the first parameter as there is no meaningful response body to return in the error case.
-//
-// If it is certain that an error should not be retried, use failRequest() instead.
-func (c *ApiClient) handleError(ctx context.Context, err error, body common.RequestBody) (*common.ResponseWrapper, *retries.Err) {
-	if !c.isRetriable(ctx, err) {
-		return nil, retries.Halt(err)
-	}
-	if resetErr := body.Reset(); resetErr != nil {
-		return nil, retries.Halt(resetErr)
-	}
-	return nil, retries.Continue(err)
 }
 
 // Fails the request with a retries.Err to halt future retries.
@@ -299,7 +257,16 @@ func (c *ApiClient) attempt(
 
 		// proactively release the connections in HTTP connection pool
 		c.httpClient.CloseIdleConnections()
-		return c.handleError(ctx, err, requestBody)
+
+		// Non-retriable errors can be returned immediately.
+		if !c.config.ErrorRetriable(ctx, request, &responseWrapper, err) {
+			return nil, retries.Halt(err)
+		}
+		// Retriable errors may require the request body to be reset.
+		if resetErr := requestBody.Reset(); resetErr != nil {
+			return nil, retries.Halt(resetErr)
+		}
+		return nil, retries.Continue(err)
 	}
 }
 
