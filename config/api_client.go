@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"regexp"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
@@ -85,6 +86,10 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 			},
 			httpclient.RetryUrlErrors,
 			httpclient.RetryTransientErrors([]string{"REQUEST_LIMIT_EXCEEDED"}),
+			httpclient.RetryIdempotentRequests([]httpclient.RestApiMatcher{
+				// Get Permissions API
+				{Method: http.MethodGet, Path: *regexp.MustCompile(`/api/2.0/permissions/[^/]+/[^/]+`)},
+			}),
 		),
 	}), nil
 }

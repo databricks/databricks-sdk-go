@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/common"
@@ -110,6 +111,31 @@ func RetryTransientErrors(errors []string) ErrorRetryer {
 		for _, substring := range errors {
 			if strings.Contains(message, substring) {
 				logger.Debugf(ctx, "Attempting retry because of %#v", substring)
+				return true
+			}
+		}
+		return false
+	}
+}
+
+type RestApiMatcher struct {
+	Method string
+	Path   regexp.Regexp
+}
+
+func (m *RestApiMatcher) Matches(req *http.Request) bool {
+	return req.Method == m.Method && m.Path.MatchString(req.URL.Path)
+}
+
+func shouldRetryIdempotentRequest(ctx context.Context, req *http.Request, resp *common.ResponseWrapper, err error) bool {
+	return RetryOnGatewayTimeout(ctx, req, resp, err)
+}
+
+func RetryIdempotentRequests(methods []RestApiMatcher) ErrorRetryer {
+	return func(ctx context.Context, r *http.Request, rw *common.ResponseWrapper, err error) bool {
+		for _, m := range methods {
+			if m.Matches(r) && shouldRetryIdempotentRequest(ctx, r, rw, err) {
+				logger.Debugf(ctx, "Attempting retry because of gateway timeout")
 				return true
 			}
 		}
