@@ -437,12 +437,18 @@ func (a *ServicePrincipalSecretsAPI) List(ctx context.Context, request ListServi
 	getItems := func(resp *ListServicePrincipalSecretsResponse) []SecretInfo {
 		return resp.Secrets
 	}
-
+	getNextReq := func(resp *ListServicePrincipalSecretsResponse) *ListServicePrincipalSecretsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
 	iterator := listing.NewIterator(
 		&request,
 		getNextPage,
 		getItems,
-		nil)
+		getNextReq)
 	return iterator
 }
 

@@ -25,27 +25,27 @@ func (_m *MockReposInterface) EXPECT() *MockReposInterface_Expecter {
 }
 
 // Create provides a mock function with given fields: ctx, request
-func (_m *MockReposInterface) Create(ctx context.Context, request workspace.CreateRepo) (*workspace.RepoInfo, error) {
+func (_m *MockReposInterface) Create(ctx context.Context, request workspace.CreateRepoRequest) (*workspace.CreateRepoResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
 	}
 
-	var r0 *workspace.RepoInfo
+	var r0 *workspace.CreateRepoResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.CreateRepo) (*workspace.RepoInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.CreateRepoRequest) (*workspace.CreateRepoResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.CreateRepo) *workspace.RepoInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.CreateRepoRequest) *workspace.CreateRepoResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*workspace.RepoInfo)
+			r0 = ret.Get(0).(*workspace.CreateRepoResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, workspace.CreateRepo) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, workspace.CreateRepoRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -61,24 +61,24 @@ type MockReposInterface_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request workspace.CreateRepo
+//   - request workspace.CreateRepoRequest
 func (_e *MockReposInterface_Expecter) Create(ctx interface{}, request interface{}) *MockReposInterface_Create_Call {
 	return &MockReposInterface_Create_Call{Call: _e.mock.On("Create", ctx, request)}
 }
 
-func (_c *MockReposInterface_Create_Call) Run(run func(ctx context.Context, request workspace.CreateRepo)) *MockReposInterface_Create_Call {
+func (_c *MockReposInterface_Create_Call) Run(run func(ctx context.Context, request workspace.CreateRepoRequest)) *MockReposInterface_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(workspace.CreateRepo))
+		run(args[0].(context.Context), args[1].(workspace.CreateRepoRequest))
 	})
 	return _c
 }
 
-func (_c *MockReposInterface_Create_Call) Return(_a0 *workspace.RepoInfo, _a1 error) *MockReposInterface_Create_Call {
+func (_c *MockReposInterface_Create_Call) Return(_a0 *workspace.CreateRepoResponse, _a1 error) *MockReposInterface_Create_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockReposInterface_Create_Call) RunAndReturn(run func(context.Context, workspace.CreateRepo) (*workspace.RepoInfo, error)) *MockReposInterface_Create_Call {
+func (_c *MockReposInterface_Create_Call) RunAndReturn(run func(context.Context, workspace.CreateRepoRequest) (*workspace.CreateRepoResponse, error)) *MockReposInterface_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -178,23 +178,23 @@ func (_c *MockReposInterface_DeleteByRepoId_Call) RunAndReturn(run func(context.
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockReposInterface) Get(ctx context.Context, request workspace.GetRepoRequest) (*workspace.RepoInfo, error) {
+func (_m *MockReposInterface) Get(ctx context.Context, request workspace.GetRepoRequest) (*workspace.GetRepoResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Get")
 	}
 
-	var r0 *workspace.RepoInfo
+	var r0 *workspace.GetRepoResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.GetRepoRequest) (*workspace.RepoInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.GetRepoRequest) (*workspace.GetRepoResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.GetRepoRequest) *workspace.RepoInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.GetRepoRequest) *workspace.GetRepoResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*workspace.RepoInfo)
+			r0 = ret.Get(0).(*workspace.GetRepoResponse)
 		}
 	}
 
@@ -226,12 +226,12 @@ func (_c *MockReposInterface_Get_Call) Run(run func(ctx context.Context, request
 	return _c
 }
 
-func (_c *MockReposInterface_Get_Call) Return(_a0 *workspace.RepoInfo, _a1 error) *MockReposInterface_Get_Call {
+func (_c *MockReposInterface_Get_Call) Return(_a0 *workspace.GetRepoResponse, _a1 error) *MockReposInterface_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockReposInterface_Get_Call) RunAndReturn(run func(context.Context, workspace.GetRepoRequest) (*workspace.RepoInfo, error)) *MockReposInterface_Get_Call {
+func (_c *MockReposInterface_Get_Call) RunAndReturn(run func(context.Context, workspace.GetRepoRequest) (*workspace.GetRepoResponse, error)) *MockReposInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -296,23 +296,23 @@ func (_c *MockReposInterface_GetByPath_Call) RunAndReturn(run func(context.Conte
 }
 
 // GetByRepoId provides a mock function with given fields: ctx, repoId
-func (_m *MockReposInterface) GetByRepoId(ctx context.Context, repoId int64) (*workspace.RepoInfo, error) {
+func (_m *MockReposInterface) GetByRepoId(ctx context.Context, repoId int64) (*workspace.GetRepoResponse, error) {
 	ret := _m.Called(ctx, repoId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByRepoId")
 	}
 
-	var r0 *workspace.RepoInfo
+	var r0 *workspace.GetRepoResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) (*workspace.RepoInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (*workspace.GetRepoResponse, error)); ok {
 		return rf(ctx, repoId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) *workspace.RepoInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) *workspace.GetRepoResponse); ok {
 		r0 = rf(ctx, repoId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*workspace.RepoInfo)
+			r0 = ret.Get(0).(*workspace.GetRepoResponse)
 		}
 	}
 
@@ -344,12 +344,12 @@ func (_c *MockReposInterface_GetByRepoId_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockReposInterface_GetByRepoId_Call) Return(_a0 *workspace.RepoInfo, _a1 error) *MockReposInterface_GetByRepoId_Call {
+func (_c *MockReposInterface_GetByRepoId_Call) Return(_a0 *workspace.GetRepoResponse, _a1 error) *MockReposInterface_GetByRepoId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockReposInterface_GetByRepoId_Call) RunAndReturn(run func(context.Context, int64) (*workspace.RepoInfo, error)) *MockReposInterface_GetByRepoId_Call {
+func (_c *MockReposInterface_GetByRepoId_Call) RunAndReturn(run func(context.Context, int64) (*workspace.GetRepoResponse, error)) *MockReposInterface_GetByRepoId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -817,7 +817,7 @@ func (_c *MockReposInterface_SetPermissions_Call) RunAndReturn(run func(context.
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockReposInterface) Update(ctx context.Context, request workspace.UpdateRepo) error {
+func (_m *MockReposInterface) Update(ctx context.Context, request workspace.UpdateRepoRequest) error {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -825,7 +825,7 @@ func (_m *MockReposInterface) Update(ctx context.Context, request workspace.Upda
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.UpdateRepo) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.UpdateRepoRequest) error); ok {
 		r0 = rf(ctx, request)
 	} else {
 		r0 = ret.Error(0)
@@ -841,14 +841,14 @@ type MockReposInterface_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request workspace.UpdateRepo
+//   - request workspace.UpdateRepoRequest
 func (_e *MockReposInterface_Expecter) Update(ctx interface{}, request interface{}) *MockReposInterface_Update_Call {
 	return &MockReposInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
 }
 
-func (_c *MockReposInterface_Update_Call) Run(run func(ctx context.Context, request workspace.UpdateRepo)) *MockReposInterface_Update_Call {
+func (_c *MockReposInterface_Update_Call) Run(run func(ctx context.Context, request workspace.UpdateRepoRequest)) *MockReposInterface_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(workspace.UpdateRepo))
+		run(args[0].(context.Context), args[1].(workspace.UpdateRepoRequest))
 	})
 	return _c
 }
@@ -858,7 +858,7 @@ func (_c *MockReposInterface_Update_Call) Return(_a0 error) *MockReposInterface_
 	return _c
 }
 
-func (_c *MockReposInterface_Update_Call) RunAndReturn(run func(context.Context, workspace.UpdateRepo) error) *MockReposInterface_Update_Call {
+func (_c *MockReposInterface_Update_Call) RunAndReturn(run func(context.Context, workspace.UpdateRepoRequest) error) *MockReposInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

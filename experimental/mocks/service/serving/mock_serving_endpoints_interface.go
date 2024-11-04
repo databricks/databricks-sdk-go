@@ -1283,6 +1283,65 @@ func (_c *MockServingEndpointsInterface_Put_Call) RunAndReturn(run func(context.
 	return _c
 }
 
+// PutAiGateway provides a mock function with given fields: ctx, request
+func (_m *MockServingEndpointsInterface) PutAiGateway(ctx context.Context, request serving.PutAiGatewayRequest) (*serving.PutAiGatewayResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PutAiGateway")
+	}
+
+	var r0 *serving.PutAiGatewayResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.PutAiGatewayRequest) (*serving.PutAiGatewayResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.PutAiGatewayRequest) *serving.PutAiGatewayResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.PutAiGatewayResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.PutAiGatewayRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockServingEndpointsInterface_PutAiGateway_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PutAiGateway'
+type MockServingEndpointsInterface_PutAiGateway_Call struct {
+	*mock.Call
+}
+
+// PutAiGateway is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request serving.PutAiGatewayRequest
+func (_e *MockServingEndpointsInterface_Expecter) PutAiGateway(ctx interface{}, request interface{}) *MockServingEndpointsInterface_PutAiGateway_Call {
+	return &MockServingEndpointsInterface_PutAiGateway_Call{Call: _e.mock.On("PutAiGateway", ctx, request)}
+}
+
+func (_c *MockServingEndpointsInterface_PutAiGateway_Call) Run(run func(ctx context.Context, request serving.PutAiGatewayRequest)) *MockServingEndpointsInterface_PutAiGateway_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(serving.PutAiGatewayRequest))
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_PutAiGateway_Call) Return(_a0 *serving.PutAiGatewayResponse, _a1 error) *MockServingEndpointsInterface_PutAiGateway_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_PutAiGateway_Call) RunAndReturn(run func(context.Context, serving.PutAiGatewayRequest) (*serving.PutAiGatewayResponse, error)) *MockServingEndpointsInterface_PutAiGateway_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Query provides a mock function with given fields: ctx, request
 func (_m *MockServingEndpointsInterface) Query(ctx context.Context, request serving.QueryEndpointInput) (*serving.QueryEndpointResponse, error) {
 	ret := _m.Called(ctx, request)

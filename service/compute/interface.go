@@ -130,6 +130,12 @@ type ClustersService interface {
 	// If Databricks acquires at least 85% of the requested on-demand nodes,
 	// cluster creation will succeed. Otherwise the cluster will terminate with
 	// an informative error message.
+	//
+	// Rather than authoring the cluster's JSON definition from scratch,
+	// Databricks recommends filling out the [create compute UI] and then
+	// copying the generated JSON definition from the UI.
+	//
+	// [create compute UI]: https://docs.databricks.com/compute/configure.html
 	Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error)
 
 	// Terminate cluster.
@@ -554,6 +560,52 @@ type LibrariesService interface {
 	// uninstalled until the cluster is restarted. A request to uninstall a
 	// library that is not currently installed is ignored.
 	Uninstall(ctx context.Context, request UninstallLibraries) error
+}
+
+// The policy compliance APIs allow you to view and manage the policy compliance
+// status of clusters in your workspace.
+//
+// A cluster is compliant with its policy if its configuration satisfies all its
+// policy rules. Clusters could be out of compliance if their policy was updated
+// after the cluster was last edited.
+//
+// The get and list compliance APIs allow you to view the policy compliance
+// status of a cluster. The enforce compliance API allows you to update a
+// cluster to be compliant with the current version of its policy.
+type PolicyComplianceForClustersService interface {
+
+	// Enforce cluster policy compliance.
+	//
+	// Updates a cluster to be compliant with the current version of its policy.
+	// A cluster can be updated if it is in a `RUNNING` or `TERMINATED` state.
+	//
+	// If a cluster is updated while in a `RUNNING` state, it will be restarted
+	// so that the new attributes can take effect.
+	//
+	// If a cluster is updated while in a `TERMINATED` state, it will remain
+	// `TERMINATED`. The next time the cluster is started, the new attributes
+	// will take effect.
+	//
+	// Clusters created by the Databricks Jobs, DLT, or Models services cannot
+	// be enforced by this API. Instead, use the "Enforce job policy compliance"
+	// API to enforce policy compliance on jobs.
+	EnforceCompliance(ctx context.Context, request EnforceClusterComplianceRequest) (*EnforceClusterComplianceResponse, error)
+
+	// Get cluster policy compliance.
+	//
+	// Returns the policy compliance status of a cluster. Clusters could be out
+	// of compliance if their policy was updated after the cluster was last
+	// edited.
+	GetCompliance(ctx context.Context, request GetClusterComplianceRequest) (*GetClusterComplianceResponse, error)
+
+	// List cluster policy compliance.
+	//
+	// Returns the policy compliance status of all clusters that use a given
+	// policy. Clusters could be out of compliance if their policy was updated
+	// after the cluster was last edited.
+	//
+	// Use ListComplianceAll() to get all ClusterCompliance instances, which will iterate over every result page.
+	ListCompliance(ctx context.Context, request ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error)
 }
 
 // View available policy families. A policy family contains a policy definition

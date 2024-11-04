@@ -20,6 +20,100 @@ func (_m *MockSettingsInterface) EXPECT() *MockSettingsInterface_Expecter {
 	return &MockSettingsInterface_Expecter{mock: &_m.Mock}
 }
 
+// AibiDashboardEmbeddingAccessPolicy provides a mock function with given fields:
+func (_m *MockSettingsInterface) AibiDashboardEmbeddingAccessPolicy() settings.AibiDashboardEmbeddingAccessPolicyInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for AibiDashboardEmbeddingAccessPolicy")
+	}
+
+	var r0 settings.AibiDashboardEmbeddingAccessPolicyInterface
+	if rf, ok := ret.Get(0).(func() settings.AibiDashboardEmbeddingAccessPolicyInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.AibiDashboardEmbeddingAccessPolicyInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_AibiDashboardEmbeddingAccessPolicy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AibiDashboardEmbeddingAccessPolicy'
+type MockSettingsInterface_AibiDashboardEmbeddingAccessPolicy_Call struct {
+	*mock.Call
+}
+
+// AibiDashboardEmbeddingAccessPolicy is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) AibiDashboardEmbeddingAccessPolicy() *MockSettingsInterface_AibiDashboardEmbeddingAccessPolicy_Call {
+	return &MockSettingsInterface_AibiDashboardEmbeddingAccessPolicy_Call{Call: _e.mock.On("AibiDashboardEmbeddingAccessPolicy")}
+}
+
+func (_c *MockSettingsInterface_AibiDashboardEmbeddingAccessPolicy_Call) Run(run func()) *MockSettingsInterface_AibiDashboardEmbeddingAccessPolicy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_AibiDashboardEmbeddingAccessPolicy_Call) Return(_a0 settings.AibiDashboardEmbeddingAccessPolicyInterface) *MockSettingsInterface_AibiDashboardEmbeddingAccessPolicy_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_AibiDashboardEmbeddingAccessPolicy_Call) RunAndReturn(run func() settings.AibiDashboardEmbeddingAccessPolicyInterface) *MockSettingsInterface_AibiDashboardEmbeddingAccessPolicy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// AibiDashboardEmbeddingApprovedDomains provides a mock function with given fields:
+func (_m *MockSettingsInterface) AibiDashboardEmbeddingApprovedDomains() settings.AibiDashboardEmbeddingApprovedDomainsInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for AibiDashboardEmbeddingApprovedDomains")
+	}
+
+	var r0 settings.AibiDashboardEmbeddingApprovedDomainsInterface
+	if rf, ok := ret.Get(0).(func() settings.AibiDashboardEmbeddingApprovedDomainsInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.AibiDashboardEmbeddingApprovedDomainsInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_AibiDashboardEmbeddingApprovedDomains_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AibiDashboardEmbeddingApprovedDomains'
+type MockSettingsInterface_AibiDashboardEmbeddingApprovedDomains_Call struct {
+	*mock.Call
+}
+
+// AibiDashboardEmbeddingApprovedDomains is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) AibiDashboardEmbeddingApprovedDomains() *MockSettingsInterface_AibiDashboardEmbeddingApprovedDomains_Call {
+	return &MockSettingsInterface_AibiDashboardEmbeddingApprovedDomains_Call{Call: _e.mock.On("AibiDashboardEmbeddingApprovedDomains")}
+}
+
+func (_c *MockSettingsInterface_AibiDashboardEmbeddingApprovedDomains_Call) Run(run func()) *MockSettingsInterface_AibiDashboardEmbeddingApprovedDomains_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_AibiDashboardEmbeddingApprovedDomains_Call) Return(_a0 settings.AibiDashboardEmbeddingApprovedDomainsInterface) *MockSettingsInterface_AibiDashboardEmbeddingApprovedDomains_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_AibiDashboardEmbeddingApprovedDomains_Call) RunAndReturn(run func() settings.AibiDashboardEmbeddingApprovedDomainsInterface) *MockSettingsInterface_AibiDashboardEmbeddingApprovedDomains_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // AutomaticClusterUpdate provides a mock function with given fields:
 func (_m *MockSettingsInterface) AutomaticClusterUpdate() settings.AutomaticClusterUpdateInterface {
 	ret := _m.Called()
@@ -157,6 +251,100 @@ func (_c *MockSettingsInterface_DefaultNamespace_Call) Return(_a0 settings.Defau
 }
 
 func (_c *MockSettingsInterface_DefaultNamespace_Call) RunAndReturn(run func() settings.DefaultNamespaceInterface) *MockSettingsInterface_DefaultNamespace_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DisableLegacyAccess provides a mock function with given fields:
+func (_m *MockSettingsInterface) DisableLegacyAccess() settings.DisableLegacyAccessInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for DisableLegacyAccess")
+	}
+
+	var r0 settings.DisableLegacyAccessInterface
+	if rf, ok := ret.Get(0).(func() settings.DisableLegacyAccessInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.DisableLegacyAccessInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_DisableLegacyAccess_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DisableLegacyAccess'
+type MockSettingsInterface_DisableLegacyAccess_Call struct {
+	*mock.Call
+}
+
+// DisableLegacyAccess is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) DisableLegacyAccess() *MockSettingsInterface_DisableLegacyAccess_Call {
+	return &MockSettingsInterface_DisableLegacyAccess_Call{Call: _e.mock.On("DisableLegacyAccess")}
+}
+
+func (_c *MockSettingsInterface_DisableLegacyAccess_Call) Run(run func()) *MockSettingsInterface_DisableLegacyAccess_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_DisableLegacyAccess_Call) Return(_a0 settings.DisableLegacyAccessInterface) *MockSettingsInterface_DisableLegacyAccess_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_DisableLegacyAccess_Call) RunAndReturn(run func() settings.DisableLegacyAccessInterface) *MockSettingsInterface_DisableLegacyAccess_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DisableLegacyDbfs provides a mock function with given fields:
+func (_m *MockSettingsInterface) DisableLegacyDbfs() settings.DisableLegacyDbfsInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for DisableLegacyDbfs")
+	}
+
+	var r0 settings.DisableLegacyDbfsInterface
+	if rf, ok := ret.Get(0).(func() settings.DisableLegacyDbfsInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.DisableLegacyDbfsInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_DisableLegacyDbfs_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DisableLegacyDbfs'
+type MockSettingsInterface_DisableLegacyDbfs_Call struct {
+	*mock.Call
+}
+
+// DisableLegacyDbfs is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) DisableLegacyDbfs() *MockSettingsInterface_DisableLegacyDbfs_Call {
+	return &MockSettingsInterface_DisableLegacyDbfs_Call{Call: _e.mock.On("DisableLegacyDbfs")}
+}
+
+func (_c *MockSettingsInterface_DisableLegacyDbfs_Call) Run(run func()) *MockSettingsInterface_DisableLegacyDbfs_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_DisableLegacyDbfs_Call) Return(_a0 settings.DisableLegacyDbfsInterface) *MockSettingsInterface_DisableLegacyDbfs_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_DisableLegacyDbfs_Call) RunAndReturn(run func() settings.DisableLegacyDbfsInterface) *MockSettingsInterface_DisableLegacyDbfs_Call {
 	_c.Call.Return(run)
 	return _c
 }

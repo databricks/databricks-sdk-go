@@ -64,6 +64,9 @@ func NewMockAccountClient(t interface {
 	mockCspEnablementAccount := settings.NewMockCspEnablementAccountInterface(t)
 	mockAccountSettingsAPI.On("CspEnablementAccount").Return(mockCspEnablementAccount).Maybe()
 
+	mockDisableLegacyFeatures := settings.NewMockDisableLegacyFeaturesInterface(t)
+	mockAccountSettingsAPI.On("DisableLegacyFeatures").Return(mockDisableLegacyFeatures).Maybe()
+
 	mockEsmEnablementAccount := settings.NewMockEsmEnablementAccountInterface(t)
 	mockAccountSettingsAPI.On("EsmEnablementAccount").Return(mockEsmEnablementAccount).Maybe()
 
@@ -77,6 +80,14 @@ func (m *MockAccountClient) GetMockCspEnablementAccountAPI() *settings.MockCspEn
 	api, ok := m.GetMockAccountSettingsAPI().CspEnablementAccount().(*settings.MockCspEnablementAccountInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected CspEnablementAccount to be *settings.MockCspEnablementAccountInterface, actual was %T", m.GetMockAccountSettingsAPI().CspEnablementAccount()))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockDisableLegacyFeaturesAPI() *settings.MockDisableLegacyFeaturesInterface {
+	api, ok := m.GetMockAccountSettingsAPI().DisableLegacyFeatures().(*settings.MockDisableLegacyFeaturesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DisableLegacyFeatures to be *settings.MockDisableLegacyFeaturesInterface, actual was %T", m.GetMockAccountSettingsAPI().DisableLegacyFeatures()))
 	}
 	return api
 }

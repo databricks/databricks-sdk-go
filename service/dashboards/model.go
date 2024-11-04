@@ -9,58 +9,27 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
 
+// Create dashboard
 type CreateDashboardRequest struct {
-	// The display name of the dashboard.
-	DisplayName string `json:"display_name"`
-	// The workspace path of the folder containing the dashboard. Includes
-	// leading slash and no trailing slash.
-	ParentPath string `json:"parent_path,omitempty"`
-	// The contents of the dashboard in serialized string form.
-	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
-	// The warehouse ID used to run the dashboard.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-"`
+	Dashboard *Dashboard `json:"dashboard,omitempty"`
 }
 
-func (s *CreateDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
+// Create dashboard schedule
 type CreateScheduleRequest struct {
-	// The cron expression describing the frequency of the periodic refresh for
-	// this schedule.
-	CronSchedule CronSchedule `json:"cron_schedule"`
 	// UUID identifying the dashboard to which the schedule belongs.
 	DashboardId string `json:"-" url:"-"`
-	// The display name for schedule.
-	DisplayName string `json:"display_name,omitempty"`
-	// The status indicates whether this schedule is paused or not.
-	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	Schedule *Schedule `json:"schedule,omitempty"`
 }
 
-func (s *CreateScheduleRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateScheduleRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
+// Create schedule subscription
 type CreateSubscriptionRequest struct {
 	// UUID identifying the dashboard to which the subscription belongs.
 	DashboardId string `json:"-" url:"-"`
 	// UUID identifying the schedule to which the subscription belongs.
 	ScheduleId string `json:"-" url:"-"`
-	// Subscriber details for users and destinations to be added as subscribers
-	// to the schedule.
-	Subscriber Subscriber `json:"subscriber"`
+
+	Subscription *Subscription `json:"subscription,omitempty"`
 }
 
 type CronSchedule struct {
@@ -84,18 +53,29 @@ type Dashboard struct {
 	// The display name of the dashboard.
 	DisplayName string `json:"display_name,omitempty"`
 	// The etag for the dashboard. Can be optionally provided on updates to
-	// ensure that the dashboard has not been modified since the last read.
+	// ensure that the dashboard has not been modified since the last read. This
+	// field is excluded in List Dashboards responses.
 	Etag string `json:"etag,omitempty"`
 	// The state of the dashboard resource. Used for tracking trashed status.
 	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
 	// The workspace path of the folder containing the dashboard. Includes
-	// leading slash and no trailing slash.
+	// leading slash and no trailing slash. This field is excluded in List
+	// Dashboards responses.
 	ParentPath string `json:"parent_path,omitempty"`
 	// The workspace path of the dashboard asset, including the file name.
+	// Exported dashboards always have the file extension `.lvdash.json`. This
+	// field is excluded in List Dashboards responses.
 	Path string `json:"path,omitempty"`
-	// The contents of the dashboard in serialized string form.
+	// The contents of the dashboard in serialized string form. This field is
+	// excluded in List Dashboards responses. Use the [get dashboard API] to
+	// retrieve an example response, which includes the `serialized_dashboard`
+	// field. This field provides the structure of the JSON string that
+	// represents the dashboard's layout and components.
+	//
+	// [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
 	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
-	// The timestamp of when the dashboard was last updated by the user.
+	// The timestamp of when the dashboard was last updated by the user. This
+	// field is excluded in List Dashboards responses.
 	UpdateTime string `json:"update_time,omitempty"`
 	// The warehouse ID used to run the dashboard.
 	WarehouseId string `json:"warehouse_id,omitempty"`
@@ -186,16 +166,6 @@ func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
 type DeleteSubscriptionResponse struct {
 }
 
-// Execute SQL query in a conversation message
-type ExecuteMessageQueryRequest struct {
-	// Conversation ID
-	ConversationId string `json:"-" url:"-"`
-	// Message ID
-	MessageId string `json:"-" url:"-"`
-	// Genie space ID
-	SpaceId string `json:"-" url:"-"`
-}
-
 // Genie AI Response
 type GenieAttachment struct {
 	Query *QueryAttachment `json:"query,omitempty"`
@@ -234,6 +204,16 @@ type GenieCreateConversationMessageRequest struct {
 	// The ID associated with the conversation.
 	ConversationId string `json:"-" url:"-"`
 	// The ID associated with the Genie space where the conversation is started.
+	SpaceId string `json:"-" url:"-"`
+}
+
+// Execute SQL query in a conversation message
+type GenieExecuteMessageQueryRequest struct {
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
 	SpaceId string `json:"-" url:"-"`
 }
 
@@ -285,9 +265,10 @@ type GenieMessage struct {
 	// Genie space ID
 	SpaceId string `json:"space_id"`
 	// MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching
-	// metadata from the data sources. * `ASKING_AI`: Waiting for the LLM to
-	// respond to the users question. * `EXECUTING_QUERY`: Executing AI provided
-	// SQL query. Get the SQL query result by calling
+	// metadata from the data sources. * `FILTERING_CONTEXT`: Running smart
+	// context step to determine relevant context. * `ASKING_AI`: Waiting for
+	// the LLM to respond to the users question. * `EXECUTING_QUERY`: Executing
+	// AI provided SQL query. Get the SQL query result by calling
 	// [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
 	// **Important: The message status will stay in the `EXECUTING_QUERY` until
 	// a client calls
@@ -580,6 +561,10 @@ const MessageErrorTypeMessageDeletedWhileExecutingException MessageErrorType = `
 
 const MessageErrorTypeMessageUpdatedWhileExecutingException MessageErrorType = `MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION`
 
+const MessageErrorTypeNoDeploymentsAvailableToWorkspace MessageErrorType = `NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE`
+
+const MessageErrorTypeNoQueryToVisualizeException MessageErrorType = `NO_QUERY_TO_VISUALIZE_EXCEPTION`
+
 const MessageErrorTypeNoTablesToQueryException MessageErrorType = `NO_TABLES_TO_QUERY_EXCEPTION`
 
 const MessageErrorTypeRateLimitExceededGenericException MessageErrorType = `RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION`
@@ -614,11 +599,11 @@ func (f *MessageErrorType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MessageErrorType) Set(v string) error {
 	switch v {
-	case `BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION`, `CHAT_COMPLETION_CLIENT_EXCEPTION`, `CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION`, `CHAT_COMPLETION_NETWORK_EXCEPTION`, `CONTENT_FILTER_EXCEPTION`, `CONTEXT_EXCEEDED_EXCEPTION`, `COULD_NOT_GET_UC_SCHEMA_EXCEPTION`, `DEPLOYMENT_NOT_FOUND_EXCEPTION`, `FUNCTIONS_NOT_AVAILABLE_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION`, `FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION`, `GENERIC_CHAT_COMPLETION_EXCEPTION`, `GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION`, `GENERIC_SQL_EXEC_API_CALL_EXCEPTION`, `ILLEGAL_PARAMETER_DEFINITION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION`, `INVALID_CHAT_COMPLETION_JSON_EXCEPTION`, `INVALID_COMPLETION_REQUEST_EXCEPTION`, `INVALID_FUNCTION_CALL_EXCEPTION`, `INVALID_TABLE_IDENTIFIER_EXCEPTION`, `LOCAL_CONTEXT_EXCEEDED_EXCEPTION`, `MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION`, `NO_TABLES_TO_QUERY_EXCEPTION`, `RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION`, `RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION`, `REPLY_PROCESS_TIMEOUT_EXCEPTION`, `RETRYABLE_PROCESSING_EXCEPTION`, `SQL_EXECUTION_EXCEPTION`, `TABLES_MISSING_EXCEPTION`, `TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION`, `TOO_MANY_TABLES_EXCEPTION`, `UNEXPECTED_REPLY_PROCESS_EXCEPTION`, `UNKNOWN_AI_MODEL`, `WAREHOUSE_ACCESS_MISSING_EXCEPTION`, `WAREHOUSE_NOT_FOUND_EXCEPTION`:
+	case `BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION`, `CHAT_COMPLETION_CLIENT_EXCEPTION`, `CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION`, `CHAT_COMPLETION_NETWORK_EXCEPTION`, `CONTENT_FILTER_EXCEPTION`, `CONTEXT_EXCEEDED_EXCEPTION`, `COULD_NOT_GET_UC_SCHEMA_EXCEPTION`, `DEPLOYMENT_NOT_FOUND_EXCEPTION`, `FUNCTIONS_NOT_AVAILABLE_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION`, `FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION`, `GENERIC_CHAT_COMPLETION_EXCEPTION`, `GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION`, `GENERIC_SQL_EXEC_API_CALL_EXCEPTION`, `ILLEGAL_PARAMETER_DEFINITION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION`, `INVALID_CHAT_COMPLETION_JSON_EXCEPTION`, `INVALID_COMPLETION_REQUEST_EXCEPTION`, `INVALID_FUNCTION_CALL_EXCEPTION`, `INVALID_TABLE_IDENTIFIER_EXCEPTION`, `LOCAL_CONTEXT_EXCEEDED_EXCEPTION`, `MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION`, `NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE`, `NO_QUERY_TO_VISUALIZE_EXCEPTION`, `NO_TABLES_TO_QUERY_EXCEPTION`, `RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION`, `RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION`, `REPLY_PROCESS_TIMEOUT_EXCEPTION`, `RETRYABLE_PROCESSING_EXCEPTION`, `SQL_EXECUTION_EXCEPTION`, `TABLES_MISSING_EXCEPTION`, `TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION`, `TOO_MANY_TABLES_EXCEPTION`, `UNEXPECTED_REPLY_PROCESS_EXCEPTION`, `UNKNOWN_AI_MODEL`, `WAREHOUSE_ACCESS_MISSING_EXCEPTION`, `WAREHOUSE_NOT_FOUND_EXCEPTION`:
 		*f = MessageErrorType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION", "CHAT_COMPLETION_CLIENT_EXCEPTION", "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION", "CHAT_COMPLETION_NETWORK_EXCEPTION", "CONTENT_FILTER_EXCEPTION", "CONTEXT_EXCEEDED_EXCEPTION", "COULD_NOT_GET_UC_SCHEMA_EXCEPTION", "DEPLOYMENT_NOT_FOUND_EXCEPTION", "FUNCTIONS_NOT_AVAILABLE_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION", "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION", "GENERIC_CHAT_COMPLETION_EXCEPTION", "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION", "GENERIC_SQL_EXEC_API_CALL_EXCEPTION", "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION", "INVALID_CHAT_COMPLETION_JSON_EXCEPTION", "INVALID_COMPLETION_REQUEST_EXCEPTION", "INVALID_FUNCTION_CALL_EXCEPTION", "INVALID_TABLE_IDENTIFIER_EXCEPTION", "LOCAL_CONTEXT_EXCEEDED_EXCEPTION", "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION", "NO_TABLES_TO_QUERY_EXCEPTION", "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION", "RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION", "REPLY_PROCESS_TIMEOUT_EXCEPTION", "RETRYABLE_PROCESSING_EXCEPTION", "SQL_EXECUTION_EXCEPTION", "TABLES_MISSING_EXCEPTION", "TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION", "TOO_MANY_TABLES_EXCEPTION", "UNEXPECTED_REPLY_PROCESS_EXCEPTION", "UNKNOWN_AI_MODEL", "WAREHOUSE_ACCESS_MISSING_EXCEPTION", "WAREHOUSE_NOT_FOUND_EXCEPTION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION", "CHAT_COMPLETION_CLIENT_EXCEPTION", "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION", "CHAT_COMPLETION_NETWORK_EXCEPTION", "CONTENT_FILTER_EXCEPTION", "CONTEXT_EXCEEDED_EXCEPTION", "COULD_NOT_GET_UC_SCHEMA_EXCEPTION", "DEPLOYMENT_NOT_FOUND_EXCEPTION", "FUNCTIONS_NOT_AVAILABLE_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION", "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION", "GENERIC_CHAT_COMPLETION_EXCEPTION", "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION", "GENERIC_SQL_EXEC_API_CALL_EXCEPTION", "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION", "INVALID_CHAT_COMPLETION_JSON_EXCEPTION", "INVALID_COMPLETION_REQUEST_EXCEPTION", "INVALID_FUNCTION_CALL_EXCEPTION", "INVALID_TABLE_IDENTIFIER_EXCEPTION", "LOCAL_CONTEXT_EXCEEDED_EXCEPTION", "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION", "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE", "NO_QUERY_TO_VISUALIZE_EXCEPTION", "NO_TABLES_TO_QUERY_EXCEPTION", "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION", "RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION", "REPLY_PROCESS_TIMEOUT_EXCEPTION", "RETRYABLE_PROCESSING_EXCEPTION", "SQL_EXECUTION_EXCEPTION", "TABLES_MISSING_EXCEPTION", "TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION", "TOO_MANY_TABLES_EXCEPTION", "UNEXPECTED_REPLY_PROCESS_EXCEPTION", "UNKNOWN_AI_MODEL", "WAREHOUSE_ACCESS_MISSING_EXCEPTION", "WAREHOUSE_NOT_FOUND_EXCEPTION"`, v)
 	}
 }
 
@@ -628,9 +613,10 @@ func (f *MessageErrorType) Type() string {
 }
 
 // MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching
-// metadata from the data sources. * `ASKING_AI`: Waiting for the LLM to respond
-// to the users question. * `EXECUTING_QUERY`: Executing AI provided SQL query.
-// Get the SQL query result by calling
+// metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context
+// step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to
+// respond to the users question. * `EXECUTING_QUERY`: Executing AI provided SQL
+// query. Get the SQL query result by calling
 // [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
 // **Important: The message status will stay in the `EXECUTING_QUERY` until a
 // client calls [getMessageQueryResult](:method:genie/getMessageQueryResult)**.
@@ -667,6 +653,9 @@ const MessageStatusFailed MessageStatus = `FAILED`
 // Fetching metadata from the data sources.
 const MessageStatusFetchingMetadata MessageStatus = `FETCHING_METADATA`
 
+// Running smart context step to determine relevant context.
+const MessageStatusFilteringContext MessageStatus = `FILTERING_CONTEXT`
+
 // SQL result is not available anymore. The user needs to execute the query
 // again.
 const MessageStatusQueryResultExpired MessageStatus = `QUERY_RESULT_EXPIRED`
@@ -682,11 +671,11 @@ func (f *MessageStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MessageStatus) Set(v string) error {
 	switch v {
-	case `ASKING_AI`, `CANCELLED`, `COMPLETED`, `EXECUTING_QUERY`, `FAILED`, `FETCHING_METADATA`, `QUERY_RESULT_EXPIRED`, `SUBMITTED`:
+	case `ASKING_AI`, `CANCELLED`, `COMPLETED`, `EXECUTING_QUERY`, `FAILED`, `FETCHING_METADATA`, `FILTERING_CONTEXT`, `QUERY_RESULT_EXPIRED`, `SUBMITTED`:
 		*f = MessageStatus(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ASKING_AI", "CANCELLED", "COMPLETED", "EXECUTING_QUERY", "FAILED", "FETCHING_METADATA", "QUERY_RESULT_EXPIRED", "SUBMITTED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ASKING_AI", "CANCELLED", "COMPLETED", "EXECUTING_QUERY", "FAILED", "FETCHING_METADATA", "FILTERING_CONTEXT", "QUERY_RESULT_EXPIRED", "SUBMITTED"`, v)
 	}
 }
 
@@ -788,6 +777,8 @@ func (s QueryAttachment) MarshalJSON() ([]byte, error) {
 }
 
 type Result struct {
+	// If result is truncated
+	IsTruncated bool `json:"is_truncated,omitempty"`
 	// Row count of the result
 	RowCount int64 `json:"row_count,omitempty"`
 	// Statement Execution API statement id. Use [Get status, manifest, and
@@ -953,54 +944,19 @@ type UnpublishDashboardRequest struct {
 type UnpublishDashboardResponse struct {
 }
 
+// Update dashboard
 type UpdateDashboardRequest struct {
+	Dashboard *Dashboard `json:"dashboard,omitempty"`
 	// UUID identifying the dashboard.
 	DashboardId string `json:"-" url:"-"`
-	// The display name of the dashboard.
-	DisplayName string `json:"display_name,omitempty"`
-	// The etag for the dashboard. Can be optionally provided on updates to
-	// ensure that the dashboard has not been modified since the last read.
-	Etag string `json:"etag,omitempty"`
-	// The contents of the dashboard in serialized string form.
-	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
-	// The warehouse ID used to run the dashboard.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-"`
 }
 
-func (s *UpdateDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
+// Update dashboard schedule
 type UpdateScheduleRequest struct {
-	// The cron expression describing the frequency of the periodic refresh for
-	// this schedule.
-	CronSchedule CronSchedule `json:"cron_schedule"`
 	// UUID identifying the dashboard to which the schedule belongs.
 	DashboardId string `json:"-" url:"-"`
-	// The display name for schedule.
-	DisplayName string `json:"display_name,omitempty"`
-	// The etag for the schedule. Must be left empty on create, must be provided
-	// on updates to ensure that the schedule has not been modified since the
-	// last read, and can be optionally provided on delete.
-	Etag string `json:"etag,omitempty"`
-	// The status indicates whether this schedule is paused or not.
-	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
+
+	Schedule *Schedule `json:"schedule,omitempty"`
 	// UUID identifying the schedule.
 	ScheduleId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateScheduleRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateScheduleRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }

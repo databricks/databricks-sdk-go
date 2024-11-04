@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -269,6 +269,14 @@ type AccountSettingsInterface interface {
 	// compliance security profile enabled by default.
 	CspEnablementAccount() CspEnablementAccountInterface
 
+	// Disable legacy features for new Databricks workspaces.
+	//
+	// For newly created workspaces: 1. Disables the use of DBFS root and
+	// mounts. 2. Hive Metastore will not be provisioned. 3. Disables the use of
+	// ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
+	// prior to 13.3LTS.
+	DisableLegacyFeatures() DisableLegacyFeaturesInterface
+
 	// The enhanced security monitoring setting at the account level controls
 	// whether to enable the feature on new workspaces. By default, this
 	// account-level setting is disabled for new workspaces. After workspace
@@ -297,6 +305,8 @@ func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 
 		cspEnablementAccount: NewCspEnablementAccount(client),
 
+		disableLegacyFeatures: NewDisableLegacyFeatures(client),
+
 		esmEnablementAccount: NewEsmEnablementAccount(client),
 
 		personalCompute: NewPersonalCompute(client),
@@ -316,6 +326,14 @@ type AccountSettingsAPI struct {
 	// This settings can be disabled so that new workspaces do not have
 	// compliance security profile enabled by default.
 	cspEnablementAccount CspEnablementAccountInterface
+
+	// Disable legacy features for new Databricks workspaces.
+	//
+	// For newly created workspaces: 1. Disables the use of DBFS root and
+	// mounts. 2. Hive Metastore will not be provisioned. 3. Disables the use of
+	// ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
+	// prior to 13.3LTS.
+	disableLegacyFeatures DisableLegacyFeaturesInterface
 
 	// The enhanced security monitoring setting at the account level controls
 	// whether to enable the feature on new workspaces. By default, this
@@ -341,12 +359,76 @@ func (a *AccountSettingsAPI) CspEnablementAccount() CspEnablementAccountInterfac
 	return a.cspEnablementAccount
 }
 
+func (a *AccountSettingsAPI) DisableLegacyFeatures() DisableLegacyFeaturesInterface {
+	return a.disableLegacyFeatures
+}
+
 func (a *AccountSettingsAPI) EsmEnablementAccount() EsmEnablementAccountInterface {
 	return a.esmEnablementAccount
 }
 
 func (a *AccountSettingsAPI) PersonalCompute() PersonalComputeInterface {
 	return a.personalCompute
+}
+
+type AibiDashboardEmbeddingAccessPolicyInterface interface {
+
+	// Retrieve the AI/BI dashboard embedding access policy.
+	//
+	// Retrieves the AI/BI dashboard embedding access policy. The default setting is
+	// ALLOW_APPROVED_DOMAINS, permitting AI/BI dashboards to be embedded on
+	// approved domains.
+	Get(ctx context.Context, request GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error)
+
+	// Update the AI/BI dashboard embedding access policy.
+	//
+	// Updates the AI/BI dashboard embedding access policy at the workspace level.
+	Update(ctx context.Context, request UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error)
+}
+
+func NewAibiDashboardEmbeddingAccessPolicy(client *client.DatabricksClient) *AibiDashboardEmbeddingAccessPolicyAPI {
+	return &AibiDashboardEmbeddingAccessPolicyAPI{
+		aibiDashboardEmbeddingAccessPolicyImpl: aibiDashboardEmbeddingAccessPolicyImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls whether AI/BI published dashboard embedding is enabled,
+// conditionally enabled, or disabled at the workspace level. By default, this
+// setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
+type AibiDashboardEmbeddingAccessPolicyAPI struct {
+	aibiDashboardEmbeddingAccessPolicyImpl
+}
+
+type AibiDashboardEmbeddingApprovedDomainsInterface interface {
+
+	// Retrieve the list of domains approved to host embedded AI/BI dashboards.
+	//
+	// Retrieves the list of domains approved to host embedded AI/BI dashboards.
+	Get(ctx context.Context, request GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error)
+
+	// Update the list of domains approved to host embedded AI/BI dashboards.
+	//
+	// Updates the list of domains approved to host embedded AI/BI dashboards. This
+	// update will fail if the current workspace access policy is not
+	// ALLOW_APPROVED_DOMAINS.
+	Update(ctx context.Context, request UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error)
+}
+
+func NewAibiDashboardEmbeddingApprovedDomains(client *client.DatabricksClient) *AibiDashboardEmbeddingApprovedDomainsAPI {
+	return &AibiDashboardEmbeddingApprovedDomainsAPI{
+		aibiDashboardEmbeddingApprovedDomainsImpl: aibiDashboardEmbeddingApprovedDomainsImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls the list of domains approved to host the embedded AI/BI dashboards.
+// The approved domains list can't be mutated when the current access policy is
+// not set to ALLOW_APPROVED_DOMAINS.
+type AibiDashboardEmbeddingApprovedDomainsAPI struct {
+	aibiDashboardEmbeddingApprovedDomainsImpl
 }
 
 type AutomaticClusterUpdateInterface interface {
@@ -520,6 +602,113 @@ func NewDefaultNamespace(client *client.DatabricksClient) *DefaultNamespaceAPI {
 // Catalog-enabled compute.
 type DefaultNamespaceAPI struct {
 	defaultNamespaceImpl
+}
+
+type DisableLegacyAccessInterface interface {
+
+	// Delete Legacy Access Disablement Status.
+	//
+	// Deletes legacy access disablement status.
+	Delete(ctx context.Context, request DeleteDisableLegacyAccessRequest) (*DeleteDisableLegacyAccessResponse, error)
+
+	// Retrieve Legacy Access Disablement Status.
+	//
+	// Retrieves legacy access disablement Status.
+	Get(ctx context.Context, request GetDisableLegacyAccessRequest) (*DisableLegacyAccess, error)
+
+	// Update Legacy Access Disablement Status.
+	//
+	// Updates legacy access disablement status.
+	Update(ctx context.Context, request UpdateDisableLegacyAccessRequest) (*DisableLegacyAccess, error)
+}
+
+func NewDisableLegacyAccess(client *client.DatabricksClient) *DisableLegacyAccessAPI {
+	return &DisableLegacyAccessAPI{
+		disableLegacyAccessImpl: disableLegacyAccessImpl{
+			client: client,
+		},
+	}
+}
+
+// 'Disabling legacy access' has the following impacts:
+//
+// 1. Disables direct access to the Hive Metastore. However, you can still
+// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode (docs
+// link) on any External Location access from the workspace. 3. Alters DBFS path
+// access to use External Location permissions in place of legacy credentials.
+// 4. Enforces Unity Catalog access on all path based access.
+type DisableLegacyAccessAPI struct {
+	disableLegacyAccessImpl
+}
+
+type DisableLegacyDbfsInterface interface {
+
+	// Delete the disable legacy DBFS setting.
+	//
+	// Deletes the disable legacy DBFS setting for a workspace, reverting back to
+	// the default.
+	Delete(ctx context.Context, request DeleteDisableLegacyDbfsRequest) (*DeleteDisableLegacyDbfsResponse, error)
+
+	// Get the disable legacy DBFS setting.
+	//
+	// Gets the disable legacy DBFS setting.
+	Get(ctx context.Context, request GetDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error)
+
+	// Update the disable legacy DBFS setting.
+	//
+	// Updates the disable legacy DBFS setting for the workspace.
+	Update(ctx context.Context, request UpdateDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error)
+}
+
+func NewDisableLegacyDbfs(client *client.DatabricksClient) *DisableLegacyDbfsAPI {
+	return &DisableLegacyDbfsAPI{
+		disableLegacyDbfsImpl: disableLegacyDbfsImpl{
+			client: client,
+		},
+	}
+}
+
+// When this setting is on, access to DBFS root and DBFS mounts is disallowed
+// (as well as creation of new mounts). When the setting is off, all DBFS
+// functionality is enabled
+type DisableLegacyDbfsAPI struct {
+	disableLegacyDbfsImpl
+}
+
+type DisableLegacyFeaturesInterface interface {
+
+	// Delete the disable legacy features setting.
+	//
+	// Deletes the disable legacy features setting.
+	Delete(ctx context.Context, request DeleteDisableLegacyFeaturesRequest) (*DeleteDisableLegacyFeaturesResponse, error)
+
+	// Get the disable legacy features setting.
+	//
+	// Gets the value of the disable legacy features setting.
+	Get(ctx context.Context, request GetDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
+
+	// Update the disable legacy features setting.
+	//
+	// Updates the value of the disable legacy features setting.
+	Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
+}
+
+func NewDisableLegacyFeatures(client *client.DatabricksClient) *DisableLegacyFeaturesAPI {
+	return &DisableLegacyFeaturesAPI{
+		disableLegacyFeaturesImpl: disableLegacyFeaturesImpl{
+			client: client,
+		},
+	}
+}
+
+// Disable legacy features for new Databricks workspaces.
+//
+// For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2.
+// Hive Metastore will not be provisioned. 3. Disables the use of
+// ‘No-isolation clusters’. 4. Disables Databricks Runtime versions prior to
+// 13.3LTS.
+type DisableLegacyFeaturesAPI struct {
+	disableLegacyFeaturesImpl
 }
 
 type EnhancedSecurityMonitoringInterface interface {
@@ -1300,6 +1489,16 @@ type RestrictWorkspaceAdminsAPI struct {
 
 type SettingsInterface interface {
 
+	// Controls whether AI/BI published dashboard embedding is enabled,
+	// conditionally enabled, or disabled at the workspace level. By default,
+	// this setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
+	AibiDashboardEmbeddingAccessPolicy() AibiDashboardEmbeddingAccessPolicyInterface
+
+	// Controls the list of domains approved to host the embedded AI/BI
+	// dashboards. The approved domains list can't be mutated when the current
+	// access policy is not set to ALLOW_APPROVED_DOMAINS.
+	AibiDashboardEmbeddingApprovedDomains() AibiDashboardEmbeddingApprovedDomainsInterface
+
 	// Controls whether automatic cluster update is enabled for the current
 	// workspace. By default, it is turned off.
 	AutomaticClusterUpdate() AutomaticClusterUpdateInterface
@@ -1325,6 +1524,20 @@ type SettingsInterface interface {
 	// effect. Additionally, the default namespace only applies when using Unity
 	// Catalog-enabled compute.
 	DefaultNamespace() DefaultNamespaceInterface
+
+	// 'Disabling legacy access' has the following impacts:
+	//
+	// 1. Disables direct access to the Hive Metastore. However, you can still
+	// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode
+	// (docs link) on any External Location access from the workspace. 3. Alters
+	// DBFS path access to use External Location permissions in place of legacy
+	// credentials. 4. Enforces Unity Catalog access on all path based access.
+	DisableLegacyAccess() DisableLegacyAccessInterface
+
+	// When this setting is on, access to DBFS root and DBFS mounts is
+	// disallowed (as well as creation of new mounts). When the setting is off,
+	// all DBFS functionality is enabled
+	DisableLegacyDbfs() DisableLegacyDbfsInterface
 
 	// Controls whether enhanced security monitoring is enabled for the current
 	// workspace. If the compliance security profile is enabled, this is
@@ -1357,11 +1570,19 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 			client: client,
 		},
 
+		aibiDashboardEmbeddingAccessPolicy: NewAibiDashboardEmbeddingAccessPolicy(client),
+
+		aibiDashboardEmbeddingApprovedDomains: NewAibiDashboardEmbeddingApprovedDomains(client),
+
 		automaticClusterUpdate: NewAutomaticClusterUpdate(client),
 
 		complianceSecurityProfile: NewComplianceSecurityProfile(client),
 
 		defaultNamespace: NewDefaultNamespace(client),
+
+		disableLegacyAccess: NewDisableLegacyAccess(client),
+
+		disableLegacyDbfs: NewDisableLegacyDbfs(client),
 
 		enhancedSecurityMonitoring: NewEnhancedSecurityMonitoring(client),
 
@@ -1373,6 +1594,16 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 // level.
 type SettingsAPI struct {
 	settingsImpl
+
+	// Controls whether AI/BI published dashboard embedding is enabled,
+	// conditionally enabled, or disabled at the workspace level. By default,
+	// this setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
+	aibiDashboardEmbeddingAccessPolicy AibiDashboardEmbeddingAccessPolicyInterface
+
+	// Controls the list of domains approved to host the embedded AI/BI
+	// dashboards. The approved domains list can't be mutated when the current
+	// access policy is not set to ALLOW_APPROVED_DOMAINS.
+	aibiDashboardEmbeddingApprovedDomains AibiDashboardEmbeddingApprovedDomainsInterface
 
 	// Controls whether automatic cluster update is enabled for the current
 	// workspace. By default, it is turned off.
@@ -1400,6 +1631,20 @@ type SettingsAPI struct {
 	// Catalog-enabled compute.
 	defaultNamespace DefaultNamespaceInterface
 
+	// 'Disabling legacy access' has the following impacts:
+	//
+	// 1. Disables direct access to the Hive Metastore. However, you can still
+	// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode
+	// (docs link) on any External Location access from the workspace. 3. Alters
+	// DBFS path access to use External Location permissions in place of legacy
+	// credentials. 4. Enforces Unity Catalog access on all path based access.
+	disableLegacyAccess DisableLegacyAccessInterface
+
+	// When this setting is on, access to DBFS root and DBFS mounts is
+	// disallowed (as well as creation of new mounts). When the setting is off,
+	// all DBFS functionality is enabled
+	disableLegacyDbfs DisableLegacyDbfsInterface
+
 	// Controls whether enhanced security monitoring is enabled for the current
 	// workspace. If the compliance security profile is enabled, this is
 	// automatically enabled. By default, it is disabled. However, if the
@@ -1425,6 +1670,14 @@ type SettingsAPI struct {
 	restrictWorkspaceAdmins RestrictWorkspaceAdminsInterface
 }
 
+func (a *SettingsAPI) AibiDashboardEmbeddingAccessPolicy() AibiDashboardEmbeddingAccessPolicyInterface {
+	return a.aibiDashboardEmbeddingAccessPolicy
+}
+
+func (a *SettingsAPI) AibiDashboardEmbeddingApprovedDomains() AibiDashboardEmbeddingApprovedDomainsInterface {
+	return a.aibiDashboardEmbeddingApprovedDomains
+}
+
 func (a *SettingsAPI) AutomaticClusterUpdate() AutomaticClusterUpdateInterface {
 	return a.automaticClusterUpdate
 }
@@ -1435,6 +1688,14 @@ func (a *SettingsAPI) ComplianceSecurityProfile() ComplianceSecurityProfileInter
 
 func (a *SettingsAPI) DefaultNamespace() DefaultNamespaceInterface {
 	return a.defaultNamespace
+}
+
+func (a *SettingsAPI) DisableLegacyAccess() DisableLegacyAccessInterface {
+	return a.disableLegacyAccess
+}
+
+func (a *SettingsAPI) DisableLegacyDbfs() DisableLegacyDbfsInterface {
+	return a.disableLegacyDbfs
 }
 
 func (a *SettingsAPI) EnhancedSecurityMonitoring() EnhancedSecurityMonitoringInterface {

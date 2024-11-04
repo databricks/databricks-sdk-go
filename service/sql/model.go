@@ -49,6 +49,8 @@ type Alert struct {
 	Id string `json:"id,omitempty"`
 	// The workspace state of the alert. Used for tracking trashed status.
 	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
@@ -354,6 +356,8 @@ type CancelExecutionRequest struct {
 type CancelExecutionResponse struct {
 }
 
+// Configures the channel name and DBSQL version of the warehouse.
+// CHANNEL_NAME_CUSTOM should be chosen only when `dbsql_version` is specified.
 type Channel struct {
 	DbsqlVersion string `json:"dbsql_version,omitempty"`
 
@@ -398,8 +402,6 @@ const ChannelNameChannelNamePreview ChannelName = `CHANNEL_NAME_PREVIEW`
 
 const ChannelNameChannelNamePrevious ChannelName = `CHANNEL_NAME_PREVIOUS`
 
-const ChannelNameChannelNameUnspecified ChannelName = `CHANNEL_NAME_UNSPECIFIED`
-
 // String representation for [fmt.Print]
 func (f *ChannelName) String() string {
 	return string(*f)
@@ -408,36 +410,17 @@ func (f *ChannelName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ChannelName) Set(v string) error {
 	switch v {
-	case `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_PREVIOUS`, `CHANNEL_NAME_UNSPECIFIED`:
+	case `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_PREVIOUS`:
 		*f = ChannelName(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CHANNEL_NAME_CURRENT", "CHANNEL_NAME_CUSTOM", "CHANNEL_NAME_PREVIEW", "CHANNEL_NAME_PREVIOUS", "CHANNEL_NAME_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CHANNEL_NAME_CURRENT", "CHANNEL_NAME_CUSTOM", "CHANNEL_NAME_PREVIEW", "CHANNEL_NAME_PREVIOUS"`, v)
 	}
 }
 
 // Type always returns ChannelName to satisfy [pflag.Value] interface
 func (f *ChannelName) Type() string {
 	return "ChannelName"
-}
-
-// Client code that triggered the request
-type ClientCallContext struct {
-	// File name that contains the last line that triggered the request.
-	FileName *EncodedText `json:"file_name,omitempty"`
-	// Last line number within a file or notebook cell that triggered the
-	// request.
-	LineNumber int `json:"line_number,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ClientCallContext) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ClientCallContext) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ColumnInfo struct {
@@ -533,39 +516,6 @@ func (f *ColumnInfoTypeName) Type() string {
 	return "ColumnInfoTypeName"
 }
 
-type ContextFilter struct {
-	// Databricks SQL Alert id
-	DbsqlAlertId string `json:"dbsql_alert_id,omitempty" url:"dbsql_alert_id,omitempty"`
-	// Databricks SQL Dashboard id
-	DbsqlDashboardId string `json:"dbsql_dashboard_id,omitempty" url:"dbsql_dashboard_id,omitempty"`
-	// Databricks SQL Query id
-	DbsqlQueryId string `json:"dbsql_query_id,omitempty" url:"dbsql_query_id,omitempty"`
-	// Databricks SQL Query session id
-	DbsqlSessionId string `json:"dbsql_session_id,omitempty" url:"dbsql_session_id,omitempty"`
-	// Databricks Workflows id
-	JobId string `json:"job_id,omitempty" url:"job_id,omitempty"`
-	// Databricks Workflows task run id
-	JobRunId string `json:"job_run_id,omitempty" url:"job_run_id,omitempty"`
-	// Databricks Lakeview Dashboard id
-	LakeviewDashboardId string `json:"lakeview_dashboard_id,omitempty" url:"lakeview_dashboard_id,omitempty"`
-	// Databricks Notebook runnableCommandId
-	NotebookCellRunId string `json:"notebook_cell_run_id,omitempty" url:"notebook_cell_run_id,omitempty"`
-	// Databricks Notebook id
-	NotebookId string `json:"notebook_id,omitempty" url:"notebook_id,omitempty"`
-	// Databricks Query History statement ids.
-	StatementIds []string `json:"statement_ids,omitempty" url:"statement_ids,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ContextFilter) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ContextFilter) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type CreateAlert struct {
 	// Name of the alert.
 	Name string `json:"name"`
@@ -611,6 +561,8 @@ type CreateAlertRequestAlert struct {
 	CustomSubject string `json:"custom_subject,omitempty"`
 	// The display name of the alert.
 	DisplayName string `json:"display_name,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The workspace path of the folder containing the alert.
 	ParentPath string `json:"parent_path,omitempty"`
 	// UUID of the query attached to the alert.
@@ -735,7 +687,9 @@ type CreateWarehouseRequest struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
 	//
-	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+	// Supported values: - Must be >= 0 mins for serverless warehouses - Must be
+	// == 0 or >= 10 mins for non-serverless warehouses - 0 indicates no
+	// autostop.
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
@@ -1411,51 +1365,6 @@ type EditWarehouseResponse struct {
 // Represents an empty message, similar to google.protobuf.Empty, which is not
 // available in the firm right now.
 type Empty struct {
-}
-
-type EncodedText struct {
-	// Carry text data in different form.
-	Encoding EncodedTextEncoding `json:"encoding,omitempty"`
-	// text data
-	Text string `json:"text,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *EncodedText) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s EncodedText) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Carry text data in different form.
-type EncodedTextEncoding string
-
-const EncodedTextEncodingBase64 EncodedTextEncoding = `BASE64`
-
-const EncodedTextEncodingPlain EncodedTextEncoding = `PLAIN`
-
-// String representation for [fmt.Print]
-func (f *EncodedTextEncoding) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *EncodedTextEncoding) Set(v string) error {
-	switch v {
-	case `BASE64`, `PLAIN`:
-		*f = EncodedTextEncoding(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "BASE64", "PLAIN"`, v)
-	}
-}
-
-// Type always returns EncodedTextEncoding to satisfy [pflag.Value] interface
-func (f *EncodedTextEncoding) Type() string {
-	return "EncodedTextEncoding"
 }
 
 type EndpointConfPair struct {
@@ -2446,6 +2355,8 @@ type ListAlertsResponseAlert struct {
 	Id string `json:"id,omitempty"`
 	// The workspace state of the alert. Used for tracking trashed status.
 	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`
@@ -2600,6 +2511,9 @@ func (s ListQueriesResponse) MarshalJSON() ([]byte, error) {
 type ListQueryHistoryRequest struct {
 	// A filter to limit query history results. This field is optional.
 	FilterBy *QueryFilter `json:"-" url:"filter_by,omitempty"`
+	// Whether to include the query metrics with each query. Only use this for a
+	// small subset of queries (max_results). Defaults to false.
+	IncludeMetrics bool `json:"-" url:"include_metrics,omitempty"`
 	// Limit the number of results returned in one page. Must be less than 1000
 	// and the default is 100.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
@@ -3154,11 +3068,11 @@ func (s QueryEditContent) MarshalJSON() ([]byte, error) {
 }
 
 type QueryFilter struct {
-	// Filter by one or more property describing where the query was generated
-	ContextFilter *ContextFilter `json:"context_filter,omitempty" url:"context_filter,omitempty"`
 	// A range filter for query submitted time. The time range must be <= 30
 	// days.
 	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty" url:"query_start_time_range,omitempty"`
+	// A list of statement IDs.
+	StatementIds []string `json:"statement_ids,omitempty" url:"statement_ids,omitempty"`
 
 	Statuses []QueryStatus `json:"statuses,omitempty" url:"statuses,omitempty"`
 	// A list of user IDs who ran the queries.
@@ -3195,8 +3109,6 @@ type QueryInfo struct {
 	QueryEndTimeMs int64 `json:"query_end_time_ms,omitempty"`
 	// The query ID.
 	QueryId string `json:"query_id,omitempty"`
-
-	QuerySource *QuerySource `json:"query_source,omitempty"`
 	// The time the query started.
 	QueryStartTimeMs int64 `json:"query_start_time_ms,omitempty"`
 	// The text of the query.
@@ -3414,194 +3326,6 @@ func (s *QueryPostContent) UnmarshalJSON(b []byte) error {
 
 func (s QueryPostContent) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type QuerySource struct {
-	// UUID
-	AlertId string `json:"alert_id,omitempty"`
-	// Client code that triggered the request
-	ClientCallContext *ClientCallContext `json:"client_call_context,omitempty"`
-	// Id associated with a notebook cell
-	CommandId string `json:"command_id,omitempty"`
-	// Id associated with a notebook run or execution
-	CommandRunId string `json:"command_run_id,omitempty"`
-	// UUID
-	DashboardId string `json:"dashboard_id,omitempty"`
-	// UUID for Lakeview Dashboards, separate from DBSQL Dashboards
-	// (dashboard_id)
-	DashboardV3Id string `json:"dashboard_v3_id,omitempty"`
-
-	DriverInfo *QuerySourceDriverInfo `json:"driver_info,omitempty"`
-	// Spark service that received and processed the query
-	EntryPoint QuerySourceEntryPoint `json:"entry_point,omitempty"`
-	// UUID for Genie space
-	GenieSpaceId string `json:"genie_space_id,omitempty"`
-
-	IsCloudFetch bool `json:"is_cloud_fetch,omitempty"`
-
-	IsDatabricksSqlExecApi bool `json:"is_databricks_sql_exec_api,omitempty"`
-
-	JobId string `json:"job_id,omitempty"`
-	// With background compute, jobs can be managed by different internal teams.
-	// When not specified, not a background compute job When specified and the
-	// value is not JOBS, it is a background compute job
-	JobManagedBy QuerySourceJobManager `json:"job_managed_by,omitempty"`
-
-	NotebookId string `json:"notebook_id,omitempty"`
-	// Id associated with a DLT pipeline
-	PipelineId string `json:"pipeline_id,omitempty"`
-	// Id associated with a DLT update
-	PipelineUpdateId string `json:"pipeline_update_id,omitempty"`
-	// String provided by a customer that'll help them identify the query
-	QueryTags string `json:"query_tags,omitempty"`
-	// Id associated with a job run or execution
-	RunId string `json:"run_id,omitempty"`
-	// Id associated with a notebook cell run or execution
-	RunnableCommandId string `json:"runnable_command_id,omitempty"`
-
-	ScheduledBy QuerySourceTrigger `json:"scheduled_by,omitempty"`
-
-	ServerlessChannelInfo *ServerlessChannelInfo `json:"serverless_channel_info,omitempty"`
-	// UUID
-	SourceQueryId string `json:"source_query_id,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *QuerySource) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s QuerySource) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type QuerySourceDriverInfo struct {
-	BiToolEntry string `json:"bi_tool_entry,omitempty"`
-
-	DriverName string `json:"driver_name,omitempty"`
-
-	SimbaBrandingVendor string `json:"simba_branding_vendor,omitempty"`
-
-	VersionNumber string `json:"version_number,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *QuerySourceDriverInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s QuerySourceDriverInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Spark service that received and processed the query
-type QuerySourceEntryPoint string
-
-const QuerySourceEntryPointDlt QuerySourceEntryPoint = `DLT`
-
-const QuerySourceEntryPointSparkConnect QuerySourceEntryPoint = `SPARK_CONNECT`
-
-const QuerySourceEntryPointThriftServer QuerySourceEntryPoint = `THRIFT_SERVER`
-
-// String representation for [fmt.Print]
-func (f *QuerySourceEntryPoint) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *QuerySourceEntryPoint) Set(v string) error {
-	switch v {
-	case `DLT`, `SPARK_CONNECT`, `THRIFT_SERVER`:
-		*f = QuerySourceEntryPoint(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "DLT", "SPARK_CONNECT", "THRIFT_SERVER"`, v)
-	}
-}
-
-// Type always returns QuerySourceEntryPoint to satisfy [pflag.Value] interface
-func (f *QuerySourceEntryPoint) Type() string {
-	return "QuerySourceEntryPoint"
-}
-
-// Copied from elastic-spark-common/api/messages/manager.proto with enum values
-// changed by 1 to accommodate JOB_MANAGER_UNSPECIFIED
-type QuerySourceJobManager string
-
-const QuerySourceJobManagerAppSystemTable QuerySourceJobManager = `APP_SYSTEM_TABLE`
-
-const QuerySourceJobManagerAutoml QuerySourceJobManager = `AUTOML`
-
-const QuerySourceJobManagerAutoMaintenance QuerySourceJobManager = `AUTO_MAINTENANCE`
-
-const QuerySourceJobManagerCleanRooms QuerySourceJobManager = `CLEAN_ROOMS`
-
-const QuerySourceJobManagerDataMonitoring QuerySourceJobManager = `DATA_MONITORING`
-
-const QuerySourceJobManagerDataSharing QuerySourceJobManager = `DATA_SHARING`
-
-const QuerySourceJobManagerEncryption QuerySourceJobManager = `ENCRYPTION`
-
-const QuerySourceJobManagerFabricCrawler QuerySourceJobManager = `FABRIC_CRAWLER`
-
-const QuerySourceJobManagerJobs QuerySourceJobManager = `JOBS`
-
-const QuerySourceJobManagerLakeview QuerySourceJobManager = `LAKEVIEW`
-
-const QuerySourceJobManagerManagedRag QuerySourceJobManager = `MANAGED_RAG`
-
-const QuerySourceJobManagerScheduledMvRefresh QuerySourceJobManager = `SCHEDULED_MV_REFRESH`
-
-const QuerySourceJobManagerTesting QuerySourceJobManager = `TESTING`
-
-// String representation for [fmt.Print]
-func (f *QuerySourceJobManager) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *QuerySourceJobManager) Set(v string) error {
-	switch v {
-	case `APP_SYSTEM_TABLE`, `AUTOML`, `AUTO_MAINTENANCE`, `CLEAN_ROOMS`, `DATA_MONITORING`, `DATA_SHARING`, `ENCRYPTION`, `FABRIC_CRAWLER`, `JOBS`, `LAKEVIEW`, `MANAGED_RAG`, `SCHEDULED_MV_REFRESH`, `TESTING`:
-		*f = QuerySourceJobManager(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "APP_SYSTEM_TABLE", "AUTOML", "AUTO_MAINTENANCE", "CLEAN_ROOMS", "DATA_MONITORING", "DATA_SHARING", "ENCRYPTION", "FABRIC_CRAWLER", "JOBS", "LAKEVIEW", "MANAGED_RAG", "SCHEDULED_MV_REFRESH", "TESTING"`, v)
-	}
-}
-
-// Type always returns QuerySourceJobManager to satisfy [pflag.Value] interface
-func (f *QuerySourceJobManager) Type() string {
-	return "QuerySourceJobManager"
-}
-
-type QuerySourceTrigger string
-
-const QuerySourceTriggerManual QuerySourceTrigger = `MANUAL`
-
-const QuerySourceTriggerScheduled QuerySourceTrigger = `SCHEDULED`
-
-// String representation for [fmt.Print]
-func (f *QuerySourceTrigger) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *QuerySourceTrigger) Set(v string) error {
-	switch v {
-	case `MANUAL`, `SCHEDULED`:
-		*f = QuerySourceTrigger(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "MANUAL", "SCHEDULED"`, v)
-	}
-}
-
-// Type always returns QuerySourceTrigger to satisfy [pflag.Value] interface
-func (f *QuerySourceTrigger) Type() string {
-	return "QuerySourceTrigger"
 }
 
 type QueryStatementType string
@@ -3870,11 +3594,6 @@ func (f *RunAsRole) Set(v string) error {
 // Type always returns RunAsRole to satisfy [pflag.Value] interface
 func (f *RunAsRole) Type() string {
 	return "RunAsRole"
-}
-
-type ServerlessChannelInfo struct {
-	// Name of the Channel
-	Name ChannelName `json:"name,omitempty"`
 }
 
 type ServiceError struct {
@@ -4627,6 +4346,8 @@ type UpdateAlertRequestAlert struct {
 	CustomSubject string `json:"custom_subject,omitempty"`
 	// The display name of the alert.
 	DisplayName string `json:"display_name,omitempty"`
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	OwnerUserName string `json:"owner_user_name,omitempty"`

@@ -9,25 +9,35 @@ import (
 )
 
 type App struct {
-	// The active deployment of the app.
+	// The active deployment of the app. A deployment is considered active when
+	// it has been deployed to the app compute.
 	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
+
+	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
+
+	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
 	// The creation time of the app. Formatted timestamp in ISO 6801.
 	CreateTime string `json:"create_time,omitempty"`
 	// The email of the user that created the app.
 	Creator string `json:"creator,omitempty"`
+	// The default workspace file system path of the source code from which app
+	// deployment are created. This field tracks the workspace source code path
+	// of the last active deployment.
+	DefaultSourceCodePath string `json:"default_source_code_path,omitempty"`
 	// The description of the app.
 	Description string `json:"description,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name"`
-	// The pending deployment of the app.
+	// The pending deployment of the app. A deployment is considered pending
+	// when it is being prepared for deployment to the app compute.
 	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
+	// Resources for the app.
+	Resources []AppResource `json:"resources,omitempty"`
 
 	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
 
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	Status *AppStatus `json:"status,omitempty"`
 	// The update time of the app. Formatted timestamp in ISO 6801.
 	UpdateTime string `json:"update_time,omitempty"`
 	// The email of the user that last updated the app.
@@ -108,7 +118,7 @@ type AppDeployment struct {
 	// the app in the workspace during deployment creation, whereas the latter
 	// provides a system generated stable snapshotted source code path used by
 	// the deployment.
-	SourceCodePath string `json:"source_code_path"`
+	SourceCodePath string `json:"source_code_path,omitempty"`
 	// Status and status message of the deployment
 	Status *AppDeploymentStatus `json:"status,omitempty"`
 	// The update time of the deployment. Formatted timestamp in ISO 6801.
@@ -170,11 +180,11 @@ func (f *AppDeploymentMode) Type() string {
 
 type AppDeploymentState string
 
+const AppDeploymentStateCancelled AppDeploymentState = `CANCELLED`
+
 const AppDeploymentStateFailed AppDeploymentState = `FAILED`
 
 const AppDeploymentStateInProgress AppDeploymentState = `IN_PROGRESS`
-
-const AppDeploymentStateStopped AppDeploymentState = `STOPPED`
 
 const AppDeploymentStateSucceeded AppDeploymentState = `SUCCEEDED`
 
@@ -186,11 +196,11 @@ func (f *AppDeploymentState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppDeploymentState) Set(v string) error {
 	switch v {
-	case `FAILED`, `IN_PROGRESS`, `STOPPED`, `SUCCEEDED`:
+	case `CANCELLED`, `FAILED`, `IN_PROGRESS`, `SUCCEEDED`:
 		*f = AppDeploymentState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FAILED", "IN_PROGRESS", "STOPPED", "SUCCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "IN_PROGRESS", "SUCCEEDED"`, v)
 	}
 }
 
@@ -302,100 +312,303 @@ type AppPermissionsRequest struct {
 	AppName string `json:"-" url:"-"`
 }
 
-type AppState string
+type AppResource struct {
+	// Description of the App Resource.
+	Description string `json:"description,omitempty"`
 
-const AppStateCreating AppState = `CREATING`
+	Job *AppResourceJob `json:"job,omitempty"`
+	// Name of the App Resource.
+	Name string `json:"name"`
 
-const AppStateDeleted AppState = `DELETED`
+	Secret *AppResourceSecret `json:"secret,omitempty"`
 
-const AppStateDeleting AppState = `DELETING`
+	ServingEndpoint *AppResourceServingEndpoint `json:"serving_endpoint,omitempty"`
 
-const AppStateError AppState = `ERROR`
+	SqlWarehouse *AppResourceSqlWarehouse `json:"sql_warehouse,omitempty"`
 
-const AppStateIdle AppState = `IDLE`
+	ForceSendFields []string `json:"-"`
+}
 
-const AppStateRunning AppState = `RUNNING`
+func (s *AppResource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
 
-const AppStateStarting AppState = `STARTING`
+func (s AppResource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppResourceJob struct {
+	// Id of the job to grant permission on.
+	Id string `json:"id"`
+	// Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE",
+	// "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
+	Permission AppResourceJobJobPermission `json:"permission"`
+}
+
+type AppResourceJobJobPermission string
+
+const AppResourceJobJobPermissionCanManage AppResourceJobJobPermission = `CAN_MANAGE`
+
+const AppResourceJobJobPermissionCanManageRun AppResourceJobJobPermission = `CAN_MANAGE_RUN`
+
+const AppResourceJobJobPermissionCanView AppResourceJobJobPermission = `CAN_VIEW`
+
+const AppResourceJobJobPermissionIsOwner AppResourceJobJobPermission = `IS_OWNER`
 
 // String representation for [fmt.Print]
-func (f *AppState) String() string {
+func (f *AppResourceJobJobPermission) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *AppState) Set(v string) error {
+func (f *AppResourceJobJobPermission) Set(v string) error {
 	switch v {
-	case `CREATING`, `DELETED`, `DELETING`, `ERROR`, `IDLE`, `RUNNING`, `STARTING`:
-		*f = AppState(v)
+	case `CAN_MANAGE`, `CAN_MANAGE_RUN`, `CAN_VIEW`, `IS_OWNER`:
+		*f = AppResourceJobJobPermission(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CREATING", "DELETED", "DELETING", "ERROR", "IDLE", "RUNNING", "STARTING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MANAGE_RUN", "CAN_VIEW", "IS_OWNER"`, v)
 	}
 }
 
-// Type always returns AppState to satisfy [pflag.Value] interface
-func (f *AppState) Type() string {
-	return "AppState"
+// Type always returns AppResourceJobJobPermission to satisfy [pflag.Value] interface
+func (f *AppResourceJobJobPermission) Type() string {
+	return "AppResourceJobJobPermission"
 }
 
-type AppStatus struct {
-	// Message corresponding with the app state.
+type AppResourceSecret struct {
+	// Key of the secret to grant permission on.
+	Key string `json:"key"`
+	// Permission to grant on the secret scope. For secrets, only one permission
+	// is allowed. Permission must be one of: "READ", "WRITE", "MANAGE".
+	Permission AppResourceSecretSecretPermission `json:"permission"`
+	// Scope of the secret to grant permission on.
+	Scope string `json:"scope"`
+}
+
+// Permission to grant on the secret scope. Supported permissions are: "READ",
+// "WRITE", "MANAGE".
+type AppResourceSecretSecretPermission string
+
+const AppResourceSecretSecretPermissionManage AppResourceSecretSecretPermission = `MANAGE`
+
+const AppResourceSecretSecretPermissionRead AppResourceSecretSecretPermission = `READ`
+
+const AppResourceSecretSecretPermissionWrite AppResourceSecretSecretPermission = `WRITE`
+
+// String representation for [fmt.Print]
+func (f *AppResourceSecretSecretPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceSecretSecretPermission) Set(v string) error {
+	switch v {
+	case `MANAGE`, `READ`, `WRITE`:
+		*f = AppResourceSecretSecretPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MANAGE", "READ", "WRITE"`, v)
+	}
+}
+
+// Type always returns AppResourceSecretSecretPermission to satisfy [pflag.Value] interface
+func (f *AppResourceSecretSecretPermission) Type() string {
+	return "AppResourceSecretSecretPermission"
+}
+
+type AppResourceServingEndpoint struct {
+	// Name of the serving endpoint to grant permission on.
+	Name string `json:"name"`
+	// Permission to grant on the serving endpoint. Supported permissions are:
+	// "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW".
+	Permission AppResourceServingEndpointServingEndpointPermission `json:"permission"`
+}
+
+type AppResourceServingEndpointServingEndpointPermission string
+
+const AppResourceServingEndpointServingEndpointPermissionCanManage AppResourceServingEndpointServingEndpointPermission = `CAN_MANAGE`
+
+const AppResourceServingEndpointServingEndpointPermissionCanQuery AppResourceServingEndpointServingEndpointPermission = `CAN_QUERY`
+
+const AppResourceServingEndpointServingEndpointPermissionCanView AppResourceServingEndpointServingEndpointPermission = `CAN_VIEW`
+
+// String representation for [fmt.Print]
+func (f *AppResourceServingEndpointServingEndpointPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceServingEndpointServingEndpointPermission) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_QUERY`, `CAN_VIEW`:
+		*f = AppResourceServingEndpointServingEndpointPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW"`, v)
+	}
+}
+
+// Type always returns AppResourceServingEndpointServingEndpointPermission to satisfy [pflag.Value] interface
+func (f *AppResourceServingEndpointServingEndpointPermission) Type() string {
+	return "AppResourceServingEndpointServingEndpointPermission"
+}
+
+type AppResourceSqlWarehouse struct {
+	// Id of the SQL warehouse to grant permission on.
+	Id string `json:"id"`
+	// Permission to grant on the SQL warehouse. Supported permissions are:
+	// "CAN_MANAGE", "CAN_USE", "IS_OWNER".
+	Permission AppResourceSqlWarehouseSqlWarehousePermission `json:"permission"`
+}
+
+type AppResourceSqlWarehouseSqlWarehousePermission string
+
+const AppResourceSqlWarehouseSqlWarehousePermissionCanManage AppResourceSqlWarehouseSqlWarehousePermission = `CAN_MANAGE`
+
+const AppResourceSqlWarehouseSqlWarehousePermissionCanUse AppResourceSqlWarehouseSqlWarehousePermission = `CAN_USE`
+
+const AppResourceSqlWarehouseSqlWarehousePermissionIsOwner AppResourceSqlWarehouseSqlWarehousePermission = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (f *AppResourceSqlWarehouseSqlWarehousePermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceSqlWarehouseSqlWarehousePermission) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_USE`, `IS_OWNER`:
+		*f = AppResourceSqlWarehouseSqlWarehousePermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_USE", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns AppResourceSqlWarehouseSqlWarehousePermission to satisfy [pflag.Value] interface
+func (f *AppResourceSqlWarehouseSqlWarehousePermission) Type() string {
+	return "AppResourceSqlWarehouseSqlWarehousePermission"
+}
+
+type ApplicationState string
+
+const ApplicationStateCrashed ApplicationState = `CRASHED`
+
+const ApplicationStateDeploying ApplicationState = `DEPLOYING`
+
+const ApplicationStateRunning ApplicationState = `RUNNING`
+
+const ApplicationStateUnavailable ApplicationState = `UNAVAILABLE`
+
+// String representation for [fmt.Print]
+func (f *ApplicationState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ApplicationState) Set(v string) error {
+	switch v {
+	case `CRASHED`, `DEPLOYING`, `RUNNING`, `UNAVAILABLE`:
+		*f = ApplicationState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CRASHED", "DEPLOYING", "RUNNING", "UNAVAILABLE"`, v)
+	}
+}
+
+// Type always returns ApplicationState to satisfy [pflag.Value] interface
+func (f *ApplicationState) Type() string {
+	return "ApplicationState"
+}
+
+type ApplicationStatus struct {
+	// Application status message
 	Message string `json:"message,omitempty"`
-	// State of the app.
-	State AppState `json:"state,omitempty"`
+	// State of the application.
+	State ApplicationState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *AppStatus) UnmarshalJSON(b []byte) error {
+func (s *ApplicationStatus) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s AppStatus) MarshalJSON() ([]byte, error) {
+func (s ApplicationStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ComputeState string
+
+const ComputeStateActive ComputeState = `ACTIVE`
+
+const ComputeStateDeleting ComputeState = `DELETING`
+
+const ComputeStateError ComputeState = `ERROR`
+
+const ComputeStateStarting ComputeState = `STARTING`
+
+const ComputeStateStopped ComputeState = `STOPPED`
+
+const ComputeStateStopping ComputeState = `STOPPING`
+
+const ComputeStateUpdating ComputeState = `UPDATING`
+
+// String representation for [fmt.Print]
+func (f *ComputeState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ComputeState) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `DELETING`, `ERROR`, `STARTING`, `STOPPED`, `STOPPING`, `UPDATING`:
+		*f = ComputeState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "ERROR", "STARTING", "STOPPED", "STOPPING", "UPDATING"`, v)
+	}
+}
+
+// Type always returns ComputeState to satisfy [pflag.Value] interface
+func (f *ComputeState) Type() string {
+	return "ComputeState"
+}
+
+type ComputeStatus struct {
+	// Compute status message
+	Message string `json:"message,omitempty"`
+	// State of the app compute.
+	State ComputeState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ComputeStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ComputeStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Create an app deployment
 type CreateAppDeploymentRequest struct {
+	AppDeployment *AppDeployment `json:"app_deployment,omitempty"`
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
-	// The mode of which the deployment will manage the source code.
-	Mode AppDeploymentMode `json:"mode,omitempty"`
-	// The workspace file system path of the source code used to create the app
-	// deployment. This is different from
-	// `deployment_artifacts.source_code_path`, which is the path used by the
-	// deployed app. The former refers to the original source code location of
-	// the app in the workspace during deployment creation, whereas the latter
-	// provides a system generated stable snapshotted source code path used by
-	// the deployment.
-	SourceCodePath string `json:"source_code_path"`
 }
 
+// Create an app
 type CreateAppRequest struct {
-	// The description of the app.
-	Description string `json:"description,omitempty"`
-	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens. It must be unique within the workspace.
-	Name string `json:"name"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateAppRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	App *App `json:"app,omitempty"`
 }
 
 // Delete an app
 type DeleteAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
-}
-
-type DeleteResponse struct {
 }
 
 // Get an app deployment
@@ -512,23 +725,9 @@ type StopAppRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-type StopAppResponse struct {
-}
-
+// Update an app
 type UpdateAppRequest struct {
-	// The description of the app.
-	Description string `json:"description,omitempty"`
-	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens. It must be unique within the workspace.
-	Name string `json:"name" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateAppRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateAppRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	App *App `json:"app,omitempty"`
+	// The name of the app.
+	Name string `json:"-" url:"-"`
 }

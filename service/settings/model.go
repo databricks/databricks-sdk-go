@@ -8,6 +8,99 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+type AibiDashboardEmbeddingAccessPolicy struct {
+	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType `json:"access_policy_type"`
+}
+
+type AibiDashboardEmbeddingAccessPolicyAccessPolicyType string
+
+const AibiDashboardEmbeddingAccessPolicyAccessPolicyTypeAllowAllDomains AibiDashboardEmbeddingAccessPolicyAccessPolicyType = `ALLOW_ALL_DOMAINS`
+
+const AibiDashboardEmbeddingAccessPolicyAccessPolicyTypeAllowApprovedDomains AibiDashboardEmbeddingAccessPolicyAccessPolicyType = `ALLOW_APPROVED_DOMAINS`
+
+const AibiDashboardEmbeddingAccessPolicyAccessPolicyTypeDenyAllDomains AibiDashboardEmbeddingAccessPolicyAccessPolicyType = `DENY_ALL_DOMAINS`
+
+// String representation for [fmt.Print]
+func (f *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) Set(v string) error {
+	switch v {
+	case `ALLOW_ALL_DOMAINS`, `ALLOW_APPROVED_DOMAINS`, `DENY_ALL_DOMAINS`:
+		*f = AibiDashboardEmbeddingAccessPolicyAccessPolicyType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALLOW_ALL_DOMAINS", "ALLOW_APPROVED_DOMAINS", "DENY_ALL_DOMAINS"`, v)
+	}
+}
+
+// Type always returns AibiDashboardEmbeddingAccessPolicyAccessPolicyType to satisfy [pflag.Value] interface
+func (f *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) Type() string {
+	return "AibiDashboardEmbeddingAccessPolicyAccessPolicyType"
+}
+
+type AibiDashboardEmbeddingAccessPolicySetting struct {
+	AibiDashboardEmbeddingAccessPolicy AibiDashboardEmbeddingAccessPolicy `json:"aibi_dashboard_embedding_access_policy"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AibiDashboardEmbeddingAccessPolicySetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AibiDashboardEmbeddingAccessPolicySetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AibiDashboardEmbeddingApprovedDomains struct {
+	ApprovedDomains []string `json:"approved_domains,omitempty"`
+}
+
+type AibiDashboardEmbeddingApprovedDomainsSetting struct {
+	AibiDashboardEmbeddingApprovedDomains AibiDashboardEmbeddingApprovedDomains `json:"aibi_dashboard_embedding_approved_domains"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AibiDashboardEmbeddingApprovedDomainsSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AibiDashboardEmbeddingApprovedDomainsSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AutomaticClusterUpdateSetting struct {
 	AutomaticClusterUpdateWorkspace ClusterAutoRestartMessage `json:"automatic_cluster_update_workspace"`
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -33,6 +126,20 @@ func (s *AutomaticClusterUpdateSetting) UnmarshalJSON(b []byte) error {
 }
 
 func (s AutomaticClusterUpdateSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type BooleanMessage struct {
+	Value bool `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BooleanMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BooleanMessage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -588,6 +695,108 @@ type DeleteDefaultNamespaceSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
+// Delete Legacy Access Disablement Status
+type DeleteDisableLegacyAccessRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteDisableLegacyAccessResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
+}
+
+// Delete the disable legacy DBFS setting
+type DeleteDisableLegacyDbfsRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteDisableLegacyDbfsResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
+}
+
+// Delete the disable legacy features setting
+type DeleteDisableLegacyFeaturesRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteDisableLegacyFeaturesResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
+}
+
 // Delete access list
 type DeleteIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
@@ -724,6 +933,90 @@ func (f *DestinationType) Set(v string) error {
 // Type always returns DestinationType to satisfy [pflag.Value] interface
 func (f *DestinationType) Type() string {
 	return "DestinationType"
+}
+
+type DisableLegacyAccess struct {
+	DisableLegacyAccess BooleanMessage `json:"disable_legacy_access"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DisableLegacyAccess) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DisableLegacyAccess) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DisableLegacyDbfs struct {
+	DisableLegacyDbfs BooleanMessage `json:"disable_legacy_dbfs"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DisableLegacyDbfs) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DisableLegacyDbfs) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DisableLegacyFeatures struct {
+	DisableLegacyFeatures BooleanMessage `json:"disable_legacy_features"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DisableLegacyFeatures) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DisableLegacyFeatures) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type EmailConfig struct {
@@ -899,6 +1192,50 @@ type GetAccountIpAccessListRequest struct {
 	IpAccessListId string `json:"-" url:"-"`
 }
 
+// Retrieve the AI/BI dashboard embedding access policy
+type GetAibiDashboardEmbeddingAccessPolicySettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Retrieve the list of domains approved to host embedded AI/BI dashboards
+type GetAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get the automatic cluster update setting
 type GetAutomaticClusterUpdateSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -984,6 +1321,72 @@ func (s *GetDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Retrieve Legacy Access Disablement Status
+type GetDisableLegacyAccessRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get the disable legacy DBFS setting
+type GetDisableLegacyDbfsRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get the disable legacy features setting
+type GetDisableLegacyFeaturesRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1934,10 +2337,15 @@ type TokenInfo struct {
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// Timestamp when the token expires.
 	ExpiryTime int64 `json:"expiry_time,omitempty"`
+	// Approximate timestamp for the day the token was last used. Accurate up to
+	// 1 day.
+	LastUsedDay int64 `json:"last_used_day,omitempty"`
 	// User ID of the user that owns the token.
 	OwnerId int64 `json:"owner_id,omitempty"`
 	// ID of the token.
 	TokenId string `json:"token_id,omitempty"`
+	// If applicable, the ID of the workspace that the token was created in.
+	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -2036,6 +2444,8 @@ type TokenPermissionsRequest struct {
 // supported.
 type TokenType string
 
+const TokenTypeArclightAzureExchangeToken TokenType = `ARCLIGHT_AZURE_EXCHANGE_TOKEN`
+
 const TokenTypeAzureActiveDirectoryToken TokenType = `AZURE_ACTIVE_DIRECTORY_TOKEN`
 
 // String representation for [fmt.Print]
@@ -2046,17 +2456,45 @@ func (f *TokenType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TokenType) Set(v string) error {
 	switch v {
-	case `AZURE_ACTIVE_DIRECTORY_TOKEN`:
+	case `ARCLIGHT_AZURE_EXCHANGE_TOKEN`, `AZURE_ACTIVE_DIRECTORY_TOKEN`:
 		*f = TokenType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AZURE_ACTIVE_DIRECTORY_TOKEN"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ARCLIGHT_AZURE_EXCHANGE_TOKEN", "AZURE_ACTIVE_DIRECTORY_TOKEN"`, v)
 	}
 }
 
 // Type always returns TokenType to satisfy [pflag.Value] interface
 func (f *TokenType) Type() string {
 	return "TokenType"
+}
+
+// Details required to update a setting.
+type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting AibiDashboardEmbeddingAccessPolicySetting `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting AibiDashboardEmbeddingApprovedDomainsSetting `json:"setting"`
 }
 
 // Details required to update a setting.
@@ -2121,6 +2559,48 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	// to take effect. Additionally, the default namespace only applies when
 	// using Unity Catalog-enabled compute.
 	Setting DefaultNamespaceSetting `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateDisableLegacyAccessRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting DisableLegacyAccess `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateDisableLegacyDbfsRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting DisableLegacyDbfs `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateDisableLegacyFeaturesRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	FieldMask string `json:"field_mask"`
+
+	Setting DisableLegacyFeatures `json:"setting"`
 }
 
 // Details required to update a setting.

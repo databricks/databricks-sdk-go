@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Cluster Policies, Clusters, Command Execution, Global Init Scripts, Instance Pools, Instance Profiles, Libraries, Policy Families, etc.
+// These APIs allow you to manage Cluster Policies, Clusters, Command Execution, Global Init Scripts, Instance Pools, Instance Profiles, Libraries, Policy Compliance For Clusters, Policy Families, etc.
 package compute
 
 import (
@@ -306,6 +306,12 @@ type ClustersInterface interface {
 	// If Databricks acquires at least 85% of the requested on-demand nodes, cluster
 	// creation will succeed. Otherwise the cluster will terminate with an
 	// informative error message.
+	//
+	// Rather than authoring the cluster's JSON definition from scratch, Databricks
+	// recommends filling out the [create compute UI] and then copying the generated
+	// JSON definition from the UI.
+	//
+	// [create compute UI]: https://docs.databricks.com/compute/configure.html
 	Create(ctx context.Context, createCluster CreateCluster) (*WaitGetClusterRunning[CreateClusterResponse], error)
 
 	// Calls [ClustersAPIInterface.Create] and waits to reach RUNNING state
@@ -773,6 +779,12 @@ func (w *WaitGetClusterTerminated[R]) GetWithTimeout(timeout time.Duration) (*Cl
 // If Databricks acquires at least 85% of the requested on-demand nodes, cluster
 // creation will succeed. Otherwise the cluster will terminate with an
 // informative error message.
+//
+// Rather than authoring the cluster's JSON definition from scratch, Databricks
+// recommends filling out the [create compute UI] and then copying the generated
+// JSON definition from the UI.
+//
+// [create compute UI]: https://docs.databricks.com/compute/configure.html
 func (a *ClustersAPI) Create(ctx context.Context, createCluster CreateCluster) (*WaitGetClusterRunning[CreateClusterResponse], error) {
 	createClusterResponse, err := a.clustersImpl.Create(ctx, createCluster)
 	if err != nil {
@@ -1378,13 +1390,13 @@ type CommandExecutionInterface interface {
 	WaitCommandStatusCommandExecutionCancelled(ctx context.Context, clusterId string, commandId string, contextId string,
 		timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error)
 
-	// WaitCommandStatusCommandExecutionFinishedOrError repeatedly calls [CommandExecutionAPI.CommandStatus] and waits to reach Finished or Error state
-	WaitCommandStatusCommandExecutionFinishedOrError(ctx context.Context, clusterId string, commandId string, contextId string,
-		timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error)
-
 	// WaitContextStatusCommandExecutionRunning repeatedly calls [CommandExecutionAPI.ContextStatus] and waits to reach Running state
 	WaitContextStatusCommandExecutionRunning(ctx context.Context, clusterId string, contextId string,
 		timeout time.Duration, callback func(*ContextStatusResponse)) (*ContextStatusResponse, error)
+
+	// WaitCommandStatusCommandExecutionFinishedOrError repeatedly calls [CommandExecutionAPI.CommandStatus] and waits to reach Finished or Error state
+	WaitCommandStatusCommandExecutionFinishedOrError(ctx context.Context, clusterId string, commandId string, contextId string,
+		timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error)
 
 	// Cancel a command.
 	//
@@ -1528,6 +1540,62 @@ func (w *WaitCommandStatusCommandExecutionCancelled[R]) GetWithTimeout(timeout t
 	return w.Poll(timeout, w.callback)
 }
 
+// WaitContextStatusCommandExecutionRunning repeatedly calls [CommandExecutionAPI.ContextStatus] and waits to reach Running state
+func (a *CommandExecutionAPI) WaitContextStatusCommandExecutionRunning(ctx context.Context, clusterId string, contextId string,
+	timeout time.Duration, callback func(*ContextStatusResponse)) (*ContextStatusResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[ContextStatusResponse](ctx, timeout, func() (*ContextStatusResponse, *retries.Err) {
+		contextStatusResponse, err := a.ContextStatus(ctx, ContextStatusRequest{
+			ClusterId: clusterId,
+			ContextId: contextId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(contextStatusResponse)
+		}
+		status := contextStatusResponse.Status
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case ContextStatusRunning: // target state
+			return contextStatusResponse, nil
+		case ContextStatusError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ContextStatusRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitContextStatusCommandExecutionRunning is a wrapper that calls [CommandExecutionAPI.WaitContextStatusCommandExecutionRunning] and waits to reach Running state.
+type WaitContextStatusCommandExecutionRunning[R any] struct {
+	Response  *R
+	ClusterId string `json:"clusterId"`
+	ContextId string `json:"contextId"`
+	Poll      func(time.Duration, func(*ContextStatusResponse)) (*ContextStatusResponse, error)
+	callback  func(*ContextStatusResponse)
+	timeout   time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitContextStatusCommandExecutionRunning[R]) OnProgress(callback func(*ContextStatusResponse)) *WaitContextStatusCommandExecutionRunning[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the ContextStatusResponse with the default timeout of 20 minutes.
+func (w *WaitContextStatusCommandExecutionRunning[R]) Get() (*ContextStatusResponse, error) {
+	return w.Poll(w.timeout, w.callback)
+}
+
+// Get the ContextStatusResponse with custom timeout.
+func (w *WaitContextStatusCommandExecutionRunning[R]) GetWithTimeout(timeout time.Duration) (*ContextStatusResponse, error) {
+	return w.Poll(timeout, w.callback)
+}
+
 // WaitCommandStatusCommandExecutionFinishedOrError repeatedly calls [CommandExecutionAPI.CommandStatus] and waits to reach Finished or Error state
 func (a *CommandExecutionAPI) WaitCommandStatusCommandExecutionFinishedOrError(ctx context.Context, clusterId string, commandId string, contextId string,
 	timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error) {
@@ -1583,62 +1651,6 @@ func (w *WaitCommandStatusCommandExecutionFinishedOrError[R]) Get() (*CommandSta
 
 // Get the CommandStatusResponse with custom timeout.
 func (w *WaitCommandStatusCommandExecutionFinishedOrError[R]) GetWithTimeout(timeout time.Duration) (*CommandStatusResponse, error) {
-	return w.Poll(timeout, w.callback)
-}
-
-// WaitContextStatusCommandExecutionRunning repeatedly calls [CommandExecutionAPI.ContextStatus] and waits to reach Running state
-func (a *CommandExecutionAPI) WaitContextStatusCommandExecutionRunning(ctx context.Context, clusterId string, contextId string,
-	timeout time.Duration, callback func(*ContextStatusResponse)) (*ContextStatusResponse, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	return retries.Poll[ContextStatusResponse](ctx, timeout, func() (*ContextStatusResponse, *retries.Err) {
-		contextStatusResponse, err := a.ContextStatus(ctx, ContextStatusRequest{
-			ClusterId: clusterId,
-			ContextId: contextId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
-		if callback != nil {
-			callback(contextStatusResponse)
-		}
-		status := contextStatusResponse.Status
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		switch status {
-		case ContextStatusRunning: // target state
-			return contextStatusResponse, nil
-		case ContextStatusError:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ContextStatusRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
-}
-
-// WaitContextStatusCommandExecutionRunning is a wrapper that calls [CommandExecutionAPI.WaitContextStatusCommandExecutionRunning] and waits to reach Running state.
-type WaitContextStatusCommandExecutionRunning[R any] struct {
-	Response  *R
-	ClusterId string `json:"clusterId"`
-	ContextId string `json:"contextId"`
-	Poll      func(time.Duration, func(*ContextStatusResponse)) (*ContextStatusResponse, error)
-	callback  func(*ContextStatusResponse)
-	timeout   time.Duration
-}
-
-// OnProgress invokes a callback every time it polls for the status update.
-func (w *WaitContextStatusCommandExecutionRunning[R]) OnProgress(callback func(*ContextStatusResponse)) *WaitContextStatusCommandExecutionRunning[R] {
-	w.callback = callback
-	return w
-}
-
-// Get the ContextStatusResponse with the default timeout of 20 minutes.
-func (w *WaitContextStatusCommandExecutionRunning[R]) Get() (*ContextStatusResponse, error) {
-	return w.Poll(w.timeout, w.callback)
-}
-
-// Get the ContextStatusResponse with custom timeout.
-func (w *WaitContextStatusCommandExecutionRunning[R]) GetWithTimeout(timeout time.Duration) (*ContextStatusResponse, error) {
 	return w.Poll(timeout, w.callback)
 }
 
@@ -2576,6 +2588,131 @@ func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId s
 	return a.librariesImpl.ClusterStatus(ctx, ClusterStatus{
 		ClusterId: clusterId,
 	})
+}
+
+type PolicyComplianceForClustersInterface interface {
+
+	// Enforce cluster policy compliance.
+	//
+	// Updates a cluster to be compliant with the current version of its policy. A
+	// cluster can be updated if it is in a `RUNNING` or `TERMINATED` state.
+	//
+	// If a cluster is updated while in a `RUNNING` state, it will be restarted so
+	// that the new attributes can take effect.
+	//
+	// If a cluster is updated while in a `TERMINATED` state, it will remain
+	// `TERMINATED`. The next time the cluster is started, the new attributes will
+	// take effect.
+	//
+	// Clusters created by the Databricks Jobs, DLT, or Models services cannot be
+	// enforced by this API. Instead, use the "Enforce job policy compliance" API to
+	// enforce policy compliance on jobs.
+	EnforceCompliance(ctx context.Context, request EnforceClusterComplianceRequest) (*EnforceClusterComplianceResponse, error)
+
+	// Get cluster policy compliance.
+	//
+	// Returns the policy compliance status of a cluster. Clusters could be out of
+	// compliance if their policy was updated after the cluster was last edited.
+	GetCompliance(ctx context.Context, request GetClusterComplianceRequest) (*GetClusterComplianceResponse, error)
+
+	// Get cluster policy compliance.
+	//
+	// Returns the policy compliance status of a cluster. Clusters could be out of
+	// compliance if their policy was updated after the cluster was last edited.
+	GetComplianceByClusterId(ctx context.Context, clusterId string) (*GetClusterComplianceResponse, error)
+
+	// List cluster policy compliance.
+	//
+	// Returns the policy compliance status of all clusters that use a given policy.
+	// Clusters could be out of compliance if their policy was updated after the
+	// cluster was last edited.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListCompliance(ctx context.Context, request ListClusterCompliancesRequest) listing.Iterator[ClusterCompliance]
+
+	// List cluster policy compliance.
+	//
+	// Returns the policy compliance status of all clusters that use a given policy.
+	// Clusters could be out of compliance if their policy was updated after the
+	// cluster was last edited.
+	//
+	// This method is generated by Databricks SDK Code Generator.
+	ListComplianceAll(ctx context.Context, request ListClusterCompliancesRequest) ([]ClusterCompliance, error)
+}
+
+func NewPolicyComplianceForClusters(client *client.DatabricksClient) *PolicyComplianceForClustersAPI {
+	return &PolicyComplianceForClustersAPI{
+		policyComplianceForClustersImpl: policyComplianceForClustersImpl{
+			client: client,
+		},
+	}
+}
+
+// The policy compliance APIs allow you to view and manage the policy compliance
+// status of clusters in your workspace.
+//
+// A cluster is compliant with its policy if its configuration satisfies all its
+// policy rules. Clusters could be out of compliance if their policy was updated
+// after the cluster was last edited.
+//
+// The get and list compliance APIs allow you to view the policy compliance
+// status of a cluster. The enforce compliance API allows you to update a
+// cluster to be compliant with the current version of its policy.
+type PolicyComplianceForClustersAPI struct {
+	policyComplianceForClustersImpl
+}
+
+// Get cluster policy compliance.
+//
+// Returns the policy compliance status of a cluster. Clusters could be out of
+// compliance if their policy was updated after the cluster was last edited.
+func (a *PolicyComplianceForClustersAPI) GetComplianceByClusterId(ctx context.Context, clusterId string) (*GetClusterComplianceResponse, error) {
+	return a.policyComplianceForClustersImpl.GetCompliance(ctx, GetClusterComplianceRequest{
+		ClusterId: clusterId,
+	})
+}
+
+// List cluster policy compliance.
+//
+// Returns the policy compliance status of all clusters that use a given policy.
+// Clusters could be out of compliance if their policy was updated after the
+// cluster was last edited.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *PolicyComplianceForClustersAPI) ListCompliance(ctx context.Context, request ListClusterCompliancesRequest) listing.Iterator[ClusterCompliance] {
+
+	getNextPage := func(ctx context.Context, req ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.policyComplianceForClustersImpl.ListCompliance(ctx, req)
+	}
+	getItems := func(resp *ListClusterCompliancesResponse) []ClusterCompliance {
+		return resp.Clusters
+	}
+	getNextReq := func(resp *ListClusterCompliancesResponse) *ListClusterCompliancesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List cluster policy compliance.
+//
+// Returns the policy compliance status of all clusters that use a given policy.
+// Clusters could be out of compliance if their policy was updated after the
+// cluster was last edited.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *PolicyComplianceForClustersAPI) ListComplianceAll(ctx context.Context, request ListClusterCompliancesRequest) ([]ClusterCompliance, error) {
+	iterator := a.ListCompliance(ctx, request)
+	return listing.ToSlice[ClusterCompliance](ctx, iterator)
 }
 
 type PolicyFamiliesInterface interface {

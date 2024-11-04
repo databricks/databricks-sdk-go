@@ -212,9 +212,10 @@ type GetPermissionRequest struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dbsql-dashboards, directories,
-	// experiments, files, instance-pools, jobs, notebooks, pipelines, queries,
-	// registered-models, repos, serving-endpoints, or warehouses.
+	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
+	// directories, experiments, files, instance-pools, jobs, notebooks,
+	// pipelines, queries, registered-models, repos, serving-endpoints, or
+	// warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -329,7 +330,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -1136,9 +1137,10 @@ type PermissionsRequest struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dbsql-dashboards, directories,
-	// experiments, files, instance-pools, jobs, notebooks, pipelines, queries,
-	// registered-models, repos, serving-endpoints, or warehouses.
+	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
+	// directories, experiments, files, instance-pools, jobs, notebooks,
+	// pipelines, queries, registered-models, repos, serving-endpoints, or
+	// warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1324,7 +1326,7 @@ type User struct {
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID. This is automatically set by Databricks. Any value
 	// provided by the client will be ignored.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`
 	// Corresponds to AWS instance profile/arn role.

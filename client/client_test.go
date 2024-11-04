@@ -270,7 +270,7 @@ func TestNonJSONResponseIncludedInError(t *testing.T) {
 		{
 			statusCode: 400,
 			status:     "Bad Request",
-			errorMessage: `unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
+			errorMessage: `failed to unmarshal response body: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
 ` + "```" + `
 GET /a
 > * Host: 
@@ -285,7 +285,7 @@ GET /a
 		{
 			statusCode: 500,
 			status:     "Internal Server Error",
-			errorMessage: `unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
+			errorMessage: `failed to unmarshal response body: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
 ` + "```" + `
 GET /a
 > * Host: 
@@ -300,7 +300,7 @@ GET /a
 		{
 			statusCode: 200,
 			status:     "OK",
-			errorMessage: `unexpected error handling request: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
+			errorMessage: `failed to unmarshal response body: invalid character '<' looking for beginning of value. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:
 ` + "```" + `
 GET /a
 > * Host: 
