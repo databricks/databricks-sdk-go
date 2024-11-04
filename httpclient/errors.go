@@ -127,14 +127,10 @@ func (m *RestApiMatcher) Matches(req *http.Request) bool {
 	return req.Method == m.Method && m.Path.MatchString(req.URL.Path)
 }
 
-func shouldRetryIdempotentRequest(ctx context.Context, req *http.Request, resp *common.ResponseWrapper, err error) bool {
-	return RetryOnGatewayTimeout(ctx, req, resp, err)
-}
-
-func RetryIdempotentRequests(methods []RestApiMatcher) ErrorRetryer {
+func RetryMatchedRequests(methods []RestApiMatcher, retryer ErrorRetryer) ErrorRetryer {
 	return func(ctx context.Context, r *http.Request, rw *common.ResponseWrapper, err error) bool {
 		for _, m := range methods {
-			if m.Matches(r) && shouldRetryIdempotentRequest(ctx, r, rw, err) {
+			if m.Matches(r) && retryer(ctx, r, rw, err) {
 				logger.Debugf(ctx, "Attempting retry because of gateway timeout")
 				return true
 			}
