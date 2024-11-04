@@ -30,7 +30,5 @@ func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, erro
 		pageToken = nextRun.NextPageToken
 	}
 
-	run.NextPageToken = ""
-	run.PrevPageToken = ""
 	return run, nil
 }

@@ -118,7 +118,6 @@ func TestGetRun(t *testing.T) {
 							JobClusterKey: "cluster2",
 						},
 					},
-					PrevPageToken: "token1-reverse",
 				},
 			},
 			{
@@ -167,7 +166,6 @@ func TestGetRun(t *testing.T) {
 		assert.Equal(t, 4, len(run.Tasks))
 		assert.Empty(t, run.Iterations)
 		assert.Empty(t, run.NextPageToken)
-		assert.Empty(t, run.PrevPageToken)
 		expected := []RunTask{
 			{RunId: 123, ForceSendFields: []string{"RunId", "TaskKey"}},
 			{RunId: 1234, ForceSendFields: []string{"RunId", "TaskKey"}},
@@ -226,7 +224,6 @@ func TestGetRun(t *testing.T) {
 							JobClusterKey: "cluster2",
 						},
 					},
-					PrevPageToken: "token1-reverse",
 				},
 			},
 			{
@@ -318,7 +315,6 @@ func TestGetRun(t *testing.T) {
 							RunId: 999,
 						},
 					},
-					PrevPageToken: "token1-reverse",
 				},
 			},
 			{
@@ -363,7 +359,6 @@ func TestGetRun(t *testing.T) {
 		assert.Equal(t, 4, len(run.Iterations))
 		assert.Equal(t, 1, len(run.Tasks))
 		assert.Empty(t, run.NextPageToken)
-		assert.Empty(t, run.PrevPageToken)
 		expected := []RunTask{
 			{RunId: 123, ForceSendFields: []string{"RunId", "TaskKey"}},
 			{RunId: 1234, ForceSendFields: []string{"RunId", "TaskKey"}},
