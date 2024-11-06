@@ -940,53 +940,6 @@ func (_c *MockServingEndpointsInterface_GetPermissionsByServingEndpointId_Call) 
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockServingEndpointsInterface) Impl() serving.ServingEndpointsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 serving.ServingEndpointsService
-	if rf, ok := ret.Get(0).(func() serving.ServingEndpointsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(serving.ServingEndpointsService)
-		}
-	}
-
-	return r0
-}
-
-// MockServingEndpointsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockServingEndpointsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockServingEndpointsInterface_Expecter) Impl() *MockServingEndpointsInterface_Impl_Call {
-	return &MockServingEndpointsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockServingEndpointsInterface_Impl_Call) Run(run func()) *MockServingEndpointsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockServingEndpointsInterface_Impl_Call) Return(_a0 serving.ServingEndpointsService) *MockServingEndpointsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockServingEndpointsInterface_Impl_Call) RunAndReturn(run func() serving.ServingEndpointsService) *MockServingEndpointsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx
 func (_m *MockServingEndpointsInterface) List(ctx context.Context) listing.Iterator[serving.ServingEndpoint] {
 	ret := _m.Called(ctx)
@@ -1326,6 +1279,65 @@ func (_c *MockServingEndpointsInterface_Put_Call) Return(_a0 *serving.PutRespons
 }
 
 func (_c *MockServingEndpointsInterface_Put_Call) RunAndReturn(run func(context.Context, serving.PutRequest) (*serving.PutResponse, error)) *MockServingEndpointsInterface_Put_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// PutAiGateway provides a mock function with given fields: ctx, request
+func (_m *MockServingEndpointsInterface) PutAiGateway(ctx context.Context, request serving.PutAiGatewayRequest) (*serving.PutAiGatewayResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PutAiGateway")
+	}
+
+	var r0 *serving.PutAiGatewayResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.PutAiGatewayRequest) (*serving.PutAiGatewayResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.PutAiGatewayRequest) *serving.PutAiGatewayResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.PutAiGatewayResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.PutAiGatewayRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockServingEndpointsInterface_PutAiGateway_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PutAiGateway'
+type MockServingEndpointsInterface_PutAiGateway_Call struct {
+	*mock.Call
+}
+
+// PutAiGateway is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request serving.PutAiGatewayRequest
+func (_e *MockServingEndpointsInterface_Expecter) PutAiGateway(ctx interface{}, request interface{}) *MockServingEndpointsInterface_PutAiGateway_Call {
+	return &MockServingEndpointsInterface_PutAiGateway_Call{Call: _e.mock.On("PutAiGateway", ctx, request)}
+}
+
+func (_c *MockServingEndpointsInterface_PutAiGateway_Call) Run(run func(ctx context.Context, request serving.PutAiGatewayRequest)) *MockServingEndpointsInterface_PutAiGateway_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(serving.PutAiGatewayRequest))
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_PutAiGateway_Call) Return(_a0 *serving.PutAiGatewayResponse, _a1 error) *MockServingEndpointsInterface_PutAiGateway_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_PutAiGateway_Call) RunAndReturn(run func(context.Context, serving.PutAiGatewayRequest) (*serving.PutAiGatewayResponse, error)) *MockServingEndpointsInterface_PutAiGateway_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1697,54 +1709,6 @@ func (_c *MockServingEndpointsInterface_WaitGetServingEndpointNotUpdating_Call) 
 }
 
 func (_c *MockServingEndpointsInterface_WaitGetServingEndpointNotUpdating_Call) RunAndReturn(run func(context.Context, string, time.Duration, func(*serving.ServingEndpointDetailed)) (*serving.ServingEndpointDetailed, error)) *MockServingEndpointsInterface_WaitGetServingEndpointNotUpdating_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockServingEndpointsInterface) WithImpl(impl serving.ServingEndpointsService) serving.ServingEndpointsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 serving.ServingEndpointsInterface
-	if rf, ok := ret.Get(0).(func(serving.ServingEndpointsService) serving.ServingEndpointsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(serving.ServingEndpointsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockServingEndpointsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockServingEndpointsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl serving.ServingEndpointsService
-func (_e *MockServingEndpointsInterface_Expecter) WithImpl(impl interface{}) *MockServingEndpointsInterface_WithImpl_Call {
-	return &MockServingEndpointsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockServingEndpointsInterface_WithImpl_Call) Run(run func(impl serving.ServingEndpointsService)) *MockServingEndpointsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(serving.ServingEndpointsService))
-	})
-	return _c
-}
-
-func (_c *MockServingEndpointsInterface_WithImpl_Call) Return(_a0 serving.ServingEndpointsInterface) *MockServingEndpointsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockServingEndpointsInterface_WithImpl_Call) RunAndReturn(run func(serving.ServingEndpointsService) serving.ServingEndpointsInterface) *MockServingEndpointsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

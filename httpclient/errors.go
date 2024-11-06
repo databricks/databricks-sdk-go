@@ -48,10 +48,10 @@ func DefaultErrorMapper(ctx context.Context, resp common.ResponseWrapper) error 
 func DefaultErrorRetriable(ctx context.Context, err error) bool {
 	var httpError *HttpError
 	if errors.As(err, &httpError) {
-		if httpError.StatusCode == 429 {
+		if httpError.StatusCode == http.StatusTooManyRequests {
 			return true
 		}
-		if httpError.StatusCode == 504 {
+		if httpError.StatusCode == http.StatusGatewayTimeout {
 			return true
 		}
 	}

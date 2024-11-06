@@ -4,11 +4,15 @@
 //
 // - [iam.AccountAccessControlProxyAPI]: These APIs manage access rules on resources in an account.
 //
+// - [settings.AibiDashboardEmbeddingAccessPolicyAPI]: Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the workspace level.
+//
+// - [settings.AibiDashboardEmbeddingApprovedDomainsAPI]: Controls the list of domains approved to host the embedded AI/BI dashboards.
+//
 // - [sql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
 // - [sql.AlertsLegacyAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
-// - [serving.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
+// - [apps.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
 //
 // - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode.
 //
@@ -61,6 +65,12 @@
 // - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/set.
 //
 // - [settings.DefaultNamespaceAPI]: The default namespace setting API allows users to configure the default namespace for a Databricks workspace.
+//
+// - [settings.DisableLegacyAccessAPI]: 'Disabling legacy access' has the following impacts: 1.
+//
+// - [settings.DisableLegacyDbfsAPI]: When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new mounts).
+//
+// - [settings.DisableLegacyFeaturesAPI]: Disable legacy features for new Databricks workspaces.
 //
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
@@ -132,6 +142,10 @@
 //
 // - [pipelines.PipelinesAPI]: The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
 //
+// - [compute.PolicyComplianceForClustersAPI]: The policy compliance APIs allow you to view and manage the policy compliance status of clusters in your workspace.
+//
+// - [jobs.PolicyComplianceForJobsAPI]: The compliance APIs allow you to view and manage the policy compliance status of jobs in your workspace.
+//
 // - [compute.PolicyFamiliesAPI]: View available policy families.
 //
 // - [provisioning.PrivateAccessAPI]: These APIs manage private access settings for this account.
@@ -160,7 +174,7 @@
 //
 // - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
 //
-// - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints, serverless compute, and DLT.
+// - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute.
 //
 // - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of visualizations from existing queries in the Databricks Workspace.
 //
@@ -173,6 +187,8 @@
 // - [catalog.RegisteredModelsAPI]: Databricks provides a hosted version of MLflow Model Registry in Unity Catalog.
 //
 // - [workspace.ReposAPI]: The Repos API allows users to manage their git repos.
+//
+// - [catalog.ResourceQuotasAPI]: Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that can be created.
 //
 // - [settings.RestrictWorkspaceAdminsAPI]: The Restrict Workspace Admins setting lets you control the capabilities of workspace admins.
 //
@@ -210,6 +226,8 @@
 //
 // - [catalog.TablesAPI]: A table resides in the third layer of Unity Catalog’s three-level namespace.
 //
+// - [catalog.TemporaryTableCredentialsAPI]: Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locationswhere table data is stored in Databricks.
+//
 // - [settings.TokenManagementAPI]: Enables administrators to get all tokens and delete tokens for other users.
 //
 // - [settings.TokensAPI]: The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access Databricks REST APIs.
@@ -244,6 +262,7 @@
 package service
 
 import (
+	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/compute"
@@ -271,9 +290,11 @@ import (
 var (
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
+	_ *settings.AibiDashboardEmbeddingAccessPolicyAPI     = nil
+	_ *settings.AibiDashboardEmbeddingApprovedDomainsAPI  = nil
 	_ *sql.AlertsAPI                                      = nil
 	_ *sql.AlertsLegacyAPI                                = nil
-	_ *serving.AppsAPI                                    = nil
+	_ *apps.AppsAPI                                       = nil
 	_ *catalog.ArtifactAllowlistsAPI                      = nil
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil
@@ -300,6 +321,9 @@ var (
 	_ *files.DbfsAPI                                      = nil
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil
+	_ *settings.DisableLegacyAccessAPI                    = nil
+	_ *settings.DisableLegacyDbfsAPI                      = nil
+	_ *settings.DisableLegacyFeaturesAPI                  = nil
 	_ *provisioning.EncryptionKeysAPI                     = nil
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil
@@ -335,6 +359,8 @@ var (
 	_ *iam.PermissionsAPI                                 = nil
 	_ *settings.PersonalComputeAPI                        = nil
 	_ *pipelines.PipelinesAPI                             = nil
+	_ *compute.PolicyComplianceForClustersAPI             = nil
+	_ *jobs.PolicyComplianceForJobsAPI                    = nil
 	_ *compute.PolicyFamiliesAPI                          = nil
 	_ *provisioning.PrivateAccessAPI                      = nil
 	_ *marketplace.ProviderExchangeFiltersAPI             = nil
@@ -356,6 +382,7 @@ var (
 	_ *sharing.RecipientsAPI                              = nil
 	_ *catalog.RegisteredModelsAPI                        = nil
 	_ *workspace.ReposAPI                                 = nil
+	_ *catalog.ResourceQuotasAPI                          = nil
 	_ *settings.RestrictWorkspaceAdminsAPI                = nil
 	_ *catalog.SchemasAPI                                 = nil
 	_ *workspace.SecretsAPI                               = nil
@@ -374,6 +401,7 @@ var (
 	_ *catalog.SystemSchemasAPI                           = nil
 	_ *catalog.TableConstraintsAPI                        = nil
 	_ *catalog.TablesAPI                                  = nil
+	_ *catalog.TemporaryTableCredentialsAPI               = nil
 	_ *settings.TokenManagementAPI                        = nil
 	_ *settings.TokensAPI                                 = nil
 	_ *billing.UsageDashboardsAPI                         = nil

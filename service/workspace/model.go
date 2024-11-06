@@ -52,11 +52,11 @@ type AzureKeyVaultSecretScopeMetadata struct {
 	ResourceId string `json:"resource_id"`
 }
 
-type CreateCredentials struct {
+type CreateCredentialsRequest struct {
 	// Git provider. This field is case-insensitive. The available Git providers
-	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
-	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
-	// awsCodeCommit.
+	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
+	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
+	// `awsCodeCommit`.
 	GitProvider string `json:"git_provider"`
 	// The username or email provided with your Git provider account, depending
 	// on which provider you are using. For GitHub, GitHub Enterprise Server, or
@@ -68,8 +68,7 @@ type CreateCredentials struct {
 	GitUsername string `json:"git_username,omitempty"`
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
-	// scoped access tokens. [Learn more]. The personal access token used to
-	// authenticate to the corresponding Git
+	// scoped access tokens. [Learn more].
 	//
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
@@ -77,29 +76,21 @@ type CreateCredentials struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *CreateCredentials) UnmarshalJSON(b []byte) error {
+func (s *CreateCredentialsRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s CreateCredentials) MarshalJSON() ([]byte, error) {
+func (s CreateCredentialsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
 type CreateCredentialsResponse struct {
 	// ID of the credential object in the workspace.
-	CredentialId int64 `json:"credential_id,omitempty"`
-	// Git provider. This field is case-insensitive. The available Git providers
-	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
-	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
-	// awsCodeCommit.
-	GitProvider string `json:"git_provider,omitempty"`
-	// The username or email provided with your Git provider account, depending
-	// on which provider you are using. For GitHub, GitHub Enterprise Server, or
-	// Azure DevOps Services, either email or username may be used. For GitLab,
-	// GitLab Enterprise Edition, email must be used. For AWS CodeCommit,
-	// BitBucket or BitBucket Server, username must be used. For all other
-	// providers please see your provider's Personal Access Token authentication
-	// documentation to see what is supported.
+	CredentialId int64 `json:"credential_id"`
+	// The Git provider associated with the credential.
+	GitProvider string `json:"git_provider"`
+	// The username or email provided with your Git provider account and
+	// associated with the credential.
 	GitUsername string `json:"git_username,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -113,15 +104,15 @@ func (s CreateCredentialsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CreateRepo struct {
+type CreateRepoRequest struct {
 	// Desired path for the repo in the workspace. Almost any path in the
-	// workspace can be chosen. If repo is created in /Repos, path must be in
-	// the format /Repos/{folder}/{repo-name}.
+	// workspace can be chosen. If repo is created in `/Repos`, path must be in
+	// the format `/Repos/{folder}/{repo-name}`.
 	Path string `json:"path,omitempty"`
 	// Git provider. This field is case-insensitive. The available Git providers
-	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
-	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
-	// awsCodeCommit.
+	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
+	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
+	// `awsCodeCommit`.
 	Provider string `json:"provider"`
 	// If specified, the repo will be created with sparse checkout enabled. You
 	// cannot enable/disable sparse checkout after the repo is created.
@@ -132,11 +123,39 @@ type CreateRepo struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *CreateRepo) UnmarshalJSON(b []byte) error {
+func (s *CreateRepoRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s CreateRepo) MarshalJSON() ([]byte, error) {
+func (s CreateRepoRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateRepoResponse struct {
+	// Branch that the Git folder (repo) is checked out to.
+	Branch string `json:"branch,omitempty"`
+	// SHA-1 hash representing the commit ID of the current HEAD of the Git
+	// folder (repo).
+	HeadCommitId string `json:"head_commit_id,omitempty"`
+	// ID of the Git folder (repo) object in the workspace.
+	Id int64 `json:"id,omitempty"`
+	// Path of the Git folder (repo) in the workspace.
+	Path string `json:"path,omitempty"`
+	// Git provider of the linked Git repository.
+	Provider string `json:"provider,omitempty"`
+	// Sparse checkout settings for the Git folder (repo).
+	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
+	// URL of the linked Git repository.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateRepoResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateRepoResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -168,19 +187,11 @@ type CreateScopeResponse struct {
 
 type CredentialInfo struct {
 	// ID of the credential object in the workspace.
-	CredentialId int64 `json:"credential_id,omitempty"`
-	// Git provider. This field is case-insensitive. The available Git providers
-	// are gitHub, gitHubOAuth, bitbucketCloud, gitLab, azureDevOpsServices,
-	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
-	// awsCodeCommit.
+	CredentialId int64 `json:"credential_id"`
+	// The Git provider associated with the credential.
 	GitProvider string `json:"git_provider,omitempty"`
-	// The username or email provided with your Git provider account, depending
-	// on which provider you are using. For GitHub, GitHub Enterprise Server, or
-	// Azure DevOps Services, either email or username may be used. For GitLab,
-	// GitLab Enterprise Edition, email must be used. For AWS CodeCommit,
-	// BitBucket or BitBucket Server, username must be used. For all other
-	// providers please see your provider's Personal Access Token authentication
-	// documentation to see what is supported.
+	// The username or email provided with your Git provider account and
+	// associated with the credential.
 	GitUsername string `json:"git_username,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -225,15 +236,21 @@ type DeleteAclResponse struct {
 }
 
 // Delete a credential
-type DeleteGitCredentialRequest struct {
+type DeleteCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
 }
 
+type DeleteCredentialsResponse struct {
+}
+
 // Delete a repo
 type DeleteRepoRequest struct {
-	// The ID for the corresponding repo to access.
+	// ID of the Git folder (repo) object in the workspace.
 	RepoId int64 `json:"-" url:"-"`
+}
+
+type DeleteRepoResponse struct {
 }
 
 type DeleteResponse struct {
@@ -340,14 +357,30 @@ type GetAclRequest struct {
 	Scope string `json:"-" url:"scope"`
 }
 
-type GetCredentialsResponse struct {
-	Credentials []CredentialInfo `json:"credentials,omitempty"`
-}
-
 // Get a credential entry
-type GetGitCredentialRequest struct {
+type GetCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
+}
+
+type GetCredentialsResponse struct {
+	// ID of the credential object in the workspace.
+	CredentialId int64 `json:"credential_id"`
+	// The Git provider associated with the credential.
+	GitProvider string `json:"git_provider,omitempty"`
+	// The username or email provided with your Git provider account and
+	// associated with the credential.
+	GitUsername string `json:"git_username,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetCredentialsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetCredentialsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get repo permission levels
@@ -369,8 +402,35 @@ type GetRepoPermissionsRequest struct {
 
 // Get a repo
 type GetRepoRequest struct {
-	// The ID for the corresponding repo to access.
+	// ID of the Git folder (repo) object in the workspace.
 	RepoId int64 `json:"-" url:"-"`
+}
+
+type GetRepoResponse struct {
+	// Branch that the local version of the repo is checked out to.
+	Branch string `json:"branch,omitempty"`
+	// SHA-1 hash representing the commit ID of the current HEAD of the repo.
+	HeadCommitId string `json:"head_commit_id,omitempty"`
+	// ID of the Git folder (repo) object in the workspace.
+	Id int64 `json:"id,omitempty"`
+	// Path of the Git folder (repo) in the workspace.
+	Path string `json:"path,omitempty"`
+	// Git provider of the linked Git repository.
+	Provider string `json:"provider,omitempty"`
+	// Sparse checkout settings for the Git folder (repo).
+	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
+	// URL of the linked Git repository.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetRepoResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetRepoResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a secret
@@ -569,6 +629,11 @@ type ListAclsResponse struct {
 	Items []AclItem `json:"items,omitempty"`
 }
 
+type ListCredentialsResponse struct {
+	// List of credentials.
+	Credentials []CredentialInfo `json:"credentials,omitempty"`
+}
+
 // Get repos
 type ListReposRequest struct {
 	// Token used to get the next page of results. If not specified, returns the
@@ -576,7 +641,8 @@ type ListReposRequest struct {
 	// results.
 	NextPageToken string `json:"-" url:"next_page_token,omitempty"`
 	// Filters repos that have paths starting with the given path prefix. If not
-	// provided repos from /Repos will be served.
+	// provided or when provided an effectively empty prefix (`/` or
+	// `/Workspace`) Git folders (repos) from `/Workspace/Repos` will be served.
 	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -591,10 +657,10 @@ func (s ListReposRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListReposResponse struct {
-	// Token that can be specified as a query parameter to the GET /repos
+	// Token that can be specified as a query parameter to the `GET /repos`
 	// endpoint to retrieve the next page of results.
 	NextPageToken string `json:"next_page_token,omitempty"`
-
+	// List of Git folders (repos).
 	Repos []RepoInfo `json:"repos,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -818,25 +884,21 @@ func (s RepoAccessControlResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Git folder (repo) information.
 type RepoInfo struct {
-	// Branch that the local version of the repo is checked out to.
+	// Name of the current git branch of the git folder (repo).
 	Branch string `json:"branch,omitempty"`
-	// SHA-1 hash representing the commit ID of the current HEAD of the repo.
+	// Current git commit id of the git folder (repo).
 	HeadCommitId string `json:"head_commit_id,omitempty"`
-	// ID of the repo object in the workspace.
+	// Id of the git folder (repo) in the Workspace.
 	Id int64 `json:"id,omitempty"`
-	// Desired path for the repo in the workspace. Almost any path in the
-	// workspace can be chosen. If repo is created in /Repos, path must be in
-	// the format /Repos/{folder}/{repo-name}.
+	// Root path of the git folder (repo) in the Workspace.
 	Path string `json:"path,omitempty"`
-	// Git provider. This field is case-insensitive. The available Git providers
-	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
-	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
-	// awsCodeCommit.
+	// Git provider of the remote git repository, e.g. `gitHub`.
 	Provider string `json:"provider,omitempty"`
-
+	// Sparse checkout config for the git folder (repo).
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
-	// URL of the Git repository to be linked.
+	// URL of the remote git repository.
 	Url string `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -1003,24 +1065,32 @@ func (s SecretScope) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Sparse checkout configuration, it contains options like cone patterns.
 type SparseCheckout struct {
-	// List of patterns to include for sparse checkout.
+	// List of sparse checkout cone patterns, see [cone mode handling] for
+	// details.
+	//
+	// [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
 	Patterns []string `json:"patterns,omitempty"`
 }
 
+// Sparse checkout configuration, it contains options like cone patterns.
 type SparseCheckoutUpdate struct {
-	// List of patterns to include for sparse checkout.
+	// List of sparse checkout cone patterns, see [cone mode handling] for
+	// details.
+	//
+	// [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
 	Patterns []string `json:"patterns,omitempty"`
 }
 
-type UpdateCredentials struct {
+type UpdateCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
 	// Git provider. This field is case-insensitive. The available Git providers
-	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
-	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
-	// awsCodeCommit.
-	GitProvider string `json:"git_provider,omitempty"`
+	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
+	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
+	// `awsCodeCommit`.
+	GitProvider string `json:"git_provider"`
 	// The username or email provided with your Git provider account, depending
 	// on which provider you are using. For GitHub, GitHub Enterprise Server, or
 	// Azure DevOps Services, either email or username may be used. For GitLab,
@@ -1031,8 +1101,7 @@ type UpdateCredentials struct {
 	GitUsername string `json:"git_username,omitempty"`
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
-	// scoped access tokens. [Learn more]. The personal access token used to
-	// authenticate to the corresponding Git
+	// scoped access tokens. [Learn more].
 	//
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
@@ -1040,18 +1109,21 @@ type UpdateCredentials struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *UpdateCredentials) UnmarshalJSON(b []byte) error {
+func (s *UpdateCredentialsRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s UpdateCredentials) MarshalJSON() ([]byte, error) {
+func (s UpdateCredentialsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type UpdateRepo struct {
+type UpdateCredentialsResponse struct {
+}
+
+type UpdateRepoRequest struct {
 	// Branch that the local version of the repo is checked out to.
 	Branch string `json:"branch,omitempty"`
-	// The ID for the corresponding repo to access.
+	// ID of the Git folder (repo) object in the workspace.
 	RepoId int64 `json:"-" url:"-"`
 	// If specified, update the sparse checkout settings. The update will fail
 	// if sparse checkout is not enabled for the repo.
@@ -1065,15 +1137,15 @@ type UpdateRepo struct {
 	ForceSendFields []string `json:"-"`
 }
 
-func (s *UpdateRepo) UnmarshalJSON(b []byte) error {
+func (s *UpdateRepoRequest) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s UpdateRepo) MarshalJSON() ([]byte, error) {
+func (s UpdateRepoRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type UpdateResponse struct {
+type UpdateRepoResponse struct {
 }
 
 type WorkspaceObjectAccessControlRequest struct {

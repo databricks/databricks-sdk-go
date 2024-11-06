@@ -6,72 +6,6 @@ import (
 	"context"
 )
 
-// Apps run directly on a customer’s Databricks instance, integrate with their
-// data, use and extend Databricks services, and enable users to interact
-// through single sign-on.
-type AppsService interface {
-
-	// Create an app.
-	//
-	// Creates a new app.
-	Create(ctx context.Context, request CreateAppRequest) (*App, error)
-
-	// Delete an app.
-	//
-	// Deletes an app.
-	Delete(ctx context.Context, request DeleteAppRequest) error
-
-	// Create an app deployment.
-	//
-	// Creates an app deployment for the app with the supplied name.
-	Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error)
-
-	// Get an app.
-	//
-	// Retrieves information for the app with the supplied name.
-	Get(ctx context.Context, request GetAppRequest) (*App, error)
-
-	// Get an app deployment.
-	//
-	// Retrieves information for the app deployment with the supplied name and
-	// deployment id.
-	GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error)
-
-	// Get app environment.
-	//
-	// Retrieves app environment.
-	GetEnvironment(ctx context.Context, request GetAppEnvironmentRequest) (*AppEnvironment, error)
-
-	// List apps.
-	//
-	// Lists all apps in the workspace.
-	//
-	// Use ListAll() to get all App instances, which will iterate over every result page.
-	List(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error)
-
-	// List app deployments.
-	//
-	// Lists all app deployments for the app with the supplied name.
-	//
-	// Use ListDeploymentsAll() to get all AppDeployment instances, which will iterate over every result page.
-	ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error)
-
-	// Start an app.
-	//
-	// Start the last active deployment of the app in the workspace.
-	Start(ctx context.Context, request StartAppRequest) (*AppDeployment, error)
-
-	// Stop an app.
-	//
-	// Stops the active deployment of the app in the workspace.
-	Stop(ctx context.Context, request StopAppRequest) error
-
-	// Update an app.
-	//
-	// Updates the app with the supplied name.
-	Update(ctx context.Context, request UpdateAppRequest) (*App, error)
-}
-
 // The Serving Endpoints API allows you to create, update, and delete model
 // serving endpoints.
 //
@@ -145,9 +79,16 @@ type ServingEndpointsService interface {
 
 	// Update rate limits of a serving endpoint.
 	//
-	// Used to update the rate limits of a serving endpoint. NOTE: only external
-	// and foundation model endpoints are supported as of now.
+	// Used to update the rate limits of a serving endpoint. NOTE: Only
+	// foundation model endpoints are currently supported. For external models,
+	// use AI Gateway to manage rate limits.
 	Put(ctx context.Context, request PutRequest) (*PutResponse, error)
+
+	// Update AI Gateway of a serving endpoint.
+	//
+	// Used to update the AI Gateway of a serving endpoint. NOTE: Only external
+	// model endpoints are currently supported.
+	PutAiGateway(ctx context.Context, request PutAiGatewayRequest) (*PutAiGatewayResponse, error)
 
 	// Query a serving endpoint.
 	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)

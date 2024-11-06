@@ -9,6 +9,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 
+	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
@@ -52,13 +53,15 @@ type WorkspaceClient struct {
 	// :method:jobs/create.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version.
+	// Please see the latest version. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	AlertsLegacy sql.AlertsLegacyInterface
 
 	// Apps run directly on a customer’s Databricks instance, integrate with
 	// their data, use and extend Databricks services, and enable users to
 	// interact through single sign-on.
-	Apps serving.AppsInterface
+	Apps apps.AppsInterface
 
 	// In Databricks Runtime 13.3 and above, you can add libraries and init
 	// scripts to the `allowlist` in UC so that users can leverage these
@@ -207,7 +210,9 @@ type WorkspaceClient struct {
 	// your SQL warehouse as it appears in Databricks SQL.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DataSources sql.DataSourcesInterface
 
 	// DBFS API makes it simple to interact with various data sources without
@@ -229,7 +234,9 @@ type WorkspaceClient struct {
 	// permissions (superset of `CAN_RUN`)
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version.
+	// [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DbsqlPermissions sql.DbsqlPermissionsInterface
 
 	// Experiments are the primary unit of organization in MLflow; all MLflow
@@ -487,6 +494,9 @@ type WorkspaceClient struct {
 	// Permissions API are used to create read, write, edit, update and manage
 	// access for various users on different objects and endpoints.
 	//
+	// * **[Apps permissions](:service:apps)** — Manage which users can manage
+	// or use apps.
+	//
 	// * **[Cluster permissions](:service:clusters)** — Manage which users can
 	// manage, restart, or attach to clusters.
 	//
@@ -525,7 +535,8 @@ type WorkspaceClient struct {
 	// users can create or use tokens.
 	//
 	// * **[Workspace object permissions](:service:workspace)** — Manage which
-	// users can read, run, edit, or manage directories, files, and notebooks.
+	// users can read, run, edit, or manage alerts, dbsql-dashboards,
+	// directories, files, notebooks and queries.
 	//
 	// For the mapping of the required permissions for specific actions or
 	// abilities and other important information, see [Access Control].
@@ -551,6 +562,33 @@ type WorkspaceClient struct {
 	// allow you to define expected data quality and specify how to handle
 	// records that fail those expectations.
 	Pipelines pipelines.PipelinesInterface
+
+	// The policy compliance APIs allow you to view and manage the policy
+	// compliance status of clusters in your workspace.
+	//
+	// A cluster is compliant with its policy if its configuration satisfies all
+	// its policy rules. Clusters could be out of compliance if their policy was
+	// updated after the cluster was last edited.
+	//
+	// The get and list compliance APIs allow you to view the policy compliance
+	// status of a cluster. The enforce compliance API allows you to update a
+	// cluster to be compliant with the current version of its policy.
+	PolicyComplianceForClusters compute.PolicyComplianceForClustersInterface
+
+	// The compliance APIs allow you to view and manage the policy compliance
+	// status of jobs in your workspace. This API currently only supports
+	// compliance controls for cluster policies.
+	//
+	// A job is in compliance if its cluster configurations satisfy the rules of
+	// all their respective cluster policies. A job could be out of compliance
+	// if a cluster policy it uses was updated after the job was last edited.
+	// The job is considered out of compliance if any of its clusters no longer
+	// comply with their updated policies.
+	//
+	// The get and list compliance APIs allow you to view the policy compliance
+	// status of a job. The enforce compliance API allows you to update a job so
+	// that it becomes compliant with all of its policies.
+	PolicyComplianceForJobs jobs.PolicyComplianceForJobsInterface
 
 	// View available policy families. A policy family contains a policy
 	// definition providing best practices for configuring clusters for a
@@ -619,11 +657,13 @@ type WorkspaceClient struct {
 	// :method:jobs/create.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version.
+	// Please see the latest version. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueriesLegacy sql.QueriesLegacyInterface
 
 	// A service responsible for storing and retrieving the list of queries run
-	// against SQL endpoints, serverless compute, and DLT.
+	// against SQL endpoints and serverless compute.
 	QueryHistory sql.QueryHistoryInterface
 
 	// This is an evolving API that facilitates the addition and removal of
@@ -636,7 +676,9 @@ type WorkspaceClient struct {
 	// Data structures may change over time.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version.
+	// Please see the latest version. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueryVisualizationsLegacy sql.QueryVisualizationsLegacyInterface
 
 	// The Recipient Activation API is only applicable in the open sharing model
@@ -715,6 +757,16 @@ type WorkspaceClient struct {
 	// data science and engineering code development best practices using Git
 	// for version control, collaboration, and CI/CD.
 	Repos workspace.ReposInterface
+
+	// Unity Catalog enforces resource quotas on all securable objects, which
+	// limits the number of resources that can be created. Quotas are expressed
+	// in terms of a resource type and a parent (for example, tables per
+	// metastore or schemas per catalog). The resource quota APIs enable you to
+	// monitor your current usage and limits. For more information on resource
+	// quotas see the [Unity Catalog documentation].
+	//
+	// [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
+	ResourceQuotas catalog.ResourceQuotasInterface
 
 	// A schema (also called a database) is the second layer of Unity
 	// Catalog’s three-level namespace. A schema organizes tables, views and
@@ -878,10 +930,13 @@ type WorkspaceClient struct {
 	// arrives. Polling for status until a terminal state is reached is a
 	// reliable way to determine the final state. - Wait timeouts are
 	// approximate, occur server-side, and cannot account for things such as
-	// caller delays and network latency from caller to service. - The system
-	// will auto-close a statement after one hour if the client stops polling
-	// and thus you must poll at least once an hour. - The results are only
-	// available for one hour after success; polling does not extend this.
+	// caller delays and network latency from caller to service. - To guarantee
+	// that the statement is kept alive, you must poll at least once every 15
+	// minutes. - The results are only available for one hour after success;
+	// polling does not extend this. - The SQL Execution API must be used for
+	// the entire lifecycle of the statement. For example, you cannot use the
+	// Jobs API to execute the command, and then the SQL Execution API to cancel
+	// it.
 	//
 	// [Apache Arrow Columnar]: https://arrow.apache.org/overview/
 	// [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
@@ -934,6 +989,25 @@ type WorkspaceClient struct {
 	// A table can be managed or external. From an API perspective, a __VIEW__
 	// is a particular kind of table (rather than a managed or external table).
 	Tables catalog.TablesInterface
+
+	// Temporary Table Credentials refer to short-lived, downscoped credentials
+	// used to access cloud storage locationswhere table data is stored in
+	// Databricks. These credentials are employed to provide secure and
+	// time-limitedaccess to data in cloud environments such as AWS, Azure, and
+	// Google Cloud. Each cloud provider has its own typeof credentials: AWS
+	// uses temporary session tokens via AWS Security Token Service (STS), Azure
+	// utilizesShared Access Signatures (SAS) for its data storage services, and
+	// Google Cloud supports temporary credentialsthrough OAuth 2.0.Temporary
+	// table credentials ensure that data access is limited in scope and
+	// duration, reducing the risk ofunauthorized access or misuse. To use the
+	// temporary table credentials API, a metastore admin needs to enable the
+	// external_access_enabled flag (off by default) at the metastore level, and
+	// user needs to be granted the EXTERNAL USE SCHEMA permission at the schema
+	// level by catalog admin. Note that EXTERNAL USE SCHEMA is a schema level
+	// permission that can only be granted by catalog admin explicitly and is
+	// not included in schema ownership or ALL PRIVILEGES on the schema for
+	// security reason.
+	TemporaryTableCredentials catalog.TemporaryTableCredentialsInterface
 
 	// Enables administrators to get all tokens and delete tokens for other
 	// users. Admins can either get every token, get a specific token by ID, or
@@ -1062,7 +1136,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
 		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),
-		Apps:                                serving.NewApps(databricksClient),
+		Apps:                                apps.NewApps(databricksClient),
 		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
 		Catalogs:                            catalog.NewCatalogs(databricksClient),
 		CleanRooms:                          sharing.NewCleanRooms(databricksClient),
@@ -1105,6 +1179,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		PermissionMigration:                 iam.NewPermissionMigration(databricksClient),
 		Permissions:                         iam.NewPermissions(databricksClient),
 		Pipelines:                           pipelines.NewPipelines(databricksClient),
+		PolicyComplianceForClusters:         compute.NewPolicyComplianceForClusters(databricksClient),
+		PolicyComplianceForJobs:             jobs.NewPolicyComplianceForJobs(databricksClient),
 		PolicyFamilies:                      compute.NewPolicyFamilies(databricksClient),
 		ProviderExchangeFilters:             marketplace.NewProviderExchangeFilters(databricksClient),
 		ProviderExchanges:                   marketplace.NewProviderExchanges(databricksClient),
@@ -1124,6 +1200,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Recipients:                          sharing.NewRecipients(databricksClient),
 		RegisteredModels:                    catalog.NewRegisteredModels(databricksClient),
 		Repos:                               workspace.NewRepos(databricksClient),
+		ResourceQuotas:                      catalog.NewResourceQuotas(databricksClient),
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
 		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),
@@ -1136,6 +1213,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		SystemSchemas:                       catalog.NewSystemSchemas(databricksClient),
 		TableConstraints:                    catalog.NewTableConstraints(databricksClient),
 		Tables:                              catalog.NewTables(databricksClient),
+		TemporaryTableCredentials:           catalog.NewTemporaryTableCredentials(databricksClient),
 		TokenManagement:                     settings.NewTokenManagement(databricksClient),
 		Tokens:                              settings.NewTokens(databricksClient),
 		Users:                               iam.NewUsers(databricksClient),

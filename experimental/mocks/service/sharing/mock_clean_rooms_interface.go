@@ -295,53 +295,6 @@ func (_c *MockCleanRoomsInterface_GetByName_Call) RunAndReturn(run func(context.
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockCleanRoomsInterface) Impl() sharing.CleanRoomsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sharing.CleanRoomsService
-	if rf, ok := ret.Get(0).(func() sharing.CleanRoomsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sharing.CleanRoomsService)
-		}
-	}
-
-	return r0
-}
-
-// MockCleanRoomsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockCleanRoomsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockCleanRoomsInterface_Expecter) Impl() *MockCleanRoomsInterface_Impl_Call {
-	return &MockCleanRoomsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockCleanRoomsInterface_Impl_Call) Run(run func()) *MockCleanRoomsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockCleanRoomsInterface_Impl_Call) Return(_a0 sharing.CleanRoomsService) *MockCleanRoomsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCleanRoomsInterface_Impl_Call) RunAndReturn(run func() sharing.CleanRoomsService) *MockCleanRoomsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockCleanRoomsInterface) List(ctx context.Context, request sharing.ListCleanRoomsRequest) listing.Iterator[sharing.CleanRoomInfo] {
 	ret := _m.Called(ctx, request)
@@ -505,54 +458,6 @@ func (_c *MockCleanRoomsInterface_Update_Call) Return(_a0 *sharing.CleanRoomInfo
 }
 
 func (_c *MockCleanRoomsInterface_Update_Call) RunAndReturn(run func(context.Context, sharing.UpdateCleanRoom) (*sharing.CleanRoomInfo, error)) *MockCleanRoomsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockCleanRoomsInterface) WithImpl(impl sharing.CleanRoomsService) sharing.CleanRoomsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sharing.CleanRoomsInterface
-	if rf, ok := ret.Get(0).(func(sharing.CleanRoomsService) sharing.CleanRoomsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sharing.CleanRoomsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockCleanRoomsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockCleanRoomsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sharing.CleanRoomsService
-func (_e *MockCleanRoomsInterface_Expecter) WithImpl(impl interface{}) *MockCleanRoomsInterface_WithImpl_Call {
-	return &MockCleanRoomsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockCleanRoomsInterface_WithImpl_Call) Run(run func(impl sharing.CleanRoomsService)) *MockCleanRoomsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sharing.CleanRoomsService))
-	})
-	return _c
-}
-
-func (_c *MockCleanRoomsInterface_WithImpl_Call) Return(_a0 sharing.CleanRoomsInterface) *MockCleanRoomsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCleanRoomsInterface_WithImpl_Call) RunAndReturn(run func(sharing.CleanRoomsService) sharing.CleanRoomsInterface) *MockCleanRoomsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

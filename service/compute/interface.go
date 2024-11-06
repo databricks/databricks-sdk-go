@@ -130,6 +130,12 @@ type ClustersService interface {
 	// If Databricks acquires at least 85% of the requested on-demand nodes,
 	// cluster creation will succeed. Otherwise the cluster will terminate with
 	// an informative error message.
+	//
+	// Rather than authoring the cluster's JSON definition from scratch,
+	// Databricks recommends filling out the [create compute UI] and then
+	// copying the generated JSON definition from the UI.
+	//
+	// [create compute UI]: https://docs.databricks.com/compute/configure.html
 	Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error)
 
 	// Terminate cluster.
@@ -265,6 +271,21 @@ type ClustersService interface {
 	// the ListClusters API. Unpinning a cluster that is not pinned will have no
 	// effect. This API can only be called by workspace admins.
 	Unpin(ctx context.Context, request UnpinCluster) error
+
+	// Update cluster configuration (partial).
+	//
+	// Updates the configuration of a cluster to match the partial set of
+	// attributes and size. Denote which fields to update using the
+	// `update_mask` field in the request body. A cluster can be updated if it
+	// is in a `RUNNING` or `TERMINATED` state. If a cluster is updated while in
+	// a `RUNNING` state, it will be restarted so that the new attributes can
+	// take effect. If a cluster is updated while in a `TERMINATED` state, it
+	// will remain `TERMINATED`. The updated attributes will take effect the
+	// next time the cluster is started using the `clusters/start` API. Attempts
+	// to update a cluster in any other state will be rejected with an
+	// `INVALID_STATE` error code. Clusters created by the Databricks Jobs
+	// service cannot be updated.
+	Update(ctx context.Context, request UpdateCluster) error
 
 	// Update cluster permissions.
 	//
@@ -541,6 +562,52 @@ type LibrariesService interface {
 	Uninstall(ctx context.Context, request UninstallLibraries) error
 }
 
+// The policy compliance APIs allow you to view and manage the policy compliance
+// status of clusters in your workspace.
+//
+// A cluster is compliant with its policy if its configuration satisfies all its
+// policy rules. Clusters could be out of compliance if their policy was updated
+// after the cluster was last edited.
+//
+// The get and list compliance APIs allow you to view the policy compliance
+// status of a cluster. The enforce compliance API allows you to update a
+// cluster to be compliant with the current version of its policy.
+type PolicyComplianceForClustersService interface {
+
+	// Enforce cluster policy compliance.
+	//
+	// Updates a cluster to be compliant with the current version of its policy.
+	// A cluster can be updated if it is in a `RUNNING` or `TERMINATED` state.
+	//
+	// If a cluster is updated while in a `RUNNING` state, it will be restarted
+	// so that the new attributes can take effect.
+	//
+	// If a cluster is updated while in a `TERMINATED` state, it will remain
+	// `TERMINATED`. The next time the cluster is started, the new attributes
+	// will take effect.
+	//
+	// Clusters created by the Databricks Jobs, DLT, or Models services cannot
+	// be enforced by this API. Instead, use the "Enforce job policy compliance"
+	// API to enforce policy compliance on jobs.
+	EnforceCompliance(ctx context.Context, request EnforceClusterComplianceRequest) (*EnforceClusterComplianceResponse, error)
+
+	// Get cluster policy compliance.
+	//
+	// Returns the policy compliance status of a cluster. Clusters could be out
+	// of compliance if their policy was updated after the cluster was last
+	// edited.
+	GetCompliance(ctx context.Context, request GetClusterComplianceRequest) (*GetClusterComplianceResponse, error)
+
+	// List cluster policy compliance.
+	//
+	// Returns the policy compliance status of all clusters that use a given
+	// policy. Clusters could be out of compliance if their policy was updated
+	// after the cluster was last edited.
+	//
+	// Use ListComplianceAll() to get all ClusterCompliance instances, which will iterate over every result page.
+	ListCompliance(ctx context.Context, request ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error)
+}
+
 // View available policy families. A policy family contains a policy definition
 // providing best practices for configuring clusters for a particular use case.
 //
@@ -554,12 +621,14 @@ type PolicyFamiliesService interface {
 
 	// Get policy family information.
 	//
-	// Retrieve the information for an policy family based on its identifier.
+	// Retrieve the information for an policy family based on its identifier and
+	// version
 	Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error)
 
 	// List policy families.
 	//
-	// Retrieve a list of policy families. This API is paginated.
+	// Returns the list of policy definition types available to use at their
+	// latest version. This API is paginated.
 	//
 	// Use ListAll() to get all PolicyFamily instances, which will iterate over every result page.
 	List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error)

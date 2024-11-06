@@ -289,6 +289,16 @@ func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 	return err
 }
 
+func (a *clustersImpl) Update(ctx context.Context, request UpdateCluster) error {
+	var updateClusterResponse UpdateClusterResponse
+	path := "/api/2.1/clusters/update"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &updateClusterResponse)
+	return err
+}
+
 func (a *clustersImpl) UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
@@ -588,6 +598,39 @@ func (a *librariesImpl) Uninstall(ctx context.Context, request UninstallLibrarie
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &uninstallLibrariesResponse)
 	return err
+}
+
+// unexported type that holds implementations of just PolicyComplianceForClusters API methods
+type policyComplianceForClustersImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *policyComplianceForClustersImpl) EnforceCompliance(ctx context.Context, request EnforceClusterComplianceRequest) (*EnforceClusterComplianceResponse, error) {
+	var enforceClusterComplianceResponse EnforceClusterComplianceResponse
+	path := "/api/2.0/policies/clusters/enforce-compliance"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &enforceClusterComplianceResponse)
+	return &enforceClusterComplianceResponse, err
+}
+
+func (a *policyComplianceForClustersImpl) GetCompliance(ctx context.Context, request GetClusterComplianceRequest) (*GetClusterComplianceResponse, error) {
+	var getClusterComplianceResponse GetClusterComplianceResponse
+	path := "/api/2.0/policies/clusters/get-compliance"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getClusterComplianceResponse)
+	return &getClusterComplianceResponse, err
+}
+
+func (a *policyComplianceForClustersImpl) ListCompliance(ctx context.Context, request ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error) {
+	var listClusterCompliancesResponse ListClusterCompliancesResponse
+	path := "/api/2.0/policies/clusters/list-compliance"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listClusterCompliancesResponse)
+	return &listClusterCompliancesResponse, err
 }
 
 // unexported type that holds implementations of just PolicyFamilies API methods

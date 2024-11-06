@@ -460,53 +460,6 @@ func (_c *MockQualityMonitorsInterface_GetRefreshByTableNameAndRefreshId_Call) R
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockQualityMonitorsInterface) Impl() catalog.QualityMonitorsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 catalog.QualityMonitorsService
-	if rf, ok := ret.Get(0).(func() catalog.QualityMonitorsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.QualityMonitorsService)
-		}
-	}
-
-	return r0
-}
-
-// MockQualityMonitorsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockQualityMonitorsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockQualityMonitorsInterface_Expecter) Impl() *MockQualityMonitorsInterface_Impl_Call {
-	return &MockQualityMonitorsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockQualityMonitorsInterface_Impl_Call) Run(run func()) *MockQualityMonitorsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_Impl_Call) Return(_a0 catalog.QualityMonitorsService) *MockQualityMonitorsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_Impl_Call) RunAndReturn(run func() catalog.QualityMonitorsService) *MockQualityMonitorsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ListRefreshes provides a mock function with given fields: ctx, request
 func (_m *MockQualityMonitorsInterface) ListRefreshes(ctx context.Context, request catalog.ListRefreshesRequest) (*catalog.MonitorRefreshListResponse, error) {
 	ret := _m.Called(ctx, request)
@@ -625,6 +578,65 @@ func (_c *MockQualityMonitorsInterface_ListRefreshesByTableName_Call) RunAndRetu
 	return _c
 }
 
+// RegenerateDashboard provides a mock function with given fields: ctx, request
+func (_m *MockQualityMonitorsInterface) RegenerateDashboard(ctx context.Context, request catalog.RegenerateDashboardRequest) (*catalog.RegenerateDashboardResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RegenerateDashboard")
+	}
+
+	var r0 *catalog.RegenerateDashboardResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.RegenerateDashboardRequest) (*catalog.RegenerateDashboardResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.RegenerateDashboardRequest) *catalog.RegenerateDashboardResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.RegenerateDashboardResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.RegenerateDashboardRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockQualityMonitorsInterface_RegenerateDashboard_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RegenerateDashboard'
+type MockQualityMonitorsInterface_RegenerateDashboard_Call struct {
+	*mock.Call
+}
+
+// RegenerateDashboard is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.RegenerateDashboardRequest
+func (_e *MockQualityMonitorsInterface_Expecter) RegenerateDashboard(ctx interface{}, request interface{}) *MockQualityMonitorsInterface_RegenerateDashboard_Call {
+	return &MockQualityMonitorsInterface_RegenerateDashboard_Call{Call: _e.mock.On("RegenerateDashboard", ctx, request)}
+}
+
+func (_c *MockQualityMonitorsInterface_RegenerateDashboard_Call) Run(run func(ctx context.Context, request catalog.RegenerateDashboardRequest)) *MockQualityMonitorsInterface_RegenerateDashboard_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.RegenerateDashboardRequest))
+	})
+	return _c
+}
+
+func (_c *MockQualityMonitorsInterface_RegenerateDashboard_Call) Return(_a0 *catalog.RegenerateDashboardResponse, _a1 error) *MockQualityMonitorsInterface_RegenerateDashboard_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockQualityMonitorsInterface_RegenerateDashboard_Call) RunAndReturn(run func(context.Context, catalog.RegenerateDashboardRequest) (*catalog.RegenerateDashboardResponse, error)) *MockQualityMonitorsInterface_RegenerateDashboard_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // RunRefresh provides a mock function with given fields: ctx, request
 func (_m *MockQualityMonitorsInterface) RunRefresh(ctx context.Context, request catalog.RunRefreshRequest) (*catalog.MonitorRefreshInfo, error) {
 	ret := _m.Called(ctx, request)
@@ -739,54 +751,6 @@ func (_c *MockQualityMonitorsInterface_Update_Call) Return(_a0 *catalog.MonitorI
 }
 
 func (_c *MockQualityMonitorsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdateMonitor) (*catalog.MonitorInfo, error)) *MockQualityMonitorsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockQualityMonitorsInterface) WithImpl(impl catalog.QualityMonitorsService) catalog.QualityMonitorsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 catalog.QualityMonitorsInterface
-	if rf, ok := ret.Get(0).(func(catalog.QualityMonitorsService) catalog.QualityMonitorsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(catalog.QualityMonitorsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockQualityMonitorsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockQualityMonitorsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl catalog.QualityMonitorsService
-func (_e *MockQualityMonitorsInterface_Expecter) WithImpl(impl interface{}) *MockQualityMonitorsInterface_WithImpl_Call {
-	return &MockQualityMonitorsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockQualityMonitorsInterface_WithImpl_Call) Run(run func(impl catalog.QualityMonitorsService)) *MockQualityMonitorsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(catalog.QualityMonitorsService))
-	})
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_WithImpl_Call) Return(_a0 catalog.QualityMonitorsInterface) *MockQualityMonitorsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_WithImpl_Call) RunAndReturn(run func(catalog.QualityMonitorsService) catalog.QualityMonitorsInterface) *MockQualityMonitorsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

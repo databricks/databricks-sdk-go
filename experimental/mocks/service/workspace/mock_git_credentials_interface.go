@@ -25,7 +25,7 @@ func (_m *MockGitCredentialsInterface) EXPECT() *MockGitCredentialsInterface_Exp
 }
 
 // Create provides a mock function with given fields: ctx, request
-func (_m *MockGitCredentialsInterface) Create(ctx context.Context, request workspace.CreateCredentials) (*workspace.CreateCredentialsResponse, error) {
+func (_m *MockGitCredentialsInterface) Create(ctx context.Context, request workspace.CreateCredentialsRequest) (*workspace.CreateCredentialsResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -34,10 +34,10 @@ func (_m *MockGitCredentialsInterface) Create(ctx context.Context, request works
 
 	var r0 *workspace.CreateCredentialsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.CreateCredentials) (*workspace.CreateCredentialsResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.CreateCredentialsRequest) (*workspace.CreateCredentialsResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.CreateCredentials) *workspace.CreateCredentialsResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.CreateCredentialsRequest) *workspace.CreateCredentialsResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -45,7 +45,7 @@ func (_m *MockGitCredentialsInterface) Create(ctx context.Context, request works
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, workspace.CreateCredentials) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, workspace.CreateCredentialsRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -61,14 +61,14 @@ type MockGitCredentialsInterface_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request workspace.CreateCredentials
+//   - request workspace.CreateCredentialsRequest
 func (_e *MockGitCredentialsInterface_Expecter) Create(ctx interface{}, request interface{}) *MockGitCredentialsInterface_Create_Call {
 	return &MockGitCredentialsInterface_Create_Call{Call: _e.mock.On("Create", ctx, request)}
 }
 
-func (_c *MockGitCredentialsInterface_Create_Call) Run(run func(ctx context.Context, request workspace.CreateCredentials)) *MockGitCredentialsInterface_Create_Call {
+func (_c *MockGitCredentialsInterface_Create_Call) Run(run func(ctx context.Context, request workspace.CreateCredentialsRequest)) *MockGitCredentialsInterface_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(workspace.CreateCredentials))
+		run(args[0].(context.Context), args[1].(workspace.CreateCredentialsRequest))
 	})
 	return _c
 }
@@ -78,7 +78,7 @@ func (_c *MockGitCredentialsInterface_Create_Call) Return(_a0 *workspace.CreateC
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_Create_Call) RunAndReturn(run func(context.Context, workspace.CreateCredentials) (*workspace.CreateCredentialsResponse, error)) *MockGitCredentialsInterface_Create_Call {
+func (_c *MockGitCredentialsInterface_Create_Call) RunAndReturn(run func(context.Context, workspace.CreateCredentialsRequest) (*workspace.CreateCredentialsResponse, error)) *MockGitCredentialsInterface_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -142,7 +142,7 @@ func (_c *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockGitCredentialsInterface) Delete(ctx context.Context, request workspace.DeleteGitCredentialRequest) error {
+func (_m *MockGitCredentialsInterface) Delete(ctx context.Context, request workspace.DeleteCredentialsRequest) error {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -150,7 +150,7 @@ func (_m *MockGitCredentialsInterface) Delete(ctx context.Context, request works
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.DeleteGitCredentialRequest) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.DeleteCredentialsRequest) error); ok {
 		r0 = rf(ctx, request)
 	} else {
 		r0 = ret.Error(0)
@@ -166,14 +166,14 @@ type MockGitCredentialsInterface_Delete_Call struct {
 
 // Delete is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request workspace.DeleteGitCredentialRequest
+//   - request workspace.DeleteCredentialsRequest
 func (_e *MockGitCredentialsInterface_Expecter) Delete(ctx interface{}, request interface{}) *MockGitCredentialsInterface_Delete_Call {
 	return &MockGitCredentialsInterface_Delete_Call{Call: _e.mock.On("Delete", ctx, request)}
 }
 
-func (_c *MockGitCredentialsInterface_Delete_Call) Run(run func(ctx context.Context, request workspace.DeleteGitCredentialRequest)) *MockGitCredentialsInterface_Delete_Call {
+func (_c *MockGitCredentialsInterface_Delete_Call) Run(run func(ctx context.Context, request workspace.DeleteCredentialsRequest)) *MockGitCredentialsInterface_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(workspace.DeleteGitCredentialRequest))
+		run(args[0].(context.Context), args[1].(workspace.DeleteCredentialsRequest))
 	})
 	return _c
 }
@@ -183,7 +183,7 @@ func (_c *MockGitCredentialsInterface_Delete_Call) Return(_a0 error) *MockGitCre
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_Delete_Call) RunAndReturn(run func(context.Context, workspace.DeleteGitCredentialRequest) error) *MockGitCredentialsInterface_Delete_Call {
+func (_c *MockGitCredentialsInterface_Delete_Call) RunAndReturn(run func(context.Context, workspace.DeleteCredentialsRequest) error) *MockGitCredentialsInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -236,27 +236,27 @@ func (_c *MockGitCredentialsInterface_DeleteByCredentialId_Call) RunAndReturn(ru
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockGitCredentialsInterface) Get(ctx context.Context, request workspace.GetGitCredentialRequest) (*workspace.CredentialInfo, error) {
+func (_m *MockGitCredentialsInterface) Get(ctx context.Context, request workspace.GetCredentialsRequest) (*workspace.GetCredentialsResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Get")
 	}
 
-	var r0 *workspace.CredentialInfo
+	var r0 *workspace.GetCredentialsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.GetGitCredentialRequest) (*workspace.CredentialInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.GetCredentialsRequest) (*workspace.GetCredentialsResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.GetGitCredentialRequest) *workspace.CredentialInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.GetCredentialsRequest) *workspace.GetCredentialsResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*workspace.CredentialInfo)
+			r0 = ret.Get(0).(*workspace.GetCredentialsResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, workspace.GetGitCredentialRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, workspace.GetCredentialsRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -272,46 +272,46 @@ type MockGitCredentialsInterface_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request workspace.GetGitCredentialRequest
+//   - request workspace.GetCredentialsRequest
 func (_e *MockGitCredentialsInterface_Expecter) Get(ctx interface{}, request interface{}) *MockGitCredentialsInterface_Get_Call {
 	return &MockGitCredentialsInterface_Get_Call{Call: _e.mock.On("Get", ctx, request)}
 }
 
-func (_c *MockGitCredentialsInterface_Get_Call) Run(run func(ctx context.Context, request workspace.GetGitCredentialRequest)) *MockGitCredentialsInterface_Get_Call {
+func (_c *MockGitCredentialsInterface_Get_Call) Run(run func(ctx context.Context, request workspace.GetCredentialsRequest)) *MockGitCredentialsInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(workspace.GetGitCredentialRequest))
+		run(args[0].(context.Context), args[1].(workspace.GetCredentialsRequest))
 	})
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_Get_Call) Return(_a0 *workspace.CredentialInfo, _a1 error) *MockGitCredentialsInterface_Get_Call {
+func (_c *MockGitCredentialsInterface_Get_Call) Return(_a0 *workspace.GetCredentialsResponse, _a1 error) *MockGitCredentialsInterface_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_Get_Call) RunAndReturn(run func(context.Context, workspace.GetGitCredentialRequest) (*workspace.CredentialInfo, error)) *MockGitCredentialsInterface_Get_Call {
+func (_c *MockGitCredentialsInterface_Get_Call) RunAndReturn(run func(context.Context, workspace.GetCredentialsRequest) (*workspace.GetCredentialsResponse, error)) *MockGitCredentialsInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetByCredentialId provides a mock function with given fields: ctx, credentialId
-func (_m *MockGitCredentialsInterface) GetByCredentialId(ctx context.Context, credentialId int64) (*workspace.CredentialInfo, error) {
+func (_m *MockGitCredentialsInterface) GetByCredentialId(ctx context.Context, credentialId int64) (*workspace.GetCredentialsResponse, error) {
 	ret := _m.Called(ctx, credentialId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByCredentialId")
 	}
 
-	var r0 *workspace.CredentialInfo
+	var r0 *workspace.GetCredentialsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) (*workspace.CredentialInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (*workspace.GetCredentialsResponse, error)); ok {
 		return rf(ctx, credentialId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) *workspace.CredentialInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) *workspace.GetCredentialsResponse); ok {
 		r0 = rf(ctx, credentialId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*workspace.CredentialInfo)
+			r0 = ret.Get(0).(*workspace.GetCredentialsResponse)
 		}
 	}
 
@@ -343,12 +343,12 @@ func (_c *MockGitCredentialsInterface_GetByCredentialId_Call) Run(run func(ctx c
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_GetByCredentialId_Call) Return(_a0 *workspace.CredentialInfo, _a1 error) *MockGitCredentialsInterface_GetByCredentialId_Call {
+func (_c *MockGitCredentialsInterface_GetByCredentialId_Call) Return(_a0 *workspace.GetCredentialsResponse, _a1 error) *MockGitCredentialsInterface_GetByCredentialId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_GetByCredentialId_Call) RunAndReturn(run func(context.Context, int64) (*workspace.CredentialInfo, error)) *MockGitCredentialsInterface_GetByCredentialId_Call {
+func (_c *MockGitCredentialsInterface_GetByCredentialId_Call) RunAndReturn(run func(context.Context, int64) (*workspace.GetCredentialsResponse, error)) *MockGitCredentialsInterface_GetByCredentialId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -408,53 +408,6 @@ func (_c *MockGitCredentialsInterface_GetByGitProvider_Call) Return(_a0 *workspa
 }
 
 func (_c *MockGitCredentialsInterface_GetByGitProvider_Call) RunAndReturn(run func(context.Context, string) (*workspace.CredentialInfo, error)) *MockGitCredentialsInterface_GetByGitProvider_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// Impl provides a mock function with given fields:
-func (_m *MockGitCredentialsInterface) Impl() workspace.GitCredentialsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 workspace.GitCredentialsService
-	if rf, ok := ret.Get(0).(func() workspace.GitCredentialsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(workspace.GitCredentialsService)
-		}
-	}
-
-	return r0
-}
-
-// MockGitCredentialsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockGitCredentialsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockGitCredentialsInterface_Expecter) Impl() *MockGitCredentialsInterface_Impl_Call {
-	return &MockGitCredentialsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockGitCredentialsInterface_Impl_Call) Run(run func()) *MockGitCredentialsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockGitCredentialsInterface_Impl_Call) Return(_a0 workspace.GitCredentialsService) *MockGitCredentialsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockGitCredentialsInterface_Impl_Call) RunAndReturn(run func() workspace.GitCredentialsService) *MockGitCredentialsInterface_Impl_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -566,7 +519,7 @@ func (_c *MockGitCredentialsInterface_ListAll_Call) RunAndReturn(run func(contex
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockGitCredentialsInterface) Update(ctx context.Context, request workspace.UpdateCredentials) error {
+func (_m *MockGitCredentialsInterface) Update(ctx context.Context, request workspace.UpdateCredentialsRequest) error {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -574,7 +527,7 @@ func (_m *MockGitCredentialsInterface) Update(ctx context.Context, request works
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, workspace.UpdateCredentials) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.UpdateCredentialsRequest) error); ok {
 		r0 = rf(ctx, request)
 	} else {
 		r0 = ret.Error(0)
@@ -590,14 +543,14 @@ type MockGitCredentialsInterface_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request workspace.UpdateCredentials
+//   - request workspace.UpdateCredentialsRequest
 func (_e *MockGitCredentialsInterface_Expecter) Update(ctx interface{}, request interface{}) *MockGitCredentialsInterface_Update_Call {
 	return &MockGitCredentialsInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
 }
 
-func (_c *MockGitCredentialsInterface_Update_Call) Run(run func(ctx context.Context, request workspace.UpdateCredentials)) *MockGitCredentialsInterface_Update_Call {
+func (_c *MockGitCredentialsInterface_Update_Call) Run(run func(ctx context.Context, request workspace.UpdateCredentialsRequest)) *MockGitCredentialsInterface_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(workspace.UpdateCredentials))
+		run(args[0].(context.Context), args[1].(workspace.UpdateCredentialsRequest))
 	})
 	return _c
 }
@@ -607,55 +560,7 @@ func (_c *MockGitCredentialsInterface_Update_Call) Return(_a0 error) *MockGitCre
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_Update_Call) RunAndReturn(run func(context.Context, workspace.UpdateCredentials) error) *MockGitCredentialsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockGitCredentialsInterface) WithImpl(impl workspace.GitCredentialsService) workspace.GitCredentialsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 workspace.GitCredentialsInterface
-	if rf, ok := ret.Get(0).(func(workspace.GitCredentialsService) workspace.GitCredentialsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(workspace.GitCredentialsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockGitCredentialsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockGitCredentialsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl workspace.GitCredentialsService
-func (_e *MockGitCredentialsInterface_Expecter) WithImpl(impl interface{}) *MockGitCredentialsInterface_WithImpl_Call {
-	return &MockGitCredentialsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockGitCredentialsInterface_WithImpl_Call) Run(run func(impl workspace.GitCredentialsService)) *MockGitCredentialsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(workspace.GitCredentialsService))
-	})
-	return _c
-}
-
-func (_c *MockGitCredentialsInterface_WithImpl_Call) Return(_a0 workspace.GitCredentialsInterface) *MockGitCredentialsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockGitCredentialsInterface_WithImpl_Call) RunAndReturn(run func(workspace.GitCredentialsService) workspace.GitCredentialsInterface) *MockGitCredentialsInterface_WithImpl_Call {
+func (_c *MockGitCredentialsInterface_Update_Call) RunAndReturn(run func(context.Context, workspace.UpdateCredentialsRequest) error) *MockGitCredentialsInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

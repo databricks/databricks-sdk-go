@@ -20,17 +20,17 @@ type GitCredentialsService interface {
 	// user is supported, so any attempts to create credentials if an entry
 	// already exists will fail. Use the PATCH endpoint to update existing
 	// credentials, or the DELETE endpoint to delete existing credentials.
-	Create(ctx context.Context, request CreateCredentials) (*CreateCredentialsResponse, error)
+	Create(ctx context.Context, request CreateCredentialsRequest) (*CreateCredentialsResponse, error)
 
 	// Delete a credential.
 	//
 	// Deletes the specified Git credential.
-	Delete(ctx context.Context, request DeleteGitCredentialRequest) error
+	Delete(ctx context.Context, request DeleteCredentialsRequest) error
 
 	// Get a credential entry.
 	//
 	// Gets the Git credential with the specified credential ID.
-	Get(ctx context.Context, request GetGitCredentialRequest) (*CredentialInfo, error)
+	Get(ctx context.Context, request GetCredentialsRequest) (*GetCredentialsResponse, error)
 
 	// Get Git credentials.
 	//
@@ -38,12 +38,12 @@ type GitCredentialsService interface {
 	// supported.
 	//
 	// Use ListAll() to get all CredentialInfo instances
-	List(ctx context.Context) (*GetCredentialsResponse, error)
+	List(ctx context.Context) (*ListCredentialsResponse, error)
 
 	// Update a credential.
 	//
 	// Updates the specified Git credential.
-	Update(ctx context.Context, request UpdateCredentials) error
+	Update(ctx context.Context, request UpdateCredentialsRequest) error
 }
 
 // The Repos API allows users to manage their git repos. Users can use the API
@@ -63,7 +63,7 @@ type ReposService interface {
 	// Creates a repo in the workspace and links it to the remote Git repo
 	// specified. Note that repos created programmatically must be linked to a
 	// remote Git repo, unlike repos created in the browser.
-	Create(ctx context.Context, request CreateRepo) (*RepoInfo, error)
+	Create(ctx context.Context, request CreateRepoRequest) (*CreateRepoResponse, error)
 
 	// Delete a repo.
 	//
@@ -73,7 +73,7 @@ type ReposService interface {
 	// Get a repo.
 	//
 	// Returns the repo with the given repo ID.
-	Get(ctx context.Context, request GetRepoRequest) (*RepoInfo, error)
+	Get(ctx context.Context, request GetRepoRequest) (*GetRepoResponse, error)
 
 	// Get repo permission levels.
 	//
@@ -88,8 +88,8 @@ type ReposService interface {
 
 	// Get repos.
 	//
-	// Returns repos that the calling user has Manage permissions on. Results
-	// are paginated with each page containing twenty repos.
+	// Returns repos that the calling user has Manage permissions on. Use
+	// `next_page_token` to iterate through additional pages.
 	//
 	// Use ListAll() to get all RepoInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListReposRequest) (*ListReposResponse, error)
@@ -104,7 +104,7 @@ type ReposService interface {
 	//
 	// Updates the repo to a different branch or tag, or updates the repo to the
 	// latest commit on the same branch.
-	Update(ctx context.Context, request UpdateRepo) error
+	Update(ctx context.Context, request UpdateRepoRequest) error
 
 	// Update repo permissions.
 	//

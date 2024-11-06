@@ -23,7 +23,7 @@ type GenieService interface {
 	// Execute SQL query in a conversation message.
 	//
 	// Execute the SQL query in the message.
-	ExecuteMessageQuery(ctx context.Context, request ExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
+	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
 	// Get conversation message.
 	//

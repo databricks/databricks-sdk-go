@@ -15,7 +15,7 @@ type gitCredentialsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentials) (*CreateCredentialsResponse, error) {
+func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentialsRequest) (*CreateCredentialsResponse, error) {
 	var createCredentialsResponse CreateCredentialsResponse
 	path := "/api/2.0/git-credentials"
 	headers := make(map[string]string)
@@ -25,39 +25,40 @@ func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentia
 	return &createCredentialsResponse, err
 }
 
-func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteGitCredentialRequest) error {
-	var deleteResponse DeleteResponse
+func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteCredentialsRequest) error {
+	var deleteCredentialsResponse DeleteCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteCredentialsResponse)
 	return err
 }
 
-func (a *gitCredentialsImpl) Get(ctx context.Context, request GetGitCredentialRequest) (*CredentialInfo, error) {
-	var credentialInfo CredentialInfo
+func (a *gitCredentialsImpl) Get(ctx context.Context, request GetCredentialsRequest) (*GetCredentialsResponse, error) {
+	var getCredentialsResponse GetCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &credentialInfo)
-	return &credentialInfo, err
-}
-
-func (a *gitCredentialsImpl) List(ctx context.Context) (*GetCredentialsResponse, error) {
-	var getCredentialsResponse GetCredentialsResponse
-	path := "/api/2.0/git-credentials"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &getCredentialsResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getCredentialsResponse)
 	return &getCredentialsResponse, err
 }
 
-func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentials) error {
-	var updateResponse UpdateResponse
+func (a *gitCredentialsImpl) List(ctx context.Context) (*ListCredentialsResponse, error) {
+	var listCredentialsResponse ListCredentialsResponse
+	path := "/api/2.0/git-credentials"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listCredentialsResponse)
+	return &listCredentialsResponse, err
+}
+
+func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentialsRequest) error {
+	var updateCredentialsResponse UpdateCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateCredentialsResponse)
 	return err
 }
 
@@ -66,31 +67,32 @@ type reposImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *reposImpl) Create(ctx context.Context, request CreateRepo) (*RepoInfo, error) {
-	var repoInfo RepoInfo
+func (a *reposImpl) Create(ctx context.Context, request CreateRepoRequest) (*CreateRepoResponse, error) {
+	var createRepoResponse CreateRepoResponse
 	path := "/api/2.0/repos"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &repoInfo)
-	return &repoInfo, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createRepoResponse)
+	return &createRepoResponse, err
 }
 
 func (a *reposImpl) Delete(ctx context.Context, request DeleteRepoRequest) error {
-	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
-	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return err
-}
-
-func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*RepoInfo, error) {
-	var repoInfo RepoInfo
+	var deleteRepoResponse DeleteRepoResponse
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &repoInfo)
-	return &repoInfo, err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteRepoResponse)
+	return err
+}
+
+func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*GetRepoResponse, error) {
+	var getRepoResponse GetRepoResponse
+	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getRepoResponse)
+	return &getRepoResponse, err
 }
 
 func (a *reposImpl) GetPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
@@ -130,13 +132,13 @@ func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsR
 	return &repoPermissions, err
 }
 
-func (a *reposImpl) Update(ctx context.Context, request UpdateRepo) error {
-	var updateResponse UpdateResponse
+func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) error {
+	var updateRepoResponse UpdateRepoResponse
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateRepoResponse)
 	return err
 }
 

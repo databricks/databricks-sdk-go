@@ -19,6 +19,7 @@ func TestNested(t *testing.T) {
 	require.Contains(t, batch.packages["settings"].services, "Settings")
 	require.Contains(t, batch.packages["settings"].services["Settings"].subservices, "DefaultNamespace")
 	require.Equal(t, batch.packages["settings"].services["DefaultNamespace"].ParentService.Name, "Settings")
+	require.Equal(t, batch.packages["settings"].services["DefaultNamespace"].methods["cancel"].Response.fields["last-modified"].Entity.Terraform.Alias, "new_name")
 }
 
 func TestBasic(t *testing.T) {

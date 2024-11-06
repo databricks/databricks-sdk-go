@@ -77,6 +77,54 @@ type accountSettingsImpl struct {
 	client *client.DatabricksClient
 }
 
+// unexported type that holds implementations of just AibiDashboardEmbeddingAccessPolicy API methods
+type aibiDashboardEmbeddingAccessPolicyImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *aibiDashboardEmbeddingAccessPolicyImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error) {
+	var aibiDashboardEmbeddingAccessPolicySetting AibiDashboardEmbeddingAccessPolicySetting
+	path := "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &aibiDashboardEmbeddingAccessPolicySetting)
+	return &aibiDashboardEmbeddingAccessPolicySetting, err
+}
+
+func (a *aibiDashboardEmbeddingAccessPolicyImpl) Update(ctx context.Context, request UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error) {
+	var aibiDashboardEmbeddingAccessPolicySetting AibiDashboardEmbeddingAccessPolicySetting
+	path := "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &aibiDashboardEmbeddingAccessPolicySetting)
+	return &aibiDashboardEmbeddingAccessPolicySetting, err
+}
+
+// unexported type that holds implementations of just AibiDashboardEmbeddingApprovedDomains API methods
+type aibiDashboardEmbeddingApprovedDomainsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error) {
+	var aibiDashboardEmbeddingApprovedDomainsSetting AibiDashboardEmbeddingApprovedDomainsSetting
+	path := "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &aibiDashboardEmbeddingApprovedDomainsSetting)
+	return &aibiDashboardEmbeddingApprovedDomainsSetting, err
+}
+
+func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Update(ctx context.Context, request UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error) {
+	var aibiDashboardEmbeddingApprovedDomainsSetting AibiDashboardEmbeddingApprovedDomainsSetting
+	path := "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &aibiDashboardEmbeddingApprovedDomainsSetting)
+	return &aibiDashboardEmbeddingApprovedDomainsSetting, err
+}
+
 // unexported type that holds implementations of just AutomaticClusterUpdate API methods
 type automaticClusterUpdateImpl struct {
 	client *client.DatabricksClient
@@ -195,6 +243,105 @@ func (a *defaultNamespaceImpl) Update(ctx context.Context, request UpdateDefault
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &defaultNamespaceSetting)
 	return &defaultNamespaceSetting, err
+}
+
+// unexported type that holds implementations of just DisableLegacyAccess API methods
+type disableLegacyAccessImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *disableLegacyAccessImpl) Delete(ctx context.Context, request DeleteDisableLegacyAccessRequest) (*DeleteDisableLegacyAccessResponse, error) {
+	var deleteDisableLegacyAccessResponse DeleteDisableLegacyAccessResponse
+	path := "/api/2.0/settings/types/disable_legacy_access/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDisableLegacyAccessResponse)
+	return &deleteDisableLegacyAccessResponse, err
+}
+
+func (a *disableLegacyAccessImpl) Get(ctx context.Context, request GetDisableLegacyAccessRequest) (*DisableLegacyAccess, error) {
+	var disableLegacyAccess DisableLegacyAccess
+	path := "/api/2.0/settings/types/disable_legacy_access/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &disableLegacyAccess)
+	return &disableLegacyAccess, err
+}
+
+func (a *disableLegacyAccessImpl) Update(ctx context.Context, request UpdateDisableLegacyAccessRequest) (*DisableLegacyAccess, error) {
+	var disableLegacyAccess DisableLegacyAccess
+	path := "/api/2.0/settings/types/disable_legacy_access/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &disableLegacyAccess)
+	return &disableLegacyAccess, err
+}
+
+// unexported type that holds implementations of just DisableLegacyDbfs API methods
+type disableLegacyDbfsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *disableLegacyDbfsImpl) Delete(ctx context.Context, request DeleteDisableLegacyDbfsRequest) (*DeleteDisableLegacyDbfsResponse, error) {
+	var deleteDisableLegacyDbfsResponse DeleteDisableLegacyDbfsResponse
+	path := "/api/2.0/settings/types/disable_legacy_dbfs/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDisableLegacyDbfsResponse)
+	return &deleteDisableLegacyDbfsResponse, err
+}
+
+func (a *disableLegacyDbfsImpl) Get(ctx context.Context, request GetDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error) {
+	var disableLegacyDbfs DisableLegacyDbfs
+	path := "/api/2.0/settings/types/disable_legacy_dbfs/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &disableLegacyDbfs)
+	return &disableLegacyDbfs, err
+}
+
+func (a *disableLegacyDbfsImpl) Update(ctx context.Context, request UpdateDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error) {
+	var disableLegacyDbfs DisableLegacyDbfs
+	path := "/api/2.0/settings/types/disable_legacy_dbfs/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &disableLegacyDbfs)
+	return &disableLegacyDbfs, err
+}
+
+// unexported type that holds implementations of just DisableLegacyFeatures API methods
+type disableLegacyFeaturesImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *disableLegacyFeaturesImpl) Delete(ctx context.Context, request DeleteDisableLegacyFeaturesRequest) (*DeleteDisableLegacyFeaturesResponse, error) {
+	var deleteDisableLegacyFeaturesResponse DeleteDisableLegacyFeaturesResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDisableLegacyFeaturesResponse)
+	return &deleteDisableLegacyFeaturesResponse, err
+}
+
+func (a *disableLegacyFeaturesImpl) Get(ctx context.Context, request GetDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error) {
+	var disableLegacyFeatures DisableLegacyFeatures
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &disableLegacyFeatures)
+	return &disableLegacyFeatures, err
+}
+
+func (a *disableLegacyFeaturesImpl) Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error) {
+	var disableLegacyFeatures DisableLegacyFeatures
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &disableLegacyFeatures)
+	return &disableLegacyFeatures, err
 }
 
 // unexported type that holds implementations of just EnhancedSecurityMonitoring API methods

@@ -191,53 +191,6 @@ func (_c *MockConsumerFulfillmentsInterface_GetByListingId_Call) RunAndReturn(ru
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockConsumerFulfillmentsInterface) Impl() marketplace.ConsumerFulfillmentsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 marketplace.ConsumerFulfillmentsService
-	if rf, ok := ret.Get(0).(func() marketplace.ConsumerFulfillmentsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(marketplace.ConsumerFulfillmentsService)
-		}
-	}
-
-	return r0
-}
-
-// MockConsumerFulfillmentsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockConsumerFulfillmentsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockConsumerFulfillmentsInterface_Expecter) Impl() *MockConsumerFulfillmentsInterface_Impl_Call {
-	return &MockConsumerFulfillmentsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockConsumerFulfillmentsInterface_Impl_Call) Run(run func()) *MockConsumerFulfillmentsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockConsumerFulfillmentsInterface_Impl_Call) Return(_a0 marketplace.ConsumerFulfillmentsService) *MockConsumerFulfillmentsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockConsumerFulfillmentsInterface_Impl_Call) RunAndReturn(run func() marketplace.ConsumerFulfillmentsService) *MockConsumerFulfillmentsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockConsumerFulfillmentsInterface) List(ctx context.Context, request marketplace.ListFulfillmentsRequest) listing.Iterator[marketplace.ListingFulfillment] {
 	ret := _m.Called(ctx, request)
@@ -401,54 +354,6 @@ func (_c *MockConsumerFulfillmentsInterface_ListByListingId_Call) Return(_a0 *ma
 }
 
 func (_c *MockConsumerFulfillmentsInterface_ListByListingId_Call) RunAndReturn(run func(context.Context, string) (*marketplace.ListFulfillmentsResponse, error)) *MockConsumerFulfillmentsInterface_ListByListingId_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockConsumerFulfillmentsInterface) WithImpl(impl marketplace.ConsumerFulfillmentsService) marketplace.ConsumerFulfillmentsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 marketplace.ConsumerFulfillmentsInterface
-	if rf, ok := ret.Get(0).(func(marketplace.ConsumerFulfillmentsService) marketplace.ConsumerFulfillmentsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(marketplace.ConsumerFulfillmentsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockConsumerFulfillmentsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockConsumerFulfillmentsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl marketplace.ConsumerFulfillmentsService
-func (_e *MockConsumerFulfillmentsInterface_Expecter) WithImpl(impl interface{}) *MockConsumerFulfillmentsInterface_WithImpl_Call {
-	return &MockConsumerFulfillmentsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockConsumerFulfillmentsInterface_WithImpl_Call) Run(run func(impl marketplace.ConsumerFulfillmentsService)) *MockConsumerFulfillmentsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(marketplace.ConsumerFulfillmentsService))
-	})
-	return _c
-}
-
-func (_c *MockConsumerFulfillmentsInterface_WithImpl_Call) Return(_a0 marketplace.ConsumerFulfillmentsInterface) *MockConsumerFulfillmentsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockConsumerFulfillmentsInterface_WithImpl_Call) RunAndReturn(run func(marketplace.ConsumerFulfillmentsService) marketplace.ConsumerFulfillmentsInterface) *MockConsumerFulfillmentsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

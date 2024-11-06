@@ -543,13 +543,13 @@ func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersi
 	return err
 }
 
-func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequest) (*RegisteredModelInfo, error) {
-	var registeredModelInfo RegisteredModelInfo
+func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequest) (*ModelVersionInfo, error) {
+	var modelVersionInfo ModelVersionInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &registeredModelInfo)
-	return &registeredModelInfo, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &modelVersionInfo)
+	return &modelVersionInfo, err
 }
 
 func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRequest) (*ModelVersionInfo, error) {
@@ -591,7 +591,7 @@ func (a *onlineTablesImpl) Create(ctx context.Context, request CreateOnlineTable
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &onlineTable)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Table, &onlineTable)
 	return &onlineTable, err
 }
 
@@ -669,6 +669,16 @@ func (a *qualityMonitorsImpl) ListRefreshes(ctx context.Context, request ListRef
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &monitorRefreshListResponse)
 	return &monitorRefreshListResponse, err
+}
+
+func (a *qualityMonitorsImpl) RegenerateDashboard(ctx context.Context, request RegenerateDashboardRequest) (*RegenerateDashboardResponse, error) {
+	var regenerateDashboardResponse RegenerateDashboardResponse
+	path := fmt.Sprintf("/api/2.1/quality-monitoring/tables/%v/monitor/dashboard", request.TableName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &regenerateDashboardResponse)
+	return &regenerateDashboardResponse, err
 }
 
 func (a *qualityMonitorsImpl) RunRefresh(ctx context.Context, request RunRefreshRequest) (*MonitorRefreshInfo, error) {
@@ -757,6 +767,29 @@ func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegiste
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &registeredModelInfo)
 	return &registeredModelInfo, err
+}
+
+// unexported type that holds implementations of just ResourceQuotas API methods
+type resourceQuotasImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *resourceQuotasImpl) GetQuota(ctx context.Context, request GetQuotaRequest) (*GetQuotaResponse, error) {
+	var getQuotaResponse GetQuotaResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/resource-quotas/%v/%v/%v", request.ParentSecurableType, request.ParentFullName, request.QuotaName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getQuotaResponse)
+	return &getQuotaResponse, err
+}
+
+func (a *resourceQuotasImpl) ListQuotas(ctx context.Context, request ListQuotasRequest) (*ListQuotasResponse, error) {
+	var listQuotasResponse ListQuotasResponse
+	path := "/api/2.1/unity-catalog/resource-quotas/all-resource-quotas"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listQuotasResponse)
+	return &listQuotasResponse, err
 }
 
 // unexported type that holds implementations of just Schemas API methods
@@ -987,6 +1020,21 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) err
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
+}
+
+// unexported type that holds implementations of just TemporaryTableCredentials API methods
+type temporaryTableCredentialsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx context.Context, request GenerateTemporaryTableCredentialRequest) (*GenerateTemporaryTableCredentialResponse, error) {
+	var generateTemporaryTableCredentialResponse GenerateTemporaryTableCredentialResponse
+	path := "/api/2.0/unity-catalog/temporary-table-credentials"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &generateTemporaryTableCredentialResponse)
+	return &generateTemporaryTableCredentialResponse, err
 }
 
 // unexported type that holds implementations of just Volumes API methods

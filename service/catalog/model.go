@@ -122,6 +122,31 @@ func (f *ArtifactType) Type() string {
 type AssignResponse struct {
 }
 
+// AWS temporary credentials for API authentication. Read more at
+// https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
+type AwsCredentials struct {
+	// The access key ID that identifies the temporary credentials.
+	AccessKeyId string `json:"access_key_id,omitempty"`
+	// The Amazon Resource Name (ARN) of the S3 access point for temporary
+	// credentials related the external location.
+	AccessPoint string `json:"access_point,omitempty"`
+	// The secret access key that can be used to sign AWS API requests.
+	SecretAccessKey string `json:"secret_access_key,omitempty"`
+	// The token that users must pass to AWS API to use the temporary
+	// credentials.
+	SessionToken string `json:"session_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AwsCredentials) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AwsCredentials) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AwsIamRoleRequest struct {
 	// The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
 	RoleArn string `json:"role_arn"`
@@ -207,6 +232,23 @@ type AzureServicePrincipal struct {
 	// The directory ID corresponding to the Azure Active Directory (AAD) tenant
 	// of the application.
 	DirectoryId string `json:"directory_id"`
+}
+
+// Azure temporary credentials for API authentication. Read more at
+// https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
+type AzureUserDelegationSas struct {
+	// The signed URI (SAS Token) used to access blob services for a given path
+	SasToken string `json:"sas_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AzureUserDelegationSas) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AzureUserDelegationSas) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Cancel refresh
@@ -586,7 +628,15 @@ type ConnectionInfoSecurableKind string
 
 const ConnectionInfoSecurableKindConnectionBigquery ConnectionInfoSecurableKind = `CONNECTION_BIGQUERY`
 
+const ConnectionInfoSecurableKindConnectionBuiltinHiveMetastore ConnectionInfoSecurableKind = `CONNECTION_BUILTIN_HIVE_METASTORE`
+
 const ConnectionInfoSecurableKindConnectionDatabricks ConnectionInfoSecurableKind = `CONNECTION_DATABRICKS`
+
+const ConnectionInfoSecurableKindConnectionExternalHiveMetastore ConnectionInfoSecurableKind = `CONNECTION_EXTERNAL_HIVE_METASTORE`
+
+const ConnectionInfoSecurableKindConnectionGlue ConnectionInfoSecurableKind = `CONNECTION_GLUE`
+
+const ConnectionInfoSecurableKindConnectionHttpBearer ConnectionInfoSecurableKind = `CONNECTION_HTTP_BEARER`
 
 const ConnectionInfoSecurableKindConnectionMysql ConnectionInfoSecurableKind = `CONNECTION_MYSQL`
 
@@ -610,11 +660,11 @@ func (f *ConnectionInfoSecurableKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionInfoSecurableKind) Set(v string) error {
 	switch v {
-	case `CONNECTION_BIGQUERY`, `CONNECTION_DATABRICKS`, `CONNECTION_MYSQL`, `CONNECTION_ONLINE_CATALOG`, `CONNECTION_POSTGRESQL`, `CONNECTION_REDSHIFT`, `CONNECTION_SNOWFLAKE`, `CONNECTION_SQLDW`, `CONNECTION_SQLSERVER`:
+	case `CONNECTION_BIGQUERY`, `CONNECTION_BUILTIN_HIVE_METASTORE`, `CONNECTION_DATABRICKS`, `CONNECTION_EXTERNAL_HIVE_METASTORE`, `CONNECTION_GLUE`, `CONNECTION_HTTP_BEARER`, `CONNECTION_MYSQL`, `CONNECTION_ONLINE_CATALOG`, `CONNECTION_POSTGRESQL`, `CONNECTION_REDSHIFT`, `CONNECTION_SNOWFLAKE`, `CONNECTION_SQLDW`, `CONNECTION_SQLSERVER`:
 		*f = ConnectionInfoSecurableKind(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CONNECTION_BIGQUERY", "CONNECTION_DATABRICKS", "CONNECTION_MYSQL", "CONNECTION_ONLINE_CATALOG", "CONNECTION_POSTGRESQL", "CONNECTION_REDSHIFT", "CONNECTION_SNOWFLAKE", "CONNECTION_SQLDW", "CONNECTION_SQLSERVER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONNECTION_BIGQUERY", "CONNECTION_BUILTIN_HIVE_METASTORE", "CONNECTION_DATABRICKS", "CONNECTION_EXTERNAL_HIVE_METASTORE", "CONNECTION_GLUE", "CONNECTION_HTTP_BEARER", "CONNECTION_MYSQL", "CONNECTION_ONLINE_CATALOG", "CONNECTION_POSTGRESQL", "CONNECTION_REDSHIFT", "CONNECTION_SNOWFLAKE", "CONNECTION_SQLDW", "CONNECTION_SQLSERVER"`, v)
 	}
 }
 
@@ -629,6 +679,12 @@ type ConnectionType string
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
 
 const ConnectionTypeDatabricks ConnectionType = `DATABRICKS`
+
+const ConnectionTypeGlue ConnectionType = `GLUE`
+
+const ConnectionTypeHiveMetastore ConnectionType = `HIVE_METASTORE`
+
+const ConnectionTypeHttp ConnectionType = `HTTP`
 
 const ConnectionTypeMysql ConnectionType = `MYSQL`
 
@@ -650,11 +706,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `DATABRICKS`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
+	case `BIGQUERY`, `DATABRICKS`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "GLUE", "HIVE_METASTORE", "HTTP", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
 	}
 }
 
@@ -754,6 +810,10 @@ type CreateExternalLocation struct {
 	CredentialName string `json:"credential_name"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Indicates whether fallback mode is enabled for this external location.
+	// When fallback mode is enabled, the access to the location falls back to
+	// cluster credentials if UC credentials are not sufficient.
+	Fallback bool `json:"fallback,omitempty"`
 	// Name of the external location.
 	Name string `json:"name"`
 	// Indicates whether the external location is read-only.
@@ -801,7 +861,7 @@ type CreateFunction struct {
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
 	Properties string `json:"properties,omitempty"`
 	// Table function return parameters.
-	ReturnParams FunctionParameterInfos `json:"return_params"`
+	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
@@ -811,7 +871,7 @@ type CreateFunction struct {
 	// Function body.
 	RoutineDefinition string `json:"routine_definition"`
 	// Function dependencies.
-	RoutineDependencies DependencyList `json:"routine_dependencies"`
+	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
 	// Name of parent schema relative to its parent catalog.
 	SchemaName string `json:"schema_name"`
 	// Function security type.
@@ -975,7 +1035,9 @@ func (s CreateMetastore) MarshalJSON() ([]byte, error) {
 }
 
 type CreateMetastoreAssignment struct {
-	// The name of the default catalog in the metastore.
+	// The name of the default catalog in the metastore. This field is
+	// depracted. Please use "Default Namespace API" to configure the default
+	// catalog for a Databricks workspace.
 	DefaultCatalogName string `json:"default_catalog_name"`
 	// The unique ID of the metastore.
 	MetastoreId string `json:"metastore_id"`
@@ -1034,22 +1096,10 @@ func (s CreateMonitor) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Online Table information.
+// Create an Online Table
 type CreateOnlineTableRequest struct {
-	// Full three-part (catalog, schema, table) name of the table.
-	Name string `json:"name,omitempty"`
-	// Specification of the online table.
-	Spec *OnlineTableSpec `json:"spec,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateOnlineTableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateOnlineTableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	// Online Table information.
+	Table *OnlineTable `json:"table,omitempty"`
 }
 
 type CreateRegisteredModelRequest struct {
@@ -1171,6 +1221,8 @@ func (s CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
 // The type of credential.
 type CredentialType string
 
+const CredentialTypeBearerToken CredentialType = `BEARER_TOKEN`
+
 const CredentialTypeUsernamePassword CredentialType = `USERNAME_PASSWORD`
 
 // String representation for [fmt.Print]
@@ -1181,11 +1233,11 @@ func (f *CredentialType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CredentialType) Set(v string) error {
 	switch v {
-	case `USERNAME_PASSWORD`:
+	case `BEARER_TOKEN`, `USERNAME_PASSWORD`:
 		*f = CredentialType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "USERNAME_PASSWORD"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BEARER_TOKEN", "USERNAME_PASSWORD"`, v)
 	}
 }
 
@@ -1723,6 +1775,10 @@ type ExternalLocationInfo struct {
 	CredentialName string `json:"credential_name,omitempty"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Indicates whether fallback mode is enabled for this external location.
+	// When fallback mode is enabled, the access to the location falls back to
+	// cluster credentials if UC credentials are not sufficient.
+	Fallback bool `json:"fallback,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
@@ -2085,6 +2141,71 @@ func (f *FunctionParameterType) Type() string {
 	return "FunctionParameterType"
 }
 
+// GCP temporary credentials for API authentication. Read more at
+// https://developers.google.com/identity/protocols/oauth2/service-account
+type GcpOauthToken struct {
+	OauthToken string `json:"oauth_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GcpOauthToken) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GcpOauthToken) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenerateTemporaryTableCredentialRequest struct {
+	// The operation performed against the table data, either READ or
+	// READ_WRITE. If READ_WRITE is specified, the credentials returned will
+	// have write permissions, otherwise, it will be read only.
+	Operation TableOperation `json:"operation,omitempty"`
+	// UUID of the table to read or write.
+	TableId string `json:"table_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GenerateTemporaryTableCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenerateTemporaryTableCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenerateTemporaryTableCredentialResponse struct {
+	// AWS temporary credentials for API authentication. Read more at
+	// https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
+	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
+	// Azure temporary credentials for API authentication. Read more at
+	// https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
+	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
+	// Server time when the credential will expire, in epoch milliseconds. The
+	// API client is advised to cache the credential given this expiration time.
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
+	// GCP temporary credentials for API authentication. Read more at
+	// https://developers.google.com/identity/protocols/oauth2/service-account
+	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
+	// R2 temporary credentials for API authentication. Read more at
+	// https://developers.cloudflare.com/r2/api/s3/tokens/.
+	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
+	// The URL of the storage path accessible by the temporary credential.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GenerateTemporaryTableCredentialResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenerateTemporaryTableCredentialResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Gets the metastore assignment for a workspace
 type GetAccountMetastoreAssignmentRequest struct {
 	// Workspace ID.
@@ -2113,10 +2234,29 @@ type GetArtifactAllowlistRequest struct {
 
 // Get securable workspace bindings
 type GetBindingsRequest struct {
+	// Maximum number of workspace bindings to return. - When set to 0, the page
+	// length is set to a server configured value (recommended); - When set to a
+	// value greater than 0, the page length is the minimum of this value and a
+	// server configured value; - When set to a value less than 0, an invalid
+	// parameter error is returned; - If not set, all the workspace bindings are
+	// returned (not recommended).
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The name of the securable.
 	SecurableName string `json:"-" url:"-"`
 	// The type of the securable to bind to a workspace.
 	SecurableType GetBindingsSecurableType `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetBindingsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetBindingsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GetBindingsSecurableType string
@@ -2154,6 +2294,19 @@ type GetByAliasRequest struct {
 	Alias string `json:"-" url:"-"`
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
+	// Whether to include aliases associated with the model version in the
+	// response
+	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetByAliasRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetByAliasRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a catalog
@@ -2284,6 +2437,9 @@ type GetMetastoreSummaryResponse struct {
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	DeltaSharingScope GetMetastoreSummaryResponseDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
 	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
@@ -2352,6 +2508,9 @@ func (f *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
 type GetModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
 	FullName string `json:"-" url:"-"`
+	// Whether to include aliases associated with the model version in the
+	// response
+	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
 	// Whether to include model versions in the response for which the principal
 	// can only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
@@ -2381,6 +2540,23 @@ type GetQualityMonitorRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
+// Get information for a single resource quota.
+type GetQuotaRequest struct {
+	// Full name of the parent resource. Provide the metastore ID if the parent
+	// is a metastore.
+	ParentFullName string `json:"-" url:"-"`
+	// Securable type of the quota parent.
+	ParentSecurableType string `json:"-" url:"-"`
+	// Name of the quota. Follows the pattern of the quota type, with "-quota"
+	// added as a suffix.
+	QuotaName string `json:"-" url:"-"`
+}
+
+type GetQuotaResponse struct {
+	// The returned QuotaInfo.
+	QuotaInfo *QuotaInfo `json:"quota_info,omitempty"`
+}
+
 // Get refresh
 type GetRefreshRequest struct {
 	// ID of the refresh.
@@ -2393,6 +2569,8 @@ type GetRefreshRequest struct {
 type GetRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
+	// Whether to include registered model aliases in the response
+	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
 	// Whether to include registered models in the response for which the
 	// principal can only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
@@ -2442,6 +2620,8 @@ type GetTableRequest struct {
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Whether delta metadata should be included in the response.
 	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
+	// Whether to include a manifest containing capabilities the table has.
+	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -2748,6 +2928,43 @@ func (s ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// List all resource quotas under a metastore.
+type ListQuotasRequest struct {
+	// The number of quotas to return.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque token for the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQuotasRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListQuotasRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListQuotasResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// An array of returned QuotaInfos.
+	Quotas []QuotaInfo `json:"quotas,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQuotasResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListQuotasResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // List refreshes
 type ListRefreshesRequest struct {
 	// Full name of the table.
@@ -2908,6 +3125,8 @@ func (s ListStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
 type ListSummariesRequest struct {
 	// Name of parent catalog for tables of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
+	// Whether to include a manifest containing capabilities the table has.
+	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 	// Maximum number of summaries for tables to return. If not set, the page
 	// length is set to a server configured value (10000, as of 1/5/2024). -
 	// when set to a value greater than 0, the page length is the minimum of
@@ -2938,13 +3157,46 @@ func (s ListSummariesRequest) MarshalJSON() ([]byte, error) {
 
 // List system schemas
 type ListSystemSchemasRequest struct {
+	// Maximum number of schemas to return. - When set to 0, the page length is
+	// set to a server configured value (recommended); - When set to a value
+	// greater than 0, the page length is the minimum of this value and a server
+	// configured value; - When set to a value less than 0, an invalid parameter
+	// error is returned; - If not set, all the schemas are returned (not
+	// recommended).
+	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// The ID for the metastore in which the system schema resides.
 	MetastoreId string `json:"-" url:"-"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSystemSchemasRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSystemSchemasRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListSystemSchemasResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of system schema information objects.
 	Schemas []SystemSchemaInfo `json:"schemas,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSystemSchemasResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSystemSchemasResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListTableSummariesResponse struct {
@@ -2975,6 +3227,8 @@ type ListTablesRequest struct {
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Whether delta metadata should be included in the response.
 	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
+	// Whether to include a manifest containing capabilities the table has.
+	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 	// Maximum number of tables to return. If not set, all the tables are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
@@ -3138,6 +3392,9 @@ type MetastoreInfo struct {
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	DeltaSharingScope MetastoreInfoDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
 	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
@@ -3203,6 +3460,8 @@ func (f *MetastoreInfoDeltaSharingScope) Type() string {
 }
 
 type ModelVersionInfo struct {
+	// List of aliases associated with the model version
+	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
@@ -3721,10 +3980,15 @@ type OnlineTable struct {
 	Name string `json:"name,omitempty"`
 	// Specification of the online table.
 	Spec *OnlineTableSpec `json:"spec,omitempty"`
-	// Online Table status
+	// Online Table data synchronization status
 	Status *OnlineTableStatus `json:"status,omitempty"`
 	// Data serving REST API URL for this table
 	TableServingUrl string `json:"table_serving_url,omitempty"`
+	// The provisioning state of the online table entity in Unity Catalog. This
+	// is distinct from the state of the data synchronization pipeline (i.e. the
+	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
+	// runs asynchronously).
+	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -4060,7 +4324,7 @@ const ProvisioningInfoStateFailed ProvisioningInfoState = `FAILED`
 
 const ProvisioningInfoStateProvisioning ProvisioningInfoState = `PROVISIONING`
 
-const ProvisioningInfoStateStateUnspecified ProvisioningInfoState = `STATE_UNSPECIFIED`
+const ProvisioningInfoStateUpdating ProvisioningInfoState = `UPDATING`
 
 // String representation for [fmt.Print]
 func (f *ProvisioningInfoState) String() string {
@@ -4070,11 +4334,11 @@ func (f *ProvisioningInfoState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ProvisioningInfoState) Set(v string) error {
 	switch v {
-	case `ACTIVE`, `DELETING`, `FAILED`, `PROVISIONING`, `STATE_UNSPECIFIED`:
+	case `ACTIVE`, `DELETING`, `FAILED`, `PROVISIONING`, `UPDATING`:
 		*f = ProvisioningInfoState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "FAILED", "PROVISIONING", "STATE_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "FAILED", "PROVISIONING", "UPDATING"`, v)
 	}
 }
 
@@ -4089,6 +4353,53 @@ type ProvisioningStatus struct {
 	// Details about initial data synchronization. Only populated when in the
 	// PROVISIONING_INITIAL_SNAPSHOT state.
 	InitialPipelineSyncProgress *PipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
+}
+
+type QuotaInfo struct {
+	// The timestamp that indicates when the quota count was last updated.
+	LastRefreshedAt int64 `json:"last_refreshed_at,omitempty"`
+	// Name of the parent resource. Returns metastore ID if the parent is a
+	// metastore.
+	ParentFullName string `json:"parent_full_name,omitempty"`
+	// The quota parent securable type.
+	ParentSecurableType SecurableType `json:"parent_securable_type,omitempty"`
+	// The current usage of the resource quota.
+	QuotaCount int `json:"quota_count,omitempty"`
+	// The current limit of the resource quota.
+	QuotaLimit int `json:"quota_limit,omitempty"`
+	// The name of the quota.
+	QuotaName string `json:"quota_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QuotaInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QuotaInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// R2 temporary credentials for API authentication. Read more at
+// https://developers.cloudflare.com/r2/api/s3/tokens/.
+type R2Credentials struct {
+	// The access key ID that identifies the temporary credentials.
+	AccessKeyId string `json:"access_key_id,omitempty"`
+	// The secret access key associated with the access key.
+	SecretAccessKey string `json:"secret_access_key,omitempty"`
+	// The generated JWT that users must pass to use the temporary credentials.
+	SessionToken string `json:"session_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *R2Credentials) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s R2Credentials) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a Volume
@@ -4107,6 +4418,41 @@ func (s *ReadVolumeRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s ReadVolumeRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type RegenerateDashboardRequest struct {
+	// Full name of the table.
+	TableName string `json:"-" url:"-"`
+	// Optional argument to specify the warehouse for dashboard regeneration. If
+	// not specified, the first running warehouse will be used.
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegenerateDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RegenerateDashboardRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type RegenerateDashboardResponse struct {
+	// Id of the regenerated monitoring dashboard.
+	DashboardId string `json:"dashboard_id,omitempty"`
+	// The directory where the regenerated dashboard is stored.
+	ParentFolder string `json:"parent_folder,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegenerateDashboardResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RegenerateDashboardResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -4576,6 +4922,33 @@ func (s TableInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type TableOperation string
+
+const TableOperationRead TableOperation = `READ`
+
+const TableOperationReadWrite TableOperation = `READ_WRITE`
+
+// String representation for [fmt.Print]
+func (f *TableOperation) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TableOperation) Set(v string) error {
+	switch v {
+	case `READ`, `READ_WRITE`:
+		*f = TableOperation(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "READ", "READ_WRITE"`, v)
+	}
+}
+
+// Type always returns TableOperation to satisfy [pflag.Value] interface
+func (f *TableOperation) Type() string {
+	return "TableOperation"
+}
+
 type TableRowFilter struct {
 	// The full name of the row filter SQL UDF.
 	FunctionName string `json:"function_name"`
@@ -4767,6 +5140,10 @@ type UpdateExternalLocation struct {
 	CredentialName string `json:"credential_name,omitempty"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Indicates whether fallback mode is enabled for this external location.
+	// When fallback mode is enabled, the access to the location falls back to
+	// cluster credentials if UC credentials are not sufficient.
+	Fallback bool `json:"fallback,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
 	Force bool `json:"force,omitempty"`
@@ -4848,7 +5225,9 @@ func (s UpdateMetastore) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateMetastoreAssignment struct {
-	// The name of the default catalog for the metastore.
+	// The name of the default catalog in the metastore. This field is
+	// depracted. Please use "Default Namespace API" to configure the default
+	// catalog for a Databricks workspace.
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
 	// The unique ID of the metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -5373,4 +5752,18 @@ func (f *WorkspaceBindingBindingType) Type() string {
 type WorkspaceBindingsResponse struct {
 	// List of workspace bindings
 	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

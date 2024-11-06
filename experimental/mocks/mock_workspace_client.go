@@ -8,6 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/stretchr/testify/mock"
 
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/compute"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dashboards"
@@ -42,7 +43,7 @@ func NewMockWorkspaceClient(t interface {
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
 			Alerts:                              sql.NewMockAlertsInterface(t),
 			AlertsLegacy:                        sql.NewMockAlertsLegacyInterface(t),
-			Apps:                                serving.NewMockAppsInterface(t),
+			Apps:                                apps.NewMockAppsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
 			CleanRooms:                          sharing.NewMockCleanRoomsInterface(t),
@@ -85,6 +86,8 @@ func NewMockWorkspaceClient(t interface {
 			PermissionMigration:                 iam.NewMockPermissionMigrationInterface(t),
 			Permissions:                         iam.NewMockPermissionsInterface(t),
 			Pipelines:                           pipelines.NewMockPipelinesInterface(t),
+			PolicyComplianceForClusters:         compute.NewMockPolicyComplianceForClustersInterface(t),
+			PolicyComplianceForJobs:             jobs.NewMockPolicyComplianceForJobsInterface(t),
 			PolicyFamilies:                      compute.NewMockPolicyFamiliesInterface(t),
 			ProviderExchangeFilters:             marketplace.NewMockProviderExchangeFiltersInterface(t),
 			ProviderExchanges:                   marketplace.NewMockProviderExchangesInterface(t),
@@ -104,6 +107,7 @@ func NewMockWorkspaceClient(t interface {
 			Recipients:                          sharing.NewMockRecipientsInterface(t),
 			RegisteredModels:                    catalog.NewMockRegisteredModelsInterface(t),
 			Repos:                               workspace.NewMockReposInterface(t),
+			ResourceQuotas:                      catalog.NewMockResourceQuotasInterface(t),
 			Schemas:                             catalog.NewMockSchemasInterface(t),
 			Secrets:                             workspace.NewMockSecretsInterface(t),
 			ServicePrincipals:                   iam.NewMockServicePrincipalsInterface(t),
@@ -116,6 +120,7 @@ func NewMockWorkspaceClient(t interface {
 			SystemSchemas:                       catalog.NewMockSystemSchemasInterface(t),
 			TableConstraints:                    catalog.NewMockTableConstraintsInterface(t),
 			Tables:                              catalog.NewMockTablesInterface(t),
+			TemporaryTableCredentials:           catalog.NewMockTemporaryTableCredentialsInterface(t),
 			TokenManagement:                     settings.NewMockTokenManagementInterface(t),
 			Tokens:                              settings.NewMockTokensInterface(t),
 			Users:                               iam.NewMockUsersInterface(t),
@@ -131,6 +136,12 @@ func NewMockWorkspaceClient(t interface {
 
 	mocksettingsAPI := cli.GetMockSettingsAPI()
 
+	mockaibiDashboardEmbeddingAccessPolicy := settings.NewMockAibiDashboardEmbeddingAccessPolicyInterface(t)
+	mocksettingsAPI.On("AibiDashboardEmbeddingAccessPolicy").Return(mockaibiDashboardEmbeddingAccessPolicy).Maybe()
+
+	mockaibiDashboardEmbeddingApprovedDomains := settings.NewMockAibiDashboardEmbeddingApprovedDomainsInterface(t)
+	mocksettingsAPI.On("AibiDashboardEmbeddingApprovedDomains").Return(mockaibiDashboardEmbeddingApprovedDomains).Maybe()
+
 	mockautomaticClusterUpdate := settings.NewMockAutomaticClusterUpdateInterface(t)
 	mocksettingsAPI.On("AutomaticClusterUpdate").Return(mockautomaticClusterUpdate).Maybe()
 
@@ -140,6 +151,12 @@ func NewMockWorkspaceClient(t interface {
 	mockdefaultNamespace := settings.NewMockDefaultNamespaceInterface(t)
 	mocksettingsAPI.On("DefaultNamespace").Return(mockdefaultNamespace).Maybe()
 
+	mockdisableLegacyAccess := settings.NewMockDisableLegacyAccessInterface(t)
+	mocksettingsAPI.On("DisableLegacyAccess").Return(mockdisableLegacyAccess).Maybe()
+
+	mockdisableLegacyDbfs := settings.NewMockDisableLegacyDbfsInterface(t)
+	mocksettingsAPI.On("DisableLegacyDbfs").Return(mockdisableLegacyDbfs).Maybe()
+
 	mockenhancedSecurityMonitoring := settings.NewMockEnhancedSecurityMonitoringInterface(t)
 	mocksettingsAPI.On("EnhancedSecurityMonitoring").Return(mockenhancedSecurityMonitoring).Maybe()
 
@@ -147,6 +164,22 @@ func NewMockWorkspaceClient(t interface {
 	mocksettingsAPI.On("RestrictWorkspaceAdmins").Return(mockrestrictWorkspaceAdmins).Maybe()
 
 	return cli
+}
+
+func (m *MockWorkspaceClient) GetMockAibiDashboardEmbeddingAccessPolicyAPI() *settings.MockAibiDashboardEmbeddingAccessPolicyInterface {
+	api, ok := m.GetMockSettingsAPI().AibiDashboardEmbeddingAccessPolicy().(*settings.MockAibiDashboardEmbeddingAccessPolicyInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AibiDashboardEmbeddingAccessPolicy to be *settings.MockAibiDashboardEmbeddingAccessPolicyInterface, actual was %T", m.GetMockSettingsAPI().AibiDashboardEmbeddingAccessPolicy()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockAibiDashboardEmbeddingApprovedDomainsAPI() *settings.MockAibiDashboardEmbeddingApprovedDomainsInterface {
+	api, ok := m.GetMockSettingsAPI().AibiDashboardEmbeddingApprovedDomains().(*settings.MockAibiDashboardEmbeddingApprovedDomainsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AibiDashboardEmbeddingApprovedDomains to be *settings.MockAibiDashboardEmbeddingApprovedDomainsInterface, actual was %T", m.GetMockSettingsAPI().AibiDashboardEmbeddingApprovedDomains()))
+	}
+	return api
 }
 
 func (m *MockWorkspaceClient) GetMockAutomaticClusterUpdateAPI() *settings.MockAutomaticClusterUpdateInterface {
@@ -169,6 +202,22 @@ func (m *MockWorkspaceClient) GetMockDefaultNamespaceAPI() *settings.MockDefault
 	api, ok := m.GetMockSettingsAPI().DefaultNamespace().(*settings.MockDefaultNamespaceInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DefaultNamespace to be *settings.MockDefaultNamespaceInterface, actual was %T", m.GetMockSettingsAPI().DefaultNamespace()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDisableLegacyAccessAPI() *settings.MockDisableLegacyAccessInterface {
+	api, ok := m.GetMockSettingsAPI().DisableLegacyAccess().(*settings.MockDisableLegacyAccessInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DisableLegacyAccess to be *settings.MockDisableLegacyAccessInterface, actual was %T", m.GetMockSettingsAPI().DisableLegacyAccess()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDisableLegacyDbfsAPI() *settings.MockDisableLegacyDbfsInterface {
+	api, ok := m.GetMockSettingsAPI().DisableLegacyDbfs().(*settings.MockDisableLegacyDbfsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DisableLegacyDbfs to be *settings.MockDisableLegacyDbfsInterface, actual was %T", m.GetMockSettingsAPI().DisableLegacyDbfs()))
 	}
 	return api
 }
@@ -213,10 +262,10 @@ func (m *MockWorkspaceClient) GetMockAlertsLegacyAPI() *sql.MockAlertsLegacyInte
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockAppsAPI() *serving.MockAppsInterface {
-	api, ok := m.WorkspaceClient.Apps.(*serving.MockAppsInterface)
+func (m *MockWorkspaceClient) GetMockAppsAPI() *apps.MockAppsInterface {
+	api, ok := m.WorkspaceClient.Apps.(*apps.MockAppsInterface)
 	if !ok {
-		panic(fmt.Sprintf("expected Apps to be *serving.MockAppsInterface, actual was %T", m.WorkspaceClient.Apps))
+		panic(fmt.Sprintf("expected Apps to be *apps.MockAppsInterface, actual was %T", m.WorkspaceClient.Apps))
 	}
 	return api
 }
@@ -557,6 +606,22 @@ func (m *MockWorkspaceClient) GetMockPipelinesAPI() *pipelines.MockPipelinesInte
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockPolicyComplianceForClustersAPI() *compute.MockPolicyComplianceForClustersInterface {
+	api, ok := m.WorkspaceClient.PolicyComplianceForClusters.(*compute.MockPolicyComplianceForClustersInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected PolicyComplianceForClusters to be *compute.MockPolicyComplianceForClustersInterface, actual was %T", m.WorkspaceClient.PolicyComplianceForClusters))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockPolicyComplianceForJobsAPI() *jobs.MockPolicyComplianceForJobsInterface {
+	api, ok := m.WorkspaceClient.PolicyComplianceForJobs.(*jobs.MockPolicyComplianceForJobsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected PolicyComplianceForJobs to be *jobs.MockPolicyComplianceForJobsInterface, actual was %T", m.WorkspaceClient.PolicyComplianceForJobs))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockPolicyFamiliesAPI() *compute.MockPolicyFamiliesInterface {
 	api, ok := m.WorkspaceClient.PolicyFamilies.(*compute.MockPolicyFamiliesInterface)
 	if !ok {
@@ -709,6 +774,14 @@ func (m *MockWorkspaceClient) GetMockReposAPI() *workspace.MockReposInterface {
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockResourceQuotasAPI() *catalog.MockResourceQuotasInterface {
+	api, ok := m.WorkspaceClient.ResourceQuotas.(*catalog.MockResourceQuotasInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ResourceQuotas to be *catalog.MockResourceQuotasInterface, actual was %T", m.WorkspaceClient.ResourceQuotas))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockSchemasAPI() *catalog.MockSchemasInterface {
 	api, ok := m.WorkspaceClient.Schemas.(*catalog.MockSchemasInterface)
 	if !ok {
@@ -801,6 +874,14 @@ func (m *MockWorkspaceClient) GetMockTablesAPI() *catalog.MockTablesInterface {
 	api, ok := m.WorkspaceClient.Tables.(*catalog.MockTablesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Tables to be *catalog.MockTablesInterface, actual was %T", m.WorkspaceClient.Tables))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockTemporaryTableCredentialsAPI() *catalog.MockTemporaryTableCredentialsInterface {
+	api, ok := m.WorkspaceClient.TemporaryTableCredentials.(*catalog.MockTemporaryTableCredentialsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected TemporaryTableCredentials to be *catalog.MockTemporaryTableCredentialsInterface, actual was %T", m.WorkspaceClient.TemporaryTableCredentials))
 	}
 	return api
 }

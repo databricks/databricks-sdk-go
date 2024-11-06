@@ -99,9 +99,38 @@ func (svc *Service) Methods() (methods []*Method) {
 	return methods
 }
 
+// NamedIdMap allows to retrieve a special NamedIdMap object from all methods
+// in the service which returns name-to-id mapping retrieval definition for all
+// entities of a type
+// If there are multiple NamedIdMap for the service, it will panic, because this is not allowed.
+func (svc *Service) NamedIdMap() *NamedIdMap {
+	entities := make([]*NamedIdMap, 0)
+	for _, v := range svc.Methods() {
+		// NamedIdMap is defined only for list operations
+		if v.Operation.Crud != "list" {
+			continue
+		}
+
+		n := v.NamedIdMap()
+		if n != nil {
+			entities = append(entities, n)
+		}
+	}
+
+	if len(entities) > 1 {
+		panic(fmt.Errorf("methods for service %s has more than one NamedIdMap operations", svc.Name))
+	}
+
+	if len(entities) == 0 {
+		return nil
+	}
+
+	return entities[0]
+}
+
 // List returns a method annotated with x-databricks-crud:list
 func (svc *Service) List() *Method {
-	for _, v := range svc.methods {
+	for _, v := range svc.Methods() {
 		if v.Operation.Crud == "list" {
 			return v
 		}
@@ -111,7 +140,7 @@ func (svc *Service) List() *Method {
 
 // List returns a method annotated with x-databricks-crud:create
 func (svc *Service) Create() *Method {
-	for _, v := range svc.methods {
+	for _, v := range svc.Methods() {
 		if v.Operation.Crud == "create" {
 			return v
 		}
@@ -121,7 +150,7 @@ func (svc *Service) Create() *Method {
 
 // List returns a method annotated with x-databricks-crud:read
 func (svc *Service) Read() *Method {
-	for _, v := range svc.methods {
+	for _, v := range svc.Methods() {
 		if v.Operation.Crud == "read" {
 			return v
 		}
@@ -131,7 +160,7 @@ func (svc *Service) Read() *Method {
 
 // List returns a method annotated with x-databricks-crud:update
 func (svc *Service) Update() *Method {
-	for _, v := range svc.methods {
+	for _, v := range svc.Methods() {
 		if v.Operation.Crud == "update" {
 			return v
 		}
@@ -141,7 +170,7 @@ func (svc *Service) Update() *Method {
 
 // List returns a method annotated with x-databricks-crud:delete
 func (svc *Service) Delete() *Method {
-	for _, v := range svc.methods {
+	for _, v := range svc.Methods() {
 		if v.Operation.Crud == "delete" {
 			return v
 		}

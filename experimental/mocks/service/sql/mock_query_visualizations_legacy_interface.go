@@ -175,53 +175,6 @@ func (_c *MockQueryVisualizationsLegacyInterface_DeleteById_Call) RunAndReturn(r
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockQueryVisualizationsLegacyInterface) Impl() sql.QueryVisualizationsLegacyService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sql.QueryVisualizationsLegacyService
-	if rf, ok := ret.Get(0).(func() sql.QueryVisualizationsLegacyService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.QueryVisualizationsLegacyService)
-		}
-	}
-
-	return r0
-}
-
-// MockQueryVisualizationsLegacyInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockQueryVisualizationsLegacyInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockQueryVisualizationsLegacyInterface_Expecter) Impl() *MockQueryVisualizationsLegacyInterface_Impl_Call {
-	return &MockQueryVisualizationsLegacyInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockQueryVisualizationsLegacyInterface_Impl_Call) Run(run func()) *MockQueryVisualizationsLegacyInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockQueryVisualizationsLegacyInterface_Impl_Call) Return(_a0 sql.QueryVisualizationsLegacyService) *MockQueryVisualizationsLegacyInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockQueryVisualizationsLegacyInterface_Impl_Call) RunAndReturn(run func() sql.QueryVisualizationsLegacyService) *MockQueryVisualizationsLegacyInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockQueryVisualizationsLegacyInterface) Update(ctx context.Context, request sql.LegacyVisualization) (*sql.LegacyVisualization, error) {
 	ret := _m.Called(ctx, request)
@@ -277,54 +230,6 @@ func (_c *MockQueryVisualizationsLegacyInterface_Update_Call) Return(_a0 *sql.Le
 }
 
 func (_c *MockQueryVisualizationsLegacyInterface_Update_Call) RunAndReturn(run func(context.Context, sql.LegacyVisualization) (*sql.LegacyVisualization, error)) *MockQueryVisualizationsLegacyInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockQueryVisualizationsLegacyInterface) WithImpl(impl sql.QueryVisualizationsLegacyService) sql.QueryVisualizationsLegacyInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sql.QueryVisualizationsLegacyInterface
-	if rf, ok := ret.Get(0).(func(sql.QueryVisualizationsLegacyService) sql.QueryVisualizationsLegacyInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.QueryVisualizationsLegacyInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockQueryVisualizationsLegacyInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockQueryVisualizationsLegacyInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sql.QueryVisualizationsLegacyService
-func (_e *MockQueryVisualizationsLegacyInterface_Expecter) WithImpl(impl interface{}) *MockQueryVisualizationsLegacyInterface_WithImpl_Call {
-	return &MockQueryVisualizationsLegacyInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockQueryVisualizationsLegacyInterface_WithImpl_Call) Run(run func(impl sql.QueryVisualizationsLegacyService)) *MockQueryVisualizationsLegacyInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sql.QueryVisualizationsLegacyService))
-	})
-	return _c
-}
-
-func (_c *MockQueryVisualizationsLegacyInterface_WithImpl_Call) Return(_a0 sql.QueryVisualizationsLegacyInterface) *MockQueryVisualizationsLegacyInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockQueryVisualizationsLegacyInterface_WithImpl_Call) RunAndReturn(run func(sql.QueryVisualizationsLegacyService) sql.QueryVisualizationsLegacyInterface) *MockQueryVisualizationsLegacyInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

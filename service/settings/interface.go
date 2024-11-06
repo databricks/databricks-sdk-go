@@ -107,6 +107,43 @@ type AccountIpAccessListsService interface {
 type AccountSettingsService interface {
 }
 
+// Controls whether AI/BI published dashboard embedding is enabled,
+// conditionally enabled, or disabled at the workspace level. By default, this
+// setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
+type AibiDashboardEmbeddingAccessPolicyService interface {
+
+	// Retrieve the AI/BI dashboard embedding access policy.
+	//
+	// Retrieves the AI/BI dashboard embedding access policy. The default
+	// setting is ALLOW_APPROVED_DOMAINS, permitting AI/BI dashboards to be
+	// embedded on approved domains.
+	Get(ctx context.Context, request GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error)
+
+	// Update the AI/BI dashboard embedding access policy.
+	//
+	// Updates the AI/BI dashboard embedding access policy at the workspace
+	// level.
+	Update(ctx context.Context, request UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error)
+}
+
+// Controls the list of domains approved to host the embedded AI/BI dashboards.
+// The approved domains list can't be mutated when the current access policy is
+// not set to ALLOW_APPROVED_DOMAINS.
+type AibiDashboardEmbeddingApprovedDomainsService interface {
+
+	// Retrieve the list of domains approved to host embedded AI/BI dashboards.
+	//
+	// Retrieves the list of domains approved to host embedded AI/BI dashboards.
+	Get(ctx context.Context, request GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error)
+
+	// Update the list of domains approved to host embedded AI/BI dashboards.
+	//
+	// Updates the list of domains approved to host embedded AI/BI dashboards.
+	// This update will fail if the current workspace access policy is not
+	// ALLOW_APPROVED_DOMAINS.
+	Update(ctx context.Context, request UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error)
+}
+
 // Controls whether automatic cluster update is enabled for the current
 // workspace. By default, it is turned off.
 type AutomaticClusterUpdateService interface {
@@ -222,6 +259,77 @@ type DefaultNamespaceService interface {
 	// concurrently, `PATCH` fails with 409 and the request must be retried by
 	// using the fresh etag in the 409 response.
 	Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
+}
+
+// 'Disabling legacy access' has the following impacts:
+//
+// 1. Disables direct access to the Hive Metastore. However, you can still
+// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode (docs
+// link) on any External Location access from the workspace. 3. Alters DBFS path
+// access to use External Location permissions in place of legacy credentials.
+// 4. Enforces Unity Catalog access on all path based access.
+type DisableLegacyAccessService interface {
+
+	// Delete Legacy Access Disablement Status.
+	//
+	// Deletes legacy access disablement status.
+	Delete(ctx context.Context, request DeleteDisableLegacyAccessRequest) (*DeleteDisableLegacyAccessResponse, error)
+
+	// Retrieve Legacy Access Disablement Status.
+	//
+	// Retrieves legacy access disablement Status.
+	Get(ctx context.Context, request GetDisableLegacyAccessRequest) (*DisableLegacyAccess, error)
+
+	// Update Legacy Access Disablement Status.
+	//
+	// Updates legacy access disablement status.
+	Update(ctx context.Context, request UpdateDisableLegacyAccessRequest) (*DisableLegacyAccess, error)
+}
+
+// When this setting is on, access to DBFS root and DBFS mounts is disallowed
+// (as well as creation of new mounts). When the setting is off, all DBFS
+// functionality is enabled
+type DisableLegacyDbfsService interface {
+
+	// Delete the disable legacy DBFS setting.
+	//
+	// Deletes the disable legacy DBFS setting for a workspace, reverting back
+	// to the default.
+	Delete(ctx context.Context, request DeleteDisableLegacyDbfsRequest) (*DeleteDisableLegacyDbfsResponse, error)
+
+	// Get the disable legacy DBFS setting.
+	//
+	// Gets the disable legacy DBFS setting.
+	Get(ctx context.Context, request GetDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error)
+
+	// Update the disable legacy DBFS setting.
+	//
+	// Updates the disable legacy DBFS setting for the workspace.
+	Update(ctx context.Context, request UpdateDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error)
+}
+
+// Disable legacy features for new Databricks workspaces.
+//
+// For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2.
+// Hive Metastore will not be provisioned. 3. Disables the use of
+// ‘No-isolation clusters’. 4. Disables Databricks Runtime versions prior to
+// 13.3LTS.
+type DisableLegacyFeaturesService interface {
+
+	// Delete the disable legacy features setting.
+	//
+	// Deletes the disable legacy features setting.
+	Delete(ctx context.Context, request DeleteDisableLegacyFeaturesRequest) (*DeleteDisableLegacyFeaturesResponse, error)
+
+	// Get the disable legacy features setting.
+	//
+	// Gets the value of the disable legacy features setting.
+	Get(ctx context.Context, request GetDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
+
+	// Update the disable legacy features setting.
+	//
+	// Updates the value of the disable legacy features setting.
+	Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
 }
 
 // Controls whether enhanced security monitoring is enabled for the current

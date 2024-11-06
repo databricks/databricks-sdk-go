@@ -591,53 +591,6 @@ func (_c *MockCommandExecutionInterface_ExecuteAndWait_Call) RunAndReturn(run fu
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockCommandExecutionInterface) Impl() compute.CommandExecutionService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 compute.CommandExecutionService
-	if rf, ok := ret.Get(0).(func() compute.CommandExecutionService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.CommandExecutionService)
-		}
-	}
-
-	return r0
-}
-
-// MockCommandExecutionInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockCommandExecutionInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockCommandExecutionInterface_Expecter) Impl() *MockCommandExecutionInterface_Impl_Call {
-	return &MockCommandExecutionInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockCommandExecutionInterface_Impl_Call) Run(run func()) *MockCommandExecutionInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockCommandExecutionInterface_Impl_Call) Return(_a0 compute.CommandExecutionService) *MockCommandExecutionInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCommandExecutionInterface_Impl_Call) RunAndReturn(run func() compute.CommandExecutionService) *MockCommandExecutionInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Start provides a mock function with given fields: ctx, clusterID, language
 func (_m *MockCommandExecutionInterface) Start(ctx context.Context, clusterID string, language compute.Language) (*compute.CommandExecutorV2, error) {
 	ret := _m.Called(ctx, clusterID, language)
@@ -882,54 +835,6 @@ func (_c *MockCommandExecutionInterface_WaitContextStatusCommandExecutionRunning
 }
 
 func (_c *MockCommandExecutionInterface_WaitContextStatusCommandExecutionRunning_Call) RunAndReturn(run func(context.Context, string, string, time.Duration, func(*compute.ContextStatusResponse)) (*compute.ContextStatusResponse, error)) *MockCommandExecutionInterface_WaitContextStatusCommandExecutionRunning_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockCommandExecutionInterface) WithImpl(impl compute.CommandExecutionService) compute.CommandExecutionInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 compute.CommandExecutionInterface
-	if rf, ok := ret.Get(0).(func(compute.CommandExecutionService) compute.CommandExecutionInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(compute.CommandExecutionInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockCommandExecutionInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockCommandExecutionInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl compute.CommandExecutionService
-func (_e *MockCommandExecutionInterface_Expecter) WithImpl(impl interface{}) *MockCommandExecutionInterface_WithImpl_Call {
-	return &MockCommandExecutionInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockCommandExecutionInterface_WithImpl_Call) Run(run func(impl compute.CommandExecutionService)) *MockCommandExecutionInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(compute.CommandExecutionService))
-	})
-	return _c
-}
-
-func (_c *MockCommandExecutionInterface_WithImpl_Call) Return(_a0 compute.CommandExecutionInterface) *MockCommandExecutionInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCommandExecutionInterface_WithImpl_Call) RunAndReturn(run func(compute.CommandExecutionService) compute.CommandExecutionInterface) *MockCommandExecutionInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

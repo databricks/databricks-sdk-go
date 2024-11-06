@@ -33,6 +33,202 @@ func (s Ai21LabsConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type AiGatewayConfig struct {
+	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
+	// in requests and responses.
+	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
+	// Configuration for payload logging using inference tables. Use these
+	// tables to monitor and audit data being sent to and received from model
+	// APIs and to improve model quality.
+	InferenceTableConfig *AiGatewayInferenceTableConfig `json:"inference_table_config,omitempty"`
+	// Configuration for rate limits which can be set to limit endpoint traffic.
+	RateLimits []AiGatewayRateLimit `json:"rate_limits,omitempty"`
+	// Configuration to enable usage tracking using system tables. These tables
+	// allow you to monitor operational usage on endpoints and their associated
+	// costs.
+	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
+}
+
+type AiGatewayGuardrailParameters struct {
+	// List of invalid keywords. AI guardrail uses keyword or string matching to
+	// decide if the keyword exists in the request or response content.
+	InvalidKeywords []string `json:"invalid_keywords,omitempty"`
+	// Configuration for guardrail PII filter.
+	Pii *AiGatewayGuardrailPiiBehavior `json:"pii,omitempty"`
+	// Indicates whether the safety filter is enabled.
+	Safety bool `json:"safety,omitempty"`
+	// The list of allowed topics. Given a chat request, this guardrail flags
+	// the request if its topic is not in the allowed topics.
+	ValidTopics []string `json:"valid_topics,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AiGatewayGuardrailParameters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiGatewayGuardrailParameters) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AiGatewayGuardrailPiiBehavior struct {
+	// Behavior for PII filter. Currently only 'BLOCK' is supported. If 'BLOCK'
+	// is set for the input guardrail and the request contains PII, the request
+	// is not sent to the model server and 400 status code is returned; if
+	// 'BLOCK' is set for the output guardrail and the model response contains
+	// PII, the PII info in the response is redacted and 400 status code is
+	// returned.
+	Behavior AiGatewayGuardrailPiiBehaviorBehavior `json:"behavior"`
+}
+
+// Behavior for PII filter. Currently only 'BLOCK' is supported. If 'BLOCK' is
+// set for the input guardrail and the request contains PII, the request is not
+// sent to the model server and 400 status code is returned; if 'BLOCK' is set
+// for the output guardrail and the model response contains PII, the PII info in
+// the response is redacted and 400 status code is returned.
+type AiGatewayGuardrailPiiBehaviorBehavior string
+
+const AiGatewayGuardrailPiiBehaviorBehaviorBlock AiGatewayGuardrailPiiBehaviorBehavior = `BLOCK`
+
+const AiGatewayGuardrailPiiBehaviorBehaviorNone AiGatewayGuardrailPiiBehaviorBehavior = `NONE`
+
+// String representation for [fmt.Print]
+func (f *AiGatewayGuardrailPiiBehaviorBehavior) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AiGatewayGuardrailPiiBehaviorBehavior) Set(v string) error {
+	switch v {
+	case `BLOCK`, `NONE`:
+		*f = AiGatewayGuardrailPiiBehaviorBehavior(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BLOCK", "NONE"`, v)
+	}
+}
+
+// Type always returns AiGatewayGuardrailPiiBehaviorBehavior to satisfy [pflag.Value] interface
+func (f *AiGatewayGuardrailPiiBehaviorBehavior) Type() string {
+	return "AiGatewayGuardrailPiiBehaviorBehavior"
+}
+
+type AiGatewayGuardrails struct {
+	// Configuration for input guardrail filters.
+	Input *AiGatewayGuardrailParameters `json:"input,omitempty"`
+	// Configuration for output guardrail filters.
+	Output *AiGatewayGuardrailParameters `json:"output,omitempty"`
+}
+
+type AiGatewayInferenceTableConfig struct {
+	// The name of the catalog in Unity Catalog. Required when enabling
+	// inference tables. NOTE: On update, you have to disable inference table
+	// first in order to change the catalog name.
+	CatalogName string `json:"catalog_name,omitempty"`
+	// Indicates whether the inference table is enabled.
+	Enabled bool `json:"enabled,omitempty"`
+	// The name of the schema in Unity Catalog. Required when enabling inference
+	// tables. NOTE: On update, you have to disable inference table first in
+	// order to change the schema name.
+	SchemaName string `json:"schema_name,omitempty"`
+	// The prefix of the table in Unity Catalog. NOTE: On update, you have to
+	// disable inference table first in order to change the prefix name.
+	TableNamePrefix string `json:"table_name_prefix,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AiGatewayInferenceTableConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiGatewayInferenceTableConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AiGatewayRateLimit struct {
+	// Used to specify how many calls are allowed for a key within the
+	// renewal_period.
+	Calls int `json:"calls"`
+	// Key field for a rate limit. Currently, only 'user' and 'endpoint' are
+	// supported, with 'endpoint' being the default if not specified.
+	Key AiGatewayRateLimitKey `json:"key,omitempty"`
+	// Renewal period field for a rate limit. Currently, only 'minute' is
+	// supported.
+	RenewalPeriod AiGatewayRateLimitRenewalPeriod `json:"renewal_period"`
+}
+
+// Key field for a rate limit. Currently, only 'user' and 'endpoint' are
+// supported, with 'endpoint' being the default if not specified.
+type AiGatewayRateLimitKey string
+
+const AiGatewayRateLimitKeyEndpoint AiGatewayRateLimitKey = `endpoint`
+
+const AiGatewayRateLimitKeyUser AiGatewayRateLimitKey = `user`
+
+// String representation for [fmt.Print]
+func (f *AiGatewayRateLimitKey) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AiGatewayRateLimitKey) Set(v string) error {
+	switch v {
+	case `endpoint`, `user`:
+		*f = AiGatewayRateLimitKey(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "endpoint", "user"`, v)
+	}
+}
+
+// Type always returns AiGatewayRateLimitKey to satisfy [pflag.Value] interface
+func (f *AiGatewayRateLimitKey) Type() string {
+	return "AiGatewayRateLimitKey"
+}
+
+// Renewal period field for a rate limit. Currently, only 'minute' is supported.
+type AiGatewayRateLimitRenewalPeriod string
+
+const AiGatewayRateLimitRenewalPeriodMinute AiGatewayRateLimitRenewalPeriod = `minute`
+
+// String representation for [fmt.Print]
+func (f *AiGatewayRateLimitRenewalPeriod) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AiGatewayRateLimitRenewalPeriod) Set(v string) error {
+	switch v {
+	case `minute`:
+		*f = AiGatewayRateLimitRenewalPeriod(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "minute"`, v)
+	}
+}
+
+// Type always returns AiGatewayRateLimitRenewalPeriod to satisfy [pflag.Value] interface
+func (f *AiGatewayRateLimitRenewalPeriod) Type() string {
+	return "AiGatewayRateLimitRenewalPeriod"
+}
+
+type AiGatewayUsageTrackingConfig struct {
+	// Whether to enable usage tracking.
+	Enabled bool `json:"enabled,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AiGatewayUsageTrackingConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiGatewayUsageTrackingConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AmazonBedrockConfig struct {
 	// The Databricks secret key reference for an AWS access key ID with
 	// permissions to interact with Bedrock services. If you prefer to paste
@@ -130,228 +326,6 @@ func (s *AnthropicConfig) UnmarshalJSON(b []byte) error {
 }
 
 func (s AnthropicConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type App struct {
-	// The active deployment of the app.
-	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
-	// The creation time of the app. Formatted timestamp in ISO 6801.
-	CreateTime string `json:"create_time,omitempty"`
-	// The email of the user that created the app.
-	Creator string `json:"creator,omitempty"`
-	// The description of the app.
-	Description string `json:"description,omitempty"`
-	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens. It must be unique within the workspace.
-	Name string `json:"name"`
-	// The pending deployment of the app.
-	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
-
-	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	Status *AppStatus `json:"status,omitempty"`
-	// The update time of the app. Formatted timestamp in ISO 6801.
-	UpdateTime string `json:"update_time,omitempty"`
-	// The email of the user that last updated the app.
-	Updater string `json:"updater,omitempty"`
-	// The URL of the app once it is deployed.
-	Url string `json:"url,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *App) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s App) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type AppDeployment struct {
-	// The creation time of the deployment. Formatted timestamp in ISO 6801.
-	CreateTime string `json:"create_time,omitempty"`
-	// The email of the user creates the deployment.
-	Creator string `json:"creator,omitempty"`
-	// The deployment artifacts for an app.
-	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
-	// The unique id of the deployment.
-	DeploymentId string `json:"deployment_id,omitempty"`
-	// The mode of which the deployment will manage the source code.
-	Mode AppDeploymentMode `json:"mode"`
-	// The workspace file system path of the source code used to create the app
-	// deployment. This is different from
-	// `deployment_artifacts.source_code_path`, which is the path used by the
-	// deployed app. The former refers to the original source code location of
-	// the app in the workspace during deployment creation, whereas the latter
-	// provides a system generated stable snapshotted source code path used by
-	// the deployment.
-	SourceCodePath string `json:"source_code_path"`
-	// Status and status message of the deployment
-	Status *AppDeploymentStatus `json:"status,omitempty"`
-	// The update time of the deployment. Formatted timestamp in ISO 6801.
-	UpdateTime string `json:"update_time,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *AppDeployment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AppDeployment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type AppDeploymentArtifacts struct {
-	// The snapshotted workspace file system path of the source code loaded by
-	// the deployed app.
-	SourceCodePath string `json:"source_code_path,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *AppDeploymentArtifacts) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AppDeploymentArtifacts) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type AppDeploymentMode string
-
-const AppDeploymentModeAutoSync AppDeploymentMode = `AUTO_SYNC`
-
-const AppDeploymentModeSnapshot AppDeploymentMode = `SNAPSHOT`
-
-// String representation for [fmt.Print]
-func (f *AppDeploymentMode) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *AppDeploymentMode) Set(v string) error {
-	switch v {
-	case `AUTO_SYNC`, `SNAPSHOT`:
-		*f = AppDeploymentMode(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "AUTO_SYNC", "SNAPSHOT"`, v)
-	}
-}
-
-// Type always returns AppDeploymentMode to satisfy [pflag.Value] interface
-func (f *AppDeploymentMode) Type() string {
-	return "AppDeploymentMode"
-}
-
-type AppDeploymentState string
-
-const AppDeploymentStateFailed AppDeploymentState = `FAILED`
-
-const AppDeploymentStateInProgress AppDeploymentState = `IN_PROGRESS`
-
-const AppDeploymentStateStopped AppDeploymentState = `STOPPED`
-
-const AppDeploymentStateSucceeded AppDeploymentState = `SUCCEEDED`
-
-// String representation for [fmt.Print]
-func (f *AppDeploymentState) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *AppDeploymentState) Set(v string) error {
-	switch v {
-	case `FAILED`, `IN_PROGRESS`, `STOPPED`, `SUCCEEDED`:
-		*f = AppDeploymentState(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "FAILED", "IN_PROGRESS", "STOPPED", "SUCCEEDED"`, v)
-	}
-}
-
-// Type always returns AppDeploymentState to satisfy [pflag.Value] interface
-func (f *AppDeploymentState) Type() string {
-	return "AppDeploymentState"
-}
-
-type AppDeploymentStatus struct {
-	// Message corresponding with the deployment state.
-	Message string `json:"message,omitempty"`
-	// State of the deployment.
-	State AppDeploymentState `json:"state,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *AppDeploymentStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AppDeploymentStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type AppEnvironment struct {
-	Env []EnvVariable `json:"env,omitempty"`
-}
-
-type AppState string
-
-const AppStateCreating AppState = `CREATING`
-
-const AppStateDeleted AppState = `DELETED`
-
-const AppStateDeleting AppState = `DELETING`
-
-const AppStateError AppState = `ERROR`
-
-const AppStateIdle AppState = `IDLE`
-
-const AppStateRunning AppState = `RUNNING`
-
-const AppStateStarting AppState = `STARTING`
-
-// String representation for [fmt.Print]
-func (f *AppState) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *AppState) Set(v string) error {
-	switch v {
-	case `CREATING`, `DELETED`, `DELETING`, `ERROR`, `IDLE`, `RUNNING`, `STARTING`:
-		*f = AppState(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CREATING", "DELETED", "DELETING", "ERROR", "IDLE", "RUNNING", "STARTING"`, v)
-	}
-}
-
-// Type always returns AppState to satisfy [pflag.Value] interface
-func (f *AppState) Type() string {
-	return "AppState"
-}
-
-type AppStatus struct {
-	// Message corresponding with the app state.
-	Message string `json:"message,omitempty"`
-	// State of the app.
-	State AppState `json:"state,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *AppStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AppStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -494,48 +468,18 @@ func (s CohereConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CreateAppDeploymentRequest struct {
-	// The name of the app.
-	AppName string `json:"-" url:"-"`
-	// The mode of which the deployment will manage the source code.
-	Mode AppDeploymentMode `json:"mode"`
-	// The workspace file system path of the source code used to create the app
-	// deployment. This is different from
-	// `deployment_artifacts.source_code_path`, which is the path used by the
-	// deployed app. The former refers to the original source code location of
-	// the app in the workspace during deployment creation, whereas the latter
-	// provides a system generated stable snapshotted source code path used by
-	// the deployment.
-	SourceCodePath string `json:"source_code_path"`
-}
-
-type CreateAppRequest struct {
-	// The description of the app.
-	Description string `json:"description,omitempty"`
-	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens. It must be unique within the workspace.
-	Name string `json:"name"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateAppRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type CreateServingEndpoint struct {
+	// The AI Gateway configuration for the serving endpoint. NOTE: only
+	// external model endpoints are supported as of now.
+	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
 	// The core config of the serving endpoint.
 	Config EndpointCoreConfigInput `json:"config"`
 	// The name of the serving endpoint. This field is required and must be
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
 	Name string `json:"name"`
-	// Rate limits to be applied to the serving endpoint. NOTE: only external
-	// and foundation model endpoints are supported as of now.
+	// Rate limits to be applied to the serving endpoint. NOTE: this field is
+	// deprecated, please use AI Gateway to manage rate limits.
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
 	// Enable route optimization for the serving endpoint.
 	RouteOptimized bool `json:"route_optimized,omitempty"`
@@ -590,12 +534,6 @@ type DataframeSplitInput struct {
 	Data []any `json:"data,omitempty"`
 
 	Index []int `json:"index,omitempty"`
-}
-
-// Delete an app
-type DeleteAppRequest struct {
-	// The name of the app.
-	Name string `json:"-" url:"-"`
 }
 
 type DeleteResponse struct {
@@ -828,24 +766,6 @@ func (s EndpointTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type EnvVariable struct {
-	Name string `json:"name,omitempty"`
-
-	Value string `json:"value,omitempty"`
-
-	ValueFrom string `json:"value_from,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *EnvVariable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s EnvVariable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 // Get metrics of a serving endpoint
 type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
@@ -969,26 +889,6 @@ func (s FoundationModel) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get an app deployment
-type GetAppDeploymentRequest struct {
-	// The name of the app.
-	AppName string `json:"-" url:"-"`
-	// The unique id of the deployment.
-	DeploymentId string `json:"-" url:"-"`
-}
-
-// Get app environment
-type GetAppEnvironmentRequest struct {
-	// The name of the app.
-	Name string `json:"-" url:"-"`
-}
-
-// Get an app
-type GetAppRequest struct {
-	// The name of the app.
-	Name string `json:"-" url:"-"`
-}
-
 // Get the schema for a serving endpoint
 type GetOpenApiRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
@@ -1061,79 +961,6 @@ func (s *GoogleCloudVertexAiConfig) UnmarshalJSON(b []byte) error {
 }
 
 func (s GoogleCloudVertexAiConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// List app deployments
-type ListAppDeploymentsRequest struct {
-	// The name of the app.
-	AppName string `json:"-" url:"-"`
-	// Upper bound for items returned.
-	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Pagination token to go to the next page of apps. Requests first page if
-	// absent.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListAppDeploymentsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListAppDeploymentsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type ListAppDeploymentsResponse struct {
-	// Deployment history of the app.
-	AppDeployments []AppDeployment `json:"app_deployments,omitempty"`
-	// Pagination token to request the next page of apps.
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListAppDeploymentsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// List apps
-type ListAppsRequest struct {
-	// Upper bound for items returned.
-	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Pagination token to go to the next page of apps. Requests first page if
-	// absent.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListAppsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListAppsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type ListAppsResponse struct {
-	Apps []App `json:"apps,omitempty"`
-	// Pagination token to request the next page of apps.
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListAppsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListAppsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1271,6 +1098,42 @@ func (s *PayloadTable) UnmarshalJSON(b []byte) error {
 
 func (s PayloadTable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Update AI Gateway of a serving endpoint
+type PutAiGatewayRequest struct {
+	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
+	// in requests and responses.
+	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
+	// Configuration for payload logging using inference tables. Use these
+	// tables to monitor and audit data being sent to and received from model
+	// APIs and to improve model quality.
+	InferenceTableConfig *AiGatewayInferenceTableConfig `json:"inference_table_config,omitempty"`
+	// The name of the serving endpoint whose AI Gateway is being updated. This
+	// field is required.
+	Name string `json:"-" url:"-"`
+	// Configuration for rate limits which can be set to limit endpoint traffic.
+	RateLimits []AiGatewayRateLimit `json:"rate_limits,omitempty"`
+	// Configuration to enable usage tracking using system tables. These tables
+	// allow you to monitor operational usage on endpoints and their associated
+	// costs.
+	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
+}
+
+type PutAiGatewayResponse struct {
+	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
+	// in requests and responses.
+	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
+	// Configuration for payload logging using inference tables. Use these
+	// tables to monitor and audit data being sent to and received from model
+	// APIs and to improve model quality .
+	InferenceTableConfig *AiGatewayInferenceTableConfig `json:"inference_table_config,omitempty"`
+	// Configuration for rate limits which can be set to limit endpoint traffic.
+	RateLimits []AiGatewayRateLimit `json:"rate_limits,omitempty"`
+	// Configuration to enable usage tracking using system tables. These tables
+	// allow you to monitor operational usage on endpoints and their associated
+	// costs.
+	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
 }
 
 // Update rate limits of a serving endpoint
@@ -1685,6 +1548,10 @@ type ServedModelInput struct {
 	// ARN of the instance profile that the served model will use to access AWS
 	// resources.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The maximum tokens per second that the endpoint can scale up to.
+	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
+	// The minimum tokens per second that the endpoint can scale down to.
+	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
 	// The name of the model in Databricks Model Registry to be served or if the
 	// model resides in Unity Catalog, the full name of model, in the form of
 	// __catalog_name__.__schema_name__.__model_name__.
@@ -1707,7 +1574,7 @@ type ServedModelInput struct {
 	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
 	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
 	// the provisioned concurrency for each workload size will be 0.
-	WorkloadSize ServedModelInputWorkloadSize `json:"workload_size"`
+	WorkloadSize ServedModelInputWorkloadSize `json:"workload_size,omitempty"`
 	// The workload type of the served model. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
 	// parameter is "CPU". For deep learning workloads, GPU acceleration is
@@ -1960,6 +1827,9 @@ type ServerLogsResponse struct {
 }
 
 type ServingEndpoint struct {
+	// The AI Gateway configuration for the serving endpoint. NOTE: Only
+	// external model endpoints are currently supported.
+	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
 	// The config that is currently being served by the endpoint.
 	Config *EndpointCoreConfigSummary `json:"config,omitempty"`
 	// The timestamp when the endpoint was created in Unix time.
@@ -2036,6 +1906,9 @@ func (s ServingEndpointAccessControlResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ServingEndpointDetailed struct {
+	// The AI Gateway configuration for the serving endpoint. NOTE: Only
+	// external model endpoints are currently supported.
+	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
 	// The config that is currently being served by the endpoint.
 	Config *EndpointCoreConfigOutput `json:"config,omitempty"`
 	// The timestamp when the endpoint was created in Unix time.
@@ -2196,40 +2069,9 @@ type ServingEndpointPermissionsRequest struct {
 	ServingEndpointId string `json:"-" url:"-"`
 }
 
-type StartAppRequest struct {
-	// The name of the app.
-	Name string `json:"-" url:"-"`
-}
-
-type StopAppRequest struct {
-	// The name of the app.
-	Name string `json:"-" url:"-"`
-}
-
-type StopAppResponse struct {
-}
-
 type TrafficConfig struct {
 	// The list of routes that define traffic to each served entity.
 	Routes []Route `json:"routes,omitempty"`
-}
-
-type UpdateAppRequest struct {
-	// The description of the app.
-	Description string `json:"description,omitempty"`
-	// The name of the app. The name must contain only lowercase alphanumeric
-	// characters and hyphens. It must be unique within the workspace.
-	Name string `json:"name" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateAppRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateAppRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type V1ResponseChoiceElement struct {

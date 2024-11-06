@@ -410,53 +410,6 @@ func (_c *MockCredentialsInterface_GetByCredentialsName_Call) RunAndReturn(run f
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockCredentialsInterface) Impl() provisioning.CredentialsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 provisioning.CredentialsService
-	if rf, ok := ret.Get(0).(func() provisioning.CredentialsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(provisioning.CredentialsService)
-		}
-	}
-
-	return r0
-}
-
-// MockCredentialsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockCredentialsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockCredentialsInterface_Expecter) Impl() *MockCredentialsInterface_Impl_Call {
-	return &MockCredentialsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockCredentialsInterface_Impl_Call) Run(run func()) *MockCredentialsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockCredentialsInterface_Impl_Call) Return(_a0 provisioning.CredentialsService) *MockCredentialsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCredentialsInterface_Impl_Call) RunAndReturn(run func() provisioning.CredentialsService) *MockCredentialsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx
 func (_m *MockCredentialsInterface) List(ctx context.Context) ([]provisioning.Credential, error) {
 	ret := _m.Called(ctx)
@@ -511,54 +464,6 @@ func (_c *MockCredentialsInterface_List_Call) Return(_a0 []provisioning.Credenti
 }
 
 func (_c *MockCredentialsInterface_List_Call) RunAndReturn(run func(context.Context) ([]provisioning.Credential, error)) *MockCredentialsInterface_List_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockCredentialsInterface) WithImpl(impl provisioning.CredentialsService) provisioning.CredentialsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 provisioning.CredentialsInterface
-	if rf, ok := ret.Get(0).(func(provisioning.CredentialsService) provisioning.CredentialsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(provisioning.CredentialsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockCredentialsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockCredentialsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl provisioning.CredentialsService
-func (_e *MockCredentialsInterface_Expecter) WithImpl(impl interface{}) *MockCredentialsInterface_WithImpl_Call {
-	return &MockCredentialsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockCredentialsInterface_WithImpl_Call) Run(run func(impl provisioning.CredentialsService)) *MockCredentialsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(provisioning.CredentialsService))
-	})
-	return _c
-}
-
-func (_c *MockCredentialsInterface_WithImpl_Call) Return(_a0 provisioning.CredentialsInterface) *MockCredentialsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockCredentialsInterface_WithImpl_Call) RunAndReturn(run func(provisioning.CredentialsService) provisioning.CredentialsInterface) *MockCredentialsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

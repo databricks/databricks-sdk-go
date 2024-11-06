@@ -53,7 +53,9 @@ type AlertsService interface {
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 //
 // **Note**: A new version of the Databricks SQL API is now available. Please
-// see the latest version.
+// see the latest version. [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type AlertsLegacyService interface {
 
 	// Create an alert.
@@ -63,7 +65,9 @@ type AlertsLegacyService interface {
 	// notification destinations if the condition was met.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:alerts/create instead.
+	// Please use :method:alerts/create instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Create(ctx context.Context, request CreateAlert) (*LegacyAlert, error)
 
 	// Delete an alert.
@@ -73,7 +77,9 @@ type AlertsLegacyService interface {
 	// to the trash.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:alerts/delete instead.
+	// Please use :method:alerts/delete instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Delete(ctx context.Context, request DeleteAlertsLegacyRequest) error
 
 	// Get an alert.
@@ -81,7 +87,9 @@ type AlertsLegacyService interface {
 	// Gets an alert.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:alerts/get instead.
+	// Please use :method:alerts/get instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Get(ctx context.Context, request GetAlertsLegacyRequest) (*LegacyAlert, error)
 
 	// Get alerts.
@@ -89,7 +97,9 @@ type AlertsLegacyService interface {
 	// Gets a list of alerts.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:alerts/list instead.
+	// Please use :method:alerts/list instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	List(ctx context.Context) ([]LegacyAlert, error)
 
 	// Update an alert.
@@ -97,7 +107,9 @@ type AlertsLegacyService interface {
 	// Updates an alert.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:alerts/update instead.
+	// Please use :method:alerts/update instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Update(ctx context.Context, request EditAlert) error
 }
 
@@ -175,8 +187,10 @@ type DashboardsService interface {
 // client, or `grep` to search the response from this API for the name of your
 // SQL warehouse as it appears in Databricks SQL.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// see the latest version.
+// **Note**: A new version of the Databricks SQL API is now available. [Learn
+// more]
+//
+// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type DataSourcesService interface {
 
 	// Get a list of SQL warehouses.
@@ -187,7 +201,9 @@ type DataSourcesService interface {
 	// against it.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:warehouses/list instead.
+	// Please use :method:warehouses/list instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	List(ctx context.Context) ([]DataSource, error)
 }
 
@@ -205,20 +221,32 @@ type DataSourcesService interface {
 // - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
 // permissions (superset of `CAN_RUN`)
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// see the latest version.
+// **Note**: A new version of the Databricks SQL API is now available. [Learn
+// more]
+//
+// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type DbsqlPermissionsService interface {
 
 	// Get object ACL.
 	//
 	// Gets a JSON representation of the access control list (ACL) for a
 	// specified object.
+	//
+	// **Note**: A new version of the Databricks SQL API is now available.
+	// Please use :method:workspace/getpermissions instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Get(ctx context.Context, request GetDbsqlPermissionRequest) (*GetResponse, error)
 
 	// Set object ACL.
 	//
 	// Sets the access control list (ACL) for a specified object. This operation
 	// will complete rewrite the ACL.
+	//
+	// **Note**: A new version of the Databricks SQL API is now available.
+	// Please use :method:workspace/setpermissions instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Set(ctx context.Context, request SetRequest) (*SetResponse, error)
 
 	// Transfer object ownership.
@@ -228,7 +256,9 @@ type DbsqlPermissionsService interface {
 	//
 	// **Note**: A new version of the Databricks SQL API is now available. For
 	// queries and alerts, please use :method:queries/update and
-	// :method:alerts/update respectively instead.
+	// :method:alerts/update respectively instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	TransferOwnership(ctx context.Context, request TransferOwnershipRequest) (*Success, error)
 }
 
@@ -284,7 +314,9 @@ type QueriesService interface {
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 //
 // **Note**: A new version of the Databricks SQL API is now available. Please
-// see the latest version.
+// see the latest version. [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type QueriesLegacyService interface {
 
 	// Create a new query definition.
@@ -300,7 +332,9 @@ type QueriesLegacyService interface {
 	// **Note**: You cannot add a visualization until you create the query.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:queries/create instead.
+	// Please use :method:queries/create instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Create(ctx context.Context, request QueryPostContent) (*LegacyQuery, error)
 
 	// Delete a query.
@@ -310,7 +344,9 @@ type QueriesLegacyService interface {
 	// deleted after 30 days.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:queries/delete instead.
+	// Please use :method:queries/delete instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Delete(ctx context.Context, request DeleteQueriesLegacyRequest) error
 
 	// Get a query definition.
@@ -319,7 +355,9 @@ type QueriesLegacyService interface {
 	// information about the currently authenticated user.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:queries/get instead.
+	// Please use :method:queries/get instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Get(ctx context.Context, request GetQueriesLegacyRequest) (*LegacyQuery, error)
 
 	// Get a list of queries.
@@ -331,7 +369,9 @@ type QueriesLegacyService interface {
 	// in throttling, service degradation, or a temporary ban.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:queries/list instead.
+	// Please use :method:queries/list instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	//
 	// Use ListAll() to get all LegacyQuery instances, which will iterate over every result page.
 	List(ctx context.Context, request ListQueriesLegacyRequest) (*QueryList, error)
@@ -343,7 +383,9 @@ type QueriesLegacyService interface {
 	// alerts.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version.
+	// Please see the latest version. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Restore(ctx context.Context, request RestoreQueriesLegacyRequest) error
 
 	// Change a query definition.
@@ -353,18 +395,20 @@ type QueriesLegacyService interface {
 	// **Note**: You cannot undo this operation.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:queries/update instead.
+	// Please use :method:queries/update instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Update(ctx context.Context, request QueryEditContent) (*LegacyQuery, error)
 }
 
 // A service responsible for storing and retrieving the list of queries run
-// against SQL endpoints, serverless compute, and DLT.
+// against SQL endpoints and serverless compute.
 type QueryHistoryService interface {
 
 	// List Queries.
 	//
-	// List the history of queries through SQL warehouses, serverless compute,
-	// and DLT.
+	// List the history of queries through SQL warehouses, and serverless
+	// compute.
 	//
 	// You can filter by user ID, warehouse ID, status, and time range. Most
 	// recently started queries are returned first (up to max_results in
@@ -399,7 +443,9 @@ type QueryVisualizationsService interface {
 // structures may change over time.
 //
 // **Note**: A new version of the Databricks SQL API is now available. Please
-// see the latest version.
+// see the latest version. [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type QueryVisualizationsLegacyService interface {
 
 	// Add visualization to a query.
@@ -407,7 +453,9 @@ type QueryVisualizationsLegacyService interface {
 	// Creates visualization in the query.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:queryvisualizations/create instead.
+	// Please use :method:queryvisualizations/create instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Create(ctx context.Context, request CreateQueryVisualizationsLegacyRequest) (*LegacyVisualization, error)
 
 	// Remove visualization.
@@ -415,7 +463,9 @@ type QueryVisualizationsLegacyService interface {
 	// Removes a visualization from the query.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:queryvisualizations/delete instead.
+	// Please use :method:queryvisualizations/delete instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Delete(ctx context.Context, request DeleteQueryVisualizationsLegacyRequest) error
 
 	// Edit existing visualization.
@@ -423,7 +473,9 @@ type QueryVisualizationsLegacyService interface {
 	// Updates visualization in the query.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please use :method:queryvisualizations/update instead.
+	// Please use :method:queryvisualizations/update instead. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Update(ctx context.Context, request LegacyVisualization) (*LegacyVisualization, error)
 }
 
@@ -523,10 +575,12 @@ type QueryVisualizationsLegacyService interface {
 // request arrives. Polling for status until a terminal state is reached is a
 // reliable way to determine the final state. - Wait timeouts are approximate,
 // occur server-side, and cannot account for things such as caller delays and
-// network latency from caller to service. - The system will auto-close a
-// statement after one hour if the client stops polling and thus you must poll
-// at least once an hour. - The results are only available for one hour after
-// success; polling does not extend this.
+// network latency from caller to service. - To guarantee that the statement is
+// kept alive, you must poll at least once every 15 minutes. - The results are
+// only available for one hour after success; polling does not extend this. -
+// The SQL Execution API must be used for the entire lifecycle of the statement.
+// For example, you cannot use the Jobs API to execute the command, and then the
+// SQL Execution API to cancel it.
 //
 // [Apache Arrow Columnar]: https://arrow.apache.org/overview/
 // [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html

@@ -67,6 +67,53 @@ func (_c *MockAccountSettingsInterface_CspEnablementAccount_Call) RunAndReturn(r
 	return _c
 }
 
+// DisableLegacyFeatures provides a mock function with given fields:
+func (_m *MockAccountSettingsInterface) DisableLegacyFeatures() settings.DisableLegacyFeaturesInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for DisableLegacyFeatures")
+	}
+
+	var r0 settings.DisableLegacyFeaturesInterface
+	if rf, ok := ret.Get(0).(func() settings.DisableLegacyFeaturesInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.DisableLegacyFeaturesInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockAccountSettingsInterface_DisableLegacyFeatures_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DisableLegacyFeatures'
+type MockAccountSettingsInterface_DisableLegacyFeatures_Call struct {
+	*mock.Call
+}
+
+// DisableLegacyFeatures is a helper method to define mock.On call
+func (_e *MockAccountSettingsInterface_Expecter) DisableLegacyFeatures() *MockAccountSettingsInterface_DisableLegacyFeatures_Call {
+	return &MockAccountSettingsInterface_DisableLegacyFeatures_Call{Call: _e.mock.On("DisableLegacyFeatures")}
+}
+
+func (_c *MockAccountSettingsInterface_DisableLegacyFeatures_Call) Run(run func()) *MockAccountSettingsInterface_DisableLegacyFeatures_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_DisableLegacyFeatures_Call) Return(_a0 settings.DisableLegacyFeaturesInterface) *MockAccountSettingsInterface_DisableLegacyFeatures_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_DisableLegacyFeatures_Call) RunAndReturn(run func() settings.DisableLegacyFeaturesInterface) *MockAccountSettingsInterface_DisableLegacyFeatures_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // EsmEnablementAccount provides a mock function with given fields:
 func (_m *MockAccountSettingsInterface) EsmEnablementAccount() settings.EsmEnablementAccountInterface {
 	ret := _m.Called()
@@ -114,53 +161,6 @@ func (_c *MockAccountSettingsInterface_EsmEnablementAccount_Call) RunAndReturn(r
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockAccountSettingsInterface) Impl() settings.AccountSettingsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 settings.AccountSettingsService
-	if rf, ok := ret.Get(0).(func() settings.AccountSettingsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.AccountSettingsService)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountSettingsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockAccountSettingsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockAccountSettingsInterface_Expecter) Impl() *MockAccountSettingsInterface_Impl_Call {
-	return &MockAccountSettingsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockAccountSettingsInterface_Impl_Call) Run(run func()) *MockAccountSettingsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockAccountSettingsInterface_Impl_Call) Return(_a0 settings.AccountSettingsService) *MockAccountSettingsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountSettingsInterface_Impl_Call) RunAndReturn(run func() settings.AccountSettingsService) *MockAccountSettingsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // PersonalCompute provides a mock function with given fields:
 func (_m *MockAccountSettingsInterface) PersonalCompute() settings.PersonalComputeInterface {
 	ret := _m.Called()
@@ -204,54 +204,6 @@ func (_c *MockAccountSettingsInterface_PersonalCompute_Call) Return(_a0 settings
 }
 
 func (_c *MockAccountSettingsInterface_PersonalCompute_Call) RunAndReturn(run func() settings.PersonalComputeInterface) *MockAccountSettingsInterface_PersonalCompute_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockAccountSettingsInterface) WithImpl(impl settings.AccountSettingsService) settings.AccountSettingsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 settings.AccountSettingsInterface
-	if rf, ok := ret.Get(0).(func(settings.AccountSettingsService) settings.AccountSettingsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(settings.AccountSettingsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockAccountSettingsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockAccountSettingsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl settings.AccountSettingsService
-func (_e *MockAccountSettingsInterface_Expecter) WithImpl(impl interface{}) *MockAccountSettingsInterface_WithImpl_Call {
-	return &MockAccountSettingsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockAccountSettingsInterface_WithImpl_Call) Run(run func(impl settings.AccountSettingsService)) *MockAccountSettingsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(settings.AccountSettingsService))
-	})
-	return _c
-}
-
-func (_c *MockAccountSettingsInterface_WithImpl_Call) Return(_a0 settings.AccountSettingsInterface) *MockAccountSettingsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountSettingsInterface_WithImpl_Call) RunAndReturn(run func(settings.AccountSettingsService) settings.AccountSettingsInterface) *MockAccountSettingsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

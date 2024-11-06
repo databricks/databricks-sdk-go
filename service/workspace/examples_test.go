@@ -19,7 +19,7 @@ func ExampleReposAPI_GetByPath_checkoutBranchByPath() {
 		panic(err)
 	}
 	// because you can update repo only by ID, not by path
-	err = w.Repos.Update(ctx, workspace.UpdateRepo{
+	err = w.Repos.Update(ctx, workspace.UpdateRepoRequest{
 		RepoId: repo.Id,
 		Branch: "v1.4.18",
 	})

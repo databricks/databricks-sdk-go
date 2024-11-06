@@ -155,6 +155,10 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	e.IsComputed = s.IsComputed
 	e.RequiredOrder = s.Required
 
+	if s.Terraform != nil {
+		e.Terraform = &Terraform{Alias: s.Terraform.Alias}
+	}
+
 	switch {
 	case len(s.Enum) != 0:
 		return pkg.makeEnum(e, s, path)

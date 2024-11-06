@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -336,7 +337,8 @@ func (c *Config) WithTesting() *Config {
 }
 
 func (c *Config) CanonicalHostName() string {
-	c.fixHostIfNeeded()
+	// Missing host is tolerated here.
+	_ = c.fixHostIfNeeded()
 	return c.Host
 }
 
@@ -361,7 +363,9 @@ func (c *Config) authenticateIfNeeded() error {
 	if c.Credentials == nil {
 		c.Credentials = &DefaultCredentials{}
 	}
-	c.fixHostIfNeeded()
+	if err := c.fixHostIfNeeded(); err != nil && !errors.Is(err, ErrNoHostConfigured) {
+		return err
+	}
 	ctx := c.refreshClient.InContextForOAuth2(c.refreshCtx)
 	credentialsProvider, err := c.Credentials.Configure(ctx, c)
 	if err != nil {
@@ -372,7 +376,9 @@ func (c *Config) authenticateIfNeeded() error {
 	}
 	c.credentialsProvider = credentialsProvider
 	c.AuthType = c.Credentials.Name()
-	c.fixHostIfNeeded()
+	if err := c.fixHostIfNeeded(); err != nil {
+		return err
+	}
 	// TODO: error customization
 	return nil
 }
@@ -393,6 +399,9 @@ func (c *Config) fixHostIfNeeded() error {
 			return err
 		}
 	}
+	if parsedHost.Hostname() == "" {
+		return ErrNoHostConfigured
+	}
 	// Create new instance to ensure other fields are initialized as empty.
 	parsedHost = &url.URL{
 		Scheme: parsedHost.Scheme,
@@ -402,6 +411,11 @@ func (c *Config) fixHostIfNeeded() error {
 	c.Host = parsedHost.String()
 	return nil
 }
+
+// ErrNoHostConfigured is the error returned when a user tries to authenticate
+// without a host configured. Applications can check for this error to provide
+// more user-friendly error messages.
+var ErrNoHostConfigured = fmt.Errorf("no host configured")
 
 func (c *Config) refreshTokenErrorMapper(ctx context.Context, resp common.ResponseWrapper) error {
 	defaultErr := httpclient.DefaultErrorMapper(ctx, resp)

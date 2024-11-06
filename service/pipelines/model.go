@@ -13,6 +13,8 @@ type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
+	// Budget policy of this pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
@@ -43,7 +45,7 @@ type CreatePipeline struct {
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'target' or 'catalog' settings.
-	IngestionDefinition *ManagedIngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
+	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
@@ -52,6 +54,10 @@ type CreatePipeline struct {
 	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
+	// The default schema (database) where tables are read from or published to.
+	// The presence of this field implies that the pipeline is in direct
+	// publishing mode.
+	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
@@ -164,6 +170,8 @@ type EditPipeline struct {
 	// If false, deployment will fail if name has changed and conflicts the name
 	// of another pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
+	// Budget policy of this pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
@@ -196,7 +204,7 @@ type EditPipeline struct {
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'target' or 'catalog' settings.
-	IngestionDefinition *ManagedIngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
+	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
@@ -207,6 +215,10 @@ type EditPipeline struct {
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
 	PipelineId string `json:"pipeline_id,omitempty" url:"-"`
+	// The default schema (database) where tables are read from or published to.
+	// The presence of this field implies that the pipeline is in direct
+	// publishing mode.
+	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
@@ -332,6 +344,8 @@ type GetPipelineResponse struct {
 	ClusterId string `json:"cluster_id,omitempty"`
 	// The username of the pipeline creator.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// Serverless budget policy ID of this pipeline.
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The health of a pipeline.
 	Health GetPipelineResponseHealth `json:"health,omitempty"`
 	// The last time the pipeline settings were modified or created.
@@ -404,6 +418,8 @@ type GetUpdateResponse struct {
 }
 
 type IngestionConfig struct {
+	// Select tables from a specific source report.
+	Report *ReportSpec `json:"report,omitempty"`
 	// Select tables from a specific source schema.
 	Schema *SchemaSpec `json:"schema,omitempty"`
 	// Select tables from a specific source table.
@@ -417,7 +433,7 @@ type IngestionGatewayPipelineDefinition struct {
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
 	GatewayStorageCatalog string `json:"gateway_storage_catalog,omitempty"`
-	// Required. The Unity Catalog-compatible naming for the gateway storage
+	// Optional. The Unity Catalog-compatible name for the gateway storage
 	// location. This is the destination to use for the data that is extracted
 	// by the gateway. Delta Live Tables system will automatically create the
 	// storage location under the catalog and schema.
@@ -434,6 +450,33 @@ func (s *IngestionGatewayPipelineDefinition) UnmarshalJSON(b []byte) error {
 }
 
 func (s IngestionGatewayPipelineDefinition) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type IngestionPipelineDefinition struct {
+	// Immutable. The Unity Catalog connection this ingestion pipeline uses to
+	// communicate with the source. Specify either ingestion_gateway_id or
+	// connection_name.
+	ConnectionName string `json:"connection_name,omitempty"`
+	// Immutable. Identifier for the ingestion gateway used by this ingestion
+	// pipeline to communicate with the source. Specify either
+	// ingestion_gateway_id or connection_name.
+	IngestionGatewayId string `json:"ingestion_gateway_id,omitempty"`
+	// Required. Settings specifying tables to replicate and the destination for
+	// the replicated tables.
+	Objects []IngestionConfig `json:"objects,omitempty"`
+	// Configuration settings to control the ingestion of tables. These settings
+	// are applied to all tables in the pipeline.
+	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *IngestionPipelineDefinition) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -585,33 +628,6 @@ func (s *ListUpdatesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListUpdatesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type ManagedIngestionPipelineDefinition struct {
-	// Immutable. The Unity Catalog connection this ingestion pipeline uses to
-	// communicate with the source. Specify either ingestion_gateway_id or
-	// connection_name.
-	ConnectionName string `json:"connection_name,omitempty"`
-	// Immutable. Identifier for the ingestion gateway used by this ingestion
-	// pipeline to communicate with the source. Specify either
-	// ingestion_gateway_id or connection_name.
-	IngestionGatewayId string `json:"ingestion_gateway_id,omitempty"`
-	// Required. Settings specifying tables to replicate and the destination for
-	// the replicated tables.
-	Objects []IngestionConfig `json:"objects,omitempty"`
-	// Configuration settings to control the ingestion of tables. These settings
-	// are applied to all tables in the pipeline.
-	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ManagedIngestionPipelineDefinition) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ManagedIngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1087,6 +1103,8 @@ type PipelinePermissionsRequest struct {
 }
 
 type PipelineSpec struct {
+	// Budget policy of this pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
@@ -1115,7 +1133,7 @@ type PipelineSpec struct {
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'target' or 'catalog' settings.
-	IngestionDefinition *ManagedIngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
+	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
@@ -1124,6 +1142,10 @@ type PipelineSpec struct {
 	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
+	// The default schema (database) where tables are read from or published to.
+	// The presence of this field implies that the pipeline is in direct
+	// publishing mode.
+	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
@@ -1253,6 +1275,32 @@ type PipelineTrigger struct {
 	Manual *ManualTrigger `json:"manual,omitempty"`
 }
 
+type ReportSpec struct {
+	// Required. Destination catalog to store table.
+	DestinationCatalog string `json:"destination_catalog,omitempty"`
+	// Required. Destination schema to store table.
+	DestinationSchema string `json:"destination_schema,omitempty"`
+	// Required. Destination table name. The pipeline fails if a table with that
+	// name already exists.
+	DestinationTable string `json:"destination_table,omitempty"`
+	// Required. Report URL in the source system.
+	SourceUrl string `json:"source_url,omitempty"`
+	// Configuration settings to control the ingestion of tables. These settings
+	// override the table_configuration defined in the
+	// IngestionPipelineDefinition object.
+	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ReportSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ReportSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type SchemaSpec struct {
 	// Required. Destination catalog to store tables.
 	DestinationCatalog string `json:"destination_catalog,omitempty"`
@@ -1267,8 +1315,7 @@ type SchemaSpec struct {
 	SourceSchema string `json:"source_schema,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in this schema and override the
-	// table_configuration defined in the ManagedIngestionPipelineDefinition
-	// object.
+	// table_configuration defined in the IngestionPipelineDefinition object.
 	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -1432,7 +1479,7 @@ type TableSpec struct {
 	DestinationCatalog string `json:"destination_catalog,omitempty"`
 	// Required. Destination schema to store table.
 	DestinationSchema string `json:"destination_schema,omitempty"`
-	// Optional. Destination table name. The pipeline fails If a table with that
+	// Optional. Destination table name. The pipeline fails if a table with that
 	// name already exists. If not set, the source table name is used.
 	DestinationTable string `json:"destination_table,omitempty"`
 	// Source catalog name. Might be optional depending on the type of source.
@@ -1444,7 +1491,7 @@ type TableSpec struct {
 	SourceTable string `json:"source_table,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
-	// ManagedIngestionPipelineDefinition object and the SchemaSpec.
+	// IngestionPipelineDefinition object and the SchemaSpec.
 	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -1466,6 +1513,10 @@ type TableSpecificConfig struct {
 	SalesforceIncludeFormulaFields bool `json:"salesforce_include_formula_fields,omitempty"`
 	// The SCD type to use to ingest the table.
 	ScdType TableSpecificConfigScdType `json:"scd_type,omitempty"`
+	// The column names specifying the logical order of events in the source
+	// data. Delta Live Tables uses this sequencing to handle change events that
+	// arrive out of order.
+	SequenceBy []string `json:"sequence_by,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

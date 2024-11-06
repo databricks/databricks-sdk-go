@@ -175,53 +175,6 @@ func (_c *MockQueryVisualizationsInterface_DeleteById_Call) RunAndReturn(run fun
 	return _c
 }
 
-// Impl provides a mock function with given fields:
-func (_m *MockQueryVisualizationsInterface) Impl() sql.QueryVisualizationsService {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Impl")
-	}
-
-	var r0 sql.QueryVisualizationsService
-	if rf, ok := ret.Get(0).(func() sql.QueryVisualizationsService); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.QueryVisualizationsService)
-		}
-	}
-
-	return r0
-}
-
-// MockQueryVisualizationsInterface_Impl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Impl'
-type MockQueryVisualizationsInterface_Impl_Call struct {
-	*mock.Call
-}
-
-// Impl is a helper method to define mock.On call
-func (_e *MockQueryVisualizationsInterface_Expecter) Impl() *MockQueryVisualizationsInterface_Impl_Call {
-	return &MockQueryVisualizationsInterface_Impl_Call{Call: _e.mock.On("Impl")}
-}
-
-func (_c *MockQueryVisualizationsInterface_Impl_Call) Run(run func()) *MockQueryVisualizationsInterface_Impl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockQueryVisualizationsInterface_Impl_Call) Return(_a0 sql.QueryVisualizationsService) *MockQueryVisualizationsInterface_Impl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockQueryVisualizationsInterface_Impl_Call) RunAndReturn(run func() sql.QueryVisualizationsService) *MockQueryVisualizationsInterface_Impl_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockQueryVisualizationsInterface) Update(ctx context.Context, request sql.UpdateVisualizationRequest) (*sql.Visualization, error) {
 	ret := _m.Called(ctx, request)
@@ -277,54 +230,6 @@ func (_c *MockQueryVisualizationsInterface_Update_Call) Return(_a0 *sql.Visualiz
 }
 
 func (_c *MockQueryVisualizationsInterface_Update_Call) RunAndReturn(run func(context.Context, sql.UpdateVisualizationRequest) (*sql.Visualization, error)) *MockQueryVisualizationsInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// WithImpl provides a mock function with given fields: impl
-func (_m *MockQueryVisualizationsInterface) WithImpl(impl sql.QueryVisualizationsService) sql.QueryVisualizationsInterface {
-	ret := _m.Called(impl)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WithImpl")
-	}
-
-	var r0 sql.QueryVisualizationsInterface
-	if rf, ok := ret.Get(0).(func(sql.QueryVisualizationsService) sql.QueryVisualizationsInterface); ok {
-		r0 = rf(impl)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(sql.QueryVisualizationsInterface)
-		}
-	}
-
-	return r0
-}
-
-// MockQueryVisualizationsInterface_WithImpl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithImpl'
-type MockQueryVisualizationsInterface_WithImpl_Call struct {
-	*mock.Call
-}
-
-// WithImpl is a helper method to define mock.On call
-//   - impl sql.QueryVisualizationsService
-func (_e *MockQueryVisualizationsInterface_Expecter) WithImpl(impl interface{}) *MockQueryVisualizationsInterface_WithImpl_Call {
-	return &MockQueryVisualizationsInterface_WithImpl_Call{Call: _e.mock.On("WithImpl", impl)}
-}
-
-func (_c *MockQueryVisualizationsInterface_WithImpl_Call) Run(run func(impl sql.QueryVisualizationsService)) *MockQueryVisualizationsInterface_WithImpl_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(sql.QueryVisualizationsService))
-	})
-	return _c
-}
-
-func (_c *MockQueryVisualizationsInterface_WithImpl_Call) Return(_a0 sql.QueryVisualizationsInterface) *MockQueryVisualizationsInterface_WithImpl_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockQueryVisualizationsInterface_WithImpl_Call) RunAndReturn(run func(sql.QueryVisualizationsService) sql.QueryVisualizationsInterface) *MockQueryVisualizationsInterface_WithImpl_Call {
 	_c.Call.Return(run)
 	return _c
 }

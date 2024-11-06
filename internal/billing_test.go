@@ -16,8 +16,8 @@ func TestMwsAccUsageDownload(t *testing.T) {
 		t.SkipNow()
 	}
 	resp, err := a.BillableUsage.Download(ctx, billing.DownloadRequest{
-		StartMonth: "2023-01",
-		EndMonth:   "2023-02",
+		StartMonth: "2024-08",
+		EndMonth:   "2024-09",
 	})
 	require.NoError(t, err)
 	out, err := io.ReadAll(resp.Contents)
@@ -123,7 +123,8 @@ func TestMwsAccBudgets(t *testing.T) {
 
 		BudgetId: created.Budget.BudgetConfigurationId,
 		Budget: billing.UpdateBudgetConfigurationBudget{
-			DisplayName: RandomName("go-sdk-updated-"),
+			BudgetConfigurationId: created.Budget.BudgetConfigurationId,
+			DisplayName:           RandomName("go-sdk-updated-"),
 			Filter: &billing.BudgetConfigurationFilter{
 				Tags: []billing.BudgetConfigurationFilterTagClause{
 					{
@@ -136,16 +137,12 @@ func TestMwsAccBudgets(t *testing.T) {
 				}},
 			AlertConfigurations: []billing.AlertConfiguration{
 				{
-					TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
-					QuantityType:      billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
-					TriggerType:       billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
-					QuantityThreshold: "50",
-					ActionConfigurations: []billing.ActionConfiguration{
-						{
-							ActionType: billing.ActionConfigurationTypeEmailNotification,
-							Target:     "admin@example.com",
-						},
-					},
+					AlertConfigurationId: created.Budget.AlertConfigurations[0].AlertConfigurationId,
+					TimePeriod:           billing.AlertConfigurationTimePeriodMonth,
+					QuantityType:         billing.AlertConfigurationQuantityTypeListPriceDollarsUsd,
+					TriggerType:          billing.AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
+					QuantityThreshold:    "50",
+					ActionConfigurations: created.Budget.AlertConfigurations[0].ActionConfigurations,
 				},
 			},
 		},

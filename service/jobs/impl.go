@@ -206,3 +206,36 @@ func (a *jobsImpl) UpdatePermissions(ctx context.Context, request JobPermissions
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &jobPermissions)
 	return &jobPermissions, err
 }
+
+// unexported type that holds implementations of just PolicyComplianceForJobs API methods
+type policyComplianceForJobsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *policyComplianceForJobsImpl) EnforceCompliance(ctx context.Context, request EnforcePolicyComplianceRequest) (*EnforcePolicyComplianceResponse, error) {
+	var enforcePolicyComplianceResponse EnforcePolicyComplianceResponse
+	path := "/api/2.0/policies/jobs/enforce-compliance"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &enforcePolicyComplianceResponse)
+	return &enforcePolicyComplianceResponse, err
+}
+
+func (a *policyComplianceForJobsImpl) GetCompliance(ctx context.Context, request GetPolicyComplianceRequest) (*GetPolicyComplianceResponse, error) {
+	var getPolicyComplianceResponse GetPolicyComplianceResponse
+	path := "/api/2.0/policies/jobs/get-compliance"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getPolicyComplianceResponse)
+	return &getPolicyComplianceResponse, err
+}
+
+func (a *policyComplianceForJobsImpl) ListCompliance(ctx context.Context, request ListJobComplianceRequest) (*ListJobComplianceForPolicyResponse, error) {
+	var listJobComplianceForPolicyResponse ListJobComplianceForPolicyResponse
+	path := "/api/2.0/policies/jobs/list-compliance"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listJobComplianceForPolicyResponse)
+	return &listJobComplianceForPolicyResponse, err
+}
