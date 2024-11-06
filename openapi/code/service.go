@@ -491,12 +491,22 @@ func (svc *Service) getPathStyle(op *openapi.Operation) openapi.PathStyle {
 }
 
 var jobs2Dot1Apis = map[string]struct{}{
-	"/api/2.2/jobs/create":    {},
-	"/api/2.2/jobs/update":    {},
-	"/api/2.2/jobs/list":      {},
-	"/api/2.2/jobs/get":       {},
-	"/api/2.2/jobs/reset":     {},
-	"/api/2.2/jobs/runs/list": {},
+	"/api/2.2/jobs/create":          {},
+	"/api/2.2/jobs/update":          {},
+	"/api/2.2/jobs/list":            {},
+	"/api/2.2/jobs/get":             {},
+	"/api/2.2/jobs/reset":           {},
+	"/api/2.2/jobs/runs/list":       {},
+	"/api/2.2/jobs/delete":          {},
+	"/api/2.2/jobs/run-now":         {},
+	"/api/2.2/jobs/runs/cancel":     {},
+	"/api/2.2/jobs/runs/cancel-all": {},
+	"/api/2.2/jobs/runs/delete":     {},
+	"/api/2.2/jobs/runs/export":     {},
+	"/api/2.2/jobs/runs/get":        {},
+	"/api/2.2/jobs/runs/get-output": {},
+	"/api/2.2/jobs/runs/submit":     {},
+	"/api/2.2/jobs/runs/repair":     {},
 }
 
 func (svc *Service) pinJobsApisTo2Dot1(path string) string {
