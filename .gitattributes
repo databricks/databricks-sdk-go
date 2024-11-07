@@ -15,6 +15,7 @@ experimental/mocks/service/catalog/mock_account_storage_credentials_interface.go
 experimental/mocks/service/catalog/mock_artifact_allowlists_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_catalogs_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_connections_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_credentials_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_external_locations_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_functions_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_grants_interface.go linguist-generated=true
@@ -110,7 +111,6 @@ experimental/mocks/service/settings/mock_settings_interface.go linguist-generate
 experimental/mocks/service/settings/mock_token_management_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_tokens_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_workspace_conf_interface.go linguist-generated=true
-experimental/mocks/service/sharing/mock_clean_rooms_interface.go linguist-generated=true
 experimental/mocks/service/sharing/mock_providers_interface.go linguist-generated=true
 experimental/mocks/service/sharing/mock_recipient_activation_interface.go linguist-generated=true
 experimental/mocks/service/sharing/mock_recipients_interface.go linguist-generated=true
