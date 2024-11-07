@@ -1,5 +1,14 @@
 # Version changelog
 
+## [Release] Release v0.50.1
+
+### Internal Changes
+
+ * Always write message for manual test execution ([#1079](https://github.com/databricks/databricks-sdk-go/pull/1079)).
+ * Use error names instead of codes in `errors.go` ([#1080](https://github.com/databricks/databricks-sdk-go/pull/1080)).
+
+
+
 ## [Release] Release v0.50.0
 
 ### Internal Changes
