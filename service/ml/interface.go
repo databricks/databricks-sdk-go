@@ -251,8 +251,9 @@ type ExperimentsService interface {
 
 	// Set experiment permissions.
 	//
-	// Sets permissions on an experiment. Experiments can inherit permissions
-	// from their root object.
+	// Sets permissions on an object, replacing existing permissions if they
+	// exist. Deletes all direct permissions if none are specified. Objects can
+	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error)
 
 	// Set a tag.
@@ -460,8 +461,9 @@ type ModelRegistryService interface {
 
 	// Set registered model permissions.
 	//
-	// Sets permissions on a registered model. Registered models can inherit
-	// permissions from their root object.
+	// Sets permissions on an object, replacing existing permissions if they
+	// exist. Deletes all direct permissions if none are specified. Objects can
+	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
 
 	// Test a webhook.

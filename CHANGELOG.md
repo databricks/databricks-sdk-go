@@ -1,5 +1,30 @@
 # Version changelog
 
+## [Release] Release v0.51.0
+
+### Internal Changes
+
+ * Always write message for manual test execution ([#1079](https://github.com/databricks/databricks-sdk-go/pull/1079)).
+ * Use error names instead of codes in `errors.go` ([#1080](https://github.com/databricks/databricks-sdk-go/pull/1080)).
+
+
+### API Changes:
+
+ * Added [w.Credentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CredentialsAPI) workspace-level service.
+ * Added `AzureAad` field for [catalog.GenerateTemporaryTableCredentialResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GenerateTemporaryTableCredentialResponse).
+ * Added `OmitUsername` field for [catalog.ListTablesRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListTablesRequest).
+ * Added `FullName` field for [catalog.StorageCredentialInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#StorageCredentialInfo).
+ * Added `WarehouseId` field for [dashboards.Schedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#Schedule).
+ * Added `Only` field for [jobs.RunNow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunNow).
+ * Added `RestartWindow` field for [pipelines.CreatePipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#CreatePipeline).
+ * Added `RestartWindow` field for [pipelines.EditPipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#EditPipeline).
+ * Added `ConnectionName` field for [pipelines.IngestionGatewayPipelineDefinition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionGatewayPipelineDefinition).
+ * Added `RestartWindow` field for [pipelines.PipelineSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineSpec).
+ * Added `PrivateAccessSettingsId` field for [provisioning.UpdateWorkspaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#UpdateWorkspaceRequest).
+ * Removed [w.CleanRooms](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomsAPI) workspace-level service.
+
+OpenAPI SHA: d25296d2f4aa7bd6195c816fdf82e0f960f775da, Date: 2024-11-07
+
 ## [Release] Release v0.50.0
 
 ### Internal Changes

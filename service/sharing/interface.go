@@ -8,63 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-// A clean room is a secure, privacy-protecting environment where two or more
-// parties can share sensitive enterprise data, including customer data, for
-// measurements, insights, activation and other use cases.
-//
-// To create clean rooms, you must be a metastore admin or a user with the
-// **CREATE_CLEAN_ROOM** privilege.
-type CleanRoomsService interface {
-
-	// Create a clean room.
-	//
-	// Creates a new clean room with specified colaborators. The caller must be
-	// a metastore admin or have the **CREATE_CLEAN_ROOM** privilege on the
-	// metastore.
-	Create(ctx context.Context, request CreateCleanRoom) (*CleanRoomInfo, error)
-
-	// Delete a clean room.
-	//
-	// Deletes a data object clean room from the metastore. The caller must be
-	// an owner of the clean room.
-	Delete(ctx context.Context, request DeleteCleanRoomRequest) error
-
-	// Get a clean room.
-	//
-	// Gets a data object clean room from the metastore. The caller must be a
-	// metastore admin or the owner of the clean room.
-	Get(ctx context.Context, request GetCleanRoomRequest) (*CleanRoomInfo, error)
-
-	// List clean rooms.
-	//
-	// Gets an array of data object clean rooms from the metastore. The caller
-	// must be a metastore admin or the owner of the clean room. There is no
-	// guarantee of a specific ordering of the elements in the array.
-	//
-	// Use ListAll() to get all CleanRoomInfo instances, which will iterate over every result page.
-	List(ctx context.Context, request ListCleanRoomsRequest) (*ListCleanRoomsResponse, error)
-
-	// Update a clean room.
-	//
-	// Updates the clean room with the changes and data objects in the request.
-	// The caller must be the owner of the clean room or a metastore admin.
-	//
-	// When the caller is a metastore admin, only the __owner__ field can be
-	// updated.
-	//
-	// In the case that the clean room name is changed **updateCleanRoom**
-	// requires that the caller is both the clean room owner and a metastore
-	// admin.
-	//
-	// For each table that is added through this method, the clean room owner
-	// must also have **SELECT** privilege on the table. The privilege must be
-	// maintained indefinitely for recipients to be able to access the table.
-	// Typically, you should use a group as the clean room owner.
-	//
-	// Table removals through **update** do not require additional privileges.
-	Update(ctx context.Context, request UpdateCleanRoom) (*CleanRoomInfo, error)
-}
-
 // A data provider is an object representing the organization in the real world
 // who shares the data. A provider contains shares which further contain the
 // shared data.

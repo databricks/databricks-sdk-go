@@ -150,7 +150,8 @@ type ServingEndpointsInterface interface {
 
 	// Set serving endpoint permissions.
 	//
-	// Sets permissions on a serving endpoint. Serving endpoints can inherit
+	// Sets permissions on an object, replacing existing permissions if they exist.
+	// Deletes all direct permissions if none are specified. Objects can inherit
 	// permissions from their root object.
 	SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 

@@ -22,8 +22,6 @@
 //
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
-// - [sharing.CleanRoomsAPI]: A clean room is a secure, privacy-protecting environment where two or more parties can share sensitive enterprise data, including customer data, for measurements, insights, activation and other use cases.
-//
 // - [compute.ClusterPoliciesAPI]: You can use cluster policies to control users' ability to configure clusters based on a set of rules.
 //
 // - [compute.ClustersAPI]: The Clusters API allows you to create, start, edit, list, terminate, and delete clusters.
@@ -43,6 +41,8 @@
 // - [marketplace.ConsumerPersonalizationRequestsAPI]: Personalization Requests allow customers to interact with the individualized Marketplace listing flow.
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
+//
+// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
 //
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
@@ -299,7 +299,6 @@ var (
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil
 	_ *catalog.CatalogsAPI                                = nil
-	_ *sharing.CleanRoomsAPI                              = nil
 	_ *compute.ClusterPoliciesAPI                         = nil
 	_ *compute.ClustersAPI                                = nil
 	_ *compute.CommandExecutionAPI                        = nil
@@ -311,6 +310,7 @@ var (
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
 	_ *provisioning.CredentialsAPI                        = nil
+	_ *catalog.CredentialsAPI                             = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil

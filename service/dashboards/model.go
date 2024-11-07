@@ -817,6 +817,8 @@ type Schedule struct {
 	ScheduleId string `json:"schedule_id,omitempty"`
 	// A timestamp indicating when the schedule was last updated.
 	UpdateTime string `json:"update_time,omitempty"`
+	// The warehouse id to run the dashboard with for the schedule.
+	WarehouseId string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
