@@ -143,8 +143,9 @@ type AppsInterface interface {
 
 	// Set app permissions.
 	//
-	// Sets permissions on an app. Apps can inherit permissions from their root
-	// object.
+	// Sets permissions on an object, replacing existing permissions if they exist.
+	// Deletes all direct permissions if none are specified. Objects can inherit
+	// permissions from their root object.
 	SetPermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error)
 
 	// Start an app.

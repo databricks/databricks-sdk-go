@@ -1031,6 +1031,9 @@ type UpdateWorkspaceRequest struct {
 	// switch from a Databricks-managed VPC to a customer-managed VPC by
 	// updating the workspace to add a network configuration ID.
 	NetworkId string `json:"network_id,omitempty"`
+	// The ID of the workspace's private access settings configuration object.
+	// This parameter is available only for updating failed workspaces.
+	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
 	// The ID of the workspace's storage configuration object. This parameter is
 	// available only for updating failed workspaces.
 	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`

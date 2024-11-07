@@ -2188,7 +2188,7 @@ type EditCluster struct {
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-	// ID of the cluser
+	// ID of the cluster
 	ClusterId string `json:"cluster_id"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only

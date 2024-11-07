@@ -1959,8 +1959,9 @@ type WarehousesInterface interface {
 
 	// Set SQL warehouse permissions.
 	//
-	// Sets permissions on a SQL warehouse. SQL warehouses can inherit permissions
-	// from their root object.
+	// Sets permissions on an object, replacing existing permissions if they exist.
+	// Deletes all direct permissions if none are specified. Objects can inherit
+	// permissions from their root object.
 	SetPermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
 
 	// Set the workspace configuration.

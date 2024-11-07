@@ -294,8 +294,9 @@ type ReposInterface interface {
 
 	// Set repo permissions.
 	//
-	// Sets permissions on a repo. Repos can inherit permissions from their root
-	// object.
+	// Sets permissions on an object, replacing existing permissions if they exist.
+	// Deletes all direct permissions if none are specified. Objects can inherit
+	// permissions from their root object.
 	SetPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error)
 
 	// Update a repo.
@@ -1010,7 +1011,8 @@ type WorkspaceInterface interface {
 
 	// Set workspace object permissions.
 	//
-	// Sets permissions on a workspace object. Workspace objects can inherit
+	// Sets permissions on an object, replacing existing permissions if they exist.
+	// Deletes all direct permissions if none are specified. Objects can inherit
 	// permissions from their parent objects or root object.
 	SetPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error)
 

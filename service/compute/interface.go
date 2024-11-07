@@ -74,8 +74,9 @@ type ClusterPoliciesService interface {
 
 	// Set cluster policy permissions.
 	//
-	// Sets permissions on a cluster policy. Cluster policies can inherit
-	// permissions from their root object.
+	// Sets permissions on an object, replacing existing permissions if they
+	// exist. Deletes all direct permissions if none are specified. Objects can
+	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error)
 
 	// Update cluster policy permissions.
@@ -242,8 +243,9 @@ type ClustersService interface {
 
 	// Set cluster permissions.
 	//
-	// Sets permissions on a cluster. Clusters can inherit permissions from
-	// their root object.
+	// Sets permissions on an object, replacing existing permissions if they
+	// exist. Deletes all direct permissions if none are specified. Objects can
+	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error)
 
 	// List available Spark versions.
@@ -446,8 +448,9 @@ type InstancePoolsService interface {
 
 	// Set instance pool permissions.
 	//
-	// Sets permissions on an instance pool. Instance pools can inherit
-	// permissions from their root object.
+	// Sets permissions on an object, replacing existing permissions if they
+	// exist. Deletes all direct permissions if none are specified. Objects can
+	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error)
 
 	// Update instance pool permissions.
