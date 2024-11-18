@@ -195,6 +195,7 @@ func (s GetCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 
 // Get OAuth Custom App Integration
 type GetCustomAppIntegrationRequest struct {
+	// The OAuth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
 }
 

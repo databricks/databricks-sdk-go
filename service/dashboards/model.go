@@ -321,7 +321,7 @@ type GetDashboardRequest struct {
 
 // Get published dashboard
 type GetPublishedDashboardRequest struct {
-	// UUID identifying the dashboard to be published.
+	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
 }
 
@@ -413,7 +413,7 @@ func (s ListDashboardsResponse) MarshalJSON() ([]byte, error) {
 
 // List dashboard schedules
 type ListSchedulesRequest struct {
-	// UUID identifying the dashboard to which the schedule belongs.
+	// UUID identifying the dashboard to which the schedules belongs.
 	DashboardId string `json:"-" url:"-"`
 	// The number of schedules to return per page.
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -453,14 +453,14 @@ func (s ListSchedulesResponse) MarshalJSON() ([]byte, error) {
 
 // List schedule subscriptions
 type ListSubscriptionsRequest struct {
-	// UUID identifying the dashboard to which the subscription belongs.
+	// UUID identifying the dashboard which the subscriptions belongs.
 	DashboardId string `json:"-" url:"-"`
 	// The number of subscriptions to return per page.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// A page token, received from a previous `ListSubscriptions` call. Use this
 	// to retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// UUID identifying the schedule to which the subscription belongs.
+	// UUID identifying the schedule which the subscriptions belongs.
 	ScheduleId string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-"`
@@ -939,7 +939,7 @@ type TrashDashboardResponse struct {
 
 // Unpublish dashboard
 type UnpublishDashboardRequest struct {
-	// UUID identifying the dashboard to be published.
+	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
 }
 

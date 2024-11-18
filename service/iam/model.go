@@ -1299,7 +1299,7 @@ type UpdateWorkspaceAssignments struct {
 	Permissions []WorkspacePermission `json:"permissions,omitempty"`
 	// The ID of the user, service principal, or group.
 	PrincipalId int64 `json:"-" url:"-"`
-	// The workspace ID for the account.
+	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 

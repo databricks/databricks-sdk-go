@@ -220,7 +220,7 @@ type AzureManagedIdentity struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
 	// format
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
-	AccessConnectorId string `json:"access_connector_id,omitempty"`
+	AccessConnectorId string `json:"access_connector_id"`
 	// The Databricks internal ID that represents this managed identity. This
 	// field is only used to persist the credential_id once it is fetched from
 	// the credentials manager - as we only use the protobuf serializer to store
@@ -295,6 +295,7 @@ func (s AzureManagedIdentityResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The Azure service principal configuration.
 type AzureServicePrincipal struct {
 	// The application ID of the application registration within the referenced
 	// AAD tenant.
@@ -880,13 +881,21 @@ type CreateCredentialRequest struct {
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	// The Azure service principal configuration.
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
+	// TODO(UC-978): Document GCP service account key usage for service
+	// credentials.
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// Indicates the purpose of the credential.
 	Purpose CredentialPurpose `json:"purpose,omitempty"`
+	// Whether the credential is usable only for read operations. Only
+	// applicable when purpose is **STORAGE**.
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Optional. Supplying true to this argument skips validation of the created
 	// set of credentials.
 	SkipValidation bool `json:"skip_validation,omitempty"`
@@ -1324,6 +1333,8 @@ type CredentialInfo struct {
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	// The Azure service principal configuration.
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// Time at which this credential was created, in epoch milliseconds.
@@ -1346,10 +1357,16 @@ type CredentialInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// Indicates the purpose of the credential.
 	Purpose CredentialPurpose `json:"purpose,omitempty"`
+	// Whether the credential is usable only for read operations. Only
+	// applicable when purpose is **STORAGE**.
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Time at which this credential was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the credential.
 	UpdatedBy string `json:"updated_by,omitempty"`
+	// Whether this credential is the current metastore's root storage
+	// credential. Only applicable when purpose is **STORAGE**.
+	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1366,6 +1383,8 @@ type CredentialPurpose string
 
 const CredentialPurposeService CredentialPurpose = `SERVICE`
 
+const CredentialPurposeStorage CredentialPurpose = `STORAGE`
+
 // String representation for [fmt.Print]
 func (f *CredentialPurpose) String() string {
 	return string(*f)
@@ -1374,11 +1393,11 @@ func (f *CredentialPurpose) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CredentialPurpose) Set(v string) error {
 	switch v {
-	case `SERVICE`:
+	case `SERVICE`, `STORAGE`:
 		*f = CredentialPurpose(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "SERVICE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "SERVICE", "STORAGE"`, v)
 	}
 }
 
@@ -1613,7 +1632,9 @@ type DeleteConnectionRequest struct {
 
 // Delete a credential
 type DeleteCredentialRequest struct {
-	// Force deletion even if there are dependent services.
+	// Force an update even if there are dependent services (when purpose is
+	// **SERVICE**) or dependent external locations and external tables (when
+	// purpose is **STORAGE**).
 	Force bool `json:"-" url:"force,omitempty"`
 	// Name of the credential.
 	NameArg string `json:"-" url:"-"`
@@ -2363,6 +2384,26 @@ func (s GcpOauthToken) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// GCP long-lived credential. GCP Service Account.
+type GcpServiceAccountKey struct {
+	// The email of the service account. [Create:REQ Update:OPT].
+	Email string `json:"email,omitempty"`
+	// The service account's RSA private key. [Create:REQ Update:OPT]
+	PrivateKey string `json:"private_key,omitempty"`
+	// The ID of the service account's private key. [Create:REQ Update:OPT]
+	PrivateKeyId string `json:"private_key_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GcpServiceAccountKey) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GcpServiceAccountKey) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Options to customize the requested temporary credential
 type GenerateTemporaryServiceCredentialAzureOptions struct {
 	// The resources to which the temporary Azure credential should apply. These
@@ -2376,17 +2417,7 @@ type GenerateTemporaryServiceCredentialRequest struct {
 	AzureOptions *GenerateTemporaryServiceCredentialAzureOptions `json:"azure_options,omitempty"`
 	// The name of the service credential used to generate a temporary
 	// credential
-	CredentialName string `json:"credential_name,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GenerateTemporaryServiceCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GenerateTemporaryServiceCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	CredentialName string `json:"credential_name"`
 }
 
 type GenerateTemporaryTableCredentialRequest struct {
@@ -5451,9 +5482,13 @@ type UpdateCredentialRequest struct {
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	// The Azure service principal configuration.
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
-	// Force update even if there are dependent services.
+	// Force an update even if there are dependent services (when purpose is
+	// **SERVICE**) or dependent external locations and external tables (when
+	// purpose is **STORAGE**).
 	Force bool `json:"force,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
@@ -5464,6 +5499,9 @@ type UpdateCredentialRequest struct {
 	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of credential.
 	Owner string `json:"owner,omitempty"`
+	// Whether the credential is usable only for read operations. Only
+	// applicable when purpose is **STORAGE**.
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Supply true to this argument to skip validation of the updated
 	// credential.
 	SkipValidation bool `json:"skip_validation,omitempty"`
@@ -5852,9 +5890,18 @@ type ValidateCredentialRequest struct {
 	// Required. The name of an existing credential or long-lived cloud
 	// credential to validate.
 	CredentialName string `json:"credential_name,omitempty"`
+	// The name of an existing external location to validate. Only applicable
+	// for storage credentials (purpose is **STORAGE**.)
+	ExternalLocationName string `json:"external_location_name,omitempty"`
 	// The purpose of the credential. This should only be used when the
 	// credential is specified.
 	Purpose CredentialPurpose `json:"purpose,omitempty"`
+	// Whether the credential is only usable for read operations. Only
+	// applicable for storage credentials (purpose is **STORAGE**.)
+	ReadOnly bool `json:"read_only,omitempty"`
+	// The external location url to validate. Only applicable when purpose is
+	// **STORAGE**.
+	Url string `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -5868,8 +5915,21 @@ func (s ValidateCredentialRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ValidateCredentialResponse struct {
+	// Whether the tested location is a directory in cloud storage. Only
+	// applicable for when purpose is **STORAGE**.
+	IsDir bool `json:"isDir,omitempty"`
 	// The results of the validation check.
 	Results []CredentialValidationResult `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ValidateCredentialResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ValidateCredentialResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // A enum represents the result of the file operation

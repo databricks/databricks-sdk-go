@@ -791,19 +791,24 @@ type CredentialsInterface interface {
 
 	// Create a credential.
 	//
-	// Creates a new credential.
+	// Creates a new credential. The type of credential to be created is determined
+	// by the **purpose** field, which should be either **SERVICE** or **STORAGE**.
+	//
+	// The caller must be a metastore admin or have the metastore privilege
+	// **CREATE_STORAGE_CREDENTIAL** for storage credentials, or
+	// **CREATE_SERVICE_CREDENTIAL** for service credentials.
 	CreateCredential(ctx context.Context, request CreateCredentialRequest) (*CredentialInfo, error)
 
 	// Delete a credential.
 	//
-	// Deletes a credential from the metastore. The caller must be an owner of the
-	// credential.
+	// Deletes a service or storage credential from the metastore. The caller must
+	// be an owner of the credential.
 	DeleteCredential(ctx context.Context, request DeleteCredentialRequest) error
 
 	// Delete a credential.
 	//
-	// Deletes a credential from the metastore. The caller must be an owner of the
-	// credential.
+	// Deletes a service or storage credential from the metastore. The caller must
+	// be an owner of the credential.
 	DeleteCredentialByNameArg(ctx context.Context, nameArg string) error
 
 	// Generate a temporary service credential.
@@ -815,14 +820,16 @@ type CredentialsInterface interface {
 
 	// Get a credential.
 	//
-	// Gets a credential from the metastore. The caller must be a metastore admin,
-	// the owner of the credential, or have any permission on the credential.
+	// Gets a service or storage credential from the metastore. The caller must be a
+	// metastore admin, the owner of the credential, or have any permission on the
+	// credential.
 	GetCredential(ctx context.Context, request GetCredentialRequest) (*CredentialInfo, error)
 
 	// Get a credential.
 	//
-	// Gets a credential from the metastore. The caller must be a metastore admin,
-	// the owner of the credential, or have any permission on the credential.
+	// Gets a service or storage credential from the metastore. The caller must be a
+	// metastore admin, the owner of the credential, or have any permission on the
+	// credential.
 	GetCredentialByNameArg(ctx context.Context, nameArg string) (*CredentialInfo, error)
 
 	// List credentials.
@@ -851,7 +858,7 @@ type CredentialsInterface interface {
 
 	// Update a credential.
 	//
-	// Updates a credential on the metastore.
+	// Updates a service or storage credential on the metastore.
 	//
 	// The caller must be the owner of the credential or a metastore admin or have
 	// the `MANAGE` permission. If the caller is a metastore admin, only the
@@ -862,10 +869,19 @@ type CredentialsInterface interface {
 	//
 	// Validates a credential.
 	//
-	// Either the __credential_name__ or the cloud-specific credential must be
-	// provided.
+	// For service credentials (purpose is **SERVICE**), either the
+	// __credential_name__ or the cloud-specific credential must be provided.
 	//
-	// The caller must be a metastore admin or the credential owner.
+	// For storage credentials (purpose is **STORAGE**), at least one of
+	// __external_location_name__ and __url__ need to be provided. If only one of
+	// them is provided, it will be used for validation. And if both are provided,
+	// the __url__ will be used for validation, and __external_location_name__ will
+	// be ignored when checking overlapping urls. Either the __credential_name__ or
+	// the cloud-specific credential must be provided.
+	//
+	// The caller must be a metastore admin or the credential owner or have the
+	// required permission on the metastore and the credential (e.g.,
+	// **CREATE_EXTERNAL_LOCATION** when purpose is **STORAGE**).
 	ValidateCredential(ctx context.Context, request ValidateCredentialRequest) (*ValidateCredentialResponse, error)
 }
 
@@ -891,8 +907,8 @@ type CredentialsAPI struct {
 
 // Delete a credential.
 //
-// Deletes a credential from the metastore. The caller must be an owner of the
-// credential.
+// Deletes a service or storage credential from the metastore. The caller must
+// be an owner of the credential.
 func (a *CredentialsAPI) DeleteCredentialByNameArg(ctx context.Context, nameArg string) error {
 	return a.credentialsImpl.DeleteCredential(ctx, DeleteCredentialRequest{
 		NameArg: nameArg,
@@ -901,8 +917,9 @@ func (a *CredentialsAPI) DeleteCredentialByNameArg(ctx context.Context, nameArg 
 
 // Get a credential.
 //
-// Gets a credential from the metastore. The caller must be a metastore admin,
-// the owner of the credential, or have any permission on the credential.
+// Gets a service or storage credential from the metastore. The caller must be a
+// metastore admin, the owner of the credential, or have any permission on the
+// credential.
 func (a *CredentialsAPI) GetCredentialByNameArg(ctx context.Context, nameArg string) (*CredentialInfo, error) {
 	return a.credentialsImpl.GetCredential(ctx, GetCredentialRequest{
 		NameArg: nameArg,
