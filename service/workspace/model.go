@@ -246,7 +246,7 @@ type DeleteCredentialsResponse struct {
 
 // Delete a repo
 type DeleteRepoRequest struct {
-	// ID of the Git folder (repo) object in the workspace.
+	// The ID for the corresponding repo to delete.
 	RepoId int64 `json:"-" url:"-"`
 }
 

@@ -898,7 +898,7 @@ type DeleteRestrictWorkspaceAdminsSettingResponse struct {
 
 // Delete a token
 type DeleteTokenManagementRequest struct {
-	// The ID of the token to get.
+	// The ID of the token to revoke.
 	TokenId string `json:"-" url:"-"`
 }
 
@@ -2666,7 +2666,7 @@ type UpdateNotificationDestinationRequest struct {
 	Config *Config `json:"config,omitempty"`
 	// The display name for the notification destination.
 	DisplayName string `json:"display_name,omitempty"`
-
+	// UUID identifying notification destination.
 	Id string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-"`

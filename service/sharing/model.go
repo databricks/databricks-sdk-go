@@ -901,6 +901,10 @@ func (s SharedDataObject) MarshalJSON() ([]byte, error) {
 // The type of the data object.
 type SharedDataObjectDataObjectType string
 
+const SharedDataObjectDataObjectTypeFeatureSpec SharedDataObjectDataObjectType = `FEATURE_SPEC`
+
+const SharedDataObjectDataObjectTypeFunction SharedDataObjectDataObjectType = `FUNCTION`
+
 const SharedDataObjectDataObjectTypeMaterializedView SharedDataObjectDataObjectType = `MATERIALIZED_VIEW`
 
 const SharedDataObjectDataObjectTypeModel SharedDataObjectDataObjectType = `MODEL`
@@ -923,11 +927,11 @@ func (f *SharedDataObjectDataObjectType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SharedDataObjectDataObjectType) Set(v string) error {
 	switch v {
-	case `MATERIALIZED_VIEW`, `MODEL`, `NOTEBOOK_FILE`, `SCHEMA`, `STREAMING_TABLE`, `TABLE`, `VIEW`:
+	case `FEATURE_SPEC`, `FUNCTION`, `MATERIALIZED_VIEW`, `MODEL`, `NOTEBOOK_FILE`, `SCHEMA`, `STREAMING_TABLE`, `TABLE`, `VIEW`:
 		*f = SharedDataObjectDataObjectType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "MATERIALIZED_VIEW", "MODEL", "NOTEBOOK_FILE", "SCHEMA", "STREAMING_TABLE", "TABLE", "VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FEATURE_SPEC", "FUNCTION", "MATERIALIZED_VIEW", "MODEL", "NOTEBOOK_FILE", "SCHEMA", "STREAMING_TABLE", "TABLE", "VIEW"`, v)
 	}
 }
 
