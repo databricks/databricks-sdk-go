@@ -885,8 +885,7 @@ type CreateCredentialRequest struct {
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
-	// TODO(UC-978): Document GCP service account key usage for service
-	// credentials.
+
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
@@ -2386,11 +2385,11 @@ func (s GcpOauthToken) MarshalJSON() ([]byte, error) {
 
 // GCP long-lived credential. GCP Service Account.
 type GcpServiceAccountKey struct {
-	// The email of the service account. [Create:REQ Update:OPT].
+	// The email of the service account.
 	Email string `json:"email,omitempty"`
-	// The service account's RSA private key. [Create:REQ Update:OPT]
+	// The service account's RSA private key.
 	PrivateKey string `json:"private_key,omitempty"`
-	// The ID of the service account's private key. [Create:REQ Update:OPT]
+	// The ID of the service account's private key.
 	PrivateKeyId string `json:"private_key_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
