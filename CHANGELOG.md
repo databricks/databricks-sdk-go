@@ -1,5 +1,28 @@
 # Version changelog
 
+## [Release] Release v0.52.0
+
+### Internal Changes
+
+ * Update Jobs GetRun API to support paginated responses for jobs and ForEach tasks ([#1089](https://github.com/databricks/databricks-sdk-go/pull/1089)).
+
+
+### API Changes:
+
+ * Added `ServicePrincipalClientId` field for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+ * Added `AzureServicePrincipal`, `GcpServiceAccountKey` and `ReadOnly` fields for [catalog.CreateCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateCredentialRequest).
+ * Added `AzureServicePrincipal`, `ReadOnly` and `UsedForManagedStorage` fields for [catalog.CredentialInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CredentialInfo).
+ * Added `AzureServicePrincipal` and `ReadOnly` fields for [catalog.UpdateCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateCredentialRequest).
+ * Added `ExternalLocationName`, `ReadOnly` and `Url` fields for [catalog.ValidateCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ValidateCredentialRequest).
+ * Added `IsDir` field for [catalog.ValidateCredentialResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ValidateCredentialResponse).
+ * Changed `CreateCredential` and `GenerateTemporaryServiceCredential` methods for [w.Credentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CredentialsAPI) workspace-level service with new required argument order.
+ * Changed `AccessConnectorId` field for [catalog.AzureManagedIdentity](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AzureManagedIdentity) to be required.
+ * Changed `AccessConnectorId` field for [catalog.AzureManagedIdentity](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AzureManagedIdentity) to be required.
+ * Changed `Name` field for [catalog.CreateCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateCredentialRequest) to be required.
+ * Changed `CredentialName` field for [catalog.GenerateTemporaryServiceCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GenerateTemporaryServiceCredentialRequest) to be required.
+
+OpenAPI SHA: f2385add116e3716c8a90a0b68e204deb40f996c, Date: 2024-11-15
+
 ## [Release] Release v0.51.0
 
 ### Internal Changes
