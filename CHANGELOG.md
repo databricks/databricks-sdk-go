@@ -11,6 +11,7 @@
 
  * Update to latest OpenAPI spec ([#1098](https://github.com/databricks/databricks-sdk-go/pull/1098)).
 
+Note: This release contains breaking changes, please see the API changes below for more details.
 
 ### API Changes:
 
@@ -28,11 +29,11 @@
  * Added `GcpOptions` field for [catalog.GenerateTemporaryServiceCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GenerateTemporaryServiceCredentialRequest).
  * Added `DatabricksGcpServiceAccount` field for [catalog.UpdateCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateCredentialRequest).
  * Added `CachedQuerySchema` field for [dashboards.QueryAttachment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#QueryAttachment).
- * Changed `ContentLength` field for [files.DownloadResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#DownloadResponse) to [files.ContentLength](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#ContentLength).
- * Changed `ContentLength` field for [files.GetMetadataResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#GetMetadataResponse) to [files.ContentLength](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#ContentLength).
- * Removed [catalog.GcpServiceAccountKey](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GcpServiceAccountKey).
- * Removed [files.FileSize](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#FileSize).
- * Removed `GcpServiceAccountKey` field for [catalog.CreateCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateCredentialRequest).
+ * [Breaking] Changed `ContentLength` field for [files.DownloadResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#DownloadResponse) to [files.ContentLength](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#ContentLength).
+ * [Breaking] Changed `ContentLength` field for [files.GetMetadataResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#GetMetadataResponse) to [files.ContentLength](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#ContentLength).
+ * [Breaking] Removed [catalog.GcpServiceAccountKey](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GcpServiceAccountKey).
+ * [Breaking] Removed [files.FileSize](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#FileSize).
+ * [Breaking] Removed `GcpServiceAccountKey` field for [catalog.CreateCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateCredentialRequest).
 
 OpenAPI SHA: 7016dcbf2e011459416cf408ce21143bcc4b3a25, Date: 2024-12-05
 
