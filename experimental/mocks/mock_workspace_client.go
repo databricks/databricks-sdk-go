@@ -10,6 +10,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/compute"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
@@ -46,6 +47,9 @@ func NewMockWorkspaceClient(t interface {
 			Apps:                                apps.NewMockAppsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
+			CleanRoomAssets:                     cleanrooms.NewMockCleanRoomAssetsInterface(t),
+			CleanRoomTaskRuns:                   cleanrooms.NewMockCleanRoomTaskRunsInterface(t),
+			CleanRooms:                          cleanrooms.NewMockCleanRoomsInterface(t),
 			ClusterPolicies:                     compute.NewMockClusterPoliciesInterface(t),
 			Clusters:                            compute.NewMockClustersInterface(t),
 			CommandExecution:                    compute.NewMockCommandExecutionInterface(t),
@@ -282,6 +286,30 @@ func (m *MockWorkspaceClient) GetMockCatalogsAPI() *catalog.MockCatalogsInterfac
 	api, ok := m.WorkspaceClient.Catalogs.(*catalog.MockCatalogsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Catalogs to be *catalog.MockCatalogsInterface, actual was %T", m.WorkspaceClient.Catalogs))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockCleanRoomAssetsAPI() *cleanrooms.MockCleanRoomAssetsInterface {
+	api, ok := m.WorkspaceClient.CleanRoomAssets.(*cleanrooms.MockCleanRoomAssetsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected CleanRoomAssets to be *cleanrooms.MockCleanRoomAssetsInterface, actual was %T", m.WorkspaceClient.CleanRoomAssets))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockCleanRoomTaskRunsAPI() *cleanrooms.MockCleanRoomTaskRunsInterface {
+	api, ok := m.WorkspaceClient.CleanRoomTaskRuns.(*cleanrooms.MockCleanRoomTaskRunsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected CleanRoomTaskRuns to be *cleanrooms.MockCleanRoomTaskRunsInterface, actual was %T", m.WorkspaceClient.CleanRoomTaskRuns))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockCleanRoomsAPI() *cleanrooms.MockCleanRoomsInterface {
+	api, ok := m.WorkspaceClient.CleanRooms.(*cleanrooms.MockCleanRoomsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected CleanRooms to be *cleanrooms.MockCleanRoomsInterface, actual was %T", m.WorkspaceClient.CleanRooms))
 	}
 	return api
 }

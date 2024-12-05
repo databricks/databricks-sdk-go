@@ -116,6 +116,63 @@ func (f *DashboardView) Type() string {
 	return "DashboardView"
 }
 
+type DataType string
+
+const DataTypeDataTypeArray DataType = `DATA_TYPE_ARRAY`
+
+const DataTypeDataTypeBigInt DataType = `DATA_TYPE_BIG_INT`
+
+const DataTypeDataTypeBinary DataType = `DATA_TYPE_BINARY`
+
+const DataTypeDataTypeBoolean DataType = `DATA_TYPE_BOOLEAN`
+
+const DataTypeDataTypeDate DataType = `DATA_TYPE_DATE`
+
+const DataTypeDataTypeDecimal DataType = `DATA_TYPE_DECIMAL`
+
+const DataTypeDataTypeDouble DataType = `DATA_TYPE_DOUBLE`
+
+const DataTypeDataTypeFloat DataType = `DATA_TYPE_FLOAT`
+
+const DataTypeDataTypeInt DataType = `DATA_TYPE_INT`
+
+const DataTypeDataTypeInterval DataType = `DATA_TYPE_INTERVAL`
+
+const DataTypeDataTypeMap DataType = `DATA_TYPE_MAP`
+
+const DataTypeDataTypeSmallInt DataType = `DATA_TYPE_SMALL_INT`
+
+const DataTypeDataTypeString DataType = `DATA_TYPE_STRING`
+
+const DataTypeDataTypeStruct DataType = `DATA_TYPE_STRUCT`
+
+const DataTypeDataTypeTimestamp DataType = `DATA_TYPE_TIMESTAMP`
+
+const DataTypeDataTypeTinyInt DataType = `DATA_TYPE_TINY_INT`
+
+const DataTypeDataTypeVoid DataType = `DATA_TYPE_VOID`
+
+// String representation for [fmt.Print]
+func (f *DataType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DataType) Set(v string) error {
+	switch v {
+	case `DATA_TYPE_ARRAY`, `DATA_TYPE_BIG_INT`, `DATA_TYPE_BINARY`, `DATA_TYPE_BOOLEAN`, `DATA_TYPE_DATE`, `DATA_TYPE_DECIMAL`, `DATA_TYPE_DOUBLE`, `DATA_TYPE_FLOAT`, `DATA_TYPE_INT`, `DATA_TYPE_INTERVAL`, `DATA_TYPE_MAP`, `DATA_TYPE_SMALL_INT`, `DATA_TYPE_STRING`, `DATA_TYPE_STRUCT`, `DATA_TYPE_TIMESTAMP`, `DATA_TYPE_TINY_INT`, `DATA_TYPE_VOID`:
+		*f = DataType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DATA_TYPE_ARRAY", "DATA_TYPE_BIG_INT", "DATA_TYPE_BINARY", "DATA_TYPE_BOOLEAN", "DATA_TYPE_DATE", "DATA_TYPE_DECIMAL", "DATA_TYPE_DOUBLE", "DATA_TYPE_FLOAT", "DATA_TYPE_INT", "DATA_TYPE_INTERVAL", "DATA_TYPE_MAP", "DATA_TYPE_SMALL_INT", "DATA_TYPE_STRING", "DATA_TYPE_STRUCT", "DATA_TYPE_TIMESTAMP", "DATA_TYPE_TINY_INT", "DATA_TYPE_VOID"`, v)
+	}
+}
+
+// Type always returns DataType to satisfy [pflag.Value] interface
+func (f *DataType) Type() string {
+	return "DataType"
+}
+
 // Delete dashboard schedule
 type DeleteScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
@@ -748,6 +805,7 @@ func (s PublishedDashboard) MarshalJSON() ([]byte, error) {
 }
 
 type QueryAttachment struct {
+	CachedQuerySchema *QuerySchema `json:"cached_query_schema,omitempty"`
 	// Description of the query
 	Description string `json:"description,omitempty"`
 
@@ -774,6 +832,34 @@ func (s *QueryAttachment) UnmarshalJSON(b []byte) error {
 
 func (s QueryAttachment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type QuerySchema struct {
+	Columns []QuerySchemaColumn `json:"columns,omitempty"`
+	// Used to determine if the stored query schema is compatible with the
+	// latest run. The service should always clear the schema when the query is
+	// re-executed.
+	StatementId string `json:"statement_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QuerySchema) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QuerySchema) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type QuerySchemaColumn struct {
+	// Populated from
+	// https://docs.databricks.com/sql/language-manual/sql-ref-datatypes.html
+	DataType DataType `json:"data_type"`
+
+	Name string `json:"name"`
+	// Corresponds to type desc
+	TypeText string `json:"type_text"`
 }
 
 type Result struct {

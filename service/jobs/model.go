@@ -209,6 +209,108 @@ type CancelRun struct {
 type CancelRunResponse struct {
 }
 
+// Copied from elastic-spark-common/api/messages/runs.proto. Using the original
+// definition to remove coupling with jobs API definition
+type CleanRoomTaskRunLifeCycleState string
+
+const CleanRoomTaskRunLifeCycleStateBlocked CleanRoomTaskRunLifeCycleState = `BLOCKED`
+
+const CleanRoomTaskRunLifeCycleStateInternalError CleanRoomTaskRunLifeCycleState = `INTERNAL_ERROR`
+
+const CleanRoomTaskRunLifeCycleStatePending CleanRoomTaskRunLifeCycleState = `PENDING`
+
+const CleanRoomTaskRunLifeCycleStateQueued CleanRoomTaskRunLifeCycleState = `QUEUED`
+
+const CleanRoomTaskRunLifeCycleStateRunning CleanRoomTaskRunLifeCycleState = `RUNNING`
+
+const CleanRoomTaskRunLifeCycleStateSkipped CleanRoomTaskRunLifeCycleState = `SKIPPED`
+
+const CleanRoomTaskRunLifeCycleStateTerminated CleanRoomTaskRunLifeCycleState = `TERMINATED`
+
+const CleanRoomTaskRunLifeCycleStateTerminating CleanRoomTaskRunLifeCycleState = `TERMINATING`
+
+const CleanRoomTaskRunLifeCycleStateWaitingForRetry CleanRoomTaskRunLifeCycleState = `WAITING_FOR_RETRY`
+
+// String representation for [fmt.Print]
+func (f *CleanRoomTaskRunLifeCycleState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CleanRoomTaskRunLifeCycleState) Set(v string) error {
+	switch v {
+	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `QUEUED`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
+		*f = CleanRoomTaskRunLifeCycleState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "INTERNAL_ERROR", "PENDING", "QUEUED", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING", "WAITING_FOR_RETRY"`, v)
+	}
+}
+
+// Type always returns CleanRoomTaskRunLifeCycleState to satisfy [pflag.Value] interface
+func (f *CleanRoomTaskRunLifeCycleState) Type() string {
+	return "CleanRoomTaskRunLifeCycleState"
+}
+
+// Copied from elastic-spark-common/api/messages/runs.proto. Using the original
+// definition to avoid cyclic dependency.
+type CleanRoomTaskRunResultState string
+
+const CleanRoomTaskRunResultStateCanceled CleanRoomTaskRunResultState = `CANCELED`
+
+const CleanRoomTaskRunResultStateDisabled CleanRoomTaskRunResultState = `DISABLED`
+
+const CleanRoomTaskRunResultStateEvicted CleanRoomTaskRunResultState = `EVICTED`
+
+const CleanRoomTaskRunResultStateExcluded CleanRoomTaskRunResultState = `EXCLUDED`
+
+const CleanRoomTaskRunResultStateFailed CleanRoomTaskRunResultState = `FAILED`
+
+const CleanRoomTaskRunResultStateMaximumConcurrentRunsReached CleanRoomTaskRunResultState = `MAXIMUM_CONCURRENT_RUNS_REACHED`
+
+const CleanRoomTaskRunResultStateSuccess CleanRoomTaskRunResultState = `SUCCESS`
+
+const CleanRoomTaskRunResultStateSuccessWithFailures CleanRoomTaskRunResultState = `SUCCESS_WITH_FAILURES`
+
+const CleanRoomTaskRunResultStateTimedout CleanRoomTaskRunResultState = `TIMEDOUT`
+
+const CleanRoomTaskRunResultStateUpstreamCanceled CleanRoomTaskRunResultState = `UPSTREAM_CANCELED`
+
+const CleanRoomTaskRunResultStateUpstreamEvicted CleanRoomTaskRunResultState = `UPSTREAM_EVICTED`
+
+const CleanRoomTaskRunResultStateUpstreamFailed CleanRoomTaskRunResultState = `UPSTREAM_FAILED`
+
+// String representation for [fmt.Print]
+func (f *CleanRoomTaskRunResultState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CleanRoomTaskRunResultState) Set(v string) error {
+	switch v {
+	case `CANCELED`, `DISABLED`, `EVICTED`, `EXCLUDED`, `FAILED`, `MAXIMUM_CONCURRENT_RUNS_REACHED`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `TIMEDOUT`, `UPSTREAM_CANCELED`, `UPSTREAM_EVICTED`, `UPSTREAM_FAILED`:
+		*f = CleanRoomTaskRunResultState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "DISABLED", "EVICTED", "EXCLUDED", "FAILED", "MAXIMUM_CONCURRENT_RUNS_REACHED", "SUCCESS", "SUCCESS_WITH_FAILURES", "TIMEDOUT", "UPSTREAM_CANCELED", "UPSTREAM_EVICTED", "UPSTREAM_FAILED"`, v)
+	}
+}
+
+// Type always returns CleanRoomTaskRunResultState to satisfy [pflag.Value] interface
+func (f *CleanRoomTaskRunResultState) Type() string {
+	return "CleanRoomTaskRunResultState"
+}
+
+// Stores the run state of the clean room notebook V1 task.
+type CleanRoomTaskRunState struct {
+	// A value indicating the run's current lifecycle state. This field is
+	// always available in the response.
+	LifeCycleState CleanRoomTaskRunLifeCycleState `json:"life_cycle_state,omitempty"`
+	// A value indicating the run's result. This field is only available for
+	// terminal lifecycle states.
+	ResultState CleanRoomTaskRunResultState `json:"result_state,omitempty"`
+}
+
 type ClusterInstance struct {
 	// The canonical identifier for the cluster used by a run. This field is
 	// always available for runs on existing clusters. For runs on new clusters,
@@ -441,9 +543,8 @@ type CreateJob struct {
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
-	// Write-only setting. Specifies the user, service principal or group that
-	// the job/pipeline runs as. If not specified, the job/pipeline runs as the
-	// user who created the job/pipeline.
+	// Write-only setting. Specifies the user or service principal that the job
+	// runs as. If not specified, the job runs as the user who created the job.
 	//
 	// Either `user_name` or `service_principal_name` should be specified. If
 	// not, an error is thrown.
@@ -1384,9 +1485,8 @@ type JobPermissionsRequest struct {
 	JobId string `json:"-" url:"-"`
 }
 
-// Write-only setting. Specifies the user, service principal or group that the
-// job/pipeline runs as. If not specified, the job/pipeline runs as the user who
-// created the job/pipeline.
+// Write-only setting. Specifies the user or service principal that the job runs
+// as. If not specified, the job runs as the user who created the job.
 //
 // Either `user_name` or `service_principal_name` should be specified. If not,
 // an error is thrown.
@@ -1483,9 +1583,8 @@ type JobSettings struct {
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
-	// Write-only setting. Specifies the user, service principal or group that
-	// the job/pipeline runs as. If not specified, the job/pipeline runs as the
-	// user who created the job/pipeline.
+	// Write-only setting. Specifies the user or service principal that the job
+	// runs as. If not specified, the job runs as the user who created the job.
 	//
 	// Either `user_name` or `service_principal_name` should be specified. If
 	// not, an error is thrown.

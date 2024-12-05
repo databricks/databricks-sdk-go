@@ -22,6 +22,12 @@
 //
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
+// - [cleanrooms.CleanRoomAssetsAPI]: Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the clean room.
+//
+// - [cleanrooms.CleanRoomTaskRunsAPI]: Clean room task runs are the executions of notebooks in a clean room.
+//
+// - [cleanrooms.CleanRoomsAPI]: A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting environment where multiple parties can work together on sensitive enterprise data without direct access to each other’s data.
+//
 // - [compute.ClusterPoliciesAPI]: You can use cluster policies to control users' ability to configure clusters based on a set of rules.
 //
 // - [compute.ClustersAPI]: The Clusters API allows you to create, start, edit, list, terminate, and delete clusters.
@@ -42,9 +48,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
-//
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
+//
+// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -265,6 +271,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
+	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/service/files"
@@ -299,6 +306,9 @@ var (
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil
 	_ *catalog.CatalogsAPI                                = nil
+	_ *cleanrooms.CleanRoomAssetsAPI                      = nil
+	_ *cleanrooms.CleanRoomTaskRunsAPI                    = nil
+	_ *cleanrooms.CleanRoomsAPI                           = nil
 	_ *compute.ClusterPoliciesAPI                         = nil
 	_ *compute.ClustersAPI                                = nil
 	_ *compute.CommandExecutionAPI                        = nil
@@ -309,8 +319,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *catalog.CredentialsAPI                             = nil
 	_ *provisioning.CredentialsAPI                        = nil
+	_ *catalog.CredentialsAPI                             = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil

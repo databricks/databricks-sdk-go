@@ -82,6 +82,15 @@ type aibiDashboardEmbeddingAccessPolicyImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *aibiDashboardEmbeddingAccessPolicyImpl) Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*DeleteAibiDashboardEmbeddingAccessPolicySettingResponse, error) {
+	var deleteAibiDashboardEmbeddingAccessPolicySettingResponse DeleteAibiDashboardEmbeddingAccessPolicySettingResponse
+	path := "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteAibiDashboardEmbeddingAccessPolicySettingResponse)
+	return &deleteAibiDashboardEmbeddingAccessPolicySettingResponse, err
+}
+
 func (a *aibiDashboardEmbeddingAccessPolicyImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error) {
 	var aibiDashboardEmbeddingAccessPolicySetting AibiDashboardEmbeddingAccessPolicySetting
 	path := "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
@@ -104,6 +113,15 @@ func (a *aibiDashboardEmbeddingAccessPolicyImpl) Update(ctx context.Context, req
 // unexported type that holds implementations of just AibiDashboardEmbeddingApprovedDomains API methods
 type aibiDashboardEmbeddingApprovedDomainsImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse, error) {
+	var deleteAibiDashboardEmbeddingApprovedDomainsSettingResponse DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse
+	path := "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteAibiDashboardEmbeddingApprovedDomainsSettingResponse)
+	return &deleteAibiDashboardEmbeddingApprovedDomainsSettingResponse, err
 }
 
 func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error) {

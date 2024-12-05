@@ -295,7 +295,8 @@ func (s AzureManagedIdentityResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The Azure service principal configuration.
+// The Azure service principal configuration. Only applicable when purpose is
+// **STORAGE**.
 type AzureServicePrincipal struct {
 	// The application ID of the application registration within the referenced
 	// AAD tenant.
@@ -538,7 +539,7 @@ type ColumnInfo struct {
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// Full data type specification, JSON-serialized.
 	TypeJson string `json:"type_json,omitempty"`
-	// Name of type (INT, STRUCT, MAP, etc.).
+
 	TypeName ColumnTypeName `json:"type_name,omitempty"`
 	// Digits of precision; required for DecimalTypes.
 	TypePrecision int `json:"type_precision,omitempty"`
@@ -578,7 +579,6 @@ func (s ColumnMask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Name of type (INT, STRUCT, MAP, etc.).
 type ColumnTypeName string
 
 const ColumnTypeNameArray ColumnTypeName = `ARRAY`
@@ -881,12 +881,14 @@ type CreateCredentialRequest struct {
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
-	// The Azure service principal configuration.
+	// The Azure service principal configuration. Only applicable when purpose
+	// is **STORAGE**.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
-
-	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
+	// GCP long-lived credential. Databricks-created Google Cloud Storage
+	// service account.
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
 	Name string `json:"name"`
@@ -1332,7 +1334,8 @@ type CredentialInfo struct {
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
-	// The Azure service principal configuration.
+	// The Azure service principal configuration. Only applicable when purpose
+	// is **STORAGE**.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
@@ -1340,6 +1343,9 @@ type CredentialInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
+	// GCP long-lived credential. Databricks-created Google Cloud Storage
+	// service account.
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// The full name of the credential.
 	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the credential.
@@ -1524,6 +1530,30 @@ func (f *DataSourceFormat) Set(v string) error {
 // Type always returns DataSourceFormat to satisfy [pflag.Value] interface
 func (f *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
+}
+
+// GCP long-lived credential. Databricks-created Google Cloud Storage service
+// account.
+type DatabricksGcpServiceAccount struct {
+	// The Databricks internal ID that represents this managed identity. This
+	// field is only used to persist the credential_id once it is fetched from
+	// the credentials manager - as we only use the protobuf serializer to store
+	// credentials, this ID gets persisted to the database
+	CredentialId string `json:"credential_id,omitempty"`
+	// The email of the service account.
+	Email string `json:"email,omitempty"`
+	// The ID that represents the private key for this Service Account
+	PrivateKeyId string `json:"private_key_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DatabricksGcpServiceAccount) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabricksGcpServiceAccount) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DatabricksGcpServiceAccountRequest struct {
@@ -2287,7 +2317,7 @@ type FunctionParameterInfo struct {
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// Full data type spec, JSON-serialized.
 	TypeJson string `json:"type_json,omitempty"`
-	// Name of type (INT, STRUCT, MAP, etc.).
+
 	TypeName ColumnTypeName `json:"type_name"`
 	// Digits of precision; required on Create for DecimalTypes.
 	TypePrecision int `json:"type_precision,omitempty"`
@@ -2383,27 +2413,7 @@ func (s GcpOauthToken) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// GCP long-lived credential. GCP Service Account.
-type GcpServiceAccountKey struct {
-	// The email of the service account.
-	Email string `json:"email,omitempty"`
-	// The service account's RSA private key.
-	PrivateKey string `json:"private_key,omitempty"`
-	// The ID of the service account's private key.
-	PrivateKeyId string `json:"private_key_id,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GcpServiceAccountKey) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GcpServiceAccountKey) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Options to customize the requested temporary credential
+// The Azure cloud options to customize the requested temporary credential
 type GenerateTemporaryServiceCredentialAzureOptions struct {
 	// The resources to which the temporary Azure credential should apply. These
 	// resources are the scopes that are passed to the token provider (see
@@ -2411,12 +2421,22 @@ type GenerateTemporaryServiceCredentialAzureOptions struct {
 	Resources []string `json:"resources,omitempty"`
 }
 
+// The GCP cloud options to customize the requested temporary credential
+type GenerateTemporaryServiceCredentialGcpOptions struct {
+	// The scopes to which the temporary GCP credential should apply. These
+	// resources are the scopes that are passed to the token provider (see
+	// https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials)
+	Scopes []string `json:"scopes,omitempty"`
+}
+
 type GenerateTemporaryServiceCredentialRequest struct {
-	// Options to customize the requested temporary credential
+	// The Azure cloud options to customize the requested temporary credential
 	AzureOptions *GenerateTemporaryServiceCredentialAzureOptions `json:"azure_options,omitempty"`
 	// The name of the service credential used to generate a temporary
 	// credential
 	CredentialName string `json:"credential_name"`
+	// The GCP cloud options to customize the requested temporary credential
+	GcpOptions *GenerateTemporaryServiceCredentialGcpOptions `json:"gcp_options,omitempty"`
 }
 
 type GenerateTemporaryTableCredentialRequest struct {
@@ -4517,6 +4537,8 @@ const PrivilegeCreateExternalVolume Privilege = `CREATE_EXTERNAL_VOLUME`
 
 const PrivilegeCreateForeignCatalog Privilege = `CREATE_FOREIGN_CATALOG`
 
+const PrivilegeCreateForeignSecurable Privilege = `CREATE_FOREIGN_SECURABLE`
+
 const PrivilegeCreateFunction Privilege = `CREATE_FUNCTION`
 
 const PrivilegeCreateManagedStorage Privilege = `CREATE_MANAGED_STORAGE`
@@ -4593,11 +4615,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -5481,10 +5503,14 @@ type UpdateCredentialRequest struct {
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
-	// The Azure service principal configuration.
+	// The Azure service principal configuration. Only applicable when purpose
+	// is **STORAGE**.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
+	// GCP long-lived credential. Databricks-created Google Cloud Storage
+	// service account.
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// Force an update even if there are dependent services (when purpose is
 	// **SERVICE**) or dependent external locations and external tables (when
 	// purpose is **STORAGE**).
