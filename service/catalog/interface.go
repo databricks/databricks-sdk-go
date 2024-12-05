@@ -240,8 +240,8 @@ type ConnectionsService interface {
 // access the credential.
 //
 // To create credentials, you must be a Databricks account admin or have the
-// `CREATE SERVICE CREDENTIAL privilege. The user who creates the credential can
-// delegate ownership to another user or group to manage permissions on it
+// `CREATE SERVICE CREDENTIAL` privilege. The user who creates the credential
+// can delegate ownership to another user or group to manage permissions on it.
 type CredentialsService interface {
 
 	// Create a credential.

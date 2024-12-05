@@ -179,8 +179,9 @@ type FilesService interface {
 
 	// Download a file.
 	//
-	// Downloads a file of up to 5 GiB. The file contents are the response body.
-	// This is a standard HTTP file download, not a JSON RPC.
+	// Downloads a file. The file contents are the response body. This is a
+	// standard HTTP file download, not a JSON RPC. It supports the Range and
+	// If-Unmodified-Since HTTP headers.
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 
 	// Get directory metadata.

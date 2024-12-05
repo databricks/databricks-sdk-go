@@ -373,6 +373,12 @@ func (a *AccountSettingsAPI) PersonalCompute() PersonalComputeInterface {
 
 type AibiDashboardEmbeddingAccessPolicyInterface interface {
 
+	// Delete the AI/BI dashboard embedding access policy.
+	//
+	// Delete the AI/BI dashboard embedding access policy, reverting back to the
+	// default.
+	Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*DeleteAibiDashboardEmbeddingAccessPolicySettingResponse, error)
+
 	// Retrieve the AI/BI dashboard embedding access policy.
 	//
 	// Retrieves the AI/BI dashboard embedding access policy. The default setting is
@@ -402,6 +408,12 @@ type AibiDashboardEmbeddingAccessPolicyAPI struct {
 }
 
 type AibiDashboardEmbeddingApprovedDomainsInterface interface {
+
+	// Delete AI/BI dashboard embedding approved domains.
+	//
+	// Delete the list of domains approved to host embedded AI/BI dashboards,
+	// reverting back to the default empty list.
+	Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse, error)
 
 	// Retrieve the list of domains approved to host embedded AI/BI dashboards.
 	//
