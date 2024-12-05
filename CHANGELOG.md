@@ -1,5 +1,13 @@
 # Version changelog
 
+## [Release] Release v0.52.1
+
+### Bug Fixes
+
+ * Update Changelog file ([#1091](https://github.com/databricks/databricks-sdk-go/pull/1091)).
+
+
+
 ## [Release] Release v0.52.0
 
 ### Internal Changes
