@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"regexp"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/useragent"
@@ -73,17 +75,22 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 				return nil
 			},
 		},
-		TransientErrors: []string{
-			"REQUEST_LIMIT_EXCEEDED", // This is temporary workaround for SCIM API returning 500.  Remove when it's fixed
-		},
 		ErrorMapper: apierr.GetAPIError,
-		ErrorRetriable: func(ctx context.Context, err error) bool {
-			var apiErr *apierr.APIError
-			if errors.As(err, &apiErr) {
-				return apiErr.IsRetriable(ctx)
-			}
-			return false
-		},
+		ErrorRetriable: httpclient.CombineRetriers(
+			func(ctx context.Context, _ *http.Request, _ *common.ResponseWrapper, err error) bool {
+				var apiErr *apierr.APIError
+				if errors.As(err, &apiErr) {
+					return apiErr.IsRetriable(ctx)
+				}
+				return false
+			},
+			httpclient.RetryUrlErrors,
+			httpclient.RetryTransientErrors([]string{"REQUEST_LIMIT_EXCEEDED"}),
+			httpclient.RetryMatchedRequests([]httpclient.RestApiMatcher{
+				// Get Permissions API can be retried on 504
+				{Method: http.MethodGet, Path: *regexp.MustCompile(`/api/2.0/permissions/[^/]+/[^/]+`)},
+			}, httpclient.RetryOnGatewayTimeout),
+		),
 	}), nil
 }
 
