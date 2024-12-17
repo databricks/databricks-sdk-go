@@ -48,9 +48,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
-//
 // - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
+//
+// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -87,6 +87,8 @@
 // - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
 //
 // - [catalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
+//
+// - [oauth2.AccountFederationPolicyAPI]: These APIs manage account federation policies.
 //
 // - [files.FilesAPI]: The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI.
 //
@@ -201,6 +203,8 @@
 // - [catalog.SchemasAPI]: A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace.
 //
 // - [workspace.SecretsAPI]: The Secrets API allows you to manage secrets, secret scopes, and access permissions.
+//
+// - [oauth2.ServicePrincipalFederationPolicyAPI]: These APIs manage service principal federation policies.
 //
 // - [oauth2.ServicePrincipalSecretsAPI]: These APIs enable administrators to manage service principal secrets.
 //
@@ -319,8 +323,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *provisioning.CredentialsAPI                        = nil
 	_ *catalog.CredentialsAPI                             = nil
+	_ *provisioning.CredentialsAPI                        = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
@@ -339,6 +343,7 @@ var (
 	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *ml.ExperimentsAPI                                  = nil
 	_ *catalog.ExternalLocationsAPI                       = nil
+	_ *oauth2.AccountFederationPolicyAPI                  = nil
 	_ *files.FilesAPI                                     = nil
 	_ *catalog.FunctionsAPI                               = nil
 	_ *dashboards.GenieAPI                                = nil
@@ -396,6 +401,7 @@ var (
 	_ *settings.RestrictWorkspaceAdminsAPI                = nil
 	_ *catalog.SchemasAPI                                 = nil
 	_ *workspace.SecretsAPI                               = nil
+	_ *oauth2.ServicePrincipalFederationPolicyAPI         = nil
 	_ *oauth2.ServicePrincipalSecretsAPI                  = nil
 	_ *iam.ServicePrincipalsAPI                           = nil
 	_ *iam.AccountServicePrincipalsAPI                    = nil

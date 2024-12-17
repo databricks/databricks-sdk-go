@@ -1,5 +1,24 @@
 # Version changelog
 
+## [Release] Release v0.54.0
+
+### API Changes:
+
+ * Added [a.AccountFederationPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#AccountFederationPolicyAPI) account-level service and [a.ServicePrincipalFederationPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#ServicePrincipalFederationPolicyAPI) account-level service.
+ * Added `IsSingleNode`, `Kind` and `UseMlRuntime` fields for [compute.ClusterAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterAttributes).
+ * Added `IsSingleNode`, `Kind` and `UseMlRuntime` fields for [compute.ClusterDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterDetails).
+ * Added `IsSingleNode`, `Kind` and `UseMlRuntime` fields for [compute.ClusterSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterSpec).
+ * Added `IsSingleNode`, `Kind` and `UseMlRuntime` fields for [compute.CreateCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#CreateCluster).
+ * Added `IsSingleNode`, `Kind` and `UseMlRuntime` fields for [compute.EditCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditCluster).
+ * Added `IsSingleNode`, `Kind` and `UseMlRuntime` fields for [compute.UpdateClusterResource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#UpdateClusterResource).
+ * Added `UpdateParameterSyntax` field for [dashboards.MigrateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#MigrateDashboardRequest).
+ * Added `CleanRoomsNotebookTask` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+ * Added `CleanRoomsNotebookTask` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+ * Added `CleanRoomsNotebookTask` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+ * Changed `DaysOfWeek` field for [pipelines.RestartWindow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#RestartWindow) to type [pipelines.RestartWindowDaysOfWeekList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#RestartWindowDaysOfWeekList).
+
+OpenAPI SHA: a6a317df8327c9b1e5cb59a03a42ffa2aabeef6d, Date: 2024-12-16
+
 ## [Release] Release v0.53.0
 
 ### Bug Fixes

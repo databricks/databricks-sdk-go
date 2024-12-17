@@ -30,32 +30,34 @@ func NewMockAccountClient(t interface {
 		AccountClient: &databricks.AccountClient{
 			Config: nil,
 
-			AccessControl:           iam.NewMockAccountAccessControlInterface(t),
-			BillableUsage:           billing.NewMockBillableUsageInterface(t),
-			Credentials:             provisioning.NewMockCredentialsInterface(t),
-			CustomAppIntegration:    oauth2.NewMockCustomAppIntegrationInterface(t),
-			EncryptionKeys:          provisioning.NewMockEncryptionKeysInterface(t),
-			Groups:                  iam.NewMockAccountGroupsInterface(t),
-			IpAccessLists:           settings.NewMockAccountIpAccessListsInterface(t),
-			LogDelivery:             billing.NewMockLogDeliveryInterface(t),
-			MetastoreAssignments:    catalog.NewMockAccountMetastoreAssignmentsInterface(t),
-			Metastores:              catalog.NewMockAccountMetastoresInterface(t),
-			NetworkConnectivity:     settings.NewMockNetworkConnectivityInterface(t),
-			Networks:                provisioning.NewMockNetworksInterface(t),
-			OAuthPublishedApps:      oauth2.NewMockOAuthPublishedAppsInterface(t),
-			PrivateAccess:           provisioning.NewMockPrivateAccessInterface(t),
-			PublishedAppIntegration: oauth2.NewMockPublishedAppIntegrationInterface(t),
-			ServicePrincipalSecrets: oauth2.NewMockServicePrincipalSecretsInterface(t),
-			ServicePrincipals:       iam.NewMockAccountServicePrincipalsInterface(t),
-			Settings:                settings.NewMockAccountSettingsInterface(t),
-			Storage:                 provisioning.NewMockStorageInterface(t),
-			StorageCredentials:      catalog.NewMockAccountStorageCredentialsInterface(t),
-			UsageDashboards:         billing.NewMockUsageDashboardsInterface(t),
-			Users:                   iam.NewMockAccountUsersInterface(t),
-			VpcEndpoints:            provisioning.NewMockVpcEndpointsInterface(t),
-			WorkspaceAssignment:     iam.NewMockWorkspaceAssignmentInterface(t),
-			Workspaces:              provisioning.NewMockWorkspacesInterface(t),
-			Budgets:                 billing.NewMockBudgetsInterface(t),
+			AccessControl:                    iam.NewMockAccountAccessControlInterface(t),
+			BillableUsage:                    billing.NewMockBillableUsageInterface(t),
+			Credentials:                      provisioning.NewMockCredentialsInterface(t),
+			CustomAppIntegration:             oauth2.NewMockCustomAppIntegrationInterface(t),
+			EncryptionKeys:                   provisioning.NewMockEncryptionKeysInterface(t),
+			FederationPolicy:                 oauth2.NewMockAccountFederationPolicyInterface(t),
+			Groups:                           iam.NewMockAccountGroupsInterface(t),
+			IpAccessLists:                    settings.NewMockAccountIpAccessListsInterface(t),
+			LogDelivery:                      billing.NewMockLogDeliveryInterface(t),
+			MetastoreAssignments:             catalog.NewMockAccountMetastoreAssignmentsInterface(t),
+			Metastores:                       catalog.NewMockAccountMetastoresInterface(t),
+			NetworkConnectivity:              settings.NewMockNetworkConnectivityInterface(t),
+			Networks:                         provisioning.NewMockNetworksInterface(t),
+			OAuthPublishedApps:               oauth2.NewMockOAuthPublishedAppsInterface(t),
+			PrivateAccess:                    provisioning.NewMockPrivateAccessInterface(t),
+			PublishedAppIntegration:          oauth2.NewMockPublishedAppIntegrationInterface(t),
+			ServicePrincipalFederationPolicy: oauth2.NewMockServicePrincipalFederationPolicyInterface(t),
+			ServicePrincipalSecrets:          oauth2.NewMockServicePrincipalSecretsInterface(t),
+			ServicePrincipals:                iam.NewMockAccountServicePrincipalsInterface(t),
+			Settings:                         settings.NewMockAccountSettingsInterface(t),
+			Storage:                          provisioning.NewMockStorageInterface(t),
+			StorageCredentials:               catalog.NewMockAccountStorageCredentialsInterface(t),
+			UsageDashboards:                  billing.NewMockUsageDashboardsInterface(t),
+			Users:                            iam.NewMockAccountUsersInterface(t),
+			VpcEndpoints:                     provisioning.NewMockVpcEndpointsInterface(t),
+			WorkspaceAssignment:              iam.NewMockWorkspaceAssignmentInterface(t),
+			Workspaces:                       provisioning.NewMockWorkspacesInterface(t),
+			Budgets:                          billing.NewMockBudgetsInterface(t),
 		},
 	}
 
@@ -148,6 +150,14 @@ func (m *MockAccountClient) GetMockEncryptionKeysAPI() *provisioning.MockEncrypt
 	return api
 }
 
+func (m *MockAccountClient) GetMockAccountFederationPolicyAPI() *oauth2.MockAccountFederationPolicyInterface {
+	api, ok := m.AccountClient.FederationPolicy.(*oauth2.MockAccountFederationPolicyInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected FederationPolicy to be *oauth2.MockAccountFederationPolicyInterface, actual was %T", m.AccountClient.FederationPolicy))
+	}
+	return api
+}
+
 func (m *MockAccountClient) GetMockAccountGroupsAPI() *iam.MockAccountGroupsInterface {
 	api, ok := m.AccountClient.Groups.(*iam.MockAccountGroupsInterface)
 	if !ok {
@@ -224,6 +234,14 @@ func (m *MockAccountClient) GetMockPublishedAppIntegrationAPI() *oauth2.MockPubl
 	api, ok := m.AccountClient.PublishedAppIntegration.(*oauth2.MockPublishedAppIntegrationInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected PublishedAppIntegration to be *oauth2.MockPublishedAppIntegrationInterface, actual was %T", m.AccountClient.PublishedAppIntegration))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockServicePrincipalFederationPolicyAPI() *oauth2.MockServicePrincipalFederationPolicyInterface {
+	api, ok := m.AccountClient.ServicePrincipalFederationPolicy.(*oauth2.MockServicePrincipalFederationPolicyInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ServicePrincipalFederationPolicy to be *oauth2.MockServicePrincipalFederationPolicyInterface, actual was %T", m.AccountClient.ServicePrincipalFederationPolicy))
 	}
 	return api
 }

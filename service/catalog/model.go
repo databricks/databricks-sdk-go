@@ -2549,9 +2549,9 @@ type GetBindingsSecurableType string
 
 const GetBindingsSecurableTypeCatalog GetBindingsSecurableType = `catalog`
 
-const GetBindingsSecurableTypeExternalLocation GetBindingsSecurableType = `external_location`
+const GetBindingsSecurableTypeCredential GetBindingsSecurableType = `credential`
 
-const GetBindingsSecurableTypeServiceCredential GetBindingsSecurableType = `service_credential`
+const GetBindingsSecurableTypeExternalLocation GetBindingsSecurableType = `external_location`
 
 const GetBindingsSecurableTypeStorageCredential GetBindingsSecurableType = `storage_credential`
 
@@ -2563,11 +2563,11 @@ func (f *GetBindingsSecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GetBindingsSecurableType) Set(v string) error {
 	switch v {
-	case `catalog`, `external_location`, `service_credential`, `storage_credential`:
+	case `catalog`, `credential`, `external_location`, `storage_credential`:
 		*f = GetBindingsSecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "external_location", "service_credential", "storage_credential"`, v)
+		return fmt.Errorf(`value "%s" is not one of "catalog", "credential", "external_location", "storage_credential"`, v)
 	}
 }
 
@@ -5421,9 +5421,9 @@ type UpdateBindingsSecurableType string
 
 const UpdateBindingsSecurableTypeCatalog UpdateBindingsSecurableType = `catalog`
 
-const UpdateBindingsSecurableTypeExternalLocation UpdateBindingsSecurableType = `external_location`
+const UpdateBindingsSecurableTypeCredential UpdateBindingsSecurableType = `credential`
 
-const UpdateBindingsSecurableTypeServiceCredential UpdateBindingsSecurableType = `service_credential`
+const UpdateBindingsSecurableTypeExternalLocation UpdateBindingsSecurableType = `external_location`
 
 const UpdateBindingsSecurableTypeStorageCredential UpdateBindingsSecurableType = `storage_credential`
 
@@ -5435,11 +5435,11 @@ func (f *UpdateBindingsSecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UpdateBindingsSecurableType) Set(v string) error {
 	switch v {
-	case `catalog`, `external_location`, `service_credential`, `storage_credential`:
+	case `catalog`, `credential`, `external_location`, `storage_credential`:
 		*f = UpdateBindingsSecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "external_location", "service_credential", "storage_credential"`, v)
+		return fmt.Errorf(`value "%s" is not one of "catalog", "credential", "external_location", "storage_credential"`, v)
 	}
 }
 
