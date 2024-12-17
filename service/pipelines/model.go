@@ -1315,7 +1315,7 @@ type RestartWindow struct {
 	// Days of week in which the restart is allowed to happen (within a
 	// five-hour window starting at start_hour). If not specified all days of
 	// the week will be used.
-	DaysOfWeek RestartWindowDaysOfWeek `json:"days_of_week,omitempty"`
+	DaysOfWeek []RestartWindowDaysOfWeek `json:"days_of_week,omitempty"`
 	// An integer between 0 and 23 denoting the start hour for the restart
 	// window in the 24-hour day. Continuous pipeline restart is triggered only
 	// within a five-hour window starting at this hour.

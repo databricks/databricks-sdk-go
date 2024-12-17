@@ -6,6 +6,24 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+// Create account federation policy
+type CreateAccountFederationPolicyRequest struct {
+	Policy *FederationPolicy `json:"policy,omitempty"`
+	// The identifier for the federation policy. If unspecified, the id will be
+	// assigned by Databricks.
+	PolicyId string `json:"-" url:"policy_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAccountFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateCustomAppIntegration struct {
 	// This field indicates whether an OAuth client secret is required to
 	// authenticate this client.
@@ -84,6 +102,26 @@ func (s CreatePublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Create service principal federation policy
+type CreateServicePrincipalFederationPolicyRequest struct {
+	Policy *FederationPolicy `json:"policy,omitempty"`
+	// The identifier for the federation policy. If unspecified, the id will be
+	// assigned by Databricks.
+	PolicyId string `json:"-" url:"policy_id,omitempty"`
+	// The service principal id for the federation policy.
+	ServicePrincipalId int64 `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateServicePrincipalFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Create service principal secret
 type CreateServicePrincipalSecretRequest struct {
 	// The service principal ID.
@@ -132,6 +170,11 @@ func (s DataPlaneInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Delete account federation policy
+type DeleteAccountFederationPolicyRequest struct {
+	PolicyId string `json:"-" url:"-"`
+}
+
 type DeleteCustomAppIntegrationOutput struct {
 }
 
@@ -151,12 +194,52 @@ type DeletePublishedAppIntegrationRequest struct {
 type DeleteResponse struct {
 }
 
+// Delete service principal federation policy
+type DeleteServicePrincipalFederationPolicyRequest struct {
+	PolicyId string `json:"-" url:"-"`
+	// The service principal id for the federation policy.
+	ServicePrincipalId int64 `json:"-" url:"-"`
+}
+
 // Delete service principal secret
 type DeleteServicePrincipalSecretRequest struct {
 	// The secret ID.
 	SecretId string `json:"-" url:"-"`
 	// The service principal ID.
 	ServicePrincipalId int64 `json:"-" url:"-"`
+}
+
+type FederationPolicy struct {
+	// Creation time of the federation policy.
+	CreateTime string `json:"create_time,omitempty"`
+	// Description of the federation policy.
+	Description string `json:"description,omitempty"`
+	// Name of the federation policy. The name must contain only lowercase
+	// alphanumeric characters, numbers, and hyphens. It must be unique within
+	// the account.
+	Name string `json:"name,omitempty"`
+	// Specifies the policy to use for validating OIDC claims in your federated
+	// tokens.
+	OidcPolicy *OidcFederationPolicy `json:"oidc_policy,omitempty"`
+	// Unique, immutable id of the federation policy.
+	Uid string `json:"uid,omitempty"`
+	// Last update time of the federation policy.
+	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *FederationPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FederationPolicy) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get account federation policy
+type GetAccountFederationPolicyRequest struct {
+	PolicyId string `json:"-" url:"-"`
 }
 
 type GetCustomAppIntegrationOutput struct {
@@ -281,6 +364,30 @@ func (s GetPublishedAppsOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Get service principal federation policy
+type GetServicePrincipalFederationPolicyRequest struct {
+	PolicyId string `json:"-" url:"-"`
+	// The service principal id for the federation policy.
+	ServicePrincipalId int64 `json:"-" url:"-"`
+}
+
+// List account federation policies
+type ListAccountFederationPoliciesRequest struct {
+	PageSize int `json:"-" url:"page_size,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAccountFederationPoliciesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAccountFederationPoliciesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get custom oauth app integrations
 type ListCustomAppIntegrationsRequest struct {
 	IncludeCreatorUsername bool `json:"-" url:"include_creator_username,omitempty"`
@@ -297,6 +404,22 @@ func (s *ListCustomAppIntegrationsRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListCustomAppIntegrationsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListFederationPoliciesResponse struct {
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Policies []FederationPolicy `json:"policies,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListFederationPoliciesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListFederationPoliciesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -332,6 +455,25 @@ func (s *ListPublishedAppIntegrationsRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListPublishedAppIntegrationsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List service principal federation policies
+type ListServicePrincipalFederationPoliciesRequest struct {
+	PageSize int `json:"-" url:"page_size,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The service principal id for the federation policy.
+	ServicePrincipalId int64 `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListServicePrincipalFederationPoliciesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListServicePrincipalFederationPoliciesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -375,6 +517,44 @@ func (s *ListServicePrincipalSecretsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListServicePrincipalSecretsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Specifies the policy to use for validating OIDC claims in your federated
+// tokens.
+type OidcFederationPolicy struct {
+	// The allowed token audiences, as specified in the 'aud' claim of federated
+	// tokens. The audience identifier is intended to represent the recipient of
+	// the token. Can be any non-empty string value. As long as the audience in
+	// the token matches at least one audience in the policy, the token is
+	// considered a match. If audiences is unspecified, defaults to your
+	// Databricks account id.
+	Audiences []string `json:"audiences,omitempty"`
+	// The required token issuer, as specified in the 'iss' claim of federated
+	// tokens.
+	Issuer string `json:"issuer,omitempty"`
+	// The public keys used to validate the signature of federated tokens, in
+	// JWKS format. If unspecified (recommended), Databricks automatically
+	// fetches the public keys from your issuer’s well known endpoint.
+	// Databricks strongly recommends relying on your issuer’s well known
+	// endpoint for discovering public keys.
+	JwksJson string `json:"jwks_json,omitempty"`
+	// The required token subject, as specified in the subject claim of
+	// federated tokens. Must be specified for service principal federation
+	// policies. Must not be specified for account federation policies.
+	Subject string `json:"subject,omitempty"`
+	// The claim that contains the subject of the token. If unspecified, the
+	// default value is 'sub'.
+	SubjectClaim string `json:"subject_claim,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *OidcFederationPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OidcFederationPolicy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -447,6 +627,18 @@ func (s TokenAccessPolicy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Update account federation policy
+type UpdateAccountFederationPolicyRequest struct {
+	Policy *FederationPolicy `json:"policy,omitempty"`
+
+	PolicyId string `json:"-" url:"-"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
 type UpdateCustomAppIntegration struct {
 	IntegrationId string `json:"-" url:"-"`
 	// List of OAuth redirect urls to be updated in the custom OAuth app
@@ -466,4 +658,18 @@ type UpdatePublishedAppIntegration struct {
 }
 
 type UpdatePublishedAppIntegrationOutput struct {
+}
+
+// Update service principal federation policy
+type UpdateServicePrincipalFederationPolicyRequest struct {
+	Policy *FederationPolicy `json:"policy,omitempty"`
+
+	PolicyId string `json:"-" url:"-"`
+	// The service principal id for the federation policy.
+	ServicePrincipalId int64 `json:"-" url:"-"`
+	// Field mask is required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. The field
+	// mask needs to be supplied as single string. To specify multiple fields in
+	// the field mask, use comma as the separator (no space).
+	UpdateMask string `json:"-" url:"update_mask"`
 }

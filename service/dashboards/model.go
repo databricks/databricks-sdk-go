@@ -749,6 +749,10 @@ type MigrateDashboardRequest struct {
 	ParentPath string `json:"parent_path,omitempty"`
 	// UUID of the dashboard to be migrated.
 	SourceDashboardId string `json:"source_dashboard_id"`
+	// Flag to indicate if mustache parameter syntax ({{ param }}) should be
+	// auto-updated to named syntax (:param) when converting datasets in the
+	// dashboard.
+	UpdateParameterSyntax bool `json:"update_parameter_syntax,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
