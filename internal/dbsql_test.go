@@ -19,7 +19,7 @@ func TestAccQueries(t *testing.T) {
 
 	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
 		Query: &sql.CreateQueryRequestQuery{
-			DisplayName: RandomName("go-sdk/test/"),
+			DisplayName: RandomName("go-sdk-test-"),
 			WarehouseId: srcs[0].WarehouseId,
 			Description: "test query from Go SDK",
 			QueryText:   "SHOW TABLES",
@@ -63,7 +63,7 @@ func TestAccAlerts(t *testing.T) {
 
 	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
 		Query: &sql.CreateQueryRequestQuery{
-			DisplayName: RandomName("go-sdk/test/"),
+			DisplayName: RandomName("go-sdk-test-"),
 			WarehouseId: srcs[0].WarehouseId,
 			Description: "test query from Go SDK",
 			QueryText:   "SELECT 1",
