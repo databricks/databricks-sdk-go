@@ -67,6 +67,9 @@ func Continuef(format string, err error, args ...interface{}) *Err {
 	return Continue(wrapped)
 }
 
+// BackoffFunc is a function that returns the duration to wait before retrying the given attempt.
+type BackoffFunc func(int) time.Duration
+
 var maxWait = 10 * time.Second
 var minJitter = 50 * time.Millisecond
 var maxJitter = 750 * time.Millisecond
@@ -152,6 +155,14 @@ func OnErrors(on ...error) RetryOption {
 func WithRetryFunc(halt func(error) bool) RetryOption {
 	return func(rc *RetryConfig) {
 		rc.shouldRetry = halt
+	}
+}
+
+// WithBackoffFunc configures the backoff duration for a given attempt. The retrier will wait
+// for the returned duration before retrying.
+func WithBackoffFunc(f func(attempt int) time.Duration) RetryOption {
+	return func(rc *RetryConfig) {
+		rc.backoff = f
 	}
 }
 

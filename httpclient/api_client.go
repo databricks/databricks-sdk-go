@@ -27,7 +27,13 @@ type ClientConfig struct {
 	AuthVisitor RequestVisitor
 	Visitors    []RequestVisitor
 
-	RetryTimeout       time.Duration
+	// The maximum amount of time to retry requests that return retriable errors.
+	// If unset, the default is 5 minutes.
+	RetryTimeout time.Duration
+
+	// Returns the amount of time to wait after the given attempt.
+	RetryBackoff retries.BackoffFunc
+
 	HTTPTimeout        time.Duration
 	InsecureSkipVerify bool
 	DebugHeaders       bool
@@ -302,16 +308,20 @@ func (c *ApiClient) recordRequestLog(
 func (c *ApiClient) RoundTrip(request *http.Request) (*http.Response, error) {
 	ctx := request.Context()
 	requestURL := request.URL.String()
-	resp, err := retries.Poll(ctx, c.config.RetryTimeout,
-		c.attempt(ctx, request.Method, requestURL, common.RequestBody{
-			Reader: request.Body,
-			// DO NOT DECODE BODY, because it may contain sensitive payload,
-			// like Azure Service Principal in a multipart/form-data body.
-			DebugBytes: []byte("<http.RoundTripper>"),
-		}, func(r *http.Request) error {
-			r.Header = request.Header
-			return nil
-		}))
+	retrier := makeRetrier[common.ResponseWrapper](c.config)
+	resp, err := retrier.Run(
+		ctx,
+		func(ctx context.Context) (*common.ResponseWrapper, error) {
+			return c.attempt(ctx, request.Method, requestURL, common.RequestBody{
+				Reader: request.Body,
+				// DO NOT DECODE BODY, because it may contain sensitive payload,
+				// like Azure Service Principal in a multipart/form-data body.
+				DebugBytes: []byte("<http.RoundTripper>"),
+			}, func(r *http.Request) error {
+				r.Header = request.Header
+				return nil
+			})()
+		})
 	if err != nil {
 		return nil, err
 	}
@@ -336,8 +346,16 @@ func (c *ApiClient) perform(
 	requestBody common.RequestBody,
 	visitors ...RequestVisitor,
 ) (*common.ResponseWrapper, error) {
-	resp, err := retries.Poll(ctx, c.config.RetryTimeout,
-		c.attempt(ctx, method, requestURL, requestBody, visitors...))
+	retrier := makeRetrier[common.ResponseWrapper](c.config)
+	resp, err := retrier.Run(
+		ctx,
+		func(ctx context.Context) (*common.ResponseWrapper, error) {
+			resp, err := c.attempt(ctx, method, requestURL, requestBody, visitors...)()
+			if err != nil {
+				return resp, err
+			}
+			return resp, nil
+		})
 	var timedOut *retries.ErrTimedOut
 	if errors.As(err, &timedOut) {
 		// TODO: check if we want to unwrap this error here

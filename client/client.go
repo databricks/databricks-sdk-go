@@ -69,7 +69,7 @@ func (c *DatabricksClient) Do(
 	headers map[string]string,
 	request any,
 	response any,
-	visitors ...func(*http.Request) error
+	visitors ...func(*http.Request) error,
 ) error {
 	opts := []httpclient.DoOption{}
 	for _, v := range visitors {
