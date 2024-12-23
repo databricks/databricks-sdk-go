@@ -165,6 +165,8 @@ type BaseRun struct {
 	// failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run
 	// Job task. * `FILE_ARRIVAL`: Indicates a run that is triggered by a file
 	// arrival. * `TABLE`: Indicates a run that is triggered by a table update.
+	// * `CONTINUOUS_RESTART`: Indicates a run created by user to manually
+	// restart a continuous job run.
 	Trigger TriggerType `json:"trigger,omitempty"`
 	// Additional details about what triggered the run
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
@@ -207,6 +209,131 @@ type CancelRun struct {
 }
 
 type CancelRunResponse struct {
+}
+
+// Copied from elastic-spark-common/api/messages/runs.proto. Using the original
+// definition to remove coupling with jobs API definition
+type CleanRoomTaskRunLifeCycleState string
+
+const CleanRoomTaskRunLifeCycleStateBlocked CleanRoomTaskRunLifeCycleState = `BLOCKED`
+
+const CleanRoomTaskRunLifeCycleStateInternalError CleanRoomTaskRunLifeCycleState = `INTERNAL_ERROR`
+
+const CleanRoomTaskRunLifeCycleStatePending CleanRoomTaskRunLifeCycleState = `PENDING`
+
+const CleanRoomTaskRunLifeCycleStateQueued CleanRoomTaskRunLifeCycleState = `QUEUED`
+
+const CleanRoomTaskRunLifeCycleStateRunning CleanRoomTaskRunLifeCycleState = `RUNNING`
+
+const CleanRoomTaskRunLifeCycleStateSkipped CleanRoomTaskRunLifeCycleState = `SKIPPED`
+
+const CleanRoomTaskRunLifeCycleStateTerminated CleanRoomTaskRunLifeCycleState = `TERMINATED`
+
+const CleanRoomTaskRunLifeCycleStateTerminating CleanRoomTaskRunLifeCycleState = `TERMINATING`
+
+const CleanRoomTaskRunLifeCycleStateWaitingForRetry CleanRoomTaskRunLifeCycleState = `WAITING_FOR_RETRY`
+
+// String representation for [fmt.Print]
+func (f *CleanRoomTaskRunLifeCycleState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CleanRoomTaskRunLifeCycleState) Set(v string) error {
+	switch v {
+	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `QUEUED`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
+		*f = CleanRoomTaskRunLifeCycleState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "INTERNAL_ERROR", "PENDING", "QUEUED", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING", "WAITING_FOR_RETRY"`, v)
+	}
+}
+
+// Type always returns CleanRoomTaskRunLifeCycleState to satisfy [pflag.Value] interface
+func (f *CleanRoomTaskRunLifeCycleState) Type() string {
+	return "CleanRoomTaskRunLifeCycleState"
+}
+
+// Copied from elastic-spark-common/api/messages/runs.proto. Using the original
+// definition to avoid cyclic dependency.
+type CleanRoomTaskRunResultState string
+
+const CleanRoomTaskRunResultStateCanceled CleanRoomTaskRunResultState = `CANCELED`
+
+const CleanRoomTaskRunResultStateDisabled CleanRoomTaskRunResultState = `DISABLED`
+
+const CleanRoomTaskRunResultStateEvicted CleanRoomTaskRunResultState = `EVICTED`
+
+const CleanRoomTaskRunResultStateExcluded CleanRoomTaskRunResultState = `EXCLUDED`
+
+const CleanRoomTaskRunResultStateFailed CleanRoomTaskRunResultState = `FAILED`
+
+const CleanRoomTaskRunResultStateMaximumConcurrentRunsReached CleanRoomTaskRunResultState = `MAXIMUM_CONCURRENT_RUNS_REACHED`
+
+const CleanRoomTaskRunResultStateSuccess CleanRoomTaskRunResultState = `SUCCESS`
+
+const CleanRoomTaskRunResultStateSuccessWithFailures CleanRoomTaskRunResultState = `SUCCESS_WITH_FAILURES`
+
+const CleanRoomTaskRunResultStateTimedout CleanRoomTaskRunResultState = `TIMEDOUT`
+
+const CleanRoomTaskRunResultStateUpstreamCanceled CleanRoomTaskRunResultState = `UPSTREAM_CANCELED`
+
+const CleanRoomTaskRunResultStateUpstreamEvicted CleanRoomTaskRunResultState = `UPSTREAM_EVICTED`
+
+const CleanRoomTaskRunResultStateUpstreamFailed CleanRoomTaskRunResultState = `UPSTREAM_FAILED`
+
+// String representation for [fmt.Print]
+func (f *CleanRoomTaskRunResultState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CleanRoomTaskRunResultState) Set(v string) error {
+	switch v {
+	case `CANCELED`, `DISABLED`, `EVICTED`, `EXCLUDED`, `FAILED`, `MAXIMUM_CONCURRENT_RUNS_REACHED`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `TIMEDOUT`, `UPSTREAM_CANCELED`, `UPSTREAM_EVICTED`, `UPSTREAM_FAILED`:
+		*f = CleanRoomTaskRunResultState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "DISABLED", "EVICTED", "EXCLUDED", "FAILED", "MAXIMUM_CONCURRENT_RUNS_REACHED", "SUCCESS", "SUCCESS_WITH_FAILURES", "TIMEDOUT", "UPSTREAM_CANCELED", "UPSTREAM_EVICTED", "UPSTREAM_FAILED"`, v)
+	}
+}
+
+// Type always returns CleanRoomTaskRunResultState to satisfy [pflag.Value] interface
+func (f *CleanRoomTaskRunResultState) Type() string {
+	return "CleanRoomTaskRunResultState"
+}
+
+// Stores the run state of the clean rooms notebook task.
+type CleanRoomTaskRunState struct {
+	// A value indicating the run's current lifecycle state. This field is
+	// always available in the response.
+	LifeCycleState CleanRoomTaskRunLifeCycleState `json:"life_cycle_state,omitempty"`
+	// A value indicating the run's result. This field is only available for
+	// terminal lifecycle states.
+	ResultState CleanRoomTaskRunResultState `json:"result_state,omitempty"`
+}
+
+type CleanRoomsNotebookTask struct {
+	// The clean room that the notebook belongs to.
+	CleanRoomName string `json:"clean_room_name"`
+	// Checksum to validate the freshness of the notebook resource (i.e. the
+	// notebook being run is the latest version). It can be fetched by calling
+	// the :method:cleanroomassets/get API.
+	Etag string `json:"etag,omitempty"`
+	// Base parameters to be used for the clean room notebook job.
+	NotebookBaseParameters map[string]string `json:"notebook_base_parameters,omitempty"`
+	// Name of the notebook being run.
+	NotebookName string `json:"notebook_name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CleanRoomsNotebookTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomsNotebookTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ClusterInstance struct {
@@ -441,12 +568,11 @@ type CreateJob struct {
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
-	// Write-only setting. Specifies the user, service principal or group that
-	// the job/pipeline runs as. If not specified, the job/pipeline runs as the
-	// user who created the job/pipeline.
+	// Write-only setting. Specifies the user or service principal that the job
+	// runs as. If not specified, the job runs as the user who created the job.
 	//
-	// Exactly one of `user_name`, `service_principal_name`, `group_name` should
-	// be specified. If not, an error is thrown.
+	// Either `user_name` or `service_principal_name` should be specified. If
+	// not, an error is thrown.
 	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
@@ -1384,12 +1510,11 @@ type JobPermissionsRequest struct {
 	JobId string `json:"-" url:"-"`
 }
 
-// Write-only setting. Specifies the user, service principal or group that the
-// job/pipeline runs as. If not specified, the job/pipeline runs as the user who
-// created the job/pipeline.
+// Write-only setting. Specifies the user or service principal that the job runs
+// as. If not specified, the job runs as the user who created the job.
 //
-// Exactly one of `user_name`, `service_principal_name`, `group_name` should be
-// specified. If not, an error is thrown.
+// Either `user_name` or `service_principal_name` should be specified. If not,
+// an error is thrown.
 type JobRunAs struct {
 	// Application ID of an active service principal. Setting this field
 	// requires the `servicePrincipal/user` role.
@@ -1483,12 +1608,11 @@ type JobSettings struct {
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
-	// Write-only setting. Specifies the user, service principal or group that
-	// the job/pipeline runs as. If not specified, the job/pipeline runs as the
-	// user who created the job/pipeline.
+	// Write-only setting. Specifies the user or service principal that the job
+	// runs as. If not specified, the job runs as the user who created the job.
 	//
-	// Exactly one of `user_name`, `service_principal_name`, `group_name` should
-	// be specified. If not, an error is thrown.
+	// Either `user_name` or `service_principal_name` should be specified. If
+	// not, an error is thrown.
 	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
@@ -1587,12 +1711,12 @@ func (f *JobSourceDirtyState) Type() string {
 //
 // * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. *
 // `STREAMING_BACKLOG_BYTES`: An estimate of the maximum bytes of data waiting
-// to be consumed across all streams. This metric is in Private Preview. *
+// to be consumed across all streams. This metric is in Public Preview. *
 // `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag across all
-// streams. This metric is in Private Preview. * `STREAMING_BACKLOG_SECONDS`: An
+// streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An
 // estimate of the maximum consumer delay across all streams. This metric is in
-// Private Preview. * `STREAMING_BACKLOG_FILES`: An estimate of the maximum
-// number of outstanding files across all streams. This metric is in Private
+// Public Preview. * `STREAMING_BACKLOG_FILES`: An estimate of the maximum
+// number of outstanding files across all streams. This metric is in Public
 // Preview.
 type JobsHealthMetric string
 
@@ -1600,19 +1724,19 @@ type JobsHealthMetric string
 const JobsHealthMetricRunDurationSeconds JobsHealthMetric = `RUN_DURATION_SECONDS`
 
 // An estimate of the maximum bytes of data waiting to be consumed across all
-// streams. This metric is in Private Preview.
+// streams. This metric is in Public Preview.
 const JobsHealthMetricStreamingBacklogBytes JobsHealthMetric = `STREAMING_BACKLOG_BYTES`
 
 // An estimate of the maximum number of outstanding files across all streams.
-// This metric is in Private Preview.
+// This metric is in Public Preview.
 const JobsHealthMetricStreamingBacklogFiles JobsHealthMetric = `STREAMING_BACKLOG_FILES`
 
 // An estimate of the maximum offset lag across all streams. This metric is in
-// Private Preview.
+// Public Preview.
 const JobsHealthMetricStreamingBacklogRecords JobsHealthMetric = `STREAMING_BACKLOG_RECORDS`
 
 // An estimate of the maximum consumer delay across all streams. This metric is
-// in Private Preview.
+// in Public Preview.
 const JobsHealthMetricStreamingBacklogSeconds JobsHealthMetric = `STREAMING_BACKLOG_SECONDS`
 
 // String representation for [fmt.Print]
@@ -1669,13 +1793,13 @@ type JobsHealthRule struct {
 	//
 	// * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. *
 	// `STREAMING_BACKLOG_BYTES`: An estimate of the maximum bytes of data
-	// waiting to be consumed across all streams. This metric is in Private
+	// waiting to be consumed across all streams. This metric is in Public
 	// Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset
-	// lag across all streams. This metric is in Private Preview. *
+	// lag across all streams. This metric is in Public Preview. *
 	// `STREAMING_BACKLOG_SECONDS`: An estimate of the maximum consumer delay
-	// across all streams. This metric is in Private Preview. *
+	// across all streams. This metric is in Public Preview. *
 	// `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of
-	// outstanding files across all streams. This metric is in Private Preview.
+	// outstanding files across all streams. This metric is in Public Preview.
 	Metric JobsHealthMetric `json:"metric"`
 	// Specifies the operator used to compare the health metric value with the
 	// specified threshold.
@@ -2514,6 +2638,8 @@ type Run struct {
 	// failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run
 	// Job task. * `FILE_ARRIVAL`: Indicates a run that is triggered by a file
 	// arrival. * `TABLE`: Indicates a run that is triggered by a table update.
+	// * `CONTINUOUS_RESTART`: Indicates a run created by user to manually
+	// restart a continuous job run.
 	Trigger TriggerType `json:"trigger,omitempty"`
 	// Additional details about what triggered the run
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
@@ -2907,6 +3033,9 @@ type RunNow struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
+	// A list of task keys to run inside of the job. If this field is not
+	// provided, all tasks in the job will be run.
+	Only []string `json:"only,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 
@@ -3235,6 +3364,11 @@ type RunTask struct {
 	// retried only until they succeed, and the maximum `attempt_number` is the
 	// same as the `max_retries` value for the job.
 	AttemptNumber int `json:"attempt_number,omitempty"`
+	// The task runs a [clean rooms] notebook when the
+	// `clean_rooms_notebook_task` field is present.
+	//
+	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
+	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
 	// The time in milliseconds it took to terminate the cluster and clean up
 	// any associated artifacts. The duration of a task run is the sum of the
 	// `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
@@ -3938,6 +4072,11 @@ func (s SubmitRunResponse) MarshalJSON() ([]byte, error) {
 }
 
 type SubmitTask struct {
+	// The task runs a [clean rooms] notebook when the
+	// `clean_rooms_notebook_task` field is present.
+	//
+	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
+	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
 	// task does not require a cluster to execute and does not support retries
@@ -4075,6 +4214,11 @@ func (s TableUpdateTriggerConfiguration) MarshalJSON() ([]byte, error) {
 }
 
 type Task struct {
+	// The task runs a [clean rooms] notebook when the
+	// `clean_rooms_notebook_task` field is present.
+	//
+	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
+	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
 	// task does not require a cluster to execute and does not support retries
@@ -4606,7 +4750,9 @@ type TriggerSettings struct {
 // run. This occurs when you request to re-run the job in case of failures. *
 // `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. *
 // `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival. *
-// `TABLE`: Indicates a run that is triggered by a table update.
+// `TABLE`: Indicates a run that is triggered by a table update. *
+// `CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a
+// continuous job run.
 type TriggerType string
 
 // Indicates a run that is triggered by a file arrival.

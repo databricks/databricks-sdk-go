@@ -573,7 +573,7 @@ func (s GetBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
 
 // Get budget
 type GetBudgetConfigurationRequest struct {
-	// The Databricks budget configuration ID.
+	// The budget configuration ID
 	BudgetId string `json:"-" url:"-"`
 }
 

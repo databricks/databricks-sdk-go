@@ -438,9 +438,16 @@ type ClusterAttributes struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// * `NONE`: No security isolation for multiple users sharing the cluster.
-	// Data governance features are not available in this mode. * `SINGLE_USER`:
-	// A secure cluster that can only be exclusively used by a single user
+	// The following modes can only be used with `kind`. *
+	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
+	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+	//
+	// The following modes can be used regardless of `kind`. * `NONE`: No
+	// security isolation for multiple users sharing the cluster. Data
+	// governance features are not available in this mode. * `SINGLE_USER`: A
+	// secure cluster that can only be exclusively used by a single user
 	// specified in `single_user_name`. Most programming languages, cluster
 	// features and data governance features are available in this mode. *
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
@@ -485,6 +492,19 @@ type ClusterAttributes struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// When set to true, Databricks will automatically set single node related
+	// `custom_tags`, `spark_conf`, and `num_workers`
+	IsSingleNode bool `json:"is_single_node,omitempty"`
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// The first usage of this value is for the simple cluster form where it
+	// sets `kind = CLASSIC_PREVIEW`.
+	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -532,6 +552,12 @@ type ClusterAttributes struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// `effective_spark_version` is determined by `spark_version` (DBR release),
+	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
+	// not.
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
@@ -626,9 +652,16 @@ type ClusterDetails struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// * `NONE`: No security isolation for multiple users sharing the cluster.
-	// Data governance features are not available in this mode. * `SINGLE_USER`:
-	// A secure cluster that can only be exclusively used by a single user
+	// The following modes can only be used with `kind`. *
+	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
+	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+	//
+	// The following modes can be used regardless of `kind`. * `NONE`: No
+	// security isolation for multiple users sharing the cluster. Data
+	// governance features are not available in this mode. * `SINGLE_USER`: A
+	// secure cluster that can only be exclusively used by a single user
 	// specified in `single_user_name`. Most programming languages, cluster
 	// features and data governance features are available in this mode. *
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
@@ -692,9 +725,22 @@ type ClusterDetails struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// When set to true, Databricks will automatically set single node related
+	// `custom_tags`, `spark_conf`, and `num_workers`
+	IsSingleNode bool `json:"is_single_node,omitempty"`
 	// Port on which Spark JDBC server is listening, in the driver nod. No
 	// service will be listeningon on this port in executor nodes.
 	JdbcPort int `json:"jdbc_port,omitempty"`
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// The first usage of this value is for the simple cluster form where it
+	// sets `kind = CLASSIC_PREVIEW`.
+	Kind Kind `json:"kind,omitempty"`
 	// the timestamp that the cluster was started/restarted
 	LastRestartedTime int64 `json:"last_restarted_time,omitempty"`
 	// Time when the cluster driver last lost its state (due to a restart or
@@ -781,6 +827,12 @@ type ClusterDetails struct {
 	// Information about why the cluster was terminated. This field only appears
 	// when the cluster is in a `TERMINATING` or `TERMINATED` state.
 	TerminationReason *TerminationReason `json:"termination_reason,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// `effective_spark_version` is determined by `spark_version` (DBR release),
+	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
+	// not.
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
@@ -1203,9 +1255,16 @@ type ClusterSpec struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// * `NONE`: No security isolation for multiple users sharing the cluster.
-	// Data governance features are not available in this mode. * `SINGLE_USER`:
-	// A secure cluster that can only be exclusively used by a single user
+	// The following modes can only be used with `kind`. *
+	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
+	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+	//
+	// The following modes can be used regardless of `kind`. * `NONE`: No
+	// security isolation for multiple users sharing the cluster. Data
+	// governance features are not available in this mode. * `SINGLE_USER`: A
+	// secure cluster that can only be exclusively used by a single user
 	// specified in `single_user_name`. Most programming languages, cluster
 	// features and data governance features are available in this mode. *
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
@@ -1250,6 +1309,19 @@ type ClusterSpec struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// When set to true, Databricks will automatically set single node related
+	// `custom_tags`, `spark_conf`, and `num_workers`
+	IsSingleNode bool `json:"is_single_node,omitempty"`
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// The first usage of this value is for the simple cluster form where it
+	// sets `kind = CLASSIC_PREVIEW`.
+	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -1308,6 +1380,12 @@ type ClusterSpec struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// `effective_spark_version` is determined by `spark_version` (DBR release),
+	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
+	// not.
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
@@ -1509,9 +1587,16 @@ type CreateCluster struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// * `NONE`: No security isolation for multiple users sharing the cluster.
-	// Data governance features are not available in this mode. * `SINGLE_USER`:
-	// A secure cluster that can only be exclusively used by a single user
+	// The following modes can only be used with `kind`. *
+	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
+	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+	//
+	// The following modes can be used regardless of `kind`. * `NONE`: No
+	// security isolation for multiple users sharing the cluster. Data
+	// governance features are not available in this mode. * `SINGLE_USER`: A
+	// secure cluster that can only be exclusively used by a single user
 	// specified in `single_user_name`. Most programming languages, cluster
 	// features and data governance features are available in this mode. *
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
@@ -1556,6 +1641,19 @@ type CreateCluster struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// When set to true, Databricks will automatically set single node related
+	// `custom_tags`, `spark_conf`, and `num_workers`
+	IsSingleNode bool `json:"is_single_node,omitempty"`
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// The first usage of this value is for the simple cluster form where it
+	// sets `kind = CLASSIC_PREVIEW`.
+	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -1614,6 +1712,12 @@ type CreateCluster struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// `effective_spark_version` is determined by `spark_version` (DBR release),
+	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
+	// not.
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
@@ -1883,15 +1987,22 @@ func (f *DataPlaneEventDetailsEventType) Type() string {
 // Data security mode decides what data governance model to use when accessing
 // data from a cluster.
 //
-// * `NONE`: No security isolation for multiple users sharing the cluster. Data
-// governance features are not available in this mode. * `SINGLE_USER`: A secure
-// cluster that can only be exclusively used by a single user specified in
-// `single_user_name`. Most programming languages, cluster features and data
-// governance features are available in this mode. * `USER_ISOLATION`: A secure
-// cluster that can be shared by multiple users. Cluster users are fully
-// isolated so that they cannot see each other's data and credentials. Most data
-// governance features are supported in this mode. But programming languages and
-// cluster features might be limited.
+// The following modes can only be used with `kind`. *
+// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access
+// mode depending on your compute configuration. *
+// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
+// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+//
+// The following modes can be used regardless of `kind`. * `NONE`: No security
+// isolation for multiple users sharing the cluster. Data governance features
+// are not available in this mode. * `SINGLE_USER`: A secure cluster that can
+// only be exclusively used by a single user specified in `single_user_name`.
+// Most programming languages, cluster features and data governance features are
+// available in this mode. * `USER_ISOLATION`: A secure cluster that can be
+// shared by multiple users. Cluster users are fully isolated so that they
+// cannot see each other's data and credentials. Most data governance features
+// are supported in this mode. But programming languages and cluster features
+// might be limited.
 //
 // The following modes are deprecated starting with Databricks Runtime 15.0 and
 // will be removed for future Databricks Runtime versions:
@@ -1903,6 +2014,16 @@ func (f *DataPlaneEventDetailsEventType) Type() string {
 // `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have
 // UC nor passthrough enabled.
 type DataSecurityMode string
+
+// <Databricks> will choose the most appropriate access mode depending on your
+// compute configuration.
+const DataSecurityModeDataSecurityModeAuto DataSecurityMode = `DATA_SECURITY_MODE_AUTO`
+
+// Alias for `SINGLE_USER`.
+const DataSecurityModeDataSecurityModeDedicated DataSecurityMode = `DATA_SECURITY_MODE_DEDICATED`
+
+// Alias for `USER_ISOLATION`.
+const DataSecurityModeDataSecurityModeStandard DataSecurityMode = `DATA_SECURITY_MODE_STANDARD`
 
 // This mode is for users migrating from legacy Passthrough on high concurrency
 // clusters.
@@ -1941,11 +2062,11 @@ func (f *DataSecurityMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DataSecurityMode) Set(v string) error {
 	switch v {
-	case `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_SINGLE_USER_STANDARD`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
+	case `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, `DATA_SECURITY_MODE_STANDARD`, `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_SINGLE_USER_STANDARD`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
 		*f = DataSecurityMode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_SINGLE_USER_STANDARD", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DATA_SECURITY_MODE_AUTO", "DATA_SECURITY_MODE_DEDICATED", "DATA_SECURITY_MODE_STANDARD", "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_SINGLE_USER_STANDARD", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
 	}
 }
 
@@ -2188,7 +2309,7 @@ type EditCluster struct {
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-	// ID of the cluser
+	// ID of the cluster
 	ClusterId string `json:"cluster_id"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
@@ -2212,9 +2333,16 @@ type EditCluster struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// * `NONE`: No security isolation for multiple users sharing the cluster.
-	// Data governance features are not available in this mode. * `SINGLE_USER`:
-	// A secure cluster that can only be exclusively used by a single user
+	// The following modes can only be used with `kind`. *
+	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
+	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+	//
+	// The following modes can be used regardless of `kind`. * `NONE`: No
+	// security isolation for multiple users sharing the cluster. Data
+	// governance features are not available in this mode. * `SINGLE_USER`: A
+	// secure cluster that can only be exclusively used by a single user
 	// specified in `single_user_name`. Most programming languages, cluster
 	// features and data governance features are available in this mode. *
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
@@ -2259,6 +2387,19 @@ type EditCluster struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// When set to true, Databricks will automatically set single node related
+	// `custom_tags`, `spark_conf`, and `num_workers`
+	IsSingleNode bool `json:"is_single_node,omitempty"`
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// The first usage of this value is for the simple cluster form where it
+	// sets `kind = CLASSIC_PREVIEW`.
+	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -2317,6 +2458,12 @@ type EditCluster struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// `effective_spark_version` is determined by `spark_version` (DBR release),
+	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
+	// not.
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
@@ -3754,6 +3901,38 @@ func (s InstanceProfile) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The kind of compute described by this compute specification.
+//
+// Depending on `kind`, different validations and default values will be
+// applied.
+//
+// The first usage of this value is for the simple cluster form where it sets
+// `kind = CLASSIC_PREVIEW`.
+type Kind string
+
+const KindClassicPreview Kind = `CLASSIC_PREVIEW`
+
+// String representation for [fmt.Print]
+func (f *Kind) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *Kind) Set(v string) error {
+	switch v {
+	case `CLASSIC_PREVIEW`:
+		*f = Kind(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC_PREVIEW"`, v)
+	}
+}
+
+// Type always returns Kind to satisfy [pflag.Value] interface
+func (f *Kind) Type() string {
+	return "Kind"
+}
+
 type Language string
 
 const LanguagePython Language = `python`
@@ -5145,9 +5324,16 @@ type UpdateClusterResource struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// * `NONE`: No security isolation for multiple users sharing the cluster.
-	// Data governance features are not available in this mode. * `SINGLE_USER`:
-	// A secure cluster that can only be exclusively used by a single user
+	// The following modes can only be used with `kind`. *
+	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
+	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+	//
+	// The following modes can be used regardless of `kind`. * `NONE`: No
+	// security isolation for multiple users sharing the cluster. Data
+	// governance features are not available in this mode. * `SINGLE_USER`: A
+	// secure cluster that can only be exclusively used by a single user
 	// specified in `single_user_name`. Most programming languages, cluster
 	// features and data governance features are available in this mode. *
 	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
@@ -5192,6 +5378,19 @@ type UpdateClusterResource struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// When set to true, Databricks will automatically set single node related
+	// `custom_tags`, `spark_conf`, and `num_workers`
+	IsSingleNode bool `json:"is_single_node,omitempty"`
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// The first usage of this value is for the simple cluster form where it
+	// sets `kind = CLASSIC_PREVIEW`.
+	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -5250,6 +5449,12 @@ type UpdateClusterResource struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// `effective_spark_version` is determined by `spark_version` (DBR release),
+	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
+	// not.
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 

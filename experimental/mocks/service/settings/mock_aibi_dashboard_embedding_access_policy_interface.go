@@ -22,6 +22,65 @@ func (_m *MockAibiDashboardEmbeddingAccessPolicyInterface) EXPECT() *MockAibiDas
 	return &MockAibiDashboardEmbeddingAccessPolicyInterface_Expecter{mock: &_m.Mock}
 }
 
+// Delete provides a mock function with given fields: ctx, request
+func (_m *MockAibiDashboardEmbeddingAccessPolicyInterface) Delete(ctx context.Context, request settings.DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*settings.DeleteAibiDashboardEmbeddingAccessPolicySettingResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Delete")
+	}
+
+	var r0 *settings.DeleteAibiDashboardEmbeddingAccessPolicySettingResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*settings.DeleteAibiDashboardEmbeddingAccessPolicySettingResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) *settings.DeleteAibiDashboardEmbeddingAccessPolicySettingResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settings.DeleteAibiDashboardEmbeddingAccessPolicySettingResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settings.DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAibiDashboardEmbeddingAccessPolicyInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
+type MockAibiDashboardEmbeddingAccessPolicyInterface_Delete_Call struct {
+	*mock.Call
+}
+
+// Delete is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settings.DeleteAibiDashboardEmbeddingAccessPolicySettingRequest
+func (_e *MockAibiDashboardEmbeddingAccessPolicyInterface_Expecter) Delete(ctx interface{}, request interface{}) *MockAibiDashboardEmbeddingAccessPolicyInterface_Delete_Call {
+	return &MockAibiDashboardEmbeddingAccessPolicyInterface_Delete_Call{Call: _e.mock.On("Delete", ctx, request)}
+}
+
+func (_c *MockAibiDashboardEmbeddingAccessPolicyInterface_Delete_Call) Run(run func(ctx context.Context, request settings.DeleteAibiDashboardEmbeddingAccessPolicySettingRequest)) *MockAibiDashboardEmbeddingAccessPolicyInterface_Delete_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settings.DeleteAibiDashboardEmbeddingAccessPolicySettingRequest))
+	})
+	return _c
+}
+
+func (_c *MockAibiDashboardEmbeddingAccessPolicyInterface_Delete_Call) Return(_a0 *settings.DeleteAibiDashboardEmbeddingAccessPolicySettingResponse, _a1 error) *MockAibiDashboardEmbeddingAccessPolicyInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAibiDashboardEmbeddingAccessPolicyInterface_Delete_Call) RunAndReturn(run func(context.Context, settings.DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*settings.DeleteAibiDashboardEmbeddingAccessPolicySettingResponse, error)) *MockAibiDashboardEmbeddingAccessPolicyInterface_Delete_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function with given fields: ctx, request
 func (_m *MockAibiDashboardEmbeddingAccessPolicyInterface) Get(ctx context.Context, request settings.GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*settings.AibiDashboardEmbeddingAccessPolicySetting, error) {
 	ret := _m.Called(ctx, request)

@@ -246,7 +246,7 @@ type DeleteCredentialsResponse struct {
 
 // Delete a repo
 type DeleteRepoRequest struct {
-	// ID of the Git folder (repo) object in the workspace.
+	// The ID for the corresponding repo to delete.
 	RepoId int64 `json:"-" url:"-"`
 }
 
@@ -555,6 +555,8 @@ const ImportFormatHtml ImportFormat = `HTML`
 // The notebook is imported as a Jupyter/IPython Notebook file.
 const ImportFormatJupyter ImportFormat = `JUPYTER`
 
+const ImportFormatRaw ImportFormat = `RAW`
+
 // The notebook is imported from R Markdown format.
 const ImportFormatRMarkdown ImportFormat = `R_MARKDOWN`
 
@@ -569,11 +571,11 @@ func (f *ImportFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ImportFormat) Set(v string) error {
 	switch v {
-	case `AUTO`, `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
+	case `AUTO`, `DBC`, `HTML`, `JUPYTER`, `RAW`, `R_MARKDOWN`, `SOURCE`:
 		*f = ImportFormat(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AUTO", "DBC", "HTML", "JUPYTER", "R_MARKDOWN", "SOURCE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AUTO", "DBC", "HTML", "JUPYTER", "RAW", "R_MARKDOWN", "SOURCE"`, v)
 	}
 }
 

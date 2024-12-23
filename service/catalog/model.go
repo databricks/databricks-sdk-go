@@ -147,6 +147,29 @@ func (s AwsCredentials) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The AWS IAM role configuration
+type AwsIamRole struct {
+	// The external ID used in role assumption to prevent the confused deputy
+	// problem.
+	ExternalId string `json:"external_id,omitempty"`
+	// The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary
+	// credentials.
+	RoleArn string `json:"role_arn,omitempty"`
+	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
+	// This is the identity that is going to assume the AWS IAM role.
+	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AwsIamRole) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AwsIamRole) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AwsIamRoleRequest struct {
 	// The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
 	RoleArn string `json:"role_arn"`
@@ -170,6 +193,55 @@ func (s *AwsIamRoleResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s AwsIamRoleResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Azure Active Directory token, essentially the Oauth token for Azure Service
+// Principal or Managed Identity. Read more at
+// https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token
+type AzureActiveDirectoryToken struct {
+	// Opaque token that contains claims that you can use in Azure Active
+	// Directory to access cloud services.
+	AadToken string `json:"aad_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AzureActiveDirectoryToken) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AzureActiveDirectoryToken) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The Azure managed identity configuration.
+type AzureManagedIdentity struct {
+	// The Azure resource ID of the Azure Databricks Access Connector. Use the
+	// format
+	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+	AccessConnectorId string `json:"access_connector_id"`
+	// The Databricks internal ID that represents this managed identity. This
+	// field is only used to persist the credential_id once it is fetched from
+	// the credentials manager - as we only use the protobuf serializer to store
+	// credentials, this ID gets persisted to the database. .
+	CredentialId string `json:"credential_id,omitempty"`
+	// The Azure resource ID of the managed identity. Use the format,
+	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+	// This is only available for user-assgined identities. For system-assigned
+	// identities, the access_connector_id is used to identify the identity. If
+	// this field is not provided, then we assume the AzureManagedIdentity is
+	// using the system-assigned identity.
+	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AzureManagedIdentity) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AzureManagedIdentity) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -223,6 +295,8 @@ func (s AzureManagedIdentityResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The Azure service principal configuration. Only applicable when purpose is
+// **STORAGE**.
 type AzureServicePrincipal struct {
 	// The application ID of the application registration within the referenced
 	// AAD tenant.
@@ -465,7 +539,7 @@ type ColumnInfo struct {
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// Full data type specification, JSON-serialized.
 	TypeJson string `json:"type_json,omitempty"`
-	// Name of type (INT, STRUCT, MAP, etc.).
+
 	TypeName ColumnTypeName `json:"type_name,omitempty"`
 	// Digits of precision; required for DecimalTypes.
 	TypePrecision int `json:"type_precision,omitempty"`
@@ -505,7 +579,6 @@ func (s ColumnMask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Name of type (INT, STRUCT, MAP, etc.).
 type ColumnTypeName string
 
 const ColumnTypeNameArray ColumnTypeName = `ARRAY`
@@ -550,6 +623,8 @@ const ColumnTypeNameTimestampNtz ColumnTypeName = `TIMESTAMP_NTZ`
 
 const ColumnTypeNameUserDefinedType ColumnTypeName = `USER_DEFINED_TYPE`
 
+const ColumnTypeNameVariant ColumnTypeName = `VARIANT`
+
 // String representation for [fmt.Print]
 func (f *ColumnTypeName) String() string {
 	return string(*f)
@@ -558,11 +633,11 @@ func (f *ColumnTypeName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ColumnTypeName) Set(v string) error {
 	switch v {
-	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`:
+	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`, `VARIANT`:
 		*f = ColumnTypeName(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TABLE_TYPE", "TIMESTAMP", "TIMESTAMP_NTZ", "USER_DEFINED_TYPE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TABLE_TYPE", "TIMESTAMP", "TIMESTAMP_NTZ", "USER_DEFINED_TYPE", "VARIANT"`, v)
 	}
 }
 
@@ -801,6 +876,42 @@ func (s CreateConnection) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateCredentialRequest struct {
+	// The AWS IAM role configuration
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// The Azure managed identity configuration.
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	// The Azure service principal configuration. Only applicable when purpose
+	// is **STORAGE**.
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// Comment associated with the credential.
+	Comment string `json:"comment,omitempty"`
+	// GCP long-lived credential. Databricks-created Google Cloud Storage
+	// service account.
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
+	// The credential name. The name must be unique among storage and service
+	// credentials within the metastore.
+	Name string `json:"name"`
+	// Indicates the purpose of the credential.
+	Purpose CredentialPurpose `json:"purpose,omitempty"`
+	// Whether the credential is usable only for read operations. Only
+	// applicable when purpose is **STORAGE**.
+	ReadOnly bool `json:"read_only,omitempty"`
+	// Optional. Supplying true to this argument skips validation of the created
+	// set of credentials.
+	SkipValidation bool `json:"skip_validation,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateExternalLocation struct {
 	// The AWS access point to use when accesing s3 for this external location.
 	AccessPoint string `json:"access_point,omitempty"`
@@ -956,7 +1067,7 @@ func (f *CreateFunctionRoutineBody) Type() string {
 	return "CreateFunctionRoutineBody"
 }
 
-// Function security type.
+// The security type of the function.
 type CreateFunctionSecurityType string
 
 const CreateFunctionSecurityTypeDefiner CreateFunctionSecurityType = `DEFINER`
@@ -1218,6 +1329,88 @@ func (s CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CredentialInfo struct {
+	// The AWS IAM role configuration
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// The Azure managed identity configuration.
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	// The Azure service principal configuration. Only applicable when purpose
+	// is **STORAGE**.
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// Comment associated with the credential.
+	Comment string `json:"comment,omitempty"`
+	// Time at which this credential was created, in epoch milliseconds.
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// Username of credential creator.
+	CreatedBy string `json:"created_by,omitempty"`
+	// GCP long-lived credential. Databricks-created Google Cloud Storage
+	// service account.
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
+	// The full name of the credential.
+	FullName string `json:"full_name,omitempty"`
+	// The unique identifier of the credential.
+	Id string `json:"id,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	// Unique identifier of the parent metastore.
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// The credential name. The name must be unique among storage and service
+	// credentials within the metastore.
+	Name string `json:"name,omitempty"`
+	// Username of current owner of credential.
+	Owner string `json:"owner,omitempty"`
+	// Indicates the purpose of the credential.
+	Purpose CredentialPurpose `json:"purpose,omitempty"`
+	// Whether the credential is usable only for read operations. Only
+	// applicable when purpose is **STORAGE**.
+	ReadOnly bool `json:"read_only,omitempty"`
+	// Time at which this credential was last modified, in epoch milliseconds.
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Username of user who last modified the credential.
+	UpdatedBy string `json:"updated_by,omitempty"`
+	// Whether this credential is the current metastore's root storage
+	// credential. Only applicable when purpose is **STORAGE**.
+	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CredentialInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CredentialInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CredentialPurpose string
+
+const CredentialPurposeService CredentialPurpose = `SERVICE`
+
+const CredentialPurposeStorage CredentialPurpose = `STORAGE`
+
+// String representation for [fmt.Print]
+func (f *CredentialPurpose) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CredentialPurpose) Set(v string) error {
+	switch v {
+	case `SERVICE`, `STORAGE`:
+		*f = CredentialPurpose(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SERVICE", "STORAGE"`, v)
+	}
+}
+
+// Type always returns CredentialPurpose to satisfy [pflag.Value] interface
+func (f *CredentialPurpose) Type() string {
+	return "CredentialPurpose"
+}
+
 // The type of credential.
 type CredentialType string
 
@@ -1244,6 +1437,23 @@ func (f *CredentialType) Set(v string) error {
 // Type always returns CredentialType to satisfy [pflag.Value] interface
 func (f *CredentialType) Type() string {
 	return "CredentialType"
+}
+
+type CredentialValidationResult struct {
+	// Error message would exist when the result does not equal to **PASS**.
+	Message string `json:"message,omitempty"`
+	// The results of the tested operation.
+	Result ValidateCredentialResult `json:"result,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CredentialValidationResult) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CredentialValidationResult) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Currently assigned workspaces
@@ -1320,6 +1530,30 @@ func (f *DataSourceFormat) Set(v string) error {
 // Type always returns DataSourceFormat to satisfy [pflag.Value] interface
 func (f *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
+}
+
+// GCP long-lived credential. Databricks-created Google Cloud Storage service
+// account.
+type DatabricksGcpServiceAccount struct {
+	// The Databricks internal ID that represents this managed identity. This
+	// field is only used to persist the credential_id once it is fetched from
+	// the credentials manager - as we only use the protobuf serializer to store
+	// credentials, this ID gets persisted to the database
+	CredentialId string `json:"credential_id,omitempty"`
+	// The email of the service account.
+	Email string `json:"email,omitempty"`
+	// The ID that represents the private key for this Service Account
+	PrivateKeyId string `json:"private_key_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DatabricksGcpServiceAccount) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabricksGcpServiceAccount) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DatabricksGcpServiceAccountRequest struct {
@@ -1423,6 +1657,29 @@ func (s DeleteCatalogRequest) MarshalJSON() ([]byte, error) {
 type DeleteConnectionRequest struct {
 	// The name of the connection to be deleted.
 	Name string `json:"-" url:"-"`
+}
+
+// Delete a credential
+type DeleteCredentialRequest struct {
+	// Force an update even if there are dependent services (when purpose is
+	// **SERVICE**) or dependent external locations and external tables (when
+	// purpose is **STORAGE**).
+	Force bool `json:"-" url:"force,omitempty"`
+	// Name of the credential.
+	NameArg string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DeleteCredentialResponse struct {
 }
 
 // Delete an external location
@@ -1779,8 +2036,7 @@ type ExternalLocationInfo struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// Whether the current securable is accessible from all workspaces or a
-	// specific set of workspaces.
+
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of metastore hosting the external location.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -1988,7 +2244,7 @@ func (f *FunctionInfoRoutineBody) Type() string {
 	return "FunctionInfoRoutineBody"
 }
 
-// Function security type.
+// The security type of the function.
 type FunctionInfoSecurityType string
 
 const FunctionInfoSecurityTypeDefiner FunctionInfoSecurityType = `DEFINER`
@@ -2061,7 +2317,7 @@ type FunctionParameterInfo struct {
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// Full data type spec, JSON-serialized.
 	TypeJson string `json:"type_json,omitempty"`
-	// Name of type (INT, STRUCT, MAP, etc.).
+
 	TypeName ColumnTypeName `json:"type_name"`
 	// Digits of precision; required on Create for DecimalTypes.
 	TypePrecision int `json:"type_precision,omitempty"`
@@ -2157,6 +2413,32 @@ func (s GcpOauthToken) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The Azure cloud options to customize the requested temporary credential
+type GenerateTemporaryServiceCredentialAzureOptions struct {
+	// The resources to which the temporary Azure credential should apply. These
+	// resources are the scopes that are passed to the token provider (see
+	// https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python)
+	Resources []string `json:"resources,omitempty"`
+}
+
+// The GCP cloud options to customize the requested temporary credential
+type GenerateTemporaryServiceCredentialGcpOptions struct {
+	// The scopes to which the temporary GCP credential should apply. These
+	// resources are the scopes that are passed to the token provider (see
+	// https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials)
+	Scopes []string `json:"scopes,omitempty"`
+}
+
+type GenerateTemporaryServiceCredentialRequest struct {
+	// The Azure cloud options to customize the requested temporary credential
+	AzureOptions *GenerateTemporaryServiceCredentialAzureOptions `json:"azure_options,omitempty"`
+	// The name of the service credential used to generate a temporary
+	// credential
+	CredentialName string `json:"credential_name"`
+	// The GCP cloud options to customize the requested temporary credential
+	GcpOptions *GenerateTemporaryServiceCredentialGcpOptions `json:"gcp_options,omitempty"`
+}
+
 type GenerateTemporaryTableCredentialRequest struct {
 	// The operation performed against the table data, either READ or
 	// READ_WRITE. If READ_WRITE is specified, the credentials returned will
@@ -2180,6 +2462,10 @@ type GenerateTemporaryTableCredentialResponse struct {
 	// AWS temporary credentials for API authentication. Read more at
 	// https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
 	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
+	// Azure Active Directory token, essentially the Oauth token for Azure
+	// Service Principal or Managed Identity. Read more at
+	// https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token
+	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
 	// Azure temporary credentials for API authentication. Read more at
 	// https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
 	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
@@ -2263,6 +2549,8 @@ type GetBindingsSecurableType string
 
 const GetBindingsSecurableTypeCatalog GetBindingsSecurableType = `catalog`
 
+const GetBindingsSecurableTypeCredential GetBindingsSecurableType = `credential`
+
 const GetBindingsSecurableTypeExternalLocation GetBindingsSecurableType = `external_location`
 
 const GetBindingsSecurableTypeStorageCredential GetBindingsSecurableType = `storage_credential`
@@ -2275,11 +2563,11 @@ func (f *GetBindingsSecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *GetBindingsSecurableType) Set(v string) error {
 	switch v {
-	case `catalog`, `external_location`, `storage_credential`:
+	case `catalog`, `credential`, `external_location`, `storage_credential`:
 		*f = GetBindingsSecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "external_location", "storage_credential"`, v)
+		return fmt.Errorf(`value "%s" is not one of "catalog", "credential", "external_location", "storage_credential"`, v)
 	}
 }
 
@@ -2332,6 +2620,12 @@ func (s GetCatalogRequest) MarshalJSON() ([]byte, error) {
 type GetConnectionRequest struct {
 	// Name of the connection.
 	Name string `json:"-" url:"-"`
+}
+
+// Get a credential
+type GetCredentialRequest struct {
+	// Name of the credential.
+	NameArg string `json:"-" url:"-"`
 }
 
 // Get effective permissions
@@ -2640,8 +2934,6 @@ type GetWorkspaceBindingRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// Whether the current securable is accessible from all workspaces or a specific
-// set of workspaces.
 type IsolationMode string
 
 const IsolationModeIsolationModeIsolated IsolationMode = `ISOLATION_MODE_ISOLATED`
@@ -2778,6 +3070,48 @@ func (s *ListConnectionsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListConnectionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List credentials
+type ListCredentialsRequest struct {
+	// Maximum number of credentials to return. - If not set, the default max
+	// page size is used. - When set to a value greater than 0, the page length
+	// is the minimum of this value and a server-configured value. - When set to
+	// 0, the page length is set to a server-configured value (recommended). -
+	// When set to a value less than 0, an invalid parameter error is returned.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque token to retrieve the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Return only credentials for the specified purpose.
+	Purpose CredentialPurpose `json:"-" url:"purpose,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListCredentialsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCredentialsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListCredentialsResponse struct {
+	Credentials []CredentialInfo `json:"credentials,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListCredentialsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCredentialsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3240,6 +3574,9 @@ type ListTablesRequest struct {
 	OmitColumns bool `json:"-" url:"omit_columns,omitempty"`
 	// Whether to omit the properties of the table from the response or not.
 	OmitProperties bool `json:"-" url:"omit_properties,omitempty"`
+	// Whether to omit the username of the table (e.g. owner, updated_by,
+	// created_by) from the response or not.
+	OmitUsername bool `json:"-" url:"omit_username,omitempty"`
 	// Opaque token to send for the next page of results (pagination).
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// Parent schema of tables.
@@ -4200,6 +4537,8 @@ const PrivilegeCreateExternalVolume Privilege = `CREATE_EXTERNAL_VOLUME`
 
 const PrivilegeCreateForeignCatalog Privilege = `CREATE_FOREIGN_CATALOG`
 
+const PrivilegeCreateForeignSecurable Privilege = `CREATE_FOREIGN_SECURABLE`
+
 const PrivilegeCreateFunction Privilege = `CREATE_FUNCTION`
 
 const PrivilegeCreateManagedStorage Privilege = `CREATE_MANAGED_STORAGE`
@@ -4276,11 +4615,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -4591,6 +4930,8 @@ const SecurableTypeCatalog SecurableType = `catalog`
 
 const SecurableTypeConnection SecurableType = `connection`
 
+const SecurableTypeCredential SecurableType = `credential`
+
 const SecurableTypeExternalLocation SecurableType = `external_location`
 
 const SecurableTypeFunction SecurableType = `function`
@@ -4621,11 +4962,11 @@ func (f *SecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableType) Set(v string) error {
 	switch v {
-	case `catalog`, `connection`, `external_location`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `storage_credential`, `table`, `volume`:
+	case `catalog`, `connection`, `credential`, `external_location`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `storage_credential`, `table`, `volume`:
 		*f = SecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "connection", "external_location", "function", "metastore", "pipeline", "provider", "recipient", "schema", "share", "storage_credential", "table", "volume"`, v)
+		return fmt.Errorf(`value "%s" is not one of "catalog", "connection", "credential", "external_location", "function", "metastore", "pipeline", "provider", "recipient", "schema", "share", "storage_credential", "table", "volume"`, v)
 	}
 }
 
@@ -4714,10 +5055,11 @@ type StorageCredentialInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// The Databricks managed GCP service account configuration.
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountResponse `json:"databricks_gcp_service_account,omitempty"`
+	// The full name of the credential.
+	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
-	// Whether the current securable is accessible from all workspaces or a
-	// specific set of workspaces.
+
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -5014,6 +5356,29 @@ func (f *TableType) Type() string {
 	return "TableType"
 }
 
+type TemporaryCredentials struct {
+	// AWS temporary credentials for API authentication. Read more at
+	// https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
+	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
+	// Azure Active Directory token, essentially the Oauth token for Azure
+	// Service Principal or Managed Identity. Read more at
+	// https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token
+	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
+	// Server time when the credential will expire, in epoch milliseconds. The
+	// API client is advised to cache the credential given this expiration time.
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TemporaryCredentials) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TemporaryCredentials) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Detailed status of an online table. Shown if the online table is in the
 // ONLINE_TRIGGERED_UPDATE or the ONLINE_NO_PENDING_UPDATE state.
 type TriggeredUpdateStatus struct {
@@ -5056,6 +5421,8 @@ type UpdateBindingsSecurableType string
 
 const UpdateBindingsSecurableTypeCatalog UpdateBindingsSecurableType = `catalog`
 
+const UpdateBindingsSecurableTypeCredential UpdateBindingsSecurableType = `credential`
+
 const UpdateBindingsSecurableTypeExternalLocation UpdateBindingsSecurableType = `external_location`
 
 const UpdateBindingsSecurableTypeStorageCredential UpdateBindingsSecurableType = `storage_credential`
@@ -5068,11 +5435,11 @@ func (f *UpdateBindingsSecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UpdateBindingsSecurableType) Set(v string) error {
 	switch v {
-	case `catalog`, `external_location`, `storage_credential`:
+	case `catalog`, `credential`, `external_location`, `storage_credential`:
 		*f = UpdateBindingsSecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "external_location", "storage_credential"`, v)
+		return fmt.Errorf(`value "%s" is not one of "catalog", "credential", "external_location", "storage_credential"`, v)
 	}
 }
 
@@ -5131,6 +5498,50 @@ func (s UpdateConnection) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateCredentialRequest struct {
+	// The AWS IAM role configuration
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// The Azure managed identity configuration.
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	// The Azure service principal configuration. Only applicable when purpose
+	// is **STORAGE**.
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// Comment associated with the credential.
+	Comment string `json:"comment,omitempty"`
+	// GCP long-lived credential. Databricks-created Google Cloud Storage
+	// service account.
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
+	// Force an update even if there are dependent services (when purpose is
+	// **SERVICE**) or dependent external locations and external tables (when
+	// purpose is **STORAGE**).
+	Force bool `json:"force,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	// Name of the credential.
+	NameArg string `json:"-" url:"-"`
+	// New name of credential.
+	NewName string `json:"new_name,omitempty"`
+	// Username of current owner of credential.
+	Owner string `json:"owner,omitempty"`
+	// Whether the credential is usable only for read operations. Only
+	// applicable when purpose is **STORAGE**.
+	ReadOnly bool `json:"read_only,omitempty"`
+	// Supply true to this argument to skip validation of the updated
+	// credential.
+	SkipValidation bool `json:"skip_validation,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpdateExternalLocation struct {
 	// The AWS access point to use when accesing s3 for this external location.
 	AccessPoint string `json:"access_point,omitempty"`
@@ -5147,8 +5558,7 @@ type UpdateExternalLocation struct {
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
 	Force bool `json:"force,omitempty"`
-	// Whether the current securable is accessible from all workspaces or a
-	// specific set of workspaces.
+
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the external location.
 	Name string `json:"-" url:"-"`
@@ -5413,8 +5823,7 @@ type UpdateStorageCredential struct {
 	// Force update even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"force,omitempty"`
-	// Whether the current securable is accessible from all workspaces or a
-	// specific set of workspaces.
+
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
@@ -5496,6 +5905,86 @@ type UpdateWorkspaceBindingsParameters struct {
 	SecurableName string `json:"-" url:"-"`
 	// The type of the securable to bind to a workspace.
 	SecurableType UpdateBindingsSecurableType `json:"-" url:"-"`
+}
+
+type ValidateCredentialRequest struct {
+	// The AWS IAM role configuration
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// The Azure managed identity configuration.
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	// Required. The name of an existing credential or long-lived cloud
+	// credential to validate.
+	CredentialName string `json:"credential_name,omitempty"`
+	// The name of an existing external location to validate. Only applicable
+	// for storage credentials (purpose is **STORAGE**.)
+	ExternalLocationName string `json:"external_location_name,omitempty"`
+	// The purpose of the credential. This should only be used when the
+	// credential is specified.
+	Purpose CredentialPurpose `json:"purpose,omitempty"`
+	// Whether the credential is only usable for read operations. Only
+	// applicable for storage credentials (purpose is **STORAGE**.)
+	ReadOnly bool `json:"read_only,omitempty"`
+	// The external location url to validate. Only applicable when purpose is
+	// **STORAGE**.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ValidateCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ValidateCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ValidateCredentialResponse struct {
+	// Whether the tested location is a directory in cloud storage. Only
+	// applicable for when purpose is **STORAGE**.
+	IsDir bool `json:"isDir,omitempty"`
+	// The results of the validation check.
+	Results []CredentialValidationResult `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ValidateCredentialResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ValidateCredentialResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A enum represents the result of the file operation
+type ValidateCredentialResult string
+
+const ValidateCredentialResultFail ValidateCredentialResult = `FAIL`
+
+const ValidateCredentialResultPass ValidateCredentialResult = `PASS`
+
+const ValidateCredentialResultSkip ValidateCredentialResult = `SKIP`
+
+// String representation for [fmt.Print]
+func (f *ValidateCredentialResult) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ValidateCredentialResult) Set(v string) error {
+	switch v {
+	case `FAIL`, `PASS`, `SKIP`:
+		*f = ValidateCredentialResult(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAIL", "PASS", "SKIP"`, v)
+	}
+}
+
+// Type always returns ValidateCredentialResult to satisfy [pflag.Value] interface
+func (f *ValidateCredentialResult) Type() string {
+	return "ValidateCredentialResult"
 }
 
 type ValidateStorageCredential struct {

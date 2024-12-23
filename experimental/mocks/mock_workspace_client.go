@@ -10,6 +10,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/compute"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
@@ -46,7 +47,9 @@ func NewMockWorkspaceClient(t interface {
 			Apps:                                apps.NewMockAppsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
-			CleanRooms:                          sharing.NewMockCleanRoomsInterface(t),
+			CleanRoomAssets:                     cleanrooms.NewMockCleanRoomAssetsInterface(t),
+			CleanRoomTaskRuns:                   cleanrooms.NewMockCleanRoomTaskRunsInterface(t),
+			CleanRooms:                          cleanrooms.NewMockCleanRoomsInterface(t),
 			ClusterPolicies:                     compute.NewMockClusterPoliciesInterface(t),
 			Clusters:                            compute.NewMockClustersInterface(t),
 			CommandExecution:                    compute.NewMockCommandExecutionInterface(t),
@@ -56,6 +59,7 @@ func NewMockWorkspaceClient(t interface {
 			ConsumerListings:                    marketplace.NewMockConsumerListingsInterface(t),
 			ConsumerPersonalizationRequests:     marketplace.NewMockConsumerPersonalizationRequestsInterface(t),
 			ConsumerProviders:                   marketplace.NewMockConsumerProvidersInterface(t),
+			Credentials:                         catalog.NewMockCredentialsInterface(t),
 			CredentialsManager:                  settings.NewMockCredentialsManagerInterface(t),
 			CurrentUser:                         iam.NewMockCurrentUserInterface(t),
 			DashboardWidgets:                    sql.NewMockDashboardWidgetsInterface(t),
@@ -286,10 +290,26 @@ func (m *MockWorkspaceClient) GetMockCatalogsAPI() *catalog.MockCatalogsInterfac
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockCleanRoomsAPI() *sharing.MockCleanRoomsInterface {
-	api, ok := m.WorkspaceClient.CleanRooms.(*sharing.MockCleanRoomsInterface)
+func (m *MockWorkspaceClient) GetMockCleanRoomAssetsAPI() *cleanrooms.MockCleanRoomAssetsInterface {
+	api, ok := m.WorkspaceClient.CleanRoomAssets.(*cleanrooms.MockCleanRoomAssetsInterface)
 	if !ok {
-		panic(fmt.Sprintf("expected CleanRooms to be *sharing.MockCleanRoomsInterface, actual was %T", m.WorkspaceClient.CleanRooms))
+		panic(fmt.Sprintf("expected CleanRoomAssets to be *cleanrooms.MockCleanRoomAssetsInterface, actual was %T", m.WorkspaceClient.CleanRoomAssets))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockCleanRoomTaskRunsAPI() *cleanrooms.MockCleanRoomTaskRunsInterface {
+	api, ok := m.WorkspaceClient.CleanRoomTaskRuns.(*cleanrooms.MockCleanRoomTaskRunsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected CleanRoomTaskRuns to be *cleanrooms.MockCleanRoomTaskRunsInterface, actual was %T", m.WorkspaceClient.CleanRoomTaskRuns))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockCleanRoomsAPI() *cleanrooms.MockCleanRoomsInterface {
+	api, ok := m.WorkspaceClient.CleanRooms.(*cleanrooms.MockCleanRoomsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected CleanRooms to be *cleanrooms.MockCleanRoomsInterface, actual was %T", m.WorkspaceClient.CleanRooms))
 	}
 	return api
 }
@@ -362,6 +382,14 @@ func (m *MockWorkspaceClient) GetMockConsumerProvidersAPI() *marketplace.MockCon
 	api, ok := m.WorkspaceClient.ConsumerProviders.(*marketplace.MockConsumerProvidersInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ConsumerProviders to be *marketplace.MockConsumerProvidersInterface, actual was %T", m.WorkspaceClient.ConsumerProviders))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockCredentialsAPI() *catalog.MockCredentialsInterface {
+	api, ok := m.WorkspaceClient.Credentials.(*catalog.MockCredentialsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Credentials to be *catalog.MockCredentialsInterface, actual was %T", m.WorkspaceClient.Credentials))
 	}
 	return api
 }

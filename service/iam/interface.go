@@ -328,8 +328,9 @@ type PermissionsService interface {
 
 	// Set object permissions.
 	//
-	// Sets permissions on an object. Objects can inherit permissions from their
-	// parent objects or root object.
+	// Sets permissions on an object, replacing existing permissions if they
+	// exist. Deletes all direct permissions if none are specified. Objects can
+	// inherit permissions from their parent objects or root object.
 	Set(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error)
 
 	// Update object permissions.
@@ -441,8 +442,9 @@ type UsersService interface {
 
 	// Set password permissions.
 	//
-	// Sets permissions on all passwords. Passwords can inherit permissions from
-	// their root object.
+	// Sets permissions on an object, replacing existing permissions if they
+	// exist. Deletes all direct permissions if none are specified. Objects can
+	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
 
 	// Replace a user.

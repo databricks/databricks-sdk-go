@@ -12,58 +12,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-// unexported type that holds implementations of just CleanRooms API methods
-type cleanRoomsImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoom) (*CleanRoomInfo, error) {
-	var cleanRoomInfo CleanRoomInfo
-	path := "/api/2.1/unity-catalog/clean-rooms"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &cleanRoomInfo)
-	return &cleanRoomInfo, err
-}
-
-func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequest) error {
-	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.Name)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
-	return err
-}
-
-func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (*CleanRoomInfo, error) {
-	var cleanRoomInfo CleanRoomInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.Name)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &cleanRoomInfo)
-	return &cleanRoomInfo, err
-}
-
-func (a *cleanRoomsImpl) List(ctx context.Context, request ListCleanRoomsRequest) (*ListCleanRoomsResponse, error) {
-	var listCleanRoomsResponse ListCleanRoomsResponse
-	path := "/api/2.1/unity-catalog/clean-rooms"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listCleanRoomsResponse)
-	return &listCleanRoomsResponse, err
-}
-
-func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoom) (*CleanRoomInfo, error) {
-	var cleanRoomInfo CleanRoomInfo
-	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.Name)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cleanRoomInfo)
-	return &cleanRoomInfo, err
-}
-
 // unexported type that holds implementations of just Providers API methods
 type providersImpl struct {
 	client *client.DatabricksClient

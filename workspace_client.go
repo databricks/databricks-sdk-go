@@ -11,6 +11,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
+	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/service/files"
@@ -78,13 +79,18 @@ type WorkspaceClient struct {
 	// depending on privileges granted centrally in Unity Catalog.
 	Catalogs catalog.CatalogsInterface
 
-	// A clean room is a secure, privacy-protecting environment where two or
-	// more parties can share sensitive enterprise data, including customer
-	// data, for measurements, insights, activation and other use cases.
-	//
-	// To create clean rooms, you must be a metastore admin or a user with the
-	// **CREATE_CLEAN_ROOM** privilege.
-	CleanRooms sharing.CleanRoomsInterface
+	// Clean room assets are data and code objects — Tables, volumes, and
+	// notebooks that are shared with the clean room.
+	CleanRoomAssets cleanrooms.CleanRoomAssetsInterface
+
+	// Clean room task runs are the executions of notebooks in a clean room.
+	CleanRoomTaskRuns cleanrooms.CleanRoomTaskRunsInterface
+
+	// A clean room uses Delta Sharing and serverless compute to provide a
+	// secure and privacy-protecting environment where multiple parties can work
+	// together on sensitive enterprise data without direct access to each
+	// other’s data.
+	CleanRooms cleanrooms.CleanRoomsInterface
 
 	// You can use cluster policies to control users' ability to configure
 	// clusters based on a set of rules. These rules specify which attributes or
@@ -175,6 +181,17 @@ type WorkspaceClient struct {
 
 	// Providers are the entities that publish listings to the Marketplace.
 	ConsumerProviders marketplace.ConsumerProvidersInterface
+
+	// A credential represents an authentication and authorization mechanism for
+	// accessing services on your cloud tenant. Each credential is subject to
+	// Unity Catalog access-control policies that control which users and groups
+	// can access the credential.
+	//
+	// To create credentials, you must be a Databricks account admin or have the
+	// `CREATE SERVICE CREDENTIAL` privilege. The user who creates the
+	// credential can delegate ownership to another user or group to manage
+	// permissions on it.
+	Credentials catalog.CredentialsInterface
 
 	// Credentials manager interacts with with Identity Providers to to perform
 	// token exchanges using stored credentials and refresh tokens.
@@ -1139,7 +1156,9 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Apps:                                apps.NewApps(databricksClient),
 		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
 		Catalogs:                            catalog.NewCatalogs(databricksClient),
-		CleanRooms:                          sharing.NewCleanRooms(databricksClient),
+		CleanRoomAssets:                     cleanrooms.NewCleanRoomAssets(databricksClient),
+		CleanRoomTaskRuns:                   cleanrooms.NewCleanRoomTaskRuns(databricksClient),
+		CleanRooms:                          cleanrooms.NewCleanRooms(databricksClient),
 		ClusterPolicies:                     compute.NewClusterPolicies(databricksClient),
 		Clusters:                            compute.NewClusters(databricksClient),
 		CommandExecution:                    compute.NewCommandExecution(databricksClient),
@@ -1149,6 +1168,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ConsumerListings:                    marketplace.NewConsumerListings(databricksClient),
 		ConsumerPersonalizationRequests:     marketplace.NewConsumerPersonalizationRequests(databricksClient),
 		ConsumerProviders:                   marketplace.NewConsumerProviders(databricksClient),
+		Credentials:                         catalog.NewCredentials(databricksClient),
 		CredentialsManager:                  settings.NewCredentialsManager(databricksClient),
 		CurrentUser:                         iam.NewCurrentUser(databricksClient),
 		DashboardWidgets:                    sql.NewDashboardWidgets(databricksClient),

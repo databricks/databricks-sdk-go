@@ -35,6 +35,8 @@ type App struct {
 	// Resources for the app.
 	Resources []AppResource `json:"resources,omitempty"`
 
+	ServicePrincipalClientId string `json:"service_principal_client_id,omitempty"`
+
 	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
 
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -728,6 +730,7 @@ type StopAppRequest struct {
 // Update an app
 type UpdateAppRequest struct {
 	App *App `json:"app,omitempty"`
-	// The name of the app.
+	// The name of the app. The name must contain only lowercase alphanumeric
+	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"-" url:"-"`
 }

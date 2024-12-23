@@ -22,7 +22,11 @@
 //
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
-// - [sharing.CleanRoomsAPI]: A clean room is a secure, privacy-protecting environment where two or more parties can share sensitive enterprise data, including customer data, for measurements, insights, activation and other use cases.
+// - [cleanrooms.CleanRoomAssetsAPI]: Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the clean room.
+//
+// - [cleanrooms.CleanRoomTaskRunsAPI]: Clean room task runs are the executions of notebooks in a clean room.
+//
+// - [cleanrooms.CleanRoomsAPI]: A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting environment where multiple parties can work together on sensitive enterprise data without direct access to each other’s data.
 //
 // - [compute.ClusterPoliciesAPI]: You can use cluster policies to control users' ability to configure clusters based on a set of rules.
 //
@@ -43,6 +47,8 @@
 // - [marketplace.ConsumerPersonalizationRequestsAPI]: Personalization Requests allow customers to interact with the individualized Marketplace listing flow.
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
+//
+// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
 //
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
@@ -81,6 +87,8 @@
 // - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
 //
 // - [catalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
+//
+// - [oauth2.AccountFederationPolicyAPI]: These APIs manage account federation policies.
 //
 // - [files.FilesAPI]: The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI.
 //
@@ -196,6 +204,8 @@
 //
 // - [workspace.SecretsAPI]: The Secrets API allows you to manage secrets, secret scopes, and access permissions.
 //
+// - [oauth2.ServicePrincipalFederationPolicyAPI]: These APIs manage service principal federation policies.
+//
 // - [oauth2.ServicePrincipalSecretsAPI]: These APIs enable administrators to manage service principal secrets.
 //
 // - [iam.ServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
@@ -265,6 +275,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
+	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/service/files"
@@ -299,7 +310,9 @@ var (
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil
 	_ *catalog.CatalogsAPI                                = nil
-	_ *sharing.CleanRoomsAPI                              = nil
+	_ *cleanrooms.CleanRoomAssetsAPI                      = nil
+	_ *cleanrooms.CleanRoomTaskRunsAPI                    = nil
+	_ *cleanrooms.CleanRoomsAPI                           = nil
 	_ *compute.ClusterPoliciesAPI                         = nil
 	_ *compute.ClustersAPI                                = nil
 	_ *compute.CommandExecutionAPI                        = nil
@@ -310,6 +323,7 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
+	_ *catalog.CredentialsAPI                             = nil
 	_ *provisioning.CredentialsAPI                        = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
@@ -329,6 +343,7 @@ var (
 	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *ml.ExperimentsAPI                                  = nil
 	_ *catalog.ExternalLocationsAPI                       = nil
+	_ *oauth2.AccountFederationPolicyAPI                  = nil
 	_ *files.FilesAPI                                     = nil
 	_ *catalog.FunctionsAPI                               = nil
 	_ *dashboards.GenieAPI                                = nil
@@ -386,6 +401,7 @@ var (
 	_ *settings.RestrictWorkspaceAdminsAPI                = nil
 	_ *catalog.SchemasAPI                                 = nil
 	_ *workspace.SecretsAPI                               = nil
+	_ *oauth2.ServicePrincipalFederationPolicyAPI         = nil
 	_ *oauth2.ServicePrincipalSecretsAPI                  = nil
 	_ *iam.ServicePrincipalsAPI                           = nil
 	_ *iam.AccountServicePrincipalsAPI                    = nil

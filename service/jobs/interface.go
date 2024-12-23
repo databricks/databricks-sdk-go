@@ -127,8 +127,9 @@ type JobsService interface {
 
 	// Set job permissions.
 	//
-	// Sets permissions on a job. Jobs can inherit permissions from their root
-	// object.
+	// Sets permissions on an object, replacing existing permissions if they
+	// exist. Deletes all direct permissions if none are specified. Objects can
+	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
 
 	// Create and trigger a one-time run.

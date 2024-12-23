@@ -661,6 +661,74 @@ type DeleteAccountIpAccessListRequest struct {
 	IpAccessListId string `json:"-" url:"-"`
 }
 
+// Delete the AI/BI dashboard embedding access policy
+type DeleteAibiDashboardEmbeddingAccessPolicySettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteAibiDashboardEmbeddingAccessPolicySettingResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
+}
+
+// Delete AI/BI dashboard embedding approved domains
+type DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
+}
+
 // Delete the default namespace setting
 type DeleteDefaultNamespaceSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -898,7 +966,7 @@ type DeleteRestrictWorkspaceAdminsSettingResponse struct {
 
 // Delete a token
 type DeleteTokenManagementRequest struct {
-	// The ID of the token to get.
+	// The ID of the token to revoke.
 	TokenId string `json:"-" url:"-"`
 }
 
@@ -1017,6 +1085,267 @@ func (s *DisableLegacyFeatures) UnmarshalJSON(b []byte) error {
 
 func (s DisableLegacyFeatures) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The network policies applying for egress traffic. This message is used by the
+// UI/REST API. We translate this message to the format expected by the
+// dataplane in Lakehouse Network Manager (for the format expected by the
+// dataplane, see networkconfig.textproto).
+type EgressNetworkPolicy struct {
+	// The access policy enforced for egress traffic to the internet.
+	InternetAccess *EgressNetworkPolicyInternetAccessPolicy `json:"internet_access,omitempty"`
+}
+
+type EgressNetworkPolicyInternetAccessPolicy struct {
+	AllowedInternetDestinations []EgressNetworkPolicyInternetAccessPolicyInternetDestination `json:"allowed_internet_destinations,omitempty"`
+
+	AllowedStorageDestinations []EgressNetworkPolicyInternetAccessPolicyStorageDestination `json:"allowed_storage_destinations,omitempty"`
+	// Optional. If not specified, assume the policy is enforced for all
+	// workloads.
+	LogOnlyMode *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode `json:"log_only_mode,omitempty"`
+	// At which level can Databricks and Databricks managed compute access
+	// Internet. FULL_ACCESS: Databricks can access Internet. No blocking rules
+	// will apply. RESTRICTED_ACCESS: Databricks can only access explicitly
+	// allowed internet and storage destinations, as well as UC connections and
+	// external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only
+	// access destinations via private link.
+	RestrictionMode EgressNetworkPolicyInternetAccessPolicyRestrictionMode `json:"restriction_mode,omitempty"`
+}
+
+// Users can specify accessible internet destinations when outbound access is
+// restricted. We only support domain name (FQDN) destinations for the time
+// being, though going forwards we want to support host names and IP addresses.
+type EgressNetworkPolicyInternetAccessPolicyInternetDestination struct {
+	Destination string `json:"destination,omitempty"`
+	// The filtering protocol used by the DP. For private and public preview,
+	// SEG will only support TCP filtering (i.e. DNS based filtering, filtering
+	// by destination IP address), so protocol will be set to TCP by default and
+	// hidden from the user. In the future, users may be able to select HTTP
+	// filtering (i.e. SNI based filtering, filtering by FQDN).
+	Protocol EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol `json:"protocol,omitempty"`
+
+	Type EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EgressNetworkPolicyInternetAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EgressNetworkPolicyInternetAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The filtering protocol used by the DP. For private and public preview, SEG
+// will only support TCP filtering (i.e. DNS based filtering, filtering by
+// destination IP address), so protocol will be set to TCP by default and hidden
+// from the user. In the future, users may be able to select HTTP filtering
+// (i.e. SNI based filtering, filtering by FQDN).
+type EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol string
+
+const EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocolTcp EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol = `TCP`
+
+// String representation for [fmt.Print]
+func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol) Set(v string) error {
+	switch v {
+	case `TCP`:
+		*f = EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TCP"`, v)
+	}
+}
+
+// Type always returns EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol to satisfy [pflag.Value] interface
+func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol) Type() string {
+	return "EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol"
+}
+
+type EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType string
+
+const EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationTypeFqdn EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType = `FQDN`
+
+// String representation for [fmt.Print]
+func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType) Set(v string) error {
+	switch v {
+	case `FQDN`:
+		*f = EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FQDN"`, v)
+	}
+}
+
+// Type always returns EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType to satisfy [pflag.Value] interface
+func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType) Type() string {
+	return "EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType"
+}
+
+type EgressNetworkPolicyInternetAccessPolicyLogOnlyMode struct {
+	LogOnlyModeType EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType `json:"log_only_mode_type,omitempty"`
+
+	Workloads []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType `json:"workloads,omitempty"`
+}
+
+type EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType string
+
+const EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeTypeAllServices EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType = `ALL_SERVICES`
+
+const EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeTypeSelectedServices EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType = `SELECTED_SERVICES`
+
+// String representation for [fmt.Print]
+func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType) Set(v string) error {
+	switch v {
+	case `ALL_SERVICES`, `SELECTED_SERVICES`:
+		*f = EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALL_SERVICES", "SELECTED_SERVICES"`, v)
+	}
+}
+
+// Type always returns EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType to satisfy [pflag.Value] interface
+func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType) Type() string {
+	return "EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType"
+}
+
+// The values should match the list of workloads used in networkconfig.proto
+type EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType string
+
+const EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypeDbsql EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType = `DBSQL`
+
+const EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypeMlServing EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType = `ML_SERVING`
+
+// String representation for [fmt.Print]
+func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType) Set(v string) error {
+	switch v {
+	case `DBSQL`, `ML_SERVING`:
+		*f = EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DBSQL", "ML_SERVING"`, v)
+	}
+}
+
+// Type always returns EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType to satisfy [pflag.Value] interface
+func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType) Type() string {
+	return "EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType"
+}
+
+// At which level can Databricks and Databricks managed compute access Internet.
+// FULL_ACCESS: Databricks can access Internet. No blocking rules will apply.
+// RESTRICTED_ACCESS: Databricks can only access explicitly allowed internet and
+// storage destinations, as well as UC connections and external locations.
+// PRIVATE_ACCESS_ONLY (not used): Databricks can only access destinations via
+// private link.
+type EgressNetworkPolicyInternetAccessPolicyRestrictionMode string
+
+const EgressNetworkPolicyInternetAccessPolicyRestrictionModeFullAccess EgressNetworkPolicyInternetAccessPolicyRestrictionMode = `FULL_ACCESS`
+
+const EgressNetworkPolicyInternetAccessPolicyRestrictionModePrivateAccessOnly EgressNetworkPolicyInternetAccessPolicyRestrictionMode = `PRIVATE_ACCESS_ONLY`
+
+const EgressNetworkPolicyInternetAccessPolicyRestrictionModeRestrictedAccess EgressNetworkPolicyInternetAccessPolicyRestrictionMode = `RESTRICTED_ACCESS`
+
+// String representation for [fmt.Print]
+func (f *EgressNetworkPolicyInternetAccessPolicyRestrictionMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressNetworkPolicyInternetAccessPolicyRestrictionMode) Set(v string) error {
+	switch v {
+	case `FULL_ACCESS`, `PRIVATE_ACCESS_ONLY`, `RESTRICTED_ACCESS`:
+		*f = EgressNetworkPolicyInternetAccessPolicyRestrictionMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FULL_ACCESS", "PRIVATE_ACCESS_ONLY", "RESTRICTED_ACCESS"`, v)
+	}
+}
+
+// Type always returns EgressNetworkPolicyInternetAccessPolicyRestrictionMode to satisfy [pflag.Value] interface
+func (f *EgressNetworkPolicyInternetAccessPolicyRestrictionMode) Type() string {
+	return "EgressNetworkPolicyInternetAccessPolicyRestrictionMode"
+}
+
+// Users can specify accessible storage destinations.
+type EgressNetworkPolicyInternetAccessPolicyStorageDestination struct {
+	AllowedPaths []string `json:"allowed_paths,omitempty"`
+
+	AzureContainer string `json:"azure_container,omitempty"`
+
+	AzureDnsZone string `json:"azure_dns_zone,omitempty"`
+
+	AzureStorageAccount string `json:"azure_storage_account,omitempty"`
+
+	AzureStorageService string `json:"azure_storage_service,omitempty"`
+
+	BucketName string `json:"bucket_name,omitempty"`
+
+	Region string `json:"region,omitempty"`
+
+	Type EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EgressNetworkPolicyInternetAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EgressNetworkPolicyInternetAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType string
+
+const EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypeAwsS3 EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType = `AWS_S3`
+
+const EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypeAzureStorage EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType = `AZURE_STORAGE`
+
+const EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypeCloudflareR2 EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType = `CLOUDFLARE_R2`
+
+const EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypeGoogleCloudStorage EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType = `GOOGLE_CLOUD_STORAGE`
+
+// String representation for [fmt.Print]
+func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType) Set(v string) error {
+	switch v {
+	case `AWS_S3`, `AZURE_STORAGE`, `CLOUDFLARE_R2`, `GOOGLE_CLOUD_STORAGE`:
+		*f = EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AWS_S3", "AZURE_STORAGE", "CLOUDFLARE_R2", "GOOGLE_CLOUD_STORAGE"`, v)
+	}
+}
+
+// Type always returns EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType to satisfy [pflag.Value] interface
+func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType) Type() string {
+	return "EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType"
 }
 
 type EmailConfig struct {
@@ -2666,7 +2995,7 @@ type UpdateNotificationDestinationRequest struct {
 	Config *Config `json:"config,omitempty"`
 	// The display name for the notification destination.
 	DisplayName string `json:"display_name,omitempty"`
-
+	// UUID identifying notification destination.
 	Id string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-"`

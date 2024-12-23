@@ -39,7 +39,7 @@ type CreatePipeline struct {
 	Edition string `json:"edition,omitempty"`
 	// Filters on which Pipeline packages to include in the deployed graph.
 	Filters *Filters `json:"filters,omitempty"`
-	// The definition of a gateway pipeline to support CDC.
+	// The definition of a gateway pipeline to support change data capture.
 	GatewayDefinition *IngestionGatewayPipelineDefinition `json:"gateway_definition,omitempty"`
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
@@ -54,6 +54,8 @@ type CreatePipeline struct {
 	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
+	// Restart window of this pipeline.
+	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	// The presence of this field implies that the pipeline is in direct
 	// publishing mode.
@@ -198,7 +200,7 @@ type EditPipeline struct {
 	ExpectedLastModified int64 `json:"expected_last_modified,omitempty"`
 	// Filters on which Pipeline packages to include in the deployed graph.
 	Filters *Filters `json:"filters,omitempty"`
-	// The definition of a gateway pipeline to support CDC.
+	// The definition of a gateway pipeline to support change data capture.
 	GatewayDefinition *IngestionGatewayPipelineDefinition `json:"gateway_definition,omitempty"`
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
@@ -215,6 +217,8 @@ type EditPipeline struct {
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
 	PipelineId string `json:"pipeline_id,omitempty" url:"-"`
+	// Restart window of this pipeline.
+	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	// The presence of this field implies that the pipeline is in direct
 	// publishing mode.
@@ -418,18 +422,22 @@ type GetUpdateResponse struct {
 }
 
 type IngestionConfig struct {
-	// Select tables from a specific source report.
+	// Select a specific source report.
 	Report *ReportSpec `json:"report,omitempty"`
-	// Select tables from a specific source schema.
+	// Select all tables from a specific source schema.
 	Schema *SchemaSpec `json:"schema,omitempty"`
-	// Select tables from a specific source table.
+	// Select a specific source table.
 	Table *TableSpec `json:"table,omitempty"`
 }
 
 type IngestionGatewayPipelineDefinition struct {
-	// Immutable. The Unity Catalog connection this gateway pipeline uses to
-	// communicate with the source.
+	// [Deprecated, use connection_name instead] Immutable. The Unity Catalog
+	// connection that this gateway pipeline uses to communicate with the
+	// source.
 	ConnectionId string `json:"connection_id,omitempty"`
+	// Immutable. The Unity Catalog connection that this gateway pipeline uses
+	// to communicate with the source.
+	ConnectionName string `json:"connection_name,omitempty"`
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
 	GatewayStorageCatalog string `json:"gateway_storage_catalog,omitempty"`
@@ -454,13 +462,13 @@ func (s IngestionGatewayPipelineDefinition) MarshalJSON() ([]byte, error) {
 }
 
 type IngestionPipelineDefinition struct {
-	// Immutable. The Unity Catalog connection this ingestion pipeline uses to
-	// communicate with the source. Specify either ingestion_gateway_id or
-	// connection_name.
+	// Immutable. The Unity Catalog connection that this ingestion pipeline uses
+	// to communicate with the source. This is used with connectors for
+	// applications like Salesforce, Workday, and so on.
 	ConnectionName string `json:"connection_name,omitempty"`
-	// Immutable. Identifier for the ingestion gateway used by this ingestion
-	// pipeline to communicate with the source. Specify either
-	// ingestion_gateway_id or connection_name.
+	// Immutable. Identifier for the gateway that is used by this ingestion
+	// pipeline to communicate with the source database. This is used with
+	// connectors to databases like SQL Server.
 	IngestionGatewayId string `json:"ingestion_gateway_id,omitempty"`
 	// Required. Settings specifying tables to replicate and the destination for
 	// the replicated tables.
@@ -1127,7 +1135,7 @@ type PipelineSpec struct {
 	Edition string `json:"edition,omitempty"`
 	// Filters on which Pipeline packages to include in the deployed graph.
 	Filters *Filters `json:"filters,omitempty"`
-	// The definition of a gateway pipeline to support CDC.
+	// The definition of a gateway pipeline to support change data capture.
 	GatewayDefinition *IngestionGatewayPipelineDefinition `json:"gateway_definition,omitempty"`
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
@@ -1142,6 +1150,8 @@ type PipelineSpec struct {
 	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
+	// Restart window of this pipeline.
+	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	// The presence of this field implies that the pipeline is in direct
 	// publishing mode.
@@ -1299,6 +1309,71 @@ func (s *ReportSpec) UnmarshalJSON(b []byte) error {
 
 func (s ReportSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type RestartWindow struct {
+	// Days of week in which the restart is allowed to happen (within a
+	// five-hour window starting at start_hour). If not specified all days of
+	// the week will be used.
+	DaysOfWeek []RestartWindowDaysOfWeek `json:"days_of_week,omitempty"`
+	// An integer between 0 and 23 denoting the start hour for the restart
+	// window in the 24-hour day. Continuous pipeline restart is triggered only
+	// within a five-hour window starting at this hour.
+	StartHour int `json:"start_hour"`
+	// Time zone id of restart window. See
+	// https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
+	// for details. If not specified, UTC will be used.
+	TimeZoneId string `json:"time_zone_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RestartWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RestartWindow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Days of week in which the restart is allowed to happen (within a five-hour
+// window starting at start_hour). If not specified all days of the week will be
+// used.
+type RestartWindowDaysOfWeek string
+
+const RestartWindowDaysOfWeekFriday RestartWindowDaysOfWeek = `FRIDAY`
+
+const RestartWindowDaysOfWeekMonday RestartWindowDaysOfWeek = `MONDAY`
+
+const RestartWindowDaysOfWeekSaturday RestartWindowDaysOfWeek = `SATURDAY`
+
+const RestartWindowDaysOfWeekSunday RestartWindowDaysOfWeek = `SUNDAY`
+
+const RestartWindowDaysOfWeekThursday RestartWindowDaysOfWeek = `THURSDAY`
+
+const RestartWindowDaysOfWeekTuesday RestartWindowDaysOfWeek = `TUESDAY`
+
+const RestartWindowDaysOfWeekWednesday RestartWindowDaysOfWeek = `WEDNESDAY`
+
+// String representation for [fmt.Print]
+func (f *RestartWindowDaysOfWeek) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RestartWindowDaysOfWeek) Set(v string) error {
+	switch v {
+	case `FRIDAY`, `MONDAY`, `SATURDAY`, `SUNDAY`, `THURSDAY`, `TUESDAY`, `WEDNESDAY`:
+		*f = RestartWindowDaysOfWeek(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FRIDAY", "MONDAY", "SATURDAY", "SUNDAY", "THURSDAY", "TUESDAY", "WEDNESDAY"`, v)
+	}
+}
+
+// Type always returns RestartWindowDaysOfWeek to satisfy [pflag.Value] interface
+func (f *RestartWindowDaysOfWeek) Type() string {
+	return "RestartWindowDaysOfWeek"
 }
 
 type SchemaSpec struct {

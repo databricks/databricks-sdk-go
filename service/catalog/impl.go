@@ -294,6 +294,78 @@ func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) 
 	return &connectionInfo, err
 }
 
+// unexported type that holds implementations of just Credentials API methods
+type credentialsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *credentialsImpl) CreateCredential(ctx context.Context, request CreateCredentialRequest) (*CredentialInfo, error) {
+	var credentialInfo CredentialInfo
+	path := "/api/2.1/unity-catalog/credentials"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &credentialInfo)
+	return &credentialInfo, err
+}
+
+func (a *credentialsImpl) DeleteCredential(ctx context.Context, request DeleteCredentialRequest) error {
+	var deleteCredentialResponse DeleteCredentialResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/credentials/%v", request.NameArg)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteCredentialResponse)
+	return err
+}
+
+func (a *credentialsImpl) GenerateTemporaryServiceCredential(ctx context.Context, request GenerateTemporaryServiceCredentialRequest) (*TemporaryCredentials, error) {
+	var temporaryCredentials TemporaryCredentials
+	path := "/api/2.1/unity-catalog/temporary-service-credentials"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &temporaryCredentials)
+	return &temporaryCredentials, err
+}
+
+func (a *credentialsImpl) GetCredential(ctx context.Context, request GetCredentialRequest) (*CredentialInfo, error) {
+	var credentialInfo CredentialInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/credentials/%v", request.NameArg)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &credentialInfo)
+	return &credentialInfo, err
+}
+
+func (a *credentialsImpl) ListCredentials(ctx context.Context, request ListCredentialsRequest) (*ListCredentialsResponse, error) {
+	var listCredentialsResponse ListCredentialsResponse
+	path := "/api/2.1/unity-catalog/credentials"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listCredentialsResponse)
+	return &listCredentialsResponse, err
+}
+
+func (a *credentialsImpl) UpdateCredential(ctx context.Context, request UpdateCredentialRequest) (*CredentialInfo, error) {
+	var credentialInfo CredentialInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/credentials/%v", request.NameArg)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &credentialInfo)
+	return &credentialInfo, err
+}
+
+func (a *credentialsImpl) ValidateCredential(ctx context.Context, request ValidateCredentialRequest) (*ValidateCredentialResponse, error) {
+	var validateCredentialResponse ValidateCredentialResponse
+	path := "/api/2.1/unity-catalog/validate-credentials"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &validateCredentialResponse)
+	return &validateCredentialResponse, err
+}
+
 // unexported type that holds implementations of just ExternalLocations API methods
 type externalLocationsImpl struct {
 	client *client.DatabricksClient

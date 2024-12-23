@@ -112,6 +112,12 @@ type AccountSettingsService interface {
 // setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
 type AibiDashboardEmbeddingAccessPolicyService interface {
 
+	// Delete the AI/BI dashboard embedding access policy.
+	//
+	// Delete the AI/BI dashboard embedding access policy, reverting back to the
+	// default.
+	Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*DeleteAibiDashboardEmbeddingAccessPolicySettingResponse, error)
+
 	// Retrieve the AI/BI dashboard embedding access policy.
 	//
 	// Retrieves the AI/BI dashboard embedding access policy. The default
@@ -130,6 +136,12 @@ type AibiDashboardEmbeddingAccessPolicyService interface {
 // The approved domains list can't be mutated when the current access policy is
 // not set to ALLOW_APPROVED_DOMAINS.
 type AibiDashboardEmbeddingApprovedDomainsService interface {
+
+	// Delete AI/BI dashboard embedding approved domains.
+	//
+	// Delete the list of domains approved to host embedded AI/BI dashboards,
+	// reverting back to the default empty list.
+	Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse, error)
 
 	// Retrieve the list of domains approved to host embedded AI/BI dashboards.
 	//
@@ -687,8 +699,9 @@ type TokenManagementService interface {
 
 	// Set token permissions.
 	//
-	// Sets permissions on all tokens. Tokens can inherit permissions from their
-	// root object.
+	// Sets permissions on an object, replacing existing permissions if they
+	// exist. Deletes all direct permissions if none are specified. Objects can
+	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error)
 
 	// Update token permissions.
