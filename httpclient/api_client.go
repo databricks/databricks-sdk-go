@@ -312,7 +312,7 @@ func (c *ApiClient) RoundTrip(request *http.Request) (*http.Response, error) {
 	resp, err := retrier.Run(
 		ctx,
 		func(ctx context.Context) (*common.ResponseWrapper, error) {
-			return c.attempt(ctx, request.Method, requestURL, common.RequestBody{
+			resp, err := c.attempt(ctx, request.Method, requestURL, common.RequestBody{
 				Reader: request.Body,
 				// DO NOT DECODE BODY, because it may contain sensitive payload,
 				// like Azure Service Principal in a multipart/form-data body.
@@ -321,6 +321,10 @@ func (c *ApiClient) RoundTrip(request *http.Request) (*http.Response, error) {
 				r.Header = request.Header
 				return nil
 			})()
+			if err != nil {
+				return nil, err
+			}
+			return resp, nil
 		})
 	if err != nil {
 		return nil, err
