@@ -7,6 +7,7 @@ import (
 func makeRetrier[T any](c ClientConfig) retries.Retrier[T] {
 	return retries.New[T](
 		retries.WithTimeout(c.RetryTimeout),
+		retries.WithRetryFunc(retries.DefaultShouldRetry),
 		retries.WithBackoffFunc(c.RetryBackoff),
 	)
 }

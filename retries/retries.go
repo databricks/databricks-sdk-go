@@ -240,7 +240,7 @@ func (r Retrier[T]) Run(ctx context.Context, fn func(context.Context) (*T, error
 	}
 }
 
-func shouldRetry(err error) bool {
+func DefaultShouldRetry(err error) bool {
 	if err == nil {
 		return false
 	}
@@ -252,7 +252,7 @@ func shouldRetry(err error) bool {
 }
 
 func Wait(ctx context.Context, timeout time.Duration, fn func() *Err) error {
-	return New[struct{}](WithTimeout(timeout), WithRetryFunc(shouldRetry)).Wait(ctx, func(_ context.Context) error {
+	return New[struct{}](WithTimeout(timeout), WithRetryFunc(DefaultShouldRetry)).Wait(ctx, func(_ context.Context) error {
 		err := fn()
 		if err != nil {
 			return err
@@ -262,7 +262,7 @@ func Wait(ctx context.Context, timeout time.Duration, fn func() *Err) error {
 }
 
 func Poll[T any](ctx context.Context, timeout time.Duration, fn func() (*T, *Err)) (*T, error) {
-	return New[T](WithTimeout(timeout), WithRetryFunc(shouldRetry)).Run(ctx, func(_ context.Context) (*T, error) {
+	return New[T](WithTimeout(timeout), WithRetryFunc(DefaultShouldRetry)).Run(ctx, func(_ context.Context) (*T, error) {
 		res, err := fn()
 		if err != nil {
 			return res, err
