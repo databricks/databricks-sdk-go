@@ -56,6 +56,13 @@ type CreatePipeline struct {
 	Photon bool `json:"photon,omitempty"`
 	// Restart window of this pipeline.
 	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
+	// Write-only setting, available only in Create/Update calls. Specifies the
+	// user or service principal that the pipeline runs as. If not specified,
+	// the pipeline runs as the user who created the pipeline.
+	//
+	// Only `user_name` or `service_principal_name` can be specified. If both
+	// are specified, an error is thrown.
+	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	// The presence of this field implies that the pipeline is in direct
 	// publishing mode.
@@ -219,6 +226,13 @@ type EditPipeline struct {
 	PipelineId string `json:"pipeline_id,omitempty" url:"-"`
 	// Restart window of this pipeline.
 	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
+	// Write-only setting, available only in Create/Update calls. Specifies the
+	// user or service principal that the pipeline runs as. If not specified,
+	// the pipeline runs as the user who created the pipeline.
+	//
+	// Only `user_name` or `service_principal_name` can be specified. If both
+	// are specified, an error is thrown.
+	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	// The presence of this field implies that the pipeline is in direct
 	// publishing mode.
@@ -1374,6 +1388,31 @@ func (f *RestartWindowDaysOfWeek) Set(v string) error {
 // Type always returns RestartWindowDaysOfWeek to satisfy [pflag.Value] interface
 func (f *RestartWindowDaysOfWeek) Type() string {
 	return "RestartWindowDaysOfWeek"
+}
+
+// Write-only setting, available only in Create/Update calls. Specifies the user
+// or service principal that the pipeline runs as. If not specified, the
+// pipeline runs as the user who created the pipeline.
+//
+// Only `user_name` or `service_principal_name` can be specified. If both are
+// specified, an error is thrown.
+type RunAs struct {
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// The email of an active workspace user. Users can only set this field to
+	// their own email.
+	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunAs) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RunAs) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SchemaSpec struct {

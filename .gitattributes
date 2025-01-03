@@ -77,9 +77,11 @@ experimental/mocks/service/marketplace/mock_provider_provider_analytics_dashboar
 experimental/mocks/service/marketplace/mock_provider_providers_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_experiments_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_model_registry_interface.go linguist-generated=true
+experimental/mocks/service/oauth2/mock_account_federation_policy_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_custom_app_integration_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_o_auth_published_apps_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_published_app_integration_interface.go linguist-generated=true
+experimental/mocks/service/oauth2/mock_service_principal_federation_policy_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_service_principal_secrets_interface.go linguist-generated=true
 experimental/mocks/service/pipelines/mock_pipelines_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_credentials_interface.go linguist-generated=true

@@ -4657,6 +4657,8 @@ type ProvisioningInfoState string
 
 const ProvisioningInfoStateActive ProvisioningInfoState = `ACTIVE`
 
+const ProvisioningInfoStateDegraded ProvisioningInfoState = `DEGRADED`
+
 const ProvisioningInfoStateDeleting ProvisioningInfoState = `DELETING`
 
 const ProvisioningInfoStateFailed ProvisioningInfoState = `FAILED`
@@ -4673,11 +4675,11 @@ func (f *ProvisioningInfoState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ProvisioningInfoState) Set(v string) error {
 	switch v {
-	case `ACTIVE`, `DELETING`, `FAILED`, `PROVISIONING`, `UPDATING`:
+	case `ACTIVE`, `DEGRADED`, `DELETING`, `FAILED`, `PROVISIONING`, `UPDATING`:
 		*f = ProvisioningInfoState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "FAILED", "PROVISIONING", "UPDATING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DEGRADED", "DELETING", "FAILED", "PROVISIONING", "UPDATING"`, v)
 	}
 }
 
