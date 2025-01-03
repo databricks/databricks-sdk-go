@@ -89,7 +89,7 @@ func TestMakeRequestBodyJsonError(t *testing.T) {
 type failingUrlEncode string
 
 func (fue failingUrlEncode) EncodeValues(key string, v *url.Values) error {
-	return fmt.Errorf(string(fue))
+	return fmt.Errorf("%s", string(fue))
 }
 
 func TestMakeRequestBodyQueryFailingEncode(t *testing.T) {

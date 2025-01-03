@@ -12,9 +12,9 @@ fmt:
 
 lint: vendor
 	@echo "✓ Linting source code with https://staticcheck.io/ ..."
-	@go run honnef.co/go/tools/cmd/staticcheck@v0.4.0 ./...
+	@go run honnef.co/go/tools/cmd/staticcheck@v0.5.1 ./...
 
-test: lint
+test: vendor
 	@echo "✓ Running tests ..."
 	@go run gotest.tools/gotestsum@latest --format pkgname-and-test-fails \
 		--no-summary=skipped --raw-command go test -v \
@@ -31,11 +31,5 @@ vendor:
 doc:
 	@echo "Open http://localhost:6060"
 	@go run golang.org/x/tools/cmd/godoc@latest -http=localhost:6060
-
-install-codegen: vendor
-	@go build -o ~/go/bin/oac openapi/gen/main.go
-
-gen:
-	@go run openapi/gen/main.go
 
 .PHONY: fmt vendor fmt coverage test lint doc
