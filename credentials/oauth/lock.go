@@ -2,6 +2,8 @@ package oauth
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/alexflint/go-filemutex"
@@ -29,6 +31,10 @@ func (l *lockerAdaptor) Unlock() {
 }
 
 func newLocker(path string) (sync.Locker, error) {
+	dirName := filepath.Dir(path)
+	if _, err := os.Stat(dirName); err != nil && os.IsNotExist(err) {
+		os.MkdirAll(dirName, 0750)
+	}
 	m, err := filemutex.New(path)
 	if err != nil {
 		return nil, err
