@@ -1,7 +1,7 @@
 package compute
 
 import (
-	"fmt"
+	"errors"
 	"html"
 	"regexp"
 	"strings"
@@ -38,7 +38,7 @@ func (r *Results) Err() error {
 	if !r.Failed() {
 		return nil
 	}
-	return fmt.Errorf(r.Error())
+	return errors.New(r.Error())
 }
 
 // Error returns error in a bit more friendly way
