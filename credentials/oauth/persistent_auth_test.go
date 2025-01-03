@@ -190,7 +190,7 @@ func TestChallengeFailed(t *testing.T) {
 
 		<-browserOpened
 		resp, err := http.Get(
-			"http://localhost:8020?error=access_denied&error_description=Policy%%20evaluation%%20failed%%20for%%20this%%20request")
+			"http://localhost:8020?error=access_denied&error_description=Policy%20evaluation%20failed%20for%20this%20request")
 		require.NoError(t, err)
 		defer resp.Body.Close()
 		assert.Equal(t, 400, resp.StatusCode)

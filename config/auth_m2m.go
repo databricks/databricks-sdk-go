@@ -2,7 +2,6 @@ package config
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"golang.org/x/oauth2"
@@ -11,8 +10,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
-
-var errOAuthNotSupported = errors.New("databricks OAuth is not supported for this host")
 
 type M2mCredentials struct {
 }

@@ -7,10 +7,11 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/credentials/oauth"
+	"github.com/databricks/databricks-sdk-go/logger"
 )
 
 type U2MCredentials struct {
-	Auth oauth.PersistentAuth
+	Auth *oauth.PersistentAuth
 }
 
 // Name implements CredentialsStrategy.
@@ -20,12 +21,21 @@ func (u U2MCredentials) Name() string {
 
 // Configure implements CredentialsStrategy.
 func (u U2MCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	a := u.Auth
+	if a == nil {
+		var err error
+		a, err = oauth.NewPersistentAuth(ctx)
+		if err != nil {
+			logger.Debugf(ctx, "failed to create persistent auth: %v, continuing", err)
+			return nil, nil
+		}
+	}
 	f := func(r *http.Request) error {
 		arg := oauth.BasicOAuthArgument{
 			Host:      cfg.Host,
 			AccountID: cfg.AccountID,
 		}
-		token, err := u.Auth.Load(r.Context(), arg)
+		token, err := a.Load(r.Context(), arg)
 		if err != nil {
 			return fmt.Errorf("oidc: %w", err)
 		}

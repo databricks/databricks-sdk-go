@@ -81,5 +81,5 @@ func TestM2mNotSupported(t *testing.T) {
 			},
 		},
 	})
-	require.ErrorIs(t, err, errOAuthNotSupported)
+	require.ErrorIs(t, err, httpclient.ErrOAuthNotSupported)
 }
