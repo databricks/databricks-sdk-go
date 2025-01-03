@@ -67,6 +67,9 @@ func Continuef(format string, err error, args ...interface{}) *Err {
 	return Continue(wrapped)
 }
 
+// BackoffFunc is a function that returns the duration to wait before retrying the given attempt.
+type BackoffFunc func(int) time.Duration
+
 var maxWait = 10 * time.Second
 var minJitter = 50 * time.Millisecond
 var maxJitter = 750 * time.Millisecond
@@ -155,6 +158,14 @@ func WithRetryFunc(halt func(error) bool) RetryOption {
 	}
 }
 
+// WithBackoffFunc configures the backoff duration for a given attempt. The retrier will wait
+// for the returned duration before retrying.
+func WithBackoffFunc(f func(attempt int) time.Duration) RetryOption {
+	return func(rc *RetryConfig) {
+		rc.backoff = f
+	}
+}
+
 // Retrier is a struct that can retry an operation until it succeeds or the timeout is reached.
 // The empty struct indicates that the retrier should run for 20 minutes and retry on any non-nil error.
 // The type parameter is the return type of the Run() method. When using the Wait() method, this can be struct{}.
@@ -229,7 +240,7 @@ func (r Retrier[T]) Run(ctx context.Context, fn func(context.Context) (*T, error
 	}
 }
 
-func shouldRetry(err error) bool {
+func DefaultShouldRetry(err error) bool {
 	if err == nil {
 		return false
 	}
@@ -241,7 +252,7 @@ func shouldRetry(err error) bool {
 }
 
 func Wait(ctx context.Context, timeout time.Duration, fn func() *Err) error {
-	return New[struct{}](WithTimeout(timeout), WithRetryFunc(shouldRetry)).Wait(ctx, func(_ context.Context) error {
+	return New[struct{}](WithTimeout(timeout), WithRetryFunc(DefaultShouldRetry)).Wait(ctx, func(_ context.Context) error {
 		err := fn()
 		if err != nil {
 			return err
@@ -251,7 +262,7 @@ func Wait(ctx context.Context, timeout time.Duration, fn func() *Err) error {
 }
 
 func Poll[T any](ctx context.Context, timeout time.Duration, fn func() (*T, *Err)) (*T, error) {
-	return New[T](WithTimeout(timeout), WithRetryFunc(shouldRetry)).Run(ctx, func(_ context.Context) (*T, error) {
+	return New[T](WithTimeout(timeout), WithRetryFunc(DefaultShouldRetry)).Run(ctx, func(_ context.Context) (*T, error) {
 		res, err := fn()
 		if err != nil {
 			return res, err
