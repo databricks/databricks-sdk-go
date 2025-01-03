@@ -12,7 +12,7 @@ func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, erro
 
 	// When querying a Job run, a page token is returned when there are more than 100 tasks. No iterations are defined for a Job run. Therefore, the next page in the response only includes the next page of tasks.
 	// When querying a ForEach task run, a page token is returned when there are more than 100 iterations. Only a single task is returned, corresponding to the ForEach task itself. Therefore, the client only reads the iterations from the next page and not the tasks.
-	isPaginatingIterations := run.Iterations != nil && len(run.Iterations) > 0
+	isPaginatingIterations := len(run.Iterations) > 0
 
 	pageToken := run.NextPageToken
 	for pageToken != "" {

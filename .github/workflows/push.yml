@@ -25,6 +25,7 @@ jobs:
           - "1.20"
           - "1.21"
           - "1.22"
+          - "1.23"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,14 +35,6 @@ jobs:
         with:
           go-version: ${{ matrix.goVersion }}
 
-      - name: Set go env
-        run: |
-          echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-
-      - name: Pull external libraries
-        run: make vendor
-
       - name: Run tests
         run: make test
 
@@ -49,6 +42,21 @@ jobs:
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+
+      - name: Run linters
+        run: make lint
 
   fmt:
     runs-on: ubuntu-latest
@@ -60,7 +68,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
+          go-version: "1.23"
 
           # No need to download cached dependencies when running gofmt.
           cache: false
@@ -75,4 +83,3 @@ jobs:
         run: |
           # Exit with status code 1 if there are differences (i.e. unformatted files)
           git diff --exit-code
-          

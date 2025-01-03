@@ -59,7 +59,7 @@ func Continue(err error) *Err {
 }
 
 func Continues(msg string) *Err {
-	return Continue(fmt.Errorf(msg))
+	return Continue(fmt.Errorf("%s", msg))
 }
 
 func Continuef(format string, err error, args ...interface{}) *Err {
