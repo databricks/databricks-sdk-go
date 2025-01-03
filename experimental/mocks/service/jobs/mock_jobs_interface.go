@@ -753,6 +753,65 @@ func (_c *MockJobsInterface_Get_Call) RunAndReturn(run func(context.Context, job
 	return _c
 }
 
+// GetByJobId provides a mock function with given fields: ctx, jobId
+func (_m *MockJobsInterface) GetByJobId(ctx context.Context, jobId int64) (*jobs.Job, error) {
+	ret := _m.Called(ctx, jobId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetByJobId")
+	}
+
+	var r0 *jobs.Job
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (*jobs.Job, error)); ok {
+		return rf(ctx, jobId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int64) *jobs.Job); ok {
+		r0 = rf(ctx, jobId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*jobs.Job)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(ctx, jobId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockJobsInterface_GetByJobId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByJobId'
+type MockJobsInterface_GetByJobId_Call struct {
+	*mock.Call
+}
+
+// GetByJobId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - jobId int64
+func (_e *MockJobsInterface_Expecter) GetByJobId(ctx interface{}, jobId interface{}) *MockJobsInterface_GetByJobId_Call {
+	return &MockJobsInterface_GetByJobId_Call{Call: _e.mock.On("GetByJobId", ctx, jobId)}
+}
+
+func (_c *MockJobsInterface_GetByJobId_Call) Run(run func(ctx context.Context, jobId int64)) *MockJobsInterface_GetByJobId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(int64))
+	})
+	return _c
+}
+
+func (_c *MockJobsInterface_GetByJobId_Call) Return(_a0 *jobs.Job, _a1 error) *MockJobsInterface_GetByJobId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockJobsInterface_GetByJobId_Call) RunAndReturn(run func(context.Context, int64) (*jobs.Job, error)) *MockJobsInterface_GetByJobId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetBySettingsName provides a mock function with given fields: ctx, name
 func (_m *MockJobsInterface) GetBySettingsName(ctx context.Context, name string) (*jobs.BaseJob, error) {
 	ret := _m.Called(ctx, name)
