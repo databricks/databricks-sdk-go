@@ -61,6 +61,12 @@ type JobsService interface {
 	// Get a single job.
 	//
 	// Retrieves the details for a single job.
+	//
+	// In Jobs API 2.2, requests for a single job support pagination of `tasks`
+	// and `job_clusters` when either exceeds 100 elements. Use the
+	// `next_page_token` field to check for more results and pass its value as
+	// the `page_token` in subsequent requests. Arrays with fewer than 100
+	// elements in a page will be empty on later pages.
 	Get(ctx context.Context, request GetJobRequest) (*Job, error)
 
 	// Get job permission levels.
@@ -76,7 +82,13 @@ type JobsService interface {
 
 	// Get a single job run.
 	//
-	// Retrieve the metadata of a run.
+	// Retrieves the metadata of a run.
+	//
+	// In Jobs API 2.2, requests for a single job run support pagination of
+	// `tasks` and `job_clusters` when either exceeds 100 elements. Use the
+	// `next_page_token` field to check for more results and pass its value as
+	// the `page_token` in subsequent requests. Arrays with fewer than 100
+	// elements in a page will be empty on later pages.
 	GetRun(ctx context.Context, request GetRunRequest) (*Run, error)
 
 	// Get the output for a single run.
