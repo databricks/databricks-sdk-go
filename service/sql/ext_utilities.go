@@ -27,7 +27,7 @@ func (a *StatementExecutionAPI) ExecuteAndWait(ctx context.Context, request Exec
 		if status.Error != nil {
 			msg = fmt.Sprintf("%s: %s %s", msg, status.Error.ErrorCode, status.Error.Message)
 		}
-		return nil, fmt.Errorf(msg)
+		return nil, fmt.Errorf("%s", msg)
 	default:
 		// TODO: parse request.WaitTimeout and use it here
 		return retries.Poll[StatementResponse](ctx, 20*time.Minute,
@@ -50,7 +50,7 @@ func (a *StatementExecutionAPI) ExecuteAndWait(ctx context.Context, request Exec
 					if status.Error != nil {
 						msg = fmt.Sprintf("%s: %s %s", msg, status.Error.ErrorCode, status.Error.Message)
 					}
-					return nil, retries.Halt(fmt.Errorf(msg))
+					return nil, retries.Halt(fmt.Errorf("%s", msg))
 				default:
 					return nil, retries.Continues(status.State.String())
 				}
