@@ -4,6 +4,7 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
@@ -16,7 +17,7 @@ func TestM2mHappyFlow(t *testing.T) {
 		ClientSecret: "c",
 		HTTPTransport: fixtures.MappingTransport{
 			"GET /oidc/.well-known/oauth-authorization-server": {
-				Response: oauthAuthorizationServer{
+				Response: httpclient.OAuthAuthorizationServer{
 					AuthorizationEndpoint: "https://localhost:1234/dummy/auth",
 					TokenEndpoint:         "https://localhost:1234/dummy/token",
 				},
