@@ -14,6 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/credentials/oauth"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -433,4 +434,11 @@ func (c *Config) refreshTokenErrorMapper(ctx context.Context, resp common.Respon
 		message: err.Message,
 		err:     err,
 	}
+}
+
+func (c *Config) getOidcEndpoints(ctx context.Context) (*oauth.OAuthAuthorizationServer, error) {
+	if c.IsAccountClient() {
+		return oauth.GetAccountOAuthEndpoints(ctx, c.Host, c.AccountID)
+	}
+	return oauth.GetWorkspaceOAuthEndpoints(ctx, c.refreshClient, c.Host)
 }

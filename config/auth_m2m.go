@@ -22,7 +22,7 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	if cfg.ClientID == "" || cfg.ClientSecret == "" {
 		return nil, nil
 	}
-	endpoints, err := cfg.refreshClient.GetOidcEndpoints(ctx, cfg.Host, cfg.AccountID)
+	endpoints, err := cfg.getOidcEndpoints(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("oidc: %w", err)
 	}

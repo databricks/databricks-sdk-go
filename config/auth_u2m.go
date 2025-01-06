@@ -45,16 +45,17 @@ func (u U2MCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		}
 	}
 
+	arg, err := u.getOAuthArg(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("oidc: %w", err)
+	}
+
 	r, err := http.NewRequestWithContext(ctx, http.MethodGet, "", nil)
 	if err != nil {
 		return nil, fmt.Errorf("http request: %w", err)
 	}
 
 	f := func(r *http.Request) error {
-		arg := oauth.BasicOAuthArgument{
-			Host:      cfg.Host,
-			AccountID: cfg.AccountID,
-		}
 		token, err := a.Load(r.Context(), arg)
 		if err != nil {
 			return fmt.Errorf("oidc: %w", err)
@@ -75,6 +76,13 @@ func (u U2MCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	}
 
 	return credentials.NewCredentialsProvider(f), nil
+}
+
+func (u U2MCredentials) getOAuthArg(cfg *Config) (oauth.OAuthArgument, error) {
+	if cfg.IsAccountClient() {
+		return oauth.NewBasicAccountOAuthArgument(cfg.Host, cfg.AccountID)
+	}
+	return oauth.NewBasicWorkspaceOAuthArgument(cfg.Host)
 }
 
 var _ CredentialsStrategy = U2MCredentials{}
