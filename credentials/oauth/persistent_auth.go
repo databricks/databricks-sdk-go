@@ -160,6 +160,8 @@ func (a *PersistentAuth) Load(ctx context.Context, arg OAuthArgument) (t *oauth2
 	a.locker.Lock()
 	defer a.locker.Unlock()
 
+	a.validateArg(arg)
+
 	// TODO: remove this listener after several releases.
 	err = a.startListener(ctx)
 	if err != nil {
@@ -223,6 +225,8 @@ func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToke
 func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) error {
 	a.locker.Lock()
 	defer a.locker.Unlock()
+
+	a.validateArg(arg)
 	err := a.startListener(ctx)
 	if err != nil {
 		return fmt.Errorf("starting listener: %w", err)
@@ -281,6 +285,15 @@ func (a *PersistentAuth) Close() error {
 	return a.ln.Close()
 }
 
+func (a *PersistentAuth) validateArg(arg OAuthArgument) error {
+	_, isWorkspaceArg := arg.(WorkspaceOAuthArgument)
+	_, isAccountArg := arg.(AccountOAuthArgument)
+	if !isWorkspaceArg && !isAccountArg {
+		return fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument or AccountOAuthArgument interface", arg)
+	}
+	return nil
+}
+
 func (a *PersistentAuth) oauth2Config(ctx context.Context, arg OAuthArgument) (*oauth2.Config, error) {
 	scopes := []string{
 		"offline_access", // ensures OAuth token includes refresh token
@@ -288,11 +301,14 @@ func (a *PersistentAuth) oauth2Config(ctx context.Context, arg OAuthArgument) (*
 	}
 	var endpoints *OAuthAuthorizationServer
 	var err error
-	if workspaceArg, ok := arg.(WorkspaceOAuthArgument); ok {
-		endpoints, err = a.client.GetWorkspaceOAuthEndpoints(ctx, workspaceArg.GetWorkspaceHost(ctx))
-	} else if accountArg, ok := arg.(AccountOAuthArgument); ok {
+	switch argg := arg.(type) {
+	case WorkspaceOAuthArgument:
+		endpoints, err = a.client.GetWorkspaceOAuthEndpoints(ctx, argg.GetWorkspaceHost(ctx))
+	case AccountOAuthArgument:
 		endpoints, err = a.client.GetAccountOAuthEndpoints(
-			ctx, accountArg.GetAccountHost(ctx), accountArg.GetAccountId(ctx))
+			ctx, argg.GetAccountHost(ctx), argg.GetAccountId(ctx))
+	default:
+		return nil, fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument or AccountOAuthArgument interface", arg)
 	}
 	if err != nil {
 		return nil, fmt.Errorf("fetching OAuth endpoints: %w", err)
