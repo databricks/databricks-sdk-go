@@ -9,14 +9,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOidcEndpointsForAccounts(t *testing.T) {
+func TestGetAccountOAuthEndpoints(t *testing.T) {
 	s, err := GetAccountOAuthEndpoints(context.Background(), "https://abc", "xyz")
 	assert.NoError(t, err)
 	assert.Equal(t, "https://abc/oidc/accounts/xyz/v1/authorize", s.AuthorizationEndpoint)
 	assert.Equal(t, "https://abc/oidc/accounts/xyz/v1/token", s.TokenEndpoint)
 }
 
-func TestOidcForWorkspace(t *testing.T) {
+func TestGetWorkspaceOAuthEndpoints(t *testing.T) {
 	p := httpclient.NewApiClient(httpclient.ClientConfig{
 		Transport: fixtures.MappingTransport{
 			"GET /oidc/.well-known/oauth-authorization-server": {
