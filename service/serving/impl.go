@@ -11,8 +11,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	goauth "golang.org/x/oauth2"
-
-	"github.com/databricks/databricks-sdk-go/service/oauth2"
 )
 
 // unexported type that holds implementations of just ServingEndpoints API methods
@@ -196,7 +194,7 @@ func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request Query
 	if err != nil {
 		return nil, err
 	}
-	infoGetter := func() (*oauth2.DataPlaneInfo, error) {
+	infoGetter := func() (*DataPlaneInfo, error) {
 		response, err := a.controlPlane.Get(ctx, getRequest)
 		if err != nil {
 			return nil, err
@@ -206,7 +204,7 @@ func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request Query
 		}
 		return response.DataPlaneInfo.QueryInfo, nil
 	}
-	refresh := func(info *oauth2.DataPlaneInfo) (*goauth.Token, error) {
+	refresh := func(info *DataPlaneInfo) (*goauth.Token, error) {
 		return a.client.GetOAuthToken(ctx, info.AuthorizationDetails, token)
 	}
 	getParams := []string{

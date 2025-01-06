@@ -4,30 +4,29 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/stretchr/testify/assert"
 	goauth "golang.org/x/oauth2"
 )
 
 type infoMock struct {
 	called bool
-	info   *oauth2.DataPlaneInfo
+	info   *DataPlaneInfo
 	err    error
 }
 
-func (i *infoMock) DataPlaneInfoGetter() (*oauth2.DataPlaneInfo, error) {
+func (i *infoMock) DataPlaneInfoGetter() (*DataPlaneInfo, error) {
 	i.called = true
 	return i.info, i.err
 }
 
 type tokenRefreshSpy struct {
 	called       bool
-	expectedInfo *oauth2.DataPlaneInfo
+	expectedInfo *DataPlaneInfo
 	token        *goauth.Token
 	err          error
 }
 
-func (t *tokenRefreshSpy) TokenRefresh(info *oauth2.DataPlaneInfo) (*goauth.Token, error) {
+func (t *tokenRefreshSpy) TokenRefresh(info *DataPlaneInfo) (*goauth.Token, error) {
 	t.expectedInfo = info
 	t.called = true
 	return t.token, t.err
@@ -35,7 +34,7 @@ func (t *tokenRefreshSpy) TokenRefresh(info *oauth2.DataPlaneInfo) (*goauth.Toke
 
 func TestTokenNotCached(t *testing.T) {
 	info := infoMock{
-		info: &oauth2.DataPlaneInfo{
+		info: &DataPlaneInfo{
 			EndpointUrl:          "url",
 			AuthorizationDetails: "authDetails",
 		},
@@ -50,7 +49,7 @@ func TestTokenNotCached(t *testing.T) {
 		err: nil,
 	}
 	c := dataPlaneServiceImpl{
-		infos:  make(map[string]*oauth2.DataPlaneInfo),
+		infos:  make(map[string]*DataPlaneInfo),
 		tokens: make(map[string]*goauth.Token),
 	}
 	url, token, err := c.GetDataPlaneDetails("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
@@ -65,7 +64,7 @@ func TestTokenNotCached(t *testing.T) {
 
 func TestTokenCached(t *testing.T) {
 	info := infoMock{
-		info: &oauth2.DataPlaneInfo{
+		info: &DataPlaneInfo{
 			EndpointUrl:          "url",
 			AuthorizationDetails: "authDetails",
 		},
@@ -80,7 +79,7 @@ func TestTokenCached(t *testing.T) {
 		err: nil,
 	}
 	c := dataPlaneServiceImpl{}
-	c.infos = make(map[string]*oauth2.DataPlaneInfo)
+	c.infos = make(map[string]*DataPlaneInfo)
 	c.tokens = make(map[string]*goauth.Token)
 	c.infos["method/params"] = info.info
 	c.tokens["method/params"] = s.token
@@ -96,7 +95,7 @@ func TestTokenCached(t *testing.T) {
 
 func TestTokenExpired(t *testing.T) {
 	info := infoMock{
-		info: &oauth2.DataPlaneInfo{
+		info: &DataPlaneInfo{
 			EndpointUrl:          "url",
 			AuthorizationDetails: "authDetails",
 		},
@@ -117,7 +116,7 @@ func TestTokenExpired(t *testing.T) {
 		err: nil,
 	}
 	c := dataPlaneServiceImpl{}
-	c.infos = make(map[string]*oauth2.DataPlaneInfo)
+	c.infos = make(map[string]*DataPlaneInfo)
 	c.tokens = make(map[string]*goauth.Token)
 	c.infos["method/params"] = info.info
 	c.tokens["method/params"] = expired
@@ -138,7 +137,7 @@ func TestTokenInfoError(t *testing.T) {
 	}
 	s := tokenRefreshSpy{}
 	c := dataPlaneServiceImpl{
-		infos:  make(map[string]*oauth2.DataPlaneInfo),
+		infos:  make(map[string]*DataPlaneInfo),
 		tokens: make(map[string]*goauth.Token),
 	}
 	url, token, err := c.GetDataPlaneDetails("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)
@@ -151,7 +150,7 @@ func TestTokenInfoError(t *testing.T) {
 
 func TestTokenRefreshError(t *testing.T) {
 	info := infoMock{
-		info: &oauth2.DataPlaneInfo{
+		info: &DataPlaneInfo{
 			EndpointUrl:          "url",
 			AuthorizationDetails: "authDetails",
 		},
@@ -162,7 +161,7 @@ func TestTokenRefreshError(t *testing.T) {
 		err:   assert.AnError,
 	}
 	c := dataPlaneServiceImpl{
-		infos:  make(map[string]*oauth2.DataPlaneInfo),
+		infos:  make(map[string]*DataPlaneInfo),
 		tokens: make(map[string]*goauth.Token),
 	}
 	url, token, err := c.GetDataPlaneDetails("method", []string{"params"}, s.TokenRefresh, info.DataPlaneInfoGetter)

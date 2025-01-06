@@ -155,23 +155,6 @@ func (s CreateServicePrincipalSecretResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type DataPlaneInfo struct {
-	// Authorization details as a string.
-	AuthorizationDetails string `json:"authorization_details,omitempty"`
-	// The URL of the endpoint for this operation in the dataplane.
-	EndpointUrl string `json:"endpoint_url,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DataPlaneInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DataPlaneInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 // Delete account federation policy
 type DeleteAccountFederationPolicyRequest struct {
 	// The identifier for the federation policy.
