@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	// where the token cache is stored
+	// tokenCacheFile is the path of the default token cache, relative to the
+	// user's home directory.
 	tokenCacheFile = ".databricks/token-cache.json"
 
 	// only the owner of the file has full execute, read, and write access
@@ -21,12 +22,31 @@ const (
 	// only the owner of the file has full read and write access
 	ownerReadWrite = 0o600
 
-	// format versioning leaves some room for format improvement
+	// tokenCacheVersion is the version of the token cache file format.
+	//
+	// Version 1 format:
+	//
+	// {
+	//   "version": 1,
+	//   "tokens": {
+	//     "<key>": {
+	//       "access_token": "<access_token>",
+	//       "token_type": "<token_type>",
+	//       "refresh_token": "<refresh
+	//       "expiry": "<expiry>"
+	//     }
+	//   }
+	// }
+	//
+	// The format of "<key>" depends on whether the token is account- or
+	// workspace-scoped:
+	//  - Account-scoped: "https://<accounts host>/oidc/accounts/<account_id>"
+	//  - Workspace-scoped: "https://<workspace host>"
 	tokenCacheVersion = 1
 )
 
-var ErrNotConfigured = errors.New("databricks OAuth is not configured for this host")
-
+// FileTokenCache caches tokens in "~/.databricks/token-cache.json". FileTokenCache
+// implements the TokenCache interface.
 // this implementation requires the calling code to do a machine-wide lock,
 // otherwise the file might get corrupt.
 type FileTokenCache struct {
@@ -38,14 +58,14 @@ type FileTokenCache struct {
 
 func (c *FileTokenCache) Store(key string, t *oauth2.Token) error {
 	err := c.load()
-	if errors.Is(err, fs.ErrNotExist) {
+	if err != nil {
+		if !errors.Is(err, fs.ErrNotExist) {
+			return fmt.Errorf("load: %w", err)
+		}
 		dir := filepath.Dir(c.fileLocation)
-		err = os.MkdirAll(dir, ownerExecReadWrite)
-		if err != nil {
+		if err := os.MkdirAll(dir, ownerExecReadWrite); err != nil {
 			return fmt.Errorf("mkdir: %w", err)
 		}
-	} else if err != nil {
-		return fmt.Errorf("load: %w", err)
 	}
 	c.Version = tokenCacheVersion
 	if c.Tokens == nil {
@@ -73,16 +93,12 @@ func (c *FileTokenCache) Lookup(key string) (*oauth2.Token, error) {
 	return t, nil
 }
 
-func (c *FileTokenCache) location() (string, error) {
+func (c *FileTokenCache) load() error {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return "", fmt.Errorf("home: %w", err)
+		return fmt.Errorf("failed loading home directory: %w", err)
 	}
-	return filepath.Join(home, tokenCacheFile), nil
-}
-
-func (c *FileTokenCache) load() error {
-	loc, err := c.location()
+	loc := filepath.Join(home, tokenCacheFile)
 	if err != nil {
 		return err
 	}

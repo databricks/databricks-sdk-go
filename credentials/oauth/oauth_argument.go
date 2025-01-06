@@ -9,43 +9,89 @@ import (
 // OAuthArgument is an interface that provides the necessary information to
 // authenticate with PersistentAuth.
 type OAuthArgument interface {
-	// GetHost returns the host of the account or workspace to authenticate to.
-	GetHost(ctx context.Context) string
-
-	// GetAccountId returns the account ID of the account to authenticate to.
-	GetAccountId(ctx context.Context) string
-
-	// GetCacheKey returns the key to use for caching the token. On Challenge,
-	// this key is used to store the token. On Load, this key is used to lookup
-	// the token.
+	// GetCacheKey returns a unique key for the OAuthArgument. This key is used
+	// to store and retrieve the token from the token cache.
 	GetCacheKey(ctx context.Context) string
 }
 
-type BasicOAuthArgument struct {
-	Host      string
-	AccountID string
+type WorkspaceOAuthArgument interface {
+	OAuthArgument
+
+	// GetWorkspaceHost returns the host of the workspace to authenticate to.
+	GetWorkspaceHost(ctx context.Context) string
 }
 
-var _ OAuthArgument = BasicOAuthArgument{}
-
-func (a BasicOAuthArgument) GetHost(ctx context.Context) string {
-	return a.Host
+type BasicWorkspaceOAuthArgument struct {
+	// host is the host of the workspace to authenticate to. This must start
+	// with "https://" and must not have a trailing slash.
+	host string
 }
 
-func (a BasicOAuthArgument) GetAccountId(ctx context.Context) string {
-	return a.AccountID
+func NewBasicWorkspaceOAuthArgument(host string) (BasicWorkspaceOAuthArgument, error) {
+	if !strings.HasPrefix(host, "https://") {
+		return BasicWorkspaceOAuthArgument{}, fmt.Errorf("host must start with 'https://': %s", host)
+	}
+	if strings.HasSuffix(host, "/") {
+		return BasicWorkspaceOAuthArgument{}, fmt.Errorf("host must not have a trailing slash: %s", host)
+	}
+	return BasicWorkspaceOAuthArgument{host: host}, nil
+}
+
+func (a BasicWorkspaceOAuthArgument) GetHost(ctx context.Context) string {
+	return a.host
 }
 
 // key is currently used for two purposes: OIDC URL prefix and token cache key.
 // once we decide to start storing scopes in the token cache, we should change
 // this approach.
-func (a BasicOAuthArgument) GetCacheKey(ctx context.Context) string {
-	a.Host = strings.TrimSuffix(a.Host, "/")
-	if !strings.HasPrefix(a.Host, "http") {
-		a.Host = fmt.Sprintf("https://%s", a.Host)
+func (a BasicWorkspaceOAuthArgument) GetCacheKey(ctx context.Context) string {
+	a.host = strings.TrimSuffix(a.host, "/")
+	if !strings.HasPrefix(a.host, "http") {
+		a.host = fmt.Sprintf("https://%s", a.host)
 	}
-	if a.AccountID != "" {
-		return fmt.Sprintf("%s/oidc/accounts/%s", a.Host, a.AccountID)
+	return a.host
+}
+
+var _ OAuthArgument = BasicWorkspaceOAuthArgument{}
+
+type AccountOAuthArgument interface {
+	OAuthArgument
+
+	// GetAccountHost returns the host of the account to authenticate to.
+	GetAccountHost(ctx context.Context) string
+
+	// GetAccountId returns the account ID of the account to authenticate to.
+	GetAccountId(ctx context.Context) string
+}
+
+type BasicAccountOAuthArgument struct {
+	accountHost string
+	accountID   string
+}
+
+var _ OAuthArgument = BasicAccountOAuthArgument{}
+
+func NewBasicAccountOAuthArgument(accountsHost, accountID string) (BasicAccountOAuthArgument, error) {
+	if !strings.HasPrefix(accountsHost, "https://") {
+		return BasicAccountOAuthArgument{}, fmt.Errorf("accountsHost must start with 'https://': %s", accountsHost)
 	}
-	return a.Host
+	if strings.HasSuffix(accountsHost, "/") {
+		return BasicAccountOAuthArgument{}, fmt.Errorf("accountsHost must not have a trailing slash: %s", accountsHost)
+	}
+	return BasicAccountOAuthArgument{accountHost: accountsHost, accountID: accountID}, nil
+}
+
+func (a BasicAccountOAuthArgument) GetHost(ctx context.Context) string {
+	return a.accountHost
+}
+
+func (a BasicAccountOAuthArgument) GetAccountId(ctx context.Context) string {
+	return a.accountID
+}
+
+// key is currently used for two purposes: OIDC URL prefix and token cache key.
+// once we decide to start storing scopes in the token cache, we should change
+// this approach.
+func (a BasicAccountOAuthArgument) GetCacheKey(ctx context.Context) string {
+	return fmt.Sprintf("%s/oidc/accounts/%s", a.accountHost, a.accountID)
 }

@@ -50,10 +50,9 @@ func TestLoad(t *testing.T) {
 	p, err := oauth.NewPersistentAuth(context.Background(), oauth.WithTokenCache(cache))
 	require.NoError(t, err)
 	defer p.Close()
-	tok, err := p.Load(context.Background(), oauth.BasicOAuthArgument{
-		Host:      "https://abc",
-		AccountID: "xyz",
-	})
+	arg, err := oauth.NewBasicAccountOAuthArgument("https://abc", "xyz")
+	assert.NoError(t, err)
+	tok, err := p.Load(context.Background(), arg)
 	assert.NoError(t, err)
 	assert.Equal(t, "bcd", tok.AccessToken)
 	assert.Equal(t, "", tok.RefreshToken)
@@ -97,10 +96,9 @@ func TestLoadRefresh(t *testing.T) {
 		p, err := oauth.NewPersistentAuth(context.Background(), oauth.WithTokenCache(cache))
 		require.NoError(t, err)
 		defer p.Close()
-		tok, err := p.Load(ctx, oauth.BasicOAuthArgument{
-			Host:      c.Config.Host,
-			AccountID: "xyz",
-		})
+		arg, err := oauth.NewBasicAccountOAuthArgument(c.Config.Host, "xyz")
+		assert.NoError(t, err)
+		tok, err := p.Load(ctx, arg)
 		assert.NoError(t, err)
 		assert.Equal(t, "refreshed", tok.AccessToken)
 		assert.Equal(t, "", tok.RefreshToken)
@@ -140,13 +138,12 @@ func TestChallenge(t *testing.T) {
 		p, err := oauth.NewPersistentAuth(context.Background(), oauth.WithTokenCache(cache), oauth.WithBrowser(browser))
 		require.NoError(t, err)
 		defer p.Close()
+		arg, err := oauth.NewBasicAccountOAuthArgument(c.Config.Host, "xyz")
+		assert.NoError(t, err)
 
 		errc := make(chan error)
 		go func() {
-			errc <- p.Challenge(ctx, oauth.BasicOAuthArgument{
-				Host:      c.Config.Host,
-				AccountID: "xyz",
-			})
+			errc <- p.Challenge(ctx, arg)
 		}()
 
 		state := <-browserOpened
@@ -179,13 +176,12 @@ func TestChallengeFailed(t *testing.T) {
 		p, err := oauth.NewPersistentAuth(context.Background(), oauth.WithBrowser(browser))
 		require.NoError(t, err)
 		defer p.Close()
+		arg, err := oauth.NewBasicAccountOAuthArgument(c.Config.Host, "xyz")
+		assert.NoError(t, err)
 
 		errc := make(chan error)
 		go func() {
-			errc <- p.Challenge(ctx, oauth.BasicOAuthArgument{
-				Host:      c.Config.Host,
-				AccountID: "xyz",
-			})
+			errc <- p.Challenge(ctx, arg)
 		}()
 
 		<-browserOpened

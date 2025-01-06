@@ -5,6 +5,8 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -38,6 +40,9 @@ const (
 // are stored in and looked up from the provided cache. Tokens include the
 // refresh token. On load, if the access token is expired, it is refreshed
 // using the refresh token.
+//
+// The PersistentAuth is safe for concurrent use. The token cache is locked
+// during token retrieval, refresh and storage.
 type PersistentAuth struct {
 	// Cache is the token cache to store and lookup tokens.
 	cache cache.TokenCache
@@ -81,6 +86,7 @@ func WithBrowser(b func(url string) error) PersistentAuthOption {
 	}
 }
 
+// NewPersistentAuth creates a new PersistentAuth with the provided options.
 func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*PersistentAuth, error) {
 	p := &PersistentAuth{}
 	for _, opt := range opts {
@@ -109,30 +115,32 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 	return p, nil
 }
 
-func (a *PersistentAuth) Load(ctx context.Context, arg OAuthArgument) (*oauth2.Token, error) {
+type tokenErrorResponse struct {
+	Error            string `json:"error"`
+	ErrorDescription string `json:"error_description"`
+}
+
+func (a *PersistentAuth) Load(ctx context.Context, arg OAuthArgument) (t *oauth2.Token, err error) {
+	a.locker.Lock()
+	defer a.locker.Unlock()
+
+	// TODO: remove this listener after several releases.
+	err = a.startListener(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("starting listener: %w", err)
+	}
+	defer a.Close()
+
 	key := arg.GetCacheKey(ctx)
-	t, err := a.cache.Lookup(key)
+	t, err = a.cache.Lookup(key)
 	if err != nil {
 		return nil, fmt.Errorf("cache: %w", err)
 	}
 	// refresh if invalid
 	if !t.Valid() {
-		// OAuth2 config is invoked only for expired tokens to speed up
-		// the happy path in the token retrieval
-		cfg, err := a.oauth2Config(ctx, arg.GetHost(ctx), arg.GetAccountId(ctx))
-		if err != nil {
-			return nil, err
-		}
-		// make OAuth2 library use our client
-		ctx = a.client.InContextForOAuth2(ctx)
-		// eagerly refresh token
-		t, err = cfg.TokenSource(ctx, t).Token()
+		t, err = a.refresh(ctx, arg, t)
 		if err != nil {
 			return nil, fmt.Errorf("token refresh: %w", err)
-		}
-		err = a.cache.Store(key, t)
-		if err != nil {
-			return nil, fmt.Errorf("cache refresh: %w", err)
 		}
 	}
 	// do not print refresh token to end-user
@@ -140,12 +148,54 @@ func (a *PersistentAuth) Load(ctx context.Context, arg OAuthArgument) (*oauth2.T
 	return t, nil
 }
 
+func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToken *oauth2.Token) (*oauth2.Token, error) {
+	// OAuth2 config is invoked only for expired tokens to speed up
+	// the happy path in the token retrieval
+	cfg, err := a.oauth2Config(ctx, arg)
+	if err != nil {
+		return nil, err
+	}
+	// make OAuth2 library use our client
+	ctx = a.client.InContextForOAuth2(ctx)
+	// eagerly refresh token
+	t, err := cfg.TokenSource(ctx, oldToken).Token()
+	if err != nil {
+		var httpErr *httpclient.HttpError
+		if errors.As(err, &httpErr) {
+			resp := &tokenErrorResponse{}
+			err = json.Unmarshal([]byte(httpErr.Message), resp)
+			if err != nil {
+				return nil, fmt.Errorf("unexpected parsing token response: %w", err)
+			}
+			// Invalid refresh tokens get their own error type so they can be
+			// better presented to users.
+			if resp.ErrorDescription == "Refresh token is invalid" {
+				return nil, &InvalidRefreshTokenError{err}
+			} else {
+				return nil, fmt.Errorf("unexpected error refreshing token: %s", resp.ErrorDescription)
+			}
+		}
+		return nil, fmt.Errorf("token refresh: %w", err)
+	}
+	err = a.cache.Store(arg.GetCacheKey(ctx), t)
+	if err != nil {
+		return nil, fmt.Errorf("cache refresh: %w", err)
+	}
+	return t, nil
+}
+
 func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) error {
+	a.locker.Lock()
+	defer a.locker.Unlock()
 	err := a.startListener(ctx)
 	if err != nil {
 		return fmt.Errorf("starting listener: %w", err)
 	}
-	cfg, err := a.oauth2Config(ctx, arg.GetHost(ctx), arg.GetAccountId(ctx))
+	// The listener will be closed by the callback server automatically, but if
+	// the callback server is not created, we need to close the listener manually.
+	defer a.Close()
+
+	cfg, err := a.oauth2Config(ctx, arg)
 	if err != nil {
 		return fmt.Errorf("fetching oauth config: %w", err)
 	}
@@ -154,6 +204,7 @@ func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) error
 		return fmt.Errorf("callback server: %w", err)
 	}
 	defer cb.Close()
+
 	state, pkce := a.stateAndPKCE()
 	// make OAuth2 library use our client
 	ctx = a.client.InContextForOAuth2(ctx)
@@ -194,16 +245,22 @@ func (a *PersistentAuth) Close() error {
 	return a.ln.Close()
 }
 
-func (a *PersistentAuth) oauth2Config(ctx context.Context, host string, accountId string) (*oauth2.Config, error) {
-	// in this iteration of CLI, we're using all scopes by default,
-	// because tools like CLI and Terraform do use all apis. This
-	// decision may be reconsidered later, once we have a proper
-	// taxonomy of all scopes ready and implemented.
+func (a *PersistentAuth) oauth2Config(ctx context.Context, arg OAuthArgument) (*oauth2.Config, error) {
 	scopes := []string{
-		"offline_access",
-		"all-apis",
+		"offline_access", // ensures OAuth token includes refresh token
+		"all-apis",       // ensures OAuth token has access to all control-plane APIs
 	}
-	endpoints, err := a.client.GetOidcEndpoints(ctx, host, accountId)
+	var endpoints *OAuthAuthorizationServer
+	var err error
+	switch arg := arg.(type) {
+	case WorkspaceOAuthArgument:
+		endpoints, err = GetWorkspaceOAuthEndpoints(ctx, a.client, arg.GetWorkspaceHost(ctx))
+		if err != nil {
+			return nil, fmt.Errorf("workspace oauth endpoints: %w", err)
+		}
+	case AccountOAuthArgument:
+		endpoints, err = GetAccountOAuthEndpoints(ctx, arg.GetAccountHost(ctx), arg.GetAccountId(ctx))
+	}
 	if err != nil {
 		return nil, fmt.Errorf("oidc: %w", err)
 	}

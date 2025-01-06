@@ -72,7 +72,7 @@ func (cb *callbackServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		ErrorDescription: r.FormValue("error_description"),
 		Code:             r.FormValue("code"),
 		State:            r.FormValue("state"),
-		Host:             cb.arg.GetHost(cb.ctx),
+		Host:             cb.getHost(r.Context()),
 	}
 	if res.Error != "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -84,6 +84,17 @@ func (cb *callbackServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		cb.renderErrCh <- err
 	}
 	cb.feedbackCh <- res
+}
+
+func (cb *callbackServer) getHost(ctx context.Context) string {
+	switch a := cb.arg.(type) {
+	case AccountOAuthArgument:
+		return a.GetAccountHost(ctx)
+	case WorkspaceOAuthArgument:
+		return a.GetWorkspaceHost(ctx)
+	default:
+		return ""
+	}
 }
 
 // Handler opens up a browser waits for redirect to come back from the identity provider
