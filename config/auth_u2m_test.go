@@ -188,6 +188,14 @@ func TestDatabricksCli_ErrorHandler(t *testing.T) {
 			err:        invalidRefreshTokenError,
 			want:       &CliInvalidRefreshTokenError{loginCommand: "databricks auth login --host https://accounts.cloud.databricks.com --account-id abc", err: invalidRefreshTokenError},
 		},
+		{
+			name:       "invalid refresh token is adapted: CLI not present",
+			pathLooker: mockPathLooker{found: false},
+			cfg:        &Config{},
+			arg:        accountArg,
+			err:        invalidRefreshTokenError,
+			want:       &CliInvalidRefreshTokenError{loginCommand: "", err: invalidRefreshTokenError},
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
