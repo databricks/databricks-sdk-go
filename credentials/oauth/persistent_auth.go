@@ -96,7 +96,11 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 		p.client = httpclient.NewApiClient(httpclient.ClientConfig{})
 	}
 	if p.cache == nil {
-		p.cache = &cache.FileTokenCache{}
+		var err error
+		p.cache, err = cache.NewFileTokenCache()
+		if err != nil {
+			return nil, fmt.Errorf("cache: %w", err)
+		}
 	}
 	if p.locker == nil {
 		home, err := os.UserHomeDir()
