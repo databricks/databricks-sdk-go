@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"golang.org/x/oauth2"
 )
@@ -53,10 +54,15 @@ type tokenCacheFile struct {
 // implements the TokenCache interface.
 type FileTokenCache struct {
 	fileLocation string
+
+	// mu protects the token cache file from concurrent reads and writes.
+	mu *sync.Mutex
 }
 
 func NewFileTokenCache() (*FileTokenCache, error) {
-	c := &FileTokenCache{}
+	c := &FileTokenCache{
+		mu: &sync.Mutex{},
+	}
 	if err := c.init(); err != nil {
 		return nil, err
 	}
@@ -65,6 +71,8 @@ func NewFileTokenCache() (*FileTokenCache, error) {
 
 // Store implements the TokenCache interface.
 func (c *FileTokenCache) Store(key string, t *oauth2.Token) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	f, err := c.load()
 	if err != nil {
 		return fmt.Errorf("load: %w", err)
@@ -82,6 +90,8 @@ func (c *FileTokenCache) Store(key string, t *oauth2.Token) error {
 
 // Lookup implements the TokenCache interface.
 func (c *FileTokenCache) Lookup(key string) (*oauth2.Token, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	f, err := c.load()
 	if err != nil {
 		return nil, fmt.Errorf("load: %w", err)
