@@ -437,6 +437,8 @@ func (c *Config) refreshTokenErrorMapper(ctx context.Context, resp common.Respon
 }
 
 func (c *Config) getOidcEndpoints(ctx context.Context) (*oauth.OAuthAuthorizationServer, error) {
+	// 
+	c.EnsureResolved()
 	if c.IsAccountClient() {
 		return oauth.GetAccountOAuthEndpoints(ctx, c.Host, c.AccountID)
 	}
