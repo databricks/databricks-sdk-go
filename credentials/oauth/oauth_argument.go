@@ -37,7 +37,7 @@ func NewBasicWorkspaceOAuthArgument(host string) (BasicWorkspaceOAuthArgument, e
 	return BasicWorkspaceOAuthArgument{host: host}, nil
 }
 
-func (a BasicWorkspaceOAuthArgument) GetHost(ctx context.Context) string {
+func (a BasicWorkspaceOAuthArgument) GetWorkspaceHost(ctx context.Context) string {
 	return a.host
 }
 
@@ -52,7 +52,7 @@ func (a BasicWorkspaceOAuthArgument) GetCacheKey(ctx context.Context) string {
 	return a.host
 }
 
-var _ OAuthArgument = BasicWorkspaceOAuthArgument{}
+var _ WorkspaceOAuthArgument = BasicWorkspaceOAuthArgument{}
 
 type AccountOAuthArgument interface {
 	OAuthArgument
@@ -69,7 +69,7 @@ type BasicAccountOAuthArgument struct {
 	accountID   string
 }
 
-var _ OAuthArgument = BasicAccountOAuthArgument{}
+var _ AccountOAuthArgument = BasicAccountOAuthArgument{}
 
 func NewBasicAccountOAuthArgument(accountsHost, accountID string) (BasicAccountOAuthArgument, error) {
 	if !strings.HasPrefix(accountsHost, "https://") {
@@ -81,7 +81,7 @@ func NewBasicAccountOAuthArgument(accountsHost, accountID string) (BasicAccountO
 	return BasicAccountOAuthArgument{accountHost: accountsHost, accountID: accountID}, nil
 }
 
-func (a BasicAccountOAuthArgument) GetHost(ctx context.Context) string {
+func (a BasicAccountOAuthArgument) GetAccountHost(ctx context.Context) string {
 	return a.accountHost
 }
 

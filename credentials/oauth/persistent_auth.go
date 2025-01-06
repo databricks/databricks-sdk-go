@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
@@ -36,6 +37,35 @@ const (
 	listenerTimeout = 45 * time.Second
 )
 
+// OAuthClient provides the http functionality needed for interacting with the
+// Databricks OAuth APIs.
+type OAuthClient interface {
+	// GetHttpClient returns an HTTP client for OAuth2 requests.
+	GetHttpClient(context.Context) *http.Client
+
+	// GetWorkspaceOAuthEndpoints returns the OAuth2 endpoints for the workspace.
+	GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*OAuthAuthorizationServer, error)
+
+	// GetAccountOAuthEndpoints returns the OAuth2 endpoints for the account.
+	GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*OAuthAuthorizationServer, error)
+}
+
+type BasicOAuthClient struct {
+	client *httpclient.ApiClient
+}
+
+func (c *BasicOAuthClient) GetHttpClient(_ context.Context) *http.Client {
+	return c.client.ToHttpClient()
+}
+
+func (c *BasicOAuthClient) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*OAuthAuthorizationServer, error) {
+	return GetWorkspaceOAuthEndpoints(ctx, c.client, workspaceHost)
+}
+
+func (c *BasicOAuthClient) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*OAuthAuthorizationServer, error) {
+	return GetAccountOAuthEndpoints(ctx, accountHost, accountId)
+}
+
 // PersistentAuth is an OAuth manager that handles the U2M OAuth flow. Tokens
 // are stored in and looked up from the provided cache. Tokens include the
 // refresh token. On load, if the access token is expired, it is refreshed
@@ -49,7 +79,7 @@ type PersistentAuth struct {
 	// Locker is the lock to synchronize token cache access.
 	locker sync.Locker
 	// Client is the HTTP client to use for OAuth2 requests.
-	client *httpclient.ApiClient
+	client OAuthClient
 	// Browser is the function to open a URL in the default browser.
 	browser func(url string) error
 	// ln is the listener for the OAuth2 callback server.
@@ -73,7 +103,7 @@ func WithLocker(l sync.Locker) PersistentAuthOption {
 }
 
 // WithApiClient sets the HTTP client for the PersistentAuth.
-func WithApiClient(c *httpclient.ApiClient) PersistentAuthOption {
+func WithOAuthClient(c OAuthClient) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.client = c
 	}
@@ -93,7 +123,9 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 		opt(p)
 	}
 	if p.client == nil {
-		p.client = httpclient.NewApiClient(httpclient.ClientConfig{})
+		p.client = &BasicOAuthClient{
+			client: httpclient.NewApiClient(httpclient.ClientConfig{}),
+		}
 	}
 	if p.cache == nil {
 		var err error
@@ -160,7 +192,7 @@ func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToke
 		return nil, err
 	}
 	// make OAuth2 library use our client
-	ctx = a.client.InContextForOAuth2(ctx)
+	ctx = a.setOAuthContext(ctx)
 	// eagerly refresh token
 	t, err := cfg.TokenSource(ctx, oldToken).Token()
 	if err != nil {
@@ -211,7 +243,7 @@ func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) error
 
 	state, pkce := a.stateAndPKCE()
 	// make OAuth2 library use our client
-	ctx = a.client.InContextForOAuth2(ctx)
+	ctx = a.setOAuthContext(ctx)
 	ts := authhandler.TokenSourceWithPKCE(ctx, cfg, state, cb.Handler, pkce)
 	t, err := ts.Token()
 	if err != nil {
@@ -256,17 +288,14 @@ func (a *PersistentAuth) oauth2Config(ctx context.Context, arg OAuthArgument) (*
 	}
 	var endpoints *OAuthAuthorizationServer
 	var err error
-	switch arg := arg.(type) {
-	case WorkspaceOAuthArgument:
-		endpoints, err = GetWorkspaceOAuthEndpoints(ctx, a.client, arg.GetWorkspaceHost(ctx))
-		if err != nil {
-			return nil, fmt.Errorf("workspace oauth endpoints: %w", err)
-		}
-	case AccountOAuthArgument:
-		endpoints, err = GetAccountOAuthEndpoints(ctx, arg.GetAccountHost(ctx), arg.GetAccountId(ctx))
+	if workspaceArg, ok := arg.(WorkspaceOAuthArgument); ok {
+		endpoints, err = a.client.GetWorkspaceOAuthEndpoints(ctx, workspaceArg.GetWorkspaceHost(ctx))
+	} else if accountArg, ok := arg.(AccountOAuthArgument); ok {
+		endpoints, err = a.client.GetAccountOAuthEndpoints(
+			ctx, accountArg.GetAccountHost(ctx), accountArg.GetAccountId(ctx))
 	}
 	if err != nil {
-		return nil, fmt.Errorf("oidc: %w", err)
+		return nil, fmt.Errorf("fetching OAuth endpoints: %w", err)
 	}
 	return &oauth2.Config{
 		ClientID: appClientID,
@@ -295,4 +324,8 @@ func (a *PersistentAuth) randomString(size int) string {
 	raw := make([]byte, size)
 	_, _ = rand.Read(raw)
 	return base64.RawURLEncoding.EncodeToString(raw)
+}
+
+func (a *PersistentAuth) setOAuthContext(ctx context.Context) context.Context {
+	return context.WithValue(ctx, oauth2.HTTPClient, a.client.GetHttpClient(ctx))
 }
