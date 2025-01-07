@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"testing"
 	"time"
@@ -126,7 +127,7 @@ func TestU2MCredentials(t *testing.T) {
 }
 
 func TestDatabricksCli_ErrorHandler(t *testing.T) {
-	invalidRefreshTokenError := &oauth.InvalidRefreshTokenError{}
+	invalidRefreshTokenError := fmt.Errorf("refresh: %w", &oauth.InvalidRefreshTokenError{})
 	workspaceArg := func() (oauth.OAuthArgument, error) {
 		return oauth.NewBasicWorkspaceOAuthArgument("https://myworkspace.cloud.databricks.com")
 	}

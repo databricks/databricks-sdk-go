@@ -166,7 +166,8 @@ var databricksCliCredentials = U2MCredentials{
 		// return a special error message for invalid refresh tokens. To help
 		// users easily reauthenticate, include a command that the user can
 		// run, prepopulating the profile, host and/or account ID.
-		if _, ok := err.(*oauth.InvalidRefreshTokenError); ok {
+		target := &oauth.InvalidRefreshTokenError{}
+		if errors.As(err, &target) {
 			return &CliInvalidRefreshTokenError{
 				loginCommand: buildLoginCommand(ctx, cfg.Profile, arg),
 				err:          err,
