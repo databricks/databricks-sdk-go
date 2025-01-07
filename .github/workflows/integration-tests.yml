@@ -6,12 +6,16 @@ on:
     types: [opened, synchronize]
 
   merge_group:
-  
+
 
 jobs:
   check-token:
     name: Check secrets access
-    runs-on: ubuntu-latest
+
+    runs-on:
+      group: databricks-deco-testing-runner-group
+      labels: ubuntu-latest-deco
+
     environment: "test-trigger-is"
     outputs:
       has_token: ${{ steps.set-token-status.outputs.has_token }}
@@ -29,11 +33,15 @@ jobs:
 
   trigger-tests:
     name: Trigger Tests
-    runs-on: ubuntu-latest
+
+    runs-on:
+      group: databricks-deco-testing-runner-group
+      labels: ubuntu-latest-deco
+
     needs: check-token
     if: github.event_name == 'pull_request'  && needs.check-token.outputs.has_token == 'true'
     environment: "test-trigger-is"
-    
+
     steps:
     - uses: actions/checkout@v3
 
@@ -45,7 +53,7 @@ jobs:
         private-key: ${{ secrets.DECO_WORKFLOW_TRIGGER_PRIVATE_KEY }}
         owner: ${{ secrets.ORG_NAME }}
         repositories: ${{secrets.REPO_NAME}}
-    
+
     - name: Trigger Workflow in Another Repo
       env:
         GH_TOKEN: ${{ steps.generate-token.outputs.token }}
@@ -53,14 +61,18 @@ jobs:
         gh workflow run sdk-go-isolated-pr.yml -R ${{ secrets.ORG_NAME }}/${{secrets.REPO_NAME}} \
         --ref main \
         -f pull_request_number=${{ github.event.pull_request.number }} \
-        -f commit_sha=${{ github.event.pull_request.head.sha }} 
+        -f commit_sha=${{ github.event.pull_request.head.sha }}
 
-    
+
   # The hash for the merge queue may not be the same as the hash for the PR.
   # Auto approve the check for the merge queue to avoid running integration tests twice.
   auto-approve:
     if: github.event_name == 'merge_group'
-    runs-on: ubuntu-latest
+
+    runs-on:
+      group: databricks-deco-testing-runner-group
+      labels: ubuntu-latest-deco
+
     steps:
       - name: Mark Check
         env:
