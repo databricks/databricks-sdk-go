@@ -605,6 +605,18 @@ type CreateAppDeploymentRequest struct {
 // Create an app
 type CreateAppRequest struct {
 	App *App `json:"app,omitempty"`
+	// If true, the app will not be started after creation.
+	NoCompute bool `json:"-" url:"no_compute,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateAppRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete an app
