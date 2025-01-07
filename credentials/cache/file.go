@@ -50,6 +50,14 @@ type tokenCacheFile struct {
 	Tokens  map[string]*oauth2.Token `json:"tokens"`
 }
 
+type FileTokenCacheOpt func(*FileTokenCache)
+
+func WithFileLocation(fileLocation string) FileTokenCacheOpt {
+	return func(c *FileTokenCache) {
+		c.fileLocation = fileLocation
+	}
+}
+
 // FileTokenCache caches tokens in "~/.databricks/token-cache.json". FileTokenCache
 // implements the TokenCache interface.
 type FileTokenCache struct {
@@ -59,12 +67,19 @@ type FileTokenCache struct {
 	mu *sync.Mutex
 }
 
-func NewFileTokenCache() (*FileTokenCache, error) {
+func NewFileTokenCache(opts ...FileTokenCacheOpt) (*FileTokenCache, error) {
 	c := &FileTokenCache{
 		mu: &sync.Mutex{},
 	}
+	for _, opt := range opts {
+		opt(c)
+	}
 	if err := c.init(); err != nil {
 		return nil, err
+	}
+	// verify the cache is working
+	if _, err := c.load(); err != nil {
+		return nil, fmt.Errorf("load: %w", err)
 	}
 	return c, nil
 }
@@ -81,7 +96,7 @@ func (c *FileTokenCache) Store(key string, t *oauth2.Token) error {
 		f.Tokens = map[string]*oauth2.Token{}
 	}
 	f.Tokens[key] = t
-	raw, err := json.MarshalIndent(c, "", "  ")
+	raw, err := json.MarshalIndent(f, "", "  ")
 	if err != nil {
 		return fmt.Errorf("marshal: %w", err)
 	}
@@ -152,7 +167,7 @@ func (c *FileTokenCache) load() (*tokenCacheFile, error) {
 		return nil, fmt.Errorf("read: %w", err)
 	}
 	f := &tokenCacheFile{}
-	err = json.Unmarshal(raw, f)
+	err = json.Unmarshal(raw, &f)
 	if err != nil {
 		return nil, fmt.Errorf("parse: %w", err)
 	}

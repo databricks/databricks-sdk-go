@@ -53,6 +53,9 @@ func (u U2MCredentials) Name() string {
 
 // Configure implements CredentialsStrategy.
 func (u U2MCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	if cfg.Host == "" {
+		return nil, nil
+	}
 	a := u.Auth
 	if a == nil {
 		var err error
@@ -121,7 +124,7 @@ type CliInvalidRefreshTokenError struct {
 
 func (e *CliInvalidRefreshTokenError) Error() string {
 	msg := "a new access token could not be retrieved because the refresh token is invalid."
-	msg += fmt.Sprintf(" To reauthenticate, run `%s`", e.loginCommand)
+	msg += fmt.Sprintf(" If using the CLI, run `%s` to reauthenticate", e.loginCommand)
 	return msg
 }
 
