@@ -22,7 +22,7 @@ func (c M2mCredentials) Name() string {
 	return "oauth-m2m"
 }
 
-func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
+func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.ClientID == "" || cfg.ClientSecret == "" {
 		return nil, nil
 	}

@@ -15,7 +15,7 @@ func (c PatCredentials) Name() string {
 	return "pat"
 }
 
-func (c PatCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
+func (c PatCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.Token == "" || cfg.Host == "" {
 		return nil, nil
 	}

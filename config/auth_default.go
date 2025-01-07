@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -43,7 +44,7 @@ var errorMessage = fmt.Sprintf("cannot configure default credentials, please che
 // ErrCannotConfigureAuth (experimental) is returned when no auth is configured
 var ErrCannotConfigureAuth = errors.New(errorMessage)
 
-func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
+func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	for _, p := range authProviders {
 		if cfg.AuthType != "" && p.Name() != cfg.AuthType {
 			// ignore other auth types if one is explicitly enforced

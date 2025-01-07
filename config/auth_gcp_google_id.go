@@ -20,7 +20,7 @@ func (c GoogleDefaultCredentials) Name() string {
 	return "google-id"
 }
 
-func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
+func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.GoogleServiceAccount == "" || !cfg.IsGcp() {
 		return nil, nil
 	}

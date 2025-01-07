@@ -54,7 +54,7 @@ func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner 
 	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken)), nil
 }
 
-func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
+func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if !cfg.IsAzure() {
 		return nil, nil
 	}

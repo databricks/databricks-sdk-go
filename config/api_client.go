@@ -104,7 +104,7 @@ func (noopLoader) Configure(cfg *Config) error { return nil }
 type noopAuth struct{}
 
 func (noopAuth) Name() string { return "noop" }
-func (noopAuth) Configure(context.Context, *Config) (CredentialsProvider, error) {
+func (noopAuth) Configure(context.Context, *Config) (credentials.CredentialsProvider, error) {
 	visitor := func(r *http.Request) error { return nil }
 	return credentials.NewCredentialsProvider(visitor), nil
 }

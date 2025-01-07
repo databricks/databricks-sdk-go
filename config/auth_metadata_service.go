@@ -49,7 +49,7 @@ func (c MetadataServiceCredentials) Name() string {
 	return "metadata-service"
 }
 
-func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
+func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.MetadataServiceURL == "" || cfg.Host == "" {
 		return nil, nil
 	}

@@ -35,7 +35,7 @@ func (c AzureClientSecretCredentials) tokenSourceFor(
 // as we cannot create AKV backed secret scopes when authenticated as SP.
 // If we are authenticated as SP and wish to create one we want to fail early.
 // Also see https://github.com/databricks/terraform-provider-databricks/issues/1490.
-func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
+func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.AzureClientID == "" || cfg.AzureClientSecret == "" || cfg.AzureTenantID == "" {
 		return nil, nil
 	}

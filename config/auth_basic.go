@@ -16,7 +16,7 @@ func (c BasicCredentials) Name() string {
 	return "basic"
 }
 
-func (c BasicCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
+func (c BasicCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.Username == "" || cfg.Password == "" || cfg.Host == "" {
 		return nil, nil
 	}

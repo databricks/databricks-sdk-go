@@ -22,7 +22,7 @@ func (c DatabricksCliCredentials) Name() string {
 	return "databricks-cli"
 }
 
-func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
+func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.Host == "" {
 		return nil, nil
 	}

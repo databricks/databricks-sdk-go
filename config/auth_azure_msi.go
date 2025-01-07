@@ -31,7 +31,7 @@ func (c AzureMsiCredentials) Name() string {
 	return "azure-msi"
 }
 
-func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
+func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && !cfg.IsAccountClient()) {
 		return nil, nil
 	}
