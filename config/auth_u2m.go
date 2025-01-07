@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os/exec"
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/credentials"
@@ -122,9 +121,7 @@ type CliInvalidRefreshTokenError struct {
 
 func (e *CliInvalidRefreshTokenError) Error() string {
 	msg := "a new access token could not be retrieved because the refresh token is invalid."
-	if e.loginCommand != "" {
-		msg += fmt.Sprintf(" To reauthenticate, run `%s`", e.loginCommand)
-	}
+	msg += fmt.Sprintf(" To reauthenticate, run `%s`", e.loginCommand)
 	return msg
 }
 
@@ -151,48 +148,30 @@ func buildLoginCommand(ctx context.Context, profile string, arg oauth.OAuthArgum
 	return strings.Join(cmd, " ")
 }
 
-// pathLooker is an interface that abstracts the LookPath function from the
-// os/exec package. It is used to facilitate testing.
-type pathLooker interface {
-	LookPath(file string) (string, error)
-}
-
-type defaultPathLooker struct{}
-
-func (defaultPathLooker) LookPath(file string) (string, error) {
-	return exec.LookPath(file)
-}
-
 // databricksCliCredentials is a credentials strategy that emulates the behavior
 // of the earlier `databricks-cli` credentials strategy which invoked the
 // `databricks auth token` command.
-func makeDatabricksCliCredentials(pathLooker pathLooker) U2MCredentials {
-	return U2MCredentials{
-		ErrorHandler: func(ctx context.Context, cfg *Config, arg oauth.OAuthArgument, err error) error {
-			// If the current OAuth argument doesn't have a corresponding session
-			// token, fall back to the next credentials strategy.
-			if errors.Is(err, cache.ErrNotConfigured) {
-				return nil
-			}
-			// If there is an existing token but the refresh token is invalid,
-			// return a special error message for invalid refresh tokens. If the
-			// `databricks` CLI is on the PATH, include a command that the user can
-			// run to reauthenticate.
-			if _, ok := err.(*oauth.InvalidRefreshTokenError); ok {
-				var loginCommand string
-				if _, execErr := pathLooker.LookPath("databricks"); execErr == nil {
-					loginCommand = buildLoginCommand(ctx, cfg.Profile, arg)
-				}
-				return &CliInvalidRefreshTokenError{
-					loginCommand: loginCommand,
-					err:          err,
-				}
-			}
-			// Otherwise, log the error and continue to the next credentials strategy.
-			logger.Debugf(ctx, "failed to load token: %v, continuing", err)
+var databricksCliCredentials = U2MCredentials{
+	ErrorHandler: func(ctx context.Context, cfg *Config, arg oauth.OAuthArgument, err error) error {
+		// If the current OAuth argument doesn't have a corresponding session
+		// token, fall back to the next credentials strategy.
+		if errors.Is(err, cache.ErrNotConfigured) {
 			return nil
-		},
-		GetOAuthArg: defaultGetOAuthArg,
-		name:        "databricks-cli",
-	}
+		}
+		// If there is an existing token but the refresh token is invalid,
+		// return a special error message for invalid refresh tokens. To help
+		// users easily reauthenticate, include a command that the user can
+		// run, prepopulating the profile, host and/or account ID.
+		if _, ok := err.(*oauth.InvalidRefreshTokenError); ok {
+			return &CliInvalidRefreshTokenError{
+				loginCommand: buildLoginCommand(ctx, cfg.Profile, arg),
+				err:          err,
+			}
+		}
+		// Otherwise, log the error and continue to the next credentials strategy.
+		logger.Debugf(ctx, "failed to load token: %v, continuing", err)
+		return nil
+	},
+	GetOAuthArg: defaultGetOAuthArg,
+	name:        "databricks-cli",
 }

@@ -13,7 +13,7 @@ var authProviders = []CredentialsStrategy{
 	PatCredentials{},
 	BasicCredentials{},
 	M2mCredentials{},
-	makeDatabricksCliCredentials(defaultPathLooker{}),
+	databricksCliCredentials,
 	MetadataServiceCredentials{},
 
 	// Attempt to configure auth from most specific to most generic (the Azure CLI).

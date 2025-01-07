@@ -125,17 +125,6 @@ func TestU2MCredentials(t *testing.T) {
 	}
 }
 
-type mockPathLooker struct {
-	found bool
-}
-
-func (m mockPathLooker) LookPath(_ string) (string, error) {
-	if m.found {
-		return "databricks", nil
-	}
-	return "", errors.New("not found")
-}
-
 func TestDatabricksCli_ErrorHandler(t *testing.T) {
 	invalidRefreshTokenError := &oauth.InvalidRefreshTokenError{}
 	workspaceArg := func() (oauth.OAuthArgument, error) {
@@ -145,12 +134,11 @@ func TestDatabricksCli_ErrorHandler(t *testing.T) {
 		return oauth.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "abc")
 	}
 	testCases := []struct {
-		name       string
-		pathLooker pathLooker
-		cfg        *Config
-		arg        func() (oauth.OAuthArgument, error)
-		err        error
-		want       error
+		name string
+		cfg  *Config
+		arg  func() (oauth.OAuthArgument, error)
+		err  error
+		want error
 	}{
 		{
 			name: "not configured is ignored",
@@ -165,41 +153,29 @@ func TestDatabricksCli_ErrorHandler(t *testing.T) {
 			want: nil,
 		},
 		{
-			name:       "invalid refresh token is adapted: profile provided",
-			pathLooker: mockPathLooker{found: true},
-			arg:        workspaceArg,
-			cfg:        &Config{Profile: "my-profile"},
-			err:        invalidRefreshTokenError,
-			want:       &CliInvalidRefreshTokenError{loginCommand: "databricks auth login --profile my-profile", err: invalidRefreshTokenError},
+			name: "invalid refresh token is adapted: profile provided",
+			arg:  workspaceArg,
+			cfg:  &Config{Profile: "my-profile"},
+			err:  invalidRefreshTokenError,
+			want: &CliInvalidRefreshTokenError{loginCommand: "databricks auth login --profile my-profile", err: invalidRefreshTokenError},
 		},
 		{
-			name:       "invalid refresh token is adapted: profile not provided for workspace",
-			pathLooker: mockPathLooker{found: true},
-			cfg:        &Config{},
-			arg:        workspaceArg,
-			err:        invalidRefreshTokenError,
-			want:       &CliInvalidRefreshTokenError{loginCommand: "databricks auth login --host https://myworkspace.cloud.databricks.com", err: invalidRefreshTokenError},
+			name: "invalid refresh token is adapted: profile not provided for workspace",
+			cfg:  &Config{},
+			arg:  workspaceArg,
+			err:  invalidRefreshTokenError,
+			want: &CliInvalidRefreshTokenError{loginCommand: "databricks auth login --host https://myworkspace.cloud.databricks.com", err: invalidRefreshTokenError},
 		},
 		{
-			name:       "invalid refresh token is adapted: profile not provided for account",
-			pathLooker: mockPathLooker{found: true},
-			cfg:        &Config{},
-			arg:        accountArg,
-			err:        invalidRefreshTokenError,
-			want:       &CliInvalidRefreshTokenError{loginCommand: "databricks auth login --host https://accounts.cloud.databricks.com --account-id abc", err: invalidRefreshTokenError},
-		},
-		{
-			name:       "invalid refresh token is adapted: CLI not present",
-			pathLooker: mockPathLooker{found: false},
-			cfg:        &Config{},
-			arg:        accountArg,
-			err:        invalidRefreshTokenError,
-			want:       &CliInvalidRefreshTokenError{loginCommand: "", err: invalidRefreshTokenError},
+			name: "invalid refresh token is adapted: profile not provided for account",
+			cfg:  &Config{},
+			arg:  accountArg,
+			err:  invalidRefreshTokenError,
+			want: &CliInvalidRefreshTokenError{loginCommand: "databricks auth login --host https://accounts.cloud.databricks.com --account-id abc", err: invalidRefreshTokenError},
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			databricksCliCredentials := makeDatabricksCliCredentials(tc.pathLooker)
 			arg, err := tc.arg()
 			require.NoError(t, err)
 			got := databricksCliCredentials.ErrorHandler(context.Background(), tc.cfg, arg, tc.err)
