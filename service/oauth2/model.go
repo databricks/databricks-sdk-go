@@ -9,8 +9,9 @@ import (
 // Create account federation policy
 type CreateAccountFederationPolicyRequest struct {
 	Policy *FederationPolicy `json:"policy,omitempty"`
-	// The identifier for the federation policy. If unspecified, the id will be
-	// assigned by Databricks.
+	// The identifier for the federation policy. The identifier must contain
+	// only lowercase alphanumeric characters, numbers, hyphens, and slashes. If
+	// unspecified, the id will be assigned by Databricks.
 	PolicyId string `json:"-" url:"policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -105,8 +106,9 @@ func (s CreatePublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 // Create service principal federation policy
 type CreateServicePrincipalFederationPolicyRequest struct {
 	Policy *FederationPolicy `json:"policy,omitempty"`
-	// The identifier for the federation policy. If unspecified, the id will be
-	// assigned by Databricks.
+	// The identifier for the federation policy. The identifier must contain
+	// only lowercase alphanumeric characters, numbers, hyphens, and slashes. If
+	// unspecified, the id will be assigned by Databricks.
 	PolicyId string `json:"-" url:"policy_id,omitempty"`
 	// The service principal id for the federation policy.
 	ServicePrincipalId int64 `json:"-" url:"-"`
@@ -153,25 +155,9 @@ func (s CreateServicePrincipalSecretResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type DataPlaneInfo struct {
-	// Authorization details as a string.
-	AuthorizationDetails string `json:"authorization_details,omitempty"`
-	// The URL of the endpoint for this operation in the dataplane.
-	EndpointUrl string `json:"endpoint_url,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DataPlaneInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DataPlaneInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 // Delete account federation policy
 type DeleteAccountFederationPolicyRequest struct {
+	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
 }
 
@@ -196,6 +182,7 @@ type DeleteResponse struct {
 
 // Delete service principal federation policy
 type DeleteServicePrincipalFederationPolicyRequest struct {
+	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
 	// The service principal id for the federation policy.
 	ServicePrincipalId int64 `json:"-" url:"-"`
@@ -214,9 +201,13 @@ type FederationPolicy struct {
 	CreateTime string `json:"create_time,omitempty"`
 	// Description of the federation policy.
 	Description string `json:"description,omitempty"`
-	// Name of the federation policy. The name must contain only lowercase
-	// alphanumeric characters, numbers, and hyphens. It must be unique within
-	// the account.
+	// Resource name for the federation policy. Example values include
+	// `accounts/<account-id>/federationPolicies/my-federation-policy` for
+	// Account Federation Policies, and
+	// `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy`
+	// for Service Principal Federation Policies. Typically an output parameter,
+	// which does not need to be specified in create or update requests. If
+	// specified in a request, must match the value in the request URL.
 	Name string `json:"name,omitempty"`
 	// Specifies the policy to use for validating OIDC claims in your federated
 	// tokens.
@@ -239,6 +230,7 @@ func (s FederationPolicy) MarshalJSON() ([]byte, error) {
 
 // Get account federation policy
 type GetAccountFederationPolicyRequest struct {
+	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
 }
 
@@ -366,6 +358,7 @@ func (s GetPublishedAppsOutput) MarshalJSON() ([]byte, error) {
 
 // Get service principal federation policy
 type GetServicePrincipalFederationPolicyRequest struct {
+	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
 	// The service principal id for the federation policy.
 	ServicePrincipalId int64 `json:"-" url:"-"`
@@ -630,7 +623,7 @@ func (s TokenAccessPolicy) MarshalJSON() ([]byte, error) {
 // Update account federation policy
 type UpdateAccountFederationPolicyRequest struct {
 	Policy *FederationPolicy `json:"policy,omitempty"`
-
+	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
 	// Field mask is required to be passed into the PATCH request. Field mask
 	// specifies which fields of the setting payload will be updated. The field
@@ -663,7 +656,7 @@ type UpdatePublishedAppIntegrationOutput struct {
 // Update service principal federation policy
 type UpdateServicePrincipalFederationPolicyRequest struct {
 	Policy *FederationPolicy `json:"policy,omitempty"`
-
+	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
 	// The service principal id for the federation policy.
 	ServicePrincipalId int64 `json:"-" url:"-"`

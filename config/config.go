@@ -13,7 +13,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/common/environment"
-	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/credentials/oauth"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"

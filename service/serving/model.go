@@ -7,7 +7,6 @@ import (
 	"io"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
-	"github.com/databricks/databricks-sdk-go/service/oauth2"
 )
 
 type Ai21LabsConfig struct {
@@ -498,6 +497,23 @@ func (s CreateServingEndpoint) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DataPlaneInfo struct {
+	// Authorization details as a string.
+	AuthorizationDetails string `json:"authorization_details,omitempty"`
+	// The URL of the endpoint for this operation in the dataplane.
+	EndpointUrl string `json:"endpoint_url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DataPlaneInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DataPlaneInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DatabricksModelServingConfig struct {
 	// The Databricks secret key reference for a Databricks API token that
 	// corresponds to a user or service principal with Can Query access to the
@@ -981,7 +997,7 @@ type LogsRequest struct {
 
 type ModelDataPlaneInfo struct {
 	// Information required to query DataPlane API 'query' endpoint.
-	QueryInfo *oauth2.DataPlaneInfo `json:"query_info,omitempty"`
+	QueryInfo *DataPlaneInfo `json:"query_info,omitempty"`
 }
 
 type OpenAiConfig struct {

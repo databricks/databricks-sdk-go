@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/credentials/cache"
 	"github.com/databricks/databricks-sdk-go/credentials/oauth"
 	"github.com/databricks/databricks-sdk-go/logger"

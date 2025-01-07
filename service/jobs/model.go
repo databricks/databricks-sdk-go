@@ -23,6 +23,11 @@ type BaseJob struct {
 	// based on accessible budget policies of the run_as identity on job
 	// creation or modification.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// Indicates if the job has more sub-resources (`tasks`, `job_clusters`)
+	// that are not shown. They can be accessed via :method:jobs/get endpoint.
+	// It is only relevant for API 2.2 :method:jobs/list requests with
+	// `expand_tasks=true`.
+	HasMore bool `json:"has_more,omitempty"`
 	// The canonical identifier for this job.
 	JobId int64 `json:"job_id,omitempty"`
 	// Settings for this job and all of its runs. These settings can be updated
@@ -89,9 +94,16 @@ type BaseRun struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
+	// Indicates if the run has more sub-resources (`tasks`, `job_clusters`)
+	// that are not shown. They can be accessed via :method:jobs/getrun
+	// endpoint. It is only relevant for API 2.2 :method:jobs/listruns requests
+	// with `expand_tasks=true`.
+	HasMore bool `json:"has_more,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
-	// You must declare dependent libraries in task settings.
+	// You must declare dependent libraries in task settings. If more than 100
+	// job clusters are available, you can paginate through them using
+	// :method:jobs/getrun.
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// The canonical identifier of the job that contains this run.
 	JobId int64 `json:"job_id,omitempty"`
@@ -153,7 +165,10 @@ type BaseRun struct {
 	// The current status of the run
 	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
-	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
+	// which you can use to call `JobsGetOutput` to retrieve the run resutls. If
+	// more than 100 tasks are available, you can paginate through them using
+	// :method:jobs/getrun. Use the `next_page_token` field at the object root
+	// to determine if more results are available.
 	Tasks []RunTask `json:"tasks,omitempty"`
 	// The type of trigger that fired this run.
 	//
@@ -543,7 +558,9 @@ type CreateJob struct {
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
-	// You must declare dependent libraries in task settings.
+	// You must declare dependent libraries in task settings. If more than 100
+	// job clusters are available, you can paginate through them using
+	// :method:jobs/get.
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// An optional maximum allowed number of concurrent runs of the job. Set
 	// this value if you want to be able to execute multiple runs of the same
@@ -583,7 +600,10 @@ type CreateJob struct {
 	// limitations as cluster tags. A maximum of 25 tags can be added to the
 	// job.
 	Tags map[string]string `json:"tags,omitempty"`
-	// A list of task specifications to be executed by this job.
+	// A list of task specifications to be executed by this job. If more than
+	// 100 tasks are available, you can paginate through them using
+	// :method:jobs/get. Use the `next_page_token` field at the object root to
+	// determine if more results are available.
 	Tasks []Task `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
@@ -961,6 +981,19 @@ type GetJobRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
 	JobId int64 `json:"-" url:"job_id"`
+	// Use `next_page_token` returned from the previous GetJob to request the
+	// next page of the job's sub-resources.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetJobRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetJobRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get job policy compliance
@@ -1005,8 +1038,8 @@ type GetRunRequest struct {
 	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
 	// Whether to include resolved parameter values in the response.
 	IncludeResolvedValues bool `json:"-" url:"include_resolved_values,omitempty"`
-	// To list the next page of job tasks, set this field to the value of the
-	// `next_page_token` returned in the GetJob response.
+	// Use `next_page_token` returned from the previous GetRun to request the
+	// next page of the run's sub-resources.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
@@ -1139,8 +1172,15 @@ type Job struct {
 	// based on accessible budget policies of the run_as identity on job
 	// creation or modification.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// Indicates if the job has more sub-resources (`tasks`, `job_clusters`)
+	// that are not shown. They can be accessed via :method:jobs/get endpoint.
+	// It is only relevant for API 2.2 :method:jobs/list requests with
+	// `expand_tasks=true`.
+	HasMore bool `json:"has_more,omitempty"`
 	// The canonical identifier for this job.
 	JobId int64 `json:"job_id,omitempty"`
+	// A token that can be used to list the next page of sub-resources.
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// The email of an active workspace user or the application ID of a service
 	// principal that the job runs as. This value can be changed by setting the
 	// `run_as` field when creating or updating a job.
@@ -1583,7 +1623,9 @@ type JobSettings struct {
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
-	// You must declare dependent libraries in task settings.
+	// You must declare dependent libraries in task settings. If more than 100
+	// job clusters are available, you can paginate through them using
+	// :method:jobs/get.
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// An optional maximum allowed number of concurrent runs of the job. Set
 	// this value if you want to be able to execute multiple runs of the same
@@ -1623,7 +1665,10 @@ type JobSettings struct {
 	// limitations as cluster tags. A maximum of 25 tags can be added to the
 	// job.
 	Tags map[string]string `json:"tags,omitempty"`
-	// A list of task specifications to be executed by this job.
+	// A list of task specifications to be executed by this job. If more than
+	// 100 tasks are available, you can paginate through them using
+	// :method:jobs/get. Use the `next_page_token` field at the object root to
+	// determine if more results are available.
 	Tasks []Task `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
@@ -1862,7 +1907,9 @@ func (s ListJobComplianceRequest) MarshalJSON() ([]byte, error) {
 
 // List jobs
 type ListJobsRequest struct {
-	// Whether to include task and cluster details in the response.
+	// Whether to include task and cluster details in the response. Note that in
+	// API 2.2, only the first 100 elements will be shown. Use :method:jobs/get
+	// to paginate through all tasks and clusters.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The number of jobs to return. This value must be greater than 0 and less
 	// or equal to 100. The default value is 20.
@@ -1924,7 +1971,9 @@ type ListRunsRequest struct {
 	// results; otherwise, lists both active and completed runs. This field
 	// cannot be `true` when active_only is `true`.
 	CompletedOnly bool `json:"-" url:"completed_only,omitempty"`
-	// Whether to include task and cluster details in the response.
+	// Whether to include task and cluster details in the response. Note that in
+	// API 2.2, only the first 100 elements will be shown. Use
+	// :method:jobs/getrun to paginate through all tasks and clusters.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The job for which to list runs. If omitted, the Jobs service lists runs
 	// from all jobs.
@@ -2557,12 +2606,19 @@ type Run struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
+	// Indicates if the run has more sub-resources (`tasks`, `job_clusters`)
+	// that are not shown. They can be accessed via :method:jobs/getrun
+	// endpoint. It is only relevant for API 2.2 :method:jobs/listruns requests
+	// with `expand_tasks=true`.
+	HasMore bool `json:"has_more,omitempty"`
 	// Only populated by for-each iterations. The parent for-each task is
 	// located in tasks array.
 	Iterations []RunTask `json:"iterations,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
-	// You must declare dependent libraries in task settings.
+	// You must declare dependent libraries in task settings. If more than 100
+	// job clusters are available, you can paginate through them using
+	// :method:jobs/getrun.
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// The canonical identifier of the job that contains this run.
 	JobId int64 `json:"job_id,omitempty"`
@@ -2626,7 +2682,10 @@ type Run struct {
 	// The current status of the run
 	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
-	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
+	// which you can use to call `JobsGetOutput` to retrieve the run resutls. If
+	// more than 100 tasks are available, you can paginate through them using
+	// :method:jobs/getrun. Use the `next_page_token` field at the object root
+	// to determine if more results are available.
 	Tasks []RunTask `json:"tasks,omitempty"`
 	// The type of trigger that fired this run.
 	//
