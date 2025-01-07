@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
-	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -104,7 +104,7 @@ func (noopLoader) Configure(cfg *Config) error { return nil }
 type noopAuth struct{}
 
 func (noopAuth) Name() string { return "noop" }
-func (noopAuth) Configure(context.Context, *Config) (credentials.CredentialsProvider, error) {
+func (noopAuth) Configure(context.Context, *Config) (CredentialsProvider, error) {
 	visitor := func(r *http.Request) error { return nil }
 	return credentials.NewCredentialsProvider(visitor), nil
 }

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 )
 
 type BasicCredentials struct {
@@ -16,7 +16,7 @@ func (c BasicCredentials) Name() string {
 	return "basic"
 }
 
-func (c BasicCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+func (c BasicCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
 	if cfg.Username == "" || cfg.Password == "" || cfg.Host == "" {
 		return nil, nil
 	}

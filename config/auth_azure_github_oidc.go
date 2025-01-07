@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -22,7 +22,7 @@ func (c AzureGithubOIDCCredentials) Name() string {
 }
 
 // Configure implements [CredentialsStrategy.Configure].
-func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
 	// Sanity check that the config is configured for Azure Databricks.
 	if !cfg.IsAzure() || cfg.AzureClientID == "" || cfg.Host == "" || cfg.AzureTenantID == "" {
 		return nil, nil

@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -31,7 +31,7 @@ func (c AzureMsiCredentials) Name() string {
 	return "azure-msi"
 }
 
-func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
 	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && !cfg.IsAccountClient()) {
 		return nil, nil
 	}

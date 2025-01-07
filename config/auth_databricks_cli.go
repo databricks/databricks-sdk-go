@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
@@ -22,7 +22,7 @@ func (c DatabricksCliCredentials) Name() string {
 	return "databricks-cli"
 }
 
-func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
 	if cfg.Host == "" {
 		return nil, nil
 	}

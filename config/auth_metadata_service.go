@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -49,7 +49,7 @@ func (c MetadataServiceCredentials) Name() string {
 	return "metadata-service"
 }
 
-func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
 	if cfg.MetadataServiceURL == "" || cfg.Host == "" {
 		return nil, nil
 	}

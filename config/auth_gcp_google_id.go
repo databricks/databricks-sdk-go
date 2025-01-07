@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/impersonate"
@@ -20,7 +20,7 @@ func (c GoogleDefaultCredentials) Name() string {
 	return "google-id"
 }
 
-func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (CredentialsProvider, error) {
 	if cfg.GoogleServiceAccount == "" || !cfg.IsGcp() {
 		return nil, nil
 	}

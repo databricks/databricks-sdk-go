@@ -13,7 +13,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/common/environment"
-	"github.com/databricks/databricks-sdk-go/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -28,7 +27,7 @@ type CredentialsStrategy interface {
 	// Configure creates CredentialsProvider or returns nil if a given credentials
 	// strategy are not configured. It returns an error if credentials are misconfigured.
 	// Takes a context and a pointer to a Config instance, that holds auth mutex.
-	Configure(context.Context, *Config) (credentials.CredentialsProvider, error)
+	Configure(context.Context, *Config) (CredentialsProvider, error)
 }
 
 type Loader interface {
@@ -50,7 +49,7 @@ type Config struct {
 	WarehouseID         string `name:"warehouse_id" env:"DATABRICKS_WAREHOUSE_ID"`
 	ServerlessComputeID string `name:"serverless_compute_id" env:"DATABRICKS_SERVERLESS_COMPUTE_ID"`
 
-	// URL of the metadata service that provides authentication credentials.
+	// URL of the metadata service that provides authentication
 	MetadataServiceURL string `name:"metadata_service_url" env:"DATABRICKS_METADATA_SERVICE_URL" auth:"metadata-service,sensitive"`
 
 	// Databricks Account ID for Accounts API. This field is used in dependencies.
@@ -160,7 +159,7 @@ type Config struct {
 	mu sync.Mutex
 
 	// HTTP request interceptor, that assigns Authorization header
-	credentialsProvider credentials.CredentialsProvider
+	credentialsProvider CredentialsProvider
 
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
@@ -231,7 +230,7 @@ func (c *Config) GetToken() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	if h, ok := c.credentialsProvider.(credentials.OAuthCredentialsProvider); ok {
+	if h, ok := c.credentialsProvider.(OAuthCredentialsProvider); ok {
 		return h.Token()
 	} else {
 		return nil, fmt.Errorf("OAuth Token not supported for current auth type %s", c.AuthType)
