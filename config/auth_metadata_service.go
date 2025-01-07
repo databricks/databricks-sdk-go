@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/credentials"
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
