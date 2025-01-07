@@ -46,9 +46,9 @@ type U2MCredentials struct {
 // Name implements CredentialsStrategy.
 func (u U2MCredentials) Name() string {
 	if u.name != "" {
-		return "oauth-u2m"
+		return u.name
 	}
-	return u.name
+	return "oauth-u2m"
 }
 
 // Configure implements CredentialsStrategy.
