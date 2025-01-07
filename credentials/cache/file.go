@@ -31,16 +31,11 @@ const (
 	//     "<key>": {
 	//       "access_token": "<access_token>",
 	//       "token_type": "<token_type>",
-	//       "refresh_token": "<refresh
+	//       "refresh_token": "<refresh_token>",
 	//       "expiry": "<expiry>"
 	//     }
 	//   }
 	// }
-	//
-	// The format of "<key>" depends on whether the token is account- or
-	// workspace-scoped:
-	//  - Account-scoped: "https://<accounts host>/oidc/accounts/<account_id>"
-	//  - Workspace-scoped: "https://<workspace host>"
 	tokenCacheVersion = 1
 )
 
@@ -67,6 +62,12 @@ type FileTokenCache struct {
 	mu *sync.Mutex
 }
 
+// NewFileTokenCache creates a new FileTokenCache. By default, the cache is
+// stored in "~/.databricks/token-cache.json". The cache file is created if it
+// does not already exist. The cache file is created with owner permissions
+// 0600 and the directory is created with owner permissions 0700. If the cache
+// file is corrupt or if its version does not match tokenCacheVersion, an error
+// is returned.
 func NewFileTokenCache(opts ...FileTokenCacheOpt) (*FileTokenCache, error) {
 	c := &FileTokenCache{
 		mu: &sync.Mutex{},

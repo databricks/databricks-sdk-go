@@ -17,6 +17,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/credentials/cache"
 	"github.com/databricks/databricks-sdk-go/httpclient"
+	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/pkg/browser"
 	"golang.org/x/oauth2"
@@ -151,17 +152,22 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 	return p, nil
 }
 
+// tokenErrorResponse is the response from the OAuth2 token endpoint when an
+// error occurs.
 type tokenErrorResponse struct {
 	Error            string `json:"error"`
 	ErrorDescription string `json:"error_description"`
 }
 
+// Load loads the OAuth2 token for the given OAuthArgument from the cache. If
+// the token is expired, it is refreshed using the refresh token.
 func (a *PersistentAuth) Load(ctx context.Context, arg OAuthArgument) (t *oauth2.Token, err error) {
 	a.locker.Lock()
 	defer a.locker.Unlock()
 
-	a.validateArg(arg)
-
+	if err := a.validateArg(arg); err != nil {
+		return nil, err
+	}
 	// TODO: remove this listener after several releases.
 	err = a.startListener(ctx)
 	if err != nil {
@@ -186,6 +192,8 @@ func (a *PersistentAuth) Load(ctx context.Context, arg OAuthArgument) (t *oauth2
 	return t, nil
 }
 
+// refresh refreshes the token for the given OAuthArgument, storing the new
+// token in the cache.
 func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToken *oauth2.Token) (*oauth2.Token, error) {
 	// OAuth2 config is invoked only for expired tokens to speed up
 	// the happy path in the token retrieval
@@ -222,14 +230,22 @@ func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToke
 	return t, nil
 }
 
-func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) error {
+// Challenge initiates the OAuth2 login flow for the given OAuthArgument. The
+// OAuth2 flow is started by opening the browser to the OAuth2 authorization
+// URL. The user is redirected to the callback server on appRedirectAddr. The
+// callback server listens for the redirect from the identity provider and
+// exchanges the authorization code for an access token. It returns the OAuth2
+// token on success.
+func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) (*oauth2.Token, error) {
 	a.locker.Lock()
 	defer a.locker.Unlock()
 
-	a.validateArg(arg)
+	if err := a.validateArg(arg); err != nil {
+		return nil, err
+	}
 	err := a.startListener(ctx)
 	if err != nil {
-		return fmt.Errorf("starting listener: %w", err)
+		return nil, fmt.Errorf("starting listener: %w", err)
 	}
 	// The listener will be closed by the callback server automatically, but if
 	// the callback server is not created, we need to close the listener manually.
@@ -237,11 +253,11 @@ func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) error
 
 	cfg, err := a.oauth2Config(ctx, arg)
 	if err != nil {
-		return fmt.Errorf("fetching oauth config: %w", err)
+		return nil, fmt.Errorf("fetching oauth config: %w", err)
 	}
-	cb, err := a.newCallback(ctx, arg)
+	cb, err := a.newCallbackServer(ctx, arg)
 	if err != nil {
-		return fmt.Errorf("callback server: %w", err)
+		return nil, fmt.Errorf("callback server: %w", err)
 	}
 	defer cb.Close()
 
@@ -251,22 +267,25 @@ func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) error
 	ts := authhandler.TokenSourceWithPKCE(ctx, cfg, state, cb.Handler, pkce)
 	t, err := ts.Token()
 	if err != nil {
-		return fmt.Errorf("authorize: %w", err)
+		return nil, fmt.Errorf("authorize: %w", err)
 	}
 	// cache token identified by host (and possibly the account id)
 	err = a.cache.Store(arg.GetCacheKey(ctx), t)
 	if err != nil {
-		return fmt.Errorf("store: %w", err)
+		return nil, fmt.Errorf("store: %w", err)
 	}
-	return nil
+	return t, nil
 }
 
+// startListener starts a listener on appRedirectAddr, retrying if the address
+// is already in use.
 func (a *PersistentAuth) startListener(ctx context.Context) error {
 	listener, err := retries.Poll(ctx, listenerTimeout,
 		func() (*net.Listener, *retries.Err) {
 			var lc net.ListenConfig
 			l, err := lc.Listen(ctx, "tcp", appRedirectAddr)
 			if err != nil {
+				logger.Debugf(ctx, "failed to listen on %s: %v, retrying", appRedirectAddr, err)
 				return nil, retries.Continue(err)
 			}
 			return &l, nil
@@ -285,6 +304,8 @@ func (a *PersistentAuth) Close() error {
 	return a.ln.Close()
 }
 
+// validateArg ensures that the OAuthArgument is either a WorkspaceOAuthArgument
+// or an AccountOAuthArgument.
 func (a *PersistentAuth) validateArg(arg OAuthArgument) error {
 	_, isWorkspaceArg := arg.(WorkspaceOAuthArgument)
 	_, isAccountArg := arg.(AccountOAuthArgument)
@@ -294,6 +315,7 @@ func (a *PersistentAuth) validateArg(arg OAuthArgument) error {
 	return nil
 }
 
+// oauth2Config returns the OAuth2 configuration for the given OAuthArgument.
 func (a *PersistentAuth) oauth2Config(ctx context.Context, arg OAuthArgument) (*oauth2.Config, error) {
 	scopes := []string{
 		"offline_access", // ensures OAuth token includes refresh token

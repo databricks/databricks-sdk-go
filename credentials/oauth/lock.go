@@ -14,6 +14,8 @@ type lockerAdaptor struct {
 	fileMutex *filemutex.FileMutex
 }
 
+var _ sync.Locker = (*lockerAdaptor)(nil)
+
 // Lock implements sync.Locker.
 func (l *lockerAdaptor) Lock() {
 	err := l.fileMutex.Lock()
@@ -30,7 +32,8 @@ func (l *lockerAdaptor) Unlock() {
 	}
 }
 
-func newLocker(path string) (sync.Locker, error) {
+// newLocker creates a new sync.Locker that uses a file-based mutex.
+func newLocker(path string) (*lockerAdaptor, error) {
 	dirName := filepath.Dir(path)
 	if _, err := os.Stat(dirName); err != nil && os.IsNotExist(err) {
 		os.MkdirAll(dirName, 0750)

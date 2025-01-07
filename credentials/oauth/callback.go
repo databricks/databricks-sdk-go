@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"fmt"
 	"html/template"
-	"net"
 	"net/http"
 	"strings"
 
@@ -24,18 +23,40 @@ type oauthResult struct {
 	Host             string
 }
 
+// callbackServer is a server that listens for the redirect from the Databricks
+// identity provider. It renders a page.html template that shows the result of
+// the authentication attempt.
 type callbackServer struct {
-	ln          net.Listener
-	srv         http.Server
-	ctx         context.Context
-	a           *PersistentAuth
-	arg         OAuthArgument
+	// ctx is the context used when waiting for the redirect from the identity
+	// provider. This is needed because the Handler() method from the oauth2
+	// library does not accept a context.
+	ctx context.Context
+
+	// srv is the server that listens for the redirect from the identity provider.
+	srv http.Server
+
+	// browser is a function that opens a browser to the given URL.
+	browser func(string) error
+
+	// arg is the OAuth argument used to authenticate.
+	arg OAuthArgument
+
+	// renderErrCh is a channel that receives an error if there is an error
+	// rendering the page.html template.
 	renderErrCh chan error
-	feedbackCh  chan oauthResult
-	tmpl        *template.Template
+
+	// feedbackCh is a channel that receives the result of the authentication
+	// attempt.
+	feedbackCh chan oauthResult
+
+	// tmpl is the template used to render the response page after the user is
+	// redirected back to the callback server.
+	tmpl *template.Template
 }
 
-func (a *PersistentAuth) newCallback(ctx context.Context, arg OAuthArgument) (*callbackServer, error) {
+// newCallbackServer creates a new callback server that listens for the redirect
+// from the Databricks identity provider.
+func (a *PersistentAuth) newCallbackServer(ctx context.Context, arg OAuthArgument) (*callbackServer, error) {
 	tmpl, err := template.New("page").Funcs(template.FuncMap{
 		"title": func(in string) string {
 			title := cases.Title(language.English)
@@ -50,22 +71,22 @@ func (a *PersistentAuth) newCallback(ctx context.Context, arg OAuthArgument) (*c
 		renderErrCh: make(chan error),
 		tmpl:        tmpl,
 		ctx:         ctx,
-		ln:          a.ln,
-		a:           a,
+		browser:     a.browser,
 		arg:         arg,
 	}
 	cb.srv.Handler = cb
 	go func() {
-		_ = cb.srv.Serve(cb.ln)
+		_ = cb.srv.Serve(a.ln)
 	}()
 	return cb, nil
 }
 
+// Close closes the callback server.
 func (cb *callbackServer) Close() error {
 	return cb.srv.Close()
 }
 
-// ServeHTTP renders page.html template
+// ServeHTTP renders the page.html template.
 func (cb *callbackServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	res := oauthResult{
 		Error:            r.FormValue("error"),
@@ -99,7 +120,7 @@ func (cb *callbackServer) getHost(ctx context.Context) string {
 
 // Handler opens up a browser waits for redirect to come back from the identity provider
 func (cb *callbackServer) Handler(authCodeURL string) (string, string, error) {
-	err := cb.a.browser(authCodeURL)
+	err := cb.browser(authCodeURL)
 	if err != nil {
 		fmt.Printf("Please open %s in the browser to continue authentication", authCodeURL)
 	}

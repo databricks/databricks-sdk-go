@@ -123,15 +123,16 @@ type CliInvalidRefreshTokenError struct {
 }
 
 func (e *CliInvalidRefreshTokenError) Error() string {
-	msg := "a new access token could not be retrieved because the refresh token is invalid."
-	msg += fmt.Sprintf(" If using the CLI, run `%s` to reauthenticate", e.loginCommand)
-	return msg
+	return fmt.Sprintf("a new access token could not be retrieved because the refresh token is invalid. If using the CLI, run `%s` to reauthenticate", e.loginCommand)
 }
 
 func (e *CliInvalidRefreshTokenError) Unwrap() error {
 	return e.err
 }
 
+// buildLoginCommand returns the `databricks auth login` command that the user
+// can run to reauthenticate. The command is prepopulated with the profile, host
+// and/or account ID.
 func buildLoginCommand(ctx context.Context, profile string, arg oauth.OAuthArgument) string {
 	cmd := []string{
 		"databricks",

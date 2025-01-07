@@ -2,7 +2,6 @@ package oauth_test
 
 import (
 	"context"
-	_ "embed"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -169,9 +168,14 @@ func TestChallenge(t *testing.T) {
 	arg, err := oauth.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
 	assert.NoError(t, err)
 
+	tokenc := make(chan *oauth2.Token)
 	errc := make(chan error)
 	go func() {
-		errc <- p.Challenge(ctx, arg)
+		token, err := p.Challenge(ctx, arg)
+		errc <- err
+		close(errc)
+		tokenc <- token
+		close(tokenc)
 	}()
 
 	state := <-browserOpened
@@ -182,6 +186,7 @@ func TestChallenge(t *testing.T) {
 
 	err = <-errc
 	assert.NoError(t, err)
+	assert.Equal(t, "__THAT__", (<-tokenc).AccessToken)
 }
 
 func TestChallengeFailed(t *testing.T) {
@@ -204,9 +209,14 @@ func TestChallengeFailed(t *testing.T) {
 	arg, err := oauth.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
 	assert.NoError(t, err)
 
+	tokenc := make(chan *oauth2.Token)
 	errc := make(chan error)
 	go func() {
-		errc <- p.Challenge(ctx, arg)
+		token, err := p.Challenge(ctx, arg)
+		errc <- err
+		close(errc)
+		tokenc <- token
+		close(tokenc)
 	}()
 
 	<-browserOpened
@@ -218,4 +228,5 @@ func TestChallengeFailed(t *testing.T) {
 
 	err = <-errc
 	assert.EqualError(t, err, "authorize: access_denied: Policy evaluation failed for this request")
+	assert.Nil(t, <-tokenc)
 }
