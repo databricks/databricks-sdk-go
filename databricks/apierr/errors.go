@@ -12,8 +12,8 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/databricks/httplog"
 	"github.com/databricks/databricks-sdk-go/logger"
-	"github.com/databricks/databricks-sdk-go/logger/httplog"
 )
 
 const (

@@ -13,9 +13,9 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/databricks/httplog"
 	"github.com/databricks/databricks-sdk-go/httpclient/traceparent"
 	"github.com/databricks/databricks-sdk-go/logger"
-	"github.com/databricks/databricks-sdk-go/logger/httplog"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/oauth2"

@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/databricks/databricks-sdk-go/databricks/apierr"
 	"github.com/stretchr/testify/assert"
 )
 

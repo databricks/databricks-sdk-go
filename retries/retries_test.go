@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/apierr"
 	"github.com/stretchr/testify/assert"
 )
 

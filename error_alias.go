@@ -2,7 +2,7 @@
 
 package databricks
 
-import "github.com/databricks/databricks-sdk-go/apierr"
+import "github.com/databricks/databricks-sdk-go/databricks/apierr"
 
 var (
 	// the request is invalid

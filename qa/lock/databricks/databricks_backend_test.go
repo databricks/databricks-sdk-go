@@ -7,7 +7,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/apierr"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks"
 	"github.com/databricks/databricks-sdk-go/qa/lock/core"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
