@@ -97,7 +97,7 @@ func TestU2MCredentials(t *testing.T) {
 					}),
 				)
 			},
-			expectErr: "oidc: token refresh: token refresh: oauth2: \"invalid_refresh_token\" \"Refresh token is invalid\"",
+			expectErr: "oidc: token refresh: oauth2: \"invalid_refresh_token\" \"Refresh token is invalid\"",
 		},
 	}
 
