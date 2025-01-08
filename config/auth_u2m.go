@@ -123,7 +123,8 @@ type CliInvalidRefreshTokenError struct {
 }
 
 func (e *CliInvalidRefreshTokenError) Error() string {
-	return fmt.Sprintf("a new access token could not be retrieved because the refresh token is invalid. If using the CLI, run `%s` to reauthenticate", e.loginCommand)
+	return fmt.Sprintf(`a new access token could not be retrieved because the refresh token is invalid. If using the CLI, run the following command to reauthenticate:
+  $ %s`, e.loginCommand)
 }
 
 func (e *CliInvalidRefreshTokenError) Unwrap() error {
