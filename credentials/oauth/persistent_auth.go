@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net"
@@ -206,26 +205,20 @@ func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToke
 	// eagerly refresh token
 	t, err := cfg.TokenSource(ctx, oldToken).Token()
 	if err != nil {
-		var httpErr *httpclient.HttpError
+		var httpErr *oauth2.RetrieveError
 		if errors.As(err, &httpErr) {
-			resp := &tokenErrorResponse{}
-			err = json.Unmarshal([]byte(httpErr.Message), resp)
-			if err != nil {
-				return nil, fmt.Errorf("unexpected parsing token response: %w", err)
-			}
 			// Invalid refresh tokens get their own error type so they can be
 			// better presented to users.
-			if resp.ErrorDescription == "Refresh token is invalid" {
+			if httpErr.ErrorDescription == "Refresh token is invalid" {
 				return nil, &InvalidRefreshTokenError{err}
-			} else {
-				return nil, fmt.Errorf("unexpected error refreshing token: %s", resp.ErrorDescription)
 			}
+			return nil, fmt.Errorf("%s (error code: %s)", httpErr.ErrorDescription, httpErr.ErrorCode)
 		}
-		return nil, fmt.Errorf("token refresh: %w", err)
+		return nil, err
 	}
 	err = a.cache.Store(arg.GetCacheKey(ctx), t)
 	if err != nil {
-		return nil, fmt.Errorf("cache refresh: %w", err)
+		return nil, fmt.Errorf("cache update: %w", err)
 	}
 	return t, nil
 }
