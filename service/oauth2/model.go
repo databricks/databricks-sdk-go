@@ -625,11 +625,23 @@ type UpdateAccountFederationPolicyRequest struct {
 	Policy *FederationPolicy `json:"policy,omitempty"`
 	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
-	UpdateMask string `json:"-" url:"update_mask"`
+	// The field mask specifies which fields of the policy to update. To specify
+	// multiple fields in the field mask, use comma as the separator (no space).
+	// The special value '*' indicates that all fields should be updated (full
+	// replacement). If unspecified, all fields that are set in the policy
+	// provided in the update request will overwrite the corresponding fields in
+	// the existing policy. Example value: 'description,oidc_policy.audiences'.
+	UpdateMask string `json:"-" url:"update_mask,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateAccountFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateCustomAppIntegration struct {
@@ -660,9 +672,21 @@ type UpdateServicePrincipalFederationPolicyRequest struct {
 	PolicyId string `json:"-" url:"-"`
 	// The service principal id for the federation policy.
 	ServicePrincipalId int64 `json:"-" url:"-"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
-	UpdateMask string `json:"-" url:"update_mask"`
+	// The field mask specifies which fields of the policy to update. To specify
+	// multiple fields in the field mask, use comma as the separator (no space).
+	// The special value '*' indicates that all fields should be updated (full
+	// replacement). If unspecified, all fields that are set in the policy
+	// provided in the update request will overwrite the corresponding fields in
+	// the existing policy. Example value: 'description,oidc_policy.audiences'.
+	UpdateMask string `json:"-" url:"update_mask,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateServicePrincipalFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
