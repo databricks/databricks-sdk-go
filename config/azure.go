@@ -10,8 +10,8 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/httpclient"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 
@@ -137,7 +137,7 @@ func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResol
 		return fmt.Errorf("resolve workspace: %w", err)
 	}
 	c.Host = fmt.Sprintf("https://%s", workspaceMetadata.Properties.WorkspaceURL)
-	logger.Debugf(ctx, "Discovered workspace url: %s", c.Host)
+	log.DebugContext(ctx, "Discovered workspace url: %s", c.Host)
 	return nil
 }
 

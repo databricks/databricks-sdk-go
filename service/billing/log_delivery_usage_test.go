@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
@@ -31,7 +31,7 @@ func ExampleLogDeliveryAPI_Create_logDelivery() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", bucket)
+	log.InfoContext(ctx, "found %v", bucket)
 
 	creds, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -44,7 +44,7 @@ func ExampleLogDeliveryAPI_Create_logDelivery() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", creds)
+	log.InfoContext(ctx, "found %v", creds)
 
 	created, err := a.LogDelivery.Create(ctx, billing.WrappedCreateLogDeliveryConfiguration{
 		LogDeliveryConfiguration: &billing.CreateLogDeliveryConfigurationParams{
@@ -58,7 +58,7 @@ func ExampleLogDeliveryAPI_Create_logDelivery() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -96,7 +96,7 @@ func ExampleLogDeliveryAPI_Get_logDelivery() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", bucket)
+	log.InfoContext(ctx, "found %v", bucket)
 
 	creds, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -109,7 +109,7 @@ func ExampleLogDeliveryAPI_Get_logDelivery() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", creds)
+	log.InfoContext(ctx, "found %v", creds)
 
 	created, err := a.LogDelivery.Create(ctx, billing.WrappedCreateLogDeliveryConfiguration{
 		LogDeliveryConfiguration: &billing.CreateLogDeliveryConfigurationParams{
@@ -123,13 +123,13 @@ func ExampleLogDeliveryAPI_Get_logDelivery() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	byId, err := a.LogDelivery.GetByLogDeliveryConfigurationId(ctx, created.LogDeliveryConfiguration.ConfigId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -162,6 +162,6 @@ func ExampleLogDeliveryAPI_ListAll_logDelivery() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }

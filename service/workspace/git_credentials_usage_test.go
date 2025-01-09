@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
@@ -28,7 +28,7 @@ func ExampleGitCredentialsAPI_Create_gitCredentials() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", cr)
+	log.InfoContext(ctx, "found %v", cr)
 
 	// cleanup
 
@@ -54,13 +54,13 @@ func ExampleGitCredentialsAPI_Get_gitCredentials() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", cr)
+	log.InfoContext(ctx, "found %v", cr)
 
 	byId, err := w.GitCredentials.GetByCredentialId(ctx, cr.CredentialId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -82,7 +82,7 @@ func ExampleGitCredentialsAPI_ListAll_gitCredentials() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", list)
+	log.InfoContext(ctx, "found %v", list)
 
 }
 
@@ -101,7 +101,7 @@ func ExampleGitCredentialsAPI_Update_gitCredentials() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", cr)
+	log.InfoContext(ctx, "found %v", cr)
 
 	err = w.GitCredentials.Update(ctx, workspace.UpdateCredentialsRequest{
 		CredentialId:        cr.CredentialId,

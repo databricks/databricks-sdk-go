@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
@@ -31,7 +31,7 @@ func ExampleVolumesAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", storageCredential)
+	log.InfoContext(ctx, "found %v", storageCredential)
 
 	externalLocation, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
 		Name:           fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -42,7 +42,7 @@ func ExampleVolumesAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", externalLocation)
+	log.InfoContext(ctx, "found %v", externalLocation)
 
 	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -50,7 +50,7 @@ func ExampleVolumesAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -59,7 +59,7 @@ func ExampleVolumesAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	createdVolume, err := w.Volumes.Create(ctx, catalog.CreateVolumeRequestContent{
 		CatalogName:     createdCatalog.Name,
@@ -71,7 +71,7 @@ func ExampleVolumesAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdVolume)
+	log.InfoContext(ctx, "found %v", createdVolume)
 
 	// cleanup
 
@@ -114,7 +114,7 @@ func ExampleVolumesAPI_ListAll_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -123,7 +123,7 @@ func ExampleVolumesAPI_ListAll_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	allVolumes, err := w.Volumes.ListAll(ctx, catalog.ListVolumesRequest{
 		CatalogName: createdCatalog.Name,
@@ -132,7 +132,7 @@ func ExampleVolumesAPI_ListAll_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", allVolumes)
+	log.InfoContext(ctx, "found %v", allVolumes)
 
 	// cleanup
 
@@ -167,7 +167,7 @@ func ExampleVolumesAPI_Read_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", storageCredential)
+	log.InfoContext(ctx, "found %v", storageCredential)
 
 	externalLocation, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
 		Name:           fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -178,7 +178,7 @@ func ExampleVolumesAPI_Read_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", externalLocation)
+	log.InfoContext(ctx, "found %v", externalLocation)
 
 	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -186,7 +186,7 @@ func ExampleVolumesAPI_Read_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -195,7 +195,7 @@ func ExampleVolumesAPI_Read_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	createdVolume, err := w.Volumes.Create(ctx, catalog.CreateVolumeRequestContent{
 		CatalogName:     createdCatalog.Name,
@@ -207,13 +207,13 @@ func ExampleVolumesAPI_Read_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdVolume)
+	log.InfoContext(ctx, "found %v", createdVolume)
 
 	loadedVolume, err := w.Volumes.ReadByName(ctx, createdVolume.FullName)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", loadedVolume)
+	log.InfoContext(ctx, "found %v", loadedVolume)
 
 	// cleanup
 
@@ -260,7 +260,7 @@ func ExampleVolumesAPI_Update_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", storageCredential)
+	log.InfoContext(ctx, "found %v", storageCredential)
 
 	externalLocation, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
 		Name:           fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -271,7 +271,7 @@ func ExampleVolumesAPI_Update_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", externalLocation)
+	log.InfoContext(ctx, "found %v", externalLocation)
 
 	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -279,7 +279,7 @@ func ExampleVolumesAPI_Update_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -288,7 +288,7 @@ func ExampleVolumesAPI_Update_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	createdVolume, err := w.Volumes.Create(ctx, catalog.CreateVolumeRequestContent{
 		CatalogName:     createdCatalog.Name,
@@ -300,13 +300,13 @@ func ExampleVolumesAPI_Update_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdVolume)
+	log.InfoContext(ctx, "found %v", createdVolume)
 
 	loadedVolume, err := w.Volumes.ReadByName(ctx, createdVolume.FullName)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", loadedVolume)
+	log.InfoContext(ctx, "found %v", loadedVolume)
 
 	_, err = w.Volumes.Update(ctx, catalog.UpdateVolumeRequestContent{
 		Name:    loadedVolume.FullName,

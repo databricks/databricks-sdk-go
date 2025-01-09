@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 )
@@ -48,7 +48,7 @@ func ExamplePipelinesAPI_Create_pipelines() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -92,13 +92,13 @@ func ExamplePipelinesAPI_Get_pipelines() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	byId, err := w.Pipelines.GetByPipelineId(ctx, created.PipelineId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -142,7 +142,7 @@ func ExamplePipelinesAPI_ListPipelineEvents_pipelines() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	events, err := w.Pipelines.ListPipelineEventsAll(ctx, pipelines.ListPipelineEventsRequest{
 		PipelineId: created.PipelineId,
@@ -150,7 +150,7 @@ func ExamplePipelinesAPI_ListPipelineEvents_pipelines() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", events)
+	log.InfoContext(ctx, "found %v", events)
 
 	// cleanup
 
@@ -172,7 +172,7 @@ func ExamplePipelinesAPI_ListPipelines_pipelines() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -209,7 +209,7 @@ func ExamplePipelinesAPI_Update_pipelines() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.Pipelines.Update(ctx, pipelines.EditPipeline{
 		PipelineId: created.PipelineId,

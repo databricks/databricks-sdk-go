@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -198,7 +198,7 @@ func (a *LibrariesAPI) Wait(ctx context.Context, wait Wait,
 			return nil, retries.Halt(err)
 		}
 		if !wait.IsRunning {
-			logger.Infof(ctx, "Cluster %s is currently not running, so just returning list of %d libraries",
+			log.InfoContext(ctx, "Cluster %s is currently not running, so just returning list of %d libraries",
 				wait.ClusterID, len(status.LibraryStatuses))
 			return status, nil
 		}
@@ -223,7 +223,7 @@ func (a *LibrariesAPI) Wait(ctx context.Context, wait Wait,
 		// cleanup libraries that failed to install
 		for _, v := range result.LibraryStatuses {
 			if v.Status == "FAILED" {
-				logger.Warnf(ctx, "Removing failed library %s from %s",
+				log.WarningContext(ctx, "Removing failed library %s from %s",
 					v.Library, wait.ClusterID)
 				cleanup.Libraries = append(cleanup.Libraries, *v.Library)
 				continue

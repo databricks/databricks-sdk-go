@@ -4,17 +4,15 @@ import (
 	"context"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func init() {
-	logger.DefaultLogger = &logger.SimpleLogger{
-		Level: logger.LevelDebug,
-	}
+	log.SetDefaultLogger(log.New(log.LevelDebug))
 }
 
 func TestSimpleGetErrorStub(t *testing.T) {

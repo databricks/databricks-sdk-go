@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
@@ -32,7 +32,7 @@ func ExampleCredentialsAPI_Create_logDelivery() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", creds)
+	log.InfoContext(ctx, "found %v", creds)
 
 	// cleanup
 
@@ -61,7 +61,7 @@ func ExampleCredentialsAPI_Create_credentials() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", role)
+	log.InfoContext(ctx, "found %v", role)
 
 	// cleanup
 
@@ -90,7 +90,7 @@ func ExampleCredentialsAPI_Create_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", role)
+	log.InfoContext(ctx, "found %v", role)
 
 	// cleanup
 
@@ -119,13 +119,13 @@ func ExampleCredentialsAPI_Get_credentials() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", role)
+	log.InfoContext(ctx, "found %v", role)
 
 	byId, err := a.Credentials.GetByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -147,6 +147,6 @@ func ExampleCredentialsAPI_ListAll_credentials() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", configs)
+	log.InfoContext(ctx, "found %v", configs)
 
 }

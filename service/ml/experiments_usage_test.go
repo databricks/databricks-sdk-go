@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/ml"
 )
@@ -26,7 +26,7 @@ func ExampleExperimentsAPI_CreateExperiment_experiments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", experiment)
+	log.InfoContext(ctx, "found %v", experiment)
 
 	// cleanup
 
@@ -52,7 +52,7 @@ func ExampleExperimentsAPI_CreateExperiment_mLflowRuns() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", experiment)
+	log.InfoContext(ctx, "found %v", experiment)
 
 	// cleanup
 
@@ -78,7 +78,7 @@ func ExampleExperimentsAPI_CreateRun_mLflowRuns() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", experiment)
+	log.InfoContext(ctx, "found %v", experiment)
 
 	created, err := w.Experiments.CreateRun(ctx, ml.CreateRun{
 		ExperimentId: experiment.ExperimentId,
@@ -90,7 +90,7 @@ func ExampleExperimentsAPI_CreateRun_mLflowRuns() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -122,7 +122,7 @@ func ExampleExperimentsAPI_GetExperiment_experiments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", experiment)
+	log.InfoContext(ctx, "found %v", experiment)
 
 	_, err = w.Experiments.GetExperiment(ctx, ml.GetExperimentRequest{
 		ExperimentId: experiment.ExperimentId,
@@ -153,7 +153,7 @@ func ExampleExperimentsAPI_ListExperiments_experiments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -170,7 +170,7 @@ func ExampleExperimentsAPI_UpdateExperiment_experiments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", experiment)
+	log.InfoContext(ctx, "found %v", experiment)
 
 	err = w.Experiments.UpdateExperiment(ctx, ml.UpdateExperiment{
 		NewName:      fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -204,7 +204,7 @@ func ExampleExperimentsAPI_UpdateRun_mLflowRuns() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", experiment)
+	log.InfoContext(ctx, "found %v", experiment)
 
 	created, err := w.Experiments.CreateRun(ctx, ml.CreateRun{
 		ExperimentId: experiment.ExperimentId,
@@ -216,7 +216,7 @@ func ExampleExperimentsAPI_UpdateRun_mLflowRuns() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Experiments.UpdateRun(ctx, ml.UpdateRun{
 		RunId:  created.Run.Info.RunId,

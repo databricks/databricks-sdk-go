@@ -6,7 +6,7 @@ import (
 	"context"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 )
 
 func ExampleCurrentUserAPI_Me_currentUser() {
@@ -20,7 +20,7 @@ func ExampleCurrentUserAPI_Me_currentUser() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", me)
+	log.InfoContext(ctx, "found %v", me)
 
 }
 
@@ -35,6 +35,6 @@ func ExampleCurrentUserAPI_Me_tokens() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", me2)
+	log.InfoContext(ctx, "found %v", me2)
 
 }

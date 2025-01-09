@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/sql"
@@ -30,7 +30,7 @@ func ExampleTablesAPI_Get_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -39,7 +39,7 @@ func ExampleTablesAPI_Get_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	_, err = w.StatementExecution.ExecuteAndWait(ctx, sql.ExecuteStatementRequest{
 		WarehouseId: os.Getenv("TEST_DEFAULT_WAREHOUSE_ID"),
@@ -57,7 +57,7 @@ func ExampleTablesAPI_Get_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdTable)
+	log.InfoContext(ctx, "found %v", createdTable)
 
 	// cleanup
 
@@ -92,7 +92,7 @@ func ExampleTablesAPI_ListAll_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -101,7 +101,7 @@ func ExampleTablesAPI_ListAll_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	allTables, err := w.Tables.ListAll(ctx, catalog.ListTablesRequest{
 		CatalogName: createdCatalog.Name,
@@ -110,7 +110,7 @@ func ExampleTablesAPI_ListAll_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", allTables)
+	log.InfoContext(ctx, "found %v", allTables)
 
 	// cleanup
 
@@ -141,7 +141,7 @@ func ExampleTablesAPI_ListSummaries_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -150,7 +150,7 @@ func ExampleTablesAPI_ListSummaries_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	summaries, err := w.Tables.ListSummariesAll(ctx, catalog.ListSummariesRequest{
 		CatalogName:       createdCatalog.Name,
@@ -159,7 +159,7 @@ func ExampleTablesAPI_ListSummaries_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", summaries)
+	log.InfoContext(ctx, "found %v", summaries)
 
 	// cleanup
 

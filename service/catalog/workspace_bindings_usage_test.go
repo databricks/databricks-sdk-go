@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
@@ -28,13 +28,13 @@ func ExampleWorkspaceBindingsAPI_Get_catalogWorkspaceBindings() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	bindings, err := w.WorkspaceBindings.GetByName(ctx, created.Name)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", bindings)
+	log.InfoContext(ctx, "found %v", bindings)
 
 	// cleanup
 
@@ -69,7 +69,7 @@ func ExampleWorkspaceBindingsAPI_Update_catalogWorkspaceBindings() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.WorkspaceBindings.Update(ctx, catalog.UpdateWorkspaceBindings{
 		Name:             created.Name,

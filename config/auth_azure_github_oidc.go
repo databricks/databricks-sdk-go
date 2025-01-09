@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/httpclient"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 
@@ -50,11 +50,11 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 // requestIDToken requests an ID token from the Github Action.
 func requestIDToken(ctx context.Context, cfg *Config) (string, error) {
 	if cfg.ActionsIDTokenRequestURL == "" {
-		logger.Debugf(ctx, "Missing cfg.ActionsIDTokenRequestURL, likely not calling from a Github action")
+		log.DebugContext(ctx, "Missing cfg.ActionsIDTokenRequestURL, likely not calling from a Github action")
 		return "", nil
 	}
 	if cfg.ActionsIDTokenRequestToken == "" {
-		logger.Debugf(ctx, "Missing cfg.ActionsIDTokenRequestToken, likely not calling from a Github action")
+		log.DebugContext(ctx, "Missing cfg.ActionsIDTokenRequestToken, likely not calling from a Github action")
 		return "", nil
 	}
 

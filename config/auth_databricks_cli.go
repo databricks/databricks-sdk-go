@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"golang.org/x/oauth2"
 )
 
@@ -30,11 +30,11 @@ func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (c
 	ts, err := newDatabricksCliTokenSource(ctx, cfg)
 	if err != nil {
 		if errors.Is(err, exec.ErrNotFound) {
-			logger.Debugf(ctx, "Most likely the Databricks CLI is not installed")
+			log.DebugContext(ctx, "Most likely the Databricks CLI is not installed")
 			return nil, nil
 		}
 		if err == errLegacyDatabricksCli {
-			logger.Debugf(ctx, "Databricks CLI version <0.100.0 detected")
+			log.DebugContext(ctx, "Databricks CLI version <0.100.0 detected")
 			return nil, nil
 		}
 		return nil, err
@@ -53,7 +53,7 @@ func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (c
 		}
 		return nil, err
 	}
-	logger.Debugf(ctx, "Using Databricks CLI authentication with Databricks OAuth tokens")
+	log.DebugContext(ctx, "Using Databricks CLI authentication with Databricks OAuth tokens")
 	visitor := refreshableVisitor(ts)
 	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
 }
@@ -118,6 +118,6 @@ func (ts *databricksCliTokenSource) Token() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot unmarshal Databricks CLI result: %w", err)
 	}
-	logger.Infof(context.Background(), "Refreshed OAuth token from Databricks CLI, expires on %s", t.Expiry)
+	log.Info("Refreshed OAuth token from Databricks CLI, expires on %s", t.Expiry)
 	return &t, nil
 }

@@ -6,7 +6,7 @@ import (
 	"context"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 )
 
 func ExampleDataSourcesAPI_ListAll_queries() {
@@ -20,7 +20,7 @@ func ExampleDataSourcesAPI_ListAll_queries() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", srcs)
+	log.InfoContext(ctx, "found %v", srcs)
 
 }
 
@@ -35,6 +35,6 @@ func ExampleDataSourcesAPI_ListAll_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", srcs)
+	log.InfoContext(ctx, "found %v", srcs)
 
 }

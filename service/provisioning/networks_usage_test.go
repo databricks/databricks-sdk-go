@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
@@ -29,7 +29,7 @@ func ExampleNetworksAPI_Create_networks() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", netw)
+	log.InfoContext(ctx, "found %v", netw)
 
 }
 
@@ -49,13 +49,13 @@ func ExampleNetworksAPI_Get_networks() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", netw)
+	log.InfoContext(ctx, "found %v", netw)
 
 	byId, err := a.Networks.GetByNetworkId(ctx, netw.NetworkId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 }
 
@@ -70,6 +70,6 @@ func ExampleNetworksAPI_ListAll_networks() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", configs)
+	log.InfoContext(ctx, "found %v", configs)
 
 }

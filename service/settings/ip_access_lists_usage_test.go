@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/settings"
 )
@@ -28,7 +28,7 @@ func ExampleIpAccessListsAPI_Create_ipAccessLists() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -54,13 +54,13 @@ func ExampleIpAccessListsAPI_Get_ipAccessLists() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	byId, err := w.IpAccessLists.GetByIpAccessListId(ctx, created.IpAccessList.ListId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -82,7 +82,7 @@ func ExampleIpAccessListsAPI_ListAll_ipAccessLists() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -101,7 +101,7 @@ func ExampleIpAccessListsAPI_Replace_ipAccessLists() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.IpAccessLists.Replace(ctx, settings.ReplaceIpAccessList{
 		IpAccessListId: created.IpAccessList.ListId,

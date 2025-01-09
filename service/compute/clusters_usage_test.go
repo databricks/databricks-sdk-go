@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/iam"
@@ -29,7 +29,7 @@ func ExampleClustersAPI_ChangeOwner_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 	clusterName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
@@ -39,7 +39,7 @@ func ExampleClustersAPI_ChangeOwner_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", otherOwner)
+	log.InfoContext(ctx, "found %v", otherOwner)
 
 	clstr, err := w.Clusters.CreateAndWait(ctx, compute.CreateCluster{
 		ClusterName:            clusterName,
@@ -51,7 +51,7 @@ func ExampleClustersAPI_ChangeOwner_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", clstr)
+	log.InfoContext(ctx, "found %v", clstr)
 
 	err = w.Clusters.ChangeOwner(ctx, compute.ChangeClusterOwner{
 		ClusterId:     clstr.ClusterId,
@@ -88,7 +88,7 @@ func ExampleClustersAPI_Create_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 	clusterName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
@@ -102,7 +102,7 @@ func ExampleClustersAPI_Create_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", clstr)
+	log.InfoContext(ctx, "found %v", clstr)
 
 	// cleanup
 
@@ -127,7 +127,7 @@ func ExampleClustersAPI_Delete_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 	clusterName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
@@ -141,7 +141,7 @@ func ExampleClustersAPI_Delete_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", clstr)
+	log.InfoContext(ctx, "found %v", clstr)
 
 	_, err = w.Clusters.DeleteByClusterIdAndWait(ctx, clstr.ClusterId)
 	if err != nil {
@@ -173,7 +173,7 @@ func ExampleClustersAPI_Edit_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 	clstr, err := w.Clusters.CreateAndWait(ctx, compute.CreateCluster{
 		ClusterName:            clusterName,
@@ -185,7 +185,7 @@ func ExampleClustersAPI_Edit_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", clstr)
+	log.InfoContext(ctx, "found %v", clstr)
 
 	_, err = w.Clusters.EditAndWait(ctx, compute.EditCluster{
 		ClusterId:              clstr.ClusterId,
@@ -224,7 +224,7 @@ func ExampleClustersAPI_EnsureClusterIsRunning_commandsDirectUsage() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", context)
+	log.InfoContext(ctx, "found %v", context)
 
 	err = w.Clusters.EnsureClusterIsRunning(ctx, clusterId)
 	if err != nil {
@@ -257,7 +257,7 @@ func ExampleClustersAPI_Events_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 	clusterName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
@@ -271,7 +271,7 @@ func ExampleClustersAPI_Events_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", clstr)
+	log.InfoContext(ctx, "found %v", clstr)
 
 	events, err := w.Clusters.EventsAll(ctx, compute.GetEvents{
 		ClusterId: clstr.ClusterId,
@@ -279,7 +279,7 @@ func ExampleClustersAPI_Events_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", events)
+	log.InfoContext(ctx, "found %v", events)
 
 	// cleanup
 
@@ -304,7 +304,7 @@ func ExampleClustersAPI_Get_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 	clusterName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
@@ -318,13 +318,13 @@ func ExampleClustersAPI_Get_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", clstr)
+	log.InfoContext(ctx, "found %v", clstr)
 
 	byId, err := w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -346,7 +346,7 @@ func ExampleClustersAPI_ListAll_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -361,7 +361,7 @@ func ExampleClustersAPI_ListNodeTypes_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", nodes)
+	log.InfoContext(ctx, "found %v", nodes)
 
 }
 
@@ -379,7 +379,7 @@ func ExampleClustersAPI_Pin_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 	clusterName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
@@ -393,7 +393,7 @@ func ExampleClustersAPI_Pin_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", clstr)
+	log.InfoContext(ctx, "found %v", clstr)
 
 	err = w.Clusters.PinByClusterId(ctx, clstr.ClusterId)
 	if err != nil {
@@ -423,7 +423,7 @@ func ExampleClustersAPI_Resize_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 	clusterName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
@@ -437,7 +437,7 @@ func ExampleClustersAPI_Resize_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", clstr)
+	log.InfoContext(ctx, "found %v", clstr)
 
 	byId, err := w.Clusters.ResizeAndWait(ctx, compute.ResizeCluster{
 		ClusterId:  clstr.ClusterId,
@@ -446,7 +446,7 @@ func ExampleClustersAPI_Resize_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -471,7 +471,7 @@ func ExampleClustersAPI_Restart_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 	clusterName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
@@ -485,7 +485,7 @@ func ExampleClustersAPI_Restart_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", clstr)
+	log.InfoContext(ctx, "found %v", clstr)
 
 	_, err = w.Clusters.RestartAndWait(ctx, compute.RestartCluster{
 		ClusterId: clstr.ClusterId,
@@ -516,7 +516,7 @@ func ExampleClustersAPI_SelectNodeType_instancePools() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", smallest)
+	log.InfoContext(ctx, "found %v", smallest)
 
 }
 
@@ -534,7 +534,7 @@ func ExampleClustersAPI_SelectSparkVersion_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 }
 
@@ -552,7 +552,7 @@ func ExampleClustersAPI_Start_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 	clusterName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
@@ -566,7 +566,7 @@ func ExampleClustersAPI_Start_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", clstr)
+	log.InfoContext(ctx, "found %v", clstr)
 
 	_, err = w.Clusters.StartByClusterIdAndWait(ctx, clstr.ClusterId)
 	if err != nil {
@@ -596,7 +596,7 @@ func ExampleClustersAPI_Unpin_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", latest)
+	log.InfoContext(ctx, "found %v", latest)
 
 	clusterName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
@@ -610,7 +610,7 @@ func ExampleClustersAPI_Unpin_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", clstr)
+	log.InfoContext(ctx, "found %v", clstr)
 
 	err = w.Clusters.UnpinByClusterId(ctx, clstr.ClusterId)
 	if err != nil {

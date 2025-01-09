@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
@@ -24,7 +24,7 @@ func ExampleAlertsAPI_Create_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", srcs)
+	log.InfoContext(ctx, "found %v", srcs)
 
 	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
 		Query: &sql.CreateQueryRequestQuery{
@@ -37,7 +37,7 @@ func ExampleAlertsAPI_Create_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", query)
+	log.InfoContext(ctx, "found %v", query)
 
 	alert, err := w.Alerts.Create(ctx, sql.CreateAlertRequest{
 		Alert: &sql.CreateAlertRequestAlert{
@@ -61,7 +61,7 @@ func ExampleAlertsAPI_Create_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", alert)
+	log.InfoContext(ctx, "found %v", alert)
 
 	// cleanup
 
@@ -87,7 +87,7 @@ func ExampleAlertsAPI_Get_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", srcs)
+	log.InfoContext(ctx, "found %v", srcs)
 
 	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
 		Query: &sql.CreateQueryRequestQuery{
@@ -100,7 +100,7 @@ func ExampleAlertsAPI_Get_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", query)
+	log.InfoContext(ctx, "found %v", query)
 
 	alert, err := w.Alerts.Create(ctx, sql.CreateAlertRequest{
 		Alert: &sql.CreateAlertRequestAlert{
@@ -124,13 +124,13 @@ func ExampleAlertsAPI_Get_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", alert)
+	log.InfoContext(ctx, "found %v", alert)
 
 	byId, err := w.Alerts.GetById(ctx, alert.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -156,7 +156,7 @@ func ExampleAlertsAPI_ListAll_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -171,7 +171,7 @@ func ExampleAlertsAPI_Update_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", srcs)
+	log.InfoContext(ctx, "found %v", srcs)
 
 	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
 		Query: &sql.CreateQueryRequestQuery{
@@ -184,7 +184,7 @@ func ExampleAlertsAPI_Update_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", query)
+	log.InfoContext(ctx, "found %v", query)
 
 	alert, err := w.Alerts.Create(ctx, sql.CreateAlertRequest{
 		Alert: &sql.CreateAlertRequestAlert{
@@ -208,7 +208,7 @@ func ExampleAlertsAPI_Update_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", alert)
+	log.InfoContext(ctx, "found %v", alert)
 
 	_, err = w.Alerts.Update(ctx, sql.UpdateAlertRequest{
 		Id: alert.Id,

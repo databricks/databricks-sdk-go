@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
@@ -37,7 +37,7 @@ func ExampleMetastoresAPI_Assign_metastores() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.Metastores.Assign(ctx, catalog.CreateMetastoreAssignment{
 		MetastoreId: created.MetastoreId,
@@ -73,7 +73,7 @@ func ExampleMetastoresAPI_Create_metastores() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -98,7 +98,7 @@ func ExampleMetastoresAPI_Current_metastores() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", currentMetastore)
+	log.InfoContext(ctx, "found %v", currentMetastore)
 
 }
 
@@ -116,7 +116,7 @@ func ExampleMetastoresAPI_Get_metastores() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Metastores.GetById(ctx, created.MetastoreId)
 	if err != nil {
@@ -146,7 +146,7 @@ func ExampleMetastoresAPI_ListAll_metastores() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -161,7 +161,7 @@ func ExampleMetastoresAPI_Summary_metastores() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", summary)
+	log.InfoContext(ctx, "found %v", summary)
 
 }
 
@@ -187,7 +187,7 @@ func ExampleMetastoresAPI_Unassign_metastores() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.Metastores.Unassign(ctx, catalog.UnassignRequest{
 		MetastoreId: created.MetastoreId,
@@ -223,7 +223,7 @@ func ExampleMetastoresAPI_Update_metastores() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Metastores.Update(ctx, catalog.UpdateMetastore{
 		Id:      created.MetastoreId,

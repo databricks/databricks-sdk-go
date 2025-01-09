@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
@@ -29,7 +29,7 @@ func ExampleSharesAPI_Create_shares() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdShare)
+	log.InfoContext(ctx, "found %v", createdShare)
 
 	// cleanup
 
@@ -53,7 +53,7 @@ func ExampleSharesAPI_Get_shares() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdShare)
+	log.InfoContext(ctx, "found %v", createdShare)
 
 	_, err = w.Shares.GetByName(ctx, createdShare.Name)
 	if err != nil {
@@ -80,7 +80,7 @@ func ExampleSharesAPI_ListAll_shares() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -99,7 +99,7 @@ func ExampleSharesAPI_Update_shares() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -108,7 +108,7 @@ func ExampleSharesAPI_Update_shares() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	_, err = w.StatementExecution.ExecuteAndWait(ctx, sql.ExecuteStatementRequest{
 		WarehouseId: os.Getenv("TEST_DEFAULT_WAREHOUSE_ID"),
@@ -128,7 +128,7 @@ func ExampleSharesAPI_Update_shares() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdShare)
+	log.InfoContext(ctx, "found %v", createdShare)
 
 	_, err = w.Shares.Update(ctx, sharing.UpdateShare{
 		Name: createdShare.Name,

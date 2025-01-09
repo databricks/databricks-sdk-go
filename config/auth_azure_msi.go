@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/httpclient"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 
@@ -42,7 +42,7 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (creden
 			return nil, fmt.Errorf("resolve host: %w", err)
 		}
 	}
-	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
+	log.DebugContext(ctx, "Generating AAD token via Azure MSI")
 	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureApplicationID))
 	management := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureServiceManagementEndpoint()))
 	visitor := azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken))

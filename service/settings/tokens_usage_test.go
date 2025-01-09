@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/settings"
 )
@@ -27,7 +27,7 @@ func ExampleTokensAPI_Create_tokens() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", token)
+	log.InfoContext(ctx, "found %v", token)
 
 	// cleanup
 
@@ -52,13 +52,13 @@ func ExampleTokensAPI_Get_tokens() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", token)
+	log.InfoContext(ctx, "found %v", token)
 
 	byName, err := w.Tokens.GetByComment(ctx, token.TokenInfo.Comment)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byName)
+	log.InfoContext(ctx, "found %v", byName)
 
 	// cleanup
 
@@ -80,6 +80,6 @@ func ExampleTokensAPI_ListAll_tokens() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }

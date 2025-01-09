@@ -2,7 +2,6 @@ package httpclient
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,7 +12,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 )
 
 func WithResponseHeader(key string, value *string) DoOption {
@@ -154,7 +153,7 @@ func injectHeaders(response any, body *common.ResponseWrapper) error {
 			value.Field(i).Set(reflect.ValueOf(intValue))
 		default:
 			// Do not fail the request if the header is not supported to avoid breaking changes.
-			logger.Warnf(context.Background(), "unsupported header type %s for field %s", field.Type.Kind(), field.Name)
+			log.Warning("unsupported header type %s for field %s", field.Type.Kind(), field.Name)
 		}
 
 	}

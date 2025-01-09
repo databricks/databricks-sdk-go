@@ -6,7 +6,7 @@ import (
 	"context"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
@@ -61,6 +61,6 @@ func ExampleInstanceProfilesAPI_ListAll_awsInstanceProfiles() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }

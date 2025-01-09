@@ -14,8 +14,8 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/databricks/httplog"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/httpclient/traceparent"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/oauth2"
@@ -176,14 +176,14 @@ func (c *ApiClient) isRetriable(ctx context.Context, err error) bool {
 	}
 	if isRetriableUrlError(err) {
 		// all IO errors are retriable
-		logger.Debugf(ctx, "Attempting retry because of IO error: %s", err)
+		log.DebugContext(ctx, "Attempting retry because of IO error: %s", err)
 		return true
 	}
 	message := err.Error()
 	// Handle transient errors for retries
 	for _, substring := range c.config.TransientErrors {
 		if strings.Contains(message, substring) {
-			logger.Debugf(ctx, "Attempting retry because of %#v", substring)
+			log.DebugContext(ctx, "Attempting retry because of %#v", substring)
 			return true
 		}
 	}
@@ -310,11 +310,9 @@ func (c *ApiClient) recordRequestLog(
 	err error,
 	requestBody, responseBody []byte,
 ) {
-	// Don't compute expensive debug message if debug logging is not enabled.
-	if !logger.Get(ctx).Enabled(ctx, logger.LevelDebug) {
-		return
-	}
-	message := httplog.RoundTripStringer{
+	// TODO: Find a way to avoid computing expensive debug message if debug
+	// logging is not enabled.
+	log.DebugContext(ctx, "%s", httplog.RoundTripStringer{
 		Request:                  request,
 		Response:                 response,
 		Err:                      err,
@@ -323,8 +321,7 @@ func (c *ApiClient) recordRequestLog(
 		DebugHeaders:             c.config.DebugHeaders,
 		DebugTruncateBytes:       c.config.DebugTruncateBytes,
 		DebugAuthorizationHeader: true,
-	}.String()
-	logger.Debugf(ctx, "%s", message)
+	})
 }
 
 // RoundTrip implements http.RoundTripper to integrate with golang.org/x/oauth2

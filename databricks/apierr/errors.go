@@ -13,7 +13,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/databricks/httplog"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 )
 
 const (
@@ -91,7 +91,7 @@ func (apiError *APIError) IsRetriable(ctx context.Context) bool {
 	// Handle transient errors for retries
 	for _, regex := range allTransientErrors {
 		if regex.Match([]byte(apiError.Message)) {
-			logger.Debugf(ctx, "Attempting retry because of %s", regex.String())
+			log.DebugContext(ctx, "Attempting retry because of %s", regex.String())
 			return true
 		}
 	}
@@ -206,7 +206,7 @@ func standardErrorParser(ctx context.Context, resp *http.Response, responseBody 
 		ScimType   string `json:"scimType,omitempty"`
 	}
 	if err := json.Unmarshal(responseBody, &errorBody); err != nil {
-		logger.Tracef(ctx, "standardErrorParser: failed to unmarshal error response: %s", err)
+		log.TraceContext(ctx, "standardErrorParser: failed to unmarshal error response: %s", err)
 		return nil
 	}
 
@@ -244,7 +244,7 @@ var stringErrorRegex = regexp.MustCompile(`^([A-Z_]+): (.*)$`)
 func stringErrorParser(ctx context.Context, resp *http.Response, responseBody []byte) *APIError {
 	matches := stringErrorRegex.FindSubmatch(responseBody)
 	if len(matches) < 3 {
-		logger.Tracef(ctx, "stringErrorParser: failed to match error response")
+		log.TraceContext(ctx, "stringErrorParser: failed to match error response")
 		return nil
 	}
 	return &APIError{
@@ -263,7 +263,7 @@ func htmlErrorParser(ctx context.Context, resp *http.Response, responseBody []by
 	messageMatches := htmlMessageRe.FindStringSubmatch(string(responseBody))
 	// No messages with <pre> </pre> format found so return a APIError
 	if len(messageMatches) < 2 {
-		logger.Tracef(ctx, "htmlErrorParser: no <pre> tag found in error response")
+		log.TraceContext(ctx, "htmlErrorParser: no <pre> tag found in error response")
 		return nil
 	}
 

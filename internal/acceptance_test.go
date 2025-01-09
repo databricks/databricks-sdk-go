@@ -8,17 +8,15 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/internal/env"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func init() {
-	logger.DefaultLogger = &logger.SimpleLogger{
-		Level: logger.LevelDebug,
-	}
+	log.SetDefaultLogger(log.New(log.LevelDebug))
 }
 
 func TestAccDefaultCredentials(t *testing.T) {

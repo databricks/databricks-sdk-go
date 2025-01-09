@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
@@ -30,7 +30,7 @@ func ExampleWorkspacesAPI_Create_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", storage)
+	log.InfoContext(ctx, "found %v", storage)
 
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -43,7 +43,7 @@ func ExampleWorkspacesAPI_Create_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", role)
+	log.InfoContext(ctx, "found %v", role)
 
 	created, err := a.Workspaces.CreateAndWait(ctx, provisioning.CreateWorkspaceRequest{
 		WorkspaceName:          fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -54,7 +54,7 @@ func ExampleWorkspacesAPI_Create_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -89,7 +89,7 @@ func ExampleWorkspacesAPI_Get_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", storage)
+	log.InfoContext(ctx, "found %v", storage)
 
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -102,7 +102,7 @@ func ExampleWorkspacesAPI_Get_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", role)
+	log.InfoContext(ctx, "found %v", role)
 
 	created, err := a.Workspaces.CreateAndWait(ctx, provisioning.CreateWorkspaceRequest{
 		WorkspaceName:          fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -113,13 +113,13 @@ func ExampleWorkspacesAPI_Get_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	byId, err := a.Workspaces.GetByWorkspaceId(ctx, created.WorkspaceId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -149,7 +149,7 @@ func ExampleWorkspacesAPI_ListAll_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -169,7 +169,7 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", storage)
+	log.InfoContext(ctx, "found %v", storage)
 
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -182,7 +182,7 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", role)
+	log.InfoContext(ctx, "found %v", role)
 
 	updateRole, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -195,7 +195,7 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", updateRole)
+	log.InfoContext(ctx, "found %v", updateRole)
 
 	created, err := a.Workspaces.CreateAndWait(ctx, provisioning.CreateWorkspaceRequest{
 		WorkspaceName:          fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -206,7 +206,7 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = a.Workspaces.UpdateAndWait(ctx, provisioning.UpdateWorkspaceRequest{
 		WorkspaceId:   created.WorkspaceId,

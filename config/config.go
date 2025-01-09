@@ -14,8 +14,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/httpclient"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 
@@ -291,7 +291,7 @@ func (c *Config) EnsureResolved() error {
 	}
 	ctx := context.Background()
 	for _, loader := range c.Loaders {
-		logger.Tracef(ctx, "Loading config via %s", loader.Name())
+		log.TraceContext(ctx, "Loading config via %s", loader.Name())
 		err := loader.Configure(c)
 		if err != nil {
 

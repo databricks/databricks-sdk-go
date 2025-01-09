@@ -59,10 +59,6 @@ func (l Level) String() string {
 // Logger is the interface that wraps the Log method.
 type Logger interface {
 	Log(ctx context.Context, level Level, format string, a ...any)
-
-	// TODO(renaud.hartert): Think about a potential alternative to exposing
-	// this method.
-	MinLevel() Level
 }
 
 type logger struct {
@@ -83,10 +79,6 @@ func (l *logger) Log(_ context.Context, level Level, format string, a ...any) {
 	if l.level <= level {
 		fmt.Fprintf(l.out, "[%s] %s\n", level.String(), fmt.Sprintf(format, a...))
 	}
-}
-
-func (l *logger) MinLevel() Level {
-	return l.level
 }
 
 var defaultLogger Logger = New(LevelInfo)
