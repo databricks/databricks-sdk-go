@@ -3,7 +3,7 @@ package poll_test
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/qa/poll"
+	"github.com/databricks/databricks-sdk-go/databricks/qa/poll"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/stretchr/testify/assert"
 )

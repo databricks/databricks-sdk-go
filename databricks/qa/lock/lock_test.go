@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/qa/lock/core"
+	"github.com/databricks/databricks-sdk-go/databricks/qa/lock/core"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -15,7 +15,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/databricks/log"
-	"github.com/databricks/databricks-sdk-go/qa"
+	"github.com/databricks/databricks-sdk-go/databricks/qa"
 )
 
 const fullCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

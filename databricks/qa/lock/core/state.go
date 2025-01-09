@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/qa"
+	"github.com/databricks/databricks-sdk-go/databricks/qa"
 )
 
 // LockState represents the state of a lock.

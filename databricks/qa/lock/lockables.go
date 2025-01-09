@@ -1,6 +1,6 @@
 package lock
 
-import "github.com/databricks/databricks-sdk-go/qa/lock/internal"
+import "github.com/databricks/databricks-sdk-go/databricks/qa/lock/internal"
 
 // GitCredentials are unique to the user and workspace.
 type GitCredentials struct {

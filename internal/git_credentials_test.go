@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/qa/lock"
+	"github.com/databricks/databricks-sdk-go/databricks/qa/lock"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

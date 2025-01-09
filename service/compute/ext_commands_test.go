@@ -8,7 +8,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
-	"github.com/databricks/databricks-sdk-go/qa"
+	"github.com/databricks/databricks-sdk-go/databricks/qa"
 )
 
 func commonFixtureWithStatusResponse(response CommandStatusResponse) qa.HTTPFixtures {

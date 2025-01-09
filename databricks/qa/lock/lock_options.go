@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/qa/lock/core"
+	"github.com/databricks/databricks-sdk-go/databricks/qa/lock/core"
 )
 
 type LockOption func(*LockOptions)
