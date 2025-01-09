@@ -2,7 +2,7 @@ module github.com/databricks/databricks-sdk-go
 
 go 1.18
 
-replace github.com/databricks/databricks-sdk-go => .
+replace github.com/databricks/databricks-sdk-go => ./
 
 require (
 	github.com/google/go-cmp v0.6.0
