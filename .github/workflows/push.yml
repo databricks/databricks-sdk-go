@@ -12,7 +12,7 @@ on:
     # because the commit is identical, yet we need to perform it to
     # seed the build cache.
     branches:
-      - main
+      - dev/sdk-mod
 
 jobs:
   tests:
