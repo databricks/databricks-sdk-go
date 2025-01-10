@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
@@ -30,7 +30,7 @@ func ExampleGlobalInitScriptsAPI_Create_globalInitScripts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -57,13 +57,13 @@ func ExampleGlobalInitScriptsAPI_Get_globalInitScripts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	byId, err := w.GlobalInitScripts.GetByScriptId(ctx, created.ScriptId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -85,7 +85,7 @@ func ExampleGlobalInitScriptsAPI_ListAll_globalInitScripts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -105,7 +105,7 @@ func ExampleGlobalInitScriptsAPI_Update_globalInitScripts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.GlobalInitScripts.Update(ctx, compute.GlobalInitScriptUpdateRequest{
 		ScriptId: created.ScriptId,

@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 )
 
 var authProviders = []CredentialsStrategy{
@@ -48,10 +48,10 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 	for _, p := range authProviders {
 		if cfg.AuthType != "" && p.Name() != cfg.AuthType {
 			// ignore other auth types if one is explicitly enforced
-			logger.Infof(ctx, "Ignoring %s auth, because %s is preferred", p.Name(), cfg.AuthType)
+			log.InfoContext(ctx, "Ignoring %s auth, because %s is preferred", p.Name(), cfg.AuthType)
 			continue
 		}
-		logger.Tracef(ctx, "Attempting to configure auth: %s", p.Name())
+		log.TraceContext(ctx, "Attempting to configure auth: %s", p.Name())
 		credentialsProvider, err := p.Configure(ctx, cfg)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", p.Name(), err)

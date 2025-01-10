@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/ml"
 )
@@ -26,7 +26,7 @@ func ExampleModelRegistryAPI_CreateComment_modelVersionComments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", model)
+	log.InfoContext(ctx, "found %v", model)
 
 	mv, err := w.ModelRegistry.CreateModelVersion(ctx, ml.CreateModelVersionRequest{
 		Name:   model.RegisteredModel.Name,
@@ -35,7 +35,7 @@ func ExampleModelRegistryAPI_CreateComment_modelVersionComments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", mv)
+	log.InfoContext(ctx, "found %v", mv)
 
 	created, err := w.ModelRegistry.CreateComment(ctx, ml.CreateComment{
 		Comment: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -45,7 +45,7 @@ func ExampleModelRegistryAPI_CreateComment_modelVersionComments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -71,7 +71,7 @@ func ExampleModelRegistryAPI_CreateModel_models() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 }
 
@@ -88,7 +88,7 @@ func ExampleModelRegistryAPI_CreateModel_modelVersions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", model)
+	log.InfoContext(ctx, "found %v", model)
 
 }
 
@@ -105,7 +105,7 @@ func ExampleModelRegistryAPI_CreateModel_modelVersionComments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", model)
+	log.InfoContext(ctx, "found %v", model)
 
 }
 
@@ -122,7 +122,7 @@ func ExampleModelRegistryAPI_CreateModelVersion_modelVersions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", model)
+	log.InfoContext(ctx, "found %v", model)
 
 	created, err := w.ModelRegistry.CreateModelVersion(ctx, ml.CreateModelVersionRequest{
 		Name:   model.RegisteredModel.Name,
@@ -131,7 +131,7 @@ func ExampleModelRegistryAPI_CreateModelVersion_modelVersions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 }
 
@@ -148,7 +148,7 @@ func ExampleModelRegistryAPI_CreateModelVersion_modelVersionComments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", model)
+	log.InfoContext(ctx, "found %v", model)
 
 	mv, err := w.ModelRegistry.CreateModelVersion(ctx, ml.CreateModelVersionRequest{
 		Name:   model.RegisteredModel.Name,
@@ -157,7 +157,7 @@ func ExampleModelRegistryAPI_CreateModelVersion_modelVersionComments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", mv)
+	log.InfoContext(ctx, "found %v", mv)
 
 }
 
@@ -178,7 +178,7 @@ func ExampleModelRegistryAPI_CreateWebhook_registryWebhooks() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -204,7 +204,7 @@ func ExampleModelRegistryAPI_GetModel_models() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	model, err := w.ModelRegistry.GetModel(ctx, ml.GetModelRequest{
 		Name: created.RegisteredModel.Name,
@@ -212,7 +212,7 @@ func ExampleModelRegistryAPI_GetModel_models() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", model)
+	log.InfoContext(ctx, "found %v", model)
 
 }
 
@@ -227,7 +227,7 @@ func ExampleModelRegistryAPI_ListModels_models() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -242,7 +242,7 @@ func ExampleModelRegistryAPI_ListWebhooks_registryWebhooks() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -259,7 +259,7 @@ func ExampleModelRegistryAPI_UpdateComment_modelVersionComments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", model)
+	log.InfoContext(ctx, "found %v", model)
 
 	mv, err := w.ModelRegistry.CreateModelVersion(ctx, ml.CreateModelVersionRequest{
 		Name:   model.RegisteredModel.Name,
@@ -268,7 +268,7 @@ func ExampleModelRegistryAPI_UpdateComment_modelVersionComments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", mv)
+	log.InfoContext(ctx, "found %v", mv)
 
 	created, err := w.ModelRegistry.CreateComment(ctx, ml.CreateComment{
 		Comment: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -278,7 +278,7 @@ func ExampleModelRegistryAPI_UpdateComment_modelVersionComments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.ModelRegistry.UpdateComment(ctx, ml.UpdateComment{
 		Comment: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -312,7 +312,7 @@ func ExampleModelRegistryAPI_UpdateModel_models() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	model, err := w.ModelRegistry.GetModel(ctx, ml.GetModelRequest{
 		Name: created.RegisteredModel.Name,
@@ -320,7 +320,7 @@ func ExampleModelRegistryAPI_UpdateModel_models() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", model)
+	log.InfoContext(ctx, "found %v", model)
 
 	err = w.ModelRegistry.UpdateModel(ctx, ml.UpdateModelRequest{
 		Name:        model.RegisteredModelDatabricks.Name,
@@ -345,7 +345,7 @@ func ExampleModelRegistryAPI_UpdateModelVersion_modelVersions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", model)
+	log.InfoContext(ctx, "found %v", model)
 
 	created, err := w.ModelRegistry.CreateModelVersion(ctx, ml.CreateModelVersionRequest{
 		Name:   model.RegisteredModel.Name,
@@ -354,7 +354,7 @@ func ExampleModelRegistryAPI_UpdateModelVersion_modelVersions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.ModelRegistry.UpdateModelVersion(ctx, ml.UpdateModelVersionRequest{
 		Description: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -384,7 +384,7 @@ func ExampleModelRegistryAPI_UpdateWebhook_registryWebhooks() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.ModelRegistry.UpdateWebhook(ctx, ml.UpdateRegistryWebhook{
 		Id:          created.Webhook.Id,

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
@@ -26,7 +26,7 @@ func ExampleCatalogsAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	// cleanup
 
@@ -53,7 +53,7 @@ func ExampleCatalogsAPI_Create_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	// cleanup
 
@@ -80,7 +80,7 @@ func ExampleCatalogsAPI_Create_catalogs() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -107,7 +107,7 @@ func ExampleCatalogsAPI_Create_catalogWorkspaceBindings() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -134,7 +134,7 @@ func ExampleCatalogsAPI_Create_schemas() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", newCatalog)
+	log.InfoContext(ctx, "found %v", newCatalog)
 
 	// cleanup
 
@@ -161,7 +161,7 @@ func ExampleCatalogsAPI_Create_shares() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	// cleanup
 
@@ -188,7 +188,7 @@ func ExampleCatalogsAPI_Get_catalogs() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Catalogs.GetByName(ctx, created.Name)
 	if err != nil {
@@ -218,7 +218,7 @@ func ExampleCatalogsAPI_ListAll_catalogs() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -235,7 +235,7 @@ func ExampleCatalogsAPI_Update_catalogs() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{
 		Name:    created.Name,
@@ -270,7 +270,7 @@ func ExampleCatalogsAPI_Update_catalogWorkspaceBindings() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{
 		Name:          created.Name,

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
@@ -30,7 +30,7 @@ func ExampleStorageAPI_Create_logDelivery() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", bucket)
+	log.InfoContext(ctx, "found %v", bucket)
 
 	// cleanup
 
@@ -57,7 +57,7 @@ func ExampleStorageAPI_Create_storage() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", storage)
+	log.InfoContext(ctx, "found %v", storage)
 
 }
 
@@ -77,7 +77,7 @@ func ExampleStorageAPI_Create_workspaces() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", storage)
+	log.InfoContext(ctx, "found %v", storage)
 
 	// cleanup
 
@@ -104,13 +104,13 @@ func ExampleStorageAPI_Get_storage() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", storage)
+	log.InfoContext(ctx, "found %v", storage)
 
 	byId, err := a.Storage.GetByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 }
 
@@ -125,6 +125,6 @@ func ExampleStorageAPI_ListAll_storage() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", configs)
+	log.InfoContext(ctx, "found %v", configs)
 
 }

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
@@ -31,7 +31,7 @@ func ExampleExternalLocationsAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", storageCredential)
+	log.InfoContext(ctx, "found %v", storageCredential)
 
 	externalLocation, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
 		Name:           fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -42,7 +42,7 @@ func ExampleExternalLocationsAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", externalLocation)
+	log.InfoContext(ctx, "found %v", externalLocation)
 
 	// cleanup
 
@@ -73,7 +73,7 @@ func ExampleExternalLocationsAPI_Create_externalLocationsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", credential)
+	log.InfoContext(ctx, "found %v", credential)
 
 	created, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
 		Name:           fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -83,7 +83,7 @@ func ExampleExternalLocationsAPI_Create_externalLocationsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -114,7 +114,7 @@ func ExampleExternalLocationsAPI_Get_externalLocationsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", credential)
+	log.InfoContext(ctx, "found %v", credential)
 
 	created, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
 		Name:           fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -124,7 +124,7 @@ func ExampleExternalLocationsAPI_Get_externalLocationsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.ExternalLocations.GetByName(ctx, created.Name)
 	if err != nil {
@@ -155,7 +155,7 @@ func ExampleExternalLocationsAPI_ListAll_externalLocationsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -175,7 +175,7 @@ func ExampleExternalLocationsAPI_Update_externalLocationsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", credential)
+	log.InfoContext(ctx, "found %v", credential)
 
 	created, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
 		Name:           fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -185,7 +185,7 @@ func ExampleExternalLocationsAPI_Update_externalLocationsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.ExternalLocations.Update(ctx, catalog.UpdateExternalLocation{
 		Name:           created.Name,

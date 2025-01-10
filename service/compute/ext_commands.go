@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -121,7 +121,7 @@ func (a *CommandsHighLevelAPI) Execute(ctx context.Context, clusterID, language,
 		}
 	}
 	commandStr = TrimLeadingWhitespace(commandStr)
-	logger.Debugf(ctx, "Executing %s command on %s:\n%s", language, clusterID, commandStr)
+	log.DebugContext(ctx, "Executing %s command on %s:\n%s", language, clusterID, commandStr)
 	context, err := a.execution.CreateAndWait(ctx, CreateContext{
 		ClusterId: clusterID,
 		Language:  Language(language),
@@ -149,7 +149,7 @@ func (a *CommandsHighLevelAPI) Execute(ctx context.Context, clusterID, language,
 		}
 	}
 	if command.Results == nil {
-		logger.Warnf(ctx, "Command has no results: %#v", command)
+		log.WarningContext(ctx, "Command has no results: %#v", command)
 		return Results{
 			ResultType: "error",
 			Summary:    "Command has no results",

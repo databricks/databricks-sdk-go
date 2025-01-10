@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 )
@@ -54,7 +54,7 @@ func ExampleJobsAPI_CancelAllRuns_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdJob)
+	log.InfoContext(ctx, "found %v", createdJob)
 
 	err = w.Jobs.CancelAllRuns(ctx, jobs.CancelAllRuns{
 		JobId: createdJob.JobId,
@@ -111,7 +111,7 @@ func ExampleJobsAPI_CancelRun_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdJob)
+	log.InfoContext(ctx, "found %v", createdJob)
 
 	runNowResponse, err := w.Jobs.RunNow(ctx, jobs.RunNow{
 		JobId: createdJob.JobId,
@@ -119,7 +119,7 @@ func ExampleJobsAPI_CancelRun_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", runNowResponse)
+	log.InfoContext(ctx, "found %v", runNowResponse)
 
 	cancelledRun, err := w.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
 		RunId: runNowResponse.Response.RunId,
@@ -127,7 +127,7 @@ func ExampleJobsAPI_CancelRun_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", cancelledRun)
+	log.InfoContext(ctx, "found %v", cancelledRun)
 
 	// cleanup
 
@@ -177,7 +177,7 @@ func ExampleJobsAPI_Create_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdJob)
+	log.InfoContext(ctx, "found %v", createdJob)
 
 	// cleanup
 
@@ -227,7 +227,7 @@ func ExampleJobsAPI_ExportRun_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdJob)
+	log.InfoContext(ctx, "found %v", createdJob)
 
 	runById, err := w.Jobs.RunNowAndWait(ctx, jobs.RunNow{
 		JobId: createdJob.JobId,
@@ -235,7 +235,7 @@ func ExampleJobsAPI_ExportRun_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", runById)
+	log.InfoContext(ctx, "found %v", runById)
 
 	exportedView, err := w.Jobs.ExportRun(ctx, jobs.ExportRunRequest{
 		RunId:         runById.Tasks[0].RunId,
@@ -244,7 +244,7 @@ func ExampleJobsAPI_ExportRun_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", exportedView)
+	log.InfoContext(ctx, "found %v", exportedView)
 
 	// cleanup
 
@@ -294,13 +294,13 @@ func ExampleJobsAPI_Get_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdJob)
+	log.InfoContext(ctx, "found %v", createdJob)
 
 	byId, err := w.Jobs.GetByJobId(ctx, createdJob.JobId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -348,13 +348,13 @@ func ExampleJobsAPI_GetRunOutput_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", run)
+	log.InfoContext(ctx, "found %v", run)
 
 	output, err := w.Jobs.GetRunOutputByRunId(ctx, run.Tasks[0].RunId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", output)
+	log.InfoContext(ctx, "found %v", output)
 
 	// cleanup
 
@@ -378,7 +378,7 @@ func ExampleJobsAPI_ListAll_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", jobList)
+	log.InfoContext(ctx, "found %v", jobList)
 
 }
 
@@ -421,7 +421,7 @@ func ExampleJobsAPI_ListRuns_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdJob)
+	log.InfoContext(ctx, "found %v", createdJob)
 
 	runList, err := w.Jobs.ListRunsAll(ctx, jobs.ListRunsRequest{
 		JobId: createdJob.JobId,
@@ -429,7 +429,7 @@ func ExampleJobsAPI_ListRuns_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", runList)
+	log.InfoContext(ctx, "found %v", runList)
 
 	// cleanup
 
@@ -479,7 +479,7 @@ func ExampleJobsAPI_RepairRun_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdJob)
+	log.InfoContext(ctx, "found %v", createdJob)
 
 	runNowResponse, err := w.Jobs.RunNow(ctx, jobs.RunNow{
 		JobId: createdJob.JobId,
@@ -487,7 +487,7 @@ func ExampleJobsAPI_RepairRun_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", runNowResponse)
+	log.InfoContext(ctx, "found %v", runNowResponse)
 
 	cancelledRun, err := w.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
 		RunId: runNowResponse.Response.RunId,
@@ -495,7 +495,7 @@ func ExampleJobsAPI_RepairRun_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", cancelledRun)
+	log.InfoContext(ctx, "found %v", cancelledRun)
 
 	repairedRun, err := w.Jobs.RepairRunAndWait(ctx, jobs.RepairRun{
 		RerunTasks: []string{cancelledRun.Tasks[0].TaskKey},
@@ -504,7 +504,7 @@ func ExampleJobsAPI_RepairRun_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", repairedRun)
+	log.InfoContext(ctx, "found %v", repairedRun)
 
 	// cleanup
 
@@ -554,7 +554,7 @@ func ExampleJobsAPI_Reset_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdJob)
+	log.InfoContext(ctx, "found %v", createdJob)
 
 	newName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 
@@ -562,7 +562,7 @@ func ExampleJobsAPI_Reset_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	err = w.Jobs.Reset(ctx, jobs.ResetJob{
 		JobId: byId.JobId,
@@ -623,7 +623,7 @@ func ExampleJobsAPI_RunNow_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdJob)
+	log.InfoContext(ctx, "found %v", createdJob)
 
 	runById, err := w.Jobs.RunNowAndWait(ctx, jobs.RunNow{
 		JobId: createdJob.JobId,
@@ -631,7 +631,7 @@ func ExampleJobsAPI_RunNow_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", runById)
+	log.InfoContext(ctx, "found %v", runById)
 
 	// cleanup
 
@@ -679,7 +679,7 @@ func ExampleJobsAPI_Submit_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", run)
+	log.InfoContext(ctx, "found %v", run)
 
 	// cleanup
 
@@ -731,7 +731,7 @@ func ExampleJobsAPI_Update_jobsApiFullIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdJob)
+	log.InfoContext(ctx, "found %v", createdJob)
 
 	err = w.Jobs.Update(ctx, jobs.UpdateJob{
 		JobId: createdJob.JobId,

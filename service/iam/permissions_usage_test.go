@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
@@ -33,7 +33,7 @@ func ExamplePermissionsAPI_Get_genericPermissions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", obj)
+	log.InfoContext(ctx, "found %v", obj)
 
 	_, err = w.Permissions.Get(ctx, iam.GetPermissionRequest{
 		RequestObjectType: "notebooks",
@@ -64,7 +64,7 @@ func ExamplePermissionsAPI_GetPermissionLevels_genericPermissions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", obj)
+	log.InfoContext(ctx, "found %v", obj)
 
 	levels, err := w.Permissions.GetPermissionLevels(ctx, iam.GetPermissionLevelsRequest{
 		RequestObjectType: "notebooks",
@@ -73,7 +73,7 @@ func ExamplePermissionsAPI_GetPermissionLevels_genericPermissions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", levels)
+	log.InfoContext(ctx, "found %v", levels)
 
 }
 
@@ -98,13 +98,13 @@ func ExamplePermissionsAPI_Set_genericPermissions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", group)
+	log.InfoContext(ctx, "found %v", group)
 
 	obj, err := w.Workspace.GetStatusByPath(ctx, notebookPath)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", obj)
+	log.InfoContext(ctx, "found %v", obj)
 
 	_, err = w.Permissions.Set(ctx, iam.PermissionsRequest{
 		RequestObjectType: "notebooks",

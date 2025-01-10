@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/sql"
@@ -30,7 +30,7 @@ func ExampleGrantsAPI_GetEffective_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -39,7 +39,7 @@ func ExampleGrantsAPI_GetEffective_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	_, err = w.StatementExecution.ExecuteAndWait(ctx, sql.ExecuteStatementRequest{
 		WarehouseId: os.Getenv("TEST_DEFAULT_WAREHOUSE_ID"),
@@ -57,13 +57,13 @@ func ExampleGrantsAPI_GetEffective_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdTable)
+	log.InfoContext(ctx, "found %v", createdTable)
 
 	grants, err := w.Grants.GetEffectiveBySecurableTypeAndFullName(ctx, catalog.SecurableTypeTable, createdTable.FullName)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", grants)
+	log.InfoContext(ctx, "found %v", grants)
 
 	// cleanup
 
@@ -100,7 +100,7 @@ func ExampleGrantsAPI_Update_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -109,7 +109,7 @@ func ExampleGrantsAPI_Update_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	_, err = w.StatementExecution.ExecuteAndWait(ctx, sql.ExecuteStatementRequest{
 		WarehouseId: os.Getenv("TEST_DEFAULT_WAREHOUSE_ID"),
@@ -129,7 +129,7 @@ func ExampleGrantsAPI_Update_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdTable)
+	log.InfoContext(ctx, "found %v", createdTable)
 
 	x, err := w.Grants.Update(ctx, catalog.UpdatePermissions{
 		FullName:      createdTable.FullName,
@@ -142,7 +142,7 @@ func ExampleGrantsAPI_Update_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", x)
+	log.InfoContext(ctx, "found %v", x)
 
 	// cleanup
 

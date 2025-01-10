@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
@@ -70,7 +70,7 @@ func ExampleSecretsAPI_ListAcls_secrets() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", acls)
+	log.InfoContext(ctx, "found %v", acls)
 
 	// cleanup
 
@@ -99,7 +99,7 @@ func ExampleSecretsAPI_ListScopes_secrets() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", scopes)
+	log.InfoContext(ctx, "found %v", scopes)
 
 }
 
@@ -125,7 +125,7 @@ func ExampleSecretsAPI_ListSecrets_secrets() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", scrts)
+	log.InfoContext(ctx, "found %v", scrts)
 
 	// cleanup
 
@@ -158,7 +158,7 @@ func ExampleSecretsAPI_PutAcl_secrets() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", group)
+	log.InfoContext(ctx, "found %v", group)
 
 	scopeName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
 

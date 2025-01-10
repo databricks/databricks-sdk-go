@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
@@ -33,7 +33,7 @@ func ExampleClusterPoliciesAPI_Create_clusterPolicies() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -64,13 +64,13 @@ func ExampleClusterPoliciesAPI_Edit_clusterPolicies() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	policy, err := w.ClusterPolicies.GetByPolicyId(ctx, created.PolicyId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", policy)
+	log.InfoContext(ctx, "found %v", policy)
 
 	err = w.ClusterPolicies.Edit(ctx, compute.EditPolicy{
 		PolicyId: policy.PolicyId,
@@ -116,13 +116,13 @@ func ExampleClusterPoliciesAPI_Get_clusterPolicies() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	policy, err := w.ClusterPolicies.GetByPolicyId(ctx, created.PolicyId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", policy)
+	log.InfoContext(ctx, "found %v", policy)
 
 	// cleanup
 
@@ -144,6 +144,6 @@ func ExampleClusterPoliciesAPI_ListAll_clusterPolicies() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }

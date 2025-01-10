@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
@@ -28,7 +28,7 @@ func ExampleCommandExecutionAPI_Create_commandsDirectUsage() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", context)
+	log.InfoContext(ctx, "found %v", context)
 
 	// cleanup
 
@@ -58,7 +58,7 @@ func ExampleCommandExecutionAPI_Execute_commandsDirectUsage() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", context)
+	log.InfoContext(ctx, "found %v", context)
 
 	textResults, err := w.CommandExecution.ExecuteAndWait(ctx, compute.Command{
 		ClusterId: clusterId,
@@ -69,7 +69,7 @@ func ExampleCommandExecutionAPI_Execute_commandsDirectUsage() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", textResults)
+	log.InfoContext(ctx, "found %v", textResults)
 
 	// cleanup
 
@@ -96,6 +96,6 @@ func ExampleCommandExecutionAPI_Start_commands() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", commandContext)
+	log.InfoContext(ctx, "found %v", commandContext)
 
 }

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 )
@@ -34,7 +34,7 @@ func ExampleProvidersAPI_Create_providers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -66,7 +66,7 @@ func ExampleProvidersAPI_Get_providers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Providers.GetByName(ctx, created.Name)
 	if err != nil {
@@ -93,7 +93,7 @@ func ExampleProvidersAPI_ListAll_providers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -118,7 +118,7 @@ func ExampleProvidersAPI_ListShares_providers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	shares, err := w.Providers.ListSharesAll(ctx, sharing.ListSharesRequest{
 		Name: created.Name,
@@ -126,7 +126,7 @@ func ExampleProvidersAPI_ListShares_providers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", shares)
+	log.InfoContext(ctx, "found %v", shares)
 
 	// cleanup
 
@@ -158,7 +158,7 @@ func ExampleProvidersAPI_Update_providers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Providers.Update(ctx, sharing.UpdateProvider{
 		Name:    created.Name,

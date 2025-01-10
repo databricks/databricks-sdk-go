@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
@@ -26,7 +26,7 @@ func ExampleDashboardsAPI_Create_dashboards() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -50,7 +50,7 @@ func ExampleDashboardsAPI_Delete_dashboards() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.Dashboards.DeleteByDashboardId(ctx, created.Id)
 	if err != nil {
@@ -79,13 +79,13 @@ func ExampleDashboardsAPI_Get_dashboards() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	byId, err := w.Dashboards.GetByDashboardId(ctx, created.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -107,7 +107,7 @@ func ExampleDashboardsAPI_ListAll_dashboards() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -124,7 +124,7 @@ func ExampleDashboardsAPI_Restore_dashboards() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.Dashboards.Restore(ctx, sql.RestoreDashboardRequest{
 		DashboardId: created.Id,

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
@@ -26,7 +26,7 @@ func ExampleSchemasAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -35,7 +35,7 @@ func ExampleSchemasAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	// cleanup
 
@@ -66,7 +66,7 @@ func ExampleSchemasAPI_Create_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -75,7 +75,7 @@ func ExampleSchemasAPI_Create_tables() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	// cleanup
 
@@ -106,7 +106,7 @@ func ExampleSchemasAPI_Create_schemas() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", newCatalog)
+	log.InfoContext(ctx, "found %v", newCatalog)
 
 	created, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -115,7 +115,7 @@ func ExampleSchemasAPI_Create_schemas() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -146,7 +146,7 @@ func ExampleSchemasAPI_Create_shares() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdCatalog)
+	log.InfoContext(ctx, "found %v", createdCatalog)
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -155,7 +155,7 @@ func ExampleSchemasAPI_Create_shares() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", createdSchema)
+	log.InfoContext(ctx, "found %v", createdSchema)
 
 	// cleanup
 
@@ -186,7 +186,7 @@ func ExampleSchemasAPI_Get_schemas() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", newCatalog)
+	log.InfoContext(ctx, "found %v", newCatalog)
 
 	created, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -195,7 +195,7 @@ func ExampleSchemasAPI_Get_schemas() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Schemas.GetByFullName(ctx, created.FullName)
 	if err != nil {
@@ -231,7 +231,7 @@ func ExampleSchemasAPI_ListAll_schemas() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", newCatalog)
+	log.InfoContext(ctx, "found %v", newCatalog)
 
 	all, err := w.Schemas.ListAll(ctx, catalog.ListSchemasRequest{
 		CatalogName: newCatalog.Name,
@@ -239,7 +239,7 @@ func ExampleSchemasAPI_ListAll_schemas() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 	// cleanup
 
@@ -266,7 +266,7 @@ func ExampleSchemasAPI_Update_schemas() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", newCatalog)
+	log.InfoContext(ctx, "found %v", newCatalog)
 
 	created, err := w.Schemas.Create(ctx, catalog.CreateSchema{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -275,7 +275,7 @@ func ExampleSchemasAPI_Update_schemas() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Schemas.Update(ctx, catalog.UpdateSchema{
 		FullName: created.FullName,

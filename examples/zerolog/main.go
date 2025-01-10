@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"github.com/databricks/databricks-sdk-go"
-	sdk "github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
+	zlog "github.com/rs/zerolog/log"
 )
 
 var json bool
@@ -17,23 +17,43 @@ func init() {
 	flag.BoolVar(&json, "json", false, "log json messages")
 }
 
+// zerologAdapter makes an zerolog.Logger usable with the Databricks SDK.
+type zerologAdapter struct {
+	zerolog.Logger
+}
+
+func (z *zerologAdapter) Log(ctx context.Context, level log.Level, format string, a ...any) {
+	switch level {
+	case log.LevelTrace:
+		z.Logger.Trace().Msgf(format, a...)
+	case log.LevelDebug:
+		z.Logger.Debug().Msgf(format, a...)
+	case log.LevelInfo:
+		z.Logger.Info().Msgf(format, a...)
+	case log.LevelWarn:
+		z.Logger.Warn().Msgf(format, a...)
+	case log.LevelError:
+		z.Logger.Error().Msgf(format, a...)
+	}
+}
+
 func main() {
 	flag.Parse()
 
 	var l zerolog.Logger
 	if json {
-		l = log.Output(os.Stderr)
+		l = zlog.Output(os.Stderr)
 	} else {
-		l = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+		l = zlog.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}
 
 	// Define global logger for the SDK.
 	// This instance is used when no context is present (e.g. upon construction),
 	// or when a context is present but doesn't hold a logger to use.
-	sdk.DefaultLogger = &zerologAdapter{l.With().Bool("global", true).Logger()}
+	log.SetDefaultLogger(&zerologAdapter{l.With().Bool("global", true).Logger()})
 
-	// Define logger on context for the SDK to use.
-	ctx := sdk.NewContext(context.Background(), &zerologAdapter{
+	logKey := &struct{}{} // define a unique key for the context value
+	ctx := context.WithValue(context.Background(), logKey, &zerologAdapter{
 		l.With().Bool("global", false).Logger(),
 	})
 

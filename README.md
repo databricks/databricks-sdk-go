@@ -583,7 +583,7 @@ By default, Databricks SDK for Go uses [logger.SimpleLogger](https://pkg.go.dev/
 Since v0.10.0, default logger prints only `INFO` level messages. To replicate more verbose behavior from the previous versions, set the `DEBUG` level in `SimpleLogger`:
 
 ```go
-import "github.com/databricks/databricks-sdk-go/logger"
+import "github.com/databricks/databricks-sdk-go/databricks/log"
 
 func init() {
 	logger.DefaultLogger = &logger.SimpleLogger{

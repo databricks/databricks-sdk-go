@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
@@ -25,6 +25,6 @@ func ExampleMetastoreAssignmentsAPI_ListAll_metastoreAssignments() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", ws)
+	log.InfoContext(ctx, "found %v", ws)
 
 }

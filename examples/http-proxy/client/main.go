@@ -3,18 +3,18 @@ package main
 import (
 	"context"
 	"crypto/tls"
-	"log"
+	golog "log"
 	"net/http"
 	"os"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
 func main() {
 	if os.Getenv("HTTPS_PROXY") != "https://localhost:8443" {
-		log.Printf(`To run this example, first start the proxy server in the examples/http-proxy/proxy directory:
+		golog.Printf(`To run this example, first start the proxy server in the examples/http-proxy/proxy directory:
 
 $ go run ../proxy
 
@@ -32,10 +32,9 @@ on Windows to see the list of clusters in your Databricks workspace using this p
 `)
 		os.Exit(1)
 	}
-	log.Printf("Constructing client...")
-	logger.DefaultLogger = &logger.SimpleLogger{
-		Level: logger.LevelDebug,
-	}
+	golog.Printf("Constructing client...")
+	log.SetDefaultLogger(log.New(log.LevelDebug))
+
 	var tlsNextProto map[string]func(authority string, c *tls.Conn) http.RoundTripper
 	if os.Getenv("HTTPS_PROXY") != "" {
 		// Go's HTTP client only supports HTTP/1.1 proxies when using TLS. See
@@ -50,7 +49,7 @@ on Windows to see the list of clusters in your Databricks workspace using this p
 			TLSNextProto: tlsNextProto,
 		},
 	}))
-	log.Printf("Listing clusters...")
+	golog.Printf("Listing clusters...")
 	all, err := w.Clusters.ListAll(context.Background(), compute.ListClustersRequest{})
 	if err != nil {
 		panic(err)

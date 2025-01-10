@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
@@ -329,36 +329,16 @@ type BufferLogger struct {
 	strings.Builder
 }
 
-func (l *BufferLogger) Enabled(_ context.Context, level logger.Level) bool {
-	return true
-}
-
-func (l *BufferLogger) Tracef(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[TRACE] "+format+"\n", v...))
-}
-
-func (l *BufferLogger) Debugf(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[DEBUG] "+format+"\n", v...))
-}
-
-func (l *BufferLogger) Infof(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[INFO] "+format+"\n", v...))
-}
-
-func (l *BufferLogger) Warnf(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[WARN] "+format+"\n", v...))
-}
-
-func (l *BufferLogger) Errorf(_ context.Context, format string, v ...interface{}) {
-	l.WriteString(fmt.Sprintf("[ERROR] "+format+"\n", v...))
+func (l *BufferLogger) Log(ctx context.Context, level log.Level, format string, a ...any) {
+	l.WriteString(fmt.Sprintf("[%s] %s\n", level, fmt.Sprintf(format, a...)))
 }
 
 func configureBufferedLogger(t *testing.T) *BufferLogger {
-	prevLogger := logger.DefaultLogger
+	prevLogger := log.DefaultLogger()
 	bufLogger := &BufferLogger{}
-	logger.DefaultLogger = bufLogger
+	log.SetDefaultLogger(bufLogger)
 	t.Cleanup(func() {
-		logger.DefaultLogger = prevLogger
+		log.SetDefaultLogger(prevLogger)
 	})
 	return bufLogger
 }

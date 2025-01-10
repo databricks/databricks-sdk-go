@@ -1,12 +1,11 @@
 package config
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"gopkg.in/ini.v1"
 )
 
@@ -78,7 +77,7 @@ func (l configFileLoader) Configure(cfg *Config) error {
 	if err != nil {
 		if os.IsNotExist(err) {
 			// early return for non-configured machines
-			logger.Debugf(context.Background(), "%s not found on current host", configFilePath)
+			log.Debug("%s not found on current host", configFilePath)
 			return nil
 		}
 		return fmt.Errorf("cannot parse config file: %w", err)
@@ -92,12 +91,12 @@ func (l configFileLoader) Configure(cfg *Config) error {
 	profileValues := configFile.Section(profile)
 	if len(profileValues.Keys()) == 0 {
 		if !hasExplicitProfile {
-			logger.Debugf(context.Background(), "%s has no %s profile configured", configFile.Path(), profile)
+			log.Debug("%s has no %s profile configured", configFile.Path(), profile)
 			return nil
 		}
 		return fmt.Errorf("%s has no %s profile configured", configFile.Path(), profile)
 	}
-	logger.Debugf(context.Background(), "Loading %s profile from %s", profile, configFile.Path())
+	log.Debug("Loading %s profile from %s", profile, configFile.Path())
 	err = ConfigAttributes.ResolveFromStringMapWithSource(cfg, profileValues.KeysHash(), Source{Type: SourceFile, Name: configFile.Path()})
 	if err != nil {
 		return fmt.Errorf("%s %s profile: %w", configFile.Path(), profile, err)

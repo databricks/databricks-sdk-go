@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/billing"
 )
@@ -47,7 +47,7 @@ func ExampleBudgetsAPI_Create_budgets() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -92,13 +92,13 @@ func ExampleBudgetsAPI_Get_budgets() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	byId, err := a.Budgets.GetByBudgetId(ctx, created.Budget.BudgetConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -120,7 +120,7 @@ func ExampleBudgetsAPI_ListAll_budgets() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -158,7 +158,7 @@ func ExampleBudgetsAPI_Update_budgets() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = a.Budgets.Update(ctx, billing.UpdateBudgetConfigurationRequest{
 		BudgetId: created.Budget.BudgetConfigurationId,

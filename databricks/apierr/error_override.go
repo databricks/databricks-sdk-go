@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 )
 
 // errorOverride is a struct that allows for customizing error responses from
@@ -65,7 +65,7 @@ func (e *errorOverride) matches(err *APIError, resp *http.Response) bool {
 func applyOverrides(ctx context.Context, err *APIError, resp *http.Response) {
 	for _, override := range allOverrides {
 		if override.matches(err, resp) {
-			logger.Debugf(ctx, "Applying error override: %s", override.debugName)
+			log.DebugContext(ctx, "Applying error override: %s", override.debugName)
 			err.unwrap = override.customError
 			return
 		}

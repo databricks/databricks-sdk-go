@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/retries"
 )
 
@@ -83,7 +83,7 @@ func (a *ClustersAPI) EnsureClusterIsRunning(ctx context.Context, clusterId stri
 		err := a.startClusterIfNeeded(ctx, clusterId, timeout)
 		var apiErr *apierr.APIError
 		if errors.As(err, &apiErr) && apiErr.ErrorCode == "INVALID_STATE" {
-			logger.Debugf(ctx, "Cluster was started by other process: %s Retrying.", apiErr.Message)
+			log.DebugContext(ctx, "Cluster was started by other process: %s Retrying.", apiErr.Message)
 			return retries.Continue(apiErr)
 		}
 		if a.isErrFailedToReach(err) {
@@ -112,13 +112,13 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		if cl.ClusterName != name {
 			continue
 		}
-		logger.Infof(ctx, "Found reusable cluster '%s'", name)
+		log.InfoContext(ctx, "Found reusable cluster '%s'", name)
 		if cl.IsRunningOrResizing() {
 			return &cl, nil
 		}
 		started, err := a.StartByClusterIdAndWait(ctx, cl.ClusterId)
 		if err != nil {
-			logger.Infof(ctx, "Cluster %s cannot be started, creating an autoterminating cluster: %s", name, err)
+			log.InfoContext(ctx, "Cluster %s cannot be started, creating an autoterminating cluster: %s", name, err)
 			break
 		}
 		return started, nil
@@ -133,7 +133,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	if err != nil {
 		return nil, err
 	}
-	logger.Infof(ctx, "Creating an autoterminating cluster with node type %s", smallestNodeType)
+	log.InfoContext(ctx, "Creating an autoterminating cluster with node type %s", smallestNodeType)
 	versions, err := a.SparkVersions(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("list spark versions: %w", err)

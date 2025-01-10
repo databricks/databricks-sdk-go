@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
@@ -35,7 +35,7 @@ func ExampleWarehousesAPI_Create_sqlWarehouses() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -68,7 +68,7 @@ func ExampleWarehousesAPI_Edit_sqlWarehouses() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Warehouses.Edit(ctx, sql.EditWarehouseRequest{
 		Id:             created.Id,
@@ -112,13 +112,13 @@ func ExampleWarehousesAPI_Get_sqlWarehouses() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	wh, err := w.Warehouses.GetById(ctx, created.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", wh)
+	log.InfoContext(ctx, "found %v", wh)
 
 	// cleanup
 
@@ -140,6 +140,6 @@ func ExampleWarehousesAPI_ListAll_sqlWarehouses() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }

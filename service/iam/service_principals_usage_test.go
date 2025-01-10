@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
@@ -27,7 +27,7 @@ func ExampleServicePrincipalsAPI_Create_accountServicePrincipal() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", spCreate)
+	log.InfoContext(ctx, "found %v", spCreate)
 
 	// cleanup
 
@@ -53,7 +53,7 @@ func ExampleServicePrincipalsAPI_Create_workspaceAssignmentOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", spn)
+	log.InfoContext(ctx, "found %v", spn)
 
 }
 
@@ -70,7 +70,7 @@ func ExampleServicePrincipalsAPI_Create_servicePrincipalsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -92,7 +92,7 @@ func ExampleServicePrincipalsAPI_Create_createOboTokenOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", groups)
+	log.InfoContext(ctx, "found %v", groups)
 
 	spn, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -103,7 +103,7 @@ func ExampleServicePrincipalsAPI_Create_createOboTokenOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", spn)
+	log.InfoContext(ctx, "found %v", spn)
 
 	// cleanup
 
@@ -128,13 +128,13 @@ func ExampleServicePrincipalsAPI_Get_accountServicePrincipal() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", spCreate)
+	log.InfoContext(ctx, "found %v", spCreate)
 
 	sp, err := a.ServicePrincipals.GetById(ctx, spCreate.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", sp)
+	log.InfoContext(ctx, "found %v", sp)
 
 	// cleanup
 
@@ -160,13 +160,13 @@ func ExampleServicePrincipalsAPI_Get_servicePrincipalsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	byId, err := w.ServicePrincipals.GetById(ctx, created.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -191,13 +191,13 @@ func ExampleServicePrincipalsAPI_ListAll_accountServicePrincipal() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", spCreate)
+	log.InfoContext(ctx, "found %v", spCreate)
 
 	sp, err := a.ServicePrincipals.GetById(ctx, spCreate.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", sp)
+	log.InfoContext(ctx, "found %v", sp)
 
 	spList, err := a.ServicePrincipals.ListAll(ctx, iam.ListAccountServicePrincipalsRequest{
 		Filter: fmt.Sprintf("displayName eq %v", sp.DisplayName),
@@ -205,7 +205,7 @@ func ExampleServicePrincipalsAPI_ListAll_accountServicePrincipal() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", spList)
+	log.InfoContext(ctx, "found %v", spList)
 
 	// cleanup
 
@@ -229,7 +229,7 @@ func ExampleServicePrincipalsAPI_ListAll_servicePrincipalsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -247,13 +247,13 @@ func ExampleServicePrincipalsAPI_Patch_accountServicePrincipal() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", spCreate)
+	log.InfoContext(ctx, "found %v", spCreate)
 
 	sp, err := a.ServicePrincipals.GetById(ctx, spCreate.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", sp)
+	log.InfoContext(ctx, "found %v", sp)
 
 	err = a.ServicePrincipals.Patch(ctx, iam.PartialUpdate{
 		Id: sp.Id,
@@ -292,13 +292,13 @@ func ExampleServicePrincipalsAPI_Patch_servicePrincipalsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	byId, err := w.ServicePrincipals.GetById(ctx, created.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	err = w.ServicePrincipals.Patch(ctx, iam.PartialUpdate{
 		Id: byId.Id,
@@ -336,13 +336,13 @@ func ExampleServicePrincipalsAPI_Update_accountServicePrincipal() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", spCreate)
+	log.InfoContext(ctx, "found %v", spCreate)
 
 	sp, err := a.ServicePrincipals.GetById(ctx, spCreate.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", sp)
+	log.InfoContext(ctx, "found %v", sp)
 
 	err = a.ServicePrincipals.Update(ctx, iam.ServicePrincipal{
 		Active:      true,
@@ -377,7 +377,7 @@ func ExampleServicePrincipalsAPI_Update_servicePrincipalsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.ServicePrincipals.Update(ctx, iam.ServicePrincipal{
 		Id:          created.Id,

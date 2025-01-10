@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
@@ -26,7 +26,7 @@ func ExampleGroupsAPI_Create_genericPermissions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", group)
+	log.InfoContext(ctx, "found %v", group)
 
 	// cleanup
 
@@ -50,7 +50,7 @@ func ExampleGroupsAPI_Create_groups() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", group)
+	log.InfoContext(ctx, "found %v", group)
 
 	// cleanup
 
@@ -74,7 +74,7 @@ func ExampleGroupsAPI_Create_secrets() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", group)
+	log.InfoContext(ctx, "found %v", group)
 
 	// cleanup
 
@@ -98,7 +98,7 @@ func ExampleGroupsAPI_Delete_genericPermissions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", group)
+	log.InfoContext(ctx, "found %v", group)
 
 	err = w.Groups.DeleteById(ctx, group.Id)
 	if err != nil {
@@ -120,7 +120,7 @@ func ExampleGroupsAPI_Delete_groups() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", group)
+	log.InfoContext(ctx, "found %v", group)
 
 	err = w.Groups.DeleteById(ctx, group.Id)
 	if err != nil {
@@ -149,7 +149,7 @@ func ExampleGroupsAPI_Delete_secrets() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", group)
+	log.InfoContext(ctx, "found %v", group)
 
 	err = w.Groups.DeleteById(ctx, group.Id)
 	if err != nil {
@@ -171,13 +171,13 @@ func ExampleGroupsAPI_Get_groups() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", group)
+	log.InfoContext(ctx, "found %v", group)
 
 	fetch, err := w.Groups.GetById(ctx, group.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", fetch)
+	log.InfoContext(ctx, "found %v", fetch)
 
 	// cleanup
 

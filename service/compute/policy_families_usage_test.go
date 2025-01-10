@@ -6,7 +6,7 @@ import (
 	"context"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
@@ -22,7 +22,7 @@ func ExamplePolicyFamiliesAPI_Get_clusterPolicyFamilies() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 	firstFamily, err := w.PolicyFamilies.Get(ctx, compute.GetPolicyFamilyRequest{
 		PolicyFamilyId: all[0].PolicyFamilyId,
@@ -30,7 +30,7 @@ func ExamplePolicyFamiliesAPI_Get_clusterPolicyFamilies() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", firstFamily)
+	log.InfoContext(ctx, "found %v", firstFamily)
 
 }
 
@@ -45,6 +45,6 @@ func ExamplePolicyFamiliesAPI_ListAll_clusterPolicyFamilies() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }

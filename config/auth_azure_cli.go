@@ -12,7 +12,7 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 )
 
 // The header used to pass the service management token to the Databricks backend.
@@ -47,7 +47,7 @@ func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner 
 	ts := &azureCliTokenSource{ctx, cfg.Environment().AzureServiceManagementEndpoint(), cfg.AzureResourceID, cfg.AzureTenantID}
 	t, err := ts.Token()
 	if err != nil {
-		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
+		log.DebugContext(ctx, "Not including service management token in headers: %v", err)
 		return azureVisitor(cfg, refreshableVisitor(inner)), nil
 	}
 	management := azureReuseTokenSource(t, ts)
@@ -72,7 +72,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (creden
 			return nil, nil
 		}
 		if strings.Contains(err.Error(), "executable file not found") {
-			logger.Debugf(ctx, "Most likely Azure CLI is not installed. "+
+			log.DebugContext(ctx, "Most likely Azure CLI is not installed. "+
 				"See https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest for details")
 			return nil, nil
 		}
@@ -86,7 +86,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (creden
 	if err != nil {
 		return nil, err
 	}
-	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
+	log.InfoContext(ctx, "Using Azure CLI authentication with AAD tokens")
 	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
 }
 
@@ -119,7 +119,7 @@ func (ts *azureCliTokenSource) getSubscription() string {
 	}
 	components := strings.Split(ts.workspaceResourceId, "/")
 	if len(components) < 3 {
-		logger.Warnf(context.Background(), "Invalid azure workspace resource ID")
+		log.Warning("Invalid azure workspace resource ID")
 		return ""
 	}
 	return components[2]
@@ -143,8 +143,12 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	if ts.azureTenantId != "" {
 		tenantIdDebug = fmt.Sprintf(" for tenant %s", ts.azureTenantId)
 	}
-	logger.Infof(context.Background(), "Refreshed OAuth token for %s%s from Azure CLI, which expires on %s",
-		ts.resource, tenantIdDebug, it.ExpiresOn)
+	log.Info(
+		"Refreshed OAuth token for %s%s from Azure CLI, which expires on %s",
+		ts.resource,
+		tenantIdDebug,
+		it.ExpiresOn,
+	)
 
 	var extra map[string]interface{}
 	err = json.Unmarshal(tokenBytes, &extra)
@@ -199,7 +203,7 @@ func (ts *azureCliTokenSource) getTokenBytesWithTenantId(tenantId string) ([]byt
 		if err == nil {
 			return result, nil
 		}
-		logger.Infof(ts.ctx, "Failed to get token for subscription. Using resource only token.")
+		log.InfoContext(ts.ctx, "Failed to get token for subscription. Using resource only token.")
 	}
 	result, err := runCommand(ts.ctx, "az", args)
 	if ee, ok := err.(*exec.ExitError); ok {

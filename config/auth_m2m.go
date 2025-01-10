@@ -9,8 +9,8 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/httpclient"
-	"github.com/databricks/databricks-sdk-go/logger"
 )
 
 var errOAuthNotSupported = errors.New("databricks OAuth is not supported for this host")
@@ -30,7 +30,7 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	if err != nil {
 		return nil, fmt.Errorf("oidc: %w", err)
 	}
-	logger.Debugf(ctx, "Generating Databricks OAuth token for Service Principal (%s)", cfg.ClientID)
+	log.DebugContext(ctx, "Generating Databricks OAuth token for Service Principal (%s)", cfg.ClientID)
 	ts := (&clientcredentials.Config{
 		ClientID:     cfg.ClientID,
 		ClientSecret: cfg.ClientSecret,

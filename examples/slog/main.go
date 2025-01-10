@@ -3,43 +3,43 @@ package main
 import (
 	"context"
 	"flag"
-	"os"
 
 	"github.com/databricks/databricks-sdk-go"
-	sdk "github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"golang.org/x/exp/slog"
 )
 
-var json bool
+// slogAdapter makes an slog.Logger usable with the Databricks SDK.
+type slogAdapter struct {
+	*slog.Logger
+}
 
-func init() {
-	flag.BoolVar(&json, "json", false, "log json messages")
+func (s *slogAdapter) Log(ctx context.Context, level log.Level, format string, a ...any) {
+	slevel := slog.LevelDebug
+	switch level {
+	case log.LevelInfo:
+		slevel = slog.LevelInfo
+	case log.LevelWarn:
+		slevel = slog.LevelWarn
+	case log.LevelError:
+		slevel = slog.LevelError
+	}
+	s.Logger.Log(ctx, slevel, format, a...)
 }
 
 func main() {
 	flag.Parse()
 
-	opts := slog.HandlerOptions{
-		Level: slog.LevelDebug,
-	}
-
-	var handler slog.Handler
-	if json {
-		handler = opts.NewJSONHandler(os.Stderr)
-	} else {
-		handler = opts.NewTextHandler(os.Stderr)
-	}
-
 	// Define global logger for the SDK.
 	// This instance is used when no context is present (e.g. upon construction),
 	// or when a context is present but doesn't hold a logger to use.
-	sdk.DefaultLogger = &slogAdapter{
-		slog.New(handler).With("global", true),
-	}
+	log.SetDefaultLogger(&slogAdapter{
+		slog.Default().With("global", true),
+	})
 
-	// Define logger on context for the SDK to use.
-	ctx := sdk.NewContext(context.Background(), &slogAdapter{
-		slog.New(handler).With("global", false),
+	logKey := &struct{}{} // define a unique key for the context value
+	ctx := context.WithValue(context.Background(), logKey, &slogAdapter{
+		slog.Default().With("global", false),
 	})
 
 	// Construct client and make a request.

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
@@ -24,7 +24,7 @@ func ExampleQueriesAPI_Create_queries() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", srcs)
+	log.InfoContext(ctx, "found %v", srcs)
 
 	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
 		Query: &sql.CreateQueryRequestQuery{
@@ -37,7 +37,7 @@ func ExampleQueriesAPI_Create_queries() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", query)
+	log.InfoContext(ctx, "found %v", query)
 
 	// cleanup
 
@@ -59,7 +59,7 @@ func ExampleQueriesAPI_Create_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", srcs)
+	log.InfoContext(ctx, "found %v", srcs)
 
 	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
 		Query: &sql.CreateQueryRequestQuery{
@@ -72,7 +72,7 @@ func ExampleQueriesAPI_Create_alerts() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", query)
+	log.InfoContext(ctx, "found %v", query)
 
 	// cleanup
 
@@ -94,7 +94,7 @@ func ExampleQueriesAPI_Get_queries() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", srcs)
+	log.InfoContext(ctx, "found %v", srcs)
 
 	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
 		Query: &sql.CreateQueryRequestQuery{
@@ -107,13 +107,13 @@ func ExampleQueriesAPI_Get_queries() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", query)
+	log.InfoContext(ctx, "found %v", query)
 
 	byId, err := w.Queries.GetById(ctx, query.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -135,7 +135,7 @@ func ExampleQueriesAPI_Update_queries() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", srcs)
+	log.InfoContext(ctx, "found %v", srcs)
 
 	query, err := w.Queries.Create(ctx, sql.CreateQueryRequest{
 		Query: &sql.CreateQueryRequestQuery{
@@ -148,7 +148,7 @@ func ExampleQueriesAPI_Update_queries() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", query)
+	log.InfoContext(ctx, "found %v", query)
 
 	updated, err := w.Queries.Update(ctx, sql.UpdateQueryRequest{
 		Id: query.Id,
@@ -162,7 +162,7 @@ func ExampleQueriesAPI_Update_queries() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", updated)
+	log.InfoContext(ctx, "found %v", updated)
 
 	// cleanup
 

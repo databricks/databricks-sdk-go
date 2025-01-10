@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/databricks/databricks-sdk-go/httpclient"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 
@@ -107,8 +107,6 @@ func (t metadataService) Token() (*oauth2.Token, error) {
 	if token == nil {
 		return nil, fmt.Errorf("no token returned from metadata service")
 	}
-	logger.Debugf(context.Background(),
-		"Refreshed access token from local metadata service, which expires on %s",
-		token.Expiry.Format(time.RFC3339))
+	log.Debug("Refreshed access token from local metadata service, which expires on %s", token.Expiry.Format(time.RFC3339))
 	return token, nil
 }

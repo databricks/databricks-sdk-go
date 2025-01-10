@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 )
@@ -26,7 +26,7 @@ func ExampleRecipientsAPI_Create_recipients() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -50,7 +50,7 @@ func ExampleRecipientsAPI_Get_recipients() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.Recipients.GetByName(ctx, created.Name)
 	if err != nil {
@@ -77,7 +77,7 @@ func ExampleRecipientsAPI_ListAll_recipients() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -94,7 +94,7 @@ func ExampleRecipientsAPI_RotateToken_recipients() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	recipientInfo, err := w.Recipients.RotateToken(ctx, sharing.RotateRecipientToken{
 		Name:                         created.Name,
@@ -103,7 +103,7 @@ func ExampleRecipientsAPI_RotateToken_recipients() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", recipientInfo)
+	log.InfoContext(ctx, "found %v", recipientInfo)
 
 	// cleanup
 
@@ -127,13 +127,13 @@ func ExampleRecipientsAPI_SharePermissions_recipients() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	sharePermissions, err := w.Recipients.SharePermissionsByName(ctx, created.Name)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", sharePermissions)
+	log.InfoContext(ctx, "found %v", sharePermissions)
 
 	// cleanup
 
@@ -157,7 +157,7 @@ func ExampleRecipientsAPI_Update_recipients() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.Recipients.Update(ctx, sharing.UpdateRecipient{
 		Name:    created.Name,

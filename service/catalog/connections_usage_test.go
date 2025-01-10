@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
@@ -29,7 +29,7 @@ func ExampleConnectionsAPI_Create_connections() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", connCreate)
+	log.InfoContext(ctx, "found %v", connCreate)
 
 	// cleanup
 
@@ -58,7 +58,7 @@ func ExampleConnectionsAPI_Get_connections() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", connCreate)
+	log.InfoContext(ctx, "found %v", connCreate)
 
 	connUpdate, err := w.Connections.Update(ctx, catalog.UpdateConnection{
 		Name:    connCreate.Name,
@@ -67,7 +67,7 @@ func ExampleConnectionsAPI_Get_connections() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", connUpdate)
+	log.InfoContext(ctx, "found %v", connUpdate)
 
 	conn, err := w.Connections.Get(ctx, catalog.GetConnectionRequest{
 		Name: connUpdate.Name,
@@ -75,7 +75,7 @@ func ExampleConnectionsAPI_Get_connections() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", conn)
+	log.InfoContext(ctx, "found %v", conn)
 
 	// cleanup
 
@@ -99,7 +99,7 @@ func ExampleConnectionsAPI_ListAll_connections() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", connList)
+	log.InfoContext(ctx, "found %v", connList)
 
 }
 
@@ -119,7 +119,7 @@ func ExampleConnectionsAPI_Update_connections() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", connCreate)
+	log.InfoContext(ctx, "found %v", connCreate)
 
 	connUpdate, err := w.Connections.Update(ctx, catalog.UpdateConnection{
 		Name:    connCreate.Name,
@@ -128,7 +128,7 @@ func ExampleConnectionsAPI_Update_connections() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", connUpdate)
+	log.InfoContext(ctx, "found %v", connUpdate)
 
 	// cleanup
 

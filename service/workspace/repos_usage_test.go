@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
@@ -30,7 +30,7 @@ func ExampleReposAPI_Create_repos() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", ri)
+	log.InfoContext(ctx, "found %v", ri)
 
 	// cleanup
 
@@ -58,13 +58,13 @@ func ExampleReposAPI_Get_repos() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", ri)
+	log.InfoContext(ctx, "found %v", ri)
 
 	byId, err := w.Repos.GetByRepoId(ctx, ri.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -86,7 +86,7 @@ func ExampleReposAPI_ListAll_repos() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -107,7 +107,7 @@ func ExampleReposAPI_Update_repos() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", ri)
+	log.InfoContext(ctx, "found %v", ri)
 
 	err = w.Repos.Update(ctx, workspace.UpdateRepoRequest{
 		RepoId: ri.Id,

@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
@@ -34,7 +34,7 @@ func ExampleWorkspaceAssignmentAPI_ListAll_workspaceAssignmentOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -51,7 +51,7 @@ func ExampleWorkspaceAssignmentAPI_Update_workspaceAssignmentOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", spn)
+	log.InfoContext(ctx, "found %v", spn)
 
 	spnId := func(v string) int64 {
 		i, err := strconv.ParseInt(v, 10, 64)

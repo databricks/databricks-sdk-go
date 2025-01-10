@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/settings"
@@ -25,7 +25,7 @@ func ExampleTokenManagementAPI_CreateOboToken_createOboTokenOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", groups)
+	log.InfoContext(ctx, "found %v", groups)
 
 	spn, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -36,7 +36,7 @@ func ExampleTokenManagementAPI_CreateOboToken_createOboTokenOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", spn)
+	log.InfoContext(ctx, "found %v", spn)
 
 	obo, err := w.TokenManagement.CreateOboToken(ctx, settings.CreateOboTokenRequest{
 		ApplicationId:   spn.ApplicationId,
@@ -45,7 +45,7 @@ func ExampleTokenManagementAPI_CreateOboToken_createOboTokenOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", obo)
+	log.InfoContext(ctx, "found %v", obo)
 
 	// cleanup
 
@@ -71,7 +71,7 @@ func ExampleTokenManagementAPI_Get_createOboTokenOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", groups)
+	log.InfoContext(ctx, "found %v", groups)
 
 	spn, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -82,7 +82,7 @@ func ExampleTokenManagementAPI_Get_createOboTokenOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", spn)
+	log.InfoContext(ctx, "found %v", spn)
 
 	obo, err := w.TokenManagement.CreateOboToken(ctx, settings.CreateOboTokenRequest{
 		ApplicationId:   spn.ApplicationId,
@@ -91,13 +91,13 @@ func ExampleTokenManagementAPI_Get_createOboTokenOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", obo)
+	log.InfoContext(ctx, "found %v", obo)
 
 	byId, err := w.TokenManagement.GetByTokenId(ctx, obo.TokenInfo.TokenId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -123,6 +123,6 @@ func ExampleTokenManagementAPI_ListAll_createOboTokenOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }

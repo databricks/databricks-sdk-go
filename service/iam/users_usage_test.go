@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
@@ -26,7 +26,7 @@ func ExampleUsersAPI_Create_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", otherOwner)
+	log.InfoContext(ctx, "found %v", otherOwner)
 
 	// cleanup
 
@@ -51,7 +51,7 @@ func ExampleUsersAPI_Create_workspaceUsers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", user)
+	log.InfoContext(ctx, "found %v", user)
 
 }
 
@@ -69,7 +69,7 @@ func ExampleUsersAPI_Create_accountUsers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", user)
+	log.InfoContext(ctx, "found %v", user)
 
 	// cleanup
 
@@ -93,7 +93,7 @@ func ExampleUsersAPI_Delete_clustersApiIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", otherOwner)
+	log.InfoContext(ctx, "found %v", otherOwner)
 
 	err = w.Users.DeleteById(ctx, otherOwner.Id)
 	if err != nil {
@@ -116,7 +116,7 @@ func ExampleUsersAPI_Delete_workspaceUsers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", user)
+	log.InfoContext(ctx, "found %v", user)
 
 	err = w.Users.DeleteById(ctx, user.Id)
 	if err != nil {
@@ -139,7 +139,7 @@ func ExampleUsersAPI_Delete_accountUsers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", user)
+	log.InfoContext(ctx, "found %v", user)
 
 	err = a.Users.DeleteById(ctx, user.Id)
 	if err != nil {
@@ -162,13 +162,13 @@ func ExampleUsersAPI_Get_workspaceUsers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", user)
+	log.InfoContext(ctx, "found %v", user)
 
 	fetch, err := w.Users.GetById(ctx, user.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", fetch)
+	log.InfoContext(ctx, "found %v", fetch)
 
 }
 
@@ -186,13 +186,13 @@ func ExampleUsersAPI_Get_accountUsers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", user)
+	log.InfoContext(ctx, "found %v", user)
 
 	byId, err := a.Users.GetById(ctx, user.Id)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -218,7 +218,7 @@ func ExampleUsersAPI_ListAll_workspaceUsers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", allUsers)
+	log.InfoContext(ctx, "found %v", allUsers)
 
 }
 
@@ -236,7 +236,7 @@ func ExampleUsersAPI_Patch_workspaceUsers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", user)
+	log.InfoContext(ctx, "found %v", user)
 
 	err = w.Users.Patch(ctx, iam.PartialUpdate{
 		Id: user.Id,
@@ -267,7 +267,7 @@ func ExampleUsersAPI_Patch_accountUsers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", user)
+	log.InfoContext(ctx, "found %v", user)
 
 	err = a.Users.Patch(ctx, iam.PartialUpdate{
 		Id:      user.Id,
@@ -308,7 +308,7 @@ func ExampleUsersAPI_Update_workspaceUsers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", user)
+	log.InfoContext(ctx, "found %v", user)
 
 	err = w.Users.Update(ctx, iam.User{
 		Id:       user.Id,

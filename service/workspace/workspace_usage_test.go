@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
@@ -37,7 +37,7 @@ func ExampleWorkspaceAPI_Export_workspaceIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", exportResponse)
+	log.InfoContext(ctx, "found %v", exportResponse)
 
 }
 
@@ -60,7 +60,7 @@ func ExampleWorkspaceAPI_GetStatus_genericPermissions() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", obj)
+	log.InfoContext(ctx, "found %v", obj)
 
 }
 
@@ -83,7 +83,7 @@ func ExampleWorkspaceAPI_GetStatus_workspaceIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", getStatusResponse)
+	log.InfoContext(ctx, "found %v", getStatusResponse)
 
 }
 
@@ -224,6 +224,6 @@ func ExampleWorkspaceAPI_ListAll_workspaceIntegration() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", objects)
+	log.InfoContext(ctx, "found %v", objects)
 
 }

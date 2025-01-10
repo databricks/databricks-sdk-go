@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
@@ -31,7 +31,7 @@ func ExampleStorageCredentialsAPI_Create_volumes() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", storageCredential)
+	log.InfoContext(ctx, "found %v", storageCredential)
 
 	// cleanup
 
@@ -58,7 +58,7 @@ func ExampleStorageCredentialsAPI_Create_storageCredentialsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -85,7 +85,7 @@ func ExampleStorageCredentialsAPI_Create_externalLocationsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", credential)
+	log.InfoContext(ctx, "found %v", credential)
 
 	// cleanup
 
@@ -112,13 +112,13 @@ func ExampleStorageCredentialsAPI_Get_storageCredentialsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	byName, err := w.StorageCredentials.GetByName(ctx, created.Name)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byName)
+	log.InfoContext(ctx, "found %v", byName)
 
 	// cleanup
 
@@ -140,7 +140,7 @@ func ExampleStorageCredentialsAPI_ListAll_storageCredentialsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
 
@@ -160,7 +160,7 @@ func ExampleStorageCredentialsAPI_Update_storageCredentialsOnAws() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	_, err = w.StorageCredentials.Update(ctx, catalog.UpdateStorageCredential{
 		Name:    created.Name,

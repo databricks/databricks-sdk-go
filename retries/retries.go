@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 )
 
 // Deprecated: use return types from non-*AndWait methods
@@ -210,13 +210,13 @@ func (r Retrier[T]) Run(ctx context.Context, fn func(context.Context) (*T, error
 			return entity, nil
 		}
 		if !r.config.ShouldRetry(err) {
-			logger.Debugf(ctx, "non-retriable error: %s", err)
+			log.DebugContext(ctx, "non-retriable error: %s", err)
 			return nil, err
 		}
 		lastErr = err
 		wait := r.config.Backoff(attempt)
 		timer := time.NewTimer(wait)
-		logger.Tracef(ctx, "%s. Sleeping %s",
+		log.TraceContext(ctx, "%s. Sleeping %s",
 			strings.TrimSuffix(err.Error(), "."),
 			wait.Round(time.Millisecond))
 		select {

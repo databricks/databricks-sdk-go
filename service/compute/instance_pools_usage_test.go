@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
@@ -26,7 +26,7 @@ func ExampleInstancePoolsAPI_Create_instancePools() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", smallest)
+	log.InfoContext(ctx, "found %v", smallest)
 
 	created, err := w.InstancePools.Create(ctx, compute.CreateInstancePool{
 		InstancePoolName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -35,7 +35,7 @@ func ExampleInstancePoolsAPI_Create_instancePools() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	// cleanup
 
@@ -59,7 +59,7 @@ func ExampleInstancePoolsAPI_Edit_instancePools() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", smallest)
+	log.InfoContext(ctx, "found %v", smallest)
 
 	created, err := w.InstancePools.Create(ctx, compute.CreateInstancePool{
 		InstancePoolName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -68,7 +68,7 @@ func ExampleInstancePoolsAPI_Edit_instancePools() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	err = w.InstancePools.Edit(ctx, compute.EditInstancePool{
 		InstancePoolId:   created.InstancePoolId,
@@ -101,7 +101,7 @@ func ExampleInstancePoolsAPI_Get_instancePools() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", smallest)
+	log.InfoContext(ctx, "found %v", smallest)
 
 	created, err := w.InstancePools.Create(ctx, compute.CreateInstancePool{
 		InstancePoolName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -110,13 +110,13 @@ func ExampleInstancePoolsAPI_Get_instancePools() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", created)
+	log.InfoContext(ctx, "found %v", created)
 
 	byId, err := w.InstancePools.GetByInstancePoolId(ctx, created.InstancePoolId)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", byId)
+	log.InfoContext(ctx, "found %v", byId)
 
 	// cleanup
 
@@ -138,6 +138,6 @@ func ExampleInstancePoolsAPI_ListAll_instancePools() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", all)
+	log.InfoContext(ctx, "found %v", all)
 
 }
