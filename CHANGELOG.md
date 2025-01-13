@@ -1,5 +1,37 @@
 # Version changelog
 
+## [Release] Release v0.55.0
+
+### Internal Changes
+
+ * Bump staticcheck to 0.5.1 and add go 1.23 test coverage ([#1106](https://github.com/databricks/databricks-sdk-go/pull/1106)).
+ * Bump x/net, x/crypto dependencies ([#1107](https://github.com/databricks/databricks-sdk-go/pull/1107)).
+ * Create custom codeql.yml ([#1114](https://github.com/databricks/databricks-sdk-go/pull/1114)).
+ * Decouple serving and oauth2 package ([#1110](https://github.com/databricks/databricks-sdk-go/pull/1110)).
+ * Migrate workflows that need write access to use hosted runners ([#1112](https://github.com/databricks/databricks-sdk-go/pull/1112)).
+ * Move package credentials in config ([#1115](https://github.com/databricks/databricks-sdk-go/pull/1115)).
+ * Update Queries test ([#1104](https://github.com/databricks/databricks-sdk-go/pull/1104)).
+
+
+### API Changes:
+
+ * Added `NoCompute` field for [apps.CreateAppRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#CreateAppRequest).
+ * Added `HasMore` field for [jobs.BaseJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseJob).
+ * Added `HasMore` field for [jobs.BaseRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseRun).
+ * Added `PageToken` field for [jobs.GetJobRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#GetJobRequest).
+ * Added `HasMore` and `NextPageToken` fields for [jobs.Job](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Job).
+ * Added `HasMore` field for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+ * Added `RunAs` field for [pipelines.CreatePipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#CreatePipeline).
+ * Added `RunAs` field for [pipelines.EditPipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#EditPipeline).
+ * Added `AuthorizationDetails` and `EndpointUrl` fields for [serving.DataPlaneInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#DataPlaneInfo).
+ * [Breaking] Changed `Update` method for [a.AccountFederationPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#AccountFederationPolicyAPI) account-level service with new required argument order.
+ * [Breaking] Changed `Update` method for [a.ServicePrincipalFederationPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#ServicePrincipalFederationPolicyAPI) account-level service with new required argument order.
+ * Changed `UpdateMask` field for [oauth2.UpdateAccountFederationPolicyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#UpdateAccountFederationPolicyRequest) to no longer be required.
+ * Changed `UpdateMask` field for [oauth2.UpdateServicePrincipalFederationPolicyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#UpdateServicePrincipalFederationPolicyRequest) to no longer be required.
+ * [Breaking] Changed `DaysOfWeek` field for [pipelines.RestartWindow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#RestartWindow) to type [pipelines.DayOfWeekList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#DayOfWeekList).
+
+OpenAPI SHA: 779817ed8d63031f5ea761fbd25ee84f38feec0d, Date: 2025-01-08
+
 ## [Release] Release v0.54.0
 
 ### API Changes:
