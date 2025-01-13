@@ -224,7 +224,7 @@ func TestAccWorkspaceRecursiveListNoTranspile(t *testing.T) {
 		workspace.UploadOverwrite())
 	require.NoError(t, err)
 
-	allMyNotebooks, err := w.Workspace.RecursiveList(ctx, filepath.Join("/Users", me(t, w).UserName))
+	allMyNotebooks, err := w.Workspace.RecursiveList(ctx, filepath.Join("/Users", me(t, w).UserName, ".sdk"))
 	require.NoError(t, err)
 	assert.True(t, len(allMyNotebooks) >= 1)
 }
