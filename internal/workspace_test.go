@@ -16,7 +16,7 @@ import (
 
 func myNotebookPath(t *testing.T, w *databricks.WorkspaceClient) string {
 	ctx := context.Background()
-	testDir := filepath.Join("/Users", me(t, w).UserName, ".sdk", RandomName("t-"))
+	testDir := filepath.Join("/Users", me(t, w).UserName, ".sdk", "notebooks", RandomName("t-"))
 	notebook := filepath.Join(testDir, RandomName("n-"))
 
 	err := w.Workspace.MkdirsByPath(ctx, testDir)
