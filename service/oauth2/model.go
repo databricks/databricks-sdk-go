@@ -3,7 +3,7 @@
 package oauth2
 
 import (
-	"github.com/databricks/databricks-sdk-go/marshal"
+	"github.com/databricks/databricks-sdk-go/databricks/marshal"
 )
 
 // Create account federation policy

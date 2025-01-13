@@ -5,7 +5,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"github.com/rs/zerolog"
 	zlog "github.com/rs/zerolog/log"

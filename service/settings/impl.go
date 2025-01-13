@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
 // unexported type that holds implementations of just AccountIpAccessLists API methods

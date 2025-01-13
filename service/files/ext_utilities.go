@@ -8,7 +8,7 @@ import (
 	"io"
 
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
-	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 // FileMode conveys user intent when opening a file.

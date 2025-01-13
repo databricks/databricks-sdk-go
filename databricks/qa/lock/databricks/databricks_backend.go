@@ -10,7 +10,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
 	"github.com/databricks/databricks-sdk-go/databricks/qa/lock/core"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
