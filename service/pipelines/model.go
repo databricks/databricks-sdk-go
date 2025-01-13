@@ -140,46 +140,6 @@ func (s DataPlaneId) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Days of week in which the restart is allowed to happen (within a five-hour
-// window starting at start_hour). If not specified all days of the week will be
-// used.
-type DayOfWeek string
-
-const DayOfWeekFriday DayOfWeek = `FRIDAY`
-
-const DayOfWeekMonday DayOfWeek = `MONDAY`
-
-const DayOfWeekSaturday DayOfWeek = `SATURDAY`
-
-const DayOfWeekSunday DayOfWeek = `SUNDAY`
-
-const DayOfWeekThursday DayOfWeek = `THURSDAY`
-
-const DayOfWeekTuesday DayOfWeek = `TUESDAY`
-
-const DayOfWeekWednesday DayOfWeek = `WEDNESDAY`
-
-// String representation for [fmt.Print]
-func (f *DayOfWeek) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *DayOfWeek) Set(v string) error {
-	switch v {
-	case `FRIDAY`, `MONDAY`, `SATURDAY`, `SUNDAY`, `THURSDAY`, `TUESDAY`, `WEDNESDAY`:
-		*f = DayOfWeek(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "FRIDAY", "MONDAY", "SATURDAY", "SUNDAY", "THURSDAY", "TUESDAY", "WEDNESDAY"`, v)
-	}
-}
-
-// Type always returns DayOfWeek to satisfy [pflag.Value] interface
-func (f *DayOfWeek) Type() string {
-	return "DayOfWeek"
-}
-
 // Delete a pipeline
 type DeletePipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
@@ -1369,7 +1329,7 @@ type RestartWindow struct {
 	// Days of week in which the restart is allowed to happen (within a
 	// five-hour window starting at start_hour). If not specified all days of
 	// the week will be used.
-	DaysOfWeek []DayOfWeek `json:"days_of_week,omitempty"`
+	DaysOfWeek []RestartWindowDaysOfWeek `json:"days_of_week,omitempty"`
 	// An integer between 0 and 23 denoting the start hour for the restart
 	// window in the 24-hour day. Continuous pipeline restart is triggered only
 	// within a five-hour window starting at this hour.
@@ -1388,6 +1348,46 @@ func (s *RestartWindow) UnmarshalJSON(b []byte) error {
 
 func (s RestartWindow) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Days of week in which the restart is allowed to happen (within a five-hour
+// window starting at start_hour). If not specified all days of the week will be
+// used.
+type RestartWindowDaysOfWeek string
+
+const RestartWindowDaysOfWeekFriday RestartWindowDaysOfWeek = `FRIDAY`
+
+const RestartWindowDaysOfWeekMonday RestartWindowDaysOfWeek = `MONDAY`
+
+const RestartWindowDaysOfWeekSaturday RestartWindowDaysOfWeek = `SATURDAY`
+
+const RestartWindowDaysOfWeekSunday RestartWindowDaysOfWeek = `SUNDAY`
+
+const RestartWindowDaysOfWeekThursday RestartWindowDaysOfWeek = `THURSDAY`
+
+const RestartWindowDaysOfWeekTuesday RestartWindowDaysOfWeek = `TUESDAY`
+
+const RestartWindowDaysOfWeekWednesday RestartWindowDaysOfWeek = `WEDNESDAY`
+
+// String representation for [fmt.Print]
+func (f *RestartWindowDaysOfWeek) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RestartWindowDaysOfWeek) Set(v string) error {
+	switch v {
+	case `FRIDAY`, `MONDAY`, `SATURDAY`, `SUNDAY`, `THURSDAY`, `TUESDAY`, `WEDNESDAY`:
+		*f = RestartWindowDaysOfWeek(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FRIDAY", "MONDAY", "SATURDAY", "SUNDAY", "THURSDAY", "TUESDAY", "WEDNESDAY"`, v)
+	}
+}
+
+// Type always returns RestartWindowDaysOfWeek to satisfy [pflag.Value] interface
+func (f *RestartWindowDaysOfWeek) Type() string {
+	return "RestartWindowDaysOfWeek"
 }
 
 // Write-only setting, available only in Create/Update calls. Specifies the user
