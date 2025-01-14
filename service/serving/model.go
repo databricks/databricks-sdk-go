@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
+	"github.com/databricks/databricks-sdk-go/databricks/marshal"
 )
 
 type Ai21LabsConfig struct {

@@ -5,7 +5,7 @@ package iam_test
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/log"
 )
 

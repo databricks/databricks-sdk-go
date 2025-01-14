@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/common/environment"
+	"github.com/databricks/databricks-sdk-go/databricks/common/environment"
 )
 
 // Metadata about the private link product. Private link redirects users to the

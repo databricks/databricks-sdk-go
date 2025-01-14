@@ -5,7 +5,7 @@ package files
 import (
 	"io"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
+	"github.com/databricks/databricks-sdk-go/databricks/marshal"
 )
 
 type AddBlock struct {

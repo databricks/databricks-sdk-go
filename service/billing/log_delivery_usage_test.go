@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/log"
 
 	"github.com/databricks/databricks-sdk-go/service/billing"

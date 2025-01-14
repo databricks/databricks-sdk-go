@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 // Run this example by running `go run ./examples/useragent` from the root of this repository.

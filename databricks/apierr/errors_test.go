@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/databricks/common"
 	"github.com/stretchr/testify/assert"
 )
 

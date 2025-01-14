@@ -5,7 +5,7 @@ package dashboards
 import (
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
+	"github.com/databricks/databricks-sdk-go/databricks/marshal"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
 

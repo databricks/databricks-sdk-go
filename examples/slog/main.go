@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 
-	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"golang.org/x/exp/slog"
 )
