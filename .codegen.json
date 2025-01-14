@@ -1,5 +1,5 @@
 {
-  "mode": "go_v0",
+  "mode": "go_v1",
   "changelog_config": ".codegen/changelog_config.yml",
   "version": {
     "version/version.go": "const Version = \"$VERSION\""
@@ -9,8 +9,7 @@
       "go"
     ],
     "post_generate": [
-      "make fmt",
-      "go run github.com/vektra/mockery/v2@0229bd4bb4357cd09af7ac15ecab85022d296b12"
+      "make fmt"
     ]
   }
 }
