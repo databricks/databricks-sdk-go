@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just clean_room_assets API methods
+// unexported type that holds implementations of just CleanRoomAssets API methods
 type cleanRoomAssetsImpl struct {
 	client *client.DatabricksClient
 }
@@ -62,7 +62,7 @@ func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoo
 	return &cleanRoomAsset, err
 }
 
-// unexported type that holds implementations of just clean_room_task_runs API methods
+// unexported type that holds implementations of just CleanRoomTaskRuns API methods
 type cleanRoomTaskRunsImpl struct {
 	client *client.DatabricksClient
 }
@@ -76,7 +76,7 @@ func (a *cleanRoomTaskRunsImpl) List(ctx context.Context, request ListCleanRoomN
 	return &listCleanRoomNotebookTaskRunsResponse, err
 }
 
-// unexported type that holds implementations of just clean_rooms API methods
+// unexported type that holds implementations of just CleanRooms API methods
 type cleanRoomsImpl struct {
 	client *client.DatabricksClient
 }
@@ -132,8 +132,8 @@ func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoomRequ
 	var cleanRoom CleanRoom
 	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cleanRoom)
 	return &cleanRoom, err
 }

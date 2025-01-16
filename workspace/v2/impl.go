@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just git_credentials API methods
+// unexported type that holds implementations of just GitCredentials API methods
 type gitCredentialsImpl struct {
 	client *client.DatabricksClient
 }
@@ -62,7 +62,7 @@ func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentia
 	return err
 }
 
-// unexported type that holds implementations of just repos API methods
+// unexported type that holds implementations of just Repos API methods
 type reposImpl struct {
 	client *client.DatabricksClient
 }
@@ -71,8 +71,8 @@ func (a *reposImpl) Create(ctx context.Context, request CreateRepoRequest) (*Cre
 	var createRepoResponse CreateRepoResponse
 	path := "/api/2.0/repos"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createRepoResponse)
 	return &createRepoResponse, err
 }
@@ -136,8 +136,8 @@ func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) error
 	var updateRepoResponse UpdateRepoResponse
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateRepoResponse)
 	return err
 }
@@ -146,13 +146,13 @@ func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissio
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &repoPermissions)
 	return &repoPermissions, err
 }
 
-// unexported type that holds implementations of just secrets API methods
+// unexported type that holds implementations of just Secrets API methods
 type secretsImpl struct {
 	client *client.DatabricksClient
 }
@@ -246,8 +246,8 @@ func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) error {
 	var putAclResponse PutAclResponse
 	path := "/api/2.0/secrets/acls/put"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &putAclResponse)
 	return err
 }
@@ -262,7 +262,7 @@ func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) error {
 	return err
 }
 
-// unexported type that holds implementations of just workspace API methods
+// unexported type that holds implementations of just Workspace API methods
 type workspaceImpl struct {
 	client *client.DatabricksClient
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just serving_endpoints API methods
+// unexported type that holds implementations of just ServingEndpoints API methods
 type servingEndpointsImpl struct {
 	client *client.DatabricksClient
 }
@@ -130,8 +130,8 @@ func (a *servingEndpointsImpl) Put(ctx context.Context, request PutRequest) (*Pu
 	var putResponse PutResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/rate-limits", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &putResponse)
 	return &putResponse, err
 }
@@ -170,8 +170,8 @@ func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request Endpoin
 	var servingEndpointDetailed ServingEndpointDetailed
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/config", request.Name)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
 }
@@ -186,7 +186,7 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 	return &servingEndpointPermissions, err
 }
 
-// unexported type that holds implementations of just serving_endpoints_data_plane API methods
+// unexported type that holds implementations of just ServingEndpointsDataPlane API methods
 type servingEndpointsDataPlaneImpl struct {
 	client *client.DatabricksClient
 }

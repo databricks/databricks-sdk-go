@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just access_control API methods
+// unexported type that holds implementations of just AccessControl API methods
 type accessControlImpl struct {
 	client *client.DatabricksClient
 }
@@ -24,7 +24,7 @@ func (a *accessControlImpl) CheckPolicy(ctx context.Context, request CheckPolicy
 	return &checkPolicyResponse, err
 }
 
-// unexported type that holds implementations of just account_access_control API methods
+// unexported type that holds implementations of just AccountAccessControl API methods
 type accountAccessControlImpl struct {
 	client *client.DatabricksClient
 }
@@ -57,7 +57,7 @@ func (a *accountAccessControlImpl) UpdateRuleSet(ctx context.Context, request Up
 	return &ruleSetResponse, err
 }
 
-// unexported type that holds implementations of just account_access_control_proxy API methods
+// unexported type that holds implementations of just AccountAccessControlProxy API methods
 type accountAccessControlProxyImpl struct {
 	client *client.DatabricksClient
 }
@@ -84,13 +84,13 @@ func (a *accountAccessControlProxyImpl) UpdateRuleSet(ctx context.Context, reque
 	var ruleSetResponse RuleSetResponse
 	path := "/api/2.0/preview/accounts/access-control/rule-sets"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &ruleSetResponse)
 	return &ruleSetResponse, err
 }
 
-// unexported type that holds implementations of just account_groups API methods
+// unexported type that holds implementations of just AccountGroups API methods
 type accountGroupsImpl struct {
 	client *client.DatabricksClient
 }
@@ -99,8 +99,8 @@ func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, 
 	var group Group
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &group)
 	return &group, err
 }
@@ -151,7 +151,7 @@ func (a *accountGroupsImpl) Update(ctx context.Context, request Group) error {
 	return err
 }
 
-// unexported type that holds implementations of just account_service_principals API methods
+// unexported type that holds implementations of just AccountServicePrincipals API methods
 type accountServicePrincipalsImpl struct {
 	client *client.DatabricksClient
 }
@@ -212,7 +212,7 @@ func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request Servi
 	return err
 }
 
-// unexported type that holds implementations of just account_users API methods
+// unexported type that holds implementations of just AccountUsers API methods
 type accountUsersImpl struct {
 	client *client.DatabricksClient
 }
@@ -221,8 +221,8 @@ func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, err
 	var user User
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &user)
 	return &user, err
 }
@@ -273,7 +273,7 @@ func (a *accountUsersImpl) Update(ctx context.Context, request User) error {
 	return err
 }
 
-// unexported type that holds implementations of just current_user API methods
+// unexported type that holds implementations of just CurrentUser API methods
 type currentUserImpl struct {
 	client *client.DatabricksClient
 }
@@ -287,7 +287,7 @@ func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
 	return &user, err
 }
 
-// unexported type that holds implementations of just groups API methods
+// unexported type that holds implementations of just Groups API methods
 type groupsImpl struct {
 	client *client.DatabricksClient
 }
@@ -342,13 +342,13 @@ func (a *groupsImpl) Update(ctx context.Context, request Group) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
 	return err
 }
 
-// unexported type that holds implementations of just permission_migration API methods
+// unexported type that holds implementations of just PermissionMigration API methods
 type permissionMigrationImpl struct {
 	client *client.DatabricksClient
 }
@@ -363,7 +363,7 @@ func (a *permissionMigrationImpl) MigratePermissions(ctx context.Context, reques
 	return &migratePermissionsResponse, err
 }
 
-// unexported type that holds implementations of just permissions API methods
+// unexported type that holds implementations of just Permissions API methods
 type permissionsImpl struct {
 	client *client.DatabricksClient
 }
@@ -406,7 +406,7 @@ func (a *permissionsImpl) Update(ctx context.Context, request PermissionsRequest
 	return &objectPermissions, err
 }
 
-// unexported type that holds implementations of just service_principals API methods
+// unexported type that holds implementations of just ServicePrincipals API methods
 type servicePrincipalsImpl struct {
 	client *client.DatabricksClient
 }
@@ -451,8 +451,8 @@ func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchResponse)
 	return err
 }
@@ -467,7 +467,7 @@ func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrinc
 	return err
 }
 
-// unexported type that holds implementations of just users API methods
+// unexported type that holds implementations of just Users API methods
 type usersImpl struct {
 	client *client.DatabricksClient
 }
@@ -566,7 +566,7 @@ func (a *usersImpl) UpdatePermissions(ctx context.Context, request PasswordPermi
 	return &passwordPermissions, err
 }
 
-// unexported type that holds implementations of just workspace_assignment API methods
+// unexported type that holds implementations of just WorkspaceAssignment API methods
 type workspaceAssignmentImpl struct {
 	client *client.DatabricksClient
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just vector_search_endpoints API methods
+// unexported type that holds implementations of just VectorSearchEndpoints API methods
 type vectorSearchEndpointsImpl struct {
 	client *client.DatabricksClient
 }
@@ -51,7 +51,7 @@ func (a *vectorSearchEndpointsImpl) ListEndpoints(ctx context.Context, request L
 	return &listEndpointResponse, err
 }
 
-// unexported type that holds implementations of just vector_search_indexes API methods
+// unexported type that holds implementations of just VectorSearchIndexes API methods
 type vectorSearchIndexesImpl struct {
 	client *client.DatabricksClient
 }
@@ -106,8 +106,8 @@ func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryV
 	var queryVectorIndexResponse QueryVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/query", request.IndexName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryVectorIndexResponse)
 	return &queryVectorIndexResponse, err
 }

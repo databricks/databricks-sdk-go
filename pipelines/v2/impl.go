@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just pipelines API methods
+// unexported type that holds implementations of just Pipelines API methods
 type pipelinesImpl struct {
 	client *client.DatabricksClient
 }
@@ -111,8 +111,8 @@ func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*
 	var startUpdateResponse StartUpdateResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &startUpdateResponse)
 	return &startUpdateResponse, err
 }
@@ -140,8 +140,8 @@ func (a *pipelinesImpl) UpdatePermissions(ctx context.Context, request PipelineP
 	var pipelinePermissions PipelinePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &pipelinePermissions)
 	return &pipelinePermissions, err
 }

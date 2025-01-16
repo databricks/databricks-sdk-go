@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just providers API methods
+// unexported type that holds implementations of just Providers API methods
 type providersImpl struct {
 	client *client.DatabricksClient
 }
@@ -19,8 +19,8 @@ func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*Pr
 	var providerInfo ProviderInfo
 	path := "/api/2.1/unity-catalog/providers"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &providerInfo)
 	return &providerInfo, err
 }
@@ -65,13 +65,13 @@ func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) (*Pr
 	var providerInfo ProviderInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &providerInfo)
 	return &providerInfo, err
 }
 
-// unexported type that holds implementations of just recipient_activation API methods
+// unexported type that holds implementations of just RecipientActivation API methods
 type recipientActivationImpl struct {
 	client *client.DatabricksClient
 }
@@ -94,7 +94,7 @@ func (a *recipientActivationImpl) RetrieveToken(ctx context.Context, request Ret
 	return &retrieveTokenResponse, err
 }
 
-// unexported type that holds implementations of just recipients API methods
+// unexported type that holds implementations of just Recipients API methods
 type recipientsImpl struct {
 	client *client.DatabricksClient
 }
@@ -165,7 +165,7 @@ func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) (*
 	return &recipientInfo, err
 }
 
-// unexported type that holds implementations of just shares API methods
+// unexported type that holds implementations of just Shares API methods
 type sharesImpl struct {
 	client *client.DatabricksClient
 }

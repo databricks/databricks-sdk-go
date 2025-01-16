@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just account_metastore_assignments API methods
+// unexported type that holds implementations of just AccountMetastoreAssignments API methods
 type accountMetastoreAssignmentsImpl struct {
 	client *client.DatabricksClient
 }
@@ -19,8 +19,8 @@ func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request Ac
 	var createResponse CreateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createResponse)
 	return err
 }
@@ -62,7 +62,7 @@ func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request Ac
 	return err
 }
 
-// unexported type that holds implementations of just account_metastores API methods
+// unexported type that holds implementations of just AccountMetastores API methods
 type accountMetastoresImpl struct {
 	client *client.DatabricksClient
 }
@@ -114,7 +114,7 @@ func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpda
 	return &accountsMetastoreInfo, err
 }
 
-// unexported type that holds implementations of just account_storage_credentials API methods
+// unexported type that holds implementations of just AccountStorageCredentials API methods
 type accountStorageCredentialsImpl struct {
 	client *client.DatabricksClient
 }
@@ -123,8 +123,8 @@ func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request Acco
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &accountsStorageCredentialInfo)
 	return &accountsStorageCredentialInfo, err
 }
@@ -166,7 +166,7 @@ func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request Acco
 	return &accountsStorageCredentialInfo, err
 }
 
-// unexported type that holds implementations of just artifact_allowlists API methods
+// unexported type that holds implementations of just ArtifactAllowlists API methods
 type artifactAllowlistsImpl struct {
 	client *client.DatabricksClient
 }
@@ -190,7 +190,7 @@ func (a *artifactAllowlistsImpl) Update(ctx context.Context, request SetArtifact
 	return &artifactAllowlistInfo, err
 }
 
-// unexported type that holds implementations of just catalogs API methods
+// unexported type that holds implementations of just Catalogs API methods
 type catalogsImpl struct {
 	client *client.DatabricksClient
 }
@@ -242,7 +242,7 @@ func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) (*Cata
 	return &catalogInfo, err
 }
 
-// unexported type that holds implementations of just connections API methods
+// unexported type that holds implementations of just Connections API methods
 type connectionsImpl struct {
 	client *client.DatabricksClient
 }
@@ -294,7 +294,7 @@ func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) 
 	return &connectionInfo, err
 }
 
-// unexported type that holds implementations of just credentials API methods
+// unexported type that holds implementations of just Credentials API methods
 type credentialsImpl struct {
 	client *client.DatabricksClient
 }
@@ -366,7 +366,7 @@ func (a *credentialsImpl) ValidateCredential(ctx context.Context, request Valida
 	return &validateCredentialResponse, err
 }
 
-// unexported type that holds implementations of just external_locations API methods
+// unexported type that holds implementations of just ExternalLocations API methods
 type externalLocationsImpl struct {
 	client *client.DatabricksClient
 }
@@ -375,8 +375,8 @@ func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExtern
 	var externalLocationInfo ExternalLocationInfo
 	path := "/api/2.1/unity-catalog/external-locations"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &externalLocationInfo)
 	return &externalLocationInfo, err
 }
@@ -418,7 +418,7 @@ func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExtern
 	return &externalLocationInfo, err
 }
 
-// unexported type that holds implementations of just functions API methods
+// unexported type that holds implementations of just Functions API methods
 type functionsImpl struct {
 	client *client.DatabricksClient
 }
@@ -470,7 +470,7 @@ func (a *functionsImpl) Update(ctx context.Context, request UpdateFunction) (*Fu
 	return &functionInfo, err
 }
 
-// unexported type that holds implementations of just grants API methods
+// unexported type that holds implementations of just Grants API methods
 type grantsImpl struct {
 	client *client.DatabricksClient
 }
@@ -503,7 +503,7 @@ func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*Pe
 	return &permissionsList, err
 }
 
-// unexported type that holds implementations of just metastores API methods
+// unexported type that holds implementations of just Metastores API methods
 type metastoresImpl struct {
 	client *client.DatabricksClient
 }
@@ -512,8 +512,8 @@ func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssi
 	var assignResponse AssignResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &assignResponse)
 	return err
 }
@@ -522,8 +522,8 @@ func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*
 	var metastoreInfo MetastoreInfo
 	path := "/api/2.1/unity-catalog/metastores"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &metastoreInfo)
 	return &metastoreInfo, err
 }
@@ -602,7 +602,7 @@ func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMet
 	return err
 }
 
-// unexported type that holds implementations of just model_versions API methods
+// unexported type that holds implementations of just ModelVersions API methods
 type modelVersionsImpl struct {
 	client *client.DatabricksClient
 }
@@ -652,7 +652,7 @@ func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersi
 	return &modelVersionInfo, err
 }
 
-// unexported type that holds implementations of just online_tables API methods
+// unexported type that holds implementations of just OnlineTables API methods
 type onlineTablesImpl struct {
 	client *client.DatabricksClient
 }
@@ -685,7 +685,7 @@ func (a *onlineTablesImpl) Get(ctx context.Context, request GetOnlineTableReques
 	return &onlineTable, err
 }
 
-// unexported type that holds implementations of just quality_monitors API methods
+// unexported type that holds implementations of just QualityMonitors API methods
 type qualityMonitorsImpl struct {
 	client *client.DatabricksClient
 }
@@ -747,8 +747,8 @@ func (a *qualityMonitorsImpl) RegenerateDashboard(ctx context.Context, request R
 	var regenerateDashboardResponse RegenerateDashboardResponse
 	path := fmt.Sprintf("/api/2.1/quality-monitoring/tables/%v/monitor/dashboard", request.TableName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &regenerateDashboardResponse)
 	return &regenerateDashboardResponse, err
 }
@@ -772,7 +772,7 @@ func (a *qualityMonitorsImpl) Update(ctx context.Context, request UpdateMonitor)
 	return &monitorInfo, err
 }
 
-// unexported type that holds implementations of just registered_models API methods
+// unexported type that holds implementations of just RegisteredModels API methods
 type registeredModelsImpl struct {
 	client *client.DatabricksClient
 }
@@ -841,7 +841,7 @@ func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegiste
 	return &registeredModelInfo, err
 }
 
-// unexported type that holds implementations of just resource_quotas API methods
+// unexported type that holds implementations of just ResourceQuotas API methods
 type resourceQuotasImpl struct {
 	client *client.DatabricksClient
 }
@@ -864,7 +864,7 @@ func (a *resourceQuotasImpl) ListQuotas(ctx context.Context, request ListQuotasR
 	return &listQuotasResponse, err
 }
 
-// unexported type that holds implementations of just schemas API methods
+// unexported type that holds implementations of just Schemas API methods
 type schemasImpl struct {
 	client *client.DatabricksClient
 }
@@ -916,7 +916,7 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*Schema
 	return &schemaInfo, err
 }
 
-// unexported type that holds implementations of just storage_credentials API methods
+// unexported type that holds implementations of just StorageCredentials API methods
 type storageCredentialsImpl struct {
 	client *client.DatabricksClient
 }
@@ -962,8 +962,8 @@ func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStora
 	var storageCredentialInfo StorageCredentialInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &storageCredentialInfo)
 	return &storageCredentialInfo, err
 }
@@ -972,13 +972,13 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 	var validateStorageCredentialResponse ValidateStorageCredentialResponse
 	path := "/api/2.1/unity-catalog/validate-storage-credentials"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &validateStorageCredentialResponse)
 	return &validateStorageCredentialResponse, err
 }
 
-// unexported type that holds implementations of just system_schemas API methods
+// unexported type that holds implementations of just SystemSchemas API methods
 type systemSchemasImpl struct {
 	client *client.DatabricksClient
 }
@@ -1010,7 +1010,7 @@ func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasR
 	return &listSystemSchemasResponse, err
 }
 
-// unexported type that holds implementations of just table_constraints API methods
+// unexported type that holds implementations of just TableConstraints API methods
 type tableConstraintsImpl struct {
 	client *client.DatabricksClient
 }
@@ -1034,7 +1034,7 @@ func (a *tableConstraintsImpl) Delete(ctx context.Context, request DeleteTableCo
 	return err
 }
 
-// unexported type that holds implementations of just tables API methods
+// unexported type that holds implementations of just Tables API methods
 type tablesImpl struct {
 	client *client.DatabricksClient
 }
@@ -1094,7 +1094,7 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) err
 	return err
 }
 
-// unexported type that holds implementations of just temporary_table_credentials API methods
+// unexported type that holds implementations of just TemporaryTableCredentials API methods
 type temporaryTableCredentialsImpl struct {
 	client *client.DatabricksClient
 }
@@ -1109,7 +1109,7 @@ func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx co
 	return &generateTemporaryTableCredentialResponse, err
 }
 
-// unexported type that holds implementations of just volumes API methods
+// unexported type that holds implementations of just Volumes API methods
 type volumesImpl struct {
 	client *client.DatabricksClient
 }
@@ -1118,8 +1118,8 @@ func (a *volumesImpl) Create(ctx context.Context, request CreateVolumeRequestCon
 	var volumeInfo VolumeInfo
 	path := "/api/2.1/unity-catalog/volumes"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &volumeInfo)
 	return &volumeInfo, err
 }
@@ -1160,7 +1160,7 @@ func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestCon
 	return &volumeInfo, err
 }
 
-// unexported type that holds implementations of just workspace_bindings API methods
+// unexported type that holds implementations of just WorkspaceBindings API methods
 type workspaceBindingsImpl struct {
 	client *client.DatabricksClient
 }
@@ -1197,8 +1197,8 @@ func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request Upda
 	var workspaceBindingsResponse WorkspaceBindingsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", request.SecurableType, request.SecurableName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &workspaceBindingsResponse)
 	return &workspaceBindingsResponse, err
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just apps API methods
+// unexported type that holds implementations of just Apps API methods
 type appsImpl struct {
 	client *client.DatabricksClient
 }

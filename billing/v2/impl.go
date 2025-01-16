@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just billable_usage API methods
+// unexported type that holds implementations of just BillableUsage API methods
 type billableUsageImpl struct {
 	client *client.DatabricksClient
 }
@@ -24,7 +24,7 @@ func (a *billableUsageImpl) Download(ctx context.Context, request DownloadReques
 	return &downloadResponse, err
 }
 
-// unexported type that holds implementations of just budgets API methods
+// unexported type that holds implementations of just Budgets API methods
 type budgetsImpl struct {
 	client *client.DatabricksClient
 }
@@ -76,7 +76,7 @@ func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurat
 	return &updateBudgetConfigurationResponse, err
 }
 
-// unexported type that holds implementations of just log_delivery API methods
+// unexported type that holds implementations of just LogDelivery API methods
 type logDeliveryImpl struct {
 	client *client.DatabricksClient
 }
@@ -119,7 +119,7 @@ func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeli
 	return err
 }
 
-// unexported type that holds implementations of just usage_dashboards API methods
+// unexported type that holds implementations of just UsageDashboards API methods
 type usageDashboardsImpl struct {
 	client *client.DatabricksClient
 }

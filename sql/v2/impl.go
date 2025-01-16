@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just alerts API methods
+// unexported type that holds implementations of just Alerts API methods
 type alertsImpl struct {
 	client *client.DatabricksClient
 }
@@ -62,7 +62,7 @@ func (a *alertsImpl) Update(ctx context.Context, request UpdateAlertRequest) (*A
 	return &alert, err
 }
 
-// unexported type that holds implementations of just alerts_legacy API methods
+// unexported type that holds implementations of just AlertsLegacy API methods
 type alertsLegacyImpl struct {
 	client *client.DatabricksClient
 }
@@ -114,7 +114,7 @@ func (a *alertsLegacyImpl) Update(ctx context.Context, request EditAlert) error 
 	return err
 }
 
-// unexported type that holds implementations of just dashboard_widgets API methods
+// unexported type that holds implementations of just DashboardWidgets API methods
 type dashboardWidgetsImpl struct {
 	client *client.DatabricksClient
 }
@@ -148,7 +148,7 @@ func (a *dashboardWidgetsImpl) Update(ctx context.Context, request CreateWidget)
 	return &widget, err
 }
 
-// unexported type that holds implementations of just dashboards API methods
+// unexported type that holds implementations of just Dashboards API methods
 type dashboardsImpl struct {
 	client *client.DatabricksClient
 }
@@ -209,7 +209,7 @@ func (a *dashboardsImpl) Update(ctx context.Context, request DashboardEditConten
 	return &dashboard, err
 }
 
-// unexported type that holds implementations of just data_sources API methods
+// unexported type that holds implementations of just DataSources API methods
 type dataSourcesImpl struct {
 	client *client.DatabricksClient
 }
@@ -223,7 +223,7 @@ func (a *dataSourcesImpl) List(ctx context.Context) ([]DataSource, error) {
 	return dataSourceList, err
 }
 
-// unexported type that holds implementations of just dbsql_permissions API methods
+// unexported type that holds implementations of just DbsqlPermissions API methods
 type dbsqlPermissionsImpl struct {
 	client *client.DatabricksClient
 }
@@ -257,7 +257,7 @@ func (a *dbsqlPermissionsImpl) TransferOwnership(ctx context.Context, request Tr
 	return &success, err
 }
 
-// unexported type that holds implementations of just queries API methods
+// unexported type that holds implementations of just Queries API methods
 type queriesImpl struct {
 	client *client.DatabricksClient
 }
@@ -318,7 +318,7 @@ func (a *queriesImpl) Update(ctx context.Context, request UpdateQueryRequest) (*
 	return &query, err
 }
 
-// unexported type that holds implementations of just queries_legacy API methods
+// unexported type that holds implementations of just QueriesLegacy API methods
 type queriesLegacyImpl struct {
 	client *client.DatabricksClient
 }
@@ -327,8 +327,8 @@ func (a *queriesLegacyImpl) Create(ctx context.Context, request QueryPostContent
 	var legacyQuery LegacyQuery
 	path := "/api/2.0/preview/sql/queries"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyQuery)
 	return &legacyQuery, err
 }
@@ -373,13 +373,13 @@ func (a *queriesLegacyImpl) Update(ctx context.Context, request QueryEditContent
 	var legacyQuery LegacyQuery
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyQuery)
 	return &legacyQuery, err
 }
 
-// unexported type that holds implementations of just query_history API methods
+// unexported type that holds implementations of just QueryHistory API methods
 type queryHistoryImpl struct {
 	client *client.DatabricksClient
 }
@@ -393,7 +393,7 @@ func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryReq
 	return &listQueriesResponse, err
 }
 
-// unexported type that holds implementations of just query_visualizations API methods
+// unexported type that holds implementations of just QueryVisualizations API methods
 type queryVisualizationsImpl struct {
 	client *client.DatabricksClient
 }
@@ -427,7 +427,7 @@ func (a *queryVisualizationsImpl) Update(ctx context.Context, request UpdateVisu
 	return &visualization, err
 }
 
-// unexported type that holds implementations of just query_visualizations_legacy API methods
+// unexported type that holds implementations of just QueryVisualizationsLegacy API methods
 type queryVisualizationsLegacyImpl struct {
 	client *client.DatabricksClient
 }
@@ -455,13 +455,13 @@ func (a *queryVisualizationsLegacyImpl) Update(ctx context.Context, request Lega
 	var legacyVisualization LegacyVisualization
 	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyVisualization)
 	return &legacyVisualization, err
 }
 
-// unexported type that holds implementations of just statement_execution API methods
+// unexported type that holds implementations of just StatementExecution API methods
 type statementExecutionImpl struct {
 	client *client.DatabricksClient
 }
@@ -502,7 +502,7 @@ func (a *statementExecutionImpl) GetStatementResultChunkN(ctx context.Context, r
 	return &resultData, err
 }
 
-// unexported type that holds implementations of just warehouses API methods
+// unexported type that holds implementations of just Warehouses API methods
 type warehousesImpl struct {
 	client *client.DatabricksClient
 }
@@ -530,8 +530,8 @@ func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest)
 	var editWarehouseResponse EditWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &editWarehouseResponse)
 	return err
 }
@@ -595,8 +595,8 @@ func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, reques
 	var setWorkspaceWarehouseConfigResponse SetWorkspaceWarehouseConfigResponse
 	path := "/api/2.0/sql/config/warehouses"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &setWorkspaceWarehouseConfigResponse)
 	return err
 }

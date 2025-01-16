@@ -11,7 +11,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-// unexported type that holds implementations of just dbfs API methods
+// unexported type that holds implementations of just Dbfs API methods
 type dbfsImpl struct {
 	client *client.DatabricksClient
 }
@@ -78,8 +78,8 @@ func (a *dbfsImpl) Mkdirs(ctx context.Context, request MkDirs) error {
 	var mkDirsResponse MkDirsResponse
 	path := "/api/2.0/dbfs/mkdirs"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &mkDirsResponse)
 	return err
 }
@@ -88,8 +88,8 @@ func (a *dbfsImpl) Move(ctx context.Context, request Move) error {
 	var moveResponse MoveResponse
 	path := "/api/2.0/dbfs/move"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &moveResponse)
 	return err
 }
@@ -113,7 +113,7 @@ func (a *dbfsImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResp
 	return &readResponse, err
 }
 
-// unexported type that holds implementations of just files API methods
+// unexported type that holds implementations of just Files API methods
 type filesImpl struct {
 	client *client.DatabricksClient
 }

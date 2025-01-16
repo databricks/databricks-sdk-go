@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just account_ip_access_lists API methods
+// unexported type that holds implementations of just AccountIpAccessLists API methods
 type accountIpAccessListsImpl struct {
 	client *client.DatabricksClient
 }
@@ -56,8 +56,8 @@ func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceI
 	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &replaceResponse)
 	return err
 }
@@ -66,18 +66,18 @@ func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpA
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
 }
 
-// unexported type that holds implementations of just account_settings API methods
+// unexported type that holds implementations of just AccountSettings API methods
 type accountSettingsImpl struct {
 	client *client.DatabricksClient
 }
 
-// unexported type that holds implementations of just aibi_dashboard_embedding_access_policy API methods
+// unexported type that holds implementations of just AibiDashboardEmbeddingAccessPolicy API methods
 type aibiDashboardEmbeddingAccessPolicyImpl struct {
 	client *client.DatabricksClient
 }
@@ -104,13 +104,13 @@ func (a *aibiDashboardEmbeddingAccessPolicyImpl) Update(ctx context.Context, req
 	var aibiDashboardEmbeddingAccessPolicySetting AibiDashboardEmbeddingAccessPolicySetting
 	path := "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &aibiDashboardEmbeddingAccessPolicySetting)
 	return &aibiDashboardEmbeddingAccessPolicySetting, err
 }
 
-// unexported type that holds implementations of just aibi_dashboard_embedding_approved_domains API methods
+// unexported type that holds implementations of just AibiDashboardEmbeddingApprovedDomains API methods
 type aibiDashboardEmbeddingApprovedDomainsImpl struct {
 	client *client.DatabricksClient
 }
@@ -143,7 +143,7 @@ func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Update(ctx context.Context, 
 	return &aibiDashboardEmbeddingApprovedDomainsSetting, err
 }
 
-// unexported type that holds implementations of just automatic_cluster_update API methods
+// unexported type that holds implementations of just AutomaticClusterUpdate API methods
 type automaticClusterUpdateImpl struct {
 	client *client.DatabricksClient
 }
@@ -167,7 +167,7 @@ func (a *automaticClusterUpdateImpl) Update(ctx context.Context, request UpdateA
 	return &automaticClusterUpdateSetting, err
 }
 
-// unexported type that holds implementations of just compliance_security_profile API methods
+// unexported type that holds implementations of just ComplianceSecurityProfile API methods
 type complianceSecurityProfileImpl struct {
 	client *client.DatabricksClient
 }
@@ -185,13 +185,13 @@ func (a *complianceSecurityProfileImpl) Update(ctx context.Context, request Upda
 	var complianceSecurityProfileSetting ComplianceSecurityProfileSetting
 	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &complianceSecurityProfileSetting)
 	return &complianceSecurityProfileSetting, err
 }
 
-// unexported type that holds implementations of just credentials_manager API methods
+// unexported type that holds implementations of just CredentialsManager API methods
 type credentialsManagerImpl struct {
 	client *client.DatabricksClient
 }
@@ -206,7 +206,7 @@ func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request Exch
 	return &exchangeTokenResponse, err
 }
 
-// unexported type that holds implementations of just csp_enablement_account API methods
+// unexported type that holds implementations of just CspEnablementAccount API methods
 type cspEnablementAccountImpl struct {
 	client *client.DatabricksClient
 }
@@ -230,7 +230,7 @@ func (a *cspEnablementAccountImpl) Update(ctx context.Context, request UpdateCsp
 	return &cspEnablementAccountSetting, err
 }
 
-// unexported type that holds implementations of just default_namespace API methods
+// unexported type that holds implementations of just DefaultNamespace API methods
 type defaultNamespaceImpl struct {
 	client *client.DatabricksClient
 }
@@ -263,7 +263,7 @@ func (a *defaultNamespaceImpl) Update(ctx context.Context, request UpdateDefault
 	return &defaultNamespaceSetting, err
 }
 
-// unexported type that holds implementations of just disable_legacy_access API methods
+// unexported type that holds implementations of just DisableLegacyAccess API methods
 type disableLegacyAccessImpl struct {
 	client *client.DatabricksClient
 }
@@ -296,7 +296,7 @@ func (a *disableLegacyAccessImpl) Update(ctx context.Context, request UpdateDisa
 	return &disableLegacyAccess, err
 }
 
-// unexported type that holds implementations of just disable_legacy_dbfs API methods
+// unexported type that holds implementations of just DisableLegacyDbfs API methods
 type disableLegacyDbfsImpl struct {
 	client *client.DatabricksClient
 }
@@ -323,13 +323,13 @@ func (a *disableLegacyDbfsImpl) Update(ctx context.Context, request UpdateDisabl
 	var disableLegacyDbfs DisableLegacyDbfs
 	path := "/api/2.0/settings/types/disable_legacy_dbfs/names/default"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &disableLegacyDbfs)
 	return &disableLegacyDbfs, err
 }
 
-// unexported type that holds implementations of just disable_legacy_features API methods
+// unexported type that holds implementations of just DisableLegacyFeatures API methods
 type disableLegacyFeaturesImpl struct {
 	client *client.DatabricksClient
 }
@@ -362,7 +362,7 @@ func (a *disableLegacyFeaturesImpl) Update(ctx context.Context, request UpdateDi
 	return &disableLegacyFeatures, err
 }
 
-// unexported type that holds implementations of just enhanced_security_monitoring API methods
+// unexported type that holds implementations of just EnhancedSecurityMonitoring API methods
 type enhancedSecurityMonitoringImpl struct {
 	client *client.DatabricksClient
 }
@@ -386,7 +386,7 @@ func (a *enhancedSecurityMonitoringImpl) Update(ctx context.Context, request Upd
 	return &enhancedSecurityMonitoringSetting, err
 }
 
-// unexported type that holds implementations of just esm_enablement_account API methods
+// unexported type that holds implementations of just EsmEnablementAccount API methods
 type esmEnablementAccountImpl struct {
 	client *client.DatabricksClient
 }
@@ -410,7 +410,7 @@ func (a *esmEnablementAccountImpl) Update(ctx context.Context, request UpdateEsm
 	return &esmEnablementAccountSetting, err
 }
 
-// unexported type that holds implementations of just ip_access_lists API methods
+// unexported type that holds implementations of just IpAccessLists API methods
 type ipAccessListsImpl struct {
 	client *client.DatabricksClient
 }
@@ -466,13 +466,13 @@ func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessLi
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
 }
 
-// unexported type that holds implementations of just network_connectivity API methods
+// unexported type that holds implementations of just NetworkConnectivity API methods
 type networkConnectivityImpl struct {
 	client *client.DatabricksClient
 }
@@ -551,7 +551,7 @@ func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, 
 	return &listNccAzurePrivateEndpointRulesResponse, err
 }
 
-// unexported type that holds implementations of just notification_destinations API methods
+// unexported type that holds implementations of just NotificationDestinations API methods
 type notificationDestinationsImpl struct {
 	client *client.DatabricksClient
 }
@@ -603,7 +603,7 @@ func (a *notificationDestinationsImpl) Update(ctx context.Context, request Updat
 	return &notificationDestination, err
 }
 
-// unexported type that holds implementations of just personal_compute API methods
+// unexported type that holds implementations of just PersonalCompute API methods
 type personalComputeImpl struct {
 	client *client.DatabricksClient
 }
@@ -636,7 +636,7 @@ func (a *personalComputeImpl) Update(ctx context.Context, request UpdatePersonal
 	return &personalComputeSetting, err
 }
 
-// unexported type that holds implementations of just restrict_workspace_admins API methods
+// unexported type that holds implementations of just RestrictWorkspaceAdmins API methods
 type restrictWorkspaceAdminsImpl struct {
 	client *client.DatabricksClient
 }
@@ -669,12 +669,12 @@ func (a *restrictWorkspaceAdminsImpl) Update(ctx context.Context, request Update
 	return &restrictWorkspaceAdminsSetting, err
 }
 
-// unexported type that holds implementations of just settings API methods
+// unexported type that holds implementations of just Settings API methods
 type settingsImpl struct {
 	client *client.DatabricksClient
 }
 
-// unexported type that holds implementations of just token_management API methods
+// unexported type that holds implementations of just TokenManagement API methods
 type tokenManagementImpl struct {
 	client *client.DatabricksClient
 }
@@ -683,8 +683,8 @@ func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request Create
 	var createOboTokenResponse CreateOboTokenResponse
 	path := "/api/2.0/token-management/on-behalf-of/tokens"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createOboTokenResponse)
 	return &createOboTokenResponse, err
 }
@@ -754,7 +754,7 @@ func (a *tokenManagementImpl) UpdatePermissions(ctx context.Context, request Tok
 	return &tokenPermissions, err
 }
 
-// unexported type that holds implementations of just tokens API methods
+// unexported type that holds implementations of just Tokens API methods
 type tokensImpl struct {
 	client *client.DatabricksClient
 }
@@ -773,8 +773,8 @@ func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) err
 	var revokeTokenResponse RevokeTokenResponse
 	path := "/api/2.0/token/delete"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &revokeTokenResponse)
 	return err
 }
@@ -788,7 +788,7 @@ func (a *tokensImpl) List(ctx context.Context) (*ListPublicTokensResponse, error
 	return &listPublicTokensResponse, err
 }
 
-// unexported type that holds implementations of just workspace_conf API methods
+// unexported type that holds implementations of just WorkspaceConf API methods
 type workspaceConfImpl struct {
 	client *client.DatabricksClient
 }

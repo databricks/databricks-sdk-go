@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just credentials API methods
+// unexported type that holds implementations of just Credentials API methods
 type credentialsImpl struct {
 	client *client.DatabricksClient
 }
@@ -52,7 +52,7 @@ func (a *credentialsImpl) List(ctx context.Context) ([]Credential, error) {
 	return credentialList, err
 }
 
-// unexported type that holds implementations of just encryption_keys API methods
+// unexported type that holds implementations of just EncryptionKeys API methods
 type encryptionKeysImpl struct {
 	client *client.DatabricksClient
 }
@@ -94,7 +94,7 @@ func (a *encryptionKeysImpl) List(ctx context.Context) ([]CustomerManagedKey, er
 	return customerManagedKeyList, err
 }
 
-// unexported type that holds implementations of just networks API methods
+// unexported type that holds implementations of just Networks API methods
 type networksImpl struct {
 	client *client.DatabricksClient
 }
@@ -136,7 +136,7 @@ func (a *networksImpl) List(ctx context.Context) ([]Network, error) {
 	return networkList, err
 }
 
-// unexported type that holds implementations of just private_access API methods
+// unexported type that holds implementations of just PrivateAccess API methods
 type privateAccessImpl struct {
 	client *client.DatabricksClient
 }
@@ -145,8 +145,8 @@ func (a *privateAccessImpl) Create(ctx context.Context, request UpsertPrivateAcc
 	var privateAccessSettings PrivateAccessSettings
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &privateAccessSettings)
 	return &privateAccessSettings, err
 }
@@ -188,7 +188,7 @@ func (a *privateAccessImpl) Replace(ctx context.Context, request UpsertPrivateAc
 	return err
 }
 
-// unexported type that holds implementations of just storage API methods
+// unexported type that holds implementations of just Storage API methods
 type storageImpl struct {
 	client *client.DatabricksClient
 }
@@ -197,8 +197,8 @@ func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigura
 	var storageConfiguration StorageConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &storageConfiguration)
 	return &storageConfiguration, err
 }
@@ -230,7 +230,7 @@ func (a *storageImpl) List(ctx context.Context) ([]StorageConfiguration, error) 
 	return storageConfigurationList, err
 }
 
-// unexported type that holds implementations of just vpc_endpoints API methods
+// unexported type that holds implementations of just VpcEndpoints API methods
 type vpcEndpointsImpl struct {
 	client *client.DatabricksClient
 }
@@ -272,7 +272,7 @@ func (a *vpcEndpointsImpl) List(ctx context.Context) ([]VpcEndpoint, error) {
 	return vpcEndpointList, err
 }
 
-// unexported type that holds implementations of just workspaces API methods
+// unexported type that holds implementations of just Workspaces API methods
 type workspacesImpl struct {
 	client *client.DatabricksClient
 }

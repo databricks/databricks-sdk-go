@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just experiments API methods
+// unexported type that holds implementations of just Experiments API methods
 type experimentsImpl struct {
 	client *client.DatabricksClient
 }
@@ -29,8 +29,8 @@ func (a *experimentsImpl) CreateRun(ctx context.Context, request CreateRun) (*Cr
 	var createRunResponse CreateRunResponse
 	path := "/api/2.0/mlflow/runs/create"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createRunResponse)
 	return &createRunResponse, err
 }
@@ -69,8 +69,8 @@ func (a *experimentsImpl) DeleteTag(ctx context.Context, request DeleteTag) erro
 	var deleteTagResponse DeleteTagResponse
 	path := "/api/2.0/mlflow/runs/delete-tag"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteTagResponse)
 	return err
 }
@@ -241,8 +241,8 @@ func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) (*
 	var searchRunsResponse SearchRunsResponse
 	path := "/api/2.0/mlflow/runs/search"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &searchRunsResponse)
 	return &searchRunsResponse, err
 }
@@ -291,8 +291,8 @@ func (a *experimentsImpl) UpdatePermissions(ctx context.Context, request Experim
 	var experimentPermissions ExperimentPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &experimentPermissions)
 	return &experimentPermissions, err
 }
@@ -307,7 +307,7 @@ func (a *experimentsImpl) UpdateRun(ctx context.Context, request UpdateRun) (*Up
 	return &updateRunResponse, err
 }
 
-// unexported type that holds implementations of just model_registry API methods
+// unexported type that holds implementations of just ModelRegistry API methods
 type modelRegistryImpl struct {
 	client *client.DatabricksClient
 }
@@ -336,8 +336,8 @@ func (a *modelRegistryImpl) CreateModel(ctx context.Context, request CreateModel
 	var createModelResponse CreateModelResponse
 	path := "/api/2.0/mlflow/registered-models/create"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createModelResponse)
 	return &createModelResponse, err
 }
@@ -439,8 +439,8 @@ func (a *modelRegistryImpl) GetLatestVersions(ctx context.Context, request GetLa
 	var getLatestVersionsResponse GetLatestVersionsResponse
 	path := "/api/2.0/mlflow/registered-models/get-latest-versions"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &getLatestVersionsResponse)
 	return &getLatestVersionsResponse, err
 }
@@ -599,8 +599,8 @@ func (a *modelRegistryImpl) TransitionStage(ctx context.Context, request Transit
 	var transitionStageResponse TransitionStageResponse
 	path := "/api/2.0/mlflow/databricks/model-versions/transition-stage"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &transitionStageResponse)
 	return &transitionStageResponse, err
 }

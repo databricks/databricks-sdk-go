@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just genie API methods
+// unexported type that holds implementations of just Genie API methods
 type genieImpl struct {
 	client *client.DatabricksClient
 }
@@ -56,13 +56,13 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 	var genieStartConversationResponse GenieStartConversationResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/start-conversation", request.SpaceId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &genieStartConversationResponse)
 	return &genieStartConversationResponse, err
 }
 
-// unexported type that holds implementations of just lakeview API methods
+// unexported type that holds implementations of just Lakeview API methods
 type lakeviewImpl struct {
 	client *client.DatabricksClient
 }
@@ -182,8 +182,8 @@ func (a *lakeviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequ
 	var dashboard Dashboard
 	path := "/api/2.0/lakeview/dashboards/migrate"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &dashboard)
 	return &dashboard, err
 }

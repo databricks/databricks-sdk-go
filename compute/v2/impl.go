@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just cluster_policies API methods
+// unexported type that holds implementations of just ClusterPolicies API methods
 type clusterPoliciesImpl struct {
 	client *client.DatabricksClient
 }
@@ -19,8 +19,8 @@ func (a *clusterPoliciesImpl) Create(ctx context.Context, request CreatePolicy) 
 	var createPolicyResponse CreatePolicyResponse
 	path := "/api/2.0/policies/clusters/create"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createPolicyResponse)
 	return &createPolicyResponse, err
 }
@@ -101,7 +101,7 @@ func (a *clusterPoliciesImpl) UpdatePermissions(ctx context.Context, request Clu
 	return &clusterPolicyPermissions, err
 }
 
-// unexported type that holds implementations of just clusters API methods
+// unexported type that holds implementations of just Clusters API methods
 type clustersImpl struct {
 	client *client.DatabricksClient
 }
@@ -120,8 +120,8 @@ func (a *clustersImpl) Create(ctx context.Context, request CreateCluster) (*Crea
 	var createClusterResponse CreateClusterResponse
 	path := "/api/2.1/clusters/create"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createClusterResponse)
 	return &createClusterResponse, err
 }
@@ -254,8 +254,8 @@ func (a *clustersImpl) SetPermissions(ctx context.Context, request ClusterPermis
 	var clusterPermissions ClusterPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &clusterPermissions)
 	return &clusterPermissions, err
 }
@@ -309,7 +309,7 @@ func (a *clustersImpl) UpdatePermissions(ctx context.Context, request ClusterPer
 	return &clusterPermissions, err
 }
 
-// unexported type that holds implementations of just command_execution API methods
+// unexported type that holds implementations of just CommandExecution API methods
 type commandExecutionImpl struct {
 	client *client.DatabricksClient
 }
@@ -356,8 +356,8 @@ func (a *commandExecutionImpl) Destroy(ctx context.Context, request DestroyConte
 	var destroyResponse DestroyResponse
 	path := "/api/1.2/contexts/destroy"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &destroyResponse)
 	return err
 }
@@ -372,7 +372,7 @@ func (a *commandExecutionImpl) Execute(ctx context.Context, request Command) (*C
 	return &created, err
 }
 
-// unexported type that holds implementations of just global_init_scripts API methods
+// unexported type that holds implementations of just GlobalInitScripts API methods
 type globalInitScriptsImpl struct {
 	client *client.DatabricksClient
 }
@@ -381,8 +381,8 @@ func (a *globalInitScriptsImpl) Create(ctx context.Context, request GlobalInitSc
 	var createResponse CreateResponse
 	path := "/api/2.0/global-init-scripts"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createResponse)
 	return &createResponse, err
 }
@@ -422,7 +422,7 @@ func (a *globalInitScriptsImpl) Update(ctx context.Context, request GlobalInitSc
 	return err
 }
 
-// unexported type that holds implementations of just instance_pools API methods
+// unexported type that holds implementations of just InstancePools API methods
 type instancePoolsImpl struct {
 	client *client.DatabricksClient
 }
@@ -513,7 +513,7 @@ func (a *instancePoolsImpl) UpdatePermissions(ctx context.Context, request Insta
 	return &instancePoolPermissions, err
 }
 
-// unexported type that holds implementations of just instance_profiles API methods
+// unexported type that holds implementations of just InstanceProfiles API methods
 type instanceProfilesImpl struct {
 	client *client.DatabricksClient
 }
@@ -522,8 +522,8 @@ func (a *instanceProfilesImpl) Add(ctx context.Context, request AddInstanceProfi
 	var addResponse AddResponse
 	path := "/api/2.0/instance-profiles/add"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &addResponse)
 	return err
 }
@@ -551,13 +551,13 @@ func (a *instanceProfilesImpl) Remove(ctx context.Context, request RemoveInstanc
 	var removeResponse RemoveResponse
 	path := "/api/2.0/instance-profiles/remove"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &removeResponse)
 	return err
 }
 
-// unexported type that holds implementations of just libraries API methods
+// unexported type that holds implementations of just Libraries API methods
 type librariesImpl struct {
 	client *client.DatabricksClient
 }
@@ -600,7 +600,7 @@ func (a *librariesImpl) Uninstall(ctx context.Context, request UninstallLibrarie
 	return err
 }
 
-// unexported type that holds implementations of just policy_compliance_for_clusters API methods
+// unexported type that holds implementations of just PolicyComplianceForClusters API methods
 type policyComplianceForClustersImpl struct {
 	client *client.DatabricksClient
 }
@@ -633,7 +633,7 @@ func (a *policyComplianceForClustersImpl) ListCompliance(ctx context.Context, re
 	return &listClusterCompliancesResponse, err
 }
 
-// unexported type that holds implementations of just policy_families API methods
+// unexported type that holds implementations of just PolicyFamilies API methods
 type policyFamiliesImpl struct {
 	client *client.DatabricksClient
 }

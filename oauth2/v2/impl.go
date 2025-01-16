@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just account_federation_policy API methods
+// unexported type that holds implementations of just AccountFederationPolicy API methods
 type accountFederationPolicyImpl struct {
 	client *client.DatabricksClient
 }
@@ -19,8 +19,8 @@ func (a *accountFederationPolicyImpl) Create(ctx context.Context, request Create
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
@@ -62,7 +62,7 @@ func (a *accountFederationPolicyImpl) Update(ctx context.Context, request Update
 	return &federationPolicy, err
 }
 
-// unexported type that holds implementations of just custom_app_integration API methods
+// unexported type that holds implementations of just CustomAppIntegration API methods
 type customAppIntegrationImpl struct {
 	client *client.DatabricksClient
 }
@@ -114,7 +114,7 @@ func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCus
 	return err
 }
 
-// unexported type that holds implementations of just o_auth_published_apps API methods
+// unexported type that holds implementations of just OAuthPublishedApps API methods
 type oAuthPublishedAppsImpl struct {
 	client *client.DatabricksClient
 }
@@ -128,7 +128,7 @@ func (a *oAuthPublishedAppsImpl) List(ctx context.Context, request ListOAuthPubl
 	return &getPublishedAppsOutput, err
 }
 
-// unexported type that holds implementations of just published_app_integration API methods
+// unexported type that holds implementations of just PublishedAppIntegration API methods
 type publishedAppIntegrationImpl struct {
 	client *client.DatabricksClient
 }
@@ -180,7 +180,7 @@ func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request Update
 	return err
 }
 
-// unexported type that holds implementations of just service_principal_federation_policy API methods
+// unexported type that holds implementations of just ServicePrincipalFederationPolicy API methods
 type servicePrincipalFederationPolicyImpl struct {
 	client *client.DatabricksClient
 }
@@ -189,8 +189,8 @@ func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, reque
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
@@ -226,13 +226,13 @@ func (a *servicePrincipalFederationPolicyImpl) Update(ctx context.Context, reque
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
 
-// unexported type that holds implementations of just service_principal_secrets API methods
+// unexported type that holds implementations of just ServicePrincipalSecrets API methods
 type servicePrincipalSecretsImpl struct {
 	client *client.DatabricksClient
 }

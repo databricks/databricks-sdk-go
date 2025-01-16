@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just consumer_fulfillments API methods
+// unexported type that holds implementations of just ConsumerFulfillments API methods
 type consumerFulfillmentsImpl struct {
 	client *client.DatabricksClient
 }
@@ -33,7 +33,7 @@ func (a *consumerFulfillmentsImpl) List(ctx context.Context, request ListFulfill
 	return &listFulfillmentsResponse, err
 }
 
-// unexported type that holds implementations of just consumer_installations API methods
+// unexported type that holds implementations of just ConsumerInstallations API methods
 type consumerInstallationsImpl struct {
 	client *client.DatabricksClient
 }
@@ -79,13 +79,13 @@ func (a *consumerInstallationsImpl) Update(ctx context.Context, request UpdateIn
 	var updateInstallationResponse UpdateInstallationResponse
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateInstallationResponse)
 	return &updateInstallationResponse, err
 }
 
-// unexported type that holds implementations of just consumer_listings API methods
+// unexported type that holds implementations of just ConsumerListings API methods
 type consumerListingsImpl struct {
 	client *client.DatabricksClient
 }
@@ -126,7 +126,7 @@ func (a *consumerListingsImpl) Search(ctx context.Context, request SearchListing
 	return &searchListingsResponse, err
 }
 
-// unexported type that holds implementations of just consumer_personalization_requests API methods
+// unexported type that holds implementations of just ConsumerPersonalizationRequests API methods
 type consumerPersonalizationRequestsImpl struct {
 	client *client.DatabricksClient
 }
@@ -159,7 +159,7 @@ func (a *consumerPersonalizationRequestsImpl) List(ctx context.Context, request 
 	return &listAllPersonalizationRequestsResponse, err
 }
 
-// unexported type that holds implementations of just consumer_providers API methods
+// unexported type that holds implementations of just ConsumerProviders API methods
 type consumerProvidersImpl struct {
 	client *client.DatabricksClient
 }
@@ -191,7 +191,7 @@ func (a *consumerProvidersImpl) List(ctx context.Context, request ListProvidersR
 	return &listProvidersResponse, err
 }
 
-// unexported type that holds implementations of just provider_exchange_filters API methods
+// unexported type that holds implementations of just ProviderExchangeFilters API methods
 type providerExchangeFiltersImpl struct {
 	client *client.DatabricksClient
 }
@@ -200,8 +200,8 @@ func (a *providerExchangeFiltersImpl) Create(ctx context.Context, request Create
 	var createExchangeFilterResponse CreateExchangeFilterResponse
 	path := "/api/2.0/marketplace-exchange/filters"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createExchangeFilterResponse)
 	return &createExchangeFilterResponse, err
 }
@@ -234,7 +234,7 @@ func (a *providerExchangeFiltersImpl) Update(ctx context.Context, request Update
 	return &updateExchangeFilterResponse, err
 }
 
-// unexported type that holds implementations of just provider_exchanges API methods
+// unexported type that holds implementations of just ProviderExchanges API methods
 type providerExchangesImpl struct {
 	client *client.DatabricksClient
 }
@@ -317,13 +317,13 @@ func (a *providerExchangesImpl) Update(ctx context.Context, request UpdateExchan
 	var updateExchangeResponse UpdateExchangeResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateExchangeResponse)
 	return &updateExchangeResponse, err
 }
 
-// unexported type that holds implementations of just provider_files API methods
+// unexported type that holds implementations of just ProviderFiles API methods
 type providerFilesImpl struct {
 	client *client.DatabricksClient
 }
@@ -365,7 +365,7 @@ func (a *providerFilesImpl) List(ctx context.Context, request ListFilesRequest) 
 	return &listFilesResponse, err
 }
 
-// unexported type that holds implementations of just provider_listings API methods
+// unexported type that holds implementations of just ProviderListings API methods
 type providerListingsImpl struct {
 	client *client.DatabricksClient
 }
@@ -417,7 +417,7 @@ func (a *providerListingsImpl) Update(ctx context.Context, request UpdateListing
 	return &updateListingResponse, err
 }
 
-// unexported type that holds implementations of just provider_personalization_requests API methods
+// unexported type that holds implementations of just ProviderPersonalizationRequests API methods
 type providerPersonalizationRequestsImpl struct {
 	client *client.DatabricksClient
 }
@@ -441,7 +441,7 @@ func (a *providerPersonalizationRequestsImpl) Update(ctx context.Context, reques
 	return &updatePersonalizationRequestResponse, err
 }
 
-// unexported type that holds implementations of just provider_provider_analytics_dashboards API methods
+// unexported type that holds implementations of just ProviderProviderAnalyticsDashboards API methods
 type providerProviderAnalyticsDashboardsImpl struct {
 	client *client.DatabricksClient
 }
@@ -483,7 +483,7 @@ func (a *providerProviderAnalyticsDashboardsImpl) Update(ctx context.Context, re
 	return &updateProviderAnalyticsDashboardResponse, err
 }
 
-// unexported type that holds implementations of just provider_providers API methods
+// unexported type that holds implementations of just ProviderProviders API methods
 type providerProvidersImpl struct {
 	client *client.DatabricksClient
 }
@@ -529,8 +529,8 @@ func (a *providerProvidersImpl) Update(ctx context.Context, request UpdateProvid
 	var updateProviderResponse UpdateProviderResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateProviderResponse)
 	return &updateProviderResponse, err
 }
