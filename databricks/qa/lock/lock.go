@@ -33,6 +33,10 @@ func Acquire(ctx context.Context, lockable core.Lockable, os ...LockOption) (*Lo
 	for _, o := range os {
 		o(&opts)
 	}
+	if opts.Backend == nil {
+		// opts.Backend = &databricks.Backend{}
+		return nil, errors.New("backend not provided")
+	}
 	if opts.LeaseDuration == 0 {
 		opts.LeaseDuration = time.Minute
 	}
