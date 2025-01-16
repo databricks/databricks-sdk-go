@@ -22,7 +22,7 @@ test: vendor
 	        cd $$dir && \
 			go run gotest.tools/gotestsum@latest --format pkgname-and-test-fails \
 			--no-summary=skipped --raw-command go test -v \
-			-json -short -coverprofile=coverage.txt  -covermode=count ./... && \
+			-json -short -coverprofile=coverage.txt  -covermode=count ./... || exit 1 && \
 	        cd ..; \
 	    fi \
     done
