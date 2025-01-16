@@ -8,9 +8,7 @@ import (
 )
 
 type CommandExecutorV2 struct {
-	clustersAPI  *ClustersAPI
 	executionAPI *CommandExecutionAPI
-	language     Language
 	clusterID    string
 	contextID    string
 }
@@ -41,6 +39,4 @@ func (m CommandMock) Execute(_ context.Context, _, _, commandStr string) Results
 
 // CommandsHighLevelAPI exposes more friendly wrapper over command execution
 type CommandsHighLevelAPI struct {
-	clusters  *ClustersAPI
-	execution *CommandExecutionAPI
 }
