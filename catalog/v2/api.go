@@ -76,8 +76,7 @@ type AccountMetastoreAssignmentsInterface interface {
 	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error
 }
 
-func NewAccountMetastoreAssignments(client *client.DatabricksClient,
-) *AccountMetastoreAssignmentsAPI {
+func NewAccountMetastoreAssignments(client *client.DatabricksClient) *AccountMetastoreAssignmentsAPI {
 	return &AccountMetastoreAssignmentsAPI{
 		accountMetastoreAssignmentsImpl: accountMetastoreAssignmentsImpl{
 			client: client,
@@ -205,8 +204,7 @@ type AccountMetastoresInterface interface {
 	Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error)
 }
 
-func NewAccountMetastores(client *client.DatabricksClient,
-) *AccountMetastoresAPI {
+func NewAccountMetastores(client *client.DatabricksClient) *AccountMetastoresAPI {
 	return &AccountMetastoresAPI{
 		accountMetastoresImpl: accountMetastoresImpl{
 			client: client,
@@ -342,8 +340,7 @@ type AccountStorageCredentialsInterface interface {
 	Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error)
 }
 
-func NewAccountStorageCredentials(client *client.DatabricksClient,
-) *AccountStorageCredentialsAPI {
+func NewAccountStorageCredentials(client *client.DatabricksClient) *AccountStorageCredentialsAPI {
 	return &AccountStorageCredentialsAPI{
 		accountStorageCredentialsImpl: accountStorageCredentialsImpl{
 			client: client,
@@ -446,8 +443,7 @@ type ArtifactAllowlistsInterface interface {
 	Update(ctx context.Context, request SetArtifactAllowlist) (*ArtifactAllowlistInfo, error)
 }
 
-func NewArtifactAllowlists(client *client.DatabricksClient,
-) *ArtifactAllowlistsAPI {
+func NewArtifactAllowlists(client *client.DatabricksClient) *ArtifactAllowlistsAPI {
 	return &ArtifactAllowlistsAPI{
 		artifactAllowlistsImpl: artifactAllowlistsImpl{
 			client: client,
@@ -536,8 +532,7 @@ type CatalogsInterface interface {
 	Update(ctx context.Context, request UpdateCatalog) (*CatalogInfo, error)
 }
 
-func NewCatalogs(client *client.DatabricksClient,
-) *CatalogsAPI {
+func NewCatalogs(client *client.DatabricksClient) *CatalogsAPI {
 	return &CatalogsAPI{
 		catalogsImpl: catalogsImpl{
 			client: client,
@@ -685,8 +680,7 @@ type ConnectionsInterface interface {
 	Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error)
 }
 
-func NewConnections(client *client.DatabricksClient,
-) *ConnectionsAPI {
+func NewConnections(client *client.DatabricksClient) *ConnectionsAPI {
 	return &ConnectionsAPI{
 		connectionsImpl: connectionsImpl{
 			client: client,
@@ -889,8 +883,7 @@ type CredentialsInterface interface {
 	ValidateCredential(ctx context.Context, request ValidateCredentialRequest) (*ValidateCredentialResponse, error)
 }
 
-func NewCredentials(client *client.DatabricksClient,
-) *CredentialsAPI {
+func NewCredentials(client *client.DatabricksClient) *CredentialsAPI {
 	return &CredentialsAPI{
 		credentialsImpl: credentialsImpl{
 			client: client,
@@ -1045,8 +1038,7 @@ type ExternalLocationsInterface interface {
 	Update(ctx context.Context, request UpdateExternalLocation) (*ExternalLocationInfo, error)
 }
 
-func NewExternalLocations(client *client.DatabricksClient,
-) *ExternalLocationsAPI {
+func NewExternalLocations(client *client.DatabricksClient) *ExternalLocationsAPI {
 	return &ExternalLocationsAPI{
 		externalLocationsImpl: externalLocationsImpl{
 			client: client,
@@ -1244,8 +1236,7 @@ type FunctionsInterface interface {
 	Update(ctx context.Context, request UpdateFunction) (*FunctionInfo, error)
 }
 
-func NewFunctions(client *client.DatabricksClient,
-) *FunctionsAPI {
+func NewFunctions(client *client.DatabricksClient) *FunctionsAPI {
 	return &FunctionsAPI{
 		functionsImpl: functionsImpl{
 			client: client,
@@ -1397,8 +1388,7 @@ type GrantsInterface interface {
 	Update(ctx context.Context, request UpdatePermissions) (*PermissionsList, error)
 }
 
-func NewGrants(client *client.DatabricksClient,
-) *GrantsAPI {
+func NewGrants(client *client.DatabricksClient) *GrantsAPI {
 	return &GrantsAPI{
 		grantsImpl: grantsImpl{
 			client: client,
@@ -1555,8 +1545,7 @@ type MetastoresInterface interface {
 	UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error
 }
 
-func NewMetastores(client *client.DatabricksClient,
-) *MetastoresAPI {
+func NewMetastores(client *client.DatabricksClient) *MetastoresAPI {
 	return &MetastoresAPI{
 		metastoresImpl: metastoresImpl{
 			client: client,
@@ -1833,8 +1822,7 @@ type ModelVersionsInterface interface {
 	Update(ctx context.Context, request UpdateModelVersionRequest) (*ModelVersionInfo, error)
 }
 
-func NewModelVersions(client *client.DatabricksClient,
-) *ModelVersionsAPI {
+func NewModelVersions(client *client.DatabricksClient) *ModelVersionsAPI {
 	return &ModelVersionsAPI{
 		modelVersionsImpl: modelVersionsImpl{
 			client: client,
@@ -2015,8 +2003,7 @@ type OnlineTablesInterface interface {
 	GetByName(ctx context.Context, name string) (*OnlineTable, error)
 }
 
-func NewOnlineTables(client *client.DatabricksClient,
-) *OnlineTablesAPI {
+func NewOnlineTables(client *client.DatabricksClient) *OnlineTablesAPI {
 	return &OnlineTablesAPI{
 		onlineTablesImpl: onlineTablesImpl{
 			client: client,
@@ -2254,8 +2241,7 @@ type QualityMonitorsInterface interface {
 	Update(ctx context.Context, request UpdateMonitor) (*MonitorInfo, error)
 }
 
-func NewQualityMonitors(client *client.DatabricksClient,
-) *QualityMonitorsAPI {
+func NewQualityMonitors(client *client.DatabricksClient) *QualityMonitorsAPI {
 	return &QualityMonitorsAPI{
 		qualityMonitorsImpl: qualityMonitorsImpl{
 			client: client,
@@ -2512,8 +2498,7 @@ type RegisteredModelsInterface interface {
 	Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error)
 }
 
-func NewRegisteredModels(client *client.DatabricksClient,
-) *RegisteredModelsAPI {
+func NewRegisteredModels(client *client.DatabricksClient) *RegisteredModelsAPI {
 	return &RegisteredModelsAPI{
 		registeredModelsImpl: registeredModelsImpl{
 			client: client,
@@ -2749,8 +2734,7 @@ type ResourceQuotasInterface interface {
 	ListQuotasAll(ctx context.Context, request ListQuotasRequest) ([]QuotaInfo, error)
 }
 
-func NewResourceQuotas(client *client.DatabricksClient,
-) *ResourceQuotasAPI {
+func NewResourceQuotas(client *client.DatabricksClient) *ResourceQuotasAPI {
 	return &ResourceQuotasAPI{
 		resourceQuotasImpl: resourceQuotasImpl{
 			client: client,
@@ -2912,8 +2896,7 @@ type SchemasInterface interface {
 	Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error)
 }
 
-func NewSchemas(client *client.DatabricksClient,
-) *SchemasAPI {
+func NewSchemas(client *client.DatabricksClient) *SchemasAPI {
 	return &SchemasAPI{
 		schemasImpl: schemasImpl{
 			client: client,
@@ -3137,8 +3120,7 @@ type StorageCredentialsInterface interface {
 	Validate(ctx context.Context, request ValidateStorageCredential) (*ValidateStorageCredentialResponse, error)
 }
 
-func NewStorageCredentials(client *client.DatabricksClient,
-) *StorageCredentialsAPI {
+func NewStorageCredentials(client *client.DatabricksClient) *StorageCredentialsAPI {
 	return &StorageCredentialsAPI{
 		storageCredentialsImpl: storageCredentialsImpl{
 			client: client,
@@ -3299,8 +3281,7 @@ type SystemSchemasInterface interface {
 	ListByMetastoreId(ctx context.Context, metastoreId string) (*ListSystemSchemasResponse, error)
 }
 
-func NewSystemSchemas(client *client.DatabricksClient,
-) *SystemSchemasAPI {
+func NewSystemSchemas(client *client.DatabricksClient) *SystemSchemasAPI {
 	return &SystemSchemasAPI{
 		systemSchemasImpl: systemSchemasImpl{
 			client: client,
@@ -3420,8 +3401,7 @@ type TableConstraintsInterface interface {
 	DeleteByFullName(ctx context.Context, fullName string) error
 }
 
-func NewTableConstraints(client *client.DatabricksClient,
-) *TableConstraintsAPI {
+func NewTableConstraints(client *client.DatabricksClient) *TableConstraintsAPI {
 	return &TableConstraintsAPI{
 		tableConstraintsImpl: tableConstraintsImpl{
 			client: client,
@@ -3615,8 +3595,7 @@ type TablesInterface interface {
 	Update(ctx context.Context, request UpdateTableRequest) error
 }
 
-func NewTables(client *client.DatabricksClient,
-) *TablesAPI {
+func NewTables(client *client.DatabricksClient) *TablesAPI {
 	return &TablesAPI{
 		tablesImpl: tablesImpl{
 			client: client,
@@ -3854,8 +3833,7 @@ type TemporaryTableCredentialsInterface interface {
 	GenerateTemporaryTableCredentials(ctx context.Context, request GenerateTemporaryTableCredentialRequest) (*GenerateTemporaryTableCredentialResponse, error)
 }
 
-func NewTemporaryTableCredentials(client *client.DatabricksClient,
-) *TemporaryTableCredentialsAPI {
+func NewTemporaryTableCredentials(client *client.DatabricksClient) *TemporaryTableCredentialsAPI {
 	return &TemporaryTableCredentialsAPI{
 		temporaryTableCredentialsImpl: temporaryTableCredentialsImpl{
 			client: client,
@@ -4013,8 +3991,7 @@ type VolumesInterface interface {
 	Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error)
 }
 
-func NewVolumes(client *client.DatabricksClient,
-) *VolumesAPI {
+func NewVolumes(client *client.DatabricksClient) *VolumesAPI {
 	return &VolumesAPI{
 		volumesImpl: volumesImpl{
 			client: client,
@@ -4223,8 +4200,7 @@ type WorkspaceBindingsInterface interface {
 	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error)
 }
 
-func NewWorkspaceBindings(client *client.DatabricksClient,
-) *WorkspaceBindingsAPI {
+func NewWorkspaceBindings(client *client.DatabricksClient) *WorkspaceBindingsAPI {
 	return &WorkspaceBindingsAPI{
 		workspaceBindingsImpl: workspaceBindingsImpl{
 			client: client,

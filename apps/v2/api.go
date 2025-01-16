@@ -139,8 +139,7 @@ type AppsInterface interface {
 	UpdatePermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error)
 }
 
-func NewApps(client *client.DatabricksClient,
-) *AppsAPI {
+func NewApps(client *client.DatabricksClient) *AppsAPI {
 	return &AppsAPI{
 		appsImpl: appsImpl{
 			client: client,

@@ -29,8 +29,7 @@ type BillableUsageInterface interface {
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 }
 
-func NewBillableUsage(client *client.DatabricksClient,
-) *BillableUsageAPI {
+func NewBillableUsage(client *client.DatabricksClient) *BillableUsageAPI {
 	return &BillableUsageAPI{
 		billableUsageImpl: billableUsageImpl{
 			client: client,
@@ -97,8 +96,7 @@ type BudgetsInterface interface {
 	Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error)
 }
 
-func NewBudgets(client *client.DatabricksClient,
-) *BudgetsAPI {
+func NewBudgets(client *client.DatabricksClient) *BudgetsAPI {
 	return &BudgetsAPI{
 		budgetsImpl: budgetsImpl{
 			client: client,
@@ -260,8 +258,7 @@ type LogDeliveryInterface interface {
 	PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error
 }
 
-func NewLogDelivery(client *client.DatabricksClient,
-) *LogDeliveryAPI {
+func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 	return &LogDeliveryAPI{
 		logDeliveryImpl: logDeliveryImpl{
 			client: client,
@@ -447,8 +444,7 @@ type UsageDashboardsInterface interface {
 	Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error)
 }
 
-func NewUsageDashboards(client *client.DatabricksClient,
-) *UsageDashboardsAPI {
+func NewUsageDashboards(client *client.DatabricksClient) *UsageDashboardsAPI {
 	return &UsageDashboardsAPI{
 		usageDashboardsImpl: usageDashboardsImpl{
 			client: client,

@@ -208,6 +208,8 @@ type CleanRoomAssetStatusEnum string
 
 const CleanRoomAssetStatusEnumActive CleanRoomAssetStatusEnum = `ACTIVE`
 
+const CleanRoomAssetStatusEnumPending CleanRoomAssetStatusEnum = `PENDING`
+
 const CleanRoomAssetStatusEnumPermissionDenied CleanRoomAssetStatusEnum = `PERMISSION_DENIED`
 
 // String representation for [fmt.Print]
@@ -218,11 +220,11 @@ func (f *CleanRoomAssetStatusEnum) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CleanRoomAssetStatusEnum) Set(v string) error {
 	switch v {
-	case `ACTIVE`, `PERMISSION_DENIED`:
+	case `ACTIVE`, `PENDING`, `PERMISSION_DENIED`:
 		*f = CleanRoomAssetStatusEnum(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "PERMISSION_DENIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "PENDING", "PERMISSION_DENIED"`, v)
 	}
 }
 

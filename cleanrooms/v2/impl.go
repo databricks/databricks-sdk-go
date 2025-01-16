@@ -56,8 +56,8 @@ func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoo
 	var cleanRoomAsset CleanRoomAsset
 	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request.Asset, &cleanRoomAsset)
 	return &cleanRoomAsset, err
 }

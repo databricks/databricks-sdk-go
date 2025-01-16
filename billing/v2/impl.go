@@ -70,8 +70,8 @@ func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurat
 	var updateBudgetConfigurationResponse UpdateBudgetConfigurationResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateBudgetConfigurationResponse)
 	return &updateBudgetConfigurationResponse, err
 }
