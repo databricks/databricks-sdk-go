@@ -108,7 +108,7 @@ type ComplexValue struct {
 
 	Primary bool `json:"primary,omitempty"`
 
-	Ref string `json:"ref,omitempty"`
+	Ref string `json:"$ref,omitempty"`
 
 	Type string `json:"type,omitempty"`
 
@@ -374,14 +374,14 @@ type GrantRule struct {
 
 type Group struct {
 	// String that represents a human-readable group name
-	DisplayName string `json:"display_name,omitempty"`
+	DisplayName string `json:"displayName,omitempty"`
 	// Entitlements assigned to the group. See [assigning entitlements] for a
 	// full list of supported values.
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
 
-	ExternalId string `json:"external_id,omitempty"`
+	ExternalId string `json:"externalId,omitempty"`
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
@@ -570,16 +570,16 @@ func (s ListGroupsRequest) MarshalJSON() ([]byte, error) {
 
 type ListGroupsResponse struct {
 	// Total results returned in the response.
-	ItemsPerPage int64 `json:"items_per_page,omitempty"`
+	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
-	Resources []Group `json:"resources,omitempty"`
+	Resources []Group `json:"Resources,omitempty"`
 	// The schema of the service principal.
 	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
-	StartIndex int64 `json:"start_index,omitempty"`
+	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
-	TotalResults int64 `json:"total_results,omitempty"`
+	TotalResults int64 `json:"totalResults,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -619,16 +619,16 @@ func (f *ListResponseSchema) Type() string {
 
 type ListServicePrincipalResponse struct {
 	// Total results returned in the response.
-	ItemsPerPage int64 `json:"items_per_page,omitempty"`
+	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
-	Resources []ServicePrincipal `json:"resources,omitempty"`
+	Resources []ServicePrincipal `json:"Resources,omitempty"`
 	// The schema of the List response.
 	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
-	StartIndex int64 `json:"start_index,omitempty"`
+	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
-	TotalResults int64 `json:"total_results,omitempty"`
+	TotalResults int64 `json:"totalResults,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -739,16 +739,16 @@ func (s ListUsersRequest) MarshalJSON() ([]byte, error) {
 
 type ListUsersResponse struct {
 	// Total results returned in the response.
-	ItemsPerPage int64 `json:"items_per_page,omitempty"`
+	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
-	Resources []User `json:"resources,omitempty"`
+	Resources []User `json:"Resources,omitempty"`
 	// The schema of the List response.
 	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
-	StartIndex int64 `json:"start_index,omitempty"`
+	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
-	TotalResults int64 `json:"total_results,omitempty"`
+	TotalResults int64 `json:"totalResults,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -806,9 +806,9 @@ func (s MigratePermissionsResponse) MarshalJSON() ([]byte, error) {
 
 type Name struct {
 	// Family name of the Databricks user.
-	FamilyName string `json:"family_name,omitempty"`
+	FamilyName string `json:"familyName,omitempty"`
 	// Given name of the Databricks user.
-	GivenName string `json:"given_name,omitempty"`
+	GivenName string `json:"givenName,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -843,7 +843,7 @@ type PartialUpdate struct {
 	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 
-	Operations []Patch `json:"operations,omitempty"`
+	Operations []Patch `json:"Operations,omitempty"`
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
 	Schemas []PatchSchema `json:"schemas,omitempty"`
@@ -1276,7 +1276,7 @@ func (s ResourceInfo) MarshalJSON() ([]byte, error) {
 type ResourceMeta struct {
 	// Identifier for group type. Can be local workspace group
 	// (`WorkspaceGroup`) or account group (`Group`).
-	ResourceType string `json:"resource_type,omitempty"`
+	ResourceType string `json:"resourceType,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1328,16 +1328,16 @@ type ServicePrincipal struct {
 	// If this user is active
 	Active bool `json:"active,omitempty"`
 	// UUID relating to the service principal
-	ApplicationId string `json:"application_id,omitempty"`
+	ApplicationId string `json:"applicationId,omitempty"`
 	// String that represents a concatenation of given and family names.
-	DisplayName string `json:"display_name,omitempty"`
+	DisplayName string `json:"displayName,omitempty"`
 	// Entitlements assigned to the service principal. See [assigning
 	// entitlements] for a full list of supported values.
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
 
-	ExternalId string `json:"external_id,omitempty"`
+	ExternalId string `json:"externalId,omitempty"`
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
@@ -1416,7 +1416,7 @@ type User struct {
 	// update `displayName`.
 	//
 	// [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
-	DisplayName string `json:"display_name,omitempty"`
+	DisplayName string `json:"displayName,omitempty"`
 	// All the emails associated with the Databricks user.
 	Emails []ComplexValue `json:"emails,omitempty"`
 	// Entitlements assigned to the user. See [assigning entitlements] for a
@@ -1425,7 +1425,7 @@ type User struct {
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
 	// External ID is not currently supported. It is reserved for future use.
-	ExternalId string `json:"external_id,omitempty"`
+	ExternalId string `json:"externalId,omitempty"`
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID. This is automatically set by Databricks. Any value
@@ -1438,7 +1438,7 @@ type User struct {
 	// The schema of the user.
 	Schemas []UserSchema `json:"schemas,omitempty"`
 	// Email address of the Databricks user.
-	UserName string `json:"user_name,omitempty"`
+	UserName string `json:"userName,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

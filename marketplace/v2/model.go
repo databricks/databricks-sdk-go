@@ -1514,7 +1514,7 @@ type ListingSummary struct {
 	// field as opposed to a share
 	GitRepo *RepoInfo `json:"git_repo,omitempty"`
 
-	ListingType ListingType `json:"listing_type"`
+	ListingType ListingType `json:"listingType"`
 
 	Name string `json:"name"`
 
@@ -1869,15 +1869,15 @@ func (s SharedDataObject) MarshalJSON() ([]byte, error) {
 }
 
 type TokenDetail struct {
-	BearerToken string `json:"bearer_token,omitempty"`
+	BearerToken string `json:"bearerToken,omitempty"`
 
 	Endpoint string `json:"endpoint,omitempty"`
 
-	ExpirationTime string `json:"expiration_time,omitempty"`
+	ExpirationTime string `json:"expirationTime,omitempty"`
 	// These field names must follow the delta sharing protocol. Original
 	// message: RetrieveToken.Response in
 	// managed-catalog/api/messages/recipient.proto
-	ShareCredentialsVersion int `json:"share_credentials_version,omitempty"`
+	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

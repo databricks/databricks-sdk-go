@@ -1189,13 +1189,13 @@ type ExchangeToken struct {
 	Credential string `json:"credential,omitempty"`
 	// The end-of-life timestamp of the token. The value is in milliseconds
 	// since the Unix epoch.
-	CredentialEolTime int64 `json:"credential_eol_time,omitempty"`
+	CredentialEolTime int64 `json:"credentialEolTime,omitempty"`
 	// User ID of the user that owns this token.
-	OwnerId int64 `json:"owner_id,omitempty"`
+	OwnerId int64 `json:"ownerId,omitempty"`
 	// The scopes of access granted in the token.
 	Scopes []string `json:"scopes,omitempty"`
 	// The type of this exchange token
-	TokenType TokenType `json:"token_type,omitempty"`
+	TokenType TokenType `json:"tokenType,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1211,11 +1211,11 @@ func (s ExchangeToken) MarshalJSON() ([]byte, error) {
 // Exchange a token with the IdP
 type ExchangeTokenRequest struct {
 	// The partition of Credentials store
-	PartitionId PartitionId `json:"partition_id"`
+	PartitionId PartitionId `json:"partitionId"`
 	// Array of scopes for the token request.
 	Scopes []string `json:"scopes"`
 	// A list of token types being requested
-	TokenType []TokenType `json:"token_type"`
+	TokenType []TokenType `json:"tokenType"`
 }
 
 // Exhanged tokens were successfully returned.
@@ -2116,7 +2116,7 @@ func (s PagerdutyConfig) MarshalJSON() ([]byte, error) {
 // Partition by workspace or account
 type PartitionId struct {
 	// The ID of the workspace.
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
+	WorkspaceId int64 `json:"workspaceId,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

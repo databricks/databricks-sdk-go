@@ -753,13 +753,13 @@ type RetrieveTokenRequest struct {
 
 type RetrieveTokenResponse struct {
 	// The token used to authorize the recipient.
-	BearerToken string `json:"bearer_token,omitempty"`
+	BearerToken string `json:"bearerToken,omitempty"`
 	// The endpoint for the share to be used by the recipient.
 	Endpoint string `json:"endpoint,omitempty"`
 	// Expiration timestamp of the token in epoch milliseconds.
-	ExpirationTime string `json:"expiration_time,omitempty"`
+	ExpirationTime string `json:"expirationTime,omitempty"`
 	// These field names must follow the delta sharing protocol.
-	ShareCredentialsVersion int `json:"share_credentials_version,omitempty"`
+	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

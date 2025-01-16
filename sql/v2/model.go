@@ -2826,16 +2826,16 @@ func (f *OwnableObjectType) Type() string {
 type Parameter struct {
 	// List of valid parameter values, newline delimited. Only applies for
 	// dropdown list parameters.
-	EnumOptions string `json:"enum_options,omitempty"`
+	EnumOptions string `json:"enumOptions,omitempty"`
 	// If specified, allows multiple values to be selected for this parameter.
 	// Only applies to dropdown list and query-based dropdown list parameters.
-	MultiValuesOptions *MultiValuesOptions `json:"multi_values_options,omitempty"`
+	MultiValuesOptions *MultiValuesOptions `json:"multiValuesOptions,omitempty"`
 	// The literal parameter marker that appears between double curly braces in
 	// the query text.
 	Name string `json:"name,omitempty"`
 	// The UUID of the query that provides the parameter values. Only applies
 	// for query-based dropdown list parameters.
-	QueryId string `json:"query_id,omitempty"`
+	QueryId string `json:"queryId,omitempty"`
 	// The text displayed in a parameter picking widget.
 	Title string `json:"title,omitempty"`
 	// Parameters can have several different types.
@@ -4720,11 +4720,11 @@ type WidgetOptions struct {
 	// Custom description of the widget
 	Description string `json:"description,omitempty"`
 	// Whether this widget is hidden on the dashboard.
-	IsHidden bool `json:"is_hidden,omitempty"`
+	IsHidden bool `json:"isHidden,omitempty"`
 	// How parameters used by the visualization in this widget relate to other
 	// widgets on the dashboard. Databricks does not recommend modifying this
 	// definition in JSON.
-	ParameterMappings any `json:"parameter_mappings,omitempty"`
+	ParameterMappings any `json:"parameterMappings,omitempty"`
 	// Coordinates of this widget on a dashboard. This portion of the API
 	// changes frequently and is unsupported.
 	Position *WidgetPosition `json:"position,omitempty"`
@@ -4748,15 +4748,15 @@ func (s WidgetOptions) MarshalJSON() ([]byte, error) {
 // frequently and is unsupported.
 type WidgetPosition struct {
 	// reserved for internal use
-	AutoHeight bool `json:"auto_height,omitempty"`
+	AutoHeight bool `json:"autoHeight,omitempty"`
 	// column in the dashboard grid. Values start with 0
 	Col int `json:"col,omitempty"`
 	// row in the dashboard grid. Values start with 0
 	Row int `json:"row,omitempty"`
 	// width of the widget measured in dashboard grid cells
-	SizeX int `json:"size_x,omitempty"`
+	SizeX int `json:"sizeX,omitempty"`
 	// height of the widget measured in dashboard grid cells
-	SizeY int `json:"size_y,omitempty"`
+	SizeY int `json:"sizeY,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

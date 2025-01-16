@@ -276,11 +276,11 @@ func (f *AzureAvailability) Type() string {
 }
 
 type CancelCommand struct {
-	ClusterId string `json:"cluster_id,omitempty"`
+	ClusterId string `json:"clusterId,omitempty"`
 
-	CommandId string `json:"command_id,omitempty"`
+	CommandId string `json:"commandId,omitempty"`
 
-	ContextId string `json:"context_id,omitempty"`
+	ContextId string `json:"contextId,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1408,11 +1408,11 @@ type ClusterStatus struct {
 
 type Command struct {
 	// Running cluster id
-	ClusterId string `json:"cluster_id,omitempty"`
+	ClusterId string `json:"clusterId,omitempty"`
 	// Executable code
 	Command string `json:"command,omitempty"`
 	// Running context id
-	ContextId string `json:"context_id,omitempty"`
+	ContextId string `json:"contextId,omitempty"`
 
 	Language Language `json:"language,omitempty"`
 
@@ -1748,7 +1748,7 @@ func (s CreateClusterResponse) MarshalJSON() ([]byte, error) {
 
 type CreateContext struct {
 	// Running cluster id
-	ClusterId string `json:"cluster_id,omitempty"`
+	ClusterId string `json:"clusterId,omitempty"`
 
 	Language Language `json:"language,omitempty"`
 
@@ -2114,9 +2114,9 @@ type DeleteResponse struct {
 }
 
 type DestroyContext struct {
-	ClusterId string `json:"cluster_id"`
+	ClusterId string `json:"clusterId"`
 
-	ContextId string `json:"context_id"`
+	ContextId string `json:"contextId"`
 }
 
 type DestroyResponse struct {
@@ -4790,16 +4790,16 @@ type Results struct {
 
 	Data any `json:"data,omitempty"`
 	// The image filename
-	FileName string `json:"file_name,omitempty"`
+	FileName string `json:"fileName,omitempty"`
 
-	FileNames []string `json:"file_names,omitempty"`
+	FileNames []string `json:"fileNames,omitempty"`
 	// true if a JSON schema is returned instead of a string representation of
 	// the Hive type.
-	IsJsonSchema bool `json:"is_json_schema,omitempty"`
+	IsJsonSchema bool `json:"isJsonSchema,omitempty"`
 	// internal field used by SDK
 	Pos int `json:"pos,omitempty"`
 
-	ResultType ResultType `json:"result_type,omitempty"`
+	ResultType ResultType `json:"resultType,omitempty"`
 	// The table schema
 	Schema []map[string]any `json:"schema,omitempty"`
 	// The summary of the error

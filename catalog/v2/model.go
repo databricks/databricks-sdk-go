@@ -5944,7 +5944,7 @@ func (s ValidateCredentialRequest) MarshalJSON() ([]byte, error) {
 type ValidateCredentialResponse struct {
 	// Whether the tested location is a directory in cloud storage. Only
 	// applicable for when purpose is **STORAGE**.
-	IsDir bool `json:"is_dir,omitempty"`
+	IsDir bool `json:"isDir,omitempty"`
 	// The results of the validation check.
 	Results []CredentialValidationResult `json:"results,omitempty"`
 
@@ -6022,7 +6022,7 @@ func (s ValidateStorageCredential) MarshalJSON() ([]byte, error) {
 
 type ValidateStorageCredentialResponse struct {
 	// Whether the tested location is a directory in cloud storage.
-	IsDir bool `json:"is_dir,omitempty"`
+	IsDir bool `json:"isDir,omitempty"`
 	// The results of the validation check.
 	Results []ValidationResult `json:"results,omitempty"`
 

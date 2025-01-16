@@ -2144,7 +2144,7 @@ type TrafficConfig struct {
 
 type V1ResponseChoiceElement struct {
 	// The finish reason returned by the endpoint.
-	FinishReason string `json:"finish_reason,omitempty"`
+	FinishReason string `json:"finishReason,omitempty"`
 	// The index of the choice in the __chat or completions__ response.
 	Index int `json:"index,omitempty"`
 	// The logprobs returned only by the __completions__ endpoint.
