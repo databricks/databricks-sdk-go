@@ -784,6 +784,84 @@ type ExportMetricsResponse struct {
 	Contents io.ReadCloser `json:"-"`
 }
 
+// Simple Proto message for testing
+type ExternalFunctionRequest struct {
+	// The connection name to use. This is required to identify the external
+	// connection.
+	ConnectionName string `json:"connection_name"`
+	// Additional headers for the request. If not provided, only auth headers
+	// from connections would be passed.
+	Headers string `json:"headers,omitempty"`
+	// The JSON payload to send in the request body.
+	Json string `json:"json,omitempty"`
+	// The HTTP method to use (e.g., 'GET', 'POST').
+	Method ExternalFunctionRequestHttpMethod `json:"method"`
+	// Query parameters for the request.
+	Params string `json:"params,omitempty"`
+	// The relative path for the API endpoint. This is required.
+	Path string `json:"path"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExternalFunctionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalFunctionRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ExternalFunctionRequestHttpMethod string
+
+const ExternalFunctionRequestHttpMethodDelete ExternalFunctionRequestHttpMethod = `DELETE`
+
+const ExternalFunctionRequestHttpMethodGet ExternalFunctionRequestHttpMethod = `GET`
+
+const ExternalFunctionRequestHttpMethodPatch ExternalFunctionRequestHttpMethod = `PATCH`
+
+const ExternalFunctionRequestHttpMethodPost ExternalFunctionRequestHttpMethod = `POST`
+
+const ExternalFunctionRequestHttpMethodPut ExternalFunctionRequestHttpMethod = `PUT`
+
+// String representation for [fmt.Print]
+func (f *ExternalFunctionRequestHttpMethod) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ExternalFunctionRequestHttpMethod) Set(v string) error {
+	switch v {
+	case `DELETE`, `GET`, `PATCH`, `POST`, `PUT`:
+		*f = ExternalFunctionRequestHttpMethod(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DELETE", "GET", "PATCH", "POST", "PUT"`, v)
+	}
+}
+
+// Type always returns ExternalFunctionRequestHttpMethod to satisfy [pflag.Value] interface
+func (f *ExternalFunctionRequestHttpMethod) Type() string {
+	return "ExternalFunctionRequestHttpMethod"
+}
+
+type ExternalFunctionResponse struct {
+	// The HTTP status code of the response
+	StatusCode int `json:"status_code,omitempty"`
+	// The content of the response
+	Text string `json:"text,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExternalFunctionResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalFunctionResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ExternalModel struct {
 	// AI21Labs Config. Only required if the provider is 'ai21labs'.
 	Ai21labsConfig *Ai21LabsConfig `json:"ai21labs_config,omitempty"`

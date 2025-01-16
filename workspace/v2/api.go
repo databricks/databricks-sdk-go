@@ -82,8 +82,7 @@ type GitCredentialsInterface interface {
 	Update(ctx context.Context, request UpdateCredentialsRequest) error
 }
 
-func NewGitCredentials(client *client.DatabricksClient,
-) *GitCredentialsAPI {
+func NewGitCredentials(client *client.DatabricksClient) *GitCredentialsAPI {
 	return &GitCredentialsAPI{
 		gitCredentialsImpl: gitCredentialsImpl{
 			client: client,
@@ -313,8 +312,7 @@ type ReposInterface interface {
 	UpdatePermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error)
 }
 
-func NewRepos(client *client.DatabricksClient,
-) *ReposAPI {
+func NewRepos(client *client.DatabricksClient) *ReposAPI {
 	return &ReposAPI{
 		reposImpl: reposImpl{
 			client: client,
@@ -687,8 +685,7 @@ type SecretsInterface interface {
 	PutSecret(ctx context.Context, request PutSecret) error
 }
 
-func NewSecrets(client *client.DatabricksClient,
-) *SecretsAPI {
+func NewSecrets(client *client.DatabricksClient) *SecretsAPI {
 	return &SecretsAPI{
 		secretsImpl: secretsImpl{
 			client: client,
@@ -1026,8 +1023,7 @@ type WorkspaceInterface interface {
 	UpdatePermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error)
 }
 
-func NewWorkspace(client *client.DatabricksClient,
-) *WorkspaceAPI {
+func NewWorkspace(client *client.DatabricksClient) *WorkspaceAPI {
 	return &WorkspaceAPI{
 		workspaceImpl: workspaceImpl{
 			client: client,

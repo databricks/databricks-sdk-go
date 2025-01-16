@@ -157,8 +157,8 @@ func (a *dashboardsImpl) Create(ctx context.Context, request DashboardPostConten
 	var dashboard Dashboard
 	path := "/api/2.0/preview/sql/dashboards"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &dashboard)
 	return &dashboard, err
 }
@@ -266,8 +266,8 @@ func (a *queriesImpl) Create(ctx context.Context, request CreateQueryRequest) (*
 	var query Query
 	path := "/api/2.0/sql/queries"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &query)
 	return &query, err
 }
@@ -327,8 +327,8 @@ func (a *queriesLegacyImpl) Create(ctx context.Context, request QueryPostContent
 	var legacyQuery LegacyQuery
 	path := "/api/2.0/preview/sql/queries"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyQuery)
 	return &legacyQuery, err
 }
@@ -373,8 +373,8 @@ func (a *queriesLegacyImpl) Update(ctx context.Context, request QueryEditContent
 	var legacyQuery LegacyQuery
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyQuery)
 	return &legacyQuery, err
 }
@@ -595,8 +595,8 @@ func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, reques
 	var setWorkspaceWarehouseConfigResponse SetWorkspaceWarehouseConfigResponse
 	path := "/api/2.0/sql/config/warehouses"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &setWorkspaceWarehouseConfigResponse)
 	return err
 }

@@ -11,7 +11,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
-	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
 var b64 = base64.StdEncoding
@@ -60,10 +59,42 @@ type workspaceAPIUtilities interface {
 // PythonNotebookOverwrite crafts Python import notebook request
 // also by trimming the code specified in the second argument
 func PythonNotebookOverwrite(path, content string) Import {
-	content = compute.TrimLeadingWhitespace(content)
+	content = TrimLeadingWhitespace(content)
 	request, _ := PythonNotebookOverwriteReader(path,
 		strings.NewReader(content))
 	return request
+}
+
+// TrimLeadingWhitespace removes leading whitespace, so that Python code blocks
+// that are embedded into Go code still could be interpreted properly.
+// TODO: for note this is from the compute package
+func TrimLeadingWhitespace(commandStr string) (newCommand string) {
+	lines := strings.Split(strings.ReplaceAll(commandStr, "\t", "    "), "\n")
+	leadingWhitespace := 1<<31 - 1
+	for _, line := range lines {
+		for pos, char := range line {
+			if char == ' ' || char == '\t' {
+				continue
+			}
+			// first non-whitespace character
+			if pos < leadingWhitespace {
+				leadingWhitespace = pos
+			}
+			// is not needed further
+			break
+		}
+	}
+	for i := 0; i < len(lines); i++ {
+		if lines[i] == "" || strings.Trim(lines[i], " \t") == "" {
+			continue
+		}
+		if len(lines[i]) < leadingWhitespace {
+			newCommand += lines[i] + "\n" // or not..
+		} else {
+			newCommand += lines[i][leadingWhitespace:] + "\n"
+		}
+	}
+	return
 }
 
 func PythonNotebookOverwriteReader(path string, r io.Reader) (Import, error) {

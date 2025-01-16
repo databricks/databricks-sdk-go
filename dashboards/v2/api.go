@@ -54,8 +54,7 @@ type GenieInterface interface {
 	StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error)
 }
 
-func NewGenie(client *client.DatabricksClient,
-) *GenieAPI {
+func NewGenie(client *client.DatabricksClient) *GenieAPI {
 	return &GenieAPI{
 		genieImpl: genieImpl{
 			client: client,
@@ -228,8 +227,7 @@ type LakeviewInterface interface {
 	UpdateSchedule(ctx context.Context, request UpdateScheduleRequest) (*Schedule, error)
 }
 
-func NewLakeview(client *client.DatabricksClient,
-) *LakeviewAPI {
+func NewLakeview(client *client.DatabricksClient) *LakeviewAPI {
 	return &LakeviewAPI{
 		lakeviewImpl: lakeviewImpl{
 			client: client,

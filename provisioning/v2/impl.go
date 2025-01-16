@@ -61,8 +61,8 @@ func (a *encryptionKeysImpl) Create(ctx context.Context, request CreateCustomerM
 	var customerManagedKey CustomerManagedKey
 	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &customerManagedKey)
 	return &customerManagedKey, err
 }
@@ -103,8 +103,8 @@ func (a *networksImpl) Create(ctx context.Context, request CreateNetworkRequest)
 	var network Network
 	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &network)
 	return &network, err
 }
@@ -197,8 +197,8 @@ func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigura
 	var storageConfiguration StorageConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &storageConfiguration)
 	return &storageConfiguration, err
 }

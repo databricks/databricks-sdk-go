@@ -320,8 +320,7 @@ type ExperimentsInterface interface {
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
 }
 
-func NewExperiments(client *client.DatabricksClient,
-) *ExperimentsAPI {
+func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {
 	return &ExperimentsAPI{
 		experimentsImpl: experimentsImpl{
 			client: client,
@@ -853,8 +852,7 @@ type ModelRegistryInterface interface {
 	UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) error
 }
 
-func NewModelRegistry(client *client.DatabricksClient,
-) *ModelRegistryAPI {
+func NewModelRegistry(client *client.DatabricksClient) *ModelRegistryAPI {
 	return &ModelRegistryAPI{
 		modelRegistryImpl: modelRegistryImpl{
 			client: client,

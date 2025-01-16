@@ -477,8 +477,8 @@ func (a *providerProviderAnalyticsDashboardsImpl) Update(ctx context.Context, re
 	var updateProviderAnalyticsDashboardResponse UpdateProviderAnalyticsDashboardResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/analytics_dashboard/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateProviderAnalyticsDashboardResponse)
 	return &updateProviderAnalyticsDashboardResponse, err
 }

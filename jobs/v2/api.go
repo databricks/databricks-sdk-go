@@ -237,8 +237,7 @@ type JobsInterface interface {
 	UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
 }
 
-func NewJobs(client *client.DatabricksClient,
-) *JobsAPI {
+func NewJobs(client *client.DatabricksClient) *JobsAPI {
 	return &JobsAPI{
 		jobsImpl: jobsImpl{
 			client: client,
@@ -526,8 +525,7 @@ type PolicyComplianceForJobsInterface interface {
 	ListComplianceAll(ctx context.Context, request ListJobComplianceRequest) ([]JobCompliance, error)
 }
 
-func NewPolicyComplianceForJobs(client *client.DatabricksClient,
-) *PolicyComplianceForJobsAPI {
+func NewPolicyComplianceForJobs(client *client.DatabricksClient) *PolicyComplianceForJobsAPI {
 	return &PolicyComplianceForJobsAPI{
 		policyComplianceForJobsImpl: policyComplianceForJobsImpl{
 			client: client,

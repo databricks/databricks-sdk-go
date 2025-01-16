@@ -161,8 +161,7 @@ type PipelinesInterface interface {
 	UpdatePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error)
 }
 
-func NewPipelines(client *client.DatabricksClient,
-) *PipelinesAPI {
+func NewPipelines(client *client.DatabricksClient) *PipelinesAPI {
 	return &PipelinesAPI{
 		pipelinesImpl: pipelinesImpl{
 			client: client,

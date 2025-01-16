@@ -113,8 +113,8 @@ func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeli
 	var patchStatusResponse PatchStatusResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchStatusResponse)
 	return err
 }

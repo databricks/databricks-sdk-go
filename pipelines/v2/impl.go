@@ -19,8 +19,8 @@ func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*Cr
 	var createPipelineResponse CreatePipelineResponse
 	path := "/api/2.0/pipelines"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createPipelineResponse)
 	return &createPipelineResponse, err
 }
@@ -111,8 +111,8 @@ func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*
 	var startUpdateResponse StartUpdateResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &startUpdateResponse)
 	return &startUpdateResponse, err
 }

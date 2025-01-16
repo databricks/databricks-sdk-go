@@ -118,8 +118,7 @@ type AccountIpAccessListsInterface interface {
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 
-func NewAccountIpAccessLists(client *client.DatabricksClient,
-) *AccountIpAccessListsAPI {
+func NewAccountIpAccessLists(client *client.DatabricksClient) *AccountIpAccessListsAPI {
 	return &AccountIpAccessListsAPI{
 		accountIpAccessListsImpl: accountIpAccessListsImpl{
 			client: client,
@@ -261,8 +260,7 @@ func (a *AccountIpAccessListsAPI) GetByLabel(ctx context.Context, name string) (
 type AccountSettingsInterface interface {
 }
 
-func NewAccountSettings(client *client.DatabricksClient,
-) *AccountSettingsAPI {
+func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 	return &AccountSettingsAPI{
 		accountSettingsImpl: accountSettingsImpl{
 			client: client,
@@ -296,8 +294,7 @@ type AibiDashboardEmbeddingAccessPolicyInterface interface {
 	Update(ctx context.Context, request UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error)
 }
 
-func NewAibiDashboardEmbeddingAccessPolicy(client *client.DatabricksClient,
-) *AibiDashboardEmbeddingAccessPolicyAPI {
+func NewAibiDashboardEmbeddingAccessPolicy(client *client.DatabricksClient) *AibiDashboardEmbeddingAccessPolicyAPI {
 	return &AibiDashboardEmbeddingAccessPolicyAPI{
 		aibiDashboardEmbeddingAccessPolicyImpl: aibiDashboardEmbeddingAccessPolicyImpl{
 			client: client,
@@ -333,8 +330,7 @@ type AibiDashboardEmbeddingApprovedDomainsInterface interface {
 	Update(ctx context.Context, request UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error)
 }
 
-func NewAibiDashboardEmbeddingApprovedDomains(client *client.DatabricksClient,
-) *AibiDashboardEmbeddingApprovedDomainsAPI {
+func NewAibiDashboardEmbeddingApprovedDomains(client *client.DatabricksClient) *AibiDashboardEmbeddingApprovedDomainsAPI {
 	return &AibiDashboardEmbeddingApprovedDomainsAPI{
 		aibiDashboardEmbeddingApprovedDomainsImpl: aibiDashboardEmbeddingApprovedDomainsImpl{
 			client: client,
@@ -366,8 +362,7 @@ type AutomaticClusterUpdateInterface interface {
 	Update(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error)
 }
 
-func NewAutomaticClusterUpdate(client *client.DatabricksClient,
-) *AutomaticClusterUpdateAPI {
+func NewAutomaticClusterUpdate(client *client.DatabricksClient) *AutomaticClusterUpdateAPI {
 	return &AutomaticClusterUpdateAPI{
 		automaticClusterUpdateImpl: automaticClusterUpdateImpl{
 			client: client,
@@ -398,8 +393,7 @@ type ComplianceSecurityProfileInterface interface {
 	Update(ctx context.Context, request UpdateComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error)
 }
 
-func NewComplianceSecurityProfile(client *client.DatabricksClient,
-) *ComplianceSecurityProfileAPI {
+func NewComplianceSecurityProfile(client *client.DatabricksClient) *ComplianceSecurityProfileAPI {
 	return &ComplianceSecurityProfileAPI{
 		complianceSecurityProfileImpl: complianceSecurityProfileImpl{
 			client: client,
@@ -425,8 +419,7 @@ type CredentialsManagerInterface interface {
 	ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error)
 }
 
-func NewCredentialsManager(client *client.DatabricksClient,
-) *CredentialsManagerAPI {
+func NewCredentialsManager(client *client.DatabricksClient) *CredentialsManagerAPI {
 	return &CredentialsManagerAPI{
 		credentialsManagerImpl: credentialsManagerImpl{
 			client: client,
@@ -454,8 +447,7 @@ type CspEnablementAccountInterface interface {
 	Update(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
 }
 
-func NewCspEnablementAccount(client *client.DatabricksClient,
-) *CspEnablementAccountAPI {
+func NewCspEnablementAccount(client *client.DatabricksClient) *CspEnablementAccountAPI {
 	return &CspEnablementAccountAPI{
 		cspEnablementAccountImpl: cspEnablementAccountImpl{
 			client: client,
@@ -502,8 +494,7 @@ type DefaultNamespaceInterface interface {
 	Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
 }
 
-func NewDefaultNamespace(client *client.DatabricksClient,
-) *DefaultNamespaceAPI {
+func NewDefaultNamespace(client *client.DatabricksClient) *DefaultNamespaceAPI {
 	return &DefaultNamespaceAPI{
 		defaultNamespaceImpl: defaultNamespaceImpl{
 			client: client,
@@ -545,8 +536,7 @@ type DisableLegacyAccessInterface interface {
 	Update(ctx context.Context, request UpdateDisableLegacyAccessRequest) (*DisableLegacyAccess, error)
 }
 
-func NewDisableLegacyAccess(client *client.DatabricksClient,
-) *DisableLegacyAccessAPI {
+func NewDisableLegacyAccess(client *client.DatabricksClient) *DisableLegacyAccessAPI {
 	return &DisableLegacyAccessAPI{
 		disableLegacyAccessImpl: disableLegacyAccessImpl{
 			client: client,
@@ -584,8 +574,7 @@ type DisableLegacyDbfsInterface interface {
 	Update(ctx context.Context, request UpdateDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error)
 }
 
-func NewDisableLegacyDbfs(client *client.DatabricksClient,
-) *DisableLegacyDbfsAPI {
+func NewDisableLegacyDbfs(client *client.DatabricksClient) *DisableLegacyDbfsAPI {
 	return &DisableLegacyDbfsAPI{
 		disableLegacyDbfsImpl: disableLegacyDbfsImpl{
 			client: client,
@@ -618,8 +607,7 @@ type DisableLegacyFeaturesInterface interface {
 	Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
 }
 
-func NewDisableLegacyFeatures(client *client.DatabricksClient,
-) *DisableLegacyFeaturesAPI {
+func NewDisableLegacyFeatures(client *client.DatabricksClient) *DisableLegacyFeaturesAPI {
 	return &DisableLegacyFeaturesAPI{
 		disableLegacyFeaturesImpl: disableLegacyFeaturesImpl{
 			client: client,
@@ -654,8 +642,7 @@ type EnhancedSecurityMonitoringInterface interface {
 	Update(ctx context.Context, request UpdateEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error)
 }
 
-func NewEnhancedSecurityMonitoring(client *client.DatabricksClient,
-) *EnhancedSecurityMonitoringAPI {
+func NewEnhancedSecurityMonitoring(client *client.DatabricksClient) *EnhancedSecurityMonitoringAPI {
 	return &EnhancedSecurityMonitoringAPI{
 		enhancedSecurityMonitoringImpl: enhancedSecurityMonitoringImpl{
 			client: client,
@@ -688,8 +675,7 @@ type EsmEnablementAccountInterface interface {
 	Update(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error)
 }
 
-func NewEsmEnablementAccount(client *client.DatabricksClient,
-) *EsmEnablementAccountAPI {
+func NewEsmEnablementAccount(client *client.DatabricksClient) *EsmEnablementAccountAPI {
 	return &EsmEnablementAccountAPI{
 		esmEnablementAccountImpl: esmEnablementAccountImpl{
 			client: client,
@@ -818,8 +804,7 @@ type IpAccessListsInterface interface {
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 
-func NewIpAccessLists(client *client.DatabricksClient,
-) *IpAccessListsAPI {
+func NewIpAccessLists(client *client.DatabricksClient) *IpAccessListsAPI {
 	return &IpAccessListsAPI{
 		ipAccessListsImpl: ipAccessListsImpl{
 			client: client,
@@ -1060,8 +1045,7 @@ type NetworkConnectivityInterface interface {
 	ListPrivateEndpointRulesByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*ListNccAzurePrivateEndpointRulesResponse, error)
 }
 
-func NewNetworkConnectivity(client *client.DatabricksClient,
-) *NetworkConnectivityAPI {
+func NewNetworkConnectivity(client *client.DatabricksClient) *NetworkConnectivityAPI {
 	return &NetworkConnectivityAPI{
 		networkConnectivityImpl: networkConnectivityImpl{
 			client: client,
@@ -1253,8 +1237,7 @@ type NotificationDestinationsInterface interface {
 	Update(ctx context.Context, request UpdateNotificationDestinationRequest) (*NotificationDestination, error)
 }
 
-func NewNotificationDestinations(client *client.DatabricksClient,
-) *NotificationDestinationsAPI {
+func NewNotificationDestinations(client *client.DatabricksClient) *NotificationDestinationsAPI {
 	return &NotificationDestinationsAPI{
 		notificationDestinationsImpl: notificationDestinationsImpl{
 			client: client,
@@ -1346,8 +1329,7 @@ type PersonalComputeInterface interface {
 	Update(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
 }
 
-func NewPersonalCompute(client *client.DatabricksClient,
-) *PersonalComputeAPI {
+func NewPersonalCompute(client *client.DatabricksClient) *PersonalComputeAPI {
 	return &PersonalComputeAPI{
 		personalComputeImpl: personalComputeImpl{
 			client: client,
@@ -1395,8 +1377,7 @@ type RestrictWorkspaceAdminsInterface interface {
 	Update(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error)
 }
 
-func NewRestrictWorkspaceAdmins(client *client.DatabricksClient,
-) *RestrictWorkspaceAdminsAPI {
+func NewRestrictWorkspaceAdmins(client *client.DatabricksClient) *RestrictWorkspaceAdminsAPI {
 	return &RestrictWorkspaceAdminsAPI{
 		restrictWorkspaceAdminsImpl: restrictWorkspaceAdminsImpl{
 			client: client,
@@ -1423,8 +1404,7 @@ type RestrictWorkspaceAdminsAPI struct {
 type SettingsInterface interface {
 }
 
-func NewSettings(client *client.DatabricksClient,
-) *SettingsAPI {
+func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 	return &SettingsAPI{
 		settingsImpl: settingsImpl{
 			client: client,
@@ -1522,8 +1502,7 @@ type TokenManagementInterface interface {
 	UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error)
 }
 
-func NewTokenManagement(client *client.DatabricksClient,
-) *TokenManagementAPI {
+func NewTokenManagement(client *client.DatabricksClient) *TokenManagementAPI {
 	return &TokenManagementAPI{
 		tokenManagementImpl: tokenManagementImpl{
 			client: client,
@@ -1701,8 +1680,7 @@ type TokensInterface interface {
 	GetByComment(ctx context.Context, name string) (*PublicTokenInfo, error)
 }
 
-func NewTokens(client *client.DatabricksClient,
-) *TokensAPI {
+func NewTokens(client *client.DatabricksClient) *TokensAPI {
 	return &TokensAPI{
 		tokensImpl: tokensImpl{
 			client: client,
@@ -1829,8 +1807,7 @@ type WorkspaceConfInterface interface {
 	SetStatus(ctx context.Context, request WorkspaceConf) error
 }
 
-func NewWorkspaceConf(client *client.DatabricksClient,
-) *WorkspaceConfAPI {
+func NewWorkspaceConf(client *client.DatabricksClient) *WorkspaceConfAPI {
 	return &WorkspaceConfAPI{
 		workspaceConfImpl: workspaceConfImpl{
 			client: client,

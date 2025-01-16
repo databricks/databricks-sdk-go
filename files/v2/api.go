@@ -189,8 +189,7 @@ type DbfsInterface interface {
 	Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error)
 }
 
-func NewDbfs(client *client.DatabricksClient,
-) *DbfsAPI {
+func NewDbfs(client *client.DatabricksClient) *DbfsAPI {
 	return &DbfsAPI{
 		dbfsImpl: dbfsImpl{
 			client: client,
@@ -431,8 +430,7 @@ type FilesInterface interface {
 	Upload(ctx context.Context, request UploadRequest) error
 }
 
-func NewFiles(client *client.DatabricksClient,
-) *FilesAPI {
+func NewFiles(client *client.DatabricksClient) *FilesAPI {
 	return &FilesAPI{
 		filesImpl: filesImpl{
 			client: client,
@@ -451,9 +449,14 @@ func NewFiles(client *client.DatabricksClient,
 //
 // The Files API has two distinct endpoints, one for working with files
 // (`/fs/files`) and another one for working with directories
-// (`/fs/directories`). Both endpoints, use the standard HTTP methods GET, HEAD,
+// (`/fs/directories`). Both endpoints use the standard HTTP methods GET, HEAD,
 // PUT, and DELETE to manage files and directories specified using their URI
 // path. The path is always absolute.
+//
+// Some Files API client features are currently experimental. To enable them,
+// set `enable_experimental_files_api_client = True` in your configuration
+// profile or use the environment variable
+// `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
 //
 // [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 type FilesAPI struct {

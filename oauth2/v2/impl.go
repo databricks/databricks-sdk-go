@@ -189,8 +189,8 @@ func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, reque
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
@@ -226,8 +226,8 @@ func (a *servicePrincipalFederationPolicyImpl) Update(ctx context.Context, reque
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }

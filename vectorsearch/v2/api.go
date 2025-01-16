@@ -41,8 +41,7 @@ type VectorSearchEndpointsInterface interface {
 	ListEndpointsAll(ctx context.Context, request ListEndpointsRequest) ([]EndpointInfo, error)
 }
 
-func NewVectorSearchEndpoints(client *client.DatabricksClient,
-) *VectorSearchEndpointsAPI {
+func NewVectorSearchEndpoints(client *client.DatabricksClient) *VectorSearchEndpointsAPI {
 	return &VectorSearchEndpointsAPI{
 		vectorSearchEndpointsImpl: vectorSearchEndpointsImpl{
 			client: client,
@@ -178,8 +177,7 @@ type VectorSearchIndexesInterface interface {
 	UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error)
 }
 
-func NewVectorSearchIndexes(client *client.DatabricksClient,
-) *VectorSearchIndexesAPI {
+func NewVectorSearchIndexes(client *client.DatabricksClient) *VectorSearchIndexesAPI {
 	return &VectorSearchIndexesAPI{
 		vectorSearchIndexesImpl: vectorSearchIndexesImpl{
 			client: client,

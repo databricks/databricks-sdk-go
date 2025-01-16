@@ -126,8 +126,8 @@ func (a *vectorSearchIndexesImpl) ScanIndex(ctx context.Context, request ScanVec
 	var scanVectorIndexResponse ScanVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/scan", request.IndexName)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &scanVectorIndexResponse)
 	return &scanVectorIndexResponse, err
 }
@@ -144,8 +144,8 @@ func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, req
 	var upsertDataVectorIndexResponse UpsertDataVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/upsert-data", request.IndexName)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &upsertDataVectorIndexResponse)
 	return &upsertDataVectorIndexResponse, err
 }

@@ -182,8 +182,8 @@ func (a *lakeviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequ
 	var dashboard Dashboard
 	path := "/api/2.0/lakeview/dashboards/migrate"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &dashboard)
 	return &dashboard, err
 }

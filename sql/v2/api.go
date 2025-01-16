@@ -85,8 +85,7 @@ type AlertsInterface interface {
 	Update(ctx context.Context, request UpdateAlertRequest) (*Alert, error)
 }
 
-func NewAlerts(client *client.DatabricksClient,
-) *AlertsAPI {
+func NewAlerts(client *client.DatabricksClient) *AlertsAPI {
 	return &AlertsAPI{
 		alertsImpl: alertsImpl{
 			client: client,
@@ -316,8 +315,7 @@ type AlertsLegacyInterface interface {
 	Update(ctx context.Context, request EditAlert) error
 }
 
-func NewAlertsLegacy(client *client.DatabricksClient,
-) *AlertsLegacyAPI {
+func NewAlertsLegacy(client *client.DatabricksClient) *AlertsLegacyAPI {
 	return &AlertsLegacyAPI{
 		alertsLegacyImpl: alertsLegacyImpl{
 			client: client,
@@ -437,8 +435,7 @@ type DashboardWidgetsInterface interface {
 	Update(ctx context.Context, request CreateWidget) (*Widget, error)
 }
 
-func NewDashboardWidgets(client *client.DatabricksClient,
-) *DashboardWidgetsAPI {
+func NewDashboardWidgets(client *client.DatabricksClient) *DashboardWidgetsAPI {
 	return &DashboardWidgetsAPI{
 		dashboardWidgetsImpl: dashboardWidgetsImpl{
 			client: client,
@@ -541,8 +538,7 @@ type DashboardsInterface interface {
 	Update(ctx context.Context, request DashboardEditContent) (*Dashboard, error)
 }
 
-func NewDashboards(client *client.DatabricksClient,
-) *DashboardsAPI {
+func NewDashboards(client *client.DatabricksClient) *DashboardsAPI {
 	return &DashboardsAPI{
 		dashboardsImpl: dashboardsImpl{
 			client: client,
@@ -719,8 +715,7 @@ type DataSourcesInterface interface {
 	GetByName(ctx context.Context, name string) (*DataSource, error)
 }
 
-func NewDataSources(client *client.DatabricksClient,
-) *DataSourcesAPI {
+func NewDataSources(client *client.DatabricksClient) *DataSourcesAPI {
 	return &DataSourcesAPI{
 		dataSourcesImpl: dataSourcesImpl{
 			client: client,
@@ -848,8 +843,7 @@ type DbsqlPermissionsInterface interface {
 	TransferOwnership(ctx context.Context, request TransferOwnershipRequest) (*Success, error)
 }
 
-func NewDbsqlPermissions(client *client.DatabricksClient,
-) *DbsqlPermissionsAPI {
+func NewDbsqlPermissions(client *client.DatabricksClient) *DbsqlPermissionsAPI {
 	return &DbsqlPermissionsAPI{
 		dbsqlPermissionsImpl: dbsqlPermissionsImpl{
 			client: client,
@@ -989,8 +983,7 @@ type QueriesInterface interface {
 	Update(ctx context.Context, request UpdateQueryRequest) (*Query, error)
 }
 
-func NewQueries(client *client.DatabricksClient,
-) *QueriesAPI {
+func NewQueries(client *client.DatabricksClient) *QueriesAPI {
 	return &QueriesAPI{
 		queriesImpl: queriesImpl{
 			client: client,
@@ -1311,8 +1304,7 @@ type QueriesLegacyInterface interface {
 	Update(ctx context.Context, request QueryEditContent) (*LegacyQuery, error)
 }
 
-func NewQueriesLegacy(client *client.DatabricksClient,
-) *QueriesLegacyAPI {
+func NewQueriesLegacy(client *client.DatabricksClient) *QueriesLegacyAPI {
 	return &QueriesLegacyAPI{
 		queriesLegacyImpl: queriesLegacyImpl{
 			client: client,
@@ -1495,8 +1487,7 @@ type QueryHistoryInterface interface {
 	List(ctx context.Context, request ListQueryHistoryRequest) (*ListQueriesResponse, error)
 }
 
-func NewQueryHistory(client *client.DatabricksClient,
-) *QueryHistoryAPI {
+func NewQueryHistory(client *client.DatabricksClient) *QueryHistoryAPI {
 	return &QueryHistoryAPI{
 		queryHistoryImpl: queryHistoryImpl{
 			client: client,
@@ -1533,8 +1524,7 @@ type QueryVisualizationsInterface interface {
 	Update(ctx context.Context, request UpdateVisualizationRequest) (*Visualization, error)
 }
 
-func NewQueryVisualizations(client *client.DatabricksClient,
-) *QueryVisualizationsAPI {
+func NewQueryVisualizations(client *client.DatabricksClient) *QueryVisualizationsAPI {
 	return &QueryVisualizationsAPI{
 		queryVisualizationsImpl: queryVisualizationsImpl{
 			client: client,
@@ -1601,8 +1591,7 @@ type QueryVisualizationsLegacyInterface interface {
 	Update(ctx context.Context, request LegacyVisualization) (*LegacyVisualization, error)
 }
 
-func NewQueryVisualizationsLegacy(client *client.DatabricksClient,
-) *QueryVisualizationsLegacyAPI {
+func NewQueryVisualizationsLegacy(client *client.DatabricksClient) *QueryVisualizationsLegacyAPI {
 	return &QueryVisualizationsLegacyAPI{
 		queryVisualizationsLegacyImpl: queryVisualizationsLegacyImpl{
 			client: client,
@@ -1699,8 +1688,7 @@ type StatementExecutionInterface interface {
 	GetStatementResultChunkNByStatementIdAndChunkIndex(ctx context.Context, statementId string, chunkIndex int) (*ResultData, error)
 }
 
-func NewStatementExecution(client *client.DatabricksClient,
-) *StatementExecutionAPI {
+func NewStatementExecution(client *client.DatabricksClient) *StatementExecutionAPI {
 	return &StatementExecutionAPI{
 		statementExecutionImpl: statementExecutionImpl{
 			client: client,
@@ -1973,8 +1961,7 @@ type WarehousesInterface interface {
 	UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
 }
 
-func NewWarehouses(client *client.DatabricksClient,
-) *WarehousesAPI {
+func NewWarehouses(client *client.DatabricksClient) *WarehousesAPI {
 	return &WarehousesAPI{
 		warehousesImpl: warehousesImpl{
 			client: client,

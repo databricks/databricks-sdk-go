@@ -56,8 +56,8 @@ func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentia
 	var updateCredentialsResponse UpdateCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateCredentialsResponse)
 	return err
 }
@@ -136,8 +136,8 @@ func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) error
 	var updateRepoResponse UpdateRepoResponse
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateRepoResponse)
 	return err
 }
@@ -161,8 +161,8 @@ func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) erro
 	var createScopeResponse CreateScopeResponse
 	path := "/api/2.0/secrets/scopes/create"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createScopeResponse)
 	return err
 }
@@ -181,8 +181,8 @@ func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) erro
 	var deleteScopeResponse DeleteScopeResponse
 	path := "/api/2.0/secrets/scopes/delete"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteScopeResponse)
 	return err
 }
@@ -246,8 +246,8 @@ func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) error {
 	var putAclResponse PutAclResponse
 	path := "/api/2.0/secrets/acls/put"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &putAclResponse)
 	return err
 }

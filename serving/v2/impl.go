@@ -88,6 +88,16 @@ func (a *servingEndpointsImpl) GetPermissions(ctx context.Context, request GetSe
 	return &servingEndpointPermissions, err
 }
 
+func (a *servingEndpointsImpl) HttpRequest(ctx context.Context, request ExternalFunctionRequest) (*ExternalFunctionResponse, error) {
+	var externalFunctionResponse ExternalFunctionResponse
+	path := "/api/2.0/external-function"
+	headers := make(map[string]string)
+	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &externalFunctionResponse)
+	return &externalFunctionResponse, err
+}
+
 func (a *servingEndpointsImpl) List(ctx context.Context) (*ListEndpointsResponse, error) {
 	var listEndpointsResponse ListEndpointsResponse
 	path := "/api/2.0/serving-endpoints"
@@ -160,8 +170,8 @@ func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request Endpoin
 	var servingEndpointDetailed ServingEndpointDetailed
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/config", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
 }
@@ -185,8 +195,8 @@ func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request Query
 	var queryEndpointResponse QueryEndpointResponse
 	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryEndpointResponse)
 	return &queryEndpointResponse, err
 }

@@ -56,8 +56,8 @@ func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceI
 	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &replaceResponse)
 	return err
 }
@@ -104,8 +104,8 @@ func (a *aibiDashboardEmbeddingAccessPolicyImpl) Update(ctx context.Context, req
 	var aibiDashboardEmbeddingAccessPolicySetting AibiDashboardEmbeddingAccessPolicySetting
 	path := "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &aibiDashboardEmbeddingAccessPolicySetting)
 	return &aibiDashboardEmbeddingAccessPolicySetting, err
 }
@@ -419,8 +419,8 @@ func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessLi
 	var createIpAccessListResponse CreateIpAccessListResponse
 	path := "/api/2.0/ip-access-lists"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createIpAccessListResponse)
 	return &createIpAccessListResponse, err
 }

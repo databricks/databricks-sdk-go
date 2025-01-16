@@ -10,6 +10,20 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
+// unexported type that holds implementations of just access_control API methods
+type accessControlImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *accessControlImpl) CheckPolicy(ctx context.Context, request CheckPolicyRequest) (*CheckPolicyResponse, error) {
+	var checkPolicyResponse CheckPolicyResponse
+	path := "/api/2.0/access-control/check-policy-v2"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &checkPolicyResponse)
+	return &checkPolicyResponse, err
+}
+
 // unexported type that holds implementations of just account_access_control API methods
 type accountAccessControlImpl struct {
 	client *client.DatabricksClient
@@ -192,8 +206,8 @@ func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request Servi
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
 	return err
 }
@@ -207,8 +221,8 @@ func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, err
 	var user User
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &user)
 	return &user, err
 }
@@ -437,8 +451,8 @@ func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchResponse)
 	return err
 }
@@ -588,8 +602,8 @@ func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWork
 	var permissionAssignment PermissionAssignment
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &permissionAssignment)
 	return &permissionAssignment, err
 }

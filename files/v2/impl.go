@@ -20,8 +20,8 @@ func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) error {
 	var addBlockResponse AddBlockResponse
 	path := "/api/2.0/dbfs/add-block"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &addBlockResponse)
 	return err
 }

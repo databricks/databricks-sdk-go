@@ -161,8 +161,8 @@ func (a *experimentsImpl) LogInputs(ctx context.Context, request LogInputs) erro
 	var logInputsResponse LogInputsResponse
 	path := "/api/2.0/mlflow/runs/log-inputs"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &logInputsResponse)
 	return err
 }
@@ -241,8 +241,8 @@ func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) (*
 	var searchRunsResponse SearchRunsResponse
 	path := "/api/2.0/mlflow/runs/search"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &searchRunsResponse)
 	return &searchRunsResponse, err
 }
@@ -281,8 +281,8 @@ func (a *experimentsImpl) UpdateExperiment(ctx context.Context, request UpdateEx
 	var updateExperimentResponse UpdateExperimentResponse
 	path := "/api/2.0/mlflow/experiments/update"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &updateExperimentResponse)
 	return err
 }
@@ -291,8 +291,8 @@ func (a *experimentsImpl) UpdatePermissions(ctx context.Context, request Experim
 	var experimentPermissions ExperimentPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &experimentPermissions)
 	return &experimentPermissions, err
 }
@@ -326,8 +326,8 @@ func (a *modelRegistryImpl) CreateComment(ctx context.Context, request CreateCom
 	var createCommentResponse CreateCommentResponse
 	path := "/api/2.0/mlflow/comments/create"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createCommentResponse)
 	return &createCommentResponse, err
 }
@@ -439,8 +439,8 @@ func (a *modelRegistryImpl) GetLatestVersions(ctx context.Context, request GetLa
 	var getLatestVersionsResponse GetLatestVersionsResponse
 	path := "/api/2.0/mlflow/registered-models/get-latest-versions"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &getLatestVersionsResponse)
 	return &getLatestVersionsResponse, err
 }

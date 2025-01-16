@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Access Control , Account Access Control Proxy , Account Groups , Account Service Principals , Account Users , Current User , Groups , Permission Migration , Permissions , Service Principals , Users , Workspace Assignment , etc.
+// These APIs allow you to manage Access Control , Account Access Control , Account Access Control Proxy , Account Groups , Account Service Principals , Account Users , Current User , Groups , Permission Migration , Permissions , Service Principals , Users , Workspace Assignment , etc.
 package iam
 
 import (
@@ -11,6 +11,25 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
+
+type AccessControlInterface interface {
+
+	// Check access policy to a resource.
+	CheckPolicy(ctx context.Context, request CheckPolicyRequest) (*CheckPolicyResponse, error)
+}
+
+func NewAccessControl(client *client.DatabricksClient) *AccessControlAPI {
+	return &AccessControlAPI{
+		accessControlImpl: accessControlImpl{
+			client: client,
+		},
+	}
+}
+
+// Rule based Access Control for Databricks Resources.
+type AccessControlAPI struct {
+	accessControlImpl
+}
 
 type AccountAccessControlInterface interface {
 
@@ -36,8 +55,7 @@ type AccountAccessControlInterface interface {
 	UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error)
 }
 
-func NewAccountAccessControl(client *client.DatabricksClient,
-) *AccountAccessControlAPI {
+func NewAccountAccessControl(client *client.DatabricksClient) *AccountAccessControlAPI {
 	return &AccountAccessControlAPI{
 		accountAccessControlImpl: accountAccessControlImpl{
 			client: client,
@@ -76,8 +94,7 @@ type AccountAccessControlProxyInterface interface {
 	UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error)
 }
 
-func NewAccountAccessControlProxy(client *client.DatabricksClient,
-) *AccountAccessControlProxyAPI {
+func NewAccountAccessControlProxy(client *client.DatabricksClient) *AccountAccessControlProxyAPI {
 	return &AccountAccessControlProxyAPI{
 		accountAccessControlProxyImpl: accountAccessControlProxyImpl{
 			client: client,
@@ -164,8 +181,7 @@ type AccountGroupsInterface interface {
 	Update(ctx context.Context, request Group) error
 }
 
-func NewAccountGroups(client *client.DatabricksClient,
-) *AccountGroupsAPI {
+func NewAccountGroups(client *client.DatabricksClient) *AccountGroupsAPI {
 	return &AccountGroupsAPI{
 		accountGroupsImpl: accountGroupsImpl{
 			client: client,
@@ -379,8 +395,7 @@ type AccountServicePrincipalsInterface interface {
 	Update(ctx context.Context, request ServicePrincipal) error
 }
 
-func NewAccountServicePrincipals(client *client.DatabricksClient,
-) *AccountServicePrincipalsAPI {
+func NewAccountServicePrincipals(client *client.DatabricksClient) *AccountServicePrincipalsAPI {
 	return &AccountServicePrincipalsAPI{
 		accountServicePrincipalsImpl: accountServicePrincipalsImpl{
 			client: client,
@@ -593,8 +608,7 @@ type AccountUsersInterface interface {
 	Update(ctx context.Context, request User) error
 }
 
-func NewAccountUsers(client *client.DatabricksClient,
-) *AccountUsersAPI {
+func NewAccountUsers(client *client.DatabricksClient) *AccountUsersAPI {
 	return &AccountUsersAPI{
 		accountUsersImpl: accountUsersImpl{
 			client: client,
@@ -746,8 +760,7 @@ type CurrentUserInterface interface {
 	Me(ctx context.Context) (*User, error)
 }
 
-func NewCurrentUser(client *client.DatabricksClient,
-) *CurrentUserAPI {
+func NewCurrentUser(client *client.DatabricksClient) *CurrentUserAPI {
 	return &CurrentUserAPI{
 		currentUserImpl: currentUserImpl{
 			client: client,
@@ -832,8 +845,7 @@ type GroupsInterface interface {
 	Update(ctx context.Context, request Group) error
 }
 
-func NewGroups(client *client.DatabricksClient,
-) *GroupsAPI {
+func NewGroups(client *client.DatabricksClient) *GroupsAPI {
 	return &GroupsAPI{
 		groupsImpl: groupsImpl{
 			client: client,
@@ -978,8 +990,7 @@ type PermissionMigrationInterface interface {
 	MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error)
 }
 
-func NewPermissionMigration(client *client.DatabricksClient,
-) *PermissionMigrationAPI {
+func NewPermissionMigration(client *client.DatabricksClient) *PermissionMigrationAPI {
 	return &PermissionMigrationAPI{
 		permissionMigrationImpl: permissionMigrationImpl{
 			client: client,
@@ -1031,8 +1042,7 @@ type PermissionsInterface interface {
 	Update(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error)
 }
 
-func NewPermissions(client *client.DatabricksClient,
-) *PermissionsAPI {
+func NewPermissions(client *client.DatabricksClient) *PermissionsAPI {
 	return &PermissionsAPI{
 		permissionsImpl: permissionsImpl{
 			client: client,
@@ -1194,8 +1204,7 @@ type ServicePrincipalsInterface interface {
 	Update(ctx context.Context, request ServicePrincipal) error
 }
 
-func NewServicePrincipals(client *client.DatabricksClient,
-) *ServicePrincipalsAPI {
+func NewServicePrincipals(client *client.DatabricksClient) *ServicePrincipalsAPI {
 	return &ServicePrincipalsAPI{
 		servicePrincipalsImpl: servicePrincipalsImpl{
 			client: client,
@@ -1432,8 +1441,7 @@ type UsersInterface interface {
 	UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
 }
 
-func NewUsers(client *client.DatabricksClient,
-) *UsersAPI {
+func NewUsers(client *client.DatabricksClient) *UsersAPI {
 	return &UsersAPI{
 		usersImpl: usersImpl{
 			client: client,
@@ -1632,8 +1640,7 @@ type WorkspaceAssignmentInterface interface {
 	Update(ctx context.Context, request UpdateWorkspaceAssignments) (*PermissionAssignment, error)
 }
 
-func NewWorkspaceAssignment(client *client.DatabricksClient,
-) *WorkspaceAssignmentAPI {
+func NewWorkspaceAssignment(client *client.DatabricksClient) *WorkspaceAssignmentAPI {
 	return &WorkspaceAssignmentAPI{
 		workspaceAssignmentImpl: workspaceAssignmentImpl{
 			client: client,

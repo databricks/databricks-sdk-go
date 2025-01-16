@@ -19,8 +19,8 @@ func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*Pr
 	var providerInfo ProviderInfo
 	path := "/api/2.1/unity-catalog/providers"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &providerInfo)
 	return &providerInfo, err
 }
@@ -65,8 +65,8 @@ func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) (*Pr
 	var providerInfo ProviderInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &providerInfo)
 	return &providerInfo, err
 }
@@ -155,14 +155,14 @@ func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePerm
 	return &getRecipientSharePermissionsResponse, err
 }
 
-func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) error {
-	var updateResponse UpdateResponse
+func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) (*RecipientInfo, error) {
+	var recipientInfo RecipientInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &recipientInfo)
+	return &recipientInfo, err
 }
 
 // unexported type that holds implementations of just shares API methods

@@ -65,8 +65,7 @@ type ConsumerFulfillmentsInterface interface {
 	ListByListingId(ctx context.Context, listingId string) (*ListFulfillmentsResponse, error)
 }
 
-func NewConsumerFulfillments(client *client.DatabricksClient,
-) *ConsumerFulfillmentsAPI {
+func NewConsumerFulfillments(client *client.DatabricksClient) *ConsumerFulfillmentsAPI {
 	return &ConsumerFulfillmentsAPI{
 		consumerFulfillmentsImpl: consumerFulfillmentsImpl{
 			client: client,
@@ -247,8 +246,7 @@ type ConsumerInstallationsInterface interface {
 	Update(ctx context.Context, request UpdateInstallationRequest) (*UpdateInstallationResponse, error)
 }
 
-func NewConsumerInstallations(client *client.DatabricksClient,
-) *ConsumerInstallationsAPI {
+func NewConsumerInstallations(client *client.DatabricksClient) *ConsumerInstallationsAPI {
 	return &ConsumerInstallationsAPI{
 		consumerInstallationsImpl: consumerInstallationsImpl{
 			client: client,
@@ -432,8 +430,7 @@ type ConsumerListingsInterface interface {
 	SearchAll(ctx context.Context, request SearchListingsRequest) ([]Listing, error)
 }
 
-func NewConsumerListings(client *client.DatabricksClient,
-) *ConsumerListingsAPI {
+func NewConsumerListings(client *client.DatabricksClient) *ConsumerListingsAPI {
 	return &ConsumerListingsAPI{
 		consumerListingsImpl: consumerListingsImpl{
 			client: client,
@@ -628,8 +625,7 @@ type ConsumerPersonalizationRequestsInterface interface {
 	ListAll(ctx context.Context, request ListAllPersonalizationRequestsRequest) ([]PersonalizationRequest, error)
 }
 
-func NewConsumerPersonalizationRequests(client *client.DatabricksClient,
-) *ConsumerPersonalizationRequestsAPI {
+func NewConsumerPersonalizationRequests(client *client.DatabricksClient) *ConsumerPersonalizationRequestsAPI {
 	return &ConsumerPersonalizationRequestsAPI{
 		consumerPersonalizationRequestsImpl: consumerPersonalizationRequestsImpl{
 			client: client,
@@ -747,8 +743,7 @@ type ConsumerProvidersInterface interface {
 	GetByName(ctx context.Context, name string) (*ProviderInfo, error)
 }
 
-func NewConsumerProviders(client *client.DatabricksClient,
-) *ConsumerProvidersAPI {
+func NewConsumerProviders(client *client.DatabricksClient) *ConsumerProvidersAPI {
 	return &ConsumerProvidersAPI{
 		consumerProvidersImpl: consumerProvidersImpl{
 			client: client,
@@ -920,8 +915,7 @@ type ProviderExchangeFiltersInterface interface {
 	Update(ctx context.Context, request UpdateExchangeFilterRequest) (*UpdateExchangeFilterResponse, error)
 }
 
-func NewProviderExchangeFilters(client *client.DatabricksClient,
-) *ProviderExchangeFiltersAPI {
+func NewProviderExchangeFilters(client *client.DatabricksClient) *ProviderExchangeFiltersAPI {
 	return &ProviderExchangeFiltersAPI{
 		providerExchangeFiltersImpl: providerExchangeFiltersImpl{
 			client: client,
@@ -1179,8 +1173,7 @@ type ProviderExchangesInterface interface {
 	Update(ctx context.Context, request UpdateExchangeRequest) (*UpdateExchangeResponse, error)
 }
 
-func NewProviderExchanges(client *client.DatabricksClient,
-) *ProviderExchangesAPI {
+func NewProviderExchanges(client *client.DatabricksClient) *ProviderExchangesAPI {
 	return &ProviderExchangesAPI{
 		providerExchangesImpl: providerExchangesImpl{
 			client: client,
@@ -1558,8 +1551,7 @@ type ProviderFilesInterface interface {
 	GetByDisplayName(ctx context.Context, name string) (*FileInfo, error)
 }
 
-func NewProviderFiles(client *client.DatabricksClient,
-) *ProviderFilesAPI {
+func NewProviderFiles(client *client.DatabricksClient) *ProviderFilesAPI {
 	return &ProviderFilesAPI{
 		providerFilesImpl: providerFilesImpl{
 			client: client,
@@ -1748,8 +1740,7 @@ type ProviderListingsInterface interface {
 	Update(ctx context.Context, request UpdateListingRequest) (*UpdateListingResponse, error)
 }
 
-func NewProviderListings(client *client.DatabricksClient,
-) *ProviderListingsAPI {
+func NewProviderListings(client *client.DatabricksClient) *ProviderListingsAPI {
 	return &ProviderListingsAPI{
 		providerListingsImpl: providerListingsImpl{
 			client: client,
@@ -1898,8 +1889,7 @@ type ProviderPersonalizationRequestsInterface interface {
 	Update(ctx context.Context, request UpdatePersonalizationRequestRequest) (*UpdatePersonalizationRequestResponse, error)
 }
 
-func NewProviderPersonalizationRequests(client *client.DatabricksClient,
-) *ProviderPersonalizationRequestsAPI {
+func NewProviderPersonalizationRequests(client *client.DatabricksClient) *ProviderPersonalizationRequestsAPI {
 	return &ProviderPersonalizationRequestsAPI{
 		providerPersonalizationRequestsImpl: providerPersonalizationRequestsImpl{
 			client: client,
@@ -1978,8 +1968,7 @@ type ProviderProviderAnalyticsDashboardsInterface interface {
 	Update(ctx context.Context, request UpdateProviderAnalyticsDashboardRequest) (*UpdateProviderAnalyticsDashboardResponse, error)
 }
 
-func NewProviderProviderAnalyticsDashboards(client *client.DatabricksClient,
-) *ProviderProviderAnalyticsDashboardsAPI {
+func NewProviderProviderAnalyticsDashboards(client *client.DatabricksClient) *ProviderProviderAnalyticsDashboardsAPI {
 	return &ProviderProviderAnalyticsDashboardsAPI{
 		providerProviderAnalyticsDashboardsImpl: providerProviderAnalyticsDashboardsImpl{
 			client: client,
@@ -2057,8 +2046,7 @@ type ProviderProvidersInterface interface {
 	Update(ctx context.Context, request UpdateProviderRequest) (*UpdateProviderResponse, error)
 }
 
-func NewProviderProviders(client *client.DatabricksClient,
-) *ProviderProvidersAPI {
+func NewProviderProviders(client *client.DatabricksClient) *ProviderProvidersAPI {
 	return &ProviderProvidersAPI{
 		providerProvidersImpl: providerProvidersImpl{
 			client: client,

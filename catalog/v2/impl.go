@@ -19,8 +19,8 @@ func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request Ac
 	var createResponse CreateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createResponse)
 	return err
 }
@@ -303,8 +303,8 @@ func (a *credentialsImpl) CreateCredential(ctx context.Context, request CreateCr
 	var credentialInfo CredentialInfo
 	path := "/api/2.1/unity-catalog/credentials"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &credentialInfo)
 	return &credentialInfo, err
 }
@@ -322,8 +322,8 @@ func (a *credentialsImpl) GenerateTemporaryServiceCredential(ctx context.Context
 	var temporaryCredentials TemporaryCredentials
 	path := "/api/2.1/unity-catalog/temporary-service-credentials"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &temporaryCredentials)
 	return &temporaryCredentials, err
 }
@@ -512,8 +512,8 @@ func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssi
 	var assignResponse AssignResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &assignResponse)
 	return err
 }
@@ -522,8 +522,8 @@ func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*
 	var metastoreInfo MetastoreInfo
 	path := "/api/2.1/unity-catalog/metastores"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &metastoreInfo)
 	return &metastoreInfo, err
 }
@@ -747,8 +747,8 @@ func (a *qualityMonitorsImpl) RegenerateDashboard(ctx context.Context, request R
 	var regenerateDashboardResponse RegenerateDashboardResponse
 	path := fmt.Sprintf("/api/2.1/quality-monitoring/tables/%v/monitor/dashboard", request.TableName)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &regenerateDashboardResponse)
 	return &regenerateDashboardResponse, err
 }
@@ -972,8 +972,8 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 	var validateStorageCredentialResponse ValidateStorageCredentialResponse
 	path := "/api/2.1/unity-catalog/validate-storage-credentials"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &validateStorageCredentialResponse)
 	return &validateStorageCredentialResponse, err
 }

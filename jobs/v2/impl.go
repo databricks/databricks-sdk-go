@@ -141,8 +141,8 @@ func (a *jobsImpl) RepairRun(ctx context.Context, request RepairRun) (*RepairRun
 	var repairRunResponse RepairRunResponse
 	path := "/api/2.1/jobs/runs/repair"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &repairRunResponse)
 	return &repairRunResponse, err
 }
@@ -161,8 +161,8 @@ func (a *jobsImpl) RunNow(ctx context.Context, request RunNow) (*RunNowResponse,
 	var runNowResponse RunNowResponse
 	path := "/api/2.1/jobs/run-now"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &runNowResponse)
 	return &runNowResponse, err
 }
@@ -216,8 +216,8 @@ func (a *policyComplianceForJobsImpl) EnforceCompliance(ctx context.Context, req
 	var enforcePolicyComplianceResponse EnforcePolicyComplianceResponse
 	path := "/api/2.0/policies/jobs/enforce-compliance"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &enforcePolicyComplianceResponse)
 	return &enforcePolicyComplianceResponse, err
 }
