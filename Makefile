@@ -15,18 +15,28 @@ lint: vendor
 	@go run honnef.co/go/tools/cmd/staticcheck@v0.5.1 ./...
 
 test: vendor
-	@echo "✓ Running tests ..."
-	@go run gotest.tools/gotestsum@latest --format pkgname-and-test-fails \
-		--no-summary=skipped --raw-command go test -v \
-		-json -short -coverprofile=coverage.txt ./...
-
-coverage: test
-	@echo "✓ Opening coverage for unit tests ..."
-	@go tool cover -html=coverage.txt
+	@echo "✓ Running tests in all modules ..."
+	@for dir in */; do \
+	    if [ -f "$$dir/go.mod" ]; then \
+	        echo "Testing $$dir..."; \
+	        cd $$dir && \
+			go run gotest.tools/gotestsum@latest --format pkgname-and-test-fails \
+			--no-summary=skipped --raw-command go test -v \
+			-json -short -coverprofile=coverage.txt  -covermode=count ./... && \
+	        cd ..; \
+	    fi \
+    done
 
 vendor:
-	@echo "✓ Filling vendor folder with library code ..."
-	@go mod vendor
+	@echo "✓ Filling vendor folders in all modules ..."
+	@for dir in */; do \
+	    if [ -f "$$dir/go.mod" ]; then \
+	        echo "Vendoring $$dir..."; \
+	        cd $$dir && \
+	        go mod vendor && \
+	        cd ..; \
+	    fi \
+	done
 
 doc:
 	@echo "Open http://localhost:6060"
