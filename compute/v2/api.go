@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Cluster Policies , Clusters , Command Execution , Global Init Scripts , Instance Pools , Instance Profiles , Libraries , Policy Compliance For Clusters , Policy Families , etc.
+// These APIs allow you to manage Cluster Policies, Clusters, Command Execution, Global Init Scripts, Instance Pools, Instance Profiles, Libraries, Policy Compliance For Clusters, Policy Families, etc.
 package compute
 
 import (

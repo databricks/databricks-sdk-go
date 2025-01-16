@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Federation Policy , Custom App Integration , O Auth Published Apps , Published App Integration , Service Principal Federation Policy , Service Principal Secrets , etc.
+// These APIs allow you to manage Account Federation Policy, Custom App Integration, O Auth Published Apps, Published App Integration, Service Principal Federation Policy, Service Principal Secrets, etc.
 package oauth2
 
 import (

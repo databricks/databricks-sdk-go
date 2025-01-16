@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Experiments , Model Registry , etc.
+// These APIs allow you to manage Experiments, Model Registry, etc.
 package ml
 
 import (

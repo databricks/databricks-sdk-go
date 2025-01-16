@@ -38,8 +38,8 @@ func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentReques
 	var appDeployment AppDeployment
 	path := fmt.Sprintf("/api/2.0/apps/%v/deployments", request.AppName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.AppDeployment, &appDeployment)
 	return &appDeployment, err
 }

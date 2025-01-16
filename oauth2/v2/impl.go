@@ -19,8 +19,8 @@ func (a *accountFederationPolicyImpl) Create(ctx context.Context, request Create
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
@@ -137,8 +137,8 @@ func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request Create
 	var createPublishedAppIntegrationOutput CreatePublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createPublishedAppIntegrationOutput)
 	return &createPublishedAppIntegrationOutput, err
 }

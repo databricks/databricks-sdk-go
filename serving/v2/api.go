@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Serving Endpoints , Serving Endpoints Data Plane , etc.
+// These APIs allow you to manage Serving Endpoints, Serving Endpoints Data Plane, etc.
 package serving
 
 import (

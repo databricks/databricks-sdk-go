@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Dbfs , Files , etc.
+// These APIs allow you to manage Dbfs, Files, etc.
 package files
 
 import (

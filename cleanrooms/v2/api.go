@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Clean Room Assets , Clean Room Task Runs , Clean Rooms , etc.
+// These APIs allow you to manage Clean Room Assets, Clean Room Task Runs, Clean Rooms, etc.
 package cleanrooms
 
 import (

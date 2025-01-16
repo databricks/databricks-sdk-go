@@ -50,8 +50,8 @@ func (a *dbfsImpl) Delete(ctx context.Context, request Delete) error {
 	var deleteResponse DeleteResponse
 	path := "/api/2.0/dbfs/delete"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteResponse)
 	return err
 }
@@ -78,8 +78,8 @@ func (a *dbfsImpl) Mkdirs(ctx context.Context, request MkDirs) error {
 	var mkDirsResponse MkDirsResponse
 	path := "/api/2.0/dbfs/mkdirs"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &mkDirsResponse)
 	return err
 }
@@ -88,8 +88,8 @@ func (a *dbfsImpl) Move(ctx context.Context, request Move) error {
 	var moveResponse MoveResponse
 	path := "/api/2.0/dbfs/move"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &moveResponse)
 	return err
 }

@@ -56,8 +56,8 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 	var genieStartConversationResponse GenieStartConversationResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/start-conversation", request.SpaceId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &genieStartConversationResponse)
 	return &genieStartConversationResponse, err
 }

@@ -251,8 +251,8 @@ func (a *dbsqlPermissionsImpl) TransferOwnership(ctx context.Context, request Tr
 	var success Success
 	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v/transfer", request.ObjectType, request.ObjectId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &success)
 	return &success, err
 }
@@ -436,8 +436,8 @@ func (a *queryVisualizationsLegacyImpl) Create(ctx context.Context, request Crea
 	var legacyVisualization LegacyVisualization
 	path := "/api/2.0/preview/sql/visualizations"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyVisualization)
 	return &legacyVisualization, err
 }
@@ -530,8 +530,8 @@ func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest)
 	var editWarehouseResponse EditWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", request.Id)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &editWarehouseResponse)
 	return err
 }

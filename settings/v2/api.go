@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists , Account Settings , Aibi Dashboard Embedding Access Policy , Aibi Dashboard Embedding Approved Domains , Automatic Cluster Update , Compliance Security Profile , Credentials Manager , Csp Enablement Account , Default Namespace , Disable Legacy Access , Disable Legacy Dbfs , Disable Legacy Features , Enhanced Security Monitoring , Esm Enablement Account , Ip Access Lists , Network Connectivity , Notification Destinations , Personal Compute , Restrict Workspace Admins , Settings , Token Management , Tokens , Workspace Conf , etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (

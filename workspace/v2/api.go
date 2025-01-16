@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Git Credentials , Repos , Secrets , Workspace , etc.
+// These APIs allow you to manage Git Credentials, Repos, Secrets, Workspace, etc.
 package workspace
 
 import (

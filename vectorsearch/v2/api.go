@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Vector Search Endpoints , Vector Search Indexes , etc.
+// These APIs allow you to manage Vector Search Endpoints, Vector Search Indexes, etc.
 package vectorsearch
 
 import (

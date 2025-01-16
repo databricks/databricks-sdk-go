@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Consumer Fulfillments , Consumer Installations , Consumer Listings , Consumer Personalization Requests , Consumer Providers , Provider Exchange Filters , Provider Exchanges , Provider Files , Provider Listings , Provider Personalization Requests , Provider Provider Analytics Dashboards , Provider Providers , etc.
+// These APIs allow you to manage Consumer Fulfillments, Consumer Installations, Consumer Listings, Consumer Personalization Requests, Consumer Providers, Provider Exchange Filters, Provider Exchanges, Provider Files, Provider Listings, Provider Personalization Requests, Provider Provider Analytics Dashboards, Provider Providers, etc.
 package marketplace
 
 import (

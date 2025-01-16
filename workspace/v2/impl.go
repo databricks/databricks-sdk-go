@@ -71,8 +71,8 @@ func (a *reposImpl) Create(ctx context.Context, request CreateRepoRequest) (*Cre
 	var createRepoResponse CreateRepoResponse
 	path := "/api/2.0/repos"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createRepoResponse)
 	return &createRepoResponse, err
 }
@@ -146,8 +146,8 @@ func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissio
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &repoPermissions)
 	return &repoPermissions, err
 }
@@ -181,8 +181,8 @@ func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) erro
 	var deleteScopeResponse DeleteScopeResponse
 	path := "/api/2.0/secrets/scopes/delete"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteScopeResponse)
 	return err
 }

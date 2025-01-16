@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Metastore Assignments , Account Metastores , Account Storage Credentials , Artifact Allowlists , Catalogs , Connections , Credentials , External Locations , Functions , Grants , Metastores , Model Versions , Online Tables , Quality Monitors , Registered Models , Resource Quotas , Schemas , Storage Credentials , System Schemas , Table Constraints , Tables , Temporary Table Credentials , Volumes , Workspace Bindings , etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, Credentials, External Locations, Functions, Grants, Metastores, Model Versions, Online Tables, Quality Monitors, Registered Models, Resource Quotas, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Temporary Table Credentials, Volumes, Workspace Bindings, etc.
 package catalog
 
 import (

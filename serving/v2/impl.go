@@ -160,8 +160,8 @@ func (a *servingEndpointsImpl) SetPermissions(ctx context.Context, request Servi
 	var servingEndpointPermissions ServingEndpointPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &servingEndpointPermissions)
 	return &servingEndpointPermissions, err
 }

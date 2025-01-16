@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Access Control , Account Access Control , Account Access Control Proxy , Account Groups , Account Service Principals , Account Users , Current User , Groups , Permission Migration , Permissions , Service Principals , Users , Workspace Assignment , etc.
+// These APIs allow you to manage Access Control, Account Access Control, Account Access Control Proxy, Account Groups, Account Service Principals, Account Users, Current User, Groups, Permission Migration, Permissions, Service Principals, Users, Workspace Assignment, etc.
 package iam
 
 import (

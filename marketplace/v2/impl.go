@@ -79,8 +79,8 @@ func (a *consumerInstallationsImpl) Update(ctx context.Context, request UpdateIn
 	var updateInstallationResponse UpdateInstallationResponse
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateInstallationResponse)
 	return &updateInstallationResponse, err
 }
@@ -200,8 +200,8 @@ func (a *providerExchangeFiltersImpl) Create(ctx context.Context, request Create
 	var createExchangeFilterResponse CreateExchangeFilterResponse
 	path := "/api/2.0/marketplace-exchange/filters"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createExchangeFilterResponse)
 	return &createExchangeFilterResponse, err
 }
@@ -317,8 +317,8 @@ func (a *providerExchangesImpl) Update(ctx context.Context, request UpdateExchan
 	var updateExchangeResponse UpdateExchangeResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateExchangeResponse)
 	return &updateExchangeResponse, err
 }
@@ -374,8 +374,8 @@ func (a *providerListingsImpl) Create(ctx context.Context, request CreateListing
 	var createListingResponse CreateListingResponse
 	path := "/api/2.0/marketplace-provider/listing"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createListingResponse)
 	return &createListingResponse, err
 }

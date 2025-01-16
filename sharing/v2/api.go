@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Providers , Recipient Activation , Recipients , Shares , etc.
+// These APIs allow you to manage Providers, Recipient Activation, Recipients, Shares, etc.
 package sharing
 
 import (

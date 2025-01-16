@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Jobs , Policy Compliance For Jobs , etc.
+// These APIs allow you to manage Jobs, Policy Compliance For Jobs, etc.
 package jobs
 
 import (

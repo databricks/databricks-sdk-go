@@ -84,8 +84,8 @@ func (a *accountAccessControlProxyImpl) UpdateRuleSet(ctx context.Context, reque
 	var ruleSetResponse RuleSetResponse
 	path := "/api/2.0/preview/accounts/access-control/rule-sets"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &ruleSetResponse)
 	return &ruleSetResponse, err
 }
@@ -99,8 +99,8 @@ func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, 
 	var group Group
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &group)
 	return &group, err
 }
@@ -160,8 +160,8 @@ func (a *accountServicePrincipalsImpl) Create(ctx context.Context, request Servi
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
@@ -206,8 +206,8 @@ func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request Servi
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
 	return err
 }
@@ -267,8 +267,8 @@ func (a *accountUsersImpl) Update(ctx context.Context, request User) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
 	return err
 }
@@ -332,8 +332,8 @@ func (a *groupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchResponse)
 	return err
 }
@@ -342,8 +342,8 @@ func (a *groupsImpl) Update(ctx context.Context, request Group) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
 	return err
 }
@@ -390,8 +390,8 @@ func (a *permissionsImpl) Set(ctx context.Context, request PermissionsRequest) (
 	var objectPermissions ObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &objectPermissions)
 	return &objectPermissions, err
 }
@@ -451,8 +451,8 @@ func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchResponse)
 	return err
 }
@@ -461,8 +461,8 @@ func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrinc
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
 	return err
 }
@@ -530,8 +530,8 @@ func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &patchResponse)
 	return err
 }

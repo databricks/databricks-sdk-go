@@ -141,8 +141,8 @@ func (a *jobsImpl) RepairRun(ctx context.Context, request RepairRun) (*RepairRun
 	var repairRunResponse RepairRunResponse
 	path := "/api/2.1/jobs/runs/repair"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &repairRunResponse)
 	return &repairRunResponse, err
 }
@@ -201,8 +201,8 @@ func (a *jobsImpl) UpdatePermissions(ctx context.Context, request JobPermissions
 	var jobPermissions JobPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", request.JobId)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &jobPermissions)
 	return &jobPermissions, err
 }

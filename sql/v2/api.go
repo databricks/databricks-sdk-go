@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Alerts , Alerts Legacy , Dashboard Widgets , Dashboards , Data Sources , Dbsql Permissions , Queries , Queries Legacy , Query History , Query Visualizations , Query Visualizations Legacy , Statement Execution , Warehouses , etc.
+// These APIs allow you to manage Alerts, Alerts Legacy, Dashboard Widgets, Dashboards, Data Sources, Dbsql Permissions, Queries, Queries Legacy, Query History, Query Visualizations, Query Visualizations Legacy, Statement Execution, Warehouses, etc.
 package sql
 
 import (

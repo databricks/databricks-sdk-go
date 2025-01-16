@@ -29,8 +29,8 @@ func (a *experimentsImpl) CreateRun(ctx context.Context, request CreateRun) (*Cr
 	var createRunResponse CreateRunResponse
 	path := "/api/2.0/mlflow/runs/create"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createRunResponse)
 	return &createRunResponse, err
 }
@@ -201,8 +201,8 @@ func (a *experimentsImpl) RestoreExperiment(ctx context.Context, request Restore
 	var restoreExperimentResponse RestoreExperimentResponse
 	path := "/api/2.0/mlflow/experiments/restore"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &restoreExperimentResponse)
 	return err
 }
@@ -221,8 +221,8 @@ func (a *experimentsImpl) RestoreRuns(ctx context.Context, request RestoreRuns) 
 	var restoreRunsResponse RestoreRunsResponse
 	path := "/api/2.0/mlflow/databricks/runs/restore-runs"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &restoreRunsResponse)
 	return &restoreRunsResponse, err
 }
@@ -231,8 +231,8 @@ func (a *experimentsImpl) SearchExperiments(ctx context.Context, request SearchE
 	var searchExperimentsResponse SearchExperimentsResponse
 	path := "/api/2.0/mlflow/experiments/search"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &searchExperimentsResponse)
 	return &searchExperimentsResponse, err
 }
@@ -241,8 +241,8 @@ func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) (*
 	var searchRunsResponse SearchRunsResponse
 	path := "/api/2.0/mlflow/runs/search"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &searchRunsResponse)
 	return &searchRunsResponse, err
 }
@@ -336,8 +336,8 @@ func (a *modelRegistryImpl) CreateModel(ctx context.Context, request CreateModel
 	var createModelResponse CreateModelResponse
 	path := "/api/2.0/mlflow/registered-models/create"
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createModelResponse)
 	return &createModelResponse, err
 }
