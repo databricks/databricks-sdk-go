@@ -12,7 +12,14 @@ fmt:
 
 lint: vendor
 	@echo "✓ Linting source code with https://staticcheck.io/ ..."
-	@go run honnef.co/go/tools/cmd/staticcheck@v0.5.1 ./...
+	@for dir in */; do \
+	    if [ -f "$$dir/go.mod" ]; then \
+	        echo "Linting $$dir..."; \
+	        cd $$dir && \
+			go run honnef.co/go/tools/cmd/staticcheck@v0.5.1 ./... || exit 1 && \
+	        cd ..; \
+	    fi \
+    done
 
 test: vendor
 	@echo "✓ Running tests in all modules ..."
