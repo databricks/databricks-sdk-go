@@ -10,9 +10,9 @@ import (
 
 const JWTGrantType = "urn:ietf:params:oauth:grant-type:jwt-bearer"
 
-// GetOAuthTokenRequest is the request to get an OAuth token. It follows the OAuth 2.0 Rich Authorization Requests specification.
+// getOAuthTokenRequest is the request to get an OAuth token. It follows the OAuth 2.0 Rich Authorization Requests specification.
 // https://datatracker.ietf.org/doc/html/rfc9396
-type GetOAuthTokenRequest struct {
+type getOAuthTokenRequest struct {
 	// Defines the method used to get the token.
 	GrantType string `url:"grant_type"`
 	// An array of authorization details that the token should be scoped to. This needs to be passed in string format.
@@ -21,11 +21,16 @@ type GetOAuthTokenRequest struct {
 	Assertion string `url:"assertion"`
 }
 
-// OAuthToken represents an OAuth token as defined by the OAuth 2.0 Authorization Framework.
-// https://datatracker.ietf.org/doc/html/rfc6749
-type OAuthToken struct {
+// oAuthToken represents an OAuth token as defined by the OAuth 2.0 Authorization Framework.
+// https://datatracker.ietf.org/doc/html/rfc6749.
+//
+// The Go SDK maintains its own implementation of OAuth because Go's oauth2
+// library lacks two features that we depend on:
+// 1. The ability to use an arbitrary assertion with the JWT grant type.
+// 2. The ability to set authorization_details when getting an OAuth token.
+type oAuthToken struct {
 	// The access token issued by the authorization server. This is the token that will be used to authenticate requests.
-	AccessToken string `json:"access_token"  auth:",sensitive"`
+	AccessToken string `json:"access_token"`
 	// Time in seconds until the token expires.
 	ExpiresIn int `json:"expires_in"`
 	// The scope of the token. This is a space-separated list of strings that represent the permissions granted by the token.
@@ -41,12 +46,12 @@ type OAuthToken struct {
 // without warning.
 func (c *ApiClient) GetOAuthToken(ctx context.Context, authDetails string, token *oauth2.Token) (*oauth2.Token, error) {
 	path := "/oidc/v1/token"
-	data := GetOAuthTokenRequest{
+	data := getOAuthTokenRequest{
 		GrantType:            JWTGrantType,
 		AuthorizationDetails: authDetails,
 		Assertion:            token.AccessToken,
 	}
-	var response OAuthToken
+	var response oAuthToken
 	opts := []DoOption{
 		WithUrlEncodedData(data),
 		WithResponseUnmarshal(&response),

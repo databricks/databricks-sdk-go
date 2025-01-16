@@ -37,6 +37,10 @@ const (
 	//   }
 	// }
 	tokenCacheVersion = 1
+
+	// lockFilePath is the path of the lock file used to prevent concurrent
+	// reads and writes to the token cache file.
+	lockFilePath = ".databricks/token-cache.lock"
 )
 
 // The format of the token cache file.
@@ -53,13 +57,19 @@ func WithFileLocation(fileLocation string) FileTokenCacheOpt {
 	}
 }
 
+func WithLocker(locker sync.Locker) FileTokenCacheOpt {
+	return func(c *FileTokenCache) {
+		c.locker = locker
+	}
+}
+
 // FileTokenCache caches tokens in "~/.databricks/token-cache.json". FileTokenCache
 // implements the TokenCache interface.
 type FileTokenCache struct {
 	fileLocation string
 
-	// mu protects the token cache file from concurrent reads and writes.
-	mu *sync.Mutex
+	// locker protects the token cache file from concurrent reads and writes.
+	locker sync.Locker
 }
 
 // NewFileTokenCache creates a new FileTokenCache. By default, the cache is
@@ -69,9 +79,7 @@ type FileTokenCache struct {
 // file is corrupt or if its version does not match tokenCacheVersion, an error
 // is returned.
 func NewFileTokenCache(opts ...FileTokenCacheOpt) (*FileTokenCache, error) {
-	c := &FileTokenCache{
-		mu: &sync.Mutex{},
-	}
+	c := &FileTokenCache{}
 	for _, opt := range opts {
 		opt(c)
 	}
@@ -87,8 +95,8 @@ func NewFileTokenCache(opts ...FileTokenCacheOpt) (*FileTokenCache, error) {
 
 // Store implements the TokenCache interface.
 func (c *FileTokenCache) Store(key string, t *oauth2.Token) error {
-	c.mu.Lock()
-	defer c.mu.Unlock()
+	c.locker.Lock()
+	defer c.locker.Unlock()
 	f, err := c.load()
 	if err != nil {
 		return fmt.Errorf("load: %w", err)
@@ -106,8 +114,8 @@ func (c *FileTokenCache) Store(key string, t *oauth2.Token) error {
 
 // Lookup implements the TokenCache interface.
 func (c *FileTokenCache) Lookup(key string) (*oauth2.Token, error) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
+	c.locker.Lock()
+	defer c.locker.Unlock()
 	f, err := c.load()
 	if err != nil {
 		return nil, fmt.Errorf("load: %w", err)
@@ -155,6 +163,18 @@ func (c *FileTokenCache) init() error {
 		}
 		if err := os.WriteFile(c.fileLocation, raw, ownerReadWrite); err != nil {
 			return fmt.Errorf("write: %w", err)
+		}
+	}
+	// Initialize the locker if it is not already set.
+	if c.locker == nil {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return fmt.Errorf("home: %w", err)
+		}
+
+		c.locker, err = newLocker(filepath.Join(home, lockFilePath))
+		if err != nil {
+			return fmt.Errorf("locker: %w", err)
 		}
 	}
 	return nil

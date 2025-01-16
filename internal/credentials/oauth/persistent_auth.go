@@ -5,17 +5,14 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net"
-	"net/http"
-	"os"
-	"path/filepath"
-	"sync"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/credentials/cache"
 	"github.com/databricks/databricks-sdk-go/httpclient"
+	"github.com/databricks/databricks-sdk-go/internal/credentials/cache"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/pkg/browser"
@@ -30,41 +27,9 @@ const (
 	appClientID     = "databricks-cli"
 	appRedirectAddr = "localhost:8020"
 
-	// lockfile location
-	lockFilePath = ".databricks/token-cache.lock"
-
 	// maximum amount of time to acquire listener on appRedirectAddr
 	listenerTimeout = 45 * time.Second
 )
-
-// OAuthClient provides the http functionality needed for interacting with the
-// Databricks OAuth APIs.
-type OAuthClient interface {
-	// GetHttpClient returns an HTTP client for OAuth2 requests.
-	GetHttpClient(context.Context) *http.Client
-
-	// GetWorkspaceOAuthEndpoints returns the OAuth2 endpoints for the workspace.
-	GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*OAuthAuthorizationServer, error)
-
-	// GetAccountOAuthEndpoints returns the OAuth2 endpoints for the account.
-	GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*OAuthAuthorizationServer, error)
-}
-
-type BasicOAuthClient struct {
-	client *httpclient.ApiClient
-}
-
-func (c *BasicOAuthClient) GetHttpClient(_ context.Context) *http.Client {
-	return c.client.ToHttpClient()
-}
-
-func (c *BasicOAuthClient) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*OAuthAuthorizationServer, error) {
-	return GetWorkspaceOAuthEndpoints(ctx, c.client, workspaceHost)
-}
-
-func (c *BasicOAuthClient) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*OAuthAuthorizationServer, error) {
-	return GetAccountOAuthEndpoints(ctx, accountHost, accountId)
-}
 
 // PersistentAuth is an OAuth manager that handles the U2M OAuth flow. Tokens
 // are stored in and looked up from the provided cache. Tokens include the
@@ -76,8 +41,6 @@ func (c *BasicOAuthClient) GetAccountOAuthEndpoints(ctx context.Context, account
 type PersistentAuth struct {
 	// Cache is the token cache to store and lookup tokens.
 	cache cache.TokenCache
-	// Locker is the lock to synchronize token cache access.
-	locker sync.Locker
 	// Client is the HTTP client to use for OAuth2 requests.
 	client OAuthClient
 	// Browser is the function to open a URL in the default browser.
@@ -92,13 +55,6 @@ type PersistentAuthOption func(*PersistentAuth)
 func WithTokenCache(c cache.TokenCache) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.cache = c
-	}
-}
-
-// WithLocker sets the locker for the PersistentAuth.
-func WithLocker(l sync.Locker) PersistentAuthOption {
-	return func(a *PersistentAuth) {
-		a.locker = l
 	}
 }
 
@@ -134,17 +90,6 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 			return nil, fmt.Errorf("cache: %w", err)
 		}
 	}
-	if p.locker == nil {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return nil, fmt.Errorf("home: %w", err)
-		}
-
-		p.locker, err = newLocker(filepath.Join(home, lockFilePath))
-		if err != nil {
-			return nil, fmt.Errorf("locker: %w", err)
-		}
-	}
 	if p.browser == nil {
 		p.browser = browser.OpenURL
 	}
@@ -154,9 +99,6 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 // Load loads the OAuth2 token for the given OAuthArgument from the cache. If
 // the token is expired, it is refreshed using the refresh token.
 func (a *PersistentAuth) Load(ctx context.Context, arg OAuthArgument) (t *oauth2.Token, err error) {
-	a.locker.Lock()
-	defer a.locker.Unlock()
-
 	if err := a.validateArg(arg); err != nil {
 		return nil, err
 	}
@@ -198,6 +140,30 @@ func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToke
 	// eagerly refresh token
 	t, err := cfg.TokenSource(ctx, oldToken).Token()
 	if err != nil {
+		// The default RoundTripper of our httpclient.ApiClient returns an error
+		// if the response status code is not 2xx. This isn't compliant with the
+		// RoundTripper interface, so this error isn't handled by the oauth2
+		// library. We need to handle it here.
+		var internalHttpError *httpclient.HttpError
+		if errors.As(err, &internalHttpError) {
+			// error fields
+			// https://datatracker.ietf.org/doc/html/rfc6749#section-5.2
+			var errResponse struct {
+				Error            string `json:"error"`
+				ErrorDescription string `json:"error_description"`
+			}
+			if unmarshalErr := json.Unmarshal([]byte(internalHttpError.Message), &errResponse); unmarshalErr != nil {
+				return nil, fmt.Errorf("unmarshal: %w", unmarshalErr)
+			}
+			// Invalid refresh tokens get their own error type so they can be
+			// better presented to users.
+			if errResponse.ErrorDescription == "Refresh token is invalid" {
+				return nil, &InvalidRefreshTokenError{err}
+			}
+			return nil, fmt.Errorf("%s (error code: %s)", errResponse.ErrorDescription, errResponse.Error)
+		}
+
+		// Handle responses from well-behaved *http.Client implementations.
 		var httpErr *oauth2.RetrieveError
 		if errors.As(err, &httpErr) {
 			// Invalid refresh tokens get their own error type so they can be
@@ -223,9 +189,6 @@ func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToke
 // exchanges the authorization code for an access token. It returns the OAuth2
 // token on success.
 func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) (*oauth2.Token, error) {
-	a.locker.Lock()
-	defer a.locker.Unlock()
-
 	if err := a.validateArg(arg); err != nil {
 		return nil, err
 	}
@@ -247,7 +210,10 @@ func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) (*oau
 	}
 	defer cb.Close()
 
-	state, pkce := a.stateAndPKCE()
+	state, pkce, err := a.stateAndPKCE()
+	if err != nil {
+		return nil, fmt.Errorf("state and pkce: %w", err)
+	}
 	// make OAuth2 library use our client
 	ctx = a.setOAuthContext(ctx)
 	ts := authhandler.TokenSourceWithPKCE(ctx, cfg, state, cb.Handler, pkce)
@@ -333,21 +299,32 @@ func (a *PersistentAuth) oauth2Config(ctx context.Context, arg OAuthArgument) (*
 	}, nil
 }
 
-func (a *PersistentAuth) stateAndPKCE() (string, *authhandler.PKCEParams) {
-	verifier := a.randomString(64)
+func (a *PersistentAuth) stateAndPKCE() (string, *authhandler.PKCEParams, error) {
+	verifier, err := a.randomString(64)
+	if err != nil {
+		return "", nil, fmt.Errorf("verifier: %w", err)
+	}
 	verifierSha256 := sha256.Sum256([]byte(verifier))
 	challenge := base64.RawURLEncoding.EncodeToString(verifierSha256[:])
-	return a.randomString(16), &authhandler.PKCEParams{
+	state, err := a.randomString(16)
+	if err != nil {
+		return "", nil, fmt.Errorf("state: %w", err)
+	}
+	return state, &authhandler.PKCEParams{
 		Challenge:       challenge,
 		ChallengeMethod: "S256",
 		Verifier:        verifier,
-	}
+	}, nil
 }
 
-func (a *PersistentAuth) randomString(size int) string {
+func (a *PersistentAuth) randomString(size int) (string, error) {
 	raw := make([]byte, size)
-	_, _ = rand.Read(raw)
-	return base64.RawURLEncoding.EncodeToString(raw)
+	// ignore error as rand.Reader never returns an error
+	_, err := rand.Read(raw)
+	if err != nil {
+		return "", fmt.Errorf("rand.Read: %w", err)
+	}
+	return base64.RawURLEncoding.EncodeToString(raw), nil
 }
 
 func (a *PersistentAuth) setOAuthContext(ctx context.Context) context.Context {

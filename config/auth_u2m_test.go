@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/credentials/cache"
-	"github.com/databricks/databricks-sdk-go/credentials/oauth"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
+	"github.com/databricks/databricks-sdk-go/internal/credentials/cache"
+	"github.com/databricks/databricks-sdk-go/internal/credentials/oauth"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 )
@@ -106,8 +106,8 @@ func TestU2MCredentials(t *testing.T) {
 			ctx := context.Background()
 			auth, err := tt.auth()
 			require.NoError(t, err)
-			strat := U2MCredentials{
-				Auth: auth,
+			strat := u2mCredentials{
+				auth: auth,
 			}
 			provider, err := strat.Configure(ctx, tt.cfg)
 			if tt.expectErr != "" {
@@ -179,7 +179,7 @@ func TestDatabricksCli_ErrorHandler(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			arg, err := tc.arg()
 			require.NoError(t, err)
-			got := databricksCliCredentials.ErrorHandler(context.Background(), tc.cfg, arg, tc.err)
+			got := DatabricksCliCredentials.errorHandler(context.Background(), tc.cfg, arg, tc.err)
 			require.Equal(t, tc.want, got)
 		})
 	}
