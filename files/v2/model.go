@@ -137,13 +137,13 @@ type DownloadRequest struct {
 }
 
 type DownloadResponse struct {
-	ContentLength int64 `json:"-" url:"-" header:"content_length,omitempty"`
+	ContentLength int64 `json:"-" url:"-" header:"content-length,omitempty"`
 
-	ContentType string `json:"-" url:"-" header:"content_type,omitempty"`
+	ContentType string `json:"-" url:"-" header:"content-type,omitempty"`
 
 	Contents io.ReadCloser `json:"-"`
 
-	LastModified string `json:"-" url:"-" header:"last_modified,omitempty"`
+	LastModified string `json:"-" url:"-" header:"last-modified,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -193,11 +193,11 @@ type GetMetadataRequest struct {
 }
 
 type GetMetadataResponse struct {
-	ContentLength int64 `json:"-" url:"-" header:"content_length,omitempty"`
+	ContentLength int64 `json:"-" url:"-" header:"content-length,omitempty"`
 
-	ContentType string `json:"-" url:"-" header:"content_type,omitempty"`
+	ContentType string `json:"-" url:"-" header:"content-type,omitempty"`
 
-	LastModified string `json:"-" url:"-" header:"last_modified,omitempty"`
+	LastModified string `json:"-" url:"-" header:"last-modified,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

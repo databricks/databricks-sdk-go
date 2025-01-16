@@ -198,7 +198,7 @@ type GetAccountUserRequest struct {
 	// Desired number of results per page. Default is 10000.
 	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" url:"excluded_attributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -211,11 +211,11 @@ type GetAccountUserRequest struct {
 	Id string `json:"-" url:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string `json:"-" url:"sort_by,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder GetSortOrder `json:"-" url:"sort_order,omitempty"`
+	SortOrder GetSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int `json:"-" url:"start_index,omitempty"`
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -329,7 +329,7 @@ type GetUserRequest struct {
 	// Desired number of results per page.
 	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" url:"excluded_attributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -342,11 +342,11 @@ type GetUserRequest struct {
 	Id string `json:"-" url:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string `json:"-" url:"sort_by,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder GetSortOrder `json:"-" url:"sort_order,omitempty"`
+	SortOrder GetSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int `json:"-" url:"start_index,omitempty"`
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -438,7 +438,7 @@ type ListAccountGroupsRequest struct {
 	// Desired number of results per page. Default is 10000.
 	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" url:"excluded_attributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -448,11 +448,11 @@ type ListAccountGroupsRequest struct {
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
 	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string `json:"-" url:"sort_by,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" url:"sort_order,omitempty"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" url:"start_index,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -472,7 +472,7 @@ type ListAccountServicePrincipalsRequest struct {
 	// Desired number of results per page. Default is 10000.
 	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" url:"excluded_attributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -482,11 +482,11 @@ type ListAccountServicePrincipalsRequest struct {
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
 	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string `json:"-" url:"sort_by,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" url:"sort_order,omitempty"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" url:"start_index,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -506,7 +506,7 @@ type ListAccountUsersRequest struct {
 	// Desired number of results per page. Default is 10000.
 	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" url:"excluded_attributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -517,11 +517,11 @@ type ListAccountUsersRequest struct {
 	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string `json:"-" url:"sort_by,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" url:"sort_order,omitempty"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" url:"start_index,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -541,7 +541,7 @@ type ListGroupsRequest struct {
 	// Desired number of results per page.
 	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" url:"excluded_attributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -551,11 +551,11 @@ type ListGroupsRequest struct {
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
 	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string `json:"-" url:"sort_by,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" url:"sort_order,omitempty"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" url:"start_index,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -648,7 +648,7 @@ type ListServicePrincipalsRequest struct {
 	// Desired number of results per page.
 	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" url:"excluded_attributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -658,11 +658,11 @@ type ListServicePrincipalsRequest struct {
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
 	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string `json:"-" url:"sort_by,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" url:"sort_order,omitempty"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" url:"start_index,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -709,7 +709,7 @@ type ListUsersRequest struct {
 	// Desired number of results per page.
 	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" url:"excluded_attributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -720,11 +720,11 @@ type ListUsersRequest struct {
 	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string `json:"-" url:"sort_by,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" url:"sort_order,omitempty"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" url:"start_index,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

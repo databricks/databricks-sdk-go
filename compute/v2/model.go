@@ -1464,11 +1464,11 @@ func (f *CommandStatus) Type() string {
 
 // Get command info
 type CommandStatusRequest struct {
-	ClusterId string `json:"-" url:"cluster_id"`
+	ClusterId string `json:"-" url:"clusterId"`
 
-	CommandId string `json:"-" url:"command_id"`
+	CommandId string `json:"-" url:"commandId"`
 
-	ContextId string `json:"-" url:"context_id"`
+	ContextId string `json:"-" url:"contextId"`
 }
 
 type CommandStatusResponse struct {
@@ -1520,9 +1520,9 @@ func (f *ContextStatus) Type() string {
 
 // Get status
 type ContextStatusRequest struct {
-	ClusterId string `json:"-" url:"cluster_id"`
+	ClusterId string `json:"-" url:"clusterId"`
 
-	ContextId string `json:"-" url:"context_id"`
+	ContextId string `json:"-" url:"contextId"`
 }
 
 type ContextStatusResponse struct {
