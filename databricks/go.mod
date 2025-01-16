@@ -3,7 +3,6 @@ module github.com/databricks/databricks-sdk-go/databricks
 go 1.18
 
 require (
-	github.com/databricks/databricks-sdk-go v0.55.0
 	github.com/google/go-cmp v0.6.0
 	github.com/google/go-querystring v1.1.0
 	github.com/google/uuid v1.6.0
