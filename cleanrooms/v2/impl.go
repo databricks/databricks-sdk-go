@@ -19,8 +19,8 @@ func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoo
 	var cleanRoomAsset CleanRoomAsset
 	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets", request.CleanRoomName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Asset, &cleanRoomAsset)
 	return &cleanRoomAsset, err
 }
@@ -56,8 +56,8 @@ func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoo
 	var cleanRoomAsset CleanRoomAsset
 	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request.Asset, &cleanRoomAsset)
 	return &cleanRoomAsset, err
 }
@@ -85,8 +85,8 @@ func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoomRequ
 	var cleanRoom CleanRoom
 	path := "/api/2.0/clean-rooms"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.CleanRoom, &cleanRoom)
 	return &cleanRoom, err
 }
@@ -95,8 +95,8 @@ func (a *cleanRoomsImpl) CreateOutputCatalog(ctx context.Context, request Create
 	var createCleanRoomOutputCatalogResponse CreateCleanRoomOutputCatalogResponse
 	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/output-catalogs", request.CleanRoomName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.OutputCatalog, &createCleanRoomOutputCatalogResponse)
 	return &createCleanRoomOutputCatalogResponse, err
 }
@@ -132,8 +132,8 @@ func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoomRequ
 	var cleanRoom CleanRoom
 	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &cleanRoom)
 	return &cleanRoom, err
 }

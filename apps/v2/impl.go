@@ -19,8 +19,8 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	var app App
 	path := "/api/2.0/apps"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.App, &app)
 	return &app, err
 }
@@ -102,8 +102,8 @@ func (a *appsImpl) SetPermissions(ctx context.Context, request AppPermissionsReq
 	var appPermissions AppPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", request.AppName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &appPermissions)
 	return &appPermissions, err
 }
@@ -112,8 +112,8 @@ func (a *appsImpl) Start(ctx context.Context, request StartAppRequest) (*App, er
 	var app App
 	path := fmt.Sprintf("/api/2.0/apps/%v/start", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &app)
 	return &app, err
 }
@@ -122,8 +122,8 @@ func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) (*App, erro
 	var app App
 	path := fmt.Sprintf("/api/2.0/apps/%v/stop", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &app)
 	return &app, err
 }
@@ -132,8 +132,8 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 	var app App
 	path := fmt.Sprintf("/api/2.0/apps/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request.App, &app)
 	return &app, err
 }
@@ -142,8 +142,8 @@ func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissions
 	var appPermissions AppPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", request.AppName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &appPermissions)
 	return &appPermissions, err
 }

@@ -28,8 +28,8 @@ func (a *servingEndpointsImpl) Create(ctx context.Context, request CreateServing
 	var servingEndpointDetailed ServingEndpointDetailed
 	path := "/api/2.0/serving-endpoints"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
 }
@@ -92,8 +92,8 @@ func (a *servingEndpointsImpl) HttpRequest(ctx context.Context, request External
 	var externalFunctionResponse ExternalFunctionResponse
 	path := "/api/2.0/external-function"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &externalFunctionResponse)
 	return &externalFunctionResponse, err
 }
@@ -120,8 +120,8 @@ func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEn
 	var endpointTags EndpointTags
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/tags", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &endpointTags)
 	return &endpointTags, err
 }
@@ -140,8 +140,8 @@ func (a *servingEndpointsImpl) PutAiGateway(ctx context.Context, request PutAiGa
 	var putAiGatewayResponse PutAiGatewayResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/ai-gateway", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &putAiGatewayResponse)
 	return &putAiGatewayResponse, err
 }
@@ -150,8 +150,8 @@ func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryEndpointI
 	var queryEndpointResponse QueryEndpointResponse
 	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryEndpointResponse)
 	return &queryEndpointResponse, err
 }
@@ -170,8 +170,8 @@ func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request Endpoin
 	var servingEndpointDetailed ServingEndpointDetailed
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/config", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
 }
@@ -180,8 +180,8 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 	var servingEndpointPermissions ServingEndpointPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &servingEndpointPermissions)
 	return &servingEndpointPermissions, err
 }
@@ -195,8 +195,8 @@ func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request Query
 	var queryEndpointResponse QueryEndpointResponse
 	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryEndpointResponse)
 	return &queryEndpointResponse, err
 }

@@ -19,8 +19,8 @@ func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentia
 	var createCredentialsResponse CreateCredentialsResponse
 	path := "/api/2.0/git-credentials"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createCredentialsResponse)
 	return &createCredentialsResponse, err
 }
@@ -56,8 +56,8 @@ func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentia
 	var updateCredentialsResponse UpdateCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateCredentialsResponse)
 	return err
 }
@@ -71,8 +71,8 @@ func (a *reposImpl) Create(ctx context.Context, request CreateRepoRequest) (*Cre
 	var createRepoResponse CreateRepoResponse
 	path := "/api/2.0/repos"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createRepoResponse)
 	return &createRepoResponse, err
 }
@@ -126,8 +126,8 @@ func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsR
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &repoPermissions)
 	return &repoPermissions, err
 }
@@ -136,8 +136,8 @@ func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) error
 	var updateRepoResponse UpdateRepoResponse
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateRepoResponse)
 	return err
 }
@@ -146,8 +146,8 @@ func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissio
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &repoPermissions)
 	return &repoPermissions, err
 }
@@ -161,8 +161,8 @@ func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) erro
 	var createScopeResponse CreateScopeResponse
 	path := "/api/2.0/secrets/scopes/create"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createScopeResponse)
 	return err
 }
@@ -171,8 +171,8 @@ func (a *secretsImpl) DeleteAcl(ctx context.Context, request DeleteAcl) error {
 	var deleteAclResponse DeleteAclResponse
 	path := "/api/2.0/secrets/acls/delete"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteAclResponse)
 	return err
 }
@@ -181,8 +181,8 @@ func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) erro
 	var deleteScopeResponse DeleteScopeResponse
 	path := "/api/2.0/secrets/scopes/delete"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteScopeResponse)
 	return err
 }
@@ -191,8 +191,8 @@ func (a *secretsImpl) DeleteSecret(ctx context.Context, request DeleteSecret) er
 	var deleteSecretResponse DeleteSecretResponse
 	path := "/api/2.0/secrets/delete"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteSecretResponse)
 	return err
 }
@@ -246,8 +246,8 @@ func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) error {
 	var putAclResponse PutAclResponse
 	path := "/api/2.0/secrets/acls/put"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &putAclResponse)
 	return err
 }
@@ -256,8 +256,8 @@ func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) error {
 	var putSecretResponse PutSecretResponse
 	path := "/api/2.0/secrets/put"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &putSecretResponse)
 	return err
 }
@@ -271,8 +271,8 @@ func (a *workspaceImpl) Delete(ctx context.Context, request Delete) error {
 	var deleteResponse DeleteResponse
 	path := "/api/2.0/workspace/delete"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteResponse)
 	return err
 }
@@ -317,8 +317,8 @@ func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
 	var importResponse ImportResponse
 	path := "/api/2.0/workspace/import"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &importResponse)
 	return err
 }
@@ -336,8 +336,8 @@ func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
 	var mkdirsResponse MkdirsResponse
 	path := "/api/2.0/workspace/mkdirs"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &mkdirsResponse)
 	return err
 }
@@ -346,8 +346,8 @@ func (a *workspaceImpl) SetPermissions(ctx context.Context, request WorkspaceObj
 	var workspaceObjectPermissions WorkspaceObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &workspaceObjectPermissions)
 	return &workspaceObjectPermissions, err
 }
@@ -356,8 +356,8 @@ func (a *workspaceImpl) UpdatePermissions(ctx context.Context, request Workspace
 	var workspaceObjectPermissions WorkspaceObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &workspaceObjectPermissions)
 	return &workspaceObjectPermissions, err
 }

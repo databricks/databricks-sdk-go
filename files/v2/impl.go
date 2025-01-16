@@ -20,8 +20,8 @@ func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) error {
 	var addBlockResponse AddBlockResponse
 	path := "/api/2.0/dbfs/add-block"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &addBlockResponse)
 	return err
 }
@@ -30,8 +30,8 @@ func (a *dbfsImpl) Close(ctx context.Context, request Close) error {
 	var closeResponse CloseResponse
 	path := "/api/2.0/dbfs/close"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &closeResponse)
 	return err
 }
@@ -40,8 +40,8 @@ func (a *dbfsImpl) Create(ctx context.Context, request Create) (*CreateResponse,
 	var createResponse CreateResponse
 	path := "/api/2.0/dbfs/create"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createResponse)
 	return &createResponse, err
 }
@@ -78,8 +78,8 @@ func (a *dbfsImpl) Mkdirs(ctx context.Context, request MkDirs) error {
 	var mkDirsResponse MkDirsResponse
 	path := "/api/2.0/dbfs/mkdirs"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &mkDirsResponse)
 	return err
 }
@@ -88,8 +88,8 @@ func (a *dbfsImpl) Move(ctx context.Context, request Move) error {
 	var moveResponse MoveResponse
 	path := "/api/2.0/dbfs/move"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &moveResponse)
 	return err
 }
@@ -98,8 +98,8 @@ func (a *dbfsImpl) Put(ctx context.Context, request Put) error {
 	var putResponse PutResponse
 	path := "/api/2.0/dbfs/put"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &putResponse)
 	return err
 }

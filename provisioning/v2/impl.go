@@ -19,8 +19,8 @@ func (a *credentialsImpl) Create(ctx context.Context, request CreateCredentialRe
 	var credential Credential
 	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &credential)
 	return &credential, err
 }
@@ -61,8 +61,8 @@ func (a *encryptionKeysImpl) Create(ctx context.Context, request CreateCustomerM
 	var customerManagedKey CustomerManagedKey
 	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &customerManagedKey)
 	return &customerManagedKey, err
 }
@@ -103,8 +103,8 @@ func (a *networksImpl) Create(ctx context.Context, request CreateNetworkRequest)
 	var network Network
 	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &network)
 	return &network, err
 }
@@ -145,8 +145,8 @@ func (a *privateAccessImpl) Create(ctx context.Context, request UpsertPrivateAcc
 	var privateAccessSettings PrivateAccessSettings
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &privateAccessSettings)
 	return &privateAccessSettings, err
 }
@@ -182,8 +182,8 @@ func (a *privateAccessImpl) Replace(ctx context.Context, request UpsertPrivateAc
 	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &replaceResponse)
 	return err
 }
@@ -197,8 +197,8 @@ func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigura
 	var storageConfiguration StorageConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &storageConfiguration)
 	return &storageConfiguration, err
 }
@@ -239,8 +239,8 @@ func (a *vpcEndpointsImpl) Create(ctx context.Context, request CreateVpcEndpoint
 	var vpcEndpoint VpcEndpoint
 	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &vpcEndpoint)
 	return &vpcEndpoint, err
 }
@@ -281,8 +281,8 @@ func (a *workspacesImpl) Create(ctx context.Context, request CreateWorkspaceRequ
 	var workspace Workspace
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &workspace)
 	return &workspace, err
 }
@@ -318,8 +318,8 @@ func (a *workspacesImpl) Update(ctx context.Context, request UpdateWorkspaceRequ
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
 }

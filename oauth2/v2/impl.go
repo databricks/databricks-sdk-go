@@ -19,8 +19,8 @@ func (a *accountFederationPolicyImpl) Create(ctx context.Context, request Create
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
@@ -56,8 +56,8 @@ func (a *accountFederationPolicyImpl) Update(ctx context.Context, request Update
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
@@ -71,8 +71,8 @@ func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCus
 	var createCustomAppIntegrationOutput CreateCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createCustomAppIntegrationOutput)
 	return &createCustomAppIntegrationOutput, err
 }
@@ -108,8 +108,8 @@ func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCus
 	var updateCustomAppIntegrationOutput UpdateCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateCustomAppIntegrationOutput)
 	return err
 }
@@ -174,8 +174,8 @@ func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request Update
 	var updatePublishedAppIntegrationOutput UpdatePublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updatePublishedAppIntegrationOutput)
 	return err
 }
@@ -189,8 +189,8 @@ func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, reque
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
@@ -226,8 +226,8 @@ func (a *servicePrincipalFederationPolicyImpl) Update(ctx context.Context, reque
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }

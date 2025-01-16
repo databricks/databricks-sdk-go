@@ -19,8 +19,8 @@ func (a *vectorSearchEndpointsImpl) CreateEndpoint(ctx context.Context, request 
 	var endpointInfo EndpointInfo
 	path := "/api/2.0/vector-search/endpoints"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &endpointInfo)
 	return &endpointInfo, err
 }
@@ -60,8 +60,8 @@ func (a *vectorSearchIndexesImpl) CreateIndex(ctx context.Context, request Creat
 	var createVectorIndexResponse CreateVectorIndexResponse
 	path := "/api/2.0/vector-search/indexes"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createVectorIndexResponse)
 	return &createVectorIndexResponse, err
 }
@@ -70,8 +70,8 @@ func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, req
 	var deleteDataVectorIndexResponse DeleteDataVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/delete-data", request.IndexName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteDataVectorIndexResponse)
 	return &deleteDataVectorIndexResponse, err
 }
@@ -106,8 +106,8 @@ func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryV
 	var queryVectorIndexResponse QueryVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/query", request.IndexName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryVectorIndexResponse)
 	return &queryVectorIndexResponse, err
 }
@@ -116,8 +116,8 @@ func (a *vectorSearchIndexesImpl) QueryNextPage(ctx context.Context, request Que
 	var queryVectorIndexResponse QueryVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/query-next-page", request.IndexName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryVectorIndexResponse)
 	return &queryVectorIndexResponse, err
 }
@@ -144,8 +144,8 @@ func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, req
 	var upsertDataVectorIndexResponse UpsertDataVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/upsert-data", request.IndexName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &upsertDataVectorIndexResponse)
 	return &upsertDataVectorIndexResponse, err
 }

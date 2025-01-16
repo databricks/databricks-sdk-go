@@ -19,8 +19,8 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 	var genieMessage GenieMessage
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages", request.SpaceId, request.ConversationId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &genieMessage)
 	return &genieMessage, err
 }
@@ -56,8 +56,8 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 	var genieStartConversationResponse GenieStartConversationResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/start-conversation", request.SpaceId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &genieStartConversationResponse)
 	return &genieStartConversationResponse, err
 }
@@ -71,8 +71,8 @@ func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardReques
 	var dashboard Dashboard
 	path := "/api/2.0/lakeview/dashboards"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Dashboard, &dashboard)
 	return &dashboard, err
 }
@@ -81,8 +81,8 @@ func (a *lakeviewImpl) CreateSchedule(ctx context.Context, request CreateSchedul
 	var schedule Schedule
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules", request.DashboardId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Schedule, &schedule)
 	return &schedule, err
 }
@@ -91,8 +91,8 @@ func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSub
 	var subscription Subscription
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions", request.DashboardId, request.ScheduleId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Subscription, &subscription)
 	return &subscription, err
 }
@@ -182,8 +182,8 @@ func (a *lakeviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequ
 	var dashboard Dashboard
 	path := "/api/2.0/lakeview/dashboards/migrate"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &dashboard)
 	return &dashboard, err
 }
@@ -192,8 +192,8 @@ func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*Pu
 	var publishedDashboard PublishedDashboard
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &publishedDashboard)
 	return &publishedDashboard, err
 }
@@ -220,8 +220,8 @@ func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardReques
 	var dashboard Dashboard
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request.Dashboard, &dashboard)
 	return &dashboard, err
 }
@@ -230,8 +230,8 @@ func (a *lakeviewImpl) UpdateSchedule(ctx context.Context, request UpdateSchedul
 	var schedule Schedule
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request.Schedule, &schedule)
 	return &schedule, err
 }

@@ -19,8 +19,8 @@ func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request Ac
 	var createResponse CreateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createResponse)
 	return err
 }
@@ -56,8 +56,8 @@ func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request Ac
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
 	return err
 }
@@ -71,8 +71,8 @@ func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCrea
 	var accountsMetastoreInfo AccountsMetastoreInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &accountsMetastoreInfo)
 	return &accountsMetastoreInfo, err
 }
@@ -123,8 +123,8 @@ func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request Acco
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &accountsStorageCredentialInfo)
 	return &accountsStorageCredentialInfo, err
 }
@@ -160,8 +160,8 @@ func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request Acco
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &accountsStorageCredentialInfo)
 	return &accountsStorageCredentialInfo, err
 }
@@ -184,8 +184,8 @@ func (a *artifactAllowlistsImpl) Update(ctx context.Context, request SetArtifact
 	var artifactAllowlistInfo ArtifactAllowlistInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/artifact-allowlists/%v", request.ArtifactType)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &artifactAllowlistInfo)
 	return &artifactAllowlistInfo, err
 }
@@ -199,8 +199,8 @@ func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*Cata
 	var catalogInfo CatalogInfo
 	path := "/api/2.1/unity-catalog/catalogs"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &catalogInfo)
 	return &catalogInfo, err
 }
@@ -236,8 +236,8 @@ func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) (*Cata
 	var catalogInfo CatalogInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &catalogInfo)
 	return &catalogInfo, err
 }
@@ -251,8 +251,8 @@ func (a *connectionsImpl) Create(ctx context.Context, request CreateConnection) 
 	var connectionInfo ConnectionInfo
 	path := "/api/2.1/unity-catalog/connections"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &connectionInfo)
 	return &connectionInfo, err
 }
@@ -288,8 +288,8 @@ func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) 
 	var connectionInfo ConnectionInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &connectionInfo)
 	return &connectionInfo, err
 }
@@ -303,8 +303,8 @@ func (a *credentialsImpl) CreateCredential(ctx context.Context, request CreateCr
 	var credentialInfo CredentialInfo
 	path := "/api/2.1/unity-catalog/credentials"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &credentialInfo)
 	return &credentialInfo, err
 }
@@ -322,8 +322,8 @@ func (a *credentialsImpl) GenerateTemporaryServiceCredential(ctx context.Context
 	var temporaryCredentials TemporaryCredentials
 	path := "/api/2.1/unity-catalog/temporary-service-credentials"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &temporaryCredentials)
 	return &temporaryCredentials, err
 }
@@ -350,8 +350,8 @@ func (a *credentialsImpl) UpdateCredential(ctx context.Context, request UpdateCr
 	var credentialInfo CredentialInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/credentials/%v", request.NameArg)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &credentialInfo)
 	return &credentialInfo, err
 }
@@ -360,8 +360,8 @@ func (a *credentialsImpl) ValidateCredential(ctx context.Context, request Valida
 	var validateCredentialResponse ValidateCredentialResponse
 	path := "/api/2.1/unity-catalog/validate-credentials"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &validateCredentialResponse)
 	return &validateCredentialResponse, err
 }
@@ -375,8 +375,8 @@ func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExtern
 	var externalLocationInfo ExternalLocationInfo
 	path := "/api/2.1/unity-catalog/external-locations"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &externalLocationInfo)
 	return &externalLocationInfo, err
 }
@@ -412,8 +412,8 @@ func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExtern
 	var externalLocationInfo ExternalLocationInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &externalLocationInfo)
 	return &externalLocationInfo, err
 }
@@ -427,8 +427,8 @@ func (a *functionsImpl) Create(ctx context.Context, request CreateFunctionReques
 	var functionInfo FunctionInfo
 	path := "/api/2.1/unity-catalog/functions"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &functionInfo)
 	return &functionInfo, err
 }
@@ -464,8 +464,8 @@ func (a *functionsImpl) Update(ctx context.Context, request UpdateFunction) (*Fu
 	var functionInfo FunctionInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &functionInfo)
 	return &functionInfo, err
 }
@@ -497,8 +497,8 @@ func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*Pe
 	var permissionsList PermissionsList
 	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &permissionsList)
 	return &permissionsList, err
 }
@@ -512,8 +512,8 @@ func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssi
 	var assignResponse AssignResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &assignResponse)
 	return err
 }
@@ -522,8 +522,8 @@ func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*
 	var metastoreInfo MetastoreInfo
 	path := "/api/2.1/unity-catalog/metastores"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &metastoreInfo)
 	return &metastoreInfo, err
 }
@@ -586,8 +586,8 @@ func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*
 	var metastoreInfo MetastoreInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &metastoreInfo)
 	return &metastoreInfo, err
 }
@@ -596,8 +596,8 @@ func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMet
 	var updateAssignmentResponse UpdateAssignmentResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateAssignmentResponse)
 	return err
 }
@@ -646,8 +646,8 @@ func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersi
 	var modelVersionInfo ModelVersionInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &modelVersionInfo)
 	return &modelVersionInfo, err
 }
@@ -661,8 +661,8 @@ func (a *onlineTablesImpl) Create(ctx context.Context, request CreateOnlineTable
 	var onlineTable OnlineTable
 	path := "/api/2.0/online-tables"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request.Table, &onlineTable)
 	return &onlineTable, err
 }
@@ -702,8 +702,8 @@ func (a *qualityMonitorsImpl) Create(ctx context.Context, request CreateMonitor)
 	var monitorInfo MonitorInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &monitorInfo)
 	return &monitorInfo, err
 }
@@ -747,8 +747,8 @@ func (a *qualityMonitorsImpl) RegenerateDashboard(ctx context.Context, request R
 	var regenerateDashboardResponse RegenerateDashboardResponse
 	path := fmt.Sprintf("/api/2.1/quality-monitoring/tables/%v/monitor/dashboard", request.TableName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &regenerateDashboardResponse)
 	return &regenerateDashboardResponse, err
 }
@@ -825,8 +825,8 @@ func (a *registeredModelsImpl) SetAlias(ctx context.Context, request SetRegister
 	var registeredModelAlias RegisteredModelAlias
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", request.FullName, request.Alias)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &registeredModelAlias)
 	return &registeredModelAlias, err
 }
@@ -835,8 +835,8 @@ func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegiste
 	var registeredModelInfo RegisteredModelInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", request.FullName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &registeredModelInfo)
 	return &registeredModelInfo, err
 }
@@ -873,8 +873,8 @@ func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*Schema
 	var schemaInfo SchemaInfo
 	path := "/api/2.1/unity-catalog/schemas"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &schemaInfo)
 	return &schemaInfo, err
 }
@@ -910,8 +910,8 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*Schema
 	var schemaInfo SchemaInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &schemaInfo)
 	return &schemaInfo, err
 }
@@ -925,8 +925,8 @@ func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStora
 	var storageCredentialInfo StorageCredentialInfo
 	path := "/api/2.1/unity-catalog/storage-credentials"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &storageCredentialInfo)
 	return &storageCredentialInfo, err
 }
@@ -962,8 +962,8 @@ func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStora
 	var storageCredentialInfo StorageCredentialInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &storageCredentialInfo)
 	return &storageCredentialInfo, err
 }
@@ -972,8 +972,8 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 	var validateStorageCredentialResponse ValidateStorageCredentialResponse
 	path := "/api/2.1/unity-catalog/validate-storage-credentials"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &validateStorageCredentialResponse)
 	return &validateStorageCredentialResponse, err
 }
@@ -1019,8 +1019,8 @@ func (a *tableConstraintsImpl) Create(ctx context.Context, request CreateTableCo
 	var tableConstraint TableConstraint
 	path := "/api/2.1/unity-catalog/constraints"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &tableConstraint)
 	return &tableConstraint, err
 }
@@ -1088,8 +1088,8 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) err
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updateResponse)
 	return err
 }
@@ -1103,8 +1103,8 @@ func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx co
 	var generateTemporaryTableCredentialResponse GenerateTemporaryTableCredentialResponse
 	path := "/api/2.0/unity-catalog/temporary-table-credentials"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &generateTemporaryTableCredentialResponse)
 	return &generateTemporaryTableCredentialResponse, err
 }
@@ -1154,8 +1154,8 @@ func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestCon
 	var volumeInfo VolumeInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.Name)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &volumeInfo)
 	return &volumeInfo, err
 }
@@ -1197,8 +1197,8 @@ func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request Upda
 	var workspaceBindingsResponse WorkspaceBindingsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", request.SecurableType, request.SecurableName)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &workspaceBindingsResponse)
 	return &workspaceBindingsResponse, err
 }

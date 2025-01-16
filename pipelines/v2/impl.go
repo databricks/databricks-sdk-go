@@ -19,8 +19,8 @@ func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*Cr
 	var createPipelineResponse CreatePipelineResponse
 	path := "/api/2.0/pipelines"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createPipelineResponse)
 	return &createPipelineResponse, err
 }
@@ -101,8 +101,8 @@ func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePerm
 	var pipelinePermissions PipelinePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &pipelinePermissions)
 	return &pipelinePermissions, err
 }
@@ -130,8 +130,8 @@ func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error 
 	var editPipelineResponse EditPipelineResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &editPipelineResponse)
 	return err
 }
@@ -140,8 +140,8 @@ func (a *pipelinesImpl) UpdatePermissions(ctx context.Context, request PipelineP
 	var pipelinePermissions PipelinePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &pipelinePermissions)
 	return &pipelinePermissions, err
 }

@@ -42,8 +42,8 @@ func (a *consumerInstallationsImpl) Create(ctx context.Context, request CreateIn
 	var installation Installation
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations", request.ListingId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &installation)
 	return &installation, err
 }
@@ -79,8 +79,8 @@ func (a *consumerInstallationsImpl) Update(ctx context.Context, request UpdateIn
 	var updateInstallationResponse UpdateInstallationResponse
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateInstallationResponse)
 	return &updateInstallationResponse, err
 }
@@ -135,8 +135,8 @@ func (a *consumerPersonalizationRequestsImpl) Create(ctx context.Context, reques
 	var createPersonalizationRequestResponse CreatePersonalizationRequestResponse
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/personalization-requests", request.ListingId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createPersonalizationRequestResponse)
 	return &createPersonalizationRequestResponse, err
 }
@@ -200,8 +200,8 @@ func (a *providerExchangeFiltersImpl) Create(ctx context.Context, request Create
 	var createExchangeFilterResponse CreateExchangeFilterResponse
 	path := "/api/2.0/marketplace-exchange/filters"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createExchangeFilterResponse)
 	return &createExchangeFilterResponse, err
 }
@@ -228,8 +228,8 @@ func (a *providerExchangeFiltersImpl) Update(ctx context.Context, request Update
 	var updateExchangeFilterResponse UpdateExchangeFilterResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/filters/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateExchangeFilterResponse)
 	return &updateExchangeFilterResponse, err
 }
@@ -243,8 +243,8 @@ func (a *providerExchangesImpl) AddListingToExchange(ctx context.Context, reques
 	var addExchangeForListingResponse AddExchangeForListingResponse
 	path := "/api/2.0/marketplace-exchange/exchanges-for-listing"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &addExchangeForListingResponse)
 	return &addExchangeForListingResponse, err
 }
@@ -253,8 +253,8 @@ func (a *providerExchangesImpl) Create(ctx context.Context, request CreateExchan
 	var createExchangeResponse CreateExchangeResponse
 	path := "/api/2.0/marketplace-exchange/exchanges"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createExchangeResponse)
 	return &createExchangeResponse, err
 }
@@ -332,8 +332,8 @@ func (a *providerFilesImpl) Create(ctx context.Context, request CreateFileReques
 	var createFileResponse CreateFileResponse
 	path := "/api/2.0/marketplace-provider/files"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createFileResponse)
 	return &createFileResponse, err
 }
@@ -411,8 +411,8 @@ func (a *providerListingsImpl) Update(ctx context.Context, request UpdateListing
 	var updateListingResponse UpdateListingResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateListingResponse)
 	return &updateListingResponse, err
 }
@@ -435,8 +435,8 @@ func (a *providerPersonalizationRequestsImpl) Update(ctx context.Context, reques
 	var updatePersonalizationRequestResponse UpdatePersonalizationRequestResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v/personalization-requests/%v/request-status", request.ListingId, request.RequestId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updatePersonalizationRequestResponse)
 	return &updatePersonalizationRequestResponse, err
 }
@@ -477,8 +477,8 @@ func (a *providerProviderAnalyticsDashboardsImpl) Update(ctx context.Context, re
 	var updateProviderAnalyticsDashboardResponse UpdateProviderAnalyticsDashboardResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/analytics_dashboard/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateProviderAnalyticsDashboardResponse)
 	return &updateProviderAnalyticsDashboardResponse, err
 }
@@ -492,8 +492,8 @@ func (a *providerProvidersImpl) Create(ctx context.Context, request CreateProvid
 	var createProviderResponse CreateProviderResponse
 	path := "/api/2.0/marketplace-provider/provider"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createProviderResponse)
 	return &createProviderResponse, err
 }

@@ -19,8 +19,8 @@ func (a *alertsImpl) Create(ctx context.Context, request CreateAlertRequest) (*A
 	var alert Alert
 	path := "/api/2.0/sql/alerts"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &alert)
 	return &alert, err
 }
@@ -56,8 +56,8 @@ func (a *alertsImpl) Update(ctx context.Context, request UpdateAlertRequest) (*A
 	var alert Alert
 	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &alert)
 	return &alert, err
 }
@@ -71,8 +71,8 @@ func (a *alertsLegacyImpl) Create(ctx context.Context, request CreateAlert) (*Le
 	var legacyAlert LegacyAlert
 	path := "/api/2.0/preview/sql/alerts"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyAlert)
 	return &legacyAlert, err
 }
@@ -108,8 +108,8 @@ func (a *alertsLegacyImpl) Update(ctx context.Context, request EditAlert) error 
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateResponse)
 	return err
 }
@@ -123,8 +123,8 @@ func (a *dashboardWidgetsImpl) Create(ctx context.Context, request CreateWidget)
 	var widget Widget
 	path := "/api/2.0/preview/sql/widgets"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &widget)
 	return &widget, err
 }
@@ -142,8 +142,8 @@ func (a *dashboardWidgetsImpl) Update(ctx context.Context, request CreateWidget)
 	var widget Widget
 	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &widget)
 	return &widget, err
 }
@@ -157,8 +157,8 @@ func (a *dashboardsImpl) Create(ctx context.Context, request DashboardPostConten
 	var dashboard Dashboard
 	path := "/api/2.0/preview/sql/dashboards"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &dashboard)
 	return &dashboard, err
 }
@@ -203,8 +203,8 @@ func (a *dashboardsImpl) Update(ctx context.Context, request DashboardEditConten
 	var dashboard Dashboard
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &dashboard)
 	return &dashboard, err
 }
@@ -241,8 +241,8 @@ func (a *dbsqlPermissionsImpl) Set(ctx context.Context, request SetRequest) (*Se
 	var setResponse SetResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", request.ObjectType, request.ObjectId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &setResponse)
 	return &setResponse, err
 }
@@ -266,8 +266,8 @@ func (a *queriesImpl) Create(ctx context.Context, request CreateQueryRequest) (*
 	var query Query
 	path := "/api/2.0/sql/queries"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &query)
 	return &query, err
 }
@@ -312,8 +312,8 @@ func (a *queriesImpl) Update(ctx context.Context, request UpdateQueryRequest) (*
 	var query Query
 	path := fmt.Sprintf("/api/2.0/sql/queries/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &query)
 	return &query, err
 }
@@ -327,8 +327,8 @@ func (a *queriesLegacyImpl) Create(ctx context.Context, request QueryPostContent
 	var legacyQuery LegacyQuery
 	path := "/api/2.0/preview/sql/queries"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyQuery)
 	return &legacyQuery, err
 }
@@ -373,8 +373,8 @@ func (a *queriesLegacyImpl) Update(ctx context.Context, request QueryEditContent
 	var legacyQuery LegacyQuery
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyQuery)
 	return &legacyQuery, err
 }
@@ -402,8 +402,8 @@ func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateVisu
 	var visualization Visualization
 	path := "/api/2.0/sql/visualizations"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &visualization)
 	return &visualization, err
 }
@@ -421,8 +421,8 @@ func (a *queryVisualizationsImpl) Update(ctx context.Context, request UpdateVisu
 	var visualization Visualization
 	path := fmt.Sprintf("/api/2.0/sql/visualizations/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &visualization)
 	return &visualization, err
 }
@@ -455,8 +455,8 @@ func (a *queryVisualizationsLegacyImpl) Update(ctx context.Context, request Lega
 	var legacyVisualization LegacyVisualization
 	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &legacyVisualization)
 	return &legacyVisualization, err
 }
@@ -478,8 +478,8 @@ func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request E
 	var statementResponse StatementResponse
 	path := "/api/2.0/sql/statements/"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &statementResponse)
 	return &statementResponse, err
 }
@@ -511,8 +511,8 @@ func (a *warehousesImpl) Create(ctx context.Context, request CreateWarehouseRequ
 	var createWarehouseResponse CreateWarehouseResponse
 	path := "/api/2.0/sql/warehouses"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createWarehouseResponse)
 	return &createWarehouseResponse, err
 }
@@ -530,8 +530,8 @@ func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest)
 	var editWarehouseResponse EditWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", request.Id)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &editWarehouseResponse)
 	return err
 }
@@ -585,8 +585,8 @@ func (a *warehousesImpl) SetPermissions(ctx context.Context, request WarehousePe
 	var warehousePermissions WarehousePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &warehousePermissions)
 	return &warehousePermissions, err
 }
@@ -595,8 +595,8 @@ func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, reques
 	var setWorkspaceWarehouseConfigResponse SetWorkspaceWarehouseConfigResponse
 	path := "/api/2.0/sql/config/warehouses"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &setWorkspaceWarehouseConfigResponse)
 	return err
 }
@@ -623,8 +623,8 @@ func (a *warehousesImpl) UpdatePermissions(ctx context.Context, request Warehous
 	var warehousePermissions WarehousePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &warehousePermissions)
 	return &warehousePermissions, err
 }

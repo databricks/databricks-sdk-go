@@ -19,8 +19,8 @@ func (a *clusterPoliciesImpl) Create(ctx context.Context, request CreatePolicy) 
 	var createPolicyResponse CreatePolicyResponse
 	path := "/api/2.0/policies/clusters/create"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createPolicyResponse)
 	return &createPolicyResponse, err
 }
@@ -29,8 +29,8 @@ func (a *clusterPoliciesImpl) Delete(ctx context.Context, request DeletePolicy) 
 	var deletePolicyResponse DeletePolicyResponse
 	path := "/api/2.0/policies/clusters/delete"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deletePolicyResponse)
 	return err
 }
@@ -39,8 +39,8 @@ func (a *clusterPoliciesImpl) Edit(ctx context.Context, request EditPolicy) erro
 	var editPolicyResponse EditPolicyResponse
 	path := "/api/2.0/policies/clusters/edit"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &editPolicyResponse)
 	return err
 }
@@ -85,8 +85,8 @@ func (a *clusterPoliciesImpl) SetPermissions(ctx context.Context, request Cluste
 	var clusterPolicyPermissions ClusterPolicyPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", request.ClusterPolicyId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &clusterPolicyPermissions)
 	return &clusterPolicyPermissions, err
 }
@@ -95,8 +95,8 @@ func (a *clusterPoliciesImpl) UpdatePermissions(ctx context.Context, request Clu
 	var clusterPolicyPermissions ClusterPolicyPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", request.ClusterPolicyId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &clusterPolicyPermissions)
 	return &clusterPolicyPermissions, err
 }
@@ -110,8 +110,8 @@ func (a *clustersImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwn
 	var changeClusterOwnerResponse ChangeClusterOwnerResponse
 	path := "/api/2.1/clusters/change-owner"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &changeClusterOwnerResponse)
 	return err
 }
@@ -120,8 +120,8 @@ func (a *clustersImpl) Create(ctx context.Context, request CreateCluster) (*Crea
 	var createClusterResponse CreateClusterResponse
 	path := "/api/2.1/clusters/create"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createClusterResponse)
 	return &createClusterResponse, err
 }
@@ -140,8 +140,8 @@ func (a *clustersImpl) Edit(ctx context.Context, request EditCluster) error {
 	var editClusterResponse EditClusterResponse
 	path := "/api/2.1/clusters/edit"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &editClusterResponse)
 	return err
 }
@@ -150,8 +150,8 @@ func (a *clustersImpl) Events(ctx context.Context, request GetEvents) (*GetEvent
 	var getEventsResponse GetEventsResponse
 	path := "/api/2.1/clusters/events"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &getEventsResponse)
 	return &getEventsResponse, err
 }
@@ -214,8 +214,8 @@ func (a *clustersImpl) PermanentDelete(ctx context.Context, request PermanentDel
 	var permanentDeleteClusterResponse PermanentDeleteClusterResponse
 	path := "/api/2.1/clusters/permanent-delete"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &permanentDeleteClusterResponse)
 	return err
 }
@@ -224,8 +224,8 @@ func (a *clustersImpl) Pin(ctx context.Context, request PinCluster) error {
 	var pinClusterResponse PinClusterResponse
 	path := "/api/2.1/clusters/pin"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &pinClusterResponse)
 	return err
 }
@@ -234,8 +234,8 @@ func (a *clustersImpl) Resize(ctx context.Context, request ResizeCluster) error 
 	var resizeClusterResponse ResizeClusterResponse
 	path := "/api/2.1/clusters/resize"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &resizeClusterResponse)
 	return err
 }
@@ -244,8 +244,8 @@ func (a *clustersImpl) Restart(ctx context.Context, request RestartCluster) erro
 	var restartClusterResponse RestartClusterResponse
 	path := "/api/2.1/clusters/restart"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &restartClusterResponse)
 	return err
 }
@@ -254,8 +254,8 @@ func (a *clustersImpl) SetPermissions(ctx context.Context, request ClusterPermis
 	var clusterPermissions ClusterPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &clusterPermissions)
 	return &clusterPermissions, err
 }
@@ -273,8 +273,8 @@ func (a *clustersImpl) Start(ctx context.Context, request StartCluster) error {
 	var startClusterResponse StartClusterResponse
 	path := "/api/2.1/clusters/start"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &startClusterResponse)
 	return err
 }
@@ -283,8 +283,8 @@ func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 	var unpinClusterResponse UnpinClusterResponse
 	path := "/api/2.1/clusters/unpin"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &unpinClusterResponse)
 	return err
 }
@@ -303,8 +303,8 @@ func (a *clustersImpl) UpdatePermissions(ctx context.Context, request ClusterPer
 	var clusterPermissions ClusterPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &clusterPermissions)
 	return &clusterPermissions, err
 }
@@ -318,8 +318,8 @@ func (a *commandExecutionImpl) Cancel(ctx context.Context, request CancelCommand
 	var cancelResponse CancelResponse
 	path := "/api/1.2/commands/cancel"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &cancelResponse)
 	return err
 }
@@ -346,8 +346,8 @@ func (a *commandExecutionImpl) Create(ctx context.Context, request CreateContext
 	var created Created
 	path := "/api/1.2/contexts/create"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &created)
 	return &created, err
 }
@@ -356,8 +356,8 @@ func (a *commandExecutionImpl) Destroy(ctx context.Context, request DestroyConte
 	var destroyResponse DestroyResponse
 	path := "/api/1.2/contexts/destroy"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &destroyResponse)
 	return err
 }
@@ -366,8 +366,8 @@ func (a *commandExecutionImpl) Execute(ctx context.Context, request Command) (*C
 	var created Created
 	path := "/api/1.2/commands/execute"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &created)
 	return &created, err
 }
@@ -381,8 +381,8 @@ func (a *globalInitScriptsImpl) Create(ctx context.Context, request GlobalInitSc
 	var createResponse CreateResponse
 	path := "/api/2.0/global-init-scripts"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createResponse)
 	return &createResponse, err
 }
@@ -431,8 +431,8 @@ func (a *instancePoolsImpl) Create(ctx context.Context, request CreateInstancePo
 	var createInstancePoolResponse CreateInstancePoolResponse
 	path := "/api/2.0/instance-pools/create"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createInstancePoolResponse)
 	return &createInstancePoolResponse, err
 }
@@ -441,8 +441,8 @@ func (a *instancePoolsImpl) Delete(ctx context.Context, request DeleteInstancePo
 	var deleteInstancePoolResponse DeleteInstancePoolResponse
 	path := "/api/2.0/instance-pools/delete"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deleteInstancePoolResponse)
 	return err
 }
@@ -451,8 +451,8 @@ func (a *instancePoolsImpl) Edit(ctx context.Context, request EditInstancePool) 
 	var editInstancePoolResponse EditInstancePoolResponse
 	path := "/api/2.0/instance-pools/edit"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &editInstancePoolResponse)
 	return err
 }
@@ -497,8 +497,8 @@ func (a *instancePoolsImpl) SetPermissions(ctx context.Context, request Instance
 	var instancePoolPermissions InstancePoolPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", request.InstancePoolId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &instancePoolPermissions)
 	return &instancePoolPermissions, err
 }
@@ -507,8 +507,8 @@ func (a *instancePoolsImpl) UpdatePermissions(ctx context.Context, request Insta
 	var instancePoolPermissions InstancePoolPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", request.InstancePoolId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &instancePoolPermissions)
 	return &instancePoolPermissions, err
 }
@@ -522,8 +522,8 @@ func (a *instanceProfilesImpl) Add(ctx context.Context, request AddInstanceProfi
 	var addResponse AddResponse
 	path := "/api/2.0/instance-profiles/add"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &addResponse)
 	return err
 }
@@ -532,8 +532,8 @@ func (a *instanceProfilesImpl) Edit(ctx context.Context, request InstanceProfile
 	var editResponse EditResponse
 	path := "/api/2.0/instance-profiles/edit"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &editResponse)
 	return err
 }
@@ -551,8 +551,8 @@ func (a *instanceProfilesImpl) Remove(ctx context.Context, request RemoveInstanc
 	var removeResponse RemoveResponse
 	path := "/api/2.0/instance-profiles/remove"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &removeResponse)
 	return err
 }
@@ -609,8 +609,8 @@ func (a *policyComplianceForClustersImpl) EnforceCompliance(ctx context.Context,
 	var enforceClusterComplianceResponse EnforceClusterComplianceResponse
 	path := "/api/2.0/policies/clusters/enforce-compliance"
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &enforceClusterComplianceResponse)
 	return &enforceClusterComplianceResponse, err
 }

@@ -33,8 +33,8 @@ func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurat
 	var createBudgetConfigurationResponse CreateBudgetConfigurationResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createBudgetConfigurationResponse)
 	return &createBudgetConfigurationResponse, err
 }
@@ -70,8 +70,8 @@ func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurat
 	var updateBudgetConfigurationResponse UpdateBudgetConfigurationResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &updateBudgetConfigurationResponse)
 	return &updateBudgetConfigurationResponse, err
 }
@@ -85,8 +85,8 @@ func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDe
 	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &wrappedLogDeliveryConfiguration)
 	return &wrappedLogDeliveryConfiguration, err
 }
@@ -128,8 +128,8 @@ func (a *usageDashboardsImpl) Create(ctx context.Context, request CreateBillingU
 	var createBillingUsageDashboardResponse CreateBillingUsageDashboardResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Content-Type"] = "application/json"
 	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createBillingUsageDashboardResponse)
 	return &createBillingUsageDashboardResponse, err
 }
