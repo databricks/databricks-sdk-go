@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/databricks/databricks-sdk-go/internal/credentials/cache"
+	"github.com/databricks/databricks-sdk-go/credentials/cache"
 	"golang.org/x/oauth2"
 )
 

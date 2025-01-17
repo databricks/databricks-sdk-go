@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
-	"github.com/databricks/databricks-sdk-go/internal/credentials/cache"
-	"github.com/databricks/databricks-sdk-go/internal/credentials/oauth"
+	"github.com/databricks/databricks-sdk-go/credentials/cache"
+	"github.com/databricks/databricks-sdk-go/credentials/oauth"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 

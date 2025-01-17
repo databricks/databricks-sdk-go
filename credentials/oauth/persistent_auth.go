@@ -11,8 +11,8 @@ import (
 	"net"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/credentials/cache"
 	"github.com/databricks/databricks-sdk-go/httpclient"
-	"github.com/databricks/databricks-sdk-go/internal/credentials/cache"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/pkg/browser"

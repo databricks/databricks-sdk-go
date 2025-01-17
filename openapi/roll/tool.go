@@ -20,32 +20,34 @@ func NewSuite(dirname string) (*Suite, error) {
 		fset:             fset,
 		ServiceToPackage: map[string]string{},
 	}
-	entries, err := os.ReadDir(dirname)
-	if err != nil {
-		return nil, err
-	}
-	for _, entry := range entries {
-		if entry.IsDir() {
-			continue
+	err := filepath.WalkDir(dirname, func(path string, info os.DirEntry, err error) error {
+		if err != nil {
+			return err
 		}
-		path := filepath.Join(dirname, entry.Name())
+		if info.IsDir() {
+			return nil
+		}
 		if strings.HasSuffix(path, "acceptance_test.go") {
 			// not transpilable
-			continue
+			return nil
 		}
 		if strings.HasSuffix(path, "files_test.go") {
 			// not transpilable
-			continue
+			return nil
 		}
 		if strings.HasSuffix(path, "workspaceconf_test.go") {
 			// not transpilable
-			continue
+			return nil
 		}
 		file, err := parser.ParseFile(fset, path, nil, parser.ParseComments)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		s.expectExamples(file)
+		return nil
+	})
+	if err != nil {
+		return nil, err
 	}
 	err = s.parsePackages(dirname+"/../workspace_client.go", "WorkspaceClient")
 	if err != nil {

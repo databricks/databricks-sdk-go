@@ -4,8 +4,8 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/credentials/oauth"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
-	"github.com/databricks/databricks-sdk-go/internal/credentials/oauth"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 )
