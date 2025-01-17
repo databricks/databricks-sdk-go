@@ -45,6 +45,17 @@ vendor:
 	    fi \
 	done
 
+download:
+	@echo "✓ Downloading dependencies in all modules ..."
+	@for dir in */; do \
+		if [ -f "$$dir/go.mod" ]; then \
+			echo "Downloading $$dir..."; \
+			cd $$dir && \
+			go mod download && \
+			cd ..; \
+		fi \
+	done
+
 doc:
 	@echo "Open http://localhost:6060"
 	@go run golang.org/x/tools/cmd/godoc@latest -http=localhost:6060
