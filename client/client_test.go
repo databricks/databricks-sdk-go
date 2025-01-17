@@ -43,11 +43,15 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 		}),
 	})
 	require.NoError(t, err)
-	err = c.Do(context.Background(), "GET", "/a/b", map[string]string{
-		"e": "f",
-	}, map[string]string{
-		"c": "d",
-	}, nil)
+	err = c.Do(
+		context.Background(),
+		"GET",
+		"/a/b",
+		map[string]string{"e": "f"},
+		nil,
+		map[string]string{"c": "d"},
+		nil,
+	)
 	require.EqualError(t, err, `Get "https://some/a/b?c=d": nope`)
 }
 
@@ -66,11 +70,15 @@ func TestSimpleRequestFailsAPIError(t *testing.T) {
 		}),
 	})
 	require.NoError(t, err)
-	err = c.Do(context.Background(), "GET", "/a/b", map[string]string{
-		"e": "f",
-	}, map[string]string{
-		"c": "d",
-	}, nil)
+	err = c.Do(
+		context.Background(),
+		"GET",
+		"/a/b",
+		map[string]string{"e": "f"},
+		nil,
+		map[string]string{"c": "d"},
+		nil,
+	)
 	require.EqualError(t, err, "nope")
 	require.ErrorIs(t, err, apierr.ErrInvalidParameterValue)
 }
@@ -115,11 +123,15 @@ func TestETag(t *testing.T) {
 		}),
 	})
 	require.NoError(t, err)
-	err = c.Do(context.Background(), "GET", "/a/b", map[string]string{
-		"e": "f",
-	}, map[string]string{
-		"c": "d",
-	}, nil)
+	err = c.Do(
+		context.Background(),
+		"GET",
+		"/a/b",
+		map[string]string{"e": "f"},
+		nil,
+		map[string]string{"c": "d"},
+		nil,
+	)
 	details := apierr.GetErrorInfo(err)
 	require.Equal(t, 1, len(details))
 	errorDetails := details[0]
@@ -148,7 +160,52 @@ func TestSimpleRequestSucceeds(t *testing.T) {
 	})
 	require.NoError(t, err)
 	var resp Dummy
-	err = c.Do(context.Background(), "POST", "/c", nil, Dummy{1}, &resp)
+	err = c.Do(
+		context.Background(),
+		"POST",
+		"/c",
+		nil,
+		nil,
+		Dummy{1},
+		&resp,
+	)
+	require.NoError(t, err)
+	require.Equal(t, 2, resp.Foo)
+}
+
+func TestQueryParamsRequestSucceeds(t *testing.T) {
+	type Dummy struct {
+		Foo int `json:"foo"`
+	}
+	c, err := New(&config.Config{
+		Host:       "some",
+		Token:      "token",
+		ConfigFile: "/dev/null",
+		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
+			if r.URL.RawQuery != "a=b&c=1" {
+				return nil, fmt.Errorf("unexpected query params: %s", r.URL.RawQuery)
+			}
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`{"foo": 2}`)),
+				Request:    r,
+			}, nil
+		}),
+	})
+	require.NoError(t, err)
+	var resp Dummy
+	err = c.Do(
+		context.Background(),
+		"POST",
+		"/c",
+		nil,
+		map[string]any{
+			"a": "b",
+			"c": 1,
+		},
+		Dummy{1},
+		&resp,
+	)
 	require.NoError(t, err)
 	require.Equal(t, 2, resp.Foo)
 }
@@ -180,7 +237,15 @@ func TestSimpleRequestRetried(t *testing.T) {
 	})
 	require.NoError(t, err)
 	var resp Dummy
-	err = c.Do(context.Background(), "PATCH", "/a", nil, Dummy{1}, &resp)
+	err = c.Do(
+		context.Background(),
+		"PATCH",
+		"/a",
+		nil,
+		nil,
+		Dummy{1},
+		&resp,
+	)
 	require.NoError(t, err)
 	require.Equal(t, 2, resp.Foo)
 	require.True(t, retried[0], "request was not retried")
@@ -203,7 +268,15 @@ func TestSimpleRequestAPIError(t *testing.T) {
 		}),
 	})
 	require.NoError(t, err)
-	err = c.Do(context.Background(), "PATCH", "/a", nil, map[string]any{}, nil)
+	err = c.Do(
+		context.Background(),
+		"PATCH",
+		"/a",
+		nil,
+		nil,
+		map[string]any{},
+		nil,
+	)
 	var aerr *apierr.APIError
 	require.ErrorAs(t, err, &aerr)
 	require.Equal(t, "NOT_FOUND", aerr.ErrorCode)
@@ -223,7 +296,15 @@ func TestHttpTransport(t *testing.T) {
 	client, err := New(cfg)
 	require.NoError(t, err)
 
-	err = client.Do(context.Background(), "GET", "/a", nil, nil, bytes.Buffer{})
+	err = client.Do(
+		context.Background(),
+		"GET",
+		"/a",
+		nil,
+		nil,
+		nil,
+		bytes.Buffer{},
+	)
 	require.NoError(t, err)
 	require.True(t, calledMock)
 }
@@ -249,9 +330,25 @@ func TestDoRemovesDoubleSlashesFromFilesAPI(t *testing.T) {
 		}),
 	})
 	require.NoError(t, err)
-	err = c.Do(context.Background(), "GET", "/api/2.0/fs/files//Volumes/abc/def/ghi", nil, map[string]any{}, nil)
+	err = c.Do(
+		context.Background(),
+		"GET",
+		"/api/2.0/fs/files//Volumes/abc/def/ghi",
+		nil,
+		nil,
+		map[string]any{},
+		nil,
+	)
 	require.NoError(t, err)
-	err = c.Do(context.Background(), "GET", "/api/2.0/anotherservice//test", nil, map[string]any{}, nil)
+	err = c.Do(
+		context.Background(),
+		"GET",
+		"/api/2.0/anotherservice//test",
+		nil,
+		nil,
+		map[string]any{},
+		nil,
+	)
 	require.NoError(t, err)
 }
 
@@ -340,7 +437,15 @@ func captureUserAgent(t *testing.T) string {
 	})
 	require.NoError(t, err)
 
-	err = c.Do(context.Background(), "GET", "/a", nil, nil, nil)
+	err = c.Do(
+		context.Background(),
+		"GET",
+		"/a",
+		nil,
+		nil,
+		nil,
+		nil,
+	)
 	require.NoError(t, err)
 
 	return userAgent
@@ -450,7 +555,15 @@ func testNonJSONResponseIncludedInError(t *testing.T, statusCode int, status, er
 	})
 	require.NoError(t, err)
 	var m map[string]string
-	err = c.Do(context.Background(), "GET", "/a", nil, nil, &m)
+	err = c.Do(
+		context.Background(),
+		"GET",
+		"/a",
+		nil,
+		nil,
+		nil,
+		&m,
+	)
 	require.EqualError(t, err, errorMessage)
 }
 
@@ -477,6 +590,14 @@ func TestRetryOn503(t *testing.T) {
 		}),
 	})
 	require.NoError(t, err)
-	err = c.Do(context.Background(), "GET", "/a/b", nil, map[string]any{}, nil)
+	err = c.Do(
+		context.Background(),
+		"GET",
+		"/a/b",
+		nil,
+		nil,
+		map[string]any{},
+		nil,
+	)
 	require.NoError(t, err)
 }
