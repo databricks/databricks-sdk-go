@@ -649,195 +649,20 @@ type ClusterLogConf struct {
 }
 
 type ClusterSpec struct {
-	// When set to true, fixed and default values from the policy will be used
-	// for fields that are omitted. When set to false, only fixed values from
-	// the policy will be applied.
-	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
-	// Parameters needed in order to automatically scale clusters up and down
-	// based on load. Note: autoscaling works best with DB runtime versions 3.0
-	// or later.
-	Autoscale *AutoScale `json:"autoscale,omitempty"`
-	// Automatically terminates the cluster after it is inactive for this time
-	// in minutes. If not set, this cluster will not be automatically
-	// terminated. If specified, the threshold must be between 10 and 10000
-	// minutes. Users can also set this value to 0 to explicitly disable
-	// automatic termination.
-	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
-	// Attributes related to clusters running on Amazon Web Services. If not
-	// specified at cluster creation, a set of default values will be used.
-	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
-	// Attributes related to clusters running on Microsoft Azure. If not
-	// specified at cluster creation, a set of default values will be used.
-	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-	// The configuration for delivering spark logs to a long-term storage
-	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
-	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every `5 mins`. The
-	// destination of driver logs is `$destination/$clusterId/driver`, while the
-	// destination of executor logs is `$destination/$clusterId/executor`.
-	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
-	// Cluster name requested by the user. This doesn't have to be unique. If
-	// not specified at creation, the cluster name will be an empty string.
-	ClusterName string `json:"cluster_name,omitempty"`
-	// Additional tags for cluster resources. Databricks will tag all cluster
-	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to `default_tags`. Notes:
-	//
-	// - Currently, Databricks allows at most 45 custom tags
-	//
-	// - Clusters can only reuse cloud resources if the resources' tags are a
-	// subset of the cluster tags
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Data security mode decides what data governance model to use when
-	// accessing data from a cluster.
-	//
-	// The following modes can only be used with `kind`. *
-	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
-	// access mode depending on your compute configuration. *
-	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
-	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
-	//
-	// The following modes can be used regardless of `kind`. * `NONE`: No
-	// security isolation for multiple users sharing the cluster. Data
-	// governance features are not available in this mode. * `SINGLE_USER`: A
-	// secure cluster that can only be exclusively used by a single user
-	// specified in `single_user_name`. Most programming languages, cluster
-	// features and data governance features are available in this mode. *
-	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
-	// Cluster users are fully isolated so that they cannot see each other's
-	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited.
-	//
-	// The following modes are deprecated starting with Databricks Runtime 15.0
-	// and will be removed for future Databricks Runtime versions:
-	//
-	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
-	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
-	// from legacy Passthrough on high concurrency clusters. *
-	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
-	// mode provides a way that doesn’t have UC nor passthrough enabled.
-	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
-	DockerImage *DockerImage `json:"docker_image,omitempty"`
-	// The optional ID of the instance pool for the driver of the cluster
-	// belongs. The pool cluster uses the instance pool with id
-	// (instance_pool_id) if the driver pool is not assigned.
-	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
-	// The node type of the Spark driver. Note that this field is optional; if
-	// unset, the driver node type will be set as the same value as
-	// `node_type_id` defined above.
-	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-	// Autoscaling Local Storage: when enabled, this cluster will dynamically
-	// acquire additional disk space when its Spark workers are running low on
-	// disk space. This feature requires specific AWS permissions to function
-	// correctly - refer to the User Guide for more details.
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-	// Whether to enable LUKS on cluster VMs' local disks
-	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-	// Attributes related to clusters running on Google Cloud Platform. If not
-	// specified at cluster creation, a set of default values will be used.
-	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-	// The configuration for storing init scripts. Any number of destinations
-	// can be specified. The scripts are executed sequentially in the order
-	// provided. If `cluster_log_conf` is specified, init script logs are sent
-	// to `<destination>/<cluster-ID>/init_scripts`.
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
-	// The optional ID of the instance pool to which the cluster belongs.
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// This field can only be used with `kind`.
-	//
-	// When set to true, Databricks will automatically set single node related
-	// `custom_tags`, `spark_conf`, and `num_workers`
-	IsSingleNode bool `json:"is_single_node,omitempty"`
 	// If job_cluster_key, this task is executed reusing the cluster specified
 	// in `job.settings.job_clusters`.
 	JobClusterKey string `json:"job_cluster_key,omitempty"`
-	// The kind of compute described by this compute specification.
-	//
-	// Depending on `kind`, different validations and default values will be
-	// applied.
-	//
-	// The first usage of this value is for the simple cluster form where it
-	// sets `kind = CLASSIC_PREVIEW`.
-	Kind Kind `json:"kind,omitempty"`
 	// An optional list of libraries to be installed on the cluster. The default
 	// value is an empty list.
 	Libraries []Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
 	NewCluster *ClusterSpec `json:"new_cluster,omitempty"`
-	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads. A
-	// list of available node types can be retrieved by using the
-	// :method:clusters/listNodeTypes API call.
-	NodeTypeId string `json:"node_type_id,omitempty"`
-	// Number of worker nodes that this cluster should have. A cluster has one
-	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
-	// Spark nodes.
-	//
-	// Note: When reading the properties of a cluster, this field reflects the
-	// desired number of workers rather than the actual current number of
-	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
-	// field will immediately be updated to reflect the target size of 10
-	// workers, whereas the workers listed in `spark_info` will gradually
-	// increase from 5 to 10 as the new nodes are provisioned.
-	NumWorkers int `json:"num_workers,omitempty"`
-	// The ID of the cluster policy used to create the cluster if applicable.
-	PolicyId string `json:"policy_id,omitempty"`
-	// Determines the cluster's runtime engine, either standard or Photon.
-	//
-	// This field is not compatible with legacy `spark_version` values that
-	// contain `-photon-`. Remove `-photon-` from the `spark_version` and set
-	// `runtime_engine` to `PHOTON`.
-	//
-	// If left unspecified, the runtime engine defaults to standard unless the
-	// spark_version contains -photon-, in which case Photon will be used.
-	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
-	// Single user name if data_security_mode is `SINGLE_USER`
-	SingleUserName string `json:"single_user_name,omitempty"`
-	// An object containing a set of optional, user-specified Spark
-	// configuration key-value pairs. Users can also pass in a string of extra
-	// JVM options to the driver and the executors via
-	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
-	// respectively.
-	SparkConf map[string]string `json:"spark_conf,omitempty"`
-	// An object containing a set of optional, user-specified environment
-	// variable key-value pairs. Please note that key-value pair of the form
-	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
-	// driver and workers.
-	//
-	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
-	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
-	// example below. This ensures that all default databricks managed
-	// environmental variables are included as well.
-	//
-	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
-	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
-	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
-	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
-	// available Spark versions can be retrieved by using the
-	// :method:clusters/sparkVersions API call.
-	SparkVersion string `json:"spark_version,omitempty"`
-	// SSH public key contents that will be added to each Spark node in this
-	// cluster. The corresponding private keys can be used to login with the
-	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
-	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-	// This field can only be used with `kind`.
-	//
-	// `effective_spark_version` is determined by `spark_version` (DBR release),
-	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
-	// not.
-	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
-	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1979,7 +1804,7 @@ type JobCluster struct {
 	// determine which cluster to launch for the task execution.
 	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
-	NewCluster ClusterSpec `json:"new_cluster"`
+	NewCluster JobsClusterSpec `json:"new_cluster"`
 }
 
 type JobCompliance struct {
@@ -2474,6 +2299,194 @@ func (f *JobSourceDirtyState) Set(v string) error {
 // Type always returns JobSourceDirtyState to satisfy [pflag.Value] interface
 func (f *JobSourceDirtyState) Type() string {
 	return "JobSourceDirtyState"
+}
+
+type JobsClusterSpec struct {
+	// When set to true, fixed and default values from the policy will be used
+	// for fields that are omitted. When set to false, only fixed values from
+	// the policy will be applied.
+	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
+	// Parameters needed in order to automatically scale clusters up and down
+	// based on load. Note: autoscaling works best with DB runtime versions 3.0
+	// or later.
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
+	// Automatically terminates the cluster after it is inactive for this time
+	// in minutes. If not set, this cluster will not be automatically
+	// terminated. If specified, the threshold must be between 10 and 10000
+	// minutes. Users can also set this value to 0 to explicitly disable
+	// automatic termination.
+	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
+	// Attributes related to clusters running on Amazon Web Services. If not
+	// specified at cluster creation, a set of default values will be used.
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
+	// Attributes related to clusters running on Microsoft Azure. If not
+	// specified at cluster creation, a set of default values will be used.
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
+	// The configuration for delivering spark logs to a long-term storage
+	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
+	// one destination can be specified for one cluster. If the conf is given,
+	// the logs will be delivered to the destination every `5 mins`. The
+	// destination of driver logs is `$destination/$clusterId/driver`, while the
+	// destination of executor logs is `$destination/$clusterId/executor`.
+	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
+	// Cluster name requested by the user. This doesn't have to be unique. If
+	// not specified at creation, the cluster name will be an empty string.
+	ClusterName string `json:"cluster_name,omitempty"`
+	// Additional tags for cluster resources. Databricks will tag all cluster
+	// resources (e.g., AWS instances and EBS volumes) with these tags in
+	// addition to `default_tags`. Notes:
+	//
+	// - Currently, Databricks allows at most 45 custom tags
+	//
+	// - Clusters can only reuse cloud resources if the resources' tags are a
+	// subset of the cluster tags
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// The following modes can only be used with `kind`. *
+	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
+	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+	//
+	// The following modes can be used regardless of `kind`. * `NONE`: No
+	// security isolation for multiple users sharing the cluster. Data
+	// governance features are not available in this mode. * `SINGLE_USER`: A
+	// secure cluster that can only be exclusively used by a single user
+	// specified in `single_user_name`. Most programming languages, cluster
+	// features and data governance features are available in this mode. *
+	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
+	// Cluster users are fully isolated so that they cannot see each other's
+	// data and credentials. Most data governance features are supported in this
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
+	// The optional ID of the instance pool for the driver of the cluster
+	// belongs. The pool cluster uses the instance pool with id
+	// (instance_pool_id) if the driver pool is not assigned.
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
+	// The node type of the Spark driver. Note that this field is optional; if
+	// unset, the driver node type will be set as the same value as
+	// `node_type_id` defined above.
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
+	// Autoscaling Local Storage: when enabled, this cluster will dynamically
+	// acquire additional disk space when its Spark workers are running low on
+	// disk space. This feature requires specific AWS permissions to function
+	// correctly - refer to the User Guide for more details.
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
+	// Whether to enable LUKS on cluster VMs' local disks
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
+	// Attributes related to clusters running on Google Cloud Platform. If not
+	// specified at cluster creation, a set of default values will be used.
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
+	// The configuration for storing init scripts. Any number of destinations
+	// can be specified. The scripts are executed sequentially in the order
+	// provided. If `cluster_log_conf` is specified, init script logs are sent
+	// to `<destination>/<cluster-ID>/init_scripts`.
+	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
+	// The optional ID of the instance pool to which the cluster belongs.
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// When set to true, Databricks will automatically set single node related
+	// `custom_tags`, `spark_conf`, and `num_workers`
+	IsSingleNode bool `json:"is_single_node,omitempty"`
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// The first usage of this value is for the simple cluster form where it
+	// sets `kind = CLASSIC_PREVIEW`.
+	Kind Kind `json:"kind,omitempty"`
+	// This field encodes, through a single value, the resources available to
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
+	// list of available node types can be retrieved by using the
+	// :method:clusters/listNodeTypes API call.
+	NodeTypeId string `json:"node_type_id,omitempty"`
+	// Number of worker nodes that this cluster should have. A cluster has one
+	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
+	// Spark nodes.
+	//
+	// Note: When reading the properties of a cluster, this field reflects the
+	// desired number of workers rather than the actual current number of
+	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
+	// field will immediately be updated to reflect the target size of 10
+	// workers, whereas the workers listed in `spark_info` will gradually
+	// increase from 5 to 10 as the new nodes are provisioned.
+	NumWorkers int `json:"num_workers,omitempty"`
+	// The ID of the cluster policy used to create the cluster if applicable.
+	PolicyId string `json:"policy_id,omitempty"`
+	// Determines the cluster's runtime engine, either standard or Photon.
+	//
+	// This field is not compatible with legacy `spark_version` values that
+	// contain `-photon-`. Remove `-photon-` from the `spark_version` and set
+	// `runtime_engine` to `PHOTON`.
+	//
+	// If left unspecified, the runtime engine defaults to standard unless the
+	// spark_version contains -photon-, in which case Photon will be used.
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
+	// Single user name if data_security_mode is `SINGLE_USER`
+	SingleUserName string `json:"single_user_name,omitempty"`
+	// An object containing a set of optional, user-specified Spark
+	// configuration key-value pairs. Users can also pass in a string of extra
+	// JVM options to the driver and the executors via
+	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
+	// respectively.
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
+	// An object containing a set of optional, user-specified environment
+	// variable key-value pairs. Please note that key-value pair of the form
+	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
+	// driver and workers.
+	//
+	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
+	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
+	// example below. This ensures that all default databricks managed
+	// environmental variables are included as well.
+	//
+	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
+	// available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
+	SparkVersion string `json:"spark_version,omitempty"`
+	// SSH public key contents that will be added to each Spark node in this
+	// cluster. The corresponding private keys can be used to login with the
+	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+	// This field can only be used with `kind`.
+	//
+	// `effective_spark_version` is determined by `spark_version` (DBR release),
+	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
+	// not.
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
+
+	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobsClusterSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobsClusterSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Specifies the health metric that is being evaluated for a particular health
@@ -5321,7 +5334,7 @@ type Task struct {
 	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
-	NewCluster *ClusterSpec `json:"new_cluster,omitempty"`
+	NewCluster *JobsClusterSpec `json:"new_cluster,omitempty"`
 	// The task runs a notebook when the `notebook_task` field is present.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
