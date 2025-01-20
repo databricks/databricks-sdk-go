@@ -109,7 +109,7 @@ func (a *PersistentAuth) Load(ctx context.Context, arg OAuthArgument) (t *oauth2
 	}
 	defer a.Close()
 
-	key := arg.GetCacheKey(ctx)
+	key := arg.GetCacheKey()
 	t, err = a.cache.Lookup(key)
 	if err != nil {
 		return nil, fmt.Errorf("cache: %w", err)
@@ -175,7 +175,7 @@ func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToke
 		}
 		return nil, err
 	}
-	err = a.cache.Store(arg.GetCacheKey(ctx), t)
+	err = a.cache.Store(arg.GetCacheKey(), t)
 	if err != nil {
 		return nil, fmt.Errorf("cache update: %w", err)
 	}
@@ -222,7 +222,7 @@ func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) (*oau
 		return nil, fmt.Errorf("authorize: %w", err)
 	}
 	// cache token identified by host (and possibly the account id)
-	err = a.cache.Store(arg.GetCacheKey(ctx), t)
+	err = a.cache.Store(arg.GetCacheKey(), t)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}
@@ -277,10 +277,10 @@ func (a *PersistentAuth) oauth2Config(ctx context.Context, arg OAuthArgument) (*
 	var err error
 	switch argg := arg.(type) {
 	case WorkspaceOAuthArgument:
-		endpoints, err = a.client.GetWorkspaceOAuthEndpoints(ctx, argg.GetWorkspaceHost(ctx))
+		endpoints, err = a.client.GetWorkspaceOAuthEndpoints(ctx, argg.GetWorkspaceHost())
 	case AccountOAuthArgument:
 		endpoints, err = a.client.GetAccountOAuthEndpoints(
-			ctx, argg.GetAccountHost(ctx), argg.GetAccountId(ctx))
+			ctx, argg.GetAccountHost(), argg.GetAccountId())
 	default:
 		return nil, fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument or AccountOAuthArgument interface", arg)
 	}

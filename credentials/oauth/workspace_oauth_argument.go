@@ -1,7 +1,6 @@
 package oauth
 
 import (
-	"context"
 	"fmt"
 	"strings"
 )
@@ -12,7 +11,7 @@ type WorkspaceOAuthArgument interface {
 	OAuthArgument
 
 	// GetWorkspaceHost returns the host of the workspace to authenticate to.
-	GetWorkspaceHost(ctx context.Context) string
+	GetWorkspaceHost() string
 }
 
 // BasicWorkspaceOAuthArgument is a basic implementation of the WorkspaceOAuthArgument
@@ -35,13 +34,13 @@ func NewBasicWorkspaceOAuthArgument(host string) (BasicWorkspaceOAuthArgument, e
 }
 
 // GetWorkspaceHost returns the host of the workspace to authenticate to.
-func (a BasicWorkspaceOAuthArgument) GetWorkspaceHost(ctx context.Context) string {
+func (a BasicWorkspaceOAuthArgument) GetWorkspaceHost() string {
 	return a.host
 }
 
 // GetCacheKey returns a unique key for caching the OAuth token for the workspace.
 // The key is in the format "<host>".
-func (a BasicWorkspaceOAuthArgument) GetCacheKey(ctx context.Context) string {
+func (a BasicWorkspaceOAuthArgument) GetCacheKey() string {
 	a.host = strings.TrimSuffix(a.host, "/")
 	if !strings.HasPrefix(a.host, "http") {
 		a.host = fmt.Sprintf("https://%s", a.host)

@@ -135,7 +135,7 @@ func (e *CliInvalidRefreshTokenError) Unwrap() error {
 // buildLoginCommand returns the `databricks auth login` command that the user
 // can run to reauthenticate. The command is prepopulated with the profile, host
 // and/or account ID.
-func buildLoginCommand(ctx context.Context, profile string, arg oauth.OAuthArgument) string {
+func buildLoginCommand(profile string, arg oauth.OAuthArgument) string {
 	cmd := []string{
 		"databricks",
 		"auth",
@@ -146,9 +146,9 @@ func buildLoginCommand(ctx context.Context, profile string, arg oauth.OAuthArgum
 	} else {
 		switch arg := arg.(type) {
 		case oauth.AccountOAuthArgument:
-			cmd = append(cmd, "--host", arg.GetAccountHost(ctx), "--account-id", arg.GetAccountId(ctx))
+			cmd = append(cmd, "--host", arg.GetAccountHost(), "--account-id", arg.GetAccountId())
 		case oauth.WorkspaceOAuthArgument:
-			cmd = append(cmd, "--host", arg.GetWorkspaceHost(ctx))
+			cmd = append(cmd, "--host", arg.GetWorkspaceHost())
 		}
 	}
 	return strings.Join(cmd, " ")
@@ -171,7 +171,7 @@ var DatabricksCliCredentials = u2mCredentials{
 		target := &oauth.InvalidRefreshTokenError{}
 		if errors.As(err, &target) {
 			return &CliInvalidRefreshTokenError{
-				loginCommand: buildLoginCommand(ctx, cfg.Profile, arg),
+				loginCommand: buildLoginCommand(cfg.Profile, arg),
 				err:          err,
 			}
 		}

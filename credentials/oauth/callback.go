@@ -93,7 +93,7 @@ func (cb *callbackServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		ErrorDescription: r.FormValue("error_description"),
 		Code:             r.FormValue("code"),
 		State:            r.FormValue("state"),
-		Host:             cb.getHost(r.Context()),
+		Host:             cb.getHost(),
 	}
 	if res.Error != "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -107,12 +107,12 @@ func (cb *callbackServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	cb.feedbackCh <- res
 }
 
-func (cb *callbackServer) getHost(ctx context.Context) string {
+func (cb *callbackServer) getHost() string {
 	switch a := cb.arg.(type) {
 	case AccountOAuthArgument:
-		return a.GetAccountHost(ctx)
+		return a.GetAccountHost()
 	case WorkspaceOAuthArgument:
-		return a.GetWorkspaceHost(ctx)
+		return a.GetWorkspaceHost()
 	default:
 		return ""
 	}

@@ -1,7 +1,6 @@
 package oauth
 
 import (
-	"context"
 	"fmt"
 	"strings"
 )
@@ -12,10 +11,10 @@ type AccountOAuthArgument interface {
 	OAuthArgument
 
 	// GetAccountHost returns the host of the account to authenticate to.
-	GetAccountHost(ctx context.Context) string
+	GetAccountHost() string
 
 	// GetAccountId returns the account ID of the account to authenticate to.
-	GetAccountId(ctx context.Context) string
+	GetAccountId() string
 }
 
 // BasicAccountOAuthArgument is a basic implementation of the AccountOAuthArgument
@@ -39,17 +38,17 @@ func NewBasicAccountOAuthArgument(accountsHost, accountID string) (BasicAccountO
 }
 
 // GetAccountHost returns the host of the account to authenticate to.
-func (a BasicAccountOAuthArgument) GetAccountHost(ctx context.Context) string {
+func (a BasicAccountOAuthArgument) GetAccountHost() string {
 	return a.accountHost
 }
 
 // GetAccountId returns the account ID of the account to authenticate to.
-func (a BasicAccountOAuthArgument) GetAccountId(ctx context.Context) string {
+func (a BasicAccountOAuthArgument) GetAccountId() string {
 	return a.accountID
 }
 
 // GetCacheKey returns a unique key for caching the OAuth token for the account.
 // The key is in the format "<accountHost>/oidc/accounts/<accountID>".
-func (a BasicAccountOAuthArgument) GetCacheKey(ctx context.Context) string {
+func (a BasicAccountOAuthArgument) GetCacheKey() string {
 	return fmt.Sprintf("%s/oidc/accounts/%s", a.accountHost, a.accountID)
 }
