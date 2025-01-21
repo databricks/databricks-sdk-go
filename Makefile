@@ -28,8 +28,12 @@ vendor:
 	@echo "✓ Filling vendor folder with library code ..."
 	@go mod vendor
 
+download:
+	@echo "✓ Downloading dependencies ..."
+	@go mod download
+
 doc:
 	@echo "Open http://localhost:6060"
 	@go run golang.org/x/tools/cmd/godoc@latest -http=localhost:6060
 
-.PHONY: fmt vendor fmt coverage test lint doc
+.PHONY: fmt vendor fmt coverage test lint doc download
