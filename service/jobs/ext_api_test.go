@@ -400,7 +400,7 @@ func TestGetJob(t *testing.T) {
 			{
 				Method:       "GET",
 				ReuseRequest: true,
-				Resource:     "/api/2.1/jobs/get?run_id=514594995218126",
+				Resource:     "/api/2.1/jobs/get?job_id=514594995218126",
 				Response: Job{
 					Settings: &JobSettings{
 						Tasks: []Task{
@@ -537,7 +537,7 @@ func TestGetJob(t *testing.T) {
 			{
 				Method:       "GET",
 				ReuseRequest: true,
-				Resource:     "/api/2.1/jobs/get?run_id=514594995218126",
+				Resource:     "/api/2.1/jobs/get?job_id=514594995218126",
 				Response: Job{
 					Settings: &JobSettings{
 						Tasks: []Task{
