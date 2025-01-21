@@ -32,3 +32,27 @@ func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, erro
 
 	return run, nil
 }
+
+func (a *JobsAPI) Get(ctx context.Context, request GetJobRequest) (*Job, error) {
+	job, err := a.jobsImpl.Get(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+
+	pageToken := job.NextPageToken
+	for pageToken != "" {
+		request.PageToken = pageToken
+		nextJob, err := a.jobsImpl.Get(ctx, request)
+		if err != nil {
+			return nil, err
+		}
+
+		job.Settings.Tasks = append(job.Settings.Tasks, nextJob.Settings.Tasks...)
+		job.Settings.JobClusters = append(job.Settings.JobClusters, nextJob.Settings.JobClusters...)
+		job.Settings.Parameters = append(job.Settings.Parameters, nextJob.Settings.Parameters...)
+		job.Settings.Environments = append(job.Settings.Environments, nextJob.Settings.Environments...)
+		pageToken = nextJob.NextPageToken
+	}
+
+	return job, nil
+}
