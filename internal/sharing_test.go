@@ -104,7 +104,7 @@ func TestUcAccRecipients(t *testing.T) {
 		err := w.Recipients.DeleteByName(ctx, created.Name)
 		require.NoError(t, err)
 	})
-	err = w.Recipients.Update(ctx, sharing.UpdateRecipient{
+	_, err = w.Recipients.Update(ctx, sharing.UpdateRecipient{
 		Name:    created.Name,
 		Comment: RandomName("comment "),
 	})

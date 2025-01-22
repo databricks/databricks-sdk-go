@@ -69,14 +69,14 @@ func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpoi
 	return &servingEndpointDetailed, err
 }
 
-func (a *servingEndpointsImpl) GetOpenApi(ctx context.Context, request GetOpenApiRequest) error {
+func (a *servingEndpointsImpl) GetOpenApi(ctx context.Context, request GetOpenApiRequest) (*GetOpenApiResponse, error) {
 	var getOpenApiResponse GetOpenApiResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/openapi", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
+	headers["Accept"] = "text/plain"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getOpenApiResponse)
-	return err
+	return &getOpenApiResponse, err
 }
 
 func (a *servingEndpointsImpl) GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
@@ -99,6 +99,17 @@ func (a *servingEndpointsImpl) GetPermissions(ctx context.Context, request GetSe
 	return &servingEndpointPermissions, err
 }
 
+func (a *servingEndpointsImpl) HttpRequest(ctx context.Context, request ExternalFunctionRequest) (*ExternalFunctionResponse, error) {
+	var externalFunctionResponse ExternalFunctionResponse
+	path := "/api/2.0/external-function"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &externalFunctionResponse)
+	return &externalFunctionResponse, err
+}
+
 func (a *servingEndpointsImpl) List(ctx context.Context) (*ListEndpointsResponse, error) {
 	var listEndpointsResponse ListEndpointsResponse
 	path := "/api/2.0/serving-endpoints"
@@ -119,15 +130,15 @@ func (a *servingEndpointsImpl) Logs(ctx context.Context, request LogsRequest) (*
 	return &serverLogsResponse, err
 }
 
-func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEndpointTags) ([]EndpointTag, error) {
-	var endpointTagList []EndpointTag
+func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEndpointTags) (*EndpointTags, error) {
+	var endpointTags EndpointTags
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/tags", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &endpointTagList)
-	return endpointTagList, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &endpointTags)
+	return &endpointTags, err
 }
 
 func (a *servingEndpointsImpl) Put(ctx context.Context, request PutRequest) (*PutResponse, error) {

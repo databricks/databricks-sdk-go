@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Access Control, Account Access Control Proxy, Account Groups, Account Service Principals, Account Users, Current User, Groups, Permission Migration, Permissions, Service Principals, Users, Workspace Assignment, etc.
+// These APIs allow you to manage Access Control, Account Access Control, Account Access Control Proxy, Account Groups, Account Service Principals, Account Users, Current User, Groups, Permission Migration, Permissions, Service Principals, Users, Workspace Assignment, etc.
 package iam
 
 import (
@@ -11,6 +11,25 @@ import (
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
+
+type AccessControlInterface interface {
+
+	// Check access policy to a resource.
+	CheckPolicy(ctx context.Context, request CheckPolicyRequest) (*CheckPolicyResponse, error)
+}
+
+func NewAccessControl(client *client.DatabricksClient) *AccessControlAPI {
+	return &AccessControlAPI{
+		accessControlImpl: accessControlImpl{
+			client: client,
+		},
+	}
+}
+
+// Rule based Access Control for Databricks Resources.
+type AccessControlAPI struct {
+	accessControlImpl
+}
 
 type AccountAccessControlInterface interface {
 
