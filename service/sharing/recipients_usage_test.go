@@ -159,7 +159,7 @@ func ExampleRecipientsAPI_Update_recipients() {
 	}
 	logger.Infof(ctx, "found %v", created)
 
-	err = w.Recipients.Update(ctx, sharing.UpdateRecipient{
+	_, err = w.Recipients.Update(ctx, sharing.UpdateRecipient{
 		Name:    created.Name,
 		Comment: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 	})
