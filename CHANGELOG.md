@@ -1,5 +1,51 @@
 # Version changelog
 
+## [Release] Release v0.56.0
+
+### Bug Fixes
+
+ * Support Query parameters for all HTTP operations ([#1124](https://github.com/databricks/databricks-sdk-go/pull/1124)).
+
+
+### Internal Changes
+
+ * Add download target to MakeFile ([#1125](https://github.com/databricks/databricks-sdk-go/pull/1125)).
+ * Delete examples/mocking module ([#1126](https://github.com/databricks/databricks-sdk-go/pull/1126)).
+ * Scope the traversing directory in the Recursive list workspace test ([#1120](https://github.com/databricks/databricks-sdk-go/pull/1120)).
+
+
+### API Changes:
+
+ * Added [w.AccessControl](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#AccessControlAPI) workspace-level service.
+ * Added `HttpRequest` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service.
+ * Added `ReviewState`, `Reviews` and `RunnerCollaborators` fields for [cleanrooms.CleanRoomAssetNotebook](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/cleanrooms#CleanRoomAssetNotebook).
+ * Added `CleanRoomsNotebookOutput` field for [jobs.RunOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunOutput).
+ * Added `RunAsRepl` field for [jobs.SparkJarTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SparkJarTask).
+ * Added `Scopes` field for [oauth2.UpdateCustomAppIntegration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#UpdateCustomAppIntegration).
+ * Added `Contents` field for [serving.GetOpenApiResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GetOpenApiResponse).
+ * Added `Activated`, `ActivationUrl`, `AuthenticationType`, `Cloud`, `Comment`, `CreatedAt`, `CreatedBy`, `DataRecipientGlobalMetastoreId`, `IpAccessList`, `MetastoreId`, `Name`, `Owner`, `PropertiesKvpairs`, `Region`, `SharingCode`, `Tokens`, `UpdatedAt` and `UpdatedBy` fields for [sharing.RecipientInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#RecipientInfo).
+ * Added `ExpirationTime` field for [sharing.RecipientInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#RecipientInfo).
+ * Changed `Update` method for [w.Recipients](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#RecipientsAPI) workspace-level service return type to become non-empty.
+ * Changed `Update` method for [w.Recipients](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#RecipientsAPI) workspace-level service to type `Update` method for [w.Recipients](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#RecipientsAPI) workspace-level service.
+ * Changed `Update` method for [w.Recipients](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#RecipientsAPI) workspace-level service to return [sharing.RecipientInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#RecipientInfo).
+ * Changed `Create` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service with new required argument order.
+ * Changed `GetOpenApi` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service return type to become non-empty.
+ * Changed `Patch` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service to return [serving.EndpointTags](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#EndpointTags).
+ * Changed `Patch` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service to type `Patch` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service.
+ * Changed [serving.EndpointTagList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#EndpointTagList) to.
+ * Changed `CollaboratorAlias` field for [cleanrooms.CleanRoomCollaborator](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/cleanrooms#CleanRoomCollaborator) to be required.
+ * Changed `CollaboratorAlias` field for [cleanrooms.CleanRoomCollaborator](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/cleanrooms#CleanRoomCollaborator) to be required.
+ * Changed `Behavior` field for [serving.AiGatewayGuardrailPiiBehavior](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AiGatewayGuardrailPiiBehavior) to no longer be required.
+ * Changed `Behavior` field for [serving.AiGatewayGuardrailPiiBehavior](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AiGatewayGuardrailPiiBehavior) to no longer be required.
+ * Changed `Config` field for [serving.CreateServingEndpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#CreateServingEndpoint) to no longer be required.
+ * Changed `ProjectId` and `Region` fields for [serving.GoogleCloudVertexAiConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GoogleCloudVertexAiConfig) to be required.
+ * Changed `ProjectId` and `Region` fields for [serving.GoogleCloudVertexAiConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GoogleCloudVertexAiConfig) to be required.
+ * Changed `WorkloadType` field for [serving.ServedEntityInput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedEntityInput) to type [serving.ServingModelWorkloadType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingModelWorkloadType).
+ * Changed `WorkloadType` field for [serving.ServedEntityOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedEntityOutput) to type [serving.ServingModelWorkloadType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingModelWorkloadType).
+ * Changed `WorkloadType` field for [serving.ServedModelOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelOutput) to type [serving.ServingModelWorkloadType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingModelWorkloadType).
+
+OpenAPI SHA: 0be1b914249781b5e903b7676fd02255755bc851, Date: 2025-01-22
+
 ## [Release] Release v0.55.0
 
 ### Internal Changes

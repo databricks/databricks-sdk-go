@@ -41,6 +41,7 @@ func NewMockWorkspaceClient(t interface {
 		WorkspaceClient: &databricks.WorkspaceClient{
 			Config: nil,
 
+			AccessControl:                       iam.NewMockAccessControlInterface(t),
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
 			Alerts:                              sql.NewMockAlertsInterface(t),
 			AlertsLegacy:                        sql.NewMockAlertsLegacyInterface(t),
@@ -238,6 +239,14 @@ func (m *MockWorkspaceClient) GetMockRestrictWorkspaceAdminsAPI() *settings.Mock
 	api, ok := m.GetMockSettingsAPI().RestrictWorkspaceAdmins().(*settings.MockRestrictWorkspaceAdminsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected RestrictWorkspaceAdmins to be *settings.MockRestrictWorkspaceAdminsInterface, actual was %T", m.GetMockSettingsAPI().RestrictWorkspaceAdmins()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockAccessControlAPI() *iam.MockAccessControlInterface {
+	api, ok := m.WorkspaceClient.AccessControl.(*iam.MockAccessControlInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AccessControl to be *iam.MockAccessControlInterface, actual was %T", m.WorkspaceClient.AccessControl))
 	}
 	return api
 }

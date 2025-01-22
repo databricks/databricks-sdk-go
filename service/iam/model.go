@@ -52,6 +52,57 @@ func (s AccessControlResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// represents an identity trying to access a resource - user or a service
+// principal group can be a principal of a permission set assignment but an
+// actor is always a user or a service principal
+type Actor struct {
+	ActorId int64 `json:"actor_id,omitempty" url:"actor_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Actor) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Actor) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Check access policy to a resource
+type CheckPolicyRequest struct {
+	Actor Actor `json:"-" url:"actor"`
+
+	AuthzIdentity RequestAuthzIdentity `json:"-" url:"authz_identity"`
+
+	ConsistencyToken ConsistencyToken `json:"-" url:"consistency_token"`
+
+	Permission string `json:"-" url:"permission"`
+	// Ex: (servicePrincipal/use,
+	// accounts/<account-id>/servicePrincipals/<sp-id>) Ex:
+	// (servicePrincipal.ruleSet/update,
+	// accounts/<account-id>/servicePrincipals/<sp-id>/ruleSets/default)
+	Resource string `json:"-" url:"resource"`
+
+	ResourceInfo *ResourceInfo `json:"-" url:"resource_info,omitempty"`
+}
+
+type CheckPolicyResponse struct {
+	ConsistencyToken ConsistencyToken `json:"consistency_token"`
+
+	IsPermitted bool `json:"is_permitted,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CheckPolicyResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CheckPolicyResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ComplexValue struct {
 	Display string `json:"display,omitempty"`
 
@@ -72,6 +123,10 @@ func (s *ComplexValue) UnmarshalJSON(b []byte) error {
 
 func (s ComplexValue) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ConsistencyToken struct {
+	Value string `json:"value"`
 }
 
 // Delete a group
@@ -1166,6 +1221,55 @@ func (s *PrincipalOutput) UnmarshalJSON(b []byte) error {
 }
 
 func (s PrincipalOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Defines the identity to be used for authZ of the request on the server side.
+// See one pager for for more information: http://go/acl/service-identity
+type RequestAuthzIdentity string
+
+const RequestAuthzIdentityRequestAuthzIdentityServiceIdentity RequestAuthzIdentity = `REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY`
+
+const RequestAuthzIdentityRequestAuthzIdentityUserContext RequestAuthzIdentity = `REQUEST_AUTHZ_IDENTITY_USER_CONTEXT`
+
+// String representation for [fmt.Print]
+func (f *RequestAuthzIdentity) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RequestAuthzIdentity) Set(v string) error {
+	switch v {
+	case `REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY`, `REQUEST_AUTHZ_IDENTITY_USER_CONTEXT`:
+		*f = RequestAuthzIdentity(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY", "REQUEST_AUTHZ_IDENTITY_USER_CONTEXT"`, v)
+	}
+}
+
+// Type always returns RequestAuthzIdentity to satisfy [pflag.Value] interface
+func (f *RequestAuthzIdentity) Type() string {
+	return "RequestAuthzIdentity"
+}
+
+type ResourceInfo struct {
+	// Id of the current resource.
+	Id string `json:"id" url:"id"`
+	// The legacy acl path of the current resource.
+	LegacyAclPath string `json:"legacy_acl_path,omitempty" url:"legacy_acl_path,omitempty"`
+	// Parent resource info for the current resource. The parent may have
+	// another parent.
+	ParentResourceInfo *ResourceInfo `json:"parent_resource_info,omitempty" url:"parent_resource_info,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ResourceInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ResourceInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

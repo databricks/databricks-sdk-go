@@ -10,6 +10,21 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 )
 
+// unexported type that holds implementations of just AccessControl API methods
+type accessControlImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *accessControlImpl) CheckPolicy(ctx context.Context, request CheckPolicyRequest) (*CheckPolicyResponse, error) {
+	var checkPolicyResponse CheckPolicyResponse
+	path := "/api/2.0/access-control/check-policy-v2"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &checkPolicyResponse)
+	return &checkPolicyResponse, err
+}
+
 // unexported type that holds implementations of just AccountAccessControl API methods
 type accountAccessControlImpl struct {
 	client *client.DatabricksClient

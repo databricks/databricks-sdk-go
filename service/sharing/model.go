@@ -44,8 +44,8 @@ type CreateProvider struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the Provider.
 	Name string `json:"name"`
-	// This field is required when the __authentication_type__ is **TOKEN** or
-	// not provided.
+	// This field is required when the __authentication_type__ is **TOKEN**,
+	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -65,7 +65,7 @@ type CreateRecipient struct {
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
 	// The global Unity Catalog metastore id provided by the data recipient.
-	// This field is required when the __authentication_type__ is
+	// This field is only present when the __authentication_type__ is
 	// **DATABRICKS**. The identifier is of format
 	// __cloud__:__region__:__metastore-uuid__.
 	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
@@ -77,10 +77,13 @@ type CreateRecipient struct {
 	Name string `json:"name"`
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
-	// Recipient properties as map of string key-value pairs.
+	// Recipient properties as map of string key-value pairs. When provided in
+	// update request, the specified properties will override the existing
+	// properties. To add and remove properties, one would need to perform a
+	// read-modify-write.
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
-	// required when the __authentication_type__ is **DATABRICKS**.
+	// only present when the __authentication_type__ is **DATABRICKS**.
 	SharingCode string `json:"sharing_code,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -565,7 +568,7 @@ type ProviderInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// The global UC metastore id of the data provider. This field is only
 	// present when the __authentication_type__ is **DATABRICKS**. The
-	// identifier is of format <cloud>:<region>:<metastore-uuid>.
+	// identifier is of format __cloud__:__region__:__metastore-uuid__.
 	DataProviderGlobalMetastoreId string `json:"data_provider_global_metastore_id,omitempty"`
 	// UUID of the provider's UC metastore. This field is only present when the
 	// __authentication_type__ is **DATABRICKS**.
@@ -575,17 +578,17 @@ type ProviderInfo struct {
 	// Username of Provider owner.
 	Owner string `json:"owner,omitempty"`
 	// The recipient profile. This field is only present when the
-	// authentication_type is `TOKEN`.
+	// authentication_type is `TOKEN` or `OAUTH_CLIENT_CREDENTIALS`.
 	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
-	// This field is only present when the authentication_type is `TOKEN` or not
-	// provided.
+	// This field is required when the __authentication_type__ is **TOKEN**,
+	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 	// Cloud region of the provider's UC metastore. This field is only present
 	// when the __authentication_type__ is **DATABRICKS**.
 	Region string `json:"region,omitempty"`
 	// Time at which this Provider was created, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of user who last modified Share.
+	// Username of user who last modified Provider.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -623,8 +626,8 @@ type RecipientInfo struct {
 	ActivationUrl string `json:"activation_url,omitempty"`
 	// The delta sharing authentication type.
 	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
-	// Cloud vendor of the recipient's Unity Catalog Metstore. This field is
-	// only present when the __authentication_type__ is **DATABRICKS**`.
+	// Cloud vendor of the recipient's Unity Catalog Metastore. This field is
+	// only present when the __authentication_type__ is **DATABRICKS**.
 	Cloud string `json:"cloud,omitempty"`
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
@@ -637,18 +640,23 @@ type RecipientInfo struct {
 	// **DATABRICKS**. The identifier is of format
 	// __cloud__:__region__:__metastore-uuid__.
 	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
+	// Expiration timestamp of the token, in epoch milliseconds.
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
-	// Unique identifier of recipient's Unity Catalog metastore. This field is
-	// only present when the __authentication_type__ is **DATABRICKS**
+	// Unique identifier of recipient's Unity Catalog Metastore. This field is
+	// only present when the __authentication_type__ is **DATABRICKS**.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of Recipient.
 	Name string `json:"name,omitempty"`
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
-	// Recipient properties as map of string key-value pairs.
+	// Recipient properties as map of string key-value pairs. When provided in
+	// update request, the specified properties will override the existing
+	// properties. To add and remove properties, one would need to perform a
+	// read-modify-write.
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
-	// Cloud region of the recipient's Unity Catalog Metstore. This field is
+	// Cloud region of the recipient's Unity Catalog Metastore. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
 	Region string `json:"region,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
@@ -695,7 +703,7 @@ type RecipientTokenInfo struct {
 	// Full activation URL to retrieve the access token. It will be empty if the
 	// token is already retrieved.
 	ActivationUrl string `json:"activation_url,omitempty"`
-	// Time at which this recipient Token was created, in epoch milliseconds.
+	// Time at which this recipient token was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of recipient token creator.
 	CreatedBy string `json:"created_by,omitempty"`
@@ -703,9 +711,9 @@ type RecipientTokenInfo struct {
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
 	// Unique ID of the recipient token.
 	Id string `json:"id,omitempty"`
-	// Time at which this recipient Token was updated, in epoch milliseconds.
+	// Time at which this recipient token was updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of recipient Token updater.
+	// Username of recipient token updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -752,7 +760,7 @@ type RotateRecipientToken struct {
 	// cannot extend the expiration_time. Use 0 to expire the existing token
 	// immediately, negative number will return an error.
 	ExistingTokenExpireInSeconds int64 `json:"existing_token_expire_in_seconds"`
-	// The name of the recipient.
+	// The name of the Recipient.
 	Name string `json:"-" url:"-"`
 }
 
@@ -762,9 +770,6 @@ type SecurablePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties"`
 }
-
-// A map of key-value properties attached to the securable.
-type SecurablePropertiesMap map[string]string
 
 type ShareInfo struct {
 	// User-provided free-form text description.
@@ -1052,8 +1057,8 @@ type UpdateProvider struct {
 	NewName string `json:"new_name,omitempty"`
 	// Username of Provider owner.
 	Owner string `json:"owner,omitempty"`
-	// This field is required when the __authentication_type__ is **TOKEN** or
-	// not provided.
+	// This field is required when the __authentication_type__ is **TOKEN**,
+	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -1076,7 +1081,7 @@ type UpdateRecipient struct {
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Name of the recipient.
 	Name string `json:"-" url:"-"`
-	// New name for the recipient.
+	// New name for the recipient. .
 	NewName string `json:"new_name,omitempty"`
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
@@ -1095,9 +1100,6 @@ func (s *UpdateRecipient) UnmarshalJSON(b []byte) error {
 
 func (s UpdateRecipient) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateResponse struct {
 }
 
 type UpdateShare struct {

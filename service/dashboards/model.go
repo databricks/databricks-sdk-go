@@ -324,8 +324,10 @@ type GenieMessage struct {
 	// MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching
 	// metadata from the data sources. * `FILTERING_CONTEXT`: Running smart
 	// context step to determine relevant context. * `ASKING_AI`: Waiting for
-	// the LLM to respond to the users question. * `EXECUTING_QUERY`: Executing
-	// AI provided SQL query. Get the SQL query result by calling
+	// the LLM to respond to the users question. * `PENDING_WAREHOUSE`: Waiting
+	// for warehouse before the SQL query can start executing. *
+	// `EXECUTING_QUERY`: Executing AI provided SQL query. Get the SQL query
+	// result by calling
 	// [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
 	// **Important: The message status will stay in the `EXECUTING_QUERY` until
 	// a client calls
@@ -672,8 +674,9 @@ func (f *MessageErrorType) Type() string {
 // MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching
 // metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context
 // step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to
-// respond to the users question. * `EXECUTING_QUERY`: Executing AI provided SQL
-// query. Get the SQL query result by calling
+// respond to the users question. * `PENDING_WAREHOUSE`: Waiting for warehouse
+// before the SQL query can start executing. * `EXECUTING_QUERY`: Executing AI
+// provided SQL query. Get the SQL query result by calling
 // [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
 // **Important: The message status will stay in the `EXECUTING_QUERY` until a
 // client calls [getMessageQueryResult](:method:genie/getMessageQueryResult)**.
@@ -713,6 +716,9 @@ const MessageStatusFetchingMetadata MessageStatus = `FETCHING_METADATA`
 // Running smart context step to determine relevant context.
 const MessageStatusFilteringContext MessageStatus = `FILTERING_CONTEXT`
 
+// Waiting for warehouse before the SQL query can start executing.
+const MessageStatusPendingWarehouse MessageStatus = `PENDING_WAREHOUSE`
+
 // SQL result is not available anymore. The user needs to execute the query
 // again.
 const MessageStatusQueryResultExpired MessageStatus = `QUERY_RESULT_EXPIRED`
@@ -728,11 +734,11 @@ func (f *MessageStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MessageStatus) Set(v string) error {
 	switch v {
-	case `ASKING_AI`, `CANCELLED`, `COMPLETED`, `EXECUTING_QUERY`, `FAILED`, `FETCHING_METADATA`, `FILTERING_CONTEXT`, `QUERY_RESULT_EXPIRED`, `SUBMITTED`:
+	case `ASKING_AI`, `CANCELLED`, `COMPLETED`, `EXECUTING_QUERY`, `FAILED`, `FETCHING_METADATA`, `FILTERING_CONTEXT`, `PENDING_WAREHOUSE`, `QUERY_RESULT_EXPIRED`, `SUBMITTED`:
 		*f = MessageStatus(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ASKING_AI", "CANCELLED", "COMPLETED", "EXECUTING_QUERY", "FAILED", "FETCHING_METADATA", "FILTERING_CONTEXT", "QUERY_RESULT_EXPIRED", "SUBMITTED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ASKING_AI", "CANCELLED", "COMPLETED", "EXECUTING_QUERY", "FAILED", "FETCHING_METADATA", "FILTERING_CONTEXT", "PENDING_WAREHOUSE", "QUERY_RESULT_EXPIRED", "SUBMITTED"`, v)
 	}
 }
 

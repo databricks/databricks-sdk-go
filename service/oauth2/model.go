@@ -649,6 +649,10 @@ type UpdateCustomAppIntegration struct {
 	// List of OAuth redirect urls to be updated in the custom OAuth app
 	// integration
 	RedirectUrls []string `json:"redirect_urls,omitempty"`
+	// List of OAuth scopes to be updated in the custom OAuth app integration,
+	// similar to redirect URIs this will fully replace the existing values
+	// instead of appending
+	Scopes []string `json:"scopes,omitempty"`
 	// Token access policy to be updated in the custom OAuth app integration
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 }

@@ -1,5 +1,7 @@
 // Databricks SDK for Go APIs
 //
+// - [iam.AccessControlAPI]: Rule based Access Control for Databricks Resources.
+//
 // - [iam.AccountAccessControlAPI]: These APIs manage access rules on resources in an account.
 //
 // - [iam.AccountAccessControlProxyAPI]: These APIs manage access rules on resources in an account.
@@ -299,6 +301,7 @@ import (
 // https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service
 // See: https://pkg.go.dev/golang.org/x/tools/internal/imports#ImportPathToAssumedName
 var (
+	_ *iam.AccessControlAPI                               = nil
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
 	_ *settings.AibiDashboardEmbeddingAccessPolicyAPI     = nil
@@ -323,8 +326,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *catalog.CredentialsAPI                             = nil
 	_ *provisioning.CredentialsAPI                        = nil
+	_ *catalog.CredentialsAPI                             = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
