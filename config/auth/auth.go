@@ -42,15 +42,19 @@ func WithAsyncRefresh(b bool) Option {
 	}
 }
 
-// NewCachedTokenProvider returns a new token source that caches the token. The
-// token is refreshed when it is expired or about to expire. The token is
-// refreshed asynchronously if the async refresh is enabled.
+// NewCachedTokenProvider wraps a [oauth2.TokenSource] to cache the tokens
+// it returns. By default, the cache will refresh tokens asynchronously a few
+// minutes before they expire.
+//
+// The token cache is safe for concurrent use by multiple goroutines and will
+// guarantee that only one token refresh is triggered at a time.
 //
 // The token cache does not take care of retries in case the token source
 // returns and error; it is the responsibility of the provided token source to
 // handle retries appropriately.
 //
-// If the TokenSource is already a cached token source, it is returned as is.
+// If the TokenSource is already a cached token source (obtained by calling this
+// function), it is returned as is.
 func NewCachedTokenSource(ts oauth2.TokenSource, opts ...Option) oauth2.TokenSource {
 	if cts, ok := ts.(*cachedTokenSource); ok {
 		return cts
@@ -83,8 +87,11 @@ type cachedTokenSource struct {
 	// multiple async refreshes from being triggered at the same time.
 	isRefreshing bool
 
-	// Error returned by the last async refresh. This is used to prevent
-	// multiple async refreshes from being triggered.
+	// Error returned by the last refresh. Async refreshes are disabled if this
+	// value is not nil so that the cache does not continue sending request to
+	// a potentially failing server. The next blocking call will re-enable async
+	// refreshes by setting this value to nil if it succeeds, or return the
+	// error if it fails.
 	refreshErr error
 
 	timeNow func() time.Time // for testing
@@ -151,7 +158,11 @@ func (cts *cachedTokenSource) blockingToken() (*oauth2.Token, error) {
 	// blockingToken operation is running at a time.
 	defer cts.mu.Unlock()
 
+	// This is important to recover from potential previous failed attempts
+	// to refresh the token asynchronously, see declaration of refreshErr for
+	// more information.
 	cts.isRefreshing = false
+
 	if ts := cts.tokenState(); ts != expired { // fresh or stale
 		return cts.cachedToken, nil
 	}
