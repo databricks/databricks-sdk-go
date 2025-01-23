@@ -6,9 +6,9 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"slices"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Apps API methods
