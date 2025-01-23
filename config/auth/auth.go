@@ -17,45 +17,58 @@ const (
 	defaultDisableAsyncRefresh = true
 )
 
-type CachedTokenSourceOptions struct {
-	// DisableAsyncRefresh disables the asynchronous token refresh.
-	DisableAsyncRefresh bool
+type Option func(*cachedTokenSource)
 
-	// StaleDuration is the duration before the token expires. If unset, the
-	// default duration of 3 minutes is used.
-	StaleDuration time.Duration
-}
-
-func (ctso *CachedTokenSourceOptions) disableAsyncRefresh() bool {
-	if ctso == nil {
-		return defaultDisableAsyncRefresh
+// WithCachedToken sets the initial token to be used by a cached token source.
+func WithCachedToken(t *oauth2.Token) Option {
+	return func(cts *cachedTokenSource) {
+		cts.cachedToken = t
 	}
-	return ctso.DisableAsyncRefresh
 }
 
-func (ctso *CachedTokenSourceOptions) staleDuration() time.Duration {
-	if ctso == nil || ctso.StaleDuration == 0 {
-		return defaultStaleDuration
+// WithStaleDuration sets the duration for which a token is considered stale.
+// Stale tokens are still valid but will trigger an asynchronous refresh if
+// async refresh is enabled. The default value is 3 minutes.
+func WithStaleDuration(d time.Duration) Option {
+	return func(cts *cachedTokenSource) {
+		cts.staleDuration = d
 	}
-	return ctso.StaleDuration
 }
 
-// NewCachedTokenProvider returns a new token source that caches the token.
+// WithAsyncRefresh enables or disables the asynchronous token refresh.
+func WithAsyncRefresh(b bool) Option {
+	return func(cts *cachedTokenSource) {
+		cts.disableAsync = !b
+	}
+}
+
+// NewCachedTokenProvider returns a new token source that caches the token. The
+// token is refreshed when it is expired or about to expire. The token is
+// refreshed asynchronously if the async refresh is enabled.
 //
-// The TokenSource is expected to take care of potential retries on its own.
+// The token cache does not take care of retries in case the token source
+// returns and error; it is the responsibility of the provided token source to
+// handle retries appropriately.
 //
 // If the TokenSource is already a cached token source, it is returned as is.
-func NewCachedTokenSource(ts oauth2.TokenSource, opts *CachedTokenSourceOptions) oauth2.TokenSource {
+func NewCachedTokenSource(ts oauth2.TokenSource, opts ...Option) oauth2.TokenSource {
 	if cts, ok := ts.(*cachedTokenSource); ok {
 		return cts
 	}
 
-	return &cachedTokenSource{
+	cts := &cachedTokenSource{
 		tokenSource:   ts,
-		staleDuration: opts.staleDuration(),
-		disableAsync:  opts.disableAsyncRefresh(),
+		staleDuration: defaultStaleDuration,
+		disableAsync:  defaultDisableAsyncRefresh,
+		cachedToken:   nil,
 		timeNow:       time.Now,
 	}
+
+	for _, opt := range opts {
+		opt(cts)
+	}
+
+	return cts
 }
 
 type cachedTokenSource struct {

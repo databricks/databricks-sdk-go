@@ -25,65 +25,55 @@ func TestNewCachedTokenSource_noCaching(t *testing.T) {
 	}
 }
 
-func TestNewCachedTokenSource(t *testing.T) {
+func TestNewCachedTokenSource_default(t *testing.T) {
 	ts := mockTokenSource(func() (*oauth2.Token, error) {
 		return nil, nil
 	})
 
-	testCases := []struct {
-		options *CachedTokenSourceOptions
-		want    *cachedTokenSource
-	}{
-		{
-			options: nil,
-			want: &cachedTokenSource{
-				tokenSource:   ts,
-				staleDuration: defaultStaleDuration,
-				disableAsync:  defaultDisableAsyncRefresh,
-			},
-		},
-		{
-			options: &CachedTokenSourceOptions{},
-			want: &cachedTokenSource{
-				tokenSource:   ts,
-				staleDuration: defaultStaleDuration,
-				disableAsync:  false,
-			},
-		},
-		{
-			options: &CachedTokenSourceOptions{
-				DisableAsyncRefresh: true,
-			},
-			want: &cachedTokenSource{
-				tokenSource:   ts,
-				staleDuration: defaultStaleDuration,
-				disableAsync:  true,
-			},
-		},
-		{
-			options: &CachedTokenSourceOptions{
-				StaleDuration: 5 * time.Minute,
-			},
-			want: &cachedTokenSource{
-				tokenSource:   ts,
-				staleDuration: 5 * time.Minute,
-				disableAsync:  false,
-			},
-		},
+	got, ok := NewCachedTokenSource(ts).(*cachedTokenSource)
+	if !ok {
+		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", got)
 	}
 
-	for _, tc := range testCases {
-		got, ok := NewCachedTokenSource(ts, tc.options).(*cachedTokenSource)
-		if !ok {
-			t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", got)
-		}
+	if got.staleDuration != defaultStaleDuration {
+		t.Errorf("NewCachedTokenSource() staleDuration = %v, want %v", got.staleDuration, defaultStaleDuration)
+	}
+	if got.disableAsync != defaultDisableAsyncRefresh {
+		t.Errorf("NewCachedTokenSource() disableAsync = %v, want %v", got.disableAsync, defaultDisableAsyncRefresh)
+	}
+	if got.cachedToken != nil {
+		t.Errorf("NewCachedTokenSource() cachedToken = %v, want nil", got.cachedToken)
+	}
+}
 
-		if got.staleDuration != tc.want.staleDuration {
-			t.Errorf("NewCachedTokenSource() staleDuration = %v, want %v", got.staleDuration, tc.want.staleDuration)
-		}
-		if got.disableAsync != tc.want.disableAsync {
-			t.Errorf("NewCachedTokenSource() disableAsync = %v, want %v", got.disableAsync, tc.want.disableAsync)
-		}
+func TestNewCachedTokenSource_options(t *testing.T) {
+	ts := mockTokenSource(func() (*oauth2.Token, error) {
+		return nil, nil
+	})
+
+	wantStaleDuration := 10 * time.Minute
+	wantDisableAsync := false
+	wantCachedToken := &oauth2.Token{Expiry: time.Unix(42, 0)}
+
+	opts := []Option{
+		WithStaleDuration(wantStaleDuration),
+		WithAsyncRefresh(!wantDisableAsync),
+		WithCachedToken(wantCachedToken),
+	}
+
+	got, ok := NewCachedTokenSource(ts, opts...).(*cachedTokenSource)
+	if !ok {
+		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", got)
+	}
+
+	if got.staleDuration != wantStaleDuration {
+		t.Errorf("NewCachedTokenSource(): staleDuration = %v, want %v", got.staleDuration, wantStaleDuration)
+	}
+	if got.disableAsync != wantDisableAsync {
+		t.Errorf("NewCachedTokenSource(): disableAsync = %v, want %v", got.disableAsync, wantDisableAsync)
+	}
+	if got.cachedToken != wantCachedToken {
+		t.Errorf("NewCachedTokenSource(): cachedToken = %v, want %v", got.cachedToken, wantCachedToken)
 	}
 }
 
