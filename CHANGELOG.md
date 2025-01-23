@@ -1,5 +1,13 @@
 # Version changelog
 
+## [Release] Release v0.56.1
+
+### Bug Fixes
+
+ * Do not send query parameters when set to zero value ([#1136](https://github.com/databricks/databricks-sdk-go/pull/1136)).
+
+
+
 ## [Release] Release v0.56.0
 
 ### Bug Fixes
