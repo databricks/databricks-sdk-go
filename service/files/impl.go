@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/httpclient"
@@ -197,7 +198,9 @@ func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
 	var uploadResponse UploadResponse
 	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	queryParams := make(map[string]any)
-	queryParams["overwrite"] = request.Overwrite
+	if request.Overwrite != false || slices.Contains(request.ForceSendFields, "Overwrite") {
+		queryParams["overwrite"] = request.Overwrite
+	}
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/octet-stream"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.Contents, &uploadResponse)
