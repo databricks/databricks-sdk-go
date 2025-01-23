@@ -63,14 +63,18 @@ type cachedTokenSource struct {
 	staleDuration time.Duration
 	disableAsync  bool
 
-	mu           sync.Mutex
-	cachedToken  *oauth2.Token
-	isRefreshing bool
-	refreshErr   error
+	mu          sync.Mutex
+	cachedToken *oauth2.Token
 
-	// timeNow is a function that returns the current time. It is used to
-	// determine the current time in tests.
-	timeNow func() time.Time
+	// Indicates that an async refresh is in progress. This is used to prevent
+	// multiple async refreshes from being triggered at the same time.
+	isRefreshing bool
+
+	// Error returned by the last async refresh. This is used to prevent
+	// multiple async refreshes from being triggered.
+	refreshErr error
+
+	timeNow func() time.Time // for testing
 }
 
 // Token returns a token from the cache or fetches a new one if the current
@@ -127,9 +131,6 @@ func (cts *cachedTokenSource) asyncToken() (*oauth2.Token, error) {
 	}
 }
 
-// blockingToken returns a token from the cache or fetches a new one if the
-// current token is expired. The function guarantees that only one refresh call
-// we be made if several goroutines are calling it concurrently.
 func (cts *cachedTokenSource) blockingToken() (*oauth2.Token, error) {
 	cts.mu.Lock()
 
@@ -150,20 +151,16 @@ func (cts *cachedTokenSource) blockingToken() (*oauth2.Token, error) {
 	return t, nil
 }
 
-// triggerAsyncRefresh
 func (cts *cachedTokenSource) triggerAsyncRefresh() {
 	cts.mu.Lock()
 	defer cts.mu.Unlock()
 	if !cts.isRefreshing && cts.refreshErr == nil {
+		cts.isRefreshing = true
 		go cts.asyncRefresh()
 	}
 }
 
 func (cts *cachedTokenSource) asyncRefresh() {
-	cts.mu.Lock()
-	cts.isRefreshing = true
-	cts.mu.Unlock()
-
 	t, err := cts.tokenSource.Token()
 
 	cts.mu.Lock()

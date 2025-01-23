@@ -158,6 +158,7 @@ func TestCachedTokenSource_Token(t *testing.T) {
 			disableAsync:  true,
 			returnedToken: &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 			wantCalls:     1,
+			wantToken:     &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
 			desc:          "[Blocking] expired cached token",
@@ -165,18 +166,21 @@ func TestCachedTokenSource_Token(t *testing.T) {
 			cachedToken:   &oauth2.Token{Expiry: now.Add(-1 * time.Second)},
 			returnedToken: &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 			wantCalls:     1,
+			wantToken:     &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
 			desc:         "[Blocking] fresh cached token",
 			disableAsync: true,
 			cachedToken:  &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 			wantCalls:    0,
+			wantToken:    &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
 			desc:         "[Blocking] stale cached token",
 			disableAsync: true,
 			cachedToken:  &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
 			wantCalls:    0,
+			wantToken:    &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
 		},
 		{
 			desc:          "[Blocking] refresh error",
@@ -188,40 +192,47 @@ func TestCachedTokenSource_Token(t *testing.T) {
 			desc:          "[Async] no cached token",
 			returnedToken: &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 			wantCalls:     1,
+			wantToken:     &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
 			desc:          "[Async] no cached token",
 			returnedToken: &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 			wantCalls:     1,
+			wantToken:     &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
 			desc:          "[Async] expired cached token",
 			cachedToken:   &oauth2.Token{Expiry: now.Add(-1 * time.Second)},
 			returnedToken: &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 			wantCalls:     1,
+			wantToken:     &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
 			desc:        "[Async] fresh cached token",
 			cachedToken: &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 			wantCalls:   0,
+			wantToken:   &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
 			desc:          "[Async] stale cached token",
 			cachedToken:   &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
 			returnedToken: &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 			wantCalls:     1,
+			wantToken:     &oauth2.Token{Expiry: now.Add(1 * time.Hour)},
 		},
 		{
 			desc:          "[Async] refresh error",
 			cachedToken:   &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
 			returnedError: fmt.Errorf("test error"),
 			wantCalls:     1,
+			wantToken:     &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
 		},
 		{
 			desc:          "[Async] stale cached token, expired token returned",
 			cachedToken:   &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
 			returnedToken: &oauth2.Token{Expiry: now.Add(-1 * time.Second)},
 			wantCalls:     10,
+			wantToken:     &oauth2.Token{Expiry: now.Add(-1 * time.Second)},
 		},
 	}
 
