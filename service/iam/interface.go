@@ -6,6 +6,13 @@ import (
 	"context"
 )
 
+// Rule based Access Control for Databricks Resources.
+type AccessControlService interface {
+
+	// Check access policy to a resource.
+	CheckPolicy(ctx context.Context, request CheckPolicyRequest) (*CheckPolicyResponse, error)
+}
+
 // These APIs manage access rules on resources in an account. Currently, only
 // grant rules are supported. A grant rule specifies a role assigned to a set of
 // principals. A list of rules attached to a resource is called a rule set.

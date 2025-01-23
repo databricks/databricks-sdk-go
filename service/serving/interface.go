@@ -48,7 +48,7 @@ type ServingEndpointsService interface {
 	// Get the query schema of the serving endpoint in OpenAPI format. The
 	// schema contains information for the supported paths, input and output
 	// format and datatypes.
-	GetOpenApi(ctx context.Context, request GetOpenApiRequest) error
+	GetOpenApi(ctx context.Context, request GetOpenApiRequest) (*GetOpenApiResponse, error)
 
 	// Get serving endpoint permission levels.
 	//
@@ -60,6 +60,10 @@ type ServingEndpointsService interface {
 	// Gets the permissions of a serving endpoint. Serving endpoints can inherit
 	// permissions from their root object.
 	GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+
+	// Make external services call using the credentials stored in UC
+	// Connection.
+	HttpRequest(ctx context.Context, request ExternalFunctionRequest) (*ExternalFunctionResponse, error)
 
 	// Get all serving endpoints.
 	//
@@ -75,7 +79,7 @@ type ServingEndpointsService interface {
 	//
 	// Used to batch add and delete tags from a serving endpoint with a single
 	// API call.
-	Patch(ctx context.Context, request PatchServingEndpointTags) ([]EndpointTag, error)
+	Patch(ctx context.Context, request PatchServingEndpointTags) (*EndpointTags, error)
 
 	// Update rate limits of a serving endpoint.
 	//
@@ -87,7 +91,7 @@ type ServingEndpointsService interface {
 	// Update AI Gateway of a serving endpoint.
 	//
 	// Used to update the AI Gateway of a serving endpoint. NOTE: Only external
-	// model endpoints are currently supported.
+	// model and provisioned throughput endpoints are currently supported.
 	PutAiGateway(ctx context.Context, request PutAiGatewayRequest) (*PutAiGatewayResponse, error)
 
 	// Query a serving endpoint.

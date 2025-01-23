@@ -403,65 +403,6 @@ func (_c *MockRecipientsInterface_ListAll_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
-// RecipientInfoNameToMetastoreIdMap provides a mock function with given fields: ctx, request
-func (_m *MockRecipientsInterface) RecipientInfoNameToMetastoreIdMap(ctx context.Context, request sharing.ListRecipientsRequest) (map[string]string, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for RecipientInfoNameToMetastoreIdMap")
-	}
-
-	var r0 map[string]string
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sharing.ListRecipientsRequest) (map[string]string, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, sharing.ListRecipientsRequest) map[string]string); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]string)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, sharing.ListRecipientsRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockRecipientsInterface_RecipientInfoNameToMetastoreIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RecipientInfoNameToMetastoreIdMap'
-type MockRecipientsInterface_RecipientInfoNameToMetastoreIdMap_Call struct {
-	*mock.Call
-}
-
-// RecipientInfoNameToMetastoreIdMap is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request sharing.ListRecipientsRequest
-func (_e *MockRecipientsInterface_Expecter) RecipientInfoNameToMetastoreIdMap(ctx interface{}, request interface{}) *MockRecipientsInterface_RecipientInfoNameToMetastoreIdMap_Call {
-	return &MockRecipientsInterface_RecipientInfoNameToMetastoreIdMap_Call{Call: _e.mock.On("RecipientInfoNameToMetastoreIdMap", ctx, request)}
-}
-
-func (_c *MockRecipientsInterface_RecipientInfoNameToMetastoreIdMap_Call) Run(run func(ctx context.Context, request sharing.ListRecipientsRequest)) *MockRecipientsInterface_RecipientInfoNameToMetastoreIdMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sharing.ListRecipientsRequest))
-	})
-	return _c
-}
-
-func (_c *MockRecipientsInterface_RecipientInfoNameToMetastoreIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockRecipientsInterface_RecipientInfoNameToMetastoreIdMap_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockRecipientsInterface_RecipientInfoNameToMetastoreIdMap_Call) RunAndReturn(run func(context.Context, sharing.ListRecipientsRequest) (map[string]string, error)) *MockRecipientsInterface_RecipientInfoNameToMetastoreIdMap_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // RotateToken provides a mock function with given fields: ctx, request
 func (_m *MockRecipientsInterface) RotateToken(ctx context.Context, request sharing.RotateRecipientToken) (*sharing.RecipientInfo, error) {
 	ret := _m.Called(ctx, request)
@@ -640,21 +581,33 @@ func (_c *MockRecipientsInterface_SharePermissionsByName_Call) RunAndReturn(run 
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockRecipientsInterface) Update(ctx context.Context, request sharing.UpdateRecipient) error {
+func (_m *MockRecipientsInterface) Update(ctx context.Context, request sharing.UpdateRecipient) (*sharing.RecipientInfo, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, sharing.UpdateRecipient) error); ok {
+	var r0 *sharing.RecipientInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, sharing.UpdateRecipient) (*sharing.RecipientInfo, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, sharing.UpdateRecipient) *sharing.RecipientInfo); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*sharing.RecipientInfo)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, sharing.UpdateRecipient) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockRecipientsInterface_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
@@ -676,12 +629,12 @@ func (_c *MockRecipientsInterface_Update_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockRecipientsInterface_Update_Call) Return(_a0 error) *MockRecipientsInterface_Update_Call {
-	_c.Call.Return(_a0)
+func (_c *MockRecipientsInterface_Update_Call) Return(_a0 *sharing.RecipientInfo, _a1 error) *MockRecipientsInterface_Update_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockRecipientsInterface_Update_Call) RunAndReturn(run func(context.Context, sharing.UpdateRecipient) error) *MockRecipientsInterface_Update_Call {
+func (_c *MockRecipientsInterface_Update_Call) RunAndReturn(run func(context.Context, sharing.UpdateRecipient) (*sharing.RecipientInfo, error)) *MockRecipientsInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

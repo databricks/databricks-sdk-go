@@ -240,6 +240,8 @@ const CleanRoomTaskRunLifeCycleStateQueued CleanRoomTaskRunLifeCycleState = `QUE
 
 const CleanRoomTaskRunLifeCycleStateRunning CleanRoomTaskRunLifeCycleState = `RUNNING`
 
+const CleanRoomTaskRunLifeCycleStateRunLifeCycleStateUnspecified CleanRoomTaskRunLifeCycleState = `RUN_LIFE_CYCLE_STATE_UNSPECIFIED`
+
 const CleanRoomTaskRunLifeCycleStateSkipped CleanRoomTaskRunLifeCycleState = `SKIPPED`
 
 const CleanRoomTaskRunLifeCycleStateTerminated CleanRoomTaskRunLifeCycleState = `TERMINATED`
@@ -256,11 +258,11 @@ func (f *CleanRoomTaskRunLifeCycleState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CleanRoomTaskRunLifeCycleState) Set(v string) error {
 	switch v {
-	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `QUEUED`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
+	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `QUEUED`, `RUNNING`, `RUN_LIFE_CYCLE_STATE_UNSPECIFIED`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
 		*f = CleanRoomTaskRunLifeCycleState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "INTERNAL_ERROR", "PENDING", "QUEUED", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING", "WAITING_FOR_RETRY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "INTERNAL_ERROR", "PENDING", "QUEUED", "RUNNING", "RUN_LIFE_CYCLE_STATE_UNSPECIFIED", "SKIPPED", "TERMINATED", "TERMINATING", "WAITING_FOR_RETRY"`, v)
 	}
 }
 
@@ -285,6 +287,8 @@ const CleanRoomTaskRunResultStateFailed CleanRoomTaskRunResultState = `FAILED`
 
 const CleanRoomTaskRunResultStateMaximumConcurrentRunsReached CleanRoomTaskRunResultState = `MAXIMUM_CONCURRENT_RUNS_REACHED`
 
+const CleanRoomTaskRunResultStateRunResultStateUnspecified CleanRoomTaskRunResultState = `RUN_RESULT_STATE_UNSPECIFIED`
+
 const CleanRoomTaskRunResultStateSuccess CleanRoomTaskRunResultState = `SUCCESS`
 
 const CleanRoomTaskRunResultStateSuccessWithFailures CleanRoomTaskRunResultState = `SUCCESS_WITH_FAILURES`
@@ -305,11 +309,11 @@ func (f *CleanRoomTaskRunResultState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CleanRoomTaskRunResultState) Set(v string) error {
 	switch v {
-	case `CANCELED`, `DISABLED`, `EVICTED`, `EXCLUDED`, `FAILED`, `MAXIMUM_CONCURRENT_RUNS_REACHED`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `TIMEDOUT`, `UPSTREAM_CANCELED`, `UPSTREAM_EVICTED`, `UPSTREAM_FAILED`:
+	case `CANCELED`, `DISABLED`, `EVICTED`, `EXCLUDED`, `FAILED`, `MAXIMUM_CONCURRENT_RUNS_REACHED`, `RUN_RESULT_STATE_UNSPECIFIED`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `TIMEDOUT`, `UPSTREAM_CANCELED`, `UPSTREAM_EVICTED`, `UPSTREAM_FAILED`:
 		*f = CleanRoomTaskRunResultState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELED", "DISABLED", "EVICTED", "EXCLUDED", "FAILED", "MAXIMUM_CONCURRENT_RUNS_REACHED", "SUCCESS", "SUCCESS_WITH_FAILURES", "TIMEDOUT", "UPSTREAM_CANCELED", "UPSTREAM_EVICTED", "UPSTREAM_FAILED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "DISABLED", "EVICTED", "EXCLUDED", "FAILED", "MAXIMUM_CONCURRENT_RUNS_REACHED", "RUN_RESULT_STATE_UNSPECIFIED", "SUCCESS", "SUCCESS_WITH_FAILURES", "TIMEDOUT", "UPSTREAM_CANCELED", "UPSTREAM_EVICTED", "UPSTREAM_FAILED"`, v)
 	}
 }
 
@@ -349,6 +353,15 @@ func (s *CleanRoomsNotebookTask) UnmarshalJSON(b []byte) error {
 
 func (s CleanRoomsNotebookTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput struct {
+	// The run state of the clean rooms notebook task.
+	CleanRoomJobRunState *CleanRoomTaskRunState `json:"clean_room_job_run_state,omitempty"`
+	// The notebook output for the clean room run
+	NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
+	// Information on how to access the output schema for the clean room run
+	OutputSchemaInfo *OutputSchemaInfo `json:"output_schema_info,omitempty"`
 }
 
 type ClusterInstance struct {
@@ -2110,6 +2123,27 @@ func (s NotebookTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Stores the catalog name, schema name, and the output schema expiration time
+// for the clean room run.
+type OutputSchemaInfo struct {
+	CatalogName string `json:"catalog_name,omitempty"`
+	// The expiration time for the output schema as a Unix timestamp in
+	// milliseconds.
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
+
+	SchemaName string `json:"schema_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *OutputSchemaInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OutputSchemaInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PauseStatus string
 
 const PauseStatusPaused PauseStatus = `PAUSED`
@@ -3175,6 +3209,8 @@ func (s RunNowResponse) MarshalJSON() ([]byte, error) {
 
 // Run output was retrieved successfully.
 type RunOutput struct {
+	// The output of a clean rooms notebook task, if available
+	CleanRoomsNotebookOutput *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput `json:"clean_rooms_notebook_output,omitempty"`
 	// The output of a dbt task, if available.
 	DbtOutput *DbtOutput `json:"dbt_output,omitempty"`
 	// An error message indicating why a task failed or why output is not
@@ -3690,6 +3726,8 @@ type SparkJarTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	Parameters []string `json:"parameters,omitempty"`
+	// Deprecated. A value of `false` is no longer supported.
+	RunAsRepl bool `json:"run_as_repl,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

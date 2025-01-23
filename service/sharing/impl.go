@@ -171,15 +171,15 @@ func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePerm
 	return &getRecipientSharePermissionsResponse, err
 }
 
-func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) error {
-	var updateResponse UpdateResponse
+func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) (*RecipientInfo, error) {
+	var recipientInfo RecipientInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateResponse)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &recipientInfo)
+	return &recipientInfo, err
 }
 
 // unexported type that holds implementations of just Shares API methods

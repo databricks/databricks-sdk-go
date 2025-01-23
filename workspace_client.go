@@ -32,6 +32,9 @@ type WorkspaceClient struct {
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 
+	// Rule based Access Control for Databricks Resources.
+	AccessControl iam.AccessControlInterface
+
 	// These APIs manage access rules on resources in an account. Currently,
 	// only grant rules are supported. A grant rule specifies a role assigned to
 	// a set of principals. A list of rules attached to a resource is called a
@@ -293,9 +296,14 @@ type WorkspaceClient struct {
 	//
 	// The Files API has two distinct endpoints, one for working with files
 	// (`/fs/files`) and another one for working with directories
-	// (`/fs/directories`). Both endpoints, use the standard HTTP methods GET,
+	// (`/fs/directories`). Both endpoints use the standard HTTP methods GET,
 	// HEAD, PUT, and DELETE to manage files and directories specified using
 	// their URI path. The path is always absolute.
+	//
+	// Some Files API client features are currently experimental. To enable
+	// them, set `enable_experimental_files_api_client = True` in your
+	// configuration profile or use the environment variable
+	// `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
 	//
 	// [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 	Files files.FilesInterface
@@ -1150,6 +1158,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Config:    cfg,
 		apiClient: apiClient,
 
+		AccessControl:                       iam.NewAccessControl(databricksClient),
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
 		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),

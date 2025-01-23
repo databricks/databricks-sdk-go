@@ -611,21 +611,33 @@ func (_c *MockServingEndpointsInterface_GetByName_Call) RunAndReturn(run func(co
 }
 
 // GetOpenApi provides a mock function with given fields: ctx, request
-func (_m *MockServingEndpointsInterface) GetOpenApi(ctx context.Context, request serving.GetOpenApiRequest) error {
+func (_m *MockServingEndpointsInterface) GetOpenApi(ctx context.Context, request serving.GetOpenApiRequest) (*serving.GetOpenApiResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetOpenApi")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, serving.GetOpenApiRequest) error); ok {
+	var r0 *serving.GetOpenApiResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.GetOpenApiRequest) (*serving.GetOpenApiResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.GetOpenApiRequest) *serving.GetOpenApiResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.GetOpenApiResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, serving.GetOpenApiRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockServingEndpointsInterface_GetOpenApi_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetOpenApi'
@@ -647,32 +659,44 @@ func (_c *MockServingEndpointsInterface_GetOpenApi_Call) Run(run func(ctx contex
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_GetOpenApi_Call) Return(_a0 error) *MockServingEndpointsInterface_GetOpenApi_Call {
-	_c.Call.Return(_a0)
+func (_c *MockServingEndpointsInterface_GetOpenApi_Call) Return(_a0 *serving.GetOpenApiResponse, _a1 error) *MockServingEndpointsInterface_GetOpenApi_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_GetOpenApi_Call) RunAndReturn(run func(context.Context, serving.GetOpenApiRequest) error) *MockServingEndpointsInterface_GetOpenApi_Call {
+func (_c *MockServingEndpointsInterface_GetOpenApi_Call) RunAndReturn(run func(context.Context, serving.GetOpenApiRequest) (*serving.GetOpenApiResponse, error)) *MockServingEndpointsInterface_GetOpenApi_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetOpenApiByName provides a mock function with given fields: ctx, name
-func (_m *MockServingEndpointsInterface) GetOpenApiByName(ctx context.Context, name string) error {
+func (_m *MockServingEndpointsInterface) GetOpenApiByName(ctx context.Context, name string) (*serving.GetOpenApiResponse, error) {
 	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetOpenApiByName")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+	var r0 *serving.GetOpenApiResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*serving.GetOpenApiResponse, error)); ok {
+		return rf(ctx, name)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *serving.GetOpenApiResponse); ok {
 		r0 = rf(ctx, name)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.GetOpenApiResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, name)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockServingEndpointsInterface_GetOpenApiByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetOpenApiByName'
@@ -694,12 +718,12 @@ func (_c *MockServingEndpointsInterface_GetOpenApiByName_Call) Run(run func(ctx 
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_GetOpenApiByName_Call) Return(_a0 error) *MockServingEndpointsInterface_GetOpenApiByName_Call {
-	_c.Call.Return(_a0)
+func (_c *MockServingEndpointsInterface_GetOpenApiByName_Call) Return(_a0 *serving.GetOpenApiResponse, _a1 error) *MockServingEndpointsInterface_GetOpenApiByName_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_GetOpenApiByName_Call) RunAndReturn(run func(context.Context, string) error) *MockServingEndpointsInterface_GetOpenApiByName_Call {
+func (_c *MockServingEndpointsInterface_GetOpenApiByName_Call) RunAndReturn(run func(context.Context, string) (*serving.GetOpenApiResponse, error)) *MockServingEndpointsInterface_GetOpenApiByName_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -940,6 +964,65 @@ func (_c *MockServingEndpointsInterface_GetPermissionsByServingEndpointId_Call) 
 	return _c
 }
 
+// HttpRequest provides a mock function with given fields: ctx, request
+func (_m *MockServingEndpointsInterface) HttpRequest(ctx context.Context, request serving.ExternalFunctionRequest) (*serving.ExternalFunctionResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for HttpRequest")
+	}
+
+	var r0 *serving.ExternalFunctionResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.ExternalFunctionRequest) (*serving.ExternalFunctionResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.ExternalFunctionRequest) *serving.ExternalFunctionResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.ExternalFunctionResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.ExternalFunctionRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockServingEndpointsInterface_HttpRequest_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'HttpRequest'
+type MockServingEndpointsInterface_HttpRequest_Call struct {
+	*mock.Call
+}
+
+// HttpRequest is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request serving.ExternalFunctionRequest
+func (_e *MockServingEndpointsInterface_Expecter) HttpRequest(ctx interface{}, request interface{}) *MockServingEndpointsInterface_HttpRequest_Call {
+	return &MockServingEndpointsInterface_HttpRequest_Call{Call: _e.mock.On("HttpRequest", ctx, request)}
+}
+
+func (_c *MockServingEndpointsInterface_HttpRequest_Call) Run(run func(ctx context.Context, request serving.ExternalFunctionRequest)) *MockServingEndpointsInterface_HttpRequest_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(serving.ExternalFunctionRequest))
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_HttpRequest_Call) Return(_a0 *serving.ExternalFunctionResponse, _a1 error) *MockServingEndpointsInterface_HttpRequest_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_HttpRequest_Call) RunAndReturn(run func(context.Context, serving.ExternalFunctionRequest) (*serving.ExternalFunctionResponse, error)) *MockServingEndpointsInterface_HttpRequest_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // List provides a mock function with given fields: ctx
 func (_m *MockServingEndpointsInterface) List(ctx context.Context) listing.Iterator[serving.ServingEndpoint] {
 	ret := _m.Called(ctx)
@@ -1166,23 +1249,23 @@ func (_c *MockServingEndpointsInterface_LogsByNameAndServedModelName_Call) RunAn
 }
 
 // Patch provides a mock function with given fields: ctx, request
-func (_m *MockServingEndpointsInterface) Patch(ctx context.Context, request serving.PatchServingEndpointTags) ([]serving.EndpointTag, error) {
+func (_m *MockServingEndpointsInterface) Patch(ctx context.Context, request serving.PatchServingEndpointTags) (*serving.EndpointTags, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Patch")
 	}
 
-	var r0 []serving.EndpointTag
+	var r0 *serving.EndpointTags
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, serving.PatchServingEndpointTags) ([]serving.EndpointTag, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, serving.PatchServingEndpointTags) (*serving.EndpointTags, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, serving.PatchServingEndpointTags) []serving.EndpointTag); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, serving.PatchServingEndpointTags) *serving.EndpointTags); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]serving.EndpointTag)
+			r0 = ret.Get(0).(*serving.EndpointTags)
 		}
 	}
 
@@ -1214,12 +1297,12 @@ func (_c *MockServingEndpointsInterface_Patch_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_Patch_Call) Return(_a0 []serving.EndpointTag, _a1 error) *MockServingEndpointsInterface_Patch_Call {
+func (_c *MockServingEndpointsInterface_Patch_Call) Return(_a0 *serving.EndpointTags, _a1 error) *MockServingEndpointsInterface_Patch_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_Patch_Call) RunAndReturn(run func(context.Context, serving.PatchServingEndpointTags) ([]serving.EndpointTag, error)) *MockServingEndpointsInterface_Patch_Call {
+func (_c *MockServingEndpointsInterface_Patch_Call) RunAndReturn(run func(context.Context, serving.PatchServingEndpointTags) (*serving.EndpointTags, error)) *MockServingEndpointsInterface_Patch_Call {
 	_c.Call.Return(run)
 	return _c
 }
