@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just AccountFederationPolicy API methods
@@ -19,7 +20,9 @@ func (a *accountFederationPolicyImpl) Create(ctx context.Context, request Create
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
-	queryParams["policy_id"] = request.PolicyId
+	if request.PolicyId != "" || slices.Contains(request.ForceSendFields, "PolicyId") {
+		queryParams["policy_id"] = request.PolicyId
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -61,7 +64,9 @@ func (a *accountFederationPolicyImpl) Update(ctx context.Context, request Update
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
-	queryParams["update_mask"] = request.UpdateMask
+	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
+		queryParams["update_mask"] = request.UpdateMask
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -207,7 +212,9 @@ func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, reque
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
-	queryParams["policy_id"] = request.PolicyId
+	if request.PolicyId != "" || slices.Contains(request.ForceSendFields, "PolicyId") {
+		queryParams["policy_id"] = request.PolicyId
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -249,7 +256,9 @@ func (a *servicePrincipalFederationPolicyImpl) Update(ctx context.Context, reque
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
-	queryParams["update_mask"] = request.UpdateMask
+	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
+		queryParams["update_mask"] = request.UpdateMask
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

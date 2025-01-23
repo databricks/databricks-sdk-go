@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Apps API methods
@@ -19,7 +20,9 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	var app App
 	path := "/api/2.0/apps"
 	queryParams := make(map[string]any)
-	queryParams["no_compute"] = request.NoCompute
+	if request.NoCompute != false || slices.Contains(request.ForceSendFields, "NoCompute") {
+		queryParams["no_compute"] = request.NoCompute
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
