@@ -33,15 +33,16 @@ func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, erro
 	return run, nil
 }
 
+// Get retrieves a job based on the provided request.
+// It handles pagination if the job contains multiple tasks, job_clusters, job_parameters or environments.
 func (a *JobsAPI) Get(ctx context.Context, request GetJobRequest) (*Job, error) {
 	job, err := a.jobsImpl.Get(ctx, request)
 	if err != nil {
 		return nil, err
 	}
 
-	pageToken := job.NextPageToken
-	for pageToken != "" {
-		request.PageToken = pageToken
+	for job.NextPageToken != "" {
+		request.PageToken = job.NextPageToken
 		nextJob, err := a.jobsImpl.Get(ctx, request)
 		if err != nil {
 			return nil, err
@@ -51,7 +52,7 @@ func (a *JobsAPI) Get(ctx context.Context, request GetJobRequest) (*Job, error) 
 		job.Settings.JobClusters = append(job.Settings.JobClusters, nextJob.Settings.JobClusters...)
 		job.Settings.Parameters = append(job.Settings.Parameters, nextJob.Settings.Parameters...)
 		job.Settings.Environments = append(job.Settings.Environments, nextJob.Settings.Environments...)
-		pageToken = nextJob.NextPageToken
+		job.NextPageToken = nextJob.NextPageToken
 	}
 
 	return job, nil
