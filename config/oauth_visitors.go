@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/config/auth"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"golang.org/x/oauth2"
 )
 
