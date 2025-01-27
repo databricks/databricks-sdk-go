@@ -296,6 +296,12 @@ type BaseRun struct {
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Description of the run
 	Description string `json:"description,omitempty"`
+	// effective_performance_target is the actual performance target used by the
+	// run during execution. effective_performance_target can differ from
+	// performance_target depending on if the job was eligible to be
+	// cost-optimized (e.g. contains at least 1 serverless task) or if we
+	// specifically override the value for the run (ex. RunNow).
+	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	EndTime int64 `json:"end_time,omitempty"`
@@ -849,6 +855,9 @@ type CreateJob struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// PerformanceTarget defines how performant or cost efficient the execution
+	// of run on serverless should be.
+	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
 	// Write-only setting. Specifies the user or service principal that the job
@@ -2198,6 +2207,9 @@ type JobSettings struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// PerformanceTarget defines how performant or cost efficient the execution
+	// of run on serverless should be.
+	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
 	// Write-only setting. Specifies the user or service principal that the job
@@ -3020,6 +3032,37 @@ func (f *PauseStatus) Type() string {
 	return "PauseStatus"
 }
 
+// PerformanceTarget defines how performant (lower latency) or cost efficient
+// the execution of run on serverless compute should be. The performance mode on
+// the job or pipeline should map to a performance setting that is passed to
+// Cluster Manager (see cluster-common PerformanceTarget).
+type PerformanceTarget string
+
+const PerformanceTargetCostOptimized PerformanceTarget = `COST_OPTIMIZED`
+
+const PerformanceTargetPerformanceOptimized PerformanceTarget = `PERFORMANCE_OPTIMIZED`
+
+// String representation for [fmt.Print]
+func (f *PerformanceTarget) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PerformanceTarget) Set(v string) error {
+	switch v {
+	case `COST_OPTIMIZED`, `PERFORMANCE_OPTIMIZED`:
+		*f = PerformanceTarget(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "PERFORMANCE_OPTIMIZED"`, v)
+	}
+}
+
+// Type always returns PerformanceTarget to satisfy [pflag.Value] interface
+func (f *PerformanceTarget) Type() string {
+	return "PerformanceTarget"
+}
+
 type PeriodicTriggerConfiguration struct {
 	// The interval at which the trigger should run.
 	Interval int `json:"interval"`
@@ -3505,6 +3548,12 @@ type Run struct {
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Description of the run
 	Description string `json:"description,omitempty"`
+	// effective_performance_target is the actual performance target used by the
+	// run during execution. effective_performance_target can differ from
+	// performance_target depending on if the job was eligible to be
+	// cost-optimized (e.g. contains at least 1 serverless task) or if we
+	// specifically override the value for the run (ex. RunNow).
+	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	EndTime int64 `json:"end_time,omitempty"`
@@ -4016,6 +4065,10 @@ type RunNow struct {
 	// A list of task keys to run inside of the job. If this field is not
 	// provided, all tasks in the job will be run.
 	Only []string `json:"only,omitempty"`
+	// PerformanceTarget defines how performant or cost efficient the execution
+	// of run on serverless compute should be. For RunNow request, the run will
+	// execute with this settings instead of ones defined in job.
+	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 
@@ -4377,6 +4430,12 @@ type RunTask struct {
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	Description string `json:"description,omitempty"`
+	// effective_performance_target is the actual performance target used by the
+	// run during execution. effective_performance_target can differ from
+	// performance_target depending on if the job was eligible to be
+	// cost-optimized (e.g. contains at least 1 serverless task) or if an
+	// override was provided for the run (ex. RunNow).
+	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
@@ -4693,6 +4752,8 @@ type SparkJarTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	Parameters []string `json:"parameters,omitempty"`
+	// Deprecated. A value of `false` is no longer supported.
+	RunAsRepl bool `json:"run_as_repl,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -5546,6 +5607,8 @@ func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 // [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
 type TerminationCodeCode string
 
+const TerminationCodeCodeBudgetPolicyLimitExceeded TerminationCodeCode = `BUDGET_POLICY_LIMIT_EXCEEDED`
+
 // The run was canceled during execution by the <Databricks> platform; for
 // example, if the maximum run duration was exceeded.
 const TerminationCodeCodeCanceled TerminationCodeCode = `CANCELED`
@@ -5643,11 +5706,11 @@ func (f *TerminationCodeCode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationCodeCode) Set(v string) error {
 	switch v {
-	case `CANCELED`, `CLOUD_FAILURE`, `CLUSTER_ERROR`, `CLUSTER_REQUEST_LIMIT_EXCEEDED`, `DRIVER_ERROR`, `FEATURE_DISABLED`, `INTERNAL_ERROR`, `INVALID_CLUSTER_REQUEST`, `INVALID_RUN_CONFIGURATION`, `LIBRARY_INSTALLATION_ERROR`, `MAX_CONCURRENT_RUNS_EXCEEDED`, `MAX_JOB_QUEUE_SIZE_EXCEEDED`, `MAX_SPARK_CONTEXTS_EXCEEDED`, `REPOSITORY_CHECKOUT_FAILED`, `RESOURCE_NOT_FOUND`, `RUN_EXECUTION_ERROR`, `SKIPPED`, `STORAGE_ACCESS_ERROR`, `SUCCESS`, `UNAUTHORIZED_ERROR`, `USER_CANCELED`, `WORKSPACE_RUN_LIMIT_EXCEEDED`:
+	case `BUDGET_POLICY_LIMIT_EXCEEDED`, `CANCELED`, `CLOUD_FAILURE`, `CLUSTER_ERROR`, `CLUSTER_REQUEST_LIMIT_EXCEEDED`, `DRIVER_ERROR`, `FEATURE_DISABLED`, `INTERNAL_ERROR`, `INVALID_CLUSTER_REQUEST`, `INVALID_RUN_CONFIGURATION`, `LIBRARY_INSTALLATION_ERROR`, `MAX_CONCURRENT_RUNS_EXCEEDED`, `MAX_JOB_QUEUE_SIZE_EXCEEDED`, `MAX_SPARK_CONTEXTS_EXCEEDED`, `REPOSITORY_CHECKOUT_FAILED`, `RESOURCE_NOT_FOUND`, `RUN_EXECUTION_ERROR`, `SKIPPED`, `STORAGE_ACCESS_ERROR`, `SUCCESS`, `UNAUTHORIZED_ERROR`, `USER_CANCELED`, `WORKSPACE_RUN_LIMIT_EXCEEDED`:
 		*f = TerminationCodeCode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELED", "CLOUD_FAILURE", "CLUSTER_ERROR", "CLUSTER_REQUEST_LIMIT_EXCEEDED", "DRIVER_ERROR", "FEATURE_DISABLED", "INTERNAL_ERROR", "INVALID_CLUSTER_REQUEST", "INVALID_RUN_CONFIGURATION", "LIBRARY_INSTALLATION_ERROR", "MAX_CONCURRENT_RUNS_EXCEEDED", "MAX_JOB_QUEUE_SIZE_EXCEEDED", "MAX_SPARK_CONTEXTS_EXCEEDED", "REPOSITORY_CHECKOUT_FAILED", "RESOURCE_NOT_FOUND", "RUN_EXECUTION_ERROR", "SKIPPED", "STORAGE_ACCESS_ERROR", "SUCCESS", "UNAUTHORIZED_ERROR", "USER_CANCELED", "WORKSPACE_RUN_LIMIT_EXCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BUDGET_POLICY_LIMIT_EXCEEDED", "CANCELED", "CLOUD_FAILURE", "CLUSTER_ERROR", "CLUSTER_REQUEST_LIMIT_EXCEEDED", "DRIVER_ERROR", "FEATURE_DISABLED", "INTERNAL_ERROR", "INVALID_CLUSTER_REQUEST", "INVALID_RUN_CONFIGURATION", "LIBRARY_INSTALLATION_ERROR", "MAX_CONCURRENT_RUNS_EXCEEDED", "MAX_JOB_QUEUE_SIZE_EXCEEDED", "MAX_SPARK_CONTEXTS_EXCEEDED", "REPOSITORY_CHECKOUT_FAILED", "RESOURCE_NOT_FOUND", "RUN_EXECUTION_ERROR", "SKIPPED", "STORAGE_ACCESS_ERROR", "SUCCESS", "UNAUTHORIZED_ERROR", "USER_CANCELED", "WORKSPACE_RUN_LIMIT_EXCEEDED"`, v)
 	}
 }
 
