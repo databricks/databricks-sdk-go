@@ -11,10 +11,9 @@ import (
 )
 
 type AppsClient struct {
+	AppsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	Apps AppsInterface
 }
 
 func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
@@ -39,8 +38,8 @@ func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
 	}
 
 	return &AppsClient{
-		cfg:       cfg,
-		apiClient: apiClient,
-		Apps:      NewApps(databricksClient),
+		cfg:           cfg,
+		apiClient:     apiClient,
+		AppsInterface: NewApps(databricksClient),
 	}, nil
 }

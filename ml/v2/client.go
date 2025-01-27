@@ -11,10 +11,9 @@ import (
 )
 
 type ExperimentsClient struct {
+	ExperimentsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	Experiments ExperimentsInterface
 }
 
 func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
@@ -39,17 +38,16 @@ func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
 	}
 
 	return &ExperimentsClient{
-		cfg:         cfg,
-		apiClient:   apiClient,
-		Experiments: NewExperiments(databricksClient),
+		cfg:                  cfg,
+		apiClient:            apiClient,
+		ExperimentsInterface: NewExperiments(databricksClient),
 	}, nil
 }
 
 type ModelRegistryClient struct {
+	ModelRegistryInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	ModelRegistry ModelRegistryInterface
 }
 
 func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
@@ -74,8 +72,8 @@ func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
 	}
 
 	return &ModelRegistryClient{
-		cfg:           cfg,
-		apiClient:     apiClient,
-		ModelRegistry: NewModelRegistry(databricksClient),
+		cfg:                    cfg,
+		apiClient:              apiClient,
+		ModelRegistryInterface: NewModelRegistry(databricksClient),
 	}, nil
 }

@@ -11,10 +11,9 @@ import (
 )
 
 type ServingEndpointsClient struct {
+	ServingEndpointsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	ServingEndpoints ServingEndpointsInterface
 }
 
 func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, error) {
@@ -39,17 +38,16 @@ func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, err
 	}
 
 	return &ServingEndpointsClient{
-		cfg:              cfg,
-		apiClient:        apiClient,
-		ServingEndpoints: NewServingEndpoints(databricksClient),
+		cfg:                       cfg,
+		apiClient:                 apiClient,
+		ServingEndpointsInterface: NewServingEndpoints(databricksClient),
 	}, nil
 }
 
 type ServingEndpointsDataPlaneClient struct {
+	ServingEndpointsDataPlaneInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	ServingEndpointsDataPlane ServingEndpointsDataPlaneInterface
 }
 
 func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDataPlaneClient, error) {
@@ -74,8 +72,8 @@ func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDa
 	}
 
 	return &ServingEndpointsDataPlaneClient{
-		cfg:                       cfg,
-		apiClient:                 apiClient,
-		ServingEndpointsDataPlane: NewServingEndpointsDataPlane(databricksClient),
+		cfg:                                cfg,
+		apiClient:                          apiClient,
+		ServingEndpointsDataPlaneInterface: NewServingEndpointsDataPlane(databricksClient),
 	}, nil
 }

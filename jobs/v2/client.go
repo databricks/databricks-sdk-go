@@ -11,10 +11,9 @@ import (
 )
 
 type JobsClient struct {
+	JobsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	Jobs JobsInterface
 }
 
 func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
@@ -39,17 +38,16 @@ func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
 	}
 
 	return &JobsClient{
-		cfg:       cfg,
-		apiClient: apiClient,
-		Jobs:      NewJobs(databricksClient),
+		cfg:           cfg,
+		apiClient:     apiClient,
+		JobsInterface: NewJobs(databricksClient),
 	}, nil
 }
 
 type PolicyComplianceForJobsClient struct {
+	PolicyComplianceForJobsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	PolicyComplianceForJobs PolicyComplianceForJobsInterface
 }
 
 func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJobsClient, error) {
@@ -74,8 +72,8 @@ func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJ
 	}
 
 	return &PolicyComplianceForJobsClient{
-		cfg:                     cfg,
-		apiClient:               apiClient,
-		PolicyComplianceForJobs: NewPolicyComplianceForJobs(databricksClient),
+		cfg:                              cfg,
+		apiClient:                        apiClient,
+		PolicyComplianceForJobsInterface: NewPolicyComplianceForJobs(databricksClient),
 	}, nil
 }

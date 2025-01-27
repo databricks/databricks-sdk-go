@@ -10,9 +10,9 @@ import (
 )
 
 type AccountFederationPolicyClient struct {
-	cfg *config.Config
+	AccountFederationPolicyInterface
 
-	AccountFederationPolicy AccountFederationPolicyInterface
+	cfg *config.Config
 }
 
 func NewAccountFederationPolicyClient(cfg *config.Config) (*AccountFederationPolicyClient, error) {
@@ -34,15 +34,15 @@ func NewAccountFederationPolicyClient(cfg *config.Config) (*AccountFederationPol
 	}
 
 	return &AccountFederationPolicyClient{
-		cfg:                     cfg,
-		AccountFederationPolicy: NewAccountFederationPolicy(apiClient),
+		cfg:                              cfg,
+		AccountFederationPolicyInterface: NewAccountFederationPolicy(apiClient),
 	}, nil
 }
 
 type CustomAppIntegrationClient struct {
-	cfg *config.Config
+	CustomAppIntegrationInterface
 
-	CustomAppIntegration CustomAppIntegrationInterface
+	cfg *config.Config
 }
 
 func NewCustomAppIntegrationClient(cfg *config.Config) (*CustomAppIntegrationClient, error) {
@@ -64,15 +64,15 @@ func NewCustomAppIntegrationClient(cfg *config.Config) (*CustomAppIntegrationCli
 	}
 
 	return &CustomAppIntegrationClient{
-		cfg:                  cfg,
-		CustomAppIntegration: NewCustomAppIntegration(apiClient),
+		cfg:                           cfg,
+		CustomAppIntegrationInterface: NewCustomAppIntegration(apiClient),
 	}, nil
 }
 
 type OAuthPublishedAppsClient struct {
-	cfg *config.Config
+	OAuthPublishedAppsInterface
 
-	OAuthPublishedApps OAuthPublishedAppsInterface
+	cfg *config.Config
 }
 
 func NewOAuthPublishedAppsClient(cfg *config.Config) (*OAuthPublishedAppsClient, error) {
@@ -94,15 +94,15 @@ func NewOAuthPublishedAppsClient(cfg *config.Config) (*OAuthPublishedAppsClient,
 	}
 
 	return &OAuthPublishedAppsClient{
-		cfg:                cfg,
-		OAuthPublishedApps: NewOAuthPublishedApps(apiClient),
+		cfg:                         cfg,
+		OAuthPublishedAppsInterface: NewOAuthPublishedApps(apiClient),
 	}, nil
 }
 
 type PublishedAppIntegrationClient struct {
-	cfg *config.Config
+	PublishedAppIntegrationInterface
 
-	PublishedAppIntegration PublishedAppIntegrationInterface
+	cfg *config.Config
 }
 
 func NewPublishedAppIntegrationClient(cfg *config.Config) (*PublishedAppIntegrationClient, error) {
@@ -124,15 +124,15 @@ func NewPublishedAppIntegrationClient(cfg *config.Config) (*PublishedAppIntegrat
 	}
 
 	return &PublishedAppIntegrationClient{
-		cfg:                     cfg,
-		PublishedAppIntegration: NewPublishedAppIntegration(apiClient),
+		cfg:                              cfg,
+		PublishedAppIntegrationInterface: NewPublishedAppIntegration(apiClient),
 	}, nil
 }
 
 type ServicePrincipalFederationPolicyClient struct {
-	cfg *config.Config
+	ServicePrincipalFederationPolicyInterface
 
-	ServicePrincipalFederationPolicy ServicePrincipalFederationPolicyInterface
+	cfg *config.Config
 }
 
 func NewServicePrincipalFederationPolicyClient(cfg *config.Config) (*ServicePrincipalFederationPolicyClient, error) {
@@ -154,15 +154,15 @@ func NewServicePrincipalFederationPolicyClient(cfg *config.Config) (*ServicePrin
 	}
 
 	return &ServicePrincipalFederationPolicyClient{
-		cfg:                              cfg,
-		ServicePrincipalFederationPolicy: NewServicePrincipalFederationPolicy(apiClient),
+		cfg: cfg,
+		ServicePrincipalFederationPolicyInterface: NewServicePrincipalFederationPolicy(apiClient),
 	}, nil
 }
 
 type ServicePrincipalSecretsClient struct {
-	cfg *config.Config
+	ServicePrincipalSecretsInterface
 
-	ServicePrincipalSecrets ServicePrincipalSecretsInterface
+	cfg *config.Config
 }
 
 func NewServicePrincipalSecretsClient(cfg *config.Config) (*ServicePrincipalSecretsClient, error) {
@@ -184,7 +184,7 @@ func NewServicePrincipalSecretsClient(cfg *config.Config) (*ServicePrincipalSecr
 	}
 
 	return &ServicePrincipalSecretsClient{
-		cfg:                     cfg,
-		ServicePrincipalSecrets: NewServicePrincipalSecrets(apiClient),
+		cfg:                              cfg,
+		ServicePrincipalSecretsInterface: NewServicePrincipalSecrets(apiClient),
 	}, nil
 }

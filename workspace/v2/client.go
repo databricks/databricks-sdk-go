@@ -11,10 +11,9 @@ import (
 )
 
 type GitCredentialsClient struct {
+	GitCredentialsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	GitCredentials GitCredentialsInterface
 }
 
 func NewGitCredentialsClient(cfg *config.Config) (*GitCredentialsClient, error) {
@@ -39,17 +38,16 @@ func NewGitCredentialsClient(cfg *config.Config) (*GitCredentialsClient, error) 
 	}
 
 	return &GitCredentialsClient{
-		cfg:            cfg,
-		apiClient:      apiClient,
-		GitCredentials: NewGitCredentials(databricksClient),
+		cfg:                     cfg,
+		apiClient:               apiClient,
+		GitCredentialsInterface: NewGitCredentials(databricksClient),
 	}, nil
 }
 
 type ReposClient struct {
+	ReposInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	Repos ReposInterface
 }
 
 func NewReposClient(cfg *config.Config) (*ReposClient, error) {
@@ -74,17 +72,16 @@ func NewReposClient(cfg *config.Config) (*ReposClient, error) {
 	}
 
 	return &ReposClient{
-		cfg:       cfg,
-		apiClient: apiClient,
-		Repos:     NewRepos(databricksClient),
+		cfg:            cfg,
+		apiClient:      apiClient,
+		ReposInterface: NewRepos(databricksClient),
 	}, nil
 }
 
 type SecretsClient struct {
+	SecretsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	Secrets SecretsInterface
 }
 
 func NewSecretsClient(cfg *config.Config) (*SecretsClient, error) {
@@ -109,17 +106,16 @@ func NewSecretsClient(cfg *config.Config) (*SecretsClient, error) {
 	}
 
 	return &SecretsClient{
-		cfg:       cfg,
-		apiClient: apiClient,
-		Secrets:   NewSecrets(databricksClient),
+		cfg:              cfg,
+		apiClient:        apiClient,
+		SecretsInterface: NewSecrets(databricksClient),
 	}, nil
 }
 
 type WorkspaceClient struct {
+	WorkspaceInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	Workspace WorkspaceInterface
 }
 
 func NewWorkspaceClient(cfg *config.Config) (*WorkspaceClient, error) {
@@ -144,8 +140,8 @@ func NewWorkspaceClient(cfg *config.Config) (*WorkspaceClient, error) {
 	}
 
 	return &WorkspaceClient{
-		cfg:       cfg,
-		apiClient: apiClient,
-		Workspace: NewWorkspace(databricksClient),
+		cfg:                cfg,
+		apiClient:          apiClient,
+		WorkspaceInterface: NewWorkspace(databricksClient),
 	}, nil
 }

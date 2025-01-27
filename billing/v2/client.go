@@ -10,9 +10,9 @@ import (
 )
 
 type BillableUsageClient struct {
-	cfg *config.Config
+	BillableUsageInterface
 
-	BillableUsage BillableUsageInterface
+	cfg *config.Config
 }
 
 func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
@@ -34,15 +34,15 @@ func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
 	}
 
 	return &BillableUsageClient{
-		cfg:           cfg,
-		BillableUsage: NewBillableUsage(apiClient),
+		cfg:                    cfg,
+		BillableUsageInterface: NewBillableUsage(apiClient),
 	}, nil
 }
 
 type BudgetsClient struct {
-	cfg *config.Config
+	BudgetsInterface
 
-	Budgets BudgetsInterface
+	cfg *config.Config
 }
 
 func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
@@ -64,15 +64,15 @@ func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
 	}
 
 	return &BudgetsClient{
-		cfg:     cfg,
-		Budgets: NewBudgets(apiClient),
+		cfg:              cfg,
+		BudgetsInterface: NewBudgets(apiClient),
 	}, nil
 }
 
 type LogDeliveryClient struct {
-	cfg *config.Config
+	LogDeliveryInterface
 
-	LogDelivery LogDeliveryInterface
+	cfg *config.Config
 }
 
 func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
@@ -94,15 +94,15 @@ func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
 	}
 
 	return &LogDeliveryClient{
-		cfg:         cfg,
-		LogDelivery: NewLogDelivery(apiClient),
+		cfg:                  cfg,
+		LogDeliveryInterface: NewLogDelivery(apiClient),
 	}, nil
 }
 
 type UsageDashboardsClient struct {
-	cfg *config.Config
+	UsageDashboardsInterface
 
-	UsageDashboards UsageDashboardsInterface
+	cfg *config.Config
 }
 
 func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error) {
@@ -124,7 +124,7 @@ func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error
 	}
 
 	return &UsageDashboardsClient{
-		cfg:             cfg,
-		UsageDashboards: NewUsageDashboards(apiClient),
+		cfg:                      cfg,
+		UsageDashboardsInterface: NewUsageDashboards(apiClient),
 	}, nil
 }

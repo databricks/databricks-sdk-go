@@ -11,10 +11,9 @@ import (
 )
 
 type AccessControlClient struct {
+	AccessControlInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	AccessControl AccessControlInterface
 }
 
 func NewAccessControlClient(cfg *config.Config) (*AccessControlClient, error) {
@@ -39,16 +38,16 @@ func NewAccessControlClient(cfg *config.Config) (*AccessControlClient, error) {
 	}
 
 	return &AccessControlClient{
-		cfg:           cfg,
-		apiClient:     apiClient,
-		AccessControl: NewAccessControl(databricksClient),
+		cfg:                    cfg,
+		apiClient:              apiClient,
+		AccessControlInterface: NewAccessControl(databricksClient),
 	}, nil
 }
 
 type AccountAccessControlClient struct {
-	cfg *config.Config
+	AccountAccessControlInterface
 
-	AccountAccessControl AccountAccessControlInterface
+	cfg *config.Config
 }
 
 func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlClient, error) {
@@ -70,16 +69,15 @@ func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlCli
 	}
 
 	return &AccountAccessControlClient{
-		cfg:                  cfg,
-		AccountAccessControl: NewAccountAccessControl(apiClient),
+		cfg:                           cfg,
+		AccountAccessControlInterface: NewAccountAccessControl(apiClient),
 	}, nil
 }
 
 type AccountAccessControlProxyClient struct {
+	AccountAccessControlProxyInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	AccountAccessControlProxy AccountAccessControlProxyInterface
 }
 
 func NewAccountAccessControlProxyClient(cfg *config.Config) (*AccountAccessControlProxyClient, error) {
@@ -104,16 +102,16 @@ func NewAccountAccessControlProxyClient(cfg *config.Config) (*AccountAccessContr
 	}
 
 	return &AccountAccessControlProxyClient{
-		cfg:                       cfg,
-		apiClient:                 apiClient,
-		AccountAccessControlProxy: NewAccountAccessControlProxy(databricksClient),
+		cfg:                                cfg,
+		apiClient:                          apiClient,
+		AccountAccessControlProxyInterface: NewAccountAccessControlProxy(databricksClient),
 	}, nil
 }
 
 type AccountGroupsClient struct {
-	cfg *config.Config
+	AccountGroupsInterface
 
-	AccountGroups AccountGroupsInterface
+	cfg *config.Config
 }
 
 func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
@@ -135,15 +133,15 @@ func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
 	}
 
 	return &AccountGroupsClient{
-		cfg:           cfg,
-		AccountGroups: NewAccountGroups(apiClient),
+		cfg:                    cfg,
+		AccountGroupsInterface: NewAccountGroups(apiClient),
 	}, nil
 }
 
 type AccountServicePrincipalsClient struct {
-	cfg *config.Config
+	AccountServicePrincipalsInterface
 
-	AccountServicePrincipals AccountServicePrincipalsInterface
+	cfg *config.Config
 }
 
 func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrincipalsClient, error) {
@@ -165,15 +163,15 @@ func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrinc
 	}
 
 	return &AccountServicePrincipalsClient{
-		cfg:                      cfg,
-		AccountServicePrincipals: NewAccountServicePrincipals(apiClient),
+		cfg:                               cfg,
+		AccountServicePrincipalsInterface: NewAccountServicePrincipals(apiClient),
 	}, nil
 }
 
 type AccountUsersClient struct {
-	cfg *config.Config
+	AccountUsersInterface
 
-	AccountUsers AccountUsersInterface
+	cfg *config.Config
 }
 
 func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
@@ -195,16 +193,15 @@ func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
 	}
 
 	return &AccountUsersClient{
-		cfg:          cfg,
-		AccountUsers: NewAccountUsers(apiClient),
+		cfg:                   cfg,
+		AccountUsersInterface: NewAccountUsers(apiClient),
 	}, nil
 }
 
 type CurrentUserClient struct {
+	CurrentUserInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	CurrentUser CurrentUserInterface
 }
 
 func NewCurrentUserClient(cfg *config.Config) (*CurrentUserClient, error) {
@@ -229,17 +226,16 @@ func NewCurrentUserClient(cfg *config.Config) (*CurrentUserClient, error) {
 	}
 
 	return &CurrentUserClient{
-		cfg:         cfg,
-		apiClient:   apiClient,
-		CurrentUser: NewCurrentUser(databricksClient),
+		cfg:                  cfg,
+		apiClient:            apiClient,
+		CurrentUserInterface: NewCurrentUser(databricksClient),
 	}, nil
 }
 
 type GroupsClient struct {
+	GroupsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	Groups GroupsInterface
 }
 
 func NewGroupsClient(cfg *config.Config) (*GroupsClient, error) {
@@ -264,17 +260,16 @@ func NewGroupsClient(cfg *config.Config) (*GroupsClient, error) {
 	}
 
 	return &GroupsClient{
-		cfg:       cfg,
-		apiClient: apiClient,
-		Groups:    NewGroups(databricksClient),
+		cfg:             cfg,
+		apiClient:       apiClient,
+		GroupsInterface: NewGroups(databricksClient),
 	}, nil
 }
 
 type PermissionMigrationClient struct {
+	PermissionMigrationInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	PermissionMigration PermissionMigrationInterface
 }
 
 func NewPermissionMigrationClient(cfg *config.Config) (*PermissionMigrationClient, error) {
@@ -299,17 +294,16 @@ func NewPermissionMigrationClient(cfg *config.Config) (*PermissionMigrationClien
 	}
 
 	return &PermissionMigrationClient{
-		cfg:                 cfg,
-		apiClient:           apiClient,
-		PermissionMigration: NewPermissionMigration(databricksClient),
+		cfg:                          cfg,
+		apiClient:                    apiClient,
+		PermissionMigrationInterface: NewPermissionMigration(databricksClient),
 	}, nil
 }
 
 type PermissionsClient struct {
+	PermissionsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	Permissions PermissionsInterface
 }
 
 func NewPermissionsClient(cfg *config.Config) (*PermissionsClient, error) {
@@ -334,17 +328,16 @@ func NewPermissionsClient(cfg *config.Config) (*PermissionsClient, error) {
 	}
 
 	return &PermissionsClient{
-		cfg:         cfg,
-		apiClient:   apiClient,
-		Permissions: NewPermissions(databricksClient),
+		cfg:                  cfg,
+		apiClient:            apiClient,
+		PermissionsInterface: NewPermissions(databricksClient),
 	}, nil
 }
 
 type ServicePrincipalsClient struct {
+	ServicePrincipalsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	ServicePrincipals ServicePrincipalsInterface
 }
 
 func NewServicePrincipalsClient(cfg *config.Config) (*ServicePrincipalsClient, error) {
@@ -369,17 +362,16 @@ func NewServicePrincipalsClient(cfg *config.Config) (*ServicePrincipalsClient, e
 	}
 
 	return &ServicePrincipalsClient{
-		cfg:               cfg,
-		apiClient:         apiClient,
-		ServicePrincipals: NewServicePrincipals(databricksClient),
+		cfg:                        cfg,
+		apiClient:                  apiClient,
+		ServicePrincipalsInterface: NewServicePrincipals(databricksClient),
 	}, nil
 }
 
 type UsersClient struct {
+	UsersInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	Users UsersInterface
 }
 
 func NewUsersClient(cfg *config.Config) (*UsersClient, error) {
@@ -404,16 +396,16 @@ func NewUsersClient(cfg *config.Config) (*UsersClient, error) {
 	}
 
 	return &UsersClient{
-		cfg:       cfg,
-		apiClient: apiClient,
-		Users:     NewUsers(databricksClient),
+		cfg:            cfg,
+		apiClient:      apiClient,
+		UsersInterface: NewUsers(databricksClient),
 	}, nil
 }
 
 type WorkspaceAssignmentClient struct {
-	cfg *config.Config
+	WorkspaceAssignmentInterface
 
-	WorkspaceAssignment WorkspaceAssignmentInterface
+	cfg *config.Config
 }
 
 func NewWorkspaceAssignmentClient(cfg *config.Config) (*WorkspaceAssignmentClient, error) {
@@ -435,7 +427,7 @@ func NewWorkspaceAssignmentClient(cfg *config.Config) (*WorkspaceAssignmentClien
 	}
 
 	return &WorkspaceAssignmentClient{
-		cfg:                 cfg,
-		WorkspaceAssignment: NewWorkspaceAssignment(apiClient),
+		cfg:                          cfg,
+		WorkspaceAssignmentInterface: NewWorkspaceAssignment(apiClient),
 	}, nil
 }

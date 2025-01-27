@@ -11,10 +11,9 @@ import (
 )
 
 type ClusterPoliciesClient struct {
+	ClusterPoliciesInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	ClusterPolicies ClusterPoliciesInterface
 }
 
 func NewClusterPoliciesClient(cfg *config.Config) (*ClusterPoliciesClient, error) {
@@ -39,17 +38,16 @@ func NewClusterPoliciesClient(cfg *config.Config) (*ClusterPoliciesClient, error
 	}
 
 	return &ClusterPoliciesClient{
-		cfg:             cfg,
-		apiClient:       apiClient,
-		ClusterPolicies: NewClusterPolicies(databricksClient),
+		cfg:                      cfg,
+		apiClient:                apiClient,
+		ClusterPoliciesInterface: NewClusterPolicies(databricksClient),
 	}, nil
 }
 
 type ClustersClient struct {
+	ClustersInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	Clusters ClustersInterface
 }
 
 func NewClustersClient(cfg *config.Config) (*ClustersClient, error) {
@@ -74,17 +72,16 @@ func NewClustersClient(cfg *config.Config) (*ClustersClient, error) {
 	}
 
 	return &ClustersClient{
-		cfg:       cfg,
-		apiClient: apiClient,
-		Clusters:  NewClusters(databricksClient),
+		cfg:               cfg,
+		apiClient:         apiClient,
+		ClustersInterface: NewClusters(databricksClient),
 	}, nil
 }
 
 type CommandExecutionClient struct {
+	CommandExecutionInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	CommandExecution CommandExecutionInterface
 }
 
 func NewCommandExecutionClient(cfg *config.Config) (*CommandExecutionClient, error) {
@@ -109,17 +106,16 @@ func NewCommandExecutionClient(cfg *config.Config) (*CommandExecutionClient, err
 	}
 
 	return &CommandExecutionClient{
-		cfg:              cfg,
-		apiClient:        apiClient,
-		CommandExecution: NewCommandExecution(databricksClient),
+		cfg:                       cfg,
+		apiClient:                 apiClient,
+		CommandExecutionInterface: NewCommandExecution(databricksClient),
 	}, nil
 }
 
 type GlobalInitScriptsClient struct {
+	GlobalInitScriptsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	GlobalInitScripts GlobalInitScriptsInterface
 }
 
 func NewGlobalInitScriptsClient(cfg *config.Config) (*GlobalInitScriptsClient, error) {
@@ -144,17 +140,16 @@ func NewGlobalInitScriptsClient(cfg *config.Config) (*GlobalInitScriptsClient, e
 	}
 
 	return &GlobalInitScriptsClient{
-		cfg:               cfg,
-		apiClient:         apiClient,
-		GlobalInitScripts: NewGlobalInitScripts(databricksClient),
+		cfg:                        cfg,
+		apiClient:                  apiClient,
+		GlobalInitScriptsInterface: NewGlobalInitScripts(databricksClient),
 	}, nil
 }
 
 type InstancePoolsClient struct {
+	InstancePoolsInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	InstancePools InstancePoolsInterface
 }
 
 func NewInstancePoolsClient(cfg *config.Config) (*InstancePoolsClient, error) {
@@ -179,17 +174,16 @@ func NewInstancePoolsClient(cfg *config.Config) (*InstancePoolsClient, error) {
 	}
 
 	return &InstancePoolsClient{
-		cfg:           cfg,
-		apiClient:     apiClient,
-		InstancePools: NewInstancePools(databricksClient),
+		cfg:                    cfg,
+		apiClient:              apiClient,
+		InstancePoolsInterface: NewInstancePools(databricksClient),
 	}, nil
 }
 
 type InstanceProfilesClient struct {
+	InstanceProfilesInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	InstanceProfiles InstanceProfilesInterface
 }
 
 func NewInstanceProfilesClient(cfg *config.Config) (*InstanceProfilesClient, error) {
@@ -214,17 +208,16 @@ func NewInstanceProfilesClient(cfg *config.Config) (*InstanceProfilesClient, err
 	}
 
 	return &InstanceProfilesClient{
-		cfg:              cfg,
-		apiClient:        apiClient,
-		InstanceProfiles: NewInstanceProfiles(databricksClient),
+		cfg:                       cfg,
+		apiClient:                 apiClient,
+		InstanceProfilesInterface: NewInstanceProfiles(databricksClient),
 	}, nil
 }
 
 type LibrariesClient struct {
+	LibrariesInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	Libraries LibrariesInterface
 }
 
 func NewLibrariesClient(cfg *config.Config) (*LibrariesClient, error) {
@@ -249,17 +242,16 @@ func NewLibrariesClient(cfg *config.Config) (*LibrariesClient, error) {
 	}
 
 	return &LibrariesClient{
-		cfg:       cfg,
-		apiClient: apiClient,
-		Libraries: NewLibraries(databricksClient),
+		cfg:                cfg,
+		apiClient:          apiClient,
+		LibrariesInterface: NewLibraries(databricksClient),
 	}, nil
 }
 
 type PolicyComplianceForClustersClient struct {
+	PolicyComplianceForClustersInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	PolicyComplianceForClusters PolicyComplianceForClustersInterface
 }
 
 func NewPolicyComplianceForClustersClient(cfg *config.Config) (*PolicyComplianceForClustersClient, error) {
@@ -284,17 +276,16 @@ func NewPolicyComplianceForClustersClient(cfg *config.Config) (*PolicyCompliance
 	}
 
 	return &PolicyComplianceForClustersClient{
-		cfg:                         cfg,
-		apiClient:                   apiClient,
-		PolicyComplianceForClusters: NewPolicyComplianceForClusters(databricksClient),
+		cfg:                                  cfg,
+		apiClient:                            apiClient,
+		PolicyComplianceForClustersInterface: NewPolicyComplianceForClusters(databricksClient),
 	}, nil
 }
 
 type PolicyFamiliesClient struct {
+	PolicyFamiliesInterface
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
-
-	PolicyFamilies PolicyFamiliesInterface
 }
 
 func NewPolicyFamiliesClient(cfg *config.Config) (*PolicyFamiliesClient, error) {
@@ -319,8 +310,8 @@ func NewPolicyFamiliesClient(cfg *config.Config) (*PolicyFamiliesClient, error) 
 	}
 
 	return &PolicyFamiliesClient{
-		cfg:            cfg,
-		apiClient:      apiClient,
-		PolicyFamilies: NewPolicyFamilies(databricksClient),
+		cfg:                     cfg,
+		apiClient:               apiClient,
+		PolicyFamiliesInterface: NewPolicyFamilies(databricksClient),
 	}, nil
 }
