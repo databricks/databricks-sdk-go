@@ -80,9 +80,14 @@ func NewCachedTokenSource(ts oauth2.TokenSource, opts ...Option) oauth2.TokenSou
 }
 
 type cachedTokenSource struct {
-	tokenSource   oauth2.TokenSource
+	// The token source to obtain tokens from.
+	tokenSource oauth2.TokenSource
+
+	// If true, only refresh the token with a blocking call when it is expired.
+	disableAsync bool
+
+	// Duration during which a token is considered stale, see tokenState.
 	staleDuration time.Duration
-	disableAsync  bool
 
 	mu          sync.Mutex
 	cachedToken *oauth2.Token
@@ -110,7 +115,18 @@ func (cts *cachedTokenSource) Token() (*oauth2.Token, error) {
 	return cts.asyncToken()
 }
 
-// tokenState represents the state of the token.
+// tokenState represents the state of the token. Each token can be in one of
+// the following three states:
+//   - fresh: The token is valid.
+//   - stale: The token is valid but will expire soon.
+//   - expired: The token has expired and cannot be used.
+//
+// Token state through time:
+//
+//	issue time     expiry time
+//	    v               v
+//	    | fresh | stale | expired -> time
+//	    |     valid     |
 type tokenState int
 
 const (
