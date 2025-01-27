@@ -192,6 +192,12 @@ type CleanRoomAssetNotebook struct {
 	// Base 64 representation of the notebook contents. This is the same format
 	// as returned by :method:workspace/export with the format of **HTML**.
 	NotebookContent string `json:"notebook_content,omitempty"`
+	// top-level status derived from all reviews
+	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
+	// All existing approvals or rejections
+	Reviews []CleanRoomNotebookReview `json:"reviews,omitempty"`
+	// collaborators that can run the notebook
+	RunnerCollaborators []CleanRoomCollaborator `json:"runner_collaborators,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -334,6 +340,56 @@ func (s *CleanRoomCollaborator) UnmarshalJSON(b []byte) error {
 
 func (s CleanRoomCollaborator) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type CleanRoomNotebookReview struct {
+	// review comment
+	Comment string `json:"comment,omitempty"`
+	// timestamp of when the review was submitted
+	CreatedAtMillis int64 `json:"created_at_millis,omitempty"`
+	// review outcome
+	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
+	// collaborator alias of the reviewer
+	ReviewerCollaboratorAlias string `json:"reviewer_collaborator_alias,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CleanRoomNotebookReview) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomNotebookReview) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CleanRoomNotebookReviewNotebookReviewState string
+
+const CleanRoomNotebookReviewNotebookReviewStateApproved CleanRoomNotebookReviewNotebookReviewState = `APPROVED`
+
+const CleanRoomNotebookReviewNotebookReviewStatePending CleanRoomNotebookReviewNotebookReviewState = `PENDING`
+
+const CleanRoomNotebookReviewNotebookReviewStateRejected CleanRoomNotebookReviewNotebookReviewState = `REJECTED`
+
+// String representation for [fmt.Print]
+func (f *CleanRoomNotebookReviewNotebookReviewState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CleanRoomNotebookReviewNotebookReviewState) Set(v string) error {
+	switch v {
+	case `APPROVED`, `PENDING`, `REJECTED`:
+		*f = CleanRoomNotebookReviewNotebookReviewState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "APPROVED", "PENDING", "REJECTED"`, v)
+	}
+}
+
+// Type always returns CleanRoomNotebookReviewNotebookReviewState to satisfy [pflag.Value] interface
+func (f *CleanRoomNotebookReviewNotebookReviewState) Type() string {
+	return "CleanRoomNotebookReviewNotebookReviewState"
 }
 
 // Stores information about a single task run.

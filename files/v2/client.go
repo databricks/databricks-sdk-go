@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package jobs
+package files
 
 import (
 	"errors"
@@ -10,14 +10,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type JobsClient struct {
+type DbfsClient struct {
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
 
-	Jobs JobsInterface
+	Dbfs DbfsInterface
 }
 
-func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
+func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -38,21 +38,21 @@ func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
 		return nil, err
 	}
 
-	return &JobsClient{
+	return &DbfsClient{
 		cfg:       cfg,
 		apiClient: apiClient,
-		Jobs:      NewJobs(databricksClient),
+		Dbfs:      NewDbfs(databricksClient),
 	}, nil
 }
 
-type PolicyComplianceForJobsClient struct {
+type FilesClient struct {
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
 
-	PolicyComplianceForJobs PolicyComplianceForJobsInterface
+	Files FilesInterface
 }
 
-func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJobsClient, error) {
+func NewFilesClient(cfg *config.Config) (*FilesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -73,9 +73,9 @@ func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJ
 		return nil, err
 	}
 
-	return &PolicyComplianceForJobsClient{
-		cfg:                     cfg,
-		apiClient:               apiClient,
-		PolicyComplianceForJobs: NewPolicyComplianceForJobs(databricksClient),
+	return &FilesClient{
+		cfg:       cfg,
+		apiClient: apiClient,
+		Files:     NewFiles(databricksClient),
 	}, nil
 }

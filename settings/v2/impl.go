@@ -362,6 +362,39 @@ func (a *disableLegacyFeaturesImpl) Update(ctx context.Context, request UpdateDi
 	return &disableLegacyFeatures, err
 }
 
+// unexported type that holds implementations of just EnableIpAccessLists API methods
+type enableIpAccessListsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *enableIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessEnableRequest) (*DeleteAccountIpAccessEnableResponse, error) {
+	var deleteAccountIpAccessEnableResponse DeleteAccountIpAccessEnableResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteAccountIpAccessEnableResponse)
+	return &deleteAccountIpAccessEnableResponse, err
+}
+
+func (a *enableIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error) {
+	var accountIpAccessEnable AccountIpAccessEnable
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &accountIpAccessEnable)
+	return &accountIpAccessEnable, err
+}
+
+func (a *enableIpAccessListsImpl) Update(ctx context.Context, request UpdateAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error) {
+	var accountIpAccessEnable AccountIpAccessEnable
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &accountIpAccessEnable)
+	return &accountIpAccessEnable, err
+}
+
 // unexported type that holds implementations of just EnhancedSecurityMonitoring API methods
 type enhancedSecurityMonitoringImpl struct {
 	client *client.DatabricksClient

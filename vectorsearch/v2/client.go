@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package jobs
+package vectorsearch
 
 import (
 	"errors"
@@ -10,14 +10,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type JobsClient struct {
+type VectorSearchEndpointsClient struct {
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
 
-	Jobs JobsInterface
+	VectorSearchEndpoints VectorSearchEndpointsInterface
 }
 
-func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
+func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -38,21 +38,21 @@ func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
 		return nil, err
 	}
 
-	return &JobsClient{
-		cfg:       cfg,
-		apiClient: apiClient,
-		Jobs:      NewJobs(databricksClient),
+	return &VectorSearchEndpointsClient{
+		cfg:                   cfg,
+		apiClient:             apiClient,
+		VectorSearchEndpoints: NewVectorSearchEndpoints(databricksClient),
 	}, nil
 }
 
-type PolicyComplianceForJobsClient struct {
+type VectorSearchIndexesClient struct {
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
 
-	PolicyComplianceForJobs PolicyComplianceForJobsInterface
+	VectorSearchIndexes VectorSearchIndexesInterface
 }
 
-func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJobsClient, error) {
+func NewVectorSearchIndexesClient(cfg *config.Config) (*VectorSearchIndexesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -73,9 +73,9 @@ func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJ
 		return nil, err
 	}
 
-	return &PolicyComplianceForJobsClient{
-		cfg:                     cfg,
-		apiClient:               apiClient,
-		PolicyComplianceForJobs: NewPolicyComplianceForJobs(databricksClient),
+	return &VectorSearchIndexesClient{
+		cfg:                 cfg,
+		apiClient:           apiClient,
+		VectorSearchIndexes: NewVectorSearchIndexes(databricksClient),
 	}, nil
 }

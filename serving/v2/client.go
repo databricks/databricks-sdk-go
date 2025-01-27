@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package jobs
+package serving
 
 import (
 	"errors"
@@ -10,14 +10,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type JobsClient struct {
+type ServingEndpointsClient struct {
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
 
-	Jobs JobsInterface
+	ServingEndpoints ServingEndpointsInterface
 }
 
-func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
+func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -38,21 +38,21 @@ func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
 		return nil, err
 	}
 
-	return &JobsClient{
-		cfg:       cfg,
-		apiClient: apiClient,
-		Jobs:      NewJobs(databricksClient),
+	return &ServingEndpointsClient{
+		cfg:              cfg,
+		apiClient:        apiClient,
+		ServingEndpoints: NewServingEndpoints(databricksClient),
 	}, nil
 }
 
-type PolicyComplianceForJobsClient struct {
+type ServingEndpointsDataPlaneClient struct {
 	cfg       *config.Config
 	apiClient *httpclient.ApiClient
 
-	PolicyComplianceForJobs PolicyComplianceForJobsInterface
+	ServingEndpointsDataPlane ServingEndpointsDataPlaneInterface
 }
 
-func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJobsClient, error) {
+func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDataPlaneClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -73,9 +73,9 @@ func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJ
 		return nil, err
 	}
 
-	return &PolicyComplianceForJobsClient{
-		cfg:                     cfg,
-		apiClient:               apiClient,
-		PolicyComplianceForJobs: NewPolicyComplianceForJobs(databricksClient),
+	return &ServingEndpointsDataPlaneClient{
+		cfg:                       cfg,
+		apiClient:                 apiClient,
+		ServingEndpointsDataPlane: NewServingEndpointsDataPlane(databricksClient),
 	}, nil
 }
