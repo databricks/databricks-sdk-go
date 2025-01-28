@@ -11,6 +11,7 @@ import (
 func TestUcAccMetastoreAssignments(t *testing.T) {
 	ctx, cfg := ucacctTest(t)
 	AccountMetastoreAssignmentsAPI, err := catalog.NewAccountMetastoreAssignmentsClient(cfg)
+	require.NoError(t, err)
 	ws, err := AccountMetastoreAssignmentsAPI.ListAll(ctx, catalog.ListAccountMetastoreAssignmentsRequest{
 		MetastoreId: GetEnvOrSkipTest(t, "TEST_METASTORE_ID"),
 	})

@@ -103,6 +103,7 @@ func TestAccAccountUsers(t *testing.T) {
 	ctx, cfg := accountTest(t)
 
 	UsersAPI, err := iam.NewAccountUsersClient(cfg)
+	require.NoError(t, err)
 	user, err := UsersAPI.Create(ctx, iam.User{
 		DisplayName: RandomName("Me "),
 		UserName:    RandomEmail(),

@@ -176,6 +176,7 @@ func TestUcAccShares(t *testing.T) {
 
 	// creates tableName
 	StatementExecutionAPI, err := sql.NewStatementExecutionClient(nil)
+	require.NoError(t, err)
 	_, err = StatementExecutionAPI.ExecuteAndWait(ctx, sql.ExecuteStatementRequest{
 		WarehouseId: GetEnvOrSkipTest(t, "TEST_DEFAULT_WAREHOUSE_ID"),
 		Catalog:     createdCatalog.Name,

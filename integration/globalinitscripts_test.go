@@ -13,6 +13,7 @@ func TestAccGlobalInitScripts(t *testing.T) {
 	ctx := workspaceTest(t)
 
 	GlobalInitScriptsAPI, err := compute.NewGlobalInitScriptsClient(nil)
+	require.NoError(t, err)
 	created, err := GlobalInitScriptsAPI.Create(ctx, compute.GlobalInitScriptCreateRequest{
 		Name:     RandomName("go-sdk-"),
 		Script:   base64.StdEncoding.EncodeToString([]byte("echo 1")),

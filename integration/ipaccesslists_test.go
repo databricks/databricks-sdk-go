@@ -12,6 +12,7 @@ func TestAccIpAccessLists(t *testing.T) {
 	ctx := workspaceTest(t)
 
 	IpAccessListsAPI, err := settings.NewIpAccessListsClient(nil)
+	require.NoError(t, err)
 	created, err := IpAccessListsAPI.Create(ctx, settings.CreateIpAccessList{
 		Label:       RandomName("go-sdk-"),
 		IpAddresses: []string{"1.0.0.0/16"},

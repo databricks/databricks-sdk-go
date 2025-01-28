@@ -14,6 +14,7 @@ func TestAccConnections(t *testing.T) {
 	ctx := ucwsTest(t)
 
 	ConnectionsAPI, err := catalog.NewConnectionsClient(nil)
+	require.NoError(t, err)
 	connCreate, err := ConnectionsAPI.Create(ctx, catalog.CreateConnection{
 		Comment:        "Go SDK Acceptance Test Connection",
 		ConnectionType: catalog.ConnectionTypeDatabricks,

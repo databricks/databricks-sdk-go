@@ -18,7 +18,7 @@ func acquireGitCredentialsLock(ctx context.Context, t *testing.T, CurrentUserAPI
 		WorkspaceHost: CurrentUserAPI.Config.Host,
 		Username:      me.UserName,
 	}
-	_, err = lock.Acquire(ctx, lockable, lock.InTest(t))
+	_, err = lock.Acquire(ctx, lockable, lock.InTest(t), lock.WithBackend(&Backend{}))
 	require.NoError(t, err)
 }
 
@@ -31,6 +31,7 @@ func TestAccGitCredentials(t *testing.T) {
 	acquireGitCredentialsLock(ctx, t, CurrentUserAPI)
 
 	GitCredentialsAPI, err := workspace.NewGitCredentialsClient(nil)
+	require.NoError(t, err)
 	list, err := GitCredentialsAPI.ListAll(ctx)
 	require.NoError(t, err)
 	for _, v := range list {

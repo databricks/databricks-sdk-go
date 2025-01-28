@@ -47,6 +47,7 @@ func TestUcAccVolumes(t *testing.T) {
 	})
 
 	StorageCredentialsAPI, err := catalog.NewStorageCredentialsClient(nil)
+	require.NoError(t, err)
 	storageCredential, err := StorageCredentialsAPI.Create(ctx, catalog.CreateStorageCredential{
 		Name: RandomName("creds-"),
 		AwsIamRole: &catalog.AwsIamRoleRequest{
@@ -61,6 +62,7 @@ func TestUcAccVolumes(t *testing.T) {
 	})
 
 	ExternalLocationsAPI, err := catalog.NewExternalLocationsClient(nil)
+	require.NoError(t, err)
 	externalLocation, err := ExternalLocationsAPI.Create(ctx, catalog.CreateExternalLocation{
 		Name:           RandomName("location-"),
 		CredentialName: storageCredential.Name,
@@ -74,6 +76,7 @@ func TestUcAccVolumes(t *testing.T) {
 	})
 
 	VolumesAPI, err := catalog.NewVolumesClient(nil)
+	require.NoError(t, err)
 	createdVolume, err := VolumesAPI.Create(ctx, catalog.CreateVolumeRequestContent{
 		CatalogName:     createdCatalog.Name,
 		SchemaName:      createdSchema.Name,
@@ -109,6 +112,7 @@ func TestUcAccVolumes(t *testing.T) {
 func TestUcAccTables(t *testing.T) {
 	ctx := ucwsTest(t)
 	CatalogsAPI, err := catalog.NewCatalogsClient(nil)
+	require.NoError(t, err)
 	if CatalogsAPI.Config.IsGcp() {
 		skipf(t)("Statement Execution API not available on GCP, skipping")
 	}
@@ -291,6 +295,7 @@ func TestUcAccExternalLocationsOnAws(t *testing.T) {
 func TestUcAccMetastores(t *testing.T) {
 	ctx := ucwsTest(t)
 	MetastoresAPI, err := catalog.NewMetastoresClient(nil)
+	require.NoError(t, err)
 	created, err := MetastoresAPI.Create(ctx, catalog.CreateMetastore{
 		Name:        RandomName("go-sdk-"),
 		StorageRoot: fmt.Sprintf("s3://%s/%s", GetEnvOrSkipTest(t, "TEST_BUCKET"), RandomName("t=")),

@@ -46,6 +46,7 @@ func TestMwsAccLogDelivery(t *testing.T) {
 	defer CredenialsAPI.DeleteByCredentialsId(ctx, creds.CredentialsId)
 
 	StorageAPI, err := provisioning.NewStorageClient(cfg)
+	require.NoError(t, err)
 	bucket, err := StorageAPI.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: RandomName("sdk-"),
 		RootBucketInfo: provisioning.RootBucketInfo{
@@ -57,6 +58,7 @@ func TestMwsAccLogDelivery(t *testing.T) {
 
 	// TODO: OpenAPI: x-databricks-sdk-inline on schema
 	LogDeliveryAPI, err := billing.NewLogDeliveryClient(cfg)
+	require.NoError(t, err)
 	created, err := LogDeliveryAPI.Create(ctx, billing.WrappedCreateLogDeliveryConfiguration{
 		LogDeliveryConfiguration: &billing.CreateLogDeliveryConfigurationParams{
 			ConfigName:             RandomName("sdk-go-"),
@@ -94,6 +96,7 @@ func TestMwsAccBudgets(t *testing.T) {
 
 	// TODO: OpenAPI: x-databricks-sdk-inline on schema
 	BudgetsAPI, err := billing.NewBudgetsClient(cfg)
+	require.NoError(t, err)
 	created, err := BudgetsAPI.Create(ctx, billing.CreateBudgetConfigurationRequest{
 		Budget: billing.CreateBudgetConfigurationBudget{
 			DisplayName: RandomName("go-sdk-"),
