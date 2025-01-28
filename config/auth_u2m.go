@@ -56,10 +56,9 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	if cfg.Host == "" {
 		return nil, nil
 	}
-	a := u.auth
-	if a == nil {
+	if u.auth == nil {
 		var err error
-		a, err = oauth.NewPersistentAuth(ctx)
+		u.auth, err = oauth.NewPersistentAuth(ctx)
 		if err != nil {
 			logger.Debugf(ctx, "failed to create persistent auth: %v, continuing", err)
 			return nil, nil
@@ -77,32 +76,34 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, fmt.Errorf("oidc: %w", err)
 	}
 
+	// Construct the visitor, and try to load the credential from the token
+	// cache. If absent, fall back to the next credentials strategy. If a token
+	// is present but cannot be loaded (e.g. expired), return an error.
+	// Otherwise, fall back to the next credentials strategy.
+	visitor := u.makeVisitor(arg)
 	r, err := http.NewRequestWithContext(ctx, http.MethodGet, "", nil)
 	if err != nil {
 		return nil, fmt.Errorf("http request: %w", err)
 	}
-
-	f := func(r *http.Request) error {
-		token, err := a.Load(r.Context(), arg)
-		if err != nil {
-			return fmt.Errorf("oidc: %w", err)
-		}
-		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
-		return nil
-	}
-
-	// Try to load the credential from the token cache. If absent, fall back to
-	// the next credentials strategy. If a token is present but cannot be loaded
-	// (e.g. expired), return an error. Otherwise, fall back to the next
-	// credentials strategy.
-	if err := f(r); err != nil {
+	if err := visitor(r); err != nil {
 		if u.errorHandler != nil {
 			return nil, u.errorHandler(ctx, cfg, arg, err)
 		}
 		return nil, err
 	}
 
-	return credentials.NewCredentialsProvider(f), nil
+	return credentials.NewCredentialsProvider(visitor), nil
+}
+
+func (u u2mCredentials) makeVisitor(arg oauth.OAuthArgument) func(*http.Request) error {
+	return func(r *http.Request) error {
+		token, err := u.auth.Load(r.Context(), arg)
+		if err != nil {
+			return fmt.Errorf("oidc: %w", err)
+		}
+		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
+		return nil
+	}
 }
 
 func defaultGetOAuthArg(_ context.Context, cfg *Config) (oauth.OAuthArgument, error) {

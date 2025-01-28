@@ -49,23 +49,17 @@ type tokenCacheFile struct {
 	Tokens  map[string]*oauth2.Token `json:"tokens"`
 }
 
-type FileTokenCacheOpt func(*FileTokenCache)
+type FileTokenCacheOption func(*fileTokenCache)
 
-func WithFileLocation(fileLocation string) FileTokenCacheOpt {
-	return func(c *FileTokenCache) {
+func WithFileLocation(fileLocation string) FileTokenCacheOption {
+	return func(c *fileTokenCache) {
 		c.fileLocation = fileLocation
 	}
 }
 
-func WithLocker(locker sync.Locker) FileTokenCacheOpt {
-	return func(c *FileTokenCache) {
-		c.locker = locker
-	}
-}
-
-// FileTokenCache caches tokens in "~/.databricks/token-cache.json". FileTokenCache
+// fileTokenCache caches tokens in "~/.databricks/token-cache.json". fileTokenCache
 // implements the TokenCache interface.
-type FileTokenCache struct {
+type fileTokenCache struct {
 	fileLocation string
 
 	// locker protects the token cache file from concurrent reads and writes.
@@ -78,15 +72,15 @@ type FileTokenCache struct {
 // 0600 and the directory is created with owner permissions 0700. If the cache
 // file is corrupt or if its version does not match tokenCacheVersion, an error
 // is returned.
-func NewFileTokenCache(opts ...FileTokenCacheOpt) (*FileTokenCache, error) {
-	c := &FileTokenCache{}
+func NewFileTokenCache(opts ...FileTokenCacheOption) (TokenCache, error) {
+	c := &fileTokenCache{}
 	for _, opt := range opts {
 		opt(c)
 	}
 	if err := c.init(); err != nil {
 		return nil, err
 	}
-	// verify the cache is working
+	// Fail fast if the cache is not working.
 	if _, err := c.load(); err != nil {
 		return nil, fmt.Errorf("load: %w", err)
 	}
@@ -94,7 +88,7 @@ func NewFileTokenCache(opts ...FileTokenCacheOpt) (*FileTokenCache, error) {
 }
 
 // Store implements the TokenCache interface.
-func (c *FileTokenCache) Store(key string, t *oauth2.Token) error {
+func (c *fileTokenCache) Store(key string, t *oauth2.Token) error {
 	c.locker.Lock()
 	defer c.locker.Unlock()
 	f, err := c.load()
@@ -113,7 +107,7 @@ func (c *FileTokenCache) Store(key string, t *oauth2.Token) error {
 }
 
 // Lookup implements the TokenCache interface.
-func (c *FileTokenCache) Lookup(key string) (*oauth2.Token, error) {
+func (c *fileTokenCache) Lookup(key string) (*oauth2.Token, error) {
 	c.locker.Lock()
 	defer c.locker.Unlock()
 	f, err := c.load()
@@ -129,7 +123,7 @@ func (c *FileTokenCache) Lookup(key string) (*oauth2.Token, error) {
 
 // init initializes the token cache file. It creates the file and directory if
 // they do not already exist.
-func (c *FileTokenCache) init() error {
+func (c *fileTokenCache) init() error {
 	// set the default file location
 	if c.fileLocation == "" {
 		home, err := os.UserHomeDir()
@@ -138,21 +132,17 @@ func (c *FileTokenCache) init() error {
 		}
 		c.fileLocation = filepath.Join(home, tokenCacheFilePath)
 	}
-	// create the directory if it doesn't already exist
-	if _, err := os.Stat(filepath.Dir(c.fileLocation)); err != nil {
-		if !os.IsNotExist(err) {
-			return fmt.Errorf("stat directory: %w", err)
-		}
-		// create the directory
-		if err := os.MkdirAll(filepath.Dir(c.fileLocation), ownerExecReadWrite); err != nil {
-			return fmt.Errorf("mkdir: %w", err)
-		}
-	}
-	// create the file if it doesn't already exist
+	// Create the cache file if it does not exist.
 	if _, err := os.Stat(c.fileLocation); err != nil {
 		if !os.IsNotExist(err) {
 			return fmt.Errorf("stat file: %w", err)
 		}
+		// Create the parent directories if needed.
+		if err := os.MkdirAll(filepath.Dir(c.fileLocation), ownerExecReadWrite); err != nil {
+			return fmt.Errorf("mkdir: %w", err)
+		}
+
+		// Create an empty cache file.
 		f := &tokenCacheFile{
 			Version: tokenCacheVersion,
 			Tokens:  map[string]*oauth2.Token{},
@@ -165,31 +155,28 @@ func (c *FileTokenCache) init() error {
 			return fmt.Errorf("write: %w", err)
 		}
 	}
-	// Initialize the locker if it is not already set.
-	if c.locker == nil {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return fmt.Errorf("home: %w", err)
-		}
+	// Initialize the locker.
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("home: %w", err)
+	}
 
-		c.locker, err = newLocker(filepath.Join(home, lockFilePath))
-		if err != nil {
-			return fmt.Errorf("locker: %w", err)
-		}
+	c.locker, err = newLocker(filepath.Join(home, lockFilePath))
+	if err != nil {
+		return fmt.Errorf("locker: %w", err)
 	}
 	return nil
 }
 
 // load loads the token cache file from disk. If the file is corrupt or if its
 // version does not match tokenCacheVersion, it returns an error.
-func (c *FileTokenCache) load() (*tokenCacheFile, error) {
+func (c *fileTokenCache) load() (*tokenCacheFile, error) {
 	raw, err := os.ReadFile(c.fileLocation)
 	if err != nil {
 		return nil, fmt.Errorf("read: %w", err)
 	}
 	f := &tokenCacheFile{}
-	err = json.Unmarshal(raw, &f)
-	if err != nil {
+	if err := json.Unmarshal(raw, &f); err != nil {
 		return nil, fmt.Errorf("parse: %w", err)
 	}
 	if f.Version != tokenCacheVersion {
@@ -200,5 +187,3 @@ func (c *FileTokenCache) load() (*tokenCacheFile, error) {
 	}
 	return f, nil
 }
-
-var _ TokenCache = (*FileTokenCache)(nil)
