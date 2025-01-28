@@ -12,7 +12,7 @@ import (
 type CredentialsClient struct {
 	CredentialsInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
@@ -34,7 +34,7 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 	}
 
 	return &CredentialsClient{
-		cfg:                  cfg,
+		Config:               cfg,
 		CredentialsInterface: NewCredentials(apiClient),
 	}, nil
 }
@@ -42,7 +42,7 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 type EncryptionKeysClient struct {
 	EncryptionKeysInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) {
@@ -64,7 +64,7 @@ func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) 
 	}
 
 	return &EncryptionKeysClient{
-		cfg:                     cfg,
+		Config:                  cfg,
 		EncryptionKeysInterface: NewEncryptionKeys(apiClient),
 	}, nil
 }
@@ -72,7 +72,7 @@ func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) 
 type NetworksClient struct {
 	NetworksInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
@@ -94,7 +94,7 @@ func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
 	}
 
 	return &NetworksClient{
-		cfg:               cfg,
+		Config:            cfg,
 		NetworksInterface: NewNetworks(apiClient),
 	}, nil
 }
@@ -102,7 +102,7 @@ func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
 type PrivateAccessClient struct {
 	PrivateAccessInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
@@ -124,7 +124,7 @@ func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
 	}
 
 	return &PrivateAccessClient{
-		cfg:                    cfg,
+		Config:                 cfg,
 		PrivateAccessInterface: NewPrivateAccess(apiClient),
 	}, nil
 }
@@ -132,7 +132,7 @@ func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
 type StorageClient struct {
 	StorageInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
@@ -154,7 +154,7 @@ func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
 	}
 
 	return &StorageClient{
-		cfg:              cfg,
+		Config:           cfg,
 		StorageInterface: NewStorage(apiClient),
 	}, nil
 }
@@ -162,7 +162,7 @@ func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
 type VpcEndpointsClient struct {
 	VpcEndpointsInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
@@ -184,7 +184,7 @@ func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
 	}
 
 	return &VpcEndpointsClient{
-		cfg:                   cfg,
+		Config:                cfg,
 		VpcEndpointsInterface: NewVpcEndpoints(apiClient),
 	}, nil
 }
@@ -192,7 +192,7 @@ func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
 type WorkspacesClient struct {
 	WorkspacesInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewWorkspacesClient(cfg *config.Config) (*WorkspacesClient, error) {
@@ -214,7 +214,7 @@ func NewWorkspacesClient(cfg *config.Config) (*WorkspacesClient, error) {
 	}
 
 	return &WorkspacesClient{
-		cfg:                 cfg,
+		Config:              cfg,
 		WorkspacesInterface: NewWorkspaces(apiClient),
 	}, nil
 }

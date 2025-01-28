@@ -461,7 +461,7 @@ type CreateServingEndpoint struct {
 	// supported.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
 	// The core config of the serving endpoint.
-	Config EndpointCoreConfigInput `json:"config"`
+	Config *EndpointCoreConfigInput `json:"config,omitempty"`
 	// The name of the serving endpoint. This field is required and must be
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.

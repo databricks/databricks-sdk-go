@@ -14,7 +14,7 @@ type CommandExecutorV2 struct {
 }
 
 type commandExecutionAPIUtilities interface {
-	Start(ctx context.Context, clusterID string, language Language) (*CommandExecutorV2, error)
+	// Start(ctx context.Context, clusterID string, language Language) (*CommandExecutorV2, error)
 }
 
 // Start the command execution context on a cluster and ensure it transitions to a running state

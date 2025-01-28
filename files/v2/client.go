@@ -12,7 +12,7 @@ import (
 
 type DbfsClient struct {
 	DbfsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -38,7 +38,7 @@ func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
 	}
 
 	return &DbfsClient{
-		cfg:           cfg,
+		Config:        cfg,
 		apiClient:     apiClient,
 		DbfsInterface: NewDbfs(databricksClient),
 	}, nil
@@ -46,7 +46,7 @@ func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
 
 type FilesClient struct {
 	FilesInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -72,7 +72,7 @@ func NewFilesClient(cfg *config.Config) (*FilesClient, error) {
 	}
 
 	return &FilesClient{
-		cfg:            cfg,
+		Config:         cfg,
 		apiClient:      apiClient,
 		FilesInterface: NewFiles(databricksClient),
 	}, nil

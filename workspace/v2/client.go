@@ -12,7 +12,7 @@ import (
 
 type GitCredentialsClient struct {
 	GitCredentialsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -38,7 +38,7 @@ func NewGitCredentialsClient(cfg *config.Config) (*GitCredentialsClient, error) 
 	}
 
 	return &GitCredentialsClient{
-		cfg:                     cfg,
+		Config:                  cfg,
 		apiClient:               apiClient,
 		GitCredentialsInterface: NewGitCredentials(databricksClient),
 	}, nil
@@ -46,7 +46,7 @@ func NewGitCredentialsClient(cfg *config.Config) (*GitCredentialsClient, error) 
 
 type ReposClient struct {
 	ReposInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -72,7 +72,7 @@ func NewReposClient(cfg *config.Config) (*ReposClient, error) {
 	}
 
 	return &ReposClient{
-		cfg:            cfg,
+		Config:         cfg,
 		apiClient:      apiClient,
 		ReposInterface: NewRepos(databricksClient),
 	}, nil
@@ -80,7 +80,7 @@ func NewReposClient(cfg *config.Config) (*ReposClient, error) {
 
 type SecretsClient struct {
 	SecretsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -106,7 +106,7 @@ func NewSecretsClient(cfg *config.Config) (*SecretsClient, error) {
 	}
 
 	return &SecretsClient{
-		cfg:              cfg,
+		Config:           cfg,
 		apiClient:        apiClient,
 		SecretsInterface: NewSecrets(databricksClient),
 	}, nil
@@ -114,7 +114,7 @@ func NewSecretsClient(cfg *config.Config) (*SecretsClient, error) {
 
 type WorkspaceClient struct {
 	WorkspaceInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -140,7 +140,7 @@ func NewWorkspaceClient(cfg *config.Config) (*WorkspaceClient, error) {
 	}
 
 	return &WorkspaceClient{
-		cfg:                cfg,
+		Config:             cfg,
 		apiClient:          apiClient,
 		WorkspaceInterface: NewWorkspace(databricksClient),
 	}, nil

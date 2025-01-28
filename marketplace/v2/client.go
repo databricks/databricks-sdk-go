@@ -12,7 +12,7 @@ import (
 
 type ConsumerFulfillmentsClient struct {
 	ConsumerFulfillmentsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -38,7 +38,7 @@ func NewConsumerFulfillmentsClient(cfg *config.Config) (*ConsumerFulfillmentsCli
 	}
 
 	return &ConsumerFulfillmentsClient{
-		cfg:                           cfg,
+		Config:                        cfg,
 		apiClient:                     apiClient,
 		ConsumerFulfillmentsInterface: NewConsumerFulfillments(databricksClient),
 	}, nil
@@ -46,7 +46,7 @@ func NewConsumerFulfillmentsClient(cfg *config.Config) (*ConsumerFulfillmentsCli
 
 type ConsumerInstallationsClient struct {
 	ConsumerInstallationsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -72,7 +72,7 @@ func NewConsumerInstallationsClient(cfg *config.Config) (*ConsumerInstallationsC
 	}
 
 	return &ConsumerInstallationsClient{
-		cfg:                            cfg,
+		Config:                         cfg,
 		apiClient:                      apiClient,
 		ConsumerInstallationsInterface: NewConsumerInstallations(databricksClient),
 	}, nil
@@ -80,7 +80,7 @@ func NewConsumerInstallationsClient(cfg *config.Config) (*ConsumerInstallationsC
 
 type ConsumerListingsClient struct {
 	ConsumerListingsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -106,7 +106,7 @@ func NewConsumerListingsClient(cfg *config.Config) (*ConsumerListingsClient, err
 	}
 
 	return &ConsumerListingsClient{
-		cfg:                       cfg,
+		Config:                    cfg,
 		apiClient:                 apiClient,
 		ConsumerListingsInterface: NewConsumerListings(databricksClient),
 	}, nil
@@ -114,7 +114,7 @@ func NewConsumerListingsClient(cfg *config.Config) (*ConsumerListingsClient, err
 
 type ConsumerPersonalizationRequestsClient struct {
 	ConsumerPersonalizationRequestsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -140,7 +140,7 @@ func NewConsumerPersonalizationRequestsClient(cfg *config.Config) (*ConsumerPers
 	}
 
 	return &ConsumerPersonalizationRequestsClient{
-		cfg:                                      cfg,
+		Config:                                   cfg,
 		apiClient:                                apiClient,
 		ConsumerPersonalizationRequestsInterface: NewConsumerPersonalizationRequests(databricksClient),
 	}, nil
@@ -148,7 +148,7 @@ func NewConsumerPersonalizationRequestsClient(cfg *config.Config) (*ConsumerPers
 
 type ConsumerProvidersClient struct {
 	ConsumerProvidersInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -174,7 +174,7 @@ func NewConsumerProvidersClient(cfg *config.Config) (*ConsumerProvidersClient, e
 	}
 
 	return &ConsumerProvidersClient{
-		cfg:                        cfg,
+		Config:                     cfg,
 		apiClient:                  apiClient,
 		ConsumerProvidersInterface: NewConsumerProviders(databricksClient),
 	}, nil
@@ -182,7 +182,7 @@ func NewConsumerProvidersClient(cfg *config.Config) (*ConsumerProvidersClient, e
 
 type ProviderExchangeFiltersClient struct {
 	ProviderExchangeFiltersInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -208,7 +208,7 @@ func NewProviderExchangeFiltersClient(cfg *config.Config) (*ProviderExchangeFilt
 	}
 
 	return &ProviderExchangeFiltersClient{
-		cfg:                              cfg,
+		Config:                           cfg,
 		apiClient:                        apiClient,
 		ProviderExchangeFiltersInterface: NewProviderExchangeFilters(databricksClient),
 	}, nil
@@ -216,7 +216,7 @@ func NewProviderExchangeFiltersClient(cfg *config.Config) (*ProviderExchangeFilt
 
 type ProviderExchangesClient struct {
 	ProviderExchangesInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -242,7 +242,7 @@ func NewProviderExchangesClient(cfg *config.Config) (*ProviderExchangesClient, e
 	}
 
 	return &ProviderExchangesClient{
-		cfg:                        cfg,
+		Config:                     cfg,
 		apiClient:                  apiClient,
 		ProviderExchangesInterface: NewProviderExchanges(databricksClient),
 	}, nil
@@ -250,7 +250,7 @@ func NewProviderExchangesClient(cfg *config.Config) (*ProviderExchangesClient, e
 
 type ProviderFilesClient struct {
 	ProviderFilesInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -276,7 +276,7 @@ func NewProviderFilesClient(cfg *config.Config) (*ProviderFilesClient, error) {
 	}
 
 	return &ProviderFilesClient{
-		cfg:                    cfg,
+		Config:                 cfg,
 		apiClient:              apiClient,
 		ProviderFilesInterface: NewProviderFiles(databricksClient),
 	}, nil
@@ -284,7 +284,7 @@ func NewProviderFilesClient(cfg *config.Config) (*ProviderFilesClient, error) {
 
 type ProviderListingsClient struct {
 	ProviderListingsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -310,7 +310,7 @@ func NewProviderListingsClient(cfg *config.Config) (*ProviderListingsClient, err
 	}
 
 	return &ProviderListingsClient{
-		cfg:                       cfg,
+		Config:                    cfg,
 		apiClient:                 apiClient,
 		ProviderListingsInterface: NewProviderListings(databricksClient),
 	}, nil
@@ -318,7 +318,7 @@ func NewProviderListingsClient(cfg *config.Config) (*ProviderListingsClient, err
 
 type ProviderPersonalizationRequestsClient struct {
 	ProviderPersonalizationRequestsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -344,7 +344,7 @@ func NewProviderPersonalizationRequestsClient(cfg *config.Config) (*ProviderPers
 	}
 
 	return &ProviderPersonalizationRequestsClient{
-		cfg:                                      cfg,
+		Config:                                   cfg,
 		apiClient:                                apiClient,
 		ProviderPersonalizationRequestsInterface: NewProviderPersonalizationRequests(databricksClient),
 	}, nil
@@ -352,7 +352,7 @@ func NewProviderPersonalizationRequestsClient(cfg *config.Config) (*ProviderPers
 
 type ProviderProviderAnalyticsDashboardsClient struct {
 	ProviderProviderAnalyticsDashboardsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -378,7 +378,7 @@ func NewProviderProviderAnalyticsDashboardsClient(cfg *config.Config) (*Provider
 	}
 
 	return &ProviderProviderAnalyticsDashboardsClient{
-		cfg:       cfg,
+		Config:    cfg,
 		apiClient: apiClient,
 		ProviderProviderAnalyticsDashboardsInterface: NewProviderProviderAnalyticsDashboards(databricksClient),
 	}, nil
@@ -386,7 +386,7 @@ func NewProviderProviderAnalyticsDashboardsClient(cfg *config.Config) (*Provider
 
 type ProviderProvidersClient struct {
 	ProviderProvidersInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -412,7 +412,7 @@ func NewProviderProvidersClient(cfg *config.Config) (*ProviderProvidersClient, e
 	}
 
 	return &ProviderProvidersClient{
-		cfg:                        cfg,
+		Config:                     cfg,
 		apiClient:                  apiClient,
 		ProviderProvidersInterface: NewProviderProviders(databricksClient),
 	}, nil

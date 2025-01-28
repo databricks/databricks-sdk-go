@@ -12,7 +12,7 @@ import (
 
 type VectorSearchEndpointsClient struct {
 	VectorSearchEndpointsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -38,7 +38,7 @@ func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsC
 	}
 
 	return &VectorSearchEndpointsClient{
-		cfg:                            cfg,
+		Config:                         cfg,
 		apiClient:                      apiClient,
 		VectorSearchEndpointsInterface: NewVectorSearchEndpoints(databricksClient),
 	}, nil
@@ -46,7 +46,7 @@ func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsC
 
 type VectorSearchIndexesClient struct {
 	VectorSearchIndexesInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -72,7 +72,7 @@ func NewVectorSearchIndexesClient(cfg *config.Config) (*VectorSearchIndexesClien
 	}
 
 	return &VectorSearchIndexesClient{
-		cfg:                          cfg,
+		Config:                       cfg,
 		apiClient:                    apiClient,
 		VectorSearchIndexesInterface: NewVectorSearchIndexes(databricksClient),
 	}, nil

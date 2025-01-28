@@ -12,7 +12,7 @@ import (
 
 type CleanRoomAssetsClient struct {
 	CleanRoomAssetsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -38,7 +38,7 @@ func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error
 	}
 
 	return &CleanRoomAssetsClient{
-		cfg:                      cfg,
+		Config:                   cfg,
 		apiClient:                apiClient,
 		CleanRoomAssetsInterface: NewCleanRoomAssets(databricksClient),
 	}, nil
@@ -46,7 +46,7 @@ func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error
 
 type CleanRoomTaskRunsClient struct {
 	CleanRoomTaskRunsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -72,7 +72,7 @@ func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, e
 	}
 
 	return &CleanRoomTaskRunsClient{
-		cfg:                        cfg,
+		Config:                     cfg,
 		apiClient:                  apiClient,
 		CleanRoomTaskRunsInterface: NewCleanRoomTaskRuns(databricksClient),
 	}, nil
@@ -80,7 +80,7 @@ func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, e
 
 type CleanRoomsClient struct {
 	CleanRoomsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -106,7 +106,7 @@ func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
 	}
 
 	return &CleanRoomsClient{
-		cfg:                 cfg,
+		Config:              cfg,
 		apiClient:           apiClient,
 		CleanRoomsInterface: NewCleanRooms(databricksClient),
 	}, nil

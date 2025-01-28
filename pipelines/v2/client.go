@@ -12,7 +12,7 @@ import (
 
 type PipelinesClient struct {
 	PipelinesInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -38,7 +38,7 @@ func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
 	}
 
 	return &PipelinesClient{
-		cfg:                cfg,
+		Config:             cfg,
 		apiClient:          apiClient,
 		PipelinesInterface: NewPipelines(databricksClient),
 	}, nil

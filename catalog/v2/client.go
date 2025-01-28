@@ -13,7 +13,7 @@ import (
 type AccountMetastoreAssignmentsClient struct {
 	AccountMetastoreAssignmentsInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewAccountMetastoreAssignmentsClient(cfg *config.Config) (*AccountMetastoreAssignmentsClient, error) {
@@ -35,7 +35,7 @@ func NewAccountMetastoreAssignmentsClient(cfg *config.Config) (*AccountMetastore
 	}
 
 	return &AccountMetastoreAssignmentsClient{
-		cfg:                                  cfg,
+		Config:                               cfg,
 		AccountMetastoreAssignmentsInterface: NewAccountMetastoreAssignments(apiClient),
 	}, nil
 }
@@ -43,7 +43,7 @@ func NewAccountMetastoreAssignmentsClient(cfg *config.Config) (*AccountMetastore
 type AccountMetastoresClient struct {
 	AccountMetastoresInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewAccountMetastoresClient(cfg *config.Config) (*AccountMetastoresClient, error) {
@@ -65,7 +65,7 @@ func NewAccountMetastoresClient(cfg *config.Config) (*AccountMetastoresClient, e
 	}
 
 	return &AccountMetastoresClient{
-		cfg:                        cfg,
+		Config:                     cfg,
 		AccountMetastoresInterface: NewAccountMetastores(apiClient),
 	}, nil
 }
@@ -73,7 +73,7 @@ func NewAccountMetastoresClient(cfg *config.Config) (*AccountMetastoresClient, e
 type AccountStorageCredentialsClient struct {
 	AccountStorageCredentialsInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewAccountStorageCredentialsClient(cfg *config.Config) (*AccountStorageCredentialsClient, error) {
@@ -95,14 +95,14 @@ func NewAccountStorageCredentialsClient(cfg *config.Config) (*AccountStorageCred
 	}
 
 	return &AccountStorageCredentialsClient{
-		cfg:                                cfg,
+		Config:                             cfg,
 		AccountStorageCredentialsInterface: NewAccountStorageCredentials(apiClient),
 	}, nil
 }
 
 type ArtifactAllowlistsClient struct {
 	ArtifactAllowlistsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -128,7 +128,7 @@ func NewArtifactAllowlistsClient(cfg *config.Config) (*ArtifactAllowlistsClient,
 	}
 
 	return &ArtifactAllowlistsClient{
-		cfg:                         cfg,
+		Config:                      cfg,
 		apiClient:                   apiClient,
 		ArtifactAllowlistsInterface: NewArtifactAllowlists(databricksClient),
 	}, nil
@@ -136,7 +136,7 @@ func NewArtifactAllowlistsClient(cfg *config.Config) (*ArtifactAllowlistsClient,
 
 type CatalogsClient struct {
 	CatalogsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -162,7 +162,7 @@ func NewCatalogsClient(cfg *config.Config) (*CatalogsClient, error) {
 	}
 
 	return &CatalogsClient{
-		cfg:               cfg,
+		Config:            cfg,
 		apiClient:         apiClient,
 		CatalogsInterface: NewCatalogs(databricksClient),
 	}, nil
@@ -170,7 +170,7 @@ func NewCatalogsClient(cfg *config.Config) (*CatalogsClient, error) {
 
 type ConnectionsClient struct {
 	ConnectionsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -196,7 +196,7 @@ func NewConnectionsClient(cfg *config.Config) (*ConnectionsClient, error) {
 	}
 
 	return &ConnectionsClient{
-		cfg:                  cfg,
+		Config:               cfg,
 		apiClient:            apiClient,
 		ConnectionsInterface: NewConnections(databricksClient),
 	}, nil
@@ -204,7 +204,7 @@ func NewConnectionsClient(cfg *config.Config) (*ConnectionsClient, error) {
 
 type CredentialsClient struct {
 	CredentialsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -230,7 +230,7 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 	}
 
 	return &CredentialsClient{
-		cfg:                  cfg,
+		Config:               cfg,
 		apiClient:            apiClient,
 		CredentialsInterface: NewCredentials(databricksClient),
 	}, nil
@@ -238,7 +238,7 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 
 type ExternalLocationsClient struct {
 	ExternalLocationsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -264,7 +264,7 @@ func NewExternalLocationsClient(cfg *config.Config) (*ExternalLocationsClient, e
 	}
 
 	return &ExternalLocationsClient{
-		cfg:                        cfg,
+		Config:                     cfg,
 		apiClient:                  apiClient,
 		ExternalLocationsInterface: NewExternalLocations(databricksClient),
 	}, nil
@@ -272,7 +272,7 @@ func NewExternalLocationsClient(cfg *config.Config) (*ExternalLocationsClient, e
 
 type FunctionsClient struct {
 	FunctionsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -298,7 +298,7 @@ func NewFunctionsClient(cfg *config.Config) (*FunctionsClient, error) {
 	}
 
 	return &FunctionsClient{
-		cfg:                cfg,
+		Config:             cfg,
 		apiClient:          apiClient,
 		FunctionsInterface: NewFunctions(databricksClient),
 	}, nil
@@ -306,7 +306,7 @@ func NewFunctionsClient(cfg *config.Config) (*FunctionsClient, error) {
 
 type GrantsClient struct {
 	GrantsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -332,7 +332,7 @@ func NewGrantsClient(cfg *config.Config) (*GrantsClient, error) {
 	}
 
 	return &GrantsClient{
-		cfg:             cfg,
+		Config:          cfg,
 		apiClient:       apiClient,
 		GrantsInterface: NewGrants(databricksClient),
 	}, nil
@@ -340,7 +340,7 @@ func NewGrantsClient(cfg *config.Config) (*GrantsClient, error) {
 
 type MetastoresClient struct {
 	MetastoresInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -366,7 +366,7 @@ func NewMetastoresClient(cfg *config.Config) (*MetastoresClient, error) {
 	}
 
 	return &MetastoresClient{
-		cfg:                 cfg,
+		Config:              cfg,
 		apiClient:           apiClient,
 		MetastoresInterface: NewMetastores(databricksClient),
 	}, nil
@@ -374,7 +374,7 @@ func NewMetastoresClient(cfg *config.Config) (*MetastoresClient, error) {
 
 type ModelVersionsClient struct {
 	ModelVersionsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -400,7 +400,7 @@ func NewModelVersionsClient(cfg *config.Config) (*ModelVersionsClient, error) {
 	}
 
 	return &ModelVersionsClient{
-		cfg:                    cfg,
+		Config:                 cfg,
 		apiClient:              apiClient,
 		ModelVersionsInterface: NewModelVersions(databricksClient),
 	}, nil
@@ -408,7 +408,7 @@ func NewModelVersionsClient(cfg *config.Config) (*ModelVersionsClient, error) {
 
 type OnlineTablesClient struct {
 	OnlineTablesInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -434,7 +434,7 @@ func NewOnlineTablesClient(cfg *config.Config) (*OnlineTablesClient, error) {
 	}
 
 	return &OnlineTablesClient{
-		cfg:                   cfg,
+		Config:                cfg,
 		apiClient:             apiClient,
 		OnlineTablesInterface: NewOnlineTables(databricksClient),
 	}, nil
@@ -442,7 +442,7 @@ func NewOnlineTablesClient(cfg *config.Config) (*OnlineTablesClient, error) {
 
 type QualityMonitorsClient struct {
 	QualityMonitorsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -468,7 +468,7 @@ func NewQualityMonitorsClient(cfg *config.Config) (*QualityMonitorsClient, error
 	}
 
 	return &QualityMonitorsClient{
-		cfg:                      cfg,
+		Config:                   cfg,
 		apiClient:                apiClient,
 		QualityMonitorsInterface: NewQualityMonitors(databricksClient),
 	}, nil
@@ -476,7 +476,7 @@ func NewQualityMonitorsClient(cfg *config.Config) (*QualityMonitorsClient, error
 
 type RegisteredModelsClient struct {
 	RegisteredModelsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -502,7 +502,7 @@ func NewRegisteredModelsClient(cfg *config.Config) (*RegisteredModelsClient, err
 	}
 
 	return &RegisteredModelsClient{
-		cfg:                       cfg,
+		Config:                    cfg,
 		apiClient:                 apiClient,
 		RegisteredModelsInterface: NewRegisteredModels(databricksClient),
 	}, nil
@@ -510,7 +510,7 @@ func NewRegisteredModelsClient(cfg *config.Config) (*RegisteredModelsClient, err
 
 type ResourceQuotasClient struct {
 	ResourceQuotasInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -536,7 +536,7 @@ func NewResourceQuotasClient(cfg *config.Config) (*ResourceQuotasClient, error) 
 	}
 
 	return &ResourceQuotasClient{
-		cfg:                     cfg,
+		Config:                  cfg,
 		apiClient:               apiClient,
 		ResourceQuotasInterface: NewResourceQuotas(databricksClient),
 	}, nil
@@ -544,7 +544,7 @@ func NewResourceQuotasClient(cfg *config.Config) (*ResourceQuotasClient, error) 
 
 type SchemasClient struct {
 	SchemasInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -570,7 +570,7 @@ func NewSchemasClient(cfg *config.Config) (*SchemasClient, error) {
 	}
 
 	return &SchemasClient{
-		cfg:              cfg,
+		Config:           cfg,
 		apiClient:        apiClient,
 		SchemasInterface: NewSchemas(databricksClient),
 	}, nil
@@ -578,7 +578,7 @@ func NewSchemasClient(cfg *config.Config) (*SchemasClient, error) {
 
 type StorageCredentialsClient struct {
 	StorageCredentialsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -604,7 +604,7 @@ func NewStorageCredentialsClient(cfg *config.Config) (*StorageCredentialsClient,
 	}
 
 	return &StorageCredentialsClient{
-		cfg:                         cfg,
+		Config:                      cfg,
 		apiClient:                   apiClient,
 		StorageCredentialsInterface: NewStorageCredentials(databricksClient),
 	}, nil
@@ -612,7 +612,7 @@ func NewStorageCredentialsClient(cfg *config.Config) (*StorageCredentialsClient,
 
 type SystemSchemasClient struct {
 	SystemSchemasInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -638,7 +638,7 @@ func NewSystemSchemasClient(cfg *config.Config) (*SystemSchemasClient, error) {
 	}
 
 	return &SystemSchemasClient{
-		cfg:                    cfg,
+		Config:                 cfg,
 		apiClient:              apiClient,
 		SystemSchemasInterface: NewSystemSchemas(databricksClient),
 	}, nil
@@ -646,7 +646,7 @@ func NewSystemSchemasClient(cfg *config.Config) (*SystemSchemasClient, error) {
 
 type TableConstraintsClient struct {
 	TableConstraintsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -672,7 +672,7 @@ func NewTableConstraintsClient(cfg *config.Config) (*TableConstraintsClient, err
 	}
 
 	return &TableConstraintsClient{
-		cfg:                       cfg,
+		Config:                    cfg,
 		apiClient:                 apiClient,
 		TableConstraintsInterface: NewTableConstraints(databricksClient),
 	}, nil
@@ -680,7 +680,7 @@ func NewTableConstraintsClient(cfg *config.Config) (*TableConstraintsClient, err
 
 type TablesClient struct {
 	TablesInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -706,7 +706,7 @@ func NewTablesClient(cfg *config.Config) (*TablesClient, error) {
 	}
 
 	return &TablesClient{
-		cfg:             cfg,
+		Config:          cfg,
 		apiClient:       apiClient,
 		TablesInterface: NewTables(databricksClient),
 	}, nil
@@ -714,7 +714,7 @@ func NewTablesClient(cfg *config.Config) (*TablesClient, error) {
 
 type TemporaryTableCredentialsClient struct {
 	TemporaryTableCredentialsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -740,7 +740,7 @@ func NewTemporaryTableCredentialsClient(cfg *config.Config) (*TemporaryTableCred
 	}
 
 	return &TemporaryTableCredentialsClient{
-		cfg:                                cfg,
+		Config:                             cfg,
 		apiClient:                          apiClient,
 		TemporaryTableCredentialsInterface: NewTemporaryTableCredentials(databricksClient),
 	}, nil
@@ -748,7 +748,7 @@ func NewTemporaryTableCredentialsClient(cfg *config.Config) (*TemporaryTableCred
 
 type VolumesClient struct {
 	VolumesInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -774,7 +774,7 @@ func NewVolumesClient(cfg *config.Config) (*VolumesClient, error) {
 	}
 
 	return &VolumesClient{
-		cfg:              cfg,
+		Config:           cfg,
 		apiClient:        apiClient,
 		VolumesInterface: NewVolumes(databricksClient),
 	}, nil
@@ -782,7 +782,7 @@ func NewVolumesClient(cfg *config.Config) (*VolumesClient, error) {
 
 type WorkspaceBindingsClient struct {
 	WorkspaceBindingsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -808,7 +808,7 @@ func NewWorkspaceBindingsClient(cfg *config.Config) (*WorkspaceBindingsClient, e
 	}
 
 	return &WorkspaceBindingsClient{
-		cfg:                        cfg,
+		Config:                     cfg,
 		apiClient:                  apiClient,
 		WorkspaceBindingsInterface: NewWorkspaceBindings(databricksClient),
 	}, nil

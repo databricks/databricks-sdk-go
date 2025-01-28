@@ -12,7 +12,7 @@ import (
 type BillableUsageClient struct {
 	BillableUsageInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
@@ -34,7 +34,7 @@ func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
 	}
 
 	return &BillableUsageClient{
-		cfg:                    cfg,
+		Config:                 cfg,
 		BillableUsageInterface: NewBillableUsage(apiClient),
 	}, nil
 }
@@ -42,7 +42,7 @@ func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
 type BudgetsClient struct {
 	BudgetsInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
@@ -64,7 +64,7 @@ func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
 	}
 
 	return &BudgetsClient{
-		cfg:              cfg,
+		Config:           cfg,
 		BudgetsInterface: NewBudgets(apiClient),
 	}, nil
 }
@@ -72,7 +72,7 @@ func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
 type LogDeliveryClient struct {
 	LogDeliveryInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
@@ -94,7 +94,7 @@ func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
 	}
 
 	return &LogDeliveryClient{
-		cfg:                  cfg,
+		Config:               cfg,
 		LogDeliveryInterface: NewLogDelivery(apiClient),
 	}, nil
 }
@@ -102,7 +102,7 @@ func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
 type UsageDashboardsClient struct {
 	UsageDashboardsInterface
 
-	cfg *config.Config
+	Config *config.Config
 }
 
 func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error) {
@@ -124,7 +124,7 @@ func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error
 	}
 
 	return &UsageDashboardsClient{
-		cfg:                      cfg,
+		Config:                   cfg,
 		UsageDashboardsInterface: NewUsageDashboards(apiClient),
 	}, nil
 }

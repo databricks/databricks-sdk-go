@@ -12,7 +12,7 @@ import (
 
 type ProvidersClient struct {
 	ProvidersInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -38,7 +38,7 @@ func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
 	}
 
 	return &ProvidersClient{
-		cfg:                cfg,
+		Config:             cfg,
 		apiClient:          apiClient,
 		ProvidersInterface: NewProviders(databricksClient),
 	}, nil
@@ -46,7 +46,7 @@ func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
 
 type RecipientActivationClient struct {
 	RecipientActivationInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -72,7 +72,7 @@ func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClien
 	}
 
 	return &RecipientActivationClient{
-		cfg:                          cfg,
+		Config:                       cfg,
 		apiClient:                    apiClient,
 		RecipientActivationInterface: NewRecipientActivation(databricksClient),
 	}, nil
@@ -80,7 +80,7 @@ func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClien
 
 type RecipientsClient struct {
 	RecipientsInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -106,7 +106,7 @@ func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
 	}
 
 	return &RecipientsClient{
-		cfg:                 cfg,
+		Config:              cfg,
 		apiClient:           apiClient,
 		RecipientsInterface: NewRecipients(databricksClient),
 	}, nil
@@ -114,7 +114,7 @@ func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
 
 type SharesClient struct {
 	SharesInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -140,7 +140,7 @@ func NewSharesClient(cfg *config.Config) (*SharesClient, error) {
 	}
 
 	return &SharesClient{
-		cfg:             cfg,
+		Config:          cfg,
 		apiClient:       apiClient,
 		SharesInterface: NewShares(databricksClient),
 	}, nil

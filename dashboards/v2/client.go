@@ -12,7 +12,7 @@ import (
 
 type GenieClient struct {
 	GenieInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -38,7 +38,7 @@ func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
 	}
 
 	return &GenieClient{
-		cfg:            cfg,
+		Config:         cfg,
 		apiClient:      apiClient,
 		GenieInterface: NewGenie(databricksClient),
 	}, nil
@@ -46,7 +46,7 @@ func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
 
 type LakeviewClient struct {
 	LakeviewInterface
-	cfg       *config.Config
+	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -72,7 +72,7 @@ func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
 	}
 
 	return &LakeviewClient{
-		cfg:               cfg,
+		Config:            cfg,
 		apiClient:         apiClient,
 		LakeviewInterface: NewLakeview(databricksClient),
 	}, nil
