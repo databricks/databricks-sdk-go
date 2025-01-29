@@ -23,8 +23,7 @@ const hexCharset = "0123456789abcdef"
 
 func init() {
 	databricks.WithProduct("integration-tests", databricks.Version())
-	logger := log.New(log.LevelDebug) // drops trace and debug logs
-	log.SetDefaultLogger(logger)
+	log.SetDefaultLogger(log.New(log.LevelDebug))
 }
 
 // prelude for all workspace-level tests
