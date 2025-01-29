@@ -99,6 +99,7 @@ func TestAccAzureErrorMappingForUnauthenticated(t *testing.T) {
 		AzureClientSecret: "invalid-for-integration-tests",
 		AzureResourceID:   "/a/b/c",
 	})
+	require.NoError(t, err)
 	_, err = ClustersAPI.SparkVersions(ctx)
 	require.ErrorIs(t, err, apierr.ErrUnauthenticated)
 }
