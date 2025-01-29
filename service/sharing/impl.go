@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"golang.org/x/exp/slices"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
@@ -253,8 +254,12 @@ func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateShareP
 	var updatePermissionsResponse UpdatePermissionsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
 	queryParams := make(map[string]any)
-	queryParams["max_results"] = request.MaxResults
-	queryParams["page_token"] = request.PageToken
+	if request.MaxResults != 0 || slices.Contains(request.ForceSendFields, "MaxResults") {
+		queryParams["max_results"] = request.MaxResults
+	}
+	if request.PageToken != "" || slices.Contains(request.ForceSendFields, "PageToken") {
+		queryParams["page_token"] = request.PageToken
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
