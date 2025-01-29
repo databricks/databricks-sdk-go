@@ -1,8 +1,6 @@
 module github.com/databricks/databricks-sdk-go/integration
 
-go 1.22.0
-
-toolchain go1.23.3
+go 1.18
 
 replace github.com/databricks/databricks-sdk-go/databricks => ../databricks
 
@@ -86,7 +84,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.24.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225 // indirect
-	golang.org/x/mod v0.22.0 // indirect
+	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/oauth2 v0.25.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
