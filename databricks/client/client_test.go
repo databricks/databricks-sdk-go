@@ -15,7 +15,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/databricks/env"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
-	"github.com/databricks/databricks-sdk-go/version"
+	"github.com/databricks/databricks-sdk-go/databricks/version"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

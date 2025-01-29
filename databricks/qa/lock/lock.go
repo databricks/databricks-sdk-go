@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/qa/lock/core"
-	"github.com/databricks/databricks-sdk-go/databricks/qa/lock/databricks"
 	"github.com/google/uuid"
 )
 
@@ -35,7 +34,8 @@ func Acquire(ctx context.Context, lockable core.Lockable, os ...LockOption) (*Lo
 		o(&opts)
 	}
 	if opts.Backend == nil {
-		opts.Backend = &databricks.Backend{}
+		// opts.Backend = &databricks.Backend{}
+		return nil, errors.New("backend not provided")
 	}
 	if opts.LeaseDuration == 0 {
 		opts.LeaseDuration = time.Minute

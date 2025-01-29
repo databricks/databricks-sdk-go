@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/version"
+	"github.com/databricks/databricks-sdk-go/databricks/version"
 	"github.com/stretchr/testify/assert"
 )
 
