@@ -38,6 +38,10 @@ type CreateCustomAppIntegration struct {
 	Scopes []string `json:"scopes,omitempty"`
 	// Token access policy
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+	// Scopes that will need to be consented by end user to mint the access
+	// token. If the user does not authorize the access token will not be
+	// minted. Must be a subset of scopes.
+	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -256,6 +260,10 @@ type GetCustomAppIntegrationOutput struct {
 	Scopes []string `json:"scopes,omitempty"`
 	// Token access policy
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+	// Scopes that will need to be consented by end user to mint the access
+	// token. If the user does not authorize the access token will not be
+	// minted. Must be a subset of scopes.
+	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -655,6 +663,10 @@ type UpdateCustomAppIntegration struct {
 	Scopes []string `json:"scopes,omitempty"`
 	// Token access policy to be updated in the custom OAuth app integration
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+	// Scopes that will need to be consented by end user to mint the access
+	// token. If the user does not authorize the access token will not be
+	// minted. Must be a subset of scopes.
+	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
 }
 
 type UpdateCustomAppIntegrationOutput struct {

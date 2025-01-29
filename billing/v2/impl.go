@@ -24,6 +24,58 @@ func (a *billableUsageImpl) Download(ctx context.Context, request DownloadReques
 	return &downloadResponse, err
 }
 
+// unexported type that holds implementations of just BudgetPolicy API methods
+type budgetPolicyImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolicyRequest) (*BudgetPolicy, error) {
+	var budgetPolicy BudgetPolicy
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &budgetPolicy)
+	return &budgetPolicy, err
+}
+
+func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolicyRequest) error {
+	var deleteResponse DeleteResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteResponse)
+	return err
+}
+
+func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyRequest) (*BudgetPolicy, error) {
+	var budgetPolicy BudgetPolicy
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &budgetPolicy)
+	return &budgetPolicy, err
+}
+
+func (a *budgetPolicyImpl) List(ctx context.Context, request ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error) {
+	var listBudgetPoliciesResponse ListBudgetPoliciesResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listBudgetPoliciesResponse)
+	return &listBudgetPoliciesResponse, err
+}
+
+func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolicyRequest) (*BudgetPolicy, error) {
+	var budgetPolicy BudgetPolicy
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request.Policy, &budgetPolicy)
+	return &budgetPolicy, err
+}
+
 // unexported type that holds implementations of just Budgets API methods
 type budgetsImpl struct {
 	client *client.DatabricksClient

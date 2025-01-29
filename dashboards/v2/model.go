@@ -1019,6 +1019,8 @@ type QueryAttachment struct {
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// AI generated SQL query
 	Query string `json:"query,omitempty"`
+
+	StatementId string `json:"statement_id,omitempty"`
 	// Name of the query
 	Title string `json:"title,omitempty"`
 

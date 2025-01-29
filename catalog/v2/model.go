@@ -5361,6 +5361,8 @@ type UpdateCatalog struct {
 	Name string `json:"-" url:"-"`
 	// New name for the catalog.
 	NewName string `json:"new_name,omitempty"`
+	// A map of key-value properties attached to the securable.
+	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of catalog.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.

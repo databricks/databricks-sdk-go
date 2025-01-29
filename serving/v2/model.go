@@ -845,23 +845,6 @@ func (f *ExternalFunctionRequestHttpMethod) Type() string {
 	return "ExternalFunctionRequestHttpMethod"
 }
 
-type ExternalFunctionResponse struct {
-	// The HTTP status code of the response
-	StatusCode int `json:"status_code,omitempty"`
-	// The content of the response
-	Text string `json:"text,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ExternalFunctionResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ExternalFunctionResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type ExternalModel struct {
 	// AI21Labs Config. Only required if the provider is 'ai21labs'.
 	Ai21labsConfig *Ai21LabsConfig `json:"ai21labs_config,omitempty"`
@@ -1047,6 +1030,10 @@ func (s *GoogleCloudVertexAiConfig) UnmarshalJSON(b []byte) error {
 
 func (s GoogleCloudVertexAiConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type HttpRequestResponse struct {
+	Contents io.ReadCloser `json:"-"`
 }
 
 type ListEndpointsResponse struct {
