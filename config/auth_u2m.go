@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
-	"github.com/databricks/databricks-sdk-go/credentials/cache"
-	"github.com/databricks/databricks-sdk-go/credentials/oauth"
+	"github.com/databricks/databricks-sdk-go/credentials/u2m"
+	"github.com/databricks/databricks-sdk-go/credentials/u2m/cache"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -27,18 +27,18 @@ import (
 type u2mCredentials struct {
 	// auth is the persistent auth object to use. If not specified, a new one will
 	// be created, using the default cache and locker.
-	auth *oauth.PersistentAuth
+	auth *u2m.PersistentAuth
 
 	// getOAuthArg is a function that returns the OAuth argument to use for
 	// loading the OAuth session token. If not specified, the OAuth argument is
 	// determined by the account host and account ID or workspace host in the
 	// Config.
-	getOAuthArg func(context.Context, *Config) (oauth.OAuthArgument, error)
+	getOAuthArg func(context.Context, *Config) (u2m.OAuthArgument, error)
 
 	// errorHandler controls the behavior of Configure() when loading the OAuth
 	// token fails. If not specified, any error will cause Configure() to return
 	// said error.
-	errorHandler func(context.Context, *Config, oauth.OAuthArgument, error) error
+	errorHandler func(context.Context, *Config, u2m.OAuthArgument, error) error
 
 	name string
 }
@@ -58,14 +58,14 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	}
 	if u.auth == nil {
 		var err error
-		u.auth, err = oauth.NewPersistentAuth(ctx)
+		u.auth, err = u2m.NewPersistentAuth(ctx)
 		if err != nil {
 			logger.Debugf(ctx, "failed to create persistent auth: %v, continuing", err)
 			return nil, nil
 		}
 	}
 
-	var arg oauth.OAuthArgument
+	var arg u2m.OAuthArgument
 	var err error
 	if u.getOAuthArg != nil {
 		arg, err = u.getOAuthArg(ctx, cfg)
@@ -95,7 +95,7 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	return credentials.NewCredentialsProvider(visitor), nil
 }
 
-func (u u2mCredentials) makeVisitor(arg oauth.OAuthArgument) func(*http.Request) error {
+func (u u2mCredentials) makeVisitor(arg u2m.OAuthArgument) func(*http.Request) error {
 	return func(r *http.Request) error {
 		token, err := u.auth.Load(r.Context(), arg)
 		if err != nil {
@@ -106,11 +106,11 @@ func (u u2mCredentials) makeVisitor(arg oauth.OAuthArgument) func(*http.Request)
 	}
 }
 
-func defaultGetOAuthArg(_ context.Context, cfg *Config) (oauth.OAuthArgument, error) {
+func defaultGetOAuthArg(_ context.Context, cfg *Config) (u2m.OAuthArgument, error) {
 	if cfg.IsAccountClient() {
-		return oauth.NewBasicAccountOAuthArgument(cfg.Host, cfg.AccountID)
+		return u2m.NewBasicAccountOAuthArgument(cfg.Host, cfg.AccountID)
 	}
-	return oauth.NewBasicWorkspaceOAuthArgument(cfg.Host)
+	return u2m.NewBasicWorkspaceOAuthArgument(cfg.Host)
 }
 
 var _ CredentialsStrategy = u2mCredentials{}
@@ -136,7 +136,7 @@ func (e *CliInvalidRefreshTokenError) Unwrap() error {
 // buildLoginCommand returns the `databricks auth login` command that the user
 // can run to reauthenticate. The command is prepopulated with the profile, host
 // and/or account ID.
-func buildLoginCommand(profile string, arg oauth.OAuthArgument) string {
+func buildLoginCommand(profile string, arg u2m.OAuthArgument) string {
 	cmd := []string{
 		"databricks",
 		"auth",
@@ -146,9 +146,9 @@ func buildLoginCommand(profile string, arg oauth.OAuthArgument) string {
 		cmd = append(cmd, "--profile", profile)
 	} else {
 		switch arg := arg.(type) {
-		case oauth.AccountOAuthArgument:
+		case u2m.AccountOAuthArgument:
 			cmd = append(cmd, "--host", arg.GetAccountHost(), "--account-id", arg.GetAccountId())
-		case oauth.WorkspaceOAuthArgument:
+		case u2m.WorkspaceOAuthArgument:
 			cmd = append(cmd, "--host", arg.GetWorkspaceHost())
 		}
 	}
@@ -159,7 +159,7 @@ func buildLoginCommand(profile string, arg oauth.OAuthArgument) string {
 // of the earlier `databricks-cli` credentials strategy which invoked the
 // `databricks auth token` command.
 var DatabricksCliCredentials = u2mCredentials{
-	errorHandler: func(ctx context.Context, cfg *Config, arg oauth.OAuthArgument, err error) error {
+	errorHandler: func(ctx context.Context, cfg *Config, arg u2m.OAuthArgument, err error) error {
 		// If the current OAuth argument doesn't have a corresponding session
 		// token, fall back to the next credentials strategy.
 		if errors.Is(err, cache.ErrNotConfigured) {
@@ -169,7 +169,7 @@ var DatabricksCliCredentials = u2mCredentials{
 		// return a special error message for invalid refresh tokens. To help
 		// users easily reauthenticate, include a command that the user can
 		// run, prepopulating the profile, host and/or account ID.
-		target := &oauth.InvalidRefreshTokenError{}
+		target := &u2m.InvalidRefreshTokenError{}
 		if errors.As(err, &target) {
 			return &CliInvalidRefreshTokenError{
 				loginCommand: buildLoginCommand(cfg.Profile, arg),

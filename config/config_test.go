@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/credentials/oauth"
+	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -76,7 +76,7 @@ func TestConfig_getOidcEndpoints_account(t *testing.T) {
 	}
 	got, err := c.getOidcEndpoints(context.Background())
 	assert.NoError(t, err)
-	assert.Equal(t, &oauth.OAuthAuthorizationServer{
+	assert.Equal(t, &u2m.OAuthAuthorizationServer{
 		AuthorizationEndpoint: "https://accounts.cloud.databricks.com/oidc/accounts/abc/v1/authorize",
 		TokenEndpoint:         "https://accounts.cloud.databricks.com/oidc/accounts/abc/v1/token",
 	}, got)
@@ -96,7 +96,7 @@ func TestConfig_getOidcEndpoints_workspace(t *testing.T) {
 	}
 	got, err := c.getOidcEndpoints(context.Background())
 	assert.NoError(t, err)
-	assert.Equal(t, &oauth.OAuthAuthorizationServer{
+	assert.Equal(t, &u2m.OAuthAuthorizationServer{
 		AuthorizationEndpoint: "https://myworkspace.cloud.databricks.com/oidc/v1/authorize",
 		TokenEndpoint:         "https://myworkspace.cloud.databricks.com/oidc/v1/token",
 	}, got)

@@ -24,11 +24,12 @@ type OAuthClient interface {
 
 // BasicOAuthClient is an implementation of the OAuthClient interface.
 type BasicOAuthClient struct {
-	client *httpclient.ApiClient
+	// Client is the ApiClient to use for making HTTP requests.
+	Client *httpclient.ApiClient
 }
 
 func (c *BasicOAuthClient) GetHttpClient(_ context.Context) *http.Client {
-	return c.client.ToHttpClient()
+	return c.Client.ToHttpClient()
 }
 
 // GetWorkspaceOAuthEndpoints returns the OAuth endpoints for the given workspace.
@@ -37,7 +38,7 @@ func (c *BasicOAuthClient) GetHttpClient(_ context.Context) *http.Client {
 func (c *BasicOAuthClient) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*OAuthAuthorizationServer, error) {
 	oidc := fmt.Sprintf("%s/oidc/.well-known/oauth-authorization-server", workspaceHost)
 	var oauthEndpoints OAuthAuthorizationServer
-	if err := c.client.Do(ctx, "GET", oidc, httpclient.WithResponseUnmarshal(&oauthEndpoints)); err != nil {
+	if err := c.Client.Do(ctx, "GET", oidc, httpclient.WithResponseUnmarshal(&oauthEndpoints)); err != nil {
 		return nil, ErrOAuthNotSupported
 	}
 	return &oauthEndpoints, nil

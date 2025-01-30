@@ -14,7 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
-	"github.com/databricks/databricks-sdk-go/credentials/oauth"
+	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -204,7 +204,7 @@ func (c *Config) NewWithWorkspaceHost(host string) (*Config, error) {
 	// vice-versa.
 	//
 	// In the future, when unified login is widely available, we may be able to
-	// reuse the authentication visitor specifically for in-house OAuth.
+	// reuse the authentication visitor specifically for in-house u2m.
 	return res, nil
 }
 
@@ -437,10 +437,13 @@ func (c *Config) refreshTokenErrorMapper(ctx context.Context, resp common.Respon
 }
 
 // getOidcEndpoints returns the OAuth endpoints for the current configuration.
-func (c *Config) getOidcEndpoints(ctx context.Context) (*oauth.OAuthAuthorizationServer, error) {
+func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
 	c.EnsureResolved()
-	if c.IsAccountClient() {
-		return oauth.GetAccountOAuthEndpoints(ctx, c.Host, c.AccountID)
+	oauthClient := &u2m.BasicOAuthClient{
+		Client: c.refreshClient,
 	}
-	return oauth.GetWorkspaceOAuthEndpoints(ctx, c.refreshClient, c.Host)
+	if c.IsAccountClient() {
+		return oauthClient.GetAccountOAuthEndpoints(ctx, c.Host, c.AccountID)
+	}
+	return oauthClient.GetWorkspaceOAuthEndpoints(ctx, c.Host)
 }

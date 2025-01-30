@@ -37,10 +37,6 @@ const (
 	//   }
 	// }
 	tokenCacheVersion = 1
-
-	// lockFilePath is the path of the lock file used to prevent concurrent
-	// reads and writes to the token cache file.
-	lockFilePath = ".databricks/token-cache.lock"
 )
 
 // The format of the token cache file.
@@ -156,15 +152,7 @@ func (c *fileTokenCache) init() error {
 		}
 	}
 	// Initialize the locker.
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return fmt.Errorf("home: %w", err)
-	}
-
-	c.locker, err = newLocker(filepath.Join(home, lockFilePath))
-	if err != nil {
-		return fmt.Errorf("locker: %w", err)
-	}
+	c.locker = &sync.Mutex{}
 	return nil
 }
 

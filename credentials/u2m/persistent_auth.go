@@ -81,7 +81,7 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 	}
 	if p.client == nil {
 		p.client = &BasicOAuthClient{
-			client: httpclient.NewApiClient(httpclient.ClientConfig{}),
+			Client: httpclient.NewApiClient(httpclient.ClientConfig{}),
 		}
 	}
 	if p.cache == nil {

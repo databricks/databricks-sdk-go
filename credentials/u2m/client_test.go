@@ -29,7 +29,7 @@ func TestGetWorkspaceOAuthEndpoints(t *testing.T) {
 			},
 		},
 	})
-	c := &BasicOAuthClient{client: p}
+	c := &BasicOAuthClient{Client: p}
 	endpoints, err := c.GetWorkspaceOAuthEndpoints(context.Background(), "https://abc")
 	assert.NoError(t, err)
 	assert.Equal(t, "a", endpoints.AuthorizationEndpoint)
