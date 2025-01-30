@@ -107,7 +107,9 @@ func TestU2MCredentials(t *testing.T) {
 					u2m.WithOAuthArgument(must(u2m.NewBasicWorkspaceOAuthArgument("https://myworkspace.cloud.databricks.com"))),
 				),
 			),
-			expectErr: "oidc: token refresh: oauth2: \"invalid_refresh_token\" \"Refresh token is invalid\"",
+			expectErr: `a new access token could not be retrieved because the refresh token is invalid. If using the CLI, run the following command to reauthenticate:
+
+  $ databricks auth login --host https://myworkspace.cloud.databricks.com`,
 		},
 	}
 
