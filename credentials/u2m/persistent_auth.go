@@ -1,4 +1,4 @@
-package oauth
+package u2m
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/credentials/cache"
+	cache "github.com/databricks/databricks-sdk-go/credentials/u2m/cache"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/retries"
@@ -21,13 +21,14 @@ import (
 )
 
 const (
-	// these values are predefined by Databricks as a public client
-	// and is specific to this application only. Using these values
-	// for other applications is not allowed.
-	appClientID     = "databricks-cli"
+	// appClientId is the default client ID used by the SDK for U2M OAuth.
+	appClientID = "databricks-cli"
+
+	// appRedirectAddr is the default address for the OAuth2 callback server.
 	appRedirectAddr = "localhost:8020"
 
-	// maximum amount of time to acquire listener on appRedirectAddr
+	// listenerTimeout is the maximum amount of time to acquire listener on
+	// appRedirectAddr.
 	listenerTimeout = 45 * time.Second
 )
 
@@ -102,7 +103,6 @@ func (a *PersistentAuth) Load(ctx context.Context, arg OAuthArgument) (t *oauth2
 	if err := a.validateArg(arg); err != nil {
 		return nil, err
 	}
-	// TODO: remove this listener after several releases.
 	err = a.startListener(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("starting listener: %w", err)

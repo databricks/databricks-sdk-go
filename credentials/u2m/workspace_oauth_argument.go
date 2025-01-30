@@ -1,4 +1,4 @@
-package oauth
+package u2m
 
 import (
 	"fmt"

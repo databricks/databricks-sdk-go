@@ -1,4 +1,4 @@
-package oauth
+package u2m
 
 // OAuthArgument is an interface that provides the necessary information to
 // authenticate with PersistentAuth. Implementations of this interface must

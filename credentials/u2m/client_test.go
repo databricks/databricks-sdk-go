@@ -1,4 +1,4 @@
-package oauth
+package u2m
 
 import (
 	"context"
@@ -9,8 +9,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetAccountOAuthEndpoints(t *testing.T) {
-	s, err := GetAccountOAuthEndpoints(context.Background(), "https://abc", "xyz")
+func TestBasicOAuthClient_GetAccountOAuthEndpoints(t *testing.T) {
+	c := &BasicOAuthClient{}
+	s, err := c.GetAccountOAuthEndpoints(context.Background(), "https://abc", "xyz")
 	assert.NoError(t, err)
 	assert.Equal(t, "https://abc/oidc/accounts/xyz/v1/authorize", s.AuthorizationEndpoint)
 	assert.Equal(t, "https://abc/oidc/accounts/xyz/v1/token", s.TokenEndpoint)
@@ -28,7 +29,8 @@ func TestGetWorkspaceOAuthEndpoints(t *testing.T) {
 			},
 		},
 	})
-	endpoints, err := GetWorkspaceOAuthEndpoints(context.Background(), p, "https://abc")
+	c := &BasicOAuthClient{client: p}
+	endpoints, err := c.GetWorkspaceOAuthEndpoints(context.Background(), "https://abc")
 	assert.NoError(t, err)
 	assert.Equal(t, "a", endpoints.AuthorizationEndpoint)
 	assert.Equal(t, "b", endpoints.TokenEndpoint)

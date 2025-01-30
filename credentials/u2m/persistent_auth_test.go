@@ -1,4 +1,4 @@
-package oauth_test
+package u2m_test
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/credentials/oauth"
+	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -44,10 +44,10 @@ func TestLoad(t *testing.T) {
 			}, nil
 		},
 	}
-	p, err := oauth.NewPersistentAuth(context.Background(), oauth.WithTokenCache(cache))
+	p, err := u2m.NewPersistentAuth(context.Background(), u2m.WithTokenCache(cache))
 	require.NoError(t, err)
 	defer p.Close()
-	arg, err := oauth.NewBasicAccountOAuthArgument("https://abc", "xyz")
+	arg, err := u2m.NewBasicAccountOAuthArgument("https://abc", "xyz")
 	assert.NoError(t, err)
 	tok, err := p.Load(context.Background(), arg)
 	assert.NoError(t, err)
@@ -65,15 +65,15 @@ func (m MockOAuthClient) GetHttpClient(_ context.Context) *http.Client {
 	}
 }
 
-func (m MockOAuthClient) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*oauth.OAuthAuthorizationServer, error) {
-	return &oauth.OAuthAuthorizationServer{
+func (m MockOAuthClient) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*u2m.OAuthAuthorizationServer, error) {
+	return &u2m.OAuthAuthorizationServer{
 		AuthorizationEndpoint: fmt.Sprintf("%s/oidc/accounts/%s/v1/authorize", accountHost, accountId),
 		TokenEndpoint:         fmt.Sprintf("%s/oidc/accounts/%s/v1/token", accountHost, accountId),
 	}, nil
 }
 
-func (m MockOAuthClient) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*oauth.OAuthAuthorizationServer, error) {
-	return &oauth.OAuthAuthorizationServer{
+func (m MockOAuthClient) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*u2m.OAuthAuthorizationServer, error) {
+	return &u2m.OAuthAuthorizationServer{
 		AuthorizationEndpoint: fmt.Sprintf("%s/oidc/v1/authorize", workspaceHost),
 		TokenEndpoint:         fmt.Sprintf("%s/oidc/v1/token", workspaceHost),
 	}, nil
@@ -97,10 +97,10 @@ func TestLoadRefresh(t *testing.T) {
 			return nil
 		},
 	}
-	p, err := oauth.NewPersistentAuth(
+	p, err := u2m.NewPersistentAuth(
 		context.Background(),
-		oauth.WithTokenCache(cache),
-		oauth.WithOAuthClient(&MockOAuthClient{
+		u2m.WithTokenCache(cache),
+		u2m.WithOAuthClient(&MockOAuthClient{
 			Transport: fixtures.SliceTransport{
 				{
 					Method:   "POST",
@@ -115,7 +115,7 @@ func TestLoadRefresh(t *testing.T) {
 	)
 	require.NoError(t, err)
 	defer p.Close()
-	arg, err := oauth.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	arg, err := u2m.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
 	assert.NoError(t, err)
 	tok, err := p.Load(ctx, arg)
 	assert.NoError(t, err)
@@ -146,11 +146,11 @@ func TestChallenge(t *testing.T) {
 			return nil
 		},
 	}
-	p, err := oauth.NewPersistentAuth(
+	p, err := u2m.NewPersistentAuth(
 		context.Background(),
-		oauth.WithTokenCache(cache),
-		oauth.WithBrowser(browser),
-		oauth.WithOAuthClient(&MockOAuthClient{
+		u2m.WithTokenCache(cache),
+		u2m.WithBrowser(browser),
+		u2m.WithOAuthClient(&MockOAuthClient{
 			Transport: fixtures.SliceTransport{
 				{
 					Method:   "POST",
@@ -165,7 +165,7 @@ func TestChallenge(t *testing.T) {
 	)
 	require.NoError(t, err)
 	defer p.Close()
-	arg, err := oauth.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	arg, err := u2m.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
 	assert.NoError(t, err)
 
 	tokenc := make(chan *oauth2.Token)
@@ -203,10 +203,10 @@ func TestChallengeFailed(t *testing.T) {
 		browserOpened <- query.Get("state")
 		return nil
 	}
-	p, err := oauth.NewPersistentAuth(context.Background(), oauth.WithBrowser(browser))
+	p, err := u2m.NewPersistentAuth(context.Background(), u2m.WithBrowser(browser))
 	require.NoError(t, err)
 	defer p.Close()
-	arg, err := oauth.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	arg, err := u2m.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
 	assert.NoError(t, err)
 
 	tokenc := make(chan *oauth2.Token)
