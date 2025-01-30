@@ -253,10 +253,10 @@ func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateShareP
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
 	queryParams := make(map[string]any)
 	if request.MaxResults != 0 || slices.Contains(request.ForceSendFields, "MaxResults") {
-		queryParams["{max_results}"] = request.MaxResults
+		queryParams["max_results"] = request.MaxResults
 	}
 	if request.PageToken != "" || slices.Contains(request.ForceSendFields, "PageToken") {
-		queryParams["{page_token}"] = request.PageToken
+		queryParams["page_token"] = request.PageToken
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

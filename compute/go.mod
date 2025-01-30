@@ -7,8 +7,8 @@ replace github.com/databricks/databricks-sdk-go/databricks => ../databricks
 require (
 	github.com/databricks/databricks-sdk-go/databricks v0.0.0-00010101000000-000000000000
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/exp v0.0.0-20250128182459-e0ece0dbea4c
-	golang.org/x/mod v0.22.0
+	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225
+	golang.org/x/mod v0.17.0
 	golang.org/x/oauth2 v0.25.0
 )
 
