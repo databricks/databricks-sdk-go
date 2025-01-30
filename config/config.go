@@ -447,3 +447,10 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 	}
 	return oauthClient.GetWorkspaceOAuthEndpoints(ctx, c.Host)
 }
+
+func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
+	if c.IsAccountClient() {
+		return u2m.NewBasicAccountOAuthArgument(c.Host, c.AccountID)
+	}
+	return u2m.NewBasicWorkspaceOAuthArgument(c.Host)
+}
