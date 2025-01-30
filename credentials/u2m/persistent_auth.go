@@ -343,3 +343,5 @@ func (a *PersistentAuth) randomString(size int) (string, error) {
 func (a *PersistentAuth) setOAuthContext(ctx context.Context) context.Context {
 	return context.WithValue(ctx, oauth2.HTTPClient, a.client.GetHttpClient(ctx))
 }
+
+var _ oauth2.TokenSource = (*PersistentAuth)(nil)

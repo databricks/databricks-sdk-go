@@ -39,7 +39,7 @@ const (
 	tokenCacheVersion = 1
 )
 
-// The format of the token cache file.
+// tokenCacheFile is the format of the token cache file.
 type tokenCacheFile struct {
 	Version int                      `json:"version"`
 	Tokens  map[string]*oauth2.Token `json:"tokens"`

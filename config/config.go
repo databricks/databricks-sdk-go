@@ -204,7 +204,7 @@ func (c *Config) NewWithWorkspaceHost(host string) (*Config, error) {
 	// vice-versa.
 	//
 	// In the future, when unified login is widely available, we may be able to
-	// reuse the authentication visitor specifically for in-house u2m.
+	// reuse the authentication visitor specifically for in-house OAuth.
 	return res, nil
 }
 
