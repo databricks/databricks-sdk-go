@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/credentials/u2m/cache"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
+	"github.com/databricks/databricks-sdk-go/credentials/u2m/cache"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
@@ -35,11 +35,18 @@ func (m MockOAuthClient) GetWorkspaceOAuthEndpoints(ctx context.Context, workspa
 	return m.GetWorkspaceOAuthEndpointsFn(ctx, workspaceHost)
 }
 
+func must[T any](c T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+	return c
+}
+
 func TestU2MCredentials(t *testing.T) {
 	tests := []struct {
 		name       string
 		cfg        *Config
-		auth       func() (*u2m.PersistentAuth, error)
+		auth       *u2m.PersistentAuth
 		expectErr  string
 		expectAuth string
 	}{
@@ -48,8 +55,8 @@ func TestU2MCredentials(t *testing.T) {
 			cfg: &Config{
 				Host: "https://myworkspace.cloud.databricks.com",
 			},
-			auth: func() (*u2m.PersistentAuth, error) {
-				return u2m.NewPersistentAuth(
+			auth: must(
+				u2m.NewPersistentAuth(
 					context.Background(),
 					u2m.WithTokenCache(&InMemoryTokenCache{
 						Tokens: map[string]*oauth2.Token{
@@ -58,8 +65,10 @@ func TestU2MCredentials(t *testing.T) {
 								Expiry:      time.Now().Add(1 * time.Hour),
 							},
 						},
-					}))
-			},
+					}),
+					u2m.WithOAuthArgument(must(u2m.NewBasicWorkspaceOAuthArgument("https://myworkspace.cloud.databricks.com"))),
+				),
+			),
 			expectAuth: "Bearer dummy_access_token",
 		},
 		{
@@ -67,8 +76,8 @@ func TestU2MCredentials(t *testing.T) {
 			cfg: &Config{
 				Host: "https://myworkspace.cloud.databricks.com",
 			},
-			auth: func() (*u2m.PersistentAuth, error) {
-				return u2m.NewPersistentAuth(
+			auth: must(
+				u2m.NewPersistentAuth(
 					context.Background(),
 					u2m.WithTokenCache(&InMemoryTokenCache{
 						Tokens: map[string]*oauth2.Token{
@@ -95,8 +104,9 @@ func TestU2MCredentials(t *testing.T) {
 							}, nil
 						},
 					}),
-				)
-			},
+					u2m.WithOAuthArgument(must(u2m.NewBasicWorkspaceOAuthArgument("https://myworkspace.cloud.databricks.com"))),
+				),
+			),
 			expectErr: "oidc: token refresh: oauth2: \"invalid_refresh_token\" \"Refresh token is invalid\"",
 		},
 	}
@@ -104,10 +114,8 @@ func TestU2MCredentials(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := context.Background()
-			auth, err := tt.auth()
-			require.NoError(t, err)
 			strat := u2mCredentials{
-				auth: auth,
+				auth: tt.auth,
 			}
 			provider, err := strat.Configure(ctx, tt.cfg)
 			if tt.expectErr != "" {
