@@ -44,12 +44,12 @@ func TestLoad(t *testing.T) {
 			}, nil
 		},
 	}
-	p, err := u2m.NewPersistentAuth(context.Background(), u2m.WithTokenCache(cache))
-	require.NoError(t, err)
-	defer p.Close()
 	arg, err := u2m.NewBasicAccountOAuthArgument("https://abc", "xyz")
 	assert.NoError(t, err)
-	tok, err := p.Load(context.Background(), arg)
+	p, err := u2m.NewPersistentAuth(context.Background(), u2m.WithTokenCache(cache), u2m.WithOAuthArgument(arg))
+	require.NoError(t, err)
+	defer p.Close()
+	tok, err := p.Token()
 	assert.NoError(t, err)
 	assert.Equal(t, "bcd", tok.AccessToken)
 	assert.Equal(t, "", tok.RefreshToken)
@@ -97,8 +97,10 @@ func TestLoadRefresh(t *testing.T) {
 			return nil
 		},
 	}
+	arg, err := u2m.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	assert.NoError(t, err)
 	p, err := u2m.NewPersistentAuth(
-		context.Background(),
+		ctx,
 		u2m.WithTokenCache(cache),
 		u2m.WithOAuthClient(&MockOAuthClient{
 			Transport: fixtures.SliceTransport{
@@ -112,12 +114,11 @@ func TestLoadRefresh(t *testing.T) {
 				},
 			},
 		}),
+		u2m.WithOAuthArgument(arg),
 	)
 	require.NoError(t, err)
 	defer p.Close()
-	arg, err := u2m.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
-	assert.NoError(t, err)
-	tok, err := p.Load(ctx, arg)
+	tok, err := p.Token()
 	assert.NoError(t, err)
 	assert.Equal(t, "refreshed", tok.AccessToken)
 	assert.Equal(t, "", tok.RefreshToken)
@@ -146,8 +147,10 @@ func TestChallenge(t *testing.T) {
 			return nil
 		},
 	}
+	arg, err := u2m.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	assert.NoError(t, err)
 	p, err := u2m.NewPersistentAuth(
-		context.Background(),
+		ctx,
 		u2m.WithTokenCache(cache),
 		u2m.WithBrowser(browser),
 		u2m.WithOAuthClient(&MockOAuthClient{
@@ -162,16 +165,15 @@ func TestChallenge(t *testing.T) {
 				},
 			},
 		}),
+		u2m.WithOAuthArgument(arg),
 	)
 	require.NoError(t, err)
 	defer p.Close()
-	arg, err := u2m.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
-	assert.NoError(t, err)
 
 	tokenc := make(chan *oauth2.Token)
 	errc := make(chan error)
 	go func() {
-		token, err := p.Challenge(ctx, arg)
+		token, err := p.Challenge()
 		errc <- err
 		close(errc)
 		tokenc <- token
@@ -203,16 +205,16 @@ func TestChallengeFailed(t *testing.T) {
 		browserOpened <- query.Get("state")
 		return nil
 	}
-	p, err := u2m.NewPersistentAuth(context.Background(), u2m.WithBrowser(browser))
-	require.NoError(t, err)
-	defer p.Close()
 	arg, err := u2m.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
 	assert.NoError(t, err)
+	p, err := u2m.NewPersistentAuth(ctx, u2m.WithBrowser(browser), u2m.WithOAuthArgument(arg))
+	require.NoError(t, err)
+	defer p.Close()
 
 	tokenc := make(chan *oauth2.Token)
 	errc := make(chan error)
 	go func() {
-		token, err := p.Challenge(ctx, arg)
+		token, err := p.Challenge()
 		errc <- err
 		close(errc)
 		tokenc <- token

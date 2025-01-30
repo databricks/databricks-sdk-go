@@ -56,7 +56,7 @@ type callbackServer struct {
 
 // newCallbackServer creates a new callback server that listens for the redirect
 // from the Databricks identity provider.
-func (a *PersistentAuth) newCallbackServer(ctx context.Context, arg OAuthArgument) (*callbackServer, error) {
+func (a *PersistentAuth) newCallbackServer() (*callbackServer, error) {
 	tmpl, err := template.New("page").Funcs(template.FuncMap{
 		"title": func(in string) string {
 			title := cases.Title(language.English)
@@ -70,9 +70,9 @@ func (a *PersistentAuth) newCallbackServer(ctx context.Context, arg OAuthArgumen
 		feedbackCh:  make(chan oauthResult),
 		renderErrCh: make(chan error),
 		tmpl:        tmpl,
-		ctx:         ctx,
+		ctx:         a.ctx,
 		browser:     a.browser,
-		arg:         arg,
+		arg:         a.oAuthArgument,
 	}
 	cb.srv.Handler = cb
 	go func() {

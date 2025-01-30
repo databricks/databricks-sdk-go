@@ -40,14 +40,20 @@ const (
 // The PersistentAuth is safe for concurrent use. The token cache is locked
 // during token retrieval, refresh and storage.
 type PersistentAuth struct {
-	// Cache is the token cache to store and lookup tokens.
+	// cache is the token cache to store and lookup tokens.
 	cache cache.TokenCache
-	// Client is the HTTP client to use for OAuth2 requests.
+	// client is the HTTP client to use for OAuth2 requests.
 	client OAuthClient
-	// Browser is the function to open a URL in the default browser.
+	// oAuthArgument defines the workspace or account to authenticate to and the
+	// cache key for the token.
+	oAuthArgument OAuthArgument
+	// browser is the function to open a URL in the default browser.
 	browser func(url string) error
 	// ln is the listener for the OAuth2 callback server.
 	ln net.Listener
+	// ctx is the context to use for underlying operations. This is needed in
+	// order to implement the oauth2.TokenSource interface.
+	ctx context.Context
 }
 
 type PersistentAuthOption func(*PersistentAuth)
@@ -63,6 +69,12 @@ func WithTokenCache(c cache.TokenCache) PersistentAuthOption {
 func WithOAuthClient(c OAuthClient) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.client = c
+	}
+}
+
+func WithOAuthArgument(arg OAuthArgument) PersistentAuthOption {
+	return func(a *PersistentAuth) {
+		a.oAuthArgument = arg
 	}
 }
 
@@ -91,32 +103,36 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 			return nil, fmt.Errorf("cache: %w", err)
 		}
 	}
+	if p.oAuthArgument == nil {
+		return nil, errors.New("missing OAuthArgument")
+	}
+	if err := p.validateArg(); err != nil {
+		return nil, err
+	}
 	if p.browser == nil {
 		p.browser = browser.OpenURL
 	}
+	p.ctx = ctx
 	return p, nil
 }
 
-// Load loads the OAuth2 token for the given OAuthArgument from the cache. If
+// Token loads the OAuth2 token for the given OAuthArgument from the cache. If
 // the token is expired, it is refreshed using the refresh token.
-func (a *PersistentAuth) Load(ctx context.Context, arg OAuthArgument) (t *oauth2.Token, err error) {
-	if err := a.validateArg(arg); err != nil {
-		return nil, err
-	}
-	err = a.startListener(ctx)
+func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
+	err = a.startListener(a.ctx)
 	if err != nil {
 		return nil, fmt.Errorf("starting listener: %w", err)
 	}
 	defer a.Close()
 
-	key := arg.GetCacheKey()
+	key := a.oAuthArgument.GetCacheKey()
 	t, err = a.cache.Lookup(key)
 	if err != nil {
 		return nil, fmt.Errorf("cache: %w", err)
 	}
 	// refresh if invalid
 	if !t.Valid() {
-		t, err = a.refresh(ctx, arg, t)
+		t, err = a.refresh(t)
 		if err != nil {
 			return nil, fmt.Errorf("token refresh: %w", err)
 		}
@@ -128,15 +144,15 @@ func (a *PersistentAuth) Load(ctx context.Context, arg OAuthArgument) (t *oauth2
 
 // refresh refreshes the token for the given OAuthArgument, storing the new
 // token in the cache.
-func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToken *oauth2.Token) (*oauth2.Token, error) {
+func (a *PersistentAuth) refresh(oldToken *oauth2.Token) (*oauth2.Token, error) {
 	// OAuth2 config is invoked only for expired tokens to speed up
 	// the happy path in the token retrieval
-	cfg, err := a.oauth2Config(ctx, arg)
+	cfg, err := a.oauth2Config()
 	if err != nil {
 		return nil, err
 	}
 	// make OAuth2 library use our client
-	ctx = a.setOAuthContext(ctx)
+	ctx := a.setOAuthContext(a.ctx)
 	// eagerly refresh token
 	t, err := cfg.TokenSource(ctx, oldToken).Token()
 	if err != nil {
@@ -175,7 +191,7 @@ func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToke
 		}
 		return nil, err
 	}
-	err = a.cache.Store(arg.GetCacheKey(), t)
+	err = a.cache.Store(a.oAuthArgument.GetCacheKey(), t)
 	if err != nil {
 		return nil, fmt.Errorf("cache update: %w", err)
 	}
@@ -188,11 +204,8 @@ func (a *PersistentAuth) refresh(ctx context.Context, arg OAuthArgument, oldToke
 // callback server listens for the redirect from the identity provider and
 // exchanges the authorization code for an access token. It returns the OAuth2
 // token on success.
-func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) (*oauth2.Token, error) {
-	if err := a.validateArg(arg); err != nil {
-		return nil, err
-	}
-	err := a.startListener(ctx)
+func (a *PersistentAuth) Challenge() (*oauth2.Token, error) {
+	err := a.startListener(a.ctx)
 	if err != nil {
 		return nil, fmt.Errorf("starting listener: %w", err)
 	}
@@ -200,11 +213,11 @@ func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) (*oau
 	// the callback server is not created, we need to close the listener manually.
 	defer a.Close()
 
-	cfg, err := a.oauth2Config(ctx, arg)
+	cfg, err := a.oauth2Config()
 	if err != nil {
 		return nil, fmt.Errorf("fetching oauth config: %w", err)
 	}
-	cb, err := a.newCallbackServer(ctx, arg)
+	cb, err := a.newCallbackServer()
 	if err != nil {
 		return nil, fmt.Errorf("callback server: %w", err)
 	}
@@ -215,14 +228,14 @@ func (a *PersistentAuth) Challenge(ctx context.Context, arg OAuthArgument) (*oau
 		return nil, fmt.Errorf("state and pkce: %w", err)
 	}
 	// make OAuth2 library use our client
-	ctx = a.setOAuthContext(ctx)
+	ctx := a.setOAuthContext(a.ctx)
 	ts := authhandler.TokenSourceWithPKCE(ctx, cfg, state, cb.Handler, pkce)
 	t, err := ts.Token()
 	if err != nil {
 		return nil, fmt.Errorf("authorize: %w", err)
 	}
 	// cache token identified by host (and possibly the account id)
-	err = a.cache.Store(arg.GetCacheKey(), t)
+	err = a.cache.Store(a.oAuthArgument.GetCacheKey(), t)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}
@@ -258,31 +271,31 @@ func (a *PersistentAuth) Close() error {
 
 // validateArg ensures that the OAuthArgument is either a WorkspaceOAuthArgument
 // or an AccountOAuthArgument.
-func (a *PersistentAuth) validateArg(arg OAuthArgument) error {
-	_, isWorkspaceArg := arg.(WorkspaceOAuthArgument)
-	_, isAccountArg := arg.(AccountOAuthArgument)
+func (a *PersistentAuth) validateArg() error {
+	_, isWorkspaceArg := a.oAuthArgument.(WorkspaceOAuthArgument)
+	_, isAccountArg := a.oAuthArgument.(AccountOAuthArgument)
 	if !isWorkspaceArg && !isAccountArg {
-		return fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument or AccountOAuthArgument interface", arg)
+		return fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument or AccountOAuthArgument interface", a.oAuthArgument)
 	}
 	return nil
 }
 
 // oauth2Config returns the OAuth2 configuration for the given OAuthArgument.
-func (a *PersistentAuth) oauth2Config(ctx context.Context, arg OAuthArgument) (*oauth2.Config, error) {
+func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
 	scopes := []string{
 		"offline_access", // ensures OAuth token includes refresh token
 		"all-apis",       // ensures OAuth token has access to all control-plane APIs
 	}
 	var endpoints *OAuthAuthorizationServer
 	var err error
-	switch argg := arg.(type) {
+	switch argg := a.oAuthArgument.(type) {
 	case WorkspaceOAuthArgument:
-		endpoints, err = a.client.GetWorkspaceOAuthEndpoints(ctx, argg.GetWorkspaceHost())
+		endpoints, err = a.client.GetWorkspaceOAuthEndpoints(a.ctx, argg.GetWorkspaceHost())
 	case AccountOAuthArgument:
 		endpoints, err = a.client.GetAccountOAuthEndpoints(
-			ctx, argg.GetAccountHost(), argg.GetAccountId())
+			a.ctx, argg.GetAccountHost(), argg.GetAccountId())
 	default:
-		return nil, fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument or AccountOAuthArgument interface", arg)
+		return nil, fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument or AccountOAuthArgument interface", a.oAuthArgument)
 	}
 	if err != nil {
 		return nil, fmt.Errorf("fetching OAuth endpoints: %w", err)

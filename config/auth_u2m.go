@@ -11,6 +11,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m/cache"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"golang.org/x/oauth2"
 )
 
 // u2mCredentials is a credentials strategy that uses the U2M OAuth flow to
@@ -56,14 +57,6 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	if cfg.Host == "" {
 		return nil, nil
 	}
-	if u.auth == nil {
-		var err error
-		u.auth, err = u2m.NewPersistentAuth(ctx)
-		if err != nil {
-			logger.Debugf(ctx, "failed to create persistent auth: %v, continuing", err)
-			return nil, nil
-		}
-	}
 
 	var arg u2m.OAuthArgument
 	var err error
@@ -76,11 +69,20 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, fmt.Errorf("oidc: %w", err)
 	}
 
+	if u.auth == nil {
+		var err error
+		u.auth, err = u2m.NewPersistentAuth(ctx, u2m.WithOAuthArgument(arg))
+		if err != nil {
+			logger.Debugf(ctx, "failed to create persistent auth: %v, continuing", err)
+			return nil, nil
+		}
+	}
+
 	// Construct the visitor, and try to load the credential from the token
 	// cache. If absent, fall back to the next credentials strategy. If a token
 	// is present but cannot be loaded (e.g. expired), return an error.
 	// Otherwise, fall back to the next credentials strategy.
-	visitor := u.makeVisitor(arg)
+	visitor := u.makeVisitor()
 	r, err := http.NewRequestWithContext(ctx, http.MethodGet, "", nil)
 	if err != nil {
 		return nil, fmt.Errorf("http request: %w", err)
@@ -92,12 +94,12 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, err
 	}
 
-	return credentials.NewCredentialsProvider(visitor), nil
+	return credentials.NewOAuthCredentialsProvider(visitor, func() (*oauth2.Token, error) { return u.auth.Token() }), nil
 }
 
-func (u u2mCredentials) makeVisitor(arg u2m.OAuthArgument) func(*http.Request) error {
+func (u u2mCredentials) makeVisitor() func(*http.Request) error {
 	return func(r *http.Request) error {
-		token, err := u.auth.Load(r.Context(), arg)
+		token, err := u.auth.Token()
 		if err != nil {
 			return fmt.Errorf("oidc: %w", err)
 		}
