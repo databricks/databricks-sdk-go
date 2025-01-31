@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 // unexported type that holds implementations of just VectorSearchEndpoints API methods
@@ -45,7 +47,37 @@ func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request Get
 	return &endpointInfo, err
 }
 
-func (a *vectorSearchEndpointsImpl) ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointResponse, error) {
+// List all endpoints.
+func (a *vectorSearchEndpointsImpl) ListEndpoints(ctx context.Context, request ListEndpointsRequest) listing.Iterator[EndpointInfo] {
+
+	getNextPage := func(ctx context.Context, req ListEndpointsRequest) (*ListEndpointResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListEndpoints(ctx, req)
+	}
+	getItems := func(resp *ListEndpointResponse) []EndpointInfo {
+		return resp.Endpoints
+	}
+	getNextReq := func(resp *ListEndpointResponse) *ListEndpointsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List all endpoints.
+func (a *vectorSearchEndpointsImpl) ListEndpointsAll(ctx context.Context, request ListEndpointsRequest) ([]EndpointInfo, error) {
+	iterator := a.ListEndpoints(ctx, request)
+	return listing.ToSlice[EndpointInfo](ctx, iterator)
+}
+func (a *vectorSearchEndpointsImpl) internalListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointResponse, error) {
 	var listEndpointResponse ListEndpointResponse
 	path := "/api/2.0/vector-search/endpoints"
 	queryParams := make(map[string]any)
@@ -101,7 +133,41 @@ func (a *vectorSearchIndexesImpl) GetIndex(ctx context.Context, request GetIndex
 	return &vectorIndex, err
 }
 
-func (a *vectorSearchIndexesImpl) ListIndexes(ctx context.Context, request ListIndexesRequest) (*ListVectorIndexesResponse, error) {
+// List indexes.
+//
+// List all indexes in the given endpoint.
+func (a *vectorSearchIndexesImpl) ListIndexes(ctx context.Context, request ListIndexesRequest) listing.Iterator[MiniVectorIndex] {
+
+	getNextPage := func(ctx context.Context, req ListIndexesRequest) (*ListVectorIndexesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListIndexes(ctx, req)
+	}
+	getItems := func(resp *ListVectorIndexesResponse) []MiniVectorIndex {
+		return resp.VectorIndexes
+	}
+	getNextReq := func(resp *ListVectorIndexesResponse) *ListIndexesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List indexes.
+//
+// List all indexes in the given endpoint.
+func (a *vectorSearchIndexesImpl) ListIndexesAll(ctx context.Context, request ListIndexesRequest) ([]MiniVectorIndex, error) {
+	iterator := a.ListIndexes(ctx, request)
+	return listing.ToSlice[MiniVectorIndex](ctx, iterator)
+}
+func (a *vectorSearchIndexesImpl) internalListIndexes(ctx context.Context, request ListIndexesRequest) (*ListVectorIndexesResponse, error) {
 	var listVectorIndexesResponse ListVectorIndexesResponse
 	path := "/api/2.0/vector-search/indexes"
 	queryParams := make(map[string]any)

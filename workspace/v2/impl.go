@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 // unexported type that holds implementations of just GitCredentials API methods
@@ -46,7 +48,38 @@ func (a *gitCredentialsImpl) Get(ctx context.Context, request GetCredentialsRequ
 	return &getCredentialsResponse, err
 }
 
-func (a *gitCredentialsImpl) List(ctx context.Context) (*ListCredentialsResponse, error) {
+// Get Git credentials.
+//
+// Lists the calling user's Git credentials. One credential per user is
+// supported.
+func (a *gitCredentialsImpl) List(ctx context.Context) listing.Iterator[CredentialInfo] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListCredentialsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx)
+	}
+	getItems := func(resp *ListCredentialsResponse) []CredentialInfo {
+		return resp.Credentials
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get Git credentials.
+//
+// Lists the calling user's Git credentials. One credential per user is
+// supported.
+func (a *gitCredentialsImpl) ListAll(ctx context.Context) ([]CredentialInfo, error) {
+	iterator := a.List(ctx)
+	return listing.ToSlice[CredentialInfo](ctx, iterator)
+}
+func (a *gitCredentialsImpl) internalList(ctx context.Context) (*ListCredentialsResponse, error) {
 	var listCredentialsResponse ListCredentialsResponse
 	path := "/api/2.0/git-credentials"
 
@@ -123,7 +156,43 @@ func (a *reposImpl) GetPermissions(ctx context.Context, request GetRepoPermissio
 	return &repoPermissions, err
 }
 
-func (a *reposImpl) List(ctx context.Context, request ListReposRequest) (*ListReposResponse, error) {
+// Get repos.
+//
+// Returns repos that the calling user has Manage permissions on. Use
+// `next_page_token` to iterate through additional pages.
+func (a *reposImpl) List(ctx context.Context, request ListReposRequest) listing.Iterator[RepoInfo] {
+
+	getNextPage := func(ctx context.Context, req ListReposRequest) (*ListReposResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListReposResponse) []RepoInfo {
+		return resp.Repos
+	}
+	getNextReq := func(resp *ListReposResponse) *ListReposRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.NextPageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Get repos.
+//
+// Returns repos that the calling user has Manage permissions on. Use
+// `next_page_token` to iterate through additional pages.
+func (a *reposImpl) ListAll(ctx context.Context, request ListReposRequest) ([]RepoInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[RepoInfo](ctx, iterator)
+}
+func (a *reposImpl) internalList(ctx context.Context, request ListReposRequest) (*ListReposResponse, error) {
 	var listReposResponse ListReposResponse
 	path := "/api/2.0/repos"
 	queryParams := make(map[string]any)
@@ -235,7 +304,45 @@ func (a *secretsImpl) GetSecret(ctx context.Context, request GetSecretRequest) (
 	return &getSecretResponse, err
 }
 
-func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error) {
+// Lists ACLs.
+//
+// List the ACLs for a given secret scope. Users must have the `MANAGE`
+// permission to invoke this API.
+//
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
+// call.
+func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) listing.Iterator[AclItem] {
+
+	getNextPage := func(ctx context.Context, req ListAclsRequest) (*ListAclsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListAcls(ctx, req)
+	}
+	getItems := func(resp *ListAclsResponse) []AclItem {
+		return resp.Items
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Lists ACLs.
+//
+// List the ACLs for a given secret scope. Users must have the `MANAGE`
+// permission to invoke this API.
+//
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
+// call.
+func (a *secretsImpl) ListAclsAll(ctx context.Context, request ListAclsRequest) ([]AclItem, error) {
+	iterator := a.ListAcls(ctx, request)
+	return listing.ToSlice[AclItem](ctx, iterator)
+}
+func (a *secretsImpl) internalListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error) {
 	var listAclsResponse ListAclsResponse
 	path := "/api/2.0/secrets/acls/list"
 	queryParams := make(map[string]any)
@@ -245,7 +352,42 @@ func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) (*L
 	return &listAclsResponse, err
 }
 
-func (a *secretsImpl) ListScopes(ctx context.Context) (*ListScopesResponse, error) {
+// List all scopes.
+//
+// Lists all secret scopes available in the workspace.
+//
+// Throws `PERMISSION_DENIED` if the user does not have permission to make this
+// API call.
+func (a *secretsImpl) ListScopes(ctx context.Context) listing.Iterator[SecretScope] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListScopesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListScopes(ctx)
+	}
+	getItems := func(resp *ListScopesResponse) []SecretScope {
+		return resp.Scopes
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List all scopes.
+//
+// Lists all secret scopes available in the workspace.
+//
+// Throws `PERMISSION_DENIED` if the user does not have permission to make this
+// API call.
+func (a *secretsImpl) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
+	iterator := a.ListScopes(ctx)
+	return listing.ToSlice[SecretScope](ctx, iterator)
+}
+func (a *secretsImpl) internalListScopes(ctx context.Context) (*ListScopesResponse, error) {
 	var listScopesResponse ListScopesResponse
 	path := "/api/2.0/secrets/scopes/list"
 
@@ -255,7 +397,49 @@ func (a *secretsImpl) ListScopes(ctx context.Context) (*ListScopesResponse, erro
 	return &listScopesResponse, err
 }
 
-func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error) {
+// List secret keys.
+//
+// Lists the secret keys that are stored at this scope. This is a metadata-only
+// operation; secret data cannot be retrieved using this API. Users need the
+// READ permission to make this call.
+//
+// The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws
+// `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
+// call.
+func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsRequest) listing.Iterator[SecretMetadata] {
+
+	getNextPage := func(ctx context.Context, req ListSecretsRequest) (*ListSecretsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListSecrets(ctx, req)
+	}
+	getItems := func(resp *ListSecretsResponse) []SecretMetadata {
+		return resp.Secrets
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List secret keys.
+//
+// Lists the secret keys that are stored at this scope. This is a metadata-only
+// operation; secret data cannot be retrieved using this API. Users need the
+// READ permission to make this call.
+//
+// The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws
+// `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
+// call.
+func (a *secretsImpl) ListSecretsAll(ctx context.Context, request ListSecretsRequest) ([]SecretMetadata, error) {
+	iterator := a.ListSecrets(ctx, request)
+	return listing.ToSlice[SecretMetadata](ctx, iterator)
+}
+func (a *secretsImpl) internalListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error) {
 	var listSecretsResponse ListSecretsResponse
 	path := "/api/2.0/secrets/list"
 	queryParams := make(map[string]any)
@@ -354,7 +538,39 @@ func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
 	return err
 }
 
-func (a *workspaceImpl) List(ctx context.Context, request ListWorkspaceRequest) (*ListResponse, error) {
+// List contents.
+//
+// Lists the contents of a directory, or the object if it is not a directory. If
+// the input path does not exist, this call returns an error
+// `RESOURCE_DOES_NOT_EXIST`.
+func (a *workspaceImpl) List(ctx context.Context, request ListWorkspaceRequest) listing.Iterator[ObjectInfo] {
+
+	getNextPage := func(ctx context.Context, req ListWorkspaceRequest) (*ListResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListResponse) []ObjectInfo {
+		return resp.Objects
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List contents.
+//
+// Lists the contents of a directory, or the object if it is not a directory. If
+// the input path does not exist, this call returns an error
+// `RESOURCE_DOES_NOT_EXIST`.
+func (a *workspaceImpl) ListAll(ctx context.Context, request ListWorkspaceRequest) ([]ObjectInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[ObjectInfo](ctx, iterator)
+}
+func (a *workspaceImpl) internalList(ctx context.Context, request ListWorkspaceRequest) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.0/workspace/list"
 	queryParams := make(map[string]any)

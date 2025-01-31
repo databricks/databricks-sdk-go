@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 // unexported type that holds implementations of just Pipelines API methods
@@ -76,7 +78,42 @@ func (a *pipelinesImpl) GetUpdate(ctx context.Context, request GetUpdateRequest)
 	return &getUpdateResponse, err
 }
 
-func (a *pipelinesImpl) ListPipelineEvents(ctx context.Context, request ListPipelineEventsRequest) (*ListPipelineEventsResponse, error) {
+// List pipeline events.
+//
+// Retrieves events for a pipeline.
+func (a *pipelinesImpl) ListPipelineEvents(ctx context.Context, request ListPipelineEventsRequest) listing.Iterator[PipelineEvent] {
+
+	getNextPage := func(ctx context.Context, req ListPipelineEventsRequest) (*ListPipelineEventsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListPipelineEvents(ctx, req)
+	}
+	getItems := func(resp *ListPipelineEventsResponse) []PipelineEvent {
+		return resp.Events
+	}
+	getNextReq := func(resp *ListPipelineEventsResponse) *ListPipelineEventsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List pipeline events.
+//
+// Retrieves events for a pipeline.
+func (a *pipelinesImpl) ListPipelineEventsAll(ctx context.Context, request ListPipelineEventsRequest) ([]PipelineEvent, error) {
+	iterator := a.ListPipelineEvents(ctx, request)
+	return listing.ToSliceN[PipelineEvent, int](ctx, iterator, request.MaxResults)
+
+}
+func (a *pipelinesImpl) internalListPipelineEvents(ctx context.Context, request ListPipelineEventsRequest) (*ListPipelineEventsResponse, error) {
 	var listPipelineEventsResponse ListPipelineEventsResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/events", request.PipelineId)
 	queryParams := make(map[string]any)
@@ -86,7 +123,42 @@ func (a *pipelinesImpl) ListPipelineEvents(ctx context.Context, request ListPipe
 	return &listPipelineEventsResponse, err
 }
 
-func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelinesRequest) (*ListPipelinesResponse, error) {
+// List pipelines.
+//
+// Lists pipelines defined in the Delta Live Tables system.
+func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelinesRequest) listing.Iterator[PipelineStateInfo] {
+
+	getNextPage := func(ctx context.Context, req ListPipelinesRequest) (*ListPipelinesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListPipelines(ctx, req)
+	}
+	getItems := func(resp *ListPipelinesResponse) []PipelineStateInfo {
+		return resp.Statuses
+	}
+	getNextReq := func(resp *ListPipelinesResponse) *ListPipelinesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List pipelines.
+//
+// Lists pipelines defined in the Delta Live Tables system.
+func (a *pipelinesImpl) ListPipelinesAll(ctx context.Context, request ListPipelinesRequest) ([]PipelineStateInfo, error) {
+	iterator := a.ListPipelines(ctx, request)
+	return listing.ToSliceN[PipelineStateInfo, int](ctx, iterator, request.MaxResults)
+
+}
+func (a *pipelinesImpl) internalListPipelines(ctx context.Context, request ListPipelinesRequest) (*ListPipelinesResponse, error) {
 	var listPipelinesResponse ListPipelinesResponse
 	path := "/api/2.0/pipelines"
 	queryParams := make(map[string]any)

@@ -9,6 +9,8 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
+	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 	"golang.org/x/exp/slices"
 )
 
@@ -71,7 +73,55 @@ func (a *dbfsImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*Fi
 	return &fileInfo, err
 }
 
-func (a *dbfsImpl) List(ctx context.Context, request ListDbfsRequest) (*ListStatusResponse, error) {
+// List directory contents or file details.
+//
+// List the contents of a directory, or details of the file. If the file or
+// directory does not exist, this call throws an exception with
+// `RESOURCE_DOES_NOT_EXIST`.
+//
+// When calling list on a large directory, the list operation will time out
+// after approximately 60 seconds. We strongly recommend using list only on
+// directories containing less than 10K files and discourage using the DBFS REST
+// API for operations that list more than 10K files. Instead, we recommend that
+// you perform such operations in the context of a cluster, using the [File
+// system utility (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs),
+// which provides the same functionality without timing out.
+func (a *dbfsImpl) List(ctx context.Context, request ListDbfsRequest) listing.Iterator[FileInfo] {
+
+	getNextPage := func(ctx context.Context, req ListDbfsRequest) (*ListStatusResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListStatusResponse) []FileInfo {
+		return resp.Files
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List directory contents or file details.
+//
+// List the contents of a directory, or details of the file. If the file or
+// directory does not exist, this call throws an exception with
+// `RESOURCE_DOES_NOT_EXIST`.
+//
+// When calling list on a large directory, the list operation will time out
+// after approximately 60 seconds. We strongly recommend using list only on
+// directories containing less than 10K files and discourage using the DBFS REST
+// API for operations that list more than 10K files. Instead, we recommend that
+// you perform such operations in the context of a cluster, using the [File
+// system utility (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs),
+// which provides the same functionality without timing out.
+func (a *dbfsImpl) ListAll(ctx context.Context, request ListDbfsRequest) ([]FileInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[FileInfo](ctx, iterator)
+}
+func (a *dbfsImpl) internalList(ctx context.Context, request ListDbfsRequest) (*ListStatusResponse, error) {
 	var listStatusResponse ListStatusResponse
 	path := "/api/2.0/dbfs/list"
 	queryParams := make(map[string]any)
@@ -184,7 +234,44 @@ func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest)
 	return &getMetadataResponse, err
 }
 
-func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
+// List directory contents.
+//
+// Returns the contents of a directory. If there is no directory at the
+// specified path, the API returns a HTTP 404 error.
+func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) listing.Iterator[DirectoryEntry] {
+
+	getNextPage := func(ctx context.Context, req ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDirectoryContents(ctx, req)
+	}
+	getItems := func(resp *ListDirectoryResponse) []DirectoryEntry {
+		return resp.Contents
+	}
+	getNextReq := func(resp *ListDirectoryResponse) *ListDirectoryContentsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List directory contents.
+//
+// Returns the contents of a directory. If there is no directory at the
+// specified path, the API returns a HTTP 404 error.
+func (a *filesImpl) ListDirectoryContentsAll(ctx context.Context, request ListDirectoryContentsRequest) ([]DirectoryEntry, error) {
+	iterator := a.ListDirectoryContents(ctx, request)
+	return listing.ToSliceN[DirectoryEntry, int64](ctx, iterator, request.PageSize)
+
+}
+func (a *filesImpl) internalListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
 	var listDirectoryResponse ListDirectoryResponse
 	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	queryParams := make(map[string]any)

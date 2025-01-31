@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 // unexported type that holds implementations of just Genie API methods
@@ -165,7 +167,37 @@ func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscript
 	return &subscription, err
 }
 
-func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error) {
+// List dashboards.
+func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard] {
+
+	getNextPage := func(ctx context.Context, req ListDashboardsRequest) (*ListDashboardsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListDashboardsResponse) []Dashboard {
+		return resp.Dashboards
+	}
+	getNextReq := func(resp *ListDashboardsResponse) *ListDashboardsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List dashboards.
+func (a *lakeviewImpl) ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[Dashboard](ctx, iterator)
+}
+func (a *lakeviewImpl) internalList(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error) {
 	var listDashboardsResponse ListDashboardsResponse
 	path := "/api/2.0/lakeview/dashboards"
 	queryParams := make(map[string]any)
@@ -175,7 +207,37 @@ func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) 
 	return &listDashboardsResponse, err
 }
 
-func (a *lakeviewImpl) ListSchedules(ctx context.Context, request ListSchedulesRequest) (*ListSchedulesResponse, error) {
+// List dashboard schedules.
+func (a *lakeviewImpl) ListSchedules(ctx context.Context, request ListSchedulesRequest) listing.Iterator[Schedule] {
+
+	getNextPage := func(ctx context.Context, req ListSchedulesRequest) (*ListSchedulesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListSchedules(ctx, req)
+	}
+	getItems := func(resp *ListSchedulesResponse) []Schedule {
+		return resp.Schedules
+	}
+	getNextReq := func(resp *ListSchedulesResponse) *ListSchedulesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List dashboard schedules.
+func (a *lakeviewImpl) ListSchedulesAll(ctx context.Context, request ListSchedulesRequest) ([]Schedule, error) {
+	iterator := a.ListSchedules(ctx, request)
+	return listing.ToSlice[Schedule](ctx, iterator)
+}
+func (a *lakeviewImpl) internalListSchedules(ctx context.Context, request ListSchedulesRequest) (*ListSchedulesResponse, error) {
 	var listSchedulesResponse ListSchedulesResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules", request.DashboardId)
 	queryParams := make(map[string]any)
@@ -185,7 +247,37 @@ func (a *lakeviewImpl) ListSchedules(ctx context.Context, request ListSchedulesR
 	return &listSchedulesResponse, err
 }
 
-func (a *lakeviewImpl) ListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) (*ListSubscriptionsResponse, error) {
+// List schedule subscriptions.
+func (a *lakeviewImpl) ListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) listing.Iterator[Subscription] {
+
+	getNextPage := func(ctx context.Context, req ListSubscriptionsRequest) (*ListSubscriptionsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListSubscriptions(ctx, req)
+	}
+	getItems := func(resp *ListSubscriptionsResponse) []Subscription {
+		return resp.Subscriptions
+	}
+	getNextReq := func(resp *ListSubscriptionsResponse) *ListSubscriptionsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List schedule subscriptions.
+func (a *lakeviewImpl) ListSubscriptionsAll(ctx context.Context, request ListSubscriptionsRequest) ([]Subscription, error) {
+	iterator := a.ListSubscriptions(ctx, request)
+	return listing.ToSlice[Subscription](ctx, iterator)
+}
+func (a *lakeviewImpl) internalListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) (*ListSubscriptionsResponse, error) {
 	var listSubscriptionsResponse ListSubscriptionsResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions", request.DashboardId, request.ScheduleId)
 	queryParams := make(map[string]any)

@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 	"golang.org/x/exp/slices"
 )
 
@@ -91,7 +93,41 @@ func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissions
 	return &appPermissions, err
 }
 
-func (a *appsImpl) List(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error) {
+// List apps.
+//
+// Lists all apps in the workspace.
+func (a *appsImpl) List(ctx context.Context, request ListAppsRequest) listing.Iterator[App] {
+
+	getNextPage := func(ctx context.Context, req ListAppsRequest) (*ListAppsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListAppsResponse) []App {
+		return resp.Apps
+	}
+	getNextReq := func(resp *ListAppsResponse) *ListAppsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List apps.
+//
+// Lists all apps in the workspace.
+func (a *appsImpl) ListAll(ctx context.Context, request ListAppsRequest) ([]App, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[App](ctx, iterator)
+}
+func (a *appsImpl) internalList(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error) {
 	var listAppsResponse ListAppsResponse
 	path := "/api/2.0/apps"
 	queryParams := make(map[string]any)
@@ -101,7 +137,41 @@ func (a *appsImpl) List(ctx context.Context, request ListAppsRequest) (*ListApps
 	return &listAppsResponse, err
 }
 
-func (a *appsImpl) ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
+// List app deployments.
+//
+// Lists all app deployments for the app with the supplied name.
+func (a *appsImpl) ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) listing.Iterator[AppDeployment] {
+
+	getNextPage := func(ctx context.Context, req ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDeployments(ctx, req)
+	}
+	getItems := func(resp *ListAppDeploymentsResponse) []AppDeployment {
+		return resp.AppDeployments
+	}
+	getNextReq := func(resp *ListAppDeploymentsResponse) *ListAppDeploymentsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List app deployments.
+//
+// Lists all app deployments for the app with the supplied name.
+func (a *appsImpl) ListDeploymentsAll(ctx context.Context, request ListAppDeploymentsRequest) ([]AppDeployment, error) {
+	iterator := a.ListDeployments(ctx, request)
+	return listing.ToSlice[AppDeployment](ctx, iterator)
+}
+func (a *appsImpl) internalListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
 	var listAppDeploymentsResponse ListAppDeploymentsResponse
 	path := fmt.Sprintf("/api/2.0/apps/%v/deployments", request.AppName)
 	queryParams := make(map[string]any)

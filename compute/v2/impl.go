@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 // unexported type that holds implementations of just ClusterPolicies API methods
@@ -78,7 +80,35 @@ func (a *clusterPoliciesImpl) GetPermissions(ctx context.Context, request GetClu
 	return &clusterPolicyPermissions, err
 }
 
-func (a *clusterPoliciesImpl) List(ctx context.Context, request ListClusterPoliciesRequest) (*ListPoliciesResponse, error) {
+// List cluster policies.
+//
+// Returns a list of policies accessible by the requesting user.
+func (a *clusterPoliciesImpl) List(ctx context.Context, request ListClusterPoliciesRequest) listing.Iterator[Policy] {
+
+	getNextPage := func(ctx context.Context, req ListClusterPoliciesRequest) (*ListPoliciesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListPoliciesResponse) []Policy {
+		return resp.Policies
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List cluster policies.
+//
+// Returns a list of policies accessible by the requesting user.
+func (a *clusterPoliciesImpl) ListAll(ctx context.Context, request ListClusterPoliciesRequest) ([]Policy, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[Policy](ctx, iterator)
+}
+func (a *clusterPoliciesImpl) internalList(ctx context.Context, request ListClusterPoliciesRequest) (*ListPoliciesResponse, error) {
 	var listPoliciesResponse ListPoliciesResponse
 	path := "/api/2.0/policies/clusters/list"
 	queryParams := make(map[string]any)
@@ -159,7 +189,47 @@ func (a *clustersImpl) Edit(ctx context.Context, request EditCluster) error {
 	return err
 }
 
-func (a *clustersImpl) Events(ctx context.Context, request GetEvents) (*GetEventsResponse, error) {
+// List cluster activity events.
+//
+// Retrieves a list of events about the activity of a cluster. This API is
+// paginated. If there are more events to read, the response includes all the
+// nparameters necessary to request the next page of events.
+func (a *clustersImpl) Events(ctx context.Context, request GetEvents) listing.Iterator[ClusterEvent] {
+
+	getNextPage := func(ctx context.Context, req GetEvents) (*GetEventsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalEvents(ctx, req)
+	}
+	getItems := func(resp *GetEventsResponse) []ClusterEvent {
+		return resp.Events
+	}
+	getNextReq := func(resp *GetEventsResponse) *GetEvents {
+		if resp.NextPage == nil {
+			return nil
+		}
+		request = *resp.NextPage
+
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List cluster activity events.
+//
+// Retrieves a list of events about the activity of a cluster. This API is
+// paginated. If there are more events to read, the response includes all the
+// nparameters necessary to request the next page of events.
+func (a *clustersImpl) EventsAll(ctx context.Context, request GetEvents) ([]ClusterEvent, error) {
+	iterator := a.Events(ctx, request)
+	return listing.ToSliceN[ClusterEvent, int64](ctx, iterator, request.Limit)
+
+}
+func (a *clustersImpl) internalEvents(ctx context.Context, request GetEvents) (*GetEventsResponse, error) {
 	var getEventsResponse GetEventsResponse
 	path := "/api/2.1/clusters/events"
 	queryParams := make(map[string]any)
@@ -200,7 +270,46 @@ func (a *clustersImpl) GetPermissions(ctx context.Context, request GetClusterPer
 	return &clusterPermissions, err
 }
 
-func (a *clustersImpl) List(ctx context.Context, request ListClustersRequest) (*ListClustersResponse, error) {
+// List clusters.
+//
+// Return information about all pinned and active clusters, and all clusters
+// terminated within the last 30 days. Clusters terminated prior to this period
+// are not included.
+func (a *clustersImpl) List(ctx context.Context, request ListClustersRequest) listing.Iterator[ClusterDetails] {
+
+	getNextPage := func(ctx context.Context, req ListClustersRequest) (*ListClustersResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListClustersResponse) []ClusterDetails {
+		return resp.Clusters
+	}
+	getNextReq := func(resp *ListClustersResponse) *ListClustersRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List clusters.
+//
+// Return information about all pinned and active clusters, and all clusters
+// terminated within the last 30 days. Clusters terminated prior to this period
+// are not included.
+func (a *clustersImpl) ListAll(ctx context.Context, request ListClustersRequest) ([]ClusterDetails, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSliceN[ClusterDetails, int](ctx, iterator, request.PageSize)
+
+}
+func (a *clustersImpl) internalList(ctx context.Context, request ListClustersRequest) (*ListClustersResponse, error) {
 	var listClustersResponse ListClustersResponse
 	path := "/api/2.1/clusters/list"
 	queryParams := make(map[string]any)
@@ -443,7 +552,42 @@ func (a *globalInitScriptsImpl) Get(ctx context.Context, request GetGlobalInitSc
 	return &globalInitScriptDetailsWithContent, err
 }
 
-func (a *globalInitScriptsImpl) List(ctx context.Context) (*ListGlobalInitScriptsResponse, error) {
+// Get init scripts.
+//
+// Get a list of all global init scripts for this workspace. This returns all
+// properties for each script but **not** the script contents. To retrieve the
+// contents of a script, use the [get a global init
+// script](:method:globalinitscripts/get) operation.
+func (a *globalInitScriptsImpl) List(ctx context.Context) listing.Iterator[GlobalInitScriptDetails] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListGlobalInitScriptsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx)
+	}
+	getItems := func(resp *ListGlobalInitScriptsResponse) []GlobalInitScriptDetails {
+		return resp.Scripts
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get init scripts.
+//
+// Get a list of all global init scripts for this workspace. This returns all
+// properties for each script but **not** the script contents. To retrieve the
+// contents of a script, use the [get a global init
+// script](:method:globalinitscripts/get) operation.
+func (a *globalInitScriptsImpl) ListAll(ctx context.Context) ([]GlobalInitScriptDetails, error) {
+	iterator := a.List(ctx)
+	return listing.ToSlice[GlobalInitScriptDetails](ctx, iterator)
+}
+func (a *globalInitScriptsImpl) internalList(ctx context.Context) (*ListGlobalInitScriptsResponse, error) {
 	var listGlobalInitScriptsResponse ListGlobalInitScriptsResponse
 	path := "/api/2.0/global-init-scripts"
 
@@ -531,7 +675,36 @@ func (a *instancePoolsImpl) GetPermissions(ctx context.Context, request GetInsta
 	return &instancePoolPermissions, err
 }
 
-func (a *instancePoolsImpl) List(ctx context.Context) (*ListInstancePools, error) {
+// List instance pool info.
+//
+// Gets a list of instance pools with their statistics.
+func (a *instancePoolsImpl) List(ctx context.Context) listing.Iterator[InstancePoolAndStats] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListInstancePools, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx)
+	}
+	getItems := func(resp *ListInstancePools) []InstancePoolAndStats {
+		return resp.InstancePools
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List instance pool info.
+//
+// Gets a list of instance pools with their statistics.
+func (a *instancePoolsImpl) ListAll(ctx context.Context) ([]InstancePoolAndStats, error) {
+	iterator := a.List(ctx)
+	return listing.ToSlice[InstancePoolAndStats](ctx, iterator)
+}
+func (a *instancePoolsImpl) internalList(ctx context.Context) (*ListInstancePools, error) {
 	var listInstancePools ListInstancePools
 	path := "/api/2.0/instance-pools/list"
 
@@ -590,7 +763,40 @@ func (a *instanceProfilesImpl) Edit(ctx context.Context, request InstanceProfile
 	return err
 }
 
-func (a *instanceProfilesImpl) List(ctx context.Context) (*ListInstanceProfilesResponse, error) {
+// List available instance profiles.
+//
+// List the instance profiles that the calling user can use to launch a cluster.
+//
+// This API is available to all users.
+func (a *instanceProfilesImpl) List(ctx context.Context) listing.Iterator[InstanceProfile] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListInstanceProfilesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx)
+	}
+	getItems := func(resp *ListInstanceProfilesResponse) []InstanceProfile {
+		return resp.InstanceProfiles
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List available instance profiles.
+//
+// List the instance profiles that the calling user can use to launch a cluster.
+//
+// This API is available to all users.
+func (a *instanceProfilesImpl) ListAll(ctx context.Context) ([]InstanceProfile, error) {
+	iterator := a.List(ctx)
+	return listing.ToSlice[InstanceProfile](ctx, iterator)
+}
+func (a *instanceProfilesImpl) internalList(ctx context.Context) (*ListInstanceProfilesResponse, error) {
 	var listInstanceProfilesResponse ListInstanceProfilesResponse
 	path := "/api/2.0/instance-profiles/list"
 
@@ -616,7 +822,38 @@ type librariesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *librariesImpl) AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {
+// Get all statuses.
+//
+// Get the status of all libraries on all clusters. A status is returned for all
+// libraries installed on this cluster via the API or the libraries UI.
+func (a *librariesImpl) AllClusterStatuses(ctx context.Context) listing.Iterator[ClusterLibraryStatuses] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListAllClusterLibraryStatusesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalAllClusterStatuses(ctx)
+	}
+	getItems := func(resp *ListAllClusterLibraryStatusesResponse) []ClusterLibraryStatuses {
+		return resp.Statuses
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get all statuses.
+//
+// Get the status of all libraries on all clusters. A status is returned for all
+// libraries installed on this cluster via the API or the libraries UI.
+func (a *librariesImpl) AllClusterStatusesAll(ctx context.Context) ([]ClusterLibraryStatuses, error) {
+	iterator := a.AllClusterStatuses(ctx)
+	return listing.ToSlice[ClusterLibraryStatuses](ctx, iterator)
+}
+func (a *librariesImpl) internalAllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {
 	var listAllClusterLibraryStatusesResponse ListAllClusterLibraryStatusesResponse
 	path := "/api/2.0/libraries/all-cluster-statuses"
 
@@ -626,7 +863,47 @@ func (a *librariesImpl) AllClusterStatuses(ctx context.Context) (*ListAllCluster
 	return &listAllClusterLibraryStatusesResponse, err
 }
 
-func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error) {
+// Get status.
+//
+// Get the status of libraries on a cluster. A status is returned for all
+// libraries installed on this cluster via the API or the libraries UI. The
+// order of returned libraries is as follows: 1. Libraries set to be installed
+// on this cluster, in the order that the libraries were added to the cluster,
+// are returned first. 2. Libraries that were previously requested to be
+// installed on this cluster or, but are now marked for removal, in no
+// particular order, are returned last.
+func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatus) listing.Iterator[LibraryFullStatus] {
+
+	getNextPage := func(ctx context.Context, req ClusterStatus) (*ClusterLibraryStatuses, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalClusterStatus(ctx, req)
+	}
+	getItems := func(resp *ClusterLibraryStatuses) []LibraryFullStatus {
+		return resp.LibraryStatuses
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get status.
+//
+// Get the status of libraries on a cluster. A status is returned for all
+// libraries installed on this cluster via the API or the libraries UI. The
+// order of returned libraries is as follows: 1. Libraries set to be installed
+// on this cluster, in the order that the libraries were added to the cluster,
+// are returned first. 2. Libraries that were previously requested to be
+// installed on this cluster or, but are now marked for removal, in no
+// particular order, are returned last.
+func (a *librariesImpl) ClusterStatusAll(ctx context.Context, request ClusterStatus) ([]LibraryFullStatus, error) {
+	iterator := a.ClusterStatus(ctx, request)
+	return listing.ToSlice[LibraryFullStatus](ctx, iterator)
+}
+func (a *librariesImpl) internalClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error) {
 	var clusterLibraryStatuses ClusterLibraryStatuses
 	path := "/api/2.0/libraries/cluster-status"
 	queryParams := make(map[string]any)
@@ -684,7 +961,45 @@ func (a *policyComplianceForClustersImpl) GetCompliance(ctx context.Context, req
 	return &getClusterComplianceResponse, err
 }
 
-func (a *policyComplianceForClustersImpl) ListCompliance(ctx context.Context, request ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error) {
+// List cluster policy compliance.
+//
+// Returns the policy compliance status of all clusters that use a given policy.
+// Clusters could be out of compliance if their policy was updated after the
+// cluster was last edited.
+func (a *policyComplianceForClustersImpl) ListCompliance(ctx context.Context, request ListClusterCompliancesRequest) listing.Iterator[ClusterCompliance] {
+
+	getNextPage := func(ctx context.Context, req ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListCompliance(ctx, req)
+	}
+	getItems := func(resp *ListClusterCompliancesResponse) []ClusterCompliance {
+		return resp.Clusters
+	}
+	getNextReq := func(resp *ListClusterCompliancesResponse) *ListClusterCompliancesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List cluster policy compliance.
+//
+// Returns the policy compliance status of all clusters that use a given policy.
+// Clusters could be out of compliance if their policy was updated after the
+// cluster was last edited.
+func (a *policyComplianceForClustersImpl) ListComplianceAll(ctx context.Context, request ListClusterCompliancesRequest) ([]ClusterCompliance, error) {
+	iterator := a.ListCompliance(ctx, request)
+	return listing.ToSlice[ClusterCompliance](ctx, iterator)
+}
+func (a *policyComplianceForClustersImpl) internalListCompliance(ctx context.Context, request ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error) {
 	var listClusterCompliancesResponse ListClusterCompliancesResponse
 	path := "/api/2.0/policies/clusters/list-compliance"
 	queryParams := make(map[string]any)
@@ -709,7 +1024,43 @@ func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyReq
 	return &policyFamily, err
 }
 
-func (a *policyFamiliesImpl) List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error) {
+// List policy families.
+//
+// Returns the list of policy definition types available to use at their latest
+// version. This API is paginated.
+func (a *policyFamiliesImpl) List(ctx context.Context, request ListPolicyFamiliesRequest) listing.Iterator[PolicyFamily] {
+
+	getNextPage := func(ctx context.Context, req ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListPolicyFamiliesResponse) []PolicyFamily {
+		return resp.PolicyFamilies
+	}
+	getNextReq := func(resp *ListPolicyFamiliesResponse) *ListPolicyFamiliesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List policy families.
+//
+// Returns the list of policy definition types available to use at their latest
+// version. This API is paginated.
+func (a *policyFamiliesImpl) ListAll(ctx context.Context, request ListPolicyFamiliesRequest) ([]PolicyFamily, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[PolicyFamily](ctx, iterator)
+}
+func (a *policyFamiliesImpl) internalList(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error) {
 	var listPolicyFamiliesResponse ListPolicyFamiliesResponse
 	path := "/api/2.0/policy-families"
 	queryParams := make(map[string]any)

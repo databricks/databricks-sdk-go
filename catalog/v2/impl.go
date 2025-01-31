@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 // unexported type that holds implementations of just AccountMetastoreAssignments API methods
@@ -46,7 +48,37 @@ func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAc
 	return &accountsMetastoreAssignment, err
 }
 
-func (a *accountMetastoreAssignmentsImpl) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) (*ListAccountMetastoreAssignmentsResponse, error) {
+// Get all workspaces assigned to a metastore.
+//
+// Gets a list of all Databricks workspace IDs that have been assigned to given
+// metastore.
+func (a *accountMetastoreAssignmentsImpl) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) listing.Iterator[int64] {
+
+	getNextPage := func(ctx context.Context, req ListAccountMetastoreAssignmentsRequest) (*ListAccountMetastoreAssignmentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListAccountMetastoreAssignmentsResponse) []int64 {
+		return resp.WorkspaceIds
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get all workspaces assigned to a metastore.
+//
+// Gets a list of all Databricks workspace IDs that have been assigned to given
+// metastore.
+func (a *accountMetastoreAssignmentsImpl) ListAll(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]int64, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[int64](ctx, iterator)
+}
+func (a *accountMetastoreAssignmentsImpl) internalList(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) (*ListAccountMetastoreAssignmentsResponse, error) {
 	var listAccountMetastoreAssignmentsResponse ListAccountMetastoreAssignmentsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/workspaces", a.client.ConfiguredAccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
@@ -103,7 +135,36 @@ func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetas
 	return &accountsMetastoreInfo, err
 }
 
-func (a *accountMetastoresImpl) List(ctx context.Context) (*ListMetastoresResponse, error) {
+// Get all metastores associated with an account.
+//
+// Gets all Unity Catalog metastores associated with an account specified by ID.
+func (a *accountMetastoresImpl) List(ctx context.Context) listing.Iterator[MetastoreInfo] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListMetastoresResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx)
+	}
+	getItems := func(resp *ListMetastoresResponse) []MetastoreInfo {
+		return resp.Metastores
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get all metastores associated with an account.
+//
+// Gets all Unity Catalog metastores associated with an account specified by ID.
+func (a *accountMetastoresImpl) ListAll(ctx context.Context) ([]MetastoreInfo, error) {
+	iterator := a.List(ctx)
+	return listing.ToSlice[MetastoreInfo](ctx, iterator)
+}
+func (a *accountMetastoresImpl) internalList(ctx context.Context) (*ListMetastoresResponse, error) {
 	var listMetastoresResponse ListMetastoresResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
 
@@ -160,7 +221,37 @@ func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAcco
 	return &accountsStorageCredentialInfo, err
 }
 
-func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListAccountStorageCredentialsResponse, error) {
+// Get all storage credentials assigned to a metastore.
+//
+// Gets a list of all storage credentials that have been assigned to given
+// metastore.
+func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) listing.Iterator[StorageCredentialInfo] {
+
+	getNextPage := func(ctx context.Context, req ListAccountStorageCredentialsRequest) (*ListAccountStorageCredentialsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListAccountStorageCredentialsResponse) []StorageCredentialInfo {
+		return resp.StorageCredentials
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get all storage credentials assigned to a metastore.
+//
+// Gets a list of all storage credentials that have been assigned to given
+// metastore.
+func (a *accountStorageCredentialsImpl) ListAll(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[StorageCredentialInfo](ctx, iterator)
+}
+func (a *accountStorageCredentialsImpl) internalList(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListAccountStorageCredentialsResponse, error) {
 	var listAccountStorageCredentialsResponse ListAccountStorageCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
@@ -243,7 +334,49 @@ func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*Cat
 	return &catalogInfo, err
 }
 
-func (a *catalogsImpl) List(ctx context.Context, request ListCatalogsRequest) (*ListCatalogsResponse, error) {
+// List catalogs.
+//
+// Gets an array of catalogs in the metastore. If the caller is the metastore
+// admin, all catalogs will be retrieved. Otherwise, only catalogs owned by the
+// caller (or for which the caller has the **USE_CATALOG** privilege) will be
+// retrieved. There is no guarantee of a specific ordering of the elements in
+// the array.
+func (a *catalogsImpl) List(ctx context.Context, request ListCatalogsRequest) listing.Iterator[CatalogInfo] {
+
+	getNextPage := func(ctx context.Context, req ListCatalogsRequest) (*ListCatalogsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListCatalogsResponse) []CatalogInfo {
+		return resp.Catalogs
+	}
+	getNextReq := func(resp *ListCatalogsResponse) *ListCatalogsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List catalogs.
+//
+// Gets an array of catalogs in the metastore. If the caller is the metastore
+// admin, all catalogs will be retrieved. Otherwise, only catalogs owned by the
+// caller (or for which the caller has the **USE_CATALOG** privilege) will be
+// retrieved. There is no guarantee of a specific ordering of the elements in
+// the array.
+func (a *catalogsImpl) ListAll(ctx context.Context, request ListCatalogsRequest) ([]CatalogInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[CatalogInfo](ctx, iterator)
+}
+func (a *catalogsImpl) internalList(ctx context.Context, request ListCatalogsRequest) (*ListCatalogsResponse, error) {
 	var listCatalogsResponse ListCatalogsResponse
 	path := "/api/2.1/unity-catalog/catalogs"
 	queryParams := make(map[string]any)
@@ -300,7 +433,41 @@ func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest)
 	return &connectionInfo, err
 }
 
-func (a *connectionsImpl) List(ctx context.Context, request ListConnectionsRequest) (*ListConnectionsResponse, error) {
+// List connections.
+//
+// List all connections.
+func (a *connectionsImpl) List(ctx context.Context, request ListConnectionsRequest) listing.Iterator[ConnectionInfo] {
+
+	getNextPage := func(ctx context.Context, req ListConnectionsRequest) (*ListConnectionsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListConnectionsResponse) []ConnectionInfo {
+		return resp.Connections
+	}
+	getNextReq := func(resp *ListConnectionsResponse) *ListConnectionsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List connections.
+//
+// List all connections.
+func (a *connectionsImpl) ListAll(ctx context.Context, request ListConnectionsRequest) ([]ConnectionInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[ConnectionInfo](ctx, iterator)
+}
+func (a *connectionsImpl) internalList(ctx context.Context, request ListConnectionsRequest) (*ListConnectionsResponse, error) {
 	var listConnectionsResponse ListConnectionsResponse
 	path := "/api/2.1/unity-catalog/connections"
 	queryParams := make(map[string]any)
@@ -368,7 +535,51 @@ func (a *credentialsImpl) GetCredential(ctx context.Context, request GetCredenti
 	return &credentialInfo, err
 }
 
-func (a *credentialsImpl) ListCredentials(ctx context.Context, request ListCredentialsRequest) (*ListCredentialsResponse, error) {
+// List credentials.
+//
+// Gets an array of credentials (as __CredentialInfo__ objects).
+//
+// The array is limited to only the credentials that the caller has permission
+// to access. If the caller is a metastore admin, retrieval of credentials is
+// unrestricted. There is no guarantee of a specific ordering of the elements in
+// the array.
+func (a *credentialsImpl) ListCredentials(ctx context.Context, request ListCredentialsRequest) listing.Iterator[CredentialInfo] {
+
+	getNextPage := func(ctx context.Context, req ListCredentialsRequest) (*ListCredentialsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListCredentials(ctx, req)
+	}
+	getItems := func(resp *ListCredentialsResponse) []CredentialInfo {
+		return resp.Credentials
+	}
+	getNextReq := func(resp *ListCredentialsResponse) *ListCredentialsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List credentials.
+//
+// Gets an array of credentials (as __CredentialInfo__ objects).
+//
+// The array is limited to only the credentials that the caller has permission
+// to access. If the caller is a metastore admin, retrieval of credentials is
+// unrestricted. There is no guarantee of a specific ordering of the elements in
+// the array.
+func (a *credentialsImpl) ListCredentialsAll(ctx context.Context, request ListCredentialsRequest) ([]CredentialInfo, error) {
+	iterator := a.ListCredentials(ctx, request)
+	return listing.ToSlice[CredentialInfo](ctx, iterator)
+}
+func (a *credentialsImpl) internalListCredentials(ctx context.Context, request ListCredentialsRequest) (*ListCredentialsResponse, error) {
 	var listCredentialsResponse ListCredentialsResponse
 	path := "/api/2.1/unity-catalog/credentials"
 	queryParams := make(map[string]any)
@@ -436,7 +647,49 @@ func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLoca
 	return &externalLocationInfo, err
 }
 
-func (a *externalLocationsImpl) List(ctx context.Context, request ListExternalLocationsRequest) (*ListExternalLocationsResponse, error) {
+// List external locations.
+//
+// Gets an array of external locations (__ExternalLocationInfo__ objects) from
+// the metastore. The caller must be a metastore admin, the owner of the
+// external location, or a user that has some privilege on the external
+// location. There is no guarantee of a specific ordering of the elements in the
+// array.
+func (a *externalLocationsImpl) List(ctx context.Context, request ListExternalLocationsRequest) listing.Iterator[ExternalLocationInfo] {
+
+	getNextPage := func(ctx context.Context, req ListExternalLocationsRequest) (*ListExternalLocationsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListExternalLocationsResponse) []ExternalLocationInfo {
+		return resp.ExternalLocations
+	}
+	getNextReq := func(resp *ListExternalLocationsResponse) *ListExternalLocationsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List external locations.
+//
+// Gets an array of external locations (__ExternalLocationInfo__ objects) from
+// the metastore. The caller must be a metastore admin, the owner of the
+// external location, or a user that has some privilege on the external
+// location. There is no guarantee of a specific ordering of the elements in the
+// array.
+func (a *externalLocationsImpl) ListAll(ctx context.Context, request ListExternalLocationsRequest) ([]ExternalLocationInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[ExternalLocationInfo](ctx, iterator)
+}
+func (a *externalLocationsImpl) internalList(ctx context.Context, request ListExternalLocationsRequest) (*ListExternalLocationsResponse, error) {
 	var listExternalLocationsResponse ListExternalLocationsResponse
 	path := "/api/2.1/unity-catalog/external-locations"
 	queryParams := make(map[string]any)
@@ -493,7 +746,53 @@ func (a *functionsImpl) Get(ctx context.Context, request GetFunctionRequest) (*F
 	return &functionInfo, err
 }
 
-func (a *functionsImpl) List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error) {
+// List functions.
+//
+// List functions within the specified parent catalog and schema. If the user is
+// a metastore admin, all functions are returned in the output list. Otherwise,
+// the user must have the **USE_CATALOG** privilege on the catalog and the
+// **USE_SCHEMA** privilege on the schema, and the output list contains only
+// functions for which either the user has the **EXECUTE** privilege or the user
+// is the owner. There is no guarantee of a specific ordering of the elements in
+// the array.
+func (a *functionsImpl) List(ctx context.Context, request ListFunctionsRequest) listing.Iterator[FunctionInfo] {
+
+	getNextPage := func(ctx context.Context, req ListFunctionsRequest) (*ListFunctionsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListFunctionsResponse) []FunctionInfo {
+		return resp.Functions
+	}
+	getNextReq := func(resp *ListFunctionsResponse) *ListFunctionsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List functions.
+//
+// List functions within the specified parent catalog and schema. If the user is
+// a metastore admin, all functions are returned in the output list. Otherwise,
+// the user must have the **USE_CATALOG** privilege on the catalog and the
+// **USE_SCHEMA** privilege on the schema, and the output list contains only
+// functions for which either the user has the **EXECUTE** privilege or the user
+// is the owner. There is no guarantee of a specific ordering of the elements in
+// the array.
+func (a *functionsImpl) ListAll(ctx context.Context, request ListFunctionsRequest) ([]FunctionInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[FunctionInfo](ctx, iterator)
+}
+func (a *functionsImpl) internalList(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error) {
 	var listFunctionsResponse ListFunctionsResponse
 	path := "/api/2.1/unity-catalog/functions"
 	queryParams := make(map[string]any)
@@ -607,7 +906,40 @@ func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (
 	return &metastoreInfo, err
 }
 
-func (a *metastoresImpl) List(ctx context.Context) (*ListMetastoresResponse, error) {
+// List metastores.
+//
+// Gets an array of the available metastores (as __MetastoreInfo__ objects). The
+// caller must be an admin to retrieve this info. There is no guarantee of a
+// specific ordering of the elements in the array.
+func (a *metastoresImpl) List(ctx context.Context) listing.Iterator[MetastoreInfo] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListMetastoresResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx)
+	}
+	getItems := func(resp *ListMetastoresResponse) []MetastoreInfo {
+		return resp.Metastores
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List metastores.
+//
+// Gets an array of the available metastores (as __MetastoreInfo__ objects). The
+// caller must be an admin to retrieve this info. There is no guarantee of a
+// specific ordering of the elements in the array.
+func (a *metastoresImpl) ListAll(ctx context.Context) ([]MetastoreInfo, error) {
+	iterator := a.List(ctx)
+	return listing.ToSlice[MetastoreInfo](ctx, iterator)
+}
+func (a *metastoresImpl) internalList(ctx context.Context) (*ListMetastoresResponse, error) {
 	var listMetastoresResponse ListMetastoresResponse
 	path := "/api/2.1/unity-catalog/metastores"
 
@@ -693,7 +1025,65 @@ func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRe
 	return &modelVersionInfo, err
 }
 
-func (a *modelVersionsImpl) List(ctx context.Context, request ListModelVersionsRequest) (*ListModelVersionsResponse, error) {
+// List Model Versions.
+//
+// List model versions. You can list model versions under a particular schema,
+// or list all model versions in the current metastore.
+//
+// The returned models are filtered based on the privileges of the calling user.
+// For example, the metastore admin is able to list all the model versions. A
+// regular user needs to be the owner or have the **EXECUTE** privilege on the
+// parent registered model to recieve the model versions in the response. For
+// the latter case, the caller must also be the owner or have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema.
+//
+// There is no guarantee of a specific ordering of the elements in the response.
+// The elements in the response will not contain any aliases or tags.
+func (a *modelVersionsImpl) List(ctx context.Context, request ListModelVersionsRequest) listing.Iterator[ModelVersionInfo] {
+
+	getNextPage := func(ctx context.Context, req ListModelVersionsRequest) (*ListModelVersionsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListModelVersionsResponse) []ModelVersionInfo {
+		return resp.ModelVersions
+	}
+	getNextReq := func(resp *ListModelVersionsResponse) *ListModelVersionsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Model Versions.
+//
+// List model versions. You can list model versions under a particular schema,
+// or list all model versions in the current metastore.
+//
+// The returned models are filtered based on the privileges of the calling user.
+// For example, the metastore admin is able to list all the model versions. A
+// regular user needs to be the owner or have the **EXECUTE** privilege on the
+// parent registered model to recieve the model versions in the response. For
+// the latter case, the caller must also be the owner or have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema.
+//
+// There is no guarantee of a specific ordering of the elements in the response.
+// The elements in the response will not contain any aliases or tags.
+func (a *modelVersionsImpl) ListAll(ctx context.Context, request ListModelVersionsRequest) ([]ModelVersionInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[ModelVersionInfo](ctx, iterator)
+}
+func (a *modelVersionsImpl) internalList(ctx context.Context, request ListModelVersionsRequest) (*ListModelVersionsResponse, error) {
 	var listModelVersionsResponse ListModelVersionsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions", request.FullName)
 	queryParams := make(map[string]any)
@@ -890,7 +1280,63 @@ func (a *registeredModelsImpl) Get(ctx context.Context, request GetRegisteredMod
 	return &registeredModelInfo, err
 }
 
-func (a *registeredModelsImpl) List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error) {
+// List Registered Models.
+//
+// List registered models. You can list registered models under a particular
+// schema, or list all registered models in the current metastore.
+//
+// The returned models are filtered based on the privileges of the calling user.
+// For example, the metastore admin is able to list all the registered models. A
+// regular user needs to be the owner or have the **EXECUTE** privilege on the
+// registered model to recieve the registered models in the response. For the
+// latter case, the caller must also be the owner or have the **USE_CATALOG**
+// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+// parent schema.
+//
+// There is no guarantee of a specific ordering of the elements in the response.
+func (a *registeredModelsImpl) List(ctx context.Context, request ListRegisteredModelsRequest) listing.Iterator[RegisteredModelInfo] {
+
+	getNextPage := func(ctx context.Context, req ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListRegisteredModelsResponse) []RegisteredModelInfo {
+		return resp.RegisteredModels
+	}
+	getNextReq := func(resp *ListRegisteredModelsResponse) *ListRegisteredModelsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Registered Models.
+//
+// List registered models. You can list registered models under a particular
+// schema, or list all registered models in the current metastore.
+//
+// The returned models are filtered based on the privileges of the calling user.
+// For example, the metastore admin is able to list all the registered models. A
+// regular user needs to be the owner or have the **EXECUTE** privilege on the
+// registered model to recieve the registered models in the response. For the
+// latter case, the caller must also be the owner or have the **USE_CATALOG**
+// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+// parent schema.
+//
+// There is no guarantee of a specific ordering of the elements in the response.
+func (a *registeredModelsImpl) ListAll(ctx context.Context, request ListRegisteredModelsRequest) ([]RegisteredModelInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[RegisteredModelInfo](ctx, iterator)
+}
+func (a *registeredModelsImpl) internalList(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error) {
 	var listRegisteredModelsResponse ListRegisteredModelsResponse
 	path := "/api/2.1/unity-catalog/models"
 	queryParams := make(map[string]any)
@@ -937,7 +1383,45 @@ func (a *resourceQuotasImpl) GetQuota(ctx context.Context, request GetQuotaReque
 	return &getQuotaResponse, err
 }
 
-func (a *resourceQuotasImpl) ListQuotas(ctx context.Context, request ListQuotasRequest) (*ListQuotasResponse, error) {
+// List all resource quotas under a metastore.
+//
+// ListQuotas returns all quota values under the metastore. There are no SLAs on
+// the freshness of the counts returned. This API does not trigger a refresh of
+// quota counts.
+func (a *resourceQuotasImpl) ListQuotas(ctx context.Context, request ListQuotasRequest) listing.Iterator[QuotaInfo] {
+
+	getNextPage := func(ctx context.Context, req ListQuotasRequest) (*ListQuotasResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListQuotas(ctx, req)
+	}
+	getItems := func(resp *ListQuotasResponse) []QuotaInfo {
+		return resp.Quotas
+	}
+	getNextReq := func(resp *ListQuotasResponse) *ListQuotasRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List all resource quotas under a metastore.
+//
+// ListQuotas returns all quota values under the metastore. There are no SLAs on
+// the freshness of the counts returned. This API does not trigger a refresh of
+// quota counts.
+func (a *resourceQuotasImpl) ListQuotasAll(ctx context.Context, request ListQuotasRequest) ([]QuotaInfo, error) {
+	iterator := a.ListQuotas(ctx, request)
+	return listing.ToSlice[QuotaInfo](ctx, iterator)
+}
+func (a *resourceQuotasImpl) internalListQuotas(ctx context.Context, request ListQuotasRequest) (*ListQuotasResponse, error) {
 	var listQuotasResponse ListQuotasResponse
 	path := "/api/2.1/unity-catalog/resource-quotas/all-resource-quotas"
 	queryParams := make(map[string]any)
@@ -983,7 +1467,49 @@ func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*Schem
 	return &schemaInfo, err
 }
 
-func (a *schemasImpl) List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error) {
+// List schemas.
+//
+// Gets an array of schemas for a catalog in the metastore. If the caller is the
+// metastore admin or the owner of the parent catalog, all schemas for the
+// catalog will be retrieved. Otherwise, only schemas owned by the caller (or
+// for which the caller has the **USE_SCHEMA** privilege) will be retrieved.
+// There is no guarantee of a specific ordering of the elements in the array.
+func (a *schemasImpl) List(ctx context.Context, request ListSchemasRequest) listing.Iterator[SchemaInfo] {
+
+	getNextPage := func(ctx context.Context, req ListSchemasRequest) (*ListSchemasResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListSchemasResponse) []SchemaInfo {
+		return resp.Schemas
+	}
+	getNextReq := func(resp *ListSchemasResponse) *ListSchemasRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List schemas.
+//
+// Gets an array of schemas for a catalog in the metastore. If the caller is the
+// metastore admin or the owner of the parent catalog, all schemas for the
+// catalog will be retrieved. Otherwise, only schemas owned by the caller (or
+// for which the caller has the **USE_SCHEMA** privilege) will be retrieved.
+// There is no guarantee of a specific ordering of the elements in the array.
+func (a *schemasImpl) ListAll(ctx context.Context, request ListSchemasRequest) ([]SchemaInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[SchemaInfo](ctx, iterator)
+}
+func (a *schemasImpl) internalList(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error) {
 	var listSchemasResponse ListSchemasResponse
 	path := "/api/2.1/unity-catalog/schemas"
 	queryParams := make(map[string]any)
@@ -1040,7 +1566,49 @@ func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCred
 	return &storageCredentialInfo, err
 }
 
-func (a *storageCredentialsImpl) List(ctx context.Context, request ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error) {
+// List credentials.
+//
+// Gets an array of storage credentials (as __StorageCredentialInfo__ objects).
+// The array is limited to only those storage credentials the caller has
+// permission to access. If the caller is a metastore admin, retrieval of
+// credentials is unrestricted. There is no guarantee of a specific ordering of
+// the elements in the array.
+func (a *storageCredentialsImpl) List(ctx context.Context, request ListStorageCredentialsRequest) listing.Iterator[StorageCredentialInfo] {
+
+	getNextPage := func(ctx context.Context, req ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListStorageCredentialsResponse) []StorageCredentialInfo {
+		return resp.StorageCredentials
+	}
+	getNextReq := func(resp *ListStorageCredentialsResponse) *ListStorageCredentialsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List credentials.
+//
+// Gets an array of storage credentials (as __StorageCredentialInfo__ objects).
+// The array is limited to only those storage credentials the caller has
+// permission to access. If the caller is a metastore admin, retrieval of
+// credentials is unrestricted. There is no guarantee of a specific ordering of
+// the elements in the array.
+func (a *storageCredentialsImpl) ListAll(ctx context.Context, request ListStorageCredentialsRequest) ([]StorageCredentialInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[StorageCredentialInfo](ctx, iterator)
+}
+func (a *storageCredentialsImpl) internalList(ctx context.Context, request ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error) {
 	var listStorageCredentialsResponse ListStorageCredentialsResponse
 	path := "/api/2.1/unity-catalog/storage-credentials"
 	queryParams := make(map[string]any)
@@ -1097,7 +1665,43 @@ func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) e
 	return err
 }
 
-func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error) {
+// List system schemas.
+//
+// Gets an array of system schemas for a metastore. The caller must be an
+// account admin or a metastore admin.
+func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasRequest) listing.Iterator[SystemSchemaInfo] {
+
+	getNextPage := func(ctx context.Context, req ListSystemSchemasRequest) (*ListSystemSchemasResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListSystemSchemasResponse) []SystemSchemaInfo {
+		return resp.Schemas
+	}
+	getNextReq := func(resp *ListSystemSchemasResponse) *ListSystemSchemasRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List system schemas.
+//
+// Gets an array of system schemas for a metastore. The caller must be an
+// account admin or a metastore admin.
+func (a *systemSchemasImpl) ListAll(ctx context.Context, request ListSystemSchemasRequest) ([]SystemSchemaInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[SystemSchemaInfo](ctx, iterator)
+}
+func (a *systemSchemasImpl) internalList(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error) {
 	var listSystemSchemasResponse ListSystemSchemasResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas", request.MetastoreId)
 	queryParams := make(map[string]any)
@@ -1168,7 +1772,51 @@ func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableIn
 	return &tableInfo, err
 }
 
-func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error) {
+// List tables.
+//
+// Gets an array of all tables for the current metastore under the parent
+// catalog and schema. The caller must be a metastore admin or an owner of (or
+// have the **SELECT** privilege on) the table. For the latter case, the caller
+// must also be the owner or have the **USE_CATALOG** privilege on the parent
+// catalog and the **USE_SCHEMA** privilege on the parent schema. There is no
+// guarantee of a specific ordering of the elements in the array.
+func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) listing.Iterator[TableInfo] {
+
+	getNextPage := func(ctx context.Context, req ListTablesRequest) (*ListTablesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListTablesResponse) []TableInfo {
+		return resp.Tables
+	}
+	getNextReq := func(resp *ListTablesResponse) *ListTablesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List tables.
+//
+// Gets an array of all tables for the current metastore under the parent
+// catalog and schema. The caller must be a metastore admin or an owner of (or
+// have the **SELECT** privilege on) the table. For the latter case, the caller
+// must also be the owner or have the **USE_CATALOG** privilege on the parent
+// catalog and the **USE_SCHEMA** privilege on the parent schema. There is no
+// guarantee of a specific ordering of the elements in the array.
+func (a *tablesImpl) ListAll(ctx context.Context, request ListTablesRequest) ([]TableInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[TableInfo](ctx, iterator)
+}
+func (a *tablesImpl) internalList(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error) {
 	var listTablesResponse ListTablesResponse
 	path := "/api/2.1/unity-catalog/tables"
 	queryParams := make(map[string]any)
@@ -1178,7 +1826,61 @@ func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) (*List
 	return &listTablesResponse, err
 }
 
-func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error) {
+// List table summaries.
+//
+// Gets an array of summaries for tables for a schema and catalog within the
+// metastore. The table summaries returned are either:
+//
+// * summaries for tables (within the current metastore and parent catalog and
+// schema), when the user is a metastore admin, or: * summaries for tables and
+// schemas (within the current metastore and parent catalog) for which the user
+// has ownership or the **SELECT** privilege on the table and ownership or
+// **USE_SCHEMA** privilege on the schema, provided that the user also has
+// ownership or the **USE_CATALOG** privilege on the parent catalog.
+//
+// There is no guarantee of a specific ordering of the elements in the array.
+func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesRequest) listing.Iterator[TableSummary] {
+
+	getNextPage := func(ctx context.Context, req ListSummariesRequest) (*ListTableSummariesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListSummaries(ctx, req)
+	}
+	getItems := func(resp *ListTableSummariesResponse) []TableSummary {
+		return resp.Tables
+	}
+	getNextReq := func(resp *ListTableSummariesResponse) *ListSummariesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List table summaries.
+//
+// Gets an array of summaries for tables for a schema and catalog within the
+// metastore. The table summaries returned are either:
+//
+// * summaries for tables (within the current metastore and parent catalog and
+// schema), when the user is a metastore admin, or: * summaries for tables and
+// schemas (within the current metastore and parent catalog) for which the user
+// has ownership or the **SELECT** privilege on the table and ownership or
+// **USE_SCHEMA** privilege on the schema, provided that the user also has
+// ownership or the **USE_CATALOG** privilege on the parent catalog.
+//
+// There is no guarantee of a specific ordering of the elements in the array.
+func (a *tablesImpl) ListSummariesAll(ctx context.Context, request ListSummariesRequest) ([]TableSummary, error) {
+	iterator := a.ListSummaries(ctx, request)
+	return listing.ToSlice[TableSummary](ctx, iterator)
+}
+func (a *tablesImpl) internalListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error) {
 	var listTableSummariesResponse ListTableSummariesResponse
 	path := "/api/2.1/unity-catalog/table-summaries"
 	queryParams := make(map[string]any)
@@ -1240,7 +1942,61 @@ func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) e
 	return err
 }
 
-func (a *volumesImpl) List(ctx context.Context, request ListVolumesRequest) (*ListVolumesResponseContent, error) {
+// List Volumes.
+//
+// Gets an array of volumes for the current metastore under the parent catalog
+// and schema.
+//
+// The returned volumes are filtered based on the privileges of the calling
+// user. For example, the metastore admin is able to list all the volumes. A
+// regular user needs to be the owner or have the **READ VOLUME** privilege on
+// the volume to recieve the volumes in the response. For the latter case, the
+// caller must also be the owner or have the **USE_CATALOG** privilege on the
+// parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+//
+// There is no guarantee of a specific ordering of the elements in the array.
+func (a *volumesImpl) List(ctx context.Context, request ListVolumesRequest) listing.Iterator[VolumeInfo] {
+
+	getNextPage := func(ctx context.Context, req ListVolumesRequest) (*ListVolumesResponseContent, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListVolumesResponseContent) []VolumeInfo {
+		return resp.Volumes
+	}
+	getNextReq := func(resp *ListVolumesResponseContent) *ListVolumesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Volumes.
+//
+// Gets an array of volumes for the current metastore under the parent catalog
+// and schema.
+//
+// The returned volumes are filtered based on the privileges of the calling
+// user. For example, the metastore admin is able to list all the volumes. A
+// regular user needs to be the owner or have the **READ VOLUME** privilege on
+// the volume to recieve the volumes in the response. For the latter case, the
+// caller must also be the owner or have the **USE_CATALOG** privilege on the
+// parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+//
+// There is no guarantee of a specific ordering of the elements in the array.
+func (a *volumesImpl) ListAll(ctx context.Context, request ListVolumesRequest) ([]VolumeInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[VolumeInfo](ctx, iterator)
+}
+func (a *volumesImpl) internalList(ctx context.Context, request ListVolumesRequest) (*ListVolumesResponseContent, error) {
 	var listVolumesResponseContent ListVolumesResponseContent
 	path := "/api/2.1/unity-catalog/volumes"
 	queryParams := make(map[string]any)
@@ -1286,7 +2042,43 @@ func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBin
 	return &currentWorkspaceBindings, err
 }
 
-func (a *workspaceBindingsImpl) GetBindings(ctx context.Context, request GetBindingsRequest) (*WorkspaceBindingsResponse, error) {
+// Get securable workspace bindings.
+//
+// Gets workspace bindings of the securable. The caller must be a metastore
+// admin or an owner of the securable.
+func (a *workspaceBindingsImpl) GetBindings(ctx context.Context, request GetBindingsRequest) listing.Iterator[WorkspaceBinding] {
+
+	getNextPage := func(ctx context.Context, req GetBindingsRequest) (*WorkspaceBindingsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalGetBindings(ctx, req)
+	}
+	getItems := func(resp *WorkspaceBindingsResponse) []WorkspaceBinding {
+		return resp.Bindings
+	}
+	getNextReq := func(resp *WorkspaceBindingsResponse) *GetBindingsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Get securable workspace bindings.
+//
+// Gets workspace bindings of the securable. The caller must be a metastore
+// admin or an owner of the securable.
+func (a *workspaceBindingsImpl) GetBindingsAll(ctx context.Context, request GetBindingsRequest) ([]WorkspaceBinding, error) {
+	iterator := a.GetBindings(ctx, request)
+	return listing.ToSlice[WorkspaceBinding](ctx, iterator)
+}
+func (a *workspaceBindingsImpl) internalGetBindings(ctx context.Context, request GetBindingsRequest) (*WorkspaceBindingsResponse, error) {
 	var workspaceBindingsResponse WorkspaceBindingsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", request.SecurableType, request.SecurableName)
 	queryParams := make(map[string]any)
