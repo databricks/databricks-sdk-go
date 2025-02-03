@@ -1,5 +1,39 @@
 # Version changelog
 
+## [Release] Release v0.57.0
+
+### New Features and Improvements
+
+ * Add support for async OAuth token refreshes ([#1135](https://github.com/databricks/databricks-sdk-go/pull/1135)).
+
+
+### API Changes:
+
+ * Added [a.BudgetPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/billing#BudgetPolicyAPI) account-level service.
+ * Added [a.EnableIpAccessLists](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EnableIpAccessListsAPI) account-level service.
+ * Added [w.LakeviewEmbedded](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewEmbeddedAPI) workspace-level service and [w.QueryExecution](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#QueryExecutionAPI) workspace-level service.
+ * Added [w.RedashConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#RedashConfigAPI) workspace-level service.
+ * Added `GcpOauthToken` field for [catalog.TemporaryCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TemporaryCredentials).
+ * Added `Options` field for [catalog.UpdateCatalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateCatalog).
+ * Added `StatementId` field for [dashboards.QueryAttachment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#QueryAttachment).
+ * Added `EffectivePerformanceTarget` field for [jobs.BaseRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseRun).
+ * Added `PerformanceTarget` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
+ * Added `PerformanceTarget` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+ * Added `EffectivePerformanceTarget` field for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+ * Added `PerformanceTarget` field for [jobs.RunNow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunNow).
+ * Added `Disabled` and `EffectivePerformanceTarget` fields for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+ * Added `UserAuthorizedScopes` field for [oauth2.CreateCustomAppIntegration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#CreateCustomAppIntegration).
+ * Added `UserAuthorizedScopes` field for [oauth2.GetCustomAppIntegrationOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#GetCustomAppIntegrationOutput).
+ * Added `UserAuthorizedScopes` field for [oauth2.UpdateCustomAppIntegration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#UpdateCustomAppIntegration).
+ * Added `Contents` field for [serving.HttpRequestResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#HttpRequestResponse).
+ * Changed `HttpRequest` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service to type `HttpRequest` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service.
+ * Changed `HttpRequest` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service to return [serving.HttpRequestResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#HttpRequestResponse).
+ * Removed `SecurableKind` field for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo).
+ * Removed `SecurableKind` field for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+ * Removed `StatusCode` and `Text` fields for [serving.ExternalFunctionResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalFunctionResponse).
+
+OpenAPI SHA: c72c58f97b950fcb924a90ef164bcb10cfcd5ece, Date: 2025-02-03
+
 ## [Release] Release v0.56.1
 
 ### Bug Fixes

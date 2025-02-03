@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enable Ip Access Lists, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -277,6 +277,11 @@ type AccountSettingsInterface interface {
 	// prior to 13.3LTS.
 	DisableLegacyFeatures() DisableLegacyFeaturesInterface
 
+	// Controls the enforcement of IP access lists for accessing the account
+	// console. Allowing you to enable or disable restricted access based on IP
+	// addresses.
+	EnableIpAccessLists() EnableIpAccessListsInterface
+
 	// The enhanced security monitoring setting at the account level controls
 	// whether to enable the feature on new workspaces. By default, this
 	// account-level setting is disabled for new workspaces. After workspace
@@ -307,6 +312,8 @@ func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 
 		disableLegacyFeatures: NewDisableLegacyFeatures(client),
 
+		enableIpAccessLists: NewEnableIpAccessLists(client),
+
 		esmEnablementAccount: NewEsmEnablementAccount(client),
 
 		personalCompute: NewPersonalCompute(client),
@@ -335,6 +342,11 @@ type AccountSettingsAPI struct {
 	// prior to 13.3LTS.
 	disableLegacyFeatures DisableLegacyFeaturesInterface
 
+	// Controls the enforcement of IP access lists for accessing the account
+	// console. Allowing you to enable or disable restricted access based on IP
+	// addresses.
+	enableIpAccessLists EnableIpAccessListsInterface
+
 	// The enhanced security monitoring setting at the account level controls
 	// whether to enable the feature on new workspaces. By default, this
 	// account-level setting is disabled for new workspaces. After workspace
@@ -361,6 +373,10 @@ func (a *AccountSettingsAPI) CspEnablementAccount() CspEnablementAccountInterfac
 
 func (a *AccountSettingsAPI) DisableLegacyFeatures() DisableLegacyFeaturesInterface {
 	return a.disableLegacyFeatures
+}
+
+func (a *AccountSettingsAPI) EnableIpAccessLists() EnableIpAccessListsInterface {
+	return a.enableIpAccessLists
 }
 
 func (a *AccountSettingsAPI) EsmEnablementAccount() EsmEnablementAccountInterface {
@@ -721,6 +737,39 @@ func NewDisableLegacyFeatures(client *client.DatabricksClient) *DisableLegacyFea
 // 13.3LTS.
 type DisableLegacyFeaturesAPI struct {
 	disableLegacyFeaturesImpl
+}
+
+type EnableIpAccessListsInterface interface {
+
+	// Delete the account IP access toggle setting.
+	//
+	// Reverts the value of the account IP access toggle setting to default (ON)
+	Delete(ctx context.Context, request DeleteAccountIpAccessEnableRequest) (*DeleteAccountIpAccessEnableResponse, error)
+
+	// Get the account IP access toggle setting.
+	//
+	// Gets the value of the account IP access toggle setting.
+	Get(ctx context.Context, request GetAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error)
+
+	// Update the account IP access toggle setting.
+	//
+	// Updates the value of the account IP access toggle setting.
+	Update(ctx context.Context, request UpdateAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error)
+}
+
+func NewEnableIpAccessLists(client *client.DatabricksClient) *EnableIpAccessListsAPI {
+	return &EnableIpAccessListsAPI{
+		enableIpAccessListsImpl: enableIpAccessListsImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls the enforcement of IP access lists for accessing the account
+// console. Allowing you to enable or disable restricted access based on IP
+// addresses.
+type EnableIpAccessListsAPI struct {
+	enableIpAccessListsImpl
 }
 
 type EnhancedSecurityMonitoringInterface interface {

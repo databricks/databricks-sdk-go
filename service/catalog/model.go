@@ -378,8 +378,6 @@ type CatalogInfo struct {
 	ProviderName string `json:"provider_name,omitempty"`
 	// Status of an asynchronously provisioned resource.
 	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
-	// Kind of catalog securable.
-	SecurableKind CatalogInfoSecurableKind `json:"securable_kind,omitempty"`
 
 	SecurableType string `json:"securable_type,omitempty"`
 	// The name of the share under the share provider.
@@ -402,56 +400,6 @@ func (s *CatalogInfo) UnmarshalJSON(b []byte) error {
 
 func (s CatalogInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-// Kind of catalog securable.
-type CatalogInfoSecurableKind string
-
-const CatalogInfoSecurableKindCatalogDeltasharing CatalogInfoSecurableKind = `CATALOG_DELTASHARING`
-
-const CatalogInfoSecurableKindCatalogForeignBigquery CatalogInfoSecurableKind = `CATALOG_FOREIGN_BIGQUERY`
-
-const CatalogInfoSecurableKindCatalogForeignDatabricks CatalogInfoSecurableKind = `CATALOG_FOREIGN_DATABRICKS`
-
-const CatalogInfoSecurableKindCatalogForeignMysql CatalogInfoSecurableKind = `CATALOG_FOREIGN_MYSQL`
-
-const CatalogInfoSecurableKindCatalogForeignPostgresql CatalogInfoSecurableKind = `CATALOG_FOREIGN_POSTGRESQL`
-
-const CatalogInfoSecurableKindCatalogForeignRedshift CatalogInfoSecurableKind = `CATALOG_FOREIGN_REDSHIFT`
-
-const CatalogInfoSecurableKindCatalogForeignSnowflake CatalogInfoSecurableKind = `CATALOG_FOREIGN_SNOWFLAKE`
-
-const CatalogInfoSecurableKindCatalogForeignSqldw CatalogInfoSecurableKind = `CATALOG_FOREIGN_SQLDW`
-
-const CatalogInfoSecurableKindCatalogForeignSqlserver CatalogInfoSecurableKind = `CATALOG_FOREIGN_SQLSERVER`
-
-const CatalogInfoSecurableKindCatalogInternal CatalogInfoSecurableKind = `CATALOG_INTERNAL`
-
-const CatalogInfoSecurableKindCatalogStandard CatalogInfoSecurableKind = `CATALOG_STANDARD`
-
-const CatalogInfoSecurableKindCatalogSystem CatalogInfoSecurableKind = `CATALOG_SYSTEM`
-
-const CatalogInfoSecurableKindCatalogSystemDeltasharing CatalogInfoSecurableKind = `CATALOG_SYSTEM_DELTASHARING`
-
-// String representation for [fmt.Print]
-func (f *CatalogInfoSecurableKind) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *CatalogInfoSecurableKind) Set(v string) error {
-	switch v {
-	case `CATALOG_DELTASHARING`, `CATALOG_FOREIGN_BIGQUERY`, `CATALOG_FOREIGN_DATABRICKS`, `CATALOG_FOREIGN_MYSQL`, `CATALOG_FOREIGN_POSTGRESQL`, `CATALOG_FOREIGN_REDSHIFT`, `CATALOG_FOREIGN_SNOWFLAKE`, `CATALOG_FOREIGN_SQLDW`, `CATALOG_FOREIGN_SQLSERVER`, `CATALOG_INTERNAL`, `CATALOG_STANDARD`, `CATALOG_SYSTEM`, `CATALOG_SYSTEM_DELTASHARING`:
-		*f = CatalogInfoSecurableKind(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CATALOG_DELTASHARING", "CATALOG_FOREIGN_BIGQUERY", "CATALOG_FOREIGN_DATABRICKS", "CATALOG_FOREIGN_MYSQL", "CATALOG_FOREIGN_POSTGRESQL", "CATALOG_FOREIGN_REDSHIFT", "CATALOG_FOREIGN_SNOWFLAKE", "CATALOG_FOREIGN_SQLDW", "CATALOG_FOREIGN_SQLSERVER", "CATALOG_INTERNAL", "CATALOG_STANDARD", "CATALOG_SYSTEM", "CATALOG_SYSTEM_DELTASHARING"`, v)
-	}
-}
-
-// Type always returns CatalogInfoSecurableKind to satisfy [pflag.Value] interface
-func (f *CatalogInfoSecurableKind) Type() string {
-	return "CatalogInfoSecurableKind"
 }
 
 // Whether the current securable is accessible from all workspaces or a specific
@@ -676,8 +624,6 @@ type ConnectionInfo struct {
 	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
-	// Kind of connection securable.
-	SecurableKind ConnectionInfoSecurableKind `json:"securable_kind,omitempty"`
 
 	SecurableType string `json:"securable_type,omitempty"`
 	// Time at which this connection was updated, in epoch milliseconds.
@@ -696,56 +642,6 @@ func (s *ConnectionInfo) UnmarshalJSON(b []byte) error {
 
 func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-// Kind of connection securable.
-type ConnectionInfoSecurableKind string
-
-const ConnectionInfoSecurableKindConnectionBigquery ConnectionInfoSecurableKind = `CONNECTION_BIGQUERY`
-
-const ConnectionInfoSecurableKindConnectionBuiltinHiveMetastore ConnectionInfoSecurableKind = `CONNECTION_BUILTIN_HIVE_METASTORE`
-
-const ConnectionInfoSecurableKindConnectionDatabricks ConnectionInfoSecurableKind = `CONNECTION_DATABRICKS`
-
-const ConnectionInfoSecurableKindConnectionExternalHiveMetastore ConnectionInfoSecurableKind = `CONNECTION_EXTERNAL_HIVE_METASTORE`
-
-const ConnectionInfoSecurableKindConnectionGlue ConnectionInfoSecurableKind = `CONNECTION_GLUE`
-
-const ConnectionInfoSecurableKindConnectionHttpBearer ConnectionInfoSecurableKind = `CONNECTION_HTTP_BEARER`
-
-const ConnectionInfoSecurableKindConnectionMysql ConnectionInfoSecurableKind = `CONNECTION_MYSQL`
-
-const ConnectionInfoSecurableKindConnectionOnlineCatalog ConnectionInfoSecurableKind = `CONNECTION_ONLINE_CATALOG`
-
-const ConnectionInfoSecurableKindConnectionPostgresql ConnectionInfoSecurableKind = `CONNECTION_POSTGRESQL`
-
-const ConnectionInfoSecurableKindConnectionRedshift ConnectionInfoSecurableKind = `CONNECTION_REDSHIFT`
-
-const ConnectionInfoSecurableKindConnectionSnowflake ConnectionInfoSecurableKind = `CONNECTION_SNOWFLAKE`
-
-const ConnectionInfoSecurableKindConnectionSqldw ConnectionInfoSecurableKind = `CONNECTION_SQLDW`
-
-const ConnectionInfoSecurableKindConnectionSqlserver ConnectionInfoSecurableKind = `CONNECTION_SQLSERVER`
-
-// String representation for [fmt.Print]
-func (f *ConnectionInfoSecurableKind) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ConnectionInfoSecurableKind) Set(v string) error {
-	switch v {
-	case `CONNECTION_BIGQUERY`, `CONNECTION_BUILTIN_HIVE_METASTORE`, `CONNECTION_DATABRICKS`, `CONNECTION_EXTERNAL_HIVE_METASTORE`, `CONNECTION_GLUE`, `CONNECTION_HTTP_BEARER`, `CONNECTION_MYSQL`, `CONNECTION_ONLINE_CATALOG`, `CONNECTION_POSTGRESQL`, `CONNECTION_REDSHIFT`, `CONNECTION_SNOWFLAKE`, `CONNECTION_SQLDW`, `CONNECTION_SQLSERVER`:
-		*f = ConnectionInfoSecurableKind(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CONNECTION_BIGQUERY", "CONNECTION_BUILTIN_HIVE_METASTORE", "CONNECTION_DATABRICKS", "CONNECTION_EXTERNAL_HIVE_METASTORE", "CONNECTION_GLUE", "CONNECTION_HTTP_BEARER", "CONNECTION_MYSQL", "CONNECTION_ONLINE_CATALOG", "CONNECTION_POSTGRESQL", "CONNECTION_REDSHIFT", "CONNECTION_SNOWFLAKE", "CONNECTION_SQLDW", "CONNECTION_SQLSERVER"`, v)
-	}
-}
-
-// Type always returns ConnectionInfoSecurableKind to satisfy [pflag.Value] interface
-func (f *ConnectionInfoSecurableKind) Type() string {
-	return "ConnectionInfoSecurableKind"
 }
 
 // The type of connection.
@@ -4928,33 +4824,35 @@ type SecurablePropertiesMap map[string]string
 // The type of Unity Catalog securable
 type SecurableType string
 
-const SecurableTypeCatalog SecurableType = `catalog`
+const SecurableTypeCatalog SecurableType = `CATALOG`
 
-const SecurableTypeConnection SecurableType = `connection`
+const SecurableTypeCleanRoom SecurableType = `CLEAN_ROOM`
 
-const SecurableTypeCredential SecurableType = `credential`
+const SecurableTypeConnection SecurableType = `CONNECTION`
 
-const SecurableTypeExternalLocation SecurableType = `external_location`
+const SecurableTypeCredential SecurableType = `CREDENTIAL`
 
-const SecurableTypeFunction SecurableType = `function`
+const SecurableTypeExternalLocation SecurableType = `EXTERNAL_LOCATION`
 
-const SecurableTypeMetastore SecurableType = `metastore`
+const SecurableTypeFunction SecurableType = `FUNCTION`
 
-const SecurableTypePipeline SecurableType = `pipeline`
+const SecurableTypeMetastore SecurableType = `METASTORE`
 
-const SecurableTypeProvider SecurableType = `provider`
+const SecurableTypePipeline SecurableType = `PIPELINE`
 
-const SecurableTypeRecipient SecurableType = `recipient`
+const SecurableTypeProvider SecurableType = `PROVIDER`
 
-const SecurableTypeSchema SecurableType = `schema`
+const SecurableTypeRecipient SecurableType = `RECIPIENT`
 
-const SecurableTypeShare SecurableType = `share`
+const SecurableTypeSchema SecurableType = `SCHEMA`
 
-const SecurableTypeStorageCredential SecurableType = `storage_credential`
+const SecurableTypeShare SecurableType = `SHARE`
 
-const SecurableTypeTable SecurableType = `table`
+const SecurableTypeStorageCredential SecurableType = `STORAGE_CREDENTIAL`
 
-const SecurableTypeVolume SecurableType = `volume`
+const SecurableTypeTable SecurableType = `TABLE`
+
+const SecurableTypeVolume SecurableType = `VOLUME`
 
 // String representation for [fmt.Print]
 func (f *SecurableType) String() string {
@@ -4964,11 +4862,11 @@ func (f *SecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableType) Set(v string) error {
 	switch v {
-	case `catalog`, `connection`, `credential`, `external_location`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `storage_credential`, `table`, `volume`:
+	case `CATALOG`, `CLEAN_ROOM`, `CONNECTION`, `CREDENTIAL`, `EXTERNAL_LOCATION`, `FUNCTION`, `METASTORE`, `PIPELINE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STORAGE_CREDENTIAL`, `TABLE`, `VOLUME`:
 		*f = SecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "connection", "credential", "external_location", "function", "metastore", "pipeline", "provider", "recipient", "schema", "share", "storage_credential", "table", "volume"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CATALOG", "CLEAN_ROOM", "CONNECTION", "CREDENTIAL", "EXTERNAL_LOCATION", "FUNCTION", "METASTORE", "PIPELINE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STORAGE_CREDENTIAL", "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -5369,6 +5267,9 @@ type TemporaryCredentials struct {
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
+	// GCP temporary credentials for API authentication. Read more at
+	// https://developers.google.com/identity/protocols/oauth2/service-account
+	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -5463,6 +5364,8 @@ type UpdateCatalog struct {
 	Name string `json:"-" url:"-"`
 	// New name for the catalog.
 	NewName string `json:"new_name,omitempty"`
+	// A map of key-value properties attached to the securable.
+	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of catalog.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.

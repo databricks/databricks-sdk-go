@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Alerts, Alerts Legacy, Dashboard Widgets, Dashboards, Data Sources, Dbsql Permissions, Queries, Queries Legacy, Query History, Query Visualizations, Query Visualizations Legacy, Statement Execution, Warehouses, etc.
+// These APIs allow you to manage Alerts, Alerts Legacy, Dashboard Widgets, Dashboards, Data Sources, Dbsql Permissions, Queries, Queries Legacy, Query History, Query Visualizations, Query Visualizations Legacy, Redash Config, Statement Execution, Warehouses, etc.
 package sql
 
 import (
@@ -1625,6 +1625,25 @@ func (a *QueryVisualizationsLegacyAPI) DeleteById(ctx context.Context, id string
 	return a.queryVisualizationsLegacyImpl.Delete(ctx, DeleteQueryVisualizationsLegacyRequest{
 		Id: id,
 	})
+}
+
+type RedashConfigInterface interface {
+
+	// Read workspace configuration for Redash-v2.
+	GetConfig(ctx context.Context) (*ClientConfig, error)
+}
+
+func NewRedashConfig(client *client.DatabricksClient) *RedashConfigAPI {
+	return &RedashConfigAPI{
+		redashConfigImpl: redashConfigImpl{
+			client: client,
+		},
+	}
+}
+
+// Redash V2 service for workspace configurations (internal)
+type RedashConfigAPI struct {
+	redashConfigImpl
 }
 
 type StatementExecutionInterface interface {

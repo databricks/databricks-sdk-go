@@ -965,23 +965,23 @@ func (_c *MockServingEndpointsInterface_GetPermissionsByServingEndpointId_Call) 
 }
 
 // HttpRequest provides a mock function with given fields: ctx, request
-func (_m *MockServingEndpointsInterface) HttpRequest(ctx context.Context, request serving.ExternalFunctionRequest) (*serving.ExternalFunctionResponse, error) {
+func (_m *MockServingEndpointsInterface) HttpRequest(ctx context.Context, request serving.ExternalFunctionRequest) (*serving.HttpRequestResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for HttpRequest")
 	}
 
-	var r0 *serving.ExternalFunctionResponse
+	var r0 *serving.HttpRequestResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, serving.ExternalFunctionRequest) (*serving.ExternalFunctionResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, serving.ExternalFunctionRequest) (*serving.HttpRequestResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, serving.ExternalFunctionRequest) *serving.ExternalFunctionResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, serving.ExternalFunctionRequest) *serving.HttpRequestResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*serving.ExternalFunctionResponse)
+			r0 = ret.Get(0).(*serving.HttpRequestResponse)
 		}
 	}
 
@@ -1013,12 +1013,12 @@ func (_c *MockServingEndpointsInterface_HttpRequest_Call) Run(run func(ctx conte
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_HttpRequest_Call) Return(_a0 *serving.ExternalFunctionResponse, _a1 error) *MockServingEndpointsInterface_HttpRequest_Call {
+func (_c *MockServingEndpointsInterface_HttpRequest_Call) Return(_a0 *serving.HttpRequestResponse, _a1 error) *MockServingEndpointsInterface_HttpRequest_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockServingEndpointsInterface_HttpRequest_Call) RunAndReturn(run func(context.Context, serving.ExternalFunctionRequest) (*serving.ExternalFunctionResponse, error)) *MockServingEndpointsInterface_HttpRequest_Call {
+func (_c *MockServingEndpointsInterface_HttpRequest_Call) RunAndReturn(run func(context.Context, serving.ExternalFunctionRequest) (*serving.HttpRequestResponse, error)) *MockServingEndpointsInterface_HttpRequest_Call {
 	_c.Call.Return(run)
 	return _c
 }

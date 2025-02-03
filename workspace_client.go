@@ -443,6 +443,10 @@ type WorkspaceClient struct {
 	// (import, export, get-status, list, delete).
 	Lakeview dashboards.LakeviewInterface
 
+	// Token-based Lakeview APIs for embedding dashboards in external
+	// applications.
+	LakeviewEmbedded dashboards.LakeviewEmbeddedInterface
+
 	// The Libraries API allows you to install and uninstall libraries and get
 	// the status of libraries on a cluster.
 	//
@@ -687,6 +691,9 @@ type WorkspaceClient struct {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueriesLegacy sql.QueriesLegacyInterface
 
+	// Query execution APIs for AI / BI Dashboards
+	QueryExecution dashboards.QueryExecutionInterface
+
 	// A service responsible for storing and retrieving the list of queries run
 	// against SQL endpoints and serverless compute.
 	QueryHistory sql.QueryHistoryInterface
@@ -736,6 +743,9 @@ type WorkspaceClient struct {
 	// uses the credential file to establish a secure connection to receive the
 	// shared data. This sharing mode is called **open sharing**.
 	Recipients sharing.RecipientsInterface
+
+	// Redash V2 service for workspace configurations (internal)
+	RedashConfig sql.RedashConfigInterface
 
 	// Databricks provides a hosted version of MLflow Model Registry in Unity
 	// Catalog. Models in Unity Catalog provide centralized access control,
@@ -1199,6 +1209,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		IpAccessLists:                       settings.NewIpAccessLists(databricksClient),
 		Jobs:                                jobs.NewJobs(databricksClient),
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
+		LakeviewEmbedded:                    dashboards.NewLakeviewEmbedded(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),
 		Metastores:                          catalog.NewMetastores(databricksClient),
 		ModelRegistry:                       ml.NewModelRegistry(databricksClient),
@@ -1222,11 +1233,13 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
 		QueriesLegacy:                       sql.NewQueriesLegacy(databricksClient),
+		QueryExecution:                      dashboards.NewQueryExecution(databricksClient),
 		QueryHistory:                        sql.NewQueryHistory(databricksClient),
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
 		QueryVisualizationsLegacy:           sql.NewQueryVisualizationsLegacy(databricksClient),
 		RecipientActivation:                 sharing.NewRecipientActivation(databricksClient),
 		Recipients:                          sharing.NewRecipients(databricksClient),
+		RedashConfig:                        sql.NewRedashConfig(databricksClient),
 		RegisteredModels:                    catalog.NewRegisteredModels(databricksClient),
 		Repos:                               workspace.NewRepos(databricksClient),
 		ResourceQuotas:                      catalog.NewResourceQuotas(databricksClient),

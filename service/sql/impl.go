@@ -503,6 +503,21 @@ func (a *queryVisualizationsLegacyImpl) Update(ctx context.Context, request Lega
 	return &legacyVisualization, err
 }
 
+// unexported type that holds implementations of just RedashConfig API methods
+type redashConfigImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *redashConfigImpl) GetConfig(ctx context.Context) (*ClientConfig, error) {
+	var clientConfig ClientConfig
+	path := "/api/2.0/redash-v2/config"
+
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &clientConfig)
+	return &clientConfig, err
+}
+
 // unexported type that holds implementations of just StatementExecution API methods
 type statementExecutionImpl struct {
 	client *client.DatabricksClient
