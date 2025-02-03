@@ -154,18 +154,15 @@ func (c *cachedTokenSource) tokenState() tokenState {
 func (cts *cachedTokenSource) asyncToken() (*oauth2.Token, error) {
 	cts.mu.Lock()
 	ts := cts.tokenState()
+	t := cts.cachedToken
 	cts.mu.Unlock()
 
 	switch ts {
 	case fresh:
-		cts.mu.Lock()
-		defer cts.mu.Unlock()
-		return cts.cachedToken, nil
+		return t, nil
 	case stale:
 		cts.triggerAsyncRefresh()
-		cts.mu.Lock()
-		defer cts.mu.Unlock()
-		return cts.cachedToken, nil
+		return t, nil
 	default: // expired
 		return cts.blockingToken()
 	}
@@ -183,6 +180,9 @@ func (cts *cachedTokenSource) blockingToken() (*oauth2.Token, error) {
 	// more information.
 	cts.isRefreshing = false
 
+	// It's possible that the token got refreshed (either by a blockingToken or
+	// an asyncRefresh call) while this particular call was waiting to acquire
+	// the mutex. This check avoids refreshing the token again in such cases.
 	if ts := cts.tokenState(); ts != expired { // fresh or stale
 		return cts.cachedToken, nil
 	}
