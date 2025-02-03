@@ -179,6 +179,7 @@ func (cts *cachedTokenSource) blockingToken() (*oauth2.Token, error) {
 	// to refresh the token asynchronously, see declaration of refreshErr for
 	// more information.
 	cts.isRefreshing = false
+	cts.refreshErr = nil
 
 	// It's possible that the token got refreshed (either by a blockingToken or
 	// an asyncRefresh call) while this particular call was waiting to acquire
@@ -200,19 +201,18 @@ func (cts *cachedTokenSource) triggerAsyncRefresh() {
 	defer cts.mu.Unlock()
 	if !cts.isRefreshing && cts.refreshErr == nil {
 		cts.isRefreshing = true
-		go cts.asyncRefresh()
-	}
-}
 
-func (cts *cachedTokenSource) asyncRefresh() {
-	t, err := cts.tokenSource.Token()
+		go func() {
+			t, err := cts.tokenSource.Token()
 
-	cts.mu.Lock()
-	defer cts.mu.Unlock()
-	cts.isRefreshing = false
-	if err != nil {
-		cts.refreshErr = err
-		return
+			cts.mu.Lock()
+			defer cts.mu.Unlock()
+			cts.isRefreshing = false
+			if err != nil {
+				cts.refreshErr = err
+				return
+			}
+			cts.cachedToken = t
+		}()
 	}
-	cts.cachedToken = t
 }
