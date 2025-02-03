@@ -5,14 +5,16 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"golang.org/x/oauth2"
 )
 
-// serviceToServiceVisitor returns a visitor that sets the Authorization header to the token from the auth token source
-// and the provided secondary header to the token from the secondary token source.
-func serviceToServiceVisitor(auth, secondary oauth2.TokenSource, secondaryHeader string) func(r *http.Request) error {
-	refreshableAuth := oauth2.ReuseTokenSource(nil, auth)
-	refreshableSecondary := oauth2.ReuseTokenSource(nil, secondary)
+// serviceToServiceVisitor returns a visitor that sets the Authorization header
+// to the token from the auth token sourcevand the provided secondary header to
+// the token from the secondary token source.
+func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHeader string) func(r *http.Request) error {
+	refreshableAuth := auth.NewCachedTokenSource(primary)
+	refreshableSecondary := auth.NewCachedTokenSource(secondary)
 	return func(r *http.Request) error {
 		inner, err := refreshableAuth.Token()
 		if err != nil {
@@ -31,9 +33,9 @@ func serviceToServiceVisitor(auth, secondary oauth2.TokenSource, secondaryHeader
 
 // The same as serviceToServiceVisitor, but without a secondary token source.
 func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
-	refreshableAuth := oauth2.ReuseTokenSource(nil, inner)
+	cts := auth.NewCachedTokenSource(inner)
 	return func(r *http.Request) error {
-		inner, err := refreshableAuth.Token()
+		inner, err := cts.Token()
 		if err != nil {
 			return fmt.Errorf("inner token: %w", err)
 		}
@@ -51,10 +53,32 @@ func azureVisitor(cfg *Config, inner func(*http.Request) error) func(*http.Reque
 	}
 }
 
-// azureReuseTokenSource calls into oauth2.ReuseTokenSourceWithExpiry with a 40 second expiry window.
-// By default, the oauth2 library refreshes a token 10 seconds before it expires.
-// Azure Databricks rejects tokens that expire in 30 seconds or less.
-// We combine these and refresh the token 40 seconds before it expires.
+// azureReuseTokenSource returns a cached token source that refreshes token 40
+// seconds before they expire. The reason for this is that Azure Databricks
+// rejects tokens that expire in 30 seconds or less and we want to give a 10
+// second buffer.
 func azureReuseTokenSource(t *oauth2.Token, ts oauth2.TokenSource) oauth2.TokenSource {
-	return oauth2.ReuseTokenSourceWithExpiry(t, ts, 40*time.Second)
+	early := wrap(ts, func(t *oauth2.Token) *oauth2.Token {
+		t.Expiry = t.Expiry.Add(-40 * time.Second)
+		return t
+	})
+
+	return auth.NewCachedTokenSource(early, auth.WithCachedToken(t))
+}
+
+func wrap(ts oauth2.TokenSource, fn func(*oauth2.Token) *oauth2.Token) oauth2.TokenSource {
+	return &tokenSourceWrapper{fn: fn, inner: ts}
+}
+
+type tokenSourceWrapper struct {
+	fn    func(*oauth2.Token) *oauth2.Token
+	inner oauth2.TokenSource
+}
+
+func (w *tokenSourceWrapper) Token() (*oauth2.Token, error) {
+	t, err := w.inner.Token()
+	if err != nil {
+		return nil, err
+	}
+	return w.fn(t), nil
 }
