@@ -51,12 +51,10 @@ func TestNewCachedTokenSource_options(t *testing.T) {
 		return nil, nil
 	})
 
-	wantStaleDuration := 10 * time.Minute
 	wantDisableAsync := false
 	wantCachedToken := &oauth2.Token{Expiry: time.Unix(42, 0)}
 
 	opts := []Option{
-		WithStaleDuration(wantStaleDuration),
 		WithAsyncRefresh(!wantDisableAsync),
 		WithCachedToken(wantCachedToken),
 	}
@@ -66,9 +64,6 @@ func TestNewCachedTokenSource_options(t *testing.T) {
 		t.Fatalf("NewCachedTokenSource() = %T, want *cachedTokenSource", got)
 	}
 
-	if got.staleDuration != wantStaleDuration {
-		t.Errorf("NewCachedTokenSource(): staleDuration = %v, want %v", got.staleDuration, wantStaleDuration)
-	}
 	if got.disableAsync != wantDisableAsync {
 		t.Errorf("NewCachedTokenSource(): disableAsync = %v, want %v", got.disableAsync, wantDisableAsync)
 	}
@@ -136,6 +131,7 @@ func TestCachedTokenSource_Token(t *testing.T) {
 		desc         string        // description of the test case
 		cachedToken  *oauth2.Token // token cached before calling Token()
 		disableAsync bool          // whether are disabled or not
+		refreshErr   error         // whether the cache was in error state
 
 		returnedToken *oauth2.Token // token returned by the token source
 		returnedError error         // error returned by the token source
@@ -177,6 +173,15 @@ func TestCachedTokenSource_Token(t *testing.T) {
 			disableAsync:  true,
 			returnedError: fmt.Errorf("test error"),
 			wantCalls:     10,
+		},
+		{
+			desc:          "[Blocking] recover from error",
+			disableAsync:  true,
+			refreshErr:    fmt.Errorf("refresh error"),
+			cachedToken:   &oauth2.Token{Expiry: now.Add(-1 * time.Minute)},
+			returnedToken: &oauth2.Token{Expiry: now.Add(-1 * time.Hour)},
+			wantCalls:     10,
+			wantToken:     &oauth2.Token{Expiry: now.Add(-1 * time.Hour)},
 		},
 		{
 			desc:          "[Async] no cached token",
@@ -224,6 +229,14 @@ func TestCachedTokenSource_Token(t *testing.T) {
 			wantCalls:     10,
 			wantToken:     &oauth2.Token{Expiry: now.Add(-1 * time.Second)},
 		},
+		{
+			desc:          "[Async] recover from error",
+			refreshErr:    fmt.Errorf("refresh error"),
+			cachedToken:   &oauth2.Token{Expiry: now.Add(-1 * time.Minute)},
+			returnedToken: &oauth2.Token{Expiry: now.Add(-1 * time.Hour)},
+			wantCalls:     10,
+			wantToken:     &oauth2.Token{Expiry: now.Add(-1 * time.Hour)},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -248,7 +261,13 @@ func TestCachedTokenSource_Token(t *testing.T) {
 					cts.Token()
 				}()
 			}
+
 			wg.Wait()
+
+			// Wait for async refreshes to finish. This part is a little brittle
+			// but necessary to ensure that the async refresh is done before
+			// checking the results.
+			time.Sleep(10 * time.Millisecond)
 
 			if int(gotCalls) != tc.wantCalls {
 				t.Errorf("want %d calls to cts.tokenSource.Token(), got %d", tc.wantCalls, gotCalls)
@@ -258,5 +277,4 @@ func TestCachedTokenSource_Token(t *testing.T) {
 			}
 		})
 	}
-
 }

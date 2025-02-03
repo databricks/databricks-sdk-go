@@ -30,15 +30,6 @@ func WithCachedToken(t *oauth2.Token) Option {
 	}
 }
 
-// WithStaleDuration sets the duration for which a token is considered stale.
-// Stale tokens are still valid but will trigger an asynchronous refresh if
-// async refresh is enabled. The default value is 3 minutes.
-func WithStaleDuration(d time.Duration) Option {
-	return func(cts *cachedTokenSource) {
-		cts.staleDuration = d
-	}
-}
-
 // WithAsyncRefresh enables or disables the asynchronous token refresh.
 func WithAsyncRefresh(b bool) Option {
 	return func(cts *cachedTokenSource) {
@@ -60,6 +51,9 @@ func WithAsyncRefresh(b bool) Option {
 // If the TokenSource is already a cached token source (obtained by calling this
 // function), it is returned as is.
 func NewCachedTokenSource(ts oauth2.TokenSource, opts ...Option) oauth2.TokenSource {
+	// This is meant as a niche optimization to avoid double caching of the
+	// token source in situations where the user calls needs caching guarantees
+	// but does not know if the token source is already cached.
 	if cts, ok := ts.(*cachedTokenSource); ok {
 		return cts
 	}
