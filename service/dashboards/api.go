@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Genie, Lakeview, etc.
+// These APIs allow you to manage Genie, Lakeview, Lakeview Embedded, Query Execution, etc.
 package dashboards
 
 import (
@@ -608,4 +608,64 @@ func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId st
 	return a.lakeviewImpl.Unpublish(ctx, UnpublishDashboardRequest{
 		DashboardId: dashboardId,
 	})
+}
+
+type LakeviewEmbeddedInterface interface {
+
+	// Read a published dashboard in an embedded ui.
+	//
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
+
+	// Read a published dashboard in an embedded ui.
+	//
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error
+}
+
+func NewLakeviewEmbedded(client *client.DatabricksClient) *LakeviewEmbeddedAPI {
+	return &LakeviewEmbeddedAPI{
+		lakeviewEmbeddedImpl: lakeviewEmbeddedImpl{
+			client: client,
+		},
+	}
+}
+
+// Token-based Lakeview APIs for embedding dashboards in external applications.
+type LakeviewEmbeddedAPI struct {
+	lakeviewEmbeddedImpl
+}
+
+// Read a published dashboard in an embedded ui.
+//
+// Get the current published dashboard within an embedded context.
+func (a *LakeviewEmbeddedAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error {
+	return a.lakeviewEmbeddedImpl.GetPublishedDashboardEmbedded(ctx, GetPublishedDashboardEmbeddedRequest{
+		DashboardId: dashboardId,
+	})
+}
+
+type QueryExecutionInterface interface {
+
+	// Cancel the results for the a query for a published, embedded dashboard.
+	CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error)
+
+	// Execute a query for a published dashboard.
+	ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error
+
+	// Poll the results for the a query for a published, embedded dashboard.
+	PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error)
+}
+
+func NewQueryExecution(client *client.DatabricksClient) *QueryExecutionAPI {
+	return &QueryExecutionAPI{
+		queryExecutionImpl: queryExecutionImpl{
+			client: client,
+		},
+	}
+}
+
+// Query execution APIs for AI / BI Dashboards
+type QueryExecutionAPI struct {
+	queryExecutionImpl
 }

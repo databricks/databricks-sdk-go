@@ -26,6 +26,38 @@ type BillableUsageService interface {
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 }
 
+// A service serves REST API about Budget policies
+type BudgetPolicyService interface {
+
+	// Create a budget policy.
+	//
+	// Creates a new policy.
+	Create(ctx context.Context, request CreateBudgetPolicyRequest) (*BudgetPolicy, error)
+
+	// Delete a budget policy.
+	//
+	// Deletes a policy
+	Delete(ctx context.Context, request DeleteBudgetPolicyRequest) error
+
+	// Get a budget policy.
+	//
+	// Retrieves a policy by it's ID.
+	Get(ctx context.Context, request GetBudgetPolicyRequest) (*BudgetPolicy, error)
+
+	// List policies.
+	//
+	// Lists all policies. Policies are returned in the alphabetically ascending
+	// order of their names.
+	//
+	// Use ListAll() to get all BudgetPolicy instances, which will iterate over every result page.
+	List(ctx context.Context, request ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error)
+
+	// Update a budget policy.
+	//
+	// Updates a policy
+	Update(ctx context.Context, request UpdateBudgetPolicyRequest) (*BudgetPolicy, error)
+}
+
 // These APIs manage budget configurations for this account. Budgets enable you
 // to monitor usage across your account. You can set up budgets to either track
 // account-wide spending, or apply filters to track the spending of specific

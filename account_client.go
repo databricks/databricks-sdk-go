@@ -29,6 +29,9 @@ type AccountClient struct {
 	// account and date range. This feature works with all account types.
 	BillableUsage billing.BillableUsageInterface
 
+	// A service serves REST API about Budget policies
+	BudgetPolicy billing.BudgetPolicyInterface
+
 	// These APIs manage credential configurations for this workspace.
 	// Databricks needs access to a cross-account service IAM role in your AWS
 	// account so that Databricks can deploy clusters in the appropriate VPC for
@@ -414,6 +417,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 
 		AccessControl:                    iam.NewAccountAccessControl(apiClient),
 		BillableUsage:                    billing.NewBillableUsage(apiClient),
+		BudgetPolicy:                     billing.NewBudgetPolicy(apiClient),
 		Credentials:                      provisioning.NewCredentials(apiClient),
 		CustomAppIntegration:             oauth2.NewCustomAppIntegration(apiClient),
 		EncryptionKeys:                   provisioning.NewEncryptionKeys(apiClient),

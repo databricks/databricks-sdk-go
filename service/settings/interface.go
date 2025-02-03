@@ -344,6 +344,27 @@ type DisableLegacyFeaturesService interface {
 	Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
 }
 
+// Controls the enforcement of IP access lists for accessing the account
+// console. Allowing you to enable or disable restricted access based on IP
+// addresses.
+type EnableIpAccessListsService interface {
+
+	// Delete the account IP access toggle setting.
+	//
+	// Reverts the value of the account IP access toggle setting to default (ON)
+	Delete(ctx context.Context, request DeleteAccountIpAccessEnableRequest) (*DeleteAccountIpAccessEnableResponse, error)
+
+	// Get the account IP access toggle setting.
+	//
+	// Gets the value of the account IP access toggle setting.
+	Get(ctx context.Context, request GetAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error)
+
+	// Update the account IP access toggle setting.
+	//
+	// Updates the value of the account IP access toggle setting.
+	Update(ctx context.Context, request UpdateAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error)
+}
+
 // Controls whether enhanced security monitoring is enabled for the current
 // workspace. If the compliance security profile is enabled, this is
 // automatically enabled. By default, it is disabled. However, if the compliance
