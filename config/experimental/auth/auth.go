@@ -29,6 +29,20 @@ type TokenSource interface {
 	Token(context.Context) (*oauth2.Token, error)
 }
 
+// TokenSourceFn is an adapter to allow the use of ordinary functions as
+// TokenSource.
+//
+// Example:
+//
+//	   ts := TokenSourceFn(func(ctx context.Context) (*oauth2.Token, error) {
+//			return &oauth2.Token{}, nil
+//	   })
+type TokenSourceFn func(context.Context) (*oauth2.Token, error)
+
+func (fn TokenSourceFn) Token(ctx context.Context) (*oauth2.Token, error) {
+	return fn(ctx)
+}
+
 type Option func(*cachedTokenSource)
 
 // WithCachedToken sets the initial token to be used by a cached token source.

@@ -220,19 +220,30 @@ func (c *Config) Authenticate(r *http.Request) error {
 	return c.credentialsProvider.SetHeaders(r)
 }
 
-// Authenticate returns an OAuth token for the current configuration.
-// It will return an error if the CredentialsStrategy does not support OAuth tokens.
+// Authenticate returns an OAuth token for the current configuration. It will
+// return an error if the CredentialsStrategy does not support OAuth tokens.
+//
+// Deprecated: Use GetTokenSource instead.
 func (c *Config) GetToken() (*oauth2.Token, error) {
-	err := c.EnsureResolved()
+	ts, err := c.GetTokenSource()
 	if err != nil {
 		return nil, err
 	}
-	err = c.authenticateIfNeeded()
-	if err != nil {
+	return ts.Token()
+}
+
+// GetTokenSource returns an OAuth token source for the current configuration.
+// It will return an error if the CredentialsStrategy does not support OAuth
+// tokens.
+func (c *Config) GetTokenSource() (oauth2.TokenSource, error) {
+	if err := c.EnsureResolved(); err != nil {
+		return nil, err
+	}
+	if err := c.authenticateIfNeeded(); err != nil {
 		return nil, err
 	}
 	if h, ok := c.credentialsProvider.(credentials.OAuthCredentialsProvider); ok {
-		return h.Token()
+		return h, nil
 	} else {
 		return nil, fmt.Errorf("OAuth Token not supported for current auth type %s", c.AuthType)
 	}

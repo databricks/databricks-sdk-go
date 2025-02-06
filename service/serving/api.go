@@ -6,9 +6,12 @@ package serving
 import (
 	"context"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/dataplane"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/useragent"
@@ -467,11 +470,19 @@ type ServingEndpointsDataPlaneInterface interface {
 func NewServingEndpointsDataPlane(client *client.DatabricksClient,
 	controlPlane *ServingEndpointsAPI,
 ) *ServingEndpointsDataPlaneAPI {
+	ts, err := client.Config.GetTokenSource()
+	if err != nil {
+		panic(err)
+	}
 	return &ServingEndpointsDataPlaneAPI{
 		servingEndpointsDataPlaneImpl: servingEndpointsDataPlaneImpl{
 			client:           client,
-			dataPlaneService: NewDataPlaneService(),
 			controlPlane:     controlPlane,
+			infos: sync.Map{},
+			dpts: dataplane.NewEndpointTokenSource(
+				client, 
+				authconv.AuthTokenSource(ts),
+			),
 		},
 	}
 }
