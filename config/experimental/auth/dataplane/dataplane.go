@@ -82,8 +82,6 @@ type tokenSource struct {
 	authDetails string
 }
 
-const JWTGrantType = "urn:ietf:params:oauth:grant-type:jwt-bearer"
-
 func (dpts *tokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
 	innerToken, err := dpts.cpts.Token(ctx)
 	if err != nil {
