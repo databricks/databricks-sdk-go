@@ -5,6 +5,7 @@
 package auth
 
 import (
+	"context"
 	"sync"
 	"time"
 
@@ -20,6 +21,13 @@ const (
 	// change in the future once the feature is stable.
 	defaultDisableAsyncRefresh = true
 )
+
+// A TokenSource is anything that can return a token.
+type TokenSource interface {
+	// Token returns a token or an error. Token must be safe for concurrent use
+	// by multiple goroutines. The returned Token must not be modified.
+	Token(context.Context) (*oauth2.Token, error)
+}
 
 type Option func(*cachedTokenSource)
 
@@ -50,7 +58,7 @@ func WithAsyncRefresh(b bool) Option {
 //
 // If the TokenSource is already a cached token source (obtained by calling this
 // function), it is returned as is.
-func NewCachedTokenSource(ts oauth2.TokenSource, opts ...Option) oauth2.TokenSource {
+func NewCachedTokenSource(ts TokenSource, opts ...Option) TokenSource {
 	// This is meant as a niche optimization to avoid double caching of the
 	// token source in situations where the user calls needs caching guarantees
 	// but does not know if the token source is already cached.
@@ -75,7 +83,7 @@ func NewCachedTokenSource(ts oauth2.TokenSource, opts ...Option) oauth2.TokenSou
 
 type cachedTokenSource struct {
 	// The token source to obtain tokens from.
-	tokenSource oauth2.TokenSource
+	tokenSource TokenSource
 
 	// If true, only refresh the token with a blocking call when it is expired.
 	disableAsync bool
@@ -102,11 +110,11 @@ type cachedTokenSource struct {
 
 // Token returns a token from the cache or fetches a new one if the current
 // token is expired.
-func (cts *cachedTokenSource) Token() (*oauth2.Token, error) {
+func (cts *cachedTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
 	if cts.disableAsync {
-		return cts.blockingToken()
+		return cts.blockingToken(ctx)
 	}
-	return cts.asyncToken()
+	return cts.asyncToken(ctx)
 }
 
 // tokenState represents the state of the token. Each token can be in one of
@@ -145,7 +153,7 @@ func (c *cachedTokenSource) tokenState() tokenState {
 	}
 }
 
-func (cts *cachedTokenSource) asyncToken() (*oauth2.Token, error) {
+func (cts *cachedTokenSource) asyncToken(ctx context.Context) (*oauth2.Token, error) {
 	cts.mu.Lock()
 	ts := cts.tokenState()
 	t := cts.cachedToken
@@ -155,14 +163,14 @@ func (cts *cachedTokenSource) asyncToken() (*oauth2.Token, error) {
 	case fresh:
 		return t, nil
 	case stale:
-		cts.triggerAsyncRefresh()
+		cts.triggerAsyncRefresh(ctx)
 		return t, nil
 	default: // expired
-		return cts.blockingToken()
+		return cts.blockingToken(ctx)
 	}
 }
 
-func (cts *cachedTokenSource) blockingToken() (*oauth2.Token, error) {
+func (cts *cachedTokenSource) blockingToken(ctx context.Context) (*oauth2.Token, error) {
 	cts.mu.Lock()
 
 	// The lock is kept for the entire operation to ensure that only one
@@ -182,7 +190,7 @@ func (cts *cachedTokenSource) blockingToken() (*oauth2.Token, error) {
 		return cts.cachedToken, nil
 	}
 
-	t, err := cts.tokenSource.Token()
+	t, err := cts.tokenSource.Token(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -190,14 +198,14 @@ func (cts *cachedTokenSource) blockingToken() (*oauth2.Token, error) {
 	return t, nil
 }
 
-func (cts *cachedTokenSource) triggerAsyncRefresh() {
+func (cts *cachedTokenSource) triggerAsyncRefresh(ctx context.Context) {
 	cts.mu.Lock()
 	defer cts.mu.Unlock()
 	if !cts.isRefreshing && cts.refreshErr == nil {
 		cts.isRefreshing = true
 
 		go func() {
-			t, err := cts.tokenSource.Token()
+			t, err := cts.tokenSource.Token(ctx)
 
 			cts.mu.Lock()
 			defer cts.mu.Unlock()
