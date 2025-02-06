@@ -99,15 +99,15 @@ func (a *servingEndpointsImpl) GetPermissions(ctx context.Context, request GetSe
 	return &servingEndpointPermissions, err
 }
 
-func (a *servingEndpointsImpl) HttpRequest(ctx context.Context, request ExternalFunctionRequest) (*ExternalFunctionResponse, error) {
-	var externalFunctionResponse ExternalFunctionResponse
+func (a *servingEndpointsImpl) HttpRequest(ctx context.Context, request ExternalFunctionRequest) (*HttpRequestResponse, error) {
+	var httpRequestResponse HttpRequestResponse
 	path := "/api/2.0/external-function"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
+	headers["Accept"] = "text/plain"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &externalFunctionResponse)
-	return &externalFunctionResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &httpRequestResponse)
+	return &httpRequestResponse, err
 }
 
 func (a *servingEndpointsImpl) List(ctx context.Context) (*ListEndpointsResponse, error) {

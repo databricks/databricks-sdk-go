@@ -106,7 +106,7 @@ type ServingEndpointsInterface interface {
 	GetPermissionsByServingEndpointId(ctx context.Context, servingEndpointId string) (*ServingEndpointPermissions, error)
 
 	// Make external services call using the credentials stored in UC Connection.
-	HttpRequest(ctx context.Context, request ExternalFunctionRequest) (*ExternalFunctionResponse, error)
+	HttpRequest(ctx context.Context, request ExternalFunctionRequest) (*HttpRequestResponse, error)
 
 	// Get all serving endpoints.
 	//

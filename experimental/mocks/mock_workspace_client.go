@@ -82,6 +82,7 @@ func NewMockWorkspaceClient(t interface {
 			IpAccessLists:                       settings.NewMockIpAccessListsInterface(t),
 			Jobs:                                jobs.NewMockJobsInterface(t),
 			Lakeview:                            dashboards.NewMockLakeviewInterface(t),
+			LakeviewEmbedded:                    dashboards.NewMockLakeviewEmbeddedInterface(t),
 			Libraries:                           compute.NewMockLibrariesInterface(t),
 			Metastores:                          catalog.NewMockMetastoresInterface(t),
 			ModelRegistry:                       ml.NewMockModelRegistryInterface(t),
@@ -105,11 +106,13 @@ func NewMockWorkspaceClient(t interface {
 			QualityMonitors:                     catalog.NewMockQualityMonitorsInterface(t),
 			Queries:                             sql.NewMockQueriesInterface(t),
 			QueriesLegacy:                       sql.NewMockQueriesLegacyInterface(t),
+			QueryExecution:                      dashboards.NewMockQueryExecutionInterface(t),
 			QueryHistory:                        sql.NewMockQueryHistoryInterface(t),
 			QueryVisualizations:                 sql.NewMockQueryVisualizationsInterface(t),
 			QueryVisualizationsLegacy:           sql.NewMockQueryVisualizationsLegacyInterface(t),
 			RecipientActivation:                 sharing.NewMockRecipientActivationInterface(t),
 			Recipients:                          sharing.NewMockRecipientsInterface(t),
+			RedashConfig:                        sql.NewMockRedashConfigInterface(t),
 			RegisteredModels:                    catalog.NewMockRegisteredModelsInterface(t),
 			Repos:                               workspace.NewMockReposInterface(t),
 			ResourceQuotas:                      catalog.NewMockResourceQuotasInterface(t),
@@ -571,6 +574,14 @@ func (m *MockWorkspaceClient) GetMockLakeviewAPI() *dashboards.MockLakeviewInter
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockLakeviewEmbeddedAPI() *dashboards.MockLakeviewEmbeddedInterface {
+	api, ok := m.WorkspaceClient.LakeviewEmbedded.(*dashboards.MockLakeviewEmbeddedInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected LakeviewEmbedded to be *dashboards.MockLakeviewEmbeddedInterface, actual was %T", m.WorkspaceClient.LakeviewEmbedded))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockLibrariesAPI() *compute.MockLibrariesInterface {
 	api, ok := m.WorkspaceClient.Libraries.(*compute.MockLibrariesInterface)
 	if !ok {
@@ -755,6 +766,14 @@ func (m *MockWorkspaceClient) GetMockQueriesLegacyAPI() *sql.MockQueriesLegacyIn
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockQueryExecutionAPI() *dashboards.MockQueryExecutionInterface {
+	api, ok := m.WorkspaceClient.QueryExecution.(*dashboards.MockQueryExecutionInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected QueryExecution to be *dashboards.MockQueryExecutionInterface, actual was %T", m.WorkspaceClient.QueryExecution))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockQueryHistoryAPI() *sql.MockQueryHistoryInterface {
 	api, ok := m.WorkspaceClient.QueryHistory.(*sql.MockQueryHistoryInterface)
 	if !ok {
@@ -791,6 +810,14 @@ func (m *MockWorkspaceClient) GetMockRecipientsAPI() *sharing.MockRecipientsInte
 	api, ok := m.WorkspaceClient.Recipients.(*sharing.MockRecipientsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Recipients to be *sharing.MockRecipientsInterface, actual was %T", m.WorkspaceClient.Recipients))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockRedashConfigAPI() *sql.MockRedashConfigInterface {
+	api, ok := m.WorkspaceClient.RedashConfig.(*sql.MockRedashConfigInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected RedashConfig to be *sql.MockRedashConfigInterface, actual was %T", m.WorkspaceClient.RedashConfig))
 	}
 	return api
 }

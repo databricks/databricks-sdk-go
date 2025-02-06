@@ -1935,6 +1935,33 @@ func (s Created) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CustomPolicyTag struct {
+	// The key of the tag. - Must be unique among all custom tags of the same
+	// policy - Cannot be “budget-policy-name”, “budget-policy-id” or
+	// "budget-policy-resolution-result" - these tags are preserved.
+	//
+	// - Follows the regex pattern defined in
+	// cluster-common/conf/src/ClusterTagConstraints.scala
+	// (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L17)
+	Key string `json:"key"`
+	// The value of the tag.
+	//
+	// - Follows the regex pattern defined in
+	// cluster-common/conf/src/ClusterTagConstraints.scala
+	// (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L24)
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CustomPolicyTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomPolicyTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DataPlaneEventDetails struct {
 	// <needs content added>
 	EventType DataPlaneEventDetailsEventType `json:"event_type,omitempty"`

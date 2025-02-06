@@ -9,6 +9,32 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
 
+// Cancel the results for the a query for a published, embedded dashboard
+type CancelPublishedQueryExecutionRequest struct {
+	DashboardName string `json:"-" url:"dashboard_name"`
+
+	DashboardRevisionId string `json:"-" url:"dashboard_revision_id"`
+	// Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	Tokens []string `json:"-" url:"tokens,omitempty"`
+}
+
+type CancelQueryExecutionResponse struct {
+	Status []CancelQueryExecutionResponseStatus `json:"status,omitempty"`
+}
+
+type CancelQueryExecutionResponseStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+	// Represents an empty message, similar to google.protobuf.Empty, which is
+	// not available in the firm right now.
+	Pending *Empty `json:"pending,omitempty"`
+	// Represents an empty message, similar to google.protobuf.Empty, which is
+	// not available in the firm right now.
+	Success *Empty `json:"success,omitempty"`
+}
+
 // Create dashboard
 type CreateDashboardRequest struct {
 	Dashboard *Dashboard `json:"dashboard,omitempty"`
@@ -223,6 +249,40 @@ func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
 type DeleteSubscriptionResponse struct {
 }
 
+// Represents an empty message, similar to google.protobuf.Empty, which is not
+// available in the firm right now.
+type Empty struct {
+}
+
+// Execute query request for published Dashboards. Since published dashboards
+// have the option of running as the publisher, the datasets, warehouse_id are
+// excluded from the request and instead read from the source (lakeview-config)
+// via the additional parameters (dashboardName and dashboardRevisionId)
+type ExecutePublishedDashboardQueryRequest struct {
+	// Dashboard name and revision_id is required to retrieve
+	// PublishedDatasetDataModel which contains the list of datasets,
+	// warehouse_id, and embedded_credentials
+	DashboardName string `json:"dashboard_name"`
+
+	DashboardRevisionId string `json:"dashboard_revision_id"`
+	// A dashboard schedule can override the warehouse used as compute for
+	// processing the published dashboard queries
+	OverrideWarehouseId string `json:"override_warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExecutePublishedDashboardQueryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExecutePublishedDashboardQueryRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ExecuteQueryResponse struct {
+}
+
 // Genie AI Response
 type GenieAttachment struct {
 	Query *QueryAttachment `json:"query,omitempty"`
@@ -376,6 +436,15 @@ type GenieStartConversationResponse struct {
 type GetDashboardRequest struct {
 	// UUID identifying the dashboard.
 	DashboardId string `json:"-" url:"-"`
+}
+
+// Read a published dashboard in an embedded ui.
+type GetPublishedDashboardEmbeddedRequest struct {
+	// UUID identifying the published dashboard.
+	DashboardId string `json:"-" url:"-"`
+}
+
+type GetPublishedDashboardEmbeddedResponse struct {
 }
 
 // Get published dashboard
@@ -771,6 +840,30 @@ func (s MigrateDashboardRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type PendingStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+}
+
+// Poll the results for the a query for a published, embedded dashboard
+type PollPublishedQueryStatusRequest struct {
+	DashboardName string `json:"-" url:"dashboard_name"`
+
+	DashboardRevisionId string `json:"-" url:"dashboard_revision_id"`
+	// Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	Tokens []string `json:"-" url:"tokens,omitempty"`
+}
+
+type PollQueryStatusResponse struct {
+	Data []PollQueryStatusResponseData `json:"data,omitempty"`
+}
+
+type PollQueryStatusResponseData struct {
+	Status QueryResponseStatus `json:"status"`
+}
+
 type PublishRequest struct {
 	// UUID identifying the dashboard to be published.
 	DashboardId string `json:"-" url:"-"`
@@ -830,6 +923,8 @@ type QueryAttachment struct {
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// AI generated SQL query
 	Query string `json:"query,omitempty"`
+
+	StatementId string `json:"statement_id,omitempty"`
 	// Name of the query
 	Title string `json:"title,omitempty"`
 
@@ -841,6 +936,34 @@ func (s *QueryAttachment) UnmarshalJSON(b []byte) error {
 }
 
 func (s QueryAttachment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type QueryResponseStatus struct {
+	// Represents an empty message, similar to google.protobuf.Empty, which is
+	// not available in the firm right now.
+	Canceled *Empty `json:"canceled,omitempty"`
+	// Represents an empty message, similar to google.protobuf.Empty, which is
+	// not available in the firm right now.
+	Closed *Empty `json:"closed,omitempty"`
+
+	Pending *PendingStatus `json:"pending,omitempty"`
+	// The statement id in format(01eef5da-c56e-1f36-bafa-21906587d6ba) The
+	// statement_id should be identical to data_token in SuccessStatus and
+	// PendingStatus. This field is created for audit logging purpose to record
+	// the statement_id of all QueryResponseStatus.
+	StatementId string `json:"statement_id,omitempty"`
+
+	Success *SuccessStatus `json:"success,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryResponseStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryResponseStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1005,6 +1128,24 @@ type SubscriptionSubscriberDestination struct {
 type SubscriptionSubscriberUser struct {
 	// UserId of the subscriber.
 	UserId int64 `json:"user_id"`
+}
+
+type SuccessStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+	// Whether the query result is truncated (either by byte limit or row limit)
+	Truncated bool `json:"truncated,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SuccessStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SuccessStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TextAttachment struct {

@@ -423,6 +423,38 @@ func (f *ChannelName) Type() string {
 	return "ChannelName"
 }
 
+type ClientConfig struct {
+	AllowCustomJsVisualizations bool `json:"allow_custom_js_visualizations,omitempty"`
+
+	AllowDownloads bool `json:"allow_downloads,omitempty"`
+
+	AllowExternalShares bool `json:"allow_external_shares,omitempty"`
+
+	AllowSubscriptions bool `json:"allow_subscriptions,omitempty"`
+
+	DateFormat string `json:"date_format,omitempty"`
+
+	DateTimeFormat string `json:"date_time_format,omitempty"`
+
+	DisablePublish bool `json:"disable_publish,omitempty"`
+
+	EnableLegacyAutodetectTypes bool `json:"enable_legacy_autodetect_types,omitempty"`
+
+	FeatureShowPermissionsControl bool `json:"feature_show_permissions_control,omitempty"`
+
+	HidePlotlyModeBar bool `json:"hide_plotly_mode_bar,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClientConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClientConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ColumnInfo struct {
 	// The name of the column.
 	Name string `json:"name,omitempty"`
@@ -4323,10 +4355,17 @@ type UpdateAlertRequest struct {
 	Alert *UpdateAlertRequestAlert `json:"alert,omitempty"`
 
 	Id string `json:"-" url:"-"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	UpdateMask string `json:"update_mask"`
 }
 
@@ -4373,10 +4412,17 @@ type UpdateQueryRequest struct {
 	Id string `json:"-" url:"-"`
 
 	Query *UpdateQueryRequestQuery `json:"query,omitempty"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	UpdateMask string `json:"update_mask"`
 }
 
@@ -4422,10 +4468,17 @@ type UpdateResponse struct {
 
 type UpdateVisualizationRequest struct {
 	Id string `json:"-" url:"-"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	UpdateMask string `json:"update_mask"`
 
 	Visualization *UpdateVisualizationRequestVisualization `json:"visualization,omitempty"`
