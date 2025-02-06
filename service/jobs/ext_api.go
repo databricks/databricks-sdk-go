@@ -41,6 +41,7 @@ func (a *JobsAPI) Get(ctx context.Context, request GetJobRequest) (*Job, error) 
 		return nil, err
 	}
 
+	// jobs/get response includes next_page_token as long as there are more pages to fetch.
 	for job.NextPageToken != "" {
 		request.PageToken = job.NextPageToken
 		nextJob, err := a.jobsImpl.Get(ctx, request)
@@ -48,6 +49,7 @@ func (a *JobsAPI) Get(ctx context.Context, request GetJobRequest) (*Job, error) 
 			return nil, err
 		}
 
+		// Each new page of jobs/get response includes the next page of the tasks, job_clusters, job_parameters, and environments.
 		job.Settings.Tasks = append(job.Settings.Tasks, nextJob.Settings.Tasks...)
 		job.Settings.JobClusters = append(job.Settings.JobClusters, nextJob.Settings.JobClusters...)
 		job.Settings.Parameters = append(job.Settings.Parameters, nextJob.Settings.Parameters...)
