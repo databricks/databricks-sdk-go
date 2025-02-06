@@ -30,7 +30,6 @@ func NewEndpointTokenSource(c OAuthClient, cpts auth.TokenSource) *dataPlaneToke
 			cpts,
 			auth.WithAsyncRefresh(false), // TODO: Enable async refreshes once the feature is stable.
 		),
-		tss: make(map[tsKey]auth.TokenSource),
 	}
 }
 
@@ -47,33 +46,30 @@ type tsKey struct {
 //
 // Each token source is cached to avoid unnecessary token requests.
 type dataPlaneTokenSource struct {
-	client OAuthClient
-	cpts   auth.TokenSource
-	tss    map[tsKey]auth.TokenSource
-	mu     sync.Mutex
+	client  OAuthClient
+	cpts    auth.TokenSource
+	sources sync.Map
 }
 
 // Token returns a token for the given endpoint and authentication details.
 func (dpts *dataPlaneTokenSource) Token(ctx context.Context, endpoint string, authDetails string) (*oauth2.Token, error) {
-	dpts.mu.Lock()
-	defer dpts.mu.Unlock()
-
 	key := tsKey{endpoint: endpoint, authDetails: authDetails}
 
-	t, ok := dpts.tss[key]
-	if !ok {
-		t = auth.NewCachedTokenSource(
-			&tokenSource{
-				client:      dpts.client,
-				cpts:        dpts.cpts,
-				authDetails: authDetails,
-			},
-			auth.WithAsyncRefresh(false), // TODO: Enable async refresh once the feature is stable.
-		)
-		dpts.tss[key] = t
+	if a, ok := dpts.sources.Load(key); ok { // happy path
+		return a.(auth.TokenSource).Token(ctx)
 	}
 
-	return t.Token(ctx)
+	ts := auth.NewCachedTokenSource(
+		&tokenSource{
+			client:      dpts.client,
+			cpts:        dpts.cpts,
+			authDetails: authDetails,
+		},
+		auth.WithAsyncRefresh(false), // TODO: Enable async refresh once the feature is stable.
+	)
+	dpts.sources.Store(key, ts)
+
+	return ts.Token(ctx)
 }
 
 type tokenSource struct {

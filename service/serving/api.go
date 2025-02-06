@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth/dataplane"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/retries"
@@ -470,10 +469,6 @@ type ServingEndpointsDataPlaneInterface interface {
 func NewServingEndpointsDataPlane(client *client.DatabricksClient,
 	controlPlane *ServingEndpointsAPI,
 ) *ServingEndpointsDataPlaneAPI {
-	ts, err := client.Config.GetTokenSource()
-	if err != nil {
-		panic(err)
-	}
 	return &ServingEndpointsDataPlaneAPI{
 		servingEndpointsDataPlaneImpl: servingEndpointsDataPlaneImpl{
 			client:       client,
@@ -481,7 +476,7 @@ func NewServingEndpointsDataPlane(client *client.DatabricksClient,
 			infos:        sync.Map{},
 			dpts: dataplane.NewEndpointTokenSource(
 				client,
-				authconv.AuthTokenSource(ts),
+				client.Config.GetTokenSource(),
 			),
 		},
 	}
