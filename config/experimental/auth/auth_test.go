@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"sync"
@@ -13,7 +14,7 @@ import (
 
 type mockTokenSource func() (*oauth2.Token, error)
 
-func (m mockTokenSource) Token() (*oauth2.Token, error) {
+func (m mockTokenSource) Token(_ context.Context) (*oauth2.Token, error) {
 	return m()
 }
 
@@ -258,7 +259,7 @@ func TestCachedTokenSource_Token(t *testing.T) {
 				wg.Add(1)
 				go func() {
 					defer wg.Done()
-					cts.Token()
+					cts.Token(context.Background())
 				}()
 			}
 
