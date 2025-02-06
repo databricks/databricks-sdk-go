@@ -476,11 +476,11 @@ func NewServingEndpointsDataPlane(client *client.DatabricksClient,
 	}
 	return &ServingEndpointsDataPlaneAPI{
 		servingEndpointsDataPlaneImpl: servingEndpointsDataPlaneImpl{
-			client:           client,
-			controlPlane:     controlPlane,
-			infos: sync.Map{},
+			client:       client,
+			controlPlane: controlPlane,
+			infos:        sync.Map{},
 			dpts: dataplane.NewEndpointTokenSource(
-				client, 
+				client,
 				authconv.AuthTokenSource(ts),
 			),
 		},
