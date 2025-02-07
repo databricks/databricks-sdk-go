@@ -33,8 +33,8 @@ func TestNewCachedTokenSource_default(t *testing.T) {
 	if got.staleDuration != defaultStaleDuration {
 		t.Errorf("NewCachedTokenSource() staleDuration = %v, want %v", got.staleDuration, defaultStaleDuration)
 	}
-	if got.disableAsync != defaultDisableAsyncRefresh {
-		t.Errorf("NewCachedTokenSource() disableAsync = %v, want %v", got.disableAsync, defaultDisableAsyncRefresh)
+	if got.disableAsync != false {
+		t.Errorf("NewCachedTokenSource() disableAsync = %v, want %v", got.disableAsync, false)
 	}
 	if got.cachedToken != nil {
 		t.Errorf("NewCachedTokenSource() cachedToken = %v, want nil", got.cachedToken)
@@ -221,7 +221,7 @@ func TestCachedTokenSource_Token(t *testing.T) {
 			desc:          "[Async] stale cached token, expired token returned",
 			cachedToken:   &oauth2.Token{Expiry: now.Add(1 * time.Minute)},
 			returnedToken: &oauth2.Token{Expiry: now.Add(-1 * time.Second)},
-			wantCalls:     10,
+			wantCalls:     1,
 			wantToken:     &oauth2.Token{Expiry: now.Add(-1 * time.Second)},
 		},
 		{
@@ -244,6 +244,7 @@ func TestCachedTokenSource_Token(t *testing.T) {
 				timeNow:       func() time.Time { return now },
 				tokenSource: TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
 					atomic.AddInt32(&gotCalls, 1)
+					time.Sleep(10 * time.Millisecond)
 					return tc.returnedToken, tc.returnedError
 				}),
 			}
@@ -262,7 +263,7 @@ func TestCachedTokenSource_Token(t *testing.T) {
 			// Wait for async refreshes to finish. This part is a little brittle
 			// but necessary to ensure that the async refresh is done before
 			// checking the results.
-			time.Sleep(10 * time.Millisecond)
+			time.Sleep(20 * time.Millisecond)
 
 			if int(gotCalls) != tc.wantCalls {
 				t.Errorf("want %d calls to cts.tokenSource.Token(), got %d", tc.wantCalls, gotCalls)

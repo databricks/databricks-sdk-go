@@ -16,10 +16,6 @@ const (
 	// Default duration for the stale period. The number as been set arbitrarily
 	// and might be changed in the future.
 	defaultStaleDuration = 3 * time.Minute
-
-	// Disable the asynchronous token refresh by default. This is meant to
-	// change in the future once the feature is stable.
-	defaultDisableAsyncRefresh = true
 )
 
 // A TokenSource is anything that can return a token.
@@ -59,9 +55,9 @@ func WithAsyncRefresh(b bool) Option {
 	}
 }
 
-// NewCachedTokenProvider wraps a [oauth2.TokenSource] to cache the tokens
-// it returns. By default, the cache will refresh tokens asynchronously a few
-// minutes before they expire.
+// NewCachedTokenProvider wraps a [TokenSource] to cache the tokens it returns.
+// By default, the cache will refresh tokens asynchronously a few minutes before
+// they expire.
 //
 // The token cache is safe for concurrent use by multiple goroutines and will
 // guarantee that only one token refresh is triggered at a time.
@@ -83,8 +79,6 @@ func NewCachedTokenSource(ts TokenSource, opts ...Option) TokenSource {
 	cts := &cachedTokenSource{
 		tokenSource:   ts,
 		staleDuration: defaultStaleDuration,
-		disableAsync:  defaultDisableAsyncRefresh,
-		cachedToken:   nil,
 		timeNow:       time.Now,
 	}
 
