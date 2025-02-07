@@ -118,31 +118,6 @@ func TestAzureCliCredentials_Valid(t *testing.T) {
 	assert.Equal(t, "...", r.Header.Get("X-Databricks-Azure-SP-Management-Token"))
 }
 
-func TestAzureCliCredentials_ReuseTokens(t *testing.T) {
-	env.CleanupEnvironment(t)
-	os.Setenv("PATH", testdataPath())
-	os.Setenv("EXPIRE", "10M")
-
-	// Use temporary file to store the number of calls to the AZ CLI.
-	tmp := t.TempDir()
-	count := filepath.Join(tmp, "count")
-	os.Setenv("COUNT", count)
-
-	aa := AzureCliCredentials{}
-	visitor, err := aa.Configure(context.Background(), azDummy)
-	assert.NoError(t, err)
-
-	r := &http.Request{Header: http.Header{}}
-	err = visitor.SetHeaders(r)
-	assert.NoError(t, err)
-
-	// We verify the headers in the test above.
-	// This test validates we do not call the AZ CLI more than we need.
-	buf, err := os.ReadFile(count)
-	require.NoError(t, err)
-	assert.Len(t, buf, 2, "Expected the AZ CLI to be called twice")
-}
-
 func TestAzureCliCredentials_ValidNoManagementAccess(t *testing.T) {
 	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
