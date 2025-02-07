@@ -12,12 +12,6 @@ import (
 	"golang.org/x/oauth2"
 )
 
-type mockTokenSource func() (*oauth2.Token, error)
-
-func (m mockTokenSource) Token(_ context.Context) (*oauth2.Token, error) {
-	return m()
-}
-
 func TestNewCachedTokenSource_noCaching(t *testing.T) {
 	want := &cachedTokenSource{}
 	got := NewCachedTokenSource(want, nil)
@@ -27,7 +21,7 @@ func TestNewCachedTokenSource_noCaching(t *testing.T) {
 }
 
 func TestNewCachedTokenSource_default(t *testing.T) {
-	ts := mockTokenSource(func() (*oauth2.Token, error) {
+	ts := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
 		return nil, nil
 	})
 
@@ -48,7 +42,7 @@ func TestNewCachedTokenSource_default(t *testing.T) {
 }
 
 func TestNewCachedTokenSource_options(t *testing.T) {
-	ts := mockTokenSource(func() (*oauth2.Token, error) {
+	ts := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
 		return nil, nil
 	})
 
@@ -248,7 +242,7 @@ func TestCachedTokenSource_Token(t *testing.T) {
 				staleDuration: 10 * time.Minute,
 				cachedToken:   tc.cachedToken,
 				timeNow:       func() time.Time { return now },
-				tokenSource: mockTokenSource(func() (*oauth2.Token, error) {
+				tokenSource: TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
 					atomic.AddInt32(&gotCalls, 1)
 					return tc.returnedToken, tc.returnedError
 				}),
