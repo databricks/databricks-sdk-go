@@ -1,0 +1,253 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package servingpreview
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+
+	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+)
+
+// unexported type that holds implementations of just ServingEndpoints API methods
+type servingEndpointsImpl struct {
+	client *client.DatabricksClient
+}
+
+// unexported type that holds implementations of just ServingEndpointsDataPlanePreview API methods
+type servingEndpointsDataPlanePreviewImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *servingEndpointsDataPlanePreviewImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
+	var queryEndpointResponse QueryEndpointResponse
+	path := fmt.Sprintf("/api/preview//serving-endpoints/%v/invocations", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &queryEndpointResponse)
+	return &queryEndpointResponse, err
+}
+
+// unexported type that holds implementations of just ServingEndpointsPreview API methods
+type servingEndpointsPreviewImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *servingEndpointsPreviewImpl) BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error) {
+	var buildLogsResponse BuildLogsResponse
+	path := fmt.Sprintf("/api/2.0preview/serving-endpoints/%v/served-models/%v/build-logs", request.Name, request.ServedModelName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &buildLogsResponse)
+	return &buildLogsResponse, err
+}
+
+func (a *servingEndpointsPreviewImpl) Create(ctx context.Context, request CreateServingEndpoint) (*ServingEndpointDetailed, error) {
+	var servingEndpointDetailed ServingEndpointDetailed
+	path := "/api/2.0preview/serving-endpoints"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &servingEndpointDetailed)
+	return &servingEndpointDetailed, err
+}
+
+func (a *servingEndpointsPreviewImpl) Delete(ctx context.Context, request DeleteServingEndpointRequest) error {
+	var deleteResponse DeleteResponse
+	path := fmt.Sprintf("/api/2.0preview/serving-endpoints/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return err
+}
+
+func (a *servingEndpointsPreviewImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error) {
+	var exportMetricsResponse ExportMetricsResponse
+	path := fmt.Sprintf("/api/2.0preview/serving-endpoints/%v/metrics", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "text/plain"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &exportMetricsResponse)
+	return &exportMetricsResponse, err
+}
+
+func (a *servingEndpointsPreviewImpl) Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error) {
+	var servingEndpointDetailed ServingEndpointDetailed
+	path := fmt.Sprintf("/api/2.0preview/serving-endpoints/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &servingEndpointDetailed)
+	return &servingEndpointDetailed, err
+}
+
+func (a *servingEndpointsPreviewImpl) GetOpenApi(ctx context.Context, request GetOpenApiRequest) (*GetOpenApiResponse, error) {
+	var getOpenApiResponse GetOpenApiResponse
+	path := fmt.Sprintf("/api/2.0preview/serving-endpoints/%v/openapi", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "text/plain"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getOpenApiResponse)
+	return &getOpenApiResponse, err
+}
+
+func (a *servingEndpointsPreviewImpl) GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
+	var getServingEndpointPermissionLevelsResponse GetServingEndpointPermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0preview/permissions/serving-endpoints/%v/permissionLevels", request.ServingEndpointId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getServingEndpointPermissionLevelsResponse)
+	return &getServingEndpointPermissionLevelsResponse, err
+}
+
+func (a *servingEndpointsPreviewImpl) GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+	var servingEndpointPermissions ServingEndpointPermissions
+	path := fmt.Sprintf("/api/2.0preview/permissions/serving-endpoints/%v", request.ServingEndpointId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &servingEndpointPermissions)
+	return &servingEndpointPermissions, err
+}
+
+func (a *servingEndpointsPreviewImpl) HttpRequest(ctx context.Context, request ExternalFunctionRequest) (*HttpRequestResponse, error) {
+	var httpRequestResponse HttpRequestResponse
+	path := "/api/2.0preview/external-function"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "text/plain"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &httpRequestResponse)
+	return &httpRequestResponse, err
+}
+
+// Get all serving endpoints.
+func (a *servingEndpointsPreviewImpl) List(ctx context.Context) listing.Iterator[ServingEndpoint] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListEndpointsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx)
+	}
+	getItems := func(resp *ListEndpointsResponse) []ServingEndpoint {
+		return resp.Endpoints
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get all serving endpoints.
+func (a *servingEndpointsPreviewImpl) ListAll(ctx context.Context) ([]ServingEndpoint, error) {
+	iterator := a.List(ctx)
+	return listing.ToSlice[ServingEndpoint](ctx, iterator)
+}
+func (a *servingEndpointsPreviewImpl) internalList(ctx context.Context) (*ListEndpointsResponse, error) {
+	var listEndpointsResponse ListEndpointsResponse
+	path := "/api/2.0preview/serving-endpoints"
+
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listEndpointsResponse)
+	return &listEndpointsResponse, err
+}
+
+func (a *servingEndpointsPreviewImpl) Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error) {
+	var serverLogsResponse ServerLogsResponse
+	path := fmt.Sprintf("/api/2.0preview/serving-endpoints/%v/served-models/%v/logs", request.Name, request.ServedModelName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &serverLogsResponse)
+	return &serverLogsResponse, err
+}
+
+func (a *servingEndpointsPreviewImpl) Patch(ctx context.Context, request PatchServingEndpointTags) (*EndpointTags, error) {
+	var endpointTags EndpointTags
+	path := fmt.Sprintf("/api/2.0preview/serving-endpoints/%v/tags", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &endpointTags)
+	return &endpointTags, err
+}
+
+func (a *servingEndpointsPreviewImpl) Put(ctx context.Context, request PutRequest) (*PutResponse, error) {
+	var putResponse PutResponse
+	path := fmt.Sprintf("/api/2.0preview/serving-endpoints/%v/rate-limits", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &putResponse)
+	return &putResponse, err
+}
+
+func (a *servingEndpointsPreviewImpl) PutAiGateway(ctx context.Context, request PutAiGatewayRequest) (*PutAiGatewayResponse, error) {
+	var putAiGatewayResponse PutAiGatewayResponse
+	path := fmt.Sprintf("/api/2.0preview/serving-endpoints/%v/ai-gateway", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &putAiGatewayResponse)
+	return &putAiGatewayResponse, err
+}
+
+func (a *servingEndpointsPreviewImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
+	var queryEndpointResponse QueryEndpointResponse
+	path := fmt.Sprintf("/api/preview//serving-endpoints/%v/invocations", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &queryEndpointResponse)
+	return &queryEndpointResponse, err
+}
+
+func (a *servingEndpointsPreviewImpl) SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+	var servingEndpointPermissions ServingEndpointPermissions
+	path := fmt.Sprintf("/api/2.0preview/permissions/serving-endpoints/%v", request.ServingEndpointId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &servingEndpointPermissions)
+	return &servingEndpointPermissions, err
+}
+
+func (a *servingEndpointsPreviewImpl) UpdateConfig(ctx context.Context, request EndpointCoreConfigInput) (*ServingEndpointDetailed, error) {
+	var servingEndpointDetailed ServingEndpointDetailed
+	path := fmt.Sprintf("/api/2.0preview/serving-endpoints/%v/config", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &servingEndpointDetailed)
+	return &servingEndpointDetailed, err
+}
+
+func (a *servingEndpointsPreviewImpl) UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+	var servingEndpointPermissions ServingEndpointPermissions
+	path := fmt.Sprintf("/api/2.0preview/permissions/serving-endpoints/%v", request.ServingEndpointId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &servingEndpointPermissions)
+	return &servingEndpointPermissions, err
+}
