@@ -1,5 +1,29 @@
 # Version changelog
 
+## [Release] Release v0.58.0
+
+### New Features and Improvements
+
+ * Enable async refreshes for OAuth tokens ([#1143](https://github.com/databricks/databricks-sdk-go/pull/1143)).
+
+
+### Internal Changes
+
+ * Add support for asynchronous data plane token refreshes ([#1142](https://github.com/databricks/databricks-sdk-go/pull/1142)).
+ * Introduce new TokenSource interface that takes a `context.Context` ([#1141](https://github.com/databricks/databricks-sdk-go/pull/1141)).
+
+
+### API Changes:
+
+ * Added `GetMessageQueryResultByAttachment` method for [w.Genie](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAPI) workspace-level service.
+ * Added `Id` field for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+ * Added `LimitConfig` field for [billing.UpdateBudgetPolicyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/billing#UpdateBudgetPolicyRequest).
+ * Added `Volumes` field for [compute.ClusterLogConf](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterLogConf).
+ * Added .
+ * Removed `ReviewState`, `Reviews` and `RunnerCollaborators` fields for [cleanrooms.CleanRoomAssetNotebook](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/cleanrooms#CleanRoomAssetNotebook).
+
+OpenAPI SHA: 99f644e72261ef5ecf8d74db20f4b7a1e09723cc, Date: 2025-02-11
+
 ## [Release] Release v0.57.0
 
 ### New Features and Improvements

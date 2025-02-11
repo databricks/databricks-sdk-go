@@ -37,6 +37,13 @@ type GenieService interface {
 	// status is `EXECUTING_QUERY`.
 	GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
+	// Get conversation message SQL query result by attachment id.
+	//
+	// Get the result of SQL query by attachment id This is only available if a
+	// message has a query attachment and the message status is
+	// `EXECUTING_QUERY`.
+	GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error)
+
 	// Start conversation.
 	//
 	// Start a new conversation.

@@ -10,6 +10,8 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/httpclient"
+	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/useragent"
 	goauth "golang.org/x/oauth2"
 )
 
@@ -110,7 +112,33 @@ func (a *servingEndpointsImpl) HttpRequest(ctx context.Context, request External
 	return &httpRequestResponse, err
 }
 
-func (a *servingEndpointsImpl) List(ctx context.Context) (*ListEndpointsResponse, error) {
+// Get all serving endpoints.
+func (a *servingEndpointsImpl) List(ctx context.Context) listing.Iterator[ServingEndpoint] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListEndpointsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx)
+	}
+	getItems := func(resp *ListEndpointsResponse) []ServingEndpoint {
+		return resp.Endpoints
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get all serving endpoints.
+func (a *servingEndpointsImpl) ListAll(ctx context.Context) ([]ServingEndpoint, error) {
+	iterator := a.List(ctx)
+	return listing.ToSlice[ServingEndpoint](ctx, iterator)
+}
+
+func (a *servingEndpointsImpl) internalList(ctx context.Context) (*ListEndpointsResponse, error) {
 	var listEndpointsResponse ListEndpointsResponse
 	path := "/api/2.0/serving-endpoints"
 
