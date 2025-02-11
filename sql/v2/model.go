@@ -423,6 +423,38 @@ func (f *ChannelName) Type() string {
 	return "ChannelName"
 }
 
+type ClientConfig struct {
+	AllowCustomJsVisualizations bool `json:"allow_custom_js_visualizations,omitempty"`
+
+	AllowDownloads bool `json:"allow_downloads,omitempty"`
+
+	AllowExternalShares bool `json:"allow_external_shares,omitempty"`
+
+	AllowSubscriptions bool `json:"allow_subscriptions,omitempty"`
+
+	DateFormat string `json:"date_format,omitempty"`
+
+	DateTimeFormat string `json:"date_time_format,omitempty"`
+
+	DisablePublish bool `json:"disable_publish,omitempty"`
+
+	EnableLegacyAutodetectTypes bool `json:"enable_legacy_autodetect_types,omitempty"`
+
+	FeatureShowPermissionsControl bool `json:"feature_show_permissions_control,omitempty"`
+
+	HidePlotlyModeBar bool `json:"hide_plotly_mode_bar,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClientConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClientConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ColumnInfo struct {
 	// The name of the column.
 	Name string `json:"name,omitempty"`

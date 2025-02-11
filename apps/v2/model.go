@@ -26,6 +26,8 @@ type App struct {
 	DefaultSourceCodePath string `json:"default_source_code_path,omitempty"`
 	// The description of the app.
 	Description string `json:"description,omitempty"`
+	// The unique identifier of the app.
+	Id string `json:"id,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name"`

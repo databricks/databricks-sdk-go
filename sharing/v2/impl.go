@@ -113,12 +113,18 @@ func (a *providersImpl) ListShares(ctx context.Context, request ListSharesReques
 	getItems := func(resp *ListProviderSharesResponse) []ProviderShare {
 		return resp.Shares
 	}
-
+	getNextReq := func(resp *ListProviderSharesResponse) *ListSharesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
 	iterator := listing.NewIterator(
 		&request,
 		getNextPage,
 		getItems,
-		nil)
+		getNextReq)
 	return iterator
 }
 

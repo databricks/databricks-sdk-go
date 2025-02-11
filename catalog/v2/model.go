@@ -5267,6 +5267,9 @@ type TemporaryCredentials struct {
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
+	// GCP temporary credentials for API authentication. Read more at
+	// https://developers.google.com/identity/protocols/oauth2/service-account
+	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
