@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package compute
+package computepreview
 
 import (
 	"context"
@@ -19,7 +19,7 @@ type clusterPoliciesImpl struct {
 
 func (a *clusterPoliciesImpl) Create(ctx context.Context, request CreatePolicy) (*CreatePolicyResponse, error) {
 	var createPolicyResponse CreatePolicyResponse
-	path := "/api/2.0/policies/clusters/create"
+	path := "/api/2.0preview/policies/clusters/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -30,7 +30,7 @@ func (a *clusterPoliciesImpl) Create(ctx context.Context, request CreatePolicy) 
 
 func (a *clusterPoliciesImpl) Delete(ctx context.Context, request DeletePolicy) error {
 	var deletePolicyResponse DeletePolicyResponse
-	path := "/api/2.0/policies/clusters/delete"
+	path := "/api/2.0preview/policies/clusters/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -41,7 +41,7 @@ func (a *clusterPoliciesImpl) Delete(ctx context.Context, request DeletePolicy) 
 
 func (a *clusterPoliciesImpl) Edit(ctx context.Context, request EditPolicy) error {
 	var editPolicyResponse EditPolicyResponse
-	path := "/api/2.0/policies/clusters/edit"
+	path := "/api/2.0preview/policies/clusters/edit"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -52,7 +52,7 @@ func (a *clusterPoliciesImpl) Edit(ctx context.Context, request EditPolicy) erro
 
 func (a *clusterPoliciesImpl) Get(ctx context.Context, request GetClusterPolicyRequest) (*Policy, error) {
 	var policy Policy
-	path := "/api/2.0/policies/clusters/get"
+	path := "/api/2.0preview/policies/clusters/get"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -62,7 +62,7 @@ func (a *clusterPoliciesImpl) Get(ctx context.Context, request GetClusterPolicyR
 
 func (a *clusterPoliciesImpl) GetPermissionLevels(ctx context.Context, request GetClusterPolicyPermissionLevelsRequest) (*GetClusterPolicyPermissionLevelsResponse, error) {
 	var getClusterPolicyPermissionLevelsResponse GetClusterPolicyPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v/permissionLevels", request.ClusterPolicyId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/cluster-policies/%v/permissionLevels", request.ClusterPolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -72,7 +72,7 @@ func (a *clusterPoliciesImpl) GetPermissionLevels(ctx context.Context, request G
 
 func (a *clusterPoliciesImpl) GetPermissions(ctx context.Context, request GetClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", request.ClusterPolicyId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/cluster-policies/%v", request.ClusterPolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -110,7 +110,7 @@ func (a *clusterPoliciesImpl) ListAll(ctx context.Context, request ListClusterPo
 }
 func (a *clusterPoliciesImpl) internalList(ctx context.Context, request ListClusterPoliciesRequest) (*ListPoliciesResponse, error) {
 	var listPoliciesResponse ListPoliciesResponse
-	path := "/api/2.0/policies/clusters/list"
+	path := "/api/2.0preview/policies/clusters/list"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -120,7 +120,7 @@ func (a *clusterPoliciesImpl) internalList(ctx context.Context, request ListClus
 
 func (a *clusterPoliciesImpl) SetPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", request.ClusterPolicyId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/cluster-policies/%v", request.ClusterPolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -131,7 +131,7 @@ func (a *clusterPoliciesImpl) SetPermissions(ctx context.Context, request Cluste
 
 func (a *clusterPoliciesImpl) UpdatePermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", request.ClusterPolicyId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/cluster-policies/%v", request.ClusterPolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -147,7 +147,7 @@ type clustersImpl struct {
 
 func (a *clustersImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
 	var changeClusterOwnerResponse ChangeClusterOwnerResponse
-	path := "/api/2.1/clusters/change-owner"
+	path := "/api/2.1preview/clusters/change-owner"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -158,7 +158,7 @@ func (a *clustersImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwn
 
 func (a *clustersImpl) Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error) {
 	var createClusterResponse CreateClusterResponse
-	path := "/api/2.1/clusters/create"
+	path := "/api/2.1preview/clusters/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -169,7 +169,7 @@ func (a *clustersImpl) Create(ctx context.Context, request CreateCluster) (*Crea
 
 func (a *clustersImpl) Delete(ctx context.Context, request DeleteCluster) error {
 	var deleteClusterResponse DeleteClusterResponse
-	path := "/api/2.1/clusters/delete"
+	path := "/api/2.1preview/clusters/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -180,7 +180,7 @@ func (a *clustersImpl) Delete(ctx context.Context, request DeleteCluster) error 
 
 func (a *clustersImpl) Edit(ctx context.Context, request EditCluster) error {
 	var editClusterResponse EditClusterResponse
-	path := "/api/2.1/clusters/edit"
+	path := "/api/2.1preview/clusters/edit"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -208,6 +208,7 @@ func (a *clustersImpl) Events(ctx context.Context, request GetEvents) listing.It
 			return nil
 		}
 		request = *resp.NextPage
+
 		return &request
 	}
 	iterator := listing.NewIterator(
@@ -230,7 +231,7 @@ func (a *clustersImpl) EventsAll(ctx context.Context, request GetEvents) ([]Clus
 }
 func (a *clustersImpl) internalEvents(ctx context.Context, request GetEvents) (*GetEventsResponse, error) {
 	var getEventsResponse GetEventsResponse
-	path := "/api/2.1/clusters/events"
+	path := "/api/2.1preview/clusters/events"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -241,7 +242,7 @@ func (a *clustersImpl) internalEvents(ctx context.Context, request GetEvents) (*
 
 func (a *clustersImpl) Get(ctx context.Context, request GetClusterRequest) (*ClusterDetails, error) {
 	var clusterDetails ClusterDetails
-	path := "/api/2.1/clusters/get"
+	path := "/api/2.1preview/clusters/get"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -251,7 +252,7 @@ func (a *clustersImpl) Get(ctx context.Context, request GetClusterRequest) (*Clu
 
 func (a *clustersImpl) GetPermissionLevels(ctx context.Context, request GetClusterPermissionLevelsRequest) (*GetClusterPermissionLevelsResponse, error) {
 	var getClusterPermissionLevelsResponse GetClusterPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v/permissionLevels", request.ClusterId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/clusters/%v/permissionLevels", request.ClusterId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -261,7 +262,7 @@ func (a *clustersImpl) GetPermissionLevels(ctx context.Context, request GetClust
 
 func (a *clustersImpl) GetPermissions(ctx context.Context, request GetClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/clusters/%v", request.ClusterId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -310,7 +311,7 @@ func (a *clustersImpl) ListAll(ctx context.Context, request ListClustersRequest)
 }
 func (a *clustersImpl) internalList(ctx context.Context, request ListClustersRequest) (*ListClustersResponse, error) {
 	var listClustersResponse ListClustersResponse
-	path := "/api/2.1/clusters/list"
+	path := "/api/2.1preview/clusters/list"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -320,7 +321,7 @@ func (a *clustersImpl) internalList(ctx context.Context, request ListClustersReq
 
 func (a *clustersImpl) ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse, error) {
 	var listNodeTypesResponse ListNodeTypesResponse
-	path := "/api/2.1/clusters/list-node-types"
+	path := "/api/2.1preview/clusters/list-node-types"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -330,7 +331,7 @@ func (a *clustersImpl) ListNodeTypes(ctx context.Context) (*ListNodeTypesRespons
 
 func (a *clustersImpl) ListZones(ctx context.Context) (*ListAvailableZonesResponse, error) {
 	var listAvailableZonesResponse ListAvailableZonesResponse
-	path := "/api/2.1/clusters/list-zones"
+	path := "/api/2.1preview/clusters/list-zones"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -340,7 +341,7 @@ func (a *clustersImpl) ListZones(ctx context.Context) (*ListAvailableZonesRespon
 
 func (a *clustersImpl) PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error {
 	var permanentDeleteClusterResponse PermanentDeleteClusterResponse
-	path := "/api/2.1/clusters/permanent-delete"
+	path := "/api/2.1preview/clusters/permanent-delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -351,7 +352,7 @@ func (a *clustersImpl) PermanentDelete(ctx context.Context, request PermanentDel
 
 func (a *clustersImpl) Pin(ctx context.Context, request PinCluster) error {
 	var pinClusterResponse PinClusterResponse
-	path := "/api/2.1/clusters/pin"
+	path := "/api/2.1preview/clusters/pin"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -362,7 +363,7 @@ func (a *clustersImpl) Pin(ctx context.Context, request PinCluster) error {
 
 func (a *clustersImpl) Resize(ctx context.Context, request ResizeCluster) error {
 	var resizeClusterResponse ResizeClusterResponse
-	path := "/api/2.1/clusters/resize"
+	path := "/api/2.1preview/clusters/resize"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -373,7 +374,7 @@ func (a *clustersImpl) Resize(ctx context.Context, request ResizeCluster) error 
 
 func (a *clustersImpl) Restart(ctx context.Context, request RestartCluster) error {
 	var restartClusterResponse RestartClusterResponse
-	path := "/api/2.1/clusters/restart"
+	path := "/api/2.1preview/clusters/restart"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -384,7 +385,7 @@ func (a *clustersImpl) Restart(ctx context.Context, request RestartCluster) erro
 
 func (a *clustersImpl) SetPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/clusters/%v", request.ClusterId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -395,7 +396,7 @@ func (a *clustersImpl) SetPermissions(ctx context.Context, request ClusterPermis
 
 func (a *clustersImpl) SparkVersions(ctx context.Context) (*GetSparkVersionsResponse, error) {
 	var getSparkVersionsResponse GetSparkVersionsResponse
-	path := "/api/2.1/clusters/spark-versions"
+	path := "/api/2.1preview/clusters/spark-versions"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -405,7 +406,7 @@ func (a *clustersImpl) SparkVersions(ctx context.Context) (*GetSparkVersionsResp
 
 func (a *clustersImpl) Start(ctx context.Context, request StartCluster) error {
 	var startClusterResponse StartClusterResponse
-	path := "/api/2.1/clusters/start"
+	path := "/api/2.1preview/clusters/start"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -416,7 +417,7 @@ func (a *clustersImpl) Start(ctx context.Context, request StartCluster) error {
 
 func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 	var unpinClusterResponse UnpinClusterResponse
-	path := "/api/2.1/clusters/unpin"
+	path := "/api/2.1preview/clusters/unpin"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -427,7 +428,7 @@ func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 
 func (a *clustersImpl) Update(ctx context.Context, request UpdateCluster) error {
 	var updateClusterResponse UpdateClusterResponse
-	path := "/api/2.1/clusters/update"
+	path := "/api/2.1preview/clusters/update"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -438,7 +439,7 @@ func (a *clustersImpl) Update(ctx context.Context, request UpdateCluster) error 
 
 func (a *clustersImpl) UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/clusters/%v", request.ClusterId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -454,7 +455,7 @@ type commandExecutionImpl struct {
 
 func (a *commandExecutionImpl) Cancel(ctx context.Context, request CancelCommand) error {
 	var cancelResponse CancelResponse
-	path := "/api/1.2/commands/cancel"
+	path := "/api/1.2preview/commands/cancel"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -465,7 +466,7 @@ func (a *commandExecutionImpl) Cancel(ctx context.Context, request CancelCommand
 
 func (a *commandExecutionImpl) CommandStatus(ctx context.Context, request CommandStatusRequest) (*CommandStatusResponse, error) {
 	var commandStatusResponse CommandStatusResponse
-	path := "/api/1.2/commands/status"
+	path := "/api/1.2preview/commands/status"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -475,7 +476,7 @@ func (a *commandExecutionImpl) CommandStatus(ctx context.Context, request Comman
 
 func (a *commandExecutionImpl) ContextStatus(ctx context.Context, request ContextStatusRequest) (*ContextStatusResponse, error) {
 	var contextStatusResponse ContextStatusResponse
-	path := "/api/1.2/contexts/status"
+	path := "/api/1.2preview/contexts/status"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -485,7 +486,7 @@ func (a *commandExecutionImpl) ContextStatus(ctx context.Context, request Contex
 
 func (a *commandExecutionImpl) Create(ctx context.Context, request CreateContext) (*Created, error) {
 	var created Created
-	path := "/api/1.2/contexts/create"
+	path := "/api/1.2preview/contexts/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -496,7 +497,7 @@ func (a *commandExecutionImpl) Create(ctx context.Context, request CreateContext
 
 func (a *commandExecutionImpl) Destroy(ctx context.Context, request DestroyContext) error {
 	var destroyResponse DestroyResponse
-	path := "/api/1.2/contexts/destroy"
+	path := "/api/1.2preview/contexts/destroy"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -507,7 +508,7 @@ func (a *commandExecutionImpl) Destroy(ctx context.Context, request DestroyConte
 
 func (a *commandExecutionImpl) Execute(ctx context.Context, request Command) (*Created, error) {
 	var created Created
-	path := "/api/1.2/commands/execute"
+	path := "/api/1.2preview/commands/execute"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -523,7 +524,7 @@ type globalInitScriptsImpl struct {
 
 func (a *globalInitScriptsImpl) Create(ctx context.Context, request GlobalInitScriptCreateRequest) (*CreateResponse, error) {
 	var createResponse CreateResponse
-	path := "/api/2.0/global-init-scripts"
+	path := "/api/2.0preview/global-init-scripts"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -534,7 +535,7 @@ func (a *globalInitScriptsImpl) Create(ctx context.Context, request GlobalInitSc
 
 func (a *globalInitScriptsImpl) Delete(ctx context.Context, request DeleteGlobalInitScriptRequest) error {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
+	path := fmt.Sprintf("/api/2.0preview/global-init-scripts/%v", request.ScriptId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
@@ -543,7 +544,7 @@ func (a *globalInitScriptsImpl) Delete(ctx context.Context, request DeleteGlobal
 
 func (a *globalInitScriptsImpl) Get(ctx context.Context, request GetGlobalInitScriptRequest) (*GlobalInitScriptDetailsWithContent, error) {
 	var globalInitScriptDetailsWithContent GlobalInitScriptDetailsWithContent
-	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
+	path := fmt.Sprintf("/api/2.0preview/global-init-scripts/%v", request.ScriptId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -588,7 +589,7 @@ func (a *globalInitScriptsImpl) ListAll(ctx context.Context) ([]GlobalInitScript
 }
 func (a *globalInitScriptsImpl) internalList(ctx context.Context) (*ListGlobalInitScriptsResponse, error) {
 	var listGlobalInitScriptsResponse ListGlobalInitScriptsResponse
-	path := "/api/2.0/global-init-scripts"
+	path := "/api/2.0preview/global-init-scripts"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -598,7 +599,7 @@ func (a *globalInitScriptsImpl) internalList(ctx context.Context) (*ListGlobalIn
 
 func (a *globalInitScriptsImpl) Update(ctx context.Context, request GlobalInitScriptUpdateRequest) error {
 	var updateResponse UpdateResponse
-	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
+	path := fmt.Sprintf("/api/2.0preview/global-init-scripts/%v", request.ScriptId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
@@ -613,7 +614,7 @@ type instancePoolsImpl struct {
 
 func (a *instancePoolsImpl) Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error) {
 	var createInstancePoolResponse CreateInstancePoolResponse
-	path := "/api/2.0/instance-pools/create"
+	path := "/api/2.0preview/instance-pools/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -624,7 +625,7 @@ func (a *instancePoolsImpl) Create(ctx context.Context, request CreateInstancePo
 
 func (a *instancePoolsImpl) Delete(ctx context.Context, request DeleteInstancePool) error {
 	var deleteInstancePoolResponse DeleteInstancePoolResponse
-	path := "/api/2.0/instance-pools/delete"
+	path := "/api/2.0preview/instance-pools/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -635,7 +636,7 @@ func (a *instancePoolsImpl) Delete(ctx context.Context, request DeleteInstancePo
 
 func (a *instancePoolsImpl) Edit(ctx context.Context, request EditInstancePool) error {
 	var editInstancePoolResponse EditInstancePoolResponse
-	path := "/api/2.0/instance-pools/edit"
+	path := "/api/2.0preview/instance-pools/edit"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -646,7 +647,7 @@ func (a *instancePoolsImpl) Edit(ctx context.Context, request EditInstancePool) 
 
 func (a *instancePoolsImpl) Get(ctx context.Context, request GetInstancePoolRequest) (*GetInstancePool, error) {
 	var getInstancePool GetInstancePool
-	path := "/api/2.0/instance-pools/get"
+	path := "/api/2.0preview/instance-pools/get"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -656,7 +657,7 @@ func (a *instancePoolsImpl) Get(ctx context.Context, request GetInstancePoolRequ
 
 func (a *instancePoolsImpl) GetPermissionLevels(ctx context.Context, request GetInstancePoolPermissionLevelsRequest) (*GetInstancePoolPermissionLevelsResponse, error) {
 	var getInstancePoolPermissionLevelsResponse GetInstancePoolPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v/permissionLevels", request.InstancePoolId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/instance-pools/%v/permissionLevels", request.InstancePoolId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -666,7 +667,7 @@ func (a *instancePoolsImpl) GetPermissionLevels(ctx context.Context, request Get
 
 func (a *instancePoolsImpl) GetPermissions(ctx context.Context, request GetInstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", request.InstancePoolId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/instance-pools/%v", request.InstancePoolId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -705,7 +706,7 @@ func (a *instancePoolsImpl) ListAll(ctx context.Context) ([]InstancePoolAndStats
 }
 func (a *instancePoolsImpl) internalList(ctx context.Context) (*ListInstancePools, error) {
 	var listInstancePools ListInstancePools
-	path := "/api/2.0/instance-pools/list"
+	path := "/api/2.0preview/instance-pools/list"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -715,7 +716,7 @@ func (a *instancePoolsImpl) internalList(ctx context.Context) (*ListInstancePool
 
 func (a *instancePoolsImpl) SetPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", request.InstancePoolId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/instance-pools/%v", request.InstancePoolId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -726,7 +727,7 @@ func (a *instancePoolsImpl) SetPermissions(ctx context.Context, request Instance
 
 func (a *instancePoolsImpl) UpdatePermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", request.InstancePoolId)
+	path := fmt.Sprintf("/api/2.0preview/permissions/instance-pools/%v", request.InstancePoolId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -742,7 +743,7 @@ type instanceProfilesImpl struct {
 
 func (a *instanceProfilesImpl) Add(ctx context.Context, request AddInstanceProfile) error {
 	var addResponse AddResponse
-	path := "/api/2.0/instance-profiles/add"
+	path := "/api/2.0preview/instance-profiles/add"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -753,7 +754,7 @@ func (a *instanceProfilesImpl) Add(ctx context.Context, request AddInstanceProfi
 
 func (a *instanceProfilesImpl) Edit(ctx context.Context, request InstanceProfile) error {
 	var editResponse EditResponse
-	path := "/api/2.0/instance-profiles/edit"
+	path := "/api/2.0preview/instance-profiles/edit"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -797,7 +798,7 @@ func (a *instanceProfilesImpl) ListAll(ctx context.Context) ([]InstanceProfile, 
 }
 func (a *instanceProfilesImpl) internalList(ctx context.Context) (*ListInstanceProfilesResponse, error) {
 	var listInstanceProfilesResponse ListInstanceProfilesResponse
-	path := "/api/2.0/instance-profiles/list"
+	path := "/api/2.0preview/instance-profiles/list"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -807,7 +808,7 @@ func (a *instanceProfilesImpl) internalList(ctx context.Context) (*ListInstanceP
 
 func (a *instanceProfilesImpl) Remove(ctx context.Context, request RemoveInstanceProfile) error {
 	var removeResponse RemoveResponse
-	path := "/api/2.0/instance-profiles/remove"
+	path := "/api/2.0preview/instance-profiles/remove"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -854,7 +855,7 @@ func (a *librariesImpl) AllClusterStatusesAll(ctx context.Context) ([]ClusterLib
 }
 func (a *librariesImpl) internalAllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {
 	var listAllClusterLibraryStatusesResponse ListAllClusterLibraryStatusesResponse
-	path := "/api/2.0/libraries/all-cluster-statuses"
+	path := "/api/2.0preview/libraries/all-cluster-statuses"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -904,7 +905,7 @@ func (a *librariesImpl) ClusterStatusAll(ctx context.Context, request ClusterSta
 }
 func (a *librariesImpl) internalClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error) {
 	var clusterLibraryStatuses ClusterLibraryStatuses
-	path := "/api/2.0/libraries/cluster-status"
+	path := "/api/2.0preview/libraries/cluster-status"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -914,7 +915,7 @@ func (a *librariesImpl) internalClusterStatus(ctx context.Context, request Clust
 
 func (a *librariesImpl) Install(ctx context.Context, request InstallLibraries) error {
 	var installLibrariesResponse InstallLibrariesResponse
-	path := "/api/2.0/libraries/install"
+	path := "/api/2.0preview/libraries/install"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -925,7 +926,7 @@ func (a *librariesImpl) Install(ctx context.Context, request InstallLibraries) e
 
 func (a *librariesImpl) Uninstall(ctx context.Context, request UninstallLibraries) error {
 	var uninstallLibrariesResponse UninstallLibrariesResponse
-	path := "/api/2.0/libraries/uninstall"
+	path := "/api/2.0preview/libraries/uninstall"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -941,7 +942,7 @@ type policyComplianceForClustersImpl struct {
 
 func (a *policyComplianceForClustersImpl) EnforceCompliance(ctx context.Context, request EnforceClusterComplianceRequest) (*EnforceClusterComplianceResponse, error) {
 	var enforceClusterComplianceResponse EnforceClusterComplianceResponse
-	path := "/api/2.0/policies/clusters/enforce-compliance"
+	path := "/api/2.0preview/policies/clusters/enforce-compliance"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -952,7 +953,7 @@ func (a *policyComplianceForClustersImpl) EnforceCompliance(ctx context.Context,
 
 func (a *policyComplianceForClustersImpl) GetCompliance(ctx context.Context, request GetClusterComplianceRequest) (*GetClusterComplianceResponse, error) {
 	var getClusterComplianceResponse GetClusterComplianceResponse
-	path := "/api/2.0/policies/clusters/get-compliance"
+	path := "/api/2.0preview/policies/clusters/get-compliance"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1000,7 +1001,7 @@ func (a *policyComplianceForClustersImpl) ListComplianceAll(ctx context.Context,
 }
 func (a *policyComplianceForClustersImpl) internalListCompliance(ctx context.Context, request ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error) {
 	var listClusterCompliancesResponse ListClusterCompliancesResponse
-	path := "/api/2.0/policies/clusters/list-compliance"
+	path := "/api/2.0preview/policies/clusters/list-compliance"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1015,7 +1016,7 @@ type policyFamiliesImpl struct {
 
 func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error) {
 	var policyFamily PolicyFamily
-	path := fmt.Sprintf("/api/2.0/policy-families/%v", request.PolicyFamilyId)
+	path := fmt.Sprintf("/api/2.0preview/policy-families/%v", request.PolicyFamilyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -1061,7 +1062,7 @@ func (a *policyFamiliesImpl) ListAll(ctx context.Context, request ListPolicyFami
 }
 func (a *policyFamiliesImpl) internalList(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error) {
 	var listPolicyFamiliesResponse ListPolicyFamiliesResponse
-	path := "/api/2.0/policy-families"
+	path := "/api/2.0preview/policy-families"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
