@@ -111,13 +111,21 @@ type DoOption struct {
 	body         any
 	contentType  string
 	isAuthOption bool
+	queryParams  map[string]any
 }
 
 // Do sends an HTTP request against path.
 func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOption) error {
 	var authVisitor RequestVisitor
 	visitors := c.config.Visitors[:]
+	var explicitQueryParams map[string]any
 	for _, o := range opts {
+		if o.queryParams != nil {
+			if explicitQueryParams != nil {
+				return fmt.Errorf("only one set of query params is allowed")
+			}
+			explicitQueryParams = o.queryParams
+		}
 		if o.in == nil {
 			continue
 		}
@@ -150,7 +158,7 @@ func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOptio
 		data = o.body
 		contentType = o.contentType
 	}
-	requestBody, err := makeRequestBody(method, &path, data, contentType)
+	requestBody, err := makeRequestBody(method, &path, data, contentType, explicitQueryParams)
 	if err != nil {
 		return fmt.Errorf("request marshal: %w", err)
 	}

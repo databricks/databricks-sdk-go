@@ -388,7 +388,11 @@ const ComplianceStandardFedrampModerate ComplianceStandard = `FEDRAMP_MODERATE`
 
 const ComplianceStandardHipaa ComplianceStandard = `HIPAA`
 
+const ComplianceStandardHitrust ComplianceStandard = `HITRUST`
+
 const ComplianceStandardIrapProtected ComplianceStandard = `IRAP_PROTECTED`
+
+const ComplianceStandardIsmap ComplianceStandard = `ISMAP`
 
 const ComplianceStandardItarEar ComplianceStandard = `ITAR_EAR`
 
@@ -404,11 +408,11 @@ func (f *ComplianceStandard) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ComplianceStandard) Set(v string) error {
 	switch v {
-	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `HIPAA`, `IRAP_PROTECTED`, `ITAR_EAR`, `NONE`, `PCI_DSS`:
+	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `HIPAA`, `HITRUST`, `IRAP_PROTECTED`, `ISMAP`, `ITAR_EAR`, `NONE`, `PCI_DSS`:
 		*f = ComplianceStandard(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "HIPAA", "IRAP_PROTECTED", "ITAR_EAR", "NONE", "PCI_DSS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "HIPAA", "HITRUST", "IRAP_PROTECTED", "ISMAP", "ITAR_EAR", "NONE", "PCI_DSS"`, v)
 	}
 }
 
@@ -2628,10 +2632,17 @@ type UpdateAccountIpAccessEnableRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting AccountIpAccessEnable `json:"setting"`
@@ -2642,10 +2653,17 @@ type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting AibiDashboardEmbeddingAccessPolicySetting `json:"setting"`
@@ -2656,10 +2674,17 @@ type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting AibiDashboardEmbeddingApprovedDomainsSetting `json:"setting"`
@@ -2670,10 +2695,17 @@ type UpdateAutomaticClusterUpdateSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting AutomaticClusterUpdateSetting `json:"setting"`
@@ -2684,10 +2716,17 @@ type UpdateComplianceSecurityProfileSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting ComplianceSecurityProfileSetting `json:"setting"`
@@ -2698,10 +2737,17 @@ type UpdateCspEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting CspEnablementAccountSetting `json:"setting"`
@@ -2712,10 +2758,17 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 	// This represents the setting configuration for the default namespace in
 	// the Databricks workspace. Setting the default catalog for the workspace
@@ -2734,10 +2787,17 @@ type UpdateDisableLegacyAccessRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting DisableLegacyAccess `json:"setting"`
@@ -2748,10 +2808,17 @@ type UpdateDisableLegacyDbfsRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting DisableLegacyDbfs `json:"setting"`
@@ -2762,10 +2829,17 @@ type UpdateDisableLegacyFeaturesRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting DisableLegacyFeatures `json:"setting"`
@@ -2776,10 +2850,17 @@ type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting EnhancedSecurityMonitoringSetting `json:"setting"`
@@ -2790,10 +2871,17 @@ type UpdateEsmEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting EsmEnablementAccountSetting `json:"setting"`
@@ -2853,10 +2941,17 @@ type UpdatePersonalComputeSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting PersonalComputeSetting `json:"setting"`
@@ -2870,10 +2965,17 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting RestrictWorkspaceAdminsSetting `json:"setting"`

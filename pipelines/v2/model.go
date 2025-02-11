@@ -222,6 +222,9 @@ type ClusterLogConf struct {
 	// the cluster iam role in `instance_profile_arn` has permission to write
 	// data to the s3 destination.
 	S3 *S3StorageInfo `json:"s3,omitempty"`
+	// destination needs to be provided. e.g. `{ "volumes" : { "destination" :
+	// "/Volumes/catalog/schema/volume/cluster_log" } }`
+	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 }
 
 type CreatePipeline struct {
@@ -2306,7 +2309,8 @@ func (f *UpdateStateInfoState) Type() string {
 }
 
 type VolumesStorageInfo struct {
-	// Unity Catalog Volumes file destination, e.g. `/Volumes/my-init.sh`
+	// Unity Catalog volumes file destination, e.g.
+	// `/Volumes/catalog/schema/volume/dir/file`
 	Destination string `json:"destination"`
 }
 

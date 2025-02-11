@@ -77,3 +77,71 @@ func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
 		LakeviewInterface: NewLakeview(databricksClient),
 	}, nil
 }
+
+type LakeviewEmbeddedClient struct {
+	LakeviewEmbeddedInterface
+	Config    *config.Config
+	apiClient *httpclient.ApiClient
+}
+
+func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, error) {
+	if cfg == nil {
+		cfg = &config.Config{}
+	}
+
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	if cfg.IsAccountClient() {
+		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
+	}
+	apiClient, err := cfg.NewApiClient()
+	if err != nil {
+		return nil, err
+	}
+	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	if err != nil {
+		return nil, err
+	}
+
+	return &LakeviewEmbeddedClient{
+		Config:                    cfg,
+		apiClient:                 apiClient,
+		LakeviewEmbeddedInterface: NewLakeviewEmbedded(databricksClient),
+	}, nil
+}
+
+type QueryExecutionClient struct {
+	QueryExecutionInterface
+	Config    *config.Config
+	apiClient *httpclient.ApiClient
+}
+
+func NewQueryExecutionClient(cfg *config.Config) (*QueryExecutionClient, error) {
+	if cfg == nil {
+		cfg = &config.Config{}
+	}
+
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	if cfg.IsAccountClient() {
+		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
+	}
+	apiClient, err := cfg.NewApiClient()
+	if err != nil {
+		return nil, err
+	}
+	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	if err != nil {
+		return nil, err
+	}
+
+	return &QueryExecutionClient{
+		Config:                  cfg,
+		apiClient:               apiClient,
+		QueryExecutionInterface: NewQueryExecution(databricksClient),
+	}, nil
+}

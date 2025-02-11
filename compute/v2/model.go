@@ -417,11 +417,12 @@ type ClusterAttributes struct {
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
-	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
-	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every `5 mins`. The
-	// destination of driver logs is `$destination/$clusterId/driver`, while the
-	// destination of executor logs is `$destination/$clusterId/executor`.
+	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
+	// volumes) are supported. Only one destination can be specified for one
+	// cluster. If the conf is given, the logs will be delivered to the
+	// destination every `5 mins`. The destination of driver logs is
+	// `$destination/$clusterId/driver`, while the destination of executor logs
+	// is `$destination/$clusterId/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
@@ -620,11 +621,12 @@ type ClusterDetails struct {
 	// restarts and resizes, while each new cluster has a globally unique id.
 	ClusterId string `json:"cluster_id,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
-	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
-	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every `5 mins`. The
-	// destination of driver logs is `$destination/$clusterId/driver`, while the
-	// destination of executor logs is `$destination/$clusterId/executor`.
+	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
+	// volumes) are supported. Only one destination can be specified for one
+	// cluster. If the conf is given, the logs will be delivered to the
+	// destination every `5 mins`. The destination of driver logs is
+	// `$destination/$clusterId/driver`, while the destination of executor logs
+	// is `$destination/$clusterId/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster log delivery status.
 	ClusterLogStatus *LogSyncStatus `json:"cluster_log_status,omitempty"`
@@ -899,6 +901,9 @@ type ClusterLogConf struct {
 	// the cluster iam role in `instance_profile_arn` has permission to write
 	// data to the s3 destination.
 	S3 *S3StorageInfo `json:"s3,omitempty"`
+	// destination needs to be provided. e.g. `{ "volumes" : { "destination" :
+	// "/Volumes/catalog/schema/volume/cluster_log" } }`
+	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 }
 
 type ClusterPermission struct {
@@ -1234,11 +1239,12 @@ type ClusterSpec struct {
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
-	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
-	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every `5 mins`. The
-	// destination of driver logs is `$destination/$clusterId/driver`, while the
-	// destination of executor logs is `$destination/$clusterId/executor`.
+	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
+	// volumes) are supported. Only one destination can be specified for one
+	// cluster. If the conf is given, the logs will be delivered to the
+	// destination every `5 mins`. The destination of driver logs is
+	// `$destination/$clusterId/driver`, while the destination of executor logs
+	// is `$destination/$clusterId/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
@@ -1566,11 +1572,12 @@ type CreateCluster struct {
 	// creation of a new cluster.
 	CloneFrom *CloneCluster `json:"clone_from,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
-	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
-	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every `5 mins`. The
-	// destination of driver logs is `$destination/$clusterId/driver`, while the
-	// destination of executor logs is `$destination/$clusterId/executor`.
+	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
+	// volumes) are supported. Only one destination can be specified for one
+	// cluster. If the conf is given, the logs will be delivered to the
+	// destination every `5 mins`. The destination of driver logs is
+	// `$destination/$clusterId/driver`, while the destination of executor logs
+	// is `$destination/$clusterId/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
@@ -2312,11 +2319,12 @@ type EditCluster struct {
 	// ID of the cluster
 	ClusterId string `json:"cluster_id"`
 	// The configuration for delivering spark logs to a long-term storage
-	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
-	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every `5 mins`. The
-	// destination of driver logs is `$destination/$clusterId/driver`, while the
-	// destination of executor logs is `$destination/$clusterId/executor`.
+	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
+	// volumes) are supported. Only one destination can be specified for one
+	// cluster. If the conf is given, the logs will be delivered to the
+	// destination every `5 mins`. The destination of driver logs is
+	// `$destination/$clusterId/driver`, while the destination of executor logs
+	// is `$destination/$clusterId/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
@@ -5293,11 +5301,12 @@ type UpdateClusterResource struct {
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
-	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
-	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every `5 mins`. The
-	// destination of driver logs is `$destination/$clusterId/driver`, while the
-	// destination of executor logs is `$destination/$clusterId/executor`.
+	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
+	// volumes) are supported. Only one destination can be specified for one
+	// cluster. If the conf is given, the logs will be delivered to the
+	// destination every `5 mins`. The destination of driver logs is
+	// `$destination/$clusterId/driver`, while the destination of executor logs
+	// is `$destination/$clusterId/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
@@ -5466,7 +5475,8 @@ type UpdateResponse struct {
 }
 
 type VolumesStorageInfo struct {
-	// Unity Catalog Volumes file destination, e.g. `/Volumes/my-init.sh`
+	// Unity Catalog volumes file destination, e.g.
+	// `/Volumes/catalog/schema/volume/dir/file`
 	Destination string `json:"destination"`
 }
 

@@ -384,6 +384,40 @@ func NewQueryVisualizationsLegacyClient(cfg *config.Config) (*QueryVisualization
 	}, nil
 }
 
+type RedashConfigClient struct {
+	RedashConfigInterface
+	Config    *config.Config
+	apiClient *httpclient.ApiClient
+}
+
+func NewRedashConfigClient(cfg *config.Config) (*RedashConfigClient, error) {
+	if cfg == nil {
+		cfg = &config.Config{}
+	}
+
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	if cfg.IsAccountClient() {
+		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
+	}
+	apiClient, err := cfg.NewApiClient()
+	if err != nil {
+		return nil, err
+	}
+	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	if err != nil {
+		return nil, err
+	}
+
+	return &RedashConfigClient{
+		Config:                cfg,
+		apiClient:             apiClient,
+		RedashConfigInterface: NewRedashConfig(databricksClient),
+	}, nil
+}
+
 type StatementExecutionClient struct {
 	StatementExecutionInterface
 	Config    *config.Config
