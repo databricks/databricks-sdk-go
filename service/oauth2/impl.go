@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/exp/slices"
 )
 
@@ -50,7 +52,38 @@ func (a *accountFederationPolicyImpl) Get(ctx context.Context, request GetAccoun
 	return &federationPolicy, err
 }
 
-func (a *accountFederationPolicyImpl) List(ctx context.Context, request ListAccountFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
+// List account federation policies.
+func (a *accountFederationPolicyImpl) List(ctx context.Context, request ListAccountFederationPoliciesRequest) listing.Iterator[FederationPolicy] {
+
+	getNextPage := func(ctx context.Context, req ListAccountFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListFederationPoliciesResponse) []FederationPolicy {
+		return resp.Policies
+	}
+	getNextReq := func(resp *ListFederationPoliciesResponse) *ListAccountFederationPoliciesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List account federation policies.
+func (a *accountFederationPolicyImpl) ListAll(ctx context.Context, request ListAccountFederationPoliciesRequest) ([]FederationPolicy, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[FederationPolicy](ctx, iterator)
+}
+
+func (a *accountFederationPolicyImpl) internalList(ctx context.Context, request ListAccountFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
 	var listFederationPoliciesResponse ListFederationPoliciesResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -110,7 +143,44 @@ func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomApp
 	return &getCustomAppIntegrationOutput, err
 }
 
-func (a *customAppIntegrationImpl) List(ctx context.Context, request ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error) {
+// Get custom oauth app integrations.
+//
+// Get the list of custom OAuth app integrations for the specified Databricks
+// account
+func (a *customAppIntegrationImpl) List(ctx context.Context, request ListCustomAppIntegrationsRequest) listing.Iterator[GetCustomAppIntegrationOutput] {
+
+	getNextPage := func(ctx context.Context, req ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *GetCustomAppIntegrationsOutput) []GetCustomAppIntegrationOutput {
+		return resp.Apps
+	}
+	getNextReq := func(resp *GetCustomAppIntegrationsOutput) *ListCustomAppIntegrationsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Get custom oauth app integrations.
+//
+// Get the list of custom OAuth app integrations for the specified Databricks
+// account
+func (a *customAppIntegrationImpl) ListAll(ctx context.Context, request ListCustomAppIntegrationsRequest) ([]GetCustomAppIntegrationOutput, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[GetCustomAppIntegrationOutput](ctx, iterator)
+}
+
+func (a *customAppIntegrationImpl) internalList(ctx context.Context, request ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error) {
 	var getCustomAppIntegrationsOutput GetCustomAppIntegrationsOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -136,7 +206,42 @@ type oAuthPublishedAppsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *oAuthPublishedAppsImpl) List(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
+// Get all the published OAuth apps.
+//
+// Get all the available published OAuth apps in Databricks.
+func (a *oAuthPublishedAppsImpl) List(ctx context.Context, request ListOAuthPublishedAppsRequest) listing.Iterator[PublishedAppOutput] {
+
+	getNextPage := func(ctx context.Context, req ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *GetPublishedAppsOutput) []PublishedAppOutput {
+		return resp.Apps
+	}
+	getNextReq := func(resp *GetPublishedAppsOutput) *ListOAuthPublishedAppsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Get all the published OAuth apps.
+//
+// Get all the available published OAuth apps in Databricks.
+func (a *oAuthPublishedAppsImpl) ListAll(ctx context.Context, request ListOAuthPublishedAppsRequest) ([]PublishedAppOutput, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[PublishedAppOutput](ctx, iterator)
+}
+
+func (a *oAuthPublishedAppsImpl) internalList(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
 	var getPublishedAppsOutput GetPublishedAppsOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-apps", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -182,7 +287,44 @@ func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublis
 	return &getPublishedAppIntegrationOutput, err
 }
 
-func (a *publishedAppIntegrationImpl) List(ctx context.Context, request ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error) {
+// Get published oauth app integrations.
+//
+// Get the list of published OAuth app integrations for the specified Databricks
+// account
+func (a *publishedAppIntegrationImpl) List(ctx context.Context, request ListPublishedAppIntegrationsRequest) listing.Iterator[GetPublishedAppIntegrationOutput] {
+
+	getNextPage := func(ctx context.Context, req ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *GetPublishedAppIntegrationsOutput) []GetPublishedAppIntegrationOutput {
+		return resp.Apps
+	}
+	getNextReq := func(resp *GetPublishedAppIntegrationsOutput) *ListPublishedAppIntegrationsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Get published oauth app integrations.
+//
+// Get the list of published OAuth app integrations for the specified Databricks
+// account
+func (a *publishedAppIntegrationImpl) ListAll(ctx context.Context, request ListPublishedAppIntegrationsRequest) ([]GetPublishedAppIntegrationOutput, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[GetPublishedAppIntegrationOutput](ctx, iterator)
+}
+
+func (a *publishedAppIntegrationImpl) internalList(ctx context.Context, request ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error) {
 	var getPublishedAppIntegrationsOutput GetPublishedAppIntegrationsOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -242,7 +384,38 @@ func (a *servicePrincipalFederationPolicyImpl) Get(ctx context.Context, request 
 	return &federationPolicy, err
 }
 
-func (a *servicePrincipalFederationPolicyImpl) List(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
+// List service principal federation policies.
+func (a *servicePrincipalFederationPolicyImpl) List(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) listing.Iterator[FederationPolicy] {
+
+	getNextPage := func(ctx context.Context, req ListServicePrincipalFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListFederationPoliciesResponse) []FederationPolicy {
+		return resp.Policies
+	}
+	getNextReq := func(resp *ListFederationPoliciesResponse) *ListServicePrincipalFederationPoliciesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List service principal federation policies.
+func (a *servicePrincipalFederationPolicyImpl) ListAll(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) ([]FederationPolicy, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[FederationPolicy](ctx, iterator)
+}
+
+func (a *servicePrincipalFederationPolicyImpl) internalList(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
 	var listFederationPoliciesResponse ListFederationPoliciesResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
@@ -290,7 +463,46 @@ func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request Delete
 	return err
 }
 
-func (a *servicePrincipalSecretsImpl) List(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
+// List service principal secrets.
+//
+// List all secrets associated with the given service principal. This operation
+// only returns information about the secrets themselves and does not include
+// the secret values.
+func (a *servicePrincipalSecretsImpl) List(ctx context.Context, request ListServicePrincipalSecretsRequest) listing.Iterator[SecretInfo] {
+
+	getNextPage := func(ctx context.Context, req ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListServicePrincipalSecretsResponse) []SecretInfo {
+		return resp.Secrets
+	}
+	getNextReq := func(resp *ListServicePrincipalSecretsResponse) *ListServicePrincipalSecretsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List service principal secrets.
+//
+// List all secrets associated with the given service principal. This operation
+// only returns information about the secrets themselves and does not include
+// the secret values.
+func (a *servicePrincipalSecretsImpl) ListAll(ctx context.Context, request ListServicePrincipalSecretsRequest) ([]SecretInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[SecretInfo](ctx, iterator)
+}
+
+func (a *servicePrincipalSecretsImpl) internalList(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
 	var listServicePrincipalSecretsResponse ListServicePrincipalSecretsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)

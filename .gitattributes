@@ -6,6 +6,7 @@ experimental/mocks/mock_account_client.go linguist-generated=true
 experimental/mocks/mock_workspace_client.go linguist-generated=true
 experimental/mocks/service/apps/mock_apps_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_billable_usage_interface.go linguist-generated=true
+experimental/mocks/service/billing/mock_budget_policy_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_budgets_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_log_delivery_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_usage_dashboards_interface.go linguist-generated=true
@@ -46,7 +47,9 @@ experimental/mocks/service/compute/mock_libraries_interface.go linguist-generate
 experimental/mocks/service/compute/mock_policy_compliance_for_clusters_interface.go linguist-generated=true
 experimental/mocks/service/compute/mock_policy_families_interface.go linguist-generated=true
 experimental/mocks/service/dashboards/mock_genie_interface.go linguist-generated=true
+experimental/mocks/service/dashboards/mock_lakeview_embedded_interface.go linguist-generated=true
 experimental/mocks/service/dashboards/mock_lakeview_interface.go linguist-generated=true
+experimental/mocks/service/dashboards/mock_query_execution_interface.go linguist-generated=true
 experimental/mocks/service/files/mock_dbfs_interface.go linguist-generated=true
 experimental/mocks/service/files/mock_files_interface.go linguist-generated=true
 experimental/mocks/service/iam/mock_access_control_interface.go linguist-generated=true
@@ -106,6 +109,7 @@ experimental/mocks/service/settings/mock_default_namespace_interface.go linguist
 experimental/mocks/service/settings/mock_disable_legacy_access_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_disable_legacy_dbfs_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_disable_legacy_features_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_enable_ip_access_lists_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_enhanced_security_monitoring_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_esm_enablement_account_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_ip_access_lists_interface.go linguist-generated=true
@@ -132,6 +136,7 @@ experimental/mocks/service/sql/mock_queries_legacy_interface.go linguist-generat
 experimental/mocks/service/sql/mock_query_history_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_query_visualizations_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_query_visualizations_legacy_interface.go linguist-generated=true
+experimental/mocks/service/sql/mock_redash_config_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_statement_execution_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_warehouses_interface.go linguist-generated=true
 experimental/mocks/service/vectorsearch/mock_vector_search_endpoints_interface.go linguist-generated=true

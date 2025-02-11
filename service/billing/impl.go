@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 // unexported type that holds implementations of just BillableUsage API methods
@@ -61,7 +63,44 @@ func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyReque
 	return &budgetPolicy, err
 }
 
-func (a *budgetPolicyImpl) List(ctx context.Context, request ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error) {
+// List policies.
+//
+// Lists all policies. Policies are returned in the alphabetically ascending
+// order of their names.
+func (a *budgetPolicyImpl) List(ctx context.Context, request ListBudgetPoliciesRequest) listing.Iterator[BudgetPolicy] {
+
+	getNextPage := func(ctx context.Context, req ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListBudgetPoliciesResponse) []BudgetPolicy {
+		return resp.Policies
+	}
+	getNextReq := func(resp *ListBudgetPoliciesResponse) *ListBudgetPoliciesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List policies.
+//
+// Lists all policies. Policies are returned in the alphabetically ascending
+// order of their names.
+func (a *budgetPolicyImpl) ListAll(ctx context.Context, request ListBudgetPoliciesRequest) ([]BudgetPolicy, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[BudgetPolicy](ctx, iterator)
+}
+
+func (a *budgetPolicyImpl) internalList(ctx context.Context, request ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error) {
 	var listBudgetPoliciesResponse ListBudgetPoliciesResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -75,6 +114,9 @@ func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolic
 	var budgetPolicy BudgetPolicy
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
+	if request.LimitConfig != nil {
+		queryParams["limit_config"] = request.LimitConfig
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -118,7 +160,42 @@ func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationReq
 	return &getBudgetConfigurationResponse, err
 }
 
-func (a *budgetsImpl) List(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
+// Get all budgets.
+//
+// Gets all budgets associated with this account.
+func (a *budgetsImpl) List(ctx context.Context, request ListBudgetConfigurationsRequest) listing.Iterator[BudgetConfiguration] {
+
+	getNextPage := func(ctx context.Context, req ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListBudgetConfigurationsResponse) []BudgetConfiguration {
+		return resp.Budgets
+	}
+	getNextReq := func(resp *ListBudgetConfigurationsResponse) *ListBudgetConfigurationsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Get all budgets.
+//
+// Gets all budgets associated with this account.
+func (a *budgetsImpl) ListAll(ctx context.Context, request ListBudgetConfigurationsRequest) ([]BudgetConfiguration, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[BudgetConfiguration](ctx, iterator)
+}
+
+func (a *budgetsImpl) internalList(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
 	var listBudgetConfigurationsResponse ListBudgetConfigurationsResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -165,7 +242,38 @@ func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest
 	return &wrappedLogDeliveryConfiguration, err
 }
 
-func (a *logDeliveryImpl) List(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
+// Get all log delivery configurations.
+//
+// Gets all Databricks log delivery configurations associated with an account
+// specified by ID.
+func (a *logDeliveryImpl) List(ctx context.Context, request ListLogDeliveryRequest) listing.Iterator[LogDeliveryConfiguration] {
+
+	getNextPage := func(ctx context.Context, req ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *WrappedLogDeliveryConfigurations) []LogDeliveryConfiguration {
+		return resp.LogDeliveryConfigurations
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get all log delivery configurations.
+//
+// Gets all Databricks log delivery configurations associated with an account
+// specified by ID.
+func (a *logDeliveryImpl) ListAll(ctx context.Context, request ListLogDeliveryRequest) ([]LogDeliveryConfiguration, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[LogDeliveryConfiguration](ctx, iterator)
+}
+
+func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
 	var wrappedLogDeliveryConfigurations WrappedLogDeliveryConfigurations
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)

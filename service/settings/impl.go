@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 // unexported type that holds implementations of just AccountIpAccessLists API methods
@@ -46,7 +48,37 @@ func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIp
 	return &getIpAccessListResponse, err
 }
 
-func (a *accountIpAccessListsImpl) List(ctx context.Context) (*GetIpAccessListsResponse, error) {
+// Get access lists.
+//
+// Gets all IP access lists for the specified account.
+func (a *accountIpAccessListsImpl) List(ctx context.Context) listing.Iterator[IpAccessListInfo] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*GetIpAccessListsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx)
+	}
+	getItems := func(resp *GetIpAccessListsResponse) []IpAccessListInfo {
+		return resp.IpAccessLists
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get access lists.
+//
+// Gets all IP access lists for the specified account.
+func (a *accountIpAccessListsImpl) ListAll(ctx context.Context) ([]IpAccessListInfo, error) {
+	iterator := a.List(ctx)
+	return listing.ToSlice[IpAccessListInfo](ctx, iterator)
+}
+
+func (a *accountIpAccessListsImpl) internalList(ctx context.Context) (*GetIpAccessListsResponse, error) {
 	var getIpAccessListsResponse GetIpAccessListsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
 
@@ -517,7 +549,37 @@ func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequ
 	return &fetchIpAccessListResponse, err
 }
 
-func (a *ipAccessListsImpl) List(ctx context.Context) (*ListIpAccessListResponse, error) {
+// Get access lists.
+//
+// Gets all IP access lists for the specified workspace.
+func (a *ipAccessListsImpl) List(ctx context.Context) listing.Iterator[IpAccessListInfo] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListIpAccessListResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx)
+	}
+	getItems := func(resp *ListIpAccessListResponse) []IpAccessListInfo {
+		return resp.IpAccessLists
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get access lists.
+//
+// Gets all IP access lists for the specified workspace.
+func (a *ipAccessListsImpl) ListAll(ctx context.Context) ([]IpAccessListInfo, error) {
+	iterator := a.List(ctx)
+	return listing.ToSlice[IpAccessListInfo](ctx, iterator)
+}
+
+func (a *ipAccessListsImpl) internalList(ctx context.Context) (*ListIpAccessListResponse, error) {
 	var listIpAccessListResponse ListIpAccessListResponse
 	path := "/api/2.0/ip-access-lists"
 
@@ -616,7 +678,42 @@ func (a *networkConnectivityImpl) GetPrivateEndpointRule(ctx context.Context, re
 	return &nccAzurePrivateEndpointRule, err
 }
 
-func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error) {
+// List network connectivity configurations.
+//
+// Gets an array of network connectivity configurations.
+func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) listing.Iterator[NetworkConnectivityConfiguration] {
+
+	getNextPage := func(ctx context.Context, req ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListNetworkConnectivityConfigurations(ctx, req)
+	}
+	getItems := func(resp *ListNetworkConnectivityConfigurationsResponse) []NetworkConnectivityConfiguration {
+		return resp.Items
+	}
+	getNextReq := func(resp *ListNetworkConnectivityConfigurationsResponse) *ListNetworkConnectivityConfigurationsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List network connectivity configurations.
+//
+// Gets an array of network connectivity configurations.
+func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurationsAll(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) ([]NetworkConnectivityConfiguration, error) {
+	iterator := a.ListNetworkConnectivityConfigurations(ctx, request)
+	return listing.ToSlice[NetworkConnectivityConfiguration](ctx, iterator)
+}
+
+func (a *networkConnectivityImpl) internalListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error) {
 	var listNetworkConnectivityConfigurationsResponse ListNetworkConnectivityConfigurationsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -626,7 +723,42 @@ func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurations(ctx cont
 	return &listNetworkConnectivityConfigurationsResponse, err
 }
 
-func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
+// List private endpoint rules.
+//
+// Gets an array of private endpoint rules.
+func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) listing.Iterator[NccAzurePrivateEndpointRule] {
+
+	getNextPage := func(ctx context.Context, req ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListPrivateEndpointRules(ctx, req)
+	}
+	getItems := func(resp *ListNccAzurePrivateEndpointRulesResponse) []NccAzurePrivateEndpointRule {
+		return resp.Items
+	}
+	getNextReq := func(resp *ListNccAzurePrivateEndpointRulesResponse) *ListPrivateEndpointRulesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List private endpoint rules.
+//
+// Gets an array of private endpoint rules.
+func (a *networkConnectivityImpl) ListPrivateEndpointRulesAll(ctx context.Context, request ListPrivateEndpointRulesRequest) ([]NccAzurePrivateEndpointRule, error) {
+	iterator := a.ListPrivateEndpointRules(ctx, request)
+	return listing.ToSlice[NccAzurePrivateEndpointRule](ctx, iterator)
+}
+
+func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
 	var listNccAzurePrivateEndpointRulesResponse ListNccAzurePrivateEndpointRulesResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
@@ -672,7 +804,42 @@ func (a *notificationDestinationsImpl) Get(ctx context.Context, request GetNotif
 	return &notificationDestination, err
 }
 
-func (a *notificationDestinationsImpl) List(ctx context.Context, request ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error) {
+// List notification destinations.
+//
+// Lists notification destinations.
+func (a *notificationDestinationsImpl) List(ctx context.Context, request ListNotificationDestinationsRequest) listing.Iterator[ListNotificationDestinationsResult] {
+
+	getNextPage := func(ctx context.Context, req ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListNotificationDestinationsResponse) []ListNotificationDestinationsResult {
+		return resp.Results
+	}
+	getNextReq := func(resp *ListNotificationDestinationsResponse) *ListNotificationDestinationsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List notification destinations.
+//
+// Lists notification destinations.
+func (a *notificationDestinationsImpl) ListAll(ctx context.Context, request ListNotificationDestinationsRequest) ([]ListNotificationDestinationsResult, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[ListNotificationDestinationsResult](ctx, iterator)
+}
+
+func (a *notificationDestinationsImpl) internalList(ctx context.Context, request ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error) {
 	var listNotificationDestinationsResponse ListNotificationDestinationsResponse
 	path := "/api/2.0/notification-destinations"
 	queryParams := make(map[string]any)
@@ -826,7 +993,36 @@ func (a *tokenManagementImpl) GetPermissions(ctx context.Context) (*TokenPermiss
 	return &tokenPermissions, err
 }
 
-func (a *tokenManagementImpl) List(ctx context.Context, request ListTokenManagementRequest) (*ListTokensResponse, error) {
+// List all tokens.
+//
+// Lists all tokens associated with the specified workspace or user.
+func (a *tokenManagementImpl) List(ctx context.Context, request ListTokenManagementRequest) listing.Iterator[TokenInfo] {
+
+	getNextPage := func(ctx context.Context, req ListTokenManagementRequest) (*ListTokensResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListTokensResponse) []TokenInfo {
+		return resp.TokenInfos
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List all tokens.
+//
+// Lists all tokens associated with the specified workspace or user.
+func (a *tokenManagementImpl) ListAll(ctx context.Context, request ListTokenManagementRequest) ([]TokenInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[TokenInfo](ctx, iterator)
+}
+
+func (a *tokenManagementImpl) internalList(ctx context.Context, request ListTokenManagementRequest) (*ListTokensResponse, error) {
 	var listTokensResponse ListTokensResponse
 	path := "/api/2.0/token-management/tokens"
 	queryParams := make(map[string]any)
@@ -885,7 +1081,37 @@ func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) err
 	return err
 }
 
-func (a *tokensImpl) List(ctx context.Context) (*ListPublicTokensResponse, error) {
+// List tokens.
+//
+// Lists all the valid tokens for a user-workspace pair.
+func (a *tokensImpl) List(ctx context.Context) listing.Iterator[PublicTokenInfo] {
+	request := struct{}{}
+
+	getNextPage := func(ctx context.Context, req struct{}) (*ListPublicTokensResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx)
+	}
+	getItems := func(resp *ListPublicTokensResponse) []PublicTokenInfo {
+		return resp.TokenInfos
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List tokens.
+//
+// Lists all the valid tokens for a user-workspace pair.
+func (a *tokensImpl) ListAll(ctx context.Context) ([]PublicTokenInfo, error) {
+	iterator := a.List(ctx)
+	return listing.ToSlice[PublicTokenInfo](ctx, iterator)
+}
+
+func (a *tokensImpl) internalList(ctx context.Context) (*ListPublicTokensResponse, error) {
 	var listPublicTokensResponse ListPublicTokensResponse
 	path := "/api/2.0/token/list"
 

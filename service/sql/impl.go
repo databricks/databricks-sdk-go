@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 // unexported type that holds implementations of just Alerts API methods
@@ -46,7 +48,46 @@ func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, 
 	return &alert, err
 }
 
-func (a *alertsImpl) List(ctx context.Context, request ListAlertsRequest) (*ListAlertsResponse, error) {
+// List alerts.
+//
+// Gets a list of alerts accessible to the user, ordered by creation time.
+// **Warning:** Calling this API concurrently 10 or more times could result in
+// throttling, service degradation, or a temporary ban.
+func (a *alertsImpl) List(ctx context.Context, request ListAlertsRequest) listing.Iterator[ListAlertsResponseAlert] {
+
+	getNextPage := func(ctx context.Context, req ListAlertsRequest) (*ListAlertsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListAlertsResponse) []ListAlertsResponseAlert {
+		return resp.Results
+	}
+	getNextReq := func(resp *ListAlertsResponse) *ListAlertsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List alerts.
+//
+// Gets a list of alerts accessible to the user, ordered by creation time.
+// **Warning:** Calling this API concurrently 10 or more times could result in
+// throttling, service degradation, or a temporary ban.
+func (a *alertsImpl) ListAll(ctx context.Context, request ListAlertsRequest) ([]ListAlertsResponseAlert, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[ListAlertsResponseAlert](ctx, iterator)
+}
+
+func (a *alertsImpl) internalList(ctx context.Context, request ListAlertsRequest) (*ListAlertsResponse, error) {
 	var listAlertsResponse ListAlertsResponse
 	path := "/api/2.0/sql/alerts"
 	queryParams := make(map[string]any)
@@ -197,7 +238,56 @@ func (a *dashboardsImpl) Get(ctx context.Context, request GetDashboardRequest) (
 	return &dashboard, err
 }
 
-func (a *dashboardsImpl) List(ctx context.Context, request ListDashboardsRequest) (*ListResponse, error) {
+// Get dashboard objects.
+//
+// Fetch a paginated list of dashboard objects.
+//
+// **Warning**: Calling this API concurrently 10 or more times could result in
+// throttling, service degradation, or a temporary ban.
+func (a *dashboardsImpl) List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard] {
+
+	request.Page = 1 // start iterating from the first page
+
+	getNextPage := func(ctx context.Context, req ListDashboardsRequest) (*ListResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListResponse) []Dashboard {
+		return resp.Results
+	}
+	getNextReq := func(resp *ListResponse) *ListDashboardsRequest {
+		if len(getItems(resp)) == 0 {
+			return nil
+		}
+		request.Page = resp.Page + 1
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	dedupedIterator := listing.NewDedupeIterator[Dashboard, string](
+		iterator,
+		func(item Dashboard) string {
+			return item.Id
+		})
+	return dedupedIterator
+}
+
+// Get dashboard objects.
+//
+// Fetch a paginated list of dashboard objects.
+//
+// **Warning**: Calling this API concurrently 10 or more times could result in
+// throttling, service degradation, or a temporary ban.
+func (a *dashboardsImpl) ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSliceN[Dashboard, int](ctx, iterator, request.PageSize)
+
+}
+
+func (a *dashboardsImpl) internalList(ctx context.Context, request ListDashboardsRequest) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.0/preview/sql/dashboards"
 	queryParams := make(map[string]any)
@@ -316,7 +406,46 @@ func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query,
 	return &query, err
 }
 
-func (a *queriesImpl) List(ctx context.Context, request ListQueriesRequest) (*ListQueryObjectsResponse, error) {
+// List queries.
+//
+// Gets a list of queries accessible to the user, ordered by creation time.
+// **Warning:** Calling this API concurrently 10 or more times could result in
+// throttling, service degradation, or a temporary ban.
+func (a *queriesImpl) List(ctx context.Context, request ListQueriesRequest) listing.Iterator[ListQueryObjectsResponseQuery] {
+
+	getNextPage := func(ctx context.Context, req ListQueriesRequest) (*ListQueryObjectsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListQueryObjectsResponse) []ListQueryObjectsResponseQuery {
+		return resp.Results
+	}
+	getNextReq := func(resp *ListQueryObjectsResponse) *ListQueriesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List queries.
+//
+// Gets a list of queries accessible to the user, ordered by creation time.
+// **Warning:** Calling this API concurrently 10 or more times could result in
+// throttling, service degradation, or a temporary ban.
+func (a *queriesImpl) ListAll(ctx context.Context, request ListQueriesRequest) ([]ListQueryObjectsResponseQuery, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[ListQueryObjectsResponseQuery](ctx, iterator)
+}
+
+func (a *queriesImpl) internalList(ctx context.Context, request ListQueriesRequest) (*ListQueryObjectsResponse, error) {
 	var listQueryObjectsResponse ListQueryObjectsResponse
 	path := "/api/2.0/sql/queries"
 	queryParams := make(map[string]any)
@@ -326,7 +455,42 @@ func (a *queriesImpl) List(ctx context.Context, request ListQueriesRequest) (*Li
 	return &listQueryObjectsResponse, err
 }
 
-func (a *queriesImpl) ListVisualizations(ctx context.Context, request ListVisualizationsForQueryRequest) (*ListVisualizationsForQueryResponse, error) {
+// List visualizations on a query.
+//
+// Gets a list of visualizations on a query.
+func (a *queriesImpl) ListVisualizations(ctx context.Context, request ListVisualizationsForQueryRequest) listing.Iterator[Visualization] {
+
+	getNextPage := func(ctx context.Context, req ListVisualizationsForQueryRequest) (*ListVisualizationsForQueryResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListVisualizations(ctx, req)
+	}
+	getItems := func(resp *ListVisualizationsForQueryResponse) []Visualization {
+		return resp.Results
+	}
+	getNextReq := func(resp *ListVisualizationsForQueryResponse) *ListVisualizationsForQueryRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List visualizations on a query.
+//
+// Gets a list of visualizations on a query.
+func (a *queriesImpl) ListVisualizationsAll(ctx context.Context, request ListVisualizationsForQueryRequest) ([]Visualization, error) {
+	iterator := a.ListVisualizations(ctx, request)
+	return listing.ToSlice[Visualization](ctx, iterator)
+}
+
+func (a *queriesImpl) internalListVisualizations(ctx context.Context, request ListVisualizationsForQueryRequest) (*ListVisualizationsForQueryResponse, error) {
 	var listVisualizationsForQueryResponse ListVisualizationsForQueryResponse
 	path := fmt.Sprintf("/api/2.0/sql/queries/%v/visualizations", request.Id)
 	queryParams := make(map[string]any)
@@ -383,7 +547,68 @@ func (a *queriesLegacyImpl) Get(ctx context.Context, request GetQueriesLegacyReq
 	return &legacyQuery, err
 }
 
-func (a *queriesLegacyImpl) List(ctx context.Context, request ListQueriesLegacyRequest) (*QueryList, error) {
+// Get a list of queries.
+//
+// Gets a list of queries. Optionally, this list can be filtered by a search
+// term.
+//
+// **Warning**: Calling this API concurrently 10 or more times could result in
+// throttling, service degradation, or a temporary ban.
+//
+// **Note**: A new version of the Databricks SQL API is now available. Please
+// use :method:queries/list instead. [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+func (a *queriesLegacyImpl) List(ctx context.Context, request ListQueriesLegacyRequest) listing.Iterator[LegacyQuery] {
+
+	request.Page = 1 // start iterating from the first page
+
+	getNextPage := func(ctx context.Context, req ListQueriesLegacyRequest) (*QueryList, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *QueryList) []LegacyQuery {
+		return resp.Results
+	}
+	getNextReq := func(resp *QueryList) *ListQueriesLegacyRequest {
+		if len(getItems(resp)) == 0 {
+			return nil
+		}
+		request.Page = resp.Page + 1
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	dedupedIterator := listing.NewDedupeIterator[LegacyQuery, string](
+		iterator,
+		func(item LegacyQuery) string {
+			return item.Id
+		})
+	return dedupedIterator
+}
+
+// Get a list of queries.
+//
+// Gets a list of queries. Optionally, this list can be filtered by a search
+// term.
+//
+// **Warning**: Calling this API concurrently 10 or more times could result in
+// throttling, service degradation, or a temporary ban.
+//
+// **Note**: A new version of the Databricks SQL API is now available. Please
+// use :method:queries/list instead. [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+func (a *queriesLegacyImpl) ListAll(ctx context.Context, request ListQueriesLegacyRequest) ([]LegacyQuery, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSliceN[LegacyQuery, int](ctx, iterator, request.PageSize)
+
+}
+
+func (a *queriesLegacyImpl) internalList(ctx context.Context, request ListQueriesLegacyRequest) (*QueryList, error) {
 	var queryList QueryList
 	path := "/api/2.0/preview/sql/queries"
 	queryParams := make(map[string]any)
@@ -640,7 +865,36 @@ func (a *warehousesImpl) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetW
 	return &getWorkspaceWarehouseConfigResponse, err
 }
 
-func (a *warehousesImpl) List(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error) {
+// List warehouses.
+//
+// Lists all SQL warehouses that a user has manager permissions on.
+func (a *warehousesImpl) List(ctx context.Context, request ListWarehousesRequest) listing.Iterator[EndpointInfo] {
+
+	getNextPage := func(ctx context.Context, req ListWarehousesRequest) (*ListWarehousesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListWarehousesResponse) []EndpointInfo {
+		return resp.Warehouses
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List warehouses.
+//
+// Lists all SQL warehouses that a user has manager permissions on.
+func (a *warehousesImpl) ListAll(ctx context.Context, request ListWarehousesRequest) ([]EndpointInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[EndpointInfo](ctx, iterator)
+}
+
+func (a *warehousesImpl) internalList(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error) {
 	var listWarehousesResponse ListWarehousesResponse
 	path := "/api/2.0/sql/warehouses"
 	queryParams := make(map[string]any)

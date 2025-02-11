@@ -397,6 +397,127 @@ func (_c *MockGenieInterface_GetMessageQueryResult_Call) RunAndReturn(run func(c
 	return _c
 }
 
+// GetMessageQueryResultByAttachment provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) GetMessageQueryResultByAttachment(ctx context.Context, request dashboards.GenieGetQueryResultByAttachmentRequest) (*dashboards.GenieGetMessageQueryResultResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetMessageQueryResultByAttachment")
+	}
+
+	var r0 *dashboards.GenieGetMessageQueryResultResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieGetQueryResultByAttachmentRequest) (*dashboards.GenieGetMessageQueryResultResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieGetQueryResultByAttachmentRequest) *dashboards.GenieGetMessageQueryResultResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieGetMessageQueryResultResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieGetQueryResultByAttachmentRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_GetMessageQueryResultByAttachment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMessageQueryResultByAttachment'
+type MockGenieInterface_GetMessageQueryResultByAttachment_Call struct {
+	*mock.Call
+}
+
+// GetMessageQueryResultByAttachment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieGetQueryResultByAttachmentRequest
+func (_e *MockGenieInterface_Expecter) GetMessageQueryResultByAttachment(ctx interface{}, request interface{}) *MockGenieInterface_GetMessageQueryResultByAttachment_Call {
+	return &MockGenieInterface_GetMessageQueryResultByAttachment_Call{Call: _e.mock.On("GetMessageQueryResultByAttachment", ctx, request)}
+}
+
+func (_c *MockGenieInterface_GetMessageQueryResultByAttachment_Call) Run(run func(ctx context.Context, request dashboards.GenieGetQueryResultByAttachmentRequest)) *MockGenieInterface_GetMessageQueryResultByAttachment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieGetQueryResultByAttachmentRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_GetMessageQueryResultByAttachment_Call) Return(_a0 *dashboards.GenieGetMessageQueryResultResponse, _a1 error) *MockGenieInterface_GetMessageQueryResultByAttachment_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_GetMessageQueryResultByAttachment_Call) RunAndReturn(run func(context.Context, dashboards.GenieGetQueryResultByAttachmentRequest) (*dashboards.GenieGetMessageQueryResultResponse, error)) *MockGenieInterface_GetMessageQueryResultByAttachment_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId provides a mock function with given fields: ctx, spaceId, conversationId, messageId, attachmentId
+func (_m *MockGenieInterface) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*dashboards.GenieGetMessageQueryResultResponse, error) {
+	ret := _m.Called(ctx, spaceId, conversationId, messageId, attachmentId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId")
+	}
+
+	var r0 *dashboards.GenieGetMessageQueryResultResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string) (*dashboards.GenieGetMessageQueryResultResponse, error)); ok {
+		return rf(ctx, spaceId, conversationId, messageId, attachmentId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string) *dashboards.GenieGetMessageQueryResultResponse); ok {
+		r0 = rf(ctx, spaceId, conversationId, messageId, attachmentId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieGetMessageQueryResultResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, string, string) error); ok {
+		r1 = rf(ctx, spaceId, conversationId, messageId, attachmentId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId'
+type MockGenieInterface_GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId_Call struct {
+	*mock.Call
+}
+
+// GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - spaceId string
+//   - conversationId string
+//   - messageId string
+//   - attachmentId string
+func (_e *MockGenieInterface_Expecter) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx interface{}, spaceId interface{}, conversationId interface{}, messageId interface{}, attachmentId interface{}) *MockGenieInterface_GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId_Call {
+	return &MockGenieInterface_GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId_Call{Call: _e.mock.On("GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId", ctx, spaceId, conversationId, messageId, attachmentId)}
+}
+
+func (_c *MockGenieInterface_GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId_Call) Run(run func(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string)) *MockGenieInterface_GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(string), args[4].(string))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId_Call) Return(_a0 *dashboards.GenieGetMessageQueryResultResponse, _a1 error) *MockGenieInterface_GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId_Call) RunAndReturn(run func(context.Context, string, string, string, string) (*dashboards.GenieGetMessageQueryResultResponse, error)) *MockGenieInterface_GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId provides a mock function with given fields: ctx, spaceId, conversationId, messageId
 func (_m *MockGenieInterface) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*dashboards.GenieGetMessageQueryResultResponse, error) {
 	ret := _m.Called(ctx, spaceId, conversationId, messageId)

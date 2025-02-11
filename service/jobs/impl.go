@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 // unexported type that holds implementations of just Jobs API methods
@@ -130,7 +132,42 @@ func (a *jobsImpl) GetRunOutput(ctx context.Context, request GetRunOutputRequest
 	return &runOutput, err
 }
 
-func (a *jobsImpl) List(ctx context.Context, request ListJobsRequest) (*ListJobsResponse, error) {
+// List jobs.
+//
+// Retrieves a list of jobs.
+func (a *jobsImpl) List(ctx context.Context, request ListJobsRequest) listing.Iterator[BaseJob] {
+
+	getNextPage := func(ctx context.Context, req ListJobsRequest) (*ListJobsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListJobsResponse) []BaseJob {
+		return resp.Jobs
+	}
+	getNextReq := func(resp *ListJobsResponse) *ListJobsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List jobs.
+//
+// Retrieves a list of jobs.
+func (a *jobsImpl) ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJob, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[BaseJob](ctx, iterator)
+}
+
+func (a *jobsImpl) internalList(ctx context.Context, request ListJobsRequest) (*ListJobsResponse, error) {
 	var listJobsResponse ListJobsResponse
 	path := "/api/2.1/jobs/list"
 	queryParams := make(map[string]any)
@@ -140,7 +177,42 @@ func (a *jobsImpl) List(ctx context.Context, request ListJobsRequest) (*ListJobs
 	return &listJobsResponse, err
 }
 
-func (a *jobsImpl) ListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error) {
+// List job runs.
+//
+// List runs in descending order by start time.
+func (a *jobsImpl) ListRuns(ctx context.Context, request ListRunsRequest) listing.Iterator[BaseRun] {
+
+	getNextPage := func(ctx context.Context, req ListRunsRequest) (*ListRunsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListRuns(ctx, req)
+	}
+	getItems := func(resp *ListRunsResponse) []BaseRun {
+		return resp.Runs
+	}
+	getNextReq := func(resp *ListRunsResponse) *ListRunsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List job runs.
+//
+// List runs in descending order by start time.
+func (a *jobsImpl) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]BaseRun, error) {
+	iterator := a.ListRuns(ctx, request)
+	return listing.ToSlice[BaseRun](ctx, iterator)
+}
+
+func (a *jobsImpl) internalListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error) {
 	var listRunsResponse ListRunsResponse
 	path := "/api/2.1/jobs/runs/list"
 	queryParams := make(map[string]any)
@@ -253,7 +325,48 @@ func (a *policyComplianceForJobsImpl) GetCompliance(ctx context.Context, request
 	return &getPolicyComplianceResponse, err
 }
 
-func (a *policyComplianceForJobsImpl) ListCompliance(ctx context.Context, request ListJobComplianceRequest) (*ListJobComplianceForPolicyResponse, error) {
+// List job policy compliance.
+//
+// Returns the policy compliance status of all jobs that use a given policy.
+// Jobs could be out of compliance if a cluster policy they use was updated
+// after the job was last edited and its job clusters no longer comply with the
+// updated policy.
+func (a *policyComplianceForJobsImpl) ListCompliance(ctx context.Context, request ListJobComplianceRequest) listing.Iterator[JobCompliance] {
+
+	getNextPage := func(ctx context.Context, req ListJobComplianceRequest) (*ListJobComplianceForPolicyResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListCompliance(ctx, req)
+	}
+	getItems := func(resp *ListJobComplianceForPolicyResponse) []JobCompliance {
+		return resp.Jobs
+	}
+	getNextReq := func(resp *ListJobComplianceForPolicyResponse) *ListJobComplianceRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List job policy compliance.
+//
+// Returns the policy compliance status of all jobs that use a given policy.
+// Jobs could be out of compliance if a cluster policy they use was updated
+// after the job was last edited and its job clusters no longer comply with the
+// updated policy.
+func (a *policyComplianceForJobsImpl) ListComplianceAll(ctx context.Context, request ListJobComplianceRequest) ([]JobCompliance, error) {
+	iterator := a.ListCompliance(ctx, request)
+	return listing.ToSlice[JobCompliance](ctx, iterator)
+}
+
+func (a *policyComplianceForJobsImpl) internalListCompliance(ctx context.Context, request ListJobComplianceRequest) (*ListJobComplianceForPolicyResponse, error) {
 	var listJobComplianceForPolicyResponse ListJobComplianceForPolicyResponse
 	path := "/api/2.0/policies/jobs/list-compliance"
 	queryParams := make(map[string]any)

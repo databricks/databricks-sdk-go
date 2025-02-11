@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 // unexported type that holds implementations of just Experiments API methods
@@ -101,7 +103,43 @@ func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperime
 	return &getExperimentResponse, err
 }
 
-func (a *experimentsImpl) GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {
+// Get history of a given metric within a run.
+//
+// Gets a list of all values for the specified metric for a given run.
+func (a *experimentsImpl) GetHistory(ctx context.Context, request GetHistoryRequest) listing.Iterator[Metric] {
+
+	getNextPage := func(ctx context.Context, req GetHistoryRequest) (*GetMetricHistoryResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalGetHistory(ctx, req)
+	}
+	getItems := func(resp *GetMetricHistoryResponse) []Metric {
+		return resp.Metrics
+	}
+	getNextReq := func(resp *GetMetricHistoryResponse) *GetHistoryRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Get history of a given metric within a run.
+//
+// Gets a list of all values for the specified metric for a given run.
+func (a *experimentsImpl) GetHistoryAll(ctx context.Context, request GetHistoryRequest) ([]Metric, error) {
+	iterator := a.GetHistory(ctx, request)
+	return listing.ToSliceN[Metric, int](ctx, iterator, request.MaxResults)
+
+}
+
+func (a *experimentsImpl) internalGetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {
 	var getMetricHistoryResponse GetMetricHistoryResponse
 	path := "/api/2.0/mlflow/metrics/get-history"
 	queryParams := make(map[string]any)
@@ -141,7 +179,54 @@ func (a *experimentsImpl) GetRun(ctx context.Context, request GetRunRequest) (*G
 	return &getRunResponse, err
 }
 
-func (a *experimentsImpl) ListArtifacts(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error) {
+// Get all artifacts.
+//
+// List artifacts for a run. Takes an optional `artifact_path` prefix. If it is
+// specified, the response contains only artifacts with the specified prefix.
+// This API does not support pagination when listing artifacts in UC Volumes. A
+// maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
+// `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC
+// Volumes, which supports pagination. See [List directory contents | Files
+// API](/api/workspace/files/listdirectorycontents).
+func (a *experimentsImpl) ListArtifacts(ctx context.Context, request ListArtifactsRequest) listing.Iterator[FileInfo] {
+
+	getNextPage := func(ctx context.Context, req ListArtifactsRequest) (*ListArtifactsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListArtifacts(ctx, req)
+	}
+	getItems := func(resp *ListArtifactsResponse) []FileInfo {
+		return resp.Files
+	}
+	getNextReq := func(resp *ListArtifactsResponse) *ListArtifactsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Get all artifacts.
+//
+// List artifacts for a run. Takes an optional `artifact_path` prefix. If it is
+// specified, the response contains only artifacts with the specified prefix.
+// This API does not support pagination when listing artifacts in UC Volumes. A
+// maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
+// `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC
+// Volumes, which supports pagination. See [List directory contents | Files
+// API](/api/workspace/files/listdirectorycontents).
+func (a *experimentsImpl) ListArtifactsAll(ctx context.Context, request ListArtifactsRequest) ([]FileInfo, error) {
+	iterator := a.ListArtifacts(ctx, request)
+	return listing.ToSlice[FileInfo](ctx, iterator)
+}
+
+func (a *experimentsImpl) internalListArtifacts(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error) {
 	var listArtifactsResponse ListArtifactsResponse
 	path := "/api/2.0/mlflow/artifacts/list"
 	queryParams := make(map[string]any)
@@ -151,7 +236,43 @@ func (a *experimentsImpl) ListArtifacts(ctx context.Context, request ListArtifac
 	return &listArtifactsResponse, err
 }
 
-func (a *experimentsImpl) ListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error) {
+// List experiments.
+//
+// Gets a list of all experiments.
+func (a *experimentsImpl) ListExperiments(ctx context.Context, request ListExperimentsRequest) listing.Iterator[Experiment] {
+
+	getNextPage := func(ctx context.Context, req ListExperimentsRequest) (*ListExperimentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListExperiments(ctx, req)
+	}
+	getItems := func(resp *ListExperimentsResponse) []Experiment {
+		return resp.Experiments
+	}
+	getNextReq := func(resp *ListExperimentsResponse) *ListExperimentsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List experiments.
+//
+// Gets a list of all experiments.
+func (a *experimentsImpl) ListExperimentsAll(ctx context.Context, request ListExperimentsRequest) ([]Experiment, error) {
+	iterator := a.ListExperiments(ctx, request)
+	return listing.ToSliceN[Experiment, int](ctx, iterator, request.MaxResults)
+
+}
+
+func (a *experimentsImpl) internalListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error) {
 	var listExperimentsResponse ListExperimentsResponse
 	path := "/api/2.0/mlflow/experiments/list"
 	queryParams := make(map[string]any)
@@ -249,7 +370,42 @@ func (a *experimentsImpl) RestoreRuns(ctx context.Context, request RestoreRuns) 
 	return &restoreRunsResponse, err
 }
 
-func (a *experimentsImpl) SearchExperiments(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error) {
+// Search experiments.
+//
+// Searches for experiments that satisfy specified search criteria.
+func (a *experimentsImpl) SearchExperiments(ctx context.Context, request SearchExperiments) listing.Iterator[Experiment] {
+
+	getNextPage := func(ctx context.Context, req SearchExperiments) (*SearchExperimentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalSearchExperiments(ctx, req)
+	}
+	getItems := func(resp *SearchExperimentsResponse) []Experiment {
+		return resp.Experiments
+	}
+	getNextReq := func(resp *SearchExperimentsResponse) *SearchExperiments {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Search experiments.
+//
+// Searches for experiments that satisfy specified search criteria.
+func (a *experimentsImpl) SearchExperimentsAll(ctx context.Context, request SearchExperiments) ([]Experiment, error) {
+	iterator := a.SearchExperiments(ctx, request)
+	return listing.ToSlice[Experiment](ctx, iterator)
+}
+
+func (a *experimentsImpl) internalSearchExperiments(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error) {
 	var searchExperimentsResponse SearchExperimentsResponse
 	path := "/api/2.0/mlflow/experiments/search"
 	queryParams := make(map[string]any)
@@ -260,7 +416,46 @@ func (a *experimentsImpl) SearchExperiments(ctx context.Context, request SearchE
 	return &searchExperimentsResponse, err
 }
 
-func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error) {
+// Search for runs.
+//
+// Searches for runs that satisfy expressions.
+//
+// Search expressions can use `mlflowMetric` and `mlflowParam` keys.",
+func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) listing.Iterator[Run] {
+
+	getNextPage := func(ctx context.Context, req SearchRuns) (*SearchRunsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalSearchRuns(ctx, req)
+	}
+	getItems := func(resp *SearchRunsResponse) []Run {
+		return resp.Runs
+	}
+	getNextReq := func(resp *SearchRunsResponse) *SearchRuns {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Search for runs.
+//
+// Searches for runs that satisfy expressions.
+//
+// Search expressions can use `mlflowMetric` and `mlflowParam` keys.",
+func (a *experimentsImpl) SearchRunsAll(ctx context.Context, request SearchRuns) ([]Run, error) {
+	iterator := a.SearchRuns(ctx, request)
+	return listing.ToSlice[Run](ctx, iterator)
+}
+
+func (a *experimentsImpl) internalSearchRuns(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error) {
 	var searchRunsResponse SearchRunsResponse
 	path := "/api/2.0/mlflow/runs/search"
 	queryParams := make(map[string]any)
@@ -478,7 +673,36 @@ func (a *modelRegistryImpl) DeleteWebhook(ctx context.Context, request DeleteWeb
 	return err
 }
 
-func (a *modelRegistryImpl) GetLatestVersions(ctx context.Context, request GetLatestVersionsRequest) (*GetLatestVersionsResponse, error) {
+// Get the latest version.
+//
+// Gets the latest version of a registered model.
+func (a *modelRegistryImpl) GetLatestVersions(ctx context.Context, request GetLatestVersionsRequest) listing.Iterator[ModelVersion] {
+
+	getNextPage := func(ctx context.Context, req GetLatestVersionsRequest) (*GetLatestVersionsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalGetLatestVersions(ctx, req)
+	}
+	getItems := func(resp *GetLatestVersionsResponse) []ModelVersion {
+		return resp.ModelVersions
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// Get the latest version.
+//
+// Gets the latest version of a registered model.
+func (a *modelRegistryImpl) GetLatestVersionsAll(ctx context.Context, request GetLatestVersionsRequest) ([]ModelVersion, error) {
+	iterator := a.GetLatestVersions(ctx, request)
+	return listing.ToSlice[ModelVersion](ctx, iterator)
+}
+
+func (a *modelRegistryImpl) internalGetLatestVersions(ctx context.Context, request GetLatestVersionsRequest) (*GetLatestVersionsResponse, error) {
 	var getLatestVersionsResponse GetLatestVersionsResponse
 	path := "/api/2.0/mlflow/registered-models/get-latest-versions"
 	queryParams := make(map[string]any)
@@ -539,7 +763,45 @@ func (a *modelRegistryImpl) GetPermissions(ctx context.Context, request GetRegis
 	return &registeredModelPermissions, err
 }
 
-func (a *modelRegistryImpl) ListModels(ctx context.Context, request ListModelsRequest) (*ListModelsResponse, error) {
+// List models.
+//
+// Lists all available registered models, up to the limit specified in
+// __max_results__.
+func (a *modelRegistryImpl) ListModels(ctx context.Context, request ListModelsRequest) listing.Iterator[Model] {
+
+	getNextPage := func(ctx context.Context, req ListModelsRequest) (*ListModelsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListModels(ctx, req)
+	}
+	getItems := func(resp *ListModelsResponse) []Model {
+		return resp.RegisteredModels
+	}
+	getNextReq := func(resp *ListModelsResponse) *ListModelsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List models.
+//
+// Lists all available registered models, up to the limit specified in
+// __max_results__.
+func (a *modelRegistryImpl) ListModelsAll(ctx context.Context, request ListModelsRequest) ([]Model, error) {
+	iterator := a.ListModels(ctx, request)
+	return listing.ToSliceN[Model, int](ctx, iterator, request.MaxResults)
+
+}
+
+func (a *modelRegistryImpl) internalListModels(ctx context.Context, request ListModelsRequest) (*ListModelsResponse, error) {
 	var listModelsResponse ListModelsResponse
 	path := "/api/2.0/mlflow/registered-models/list"
 	queryParams := make(map[string]any)
@@ -549,7 +811,36 @@ func (a *modelRegistryImpl) ListModels(ctx context.Context, request ListModelsRe
 	return &listModelsResponse, err
 }
 
-func (a *modelRegistryImpl) ListTransitionRequests(ctx context.Context, request ListTransitionRequestsRequest) (*ListTransitionRequestsResponse, error) {
+// List transition requests.
+//
+// Gets a list of all open stage transition requests for the model version.
+func (a *modelRegistryImpl) ListTransitionRequests(ctx context.Context, request ListTransitionRequestsRequest) listing.Iterator[Activity] {
+
+	getNextPage := func(ctx context.Context, req ListTransitionRequestsRequest) (*ListTransitionRequestsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListTransitionRequests(ctx, req)
+	}
+	getItems := func(resp *ListTransitionRequestsResponse) []Activity {
+		return resp.Requests
+	}
+
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		nil)
+	return iterator
+}
+
+// List transition requests.
+//
+// Gets a list of all open stage transition requests for the model version.
+func (a *modelRegistryImpl) ListTransitionRequestsAll(ctx context.Context, request ListTransitionRequestsRequest) ([]Activity, error) {
+	iterator := a.ListTransitionRequests(ctx, request)
+	return listing.ToSlice[Activity](ctx, iterator)
+}
+
+func (a *modelRegistryImpl) internalListTransitionRequests(ctx context.Context, request ListTransitionRequestsRequest) (*ListTransitionRequestsResponse, error) {
 	var listTransitionRequestsResponse ListTransitionRequestsResponse
 	path := "/api/2.0/mlflow/transition-requests/list"
 	queryParams := make(map[string]any)
@@ -559,7 +850,46 @@ func (a *modelRegistryImpl) ListTransitionRequests(ctx context.Context, request 
 	return &listTransitionRequestsResponse, err
 }
 
-func (a *modelRegistryImpl) ListWebhooks(ctx context.Context, request ListWebhooksRequest) (*ListRegistryWebhooks, error) {
+// List registry webhooks.
+//
+// **NOTE:** This endpoint is in Public Preview.
+//
+// Lists all registry webhooks.
+func (a *modelRegistryImpl) ListWebhooks(ctx context.Context, request ListWebhooksRequest) listing.Iterator[RegistryWebhook] {
+
+	getNextPage := func(ctx context.Context, req ListWebhooksRequest) (*ListRegistryWebhooks, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListWebhooks(ctx, req)
+	}
+	getItems := func(resp *ListRegistryWebhooks) []RegistryWebhook {
+		return resp.Webhooks
+	}
+	getNextReq := func(resp *ListRegistryWebhooks) *ListWebhooksRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List registry webhooks.
+//
+// **NOTE:** This endpoint is in Public Preview.
+//
+// Lists all registry webhooks.
+func (a *modelRegistryImpl) ListWebhooksAll(ctx context.Context, request ListWebhooksRequest) ([]RegistryWebhook, error) {
+	iterator := a.ListWebhooks(ctx, request)
+	return listing.ToSlice[RegistryWebhook](ctx, iterator)
+}
+
+func (a *modelRegistryImpl) internalListWebhooks(ctx context.Context, request ListWebhooksRequest) (*ListRegistryWebhooks, error) {
 	var listRegistryWebhooks ListRegistryWebhooks
 	path := "/api/2.0/mlflow/registry-webhooks/list"
 	queryParams := make(map[string]any)
@@ -591,7 +921,43 @@ func (a *modelRegistryImpl) RenameModel(ctx context.Context, request RenameModel
 	return &renameModelResponse, err
 }
 
-func (a *modelRegistryImpl) SearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
+// Searches model versions.
+//
+// Searches for specific model versions based on the supplied __filter__.
+func (a *modelRegistryImpl) SearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) listing.Iterator[ModelVersion] {
+
+	getNextPage := func(ctx context.Context, req SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalSearchModelVersions(ctx, req)
+	}
+	getItems := func(resp *SearchModelVersionsResponse) []ModelVersion {
+		return resp.ModelVersions
+	}
+	getNextReq := func(resp *SearchModelVersionsResponse) *SearchModelVersionsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Searches model versions.
+//
+// Searches for specific model versions based on the supplied __filter__.
+func (a *modelRegistryImpl) SearchModelVersionsAll(ctx context.Context, request SearchModelVersionsRequest) ([]ModelVersion, error) {
+	iterator := a.SearchModelVersions(ctx, request)
+	return listing.ToSliceN[ModelVersion, int](ctx, iterator, request.MaxResults)
+
+}
+
+func (a *modelRegistryImpl) internalSearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
 	var searchModelVersionsResponse SearchModelVersionsResponse
 	path := "/api/2.0/mlflow/model-versions/search"
 	queryParams := make(map[string]any)
@@ -601,7 +967,43 @@ func (a *modelRegistryImpl) SearchModelVersions(ctx context.Context, request Sea
 	return &searchModelVersionsResponse, err
 }
 
-func (a *modelRegistryImpl) SearchModels(ctx context.Context, request SearchModelsRequest) (*SearchModelsResponse, error) {
+// Search models.
+//
+// Search for registered models based on the specified __filter__.
+func (a *modelRegistryImpl) SearchModels(ctx context.Context, request SearchModelsRequest) listing.Iterator[Model] {
+
+	getNextPage := func(ctx context.Context, req SearchModelsRequest) (*SearchModelsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalSearchModels(ctx, req)
+	}
+	getItems := func(resp *SearchModelsResponse) []Model {
+		return resp.RegisteredModels
+	}
+	getNextReq := func(resp *SearchModelsResponse) *SearchModelsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Search models.
+//
+// Search for registered models based on the specified __filter__.
+func (a *modelRegistryImpl) SearchModelsAll(ctx context.Context, request SearchModelsRequest) ([]Model, error) {
+	iterator := a.SearchModels(ctx, request)
+	return listing.ToSliceN[Model, int](ctx, iterator, request.MaxResults)
+
+}
+
+func (a *modelRegistryImpl) internalSearchModels(ctx context.Context, request SearchModelsRequest) (*SearchModelsResponse, error) {
 	var searchModelsResponse SearchModelsResponse
 	path := "/api/2.0/mlflow/registered-models/search"
 	queryParams := make(map[string]any)
