@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Experiments Preview, Model Registry Preview, etc.
+// These APIs allow you to manage Experiments, Model Registry, etc.
 package mlpreview
 
 import (
@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
-type ExperimentsPreviewInterface interface {
+type ExperimentsInterface interface {
 
 	// Create experiment.
 	//
@@ -319,9 +319,9 @@ type ExperimentsPreviewInterface interface {
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
 }
 
-func NewExperimentsPreview(client *client.DatabricksClient) *ExperimentsPreviewAPI {
-	return &ExperimentsPreviewAPI{
-		experimentsPreviewImpl: experimentsPreviewImpl{
+func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {
+	return &ExperimentsAPI{
+		experimentsImpl: experimentsImpl{
 			client: client,
 		},
 	}
@@ -336,15 +336,15 @@ func NewExperimentsPreview(client *client.DatabricksClient) *ExperimentsPreviewA
 // Experiments are located in the workspace file tree. You manage experiments
 // using the same tools you use to manage other workspace objects such as
 // folders, notebooks, and libraries.
-type ExperimentsPreviewAPI struct {
-	experimentsPreviewImpl
+type ExperimentsAPI struct {
+	experimentsImpl
 }
 
 // Get experiment permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ExperimentsPreviewAPI) GetPermissionLevelsByExperimentId(ctx context.Context, experimentId string) (*GetExperimentPermissionLevelsResponse, error) {
-	return a.experimentsPreviewImpl.GetPermissionLevels(ctx, GetExperimentPermissionLevelsRequest{
+func (a *ExperimentsAPI) GetPermissionLevelsByExperimentId(ctx context.Context, experimentId string) (*GetExperimentPermissionLevelsResponse, error) {
+	return a.experimentsImpl.GetPermissionLevels(ctx, GetExperimentPermissionLevelsRequest{
 		ExperimentId: experimentId,
 	})
 }
@@ -353,13 +353,13 @@ func (a *ExperimentsPreviewAPI) GetPermissionLevelsByExperimentId(ctx context.Co
 //
 // Gets the permissions of an experiment. Experiments can inherit permissions
 // from their root object.
-func (a *ExperimentsPreviewAPI) GetPermissionsByExperimentId(ctx context.Context, experimentId string) (*ExperimentPermissions, error) {
-	return a.experimentsPreviewImpl.GetPermissions(ctx, GetExperimentPermissionsRequest{
+func (a *ExperimentsAPI) GetPermissionsByExperimentId(ctx context.Context, experimentId string) (*ExperimentPermissions, error) {
+	return a.experimentsImpl.GetPermissions(ctx, GetExperimentPermissionsRequest{
 		ExperimentId: experimentId,
 	})
 }
 
-type ModelRegistryPreviewInterface interface {
+type ModelRegistryInterface interface {
 
 	// Approve transition request.
 	//
@@ -638,9 +638,9 @@ type ModelRegistryPreviewInterface interface {
 	UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) error
 }
 
-func NewModelRegistryPreview(client *client.DatabricksClient) *ModelRegistryPreviewAPI {
-	return &ModelRegistryPreviewAPI{
-		modelRegistryPreviewImpl: modelRegistryPreviewImpl{
+func NewModelRegistry(client *client.DatabricksClient) *ModelRegistryAPI {
+	return &ModelRegistryAPI{
+		modelRegistryImpl: modelRegistryImpl{
 			client: client,
 		},
 	}
@@ -654,15 +654,15 @@ func NewModelRegistryPreview(client *client.DatabricksClient) *ModelRegistryPrev
 //
 // The Workspace Model Registry is a centralized model repository and a UI and
 // set of APIs that enable you to manage the full lifecycle of MLflow Models.
-type ModelRegistryPreviewAPI struct {
-	modelRegistryPreviewImpl
+type ModelRegistryAPI struct {
+	modelRegistryImpl
 }
 
 // Get registered model permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ModelRegistryPreviewAPI) GetPermissionLevelsByRegisteredModelId(ctx context.Context, registeredModelId string) (*GetRegisteredModelPermissionLevelsResponse, error) {
-	return a.modelRegistryPreviewImpl.GetPermissionLevels(ctx, GetRegisteredModelPermissionLevelsRequest{
+func (a *ModelRegistryAPI) GetPermissionLevelsByRegisteredModelId(ctx context.Context, registeredModelId string) (*GetRegisteredModelPermissionLevelsResponse, error) {
+	return a.modelRegistryImpl.GetPermissionLevels(ctx, GetRegisteredModelPermissionLevelsRequest{
 		RegisteredModelId: registeredModelId,
 	})
 }
@@ -671,8 +671,8 @@ func (a *ModelRegistryPreviewAPI) GetPermissionLevelsByRegisteredModelId(ctx con
 //
 // Gets the permissions of a registered model. Registered models can inherit
 // permissions from their root object.
-func (a *ModelRegistryPreviewAPI) GetPermissionsByRegisteredModelId(ctx context.Context, registeredModelId string) (*RegisteredModelPermissions, error) {
-	return a.modelRegistryPreviewImpl.GetPermissions(ctx, GetRegisteredModelPermissionsRequest{
+func (a *ModelRegistryAPI) GetPermissionsByRegisteredModelId(ctx context.Context, registeredModelId string) (*RegisteredModelPermissions, error) {
+	return a.modelRegistryImpl.GetPermissions(ctx, GetRegisteredModelPermissionsRequest{
 		RegisteredModelId: registeredModelId,
 	})
 }

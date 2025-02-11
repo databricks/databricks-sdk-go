@@ -10,13 +10,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type CleanRoomAssetsPreviewClient struct {
-	CleanRoomAssetsPreviewInterface
+type CleanRoomAssetsClient struct {
+	CleanRoomAssetsInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewCleanRoomAssetsPreviewClient(cfg *config.Config) (*CleanRoomAssetsPreviewClient, error) {
+func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -37,20 +37,20 @@ func NewCleanRoomAssetsPreviewClient(cfg *config.Config) (*CleanRoomAssetsPrevie
 		return nil, err
 	}
 
-	return &CleanRoomAssetsPreviewClient{
-		Config:                          cfg,
-		apiClient:                       apiClient,
-		CleanRoomAssetsPreviewInterface: NewCleanRoomAssetsPreview(databricksClient),
+	return &CleanRoomAssetsClient{
+		Config:                   cfg,
+		apiClient:                apiClient,
+		CleanRoomAssetsInterface: NewCleanRoomAssets(databricksClient),
 	}, nil
 }
 
-type CleanRoomTaskRunsPreviewClient struct {
-	CleanRoomTaskRunsPreviewInterface
+type CleanRoomTaskRunsClient struct {
+	CleanRoomTaskRunsInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewCleanRoomTaskRunsPreviewClient(cfg *config.Config) (*CleanRoomTaskRunsPreviewClient, error) {
+func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -71,43 +71,43 @@ func NewCleanRoomTaskRunsPreviewClient(cfg *config.Config) (*CleanRoomTaskRunsPr
 		return nil, err
 	}
 
-	return &CleanRoomTaskRunsPreviewClient{
-		Config:                            cfg,
-		apiClient:                         apiClient,
-		CleanRoomTaskRunsPreviewInterface: NewCleanRoomTaskRunsPreview(databricksClient),
-	}, nil
-}
-
-type CleanRoomsPreviewClient struct {
-	CleanRoomsPreviewInterface
-	Config    *config.Config
-	apiClient *httpclient.ApiClient
-}
-
-func NewCleanRoomsPreviewClient(cfg *config.Config) (*CleanRoomsPreviewClient, error) {
-	if cfg == nil {
-		cfg = &config.Config{}
-	}
-
-	err := cfg.EnsureResolved()
-	if err != nil {
-		return nil, err
-	}
-	if cfg.IsAccountClient() {
-		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
-	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
-	if err != nil {
-		return nil, err
-	}
-
-	return &CleanRoomsPreviewClient{
+	return &CleanRoomTaskRunsClient{
 		Config:                     cfg,
 		apiClient:                  apiClient,
-		CleanRoomsPreviewInterface: NewCleanRoomsPreview(databricksClient),
+		CleanRoomTaskRunsInterface: NewCleanRoomTaskRuns(databricksClient),
+	}, nil
+}
+
+type CleanRoomsClient struct {
+	CleanRoomsInterface
+	Config    *config.Config
+	apiClient *httpclient.ApiClient
+}
+
+func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
+	if cfg == nil {
+		cfg = &config.Config{}
+	}
+
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	if cfg.IsAccountClient() {
+		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
+	}
+	apiClient, err := cfg.NewApiClient()
+	if err != nil {
+		return nil, err
+	}
+	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	if err != nil {
+		return nil, err
+	}
+
+	return &CleanRoomsClient{
+		Config:              cfg,
+		apiClient:           apiClient,
+		CleanRoomsInterface: NewCleanRooms(databricksClient),
 	}, nil
 }

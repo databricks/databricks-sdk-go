@@ -208,7 +208,6 @@ func (a *clustersImpl) Events(ctx context.Context, request GetEvents) listing.It
 			return nil
 		}
 		request = *resp.NextPage
-
 		return &request
 	}
 	iterator := listing.NewIterator(

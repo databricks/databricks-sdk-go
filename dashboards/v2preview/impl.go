@@ -12,12 +12,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-// unexported type that holds implementations of just GeniePreview API methods
-type geniePreviewImpl struct {
+// unexported type that holds implementations of just Genie API methods
+type genieImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *geniePreviewImpl) CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error) {
+func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error) {
 	var genieMessage GenieMessage
 	path := fmt.Sprintf("/api/2.0preview/genie/spaces/%v/conversations/%v/messages", request.SpaceId, request.ConversationId)
 	queryParams := make(map[string]any)
@@ -28,7 +28,7 @@ func (a *geniePreviewImpl) CreateMessage(ctx context.Context, request GenieCreat
 	return &genieMessage, err
 }
 
-func (a *geniePreviewImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
+func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
 	path := fmt.Sprintf("/api/2.0preview/genie/spaces/%v/conversations/%v/messages/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId)
 	queryParams := make(map[string]any)
@@ -38,7 +38,7 @@ func (a *geniePreviewImpl) ExecuteMessageQuery(ctx context.Context, request Geni
 	return &genieGetMessageQueryResultResponse, err
 }
 
-func (a *geniePreviewImpl) GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error) {
+func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error) {
 	var genieMessage GenieMessage
 	path := fmt.Sprintf("/api/2.0preview/genie/spaces/%v/conversations/%v/messages/%v", request.SpaceId, request.ConversationId, request.MessageId)
 	queryParams := make(map[string]any)
@@ -48,7 +48,7 @@ func (a *geniePreviewImpl) GetMessage(ctx context.Context, request GenieGetConve
 	return &genieMessage, err
 }
 
-func (a *geniePreviewImpl) GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error) {
+func (a *genieImpl) GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
 	path := fmt.Sprintf("/api/2.0preview/genie/spaces/%v/conversations/%v/messages/%v/query-result", request.SpaceId, request.ConversationId, request.MessageId)
 	queryParams := make(map[string]any)
@@ -58,7 +58,7 @@ func (a *geniePreviewImpl) GetMessageQueryResult(ctx context.Context, request Ge
 	return &genieGetMessageQueryResultResponse, err
 }
 
-func (a *geniePreviewImpl) GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error) {
+func (a *genieImpl) GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
 	path := fmt.Sprintf("/api/2.0preview/genie/spaces/%v/conversations/%v/messages/%v/query-result/%v", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
 	queryParams := make(map[string]any)
@@ -68,7 +68,7 @@ func (a *geniePreviewImpl) GetMessageQueryResultByAttachment(ctx context.Context
 	return &genieGetMessageQueryResultResponse, err
 }
 
-func (a *geniePreviewImpl) StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error) {
+func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error) {
 	var genieStartConversationResponse GenieStartConversationResponse
 	path := fmt.Sprintf("/api/2.0preview/genie/spaces/%v/start-conversation", request.SpaceId)
 	queryParams := make(map[string]any)
@@ -79,27 +79,12 @@ func (a *geniePreviewImpl) StartConversation(ctx context.Context, request GenieS
 	return &genieStartConversationResponse, err
 }
 
-// unexported type that holds implementations of just LakeviewEmbeddedPreview API methods
-type lakeviewEmbeddedPreviewImpl struct {
+// unexported type that holds implementations of just Lakeview API methods
+type lakeviewImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *lakeviewEmbeddedPreviewImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error {
-	var getPublishedDashboardEmbeddedResponse GetPublishedDashboardEmbeddedResponse
-	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/published/embedded", request.DashboardId)
-	queryParams := make(map[string]any)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardEmbeddedResponse)
-	return err
-}
-
-// unexported type that holds implementations of just LakeviewPreview API methods
-type lakeviewPreviewImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *lakeviewPreviewImpl) Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error) {
+func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error) {
 	var dashboard Dashboard
 	path := "/api/2.0preview/lakeview/dashboards"
 	queryParams := make(map[string]any)
@@ -110,7 +95,7 @@ func (a *lakeviewPreviewImpl) Create(ctx context.Context, request CreateDashboar
 	return &dashboard, err
 }
 
-func (a *lakeviewPreviewImpl) CreateSchedule(ctx context.Context, request CreateScheduleRequest) (*Schedule, error) {
+func (a *lakeviewImpl) CreateSchedule(ctx context.Context, request CreateScheduleRequest) (*Schedule, error) {
 	var schedule Schedule
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/schedules", request.DashboardId)
 	queryParams := make(map[string]any)
@@ -121,7 +106,7 @@ func (a *lakeviewPreviewImpl) CreateSchedule(ctx context.Context, request Create
 	return &schedule, err
 }
 
-func (a *lakeviewPreviewImpl) CreateSubscription(ctx context.Context, request CreateSubscriptionRequest) (*Subscription, error) {
+func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSubscriptionRequest) (*Subscription, error) {
 	var subscription Subscription
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/schedules/%v/subscriptions", request.DashboardId, request.ScheduleId)
 	queryParams := make(map[string]any)
@@ -132,7 +117,7 @@ func (a *lakeviewPreviewImpl) CreateSubscription(ctx context.Context, request Cr
 	return &subscription, err
 }
 
-func (a *lakeviewPreviewImpl) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
+func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
 	var deleteScheduleResponse DeleteScheduleResponse
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
 	queryParams := make(map[string]any)
@@ -142,7 +127,7 @@ func (a *lakeviewPreviewImpl) DeleteSchedule(ctx context.Context, request Delete
 	return err
 }
 
-func (a *lakeviewPreviewImpl) DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error {
+func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error {
 	var deleteSubscriptionResponse DeleteSubscriptionResponse
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", request.DashboardId, request.ScheduleId, request.SubscriptionId)
 	queryParams := make(map[string]any)
@@ -152,7 +137,7 @@ func (a *lakeviewPreviewImpl) DeleteSubscription(ctx context.Context, request De
 	return err
 }
 
-func (a *lakeviewPreviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
+func (a *lakeviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
 	var dashboard Dashboard
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
@@ -162,7 +147,7 @@ func (a *lakeviewPreviewImpl) Get(ctx context.Context, request GetDashboardReque
 	return &dashboard, err
 }
 
-func (a *lakeviewPreviewImpl) GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error) {
+func (a *lakeviewImpl) GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error) {
 	var publishedDashboard PublishedDashboard
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/published", request.DashboardId)
 	queryParams := make(map[string]any)
@@ -172,7 +157,7 @@ func (a *lakeviewPreviewImpl) GetPublished(ctx context.Context, request GetPubli
 	return &publishedDashboard, err
 }
 
-func (a *lakeviewPreviewImpl) GetSchedule(ctx context.Context, request GetScheduleRequest) (*Schedule, error) {
+func (a *lakeviewImpl) GetSchedule(ctx context.Context, request GetScheduleRequest) (*Schedule, error) {
 	var schedule Schedule
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
 	queryParams := make(map[string]any)
@@ -182,7 +167,7 @@ func (a *lakeviewPreviewImpl) GetSchedule(ctx context.Context, request GetSchedu
 	return &schedule, err
 }
 
-func (a *lakeviewPreviewImpl) GetSubscription(ctx context.Context, request GetSubscriptionRequest) (*Subscription, error) {
+func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscriptionRequest) (*Subscription, error) {
 	var subscription Subscription
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", request.DashboardId, request.ScheduleId, request.SubscriptionId)
 	queryParams := make(map[string]any)
@@ -193,7 +178,7 @@ func (a *lakeviewPreviewImpl) GetSubscription(ctx context.Context, request GetSu
 }
 
 // List dashboards.
-func (a *lakeviewPreviewImpl) List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard] {
+func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard] {
 
 	getNextPage := func(ctx context.Context, req ListDashboardsRequest) (*ListDashboardsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -218,11 +203,11 @@ func (a *lakeviewPreviewImpl) List(ctx context.Context, request ListDashboardsRe
 }
 
 // List dashboards.
-func (a *lakeviewPreviewImpl) ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
+func (a *lakeviewImpl) ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[Dashboard](ctx, iterator)
 }
-func (a *lakeviewPreviewImpl) internalList(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error) {
+func (a *lakeviewImpl) internalList(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error) {
 	var listDashboardsResponse ListDashboardsResponse
 	path := "/api/2.0preview/lakeview/dashboards"
 	queryParams := make(map[string]any)
@@ -233,7 +218,7 @@ func (a *lakeviewPreviewImpl) internalList(ctx context.Context, request ListDash
 }
 
 // List dashboard schedules.
-func (a *lakeviewPreviewImpl) ListSchedules(ctx context.Context, request ListSchedulesRequest) listing.Iterator[Schedule] {
+func (a *lakeviewImpl) ListSchedules(ctx context.Context, request ListSchedulesRequest) listing.Iterator[Schedule] {
 
 	getNextPage := func(ctx context.Context, req ListSchedulesRequest) (*ListSchedulesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -258,11 +243,11 @@ func (a *lakeviewPreviewImpl) ListSchedules(ctx context.Context, request ListSch
 }
 
 // List dashboard schedules.
-func (a *lakeviewPreviewImpl) ListSchedulesAll(ctx context.Context, request ListSchedulesRequest) ([]Schedule, error) {
+func (a *lakeviewImpl) ListSchedulesAll(ctx context.Context, request ListSchedulesRequest) ([]Schedule, error) {
 	iterator := a.ListSchedules(ctx, request)
 	return listing.ToSlice[Schedule](ctx, iterator)
 }
-func (a *lakeviewPreviewImpl) internalListSchedules(ctx context.Context, request ListSchedulesRequest) (*ListSchedulesResponse, error) {
+func (a *lakeviewImpl) internalListSchedules(ctx context.Context, request ListSchedulesRequest) (*ListSchedulesResponse, error) {
 	var listSchedulesResponse ListSchedulesResponse
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/schedules", request.DashboardId)
 	queryParams := make(map[string]any)
@@ -273,7 +258,7 @@ func (a *lakeviewPreviewImpl) internalListSchedules(ctx context.Context, request
 }
 
 // List schedule subscriptions.
-func (a *lakeviewPreviewImpl) ListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) listing.Iterator[Subscription] {
+func (a *lakeviewImpl) ListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) listing.Iterator[Subscription] {
 
 	getNextPage := func(ctx context.Context, req ListSubscriptionsRequest) (*ListSubscriptionsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -298,11 +283,11 @@ func (a *lakeviewPreviewImpl) ListSubscriptions(ctx context.Context, request Lis
 }
 
 // List schedule subscriptions.
-func (a *lakeviewPreviewImpl) ListSubscriptionsAll(ctx context.Context, request ListSubscriptionsRequest) ([]Subscription, error) {
+func (a *lakeviewImpl) ListSubscriptionsAll(ctx context.Context, request ListSubscriptionsRequest) ([]Subscription, error) {
 	iterator := a.ListSubscriptions(ctx, request)
 	return listing.ToSlice[Subscription](ctx, iterator)
 }
-func (a *lakeviewPreviewImpl) internalListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) (*ListSubscriptionsResponse, error) {
+func (a *lakeviewImpl) internalListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) (*ListSubscriptionsResponse, error) {
 	var listSubscriptionsResponse ListSubscriptionsResponse
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/schedules/%v/subscriptions", request.DashboardId, request.ScheduleId)
 	queryParams := make(map[string]any)
@@ -312,7 +297,7 @@ func (a *lakeviewPreviewImpl) internalListSubscriptions(ctx context.Context, req
 	return &listSubscriptionsResponse, err
 }
 
-func (a *lakeviewPreviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequest) (*Dashboard, error) {
+func (a *lakeviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequest) (*Dashboard, error) {
 	var dashboard Dashboard
 	path := "/api/2.0preview/lakeview/dashboards/migrate"
 	queryParams := make(map[string]any)
@@ -323,7 +308,7 @@ func (a *lakeviewPreviewImpl) Migrate(ctx context.Context, request MigrateDashbo
 	return &dashboard, err
 }
 
-func (a *lakeviewPreviewImpl) Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error) {
+func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error) {
 	var publishedDashboard PublishedDashboard
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/published", request.DashboardId)
 	queryParams := make(map[string]any)
@@ -334,7 +319,7 @@ func (a *lakeviewPreviewImpl) Publish(ctx context.Context, request PublishReques
 	return &publishedDashboard, err
 }
 
-func (a *lakeviewPreviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) error {
+func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) error {
 	var trashDashboardResponse TrashDashboardResponse
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
@@ -344,7 +329,7 @@ func (a *lakeviewPreviewImpl) Trash(ctx context.Context, request TrashDashboardR
 	return err
 }
 
-func (a *lakeviewPreviewImpl) Unpublish(ctx context.Context, request UnpublishDashboardRequest) error {
+func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboardRequest) error {
 	var unpublishDashboardResponse UnpublishDashboardResponse
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/published", request.DashboardId)
 	queryParams := make(map[string]any)
@@ -354,7 +339,7 @@ func (a *lakeviewPreviewImpl) Unpublish(ctx context.Context, request UnpublishDa
 	return err
 }
 
-func (a *lakeviewPreviewImpl) Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error) {
+func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error) {
 	var dashboard Dashboard
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
@@ -365,7 +350,7 @@ func (a *lakeviewPreviewImpl) Update(ctx context.Context, request UpdateDashboar
 	return &dashboard, err
 }
 
-func (a *lakeviewPreviewImpl) UpdateSchedule(ctx context.Context, request UpdateScheduleRequest) (*Schedule, error) {
+func (a *lakeviewImpl) UpdateSchedule(ctx context.Context, request UpdateScheduleRequest) (*Schedule, error) {
 	var schedule Schedule
 	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
 	queryParams := make(map[string]any)
@@ -376,12 +361,27 @@ func (a *lakeviewPreviewImpl) UpdateSchedule(ctx context.Context, request Update
 	return &schedule, err
 }
 
-// unexported type that holds implementations of just QueryExecutionPreview API methods
-type queryExecutionPreviewImpl struct {
+// unexported type that holds implementations of just LakeviewEmbedded API methods
+type lakeviewEmbeddedImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *queryExecutionPreviewImpl) CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error) {
+func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error {
+	var getPublishedDashboardEmbeddedResponse GetPublishedDashboardEmbeddedResponse
+	path := fmt.Sprintf("/api/2.0preview/lakeview/dashboards/%v/published/embedded", request.DashboardId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardEmbeddedResponse)
+	return err
+}
+
+// unexported type that holds implementations of just QueryExecution API methods
+type queryExecutionImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *queryExecutionImpl) CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error) {
 	var cancelQueryExecutionResponse CancelQueryExecutionResponse
 	path := "/api/2.0preview/lakeview-query/query/published"
 	queryParams := make(map[string]any)
@@ -391,7 +391,7 @@ func (a *queryExecutionPreviewImpl) CancelPublishedQueryExecution(ctx context.Co
 	return &cancelQueryExecutionResponse, err
 }
 
-func (a *queryExecutionPreviewImpl) ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error {
+func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error {
 	var executeQueryResponse ExecuteQueryResponse
 	path := "/api/2.0preview/lakeview-query/query/published"
 	queryParams := make(map[string]any)
@@ -402,7 +402,7 @@ func (a *queryExecutionPreviewImpl) ExecutePublishedDashboardQuery(ctx context.C
 	return err
 }
 
-func (a *queryExecutionPreviewImpl) PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error) {
+func (a *queryExecutionImpl) PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error) {
 	var pollQueryStatusResponse PollQueryStatusResponse
 	path := "/api/2.0preview/lakeview-query/query/published"
 	queryParams := make(map[string]any)

@@ -10,13 +10,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type GeniePreviewClient struct {
-	GeniePreviewInterface
+type GenieClient struct {
+	GenieInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewGeniePreviewClient(cfg *config.Config) (*GeniePreviewClient, error) {
+func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -37,20 +37,20 @@ func NewGeniePreviewClient(cfg *config.Config) (*GeniePreviewClient, error) {
 		return nil, err
 	}
 
-	return &GeniePreviewClient{
-		Config:                cfg,
-		apiClient:             apiClient,
-		GeniePreviewInterface: NewGeniePreview(databricksClient),
+	return &GenieClient{
+		Config:         cfg,
+		apiClient:      apiClient,
+		GenieInterface: NewGenie(databricksClient),
 	}, nil
 }
 
-type LakeviewEmbeddedPreviewClient struct {
-	LakeviewEmbeddedPreviewInterface
+type LakeviewClient struct {
+	LakeviewInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewLakeviewEmbeddedPreviewClient(cfg *config.Config) (*LakeviewEmbeddedPreviewClient, error) {
+func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -71,20 +71,20 @@ func NewLakeviewEmbeddedPreviewClient(cfg *config.Config) (*LakeviewEmbeddedPrev
 		return nil, err
 	}
 
-	return &LakeviewEmbeddedPreviewClient{
-		Config:                           cfg,
-		apiClient:                        apiClient,
-		LakeviewEmbeddedPreviewInterface: NewLakeviewEmbeddedPreview(databricksClient),
+	return &LakeviewClient{
+		Config:            cfg,
+		apiClient:         apiClient,
+		LakeviewInterface: NewLakeview(databricksClient),
 	}, nil
 }
 
-type LakeviewPreviewClient struct {
-	LakeviewPreviewInterface
+type LakeviewEmbeddedClient struct {
+	LakeviewEmbeddedInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewLakeviewPreviewClient(cfg *config.Config) (*LakeviewPreviewClient, error) {
+func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -105,20 +105,20 @@ func NewLakeviewPreviewClient(cfg *config.Config) (*LakeviewPreviewClient, error
 		return nil, err
 	}
 
-	return &LakeviewPreviewClient{
-		Config:                   cfg,
-		apiClient:                apiClient,
-		LakeviewPreviewInterface: NewLakeviewPreview(databricksClient),
+	return &LakeviewEmbeddedClient{
+		Config:                    cfg,
+		apiClient:                 apiClient,
+		LakeviewEmbeddedInterface: NewLakeviewEmbedded(databricksClient),
 	}, nil
 }
 
-type QueryExecutionPreviewClient struct {
-	QueryExecutionPreviewInterface
+type QueryExecutionClient struct {
+	QueryExecutionInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewQueryExecutionPreviewClient(cfg *config.Config) (*QueryExecutionPreviewClient, error) {
+func NewQueryExecutionClient(cfg *config.Config) (*QueryExecutionClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -139,9 +139,9 @@ func NewQueryExecutionPreviewClient(cfg *config.Config) (*QueryExecutionPreviewC
 		return nil, err
 	}
 
-	return &QueryExecutionPreviewClient{
-		Config:                         cfg,
-		apiClient:                      apiClient,
-		QueryExecutionPreviewInterface: NewQueryExecutionPreview(databricksClient),
+	return &QueryExecutionClient{
+		Config:                  cfg,
+		apiClient:               apiClient,
+		QueryExecutionInterface: NewQueryExecution(databricksClient),
 	}, nil
 }

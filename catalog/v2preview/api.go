@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Metastore Assignments Preview, Account Metastores Preview, Account Storage Credentials Preview, Artifact Allowlists Preview, Catalogs Preview, Connections Preview, Credentials Preview, External Locations Preview, Functions Preview, Grants Preview, Metastores Preview, Model Versions Preview, Online Tables Preview, Quality Monitors Preview, Registered Models Preview, Resource Quotas Preview, Schemas Preview, Storage Credentials Preview, System Schemas Preview, Table Constraints Preview, Tables Preview, Temporary Table Credentials Preview, Volumes Preview, Workspace Bindings Preview, etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, Credentials, External Locations, Functions, Grants, Metastores, Model Versions, Online Tables, Quality Monitors, Registered Models, Resource Quotas, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Temporary Table Credentials, Volumes, Workspace Bindings, etc.
 package catalogpreview
 
 import (
@@ -12,7 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-type AccountMetastoreAssignmentsPreviewInterface interface {
+type AccountMetastoreAssignmentsInterface interface {
 
 	// Assigns a workspace to a metastore.
 	//
@@ -76,25 +76,25 @@ type AccountMetastoreAssignmentsPreviewInterface interface {
 	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error
 }
 
-func NewAccountMetastoreAssignmentsPreview(client *client.DatabricksClient) *AccountMetastoreAssignmentsPreviewAPI {
-	return &AccountMetastoreAssignmentsPreviewAPI{
-		accountMetastoreAssignmentsPreviewImpl: accountMetastoreAssignmentsPreviewImpl{
+func NewAccountMetastoreAssignments(client *client.DatabricksClient) *AccountMetastoreAssignmentsAPI {
+	return &AccountMetastoreAssignmentsAPI{
+		accountMetastoreAssignmentsImpl: accountMetastoreAssignmentsImpl{
 			client: client,
 		},
 	}
 }
 
 // These APIs manage metastore assignments to a workspace.
-type AccountMetastoreAssignmentsPreviewAPI struct {
-	accountMetastoreAssignmentsPreviewImpl
+type AccountMetastoreAssignmentsAPI struct {
+	accountMetastoreAssignmentsImpl
 }
 
 // Delete a metastore assignment.
 //
 // Deletes a metastore assignment to a workspace, leaving the workspace with no
 // metastore.
-func (a *AccountMetastoreAssignmentsPreviewAPI) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) error {
-	return a.accountMetastoreAssignmentsPreviewImpl.Delete(ctx, DeleteAccountMetastoreAssignmentRequest{
+func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) error {
+	return a.accountMetastoreAssignmentsImpl.Delete(ctx, DeleteAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
 		MetastoreId: metastoreId,
 	})
@@ -106,8 +106,8 @@ func (a *AccountMetastoreAssignmentsPreviewAPI) DeleteByWorkspaceIdAndMetastoreI
 // the workspace is assigned a metastore, the mappig will be returned. If no
 // metastore is assigned to the workspace, the assignment will not be found and
 // a 404 returned.
-func (a *AccountMetastoreAssignmentsPreviewAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*AccountsMetastoreAssignment, error) {
-	return a.accountMetastoreAssignmentsPreviewImpl.Get(ctx, GetAccountMetastoreAssignmentRequest{
+func (a *AccountMetastoreAssignmentsAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*AccountsMetastoreAssignment, error) {
+	return a.accountMetastoreAssignmentsImpl.Get(ctx, GetAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
 	})
 }
@@ -116,13 +116,13 @@ func (a *AccountMetastoreAssignmentsPreviewAPI) GetByWorkspaceId(ctx context.Con
 //
 // Gets a list of all Databricks workspace IDs that have been assigned to given
 // metastore.
-func (a *AccountMetastoreAssignmentsPreviewAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountMetastoreAssignmentsResponse, error) {
-	return a.accountMetastoreAssignmentsPreviewImpl.internalList(ctx, ListAccountMetastoreAssignmentsRequest{
+func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountMetastoreAssignmentsResponse, error) {
+	return a.accountMetastoreAssignmentsImpl.internalList(ctx, ListAccountMetastoreAssignmentsRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
-type AccountMetastoresPreviewInterface interface {
+type AccountMetastoresInterface interface {
 
 	// Create metastore.
 	//
@@ -169,9 +169,9 @@ type AccountMetastoresPreviewInterface interface {
 	Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error)
 }
 
-func NewAccountMetastoresPreview(client *client.DatabricksClient) *AccountMetastoresPreviewAPI {
-	return &AccountMetastoresPreviewAPI{
-		accountMetastoresPreviewImpl: accountMetastoresPreviewImpl{
+func NewAccountMetastores(client *client.DatabricksClient) *AccountMetastoresAPI {
+	return &AccountMetastoresAPI{
+		accountMetastoresImpl: accountMetastoresImpl{
 			client: client,
 		},
 	}
@@ -179,15 +179,15 @@ func NewAccountMetastoresPreview(client *client.DatabricksClient) *AccountMetast
 
 // These APIs manage Unity Catalog metastores for an account. A metastore
 // contains catalogs that can be associated with workspaces
-type AccountMetastoresPreviewAPI struct {
-	accountMetastoresPreviewImpl
+type AccountMetastoresAPI struct {
+	accountMetastoresImpl
 }
 
 // Delete a metastore.
 //
 // Deletes a Unity Catalog metastore for an account, both specified by ID.
-func (a *AccountMetastoresPreviewAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) error {
-	return a.accountMetastoresPreviewImpl.Delete(ctx, DeleteAccountMetastoreRequest{
+func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) error {
+	return a.accountMetastoresImpl.Delete(ctx, DeleteAccountMetastoreRequest{
 		MetastoreId: metastoreId,
 	})
 }
@@ -195,13 +195,13 @@ func (a *AccountMetastoresPreviewAPI) DeleteByMetastoreId(ctx context.Context, m
 // Get a metastore.
 //
 // Gets a Unity Catalog metastore from an account, both specified by ID.
-func (a *AccountMetastoresPreviewAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsMetastoreInfo, error) {
-	return a.accountMetastoresPreviewImpl.Get(ctx, GetAccountMetastoreRequest{
+func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsMetastoreInfo, error) {
+	return a.accountMetastoresImpl.Get(ctx, GetAccountMetastoreRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
-type AccountStorageCredentialsPreviewInterface interface {
+type AccountStorageCredentialsInterface interface {
 
 	// Create a storage credential.
 	//
@@ -271,25 +271,25 @@ type AccountStorageCredentialsPreviewInterface interface {
 	Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error)
 }
 
-func NewAccountStorageCredentialsPreview(client *client.DatabricksClient) *AccountStorageCredentialsPreviewAPI {
-	return &AccountStorageCredentialsPreviewAPI{
-		accountStorageCredentialsPreviewImpl: accountStorageCredentialsPreviewImpl{
+func NewAccountStorageCredentials(client *client.DatabricksClient) *AccountStorageCredentialsAPI {
+	return &AccountStorageCredentialsAPI{
+		accountStorageCredentialsImpl: accountStorageCredentialsImpl{
 			client: client,
 		},
 	}
 }
 
 // These APIs manage storage credentials for a particular metastore.
-type AccountStorageCredentialsPreviewAPI struct {
-	accountStorageCredentialsPreviewImpl
+type AccountStorageCredentialsAPI struct {
+	accountStorageCredentialsImpl
 }
 
 // Delete a storage credential.
 //
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
-func (a *AccountStorageCredentialsPreviewAPI) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) error {
-	return a.accountStorageCredentialsPreviewImpl.Delete(ctx, DeleteAccountStorageCredentialRequest{
+func (a *AccountStorageCredentialsAPI) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) error {
+	return a.accountStorageCredentialsImpl.Delete(ctx, DeleteAccountStorageCredentialRequest{
 		MetastoreId:           metastoreId,
 		StorageCredentialName: storageCredentialName,
 	})
@@ -300,8 +300,8 @@ func (a *AccountStorageCredentialsPreviewAPI) DeleteByMetastoreIdAndStorageCrede
 // Gets a storage credential from the metastore. The caller must be a metastore
 // admin, the owner of the storage credential, or have a level of privilege on
 // the storage credential.
-func (a *AccountStorageCredentialsPreviewAPI) GetByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*AccountsStorageCredentialInfo, error) {
-	return a.accountStorageCredentialsPreviewImpl.Get(ctx, GetAccountStorageCredentialRequest{
+func (a *AccountStorageCredentialsAPI) GetByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*AccountsStorageCredentialInfo, error) {
+	return a.accountStorageCredentialsImpl.Get(ctx, GetAccountStorageCredentialRequest{
 		MetastoreId:           metastoreId,
 		StorageCredentialName: storageCredentialName,
 	})
@@ -311,13 +311,13 @@ func (a *AccountStorageCredentialsPreviewAPI) GetByMetastoreIdAndStorageCredenti
 //
 // Gets a list of all storage credentials that have been assigned to given
 // metastore.
-func (a *AccountStorageCredentialsPreviewAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountStorageCredentialsResponse, error) {
-	return a.accountStorageCredentialsPreviewImpl.internalList(ctx, ListAccountStorageCredentialsRequest{
+func (a *AccountStorageCredentialsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountStorageCredentialsResponse, error) {
+	return a.accountStorageCredentialsImpl.internalList(ctx, ListAccountStorageCredentialsRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
-type ArtifactAllowlistsPreviewInterface interface {
+type ArtifactAllowlistsInterface interface {
 
 	// Get an artifact allowlist.
 	//
@@ -339,9 +339,9 @@ type ArtifactAllowlistsPreviewInterface interface {
 	Update(ctx context.Context, request SetArtifactAllowlist) (*ArtifactAllowlistInfo, error)
 }
 
-func NewArtifactAllowlistsPreview(client *client.DatabricksClient) *ArtifactAllowlistsPreviewAPI {
-	return &ArtifactAllowlistsPreviewAPI{
-		artifactAllowlistsPreviewImpl: artifactAllowlistsPreviewImpl{
+func NewArtifactAllowlists(client *client.DatabricksClient) *ArtifactAllowlistsAPI {
+	return &ArtifactAllowlistsAPI{
+		artifactAllowlistsImpl: artifactAllowlistsImpl{
 			client: client,
 		},
 	}
@@ -350,21 +350,21 @@ func NewArtifactAllowlistsPreview(client *client.DatabricksClient) *ArtifactAllo
 // In Databricks Runtime 13.3 and above, you can add libraries and init scripts
 // to the `allowlist` in UC so that users can leverage these artifacts on
 // compute configured with shared access mode.
-type ArtifactAllowlistsPreviewAPI struct {
-	artifactAllowlistsPreviewImpl
+type ArtifactAllowlistsAPI struct {
+	artifactAllowlistsImpl
 }
 
 // Get an artifact allowlist.
 //
 // Get the artifact allowlist of a certain artifact type. The caller must be a
 // metastore admin or have the **MANAGE ALLOWLIST** privilege on the metastore.
-func (a *ArtifactAllowlistsPreviewAPI) GetByArtifactType(ctx context.Context, artifactType ArtifactType) (*ArtifactAllowlistInfo, error) {
-	return a.artifactAllowlistsPreviewImpl.Get(ctx, GetArtifactAllowlistRequest{
+func (a *ArtifactAllowlistsAPI) GetByArtifactType(ctx context.Context, artifactType ArtifactType) (*ArtifactAllowlistInfo, error) {
+	return a.artifactAllowlistsImpl.Get(ctx, GetArtifactAllowlistRequest{
 		ArtifactType: artifactType,
 	})
 }
 
-type CatalogsPreviewInterface interface {
+type CatalogsInterface interface {
 
 	// Create a catalog.
 	//
@@ -428,9 +428,9 @@ type CatalogsPreviewInterface interface {
 	Update(ctx context.Context, request UpdateCatalog) (*CatalogInfo, error)
 }
 
-func NewCatalogsPreview(client *client.DatabricksClient) *CatalogsPreviewAPI {
-	return &CatalogsPreviewAPI{
-		catalogsPreviewImpl: catalogsPreviewImpl{
+func NewCatalogs(client *client.DatabricksClient) *CatalogsAPI {
+	return &CatalogsAPI{
+		catalogsImpl: catalogsImpl{
 			client: client,
 		},
 	}
@@ -444,16 +444,16 @@ func NewCatalogsPreview(client *client.DatabricksClient) *CatalogsPreviewAPI {
 // data centrally across all of the workspaces in a Databricks account. Users in
 // different workspaces can share access to the same data, depending on
 // privileges granted centrally in Unity Catalog.
-type CatalogsPreviewAPI struct {
-	catalogsPreviewImpl
+type CatalogsAPI struct {
+	catalogsImpl
 }
 
 // Delete a catalog.
 //
 // Deletes the catalog that matches the supplied name. The caller must be a
 // metastore admin or the owner of the catalog.
-func (a *CatalogsPreviewAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.catalogsPreviewImpl.Delete(ctx, DeleteCatalogRequest{
+func (a *CatalogsAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.catalogsImpl.Delete(ctx, DeleteCatalogRequest{
 		Name: name,
 	})
 }
@@ -463,13 +463,13 @@ func (a *CatalogsPreviewAPI) DeleteByName(ctx context.Context, name string) erro
 // Gets the specified catalog in a metastore. The caller must be a metastore
 // admin, the owner of the catalog, or a user that has the **USE_CATALOG**
 // privilege set for their account.
-func (a *CatalogsPreviewAPI) GetByName(ctx context.Context, name string) (*CatalogInfo, error) {
-	return a.catalogsPreviewImpl.Get(ctx, GetCatalogRequest{
+func (a *CatalogsAPI) GetByName(ctx context.Context, name string) (*CatalogInfo, error) {
+	return a.catalogsImpl.Get(ctx, GetCatalogRequest{
 		Name: name,
 	})
 }
 
-type ConnectionsPreviewInterface interface {
+type ConnectionsInterface interface {
 
 	// Create a connection.
 	//
@@ -514,7 +514,7 @@ type ConnectionsPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListConnectionsRequest) ([]ConnectionInfo, error)
 
-	// ConnectionInfoNameToFullNameMap calls [ConnectionsPreviewAPI.ListAll] and creates a map of results with [ConnectionInfo].Name as key and [ConnectionInfo].FullName as value.
+	// ConnectionInfoNameToFullNameMap calls [ConnectionsAPI.ListAll] and creates a map of results with [ConnectionInfo].Name as key and [ConnectionInfo].FullName as value.
 	//
 	// Returns an error if there's more than one [ConnectionInfo] with the same .Name.
 	//
@@ -529,9 +529,9 @@ type ConnectionsPreviewInterface interface {
 	Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error)
 }
 
-func NewConnectionsPreview(client *client.DatabricksClient) *ConnectionsPreviewAPI {
-	return &ConnectionsPreviewAPI{
-		connectionsPreviewImpl: connectionsPreviewImpl{
+func NewConnections(client *client.DatabricksClient) *ConnectionsAPI {
+	return &ConnectionsAPI{
+		connectionsImpl: connectionsImpl{
 			client: client,
 		},
 	}
@@ -548,15 +548,15 @@ func NewConnectionsPreview(client *client.DatabricksClient) *ConnectionsPreviewA
 // Users may create different types of connections with each connection having a
 // unique set of configuration options to support credential management and
 // other settings.
-type ConnectionsPreviewAPI struct {
-	connectionsPreviewImpl
+type ConnectionsAPI struct {
+	connectionsImpl
 }
 
 // Delete a connection.
 //
 // Deletes the connection that matches the supplied name.
-func (a *ConnectionsPreviewAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.connectionsPreviewImpl.Delete(ctx, DeleteConnectionRequest{
+func (a *ConnectionsAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.connectionsImpl.Delete(ctx, DeleteConnectionRequest{
 		Name: name,
 	})
 }
@@ -564,20 +564,20 @@ func (a *ConnectionsPreviewAPI) DeleteByName(ctx context.Context, name string) e
 // Get a connection.
 //
 // Gets a connection from it's name.
-func (a *ConnectionsPreviewAPI) GetByName(ctx context.Context, name string) (*ConnectionInfo, error) {
-	return a.connectionsPreviewImpl.Get(ctx, GetConnectionRequest{
+func (a *ConnectionsAPI) GetByName(ctx context.Context, name string) (*ConnectionInfo, error) {
+	return a.connectionsImpl.Get(ctx, GetConnectionRequest{
 		Name: name,
 	})
 }
 
-// ConnectionInfoNameToFullNameMap calls [ConnectionsPreviewAPI.ListAll] and creates a map of results with [ConnectionInfo].Name as key and [ConnectionInfo].FullName as value.
+// ConnectionInfoNameToFullNameMap calls [ConnectionsAPI.ListAll] and creates a map of results with [ConnectionInfo].Name as key and [ConnectionInfo].FullName as value.
 //
 // Returns an error if there's more than one [ConnectionInfo] with the same .Name.
 //
 // Note: All [ConnectionInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ConnectionsPreviewAPI) ConnectionInfoNameToFullNameMap(ctx context.Context, request ListConnectionsRequest) (map[string]string, error) {
+func (a *ConnectionsAPI) ConnectionInfoNameToFullNameMap(ctx context.Context, request ListConnectionsRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -595,7 +595,7 @@ func (a *ConnectionsPreviewAPI) ConnectionInfoNameToFullNameMap(ctx context.Cont
 	return mapping, nil
 }
 
-type CredentialsPreviewInterface interface {
+type CredentialsInterface interface {
 
 	// Create a credential.
 	//
@@ -693,9 +693,9 @@ type CredentialsPreviewInterface interface {
 	ValidateCredential(ctx context.Context, request ValidateCredentialRequest) (*ValidateCredentialResponse, error)
 }
 
-func NewCredentialsPreview(client *client.DatabricksClient) *CredentialsPreviewAPI {
-	return &CredentialsPreviewAPI{
-		credentialsPreviewImpl: credentialsPreviewImpl{
+func NewCredentials(client *client.DatabricksClient) *CredentialsAPI {
+	return &CredentialsAPI{
+		credentialsImpl: credentialsImpl{
 			client: client,
 		},
 	}
@@ -709,16 +709,16 @@ func NewCredentialsPreview(client *client.DatabricksClient) *CredentialsPreviewA
 // To create credentials, you must be a Databricks account admin or have the
 // `CREATE SERVICE CREDENTIAL` privilege. The user who creates the credential
 // can delegate ownership to another user or group to manage permissions on it.
-type CredentialsPreviewAPI struct {
-	credentialsPreviewImpl
+type CredentialsAPI struct {
+	credentialsImpl
 }
 
 // Delete a credential.
 //
 // Deletes a service or storage credential from the metastore. The caller must
 // be an owner of the credential.
-func (a *CredentialsPreviewAPI) DeleteCredentialByNameArg(ctx context.Context, nameArg string) error {
-	return a.credentialsPreviewImpl.DeleteCredential(ctx, DeleteCredentialRequest{
+func (a *CredentialsAPI) DeleteCredentialByNameArg(ctx context.Context, nameArg string) error {
+	return a.credentialsImpl.DeleteCredential(ctx, DeleteCredentialRequest{
 		NameArg: nameArg,
 	})
 }
@@ -728,13 +728,13 @@ func (a *CredentialsPreviewAPI) DeleteCredentialByNameArg(ctx context.Context, n
 // Gets a service or storage credential from the metastore. The caller must be a
 // metastore admin, the owner of the credential, or have any permission on the
 // credential.
-func (a *CredentialsPreviewAPI) GetCredentialByNameArg(ctx context.Context, nameArg string) (*CredentialInfo, error) {
-	return a.credentialsPreviewImpl.GetCredential(ctx, GetCredentialRequest{
+func (a *CredentialsAPI) GetCredentialByNameArg(ctx context.Context, nameArg string) (*CredentialInfo, error) {
+	return a.credentialsImpl.GetCredential(ctx, GetCredentialRequest{
 		NameArg: nameArg,
 	})
 }
 
-type ExternalLocationsPreviewInterface interface {
+type ExternalLocationsInterface interface {
 
 	// Create an external location.
 	//
@@ -799,9 +799,9 @@ type ExternalLocationsPreviewInterface interface {
 	Update(ctx context.Context, request UpdateExternalLocation) (*ExternalLocationInfo, error)
 }
 
-func NewExternalLocationsPreview(client *client.DatabricksClient) *ExternalLocationsPreviewAPI {
-	return &ExternalLocationsPreviewAPI{
-		externalLocationsPreviewImpl: externalLocationsPreviewImpl{
+func NewExternalLocations(client *client.DatabricksClient) *ExternalLocationsAPI {
+	return &ExternalLocationsAPI{
+		externalLocationsImpl: externalLocationsImpl{
 			client: client,
 		},
 	}
@@ -820,16 +820,16 @@ func NewExternalLocationsPreview(client *client.DatabricksClient) *ExternalLocat
 //
 // To create external locations, you must be a metastore admin or a user with
 // the **CREATE_EXTERNAL_LOCATION** privilege.
-type ExternalLocationsPreviewAPI struct {
-	externalLocationsPreviewImpl
+type ExternalLocationsAPI struct {
+	externalLocationsImpl
 }
 
 // Delete an external location.
 //
 // Deletes the specified external location from the metastore. The caller must
 // be the owner of the external location.
-func (a *ExternalLocationsPreviewAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.externalLocationsPreviewImpl.Delete(ctx, DeleteExternalLocationRequest{
+func (a *ExternalLocationsAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.externalLocationsImpl.Delete(ctx, DeleteExternalLocationRequest{
 		Name: name,
 	})
 }
@@ -839,13 +839,13 @@ func (a *ExternalLocationsPreviewAPI) DeleteByName(ctx context.Context, name str
 // Gets an external location from the metastore. The caller must be either a
 // metastore admin, the owner of the external location, or a user that has some
 // privilege on the external location.
-func (a *ExternalLocationsPreviewAPI) GetByName(ctx context.Context, name string) (*ExternalLocationInfo, error) {
-	return a.externalLocationsPreviewImpl.Get(ctx, GetExternalLocationRequest{
+func (a *ExternalLocationsAPI) GetByName(ctx context.Context, name string) (*ExternalLocationInfo, error) {
+	return a.externalLocationsImpl.Get(ctx, GetExternalLocationRequest{
 		Name: name,
 	})
 }
 
-type FunctionsPreviewInterface interface {
+type FunctionsInterface interface {
 
 	// Create a function.
 	//
@@ -928,7 +928,7 @@ type FunctionsPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListFunctionsRequest) ([]FunctionInfo, error)
 
-	// FunctionInfoNameToFullNameMap calls [FunctionsPreviewAPI.ListAll] and creates a map of results with [FunctionInfo].Name as key and [FunctionInfo].FullName as value.
+	// FunctionInfoNameToFullNameMap calls [FunctionsAPI.ListAll] and creates a map of results with [FunctionInfo].Name as key and [FunctionInfo].FullName as value.
 	//
 	// Returns an error if there's more than one [FunctionInfo] with the same .Name.
 	//
@@ -950,9 +950,9 @@ type FunctionsPreviewInterface interface {
 	Update(ctx context.Context, request UpdateFunction) (*FunctionInfo, error)
 }
 
-func NewFunctionsPreview(client *client.DatabricksClient) *FunctionsPreviewAPI {
-	return &FunctionsPreviewAPI{
-		functionsPreviewImpl: functionsPreviewImpl{
+func NewFunctions(client *client.DatabricksClient) *FunctionsAPI {
+	return &FunctionsAPI{
+		functionsImpl: functionsImpl{
 			client: client,
 		},
 	}
@@ -964,8 +964,8 @@ func NewFunctionsPreview(client *client.DatabricksClient) *FunctionsPreviewAPI {
 // invoked wherever a table reference is allowed in a query. In Unity Catalog, a
 // function resides at the same level as a table, so it can be referenced with
 // the form __catalog_name__.__schema_name__.__function_name__.
-type FunctionsPreviewAPI struct {
-	functionsPreviewImpl
+type FunctionsAPI struct {
+	functionsImpl
 }
 
 // Delete a function.
@@ -977,8 +977,8 @@ type FunctionsPreviewAPI struct {
 // Is the owner of the function itself and have both the **USE_CATALOG**
 // privilege on its parent catalog and the **USE_SCHEMA** privilege on its
 // parent schema
-func (a *FunctionsPreviewAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.functionsPreviewImpl.Delete(ctx, DeleteFunctionRequest{
+func (a *FunctionsAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.functionsImpl.Delete(ctx, DeleteFunctionRequest{
 		Name: name,
 	})
 }
@@ -992,20 +992,20 @@ func (a *FunctionsPreviewAPI) DeleteByName(ctx context.Context, name string) err
 // of the function - Have the **USE_CATALOG** privilege on the function's parent
 // catalog, the **USE_SCHEMA** privilege on the function's parent schema, and
 // the **EXECUTE** privilege on the function itself
-func (a *FunctionsPreviewAPI) GetByName(ctx context.Context, name string) (*FunctionInfo, error) {
-	return a.functionsPreviewImpl.Get(ctx, GetFunctionRequest{
+func (a *FunctionsAPI) GetByName(ctx context.Context, name string) (*FunctionInfo, error) {
+	return a.functionsImpl.Get(ctx, GetFunctionRequest{
 		Name: name,
 	})
 }
 
-// FunctionInfoNameToFullNameMap calls [FunctionsPreviewAPI.ListAll] and creates a map of results with [FunctionInfo].Name as key and [FunctionInfo].FullName as value.
+// FunctionInfoNameToFullNameMap calls [FunctionsAPI.ListAll] and creates a map of results with [FunctionInfo].Name as key and [FunctionInfo].FullName as value.
 //
 // Returns an error if there's more than one [FunctionInfo] with the same .Name.
 //
 // Note: All [FunctionInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *FunctionsPreviewAPI) FunctionInfoNameToFullNameMap(ctx context.Context, request ListFunctionsRequest) (map[string]string, error) {
+func (a *FunctionsAPI) FunctionInfoNameToFullNameMap(ctx context.Context, request ListFunctionsRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -1023,7 +1023,7 @@ func (a *FunctionsPreviewAPI) FunctionInfoNameToFullNameMap(ctx context.Context,
 	return mapping, nil
 }
 
-type GrantsPreviewInterface interface {
+type GrantsInterface interface {
 
 	// Get permissions.
 	//
@@ -1051,9 +1051,9 @@ type GrantsPreviewInterface interface {
 	Update(ctx context.Context, request UpdatePermissions) (*PermissionsList, error)
 }
 
-func NewGrantsPreview(client *client.DatabricksClient) *GrantsPreviewAPI {
-	return &GrantsPreviewAPI{
-		grantsPreviewImpl: grantsPreviewImpl{
+func NewGrants(client *client.DatabricksClient) *GrantsAPI {
+	return &GrantsAPI{
+		grantsImpl: grantsImpl{
 			client: client,
 		},
 	}
@@ -1070,15 +1070,15 @@ func NewGrantsPreview(client *client.DatabricksClient) *GrantsPreviewAPI {
 // automatically grants the privilege to all current and future objects within
 // the catalog. Similarly, privileges granted on a schema are inherited by all
 // current and future objects within that schema.
-type GrantsPreviewAPI struct {
-	grantsPreviewImpl
+type GrantsAPI struct {
+	grantsImpl
 }
 
 // Get permissions.
 //
 // Gets the permissions for a securable.
-func (a *GrantsPreviewAPI) GetBySecurableTypeAndFullName(ctx context.Context, securableType SecurableType, fullName string) (*PermissionsList, error) {
-	return a.grantsPreviewImpl.Get(ctx, GetGrantRequest{
+func (a *GrantsAPI) GetBySecurableTypeAndFullName(ctx context.Context, securableType SecurableType, fullName string) (*PermissionsList, error) {
+	return a.grantsImpl.Get(ctx, GetGrantRequest{
 		SecurableType: securableType,
 		FullName:      fullName,
 	})
@@ -1087,14 +1087,14 @@ func (a *GrantsPreviewAPI) GetBySecurableTypeAndFullName(ctx context.Context, se
 // Get effective permissions.
 //
 // Gets the effective permissions for a securable.
-func (a *GrantsPreviewAPI) GetEffectiveBySecurableTypeAndFullName(ctx context.Context, securableType SecurableType, fullName string) (*EffectivePermissionsList, error) {
-	return a.grantsPreviewImpl.GetEffective(ctx, GetEffectiveRequest{
+func (a *GrantsAPI) GetEffectiveBySecurableTypeAndFullName(ctx context.Context, securableType SecurableType, fullName string) (*EffectivePermissionsList, error) {
+	return a.grantsImpl.GetEffective(ctx, GetEffectiveRequest{
 		SecurableType: securableType,
 		FullName:      fullName,
 	})
 }
 
-type MetastoresPreviewInterface interface {
+type MetastoresInterface interface {
 
 	// Create an assignment.
 	//
@@ -1157,7 +1157,7 @@ type MetastoresPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context) ([]MetastoreInfo, error)
 
-	// MetastoreInfoNameToMetastoreIdMap calls [MetastoresPreviewAPI.ListAll] and creates a map of results with [MetastoreInfo].Name as key and [MetastoreInfo].MetastoreId as value.
+	// MetastoreInfoNameToMetastoreIdMap calls [MetastoresAPI.ListAll] and creates a map of results with [MetastoreInfo].Name as key and [MetastoreInfo].MetastoreId as value.
 	//
 	// Returns an error if there's more than one [MetastoreInfo] with the same .Name.
 	//
@@ -1166,7 +1166,7 @@ type MetastoresPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	MetastoreInfoNameToMetastoreIdMap(ctx context.Context) (map[string]string, error)
 
-	// GetByName calls [MetastoresPreviewAPI.MetastoreInfoNameToMetastoreIdMap] and returns a single [MetastoreInfo].
+	// GetByName calls [MetastoresAPI.MetastoreInfoNameToMetastoreIdMap] and returns a single [MetastoreInfo].
 	//
 	// Returns an error if there's more than one [MetastoreInfo] with the same .Name.
 	//
@@ -1208,9 +1208,9 @@ type MetastoresPreviewInterface interface {
 	UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error
 }
 
-func NewMetastoresPreview(client *client.DatabricksClient) *MetastoresPreviewAPI {
-	return &MetastoresPreviewAPI{
-		metastoresPreviewImpl: metastoresPreviewImpl{
+func NewMetastores(client *client.DatabricksClient) *MetastoresAPI {
+	return &MetastoresAPI{
+		metastoresImpl: metastoresImpl{
 			client: client,
 		},
 	}
@@ -1230,15 +1230,15 @@ func NewMetastoresPreview(client *client.DatabricksClient) *MetastoresPreviewAPI
 // workspaces created before Unity Catalog was released. If your workspace
 // includes a legacy Hive metastore, the data in that metastore is available in
 // a catalog named hive_metastore.
-type MetastoresPreviewAPI struct {
-	metastoresPreviewImpl
+type MetastoresAPI struct {
+	metastoresImpl
 }
 
 // Delete a metastore.
 //
 // Deletes a metastore. The caller must be a metastore admin.
-func (a *MetastoresPreviewAPI) DeleteById(ctx context.Context, id string) error {
-	return a.metastoresPreviewImpl.Delete(ctx, DeleteMetastoreRequest{
+func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) error {
+	return a.metastoresImpl.Delete(ctx, DeleteMetastoreRequest{
 		Id: id,
 	})
 }
@@ -1247,20 +1247,20 @@ func (a *MetastoresPreviewAPI) DeleteById(ctx context.Context, id string) error 
 //
 // Gets a metastore that matches the supplied ID. The caller must be a metastore
 // admin to retrieve this info.
-func (a *MetastoresPreviewAPI) GetById(ctx context.Context, id string) (*MetastoreInfo, error) {
-	return a.metastoresPreviewImpl.Get(ctx, GetMetastoreRequest{
+func (a *MetastoresAPI) GetById(ctx context.Context, id string) (*MetastoreInfo, error) {
+	return a.metastoresImpl.Get(ctx, GetMetastoreRequest{
 		Id: id,
 	})
 }
 
-// MetastoreInfoNameToMetastoreIdMap calls [MetastoresPreviewAPI.ListAll] and creates a map of results with [MetastoreInfo].Name as key and [MetastoreInfo].MetastoreId as value.
+// MetastoreInfoNameToMetastoreIdMap calls [MetastoresAPI.ListAll] and creates a map of results with [MetastoreInfo].Name as key and [MetastoreInfo].MetastoreId as value.
 //
 // Returns an error if there's more than one [MetastoreInfo] with the same .Name.
 //
 // Note: All [MetastoreInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *MetastoresPreviewAPI) MetastoreInfoNameToMetastoreIdMap(ctx context.Context) (map[string]string, error) {
+func (a *MetastoresAPI) MetastoreInfoNameToMetastoreIdMap(ctx context.Context) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx)
@@ -1278,14 +1278,14 @@ func (a *MetastoresPreviewAPI) MetastoreInfoNameToMetastoreIdMap(ctx context.Con
 	return mapping, nil
 }
 
-// GetByName calls [MetastoresPreviewAPI.MetastoreInfoNameToMetastoreIdMap] and returns a single [MetastoreInfo].
+// GetByName calls [MetastoresAPI.MetastoreInfoNameToMetastoreIdMap] and returns a single [MetastoreInfo].
 //
 // Returns an error if there's more than one [MetastoreInfo] with the same .Name.
 //
 // Note: All [MetastoreInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *MetastoresPreviewAPI) GetByName(ctx context.Context, name string) (*MetastoreInfo, error) {
+func (a *MetastoresAPI) GetByName(ctx context.Context, name string) (*MetastoreInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx)
 	if err != nil {
@@ -1309,13 +1309,13 @@ func (a *MetastoresPreviewAPI) GetByName(ctx context.Context, name string) (*Met
 // Delete an assignment.
 //
 // Deletes a metastore assignment. The caller must be an account administrator.
-func (a *MetastoresPreviewAPI) UnassignByWorkspaceId(ctx context.Context, workspaceId int64) error {
-	return a.metastoresPreviewImpl.Unassign(ctx, UnassignRequest{
+func (a *MetastoresAPI) UnassignByWorkspaceId(ctx context.Context, workspaceId int64) error {
+	return a.metastoresImpl.Unassign(ctx, UnassignRequest{
 		WorkspaceId: workspaceId,
 	})
 }
 
-type ModelVersionsPreviewInterface interface {
+type ModelVersionsInterface interface {
 
 	// Delete a Model Version.
 	//
@@ -1447,9 +1447,9 @@ type ModelVersionsPreviewInterface interface {
 	Update(ctx context.Context, request UpdateModelVersionRequest) (*ModelVersionInfo, error)
 }
 
-func NewModelVersionsPreview(client *client.DatabricksClient) *ModelVersionsPreviewAPI {
-	return &ModelVersionsPreviewAPI{
-		modelVersionsPreviewImpl: modelVersionsPreviewImpl{
+func NewModelVersions(client *client.DatabricksClient) *ModelVersionsAPI {
+	return &ModelVersionsAPI{
+		modelVersionsImpl: modelVersionsImpl{
 			client: client,
 		},
 	}
@@ -1462,8 +1462,8 @@ func NewModelVersionsPreview(client *client.DatabricksClient) *ModelVersionsPrev
 // This API reference documents the REST endpoints for managing model versions
 // in Unity Catalog. For more details, see the [registered models API
 // docs](/api/workspace/registeredmodels).
-type ModelVersionsPreviewAPI struct {
-	modelVersionsPreviewImpl
+type ModelVersionsAPI struct {
+	modelVersionsImpl
 }
 
 // Delete a Model Version.
@@ -1475,8 +1475,8 @@ type ModelVersionsPreviewAPI struct {
 // model. For the latter case, the caller must also be the owner or have the
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
-func (a *ModelVersionsPreviewAPI) DeleteByFullNameAndVersion(ctx context.Context, fullName string, version int) error {
-	return a.modelVersionsPreviewImpl.Delete(ctx, DeleteModelVersionRequest{
+func (a *ModelVersionsAPI) DeleteByFullNameAndVersion(ctx context.Context, fullName string, version int) error {
+	return a.modelVersionsImpl.Delete(ctx, DeleteModelVersionRequest{
 		FullName: fullName,
 		Version:  version,
 	})
@@ -1490,8 +1490,8 @@ func (a *ModelVersionsPreviewAPI) DeleteByFullNameAndVersion(ctx context.Context
 // privilege on) the parent registered model. For the latter case, the caller
 // must also be the owner or have the **USE_CATALOG** privilege on the parent
 // catalog and the **USE_SCHEMA** privilege on the parent schema.
-func (a *ModelVersionsPreviewAPI) GetByFullNameAndVersion(ctx context.Context, fullName string, version int) (*ModelVersionInfo, error) {
-	return a.modelVersionsPreviewImpl.Get(ctx, GetModelVersionRequest{
+func (a *ModelVersionsAPI) GetByFullNameAndVersion(ctx context.Context, fullName string, version int) (*ModelVersionInfo, error) {
+	return a.modelVersionsImpl.Get(ctx, GetModelVersionRequest{
 		FullName: fullName,
 		Version:  version,
 	})
@@ -1505,8 +1505,8 @@ func (a *ModelVersionsPreviewAPI) GetByFullNameAndVersion(ctx context.Context, f
 // privilege on) the registered model. For the latter case, the caller must also
 // be the owner or have the **USE_CATALOG** privilege on the parent catalog and
 // the **USE_SCHEMA** privilege on the parent schema.
-func (a *ModelVersionsPreviewAPI) GetByAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) (*ModelVersionInfo, error) {
-	return a.modelVersionsPreviewImpl.GetByAlias(ctx, GetByAliasRequest{
+func (a *ModelVersionsAPI) GetByAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) (*ModelVersionInfo, error) {
+	return a.modelVersionsImpl.GetByAlias(ctx, GetByAliasRequest{
 		FullName: fullName,
 		Alias:    alias,
 	})
@@ -1527,13 +1527,13 @@ func (a *ModelVersionsPreviewAPI) GetByAliasByFullNameAndAlias(ctx context.Conte
 //
 // There is no guarantee of a specific ordering of the elements in the response.
 // The elements in the response will not contain any aliases or tags.
-func (a *ModelVersionsPreviewAPI) ListByFullName(ctx context.Context, fullName string) (*ListModelVersionsResponse, error) {
-	return a.modelVersionsPreviewImpl.internalList(ctx, ListModelVersionsRequest{
+func (a *ModelVersionsAPI) ListByFullName(ctx context.Context, fullName string) (*ListModelVersionsResponse, error) {
+	return a.modelVersionsImpl.internalList(ctx, ListModelVersionsRequest{
 		FullName: fullName,
 	})
 }
 
-type OnlineTablesPreviewInterface interface {
+type OnlineTablesInterface interface {
 
 	// Create an Online Table.
 	//
@@ -1565,9 +1565,9 @@ type OnlineTablesPreviewInterface interface {
 	GetByName(ctx context.Context, name string) (*OnlineTable, error)
 }
 
-func NewOnlineTablesPreview(client *client.DatabricksClient) *OnlineTablesPreviewAPI {
-	return &OnlineTablesPreviewAPI{
-		onlineTablesPreviewImpl: onlineTablesPreviewImpl{
+func NewOnlineTables(client *client.DatabricksClient) *OnlineTablesAPI {
+	return &OnlineTablesAPI{
+		onlineTablesImpl: onlineTablesImpl{
 			client: client,
 		},
 	}
@@ -1575,8 +1575,8 @@ func NewOnlineTablesPreview(client *client.DatabricksClient) *OnlineTablesPrevie
 
 // Online tables provide lower latency and higher QPS access to data from Delta
 // tables.
-type OnlineTablesPreviewAPI struct {
-	onlineTablesPreviewImpl
+type OnlineTablesAPI struct {
+	onlineTablesImpl
 }
 
 // Delete an Online Table.
@@ -1584,8 +1584,8 @@ type OnlineTablesPreviewAPI struct {
 // Delete an online table. Warning: This will delete all the data in the online
 // table. If the source Delta table was deleted or modified since this Online
 // Table was created, this will lose the data forever!
-func (a *OnlineTablesPreviewAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.onlineTablesPreviewImpl.Delete(ctx, DeleteOnlineTableRequest{
+func (a *OnlineTablesAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.onlineTablesImpl.Delete(ctx, DeleteOnlineTableRequest{
 		Name: name,
 	})
 }
@@ -1593,13 +1593,13 @@ func (a *OnlineTablesPreviewAPI) DeleteByName(ctx context.Context, name string) 
 // Get an Online Table.
 //
 // Get information about an existing online table and its status.
-func (a *OnlineTablesPreviewAPI) GetByName(ctx context.Context, name string) (*OnlineTable, error) {
-	return a.onlineTablesPreviewImpl.Get(ctx, GetOnlineTableRequest{
+func (a *OnlineTablesAPI) GetByName(ctx context.Context, name string) (*OnlineTable, error) {
+	return a.onlineTablesImpl.Get(ctx, GetOnlineTableRequest{
 		Name: name,
 	})
 }
 
-type QualityMonitorsPreviewInterface interface {
+type QualityMonitorsInterface interface {
 
 	// Cancel refresh.
 	//
@@ -1803,9 +1803,9 @@ type QualityMonitorsPreviewInterface interface {
 	Update(ctx context.Context, request UpdateMonitor) (*MonitorInfo, error)
 }
 
-func NewQualityMonitorsPreview(client *client.DatabricksClient) *QualityMonitorsPreviewAPI {
-	return &QualityMonitorsPreviewAPI{
-		qualityMonitorsPreviewImpl: qualityMonitorsPreviewImpl{
+func NewQualityMonitors(client *client.DatabricksClient) *QualityMonitorsAPI {
+	return &QualityMonitorsAPI{
+		qualityMonitorsImpl: qualityMonitorsImpl{
 			client: client,
 		},
 	}
@@ -1819,8 +1819,8 @@ func NewQualityMonitorsPreview(client *client.DatabricksClient) *QualityMonitors
 // parent schema or parent catalog). Viewing the dashboard, computed metrics, or
 // monitor configuration only requires the user to have **SELECT** privileges on
 // the table (along with **USE_SCHEMA** and **USE_CATALOG**).
-type QualityMonitorsPreviewAPI struct {
-	qualityMonitorsPreviewImpl
+type QualityMonitorsAPI struct {
+	qualityMonitorsImpl
 }
 
 // Delete a table monitor.
@@ -1838,8 +1838,8 @@ type QualityMonitorsPreviewAPI struct {
 //
 // Note that the metric tables and dashboard will not be deleted as part of this
 // call; those assets must be manually cleaned up (if desired).
-func (a *QualityMonitorsPreviewAPI) DeleteByTableName(ctx context.Context, tableName string) error {
-	return a.qualityMonitorsPreviewImpl.Delete(ctx, DeleteQualityMonitorRequest{
+func (a *QualityMonitorsAPI) DeleteByTableName(ctx context.Context, tableName string) error {
+	return a.qualityMonitorsImpl.Delete(ctx, DeleteQualityMonitorRequest{
 		TableName: tableName,
 	})
 }
@@ -1858,8 +1858,8 @@ func (a *QualityMonitorsPreviewAPI) DeleteByTableName(ctx context.Context, table
 // information on assets created by the monitor. Some information (e.g.,
 // dashboard) may be filtered out if the caller is in a different workspace than
 // where the monitor was created.
-func (a *QualityMonitorsPreviewAPI) GetByTableName(ctx context.Context, tableName string) (*MonitorInfo, error) {
-	return a.qualityMonitorsPreviewImpl.Get(ctx, GetQualityMonitorRequest{
+func (a *QualityMonitorsAPI) GetByTableName(ctx context.Context, tableName string) (*MonitorInfo, error) {
+	return a.qualityMonitorsImpl.Get(ctx, GetQualityMonitorRequest{
 		TableName: tableName,
 	})
 }
@@ -1876,8 +1876,8 @@ func (a *QualityMonitorsPreviewAPI) GetByTableName(ctx context.Context, tableNam
 //
 // Additionally, the call must be made from the workspace where the monitor was
 // created.
-func (a *QualityMonitorsPreviewAPI) GetRefreshByTableNameAndRefreshId(ctx context.Context, tableName string, refreshId string) (*MonitorRefreshInfo, error) {
-	return a.qualityMonitorsPreviewImpl.GetRefresh(ctx, GetRefreshRequest{
+func (a *QualityMonitorsAPI) GetRefreshByTableNameAndRefreshId(ctx context.Context, tableName string, refreshId string) (*MonitorRefreshInfo, error) {
+	return a.qualityMonitorsImpl.GetRefresh(ctx, GetRefreshRequest{
 		TableName: tableName,
 		RefreshId: refreshId,
 	})
@@ -1896,13 +1896,13 @@ func (a *QualityMonitorsPreviewAPI) GetRefreshByTableNameAndRefreshId(ctx contex
 //
 // Additionally, the call must be made from the workspace where the monitor was
 // created.
-func (a *QualityMonitorsPreviewAPI) ListRefreshesByTableName(ctx context.Context, tableName string) (*MonitorRefreshListResponse, error) {
-	return a.qualityMonitorsPreviewImpl.ListRefreshes(ctx, ListRefreshesRequest{
+func (a *QualityMonitorsAPI) ListRefreshesByTableName(ctx context.Context, tableName string) (*MonitorRefreshListResponse, error) {
+	return a.qualityMonitorsImpl.ListRefreshes(ctx, ListRefreshesRequest{
 		TableName: tableName,
 	})
 }
 
-type RegisteredModelsPreviewInterface interface {
+type RegisteredModelsInterface interface {
 
 	// Create a Registered Model.
 	//
@@ -2018,7 +2018,7 @@ type RegisteredModelsPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListRegisteredModelsRequest) ([]RegisteredModelInfo, error)
 
-	// RegisteredModelInfoNameToFullNameMap calls [RegisteredModelsPreviewAPI.ListAll] and creates a map of results with [RegisteredModelInfo].Name as key and [RegisteredModelInfo].FullName as value.
+	// RegisteredModelInfoNameToFullNameMap calls [RegisteredModelsAPI.ListAll] and creates a map of results with [RegisteredModelInfo].Name as key and [RegisteredModelInfo].FullName as value.
 	//
 	// Returns an error if there's more than one [RegisteredModelInfo] with the same .Name.
 	//
@@ -2027,7 +2027,7 @@ type RegisteredModelsPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	RegisteredModelInfoNameToFullNameMap(ctx context.Context, request ListRegisteredModelsRequest) (map[string]string, error)
 
-	// GetByName calls [RegisteredModelsPreviewAPI.RegisteredModelInfoNameToFullNameMap] and returns a single [RegisteredModelInfo].
+	// GetByName calls [RegisteredModelsAPI.RegisteredModelInfoNameToFullNameMap] and returns a single [RegisteredModelInfo].
 	//
 	// Returns an error if there's more than one [RegisteredModelInfo] with the same .Name.
 	//
@@ -2060,9 +2060,9 @@ type RegisteredModelsPreviewInterface interface {
 	Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error)
 }
 
-func NewRegisteredModelsPreview(client *client.DatabricksClient) *RegisteredModelsPreviewAPI {
-	return &RegisteredModelsPreviewAPI{
-		registeredModelsPreviewImpl: registeredModelsPreviewImpl{
+func NewRegisteredModels(client *client.DatabricksClient) *RegisteredModelsAPI {
+	return &RegisteredModelsAPI{
+		registeredModelsImpl: registeredModelsImpl{
 			client: client,
 		},
 	}
@@ -2097,8 +2097,8 @@ func NewRegisteredModelsPreview(client *client.DatabricksClient) *RegisteredMode
 // Note: The securable type for models is "FUNCTION". When using REST APIs (e.g.
 // tagging, grants) that specify a securable type, use "FUNCTION" as the
 // securable type.
-type RegisteredModelsPreviewAPI struct {
-	registeredModelsPreviewImpl
+type RegisteredModelsAPI struct {
+	registeredModelsImpl
 }
 
 // Delete a Registered Model.
@@ -2110,8 +2110,8 @@ type RegisteredModelsPreviewAPI struct {
 // the latter case, the caller must also be the owner or have the
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
-func (a *RegisteredModelsPreviewAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	return a.registeredModelsPreviewImpl.Delete(ctx, DeleteRegisteredModelRequest{
+func (a *RegisteredModelsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
+	return a.registeredModelsImpl.Delete(ctx, DeleteRegisteredModelRequest{
 		FullName: fullName,
 	})
 }
@@ -2124,8 +2124,8 @@ func (a *RegisteredModelsPreviewAPI) DeleteByFullName(ctx context.Context, fullN
 // the latter case, the caller must also be the owner or have the
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
-func (a *RegisteredModelsPreviewAPI) DeleteAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) error {
-	return a.registeredModelsPreviewImpl.DeleteAlias(ctx, DeleteAliasRequest{
+func (a *RegisteredModelsAPI) DeleteAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) error {
+	return a.registeredModelsImpl.DeleteAlias(ctx, DeleteAliasRequest{
 		FullName: fullName,
 		Alias:    alias,
 	})
@@ -2139,20 +2139,20 @@ func (a *RegisteredModelsPreviewAPI) DeleteAliasByFullNameAndAlias(ctx context.C
 // privilege on) the registered model. For the latter case, the caller must also
 // be the owner or have the **USE_CATALOG** privilege on the parent catalog and
 // the **USE_SCHEMA** privilege on the parent schema.
-func (a *RegisteredModelsPreviewAPI) GetByFullName(ctx context.Context, fullName string) (*RegisteredModelInfo, error) {
-	return a.registeredModelsPreviewImpl.Get(ctx, GetRegisteredModelRequest{
+func (a *RegisteredModelsAPI) GetByFullName(ctx context.Context, fullName string) (*RegisteredModelInfo, error) {
+	return a.registeredModelsImpl.Get(ctx, GetRegisteredModelRequest{
 		FullName: fullName,
 	})
 }
 
-// RegisteredModelInfoNameToFullNameMap calls [RegisteredModelsPreviewAPI.ListAll] and creates a map of results with [RegisteredModelInfo].Name as key and [RegisteredModelInfo].FullName as value.
+// RegisteredModelInfoNameToFullNameMap calls [RegisteredModelsAPI.ListAll] and creates a map of results with [RegisteredModelInfo].Name as key and [RegisteredModelInfo].FullName as value.
 //
 // Returns an error if there's more than one [RegisteredModelInfo] with the same .Name.
 //
 // Note: All [RegisteredModelInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *RegisteredModelsPreviewAPI) RegisteredModelInfoNameToFullNameMap(ctx context.Context, request ListRegisteredModelsRequest) (map[string]string, error) {
+func (a *RegisteredModelsAPI) RegisteredModelInfoNameToFullNameMap(ctx context.Context, request ListRegisteredModelsRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -2170,14 +2170,14 @@ func (a *RegisteredModelsPreviewAPI) RegisteredModelInfoNameToFullNameMap(ctx co
 	return mapping, nil
 }
 
-// GetByName calls [RegisteredModelsPreviewAPI.RegisteredModelInfoNameToFullNameMap] and returns a single [RegisteredModelInfo].
+// GetByName calls [RegisteredModelsAPI.RegisteredModelInfoNameToFullNameMap] and returns a single [RegisteredModelInfo].
 //
 // Returns an error if there's more than one [RegisteredModelInfo] with the same .Name.
 //
 // Note: All [RegisteredModelInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *RegisteredModelsPreviewAPI) GetByName(ctx context.Context, name string) (*RegisteredModelInfo, error) {
+func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*RegisteredModelInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListRegisteredModelsRequest{})
 	if err != nil {
@@ -2198,7 +2198,7 @@ func (a *RegisteredModelsPreviewAPI) GetByName(ctx context.Context, name string)
 	return &alternatives[0], nil
 }
 
-type ResourceQuotasPreviewInterface interface {
+type ResourceQuotasInterface interface {
 
 	// Get information for a single resource quota.
 	//
@@ -2235,9 +2235,9 @@ type ResourceQuotasPreviewInterface interface {
 	ListQuotasAll(ctx context.Context, request ListQuotasRequest) ([]QuotaInfo, error)
 }
 
-func NewResourceQuotasPreview(client *client.DatabricksClient) *ResourceQuotasPreviewAPI {
-	return &ResourceQuotasPreviewAPI{
-		resourceQuotasPreviewImpl: resourceQuotasPreviewImpl{
+func NewResourceQuotas(client *client.DatabricksClient) *ResourceQuotasAPI {
+	return &ResourceQuotasAPI{
+		resourceQuotasImpl: resourceQuotasImpl{
 			client: client,
 		},
 	}
@@ -2251,8 +2251,8 @@ func NewResourceQuotasPreview(client *client.DatabricksClient) *ResourceQuotasPr
 // Catalog documentation].
 //
 // [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
-type ResourceQuotasPreviewAPI struct {
-	resourceQuotasPreviewImpl
+type ResourceQuotasAPI struct {
+	resourceQuotasImpl
 }
 
 // Get information for a single resource quota.
@@ -2261,15 +2261,15 @@ type ResourceQuotasPreviewAPI struct {
 // defined as a child-parent pair. This API also refreshes the quota count if it
 // is out of date. Refreshes are triggered asynchronously. The updated count
 // might not be returned in the first call.
-func (a *ResourceQuotasPreviewAPI) GetQuotaByParentSecurableTypeAndParentFullNameAndQuotaName(ctx context.Context, parentSecurableType string, parentFullName string, quotaName string) (*GetQuotaResponse, error) {
-	return a.resourceQuotasPreviewImpl.GetQuota(ctx, GetQuotaRequest{
+func (a *ResourceQuotasAPI) GetQuotaByParentSecurableTypeAndParentFullNameAndQuotaName(ctx context.Context, parentSecurableType string, parentFullName string, quotaName string) (*GetQuotaResponse, error) {
+	return a.resourceQuotasImpl.GetQuota(ctx, GetQuotaRequest{
 		ParentSecurableType: parentSecurableType,
 		ParentFullName:      parentFullName,
 		QuotaName:           quotaName,
 	})
 }
 
-type SchemasPreviewInterface interface {
+type SchemasInterface interface {
 
 	// Create a schema.
 	//
@@ -2326,7 +2326,7 @@ type SchemasPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListSchemasRequest) ([]SchemaInfo, error)
 
-	// SchemaInfoNameToFullNameMap calls [SchemasPreviewAPI.ListAll] and creates a map of results with [SchemaInfo].Name as key and [SchemaInfo].FullName as value.
+	// SchemaInfoNameToFullNameMap calls [SchemasAPI.ListAll] and creates a map of results with [SchemaInfo].Name as key and [SchemaInfo].FullName as value.
 	//
 	// Returns an error if there's more than one [SchemaInfo] with the same .Name.
 	//
@@ -2335,7 +2335,7 @@ type SchemasPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	SchemaInfoNameToFullNameMap(ctx context.Context, request ListSchemasRequest) (map[string]string, error)
 
-	// GetByName calls [SchemasPreviewAPI.SchemaInfoNameToFullNameMap] and returns a single [SchemaInfo].
+	// GetByName calls [SchemasAPI.SchemaInfoNameToFullNameMap] and returns a single [SchemaInfo].
 	//
 	// Returns an error if there's more than one [SchemaInfo] with the same .Name.
 	//
@@ -2354,9 +2354,9 @@ type SchemasPreviewInterface interface {
 	Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error)
 }
 
-func NewSchemasPreview(client *client.DatabricksClient) *SchemasPreviewAPI {
-	return &SchemasPreviewAPI{
-		schemasPreviewImpl: schemasPreviewImpl{
+func NewSchemas(client *client.DatabricksClient) *SchemasAPI {
+	return &SchemasAPI{
+		schemasImpl: schemasImpl{
 			client: client,
 		},
 	}
@@ -2367,16 +2367,16 @@ func NewSchemasPreview(client *client.DatabricksClient) *SchemasPreviewAPI {
 // access (or list) a table or view in a schema, users must have the USE_SCHEMA
 // data permission on the schema and its parent catalog, and they must have the
 // SELECT permission on the table or view.
-type SchemasPreviewAPI struct {
-	schemasPreviewImpl
+type SchemasAPI struct {
+	schemasImpl
 }
 
 // Delete a schema.
 //
 // Deletes the specified schema from the parent catalog. The caller must be the
 // owner of the schema or an owner of the parent catalog.
-func (a *SchemasPreviewAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	return a.schemasPreviewImpl.Delete(ctx, DeleteSchemaRequest{
+func (a *SchemasAPI) DeleteByFullName(ctx context.Context, fullName string) error {
+	return a.schemasImpl.Delete(ctx, DeleteSchemaRequest{
 		FullName: fullName,
 	})
 }
@@ -2386,20 +2386,20 @@ func (a *SchemasPreviewAPI) DeleteByFullName(ctx context.Context, fullName strin
 // Gets the specified schema within the metastore. The caller must be a
 // metastore admin, the owner of the schema, or a user that has the
 // **USE_SCHEMA** privilege on the schema.
-func (a *SchemasPreviewAPI) GetByFullName(ctx context.Context, fullName string) (*SchemaInfo, error) {
-	return a.schemasPreviewImpl.Get(ctx, GetSchemaRequest{
+func (a *SchemasAPI) GetByFullName(ctx context.Context, fullName string) (*SchemaInfo, error) {
+	return a.schemasImpl.Get(ctx, GetSchemaRequest{
 		FullName: fullName,
 	})
 }
 
-// SchemaInfoNameToFullNameMap calls [SchemasPreviewAPI.ListAll] and creates a map of results with [SchemaInfo].Name as key and [SchemaInfo].FullName as value.
+// SchemaInfoNameToFullNameMap calls [SchemasAPI.ListAll] and creates a map of results with [SchemaInfo].Name as key and [SchemaInfo].FullName as value.
 //
 // Returns an error if there's more than one [SchemaInfo] with the same .Name.
 //
 // Note: All [SchemaInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *SchemasPreviewAPI) SchemaInfoNameToFullNameMap(ctx context.Context, request ListSchemasRequest) (map[string]string, error) {
+func (a *SchemasAPI) SchemaInfoNameToFullNameMap(ctx context.Context, request ListSchemasRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -2417,14 +2417,14 @@ func (a *SchemasPreviewAPI) SchemaInfoNameToFullNameMap(ctx context.Context, req
 	return mapping, nil
 }
 
-// GetByName calls [SchemasPreviewAPI.SchemaInfoNameToFullNameMap] and returns a single [SchemaInfo].
+// GetByName calls [SchemasAPI.SchemaInfoNameToFullNameMap] and returns a single [SchemaInfo].
 //
 // Returns an error if there's more than one [SchemaInfo] with the same .Name.
 //
 // Note: All [SchemaInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *SchemasPreviewAPI) GetByName(ctx context.Context, name string) (*SchemaInfo, error) {
+func (a *SchemasAPI) GetByName(ctx context.Context, name string) (*SchemaInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListSchemasRequest{})
 	if err != nil {
@@ -2445,7 +2445,7 @@ func (a *SchemasPreviewAPI) GetByName(ctx context.Context, name string) (*Schema
 	return &alternatives[0], nil
 }
 
-type StorageCredentialsPreviewInterface interface {
+type StorageCredentialsInterface interface {
 
 	// Create a storage credential.
 	//
@@ -2500,7 +2500,7 @@ type StorageCredentialsPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListStorageCredentialsRequest) ([]StorageCredentialInfo, error)
 
-	// StorageCredentialInfoNameToIdMap calls [StorageCredentialsPreviewAPI.ListAll] and creates a map of results with [StorageCredentialInfo].Name as key and [StorageCredentialInfo].Id as value.
+	// StorageCredentialInfoNameToIdMap calls [StorageCredentialsAPI.ListAll] and creates a map of results with [StorageCredentialInfo].Name as key and [StorageCredentialInfo].Id as value.
 	//
 	// Returns an error if there's more than one [StorageCredentialInfo] with the same .Name.
 	//
@@ -2531,9 +2531,9 @@ type StorageCredentialsPreviewInterface interface {
 	Validate(ctx context.Context, request ValidateStorageCredential) (*ValidateStorageCredentialResponse, error)
 }
 
-func NewStorageCredentialsPreview(client *client.DatabricksClient) *StorageCredentialsPreviewAPI {
-	return &StorageCredentialsPreviewAPI{
-		storageCredentialsPreviewImpl: storageCredentialsPreviewImpl{
+func NewStorageCredentials(client *client.DatabricksClient) *StorageCredentialsAPI {
+	return &StorageCredentialsAPI{
+		storageCredentialsImpl: storageCredentialsImpl{
 			client: client,
 		},
 	}
@@ -2552,16 +2552,16 @@ func NewStorageCredentialsPreview(client *client.DatabricksClient) *StorageCrede
 // To create storage credentials, you must be a Databricks account admin. The
 // account admin who creates the storage credential can delegate ownership to
 // another user or group to manage permissions on it.
-type StorageCredentialsPreviewAPI struct {
-	storageCredentialsPreviewImpl
+type StorageCredentialsAPI struct {
+	storageCredentialsImpl
 }
 
 // Delete a credential.
 //
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
-func (a *StorageCredentialsPreviewAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.storageCredentialsPreviewImpl.Delete(ctx, DeleteStorageCredentialRequest{
+func (a *StorageCredentialsAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.storageCredentialsImpl.Delete(ctx, DeleteStorageCredentialRequest{
 		Name: name,
 	})
 }
@@ -2571,20 +2571,20 @@ func (a *StorageCredentialsPreviewAPI) DeleteByName(ctx context.Context, name st
 // Gets a storage credential from the metastore. The caller must be a metastore
 // admin, the owner of the storage credential, or have some permission on the
 // storage credential.
-func (a *StorageCredentialsPreviewAPI) GetByName(ctx context.Context, name string) (*StorageCredentialInfo, error) {
-	return a.storageCredentialsPreviewImpl.Get(ctx, GetStorageCredentialRequest{
+func (a *StorageCredentialsAPI) GetByName(ctx context.Context, name string) (*StorageCredentialInfo, error) {
+	return a.storageCredentialsImpl.Get(ctx, GetStorageCredentialRequest{
 		Name: name,
 	})
 }
 
-// StorageCredentialInfoNameToIdMap calls [StorageCredentialsPreviewAPI.ListAll] and creates a map of results with [StorageCredentialInfo].Name as key and [StorageCredentialInfo].Id as value.
+// StorageCredentialInfoNameToIdMap calls [StorageCredentialsAPI.ListAll] and creates a map of results with [StorageCredentialInfo].Name as key and [StorageCredentialInfo].Id as value.
 //
 // Returns an error if there's more than one [StorageCredentialInfo] with the same .Name.
 //
 // Note: All [StorageCredentialInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *StorageCredentialsPreviewAPI) StorageCredentialInfoNameToIdMap(ctx context.Context, request ListStorageCredentialsRequest) (map[string]string, error) {
+func (a *StorageCredentialsAPI) StorageCredentialInfoNameToIdMap(ctx context.Context, request ListStorageCredentialsRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -2602,7 +2602,7 @@ func (a *StorageCredentialsPreviewAPI) StorageCredentialInfoNameToIdMap(ctx cont
 	return mapping, nil
 }
 
-type SystemSchemasPreviewInterface interface {
+type SystemSchemasInterface interface {
 
 	// Disable a system schema.
 	//
@@ -2645,9 +2645,9 @@ type SystemSchemasPreviewInterface interface {
 	ListByMetastoreId(ctx context.Context, metastoreId string) (*ListSystemSchemasResponse, error)
 }
 
-func NewSystemSchemasPreview(client *client.DatabricksClient) *SystemSchemasPreviewAPI {
-	return &SystemSchemasPreviewAPI{
-		systemSchemasPreviewImpl: systemSchemasPreviewImpl{
+func NewSystemSchemas(client *client.DatabricksClient) *SystemSchemasAPI {
+	return &SystemSchemasAPI{
+		systemSchemasImpl: systemSchemasImpl{
 			client: client,
 		},
 	}
@@ -2656,16 +2656,16 @@ func NewSystemSchemasPreview(client *client.DatabricksClient) *SystemSchemasPrev
 // A system schema is a schema that lives within the system catalog. A system
 // schema may contain information about customer usage of Unity Catalog such as
 // audit-logs, billing-logs, lineage information, etc.
-type SystemSchemasPreviewAPI struct {
-	systemSchemasPreviewImpl
+type SystemSchemasAPI struct {
+	systemSchemasImpl
 }
 
 // Disable a system schema.
 //
 // Disables the system schema and removes it from the system catalog. The caller
 // must be an account admin or a metastore admin.
-func (a *SystemSchemasPreviewAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName string) error {
-	return a.systemSchemasPreviewImpl.Disable(ctx, DisableRequest{
+func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName string) error {
+	return a.systemSchemasImpl.Disable(ctx, DisableRequest{
 		MetastoreId: metastoreId,
 		SchemaName:  schemaName,
 	})
@@ -2675,13 +2675,13 @@ func (a *SystemSchemasPreviewAPI) DisableByMetastoreIdAndSchemaName(ctx context.
 //
 // Gets an array of system schemas for a metastore. The caller must be an
 // account admin or a metastore admin.
-func (a *SystemSchemasPreviewAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListSystemSchemasResponse, error) {
-	return a.systemSchemasPreviewImpl.internalList(ctx, ListSystemSchemasRequest{
+func (a *SystemSchemasAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListSystemSchemasResponse, error) {
+	return a.systemSchemasImpl.internalList(ctx, ListSystemSchemasRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
-type TableConstraintsPreviewInterface interface {
+type TableConstraintsInterface interface {
 
 	// Create a table constraint.
 	//
@@ -2724,9 +2724,9 @@ type TableConstraintsPreviewInterface interface {
 	DeleteByFullName(ctx context.Context, fullName string) error
 }
 
-func NewTableConstraintsPreview(client *client.DatabricksClient) *TableConstraintsPreviewAPI {
-	return &TableConstraintsPreviewAPI{
-		tableConstraintsPreviewImpl: tableConstraintsPreviewImpl{
+func NewTableConstraints(client *client.DatabricksClient) *TableConstraintsAPI {
+	return &TableConstraintsAPI{
+		tableConstraintsImpl: tableConstraintsImpl{
 			client: client,
 		},
 	}
@@ -2745,8 +2745,8 @@ func NewTableConstraintsPreview(client *client.DatabricksClient) *TableConstrain
 // You can declare primary keys and foreign keys as part of the table
 // specification during table creation. You can also add or drop constraints on
 // existing tables.
-type TableConstraintsPreviewAPI struct {
-	tableConstraintsPreviewImpl
+type TableConstraintsAPI struct {
+	tableConstraintsImpl
 }
 
 // Delete a table constraint.
@@ -2760,13 +2760,13 @@ type TableConstraintsPreviewAPI struct {
 // the user must have the following permissions on all of the child tables: the
 // **USE_CATALOG** privilege on the table's catalog, the **USE_SCHEMA**
 // privilege on the table's schema, and be the owner of the table.
-func (a *TableConstraintsPreviewAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	return a.tableConstraintsPreviewImpl.Delete(ctx, DeleteTableConstraintRequest{
+func (a *TableConstraintsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
+	return a.tableConstraintsImpl.Delete(ctx, DeleteTableConstraintRequest{
 		FullName: fullName,
 	})
 }
 
-type TablesPreviewInterface interface {
+type TablesInterface interface {
 
 	// Delete a table.
 	//
@@ -2856,7 +2856,7 @@ type TablesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListTablesRequest) ([]TableInfo, error)
 
-	// TableInfoNameToTableIdMap calls [TablesPreviewAPI.ListAll] and creates a map of results with [TableInfo].Name as key and [TableInfo].TableId as value.
+	// TableInfoNameToTableIdMap calls [TablesAPI.ListAll] and creates a map of results with [TableInfo].Name as key and [TableInfo].TableId as value.
 	//
 	// Returns an error if there's more than one [TableInfo] with the same .Name.
 	//
@@ -2865,7 +2865,7 @@ type TablesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	TableInfoNameToTableIdMap(ctx context.Context, request ListTablesRequest) (map[string]string, error)
 
-	// GetByName calls [TablesPreviewAPI.TableInfoNameToTableIdMap] and returns a single [TableInfo].
+	// GetByName calls [TablesAPI.TableInfoNameToTableIdMap] and returns a single [TableInfo].
 	//
 	// Returns an error if there's more than one [TableInfo] with the same .Name.
 	//
@@ -2918,9 +2918,9 @@ type TablesPreviewInterface interface {
 	Update(ctx context.Context, request UpdateTableRequest) error
 }
 
-func NewTablesPreview(client *client.DatabricksClient) *TablesPreviewAPI {
-	return &TablesPreviewAPI{
-		tablesPreviewImpl: tablesPreviewImpl{
+func NewTables(client *client.DatabricksClient) *TablesAPI {
+	return &TablesAPI{
+		tablesImpl: tablesImpl{
 			client: client,
 		},
 	}
@@ -2936,8 +2936,8 @@ func NewTablesPreview(client *client.DatabricksClient) *TablesPreviewAPI {
 //
 // A table can be managed or external. From an API perspective, a __VIEW__ is a
 // particular kind of table (rather than a managed or external table).
-type TablesPreviewAPI struct {
-	tablesPreviewImpl
+type TablesAPI struct {
+	tablesImpl
 }
 
 // Delete a table.
@@ -2947,8 +2947,8 @@ type TablesPreviewAPI struct {
 // parent catalog and be the owner of the parent schema, or be the owner of the
 // table and have the **USE_CATALOG** privilege on the parent catalog and the
 // **USE_SCHEMA** privilege on the parent schema.
-func (a *TablesPreviewAPI) DeleteByFullName(ctx context.Context, fullName string) error {
-	return a.tablesPreviewImpl.Delete(ctx, DeleteTableRequest{
+func (a *TablesAPI) DeleteByFullName(ctx context.Context, fullName string) error {
+	return a.tablesImpl.Delete(ctx, DeleteTableRequest{
 		FullName: fullName,
 	})
 }
@@ -2963,8 +2963,8 @@ func (a *TablesPreviewAPI) DeleteByFullName(ctx context.Context, fullName string
 // privilege on the parent schema, and either be the table owner or have the
 // SELECT privilege on the table. * Have BROWSE privilege on the parent catalog
 // * Have BROWSE privilege on the parent schema.
-func (a *TablesPreviewAPI) ExistsByFullName(ctx context.Context, fullName string) (*TableExistsResponse, error) {
-	return a.tablesPreviewImpl.Exists(ctx, ExistsRequest{
+func (a *TablesAPI) ExistsByFullName(ctx context.Context, fullName string) (*TableExistsResponse, error) {
+	return a.tablesImpl.Exists(ctx, ExistsRequest{
 		FullName: fullName,
 	})
 }
@@ -2978,20 +2978,20 @@ func (a *TablesPreviewAPI) ExistsByFullName(ctx context.Context, fullName string
 // privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 // parent schema, and either be the table owner or have the SELECT privilege on
 // the table.
-func (a *TablesPreviewAPI) GetByFullName(ctx context.Context, fullName string) (*TableInfo, error) {
-	return a.tablesPreviewImpl.Get(ctx, GetTableRequest{
+func (a *TablesAPI) GetByFullName(ctx context.Context, fullName string) (*TableInfo, error) {
+	return a.tablesImpl.Get(ctx, GetTableRequest{
 		FullName: fullName,
 	})
 }
 
-// TableInfoNameToTableIdMap calls [TablesPreviewAPI.ListAll] and creates a map of results with [TableInfo].Name as key and [TableInfo].TableId as value.
+// TableInfoNameToTableIdMap calls [TablesAPI.ListAll] and creates a map of results with [TableInfo].Name as key and [TableInfo].TableId as value.
 //
 // Returns an error if there's more than one [TableInfo] with the same .Name.
 //
 // Note: All [TableInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *TablesPreviewAPI) TableInfoNameToTableIdMap(ctx context.Context, request ListTablesRequest) (map[string]string, error) {
+func (a *TablesAPI) TableInfoNameToTableIdMap(ctx context.Context, request ListTablesRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -3009,14 +3009,14 @@ func (a *TablesPreviewAPI) TableInfoNameToTableIdMap(ctx context.Context, reques
 	return mapping, nil
 }
 
-// GetByName calls [TablesPreviewAPI.TableInfoNameToTableIdMap] and returns a single [TableInfo].
+// GetByName calls [TablesAPI.TableInfoNameToTableIdMap] and returns a single [TableInfo].
 //
 // Returns an error if there's more than one [TableInfo] with the same .Name.
 //
 // Note: All [TableInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *TablesPreviewAPI) GetByName(ctx context.Context, name string) (*TableInfo, error) {
+func (a *TablesAPI) GetByName(ctx context.Context, name string) (*TableInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListTablesRequest{})
 	if err != nil {
@@ -3037,7 +3037,7 @@ func (a *TablesPreviewAPI) GetByName(ctx context.Context, name string) (*TableIn
 	return &alternatives[0], nil
 }
 
-type TemporaryTableCredentialsPreviewInterface interface {
+type TemporaryTableCredentialsInterface interface {
 
 	// Generate a temporary table credential.
 	//
@@ -3048,9 +3048,9 @@ type TemporaryTableCredentialsPreviewInterface interface {
 	GenerateTemporaryTableCredentials(ctx context.Context, request GenerateTemporaryTableCredentialRequest) (*GenerateTemporaryTableCredentialResponse, error)
 }
 
-func NewTemporaryTableCredentialsPreview(client *client.DatabricksClient) *TemporaryTableCredentialsPreviewAPI {
-	return &TemporaryTableCredentialsPreviewAPI{
-		temporaryTableCredentialsPreviewImpl: temporaryTableCredentialsPreviewImpl{
+func NewTemporaryTableCredentials(client *client.DatabricksClient) *TemporaryTableCredentialsAPI {
+	return &TemporaryTableCredentialsAPI{
+		temporaryTableCredentialsImpl: temporaryTableCredentialsImpl{
 			client: client,
 		},
 	}
@@ -3072,11 +3072,11 @@ func NewTemporaryTableCredentialsPreview(client *client.DatabricksClient) *Tempo
 // SCHEMA is a schema level permission that can only be granted by catalog admin
 // explicitly and is not included in schema ownership or ALL PRIVILEGES on the
 // schema for security reason.
-type TemporaryTableCredentialsPreviewAPI struct {
-	temporaryTableCredentialsPreviewImpl
+type TemporaryTableCredentialsAPI struct {
+	temporaryTableCredentialsImpl
 }
 
-type VolumesPreviewInterface interface {
+type VolumesInterface interface {
 
 	// Create a Volume.
 	//
@@ -3154,7 +3154,7 @@ type VolumesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListVolumesRequest) ([]VolumeInfo, error)
 
-	// VolumeInfoNameToVolumeIdMap calls [VolumesPreviewAPI.ListAll] and creates a map of results with [VolumeInfo].Name as key and [VolumeInfo].VolumeId as value.
+	// VolumeInfoNameToVolumeIdMap calls [VolumesAPI.ListAll] and creates a map of results with [VolumeInfo].Name as key and [VolumeInfo].VolumeId as value.
 	//
 	// Returns an error if there's more than one [VolumeInfo] with the same .Name.
 	//
@@ -3163,7 +3163,7 @@ type VolumesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	VolumeInfoNameToVolumeIdMap(ctx context.Context, request ListVolumesRequest) (map[string]string, error)
 
-	// GetByName calls [VolumesPreviewAPI.VolumeInfoNameToVolumeIdMap] and returns a single [VolumeInfo].
+	// GetByName calls [VolumesAPI.VolumeInfoNameToVolumeIdMap] and returns a single [VolumeInfo].
 	//
 	// Returns an error if there's more than one [VolumeInfo] with the same .Name.
 	//
@@ -3206,9 +3206,9 @@ type VolumesPreviewInterface interface {
 	Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error)
 }
 
-func NewVolumesPreview(client *client.DatabricksClient) *VolumesPreviewAPI {
-	return &VolumesPreviewAPI{
-		volumesPreviewImpl: volumesPreviewImpl{
+func NewVolumes(client *client.DatabricksClient) *VolumesAPI {
+	return &VolumesAPI{
+		volumesImpl: volumesImpl{
 			client: client,
 		},
 	}
@@ -3222,8 +3222,8 @@ func NewVolumesPreview(client *client.DatabricksClient) *VolumesPreviewAPI {
 // cluster machines, storing library and config files of arbitrary formats such
 // as .whl or .txt centrally and providing secure access across workspaces to
 // it, or transforming and querying non-tabular data files in ETL.
-type VolumesPreviewAPI struct {
-	volumesPreviewImpl
+type VolumesAPI struct {
+	volumesImpl
 }
 
 // Delete a Volume.
@@ -3234,20 +3234,20 @@ type VolumesPreviewAPI struct {
 // latter case, the caller must also be the owner or have the **USE_CATALOG**
 // privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 // parent schema.
-func (a *VolumesPreviewAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.volumesPreviewImpl.Delete(ctx, DeleteVolumeRequest{
+func (a *VolumesAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.volumesImpl.Delete(ctx, DeleteVolumeRequest{
 		Name: name,
 	})
 }
 
-// VolumeInfoNameToVolumeIdMap calls [VolumesPreviewAPI.ListAll] and creates a map of results with [VolumeInfo].Name as key and [VolumeInfo].VolumeId as value.
+// VolumeInfoNameToVolumeIdMap calls [VolumesAPI.ListAll] and creates a map of results with [VolumeInfo].Name as key and [VolumeInfo].VolumeId as value.
 //
 // Returns an error if there's more than one [VolumeInfo] with the same .Name.
 //
 // Note: All [VolumeInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *VolumesPreviewAPI) VolumeInfoNameToVolumeIdMap(ctx context.Context, request ListVolumesRequest) (map[string]string, error) {
+func (a *VolumesAPI) VolumeInfoNameToVolumeIdMap(ctx context.Context, request ListVolumesRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -3265,14 +3265,14 @@ func (a *VolumesPreviewAPI) VolumeInfoNameToVolumeIdMap(ctx context.Context, req
 	return mapping, nil
 }
 
-// GetByName calls [VolumesPreviewAPI.VolumeInfoNameToVolumeIdMap] and returns a single [VolumeInfo].
+// GetByName calls [VolumesAPI.VolumeInfoNameToVolumeIdMap] and returns a single [VolumeInfo].
 //
 // Returns an error if there's more than one [VolumeInfo] with the same .Name.
 //
 // Note: All [VolumeInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *VolumesPreviewAPI) GetByName(ctx context.Context, name string) (*VolumeInfo, error) {
+func (a *VolumesAPI) GetByName(ctx context.Context, name string) (*VolumeInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListVolumesRequest{})
 	if err != nil {
@@ -3301,13 +3301,13 @@ func (a *VolumesPreviewAPI) GetByName(ctx context.Context, name string) (*Volume
 // VOLUME** privilege on) the volume. For the latter case, the caller must also
 // be the owner or have the **USE_CATALOG** privilege on the parent catalog and
 // the **USE_SCHEMA** privilege on the parent schema.
-func (a *VolumesPreviewAPI) ReadByName(ctx context.Context, name string) (*VolumeInfo, error) {
-	return a.volumesPreviewImpl.Read(ctx, ReadVolumeRequest{
+func (a *VolumesAPI) ReadByName(ctx context.Context, name string) (*VolumeInfo, error) {
+	return a.volumesImpl.Read(ctx, ReadVolumeRequest{
 		Name: name,
 	})
 }
 
-type WorkspaceBindingsPreviewInterface interface {
+type WorkspaceBindingsInterface interface {
 
 	// Get catalog workspace bindings.
 	//
@@ -3356,9 +3356,9 @@ type WorkspaceBindingsPreviewInterface interface {
 	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error)
 }
 
-func NewWorkspaceBindingsPreview(client *client.DatabricksClient) *WorkspaceBindingsPreviewAPI {
-	return &WorkspaceBindingsPreviewAPI{
-		workspaceBindingsPreviewImpl: workspaceBindingsPreviewImpl{
+func NewWorkspaceBindings(client *client.DatabricksClient) *WorkspaceBindingsAPI {
+	return &WorkspaceBindingsAPI{
+		workspaceBindingsImpl: workspaceBindingsImpl{
 			client: client,
 		},
 	}
@@ -3383,16 +3383,16 @@ func NewWorkspaceBindingsPreview(client *client.DatabricksClient) *WorkspaceBind
 //
 // Securable types that support binding: - catalog - storage_credential -
 // external_location
-type WorkspaceBindingsPreviewAPI struct {
-	workspaceBindingsPreviewImpl
+type WorkspaceBindingsAPI struct {
+	workspaceBindingsImpl
 }
 
 // Get catalog workspace bindings.
 //
 // Gets workspace bindings of the catalog. The caller must be a metastore admin
 // or an owner of the catalog.
-func (a *WorkspaceBindingsPreviewAPI) GetByName(ctx context.Context, name string) (*CurrentWorkspaceBindings, error) {
-	return a.workspaceBindingsPreviewImpl.Get(ctx, GetWorkspaceBindingRequest{
+func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*CurrentWorkspaceBindings, error) {
+	return a.workspaceBindingsImpl.Get(ctx, GetWorkspaceBindingRequest{
 		Name: name,
 	})
 }
@@ -3401,8 +3401,8 @@ func (a *WorkspaceBindingsPreviewAPI) GetByName(ctx context.Context, name string
 //
 // Gets workspace bindings of the securable. The caller must be a metastore
 // admin or an owner of the securable.
-func (a *WorkspaceBindingsPreviewAPI) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType GetBindingsSecurableType, securableName string) (*WorkspaceBindingsResponse, error) {
-	return a.workspaceBindingsPreviewImpl.internalGetBindings(ctx, GetBindingsRequest{
+func (a *WorkspaceBindingsAPI) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType GetBindingsSecurableType, securableName string) (*WorkspaceBindingsResponse, error) {
+	return a.workspaceBindingsImpl.internalGetBindings(ctx, GetBindingsRequest{
 		SecurableType: securableType,
 		SecurableName: securableName,
 	})

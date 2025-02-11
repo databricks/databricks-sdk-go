@@ -13,12 +13,12 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// unexported type that holds implementations of just ProvidersPreview API methods
-type providersPreviewImpl struct {
+// unexported type that holds implementations of just Providers API methods
+type providersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *providersPreviewImpl) Create(ctx context.Context, request CreateProvider) (*ProviderInfo, error) {
+func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*ProviderInfo, error) {
 	var providerInfo ProviderInfo
 	path := "/api/2.1preview/unity-catalog/providers"
 	queryParams := make(map[string]any)
@@ -29,7 +29,7 @@ func (a *providersPreviewImpl) Create(ctx context.Context, request CreateProvide
 	return &providerInfo, err
 }
 
-func (a *providersPreviewImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
+func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/providers/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -39,7 +39,7 @@ func (a *providersPreviewImpl) Delete(ctx context.Context, request DeleteProvide
 	return err
 }
 
-func (a *providersPreviewImpl) Get(ctx context.Context, request GetProviderRequest) (*ProviderInfo, error) {
+func (a *providersImpl) Get(ctx context.Context, request GetProviderRequest) (*ProviderInfo, error) {
 	var providerInfo ProviderInfo
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/providers/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -55,7 +55,7 @@ func (a *providersPreviewImpl) Get(ctx context.Context, request GetProviderReque
 // be a metastore admin or the owner of the providers. Providers not owned by
 // the caller are not included in the response. There is no guarantee of a
 // specific ordering of the elements in the array.
-func (a *providersPreviewImpl) List(ctx context.Context, request ListProvidersRequest) listing.Iterator[ProviderInfo] {
+func (a *providersImpl) List(ctx context.Context, request ListProvidersRequest) listing.Iterator[ProviderInfo] {
 
 	getNextPage := func(ctx context.Context, req ListProvidersRequest) (*ListProvidersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -85,11 +85,11 @@ func (a *providersPreviewImpl) List(ctx context.Context, request ListProvidersRe
 // be a metastore admin or the owner of the providers. Providers not owned by
 // the caller are not included in the response. There is no guarantee of a
 // specific ordering of the elements in the array.
-func (a *providersPreviewImpl) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
+func (a *providersImpl) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ProviderInfo](ctx, iterator)
 }
-func (a *providersPreviewImpl) internalList(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
+func (a *providersImpl) internalList(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
 	var listProvidersResponse ListProvidersResponse
 	path := "/api/2.1preview/unity-catalog/providers"
 	queryParams := make(map[string]any)
@@ -104,7 +104,7 @@ func (a *providersPreviewImpl) internalList(ctx context.Context, request ListPro
 // Gets an array of a specified provider's shares within the metastore where:
 //
 // * the caller is a metastore admin, or * the caller is the owner.
-func (a *providersPreviewImpl) ListShares(ctx context.Context, request ListSharesRequest) listing.Iterator[ProviderShare] {
+func (a *providersImpl) ListShares(ctx context.Context, request ListSharesRequest) listing.Iterator[ProviderShare] {
 
 	getNextPage := func(ctx context.Context, req ListSharesRequest) (*ListProviderSharesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -133,11 +133,11 @@ func (a *providersPreviewImpl) ListShares(ctx context.Context, request ListShare
 // Gets an array of a specified provider's shares within the metastore where:
 //
 // * the caller is a metastore admin, or * the caller is the owner.
-func (a *providersPreviewImpl) ListSharesAll(ctx context.Context, request ListSharesRequest) ([]ProviderShare, error) {
+func (a *providersImpl) ListSharesAll(ctx context.Context, request ListSharesRequest) ([]ProviderShare, error) {
 	iterator := a.ListShares(ctx, request)
 	return listing.ToSlice[ProviderShare](ctx, iterator)
 }
-func (a *providersPreviewImpl) internalListShares(ctx context.Context, request ListSharesRequest) (*ListProviderSharesResponse, error) {
+func (a *providersImpl) internalListShares(ctx context.Context, request ListSharesRequest) (*ListProviderSharesResponse, error) {
 	var listProviderSharesResponse ListProviderSharesResponse
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/providers/%v/shares", request.Name)
 	queryParams := make(map[string]any)
@@ -147,7 +147,7 @@ func (a *providersPreviewImpl) internalListShares(ctx context.Context, request L
 	return &listProviderSharesResponse, err
 }
 
-func (a *providersPreviewImpl) Update(ctx context.Context, request UpdateProvider) (*ProviderInfo, error) {
+func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) (*ProviderInfo, error) {
 	var providerInfo ProviderInfo
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/providers/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -158,12 +158,12 @@ func (a *providersPreviewImpl) Update(ctx context.Context, request UpdateProvide
 	return &providerInfo, err
 }
 
-// unexported type that holds implementations of just RecipientActivationPreview API methods
-type recipientActivationPreviewImpl struct {
+// unexported type that holds implementations of just RecipientActivation API methods
+type recipientActivationImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *recipientActivationPreviewImpl) GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error {
+func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error {
 	var getActivationUrlInfoResponse GetActivationUrlInfoResponse
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/public/data_sharing_activation_info/%v", request.ActivationUrl)
 	queryParams := make(map[string]any)
@@ -173,7 +173,7 @@ func (a *recipientActivationPreviewImpl) GetActivationUrlInfo(ctx context.Contex
 	return err
 }
 
-func (a *recipientActivationPreviewImpl) RetrieveToken(ctx context.Context, request RetrieveTokenRequest) (*RetrieveTokenResponse, error) {
+func (a *recipientActivationImpl) RetrieveToken(ctx context.Context, request RetrieveTokenRequest) (*RetrieveTokenResponse, error) {
 	var retrieveTokenResponse RetrieveTokenResponse
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/public/data_sharing_activation/%v", request.ActivationUrl)
 	queryParams := make(map[string]any)
@@ -183,12 +183,12 @@ func (a *recipientActivationPreviewImpl) RetrieveToken(ctx context.Context, requ
 	return &retrieveTokenResponse, err
 }
 
-// unexported type that holds implementations of just RecipientsPreview API methods
-type recipientsPreviewImpl struct {
+// unexported type that holds implementations of just Recipients API methods
+type recipientsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *recipientsPreviewImpl) Create(ctx context.Context, request CreateRecipient) (*RecipientInfo, error) {
+func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*RecipientInfo, error) {
 	var recipientInfo RecipientInfo
 	path := "/api/2.1preview/unity-catalog/recipients"
 	queryParams := make(map[string]any)
@@ -199,7 +199,7 @@ func (a *recipientsPreviewImpl) Create(ctx context.Context, request CreateRecipi
 	return &recipientInfo, err
 }
 
-func (a *recipientsPreviewImpl) Delete(ctx context.Context, request DeleteRecipientRequest) error {
+func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/recipients/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -209,7 +209,7 @@ func (a *recipientsPreviewImpl) Delete(ctx context.Context, request DeleteRecipi
 	return err
 }
 
-func (a *recipientsPreviewImpl) Get(ctx context.Context, request GetRecipientRequest) (*RecipientInfo, error) {
+func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (*RecipientInfo, error) {
 	var recipientInfo RecipientInfo
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/recipients/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -225,7 +225,7 @@ func (a *recipientsPreviewImpl) Get(ctx context.Context, request GetRecipientReq
 //
 // * the caller is a metastore admin, or * the caller is the owner. There is no
 // guarantee of a specific ordering of the elements in the array.
-func (a *recipientsPreviewImpl) List(ctx context.Context, request ListRecipientsRequest) listing.Iterator[RecipientInfo] {
+func (a *recipientsImpl) List(ctx context.Context, request ListRecipientsRequest) listing.Iterator[RecipientInfo] {
 
 	getNextPage := func(ctx context.Context, req ListRecipientsRequest) (*ListRecipientsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -255,11 +255,11 @@ func (a *recipientsPreviewImpl) List(ctx context.Context, request ListRecipients
 //
 // * the caller is a metastore admin, or * the caller is the owner. There is no
 // guarantee of a specific ordering of the elements in the array.
-func (a *recipientsPreviewImpl) ListAll(ctx context.Context, request ListRecipientsRequest) ([]RecipientInfo, error) {
+func (a *recipientsImpl) ListAll(ctx context.Context, request ListRecipientsRequest) ([]RecipientInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[RecipientInfo](ctx, iterator)
 }
-func (a *recipientsPreviewImpl) internalList(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error) {
+func (a *recipientsImpl) internalList(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error) {
 	var listRecipientsResponse ListRecipientsResponse
 	path := "/api/2.1preview/unity-catalog/recipients"
 	queryParams := make(map[string]any)
@@ -269,7 +269,7 @@ func (a *recipientsPreviewImpl) internalList(ctx context.Context, request ListRe
 	return &listRecipientsResponse, err
 }
 
-func (a *recipientsPreviewImpl) RotateToken(ctx context.Context, request RotateRecipientToken) (*RecipientInfo, error) {
+func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipientToken) (*RecipientInfo, error) {
 	var recipientInfo RecipientInfo
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/recipients/%v/rotate-token", request.Name)
 	queryParams := make(map[string]any)
@@ -280,7 +280,7 @@ func (a *recipientsPreviewImpl) RotateToken(ctx context.Context, request RotateR
 	return &recipientInfo, err
 }
 
-func (a *recipientsPreviewImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error) {
+func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error) {
 	var getRecipientSharePermissionsResponse GetRecipientSharePermissionsResponse
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/recipients/%v/share-permissions", request.Name)
 	queryParams := make(map[string]any)
@@ -290,7 +290,7 @@ func (a *recipientsPreviewImpl) SharePermissions(ctx context.Context, request Sh
 	return &getRecipientSharePermissionsResponse, err
 }
 
-func (a *recipientsPreviewImpl) Update(ctx context.Context, request UpdateRecipient) (*RecipientInfo, error) {
+func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) (*RecipientInfo, error) {
 	var recipientInfo RecipientInfo
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/recipients/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -301,12 +301,12 @@ func (a *recipientsPreviewImpl) Update(ctx context.Context, request UpdateRecipi
 	return &recipientInfo, err
 }
 
-// unexported type that holds implementations of just SharesPreview API methods
-type sharesPreviewImpl struct {
+// unexported type that holds implementations of just Shares API methods
+type sharesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *sharesPreviewImpl) Create(ctx context.Context, request CreateShare) (*ShareInfo, error) {
+func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*ShareInfo, error) {
 	var shareInfo ShareInfo
 	path := "/api/2.1preview/unity-catalog/shares"
 	queryParams := make(map[string]any)
@@ -317,7 +317,7 @@ func (a *sharesPreviewImpl) Create(ctx context.Context, request CreateShare) (*S
 	return &shareInfo, err
 }
 
-func (a *sharesPreviewImpl) Delete(ctx context.Context, request DeleteShareRequest) error {
+func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/shares/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -327,7 +327,7 @@ func (a *sharesPreviewImpl) Delete(ctx context.Context, request DeleteShareReque
 	return err
 }
 
-func (a *sharesPreviewImpl) Get(ctx context.Context, request GetShareRequest) (*ShareInfo, error) {
+func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareInfo, error) {
 	var shareInfo ShareInfo
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/shares/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -342,7 +342,7 @@ func (a *sharesPreviewImpl) Get(ctx context.Context, request GetShareRequest) (*
 // Gets an array of data object shares from the metastore. The caller must be a
 // metastore admin or the owner of the share. There is no guarantee of a
 // specific ordering of the elements in the array.
-func (a *sharesPreviewImpl) List(ctx context.Context, request ListSharesRequest) listing.Iterator[ShareInfo] {
+func (a *sharesImpl) List(ctx context.Context, request ListSharesRequest) listing.Iterator[ShareInfo] {
 
 	getNextPage := func(ctx context.Context, req ListSharesRequest) (*ListSharesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -371,11 +371,11 @@ func (a *sharesPreviewImpl) List(ctx context.Context, request ListSharesRequest)
 // Gets an array of data object shares from the metastore. The caller must be a
 // metastore admin or the owner of the share. There is no guarantee of a
 // specific ordering of the elements in the array.
-func (a *sharesPreviewImpl) ListAll(ctx context.Context, request ListSharesRequest) ([]ShareInfo, error) {
+func (a *sharesImpl) ListAll(ctx context.Context, request ListSharesRequest) ([]ShareInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ShareInfo](ctx, iterator)
 }
-func (a *sharesPreviewImpl) internalList(ctx context.Context, request ListSharesRequest) (*ListSharesResponse, error) {
+func (a *sharesImpl) internalList(ctx context.Context, request ListSharesRequest) (*ListSharesResponse, error) {
 	var listSharesResponse ListSharesResponse
 	path := "/api/2.1preview/unity-catalog/shares"
 	queryParams := make(map[string]any)
@@ -385,7 +385,7 @@ func (a *sharesPreviewImpl) internalList(ctx context.Context, request ListShares
 	return &listSharesResponse, err
 }
 
-func (a *sharesPreviewImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*PermissionsList, error) {
+func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*PermissionsList, error) {
 	var permissionsList PermissionsList
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/shares/%v/permissions", request.Name)
 	queryParams := make(map[string]any)
@@ -395,7 +395,7 @@ func (a *sharesPreviewImpl) SharePermissions(ctx context.Context, request ShareP
 	return &permissionsList, err
 }
 
-func (a *sharesPreviewImpl) Update(ctx context.Context, request UpdateShare) (*ShareInfo, error) {
+func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInfo, error) {
 	var shareInfo ShareInfo
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/shares/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -406,7 +406,7 @@ func (a *sharesPreviewImpl) Update(ctx context.Context, request UpdateShare) (*S
 	return &shareInfo, err
 }
 
-func (a *sharesPreviewImpl) UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error {
+func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error {
 	var updatePermissionsResponse UpdatePermissionsResponse
 	path := fmt.Sprintf("/api/2.1preview/unity-catalog/shares/%v/permissions", request.Name)
 	queryParams := make(map[string]any)

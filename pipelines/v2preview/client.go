@@ -10,13 +10,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type PipelinesPreviewClient struct {
-	PipelinesPreviewInterface
+type PipelinesClient struct {
+	PipelinesInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewPipelinesPreviewClient(cfg *config.Config) (*PipelinesPreviewClient, error) {
+func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -37,9 +37,9 @@ func NewPipelinesPreviewClient(cfg *config.Config) (*PipelinesPreviewClient, err
 		return nil, err
 	}
 
-	return &PipelinesPreviewClient{
-		Config:                    cfg,
-		apiClient:                 apiClient,
-		PipelinesPreviewInterface: NewPipelinesPreview(databricksClient),
+	return &PipelinesClient{
+		Config:             cfg,
+		apiClient:          apiClient,
+		PipelinesInterface: NewPipelines(databricksClient),
 	}, nil
 }

@@ -12,12 +12,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-// unexported type that holds implementations of just BillableUsagePreview API methods
-type billableUsagePreviewImpl struct {
+// unexported type that holds implementations of just BillableUsage API methods
+type billableUsageImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *billableUsagePreviewImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
+func (a *billableUsageImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
 	var downloadResponse DownloadResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/usage/download", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -27,12 +27,12 @@ func (a *billableUsagePreviewImpl) Download(ctx context.Context, request Downloa
 	return &downloadResponse, err
 }
 
-// unexported type that holds implementations of just BudgetPolicyPreview API methods
-type budgetPolicyPreviewImpl struct {
+// unexported type that holds implementations of just BudgetPolicy API methods
+type budgetPolicyImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *budgetPolicyPreviewImpl) Create(ctx context.Context, request CreateBudgetPolicyRequest) (*BudgetPolicy, error) {
+func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolicyRequest) (*BudgetPolicy, error) {
 	var budgetPolicy BudgetPolicy
 	path := fmt.Sprintf("/api/2.1preview/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -43,7 +43,7 @@ func (a *budgetPolicyPreviewImpl) Create(ctx context.Context, request CreateBudg
 	return &budgetPolicy, err
 }
 
-func (a *budgetPolicyPreviewImpl) Delete(ctx context.Context, request DeleteBudgetPolicyRequest) error {
+func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolicyRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1preview/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
@@ -53,7 +53,7 @@ func (a *budgetPolicyPreviewImpl) Delete(ctx context.Context, request DeleteBudg
 	return err
 }
 
-func (a *budgetPolicyPreviewImpl) Get(ctx context.Context, request GetBudgetPolicyRequest) (*BudgetPolicy, error) {
+func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyRequest) (*BudgetPolicy, error) {
 	var budgetPolicy BudgetPolicy
 	path := fmt.Sprintf("/api/2.1preview/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
@@ -67,7 +67,7 @@ func (a *budgetPolicyPreviewImpl) Get(ctx context.Context, request GetBudgetPoli
 //
 // Lists all policies. Policies are returned in the alphabetically ascending
 // order of their names.
-func (a *budgetPolicyPreviewImpl) List(ctx context.Context, request ListBudgetPoliciesRequest) listing.Iterator[BudgetPolicy] {
+func (a *budgetPolicyImpl) List(ctx context.Context, request ListBudgetPoliciesRequest) listing.Iterator[BudgetPolicy] {
 
 	getNextPage := func(ctx context.Context, req ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -95,11 +95,11 @@ func (a *budgetPolicyPreviewImpl) List(ctx context.Context, request ListBudgetPo
 //
 // Lists all policies. Policies are returned in the alphabetically ascending
 // order of their names.
-func (a *budgetPolicyPreviewImpl) ListAll(ctx context.Context, request ListBudgetPoliciesRequest) ([]BudgetPolicy, error) {
+func (a *budgetPolicyImpl) ListAll(ctx context.Context, request ListBudgetPoliciesRequest) ([]BudgetPolicy, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[BudgetPolicy](ctx, iterator)
 }
-func (a *budgetPolicyPreviewImpl) internalList(ctx context.Context, request ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error) {
+func (a *budgetPolicyImpl) internalList(ctx context.Context, request ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error) {
 	var listBudgetPoliciesResponse ListBudgetPoliciesResponse
 	path := fmt.Sprintf("/api/2.1preview/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -109,7 +109,7 @@ func (a *budgetPolicyPreviewImpl) internalList(ctx context.Context, request List
 	return &listBudgetPoliciesResponse, err
 }
 
-func (a *budgetPolicyPreviewImpl) Update(ctx context.Context, request UpdateBudgetPolicyRequest) (*BudgetPolicy, error) {
+func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolicyRequest) (*BudgetPolicy, error) {
 	var budgetPolicy BudgetPolicy
 	path := fmt.Sprintf("/api/2.1preview/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
@@ -123,12 +123,12 @@ func (a *budgetPolicyPreviewImpl) Update(ctx context.Context, request UpdateBudg
 	return &budgetPolicy, err
 }
 
-// unexported type that holds implementations of just BudgetsPreview API methods
-type budgetsPreviewImpl struct {
+// unexported type that holds implementations of just Budgets API methods
+type budgetsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *budgetsPreviewImpl) Create(ctx context.Context, request CreateBudgetConfigurationRequest) (*CreateBudgetConfigurationResponse, error) {
+func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurationRequest) (*CreateBudgetConfigurationResponse, error) {
 	var createBudgetConfigurationResponse CreateBudgetConfigurationResponse
 	path := fmt.Sprintf("/api/2.1preview/accounts/%v/budgets", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -139,7 +139,7 @@ func (a *budgetsPreviewImpl) Create(ctx context.Context, request CreateBudgetCon
 	return &createBudgetConfigurationResponse, err
 }
 
-func (a *budgetsPreviewImpl) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error {
+func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error {
 	var deleteBudgetConfigurationResponse DeleteBudgetConfigurationResponse
 	path := fmt.Sprintf("/api/2.1preview/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
@@ -149,7 +149,7 @@ func (a *budgetsPreviewImpl) Delete(ctx context.Context, request DeleteBudgetCon
 	return err
 }
 
-func (a *budgetsPreviewImpl) Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error) {
+func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error) {
 	var getBudgetConfigurationResponse GetBudgetConfigurationResponse
 	path := fmt.Sprintf("/api/2.1preview/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
@@ -162,7 +162,7 @@ func (a *budgetsPreviewImpl) Get(ctx context.Context, request GetBudgetConfigura
 // Get all budgets.
 //
 // Gets all budgets associated with this account.
-func (a *budgetsPreviewImpl) List(ctx context.Context, request ListBudgetConfigurationsRequest) listing.Iterator[BudgetConfiguration] {
+func (a *budgetsImpl) List(ctx context.Context, request ListBudgetConfigurationsRequest) listing.Iterator[BudgetConfiguration] {
 
 	getNextPage := func(ctx context.Context, req ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -189,11 +189,11 @@ func (a *budgetsPreviewImpl) List(ctx context.Context, request ListBudgetConfigu
 // Get all budgets.
 //
 // Gets all budgets associated with this account.
-func (a *budgetsPreviewImpl) ListAll(ctx context.Context, request ListBudgetConfigurationsRequest) ([]BudgetConfiguration, error) {
+func (a *budgetsImpl) ListAll(ctx context.Context, request ListBudgetConfigurationsRequest) ([]BudgetConfiguration, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[BudgetConfiguration](ctx, iterator)
 }
-func (a *budgetsPreviewImpl) internalList(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
+func (a *budgetsImpl) internalList(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
 	var listBudgetConfigurationsResponse ListBudgetConfigurationsResponse
 	path := fmt.Sprintf("/api/2.1preview/accounts/%v/budgets", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -203,7 +203,7 @@ func (a *budgetsPreviewImpl) internalList(ctx context.Context, request ListBudge
 	return &listBudgetConfigurationsResponse, err
 }
 
-func (a *budgetsPreviewImpl) Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error) {
+func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error) {
 	var updateBudgetConfigurationResponse UpdateBudgetConfigurationResponse
 	path := fmt.Sprintf("/api/2.1preview/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
@@ -214,12 +214,12 @@ func (a *budgetsPreviewImpl) Update(ctx context.Context, request UpdateBudgetCon
 	return &updateBudgetConfigurationResponse, err
 }
 
-// unexported type that holds implementations of just LogDeliveryPreview API methods
-type logDeliveryPreviewImpl struct {
+// unexported type that holds implementations of just LogDelivery API methods
+type logDeliveryImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *logDeliveryPreviewImpl) Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {
+func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {
 	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -230,7 +230,7 @@ func (a *logDeliveryPreviewImpl) Create(ctx context.Context, request WrappedCrea
 	return &wrappedLogDeliveryConfiguration, err
 }
 
-func (a *logDeliveryPreviewImpl) Get(ctx context.Context, request GetLogDeliveryRequest) (*WrappedLogDeliveryConfiguration, error) {
+func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest) (*WrappedLogDeliveryConfiguration, error) {
 	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
 	queryParams := make(map[string]any)
@@ -244,7 +244,7 @@ func (a *logDeliveryPreviewImpl) Get(ctx context.Context, request GetLogDelivery
 //
 // Gets all Databricks log delivery configurations associated with an account
 // specified by ID.
-func (a *logDeliveryPreviewImpl) List(ctx context.Context, request ListLogDeliveryRequest) listing.Iterator[LogDeliveryConfiguration] {
+func (a *logDeliveryImpl) List(ctx context.Context, request ListLogDeliveryRequest) listing.Iterator[LogDeliveryConfiguration] {
 
 	getNextPage := func(ctx context.Context, req ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -266,11 +266,11 @@ func (a *logDeliveryPreviewImpl) List(ctx context.Context, request ListLogDelive
 //
 // Gets all Databricks log delivery configurations associated with an account
 // specified by ID.
-func (a *logDeliveryPreviewImpl) ListAll(ctx context.Context, request ListLogDeliveryRequest) ([]LogDeliveryConfiguration, error) {
+func (a *logDeliveryImpl) ListAll(ctx context.Context, request ListLogDeliveryRequest) ([]LogDeliveryConfiguration, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[LogDeliveryConfiguration](ctx, iterator)
 }
-func (a *logDeliveryPreviewImpl) internalList(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
+func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
 	var wrappedLogDeliveryConfigurations WrappedLogDeliveryConfigurations
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -280,7 +280,7 @@ func (a *logDeliveryPreviewImpl) internalList(ctx context.Context, request ListL
 	return &wrappedLogDeliveryConfigurations, err
 }
 
-func (a *logDeliveryPreviewImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
+func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
 	var patchStatusResponse PatchStatusResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
 	queryParams := make(map[string]any)
@@ -291,12 +291,12 @@ func (a *logDeliveryPreviewImpl) PatchStatus(ctx context.Context, request Update
 	return err
 }
 
-// unexported type that holds implementations of just UsageDashboardsPreview API methods
-type usageDashboardsPreviewImpl struct {
+// unexported type that holds implementations of just UsageDashboards API methods
+type usageDashboardsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *usageDashboardsPreviewImpl) Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error) {
+func (a *usageDashboardsImpl) Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error) {
 	var createBillingUsageDashboardResponse CreateBillingUsageDashboardResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/dashboard", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -307,7 +307,7 @@ func (a *usageDashboardsPreviewImpl) Create(ctx context.Context, request CreateB
 	return &createBillingUsageDashboardResponse, err
 }
 
-func (a *usageDashboardsPreviewImpl) Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error) {
+func (a *usageDashboardsImpl) Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error) {
 	var getBillingUsageDashboardResponse GetBillingUsageDashboardResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/dashboard", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)

@@ -10,13 +10,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type ProvidersPreviewClient struct {
-	ProvidersPreviewInterface
+type ProvidersClient struct {
+	ProvidersInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewProvidersPreviewClient(cfg *config.Config) (*ProvidersPreviewClient, error) {
+func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -37,20 +37,20 @@ func NewProvidersPreviewClient(cfg *config.Config) (*ProvidersPreviewClient, err
 		return nil, err
 	}
 
-	return &ProvidersPreviewClient{
-		Config:                    cfg,
-		apiClient:                 apiClient,
-		ProvidersPreviewInterface: NewProvidersPreview(databricksClient),
+	return &ProvidersClient{
+		Config:             cfg,
+		apiClient:          apiClient,
+		ProvidersInterface: NewProviders(databricksClient),
 	}, nil
 }
 
-type RecipientActivationPreviewClient struct {
-	RecipientActivationPreviewInterface
+type RecipientActivationClient struct {
+	RecipientActivationInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewRecipientActivationPreviewClient(cfg *config.Config) (*RecipientActivationPreviewClient, error) {
+func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -71,20 +71,20 @@ func NewRecipientActivationPreviewClient(cfg *config.Config) (*RecipientActivati
 		return nil, err
 	}
 
-	return &RecipientActivationPreviewClient{
-		Config:                              cfg,
-		apiClient:                           apiClient,
-		RecipientActivationPreviewInterface: NewRecipientActivationPreview(databricksClient),
+	return &RecipientActivationClient{
+		Config:                       cfg,
+		apiClient:                    apiClient,
+		RecipientActivationInterface: NewRecipientActivation(databricksClient),
 	}, nil
 }
 
-type RecipientsPreviewClient struct {
-	RecipientsPreviewInterface
+type RecipientsClient struct {
+	RecipientsInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewRecipientsPreviewClient(cfg *config.Config) (*RecipientsPreviewClient, error) {
+func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -105,20 +105,20 @@ func NewRecipientsPreviewClient(cfg *config.Config) (*RecipientsPreviewClient, e
 		return nil, err
 	}
 
-	return &RecipientsPreviewClient{
-		Config:                     cfg,
-		apiClient:                  apiClient,
-		RecipientsPreviewInterface: NewRecipientsPreview(databricksClient),
+	return &RecipientsClient{
+		Config:              cfg,
+		apiClient:           apiClient,
+		RecipientsInterface: NewRecipients(databricksClient),
 	}, nil
 }
 
-type SharesPreviewClient struct {
-	SharesPreviewInterface
+type SharesClient struct {
+	SharesInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewSharesPreviewClient(cfg *config.Config) (*SharesPreviewClient, error) {
+func NewSharesClient(cfg *config.Config) (*SharesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -139,9 +139,9 @@ func NewSharesPreviewClient(cfg *config.Config) (*SharesPreviewClient, error) {
 		return nil, err
 	}
 
-	return &SharesPreviewClient{
-		Config:                 cfg,
-		apiClient:              apiClient,
-		SharesPreviewInterface: NewSharesPreview(databricksClient),
+	return &SharesClient{
+		Config:          cfg,
+		apiClient:       apiClient,
+		SharesInterface: NewShares(databricksClient),
 	}, nil
 }

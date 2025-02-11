@@ -12,12 +12,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-// unexported type that holds implementations of just AccessControlPreview API methods
-type accessControlPreviewImpl struct {
+// unexported type that holds implementations of just AccessControl API methods
+type accessControlImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accessControlPreviewImpl) CheckPolicy(ctx context.Context, request CheckPolicyRequest) (*CheckPolicyResponse, error) {
+func (a *accessControlImpl) CheckPolicy(ctx context.Context, request CheckPolicyRequest) (*CheckPolicyResponse, error) {
 	var checkPolicyResponse CheckPolicyResponse
 	path := "/api/2.0preview/access-control/check-policy-v2"
 	queryParams := make(map[string]any)
@@ -27,12 +27,12 @@ func (a *accessControlPreviewImpl) CheckPolicy(ctx context.Context, request Chec
 	return &checkPolicyResponse, err
 }
 
-// unexported type that holds implementations of just AccountAccessControlPreview API methods
-type accountAccessControlPreviewImpl struct {
+// unexported type that holds implementations of just AccountAccessControl API methods
+type accountAccessControlImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountAccessControlPreviewImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
+func (a *accountAccessControlImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
 	var getAssignableRolesForResourceResponse GetAssignableRolesForResourceResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/accounts/%v/access-control/assignable-roles", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -42,7 +42,7 @@ func (a *accountAccessControlPreviewImpl) GetAssignableRolesForResource(ctx cont
 	return &getAssignableRolesForResourceResponse, err
 }
 
-func (a *accountAccessControlPreviewImpl) GetRuleSet(ctx context.Context, request GetRuleSetRequest) (*RuleSetResponse, error) {
+func (a *accountAccessControlImpl) GetRuleSet(ctx context.Context, request GetRuleSetRequest) (*RuleSetResponse, error) {
 	var ruleSetResponse RuleSetResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -52,7 +52,7 @@ func (a *accountAccessControlPreviewImpl) GetRuleSet(ctx context.Context, reques
 	return &ruleSetResponse, err
 }
 
-func (a *accountAccessControlPreviewImpl) UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
+func (a *accountAccessControlImpl) UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
 	var ruleSetResponse RuleSetResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -63,12 +63,12 @@ func (a *accountAccessControlPreviewImpl) UpdateRuleSet(ctx context.Context, req
 	return &ruleSetResponse, err
 }
 
-// unexported type that holds implementations of just AccountAccessControlProxyPreview API methods
-type accountAccessControlProxyPreviewImpl struct {
+// unexported type that holds implementations of just AccountAccessControlProxy API methods
+type accountAccessControlProxyImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountAccessControlProxyPreviewImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
+func (a *accountAccessControlProxyImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
 	var getAssignableRolesForResourceResponse GetAssignableRolesForResourceResponse
 	path := "/api/2.0preview/preview/accounts/access-control/assignable-roles"
 	queryParams := make(map[string]any)
@@ -78,7 +78,7 @@ func (a *accountAccessControlProxyPreviewImpl) GetAssignableRolesForResource(ctx
 	return &getAssignableRolesForResourceResponse, err
 }
 
-func (a *accountAccessControlProxyPreviewImpl) GetRuleSet(ctx context.Context, request GetRuleSetRequest) (*RuleSetResponse, error) {
+func (a *accountAccessControlProxyImpl) GetRuleSet(ctx context.Context, request GetRuleSetRequest) (*RuleSetResponse, error) {
 	var ruleSetResponse RuleSetResponse
 	path := "/api/2.0preview/preview/accounts/access-control/rule-sets"
 	queryParams := make(map[string]any)
@@ -88,7 +88,7 @@ func (a *accountAccessControlProxyPreviewImpl) GetRuleSet(ctx context.Context, r
 	return &ruleSetResponse, err
 }
 
-func (a *accountAccessControlProxyPreviewImpl) UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
+func (a *accountAccessControlProxyImpl) UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
 	var ruleSetResponse RuleSetResponse
 	path := "/api/2.0preview/preview/accounts/access-control/rule-sets"
 	queryParams := make(map[string]any)
@@ -99,12 +99,12 @@ func (a *accountAccessControlProxyPreviewImpl) UpdateRuleSet(ctx context.Context
 	return &ruleSetResponse, err
 }
 
-// unexported type that holds implementations of just AccountGroupsPreview API methods
-type accountGroupsPreviewImpl struct {
+// unexported type that holds implementations of just AccountGroups API methods
+type accountGroupsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountGroupsPreviewImpl) Create(ctx context.Context, request Group) (*Group, error) {
+func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
 	var group Group
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -115,7 +115,7 @@ func (a *accountGroupsPreviewImpl) Create(ctx context.Context, request Group) (*
 	return &group, err
 }
 
-func (a *accountGroupsPreviewImpl) Delete(ctx context.Context, request DeleteAccountGroupRequest) error {
+func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteAccountGroupRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -124,7 +124,7 @@ func (a *accountGroupsPreviewImpl) Delete(ctx context.Context, request DeleteAcc
 	return err
 }
 
-func (a *accountGroupsPreviewImpl) Get(ctx context.Context, request GetAccountGroupRequest) (*Group, error) {
+func (a *accountGroupsImpl) Get(ctx context.Context, request GetAccountGroupRequest) (*Group, error) {
 	var group Group
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -137,7 +137,7 @@ func (a *accountGroupsPreviewImpl) Get(ctx context.Context, request GetAccountGr
 // List group details.
 //
 // Gets all details of the groups associated with the Databricks account.
-func (a *accountGroupsPreviewImpl) List(ctx context.Context, request ListAccountGroupsRequest) listing.Iterator[Group] {
+func (a *accountGroupsImpl) List(ctx context.Context, request ListAccountGroupsRequest) listing.Iterator[Group] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
@@ -173,12 +173,12 @@ func (a *accountGroupsPreviewImpl) List(ctx context.Context, request ListAccount
 // List group details.
 //
 // Gets all details of the groups associated with the Databricks account.
-func (a *accountGroupsPreviewImpl) ListAll(ctx context.Context, request ListAccountGroupsRequest) ([]Group, error) {
+func (a *accountGroupsImpl) ListAll(ctx context.Context, request ListAccountGroupsRequest) ([]Group, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[Group, int64](ctx, iterator, request.Count)
 
 }
-func (a *accountGroupsPreviewImpl) internalList(ctx context.Context, request ListAccountGroupsRequest) (*ListGroupsResponse, error) {
+func (a *accountGroupsImpl) internalList(ctx context.Context, request ListAccountGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -188,7 +188,7 @@ func (a *accountGroupsPreviewImpl) internalList(ctx context.Context, request Lis
 	return &listGroupsResponse, err
 }
 
-func (a *accountGroupsPreviewImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -199,7 +199,7 @@ func (a *accountGroupsPreviewImpl) Patch(ctx context.Context, request PartialUpd
 	return err
 }
 
-func (a *accountGroupsPreviewImpl) Update(ctx context.Context, request Group) error {
+func (a *accountGroupsImpl) Update(ctx context.Context, request Group) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -210,12 +210,12 @@ func (a *accountGroupsPreviewImpl) Update(ctx context.Context, request Group) er
 	return err
 }
 
-// unexported type that holds implementations of just AccountServicePrincipalsPreview API methods
-type accountServicePrincipalsPreviewImpl struct {
+// unexported type that holds implementations of just AccountServicePrincipals API methods
+type accountServicePrincipalsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountServicePrincipalsPreviewImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
+func (a *accountServicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -226,7 +226,7 @@ func (a *accountServicePrincipalsPreviewImpl) Create(ctx context.Context, reques
 	return &servicePrincipal, err
 }
 
-func (a *accountServicePrincipalsPreviewImpl) Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error {
+func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -235,7 +235,7 @@ func (a *accountServicePrincipalsPreviewImpl) Delete(ctx context.Context, reques
 	return err
 }
 
-func (a *accountServicePrincipalsPreviewImpl) Get(ctx context.Context, request GetAccountServicePrincipalRequest) (*ServicePrincipal, error) {
+func (a *accountServicePrincipalsImpl) Get(ctx context.Context, request GetAccountServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -248,7 +248,7 @@ func (a *accountServicePrincipalsPreviewImpl) Get(ctx context.Context, request G
 // List service principals.
 //
 // Gets the set of service principals associated with a Databricks account.
-func (a *accountServicePrincipalsPreviewImpl) List(ctx context.Context, request ListAccountServicePrincipalsRequest) listing.Iterator[ServicePrincipal] {
+func (a *accountServicePrincipalsImpl) List(ctx context.Context, request ListAccountServicePrincipalsRequest) listing.Iterator[ServicePrincipal] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
@@ -284,12 +284,12 @@ func (a *accountServicePrincipalsPreviewImpl) List(ctx context.Context, request 
 // List service principals.
 //
 // Gets the set of service principals associated with a Databricks account.
-func (a *accountServicePrincipalsPreviewImpl) ListAll(ctx context.Context, request ListAccountServicePrincipalsRequest) ([]ServicePrincipal, error) {
+func (a *accountServicePrincipalsImpl) ListAll(ctx context.Context, request ListAccountServicePrincipalsRequest) ([]ServicePrincipal, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[ServicePrincipal, int64](ctx, iterator, request.Count)
 
 }
-func (a *accountServicePrincipalsPreviewImpl) internalList(ctx context.Context, request ListAccountServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
+func (a *accountServicePrincipalsImpl) internalList(ctx context.Context, request ListAccountServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 	var listServicePrincipalResponse ListServicePrincipalResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -299,7 +299,7 @@ func (a *accountServicePrincipalsPreviewImpl) internalList(ctx context.Context, 
 	return &listServicePrincipalResponse, err
 }
 
-func (a *accountServicePrincipalsPreviewImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *accountServicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -310,7 +310,7 @@ func (a *accountServicePrincipalsPreviewImpl) Patch(ctx context.Context, request
 	return err
 }
 
-func (a *accountServicePrincipalsPreviewImpl) Update(ctx context.Context, request ServicePrincipal) error {
+func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -321,12 +321,12 @@ func (a *accountServicePrincipalsPreviewImpl) Update(ctx context.Context, reques
 	return err
 }
 
-// unexported type that holds implementations of just AccountUsersPreview API methods
-type accountUsersPreviewImpl struct {
+// unexported type that holds implementations of just AccountUsers API methods
+type accountUsersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountUsersPreviewImpl) Create(ctx context.Context, request User) (*User, error) {
+func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, error) {
 	var user User
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -337,7 +337,7 @@ func (a *accountUsersPreviewImpl) Create(ctx context.Context, request User) (*Us
 	return &user, err
 }
 
-func (a *accountUsersPreviewImpl) Delete(ctx context.Context, request DeleteAccountUserRequest) error {
+func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteAccountUserRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -346,7 +346,7 @@ func (a *accountUsersPreviewImpl) Delete(ctx context.Context, request DeleteAcco
 	return err
 }
 
-func (a *accountUsersPreviewImpl) Get(ctx context.Context, request GetAccountUserRequest) (*User, error) {
+func (a *accountUsersImpl) Get(ctx context.Context, request GetAccountUserRequest) (*User, error) {
 	var user User
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -359,7 +359,7 @@ func (a *accountUsersPreviewImpl) Get(ctx context.Context, request GetAccountUse
 // List users.
 //
 // Gets details for all the users associated with a Databricks account.
-func (a *accountUsersPreviewImpl) List(ctx context.Context, request ListAccountUsersRequest) listing.Iterator[User] {
+func (a *accountUsersImpl) List(ctx context.Context, request ListAccountUsersRequest) listing.Iterator[User] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
@@ -395,12 +395,12 @@ func (a *accountUsersPreviewImpl) List(ctx context.Context, request ListAccountU
 // List users.
 //
 // Gets details for all the users associated with a Databricks account.
-func (a *accountUsersPreviewImpl) ListAll(ctx context.Context, request ListAccountUsersRequest) ([]User, error) {
+func (a *accountUsersImpl) ListAll(ctx context.Context, request ListAccountUsersRequest) ([]User, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[User, int64](ctx, iterator, request.Count)
 
 }
-func (a *accountUsersPreviewImpl) internalList(ctx context.Context, request ListAccountUsersRequest) (*ListUsersResponse, error) {
+func (a *accountUsersImpl) internalList(ctx context.Context, request ListAccountUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -410,7 +410,7 @@ func (a *accountUsersPreviewImpl) internalList(ctx context.Context, request List
 	return &listUsersResponse, err
 }
 
-func (a *accountUsersPreviewImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *accountUsersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -421,7 +421,7 @@ func (a *accountUsersPreviewImpl) Patch(ctx context.Context, request PartialUpda
 	return err
 }
 
-func (a *accountUsersPreviewImpl) Update(ctx context.Context, request User) error {
+func (a *accountUsersImpl) Update(ctx context.Context, request User) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
@@ -432,12 +432,12 @@ func (a *accountUsersPreviewImpl) Update(ctx context.Context, request User) erro
 	return err
 }
 
-// unexported type that holds implementations of just CurrentUserPreview API methods
-type currentUserPreviewImpl struct {
+// unexported type that holds implementations of just CurrentUser API methods
+type currentUserImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *currentUserPreviewImpl) Me(ctx context.Context) (*User, error) {
+func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
 	var user User
 	path := "/api/2.0preview/preview/scim/v2/Me"
 
@@ -447,12 +447,12 @@ func (a *currentUserPreviewImpl) Me(ctx context.Context) (*User, error) {
 	return &user, err
 }
 
-// unexported type that holds implementations of just GroupsPreview API methods
-type groupsPreviewImpl struct {
+// unexported type that holds implementations of just Groups API methods
+type groupsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *groupsPreviewImpl) Create(ctx context.Context, request Group) (*Group, error) {
+func (a *groupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
 	var group Group
 	path := "/api/2.0preview/preview/scim/v2/Groups"
 	queryParams := make(map[string]any)
@@ -463,7 +463,7 @@ func (a *groupsPreviewImpl) Create(ctx context.Context, request Group) (*Group, 
 	return &group, err
 }
 
-func (a *groupsPreviewImpl) Delete(ctx context.Context, request DeleteGroupRequest) error {
+func (a *groupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -472,7 +472,7 @@ func (a *groupsPreviewImpl) Delete(ctx context.Context, request DeleteGroupReque
 	return err
 }
 
-func (a *groupsPreviewImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, error) {
+func (a *groupsImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	var group Group
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -485,7 +485,7 @@ func (a *groupsPreviewImpl) Get(ctx context.Context, request GetGroupRequest) (*
 // List group details.
 //
 // Gets all details of the groups associated with the Databricks workspace.
-func (a *groupsPreviewImpl) List(ctx context.Context, request ListGroupsRequest) listing.Iterator[Group] {
+func (a *groupsImpl) List(ctx context.Context, request ListGroupsRequest) listing.Iterator[Group] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
@@ -521,12 +521,12 @@ func (a *groupsPreviewImpl) List(ctx context.Context, request ListGroupsRequest)
 // List group details.
 //
 // Gets all details of the groups associated with the Databricks workspace.
-func (a *groupsPreviewImpl) ListAll(ctx context.Context, request ListGroupsRequest) ([]Group, error) {
+func (a *groupsImpl) ListAll(ctx context.Context, request ListGroupsRequest) ([]Group, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[Group, int64](ctx, iterator, request.Count)
 
 }
-func (a *groupsPreviewImpl) internalList(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
+func (a *groupsImpl) internalList(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
 	path := "/api/2.0preview/preview/scim/v2/Groups"
 	queryParams := make(map[string]any)
@@ -536,7 +536,7 @@ func (a *groupsPreviewImpl) internalList(ctx context.Context, request ListGroups
 	return &listGroupsResponse, err
 }
 
-func (a *groupsPreviewImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *groupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -547,7 +547,7 @@ func (a *groupsPreviewImpl) Patch(ctx context.Context, request PartialUpdate) er
 	return err
 }
 
-func (a *groupsPreviewImpl) Update(ctx context.Context, request Group) error {
+func (a *groupsImpl) Update(ctx context.Context, request Group) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -558,12 +558,12 @@ func (a *groupsPreviewImpl) Update(ctx context.Context, request Group) error {
 	return err
 }
 
-// unexported type that holds implementations of just PermissionMigrationPreview API methods
-type permissionMigrationPreviewImpl struct {
+// unexported type that holds implementations of just PermissionMigration API methods
+type permissionMigrationImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *permissionMigrationPreviewImpl) MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error) {
+func (a *permissionMigrationImpl) MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error) {
 	var migratePermissionsResponse MigratePermissionsResponse
 	path := "/api/2.0preview/permissionmigration"
 	queryParams := make(map[string]any)
@@ -574,12 +574,12 @@ func (a *permissionMigrationPreviewImpl) MigratePermissions(ctx context.Context,
 	return &migratePermissionsResponse, err
 }
 
-// unexported type that holds implementations of just PermissionsPreview API methods
-type permissionsPreviewImpl struct {
+// unexported type that holds implementations of just Permissions API methods
+type permissionsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *permissionsPreviewImpl) Get(ctx context.Context, request GetPermissionRequest) (*ObjectPermissions, error) {
+func (a *permissionsImpl) Get(ctx context.Context, request GetPermissionRequest) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	queryParams := make(map[string]any)
@@ -589,7 +589,7 @@ func (a *permissionsPreviewImpl) Get(ctx context.Context, request GetPermissionR
 	return &objectPermissions, err
 }
 
-func (a *permissionsPreviewImpl) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
+func (a *permissionsImpl) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
 	var getPermissionLevelsResponse GetPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0preview/permissions/%v/%v/permissionLevels", request.RequestObjectType, request.RequestObjectId)
 	queryParams := make(map[string]any)
@@ -599,7 +599,7 @@ func (a *permissionsPreviewImpl) GetPermissionLevels(ctx context.Context, reques
 	return &getPermissionLevelsResponse, err
 }
 
-func (a *permissionsPreviewImpl) Set(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
+func (a *permissionsImpl) Set(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	queryParams := make(map[string]any)
@@ -610,7 +610,7 @@ func (a *permissionsPreviewImpl) Set(ctx context.Context, request PermissionsReq
 	return &objectPermissions, err
 }
 
-func (a *permissionsPreviewImpl) Update(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
+func (a *permissionsImpl) Update(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	queryParams := make(map[string]any)
@@ -621,12 +621,12 @@ func (a *permissionsPreviewImpl) Update(ctx context.Context, request Permissions
 	return &objectPermissions, err
 }
 
-// unexported type that holds implementations of just ServicePrincipalsPreview API methods
-type servicePrincipalsPreviewImpl struct {
+// unexported type that holds implementations of just ServicePrincipals API methods
+type servicePrincipalsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *servicePrincipalsPreviewImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
+func (a *servicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := "/api/2.0preview/preview/scim/v2/ServicePrincipals"
 	queryParams := make(map[string]any)
@@ -637,7 +637,7 @@ func (a *servicePrincipalsPreviewImpl) Create(ctx context.Context, request Servi
 	return &servicePrincipal, err
 }
 
-func (a *servicePrincipalsPreviewImpl) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
+func (a *servicePrincipalsImpl) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -646,7 +646,7 @@ func (a *servicePrincipalsPreviewImpl) Delete(ctx context.Context, request Delet
 	return err
 }
 
-func (a *servicePrincipalsPreviewImpl) Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
+func (a *servicePrincipalsImpl) Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -659,7 +659,7 @@ func (a *servicePrincipalsPreviewImpl) Get(ctx context.Context, request GetServi
 // List service principals.
 //
 // Gets the set of service principals associated with a Databricks workspace.
-func (a *servicePrincipalsPreviewImpl) List(ctx context.Context, request ListServicePrincipalsRequest) listing.Iterator[ServicePrincipal] {
+func (a *servicePrincipalsImpl) List(ctx context.Context, request ListServicePrincipalsRequest) listing.Iterator[ServicePrincipal] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
@@ -695,12 +695,12 @@ func (a *servicePrincipalsPreviewImpl) List(ctx context.Context, request ListSer
 // List service principals.
 //
 // Gets the set of service principals associated with a Databricks workspace.
-func (a *servicePrincipalsPreviewImpl) ListAll(ctx context.Context, request ListServicePrincipalsRequest) ([]ServicePrincipal, error) {
+func (a *servicePrincipalsImpl) ListAll(ctx context.Context, request ListServicePrincipalsRequest) ([]ServicePrincipal, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[ServicePrincipal, int64](ctx, iterator, request.Count)
 
 }
-func (a *servicePrincipalsPreviewImpl) internalList(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
+func (a *servicePrincipalsImpl) internalList(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 	var listServicePrincipalResponse ListServicePrincipalResponse
 	path := "/api/2.0preview/preview/scim/v2/ServicePrincipals"
 	queryParams := make(map[string]any)
@@ -710,7 +710,7 @@ func (a *servicePrincipalsPreviewImpl) internalList(ctx context.Context, request
 	return &listServicePrincipalResponse, err
 }
 
-func (a *servicePrincipalsPreviewImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -721,7 +721,7 @@ func (a *servicePrincipalsPreviewImpl) Patch(ctx context.Context, request Partia
 	return err
 }
 
-func (a *servicePrincipalsPreviewImpl) Update(ctx context.Context, request ServicePrincipal) error {
+func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -732,12 +732,12 @@ func (a *servicePrincipalsPreviewImpl) Update(ctx context.Context, request Servi
 	return err
 }
 
-// unexported type that holds implementations of just UsersPreview API methods
-type usersPreviewImpl struct {
+// unexported type that holds implementations of just Users API methods
+type usersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *usersPreviewImpl) Create(ctx context.Context, request User) (*User, error) {
+func (a *usersImpl) Create(ctx context.Context, request User) (*User, error) {
 	var user User
 	path := "/api/2.0preview/preview/scim/v2/Users"
 	queryParams := make(map[string]any)
@@ -748,7 +748,7 @@ func (a *usersPreviewImpl) Create(ctx context.Context, request User) (*User, err
 	return &user, err
 }
 
-func (a *usersPreviewImpl) Delete(ctx context.Context, request DeleteUserRequest) error {
+func (a *usersImpl) Delete(ctx context.Context, request DeleteUserRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -757,7 +757,7 @@ func (a *usersPreviewImpl) Delete(ctx context.Context, request DeleteUserRequest
 	return err
 }
 
-func (a *usersPreviewImpl) Get(ctx context.Context, request GetUserRequest) (*User, error) {
+func (a *usersImpl) Get(ctx context.Context, request GetUserRequest) (*User, error) {
 	var user User
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -767,7 +767,7 @@ func (a *usersPreviewImpl) Get(ctx context.Context, request GetUserRequest) (*Us
 	return &user, err
 }
 
-func (a *usersPreviewImpl) GetPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error) {
+func (a *usersImpl) GetPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error) {
 	var getPasswordPermissionLevelsResponse GetPasswordPermissionLevelsResponse
 	path := "/api/2.0preview/permissions/authorization/passwords/permissionLevels"
 
@@ -777,7 +777,7 @@ func (a *usersPreviewImpl) GetPermissionLevels(ctx context.Context) (*GetPasswor
 	return &getPasswordPermissionLevelsResponse, err
 }
 
-func (a *usersPreviewImpl) GetPermissions(ctx context.Context) (*PasswordPermissions, error) {
+func (a *usersImpl) GetPermissions(ctx context.Context) (*PasswordPermissions, error) {
 	var passwordPermissions PasswordPermissions
 	path := "/api/2.0preview/permissions/authorization/passwords"
 
@@ -790,7 +790,7 @@ func (a *usersPreviewImpl) GetPermissions(ctx context.Context) (*PasswordPermiss
 // List users.
 //
 // Gets details for all the users associated with a Databricks workspace.
-func (a *usersPreviewImpl) List(ctx context.Context, request ListUsersRequest) listing.Iterator[User] {
+func (a *usersImpl) List(ctx context.Context, request ListUsersRequest) listing.Iterator[User] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
@@ -826,12 +826,12 @@ func (a *usersPreviewImpl) List(ctx context.Context, request ListUsersRequest) l
 // List users.
 //
 // Gets details for all the users associated with a Databricks workspace.
-func (a *usersPreviewImpl) ListAll(ctx context.Context, request ListUsersRequest) ([]User, error) {
+func (a *usersImpl) ListAll(ctx context.Context, request ListUsersRequest) ([]User, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[User, int64](ctx, iterator, request.Count)
 
 }
-func (a *usersPreviewImpl) internalList(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
+func (a *usersImpl) internalList(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
 	path := "/api/2.0preview/preview/scim/v2/Users"
 	queryParams := make(map[string]any)
@@ -841,7 +841,7 @@ func (a *usersPreviewImpl) internalList(ctx context.Context, request ListUsersRe
 	return &listUsersResponse, err
 }
 
-func (a *usersPreviewImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -852,7 +852,7 @@ func (a *usersPreviewImpl) Patch(ctx context.Context, request PartialUpdate) err
 	return err
 }
 
-func (a *usersPreviewImpl) SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+func (a *usersImpl) SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
 	var passwordPermissions PasswordPermissions
 	path := "/api/2.0preview/permissions/authorization/passwords"
 	queryParams := make(map[string]any)
@@ -863,7 +863,7 @@ func (a *usersPreviewImpl) SetPermissions(ctx context.Context, request PasswordP
 	return &passwordPermissions, err
 }
 
-func (a *usersPreviewImpl) Update(ctx context.Context, request User) error {
+func (a *usersImpl) Update(ctx context.Context, request User) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0preview/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -874,7 +874,7 @@ func (a *usersPreviewImpl) Update(ctx context.Context, request User) error {
 	return err
 }
 
-func (a *usersPreviewImpl) UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+func (a *usersImpl) UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
 	var passwordPermissions PasswordPermissions
 	path := "/api/2.0preview/permissions/authorization/passwords"
 	queryParams := make(map[string]any)
@@ -885,12 +885,12 @@ func (a *usersPreviewImpl) UpdatePermissions(ctx context.Context, request Passwo
 	return &passwordPermissions, err
 }
 
-// unexported type that holds implementations of just WorkspaceAssignmentPreview API methods
-type workspaceAssignmentPreviewImpl struct {
+// unexported type that holds implementations of just WorkspaceAssignment API methods
+type workspaceAssignmentImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *workspaceAssignmentPreviewImpl) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
+func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
 	var deleteWorkspacePermissionAssignmentResponse DeleteWorkspacePermissionAssignmentResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
@@ -900,7 +900,7 @@ func (a *workspaceAssignmentPreviewImpl) Delete(ctx context.Context, request Del
 	return err
 }
 
-func (a *workspaceAssignmentPreviewImpl) Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error) {
+func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error) {
 	var workspacePermissions WorkspacePermissions
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/workspaces/%v/permissionassignments/permissions", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
@@ -914,7 +914,7 @@ func (a *workspaceAssignmentPreviewImpl) Get(ctx context.Context, request GetWor
 //
 // Get the permission assignments for the specified Databricks account and
 // Databricks workspace.
-func (a *workspaceAssignmentPreviewImpl) List(ctx context.Context, request ListWorkspaceAssignmentRequest) listing.Iterator[PermissionAssignment] {
+func (a *workspaceAssignmentImpl) List(ctx context.Context, request ListWorkspaceAssignmentRequest) listing.Iterator[PermissionAssignment] {
 
 	getNextPage := func(ctx context.Context, req ListWorkspaceAssignmentRequest) (*PermissionAssignments, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -936,11 +936,11 @@ func (a *workspaceAssignmentPreviewImpl) List(ctx context.Context, request ListW
 //
 // Get the permission assignments for the specified Databricks account and
 // Databricks workspace.
-func (a *workspaceAssignmentPreviewImpl) ListAll(ctx context.Context, request ListWorkspaceAssignmentRequest) ([]PermissionAssignment, error) {
+func (a *workspaceAssignmentImpl) ListAll(ctx context.Context, request ListWorkspaceAssignmentRequest) ([]PermissionAssignment, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[PermissionAssignment](ctx, iterator)
 }
-func (a *workspaceAssignmentPreviewImpl) internalList(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error) {
+func (a *workspaceAssignmentImpl) internalList(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error) {
 	var permissionAssignments PermissionAssignments
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/workspaces/%v/permissionassignments", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
@@ -950,7 +950,7 @@ func (a *workspaceAssignmentPreviewImpl) internalList(ctx context.Context, reque
 	return &permissionAssignments, err
 }
 
-func (a *workspaceAssignmentPreviewImpl) Update(ctx context.Context, request UpdateWorkspaceAssignments) (*PermissionAssignment, error) {
+func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWorkspaceAssignments) (*PermissionAssignment, error) {
 	var permissionAssignment PermissionAssignment
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)

@@ -13,12 +13,12 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// unexported type that holds implementations of just AccountFederationPolicyPreview API methods
-type accountFederationPolicyPreviewImpl struct {
+// unexported type that holds implementations of just AccountFederationPolicy API methods
+type accountFederationPolicyImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountFederationPolicyPreviewImpl) Create(ctx context.Context, request CreateAccountFederationPolicyRequest) (*FederationPolicy, error) {
+func (a *accountFederationPolicyImpl) Create(ctx context.Context, request CreateAccountFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/federationPolicies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -32,7 +32,7 @@ func (a *accountFederationPolicyPreviewImpl) Create(ctx context.Context, request
 	return &federationPolicy, err
 }
 
-func (a *accountFederationPolicyPreviewImpl) Delete(ctx context.Context, request DeleteAccountFederationPolicyRequest) error {
+func (a *accountFederationPolicyImpl) Delete(ctx context.Context, request DeleteAccountFederationPolicyRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
@@ -42,7 +42,7 @@ func (a *accountFederationPolicyPreviewImpl) Delete(ctx context.Context, request
 	return err
 }
 
-func (a *accountFederationPolicyPreviewImpl) Get(ctx context.Context, request GetAccountFederationPolicyRequest) (*FederationPolicy, error) {
+func (a *accountFederationPolicyImpl) Get(ctx context.Context, request GetAccountFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
@@ -53,7 +53,7 @@ func (a *accountFederationPolicyPreviewImpl) Get(ctx context.Context, request Ge
 }
 
 // List account federation policies.
-func (a *accountFederationPolicyPreviewImpl) List(ctx context.Context, request ListAccountFederationPoliciesRequest) listing.Iterator[FederationPolicy] {
+func (a *accountFederationPolicyImpl) List(ctx context.Context, request ListAccountFederationPoliciesRequest) listing.Iterator[FederationPolicy] {
 
 	getNextPage := func(ctx context.Context, req ListAccountFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -78,11 +78,11 @@ func (a *accountFederationPolicyPreviewImpl) List(ctx context.Context, request L
 }
 
 // List account federation policies.
-func (a *accountFederationPolicyPreviewImpl) ListAll(ctx context.Context, request ListAccountFederationPoliciesRequest) ([]FederationPolicy, error) {
+func (a *accountFederationPolicyImpl) ListAll(ctx context.Context, request ListAccountFederationPoliciesRequest) ([]FederationPolicy, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[FederationPolicy](ctx, iterator)
 }
-func (a *accountFederationPolicyPreviewImpl) internalList(ctx context.Context, request ListAccountFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
+func (a *accountFederationPolicyImpl) internalList(ctx context.Context, request ListAccountFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
 	var listFederationPoliciesResponse ListFederationPoliciesResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/federationPolicies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -92,7 +92,7 @@ func (a *accountFederationPolicyPreviewImpl) internalList(ctx context.Context, r
 	return &listFederationPoliciesResponse, err
 }
 
-func (a *accountFederationPolicyPreviewImpl) Update(ctx context.Context, request UpdateAccountFederationPolicyRequest) (*FederationPolicy, error) {
+func (a *accountFederationPolicyImpl) Update(ctx context.Context, request UpdateAccountFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
@@ -106,12 +106,12 @@ func (a *accountFederationPolicyPreviewImpl) Update(ctx context.Context, request
 	return &federationPolicy, err
 }
 
-// unexported type that holds implementations of just CustomAppIntegrationPreview API methods
-type customAppIntegrationPreviewImpl struct {
+// unexported type that holds implementations of just CustomAppIntegration API methods
+type customAppIntegrationImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *customAppIntegrationPreviewImpl) Create(ctx context.Context, request CreateCustomAppIntegration) (*CreateCustomAppIntegrationOutput, error) {
+func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCustomAppIntegration) (*CreateCustomAppIntegrationOutput, error) {
 	var createCustomAppIntegrationOutput CreateCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/oauth2/custom-app-integrations", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -122,7 +122,7 @@ func (a *customAppIntegrationPreviewImpl) Create(ctx context.Context, request Cr
 	return &createCustomAppIntegrationOutput, err
 }
 
-func (a *customAppIntegrationPreviewImpl) Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error {
+func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error {
 	var deleteCustomAppIntegrationOutput DeleteCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
@@ -132,7 +132,7 @@ func (a *customAppIntegrationPreviewImpl) Delete(ctx context.Context, request De
 	return err
 }
 
-func (a *customAppIntegrationPreviewImpl) Get(ctx context.Context, request GetCustomAppIntegrationRequest) (*GetCustomAppIntegrationOutput, error) {
+func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomAppIntegrationRequest) (*GetCustomAppIntegrationOutput, error) {
 	var getCustomAppIntegrationOutput GetCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
@@ -146,7 +146,7 @@ func (a *customAppIntegrationPreviewImpl) Get(ctx context.Context, request GetCu
 //
 // Get the list of custom OAuth app integrations for the specified Databricks
 // account
-func (a *customAppIntegrationPreviewImpl) List(ctx context.Context, request ListCustomAppIntegrationsRequest) listing.Iterator[GetCustomAppIntegrationOutput] {
+func (a *customAppIntegrationImpl) List(ctx context.Context, request ListCustomAppIntegrationsRequest) listing.Iterator[GetCustomAppIntegrationOutput] {
 
 	getNextPage := func(ctx context.Context, req ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -174,11 +174,11 @@ func (a *customAppIntegrationPreviewImpl) List(ctx context.Context, request List
 //
 // Get the list of custom OAuth app integrations for the specified Databricks
 // account
-func (a *customAppIntegrationPreviewImpl) ListAll(ctx context.Context, request ListCustomAppIntegrationsRequest) ([]GetCustomAppIntegrationOutput, error) {
+func (a *customAppIntegrationImpl) ListAll(ctx context.Context, request ListCustomAppIntegrationsRequest) ([]GetCustomAppIntegrationOutput, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[GetCustomAppIntegrationOutput](ctx, iterator)
 }
-func (a *customAppIntegrationPreviewImpl) internalList(ctx context.Context, request ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error) {
+func (a *customAppIntegrationImpl) internalList(ctx context.Context, request ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error) {
 	var getCustomAppIntegrationsOutput GetCustomAppIntegrationsOutput
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/oauth2/custom-app-integrations", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -188,7 +188,7 @@ func (a *customAppIntegrationPreviewImpl) internalList(ctx context.Context, requ
 	return &getCustomAppIntegrationsOutput, err
 }
 
-func (a *customAppIntegrationPreviewImpl) Update(ctx context.Context, request UpdateCustomAppIntegration) error {
+func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCustomAppIntegration) error {
 	var updateCustomAppIntegrationOutput UpdateCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
@@ -199,15 +199,15 @@ func (a *customAppIntegrationPreviewImpl) Update(ctx context.Context, request Up
 	return err
 }
 
-// unexported type that holds implementations of just OAuthPublishedAppsPreview API methods
-type oAuthPublishedAppsPreviewImpl struct {
+// unexported type that holds implementations of just OAuthPublishedApps API methods
+type oAuthPublishedAppsImpl struct {
 	client *client.DatabricksClient
 }
 
 // Get all the published OAuth apps.
 //
 // Get all the available published OAuth apps in Databricks.
-func (a *oAuthPublishedAppsPreviewImpl) List(ctx context.Context, request ListOAuthPublishedAppsRequest) listing.Iterator[PublishedAppOutput] {
+func (a *oAuthPublishedAppsImpl) List(ctx context.Context, request ListOAuthPublishedAppsRequest) listing.Iterator[PublishedAppOutput] {
 
 	getNextPage := func(ctx context.Context, req ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -234,11 +234,11 @@ func (a *oAuthPublishedAppsPreviewImpl) List(ctx context.Context, request ListOA
 // Get all the published OAuth apps.
 //
 // Get all the available published OAuth apps in Databricks.
-func (a *oAuthPublishedAppsPreviewImpl) ListAll(ctx context.Context, request ListOAuthPublishedAppsRequest) ([]PublishedAppOutput, error) {
+func (a *oAuthPublishedAppsImpl) ListAll(ctx context.Context, request ListOAuthPublishedAppsRequest) ([]PublishedAppOutput, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[PublishedAppOutput](ctx, iterator)
 }
-func (a *oAuthPublishedAppsPreviewImpl) internalList(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
+func (a *oAuthPublishedAppsImpl) internalList(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
 	var getPublishedAppsOutput GetPublishedAppsOutput
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/oauth2/published-apps", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -248,12 +248,12 @@ func (a *oAuthPublishedAppsPreviewImpl) internalList(ctx context.Context, reques
 	return &getPublishedAppsOutput, err
 }
 
-// unexported type that holds implementations of just PublishedAppIntegrationPreview API methods
-type publishedAppIntegrationPreviewImpl struct {
+// unexported type that holds implementations of just PublishedAppIntegration API methods
+type publishedAppIntegrationImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *publishedAppIntegrationPreviewImpl) Create(ctx context.Context, request CreatePublishedAppIntegration) (*CreatePublishedAppIntegrationOutput, error) {
+func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request CreatePublishedAppIntegration) (*CreatePublishedAppIntegrationOutput, error) {
 	var createPublishedAppIntegrationOutput CreatePublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/oauth2/published-app-integrations", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -264,7 +264,7 @@ func (a *publishedAppIntegrationPreviewImpl) Create(ctx context.Context, request
 	return &createPublishedAppIntegrationOutput, err
 }
 
-func (a *publishedAppIntegrationPreviewImpl) Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error {
+func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error {
 	var deletePublishedAppIntegrationOutput DeletePublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
@@ -274,7 +274,7 @@ func (a *publishedAppIntegrationPreviewImpl) Delete(ctx context.Context, request
 	return err
 }
 
-func (a *publishedAppIntegrationPreviewImpl) Get(ctx context.Context, request GetPublishedAppIntegrationRequest) (*GetPublishedAppIntegrationOutput, error) {
+func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublishedAppIntegrationRequest) (*GetPublishedAppIntegrationOutput, error) {
 	var getPublishedAppIntegrationOutput GetPublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
@@ -288,7 +288,7 @@ func (a *publishedAppIntegrationPreviewImpl) Get(ctx context.Context, request Ge
 //
 // Get the list of published OAuth app integrations for the specified Databricks
 // account
-func (a *publishedAppIntegrationPreviewImpl) List(ctx context.Context, request ListPublishedAppIntegrationsRequest) listing.Iterator[GetPublishedAppIntegrationOutput] {
+func (a *publishedAppIntegrationImpl) List(ctx context.Context, request ListPublishedAppIntegrationsRequest) listing.Iterator[GetPublishedAppIntegrationOutput] {
 
 	getNextPage := func(ctx context.Context, req ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -316,11 +316,11 @@ func (a *publishedAppIntegrationPreviewImpl) List(ctx context.Context, request L
 //
 // Get the list of published OAuth app integrations for the specified Databricks
 // account
-func (a *publishedAppIntegrationPreviewImpl) ListAll(ctx context.Context, request ListPublishedAppIntegrationsRequest) ([]GetPublishedAppIntegrationOutput, error) {
+func (a *publishedAppIntegrationImpl) ListAll(ctx context.Context, request ListPublishedAppIntegrationsRequest) ([]GetPublishedAppIntegrationOutput, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[GetPublishedAppIntegrationOutput](ctx, iterator)
 }
-func (a *publishedAppIntegrationPreviewImpl) internalList(ctx context.Context, request ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error) {
+func (a *publishedAppIntegrationImpl) internalList(ctx context.Context, request ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error) {
 	var getPublishedAppIntegrationsOutput GetPublishedAppIntegrationsOutput
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/oauth2/published-app-integrations", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -330,7 +330,7 @@ func (a *publishedAppIntegrationPreviewImpl) internalList(ctx context.Context, r
 	return &getPublishedAppIntegrationsOutput, err
 }
 
-func (a *publishedAppIntegrationPreviewImpl) Update(ctx context.Context, request UpdatePublishedAppIntegration) error {
+func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request UpdatePublishedAppIntegration) error {
 	var updatePublishedAppIntegrationOutput UpdatePublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
@@ -341,12 +341,12 @@ func (a *publishedAppIntegrationPreviewImpl) Update(ctx context.Context, request
 	return err
 }
 
-// unexported type that holds implementations of just ServicePrincipalFederationPolicyPreview API methods
-type servicePrincipalFederationPolicyPreviewImpl struct {
+// unexported type that holds implementations of just ServicePrincipalFederationPolicy API methods
+type servicePrincipalFederationPolicyImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *servicePrincipalFederationPolicyPreviewImpl) Create(ctx context.Context, request CreateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
+func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, request CreateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
@@ -360,7 +360,7 @@ func (a *servicePrincipalFederationPolicyPreviewImpl) Create(ctx context.Context
 	return &federationPolicy, err
 }
 
-func (a *servicePrincipalFederationPolicyPreviewImpl) Delete(ctx context.Context, request DeleteServicePrincipalFederationPolicyRequest) error {
+func (a *servicePrincipalFederationPolicyImpl) Delete(ctx context.Context, request DeleteServicePrincipalFederationPolicyRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
@@ -370,7 +370,7 @@ func (a *servicePrincipalFederationPolicyPreviewImpl) Delete(ctx context.Context
 	return err
 }
 
-func (a *servicePrincipalFederationPolicyPreviewImpl) Get(ctx context.Context, request GetServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
+func (a *servicePrincipalFederationPolicyImpl) Get(ctx context.Context, request GetServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
@@ -381,7 +381,7 @@ func (a *servicePrincipalFederationPolicyPreviewImpl) Get(ctx context.Context, r
 }
 
 // List service principal federation policies.
-func (a *servicePrincipalFederationPolicyPreviewImpl) List(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) listing.Iterator[FederationPolicy] {
+func (a *servicePrincipalFederationPolicyImpl) List(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) listing.Iterator[FederationPolicy] {
 
 	getNextPage := func(ctx context.Context, req ListServicePrincipalFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -406,11 +406,11 @@ func (a *servicePrincipalFederationPolicyPreviewImpl) List(ctx context.Context, 
 }
 
 // List service principal federation policies.
-func (a *servicePrincipalFederationPolicyPreviewImpl) ListAll(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) ([]FederationPolicy, error) {
+func (a *servicePrincipalFederationPolicyImpl) ListAll(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) ([]FederationPolicy, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[FederationPolicy](ctx, iterator)
 }
-func (a *servicePrincipalFederationPolicyPreviewImpl) internalList(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
+func (a *servicePrincipalFederationPolicyImpl) internalList(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
 	var listFederationPoliciesResponse ListFederationPoliciesResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
@@ -420,7 +420,7 @@ func (a *servicePrincipalFederationPolicyPreviewImpl) internalList(ctx context.C
 	return &listFederationPoliciesResponse, err
 }
 
-func (a *servicePrincipalFederationPolicyPreviewImpl) Update(ctx context.Context, request UpdateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
+func (a *servicePrincipalFederationPolicyImpl) Update(ctx context.Context, request UpdateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
@@ -434,12 +434,12 @@ func (a *servicePrincipalFederationPolicyPreviewImpl) Update(ctx context.Context
 	return &federationPolicy, err
 }
 
-// unexported type that holds implementations of just ServicePrincipalSecretsPreview API methods
-type servicePrincipalSecretsPreviewImpl struct {
+// unexported type that holds implementations of just ServicePrincipalSecrets API methods
+type servicePrincipalSecretsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *servicePrincipalSecretsPreviewImpl) Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error) {
+func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error) {
 	var createServicePrincipalSecretResponse CreateServicePrincipalSecretResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
@@ -449,7 +449,7 @@ func (a *servicePrincipalSecretsPreviewImpl) Create(ctx context.Context, request
 	return &createServicePrincipalSecretResponse, err
 }
 
-func (a *servicePrincipalSecretsPreviewImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
+func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/servicePrincipals/%v/credentials/secrets/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.SecretId)
 	queryParams := make(map[string]any)
@@ -463,7 +463,7 @@ func (a *servicePrincipalSecretsPreviewImpl) Delete(ctx context.Context, request
 // List all secrets associated with the given service principal. This operation
 // only returns information about the secrets themselves and does not include
 // the secret values.
-func (a *servicePrincipalSecretsPreviewImpl) List(ctx context.Context, request ListServicePrincipalSecretsRequest) listing.Iterator[SecretInfo] {
+func (a *servicePrincipalSecretsImpl) List(ctx context.Context, request ListServicePrincipalSecretsRequest) listing.Iterator[SecretInfo] {
 
 	getNextPage := func(ctx context.Context, req ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -492,11 +492,11 @@ func (a *servicePrincipalSecretsPreviewImpl) List(ctx context.Context, request L
 // List all secrets associated with the given service principal. This operation
 // only returns information about the secrets themselves and does not include
 // the secret values.
-func (a *servicePrincipalSecretsPreviewImpl) ListAll(ctx context.Context, request ListServicePrincipalSecretsRequest) ([]SecretInfo, error) {
+func (a *servicePrincipalSecretsImpl) ListAll(ctx context.Context, request ListServicePrincipalSecretsRequest) ([]SecretInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[SecretInfo](ctx, iterator)
 }
-func (a *servicePrincipalSecretsPreviewImpl) internalList(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
+func (a *servicePrincipalSecretsImpl) internalList(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
 	var listServicePrincipalSecretsResponse ListServicePrincipalSecretsResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)

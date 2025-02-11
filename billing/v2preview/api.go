@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Billable Usage Preview, Budget Policy Preview, Budgets Preview, Log Delivery Preview, Usage Dashboards Preview, etc.
+// These APIs allow you to manage Billable Usage, Budget Policy, Budgets, Log Delivery, Usage Dashboards, etc.
 package billingpreview
 
 import (
@@ -12,7 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-type BillableUsagePreviewInterface interface {
+type BillableUsageInterface interface {
 
 	// Return billable usage logs.
 	//
@@ -29,9 +29,9 @@ type BillableUsagePreviewInterface interface {
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 }
 
-func NewBillableUsagePreview(client *client.DatabricksClient) *BillableUsagePreviewAPI {
-	return &BillableUsagePreviewAPI{
-		billableUsagePreviewImpl: billableUsagePreviewImpl{
+func NewBillableUsage(client *client.DatabricksClient) *BillableUsageAPI {
+	return &BillableUsageAPI{
+		billableUsageImpl: billableUsageImpl{
 			client: client,
 		},
 	}
@@ -39,11 +39,11 @@ func NewBillableUsagePreview(client *client.DatabricksClient) *BillableUsagePrev
 
 // This API allows you to download billable usage logs for the specified account
 // and date range. This feature works with all account types.
-type BillableUsagePreviewAPI struct {
-	billableUsagePreviewImpl
+type BillableUsageAPI struct {
+	billableUsageImpl
 }
 
-type BudgetPolicyPreviewInterface interface {
+type BudgetPolicyInterface interface {
 
 	// Create a budget policy.
 	//
@@ -92,24 +92,24 @@ type BudgetPolicyPreviewInterface interface {
 	Update(ctx context.Context, request UpdateBudgetPolicyRequest) (*BudgetPolicy, error)
 }
 
-func NewBudgetPolicyPreview(client *client.DatabricksClient) *BudgetPolicyPreviewAPI {
-	return &BudgetPolicyPreviewAPI{
-		budgetPolicyPreviewImpl: budgetPolicyPreviewImpl{
+func NewBudgetPolicy(client *client.DatabricksClient) *BudgetPolicyAPI {
+	return &BudgetPolicyAPI{
+		budgetPolicyImpl: budgetPolicyImpl{
 			client: client,
 		},
 	}
 }
 
 // A service serves REST API about Budget policies
-type BudgetPolicyPreviewAPI struct {
-	budgetPolicyPreviewImpl
+type BudgetPolicyAPI struct {
+	budgetPolicyImpl
 }
 
 // Delete a budget policy.
 //
 // Deletes a policy
-func (a *BudgetPolicyPreviewAPI) DeleteByPolicyId(ctx context.Context, policyId string) error {
-	return a.budgetPolicyPreviewImpl.Delete(ctx, DeleteBudgetPolicyRequest{
+func (a *BudgetPolicyAPI) DeleteByPolicyId(ctx context.Context, policyId string) error {
+	return a.budgetPolicyImpl.Delete(ctx, DeleteBudgetPolicyRequest{
 		PolicyId: policyId,
 	})
 }
@@ -117,13 +117,13 @@ func (a *BudgetPolicyPreviewAPI) DeleteByPolicyId(ctx context.Context, policyId 
 // Get a budget policy.
 //
 // Retrieves a policy by it's ID.
-func (a *BudgetPolicyPreviewAPI) GetByPolicyId(ctx context.Context, policyId string) (*BudgetPolicy, error) {
-	return a.budgetPolicyPreviewImpl.Get(ctx, GetBudgetPolicyRequest{
+func (a *BudgetPolicyAPI) GetByPolicyId(ctx context.Context, policyId string) (*BudgetPolicy, error) {
+	return a.budgetPolicyImpl.Get(ctx, GetBudgetPolicyRequest{
 		PolicyId: policyId,
 	})
 }
 
-type BudgetsPreviewInterface interface {
+type BudgetsInterface interface {
 
 	// Create new budget.
 	//
@@ -176,9 +176,9 @@ type BudgetsPreviewInterface interface {
 	Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error)
 }
 
-func NewBudgetsPreview(client *client.DatabricksClient) *BudgetsPreviewAPI {
-	return &BudgetsPreviewAPI{
-		budgetsPreviewImpl: budgetsPreviewImpl{
+func NewBudgets(client *client.DatabricksClient) *BudgetsAPI {
+	return &BudgetsAPI{
+		budgetsImpl: budgetsImpl{
 			client: client,
 		},
 	}
@@ -188,16 +188,16 @@ func NewBudgetsPreview(client *client.DatabricksClient) *BudgetsPreviewAPI {
 // to monitor usage across your account. You can set up budgets to either track
 // account-wide spending, or apply filters to track the spending of specific
 // teams, projects, or workspaces.
-type BudgetsPreviewAPI struct {
-	budgetsPreviewImpl
+type BudgetsAPI struct {
+	budgetsImpl
 }
 
 // Delete budget.
 //
 // Deletes a budget configuration for an account. Both account and budget
 // configuration are specified by ID. This cannot be undone.
-func (a *BudgetsPreviewAPI) DeleteByBudgetId(ctx context.Context, budgetId string) error {
-	return a.budgetsPreviewImpl.Delete(ctx, DeleteBudgetConfigurationRequest{
+func (a *BudgetsAPI) DeleteByBudgetId(ctx context.Context, budgetId string) error {
+	return a.budgetsImpl.Delete(ctx, DeleteBudgetConfigurationRequest{
 		BudgetId: budgetId,
 	})
 }
@@ -206,13 +206,13 @@ func (a *BudgetsPreviewAPI) DeleteByBudgetId(ctx context.Context, budgetId strin
 //
 // Gets a budget configuration for an account. Both account and budget
 // configuration are specified by ID.
-func (a *BudgetsPreviewAPI) GetByBudgetId(ctx context.Context, budgetId string) (*GetBudgetConfigurationResponse, error) {
-	return a.budgetsPreviewImpl.Get(ctx, GetBudgetConfigurationRequest{
+func (a *BudgetsAPI) GetByBudgetId(ctx context.Context, budgetId string) (*GetBudgetConfigurationResponse, error) {
+	return a.budgetsImpl.Get(ctx, GetBudgetConfigurationRequest{
 		BudgetId: budgetId,
 	})
 }
 
-type LogDeliveryPreviewInterface interface {
+type LogDeliveryInterface interface {
 
 	// Create a new log delivery configuration.
 	//
@@ -271,7 +271,7 @@ type LogDeliveryPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListLogDeliveryRequest) ([]LogDeliveryConfiguration, error)
 
-	// LogDeliveryConfigurationConfigNameToConfigIdMap calls [LogDeliveryPreviewAPI.ListAll] and creates a map of results with [LogDeliveryConfiguration].ConfigName as key and [LogDeliveryConfiguration].ConfigId as value.
+	// LogDeliveryConfigurationConfigNameToConfigIdMap calls [LogDeliveryAPI.ListAll] and creates a map of results with [LogDeliveryConfiguration].ConfigName as key and [LogDeliveryConfiguration].ConfigId as value.
 	//
 	// Returns an error if there's more than one [LogDeliveryConfiguration] with the same .ConfigName.
 	//
@@ -280,7 +280,7 @@ type LogDeliveryPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	LogDeliveryConfigurationConfigNameToConfigIdMap(ctx context.Context, request ListLogDeliveryRequest) (map[string]string, error)
 
-	// GetByConfigName calls [LogDeliveryPreviewAPI.LogDeliveryConfigurationConfigNameToConfigIdMap] and returns a single [LogDeliveryConfiguration].
+	// GetByConfigName calls [LogDeliveryAPI.LogDeliveryConfigurationConfigNameToConfigIdMap] and returns a single [LogDeliveryConfiguration].
 	//
 	// Returns an error if there's more than one [LogDeliveryConfiguration] with the same .ConfigName.
 	//
@@ -299,9 +299,9 @@ type LogDeliveryPreviewInterface interface {
 	PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error
 }
 
-func NewLogDeliveryPreview(client *client.DatabricksClient) *LogDeliveryPreviewAPI {
-	return &LogDeliveryPreviewAPI{
-		logDeliveryPreviewImpl: logDeliveryPreviewImpl{
+func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
+	return &LogDeliveryAPI{
+		logDeliveryImpl: logDeliveryImpl{
 			client: client,
 		},
 	}
@@ -368,28 +368,28 @@ func NewLogDeliveryPreview(client *client.DatabricksClient) *LogDeliveryPreviewA
 // [Billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 // [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 // [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html
-type LogDeliveryPreviewAPI struct {
-	logDeliveryPreviewImpl
+type LogDeliveryAPI struct {
+	logDeliveryImpl
 }
 
 // Get log delivery configuration.
 //
 // Gets a Databricks log delivery configuration object for an account, both
 // specified by ID.
-func (a *LogDeliveryPreviewAPI) GetByLogDeliveryConfigurationId(ctx context.Context, logDeliveryConfigurationId string) (*WrappedLogDeliveryConfiguration, error) {
-	return a.logDeliveryPreviewImpl.Get(ctx, GetLogDeliveryRequest{
+func (a *LogDeliveryAPI) GetByLogDeliveryConfigurationId(ctx context.Context, logDeliveryConfigurationId string) (*WrappedLogDeliveryConfiguration, error) {
+	return a.logDeliveryImpl.Get(ctx, GetLogDeliveryRequest{
 		LogDeliveryConfigurationId: logDeliveryConfigurationId,
 	})
 }
 
-// LogDeliveryConfigurationConfigNameToConfigIdMap calls [LogDeliveryPreviewAPI.ListAll] and creates a map of results with [LogDeliveryConfiguration].ConfigName as key and [LogDeliveryConfiguration].ConfigId as value.
+// LogDeliveryConfigurationConfigNameToConfigIdMap calls [LogDeliveryAPI.ListAll] and creates a map of results with [LogDeliveryConfiguration].ConfigName as key and [LogDeliveryConfiguration].ConfigId as value.
 //
 // Returns an error if there's more than one [LogDeliveryConfiguration] with the same .ConfigName.
 //
 // Note: All [LogDeliveryConfiguration] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *LogDeliveryPreviewAPI) LogDeliveryConfigurationConfigNameToConfigIdMap(ctx context.Context, request ListLogDeliveryRequest) (map[string]string, error) {
+func (a *LogDeliveryAPI) LogDeliveryConfigurationConfigNameToConfigIdMap(ctx context.Context, request ListLogDeliveryRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -407,14 +407,14 @@ func (a *LogDeliveryPreviewAPI) LogDeliveryConfigurationConfigNameToConfigIdMap(
 	return mapping, nil
 }
 
-// GetByConfigName calls [LogDeliveryPreviewAPI.LogDeliveryConfigurationConfigNameToConfigIdMap] and returns a single [LogDeliveryConfiguration].
+// GetByConfigName calls [LogDeliveryAPI.LogDeliveryConfigurationConfigNameToConfigIdMap] and returns a single [LogDeliveryConfiguration].
 //
 // Returns an error if there's more than one [LogDeliveryConfiguration] with the same .ConfigName.
 //
 // Note: All [LogDeliveryConfiguration] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *LogDeliveryPreviewAPI) GetByConfigName(ctx context.Context, name string) (*LogDeliveryConfiguration, error) {
+func (a *LogDeliveryAPI) GetByConfigName(ctx context.Context, name string) (*LogDeliveryConfiguration, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListLogDeliveryRequest{})
 	if err != nil {
@@ -435,7 +435,7 @@ func (a *LogDeliveryPreviewAPI) GetByConfigName(ctx context.Context, name string
 	return &alternatives[0], nil
 }
 
-type UsageDashboardsPreviewInterface interface {
+type UsageDashboardsInterface interface {
 
 	// Create new usage dashboard.
 	//
@@ -450,9 +450,9 @@ type UsageDashboardsPreviewInterface interface {
 	Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error)
 }
 
-func NewUsageDashboardsPreview(client *client.DatabricksClient) *UsageDashboardsPreviewAPI {
-	return &UsageDashboardsPreviewAPI{
-		usageDashboardsPreviewImpl: usageDashboardsPreviewImpl{
+func NewUsageDashboards(client *client.DatabricksClient) *UsageDashboardsAPI {
+	return &UsageDashboardsAPI{
+		usageDashboardsImpl: usageDashboardsImpl{
 			client: client,
 		},
 	}
@@ -461,6 +461,6 @@ func NewUsageDashboardsPreview(client *client.DatabricksClient) *UsageDashboards
 // These APIs manage usage dashboards for this account. Usage dashboards enable
 // you to gain insights into your usage with pre-built dashboards: visualize
 // breakdowns, analyze tag attributions, and identify cost drivers.
-type UsageDashboardsPreviewAPI struct {
-	usageDashboardsPreviewImpl
+type UsageDashboardsAPI struct {
+	usageDashboardsImpl
 }

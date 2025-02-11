@@ -13,12 +13,12 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// unexported type that holds implementations of just AppsPreview API methods
-type appsPreviewImpl struct {
+// unexported type that holds implementations of just Apps API methods
+type appsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *appsPreviewImpl) Create(ctx context.Context, request CreateAppRequest) (*App, error) {
+func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, error) {
 	var app App
 	path := "/api/2.0preview/apps"
 	queryParams := make(map[string]any)
@@ -32,7 +32,7 @@ func (a *appsPreviewImpl) Create(ctx context.Context, request CreateAppRequest) 
 	return &app, err
 }
 
-func (a *appsPreviewImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, error) {
+func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, error) {
 	var app App
 	path := fmt.Sprintf("/api/2.0preview/apps/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -42,7 +42,7 @@ func (a *appsPreviewImpl) Delete(ctx context.Context, request DeleteAppRequest) 
 	return &app, err
 }
 
-func (a *appsPreviewImpl) Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error) {
+func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error) {
 	var appDeployment AppDeployment
 	path := fmt.Sprintf("/api/2.0preview/apps/%v/deployments", request.AppName)
 	queryParams := make(map[string]any)
@@ -53,7 +53,7 @@ func (a *appsPreviewImpl) Deploy(ctx context.Context, request CreateAppDeploymen
 	return &appDeployment, err
 }
 
-func (a *appsPreviewImpl) Get(ctx context.Context, request GetAppRequest) (*App, error) {
+func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error) {
 	var app App
 	path := fmt.Sprintf("/api/2.0preview/apps/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -63,7 +63,7 @@ func (a *appsPreviewImpl) Get(ctx context.Context, request GetAppRequest) (*App,
 	return &app, err
 }
 
-func (a *appsPreviewImpl) GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error) {
+func (a *appsImpl) GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error) {
 	var appDeployment AppDeployment
 	path := fmt.Sprintf("/api/2.0preview/apps/%v/deployments/%v", request.AppName, request.DeploymentId)
 	queryParams := make(map[string]any)
@@ -73,7 +73,7 @@ func (a *appsPreviewImpl) GetDeployment(ctx context.Context, request GetAppDeplo
 	return &appDeployment, err
 }
 
-func (a *appsPreviewImpl) GetPermissionLevels(ctx context.Context, request GetAppPermissionLevelsRequest) (*GetAppPermissionLevelsResponse, error) {
+func (a *appsImpl) GetPermissionLevels(ctx context.Context, request GetAppPermissionLevelsRequest) (*GetAppPermissionLevelsResponse, error) {
 	var getAppPermissionLevelsResponse GetAppPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0preview/permissions/apps/%v/permissionLevels", request.AppName)
 	queryParams := make(map[string]any)
@@ -83,7 +83,7 @@ func (a *appsPreviewImpl) GetPermissionLevels(ctx context.Context, request GetAp
 	return &getAppPermissionLevelsResponse, err
 }
 
-func (a *appsPreviewImpl) GetPermissions(ctx context.Context, request GetAppPermissionsRequest) (*AppPermissions, error) {
+func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissionsRequest) (*AppPermissions, error) {
 	var appPermissions AppPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/apps/%v", request.AppName)
 	queryParams := make(map[string]any)
@@ -96,7 +96,7 @@ func (a *appsPreviewImpl) GetPermissions(ctx context.Context, request GetAppPerm
 // List apps.
 //
 // Lists all apps in the workspace.
-func (a *appsPreviewImpl) List(ctx context.Context, request ListAppsRequest) listing.Iterator[App] {
+func (a *appsImpl) List(ctx context.Context, request ListAppsRequest) listing.Iterator[App] {
 
 	getNextPage := func(ctx context.Context, req ListAppsRequest) (*ListAppsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -123,11 +123,11 @@ func (a *appsPreviewImpl) List(ctx context.Context, request ListAppsRequest) lis
 // List apps.
 //
 // Lists all apps in the workspace.
-func (a *appsPreviewImpl) ListAll(ctx context.Context, request ListAppsRequest) ([]App, error) {
+func (a *appsImpl) ListAll(ctx context.Context, request ListAppsRequest) ([]App, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[App](ctx, iterator)
 }
-func (a *appsPreviewImpl) internalList(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error) {
+func (a *appsImpl) internalList(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error) {
 	var listAppsResponse ListAppsResponse
 	path := "/api/2.0preview/apps"
 	queryParams := make(map[string]any)
@@ -140,7 +140,7 @@ func (a *appsPreviewImpl) internalList(ctx context.Context, request ListAppsRequ
 // List app deployments.
 //
 // Lists all app deployments for the app with the supplied name.
-func (a *appsPreviewImpl) ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) listing.Iterator[AppDeployment] {
+func (a *appsImpl) ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) listing.Iterator[AppDeployment] {
 
 	getNextPage := func(ctx context.Context, req ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -167,11 +167,11 @@ func (a *appsPreviewImpl) ListDeployments(ctx context.Context, request ListAppDe
 // List app deployments.
 //
 // Lists all app deployments for the app with the supplied name.
-func (a *appsPreviewImpl) ListDeploymentsAll(ctx context.Context, request ListAppDeploymentsRequest) ([]AppDeployment, error) {
+func (a *appsImpl) ListDeploymentsAll(ctx context.Context, request ListAppDeploymentsRequest) ([]AppDeployment, error) {
 	iterator := a.ListDeployments(ctx, request)
 	return listing.ToSlice[AppDeployment](ctx, iterator)
 }
-func (a *appsPreviewImpl) internalListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
+func (a *appsImpl) internalListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
 	var listAppDeploymentsResponse ListAppDeploymentsResponse
 	path := fmt.Sprintf("/api/2.0preview/apps/%v/deployments", request.AppName)
 	queryParams := make(map[string]any)
@@ -181,7 +181,7 @@ func (a *appsPreviewImpl) internalListDeployments(ctx context.Context, request L
 	return &listAppDeploymentsResponse, err
 }
 
-func (a *appsPreviewImpl) SetPermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error) {
+func (a *appsImpl) SetPermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error) {
 	var appPermissions AppPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/apps/%v", request.AppName)
 	queryParams := make(map[string]any)
@@ -192,7 +192,7 @@ func (a *appsPreviewImpl) SetPermissions(ctx context.Context, request AppPermiss
 	return &appPermissions, err
 }
 
-func (a *appsPreviewImpl) Start(ctx context.Context, request StartAppRequest) (*App, error) {
+func (a *appsImpl) Start(ctx context.Context, request StartAppRequest) (*App, error) {
 	var app App
 	path := fmt.Sprintf("/api/2.0preview/apps/%v/start", request.Name)
 	queryParams := make(map[string]any)
@@ -203,7 +203,7 @@ func (a *appsPreviewImpl) Start(ctx context.Context, request StartAppRequest) (*
 	return &app, err
 }
 
-func (a *appsPreviewImpl) Stop(ctx context.Context, request StopAppRequest) (*App, error) {
+func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) (*App, error) {
 	var app App
 	path := fmt.Sprintf("/api/2.0preview/apps/%v/stop", request.Name)
 	queryParams := make(map[string]any)
@@ -214,7 +214,7 @@ func (a *appsPreviewImpl) Stop(ctx context.Context, request StopAppRequest) (*Ap
 	return &app, err
 }
 
-func (a *appsPreviewImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, error) {
+func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, error) {
 	var app App
 	path := fmt.Sprintf("/api/2.0preview/apps/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -225,7 +225,7 @@ func (a *appsPreviewImpl) Update(ctx context.Context, request UpdateAppRequest) 
 	return &app, err
 }
 
-func (a *appsPreviewImpl) UpdatePermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error) {
+func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error) {
 	var appPermissions AppPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/apps/%v", request.AppName)
 	queryParams := make(map[string]any)

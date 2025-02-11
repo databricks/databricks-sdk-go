@@ -10,13 +10,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type JobsPreviewClient struct {
-	JobsPreviewInterface
+type JobsClient struct {
+	JobsInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewJobsPreviewClient(cfg *config.Config) (*JobsPreviewClient, error) {
+func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -37,20 +37,20 @@ func NewJobsPreviewClient(cfg *config.Config) (*JobsPreviewClient, error) {
 		return nil, err
 	}
 
-	return &JobsPreviewClient{
-		Config:               cfg,
-		apiClient:            apiClient,
-		JobsPreviewInterface: NewJobsPreview(databricksClient),
+	return &JobsClient{
+		Config:        cfg,
+		apiClient:     apiClient,
+		JobsInterface: NewJobs(databricksClient),
 	}, nil
 }
 
-type PolicyComplianceForJobsPreviewClient struct {
-	PolicyComplianceForJobsPreviewInterface
+type PolicyComplianceForJobsClient struct {
+	PolicyComplianceForJobsInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewPolicyComplianceForJobsPreviewClient(cfg *config.Config) (*PolicyComplianceForJobsPreviewClient, error) {
+func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJobsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -71,9 +71,9 @@ func NewPolicyComplianceForJobsPreviewClient(cfg *config.Config) (*PolicyComplia
 		return nil, err
 	}
 
-	return &PolicyComplianceForJobsPreviewClient{
-		Config:                                  cfg,
-		apiClient:                               apiClient,
-		PolicyComplianceForJobsPreviewInterface: NewPolicyComplianceForJobsPreview(databricksClient),
+	return &PolicyComplianceForJobsClient{
+		Config:                           cfg,
+		apiClient:                        apiClient,
+		PolicyComplianceForJobsInterface: NewPolicyComplianceForJobs(databricksClient),
 	}, nil
 }

@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Vector Search Endpoints Preview, Vector Search Indexes Preview, etc.
+// These APIs allow you to manage Vector Search Endpoints, Vector Search Indexes, etc.
 package vectorsearchpreview
 
 import (
@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
-type VectorSearchEndpointsPreviewInterface interface {
+type VectorSearchEndpointsInterface interface {
 
 	// Create an endpoint.
 	//
@@ -40,34 +40,34 @@ type VectorSearchEndpointsPreviewInterface interface {
 	ListEndpointsAll(ctx context.Context, request ListEndpointsRequest) ([]EndpointInfo, error)
 }
 
-func NewVectorSearchEndpointsPreview(client *client.DatabricksClient) *VectorSearchEndpointsPreviewAPI {
-	return &VectorSearchEndpointsPreviewAPI{
-		vectorSearchEndpointsPreviewImpl: vectorSearchEndpointsPreviewImpl{
+func NewVectorSearchEndpoints(client *client.DatabricksClient) *VectorSearchEndpointsAPI {
+	return &VectorSearchEndpointsAPI{
+		vectorSearchEndpointsImpl: vectorSearchEndpointsImpl{
 			client: client,
 		},
 	}
 }
 
 // **Endpoint**: Represents the compute resources to host vector search indexes.
-type VectorSearchEndpointsPreviewAPI struct {
-	vectorSearchEndpointsPreviewImpl
+type VectorSearchEndpointsAPI struct {
+	vectorSearchEndpointsImpl
 }
 
 // Delete an endpoint.
-func (a *VectorSearchEndpointsPreviewAPI) DeleteEndpointByEndpointName(ctx context.Context, endpointName string) error {
-	return a.vectorSearchEndpointsPreviewImpl.DeleteEndpoint(ctx, DeleteEndpointRequest{
+func (a *VectorSearchEndpointsAPI) DeleteEndpointByEndpointName(ctx context.Context, endpointName string) error {
+	return a.vectorSearchEndpointsImpl.DeleteEndpoint(ctx, DeleteEndpointRequest{
 		EndpointName: endpointName,
 	})
 }
 
 // Get an endpoint.
-func (a *VectorSearchEndpointsPreviewAPI) GetEndpointByEndpointName(ctx context.Context, endpointName string) (*EndpointInfo, error) {
-	return a.vectorSearchEndpointsPreviewImpl.GetEndpoint(ctx, GetEndpointRequest{
+func (a *VectorSearchEndpointsAPI) GetEndpointByEndpointName(ctx context.Context, endpointName string) (*EndpointInfo, error) {
+	return a.vectorSearchEndpointsImpl.GetEndpoint(ctx, GetEndpointRequest{
 		EndpointName: endpointName,
 	})
 }
 
-type VectorSearchIndexesPreviewInterface interface {
+type VectorSearchIndexesInterface interface {
 
 	// Create an index.
 	//
@@ -141,9 +141,9 @@ type VectorSearchIndexesPreviewInterface interface {
 	UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error)
 }
 
-func NewVectorSearchIndexesPreview(client *client.DatabricksClient) *VectorSearchIndexesPreviewAPI {
-	return &VectorSearchIndexesPreviewAPI{
-		vectorSearchIndexesPreviewImpl: vectorSearchIndexesPreviewImpl{
+func NewVectorSearchIndexes(client *client.DatabricksClient) *VectorSearchIndexesAPI {
+	return &VectorSearchIndexesAPI{
+		vectorSearchIndexesImpl: vectorSearchIndexesImpl{
 			client: client,
 		},
 	}
@@ -159,15 +159,15 @@ func NewVectorSearchIndexesPreview(client *client.DatabricksClient) *VectorSearc
 // changes. * **Direct Vector Access Index**: An index that supports direct read
 // and write of vectors and metadata through our REST and SDK APIs. With this
 // model, the user manages index updates.
-type VectorSearchIndexesPreviewAPI struct {
-	vectorSearchIndexesPreviewImpl
+type VectorSearchIndexesAPI struct {
+	vectorSearchIndexesImpl
 }
 
 // Delete an index.
 //
 // Delete an index.
-func (a *VectorSearchIndexesPreviewAPI) DeleteIndexByIndexName(ctx context.Context, indexName string) error {
-	return a.vectorSearchIndexesPreviewImpl.DeleteIndex(ctx, DeleteIndexRequest{
+func (a *VectorSearchIndexesAPI) DeleteIndexByIndexName(ctx context.Context, indexName string) error {
+	return a.vectorSearchIndexesImpl.DeleteIndex(ctx, DeleteIndexRequest{
 		IndexName: indexName,
 	})
 }
@@ -175,8 +175,8 @@ func (a *VectorSearchIndexesPreviewAPI) DeleteIndexByIndexName(ctx context.Conte
 // Get an index.
 //
 // Get an index.
-func (a *VectorSearchIndexesPreviewAPI) GetIndexByIndexName(ctx context.Context, indexName string) (*VectorIndex, error) {
-	return a.vectorSearchIndexesPreviewImpl.GetIndex(ctx, GetIndexRequest{
+func (a *VectorSearchIndexesAPI) GetIndexByIndexName(ctx context.Context, indexName string) (*VectorIndex, error) {
+	return a.vectorSearchIndexesImpl.GetIndex(ctx, GetIndexRequest{
 		IndexName: indexName,
 	})
 }

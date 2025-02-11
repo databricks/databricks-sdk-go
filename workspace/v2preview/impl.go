@@ -12,12 +12,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-// unexported type that holds implementations of just GitCredentialsPreview API methods
-type gitCredentialsPreviewImpl struct {
+// unexported type that holds implementations of just GitCredentials API methods
+type gitCredentialsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *gitCredentialsPreviewImpl) Create(ctx context.Context, request CreateCredentialsRequest) (*CreateCredentialsResponse, error) {
+func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentialsRequest) (*CreateCredentialsResponse, error) {
 	var createCredentialsResponse CreateCredentialsResponse
 	path := "/api/2.0preview/git-credentials"
 	queryParams := make(map[string]any)
@@ -28,7 +28,7 @@ func (a *gitCredentialsPreviewImpl) Create(ctx context.Context, request CreateCr
 	return &createCredentialsResponse, err
 }
 
-func (a *gitCredentialsPreviewImpl) Delete(ctx context.Context, request DeleteCredentialsRequest) error {
+func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteCredentialsRequest) error {
 	var deleteCredentialsResponse DeleteCredentialsResponse
 	path := fmt.Sprintf("/api/2.0preview/git-credentials/%v", request.CredentialId)
 	queryParams := make(map[string]any)
@@ -38,7 +38,7 @@ func (a *gitCredentialsPreviewImpl) Delete(ctx context.Context, request DeleteCr
 	return err
 }
 
-func (a *gitCredentialsPreviewImpl) Get(ctx context.Context, request GetCredentialsRequest) (*GetCredentialsResponse, error) {
+func (a *gitCredentialsImpl) Get(ctx context.Context, request GetCredentialsRequest) (*GetCredentialsResponse, error) {
 	var getCredentialsResponse GetCredentialsResponse
 	path := fmt.Sprintf("/api/2.0preview/git-credentials/%v", request.CredentialId)
 	queryParams := make(map[string]any)
@@ -52,7 +52,7 @@ func (a *gitCredentialsPreviewImpl) Get(ctx context.Context, request GetCredenti
 //
 // Lists the calling user's Git credentials. One credential per user is
 // supported.
-func (a *gitCredentialsPreviewImpl) List(ctx context.Context) listing.Iterator[CredentialInfo] {
+func (a *gitCredentialsImpl) List(ctx context.Context) listing.Iterator[CredentialInfo] {
 	request := struct{}{}
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListCredentialsResponse, error) {
@@ -75,11 +75,11 @@ func (a *gitCredentialsPreviewImpl) List(ctx context.Context) listing.Iterator[C
 //
 // Lists the calling user's Git credentials. One credential per user is
 // supported.
-func (a *gitCredentialsPreviewImpl) ListAll(ctx context.Context) ([]CredentialInfo, error) {
+func (a *gitCredentialsImpl) ListAll(ctx context.Context) ([]CredentialInfo, error) {
 	iterator := a.List(ctx)
 	return listing.ToSlice[CredentialInfo](ctx, iterator)
 }
-func (a *gitCredentialsPreviewImpl) internalList(ctx context.Context) (*ListCredentialsResponse, error) {
+func (a *gitCredentialsImpl) internalList(ctx context.Context) (*ListCredentialsResponse, error) {
 	var listCredentialsResponse ListCredentialsResponse
 	path := "/api/2.0preview/git-credentials"
 
@@ -89,7 +89,7 @@ func (a *gitCredentialsPreviewImpl) internalList(ctx context.Context) (*ListCred
 	return &listCredentialsResponse, err
 }
 
-func (a *gitCredentialsPreviewImpl) Update(ctx context.Context, request UpdateCredentialsRequest) error {
+func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentialsRequest) error {
 	var updateCredentialsResponse UpdateCredentialsResponse
 	path := fmt.Sprintf("/api/2.0preview/git-credentials/%v", request.CredentialId)
 	queryParams := make(map[string]any)
@@ -100,12 +100,12 @@ func (a *gitCredentialsPreviewImpl) Update(ctx context.Context, request UpdateCr
 	return err
 }
 
-// unexported type that holds implementations of just ReposPreview API methods
-type reposPreviewImpl struct {
+// unexported type that holds implementations of just Repos API methods
+type reposImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *reposPreviewImpl) Create(ctx context.Context, request CreateRepoRequest) (*CreateRepoResponse, error) {
+func (a *reposImpl) Create(ctx context.Context, request CreateRepoRequest) (*CreateRepoResponse, error) {
 	var createRepoResponse CreateRepoResponse
 	path := "/api/2.0preview/repos"
 	queryParams := make(map[string]any)
@@ -116,7 +116,7 @@ func (a *reposPreviewImpl) Create(ctx context.Context, request CreateRepoRequest
 	return &createRepoResponse, err
 }
 
-func (a *reposPreviewImpl) Delete(ctx context.Context, request DeleteRepoRequest) error {
+func (a *reposImpl) Delete(ctx context.Context, request DeleteRepoRequest) error {
 	var deleteRepoResponse DeleteRepoResponse
 	path := fmt.Sprintf("/api/2.0preview/repos/%v", request.RepoId)
 	queryParams := make(map[string]any)
@@ -126,7 +126,7 @@ func (a *reposPreviewImpl) Delete(ctx context.Context, request DeleteRepoRequest
 	return err
 }
 
-func (a *reposPreviewImpl) Get(ctx context.Context, request GetRepoRequest) (*GetRepoResponse, error) {
+func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*GetRepoResponse, error) {
 	var getRepoResponse GetRepoResponse
 	path := fmt.Sprintf("/api/2.0preview/repos/%v", request.RepoId)
 	queryParams := make(map[string]any)
@@ -136,7 +136,7 @@ func (a *reposPreviewImpl) Get(ctx context.Context, request GetRepoRequest) (*Ge
 	return &getRepoResponse, err
 }
 
-func (a *reposPreviewImpl) GetPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
+func (a *reposImpl) GetPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
 	var getRepoPermissionLevelsResponse GetRepoPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0preview/permissions/repos/%v/permissionLevels", request.RepoId)
 	queryParams := make(map[string]any)
@@ -146,7 +146,7 @@ func (a *reposPreviewImpl) GetPermissionLevels(ctx context.Context, request GetR
 	return &getRepoPermissionLevelsResponse, err
 }
 
-func (a *reposPreviewImpl) GetPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
+func (a *reposImpl) GetPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/repos/%v", request.RepoId)
 	queryParams := make(map[string]any)
@@ -160,7 +160,7 @@ func (a *reposPreviewImpl) GetPermissions(ctx context.Context, request GetRepoPe
 //
 // Returns repos that the calling user has Manage permissions on. Use
 // `next_page_token` to iterate through additional pages.
-func (a *reposPreviewImpl) List(ctx context.Context, request ListReposRequest) listing.Iterator[RepoInfo] {
+func (a *reposImpl) List(ctx context.Context, request ListReposRequest) listing.Iterator[RepoInfo] {
 
 	getNextPage := func(ctx context.Context, req ListReposRequest) (*ListReposResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -188,11 +188,11 @@ func (a *reposPreviewImpl) List(ctx context.Context, request ListReposRequest) l
 //
 // Returns repos that the calling user has Manage permissions on. Use
 // `next_page_token` to iterate through additional pages.
-func (a *reposPreviewImpl) ListAll(ctx context.Context, request ListReposRequest) ([]RepoInfo, error) {
+func (a *reposImpl) ListAll(ctx context.Context, request ListReposRequest) ([]RepoInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[RepoInfo](ctx, iterator)
 }
-func (a *reposPreviewImpl) internalList(ctx context.Context, request ListReposRequest) (*ListReposResponse, error) {
+func (a *reposImpl) internalList(ctx context.Context, request ListReposRequest) (*ListReposResponse, error) {
 	var listReposResponse ListReposResponse
 	path := "/api/2.0preview/repos"
 	queryParams := make(map[string]any)
@@ -202,7 +202,7 @@ func (a *reposPreviewImpl) internalList(ctx context.Context, request ListReposRe
 	return &listReposResponse, err
 }
 
-func (a *reposPreviewImpl) SetPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
+func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/repos/%v", request.RepoId)
 	queryParams := make(map[string]any)
@@ -213,7 +213,7 @@ func (a *reposPreviewImpl) SetPermissions(ctx context.Context, request RepoPermi
 	return &repoPermissions, err
 }
 
-func (a *reposPreviewImpl) Update(ctx context.Context, request UpdateRepoRequest) error {
+func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) error {
 	var updateRepoResponse UpdateRepoResponse
 	path := fmt.Sprintf("/api/2.0preview/repos/%v", request.RepoId)
 	queryParams := make(map[string]any)
@@ -224,7 +224,7 @@ func (a *reposPreviewImpl) Update(ctx context.Context, request UpdateRepoRequest
 	return err
 }
 
-func (a *reposPreviewImpl) UpdatePermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
+func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/repos/%v", request.RepoId)
 	queryParams := make(map[string]any)
@@ -235,12 +235,12 @@ func (a *reposPreviewImpl) UpdatePermissions(ctx context.Context, request RepoPe
 	return &repoPermissions, err
 }
 
-// unexported type that holds implementations of just SecretsPreview API methods
-type secretsPreviewImpl struct {
+// unexported type that holds implementations of just Secrets API methods
+type secretsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *secretsPreviewImpl) CreateScope(ctx context.Context, request CreateScope) error {
+func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) error {
 	var createScopeResponse CreateScopeResponse
 	path := "/api/2.0preview/secrets/scopes/create"
 	queryParams := make(map[string]any)
@@ -251,7 +251,7 @@ func (a *secretsPreviewImpl) CreateScope(ctx context.Context, request CreateScop
 	return err
 }
 
-func (a *secretsPreviewImpl) DeleteAcl(ctx context.Context, request DeleteAcl) error {
+func (a *secretsImpl) DeleteAcl(ctx context.Context, request DeleteAcl) error {
 	var deleteAclResponse DeleteAclResponse
 	path := "/api/2.0preview/secrets/acls/delete"
 	queryParams := make(map[string]any)
@@ -262,7 +262,7 @@ func (a *secretsPreviewImpl) DeleteAcl(ctx context.Context, request DeleteAcl) e
 	return err
 }
 
-func (a *secretsPreviewImpl) DeleteScope(ctx context.Context, request DeleteScope) error {
+func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) error {
 	var deleteScopeResponse DeleteScopeResponse
 	path := "/api/2.0preview/secrets/scopes/delete"
 	queryParams := make(map[string]any)
@@ -273,7 +273,7 @@ func (a *secretsPreviewImpl) DeleteScope(ctx context.Context, request DeleteScop
 	return err
 }
 
-func (a *secretsPreviewImpl) DeleteSecret(ctx context.Context, request DeleteSecret) error {
+func (a *secretsImpl) DeleteSecret(ctx context.Context, request DeleteSecret) error {
 	var deleteSecretResponse DeleteSecretResponse
 	path := "/api/2.0preview/secrets/delete"
 	queryParams := make(map[string]any)
@@ -284,7 +284,7 @@ func (a *secretsPreviewImpl) DeleteSecret(ctx context.Context, request DeleteSec
 	return err
 }
 
-func (a *secretsPreviewImpl) GetAcl(ctx context.Context, request GetAclRequest) (*AclItem, error) {
+func (a *secretsImpl) GetAcl(ctx context.Context, request GetAclRequest) (*AclItem, error) {
 	var aclItem AclItem
 	path := "/api/2.0preview/secrets/acls/get"
 	queryParams := make(map[string]any)
@@ -294,7 +294,7 @@ func (a *secretsPreviewImpl) GetAcl(ctx context.Context, request GetAclRequest) 
 	return &aclItem, err
 }
 
-func (a *secretsPreviewImpl) GetSecret(ctx context.Context, request GetSecretRequest) (*GetSecretResponse, error) {
+func (a *secretsImpl) GetSecret(ctx context.Context, request GetSecretRequest) (*GetSecretResponse, error) {
 	var getSecretResponse GetSecretResponse
 	path := "/api/2.0preview/secrets/get"
 	queryParams := make(map[string]any)
@@ -312,7 +312,7 @@ func (a *secretsPreviewImpl) GetSecret(ctx context.Context, request GetSecretReq
 // Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
-func (a *secretsPreviewImpl) ListAcls(ctx context.Context, request ListAclsRequest) listing.Iterator[AclItem] {
+func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) listing.Iterator[AclItem] {
 
 	getNextPage := func(ctx context.Context, req ListAclsRequest) (*ListAclsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -338,11 +338,11 @@ func (a *secretsPreviewImpl) ListAcls(ctx context.Context, request ListAclsReque
 // Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
-func (a *secretsPreviewImpl) ListAclsAll(ctx context.Context, request ListAclsRequest) ([]AclItem, error) {
+func (a *secretsImpl) ListAclsAll(ctx context.Context, request ListAclsRequest) ([]AclItem, error) {
 	iterator := a.ListAcls(ctx, request)
 	return listing.ToSlice[AclItem](ctx, iterator)
 }
-func (a *secretsPreviewImpl) internalListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error) {
+func (a *secretsImpl) internalListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error) {
 	var listAclsResponse ListAclsResponse
 	path := "/api/2.0preview/secrets/acls/list"
 	queryParams := make(map[string]any)
@@ -358,7 +358,7 @@ func (a *secretsPreviewImpl) internalListAcls(ctx context.Context, request ListA
 //
 // Throws `PERMISSION_DENIED` if the user does not have permission to make this
 // API call.
-func (a *secretsPreviewImpl) ListScopes(ctx context.Context) listing.Iterator[SecretScope] {
+func (a *secretsImpl) ListScopes(ctx context.Context) listing.Iterator[SecretScope] {
 	request := struct{}{}
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListScopesResponse, error) {
@@ -383,11 +383,11 @@ func (a *secretsPreviewImpl) ListScopes(ctx context.Context) listing.Iterator[Se
 //
 // Throws `PERMISSION_DENIED` if the user does not have permission to make this
 // API call.
-func (a *secretsPreviewImpl) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
+func (a *secretsImpl) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
 	iterator := a.ListScopes(ctx)
 	return listing.ToSlice[SecretScope](ctx, iterator)
 }
-func (a *secretsPreviewImpl) internalListScopes(ctx context.Context) (*ListScopesResponse, error) {
+func (a *secretsImpl) internalListScopes(ctx context.Context) (*ListScopesResponse, error) {
 	var listScopesResponse ListScopesResponse
 	path := "/api/2.0preview/secrets/scopes/list"
 
@@ -407,7 +407,7 @@ func (a *secretsPreviewImpl) internalListScopes(ctx context.Context) (*ListScope
 // `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
-func (a *secretsPreviewImpl) ListSecrets(ctx context.Context, request ListSecretsRequest) listing.Iterator[SecretMetadata] {
+func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsRequest) listing.Iterator[SecretMetadata] {
 
 	getNextPage := func(ctx context.Context, req ListSecretsRequest) (*ListSecretsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -435,11 +435,11 @@ func (a *secretsPreviewImpl) ListSecrets(ctx context.Context, request ListSecret
 // `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
-func (a *secretsPreviewImpl) ListSecretsAll(ctx context.Context, request ListSecretsRequest) ([]SecretMetadata, error) {
+func (a *secretsImpl) ListSecretsAll(ctx context.Context, request ListSecretsRequest) ([]SecretMetadata, error) {
 	iterator := a.ListSecrets(ctx, request)
 	return listing.ToSlice[SecretMetadata](ctx, iterator)
 }
-func (a *secretsPreviewImpl) internalListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error) {
+func (a *secretsImpl) internalListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error) {
 	var listSecretsResponse ListSecretsResponse
 	path := "/api/2.0preview/secrets/list"
 	queryParams := make(map[string]any)
@@ -449,7 +449,7 @@ func (a *secretsPreviewImpl) internalListSecrets(ctx context.Context, request Li
 	return &listSecretsResponse, err
 }
 
-func (a *secretsPreviewImpl) PutAcl(ctx context.Context, request PutAcl) error {
+func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) error {
 	var putAclResponse PutAclResponse
 	path := "/api/2.0preview/secrets/acls/put"
 	queryParams := make(map[string]any)
@@ -460,7 +460,7 @@ func (a *secretsPreviewImpl) PutAcl(ctx context.Context, request PutAcl) error {
 	return err
 }
 
-func (a *secretsPreviewImpl) PutSecret(ctx context.Context, request PutSecret) error {
+func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) error {
 	var putSecretResponse PutSecretResponse
 	path := "/api/2.0preview/secrets/put"
 	queryParams := make(map[string]any)
@@ -471,12 +471,12 @@ func (a *secretsPreviewImpl) PutSecret(ctx context.Context, request PutSecret) e
 	return err
 }
 
-// unexported type that holds implementations of just WorkspacePreview API methods
-type workspacePreviewImpl struct {
+// unexported type that holds implementations of just Workspace API methods
+type workspaceImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *workspacePreviewImpl) Delete(ctx context.Context, request Delete) error {
+func (a *workspaceImpl) Delete(ctx context.Context, request Delete) error {
 	var deleteResponse DeleteResponse
 	path := "/api/2.0preview/workspace/delete"
 	queryParams := make(map[string]any)
@@ -487,7 +487,7 @@ func (a *workspacePreviewImpl) Delete(ctx context.Context, request Delete) error
 	return err
 }
 
-func (a *workspacePreviewImpl) Export(ctx context.Context, request ExportRequest) (*ExportResponse, error) {
+func (a *workspaceImpl) Export(ctx context.Context, request ExportRequest) (*ExportResponse, error) {
 	var exportResponse ExportResponse
 	path := "/api/2.0preview/workspace/export"
 	queryParams := make(map[string]any)
@@ -497,7 +497,7 @@ func (a *workspacePreviewImpl) Export(ctx context.Context, request ExportRequest
 	return &exportResponse, err
 }
 
-func (a *workspacePreviewImpl) GetPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
+func (a *workspaceImpl) GetPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
 	var getWorkspaceObjectPermissionLevelsResponse GetWorkspaceObjectPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0preview/permissions/%v/%v/permissionLevels", request.WorkspaceObjectType, request.WorkspaceObjectId)
 	queryParams := make(map[string]any)
@@ -507,7 +507,7 @@ func (a *workspacePreviewImpl) GetPermissionLevels(ctx context.Context, request 
 	return &getWorkspaceObjectPermissionLevelsResponse, err
 }
 
-func (a *workspacePreviewImpl) GetPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+func (a *workspaceImpl) GetPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
 	queryParams := make(map[string]any)
@@ -517,7 +517,7 @@ func (a *workspacePreviewImpl) GetPermissions(ctx context.Context, request GetWo
 	return &workspaceObjectPermissions, err
 }
 
-func (a *workspacePreviewImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error) {
+func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error) {
 	var objectInfo ObjectInfo
 	path := "/api/2.0preview/workspace/get-status"
 	queryParams := make(map[string]any)
@@ -527,7 +527,7 @@ func (a *workspacePreviewImpl) GetStatus(ctx context.Context, request GetStatusR
 	return &objectInfo, err
 }
 
-func (a *workspacePreviewImpl) Import(ctx context.Context, request Import) error {
+func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
 	var importResponse ImportResponse
 	path := "/api/2.0preview/workspace/import"
 	queryParams := make(map[string]any)
@@ -543,7 +543,7 @@ func (a *workspacePreviewImpl) Import(ctx context.Context, request Import) error
 // Lists the contents of a directory, or the object if it is not a directory. If
 // the input path does not exist, this call returns an error
 // `RESOURCE_DOES_NOT_EXIST`.
-func (a *workspacePreviewImpl) List(ctx context.Context, request ListWorkspaceRequest) listing.Iterator[ObjectInfo] {
+func (a *workspaceImpl) List(ctx context.Context, request ListWorkspaceRequest) listing.Iterator[ObjectInfo] {
 
 	getNextPage := func(ctx context.Context, req ListWorkspaceRequest) (*ListResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -566,11 +566,11 @@ func (a *workspacePreviewImpl) List(ctx context.Context, request ListWorkspaceRe
 // Lists the contents of a directory, or the object if it is not a directory. If
 // the input path does not exist, this call returns an error
 // `RESOURCE_DOES_NOT_EXIST`.
-func (a *workspacePreviewImpl) ListAll(ctx context.Context, request ListWorkspaceRequest) ([]ObjectInfo, error) {
+func (a *workspaceImpl) ListAll(ctx context.Context, request ListWorkspaceRequest) ([]ObjectInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ObjectInfo](ctx, iterator)
 }
-func (a *workspacePreviewImpl) internalList(ctx context.Context, request ListWorkspaceRequest) (*ListResponse, error) {
+func (a *workspaceImpl) internalList(ctx context.Context, request ListWorkspaceRequest) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.0preview/workspace/list"
 	queryParams := make(map[string]any)
@@ -580,7 +580,7 @@ func (a *workspacePreviewImpl) internalList(ctx context.Context, request ListWor
 	return &listResponse, err
 }
 
-func (a *workspacePreviewImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
+func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
 	var mkdirsResponse MkdirsResponse
 	path := "/api/2.0preview/workspace/mkdirs"
 	queryParams := make(map[string]any)
@@ -591,7 +591,7 @@ func (a *workspacePreviewImpl) Mkdirs(ctx context.Context, request Mkdirs) error
 	return err
 }
 
-func (a *workspacePreviewImpl) SetPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+func (a *workspaceImpl) SetPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
 	queryParams := make(map[string]any)
@@ -602,7 +602,7 @@ func (a *workspacePreviewImpl) SetPermissions(ctx context.Context, request Works
 	return &workspaceObjectPermissions, err
 }
 
-func (a *workspacePreviewImpl) UpdatePermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+func (a *workspaceImpl) UpdatePermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
 	queryParams := make(map[string]any)

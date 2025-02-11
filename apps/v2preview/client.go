@@ -10,13 +10,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type AppsPreviewClient struct {
-	AppsPreviewInterface
+type AppsClient struct {
+	AppsInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewAppsPreviewClient(cfg *config.Config) (*AppsPreviewClient, error) {
+func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -37,9 +37,9 @@ func NewAppsPreviewClient(cfg *config.Config) (*AppsPreviewClient, error) {
 		return nil, err
 	}
 
-	return &AppsPreviewClient{
-		Config:               cfg,
-		apiClient:            apiClient,
-		AppsPreviewInterface: NewAppsPreview(databricksClient),
+	return &AppsClient{
+		Config:        cfg,
+		apiClient:     apiClient,
+		AppsInterface: NewApps(databricksClient),
 	}, nil
 }

@@ -12,12 +12,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-// unexported type that holds implementations of just CleanRoomAssetsPreview API methods
-type cleanRoomAssetsPreviewImpl struct {
+// unexported type that holds implementations of just CleanRoomAssets API methods
+type cleanRoomAssetsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *cleanRoomAssetsPreviewImpl) Create(ctx context.Context, request CreateCleanRoomAssetRequest) (*CleanRoomAsset, error) {
+func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoomAssetRequest) (*CleanRoomAsset, error) {
 	var cleanRoomAsset CleanRoomAsset
 	path := fmt.Sprintf("/api/2.0preview/clean-rooms/%v/assets", request.CleanRoomName)
 	queryParams := make(map[string]any)
@@ -28,7 +28,7 @@ func (a *cleanRoomAssetsPreviewImpl) Create(ctx context.Context, request CreateC
 	return &cleanRoomAsset, err
 }
 
-func (a *cleanRoomAssetsPreviewImpl) Delete(ctx context.Context, request DeleteCleanRoomAssetRequest) error {
+func (a *cleanRoomAssetsImpl) Delete(ctx context.Context, request DeleteCleanRoomAssetRequest) error {
 	var deleteCleanRoomAssetResponse DeleteCleanRoomAssetResponse
 	path := fmt.Sprintf("/api/2.0preview/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.AssetFullName)
 	queryParams := make(map[string]any)
@@ -38,7 +38,7 @@ func (a *cleanRoomAssetsPreviewImpl) Delete(ctx context.Context, request DeleteC
 	return err
 }
 
-func (a *cleanRoomAssetsPreviewImpl) Get(ctx context.Context, request GetCleanRoomAssetRequest) (*CleanRoomAsset, error) {
+func (a *cleanRoomAssetsImpl) Get(ctx context.Context, request GetCleanRoomAssetRequest) (*CleanRoomAsset, error) {
 	var cleanRoomAsset CleanRoomAsset
 	path := fmt.Sprintf("/api/2.0preview/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.AssetFullName)
 	queryParams := make(map[string]any)
@@ -49,7 +49,7 @@ func (a *cleanRoomAssetsPreviewImpl) Get(ctx context.Context, request GetCleanRo
 }
 
 // List assets.
-func (a *cleanRoomAssetsPreviewImpl) List(ctx context.Context, request ListCleanRoomAssetsRequest) listing.Iterator[CleanRoomAsset] {
+func (a *cleanRoomAssetsImpl) List(ctx context.Context, request ListCleanRoomAssetsRequest) listing.Iterator[CleanRoomAsset] {
 
 	getNextPage := func(ctx context.Context, req ListCleanRoomAssetsRequest) (*ListCleanRoomAssetsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -74,11 +74,11 @@ func (a *cleanRoomAssetsPreviewImpl) List(ctx context.Context, request ListClean
 }
 
 // List assets.
-func (a *cleanRoomAssetsPreviewImpl) ListAll(ctx context.Context, request ListCleanRoomAssetsRequest) ([]CleanRoomAsset, error) {
+func (a *cleanRoomAssetsImpl) ListAll(ctx context.Context, request ListCleanRoomAssetsRequest) ([]CleanRoomAsset, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[CleanRoomAsset](ctx, iterator)
 }
-func (a *cleanRoomAssetsPreviewImpl) internalList(ctx context.Context, request ListCleanRoomAssetsRequest) (*ListCleanRoomAssetsResponse, error) {
+func (a *cleanRoomAssetsImpl) internalList(ctx context.Context, request ListCleanRoomAssetsRequest) (*ListCleanRoomAssetsResponse, error) {
 	var listCleanRoomAssetsResponse ListCleanRoomAssetsResponse
 	path := fmt.Sprintf("/api/2.0preview/clean-rooms/%v/assets", request.CleanRoomName)
 	queryParams := make(map[string]any)
@@ -88,7 +88,7 @@ func (a *cleanRoomAssetsPreviewImpl) internalList(ctx context.Context, request L
 	return &listCleanRoomAssetsResponse, err
 }
 
-func (a *cleanRoomAssetsPreviewImpl) Update(ctx context.Context, request UpdateCleanRoomAssetRequest) (*CleanRoomAsset, error) {
+func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoomAssetRequest) (*CleanRoomAsset, error) {
 	var cleanRoomAsset CleanRoomAsset
 	path := fmt.Sprintf("/api/2.0preview/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.Name)
 	queryParams := make(map[string]any)
@@ -99,15 +99,15 @@ func (a *cleanRoomAssetsPreviewImpl) Update(ctx context.Context, request UpdateC
 	return &cleanRoomAsset, err
 }
 
-// unexported type that holds implementations of just CleanRoomTaskRunsPreview API methods
-type cleanRoomTaskRunsPreviewImpl struct {
+// unexported type that holds implementations of just CleanRoomTaskRuns API methods
+type cleanRoomTaskRunsImpl struct {
 	client *client.DatabricksClient
 }
 
 // List notebook task runs.
 //
 // List all the historical notebook task runs in a clean room.
-func (a *cleanRoomTaskRunsPreviewImpl) List(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) listing.Iterator[CleanRoomNotebookTaskRun] {
+func (a *cleanRoomTaskRunsImpl) List(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) listing.Iterator[CleanRoomNotebookTaskRun] {
 
 	getNextPage := func(ctx context.Context, req ListCleanRoomNotebookTaskRunsRequest) (*ListCleanRoomNotebookTaskRunsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -134,11 +134,11 @@ func (a *cleanRoomTaskRunsPreviewImpl) List(ctx context.Context, request ListCle
 // List notebook task runs.
 //
 // List all the historical notebook task runs in a clean room.
-func (a *cleanRoomTaskRunsPreviewImpl) ListAll(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) ([]CleanRoomNotebookTaskRun, error) {
+func (a *cleanRoomTaskRunsImpl) ListAll(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) ([]CleanRoomNotebookTaskRun, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[CleanRoomNotebookTaskRun](ctx, iterator)
 }
-func (a *cleanRoomTaskRunsPreviewImpl) internalList(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) (*ListCleanRoomNotebookTaskRunsResponse, error) {
+func (a *cleanRoomTaskRunsImpl) internalList(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) (*ListCleanRoomNotebookTaskRunsResponse, error) {
 	var listCleanRoomNotebookTaskRunsResponse ListCleanRoomNotebookTaskRunsResponse
 	path := fmt.Sprintf("/api/2.0preview/clean-rooms/%v/runs", request.CleanRoomName)
 	queryParams := make(map[string]any)
@@ -148,12 +148,12 @@ func (a *cleanRoomTaskRunsPreviewImpl) internalList(ctx context.Context, request
 	return &listCleanRoomNotebookTaskRunsResponse, err
 }
 
-// unexported type that holds implementations of just CleanRoomsPreview API methods
-type cleanRoomsPreviewImpl struct {
+// unexported type that holds implementations of just CleanRooms API methods
+type cleanRoomsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *cleanRoomsPreviewImpl) Create(ctx context.Context, request CreateCleanRoomRequest) (*CleanRoom, error) {
+func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoomRequest) (*CleanRoom, error) {
 	var cleanRoom CleanRoom
 	path := "/api/2.0preview/clean-rooms"
 	queryParams := make(map[string]any)
@@ -164,7 +164,7 @@ func (a *cleanRoomsPreviewImpl) Create(ctx context.Context, request CreateCleanR
 	return &cleanRoom, err
 }
 
-func (a *cleanRoomsPreviewImpl) CreateOutputCatalog(ctx context.Context, request CreateCleanRoomOutputCatalogRequest) (*CreateCleanRoomOutputCatalogResponse, error) {
+func (a *cleanRoomsImpl) CreateOutputCatalog(ctx context.Context, request CreateCleanRoomOutputCatalogRequest) (*CreateCleanRoomOutputCatalogResponse, error) {
 	var createCleanRoomOutputCatalogResponse CreateCleanRoomOutputCatalogResponse
 	path := fmt.Sprintf("/api/2.0preview/clean-rooms/%v/output-catalogs", request.CleanRoomName)
 	queryParams := make(map[string]any)
@@ -175,7 +175,7 @@ func (a *cleanRoomsPreviewImpl) CreateOutputCatalog(ctx context.Context, request
 	return &createCleanRoomOutputCatalogResponse, err
 }
 
-func (a *cleanRoomsPreviewImpl) Delete(ctx context.Context, request DeleteCleanRoomRequest) error {
+func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/clean-rooms/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -185,7 +185,7 @@ func (a *cleanRoomsPreviewImpl) Delete(ctx context.Context, request DeleteCleanR
 	return err
 }
 
-func (a *cleanRoomsPreviewImpl) Get(ctx context.Context, request GetCleanRoomRequest) (*CleanRoom, error) {
+func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (*CleanRoom, error) {
 	var cleanRoom CleanRoom
 	path := fmt.Sprintf("/api/2.0preview/clean-rooms/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -199,7 +199,7 @@ func (a *cleanRoomsPreviewImpl) Get(ctx context.Context, request GetCleanRoomReq
 //
 // Get a list of all clean rooms of the metastore. Only clean rooms the caller
 // has access to are returned.
-func (a *cleanRoomsPreviewImpl) List(ctx context.Context, request ListCleanRoomsRequest) listing.Iterator[CleanRoom] {
+func (a *cleanRoomsImpl) List(ctx context.Context, request ListCleanRoomsRequest) listing.Iterator[CleanRoom] {
 
 	getNextPage := func(ctx context.Context, req ListCleanRoomsRequest) (*ListCleanRoomsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -227,11 +227,11 @@ func (a *cleanRoomsPreviewImpl) List(ctx context.Context, request ListCleanRooms
 //
 // Get a list of all clean rooms of the metastore. Only clean rooms the caller
 // has access to are returned.
-func (a *cleanRoomsPreviewImpl) ListAll(ctx context.Context, request ListCleanRoomsRequest) ([]CleanRoom, error) {
+func (a *cleanRoomsImpl) ListAll(ctx context.Context, request ListCleanRoomsRequest) ([]CleanRoom, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[CleanRoom](ctx, iterator)
 }
-func (a *cleanRoomsPreviewImpl) internalList(ctx context.Context, request ListCleanRoomsRequest) (*ListCleanRoomsResponse, error) {
+func (a *cleanRoomsImpl) internalList(ctx context.Context, request ListCleanRoomsRequest) (*ListCleanRoomsResponse, error) {
 	var listCleanRoomsResponse ListCleanRoomsResponse
 	path := "/api/2.0preview/clean-rooms"
 	queryParams := make(map[string]any)
@@ -241,7 +241,7 @@ func (a *cleanRoomsPreviewImpl) internalList(ctx context.Context, request ListCl
 	return &listCleanRoomsResponse, err
 }
 
-func (a *cleanRoomsPreviewImpl) Update(ctx context.Context, request UpdateCleanRoomRequest) (*CleanRoom, error) {
+func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoomRequest) (*CleanRoom, error) {
 	var cleanRoom CleanRoom
 	path := fmt.Sprintf("/api/2.0preview/clean-rooms/%v", request.Name)
 	queryParams := make(map[string]any)

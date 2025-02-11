@@ -9,13 +9,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/config"
 )
 
-type BillableUsagePreviewClient struct {
-	BillableUsagePreviewInterface
+type BillableUsageClient struct {
+	BillableUsageInterface
 
 	Config *config.Config
 }
 
-func NewBillableUsagePreviewClient(cfg *config.Config) (*BillableUsagePreviewClient, error) {
+func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -33,19 +33,19 @@ func NewBillableUsagePreviewClient(cfg *config.Config) (*BillableUsagePreviewCli
 		return nil, err
 	}
 
-	return &BillableUsagePreviewClient{
-		Config:                        cfg,
-		BillableUsagePreviewInterface: NewBillableUsagePreview(apiClient),
+	return &BillableUsageClient{
+		Config:                 cfg,
+		BillableUsageInterface: NewBillableUsage(apiClient),
 	}, nil
 }
 
-type BudgetPolicyPreviewClient struct {
-	BudgetPolicyPreviewInterface
+type BudgetPolicyClient struct {
+	BudgetPolicyInterface
 
 	Config *config.Config
 }
 
-func NewBudgetPolicyPreviewClient(cfg *config.Config) (*BudgetPolicyPreviewClient, error) {
+func NewBudgetPolicyClient(cfg *config.Config) (*BudgetPolicyClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -63,19 +63,19 @@ func NewBudgetPolicyPreviewClient(cfg *config.Config) (*BudgetPolicyPreviewClien
 		return nil, err
 	}
 
-	return &BudgetPolicyPreviewClient{
-		Config:                       cfg,
-		BudgetPolicyPreviewInterface: NewBudgetPolicyPreview(apiClient),
+	return &BudgetPolicyClient{
+		Config:                cfg,
+		BudgetPolicyInterface: NewBudgetPolicy(apiClient),
 	}, nil
 }
 
-type BudgetsPreviewClient struct {
-	BudgetsPreviewInterface
+type BudgetsClient struct {
+	BudgetsInterface
 
 	Config *config.Config
 }
 
-func NewBudgetsPreviewClient(cfg *config.Config) (*BudgetsPreviewClient, error) {
+func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -93,19 +93,19 @@ func NewBudgetsPreviewClient(cfg *config.Config) (*BudgetsPreviewClient, error) 
 		return nil, err
 	}
 
-	return &BudgetsPreviewClient{
-		Config:                  cfg,
-		BudgetsPreviewInterface: NewBudgetsPreview(apiClient),
+	return &BudgetsClient{
+		Config:           cfg,
+		BudgetsInterface: NewBudgets(apiClient),
 	}, nil
 }
 
-type LogDeliveryPreviewClient struct {
-	LogDeliveryPreviewInterface
+type LogDeliveryClient struct {
+	LogDeliveryInterface
 
 	Config *config.Config
 }
 
-func NewLogDeliveryPreviewClient(cfg *config.Config) (*LogDeliveryPreviewClient, error) {
+func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -123,19 +123,19 @@ func NewLogDeliveryPreviewClient(cfg *config.Config) (*LogDeliveryPreviewClient,
 		return nil, err
 	}
 
-	return &LogDeliveryPreviewClient{
-		Config:                      cfg,
-		LogDeliveryPreviewInterface: NewLogDeliveryPreview(apiClient),
+	return &LogDeliveryClient{
+		Config:               cfg,
+		LogDeliveryInterface: NewLogDelivery(apiClient),
 	}, nil
 }
 
-type UsageDashboardsPreviewClient struct {
-	UsageDashboardsPreviewInterface
+type UsageDashboardsClient struct {
+	UsageDashboardsInterface
 
 	Config *config.Config
 }
 
-func NewUsageDashboardsPreviewClient(cfg *config.Config) (*UsageDashboardsPreviewClient, error) {
+func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -153,8 +153,8 @@ func NewUsageDashboardsPreviewClient(cfg *config.Config) (*UsageDashboardsPrevie
 		return nil, err
 	}
 
-	return &UsageDashboardsPreviewClient{
-		Config:                          cfg,
-		UsageDashboardsPreviewInterface: NewUsageDashboardsPreview(apiClient),
+	return &UsageDashboardsClient{
+		Config:                   cfg,
+		UsageDashboardsInterface: NewUsageDashboards(apiClient),
 	}, nil
 }

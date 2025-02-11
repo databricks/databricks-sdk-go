@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Federation Policy Preview, Custom App Integration Preview, O Auth Published Apps Preview, Published App Integration Preview, Service Principal Federation Policy Preview, Service Principal Secrets Preview, etc.
+// These APIs allow you to manage Account Federation Policy, Custom App Integration, O Auth Published Apps, Published App Integration, Service Principal Federation Policy, Service Principal Secrets, etc.
 package oauth2preview
 
 import (
@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
-type AccountFederationPolicyPreviewInterface interface {
+type AccountFederationPolicyInterface interface {
 
 	// Create account federation policy.
 	Create(ctx context.Context, request CreateAccountFederationPolicyRequest) (*FederationPolicy, error)
@@ -41,9 +41,9 @@ type AccountFederationPolicyPreviewInterface interface {
 	Update(ctx context.Context, request UpdateAccountFederationPolicyRequest) (*FederationPolicy, error)
 }
 
-func NewAccountFederationPolicyPreview(client *client.DatabricksClient) *AccountFederationPolicyPreviewAPI {
-	return &AccountFederationPolicyPreviewAPI{
-		accountFederationPolicyPreviewImpl: accountFederationPolicyPreviewImpl{
+func NewAccountFederationPolicy(client *client.DatabricksClient) *AccountFederationPolicyAPI {
+	return &AccountFederationPolicyAPI{
+		accountFederationPolicyImpl: accountFederationPolicyImpl{
 			client: client,
 		},
 	}
@@ -99,25 +99,25 @@ func NewAccountFederationPolicyPreview(client *client.DatabricksClient) *Account
 // federation.
 //
 // [SCIM]: https://docs.databricks.com/admin/users-groups/scim/index.html
-type AccountFederationPolicyPreviewAPI struct {
-	accountFederationPolicyPreviewImpl
+type AccountFederationPolicyAPI struct {
+	accountFederationPolicyImpl
 }
 
 // Delete account federation policy.
-func (a *AccountFederationPolicyPreviewAPI) DeleteByPolicyId(ctx context.Context, policyId string) error {
-	return a.accountFederationPolicyPreviewImpl.Delete(ctx, DeleteAccountFederationPolicyRequest{
+func (a *AccountFederationPolicyAPI) DeleteByPolicyId(ctx context.Context, policyId string) error {
+	return a.accountFederationPolicyImpl.Delete(ctx, DeleteAccountFederationPolicyRequest{
 		PolicyId: policyId,
 	})
 }
 
 // Get account federation policy.
-func (a *AccountFederationPolicyPreviewAPI) GetByPolicyId(ctx context.Context, policyId string) (*FederationPolicy, error) {
-	return a.accountFederationPolicyPreviewImpl.Get(ctx, GetAccountFederationPolicyRequest{
+func (a *AccountFederationPolicyAPI) GetByPolicyId(ctx context.Context, policyId string) (*FederationPolicy, error) {
+	return a.accountFederationPolicyImpl.Get(ctx, GetAccountFederationPolicyRequest{
 		PolicyId: policyId,
 	})
 }
 
-type CustomAppIntegrationPreviewInterface interface {
+type CustomAppIntegrationInterface interface {
 
 	// Create Custom OAuth App Integration.
 	//
@@ -172,9 +172,9 @@ type CustomAppIntegrationPreviewInterface interface {
 	Update(ctx context.Context, request UpdateCustomAppIntegration) error
 }
 
-func NewCustomAppIntegrationPreview(client *client.DatabricksClient) *CustomAppIntegrationPreviewAPI {
-	return &CustomAppIntegrationPreviewAPI{
-		customAppIntegrationPreviewImpl: customAppIntegrationPreviewImpl{
+func NewCustomAppIntegration(client *client.DatabricksClient) *CustomAppIntegrationAPI {
+	return &CustomAppIntegrationAPI{
+		customAppIntegrationImpl: customAppIntegrationImpl{
 			client: client,
 		},
 	}
@@ -183,16 +183,16 @@ func NewCustomAppIntegrationPreview(client *client.DatabricksClient) *CustomAppI
 // These APIs enable administrators to manage custom OAuth app integrations,
 // which is required for adding/using Custom OAuth App Integration like Tableau
 // Cloud for Databricks in AWS cloud.
-type CustomAppIntegrationPreviewAPI struct {
-	customAppIntegrationPreviewImpl
+type CustomAppIntegrationAPI struct {
+	customAppIntegrationImpl
 }
 
 // Delete Custom OAuth App Integration.
 //
 // Delete an existing Custom OAuth App Integration. You can retrieve the custom
 // OAuth app integration via :method:CustomAppIntegration/get.
-func (a *CustomAppIntegrationPreviewAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
-	return a.customAppIntegrationPreviewImpl.Delete(ctx, DeleteCustomAppIntegrationRequest{
+func (a *CustomAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
+	return a.customAppIntegrationImpl.Delete(ctx, DeleteCustomAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
 }
@@ -200,13 +200,13 @@ func (a *CustomAppIntegrationPreviewAPI) DeleteByIntegrationId(ctx context.Conte
 // Get OAuth Custom App Integration.
 //
 // Gets the Custom OAuth App Integration for the given integration id.
-func (a *CustomAppIntegrationPreviewAPI) GetByIntegrationId(ctx context.Context, integrationId string) (*GetCustomAppIntegrationOutput, error) {
-	return a.customAppIntegrationPreviewImpl.Get(ctx, GetCustomAppIntegrationRequest{
+func (a *CustomAppIntegrationAPI) GetByIntegrationId(ctx context.Context, integrationId string) (*GetCustomAppIntegrationOutput, error) {
+	return a.customAppIntegrationImpl.Get(ctx, GetCustomAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
 }
 
-type OAuthPublishedAppsPreviewInterface interface {
+type OAuthPublishedAppsInterface interface {
 
 	// Get all the published OAuth apps.
 	//
@@ -223,9 +223,9 @@ type OAuthPublishedAppsPreviewInterface interface {
 	ListAll(ctx context.Context, request ListOAuthPublishedAppsRequest) ([]PublishedAppOutput, error)
 }
 
-func NewOAuthPublishedAppsPreview(client *client.DatabricksClient) *OAuthPublishedAppsPreviewAPI {
-	return &OAuthPublishedAppsPreviewAPI{
-		oAuthPublishedAppsPreviewImpl: oAuthPublishedAppsPreviewImpl{
+func NewOAuthPublishedApps(client *client.DatabricksClient) *OAuthPublishedAppsAPI {
+	return &OAuthPublishedAppsAPI{
+		oAuthPublishedAppsImpl: oAuthPublishedAppsImpl{
 			client: client,
 		},
 	}
@@ -235,11 +235,11 @@ func NewOAuthPublishedAppsPreview(client *client.DatabricksClient) *OAuthPublish
 // applications in Databricks. Administrators can add the published OAuth
 // applications to their account through the OAuth Published App Integration
 // APIs.
-type OAuthPublishedAppsPreviewAPI struct {
-	oAuthPublishedAppsPreviewImpl
+type OAuthPublishedAppsAPI struct {
+	oAuthPublishedAppsImpl
 }
 
-type PublishedAppIntegrationPreviewInterface interface {
+type PublishedAppIntegrationInterface interface {
 
 	// Create Published OAuth App Integration.
 	//
@@ -294,9 +294,9 @@ type PublishedAppIntegrationPreviewInterface interface {
 	Update(ctx context.Context, request UpdatePublishedAppIntegration) error
 }
 
-func NewPublishedAppIntegrationPreview(client *client.DatabricksClient) *PublishedAppIntegrationPreviewAPI {
-	return &PublishedAppIntegrationPreviewAPI{
-		publishedAppIntegrationPreviewImpl: publishedAppIntegrationPreviewImpl{
+func NewPublishedAppIntegration(client *client.DatabricksClient) *PublishedAppIntegrationAPI {
+	return &PublishedAppIntegrationAPI{
+		publishedAppIntegrationImpl: publishedAppIntegrationImpl{
 			client: client,
 		},
 	}
@@ -305,16 +305,16 @@ func NewPublishedAppIntegrationPreview(client *client.DatabricksClient) *Publish
 // These APIs enable administrators to manage published OAuth app integrations,
 // which is required for adding/using Published OAuth App Integration like
 // Tableau Desktop for Databricks in AWS cloud.
-type PublishedAppIntegrationPreviewAPI struct {
-	publishedAppIntegrationPreviewImpl
+type PublishedAppIntegrationAPI struct {
+	publishedAppIntegrationImpl
 }
 
 // Delete Published OAuth App Integration.
 //
 // Delete an existing Published OAuth App Integration. You can retrieve the
 // published OAuth app integration via :method:PublishedAppIntegration/get.
-func (a *PublishedAppIntegrationPreviewAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
-	return a.publishedAppIntegrationPreviewImpl.Delete(ctx, DeletePublishedAppIntegrationRequest{
+func (a *PublishedAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
+	return a.publishedAppIntegrationImpl.Delete(ctx, DeletePublishedAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
 }
@@ -322,13 +322,13 @@ func (a *PublishedAppIntegrationPreviewAPI) DeleteByIntegrationId(ctx context.Co
 // Get OAuth Published App Integration.
 //
 // Gets the Published OAuth App Integration for the given integration id.
-func (a *PublishedAppIntegrationPreviewAPI) GetByIntegrationId(ctx context.Context, integrationId string) (*GetPublishedAppIntegrationOutput, error) {
-	return a.publishedAppIntegrationPreviewImpl.Get(ctx, GetPublishedAppIntegrationRequest{
+func (a *PublishedAppIntegrationAPI) GetByIntegrationId(ctx context.Context, integrationId string) (*GetPublishedAppIntegrationOutput, error) {
+	return a.publishedAppIntegrationImpl.Get(ctx, GetPublishedAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
 }
 
-type ServicePrincipalFederationPolicyPreviewInterface interface {
+type ServicePrincipalFederationPolicyInterface interface {
 
 	// Create service principal federation policy.
 	Create(ctx context.Context, request CreateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error)
@@ -362,9 +362,9 @@ type ServicePrincipalFederationPolicyPreviewInterface interface {
 	Update(ctx context.Context, request UpdateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error)
 }
 
-func NewServicePrincipalFederationPolicyPreview(client *client.DatabricksClient) *ServicePrincipalFederationPolicyPreviewAPI {
-	return &ServicePrincipalFederationPolicyPreviewAPI{
-		servicePrincipalFederationPolicyPreviewImpl: servicePrincipalFederationPolicyPreviewImpl{
+func NewServicePrincipalFederationPolicy(client *client.DatabricksClient) *ServicePrincipalFederationPolicyAPI {
+	return &ServicePrincipalFederationPolicyAPI{
+		servicePrincipalFederationPolicyImpl: servicePrincipalFederationPolicyImpl{
 			client: client,
 		},
 	}
@@ -424,34 +424,34 @@ func NewServicePrincipalFederationPolicyPreview(client *client.DatabricksClient)
 //
 // You do not need to configure an OAuth application in Databricks to use token
 // federation.
-type ServicePrincipalFederationPolicyPreviewAPI struct {
-	servicePrincipalFederationPolicyPreviewImpl
+type ServicePrincipalFederationPolicyAPI struct {
+	servicePrincipalFederationPolicyImpl
 }
 
 // Delete service principal federation policy.
-func (a *ServicePrincipalFederationPolicyPreviewAPI) DeleteByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) error {
-	return a.servicePrincipalFederationPolicyPreviewImpl.Delete(ctx, DeleteServicePrincipalFederationPolicyRequest{
+func (a *ServicePrincipalFederationPolicyAPI) DeleteByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) error {
+	return a.servicePrincipalFederationPolicyImpl.Delete(ctx, DeleteServicePrincipalFederationPolicyRequest{
 		ServicePrincipalId: servicePrincipalId,
 		PolicyId:           policyId,
 	})
 }
 
 // Get service principal federation policy.
-func (a *ServicePrincipalFederationPolicyPreviewAPI) GetByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) (*FederationPolicy, error) {
-	return a.servicePrincipalFederationPolicyPreviewImpl.Get(ctx, GetServicePrincipalFederationPolicyRequest{
+func (a *ServicePrincipalFederationPolicyAPI) GetByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) (*FederationPolicy, error) {
+	return a.servicePrincipalFederationPolicyImpl.Get(ctx, GetServicePrincipalFederationPolicyRequest{
 		ServicePrincipalId: servicePrincipalId,
 		PolicyId:           policyId,
 	})
 }
 
 // List service principal federation policies.
-func (a *ServicePrincipalFederationPolicyPreviewAPI) ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*ListFederationPoliciesResponse, error) {
-	return a.servicePrincipalFederationPolicyPreviewImpl.internalList(ctx, ListServicePrincipalFederationPoliciesRequest{
+func (a *ServicePrincipalFederationPolicyAPI) ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*ListFederationPoliciesResponse, error) {
+	return a.servicePrincipalFederationPolicyImpl.internalList(ctx, ListServicePrincipalFederationPoliciesRequest{
 		ServicePrincipalId: servicePrincipalId,
 	})
 }
 
-type ServicePrincipalSecretsPreviewInterface interface {
+type ServicePrincipalSecretsInterface interface {
 
 	// Create service principal secret.
 	//
@@ -494,9 +494,9 @@ type ServicePrincipalSecretsPreviewInterface interface {
 	ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*ListServicePrincipalSecretsResponse, error)
 }
 
-func NewServicePrincipalSecretsPreview(client *client.DatabricksClient) *ServicePrincipalSecretsPreviewAPI {
-	return &ServicePrincipalSecretsPreviewAPI{
-		servicePrincipalSecretsPreviewImpl: servicePrincipalSecretsPreviewImpl{
+func NewServicePrincipalSecrets(client *client.DatabricksClient) *ServicePrincipalSecretsAPI {
+	return &ServicePrincipalSecretsAPI{
+		servicePrincipalSecretsImpl: servicePrincipalSecretsImpl{
 			client: client,
 		},
 	}
@@ -515,15 +515,15 @@ func NewServicePrincipalSecretsPreview(client *client.DatabricksClient) *Service
 //
 // [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
 // [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
-type ServicePrincipalSecretsPreviewAPI struct {
-	servicePrincipalSecretsPreviewImpl
+type ServicePrincipalSecretsAPI struct {
+	servicePrincipalSecretsImpl
 }
 
 // Delete service principal secret.
 //
 // Delete a secret from the given service principal.
-func (a *ServicePrincipalSecretsPreviewAPI) DeleteByServicePrincipalIdAndSecretId(ctx context.Context, servicePrincipalId int64, secretId string) error {
-	return a.servicePrincipalSecretsPreviewImpl.Delete(ctx, DeleteServicePrincipalSecretRequest{
+func (a *ServicePrincipalSecretsAPI) DeleteByServicePrincipalIdAndSecretId(ctx context.Context, servicePrincipalId int64, secretId string) error {
+	return a.servicePrincipalSecretsImpl.Delete(ctx, DeleteServicePrincipalSecretRequest{
 		ServicePrincipalId: servicePrincipalId,
 		SecretId:           secretId,
 	})
@@ -534,8 +534,8 @@ func (a *ServicePrincipalSecretsPreviewAPI) DeleteByServicePrincipalIdAndSecretI
 // List all secrets associated with the given service principal. This operation
 // only returns information about the secrets themselves and does not include
 // the secret values.
-func (a *ServicePrincipalSecretsPreviewAPI) ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*ListServicePrincipalSecretsResponse, error) {
-	return a.servicePrincipalSecretsPreviewImpl.internalList(ctx, ListServicePrincipalSecretsRequest{
+func (a *ServicePrincipalSecretsAPI) ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*ListServicePrincipalSecretsResponse, error) {
+	return a.servicePrincipalSecretsImpl.internalList(ctx, ListServicePrincipalSecretsRequest{
 		ServicePrincipalId: servicePrincipalId,
 	})
 }

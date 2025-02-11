@@ -12,12 +12,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-// unexported type that holds implementations of just AccountIpAccessListsPreview API methods
-type accountIpAccessListsPreviewImpl struct {
+// unexported type that holds implementations of just AccountIpAccessLists API methods
+type accountIpAccessListsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountIpAccessListsPreviewImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
+func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
 	var createIpAccessListResponse CreateIpAccessListResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -28,7 +28,7 @@ func (a *accountIpAccessListsPreviewImpl) Create(ctx context.Context, request Cr
 	return &createIpAccessListResponse, err
 }
 
-func (a *accountIpAccessListsPreviewImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
+func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
@@ -38,7 +38,7 @@ func (a *accountIpAccessListsPreviewImpl) Delete(ctx context.Context, request De
 	return err
 }
 
-func (a *accountIpAccessListsPreviewImpl) Get(ctx context.Context, request GetAccountIpAccessListRequest) (*GetIpAccessListResponse, error) {
+func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpAccessListRequest) (*GetIpAccessListResponse, error) {
 	var getIpAccessListResponse GetIpAccessListResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
@@ -51,7 +51,7 @@ func (a *accountIpAccessListsPreviewImpl) Get(ctx context.Context, request GetAc
 // Get access lists.
 //
 // Gets all IP access lists for the specified account.
-func (a *accountIpAccessListsPreviewImpl) List(ctx context.Context) listing.Iterator[IpAccessListInfo] {
+func (a *accountIpAccessListsImpl) List(ctx context.Context) listing.Iterator[IpAccessListInfo] {
 	request := struct{}{}
 
 	getNextPage := func(ctx context.Context, req struct{}) (*GetIpAccessListsResponse, error) {
@@ -73,11 +73,11 @@ func (a *accountIpAccessListsPreviewImpl) List(ctx context.Context) listing.Iter
 // Get access lists.
 //
 // Gets all IP access lists for the specified account.
-func (a *accountIpAccessListsPreviewImpl) ListAll(ctx context.Context) ([]IpAccessListInfo, error) {
+func (a *accountIpAccessListsImpl) ListAll(ctx context.Context) ([]IpAccessListInfo, error) {
 	iterator := a.List(ctx)
 	return listing.ToSlice[IpAccessListInfo](ctx, iterator)
 }
-func (a *accountIpAccessListsPreviewImpl) internalList(ctx context.Context) (*GetIpAccessListsResponse, error) {
+func (a *accountIpAccessListsImpl) internalList(ctx context.Context) (*GetIpAccessListsResponse, error) {
 	var getIpAccessListsResponse GetIpAccessListsResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
 
@@ -87,7 +87,7 @@ func (a *accountIpAccessListsPreviewImpl) internalList(ctx context.Context) (*Ge
 	return &getIpAccessListsResponse, err
 }
 
-func (a *accountIpAccessListsPreviewImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
+func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
 	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
@@ -98,7 +98,7 @@ func (a *accountIpAccessListsPreviewImpl) Replace(ctx context.Context, request R
 	return err
 }
 
-func (a *accountIpAccessListsPreviewImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
+func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
@@ -114,17 +114,12 @@ type accountSettingsImpl struct {
 	client *client.DatabricksClient
 }
 
-// unexported type that holds implementations of just AccountSettingsPreview API methods
-type accountSettingsPreviewImpl struct {
+// unexported type that holds implementations of just AibiDashboardEmbeddingAccessPolicy API methods
+type aibiDashboardEmbeddingAccessPolicyImpl struct {
 	client *client.DatabricksClient
 }
 
-// unexported type that holds implementations of just AibiDashboardEmbeddingAccessPolicyPreview API methods
-type aibiDashboardEmbeddingAccessPolicyPreviewImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *aibiDashboardEmbeddingAccessPolicyPreviewImpl) Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*DeleteAibiDashboardEmbeddingAccessPolicySettingResponse, error) {
+func (a *aibiDashboardEmbeddingAccessPolicyImpl) Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*DeleteAibiDashboardEmbeddingAccessPolicySettingResponse, error) {
 	var deleteAibiDashboardEmbeddingAccessPolicySettingResponse DeleteAibiDashboardEmbeddingAccessPolicySettingResponse
 	path := "/api/2.0preview/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
 	queryParams := make(map[string]any)
@@ -134,7 +129,7 @@ func (a *aibiDashboardEmbeddingAccessPolicyPreviewImpl) Delete(ctx context.Conte
 	return &deleteAibiDashboardEmbeddingAccessPolicySettingResponse, err
 }
 
-func (a *aibiDashboardEmbeddingAccessPolicyPreviewImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error) {
+func (a *aibiDashboardEmbeddingAccessPolicyImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error) {
 	var aibiDashboardEmbeddingAccessPolicySetting AibiDashboardEmbeddingAccessPolicySetting
 	path := "/api/2.0preview/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
 	queryParams := make(map[string]any)
@@ -144,7 +139,7 @@ func (a *aibiDashboardEmbeddingAccessPolicyPreviewImpl) Get(ctx context.Context,
 	return &aibiDashboardEmbeddingAccessPolicySetting, err
 }
 
-func (a *aibiDashboardEmbeddingAccessPolicyPreviewImpl) Update(ctx context.Context, request UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error) {
+func (a *aibiDashboardEmbeddingAccessPolicyImpl) Update(ctx context.Context, request UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error) {
 	var aibiDashboardEmbeddingAccessPolicySetting AibiDashboardEmbeddingAccessPolicySetting
 	path := "/api/2.0preview/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
 	queryParams := make(map[string]any)
@@ -155,12 +150,12 @@ func (a *aibiDashboardEmbeddingAccessPolicyPreviewImpl) Update(ctx context.Conte
 	return &aibiDashboardEmbeddingAccessPolicySetting, err
 }
 
-// unexported type that holds implementations of just AibiDashboardEmbeddingApprovedDomainsPreview API methods
-type aibiDashboardEmbeddingApprovedDomainsPreviewImpl struct {
+// unexported type that holds implementations of just AibiDashboardEmbeddingApprovedDomains API methods
+type aibiDashboardEmbeddingApprovedDomainsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *aibiDashboardEmbeddingApprovedDomainsPreviewImpl) Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse, error) {
+func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse, error) {
 	var deleteAibiDashboardEmbeddingApprovedDomainsSettingResponse DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse
 	path := "/api/2.0preview/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default"
 	queryParams := make(map[string]any)
@@ -170,7 +165,7 @@ func (a *aibiDashboardEmbeddingApprovedDomainsPreviewImpl) Delete(ctx context.Co
 	return &deleteAibiDashboardEmbeddingApprovedDomainsSettingResponse, err
 }
 
-func (a *aibiDashboardEmbeddingApprovedDomainsPreviewImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error) {
+func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error) {
 	var aibiDashboardEmbeddingApprovedDomainsSetting AibiDashboardEmbeddingApprovedDomainsSetting
 	path := "/api/2.0preview/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default"
 	queryParams := make(map[string]any)
@@ -180,7 +175,7 @@ func (a *aibiDashboardEmbeddingApprovedDomainsPreviewImpl) Get(ctx context.Conte
 	return &aibiDashboardEmbeddingApprovedDomainsSetting, err
 }
 
-func (a *aibiDashboardEmbeddingApprovedDomainsPreviewImpl) Update(ctx context.Context, request UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error) {
+func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Update(ctx context.Context, request UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error) {
 	var aibiDashboardEmbeddingApprovedDomainsSetting AibiDashboardEmbeddingApprovedDomainsSetting
 	path := "/api/2.0preview/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default"
 	queryParams := make(map[string]any)
@@ -191,12 +186,12 @@ func (a *aibiDashboardEmbeddingApprovedDomainsPreviewImpl) Update(ctx context.Co
 	return &aibiDashboardEmbeddingApprovedDomainsSetting, err
 }
 
-// unexported type that holds implementations of just AutomaticClusterUpdatePreview API methods
-type automaticClusterUpdatePreviewImpl struct {
+// unexported type that holds implementations of just AutomaticClusterUpdate API methods
+type automaticClusterUpdateImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *automaticClusterUpdatePreviewImpl) Get(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
+func (a *automaticClusterUpdateImpl) Get(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
 	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
 	path := "/api/2.0preview/settings/types/automatic_cluster_update/names/default"
 	queryParams := make(map[string]any)
@@ -206,7 +201,7 @@ func (a *automaticClusterUpdatePreviewImpl) Get(ctx context.Context, request Get
 	return &automaticClusterUpdateSetting, err
 }
 
-func (a *automaticClusterUpdatePreviewImpl) Update(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
+func (a *automaticClusterUpdateImpl) Update(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
 	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
 	path := "/api/2.0preview/settings/types/automatic_cluster_update/names/default"
 	queryParams := make(map[string]any)
@@ -217,12 +212,12 @@ func (a *automaticClusterUpdatePreviewImpl) Update(ctx context.Context, request 
 	return &automaticClusterUpdateSetting, err
 }
 
-// unexported type that holds implementations of just ComplianceSecurityProfilePreview API methods
-type complianceSecurityProfilePreviewImpl struct {
+// unexported type that holds implementations of just ComplianceSecurityProfile API methods
+type complianceSecurityProfileImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *complianceSecurityProfilePreviewImpl) Get(ctx context.Context, request GetComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
+func (a *complianceSecurityProfileImpl) Get(ctx context.Context, request GetComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
 	var complianceSecurityProfileSetting ComplianceSecurityProfileSetting
 	path := "/api/2.0preview/settings/types/shield_csp_enablement_ws_db/names/default"
 	queryParams := make(map[string]any)
@@ -232,7 +227,7 @@ func (a *complianceSecurityProfilePreviewImpl) Get(ctx context.Context, request 
 	return &complianceSecurityProfileSetting, err
 }
 
-func (a *complianceSecurityProfilePreviewImpl) Update(ctx context.Context, request UpdateComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
+func (a *complianceSecurityProfileImpl) Update(ctx context.Context, request UpdateComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
 	var complianceSecurityProfileSetting ComplianceSecurityProfileSetting
 	path := "/api/2.0preview/settings/types/shield_csp_enablement_ws_db/names/default"
 	queryParams := make(map[string]any)
@@ -243,12 +238,12 @@ func (a *complianceSecurityProfilePreviewImpl) Update(ctx context.Context, reque
 	return &complianceSecurityProfileSetting, err
 }
 
-// unexported type that holds implementations of just CredentialsManagerPreview API methods
-type credentialsManagerPreviewImpl struct {
+// unexported type that holds implementations of just CredentialsManager API methods
+type credentialsManagerImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *credentialsManagerPreviewImpl) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
+func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
 	var exchangeTokenResponse ExchangeTokenResponse
 	path := "/api/2.0preview/credentials-manager/exchange-tokens/token"
 	queryParams := make(map[string]any)
@@ -259,12 +254,12 @@ func (a *credentialsManagerPreviewImpl) ExchangeToken(ctx context.Context, reque
 	return &exchangeTokenResponse, err
 }
 
-// unexported type that holds implementations of just CspEnablementAccountPreview API methods
-type cspEnablementAccountPreviewImpl struct {
+// unexported type that holds implementations of just CspEnablementAccount API methods
+type cspEnablementAccountImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *cspEnablementAccountPreviewImpl) Get(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
+func (a *cspEnablementAccountImpl) Get(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
 	var cspEnablementAccountSetting CspEnablementAccountSetting
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -274,7 +269,7 @@ func (a *cspEnablementAccountPreviewImpl) Get(ctx context.Context, request GetCs
 	return &cspEnablementAccountSetting, err
 }
 
-func (a *cspEnablementAccountPreviewImpl) Update(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
+func (a *cspEnablementAccountImpl) Update(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
 	var cspEnablementAccountSetting CspEnablementAccountSetting
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -285,12 +280,12 @@ func (a *cspEnablementAccountPreviewImpl) Update(ctx context.Context, request Up
 	return &cspEnablementAccountSetting, err
 }
 
-// unexported type that holds implementations of just DefaultNamespacePreview API methods
-type defaultNamespacePreviewImpl struct {
+// unexported type that holds implementations of just DefaultNamespace API methods
+type defaultNamespaceImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *defaultNamespacePreviewImpl) Delete(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
+func (a *defaultNamespaceImpl) Delete(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
 	var deleteDefaultNamespaceSettingResponse DeleteDefaultNamespaceSettingResponse
 	path := "/api/2.0preview/settings/types/default_namespace_ws/names/default"
 	queryParams := make(map[string]any)
@@ -300,7 +295,7 @@ func (a *defaultNamespacePreviewImpl) Delete(ctx context.Context, request Delete
 	return &deleteDefaultNamespaceSettingResponse, err
 }
 
-func (a *defaultNamespacePreviewImpl) Get(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
+func (a *defaultNamespaceImpl) Get(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
 	var defaultNamespaceSetting DefaultNamespaceSetting
 	path := "/api/2.0preview/settings/types/default_namespace_ws/names/default"
 	queryParams := make(map[string]any)
@@ -310,7 +305,7 @@ func (a *defaultNamespacePreviewImpl) Get(ctx context.Context, request GetDefaul
 	return &defaultNamespaceSetting, err
 }
 
-func (a *defaultNamespacePreviewImpl) Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
+func (a *defaultNamespaceImpl) Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
 	var defaultNamespaceSetting DefaultNamespaceSetting
 	path := "/api/2.0preview/settings/types/default_namespace_ws/names/default"
 	queryParams := make(map[string]any)
@@ -321,12 +316,12 @@ func (a *defaultNamespacePreviewImpl) Update(ctx context.Context, request Update
 	return &defaultNamespaceSetting, err
 }
 
-// unexported type that holds implementations of just DisableLegacyAccessPreview API methods
-type disableLegacyAccessPreviewImpl struct {
+// unexported type that holds implementations of just DisableLegacyAccess API methods
+type disableLegacyAccessImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *disableLegacyAccessPreviewImpl) Delete(ctx context.Context, request DeleteDisableLegacyAccessRequest) (*DeleteDisableLegacyAccessResponse, error) {
+func (a *disableLegacyAccessImpl) Delete(ctx context.Context, request DeleteDisableLegacyAccessRequest) (*DeleteDisableLegacyAccessResponse, error) {
 	var deleteDisableLegacyAccessResponse DeleteDisableLegacyAccessResponse
 	path := "/api/2.0preview/settings/types/disable_legacy_access/names/default"
 	queryParams := make(map[string]any)
@@ -336,7 +331,7 @@ func (a *disableLegacyAccessPreviewImpl) Delete(ctx context.Context, request Del
 	return &deleteDisableLegacyAccessResponse, err
 }
 
-func (a *disableLegacyAccessPreviewImpl) Get(ctx context.Context, request GetDisableLegacyAccessRequest) (*DisableLegacyAccess, error) {
+func (a *disableLegacyAccessImpl) Get(ctx context.Context, request GetDisableLegacyAccessRequest) (*DisableLegacyAccess, error) {
 	var disableLegacyAccess DisableLegacyAccess
 	path := "/api/2.0preview/settings/types/disable_legacy_access/names/default"
 	queryParams := make(map[string]any)
@@ -346,7 +341,7 @@ func (a *disableLegacyAccessPreviewImpl) Get(ctx context.Context, request GetDis
 	return &disableLegacyAccess, err
 }
 
-func (a *disableLegacyAccessPreviewImpl) Update(ctx context.Context, request UpdateDisableLegacyAccessRequest) (*DisableLegacyAccess, error) {
+func (a *disableLegacyAccessImpl) Update(ctx context.Context, request UpdateDisableLegacyAccessRequest) (*DisableLegacyAccess, error) {
 	var disableLegacyAccess DisableLegacyAccess
 	path := "/api/2.0preview/settings/types/disable_legacy_access/names/default"
 	queryParams := make(map[string]any)
@@ -357,12 +352,12 @@ func (a *disableLegacyAccessPreviewImpl) Update(ctx context.Context, request Upd
 	return &disableLegacyAccess, err
 }
 
-// unexported type that holds implementations of just DisableLegacyDbfsPreview API methods
-type disableLegacyDbfsPreviewImpl struct {
+// unexported type that holds implementations of just DisableLegacyDbfs API methods
+type disableLegacyDbfsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *disableLegacyDbfsPreviewImpl) Delete(ctx context.Context, request DeleteDisableLegacyDbfsRequest) (*DeleteDisableLegacyDbfsResponse, error) {
+func (a *disableLegacyDbfsImpl) Delete(ctx context.Context, request DeleteDisableLegacyDbfsRequest) (*DeleteDisableLegacyDbfsResponse, error) {
 	var deleteDisableLegacyDbfsResponse DeleteDisableLegacyDbfsResponse
 	path := "/api/2.0preview/settings/types/disable_legacy_dbfs/names/default"
 	queryParams := make(map[string]any)
@@ -372,7 +367,7 @@ func (a *disableLegacyDbfsPreviewImpl) Delete(ctx context.Context, request Delet
 	return &deleteDisableLegacyDbfsResponse, err
 }
 
-func (a *disableLegacyDbfsPreviewImpl) Get(ctx context.Context, request GetDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error) {
+func (a *disableLegacyDbfsImpl) Get(ctx context.Context, request GetDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error) {
 	var disableLegacyDbfs DisableLegacyDbfs
 	path := "/api/2.0preview/settings/types/disable_legacy_dbfs/names/default"
 	queryParams := make(map[string]any)
@@ -382,7 +377,7 @@ func (a *disableLegacyDbfsPreviewImpl) Get(ctx context.Context, request GetDisab
 	return &disableLegacyDbfs, err
 }
 
-func (a *disableLegacyDbfsPreviewImpl) Update(ctx context.Context, request UpdateDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error) {
+func (a *disableLegacyDbfsImpl) Update(ctx context.Context, request UpdateDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error) {
 	var disableLegacyDbfs DisableLegacyDbfs
 	path := "/api/2.0preview/settings/types/disable_legacy_dbfs/names/default"
 	queryParams := make(map[string]any)
@@ -393,12 +388,12 @@ func (a *disableLegacyDbfsPreviewImpl) Update(ctx context.Context, request Updat
 	return &disableLegacyDbfs, err
 }
 
-// unexported type that holds implementations of just DisableLegacyFeaturesPreview API methods
-type disableLegacyFeaturesPreviewImpl struct {
+// unexported type that holds implementations of just DisableLegacyFeatures API methods
+type disableLegacyFeaturesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *disableLegacyFeaturesPreviewImpl) Delete(ctx context.Context, request DeleteDisableLegacyFeaturesRequest) (*DeleteDisableLegacyFeaturesResponse, error) {
+func (a *disableLegacyFeaturesImpl) Delete(ctx context.Context, request DeleteDisableLegacyFeaturesRequest) (*DeleteDisableLegacyFeaturesResponse, error) {
 	var deleteDisableLegacyFeaturesResponse DeleteDisableLegacyFeaturesResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -408,7 +403,7 @@ func (a *disableLegacyFeaturesPreviewImpl) Delete(ctx context.Context, request D
 	return &deleteDisableLegacyFeaturesResponse, err
 }
 
-func (a *disableLegacyFeaturesPreviewImpl) Get(ctx context.Context, request GetDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error) {
+func (a *disableLegacyFeaturesImpl) Get(ctx context.Context, request GetDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error) {
 	var disableLegacyFeatures DisableLegacyFeatures
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -418,7 +413,7 @@ func (a *disableLegacyFeaturesPreviewImpl) Get(ctx context.Context, request GetD
 	return &disableLegacyFeatures, err
 }
 
-func (a *disableLegacyFeaturesPreviewImpl) Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error) {
+func (a *disableLegacyFeaturesImpl) Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error) {
 	var disableLegacyFeatures DisableLegacyFeatures
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -429,12 +424,12 @@ func (a *disableLegacyFeaturesPreviewImpl) Update(ctx context.Context, request U
 	return &disableLegacyFeatures, err
 }
 
-// unexported type that holds implementations of just EnableIpAccessListsPreview API methods
-type enableIpAccessListsPreviewImpl struct {
+// unexported type that holds implementations of just EnableIpAccessLists API methods
+type enableIpAccessListsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *enableIpAccessListsPreviewImpl) Delete(ctx context.Context, request DeleteAccountIpAccessEnableRequest) (*DeleteAccountIpAccessEnableResponse, error) {
+func (a *enableIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessEnableRequest) (*DeleteAccountIpAccessEnableResponse, error) {
 	var deleteAccountIpAccessEnableResponse DeleteAccountIpAccessEnableResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -444,7 +439,7 @@ func (a *enableIpAccessListsPreviewImpl) Delete(ctx context.Context, request Del
 	return &deleteAccountIpAccessEnableResponse, err
 }
 
-func (a *enableIpAccessListsPreviewImpl) Get(ctx context.Context, request GetAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error) {
+func (a *enableIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error) {
 	var accountIpAccessEnable AccountIpAccessEnable
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -454,7 +449,7 @@ func (a *enableIpAccessListsPreviewImpl) Get(ctx context.Context, request GetAcc
 	return &accountIpAccessEnable, err
 }
 
-func (a *enableIpAccessListsPreviewImpl) Update(ctx context.Context, request UpdateAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error) {
+func (a *enableIpAccessListsImpl) Update(ctx context.Context, request UpdateAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error) {
 	var accountIpAccessEnable AccountIpAccessEnable
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -465,12 +460,12 @@ func (a *enableIpAccessListsPreviewImpl) Update(ctx context.Context, request Upd
 	return &accountIpAccessEnable, err
 }
 
-// unexported type that holds implementations of just EnhancedSecurityMonitoringPreview API methods
-type enhancedSecurityMonitoringPreviewImpl struct {
+// unexported type that holds implementations of just EnhancedSecurityMonitoring API methods
+type enhancedSecurityMonitoringImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *enhancedSecurityMonitoringPreviewImpl) Get(ctx context.Context, request GetEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
+func (a *enhancedSecurityMonitoringImpl) Get(ctx context.Context, request GetEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
 	var enhancedSecurityMonitoringSetting EnhancedSecurityMonitoringSetting
 	path := "/api/2.0preview/settings/types/shield_esm_enablement_ws_db/names/default"
 	queryParams := make(map[string]any)
@@ -480,7 +475,7 @@ func (a *enhancedSecurityMonitoringPreviewImpl) Get(ctx context.Context, request
 	return &enhancedSecurityMonitoringSetting, err
 }
 
-func (a *enhancedSecurityMonitoringPreviewImpl) Update(ctx context.Context, request UpdateEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
+func (a *enhancedSecurityMonitoringImpl) Update(ctx context.Context, request UpdateEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
 	var enhancedSecurityMonitoringSetting EnhancedSecurityMonitoringSetting
 	path := "/api/2.0preview/settings/types/shield_esm_enablement_ws_db/names/default"
 	queryParams := make(map[string]any)
@@ -491,12 +486,12 @@ func (a *enhancedSecurityMonitoringPreviewImpl) Update(ctx context.Context, requ
 	return &enhancedSecurityMonitoringSetting, err
 }
 
-// unexported type that holds implementations of just EsmEnablementAccountPreview API methods
-type esmEnablementAccountPreviewImpl struct {
+// unexported type that holds implementations of just EsmEnablementAccount API methods
+type esmEnablementAccountImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *esmEnablementAccountPreviewImpl) Get(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
+func (a *esmEnablementAccountImpl) Get(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
 	var esmEnablementAccountSetting EsmEnablementAccountSetting
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -506,7 +501,7 @@ func (a *esmEnablementAccountPreviewImpl) Get(ctx context.Context, request GetEs
 	return &esmEnablementAccountSetting, err
 }
 
-func (a *esmEnablementAccountPreviewImpl) Update(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
+func (a *esmEnablementAccountImpl) Update(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
 	var esmEnablementAccountSetting EsmEnablementAccountSetting
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -517,12 +512,12 @@ func (a *esmEnablementAccountPreviewImpl) Update(ctx context.Context, request Up
 	return &esmEnablementAccountSetting, err
 }
 
-// unexported type that holds implementations of just IpAccessListsPreview API methods
-type ipAccessListsPreviewImpl struct {
+// unexported type that holds implementations of just IpAccessLists API methods
+type ipAccessListsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *ipAccessListsPreviewImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
+func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
 	var createIpAccessListResponse CreateIpAccessListResponse
 	path := "/api/2.0preview/ip-access-lists"
 	queryParams := make(map[string]any)
@@ -533,7 +528,7 @@ func (a *ipAccessListsPreviewImpl) Create(ctx context.Context, request CreateIpA
 	return &createIpAccessListResponse, err
 }
 
-func (a *ipAccessListsPreviewImpl) Delete(ctx context.Context, request DeleteIpAccessListRequest) error {
+func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessListRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/ip-access-lists/%v", request.IpAccessListId)
 	queryParams := make(map[string]any)
@@ -543,7 +538,7 @@ func (a *ipAccessListsPreviewImpl) Delete(ctx context.Context, request DeleteIpA
 	return err
 }
 
-func (a *ipAccessListsPreviewImpl) Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error) {
+func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error) {
 	var fetchIpAccessListResponse FetchIpAccessListResponse
 	path := fmt.Sprintf("/api/2.0preview/ip-access-lists/%v", request.IpAccessListId)
 	queryParams := make(map[string]any)
@@ -556,7 +551,7 @@ func (a *ipAccessListsPreviewImpl) Get(ctx context.Context, request GetIpAccessL
 // Get access lists.
 //
 // Gets all IP access lists for the specified workspace.
-func (a *ipAccessListsPreviewImpl) List(ctx context.Context) listing.Iterator[IpAccessListInfo] {
+func (a *ipAccessListsImpl) List(ctx context.Context) listing.Iterator[IpAccessListInfo] {
 	request := struct{}{}
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListIpAccessListResponse, error) {
@@ -578,11 +573,11 @@ func (a *ipAccessListsPreviewImpl) List(ctx context.Context) listing.Iterator[Ip
 // Get access lists.
 //
 // Gets all IP access lists for the specified workspace.
-func (a *ipAccessListsPreviewImpl) ListAll(ctx context.Context) ([]IpAccessListInfo, error) {
+func (a *ipAccessListsImpl) ListAll(ctx context.Context) ([]IpAccessListInfo, error) {
 	iterator := a.List(ctx)
 	return listing.ToSlice[IpAccessListInfo](ctx, iterator)
 }
-func (a *ipAccessListsPreviewImpl) internalList(ctx context.Context) (*ListIpAccessListResponse, error) {
+func (a *ipAccessListsImpl) internalList(ctx context.Context) (*ListIpAccessListResponse, error) {
 	var listIpAccessListResponse ListIpAccessListResponse
 	path := "/api/2.0preview/ip-access-lists"
 
@@ -592,7 +587,7 @@ func (a *ipAccessListsPreviewImpl) internalList(ctx context.Context) (*ListIpAcc
 	return &listIpAccessListResponse, err
 }
 
-func (a *ipAccessListsPreviewImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
+func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
 	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0preview/ip-access-lists/%v", request.IpAccessListId)
 	queryParams := make(map[string]any)
@@ -603,7 +598,7 @@ func (a *ipAccessListsPreviewImpl) Replace(ctx context.Context, request ReplaceI
 	return err
 }
 
-func (a *ipAccessListsPreviewImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
+func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0preview/ip-access-lists/%v", request.IpAccessListId)
 	queryParams := make(map[string]any)
@@ -614,12 +609,12 @@ func (a *ipAccessListsPreviewImpl) Update(ctx context.Context, request UpdateIpA
 	return err
 }
 
-// unexported type that holds implementations of just NetworkConnectivityPreview API methods
-type networkConnectivityPreviewImpl struct {
+// unexported type that holds implementations of just NetworkConnectivity API methods
+type networkConnectivityImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *networkConnectivityPreviewImpl) CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error) {
+func (a *networkConnectivityImpl) CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error) {
 	var networkConnectivityConfiguration NetworkConnectivityConfiguration
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/network-connectivity-configs", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -630,7 +625,7 @@ func (a *networkConnectivityPreviewImpl) CreateNetworkConnectivityConfiguration(
 	return &networkConnectivityConfiguration, err
 }
 
-func (a *networkConnectivityPreviewImpl) CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
+func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
 	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
@@ -641,7 +636,7 @@ func (a *networkConnectivityPreviewImpl) CreatePrivateEndpointRule(ctx context.C
 	return &nccAzurePrivateEndpointRule, err
 }
 
-func (a *networkConnectivityPreviewImpl) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error {
+func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error {
 	var deleteNetworkConnectivityConfigurationResponse DeleteNetworkConnectivityConfigurationResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
@@ -651,7 +646,7 @@ func (a *networkConnectivityPreviewImpl) DeleteNetworkConnectivityConfiguration(
 	return err
 }
 
-func (a *networkConnectivityPreviewImpl) DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
+func (a *networkConnectivityImpl) DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
 	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
 	queryParams := make(map[string]any)
@@ -661,7 +656,7 @@ func (a *networkConnectivityPreviewImpl) DeletePrivateEndpointRule(ctx context.C
 	return &nccAzurePrivateEndpointRule, err
 }
 
-func (a *networkConnectivityPreviewImpl) GetNetworkConnectivityConfiguration(ctx context.Context, request GetNetworkConnectivityConfigurationRequest) (*NetworkConnectivityConfiguration, error) {
+func (a *networkConnectivityImpl) GetNetworkConnectivityConfiguration(ctx context.Context, request GetNetworkConnectivityConfigurationRequest) (*NetworkConnectivityConfiguration, error) {
 	var networkConnectivityConfiguration NetworkConnectivityConfiguration
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
@@ -671,7 +666,7 @@ func (a *networkConnectivityPreviewImpl) GetNetworkConnectivityConfiguration(ctx
 	return &networkConnectivityConfiguration, err
 }
 
-func (a *networkConnectivityPreviewImpl) GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
+func (a *networkConnectivityImpl) GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
 	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
 	queryParams := make(map[string]any)
@@ -684,7 +679,7 @@ func (a *networkConnectivityPreviewImpl) GetPrivateEndpointRule(ctx context.Cont
 // List network connectivity configurations.
 //
 // Gets an array of network connectivity configurations.
-func (a *networkConnectivityPreviewImpl) ListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) listing.Iterator[NetworkConnectivityConfiguration] {
+func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) listing.Iterator[NetworkConnectivityConfiguration] {
 
 	getNextPage := func(ctx context.Context, req ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -711,11 +706,11 @@ func (a *networkConnectivityPreviewImpl) ListNetworkConnectivityConfigurations(c
 // List network connectivity configurations.
 //
 // Gets an array of network connectivity configurations.
-func (a *networkConnectivityPreviewImpl) ListNetworkConnectivityConfigurationsAll(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) ([]NetworkConnectivityConfiguration, error) {
+func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurationsAll(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) ([]NetworkConnectivityConfiguration, error) {
 	iterator := a.ListNetworkConnectivityConfigurations(ctx, request)
 	return listing.ToSlice[NetworkConnectivityConfiguration](ctx, iterator)
 }
-func (a *networkConnectivityPreviewImpl) internalListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error) {
+func (a *networkConnectivityImpl) internalListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error) {
 	var listNetworkConnectivityConfigurationsResponse ListNetworkConnectivityConfigurationsResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/network-connectivity-configs", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -728,7 +723,7 @@ func (a *networkConnectivityPreviewImpl) internalListNetworkConnectivityConfigur
 // List private endpoint rules.
 //
 // Gets an array of private endpoint rules.
-func (a *networkConnectivityPreviewImpl) ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) listing.Iterator[NccAzurePrivateEndpointRule] {
+func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) listing.Iterator[NccAzurePrivateEndpointRule] {
 
 	getNextPage := func(ctx context.Context, req ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -755,11 +750,11 @@ func (a *networkConnectivityPreviewImpl) ListPrivateEndpointRules(ctx context.Co
 // List private endpoint rules.
 //
 // Gets an array of private endpoint rules.
-func (a *networkConnectivityPreviewImpl) ListPrivateEndpointRulesAll(ctx context.Context, request ListPrivateEndpointRulesRequest) ([]NccAzurePrivateEndpointRule, error) {
+func (a *networkConnectivityImpl) ListPrivateEndpointRulesAll(ctx context.Context, request ListPrivateEndpointRulesRequest) ([]NccAzurePrivateEndpointRule, error) {
 	iterator := a.ListPrivateEndpointRules(ctx, request)
 	return listing.ToSlice[NccAzurePrivateEndpointRule](ctx, iterator)
 }
-func (a *networkConnectivityPreviewImpl) internalListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
+func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
 	var listNccAzurePrivateEndpointRulesResponse ListNccAzurePrivateEndpointRulesResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
@@ -769,12 +764,12 @@ func (a *networkConnectivityPreviewImpl) internalListPrivateEndpointRules(ctx co
 	return &listNccAzurePrivateEndpointRulesResponse, err
 }
 
-// unexported type that holds implementations of just NotificationDestinationsPreview API methods
-type notificationDestinationsPreviewImpl struct {
+// unexported type that holds implementations of just NotificationDestinations API methods
+type notificationDestinationsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *notificationDestinationsPreviewImpl) Create(ctx context.Context, request CreateNotificationDestinationRequest) (*NotificationDestination, error) {
+func (a *notificationDestinationsImpl) Create(ctx context.Context, request CreateNotificationDestinationRequest) (*NotificationDestination, error) {
 	var notificationDestination NotificationDestination
 	path := "/api/2.0preview/notification-destinations"
 	queryParams := make(map[string]any)
@@ -785,7 +780,7 @@ func (a *notificationDestinationsPreviewImpl) Create(ctx context.Context, reques
 	return &notificationDestination, err
 }
 
-func (a *notificationDestinationsPreviewImpl) Delete(ctx context.Context, request DeleteNotificationDestinationRequest) error {
+func (a *notificationDestinationsImpl) Delete(ctx context.Context, request DeleteNotificationDestinationRequest) error {
 	var empty Empty
 	path := fmt.Sprintf("/api/2.0preview/notification-destinations/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -795,7 +790,7 @@ func (a *notificationDestinationsPreviewImpl) Delete(ctx context.Context, reques
 	return err
 }
 
-func (a *notificationDestinationsPreviewImpl) Get(ctx context.Context, request GetNotificationDestinationRequest) (*NotificationDestination, error) {
+func (a *notificationDestinationsImpl) Get(ctx context.Context, request GetNotificationDestinationRequest) (*NotificationDestination, error) {
 	var notificationDestination NotificationDestination
 	path := fmt.Sprintf("/api/2.0preview/notification-destinations/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -808,7 +803,7 @@ func (a *notificationDestinationsPreviewImpl) Get(ctx context.Context, request G
 // List notification destinations.
 //
 // Lists notification destinations.
-func (a *notificationDestinationsPreviewImpl) List(ctx context.Context, request ListNotificationDestinationsRequest) listing.Iterator[ListNotificationDestinationsResult] {
+func (a *notificationDestinationsImpl) List(ctx context.Context, request ListNotificationDestinationsRequest) listing.Iterator[ListNotificationDestinationsResult] {
 
 	getNextPage := func(ctx context.Context, req ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -835,11 +830,11 @@ func (a *notificationDestinationsPreviewImpl) List(ctx context.Context, request 
 // List notification destinations.
 //
 // Lists notification destinations.
-func (a *notificationDestinationsPreviewImpl) ListAll(ctx context.Context, request ListNotificationDestinationsRequest) ([]ListNotificationDestinationsResult, error) {
+func (a *notificationDestinationsImpl) ListAll(ctx context.Context, request ListNotificationDestinationsRequest) ([]ListNotificationDestinationsResult, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ListNotificationDestinationsResult](ctx, iterator)
 }
-func (a *notificationDestinationsPreviewImpl) internalList(ctx context.Context, request ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error) {
+func (a *notificationDestinationsImpl) internalList(ctx context.Context, request ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error) {
 	var listNotificationDestinationsResponse ListNotificationDestinationsResponse
 	path := "/api/2.0preview/notification-destinations"
 	queryParams := make(map[string]any)
@@ -849,7 +844,7 @@ func (a *notificationDestinationsPreviewImpl) internalList(ctx context.Context, 
 	return &listNotificationDestinationsResponse, err
 }
 
-func (a *notificationDestinationsPreviewImpl) Update(ctx context.Context, request UpdateNotificationDestinationRequest) (*NotificationDestination, error) {
+func (a *notificationDestinationsImpl) Update(ctx context.Context, request UpdateNotificationDestinationRequest) (*NotificationDestination, error) {
 	var notificationDestination NotificationDestination
 	path := fmt.Sprintf("/api/2.0preview/notification-destinations/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -860,12 +855,12 @@ func (a *notificationDestinationsPreviewImpl) Update(ctx context.Context, reques
 	return &notificationDestination, err
 }
 
-// unexported type that holds implementations of just PersonalComputePreview API methods
-type personalComputePreviewImpl struct {
+// unexported type that holds implementations of just PersonalCompute API methods
+type personalComputeImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *personalComputePreviewImpl) Delete(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
+func (a *personalComputeImpl) Delete(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
 	var deletePersonalComputeSettingResponse DeletePersonalComputeSettingResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -875,7 +870,7 @@ func (a *personalComputePreviewImpl) Delete(ctx context.Context, request DeleteP
 	return &deletePersonalComputeSettingResponse, err
 }
 
-func (a *personalComputePreviewImpl) Get(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+func (a *personalComputeImpl) Get(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	var personalComputeSetting PersonalComputeSetting
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -885,7 +880,7 @@ func (a *personalComputePreviewImpl) Get(ctx context.Context, request GetPersona
 	return &personalComputeSetting, err
 }
 
-func (a *personalComputePreviewImpl) Update(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+func (a *personalComputeImpl) Update(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	var personalComputeSetting PersonalComputeSetting
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -896,12 +891,12 @@ func (a *personalComputePreviewImpl) Update(ctx context.Context, request UpdateP
 	return &personalComputeSetting, err
 }
 
-// unexported type that holds implementations of just RestrictWorkspaceAdminsPreview API methods
-type restrictWorkspaceAdminsPreviewImpl struct {
+// unexported type that holds implementations of just RestrictWorkspaceAdmins API methods
+type restrictWorkspaceAdminsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *restrictWorkspaceAdminsPreviewImpl) Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
+func (a *restrictWorkspaceAdminsImpl) Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
 	var deleteRestrictWorkspaceAdminsSettingResponse DeleteRestrictWorkspaceAdminsSettingResponse
 	path := "/api/2.0preview/settings/types/restrict_workspace_admins/names/default"
 	queryParams := make(map[string]any)
@@ -911,7 +906,7 @@ func (a *restrictWorkspaceAdminsPreviewImpl) Delete(ctx context.Context, request
 	return &deleteRestrictWorkspaceAdminsSettingResponse, err
 }
 
-func (a *restrictWorkspaceAdminsPreviewImpl) Get(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
+func (a *restrictWorkspaceAdminsImpl) Get(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
 	var restrictWorkspaceAdminsSetting RestrictWorkspaceAdminsSetting
 	path := "/api/2.0preview/settings/types/restrict_workspace_admins/names/default"
 	queryParams := make(map[string]any)
@@ -921,7 +916,7 @@ func (a *restrictWorkspaceAdminsPreviewImpl) Get(ctx context.Context, request Ge
 	return &restrictWorkspaceAdminsSetting, err
 }
 
-func (a *restrictWorkspaceAdminsPreviewImpl) Update(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
+func (a *restrictWorkspaceAdminsImpl) Update(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
 	var restrictWorkspaceAdminsSetting RestrictWorkspaceAdminsSetting
 	path := "/api/2.0preview/settings/types/restrict_workspace_admins/names/default"
 	queryParams := make(map[string]any)
@@ -937,17 +932,12 @@ type settingsImpl struct {
 	client *client.DatabricksClient
 }
 
-// unexported type that holds implementations of just SettingsPreview API methods
-type settingsPreviewImpl struct {
+// unexported type that holds implementations of just TokenManagement API methods
+type tokenManagementImpl struct {
 	client *client.DatabricksClient
 }
 
-// unexported type that holds implementations of just TokenManagementPreview API methods
-type tokenManagementPreviewImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *tokenManagementPreviewImpl) CreateOboToken(ctx context.Context, request CreateOboTokenRequest) (*CreateOboTokenResponse, error) {
+func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request CreateOboTokenRequest) (*CreateOboTokenResponse, error) {
 	var createOboTokenResponse CreateOboTokenResponse
 	path := "/api/2.0preview/token-management/on-behalf-of/tokens"
 	queryParams := make(map[string]any)
@@ -958,7 +948,7 @@ func (a *tokenManagementPreviewImpl) CreateOboToken(ctx context.Context, request
 	return &createOboTokenResponse, err
 }
 
-func (a *tokenManagementPreviewImpl) Delete(ctx context.Context, request DeleteTokenManagementRequest) error {
+func (a *tokenManagementImpl) Delete(ctx context.Context, request DeleteTokenManagementRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/token-management/tokens/%v", request.TokenId)
 	queryParams := make(map[string]any)
@@ -968,7 +958,7 @@ func (a *tokenManagementPreviewImpl) Delete(ctx context.Context, request DeleteT
 	return err
 }
 
-func (a *tokenManagementPreviewImpl) Get(ctx context.Context, request GetTokenManagementRequest) (*GetTokenResponse, error) {
+func (a *tokenManagementImpl) Get(ctx context.Context, request GetTokenManagementRequest) (*GetTokenResponse, error) {
 	var getTokenResponse GetTokenResponse
 	path := fmt.Sprintf("/api/2.0preview/token-management/tokens/%v", request.TokenId)
 	queryParams := make(map[string]any)
@@ -978,7 +968,7 @@ func (a *tokenManagementPreviewImpl) Get(ctx context.Context, request GetTokenMa
 	return &getTokenResponse, err
 }
 
-func (a *tokenManagementPreviewImpl) GetPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
+func (a *tokenManagementImpl) GetPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
 	var getTokenPermissionLevelsResponse GetTokenPermissionLevelsResponse
 	path := "/api/2.0preview/permissions/authorization/tokens/permissionLevels"
 
@@ -988,7 +978,7 @@ func (a *tokenManagementPreviewImpl) GetPermissionLevels(ctx context.Context) (*
 	return &getTokenPermissionLevelsResponse, err
 }
 
-func (a *tokenManagementPreviewImpl) GetPermissions(ctx context.Context) (*TokenPermissions, error) {
+func (a *tokenManagementImpl) GetPermissions(ctx context.Context) (*TokenPermissions, error) {
 	var tokenPermissions TokenPermissions
 	path := "/api/2.0preview/permissions/authorization/tokens"
 
@@ -1001,7 +991,7 @@ func (a *tokenManagementPreviewImpl) GetPermissions(ctx context.Context) (*Token
 // List all tokens.
 //
 // Lists all tokens associated with the specified workspace or user.
-func (a *tokenManagementPreviewImpl) List(ctx context.Context, request ListTokenManagementRequest) listing.Iterator[TokenInfo] {
+func (a *tokenManagementImpl) List(ctx context.Context, request ListTokenManagementRequest) listing.Iterator[TokenInfo] {
 
 	getNextPage := func(ctx context.Context, req ListTokenManagementRequest) (*ListTokensResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -1022,11 +1012,11 @@ func (a *tokenManagementPreviewImpl) List(ctx context.Context, request ListToken
 // List all tokens.
 //
 // Lists all tokens associated with the specified workspace or user.
-func (a *tokenManagementPreviewImpl) ListAll(ctx context.Context, request ListTokenManagementRequest) ([]TokenInfo, error) {
+func (a *tokenManagementImpl) ListAll(ctx context.Context, request ListTokenManagementRequest) ([]TokenInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[TokenInfo](ctx, iterator)
 }
-func (a *tokenManagementPreviewImpl) internalList(ctx context.Context, request ListTokenManagementRequest) (*ListTokensResponse, error) {
+func (a *tokenManagementImpl) internalList(ctx context.Context, request ListTokenManagementRequest) (*ListTokensResponse, error) {
 	var listTokensResponse ListTokensResponse
 	path := "/api/2.0preview/token-management/tokens"
 	queryParams := make(map[string]any)
@@ -1036,7 +1026,7 @@ func (a *tokenManagementPreviewImpl) internalList(ctx context.Context, request L
 	return &listTokensResponse, err
 }
 
-func (a *tokenManagementPreviewImpl) SetPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+func (a *tokenManagementImpl) SetPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
 	var tokenPermissions TokenPermissions
 	path := "/api/2.0preview/permissions/authorization/tokens"
 	queryParams := make(map[string]any)
@@ -1047,7 +1037,7 @@ func (a *tokenManagementPreviewImpl) SetPermissions(ctx context.Context, request
 	return &tokenPermissions, err
 }
 
-func (a *tokenManagementPreviewImpl) UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+func (a *tokenManagementImpl) UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
 	var tokenPermissions TokenPermissions
 	path := "/api/2.0preview/permissions/authorization/tokens"
 	queryParams := make(map[string]any)
@@ -1058,12 +1048,12 @@ func (a *tokenManagementPreviewImpl) UpdatePermissions(ctx context.Context, requ
 	return &tokenPermissions, err
 }
 
-// unexported type that holds implementations of just TokensPreview API methods
-type tokensPreviewImpl struct {
+// unexported type that holds implementations of just Tokens API methods
+type tokensImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *tokensPreviewImpl) Create(ctx context.Context, request CreateTokenRequest) (*CreateTokenResponse, error) {
+func (a *tokensImpl) Create(ctx context.Context, request CreateTokenRequest) (*CreateTokenResponse, error) {
 	var createTokenResponse CreateTokenResponse
 	path := "/api/2.0preview/token/create"
 	queryParams := make(map[string]any)
@@ -1074,7 +1064,7 @@ func (a *tokensPreviewImpl) Create(ctx context.Context, request CreateTokenReque
 	return &createTokenResponse, err
 }
 
-func (a *tokensPreviewImpl) Delete(ctx context.Context, request RevokeTokenRequest) error {
+func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) error {
 	var revokeTokenResponse RevokeTokenResponse
 	path := "/api/2.0preview/token/delete"
 	queryParams := make(map[string]any)
@@ -1088,7 +1078,7 @@ func (a *tokensPreviewImpl) Delete(ctx context.Context, request RevokeTokenReque
 // List tokens.
 //
 // Lists all the valid tokens for a user-workspace pair.
-func (a *tokensPreviewImpl) List(ctx context.Context) listing.Iterator[PublicTokenInfo] {
+func (a *tokensImpl) List(ctx context.Context) listing.Iterator[PublicTokenInfo] {
 	request := struct{}{}
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListPublicTokensResponse, error) {
@@ -1110,11 +1100,11 @@ func (a *tokensPreviewImpl) List(ctx context.Context) listing.Iterator[PublicTok
 // List tokens.
 //
 // Lists all the valid tokens for a user-workspace pair.
-func (a *tokensPreviewImpl) ListAll(ctx context.Context) ([]PublicTokenInfo, error) {
+func (a *tokensImpl) ListAll(ctx context.Context) ([]PublicTokenInfo, error) {
 	iterator := a.List(ctx)
 	return listing.ToSlice[PublicTokenInfo](ctx, iterator)
 }
-func (a *tokensPreviewImpl) internalList(ctx context.Context) (*ListPublicTokensResponse, error) {
+func (a *tokensImpl) internalList(ctx context.Context) (*ListPublicTokensResponse, error) {
 	var listPublicTokensResponse ListPublicTokensResponse
 	path := "/api/2.0preview/token/list"
 
@@ -1124,12 +1114,12 @@ func (a *tokensPreviewImpl) internalList(ctx context.Context) (*ListPublicTokens
 	return &listPublicTokensResponse, err
 }
 
-// unexported type that holds implementations of just WorkspaceConfPreview API methods
-type workspaceConfPreviewImpl struct {
+// unexported type that holds implementations of just WorkspaceConf API methods
+type workspaceConfImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *workspaceConfPreviewImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*map[string]string, error) {
+func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*map[string]string, error) {
 	var workspaceConf map[string]string
 	path := "/api/2.0preview/workspace-conf"
 	queryParams := make(map[string]any)
@@ -1139,7 +1129,7 @@ func (a *workspaceConfPreviewImpl) GetStatus(ctx context.Context, request GetSta
 	return &workspaceConf, err
 }
 
-func (a *workspaceConfPreviewImpl) SetStatus(ctx context.Context, request WorkspaceConf) error {
+func (a *workspaceConfImpl) SetStatus(ctx context.Context, request WorkspaceConf) error {
 	var setStatusResponse SetStatusResponse
 	path := "/api/2.0preview/workspace-conf"
 	queryParams := make(map[string]any)

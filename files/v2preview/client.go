@@ -10,13 +10,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type DbfsPreviewClient struct {
-	DbfsPreviewInterface
+type DbfsClient struct {
+	DbfsInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewDbfsPreviewClient(cfg *config.Config) (*DbfsPreviewClient, error) {
+func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -37,20 +37,20 @@ func NewDbfsPreviewClient(cfg *config.Config) (*DbfsPreviewClient, error) {
 		return nil, err
 	}
 
-	return &DbfsPreviewClient{
-		Config:               cfg,
-		apiClient:            apiClient,
-		DbfsPreviewInterface: NewDbfsPreview(databricksClient),
+	return &DbfsClient{
+		Config:        cfg,
+		apiClient:     apiClient,
+		DbfsInterface: NewDbfs(databricksClient),
 	}, nil
 }
 
-type FilesPreviewClient struct {
-	FilesPreviewInterface
+type FilesClient struct {
+	FilesInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewFilesPreviewClient(cfg *config.Config) (*FilesPreviewClient, error) {
+func NewFilesClient(cfg *config.Config) (*FilesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -71,9 +71,9 @@ func NewFilesPreviewClient(cfg *config.Config) (*FilesPreviewClient, error) {
 		return nil, err
 	}
 
-	return &FilesPreviewClient{
-		Config:                cfg,
-		apiClient:             apiClient,
-		FilesPreviewInterface: NewFilesPreview(databricksClient),
+	return &FilesClient{
+		Config:         cfg,
+		apiClient:      apiClient,
+		FilesInterface: NewFiles(databricksClient),
 	}, nil
 }

@@ -10,13 +10,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type GitCredentialsPreviewClient struct {
-	GitCredentialsPreviewInterface
+type GitCredentialsClient struct {
+	GitCredentialsInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewGitCredentialsPreviewClient(cfg *config.Config) (*GitCredentialsPreviewClient, error) {
+func NewGitCredentialsClient(cfg *config.Config) (*GitCredentialsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -37,88 +37,20 @@ func NewGitCredentialsPreviewClient(cfg *config.Config) (*GitCredentialsPreviewC
 		return nil, err
 	}
 
-	return &GitCredentialsPreviewClient{
-		Config:                         cfg,
-		apiClient:                      apiClient,
-		GitCredentialsPreviewInterface: NewGitCredentialsPreview(databricksClient),
-	}, nil
-}
-
-type ReposPreviewClient struct {
-	ReposPreviewInterface
-	Config    *config.Config
-	apiClient *httpclient.ApiClient
-}
-
-func NewReposPreviewClient(cfg *config.Config) (*ReposPreviewClient, error) {
-	if cfg == nil {
-		cfg = &config.Config{}
-	}
-
-	err := cfg.EnsureResolved()
-	if err != nil {
-		return nil, err
-	}
-	if cfg.IsAccountClient() {
-		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
-	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
-	if err != nil {
-		return nil, err
-	}
-
-	return &ReposPreviewClient{
-		Config:                cfg,
-		apiClient:             apiClient,
-		ReposPreviewInterface: NewReposPreview(databricksClient),
-	}, nil
-}
-
-type SecretsPreviewClient struct {
-	SecretsPreviewInterface
-	Config    *config.Config
-	apiClient *httpclient.ApiClient
-}
-
-func NewSecretsPreviewClient(cfg *config.Config) (*SecretsPreviewClient, error) {
-	if cfg == nil {
-		cfg = &config.Config{}
-	}
-
-	err := cfg.EnsureResolved()
-	if err != nil {
-		return nil, err
-	}
-	if cfg.IsAccountClient() {
-		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
-	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
-	if err != nil {
-		return nil, err
-	}
-
-	return &SecretsPreviewClient{
+	return &GitCredentialsClient{
 		Config:                  cfg,
 		apiClient:               apiClient,
-		SecretsPreviewInterface: NewSecretsPreview(databricksClient),
+		GitCredentialsInterface: NewGitCredentials(databricksClient),
 	}, nil
 }
 
-type WorkspacePreviewClient struct {
-	WorkspacePreviewInterface
+type ReposClient struct {
+	ReposInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewWorkspacePreviewClient(cfg *config.Config) (*WorkspacePreviewClient, error) {
+func NewReposClient(cfg *config.Config) (*ReposClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -139,9 +71,77 @@ func NewWorkspacePreviewClient(cfg *config.Config) (*WorkspacePreviewClient, err
 		return nil, err
 	}
 
-	return &WorkspacePreviewClient{
-		Config:                    cfg,
-		apiClient:                 apiClient,
-		WorkspacePreviewInterface: NewWorkspacePreview(databricksClient),
+	return &ReposClient{
+		Config:         cfg,
+		apiClient:      apiClient,
+		ReposInterface: NewRepos(databricksClient),
+	}, nil
+}
+
+type SecretsClient struct {
+	SecretsInterface
+	Config    *config.Config
+	apiClient *httpclient.ApiClient
+}
+
+func NewSecretsClient(cfg *config.Config) (*SecretsClient, error) {
+	if cfg == nil {
+		cfg = &config.Config{}
+	}
+
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	if cfg.IsAccountClient() {
+		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
+	}
+	apiClient, err := cfg.NewApiClient()
+	if err != nil {
+		return nil, err
+	}
+	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	if err != nil {
+		return nil, err
+	}
+
+	return &SecretsClient{
+		Config:           cfg,
+		apiClient:        apiClient,
+		SecretsInterface: NewSecrets(databricksClient),
+	}, nil
+}
+
+type WorkspaceClient struct {
+	WorkspaceInterface
+	Config    *config.Config
+	apiClient *httpclient.ApiClient
+}
+
+func NewWorkspaceClient(cfg *config.Config) (*WorkspaceClient, error) {
+	if cfg == nil {
+		cfg = &config.Config{}
+	}
+
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	if cfg.IsAccountClient() {
+		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
+	}
+	apiClient, err := cfg.NewApiClient()
+	if err != nil {
+		return nil, err
+	}
+	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	if err != nil {
+		return nil, err
+	}
+
+	return &WorkspaceClient{
+		Config:             cfg,
+		apiClient:          apiClient,
+		WorkspaceInterface: NewWorkspace(databricksClient),
 	}, nil
 }

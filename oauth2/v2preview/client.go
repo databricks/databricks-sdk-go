@@ -9,13 +9,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/config"
 )
 
-type AccountFederationPolicyPreviewClient struct {
-	AccountFederationPolicyPreviewInterface
+type AccountFederationPolicyClient struct {
+	AccountFederationPolicyInterface
 
 	Config *config.Config
 }
 
-func NewAccountFederationPolicyPreviewClient(cfg *config.Config) (*AccountFederationPolicyPreviewClient, error) {
+func NewAccountFederationPolicyClient(cfg *config.Config) (*AccountFederationPolicyClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -33,19 +33,19 @@ func NewAccountFederationPolicyPreviewClient(cfg *config.Config) (*AccountFedera
 		return nil, err
 	}
 
-	return &AccountFederationPolicyPreviewClient{
-		Config:                                  cfg,
-		AccountFederationPolicyPreviewInterface: NewAccountFederationPolicyPreview(apiClient),
+	return &AccountFederationPolicyClient{
+		Config:                           cfg,
+		AccountFederationPolicyInterface: NewAccountFederationPolicy(apiClient),
 	}, nil
 }
 
-type CustomAppIntegrationPreviewClient struct {
-	CustomAppIntegrationPreviewInterface
+type CustomAppIntegrationClient struct {
+	CustomAppIntegrationInterface
 
 	Config *config.Config
 }
 
-func NewCustomAppIntegrationPreviewClient(cfg *config.Config) (*CustomAppIntegrationPreviewClient, error) {
+func NewCustomAppIntegrationClient(cfg *config.Config) (*CustomAppIntegrationClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -63,19 +63,19 @@ func NewCustomAppIntegrationPreviewClient(cfg *config.Config) (*CustomAppIntegra
 		return nil, err
 	}
 
-	return &CustomAppIntegrationPreviewClient{
-		Config:                               cfg,
-		CustomAppIntegrationPreviewInterface: NewCustomAppIntegrationPreview(apiClient),
+	return &CustomAppIntegrationClient{
+		Config:                        cfg,
+		CustomAppIntegrationInterface: NewCustomAppIntegration(apiClient),
 	}, nil
 }
 
-type OAuthPublishedAppsPreviewClient struct {
-	OAuthPublishedAppsPreviewInterface
+type OAuthPublishedAppsClient struct {
+	OAuthPublishedAppsInterface
 
 	Config *config.Config
 }
 
-func NewOAuthPublishedAppsPreviewClient(cfg *config.Config) (*OAuthPublishedAppsPreviewClient, error) {
+func NewOAuthPublishedAppsClient(cfg *config.Config) (*OAuthPublishedAppsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -93,19 +93,19 @@ func NewOAuthPublishedAppsPreviewClient(cfg *config.Config) (*OAuthPublishedApps
 		return nil, err
 	}
 
-	return &OAuthPublishedAppsPreviewClient{
-		Config:                             cfg,
-		OAuthPublishedAppsPreviewInterface: NewOAuthPublishedAppsPreview(apiClient),
+	return &OAuthPublishedAppsClient{
+		Config:                      cfg,
+		OAuthPublishedAppsInterface: NewOAuthPublishedApps(apiClient),
 	}, nil
 }
 
-type PublishedAppIntegrationPreviewClient struct {
-	PublishedAppIntegrationPreviewInterface
+type PublishedAppIntegrationClient struct {
+	PublishedAppIntegrationInterface
 
 	Config *config.Config
 }
 
-func NewPublishedAppIntegrationPreviewClient(cfg *config.Config) (*PublishedAppIntegrationPreviewClient, error) {
+func NewPublishedAppIntegrationClient(cfg *config.Config) (*PublishedAppIntegrationClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -123,19 +123,19 @@ func NewPublishedAppIntegrationPreviewClient(cfg *config.Config) (*PublishedAppI
 		return nil, err
 	}
 
-	return &PublishedAppIntegrationPreviewClient{
-		Config:                                  cfg,
-		PublishedAppIntegrationPreviewInterface: NewPublishedAppIntegrationPreview(apiClient),
+	return &PublishedAppIntegrationClient{
+		Config:                           cfg,
+		PublishedAppIntegrationInterface: NewPublishedAppIntegration(apiClient),
 	}, nil
 }
 
-type ServicePrincipalFederationPolicyPreviewClient struct {
-	ServicePrincipalFederationPolicyPreviewInterface
+type ServicePrincipalFederationPolicyClient struct {
+	ServicePrincipalFederationPolicyInterface
 
 	Config *config.Config
 }
 
-func NewServicePrincipalFederationPolicyPreviewClient(cfg *config.Config) (*ServicePrincipalFederationPolicyPreviewClient, error) {
+func NewServicePrincipalFederationPolicyClient(cfg *config.Config) (*ServicePrincipalFederationPolicyClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -153,19 +153,19 @@ func NewServicePrincipalFederationPolicyPreviewClient(cfg *config.Config) (*Serv
 		return nil, err
 	}
 
-	return &ServicePrincipalFederationPolicyPreviewClient{
+	return &ServicePrincipalFederationPolicyClient{
 		Config: cfg,
-		ServicePrincipalFederationPolicyPreviewInterface: NewServicePrincipalFederationPolicyPreview(apiClient),
+		ServicePrincipalFederationPolicyInterface: NewServicePrincipalFederationPolicy(apiClient),
 	}, nil
 }
 
-type ServicePrincipalSecretsPreviewClient struct {
-	ServicePrincipalSecretsPreviewInterface
+type ServicePrincipalSecretsClient struct {
+	ServicePrincipalSecretsInterface
 
 	Config *config.Config
 }
 
-func NewServicePrincipalSecretsPreviewClient(cfg *config.Config) (*ServicePrincipalSecretsPreviewClient, error) {
+func NewServicePrincipalSecretsClient(cfg *config.Config) (*ServicePrincipalSecretsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -183,8 +183,8 @@ func NewServicePrincipalSecretsPreviewClient(cfg *config.Config) (*ServicePrinci
 		return nil, err
 	}
 
-	return &ServicePrincipalSecretsPreviewClient{
-		Config:                                  cfg,
-		ServicePrincipalSecretsPreviewInterface: NewServicePrincipalSecretsPreview(apiClient),
+	return &ServicePrincipalSecretsClient{
+		Config:                           cfg,
+		ServicePrincipalSecretsInterface: NewServicePrincipalSecrets(apiClient),
 	}, nil
 }

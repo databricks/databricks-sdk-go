@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Consumer Fulfillments Preview, Consumer Installations Preview, Consumer Listings Preview, Consumer Personalization Requests Preview, Consumer Providers Preview, Provider Exchange Filters Preview, Provider Exchanges Preview, Provider Files Preview, Provider Listings Preview, Provider Personalization Requests Preview, Provider Provider Analytics Dashboards Preview, Provider Providers Preview, etc.
+// These APIs allow you to manage Consumer Fulfillments, Consumer Installations, Consumer Listings, Consumer Personalization Requests, Consumer Providers, Provider Exchange Filters, Provider Exchanges, Provider Files, Provider Listings, Provider Personalization Requests, Provider Provider Analytics Dashboards, Provider Providers, etc.
 package marketplacepreview
 
 import (
@@ -12,7 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-type ConsumerFulfillmentsPreviewInterface interface {
+type ConsumerFulfillmentsInterface interface {
 
 	// Get listing content metadata.
 	//
@@ -65,24 +65,24 @@ type ConsumerFulfillmentsPreviewInterface interface {
 	ListByListingId(ctx context.Context, listingId string) (*ListFulfillmentsResponse, error)
 }
 
-func NewConsumerFulfillmentsPreview(client *client.DatabricksClient) *ConsumerFulfillmentsPreviewAPI {
-	return &ConsumerFulfillmentsPreviewAPI{
-		consumerFulfillmentsPreviewImpl: consumerFulfillmentsPreviewImpl{
+func NewConsumerFulfillments(client *client.DatabricksClient) *ConsumerFulfillmentsAPI {
+	return &ConsumerFulfillmentsAPI{
+		consumerFulfillmentsImpl: consumerFulfillmentsImpl{
 			client: client,
 		},
 	}
 }
 
 // Fulfillments are entities that allow consumers to preview installations.
-type ConsumerFulfillmentsPreviewAPI struct {
-	consumerFulfillmentsPreviewImpl
+type ConsumerFulfillmentsAPI struct {
+	consumerFulfillmentsImpl
 }
 
 // Get listing content metadata.
 //
 // Get a high level preview of the metadata of listing installable content.
-func (a *ConsumerFulfillmentsPreviewAPI) GetByListingId(ctx context.Context, listingId string) (*GetListingContentMetadataResponse, error) {
-	return a.consumerFulfillmentsPreviewImpl.internalGet(ctx, GetListingContentMetadataRequest{
+func (a *ConsumerFulfillmentsAPI) GetByListingId(ctx context.Context, listingId string) (*GetListingContentMetadataResponse, error) {
+	return a.consumerFulfillmentsImpl.internalGet(ctx, GetListingContentMetadataRequest{
 		ListingId: listingId,
 	})
 }
@@ -94,13 +94,13 @@ func (a *ConsumerFulfillmentsPreviewAPI) GetByListingId(ctx context.Context, lis
 // attached share or git repo. Only one of these fields will be present.
 // Personalized installations contain metadata about the attached share or git
 // repo, as well as the Delta Sharing recipient type.
-func (a *ConsumerFulfillmentsPreviewAPI) ListByListingId(ctx context.Context, listingId string) (*ListFulfillmentsResponse, error) {
-	return a.consumerFulfillmentsPreviewImpl.internalList(ctx, ListFulfillmentsRequest{
+func (a *ConsumerFulfillmentsAPI) ListByListingId(ctx context.Context, listingId string) (*ListFulfillmentsResponse, error) {
+	return a.consumerFulfillmentsImpl.internalList(ctx, ListFulfillmentsRequest{
 		ListingId: listingId,
 	})
 }
 
-type ConsumerInstallationsPreviewInterface interface {
+type ConsumerInstallationsInterface interface {
 
 	// Install from a listing.
 	//
@@ -160,9 +160,9 @@ type ConsumerInstallationsPreviewInterface interface {
 	Update(ctx context.Context, request UpdateInstallationRequest) (*UpdateInstallationResponse, error)
 }
 
-func NewConsumerInstallationsPreview(client *client.DatabricksClient) *ConsumerInstallationsPreviewAPI {
-	return &ConsumerInstallationsPreviewAPI{
-		consumerInstallationsPreviewImpl: consumerInstallationsPreviewImpl{
+func NewConsumerInstallations(client *client.DatabricksClient) *ConsumerInstallationsAPI {
+	return &ConsumerInstallationsAPI{
+		consumerInstallationsImpl: consumerInstallationsImpl{
 			client: client,
 		},
 	}
@@ -170,15 +170,15 @@ func NewConsumerInstallationsPreview(client *client.DatabricksClient) *ConsumerI
 
 // Installations are entities that allow consumers to interact with Databricks
 // Marketplace listings.
-type ConsumerInstallationsPreviewAPI struct {
-	consumerInstallationsPreviewImpl
+type ConsumerInstallationsAPI struct {
+	consumerInstallationsImpl
 }
 
 // Uninstall from a listing.
 //
 // Uninstall an installation associated with a Databricks Marketplace listing.
-func (a *ConsumerInstallationsPreviewAPI) DeleteByListingIdAndInstallationId(ctx context.Context, listingId string, installationId string) error {
-	return a.consumerInstallationsPreviewImpl.Delete(ctx, DeleteInstallationRequest{
+func (a *ConsumerInstallationsAPI) DeleteByListingIdAndInstallationId(ctx context.Context, listingId string, installationId string) error {
+	return a.consumerInstallationsImpl.Delete(ctx, DeleteInstallationRequest{
 		ListingId:      listingId,
 		InstallationId: installationId,
 	})
@@ -187,13 +187,13 @@ func (a *ConsumerInstallationsPreviewAPI) DeleteByListingIdAndInstallationId(ctx
 // List installations for a listing.
 //
 // List all installations for a particular listing.
-func (a *ConsumerInstallationsPreviewAPI) ListListingInstallationsByListingId(ctx context.Context, listingId string) (*ListInstallationsResponse, error) {
-	return a.consumerInstallationsPreviewImpl.internalListListingInstallations(ctx, ListInstallationsRequest{
+func (a *ConsumerInstallationsAPI) ListListingInstallationsByListingId(ctx context.Context, listingId string) (*ListInstallationsResponse, error) {
+	return a.consumerInstallationsImpl.internalListListingInstallations(ctx, ListInstallationsRequest{
 		ListingId: listingId,
 	})
 }
 
-type ConsumerListingsPreviewInterface interface {
+type ConsumerListingsInterface interface {
 
 	// Get one batch of listings. One may specify up to 50 IDs per request.
 	//
@@ -229,7 +229,7 @@ type ConsumerListingsPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListListingsRequest) ([]Listing, error)
 
-	// ListingSummaryNameToIdMap calls [ConsumerListingsPreviewAPI.ListAll] and creates a map of results with [Listing].Summary.Name as key and [Listing].Id as value.
+	// ListingSummaryNameToIdMap calls [ConsumerListingsAPI.ListAll] and creates a map of results with [Listing].Summary.Name as key and [Listing].Id as value.
 	//
 	// Returns an error if there's more than one [Listing] with the same .Summary.Name.
 	//
@@ -238,7 +238,7 @@ type ConsumerListingsPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListingSummaryNameToIdMap(ctx context.Context, request ListListingsRequest) (map[string]string, error)
 
-	// GetBySummaryName calls [ConsumerListingsPreviewAPI.ListingSummaryNameToIdMap] and returns a single [Listing].
+	// GetBySummaryName calls [ConsumerListingsAPI.ListingSummaryNameToIdMap] and returns a single [Listing].
 	//
 	// Returns an error if there's more than one [Listing] with the same .Summary.Name.
 	//
@@ -266,9 +266,9 @@ type ConsumerListingsPreviewInterface interface {
 	SearchAll(ctx context.Context, request SearchListingsRequest) ([]Listing, error)
 }
 
-func NewConsumerListingsPreview(client *client.DatabricksClient) *ConsumerListingsPreviewAPI {
-	return &ConsumerListingsPreviewAPI{
-		consumerListingsPreviewImpl: consumerListingsPreviewImpl{
+func NewConsumerListings(client *client.DatabricksClient) *ConsumerListingsAPI {
+	return &ConsumerListingsAPI{
+		consumerListingsImpl: consumerListingsImpl{
 			client: client,
 		},
 	}
@@ -276,28 +276,28 @@ func NewConsumerListingsPreview(client *client.DatabricksClient) *ConsumerListin
 
 // Listings are the core entities in the Marketplace. They represent the
 // products that are available for consumption.
-type ConsumerListingsPreviewAPI struct {
-	consumerListingsPreviewImpl
+type ConsumerListingsAPI struct {
+	consumerListingsImpl
 }
 
 // Get listing.
 //
 // Get a published listing in the Databricks Marketplace that the consumer has
 // access to.
-func (a *ConsumerListingsPreviewAPI) GetById(ctx context.Context, id string) (*GetListingResponse, error) {
-	return a.consumerListingsPreviewImpl.Get(ctx, GetListingRequest{
+func (a *ConsumerListingsAPI) GetById(ctx context.Context, id string) (*GetListingResponse, error) {
+	return a.consumerListingsImpl.Get(ctx, GetListingRequest{
 		Id: id,
 	})
 }
 
-// ListingSummaryNameToIdMap calls [ConsumerListingsPreviewAPI.ListAll] and creates a map of results with [Listing].Summary.Name as key and [Listing].Id as value.
+// ListingSummaryNameToIdMap calls [ConsumerListingsAPI.ListAll] and creates a map of results with [Listing].Summary.Name as key and [Listing].Id as value.
 //
 // Returns an error if there's more than one [Listing] with the same .Summary.Name.
 //
 // Note: All [Listing] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ConsumerListingsPreviewAPI) ListingSummaryNameToIdMap(ctx context.Context, request ListListingsRequest) (map[string]string, error) {
+func (a *ConsumerListingsAPI) ListingSummaryNameToIdMap(ctx context.Context, request ListListingsRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -315,14 +315,14 @@ func (a *ConsumerListingsPreviewAPI) ListingSummaryNameToIdMap(ctx context.Conte
 	return mapping, nil
 }
 
-// GetBySummaryName calls [ConsumerListingsPreviewAPI.ListingSummaryNameToIdMap] and returns a single [Listing].
+// GetBySummaryName calls [ConsumerListingsAPI.ListingSummaryNameToIdMap] and returns a single [Listing].
 //
 // Returns an error if there's more than one [Listing] with the same .Summary.Name.
 //
 // Note: All [Listing] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ConsumerListingsPreviewAPI) GetBySummaryName(ctx context.Context, name string) (*Listing, error) {
+func (a *ConsumerListingsAPI) GetBySummaryName(ctx context.Context, name string) (*Listing, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListListingsRequest{})
 	if err != nil {
@@ -343,7 +343,7 @@ func (a *ConsumerListingsPreviewAPI) GetBySummaryName(ctx context.Context, name 
 	return &alternatives[0], nil
 }
 
-type ConsumerPersonalizationRequestsPreviewInterface interface {
+type ConsumerPersonalizationRequestsInterface interface {
 
 	// Create a personalization request.
 	//
@@ -377,9 +377,9 @@ type ConsumerPersonalizationRequestsPreviewInterface interface {
 	ListAll(ctx context.Context, request ListAllPersonalizationRequestsRequest) ([]PersonalizationRequest, error)
 }
 
-func NewConsumerPersonalizationRequestsPreview(client *client.DatabricksClient) *ConsumerPersonalizationRequestsPreviewAPI {
-	return &ConsumerPersonalizationRequestsPreviewAPI{
-		consumerPersonalizationRequestsPreviewImpl: consumerPersonalizationRequestsPreviewImpl{
+func NewConsumerPersonalizationRequests(client *client.DatabricksClient) *ConsumerPersonalizationRequestsAPI {
+	return &ConsumerPersonalizationRequestsAPI{
+		consumerPersonalizationRequestsImpl: consumerPersonalizationRequestsImpl{
 			client: client,
 		},
 	}
@@ -387,21 +387,21 @@ func NewConsumerPersonalizationRequestsPreview(client *client.DatabricksClient) 
 
 // Personalization Requests allow customers to interact with the individualized
 // Marketplace listing flow.
-type ConsumerPersonalizationRequestsPreviewAPI struct {
-	consumerPersonalizationRequestsPreviewImpl
+type ConsumerPersonalizationRequestsAPI struct {
+	consumerPersonalizationRequestsImpl
 }
 
 // Get the personalization request for a listing.
 //
 // Get the personalization request for a listing. Each consumer can make at
 // *most* one personalization request for a listing.
-func (a *ConsumerPersonalizationRequestsPreviewAPI) GetByListingId(ctx context.Context, listingId string) (*GetPersonalizationRequestResponse, error) {
-	return a.consumerPersonalizationRequestsPreviewImpl.Get(ctx, GetPersonalizationRequestRequest{
+func (a *ConsumerPersonalizationRequestsAPI) GetByListingId(ctx context.Context, listingId string) (*GetPersonalizationRequestResponse, error) {
+	return a.consumerPersonalizationRequestsImpl.Get(ctx, GetPersonalizationRequestRequest{
 		ListingId: listingId,
 	})
 }
 
-type ConsumerProvidersPreviewInterface interface {
+type ConsumerProvidersInterface interface {
 
 	// Get one batch of providers. One may specify up to 50 IDs per request.
 	//
@@ -437,7 +437,7 @@ type ConsumerProvidersPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error)
 
-	// ProviderInfoNameToIdMap calls [ConsumerProvidersPreviewAPI.ListAll] and creates a map of results with [ProviderInfo].Name as key and [ProviderInfo].Id as value.
+	// ProviderInfoNameToIdMap calls [ConsumerProvidersAPI.ListAll] and creates a map of results with [ProviderInfo].Name as key and [ProviderInfo].Id as value.
 	//
 	// Returns an error if there's more than one [ProviderInfo] with the same .Name.
 	//
@@ -446,7 +446,7 @@ type ConsumerProvidersPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ProviderInfoNameToIdMap(ctx context.Context, request ListProvidersRequest) (map[string]string, error)
 
-	// GetByName calls [ConsumerProvidersPreviewAPI.ProviderInfoNameToIdMap] and returns a single [ProviderInfo].
+	// GetByName calls [ConsumerProvidersAPI.ProviderInfoNameToIdMap] and returns a single [ProviderInfo].
 	//
 	// Returns an error if there's more than one [ProviderInfo] with the same .Name.
 	//
@@ -456,37 +456,37 @@ type ConsumerProvidersPreviewInterface interface {
 	GetByName(ctx context.Context, name string) (*ProviderInfo, error)
 }
 
-func NewConsumerProvidersPreview(client *client.DatabricksClient) *ConsumerProvidersPreviewAPI {
-	return &ConsumerProvidersPreviewAPI{
-		consumerProvidersPreviewImpl: consumerProvidersPreviewImpl{
+func NewConsumerProviders(client *client.DatabricksClient) *ConsumerProvidersAPI {
+	return &ConsumerProvidersAPI{
+		consumerProvidersImpl: consumerProvidersImpl{
 			client: client,
 		},
 	}
 }
 
 // Providers are the entities that publish listings to the Marketplace.
-type ConsumerProvidersPreviewAPI struct {
-	consumerProvidersPreviewImpl
+type ConsumerProvidersAPI struct {
+	consumerProvidersImpl
 }
 
 // Get a provider.
 //
 // Get a provider in the Databricks Marketplace with at least one visible
 // listing.
-func (a *ConsumerProvidersPreviewAPI) GetById(ctx context.Context, id string) (*GetProviderResponse, error) {
-	return a.consumerProvidersPreviewImpl.Get(ctx, GetProviderRequest{
+func (a *ConsumerProvidersAPI) GetById(ctx context.Context, id string) (*GetProviderResponse, error) {
+	return a.consumerProvidersImpl.Get(ctx, GetProviderRequest{
 		Id: id,
 	})
 }
 
-// ProviderInfoNameToIdMap calls [ConsumerProvidersPreviewAPI.ListAll] and creates a map of results with [ProviderInfo].Name as key and [ProviderInfo].Id as value.
+// ProviderInfoNameToIdMap calls [ConsumerProvidersAPI.ListAll] and creates a map of results with [ProviderInfo].Name as key and [ProviderInfo].Id as value.
 //
 // Returns an error if there's more than one [ProviderInfo] with the same .Name.
 //
 // Note: All [ProviderInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ConsumerProvidersPreviewAPI) ProviderInfoNameToIdMap(ctx context.Context, request ListProvidersRequest) (map[string]string, error) {
+func (a *ConsumerProvidersAPI) ProviderInfoNameToIdMap(ctx context.Context, request ListProvidersRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -504,14 +504,14 @@ func (a *ConsumerProvidersPreviewAPI) ProviderInfoNameToIdMap(ctx context.Contex
 	return mapping, nil
 }
 
-// GetByName calls [ConsumerProvidersPreviewAPI.ProviderInfoNameToIdMap] and returns a single [ProviderInfo].
+// GetByName calls [ConsumerProvidersAPI.ProviderInfoNameToIdMap] and returns a single [ProviderInfo].
 //
 // Returns an error if there's more than one [ProviderInfo] with the same .Name.
 //
 // Note: All [ProviderInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ConsumerProvidersPreviewAPI) GetByName(ctx context.Context, name string) (*ProviderInfo, error) {
+func (a *ConsumerProvidersAPI) GetByName(ctx context.Context, name string) (*ProviderInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListProvidersRequest{})
 	if err != nil {
@@ -532,7 +532,7 @@ func (a *ConsumerProvidersPreviewAPI) GetByName(ctx context.Context, name string
 	return &alternatives[0], nil
 }
 
-type ProviderExchangeFiltersPreviewInterface interface {
+type ProviderExchangeFiltersInterface interface {
 
 	// Create a new exchange filter.
 	//
@@ -563,7 +563,7 @@ type ProviderExchangeFiltersPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListExchangeFiltersRequest) ([]ExchangeFilter, error)
 
-	// ExchangeFilterNameToIdMap calls [ProviderExchangeFiltersPreviewAPI.ListAll] and creates a map of results with [ExchangeFilter].Name as key and [ExchangeFilter].Id as value.
+	// ExchangeFilterNameToIdMap calls [ProviderExchangeFiltersAPI.ListAll] and creates a map of results with [ExchangeFilter].Name as key and [ExchangeFilter].Id as value.
 	//
 	// Returns an error if there's more than one [ExchangeFilter] with the same .Name.
 	//
@@ -572,7 +572,7 @@ type ProviderExchangeFiltersPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ExchangeFilterNameToIdMap(ctx context.Context, request ListExchangeFiltersRequest) (map[string]string, error)
 
-	// GetByName calls [ProviderExchangeFiltersPreviewAPI.ExchangeFilterNameToIdMap] and returns a single [ExchangeFilter].
+	// GetByName calls [ProviderExchangeFiltersAPI.ExchangeFilterNameToIdMap] and returns a single [ExchangeFilter].
 	//
 	// Returns an error if there's more than one [ExchangeFilter] with the same .Name.
 	//
@@ -587,36 +587,36 @@ type ProviderExchangeFiltersPreviewInterface interface {
 	Update(ctx context.Context, request UpdateExchangeFilterRequest) (*UpdateExchangeFilterResponse, error)
 }
 
-func NewProviderExchangeFiltersPreview(client *client.DatabricksClient) *ProviderExchangeFiltersPreviewAPI {
-	return &ProviderExchangeFiltersPreviewAPI{
-		providerExchangeFiltersPreviewImpl: providerExchangeFiltersPreviewImpl{
+func NewProviderExchangeFilters(client *client.DatabricksClient) *ProviderExchangeFiltersAPI {
+	return &ProviderExchangeFiltersAPI{
+		providerExchangeFiltersImpl: providerExchangeFiltersImpl{
 			client: client,
 		},
 	}
 }
 
 // Marketplace exchanges filters curate which groups can access an exchange.
-type ProviderExchangeFiltersPreviewAPI struct {
-	providerExchangeFiltersPreviewImpl
+type ProviderExchangeFiltersAPI struct {
+	providerExchangeFiltersImpl
 }
 
 // Delete an exchange filter.
 //
 // Delete an exchange filter
-func (a *ProviderExchangeFiltersPreviewAPI) DeleteById(ctx context.Context, id string) error {
-	return a.providerExchangeFiltersPreviewImpl.Delete(ctx, DeleteExchangeFilterRequest{
+func (a *ProviderExchangeFiltersAPI) DeleteById(ctx context.Context, id string) error {
+	return a.providerExchangeFiltersImpl.Delete(ctx, DeleteExchangeFilterRequest{
 		Id: id,
 	})
 }
 
-// ExchangeFilterNameToIdMap calls [ProviderExchangeFiltersPreviewAPI.ListAll] and creates a map of results with [ExchangeFilter].Name as key and [ExchangeFilter].Id as value.
+// ExchangeFilterNameToIdMap calls [ProviderExchangeFiltersAPI.ListAll] and creates a map of results with [ExchangeFilter].Name as key and [ExchangeFilter].Id as value.
 //
 // Returns an error if there's more than one [ExchangeFilter] with the same .Name.
 //
 // Note: All [ExchangeFilter] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderExchangeFiltersPreviewAPI) ExchangeFilterNameToIdMap(ctx context.Context, request ListExchangeFiltersRequest) (map[string]string, error) {
+func (a *ProviderExchangeFiltersAPI) ExchangeFilterNameToIdMap(ctx context.Context, request ListExchangeFiltersRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -634,14 +634,14 @@ func (a *ProviderExchangeFiltersPreviewAPI) ExchangeFilterNameToIdMap(ctx contex
 	return mapping, nil
 }
 
-// GetByName calls [ProviderExchangeFiltersPreviewAPI.ExchangeFilterNameToIdMap] and returns a single [ExchangeFilter].
+// GetByName calls [ProviderExchangeFiltersAPI.ExchangeFilterNameToIdMap] and returns a single [ExchangeFilter].
 //
 // Returns an error if there's more than one [ExchangeFilter] with the same .Name.
 //
 // Note: All [ExchangeFilter] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderExchangeFiltersPreviewAPI) GetByName(ctx context.Context, name string) (*ExchangeFilter, error) {
+func (a *ProviderExchangeFiltersAPI) GetByName(ctx context.Context, name string) (*ExchangeFilter, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListExchangeFiltersRequest{})
 	if err != nil {
@@ -662,7 +662,7 @@ func (a *ProviderExchangeFiltersPreviewAPI) GetByName(ctx context.Context, name 
 	return &alternatives[0], nil
 }
 
-type ProviderExchangesPreviewInterface interface {
+type ProviderExchangesInterface interface {
 
 	// Add an exchange for listing.
 	//
@@ -718,7 +718,7 @@ type ProviderExchangesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListExchangesRequest) ([]Exchange, error)
 
-	// ExchangeNameToIdMap calls [ProviderExchangesPreviewAPI.ListAll] and creates a map of results with [Exchange].Name as key and [Exchange].Id as value.
+	// ExchangeNameToIdMap calls [ProviderExchangesAPI.ListAll] and creates a map of results with [Exchange].Name as key and [Exchange].Id as value.
 	//
 	// Returns an error if there's more than one [Exchange] with the same .Name.
 	//
@@ -727,7 +727,7 @@ type ProviderExchangesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ExchangeNameToIdMap(ctx context.Context, request ListExchangesRequest) (map[string]string, error)
 
-	// GetByName calls [ProviderExchangesPreviewAPI.ExchangeNameToIdMap] and returns a single [Exchange].
+	// GetByName calls [ProviderExchangesAPI.ExchangeNameToIdMap] and returns a single [Exchange].
 	//
 	// Returns an error if there's more than one [Exchange] with the same .Name.
 	//
@@ -750,7 +750,7 @@ type ProviderExchangesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListExchangesForListingAll(ctx context.Context, request ListExchangesForListingRequest) ([]ExchangeListing, error)
 
-	// ExchangeListingExchangeNameToExchangeIdMap calls [ProviderExchangesPreviewAPI.ListExchangesForListingAll] and creates a map of results with [ExchangeListing].ExchangeName as key and [ExchangeListing].ExchangeId as value.
+	// ExchangeListingExchangeNameToExchangeIdMap calls [ProviderExchangesAPI.ListExchangesForListingAll] and creates a map of results with [ExchangeListing].ExchangeName as key and [ExchangeListing].ExchangeId as value.
 	//
 	// Returns an error if there's more than one [ExchangeListing] with the same .ExchangeName.
 	//
@@ -759,7 +759,7 @@ type ProviderExchangesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ExchangeListingExchangeNameToExchangeIdMap(ctx context.Context, request ListExchangesForListingRequest) (map[string]string, error)
 
-	// GetByExchangeName calls [ProviderExchangesPreviewAPI.ExchangeListingExchangeNameToExchangeIdMap] and returns a single [ExchangeListing].
+	// GetByExchangeName calls [ProviderExchangesAPI.ExchangeListingExchangeNameToExchangeIdMap] and returns a single [ExchangeListing].
 	//
 	// Returns an error if there's more than one [ExchangeListing] with the same .ExchangeName.
 	//
@@ -782,7 +782,7 @@ type ProviderExchangesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListListingsForExchangeAll(ctx context.Context, request ListListingsForExchangeRequest) ([]ExchangeListing, error)
 
-	// ExchangeListingListingNameToListingIdMap calls [ProviderExchangesPreviewAPI.ListListingsForExchangeAll] and creates a map of results with [ExchangeListing].ListingName as key and [ExchangeListing].ListingId as value.
+	// ExchangeListingListingNameToListingIdMap calls [ProviderExchangesAPI.ListListingsForExchangeAll] and creates a map of results with [ExchangeListing].ListingName as key and [ExchangeListing].ListingId as value.
 	//
 	// Returns an error if there's more than one [ExchangeListing] with the same .ListingName.
 	//
@@ -791,7 +791,7 @@ type ProviderExchangesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ExchangeListingListingNameToListingIdMap(ctx context.Context, request ListListingsForExchangeRequest) (map[string]string, error)
 
-	// GetByListingName calls [ProviderExchangesPreviewAPI.ExchangeListingListingNameToListingIdMap] and returns a single [ExchangeListing].
+	// GetByListingName calls [ProviderExchangesAPI.ExchangeListingListingNameToListingIdMap] and returns a single [ExchangeListing].
 	//
 	// Returns an error if there's more than one [ExchangeListing] with the same .ListingName.
 	//
@@ -806,9 +806,9 @@ type ProviderExchangesPreviewInterface interface {
 	Update(ctx context.Context, request UpdateExchangeRequest) (*UpdateExchangeResponse, error)
 }
 
-func NewProviderExchangesPreview(client *client.DatabricksClient) *ProviderExchangesPreviewAPI {
-	return &ProviderExchangesPreviewAPI{
-		providerExchangesPreviewImpl: providerExchangesPreviewImpl{
+func NewProviderExchanges(client *client.DatabricksClient) *ProviderExchangesAPI {
+	return &ProviderExchangesAPI{
+		providerExchangesImpl: providerExchangesImpl{
 			client: client,
 		},
 	}
@@ -816,15 +816,15 @@ func NewProviderExchangesPreview(client *client.DatabricksClient) *ProviderExcha
 
 // Marketplace exchanges allow providers to share their listings with a curated
 // set of customers.
-type ProviderExchangesPreviewAPI struct {
-	providerExchangesPreviewImpl
+type ProviderExchangesAPI struct {
+	providerExchangesImpl
 }
 
 // Delete an exchange.
 //
 // This removes a listing from marketplace.
-func (a *ProviderExchangesPreviewAPI) DeleteById(ctx context.Context, id string) error {
-	return a.providerExchangesPreviewImpl.Delete(ctx, DeleteExchangeRequest{
+func (a *ProviderExchangesAPI) DeleteById(ctx context.Context, id string) error {
+	return a.providerExchangesImpl.Delete(ctx, DeleteExchangeRequest{
 		Id: id,
 	})
 }
@@ -832,8 +832,8 @@ func (a *ProviderExchangesPreviewAPI) DeleteById(ctx context.Context, id string)
 // Remove an exchange for listing.
 //
 // Disassociate an exchange with a listing
-func (a *ProviderExchangesPreviewAPI) DeleteListingFromExchangeById(ctx context.Context, id string) error {
-	return a.providerExchangesPreviewImpl.DeleteListingFromExchange(ctx, RemoveExchangeForListingRequest{
+func (a *ProviderExchangesAPI) DeleteListingFromExchangeById(ctx context.Context, id string) error {
+	return a.providerExchangesImpl.DeleteListingFromExchange(ctx, RemoveExchangeForListingRequest{
 		Id: id,
 	})
 }
@@ -841,20 +841,20 @@ func (a *ProviderExchangesPreviewAPI) DeleteListingFromExchangeById(ctx context.
 // Get an exchange.
 //
 // Get an exchange.
-func (a *ProviderExchangesPreviewAPI) GetById(ctx context.Context, id string) (*GetExchangeResponse, error) {
-	return a.providerExchangesPreviewImpl.Get(ctx, GetExchangeRequest{
+func (a *ProviderExchangesAPI) GetById(ctx context.Context, id string) (*GetExchangeResponse, error) {
+	return a.providerExchangesImpl.Get(ctx, GetExchangeRequest{
 		Id: id,
 	})
 }
 
-// ExchangeNameToIdMap calls [ProviderExchangesPreviewAPI.ListAll] and creates a map of results with [Exchange].Name as key and [Exchange].Id as value.
+// ExchangeNameToIdMap calls [ProviderExchangesAPI.ListAll] and creates a map of results with [Exchange].Name as key and [Exchange].Id as value.
 //
 // Returns an error if there's more than one [Exchange] with the same .Name.
 //
 // Note: All [Exchange] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderExchangesPreviewAPI) ExchangeNameToIdMap(ctx context.Context, request ListExchangesRequest) (map[string]string, error) {
+func (a *ProviderExchangesAPI) ExchangeNameToIdMap(ctx context.Context, request ListExchangesRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -872,14 +872,14 @@ func (a *ProviderExchangesPreviewAPI) ExchangeNameToIdMap(ctx context.Context, r
 	return mapping, nil
 }
 
-// GetByName calls [ProviderExchangesPreviewAPI.ExchangeNameToIdMap] and returns a single [Exchange].
+// GetByName calls [ProviderExchangesAPI.ExchangeNameToIdMap] and returns a single [Exchange].
 //
 // Returns an error if there's more than one [Exchange] with the same .Name.
 //
 // Note: All [Exchange] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderExchangesPreviewAPI) GetByName(ctx context.Context, name string) (*Exchange, error) {
+func (a *ProviderExchangesAPI) GetByName(ctx context.Context, name string) (*Exchange, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListExchangesRequest{})
 	if err != nil {
@@ -900,14 +900,14 @@ func (a *ProviderExchangesPreviewAPI) GetByName(ctx context.Context, name string
 	return &alternatives[0], nil
 }
 
-// ExchangeListingExchangeNameToExchangeIdMap calls [ProviderExchangesPreviewAPI.ListExchangesForListingAll] and creates a map of results with [ExchangeListing].ExchangeName as key and [ExchangeListing].ExchangeId as value.
+// ExchangeListingExchangeNameToExchangeIdMap calls [ProviderExchangesAPI.ListExchangesForListingAll] and creates a map of results with [ExchangeListing].ExchangeName as key and [ExchangeListing].ExchangeId as value.
 //
 // Returns an error if there's more than one [ExchangeListing] with the same .ExchangeName.
 //
 // Note: All [ExchangeListing] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderExchangesPreviewAPI) ExchangeListingExchangeNameToExchangeIdMap(ctx context.Context, request ListExchangesForListingRequest) (map[string]string, error) {
+func (a *ProviderExchangesAPI) ExchangeListingExchangeNameToExchangeIdMap(ctx context.Context, request ListExchangesForListingRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListExchangesForListingAll(ctx, request)
@@ -925,14 +925,14 @@ func (a *ProviderExchangesPreviewAPI) ExchangeListingExchangeNameToExchangeIdMap
 	return mapping, nil
 }
 
-// GetByExchangeName calls [ProviderExchangesPreviewAPI.ExchangeListingExchangeNameToExchangeIdMap] and returns a single [ExchangeListing].
+// GetByExchangeName calls [ProviderExchangesAPI.ExchangeListingExchangeNameToExchangeIdMap] and returns a single [ExchangeListing].
 //
 // Returns an error if there's more than one [ExchangeListing] with the same .ExchangeName.
 //
 // Note: All [ExchangeListing] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderExchangesPreviewAPI) GetByExchangeName(ctx context.Context, name string) (*ExchangeListing, error) {
+func (a *ProviderExchangesAPI) GetByExchangeName(ctx context.Context, name string) (*ExchangeListing, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListExchangesForListingAll(ctx, ListExchangesForListingRequest{})
 	if err != nil {
@@ -953,14 +953,14 @@ func (a *ProviderExchangesPreviewAPI) GetByExchangeName(ctx context.Context, nam
 	return &alternatives[0], nil
 }
 
-// ExchangeListingListingNameToListingIdMap calls [ProviderExchangesPreviewAPI.ListListingsForExchangeAll] and creates a map of results with [ExchangeListing].ListingName as key and [ExchangeListing].ListingId as value.
+// ExchangeListingListingNameToListingIdMap calls [ProviderExchangesAPI.ListListingsForExchangeAll] and creates a map of results with [ExchangeListing].ListingName as key and [ExchangeListing].ListingId as value.
 //
 // Returns an error if there's more than one [ExchangeListing] with the same .ListingName.
 //
 // Note: All [ExchangeListing] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderExchangesPreviewAPI) ExchangeListingListingNameToListingIdMap(ctx context.Context, request ListListingsForExchangeRequest) (map[string]string, error) {
+func (a *ProviderExchangesAPI) ExchangeListingListingNameToListingIdMap(ctx context.Context, request ListListingsForExchangeRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListListingsForExchangeAll(ctx, request)
@@ -978,14 +978,14 @@ func (a *ProviderExchangesPreviewAPI) ExchangeListingListingNameToListingIdMap(c
 	return mapping, nil
 }
 
-// GetByListingName calls [ProviderExchangesPreviewAPI.ExchangeListingListingNameToListingIdMap] and returns a single [ExchangeListing].
+// GetByListingName calls [ProviderExchangesAPI.ExchangeListingListingNameToListingIdMap] and returns a single [ExchangeListing].
 //
 // Returns an error if there's more than one [ExchangeListing] with the same .ListingName.
 //
 // Note: All [ExchangeListing] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderExchangesPreviewAPI) GetByListingName(ctx context.Context, name string) (*ExchangeListing, error) {
+func (a *ProviderExchangesAPI) GetByListingName(ctx context.Context, name string) (*ExchangeListing, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListListingsForExchangeAll(ctx, ListListingsForExchangeRequest{})
 	if err != nil {
@@ -1006,7 +1006,7 @@ func (a *ProviderExchangesPreviewAPI) GetByListingName(ctx context.Context, name
 	return &alternatives[0], nil
 }
 
-type ProviderFilesPreviewInterface interface {
+type ProviderFilesInterface interface {
 
 	// Create a file.
 	//
@@ -1048,7 +1048,7 @@ type ProviderFilesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListFilesRequest) ([]FileInfo, error)
 
-	// FileInfoDisplayNameToIdMap calls [ProviderFilesPreviewAPI.ListAll] and creates a map of results with [FileInfo].DisplayName as key and [FileInfo].Id as value.
+	// FileInfoDisplayNameToIdMap calls [ProviderFilesAPI.ListAll] and creates a map of results with [FileInfo].DisplayName as key and [FileInfo].Id as value.
 	//
 	// Returns an error if there's more than one [FileInfo] with the same .DisplayName.
 	//
@@ -1057,7 +1057,7 @@ type ProviderFilesPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	FileInfoDisplayNameToIdMap(ctx context.Context, request ListFilesRequest) (map[string]string, error)
 
-	// GetByDisplayName calls [ProviderFilesPreviewAPI.FileInfoDisplayNameToIdMap] and returns a single [FileInfo].
+	// GetByDisplayName calls [ProviderFilesAPI.FileInfoDisplayNameToIdMap] and returns a single [FileInfo].
 	//
 	// Returns an error if there's more than one [FileInfo] with the same .DisplayName.
 	//
@@ -1067,9 +1067,9 @@ type ProviderFilesPreviewInterface interface {
 	GetByDisplayName(ctx context.Context, name string) (*FileInfo, error)
 }
 
-func NewProviderFilesPreview(client *client.DatabricksClient) *ProviderFilesPreviewAPI {
-	return &ProviderFilesPreviewAPI{
-		providerFilesPreviewImpl: providerFilesPreviewImpl{
+func NewProviderFiles(client *client.DatabricksClient) *ProviderFilesAPI {
+	return &ProviderFilesAPI{
+		providerFilesImpl: providerFilesImpl{
 			client: client,
 		},
 	}
@@ -1077,15 +1077,15 @@ func NewProviderFilesPreview(client *client.DatabricksClient) *ProviderFilesPrev
 
 // Marketplace offers a set of file APIs for various purposes such as preview
 // notebooks and provider icons.
-type ProviderFilesPreviewAPI struct {
-	providerFilesPreviewImpl
+type ProviderFilesAPI struct {
+	providerFilesImpl
 }
 
 // Delete a file.
 //
 // Delete a file
-func (a *ProviderFilesPreviewAPI) DeleteByFileId(ctx context.Context, fileId string) error {
-	return a.providerFilesPreviewImpl.Delete(ctx, DeleteFileRequest{
+func (a *ProviderFilesAPI) DeleteByFileId(ctx context.Context, fileId string) error {
+	return a.providerFilesImpl.Delete(ctx, DeleteFileRequest{
 		FileId: fileId,
 	})
 }
@@ -1093,20 +1093,20 @@ func (a *ProviderFilesPreviewAPI) DeleteByFileId(ctx context.Context, fileId str
 // Get a file.
 //
 // Get a file
-func (a *ProviderFilesPreviewAPI) GetByFileId(ctx context.Context, fileId string) (*GetFileResponse, error) {
-	return a.providerFilesPreviewImpl.Get(ctx, GetFileRequest{
+func (a *ProviderFilesAPI) GetByFileId(ctx context.Context, fileId string) (*GetFileResponse, error) {
+	return a.providerFilesImpl.Get(ctx, GetFileRequest{
 		FileId: fileId,
 	})
 }
 
-// FileInfoDisplayNameToIdMap calls [ProviderFilesPreviewAPI.ListAll] and creates a map of results with [FileInfo].DisplayName as key and [FileInfo].Id as value.
+// FileInfoDisplayNameToIdMap calls [ProviderFilesAPI.ListAll] and creates a map of results with [FileInfo].DisplayName as key and [FileInfo].Id as value.
 //
 // Returns an error if there's more than one [FileInfo] with the same .DisplayName.
 //
 // Note: All [FileInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderFilesPreviewAPI) FileInfoDisplayNameToIdMap(ctx context.Context, request ListFilesRequest) (map[string]string, error) {
+func (a *ProviderFilesAPI) FileInfoDisplayNameToIdMap(ctx context.Context, request ListFilesRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -1124,14 +1124,14 @@ func (a *ProviderFilesPreviewAPI) FileInfoDisplayNameToIdMap(ctx context.Context
 	return mapping, nil
 }
 
-// GetByDisplayName calls [ProviderFilesPreviewAPI.FileInfoDisplayNameToIdMap] and returns a single [FileInfo].
+// GetByDisplayName calls [ProviderFilesAPI.FileInfoDisplayNameToIdMap] and returns a single [FileInfo].
 //
 // Returns an error if there's more than one [FileInfo] with the same .DisplayName.
 //
 // Note: All [FileInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderFilesPreviewAPI) GetByDisplayName(ctx context.Context, name string) (*FileInfo, error) {
+func (a *ProviderFilesAPI) GetByDisplayName(ctx context.Context, name string) (*FileInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListFilesRequest{})
 	if err != nil {
@@ -1152,7 +1152,7 @@ func (a *ProviderFilesPreviewAPI) GetByDisplayName(ctx context.Context, name str
 	return &alternatives[0], nil
 }
 
-type ProviderListingsPreviewInterface interface {
+type ProviderListingsInterface interface {
 
 	// Create a listing.
 	//
@@ -1193,7 +1193,7 @@ type ProviderListingsPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request GetListingsRequest) ([]Listing, error)
 
-	// ListingSummaryNameToIdMap calls [ProviderListingsPreviewAPI.ListAll] and creates a map of results with [Listing].Summary.Name as key and [Listing].Id as value.
+	// ListingSummaryNameToIdMap calls [ProviderListingsAPI.ListAll] and creates a map of results with [Listing].Summary.Name as key and [Listing].Id as value.
 	//
 	// Returns an error if there's more than one [Listing] with the same .Summary.Name.
 	//
@@ -1202,7 +1202,7 @@ type ProviderListingsPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListingSummaryNameToIdMap(ctx context.Context, request GetListingsRequest) (map[string]string, error)
 
-	// GetBySummaryName calls [ProviderListingsPreviewAPI.ListingSummaryNameToIdMap] and returns a single [Listing].
+	// GetBySummaryName calls [ProviderListingsAPI.ListingSummaryNameToIdMap] and returns a single [Listing].
 	//
 	// Returns an error if there's more than one [Listing] with the same .Summary.Name.
 	//
@@ -1217,9 +1217,9 @@ type ProviderListingsPreviewInterface interface {
 	Update(ctx context.Context, request UpdateListingRequest) (*UpdateListingResponse, error)
 }
 
-func NewProviderListingsPreview(client *client.DatabricksClient) *ProviderListingsPreviewAPI {
-	return &ProviderListingsPreviewAPI{
-		providerListingsPreviewImpl: providerListingsPreviewImpl{
+func NewProviderListings(client *client.DatabricksClient) *ProviderListingsAPI {
+	return &ProviderListingsAPI{
+		providerListingsImpl: providerListingsImpl{
 			client: client,
 		},
 	}
@@ -1227,15 +1227,15 @@ func NewProviderListingsPreview(client *client.DatabricksClient) *ProviderListin
 
 // Listings are the core entities in the Marketplace. They represent the
 // products that are available for consumption.
-type ProviderListingsPreviewAPI struct {
-	providerListingsPreviewImpl
+type ProviderListingsAPI struct {
+	providerListingsImpl
 }
 
 // Delete a listing.
 //
 // Delete a listing
-func (a *ProviderListingsPreviewAPI) DeleteById(ctx context.Context, id string) error {
-	return a.providerListingsPreviewImpl.Delete(ctx, DeleteListingRequest{
+func (a *ProviderListingsAPI) DeleteById(ctx context.Context, id string) error {
+	return a.providerListingsImpl.Delete(ctx, DeleteListingRequest{
 		Id: id,
 	})
 }
@@ -1243,20 +1243,20 @@ func (a *ProviderListingsPreviewAPI) DeleteById(ctx context.Context, id string) 
 // Get a listing.
 //
 // Get a listing
-func (a *ProviderListingsPreviewAPI) GetById(ctx context.Context, id string) (*GetListingResponse, error) {
-	return a.providerListingsPreviewImpl.Get(ctx, GetListingRequest{
+func (a *ProviderListingsAPI) GetById(ctx context.Context, id string) (*GetListingResponse, error) {
+	return a.providerListingsImpl.Get(ctx, GetListingRequest{
 		Id: id,
 	})
 }
 
-// ListingSummaryNameToIdMap calls [ProviderListingsPreviewAPI.ListAll] and creates a map of results with [Listing].Summary.Name as key and [Listing].Id as value.
+// ListingSummaryNameToIdMap calls [ProviderListingsAPI.ListAll] and creates a map of results with [Listing].Summary.Name as key and [Listing].Id as value.
 //
 // Returns an error if there's more than one [Listing] with the same .Summary.Name.
 //
 // Note: All [Listing] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderListingsPreviewAPI) ListingSummaryNameToIdMap(ctx context.Context, request GetListingsRequest) (map[string]string, error) {
+func (a *ProviderListingsAPI) ListingSummaryNameToIdMap(ctx context.Context, request GetListingsRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -1274,14 +1274,14 @@ func (a *ProviderListingsPreviewAPI) ListingSummaryNameToIdMap(ctx context.Conte
 	return mapping, nil
 }
 
-// GetBySummaryName calls [ProviderListingsPreviewAPI.ListingSummaryNameToIdMap] and returns a single [Listing].
+// GetBySummaryName calls [ProviderListingsAPI.ListingSummaryNameToIdMap] and returns a single [Listing].
 //
 // Returns an error if there's more than one [Listing] with the same .Summary.Name.
 //
 // Note: All [Listing] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderListingsPreviewAPI) GetBySummaryName(ctx context.Context, name string) (*Listing, error) {
+func (a *ProviderListingsAPI) GetBySummaryName(ctx context.Context, name string) (*Listing, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, GetListingsRequest{})
 	if err != nil {
@@ -1302,7 +1302,7 @@ func (a *ProviderListingsPreviewAPI) GetBySummaryName(ctx context.Context, name 
 	return &alternatives[0], nil
 }
 
-type ProviderPersonalizationRequestsPreviewInterface interface {
+type ProviderPersonalizationRequestsInterface interface {
 
 	// All personalization requests across all listings.
 	//
@@ -1327,9 +1327,9 @@ type ProviderPersonalizationRequestsPreviewInterface interface {
 	Update(ctx context.Context, request UpdatePersonalizationRequestRequest) (*UpdatePersonalizationRequestResponse, error)
 }
 
-func NewProviderPersonalizationRequestsPreview(client *client.DatabricksClient) *ProviderPersonalizationRequestsPreviewAPI {
-	return &ProviderPersonalizationRequestsPreviewAPI{
-		providerPersonalizationRequestsPreviewImpl: providerPersonalizationRequestsPreviewImpl{
+func NewProviderPersonalizationRequests(client *client.DatabricksClient) *ProviderPersonalizationRequestsAPI {
+	return &ProviderPersonalizationRequestsAPI{
+		providerPersonalizationRequestsImpl: providerPersonalizationRequestsImpl{
 			client: client,
 		},
 	}
@@ -1337,11 +1337,11 @@ func NewProviderPersonalizationRequestsPreview(client *client.DatabricksClient) 
 
 // Personalization requests are an alternate to instantly available listings.
 // Control the lifecycle of personalized solutions.
-type ProviderPersonalizationRequestsPreviewAPI struct {
-	providerPersonalizationRequestsPreviewImpl
+type ProviderPersonalizationRequestsAPI struct {
+	providerPersonalizationRequestsImpl
 }
 
-type ProviderProviderAnalyticsDashboardsPreviewInterface interface {
+type ProviderProviderAnalyticsDashboardsInterface interface {
 
 	// Create provider analytics dashboard.
 	//
@@ -1365,20 +1365,20 @@ type ProviderProviderAnalyticsDashboardsPreviewInterface interface {
 	Update(ctx context.Context, request UpdateProviderAnalyticsDashboardRequest) (*UpdateProviderAnalyticsDashboardResponse, error)
 }
 
-func NewProviderProviderAnalyticsDashboardsPreview(client *client.DatabricksClient) *ProviderProviderAnalyticsDashboardsPreviewAPI {
-	return &ProviderProviderAnalyticsDashboardsPreviewAPI{
-		providerProviderAnalyticsDashboardsPreviewImpl: providerProviderAnalyticsDashboardsPreviewImpl{
+func NewProviderProviderAnalyticsDashboards(client *client.DatabricksClient) *ProviderProviderAnalyticsDashboardsAPI {
+	return &ProviderProviderAnalyticsDashboardsAPI{
+		providerProviderAnalyticsDashboardsImpl: providerProviderAnalyticsDashboardsImpl{
 			client: client,
 		},
 	}
 }
 
 // Manage templated analytics solution for providers.
-type ProviderProviderAnalyticsDashboardsPreviewAPI struct {
-	providerProviderAnalyticsDashboardsPreviewImpl
+type ProviderProviderAnalyticsDashboardsAPI struct {
+	providerProviderAnalyticsDashboardsImpl
 }
 
-type ProviderProvidersPreviewInterface interface {
+type ProviderProvidersInterface interface {
 
 	// Create a provider.
 	//
@@ -1419,7 +1419,7 @@ type ProviderProvidersPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error)
 
-	// ProviderInfoNameToIdMap calls [ProviderProvidersPreviewAPI.ListAll] and creates a map of results with [ProviderInfo].Name as key and [ProviderInfo].Id as value.
+	// ProviderInfoNameToIdMap calls [ProviderProvidersAPI.ListAll] and creates a map of results with [ProviderInfo].Name as key and [ProviderInfo].Id as value.
 	//
 	// Returns an error if there's more than one [ProviderInfo] with the same .Name.
 	//
@@ -1428,7 +1428,7 @@ type ProviderProvidersPreviewInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ProviderInfoNameToIdMap(ctx context.Context, request ListProvidersRequest) (map[string]string, error)
 
-	// GetByName calls [ProviderProvidersPreviewAPI.ProviderInfoNameToIdMap] and returns a single [ProviderInfo].
+	// GetByName calls [ProviderProvidersAPI.ProviderInfoNameToIdMap] and returns a single [ProviderInfo].
 	//
 	// Returns an error if there's more than one [ProviderInfo] with the same .Name.
 	//
@@ -1443,24 +1443,24 @@ type ProviderProvidersPreviewInterface interface {
 	Update(ctx context.Context, request UpdateProviderRequest) (*UpdateProviderResponse, error)
 }
 
-func NewProviderProvidersPreview(client *client.DatabricksClient) *ProviderProvidersPreviewAPI {
-	return &ProviderProvidersPreviewAPI{
-		providerProvidersPreviewImpl: providerProvidersPreviewImpl{
+func NewProviderProviders(client *client.DatabricksClient) *ProviderProvidersAPI {
+	return &ProviderProvidersAPI{
+		providerProvidersImpl: providerProvidersImpl{
 			client: client,
 		},
 	}
 }
 
 // Providers are entities that manage assets in Marketplace.
-type ProviderProvidersPreviewAPI struct {
-	providerProvidersPreviewImpl
+type ProviderProvidersAPI struct {
+	providerProvidersImpl
 }
 
 // Delete provider.
 //
 // Delete provider
-func (a *ProviderProvidersPreviewAPI) DeleteById(ctx context.Context, id string) error {
-	return a.providerProvidersPreviewImpl.Delete(ctx, DeleteProviderRequest{
+func (a *ProviderProvidersAPI) DeleteById(ctx context.Context, id string) error {
+	return a.providerProvidersImpl.Delete(ctx, DeleteProviderRequest{
 		Id: id,
 	})
 }
@@ -1468,20 +1468,20 @@ func (a *ProviderProvidersPreviewAPI) DeleteById(ctx context.Context, id string)
 // Get provider.
 //
 // Get provider profile
-func (a *ProviderProvidersPreviewAPI) GetById(ctx context.Context, id string) (*GetProviderResponse, error) {
-	return a.providerProvidersPreviewImpl.Get(ctx, GetProviderRequest{
+func (a *ProviderProvidersAPI) GetById(ctx context.Context, id string) (*GetProviderResponse, error) {
+	return a.providerProvidersImpl.Get(ctx, GetProviderRequest{
 		Id: id,
 	})
 }
 
-// ProviderInfoNameToIdMap calls [ProviderProvidersPreviewAPI.ListAll] and creates a map of results with [ProviderInfo].Name as key and [ProviderInfo].Id as value.
+// ProviderInfoNameToIdMap calls [ProviderProvidersAPI.ListAll] and creates a map of results with [ProviderInfo].Name as key and [ProviderInfo].Id as value.
 //
 // Returns an error if there's more than one [ProviderInfo] with the same .Name.
 //
 // Note: All [ProviderInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderProvidersPreviewAPI) ProviderInfoNameToIdMap(ctx context.Context, request ListProvidersRequest) (map[string]string, error) {
+func (a *ProviderProvidersAPI) ProviderInfoNameToIdMap(ctx context.Context, request ListProvidersRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -1499,14 +1499,14 @@ func (a *ProviderProvidersPreviewAPI) ProviderInfoNameToIdMap(ctx context.Contex
 	return mapping, nil
 }
 
-// GetByName calls [ProviderProvidersPreviewAPI.ProviderInfoNameToIdMap] and returns a single [ProviderInfo].
+// GetByName calls [ProviderProvidersAPI.ProviderInfoNameToIdMap] and returns a single [ProviderInfo].
 //
 // Returns an error if there's more than one [ProviderInfo] with the same .Name.
 //
 // Note: All [ProviderInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ProviderProvidersPreviewAPI) GetByName(ctx context.Context, name string) (*ProviderInfo, error) {
+func (a *ProviderProvidersAPI) GetByName(ctx context.Context, name string) (*ProviderInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListProvidersRequest{})
 	if err != nil {

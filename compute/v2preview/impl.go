@@ -12,12 +12,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-// unexported type that holds implementations of just ClusterPoliciesPreview API methods
-type clusterPoliciesPreviewImpl struct {
+// unexported type that holds implementations of just ClusterPolicies API methods
+type clusterPoliciesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *clusterPoliciesPreviewImpl) Create(ctx context.Context, request CreatePolicy) (*CreatePolicyResponse, error) {
+func (a *clusterPoliciesImpl) Create(ctx context.Context, request CreatePolicy) (*CreatePolicyResponse, error) {
 	var createPolicyResponse CreatePolicyResponse
 	path := "/api/2.0preview/policies/clusters/create"
 	queryParams := make(map[string]any)
@@ -28,7 +28,7 @@ func (a *clusterPoliciesPreviewImpl) Create(ctx context.Context, request CreateP
 	return &createPolicyResponse, err
 }
 
-func (a *clusterPoliciesPreviewImpl) Delete(ctx context.Context, request DeletePolicy) error {
+func (a *clusterPoliciesImpl) Delete(ctx context.Context, request DeletePolicy) error {
 	var deletePolicyResponse DeletePolicyResponse
 	path := "/api/2.0preview/policies/clusters/delete"
 	queryParams := make(map[string]any)
@@ -39,7 +39,7 @@ func (a *clusterPoliciesPreviewImpl) Delete(ctx context.Context, request DeleteP
 	return err
 }
 
-func (a *clusterPoliciesPreviewImpl) Edit(ctx context.Context, request EditPolicy) error {
+func (a *clusterPoliciesImpl) Edit(ctx context.Context, request EditPolicy) error {
 	var editPolicyResponse EditPolicyResponse
 	path := "/api/2.0preview/policies/clusters/edit"
 	queryParams := make(map[string]any)
@@ -50,7 +50,7 @@ func (a *clusterPoliciesPreviewImpl) Edit(ctx context.Context, request EditPolic
 	return err
 }
 
-func (a *clusterPoliciesPreviewImpl) Get(ctx context.Context, request GetClusterPolicyRequest) (*Policy, error) {
+func (a *clusterPoliciesImpl) Get(ctx context.Context, request GetClusterPolicyRequest) (*Policy, error) {
 	var policy Policy
 	path := "/api/2.0preview/policies/clusters/get"
 	queryParams := make(map[string]any)
@@ -60,7 +60,7 @@ func (a *clusterPoliciesPreviewImpl) Get(ctx context.Context, request GetCluster
 	return &policy, err
 }
 
-func (a *clusterPoliciesPreviewImpl) GetPermissionLevels(ctx context.Context, request GetClusterPolicyPermissionLevelsRequest) (*GetClusterPolicyPermissionLevelsResponse, error) {
+func (a *clusterPoliciesImpl) GetPermissionLevels(ctx context.Context, request GetClusterPolicyPermissionLevelsRequest) (*GetClusterPolicyPermissionLevelsResponse, error) {
 	var getClusterPolicyPermissionLevelsResponse GetClusterPolicyPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0preview/permissions/cluster-policies/%v/permissionLevels", request.ClusterPolicyId)
 	queryParams := make(map[string]any)
@@ -70,7 +70,7 @@ func (a *clusterPoliciesPreviewImpl) GetPermissionLevels(ctx context.Context, re
 	return &getClusterPolicyPermissionLevelsResponse, err
 }
 
-func (a *clusterPoliciesPreviewImpl) GetPermissions(ctx context.Context, request GetClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
+func (a *clusterPoliciesImpl) GetPermissions(ctx context.Context, request GetClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/cluster-policies/%v", request.ClusterPolicyId)
 	queryParams := make(map[string]any)
@@ -83,7 +83,7 @@ func (a *clusterPoliciesPreviewImpl) GetPermissions(ctx context.Context, request
 // List cluster policies.
 //
 // Returns a list of policies accessible by the requesting user.
-func (a *clusterPoliciesPreviewImpl) List(ctx context.Context, request ListClusterPoliciesRequest) listing.Iterator[Policy] {
+func (a *clusterPoliciesImpl) List(ctx context.Context, request ListClusterPoliciesRequest) listing.Iterator[Policy] {
 
 	getNextPage := func(ctx context.Context, req ListClusterPoliciesRequest) (*ListPoliciesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -104,11 +104,11 @@ func (a *clusterPoliciesPreviewImpl) List(ctx context.Context, request ListClust
 // List cluster policies.
 //
 // Returns a list of policies accessible by the requesting user.
-func (a *clusterPoliciesPreviewImpl) ListAll(ctx context.Context, request ListClusterPoliciesRequest) ([]Policy, error) {
+func (a *clusterPoliciesImpl) ListAll(ctx context.Context, request ListClusterPoliciesRequest) ([]Policy, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[Policy](ctx, iterator)
 }
-func (a *clusterPoliciesPreviewImpl) internalList(ctx context.Context, request ListClusterPoliciesRequest) (*ListPoliciesResponse, error) {
+func (a *clusterPoliciesImpl) internalList(ctx context.Context, request ListClusterPoliciesRequest) (*ListPoliciesResponse, error) {
 	var listPoliciesResponse ListPoliciesResponse
 	path := "/api/2.0preview/policies/clusters/list"
 	queryParams := make(map[string]any)
@@ -118,7 +118,7 @@ func (a *clusterPoliciesPreviewImpl) internalList(ctx context.Context, request L
 	return &listPoliciesResponse, err
 }
 
-func (a *clusterPoliciesPreviewImpl) SetPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
+func (a *clusterPoliciesImpl) SetPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/cluster-policies/%v", request.ClusterPolicyId)
 	queryParams := make(map[string]any)
@@ -129,7 +129,7 @@ func (a *clusterPoliciesPreviewImpl) SetPermissions(ctx context.Context, request
 	return &clusterPolicyPermissions, err
 }
 
-func (a *clusterPoliciesPreviewImpl) UpdatePermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
+func (a *clusterPoliciesImpl) UpdatePermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/cluster-policies/%v", request.ClusterPolicyId)
 	queryParams := make(map[string]any)
@@ -140,12 +140,12 @@ func (a *clusterPoliciesPreviewImpl) UpdatePermissions(ctx context.Context, requ
 	return &clusterPolicyPermissions, err
 }
 
-// unexported type that holds implementations of just ClustersPreview API methods
-type clustersPreviewImpl struct {
+// unexported type that holds implementations of just Clusters API methods
+type clustersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *clustersPreviewImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
+func (a *clustersImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
 	var changeClusterOwnerResponse ChangeClusterOwnerResponse
 	path := "/api/2.1preview/clusters/change-owner"
 	queryParams := make(map[string]any)
@@ -156,7 +156,7 @@ func (a *clustersPreviewImpl) ChangeOwner(ctx context.Context, request ChangeClu
 	return err
 }
 
-func (a *clustersPreviewImpl) Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error) {
+func (a *clustersImpl) Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error) {
 	var createClusterResponse CreateClusterResponse
 	path := "/api/2.1preview/clusters/create"
 	queryParams := make(map[string]any)
@@ -167,7 +167,7 @@ func (a *clustersPreviewImpl) Create(ctx context.Context, request CreateCluster)
 	return &createClusterResponse, err
 }
 
-func (a *clustersPreviewImpl) Delete(ctx context.Context, request DeleteCluster) error {
+func (a *clustersImpl) Delete(ctx context.Context, request DeleteCluster) error {
 	var deleteClusterResponse DeleteClusterResponse
 	path := "/api/2.1preview/clusters/delete"
 	queryParams := make(map[string]any)
@@ -178,7 +178,7 @@ func (a *clustersPreviewImpl) Delete(ctx context.Context, request DeleteCluster)
 	return err
 }
 
-func (a *clustersPreviewImpl) Edit(ctx context.Context, request EditCluster) error {
+func (a *clustersImpl) Edit(ctx context.Context, request EditCluster) error {
 	var editClusterResponse EditClusterResponse
 	path := "/api/2.1preview/clusters/edit"
 	queryParams := make(map[string]any)
@@ -194,7 +194,7 @@ func (a *clustersPreviewImpl) Edit(ctx context.Context, request EditCluster) err
 // Retrieves a list of events about the activity of a cluster. This API is
 // paginated. If there are more events to read, the response includes all the
 // nparameters necessary to request the next page of events.
-func (a *clustersPreviewImpl) Events(ctx context.Context, request GetEvents) listing.Iterator[ClusterEvent] {
+func (a *clustersImpl) Events(ctx context.Context, request GetEvents) listing.Iterator[ClusterEvent] {
 
 	getNextPage := func(ctx context.Context, req GetEvents) (*GetEventsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -204,10 +204,11 @@ func (a *clustersPreviewImpl) Events(ctx context.Context, request GetEvents) lis
 		return resp.Events
 	}
 	getNextReq := func(resp *GetEventsResponse) *GetEvents {
-		if len(getItems(resp)) == 0 {
+		if resp.NextPage == nil {
 			return nil
 		}
-		request.Offset = resp.Offset + int64(len(resp.Events))
+		request = *resp.NextPage
+
 		return &request
 	}
 	iterator := listing.NewIterator(
@@ -223,12 +224,12 @@ func (a *clustersPreviewImpl) Events(ctx context.Context, request GetEvents) lis
 // Retrieves a list of events about the activity of a cluster. This API is
 // paginated. If there are more events to read, the response includes all the
 // nparameters necessary to request the next page of events.
-func (a *clustersPreviewImpl) EventsAll(ctx context.Context, request GetEvents) ([]ClusterEvent, error) {
+func (a *clustersImpl) EventsAll(ctx context.Context, request GetEvents) ([]ClusterEvent, error) {
 	iterator := a.Events(ctx, request)
 	return listing.ToSliceN[ClusterEvent, int64](ctx, iterator, request.Limit)
 
 }
-func (a *clustersPreviewImpl) internalEvents(ctx context.Context, request GetEvents) (*GetEventsResponse, error) {
+func (a *clustersImpl) internalEvents(ctx context.Context, request GetEvents) (*GetEventsResponse, error) {
 	var getEventsResponse GetEventsResponse
 	path := "/api/2.1preview/clusters/events"
 	queryParams := make(map[string]any)
@@ -239,7 +240,7 @@ func (a *clustersPreviewImpl) internalEvents(ctx context.Context, request GetEve
 	return &getEventsResponse, err
 }
 
-func (a *clustersPreviewImpl) Get(ctx context.Context, request GetClusterRequest) (*ClusterDetails, error) {
+func (a *clustersImpl) Get(ctx context.Context, request GetClusterRequest) (*ClusterDetails, error) {
 	var clusterDetails ClusterDetails
 	path := "/api/2.1preview/clusters/get"
 	queryParams := make(map[string]any)
@@ -249,7 +250,7 @@ func (a *clustersPreviewImpl) Get(ctx context.Context, request GetClusterRequest
 	return &clusterDetails, err
 }
 
-func (a *clustersPreviewImpl) GetPermissionLevels(ctx context.Context, request GetClusterPermissionLevelsRequest) (*GetClusterPermissionLevelsResponse, error) {
+func (a *clustersImpl) GetPermissionLevels(ctx context.Context, request GetClusterPermissionLevelsRequest) (*GetClusterPermissionLevelsResponse, error) {
 	var getClusterPermissionLevelsResponse GetClusterPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0preview/permissions/clusters/%v/permissionLevels", request.ClusterId)
 	queryParams := make(map[string]any)
@@ -259,7 +260,7 @@ func (a *clustersPreviewImpl) GetPermissionLevels(ctx context.Context, request G
 	return &getClusterPermissionLevelsResponse, err
 }
 
-func (a *clustersPreviewImpl) GetPermissions(ctx context.Context, request GetClusterPermissionsRequest) (*ClusterPermissions, error) {
+func (a *clustersImpl) GetPermissions(ctx context.Context, request GetClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/clusters/%v", request.ClusterId)
 	queryParams := make(map[string]any)
@@ -274,7 +275,7 @@ func (a *clustersPreviewImpl) GetPermissions(ctx context.Context, request GetClu
 // Return information about all pinned and active clusters, and all clusters
 // terminated within the last 30 days. Clusters terminated prior to this period
 // are not included.
-func (a *clustersPreviewImpl) List(ctx context.Context, request ListClustersRequest) listing.Iterator[ClusterDetails] {
+func (a *clustersImpl) List(ctx context.Context, request ListClustersRequest) listing.Iterator[ClusterDetails] {
 
 	getNextPage := func(ctx context.Context, req ListClustersRequest) (*ListClustersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -303,12 +304,12 @@ func (a *clustersPreviewImpl) List(ctx context.Context, request ListClustersRequ
 // Return information about all pinned and active clusters, and all clusters
 // terminated within the last 30 days. Clusters terminated prior to this period
 // are not included.
-func (a *clustersPreviewImpl) ListAll(ctx context.Context, request ListClustersRequest) ([]ClusterDetails, error) {
+func (a *clustersImpl) ListAll(ctx context.Context, request ListClustersRequest) ([]ClusterDetails, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[ClusterDetails, int](ctx, iterator, request.PageSize)
 
 }
-func (a *clustersPreviewImpl) internalList(ctx context.Context, request ListClustersRequest) (*ListClustersResponse, error) {
+func (a *clustersImpl) internalList(ctx context.Context, request ListClustersRequest) (*ListClustersResponse, error) {
 	var listClustersResponse ListClustersResponse
 	path := "/api/2.1preview/clusters/list"
 	queryParams := make(map[string]any)
@@ -318,7 +319,7 @@ func (a *clustersPreviewImpl) internalList(ctx context.Context, request ListClus
 	return &listClustersResponse, err
 }
 
-func (a *clustersPreviewImpl) ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse, error) {
+func (a *clustersImpl) ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse, error) {
 	var listNodeTypesResponse ListNodeTypesResponse
 	path := "/api/2.1preview/clusters/list-node-types"
 
@@ -328,7 +329,7 @@ func (a *clustersPreviewImpl) ListNodeTypes(ctx context.Context) (*ListNodeTypes
 	return &listNodeTypesResponse, err
 }
 
-func (a *clustersPreviewImpl) ListZones(ctx context.Context) (*ListAvailableZonesResponse, error) {
+func (a *clustersImpl) ListZones(ctx context.Context) (*ListAvailableZonesResponse, error) {
 	var listAvailableZonesResponse ListAvailableZonesResponse
 	path := "/api/2.1preview/clusters/list-zones"
 
@@ -338,7 +339,7 @@ func (a *clustersPreviewImpl) ListZones(ctx context.Context) (*ListAvailableZone
 	return &listAvailableZonesResponse, err
 }
 
-func (a *clustersPreviewImpl) PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error {
+func (a *clustersImpl) PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error {
 	var permanentDeleteClusterResponse PermanentDeleteClusterResponse
 	path := "/api/2.1preview/clusters/permanent-delete"
 	queryParams := make(map[string]any)
@@ -349,7 +350,7 @@ func (a *clustersPreviewImpl) PermanentDelete(ctx context.Context, request Perma
 	return err
 }
 
-func (a *clustersPreviewImpl) Pin(ctx context.Context, request PinCluster) error {
+func (a *clustersImpl) Pin(ctx context.Context, request PinCluster) error {
 	var pinClusterResponse PinClusterResponse
 	path := "/api/2.1preview/clusters/pin"
 	queryParams := make(map[string]any)
@@ -360,7 +361,7 @@ func (a *clustersPreviewImpl) Pin(ctx context.Context, request PinCluster) error
 	return err
 }
 
-func (a *clustersPreviewImpl) Resize(ctx context.Context, request ResizeCluster) error {
+func (a *clustersImpl) Resize(ctx context.Context, request ResizeCluster) error {
 	var resizeClusterResponse ResizeClusterResponse
 	path := "/api/2.1preview/clusters/resize"
 	queryParams := make(map[string]any)
@@ -371,7 +372,7 @@ func (a *clustersPreviewImpl) Resize(ctx context.Context, request ResizeCluster)
 	return err
 }
 
-func (a *clustersPreviewImpl) Restart(ctx context.Context, request RestartCluster) error {
+func (a *clustersImpl) Restart(ctx context.Context, request RestartCluster) error {
 	var restartClusterResponse RestartClusterResponse
 	path := "/api/2.1preview/clusters/restart"
 	queryParams := make(map[string]any)
@@ -382,7 +383,7 @@ func (a *clustersPreviewImpl) Restart(ctx context.Context, request RestartCluste
 	return err
 }
 
-func (a *clustersPreviewImpl) SetPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
+func (a *clustersImpl) SetPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/clusters/%v", request.ClusterId)
 	queryParams := make(map[string]any)
@@ -393,7 +394,7 @@ func (a *clustersPreviewImpl) SetPermissions(ctx context.Context, request Cluste
 	return &clusterPermissions, err
 }
 
-func (a *clustersPreviewImpl) SparkVersions(ctx context.Context) (*GetSparkVersionsResponse, error) {
+func (a *clustersImpl) SparkVersions(ctx context.Context) (*GetSparkVersionsResponse, error) {
 	var getSparkVersionsResponse GetSparkVersionsResponse
 	path := "/api/2.1preview/clusters/spark-versions"
 
@@ -403,7 +404,7 @@ func (a *clustersPreviewImpl) SparkVersions(ctx context.Context) (*GetSparkVersi
 	return &getSparkVersionsResponse, err
 }
 
-func (a *clustersPreviewImpl) Start(ctx context.Context, request StartCluster) error {
+func (a *clustersImpl) Start(ctx context.Context, request StartCluster) error {
 	var startClusterResponse StartClusterResponse
 	path := "/api/2.1preview/clusters/start"
 	queryParams := make(map[string]any)
@@ -414,7 +415,7 @@ func (a *clustersPreviewImpl) Start(ctx context.Context, request StartCluster) e
 	return err
 }
 
-func (a *clustersPreviewImpl) Unpin(ctx context.Context, request UnpinCluster) error {
+func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 	var unpinClusterResponse UnpinClusterResponse
 	path := "/api/2.1preview/clusters/unpin"
 	queryParams := make(map[string]any)
@@ -425,7 +426,7 @@ func (a *clustersPreviewImpl) Unpin(ctx context.Context, request UnpinCluster) e
 	return err
 }
 
-func (a *clustersPreviewImpl) Update(ctx context.Context, request UpdateCluster) error {
+func (a *clustersImpl) Update(ctx context.Context, request UpdateCluster) error {
 	var updateClusterResponse UpdateClusterResponse
 	path := "/api/2.1preview/clusters/update"
 	queryParams := make(map[string]any)
@@ -436,7 +437,7 @@ func (a *clustersPreviewImpl) Update(ctx context.Context, request UpdateCluster)
 	return err
 }
 
-func (a *clustersPreviewImpl) UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
+func (a *clustersImpl) UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/clusters/%v", request.ClusterId)
 	queryParams := make(map[string]any)
@@ -447,12 +448,12 @@ func (a *clustersPreviewImpl) UpdatePermissions(ctx context.Context, request Clu
 	return &clusterPermissions, err
 }
 
-// unexported type that holds implementations of just CommandExecutionPreview API methods
-type commandExecutionPreviewImpl struct {
+// unexported type that holds implementations of just CommandExecution API methods
+type commandExecutionImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *commandExecutionPreviewImpl) Cancel(ctx context.Context, request CancelCommand) error {
+func (a *commandExecutionImpl) Cancel(ctx context.Context, request CancelCommand) error {
 	var cancelResponse CancelResponse
 	path := "/api/1.2preview/commands/cancel"
 	queryParams := make(map[string]any)
@@ -463,7 +464,7 @@ func (a *commandExecutionPreviewImpl) Cancel(ctx context.Context, request Cancel
 	return err
 }
 
-func (a *commandExecutionPreviewImpl) CommandStatus(ctx context.Context, request CommandStatusRequest) (*CommandStatusResponse, error) {
+func (a *commandExecutionImpl) CommandStatus(ctx context.Context, request CommandStatusRequest) (*CommandStatusResponse, error) {
 	var commandStatusResponse CommandStatusResponse
 	path := "/api/1.2preview/commands/status"
 	queryParams := make(map[string]any)
@@ -473,7 +474,7 @@ func (a *commandExecutionPreviewImpl) CommandStatus(ctx context.Context, request
 	return &commandStatusResponse, err
 }
 
-func (a *commandExecutionPreviewImpl) ContextStatus(ctx context.Context, request ContextStatusRequest) (*ContextStatusResponse, error) {
+func (a *commandExecutionImpl) ContextStatus(ctx context.Context, request ContextStatusRequest) (*ContextStatusResponse, error) {
 	var contextStatusResponse ContextStatusResponse
 	path := "/api/1.2preview/contexts/status"
 	queryParams := make(map[string]any)
@@ -483,7 +484,7 @@ func (a *commandExecutionPreviewImpl) ContextStatus(ctx context.Context, request
 	return &contextStatusResponse, err
 }
 
-func (a *commandExecutionPreviewImpl) Create(ctx context.Context, request CreateContext) (*Created, error) {
+func (a *commandExecutionImpl) Create(ctx context.Context, request CreateContext) (*Created, error) {
 	var created Created
 	path := "/api/1.2preview/contexts/create"
 	queryParams := make(map[string]any)
@@ -494,7 +495,7 @@ func (a *commandExecutionPreviewImpl) Create(ctx context.Context, request Create
 	return &created, err
 }
 
-func (a *commandExecutionPreviewImpl) Destroy(ctx context.Context, request DestroyContext) error {
+func (a *commandExecutionImpl) Destroy(ctx context.Context, request DestroyContext) error {
 	var destroyResponse DestroyResponse
 	path := "/api/1.2preview/contexts/destroy"
 	queryParams := make(map[string]any)
@@ -505,7 +506,7 @@ func (a *commandExecutionPreviewImpl) Destroy(ctx context.Context, request Destr
 	return err
 }
 
-func (a *commandExecutionPreviewImpl) Execute(ctx context.Context, request Command) (*Created, error) {
+func (a *commandExecutionImpl) Execute(ctx context.Context, request Command) (*Created, error) {
 	var created Created
 	path := "/api/1.2preview/commands/execute"
 	queryParams := make(map[string]any)
@@ -516,12 +517,12 @@ func (a *commandExecutionPreviewImpl) Execute(ctx context.Context, request Comma
 	return &created, err
 }
 
-// unexported type that holds implementations of just GlobalInitScriptsPreview API methods
-type globalInitScriptsPreviewImpl struct {
+// unexported type that holds implementations of just GlobalInitScripts API methods
+type globalInitScriptsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *globalInitScriptsPreviewImpl) Create(ctx context.Context, request GlobalInitScriptCreateRequest) (*CreateResponse, error) {
+func (a *globalInitScriptsImpl) Create(ctx context.Context, request GlobalInitScriptCreateRequest) (*CreateResponse, error) {
 	var createResponse CreateResponse
 	path := "/api/2.0preview/global-init-scripts"
 	queryParams := make(map[string]any)
@@ -532,7 +533,7 @@ func (a *globalInitScriptsPreviewImpl) Create(ctx context.Context, request Globa
 	return &createResponse, err
 }
 
-func (a *globalInitScriptsPreviewImpl) Delete(ctx context.Context, request DeleteGlobalInitScriptRequest) error {
+func (a *globalInitScriptsImpl) Delete(ctx context.Context, request DeleteGlobalInitScriptRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/global-init-scripts/%v", request.ScriptId)
 	queryParams := make(map[string]any)
@@ -541,7 +542,7 @@ func (a *globalInitScriptsPreviewImpl) Delete(ctx context.Context, request Delet
 	return err
 }
 
-func (a *globalInitScriptsPreviewImpl) Get(ctx context.Context, request GetGlobalInitScriptRequest) (*GlobalInitScriptDetailsWithContent, error) {
+func (a *globalInitScriptsImpl) Get(ctx context.Context, request GetGlobalInitScriptRequest) (*GlobalInitScriptDetailsWithContent, error) {
 	var globalInitScriptDetailsWithContent GlobalInitScriptDetailsWithContent
 	path := fmt.Sprintf("/api/2.0preview/global-init-scripts/%v", request.ScriptId)
 	queryParams := make(map[string]any)
@@ -557,7 +558,7 @@ func (a *globalInitScriptsPreviewImpl) Get(ctx context.Context, request GetGloba
 // properties for each script but **not** the script contents. To retrieve the
 // contents of a script, use the [get a global init
 // script](:method:globalinitscripts/get) operation.
-func (a *globalInitScriptsPreviewImpl) List(ctx context.Context) listing.Iterator[GlobalInitScriptDetails] {
+func (a *globalInitScriptsImpl) List(ctx context.Context) listing.Iterator[GlobalInitScriptDetails] {
 	request := struct{}{}
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListGlobalInitScriptsResponse, error) {
@@ -582,11 +583,11 @@ func (a *globalInitScriptsPreviewImpl) List(ctx context.Context) listing.Iterato
 // properties for each script but **not** the script contents. To retrieve the
 // contents of a script, use the [get a global init
 // script](:method:globalinitscripts/get) operation.
-func (a *globalInitScriptsPreviewImpl) ListAll(ctx context.Context) ([]GlobalInitScriptDetails, error) {
+func (a *globalInitScriptsImpl) ListAll(ctx context.Context) ([]GlobalInitScriptDetails, error) {
 	iterator := a.List(ctx)
 	return listing.ToSlice[GlobalInitScriptDetails](ctx, iterator)
 }
-func (a *globalInitScriptsPreviewImpl) internalList(ctx context.Context) (*ListGlobalInitScriptsResponse, error) {
+func (a *globalInitScriptsImpl) internalList(ctx context.Context) (*ListGlobalInitScriptsResponse, error) {
 	var listGlobalInitScriptsResponse ListGlobalInitScriptsResponse
 	path := "/api/2.0preview/global-init-scripts"
 
@@ -596,7 +597,7 @@ func (a *globalInitScriptsPreviewImpl) internalList(ctx context.Context) (*ListG
 	return &listGlobalInitScriptsResponse, err
 }
 
-func (a *globalInitScriptsPreviewImpl) Update(ctx context.Context, request GlobalInitScriptUpdateRequest) error {
+func (a *globalInitScriptsImpl) Update(ctx context.Context, request GlobalInitScriptUpdateRequest) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0preview/global-init-scripts/%v", request.ScriptId)
 	queryParams := make(map[string]any)
@@ -606,12 +607,12 @@ func (a *globalInitScriptsPreviewImpl) Update(ctx context.Context, request Globa
 	return err
 }
 
-// unexported type that holds implementations of just InstancePoolsPreview API methods
-type instancePoolsPreviewImpl struct {
+// unexported type that holds implementations of just InstancePools API methods
+type instancePoolsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *instancePoolsPreviewImpl) Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error) {
+func (a *instancePoolsImpl) Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error) {
 	var createInstancePoolResponse CreateInstancePoolResponse
 	path := "/api/2.0preview/instance-pools/create"
 	queryParams := make(map[string]any)
@@ -622,7 +623,7 @@ func (a *instancePoolsPreviewImpl) Create(ctx context.Context, request CreateIns
 	return &createInstancePoolResponse, err
 }
 
-func (a *instancePoolsPreviewImpl) Delete(ctx context.Context, request DeleteInstancePool) error {
+func (a *instancePoolsImpl) Delete(ctx context.Context, request DeleteInstancePool) error {
 	var deleteInstancePoolResponse DeleteInstancePoolResponse
 	path := "/api/2.0preview/instance-pools/delete"
 	queryParams := make(map[string]any)
@@ -633,7 +634,7 @@ func (a *instancePoolsPreviewImpl) Delete(ctx context.Context, request DeleteIns
 	return err
 }
 
-func (a *instancePoolsPreviewImpl) Edit(ctx context.Context, request EditInstancePool) error {
+func (a *instancePoolsImpl) Edit(ctx context.Context, request EditInstancePool) error {
 	var editInstancePoolResponse EditInstancePoolResponse
 	path := "/api/2.0preview/instance-pools/edit"
 	queryParams := make(map[string]any)
@@ -644,7 +645,7 @@ func (a *instancePoolsPreviewImpl) Edit(ctx context.Context, request EditInstanc
 	return err
 }
 
-func (a *instancePoolsPreviewImpl) Get(ctx context.Context, request GetInstancePoolRequest) (*GetInstancePool, error) {
+func (a *instancePoolsImpl) Get(ctx context.Context, request GetInstancePoolRequest) (*GetInstancePool, error) {
 	var getInstancePool GetInstancePool
 	path := "/api/2.0preview/instance-pools/get"
 	queryParams := make(map[string]any)
@@ -654,7 +655,7 @@ func (a *instancePoolsPreviewImpl) Get(ctx context.Context, request GetInstanceP
 	return &getInstancePool, err
 }
 
-func (a *instancePoolsPreviewImpl) GetPermissionLevels(ctx context.Context, request GetInstancePoolPermissionLevelsRequest) (*GetInstancePoolPermissionLevelsResponse, error) {
+func (a *instancePoolsImpl) GetPermissionLevels(ctx context.Context, request GetInstancePoolPermissionLevelsRequest) (*GetInstancePoolPermissionLevelsResponse, error) {
 	var getInstancePoolPermissionLevelsResponse GetInstancePoolPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0preview/permissions/instance-pools/%v/permissionLevels", request.InstancePoolId)
 	queryParams := make(map[string]any)
@@ -664,7 +665,7 @@ func (a *instancePoolsPreviewImpl) GetPermissionLevels(ctx context.Context, requ
 	return &getInstancePoolPermissionLevelsResponse, err
 }
 
-func (a *instancePoolsPreviewImpl) GetPermissions(ctx context.Context, request GetInstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
+func (a *instancePoolsImpl) GetPermissions(ctx context.Context, request GetInstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/instance-pools/%v", request.InstancePoolId)
 	queryParams := make(map[string]any)
@@ -677,7 +678,7 @@ func (a *instancePoolsPreviewImpl) GetPermissions(ctx context.Context, request G
 // List instance pool info.
 //
 // Gets a list of instance pools with their statistics.
-func (a *instancePoolsPreviewImpl) List(ctx context.Context) listing.Iterator[InstancePoolAndStats] {
+func (a *instancePoolsImpl) List(ctx context.Context) listing.Iterator[InstancePoolAndStats] {
 	request := struct{}{}
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListInstancePools, error) {
@@ -699,11 +700,11 @@ func (a *instancePoolsPreviewImpl) List(ctx context.Context) listing.Iterator[In
 // List instance pool info.
 //
 // Gets a list of instance pools with their statistics.
-func (a *instancePoolsPreviewImpl) ListAll(ctx context.Context) ([]InstancePoolAndStats, error) {
+func (a *instancePoolsImpl) ListAll(ctx context.Context) ([]InstancePoolAndStats, error) {
 	iterator := a.List(ctx)
 	return listing.ToSlice[InstancePoolAndStats](ctx, iterator)
 }
-func (a *instancePoolsPreviewImpl) internalList(ctx context.Context) (*ListInstancePools, error) {
+func (a *instancePoolsImpl) internalList(ctx context.Context) (*ListInstancePools, error) {
 	var listInstancePools ListInstancePools
 	path := "/api/2.0preview/instance-pools/list"
 
@@ -713,7 +714,7 @@ func (a *instancePoolsPreviewImpl) internalList(ctx context.Context) (*ListInsta
 	return &listInstancePools, err
 }
 
-func (a *instancePoolsPreviewImpl) SetPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
+func (a *instancePoolsImpl) SetPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/instance-pools/%v", request.InstancePoolId)
 	queryParams := make(map[string]any)
@@ -724,7 +725,7 @@ func (a *instancePoolsPreviewImpl) SetPermissions(ctx context.Context, request I
 	return &instancePoolPermissions, err
 }
 
-func (a *instancePoolsPreviewImpl) UpdatePermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
+func (a *instancePoolsImpl) UpdatePermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
 	path := fmt.Sprintf("/api/2.0preview/permissions/instance-pools/%v", request.InstancePoolId)
 	queryParams := make(map[string]any)
@@ -735,12 +736,12 @@ func (a *instancePoolsPreviewImpl) UpdatePermissions(ctx context.Context, reques
 	return &instancePoolPermissions, err
 }
 
-// unexported type that holds implementations of just InstanceProfilesPreview API methods
-type instanceProfilesPreviewImpl struct {
+// unexported type that holds implementations of just InstanceProfiles API methods
+type instanceProfilesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *instanceProfilesPreviewImpl) Add(ctx context.Context, request AddInstanceProfile) error {
+func (a *instanceProfilesImpl) Add(ctx context.Context, request AddInstanceProfile) error {
 	var addResponse AddResponse
 	path := "/api/2.0preview/instance-profiles/add"
 	queryParams := make(map[string]any)
@@ -751,7 +752,7 @@ func (a *instanceProfilesPreviewImpl) Add(ctx context.Context, request AddInstan
 	return err
 }
 
-func (a *instanceProfilesPreviewImpl) Edit(ctx context.Context, request InstanceProfile) error {
+func (a *instanceProfilesImpl) Edit(ctx context.Context, request InstanceProfile) error {
 	var editResponse EditResponse
 	path := "/api/2.0preview/instance-profiles/edit"
 	queryParams := make(map[string]any)
@@ -767,7 +768,7 @@ func (a *instanceProfilesPreviewImpl) Edit(ctx context.Context, request Instance
 // List the instance profiles that the calling user can use to launch a cluster.
 //
 // This API is available to all users.
-func (a *instanceProfilesPreviewImpl) List(ctx context.Context) listing.Iterator[InstanceProfile] {
+func (a *instanceProfilesImpl) List(ctx context.Context) listing.Iterator[InstanceProfile] {
 	request := struct{}{}
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListInstanceProfilesResponse, error) {
@@ -791,11 +792,11 @@ func (a *instanceProfilesPreviewImpl) List(ctx context.Context) listing.Iterator
 // List the instance profiles that the calling user can use to launch a cluster.
 //
 // This API is available to all users.
-func (a *instanceProfilesPreviewImpl) ListAll(ctx context.Context) ([]InstanceProfile, error) {
+func (a *instanceProfilesImpl) ListAll(ctx context.Context) ([]InstanceProfile, error) {
 	iterator := a.List(ctx)
 	return listing.ToSlice[InstanceProfile](ctx, iterator)
 }
-func (a *instanceProfilesPreviewImpl) internalList(ctx context.Context) (*ListInstanceProfilesResponse, error) {
+func (a *instanceProfilesImpl) internalList(ctx context.Context) (*ListInstanceProfilesResponse, error) {
 	var listInstanceProfilesResponse ListInstanceProfilesResponse
 	path := "/api/2.0preview/instance-profiles/list"
 
@@ -805,7 +806,7 @@ func (a *instanceProfilesPreviewImpl) internalList(ctx context.Context) (*ListIn
 	return &listInstanceProfilesResponse, err
 }
 
-func (a *instanceProfilesPreviewImpl) Remove(ctx context.Context, request RemoveInstanceProfile) error {
+func (a *instanceProfilesImpl) Remove(ctx context.Context, request RemoveInstanceProfile) error {
 	var removeResponse RemoveResponse
 	path := "/api/2.0preview/instance-profiles/remove"
 	queryParams := make(map[string]any)
@@ -816,8 +817,8 @@ func (a *instanceProfilesPreviewImpl) Remove(ctx context.Context, request Remove
 	return err
 }
 
-// unexported type that holds implementations of just LibrariesPreview API methods
-type librariesPreviewImpl struct {
+// unexported type that holds implementations of just Libraries API methods
+type librariesImpl struct {
 	client *client.DatabricksClient
 }
 
@@ -825,7 +826,7 @@ type librariesPreviewImpl struct {
 //
 // Get the status of all libraries on all clusters. A status is returned for all
 // libraries installed on this cluster via the API or the libraries UI.
-func (a *librariesPreviewImpl) AllClusterStatuses(ctx context.Context) listing.Iterator[ClusterLibraryStatuses] {
+func (a *librariesImpl) AllClusterStatuses(ctx context.Context) listing.Iterator[ClusterLibraryStatuses] {
 	request := struct{}{}
 
 	getNextPage := func(ctx context.Context, req struct{}) (*ListAllClusterLibraryStatusesResponse, error) {
@@ -848,11 +849,11 @@ func (a *librariesPreviewImpl) AllClusterStatuses(ctx context.Context) listing.I
 //
 // Get the status of all libraries on all clusters. A status is returned for all
 // libraries installed on this cluster via the API or the libraries UI.
-func (a *librariesPreviewImpl) AllClusterStatusesAll(ctx context.Context) ([]ClusterLibraryStatuses, error) {
+func (a *librariesImpl) AllClusterStatusesAll(ctx context.Context) ([]ClusterLibraryStatuses, error) {
 	iterator := a.AllClusterStatuses(ctx)
 	return listing.ToSlice[ClusterLibraryStatuses](ctx, iterator)
 }
-func (a *librariesPreviewImpl) internalAllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {
+func (a *librariesImpl) internalAllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {
 	var listAllClusterLibraryStatusesResponse ListAllClusterLibraryStatusesResponse
 	path := "/api/2.0preview/libraries/all-cluster-statuses"
 
@@ -871,7 +872,7 @@ func (a *librariesPreviewImpl) internalAllClusterStatuses(ctx context.Context) (
 // are returned first. 2. Libraries that were previously requested to be
 // installed on this cluster or, but are now marked for removal, in no
 // particular order, are returned last.
-func (a *librariesPreviewImpl) ClusterStatus(ctx context.Context, request ClusterStatus) listing.Iterator[LibraryFullStatus] {
+func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatus) listing.Iterator[LibraryFullStatus] {
 
 	getNextPage := func(ctx context.Context, req ClusterStatus) (*ClusterLibraryStatuses, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -898,11 +899,11 @@ func (a *librariesPreviewImpl) ClusterStatus(ctx context.Context, request Cluste
 // are returned first. 2. Libraries that were previously requested to be
 // installed on this cluster or, but are now marked for removal, in no
 // particular order, are returned last.
-func (a *librariesPreviewImpl) ClusterStatusAll(ctx context.Context, request ClusterStatus) ([]LibraryFullStatus, error) {
+func (a *librariesImpl) ClusterStatusAll(ctx context.Context, request ClusterStatus) ([]LibraryFullStatus, error) {
 	iterator := a.ClusterStatus(ctx, request)
 	return listing.ToSlice[LibraryFullStatus](ctx, iterator)
 }
-func (a *librariesPreviewImpl) internalClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error) {
+func (a *librariesImpl) internalClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error) {
 	var clusterLibraryStatuses ClusterLibraryStatuses
 	path := "/api/2.0preview/libraries/cluster-status"
 	queryParams := make(map[string]any)
@@ -912,7 +913,7 @@ func (a *librariesPreviewImpl) internalClusterStatus(ctx context.Context, reques
 	return &clusterLibraryStatuses, err
 }
 
-func (a *librariesPreviewImpl) Install(ctx context.Context, request InstallLibraries) error {
+func (a *librariesImpl) Install(ctx context.Context, request InstallLibraries) error {
 	var installLibrariesResponse InstallLibrariesResponse
 	path := "/api/2.0preview/libraries/install"
 	queryParams := make(map[string]any)
@@ -923,7 +924,7 @@ func (a *librariesPreviewImpl) Install(ctx context.Context, request InstallLibra
 	return err
 }
 
-func (a *librariesPreviewImpl) Uninstall(ctx context.Context, request UninstallLibraries) error {
+func (a *librariesImpl) Uninstall(ctx context.Context, request UninstallLibraries) error {
 	var uninstallLibrariesResponse UninstallLibrariesResponse
 	path := "/api/2.0preview/libraries/uninstall"
 	queryParams := make(map[string]any)
@@ -934,12 +935,12 @@ func (a *librariesPreviewImpl) Uninstall(ctx context.Context, request UninstallL
 	return err
 }
 
-// unexported type that holds implementations of just PolicyComplianceForClustersPreview API methods
-type policyComplianceForClustersPreviewImpl struct {
+// unexported type that holds implementations of just PolicyComplianceForClusters API methods
+type policyComplianceForClustersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *policyComplianceForClustersPreviewImpl) EnforceCompliance(ctx context.Context, request EnforceClusterComplianceRequest) (*EnforceClusterComplianceResponse, error) {
+func (a *policyComplianceForClustersImpl) EnforceCompliance(ctx context.Context, request EnforceClusterComplianceRequest) (*EnforceClusterComplianceResponse, error) {
 	var enforceClusterComplianceResponse EnforceClusterComplianceResponse
 	path := "/api/2.0preview/policies/clusters/enforce-compliance"
 	queryParams := make(map[string]any)
@@ -950,7 +951,7 @@ func (a *policyComplianceForClustersPreviewImpl) EnforceCompliance(ctx context.C
 	return &enforceClusterComplianceResponse, err
 }
 
-func (a *policyComplianceForClustersPreviewImpl) GetCompliance(ctx context.Context, request GetClusterComplianceRequest) (*GetClusterComplianceResponse, error) {
+func (a *policyComplianceForClustersImpl) GetCompliance(ctx context.Context, request GetClusterComplianceRequest) (*GetClusterComplianceResponse, error) {
 	var getClusterComplianceResponse GetClusterComplianceResponse
 	path := "/api/2.0preview/policies/clusters/get-compliance"
 	queryParams := make(map[string]any)
@@ -965,7 +966,7 @@ func (a *policyComplianceForClustersPreviewImpl) GetCompliance(ctx context.Conte
 // Returns the policy compliance status of all clusters that use a given policy.
 // Clusters could be out of compliance if their policy was updated after the
 // cluster was last edited.
-func (a *policyComplianceForClustersPreviewImpl) ListCompliance(ctx context.Context, request ListClusterCompliancesRequest) listing.Iterator[ClusterCompliance] {
+func (a *policyComplianceForClustersImpl) ListCompliance(ctx context.Context, request ListClusterCompliancesRequest) listing.Iterator[ClusterCompliance] {
 
 	getNextPage := func(ctx context.Context, req ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -994,11 +995,11 @@ func (a *policyComplianceForClustersPreviewImpl) ListCompliance(ctx context.Cont
 // Returns the policy compliance status of all clusters that use a given policy.
 // Clusters could be out of compliance if their policy was updated after the
 // cluster was last edited.
-func (a *policyComplianceForClustersPreviewImpl) ListComplianceAll(ctx context.Context, request ListClusterCompliancesRequest) ([]ClusterCompliance, error) {
+func (a *policyComplianceForClustersImpl) ListComplianceAll(ctx context.Context, request ListClusterCompliancesRequest) ([]ClusterCompliance, error) {
 	iterator := a.ListCompliance(ctx, request)
 	return listing.ToSlice[ClusterCompliance](ctx, iterator)
 }
-func (a *policyComplianceForClustersPreviewImpl) internalListCompliance(ctx context.Context, request ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error) {
+func (a *policyComplianceForClustersImpl) internalListCompliance(ctx context.Context, request ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error) {
 	var listClusterCompliancesResponse ListClusterCompliancesResponse
 	path := "/api/2.0preview/policies/clusters/list-compliance"
 	queryParams := make(map[string]any)
@@ -1008,12 +1009,12 @@ func (a *policyComplianceForClustersPreviewImpl) internalListCompliance(ctx cont
 	return &listClusterCompliancesResponse, err
 }
 
-// unexported type that holds implementations of just PolicyFamiliesPreview API methods
-type policyFamiliesPreviewImpl struct {
+// unexported type that holds implementations of just PolicyFamilies API methods
+type policyFamiliesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *policyFamiliesPreviewImpl) Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error) {
+func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error) {
 	var policyFamily PolicyFamily
 	path := fmt.Sprintf("/api/2.0preview/policy-families/%v", request.PolicyFamilyId)
 	queryParams := make(map[string]any)
@@ -1027,7 +1028,7 @@ func (a *policyFamiliesPreviewImpl) Get(ctx context.Context, request GetPolicyFa
 //
 // Returns the list of policy definition types available to use at their latest
 // version. This API is paginated.
-func (a *policyFamiliesPreviewImpl) List(ctx context.Context, request ListPolicyFamiliesRequest) listing.Iterator[PolicyFamily] {
+func (a *policyFamiliesImpl) List(ctx context.Context, request ListPolicyFamiliesRequest) listing.Iterator[PolicyFamily] {
 
 	getNextPage := func(ctx context.Context, req ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -1055,11 +1056,11 @@ func (a *policyFamiliesPreviewImpl) List(ctx context.Context, request ListPolicy
 //
 // Returns the list of policy definition types available to use at their latest
 // version. This API is paginated.
-func (a *policyFamiliesPreviewImpl) ListAll(ctx context.Context, request ListPolicyFamiliesRequest) ([]PolicyFamily, error) {
+func (a *policyFamiliesImpl) ListAll(ctx context.Context, request ListPolicyFamiliesRequest) ([]PolicyFamily, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[PolicyFamily](ctx, iterator)
 }
-func (a *policyFamiliesPreviewImpl) internalList(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error) {
+func (a *policyFamiliesImpl) internalList(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error) {
 	var listPolicyFamiliesResponse ListPolicyFamiliesResponse
 	path := "/api/2.0preview/policy-families"
 	queryParams := make(map[string]any)

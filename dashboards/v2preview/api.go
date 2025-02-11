@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Genie Preview, Lakeview Embedded Preview, Lakeview Preview, Query Execution Preview, etc.
+// These APIs allow you to manage Genie, Lakeview, Lakeview Embedded, Query Execution, etc.
 package dashboardspreview
 
 import (
@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
-type GeniePreviewInterface interface {
+type GenieInterface interface {
 
 	// Create conversation message.
 	//
@@ -65,9 +65,9 @@ type GeniePreviewInterface interface {
 	StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error)
 }
 
-func NewGeniePreview(client *client.DatabricksClient) *GeniePreviewAPI {
-	return &GeniePreviewAPI{
-		geniePreviewImpl: geniePreviewImpl{
+func NewGenie(client *client.DatabricksClient) *GenieAPI {
+	return &GenieAPI{
+		genieImpl: genieImpl{
 			client: client,
 		},
 	}
@@ -78,15 +78,15 @@ func NewGeniePreview(client *client.DatabricksClient) *GeniePreviewAPI {
 // natural language. Genie uses data registered to Unity Catalog and requires at
 // least CAN USE permission on a Pro or Serverless SQL warehouse. Also,
 // Databricks Assistant must be enabled.
-type GeniePreviewAPI struct {
-	geniePreviewImpl
+type GenieAPI struct {
+	genieImpl
 }
 
 // Get conversation message.
 //
 // Get message from conversation.
-func (a *GeniePreviewAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error) {
-	return a.geniePreviewImpl.GetMessage(ctx, GenieGetConversationMessageRequest{
+func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error) {
+	return a.genieImpl.GetMessage(ctx, GenieGetConversationMessageRequest{
 		SpaceId:        spaceId,
 		ConversationId: conversationId,
 		MessageId:      messageId,
@@ -98,8 +98,8 @@ func (a *GeniePreviewAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx c
 // Get the result of SQL query if the message has a query attachment. This is
 // only available if a message has a query attachment and the message status is
 // `EXECUTING_QUERY`.
-func (a *GeniePreviewAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error) {
-	return a.geniePreviewImpl.GetMessageQueryResult(ctx, GenieGetMessageQueryResultRequest{
+func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error) {
+	return a.genieImpl.GetMessageQueryResult(ctx, GenieGetMessageQueryResultRequest{
 		SpaceId:        spaceId,
 		ConversationId: conversationId,
 		MessageId:      messageId,
@@ -110,8 +110,8 @@ func (a *GeniePreviewAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMess
 //
 // Get the result of SQL query by attachment id This is only available if a
 // message has a query attachment and the message status is `EXECUTING_QUERY`.
-func (a *GeniePreviewAPI) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
-	return a.geniePreviewImpl.GetMessageQueryResultByAttachment(ctx, GenieGetQueryResultByAttachmentRequest{
+func (a *GenieAPI) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
+	return a.genieImpl.GetMessageQueryResultByAttachment(ctx, GenieGetQueryResultByAttachmentRequest{
 		SpaceId:        spaceId,
 		ConversationId: conversationId,
 		MessageId:      messageId,
@@ -119,42 +119,7 @@ func (a *GeniePreviewAPI) GetMessageQueryResultByAttachmentBySpaceIdAndConversat
 	})
 }
 
-type LakeviewEmbeddedPreviewInterface interface {
-
-	// Read a published dashboard in an embedded ui.
-	//
-	// Get the current published dashboard within an embedded context.
-	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
-
-	// Read a published dashboard in an embedded ui.
-	//
-	// Get the current published dashboard within an embedded context.
-	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error
-}
-
-func NewLakeviewEmbeddedPreview(client *client.DatabricksClient) *LakeviewEmbeddedPreviewAPI {
-	return &LakeviewEmbeddedPreviewAPI{
-		lakeviewEmbeddedPreviewImpl: lakeviewEmbeddedPreviewImpl{
-			client: client,
-		},
-	}
-}
-
-// Token-based Lakeview APIs for embedding dashboards in external applications.
-type LakeviewEmbeddedPreviewAPI struct {
-	lakeviewEmbeddedPreviewImpl
-}
-
-// Read a published dashboard in an embedded ui.
-//
-// Get the current published dashboard within an embedded context.
-func (a *LakeviewEmbeddedPreviewAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error {
-	return a.lakeviewEmbeddedPreviewImpl.GetPublishedDashboardEmbedded(ctx, GetPublishedDashboardEmbeddedRequest{
-		DashboardId: dashboardId,
-	})
-}
-
-type LakeviewPreviewInterface interface {
+type LakeviewInterface interface {
 
 	// Create dashboard.
 	//
@@ -286,9 +251,9 @@ type LakeviewPreviewInterface interface {
 	UpdateSchedule(ctx context.Context, request UpdateScheduleRequest) (*Schedule, error)
 }
 
-func NewLakeviewPreview(client *client.DatabricksClient) *LakeviewPreviewAPI {
-	return &LakeviewPreviewAPI{
-		lakeviewPreviewImpl: lakeviewPreviewImpl{
+func NewLakeview(client *client.DatabricksClient) *LakeviewAPI {
+	return &LakeviewAPI{
+		lakeviewImpl: lakeviewImpl{
 			client: client,
 		},
 	}
@@ -297,21 +262,21 @@ func NewLakeviewPreview(client *client.DatabricksClient) *LakeviewPreviewAPI {
 // These APIs provide specific management operations for Lakeview dashboards.
 // Generic resource management can be done with Workspace API (import, export,
 // get-status, list, delete).
-type LakeviewPreviewAPI struct {
-	lakeviewPreviewImpl
+type LakeviewAPI struct {
+	lakeviewImpl
 }
 
 // Delete dashboard schedule.
-func (a *LakeviewPreviewAPI) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) error {
-	return a.lakeviewPreviewImpl.DeleteSchedule(ctx, DeleteScheduleRequest{
+func (a *LakeviewAPI) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) error {
+	return a.lakeviewImpl.DeleteSchedule(ctx, DeleteScheduleRequest{
 		DashboardId: dashboardId,
 		ScheduleId:  scheduleId,
 	})
 }
 
 // Delete schedule subscription.
-func (a *LakeviewPreviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) error {
-	return a.lakeviewPreviewImpl.DeleteSubscription(ctx, DeleteSubscriptionRequest{
+func (a *LakeviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) error {
+	return a.lakeviewImpl.DeleteSubscription(ctx, DeleteSubscriptionRequest{
 		DashboardId:    dashboardId,
 		ScheduleId:     scheduleId,
 		SubscriptionId: subscriptionId,
@@ -321,8 +286,8 @@ func (a *LakeviewPreviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubs
 // Get dashboard.
 //
 // Get a draft dashboard.
-func (a *LakeviewPreviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error) {
-	return a.lakeviewPreviewImpl.Get(ctx, GetDashboardRequest{
+func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error) {
+	return a.lakeviewImpl.Get(ctx, GetDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
@@ -330,23 +295,23 @@ func (a *LakeviewPreviewAPI) GetByDashboardId(ctx context.Context, dashboardId s
 // Get published dashboard.
 //
 // Get the current published dashboard.
-func (a *LakeviewPreviewAPI) GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error) {
-	return a.lakeviewPreviewImpl.GetPublished(ctx, GetPublishedDashboardRequest{
+func (a *LakeviewAPI) GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error) {
+	return a.lakeviewImpl.GetPublished(ctx, GetPublishedDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
 
 // Get dashboard schedule.
-func (a *LakeviewPreviewAPI) GetScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*Schedule, error) {
-	return a.lakeviewPreviewImpl.GetSchedule(ctx, GetScheduleRequest{
+func (a *LakeviewAPI) GetScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*Schedule, error) {
+	return a.lakeviewImpl.GetSchedule(ctx, GetScheduleRequest{
 		DashboardId: dashboardId,
 		ScheduleId:  scheduleId,
 	})
 }
 
 // Get schedule subscription.
-func (a *LakeviewPreviewAPI) GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*Subscription, error) {
-	return a.lakeviewPreviewImpl.GetSubscription(ctx, GetSubscriptionRequest{
+func (a *LakeviewAPI) GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*Subscription, error) {
+	return a.lakeviewImpl.GetSubscription(ctx, GetSubscriptionRequest{
 		DashboardId:    dashboardId,
 		ScheduleId:     scheduleId,
 		SubscriptionId: subscriptionId,
@@ -354,15 +319,15 @@ func (a *LakeviewPreviewAPI) GetSubscriptionByDashboardIdAndScheduleIdAndSubscri
 }
 
 // List dashboard schedules.
-func (a *LakeviewPreviewAPI) ListSchedulesByDashboardId(ctx context.Context, dashboardId string) (*ListSchedulesResponse, error) {
-	return a.lakeviewPreviewImpl.internalListSchedules(ctx, ListSchedulesRequest{
+func (a *LakeviewAPI) ListSchedulesByDashboardId(ctx context.Context, dashboardId string) (*ListSchedulesResponse, error) {
+	return a.lakeviewImpl.internalListSchedules(ctx, ListSchedulesRequest{
 		DashboardId: dashboardId,
 	})
 }
 
 // List schedule subscriptions.
-func (a *LakeviewPreviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*ListSubscriptionsResponse, error) {
-	return a.lakeviewPreviewImpl.internalListSubscriptions(ctx, ListSubscriptionsRequest{
+func (a *LakeviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*ListSubscriptionsResponse, error) {
+	return a.lakeviewImpl.internalListSubscriptions(ctx, ListSubscriptionsRequest{
 		DashboardId: dashboardId,
 		ScheduleId:  scheduleId,
 	})
@@ -371,8 +336,8 @@ func (a *LakeviewPreviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx con
 // Trash dashboard.
 //
 // Trash a dashboard.
-func (a *LakeviewPreviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) error {
-	return a.lakeviewPreviewImpl.Trash(ctx, TrashDashboardRequest{
+func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) error {
+	return a.lakeviewImpl.Trash(ctx, TrashDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
@@ -380,13 +345,48 @@ func (a *LakeviewPreviewAPI) TrashByDashboardId(ctx context.Context, dashboardId
 // Unpublish dashboard.
 //
 // Unpublish the dashboard.
-func (a *LakeviewPreviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId string) error {
-	return a.lakeviewPreviewImpl.Unpublish(ctx, UnpublishDashboardRequest{
+func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId string) error {
+	return a.lakeviewImpl.Unpublish(ctx, UnpublishDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
 
-type QueryExecutionPreviewInterface interface {
+type LakeviewEmbeddedInterface interface {
+
+	// Read a published dashboard in an embedded ui.
+	//
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
+
+	// Read a published dashboard in an embedded ui.
+	//
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error
+}
+
+func NewLakeviewEmbedded(client *client.DatabricksClient) *LakeviewEmbeddedAPI {
+	return &LakeviewEmbeddedAPI{
+		lakeviewEmbeddedImpl: lakeviewEmbeddedImpl{
+			client: client,
+		},
+	}
+}
+
+// Token-based Lakeview APIs for embedding dashboards in external applications.
+type LakeviewEmbeddedAPI struct {
+	lakeviewEmbeddedImpl
+}
+
+// Read a published dashboard in an embedded ui.
+//
+// Get the current published dashboard within an embedded context.
+func (a *LakeviewEmbeddedAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error {
+	return a.lakeviewEmbeddedImpl.GetPublishedDashboardEmbedded(ctx, GetPublishedDashboardEmbeddedRequest{
+		DashboardId: dashboardId,
+	})
+}
+
+type QueryExecutionInterface interface {
 
 	// Cancel the results for the a query for a published, embedded dashboard.
 	CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error)
@@ -398,15 +398,15 @@ type QueryExecutionPreviewInterface interface {
 	PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error)
 }
 
-func NewQueryExecutionPreview(client *client.DatabricksClient) *QueryExecutionPreviewAPI {
-	return &QueryExecutionPreviewAPI{
-		queryExecutionPreviewImpl: queryExecutionPreviewImpl{
+func NewQueryExecution(client *client.DatabricksClient) *QueryExecutionAPI {
+	return &QueryExecutionAPI{
+		queryExecutionImpl: queryExecutionImpl{
 			client: client,
 		},
 	}
 }
 
 // Query execution APIs for AI / BI Dashboards
-type QueryExecutionPreviewAPI struct {
-	queryExecutionPreviewImpl
+type QueryExecutionAPI struct {
+	queryExecutionImpl
 }

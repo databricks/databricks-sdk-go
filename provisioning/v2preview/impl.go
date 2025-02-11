@@ -10,12 +10,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// unexported type that holds implementations of just CredentialsPreview API methods
-type credentialsPreviewImpl struct {
+// unexported type that holds implementations of just Credentials API methods
+type credentialsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *credentialsPreviewImpl) Create(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
+func (a *credentialsImpl) Create(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
 	var credential Credential
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/credentials", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -26,7 +26,7 @@ func (a *credentialsPreviewImpl) Create(ctx context.Context, request CreateCrede
 	return &credential, err
 }
 
-func (a *credentialsPreviewImpl) Delete(ctx context.Context, request DeleteCredentialRequest) error {
+func (a *credentialsImpl) Delete(ctx context.Context, request DeleteCredentialRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), request.CredentialsId)
 	queryParams := make(map[string]any)
@@ -36,7 +36,7 @@ func (a *credentialsPreviewImpl) Delete(ctx context.Context, request DeleteCrede
 	return err
 }
 
-func (a *credentialsPreviewImpl) Get(ctx context.Context, request GetCredentialRequest) (*Credential, error) {
+func (a *credentialsImpl) Get(ctx context.Context, request GetCredentialRequest) (*Credential, error) {
 	var credential Credential
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), request.CredentialsId)
 	queryParams := make(map[string]any)
@@ -46,7 +46,7 @@ func (a *credentialsPreviewImpl) Get(ctx context.Context, request GetCredentialR
 	return &credential, err
 }
 
-func (a *credentialsPreviewImpl) List(ctx context.Context) ([]Credential, error) {
+func (a *credentialsImpl) List(ctx context.Context) ([]Credential, error) {
 	var credentialList []Credential
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/credentials", a.client.ConfiguredAccountID())
 
@@ -56,12 +56,12 @@ func (a *credentialsPreviewImpl) List(ctx context.Context) ([]Credential, error)
 	return credentialList, err
 }
 
-// unexported type that holds implementations of just EncryptionKeysPreview API methods
-type encryptionKeysPreviewImpl struct {
+// unexported type that holds implementations of just EncryptionKeys API methods
+type encryptionKeysImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *encryptionKeysPreviewImpl) Create(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
+func (a *encryptionKeysImpl) Create(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
 	var customerManagedKey CustomerManagedKey
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/customer-managed-keys", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -72,7 +72,7 @@ func (a *encryptionKeysPreviewImpl) Create(ctx context.Context, request CreateCu
 	return &customerManagedKey, err
 }
 
-func (a *encryptionKeysPreviewImpl) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error {
+func (a *encryptionKeysImpl) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), request.CustomerManagedKeyId)
 	queryParams := make(map[string]any)
@@ -82,7 +82,7 @@ func (a *encryptionKeysPreviewImpl) Delete(ctx context.Context, request DeleteEn
 	return err
 }
 
-func (a *encryptionKeysPreviewImpl) Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error) {
+func (a *encryptionKeysImpl) Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error) {
 	var customerManagedKey CustomerManagedKey
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), request.CustomerManagedKeyId)
 	queryParams := make(map[string]any)
@@ -92,7 +92,7 @@ func (a *encryptionKeysPreviewImpl) Get(ctx context.Context, request GetEncrypti
 	return &customerManagedKey, err
 }
 
-func (a *encryptionKeysPreviewImpl) List(ctx context.Context) ([]CustomerManagedKey, error) {
+func (a *encryptionKeysImpl) List(ctx context.Context) ([]CustomerManagedKey, error) {
 	var customerManagedKeyList []CustomerManagedKey
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/customer-managed-keys", a.client.ConfiguredAccountID())
 
@@ -102,12 +102,12 @@ func (a *encryptionKeysPreviewImpl) List(ctx context.Context) ([]CustomerManaged
 	return customerManagedKeyList, err
 }
 
-// unexported type that holds implementations of just NetworksPreview API methods
-type networksPreviewImpl struct {
+// unexported type that holds implementations of just Networks API methods
+type networksImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *networksPreviewImpl) Create(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
+func (a *networksImpl) Create(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
 	var network Network
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/networks", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -118,7 +118,7 @@ func (a *networksPreviewImpl) Create(ctx context.Context, request CreateNetworkR
 	return &network, err
 }
 
-func (a *networksPreviewImpl) Delete(ctx context.Context, request DeleteNetworkRequest) error {
+func (a *networksImpl) Delete(ctx context.Context, request DeleteNetworkRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), request.NetworkId)
 	queryParams := make(map[string]any)
@@ -128,7 +128,7 @@ func (a *networksPreviewImpl) Delete(ctx context.Context, request DeleteNetworkR
 	return err
 }
 
-func (a *networksPreviewImpl) Get(ctx context.Context, request GetNetworkRequest) (*Network, error) {
+func (a *networksImpl) Get(ctx context.Context, request GetNetworkRequest) (*Network, error) {
 	var network Network
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), request.NetworkId)
 	queryParams := make(map[string]any)
@@ -138,7 +138,7 @@ func (a *networksPreviewImpl) Get(ctx context.Context, request GetNetworkRequest
 	return &network, err
 }
 
-func (a *networksPreviewImpl) List(ctx context.Context) ([]Network, error) {
+func (a *networksImpl) List(ctx context.Context) ([]Network, error) {
 	var networkList []Network
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/networks", a.client.ConfiguredAccountID())
 
@@ -148,12 +148,12 @@ func (a *networksPreviewImpl) List(ctx context.Context) ([]Network, error) {
 	return networkList, err
 }
 
-// unexported type that holds implementations of just PrivateAccessPreview API methods
-type privateAccessPreviewImpl struct {
+// unexported type that holds implementations of just PrivateAccess API methods
+type privateAccessImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *privateAccessPreviewImpl) Create(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
+func (a *privateAccessImpl) Create(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
 	var privateAccessSettings PrivateAccessSettings
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/private-access-settings", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -164,7 +164,7 @@ func (a *privateAccessPreviewImpl) Create(ctx context.Context, request UpsertPri
 	return &privateAccessSettings, err
 }
 
-func (a *privateAccessPreviewImpl) Delete(ctx context.Context, request DeletePrivateAccesRequest) error {
+func (a *privateAccessImpl) Delete(ctx context.Context, request DeletePrivateAccesRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	queryParams := make(map[string]any)
@@ -174,7 +174,7 @@ func (a *privateAccessPreviewImpl) Delete(ctx context.Context, request DeletePri
 	return err
 }
 
-func (a *privateAccessPreviewImpl) Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error) {
+func (a *privateAccessImpl) Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error) {
 	var privateAccessSettings PrivateAccessSettings
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	queryParams := make(map[string]any)
@@ -184,7 +184,7 @@ func (a *privateAccessPreviewImpl) Get(ctx context.Context, request GetPrivateAc
 	return &privateAccessSettings, err
 }
 
-func (a *privateAccessPreviewImpl) List(ctx context.Context) ([]PrivateAccessSettings, error) {
+func (a *privateAccessImpl) List(ctx context.Context) ([]PrivateAccessSettings, error) {
 	var privateAccessSettingsList []PrivateAccessSettings
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/private-access-settings", a.client.ConfiguredAccountID())
 
@@ -194,7 +194,7 @@ func (a *privateAccessPreviewImpl) List(ctx context.Context) ([]PrivateAccessSet
 	return privateAccessSettingsList, err
 }
 
-func (a *privateAccessPreviewImpl) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
+func (a *privateAccessImpl) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
 	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	queryParams := make(map[string]any)
@@ -205,12 +205,12 @@ func (a *privateAccessPreviewImpl) Replace(ctx context.Context, request UpsertPr
 	return err
 }
 
-// unexported type that holds implementations of just StoragePreview API methods
-type storagePreviewImpl struct {
+// unexported type that holds implementations of just Storage API methods
+type storageImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *storagePreviewImpl) Create(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
+func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
 	var storageConfiguration StorageConfiguration
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/storage-configurations", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -221,7 +221,7 @@ func (a *storagePreviewImpl) Create(ctx context.Context, request CreateStorageCo
 	return &storageConfiguration, err
 }
 
-func (a *storagePreviewImpl) Delete(ctx context.Context, request DeleteStorageRequest) error {
+func (a *storageImpl) Delete(ctx context.Context, request DeleteStorageRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), request.StorageConfigurationId)
 	queryParams := make(map[string]any)
@@ -231,7 +231,7 @@ func (a *storagePreviewImpl) Delete(ctx context.Context, request DeleteStorageRe
 	return err
 }
 
-func (a *storagePreviewImpl) Get(ctx context.Context, request GetStorageRequest) (*StorageConfiguration, error) {
+func (a *storageImpl) Get(ctx context.Context, request GetStorageRequest) (*StorageConfiguration, error) {
 	var storageConfiguration StorageConfiguration
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), request.StorageConfigurationId)
 	queryParams := make(map[string]any)
@@ -241,7 +241,7 @@ func (a *storagePreviewImpl) Get(ctx context.Context, request GetStorageRequest)
 	return &storageConfiguration, err
 }
 
-func (a *storagePreviewImpl) List(ctx context.Context) ([]StorageConfiguration, error) {
+func (a *storageImpl) List(ctx context.Context) ([]StorageConfiguration, error) {
 	var storageConfigurationList []StorageConfiguration
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/storage-configurations", a.client.ConfiguredAccountID())
 
@@ -251,12 +251,12 @@ func (a *storagePreviewImpl) List(ctx context.Context) ([]StorageConfiguration, 
 	return storageConfigurationList, err
 }
 
-// unexported type that holds implementations of just VpcEndpointsPreview API methods
-type vpcEndpointsPreviewImpl struct {
+// unexported type that holds implementations of just VpcEndpoints API methods
+type vpcEndpointsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *vpcEndpointsPreviewImpl) Create(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
+func (a *vpcEndpointsImpl) Create(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
 	var vpcEndpoint VpcEndpoint
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/vpc-endpoints", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -267,7 +267,7 @@ func (a *vpcEndpointsPreviewImpl) Create(ctx context.Context, request CreateVpcE
 	return &vpcEndpoint, err
 }
 
-func (a *vpcEndpointsPreviewImpl) Delete(ctx context.Context, request DeleteVpcEndpointRequest) error {
+func (a *vpcEndpointsImpl) Delete(ctx context.Context, request DeleteVpcEndpointRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), request.VpcEndpointId)
 	queryParams := make(map[string]any)
@@ -277,7 +277,7 @@ func (a *vpcEndpointsPreviewImpl) Delete(ctx context.Context, request DeleteVpcE
 	return err
 }
 
-func (a *vpcEndpointsPreviewImpl) Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
+func (a *vpcEndpointsImpl) Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
 	var vpcEndpoint VpcEndpoint
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), request.VpcEndpointId)
 	queryParams := make(map[string]any)
@@ -287,7 +287,7 @@ func (a *vpcEndpointsPreviewImpl) Get(ctx context.Context, request GetVpcEndpoin
 	return &vpcEndpoint, err
 }
 
-func (a *vpcEndpointsPreviewImpl) List(ctx context.Context) ([]VpcEndpoint, error) {
+func (a *vpcEndpointsImpl) List(ctx context.Context) ([]VpcEndpoint, error) {
 	var vpcEndpointList []VpcEndpoint
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/vpc-endpoints", a.client.ConfiguredAccountID())
 
@@ -297,12 +297,12 @@ func (a *vpcEndpointsPreviewImpl) List(ctx context.Context) ([]VpcEndpoint, erro
 	return vpcEndpointList, err
 }
 
-// unexported type that holds implementations of just WorkspacesPreview API methods
-type workspacesPreviewImpl struct {
+// unexported type that holds implementations of just Workspaces API methods
+type workspacesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *workspacesPreviewImpl) Create(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
+func (a *workspacesImpl) Create(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
 	var workspace Workspace
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/workspaces", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -313,7 +313,7 @@ func (a *workspacesPreviewImpl) Create(ctx context.Context, request CreateWorksp
 	return &workspace, err
 }
 
-func (a *workspacesPreviewImpl) Delete(ctx context.Context, request DeleteWorkspaceRequest) error {
+func (a *workspacesImpl) Delete(ctx context.Context, request DeleteWorkspaceRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
@@ -323,7 +323,7 @@ func (a *workspacesPreviewImpl) Delete(ctx context.Context, request DeleteWorksp
 	return err
 }
 
-func (a *workspacesPreviewImpl) Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
+func (a *workspacesImpl) Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
 	var workspace Workspace
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
@@ -333,7 +333,7 @@ func (a *workspacesPreviewImpl) Get(ctx context.Context, request GetWorkspaceReq
 	return &workspace, err
 }
 
-func (a *workspacesPreviewImpl) List(ctx context.Context) ([]Workspace, error) {
+func (a *workspacesImpl) List(ctx context.Context) ([]Workspace, error) {
 	var workspaceList []Workspace
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/workspaces", a.client.ConfiguredAccountID())
 
@@ -343,7 +343,7 @@ func (a *workspacesPreviewImpl) List(ctx context.Context) ([]Workspace, error) {
 	return workspaceList, err
 }
 
-func (a *workspacesPreviewImpl) Update(ctx context.Context, request UpdateWorkspaceRequest) error {
+func (a *workspacesImpl) Update(ctx context.Context, request UpdateWorkspaceRequest) error {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0preview/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)

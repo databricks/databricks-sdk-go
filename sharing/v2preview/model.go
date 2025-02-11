@@ -420,11 +420,11 @@ func (f *PartitionValueOp) Type() string {
 
 type PermissionsChange struct {
 	// The set of privileges to add.
-	Add []SharingPrivilege `json:"add,omitempty"`
+	Add []Privilege `json:"add,omitempty"`
 	// The principal whose privileges we are changing.
 	Principal string `json:"principal,omitempty"`
 	// The set of privileges to remove.
-	Remove []SharingPrivilege `json:"remove,omitempty"`
+	Remove []Privilege `json:"remove,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -439,7 +439,7 @@ func (s PermissionsChange) MarshalJSON() ([]byte, error) {
 
 type PermissionsList struct {
 	// The privileges assigned to each principal
-	PrivilegeAssignments []SharingPrivilegeAssignment `json:"privilege_assignments,omitempty"`
+	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 }
 
 type Privilege string
@@ -1061,136 +1061,6 @@ func (f *SharedDataObjectUpdateAction) Set(v string) error {
 // Type always returns SharedDataObjectUpdateAction to satisfy [pflag.Value] interface
 func (f *SharedDataObjectUpdateAction) Type() string {
 	return "SharedDataObjectUpdateAction"
-}
-
-type SharingPrivilege string
-
-const SharingPrivilegeAccess SharingPrivilege = `ACCESS`
-
-const SharingPrivilegeAllPrivileges SharingPrivilege = `ALL_PRIVILEGES`
-
-const SharingPrivilegeApplyTag SharingPrivilege = `APPLY_TAG`
-
-const SharingPrivilegeCreate SharingPrivilege = `CREATE`
-
-const SharingPrivilegeCreateCatalog SharingPrivilege = `CREATE_CATALOG`
-
-const SharingPrivilegeCreateConnection SharingPrivilege = `CREATE_CONNECTION`
-
-const SharingPrivilegeCreateExternalLocation SharingPrivilege = `CREATE_EXTERNAL_LOCATION`
-
-const SharingPrivilegeCreateExternalTable SharingPrivilege = `CREATE_EXTERNAL_TABLE`
-
-const SharingPrivilegeCreateExternalVolume SharingPrivilege = `CREATE_EXTERNAL_VOLUME`
-
-const SharingPrivilegeCreateForeignCatalog SharingPrivilege = `CREATE_FOREIGN_CATALOG`
-
-const SharingPrivilegeCreateForeignSecurable SharingPrivilege = `CREATE_FOREIGN_SECURABLE`
-
-const SharingPrivilegeCreateFunction SharingPrivilege = `CREATE_FUNCTION`
-
-const SharingPrivilegeCreateManagedStorage SharingPrivilege = `CREATE_MANAGED_STORAGE`
-
-const SharingPrivilegeCreateMaterializedView SharingPrivilege = `CREATE_MATERIALIZED_VIEW`
-
-const SharingPrivilegeCreateModel SharingPrivilege = `CREATE_MODEL`
-
-const SharingPrivilegeCreateProvider SharingPrivilege = `CREATE_PROVIDER`
-
-const SharingPrivilegeCreateRecipient SharingPrivilege = `CREATE_RECIPIENT`
-
-const SharingPrivilegeCreateSchema SharingPrivilege = `CREATE_SCHEMA`
-
-const SharingPrivilegeCreateServiceCredential SharingPrivilege = `CREATE_SERVICE_CREDENTIAL`
-
-const SharingPrivilegeCreateShare SharingPrivilege = `CREATE_SHARE`
-
-const SharingPrivilegeCreateStorageCredential SharingPrivilege = `CREATE_STORAGE_CREDENTIAL`
-
-const SharingPrivilegeCreateTable SharingPrivilege = `CREATE_TABLE`
-
-const SharingPrivilegeCreateView SharingPrivilege = `CREATE_VIEW`
-
-const SharingPrivilegeCreateVolume SharingPrivilege = `CREATE_VOLUME`
-
-const SharingPrivilegeExecute SharingPrivilege = `EXECUTE`
-
-const SharingPrivilegeManage SharingPrivilege = `MANAGE`
-
-const SharingPrivilegeManageAllowlist SharingPrivilege = `MANAGE_ALLOWLIST`
-
-const SharingPrivilegeModify SharingPrivilege = `MODIFY`
-
-const SharingPrivilegeReadFiles SharingPrivilege = `READ_FILES`
-
-const SharingPrivilegeReadPrivateFiles SharingPrivilege = `READ_PRIVATE_FILES`
-
-const SharingPrivilegeReadVolume SharingPrivilege = `READ_VOLUME`
-
-const SharingPrivilegeRefresh SharingPrivilege = `REFRESH`
-
-const SharingPrivilegeSelect SharingPrivilege = `SELECT`
-
-const SharingPrivilegeSetSharePermission SharingPrivilege = `SET_SHARE_PERMISSION`
-
-const SharingPrivilegeUsage SharingPrivilege = `USAGE`
-
-const SharingPrivilegeUseCatalog SharingPrivilege = `USE_CATALOG`
-
-const SharingPrivilegeUseConnection SharingPrivilege = `USE_CONNECTION`
-
-const SharingPrivilegeUseMarketplaceAssets SharingPrivilege = `USE_MARKETPLACE_ASSETS`
-
-const SharingPrivilegeUseProvider SharingPrivilege = `USE_PROVIDER`
-
-const SharingPrivilegeUseRecipient SharingPrivilege = `USE_RECIPIENT`
-
-const SharingPrivilegeUseSchema SharingPrivilege = `USE_SCHEMA`
-
-const SharingPrivilegeUseShare SharingPrivilege = `USE_SHARE`
-
-const SharingPrivilegeWriteFiles SharingPrivilege = `WRITE_FILES`
-
-const SharingPrivilegeWritePrivateFiles SharingPrivilege = `WRITE_PRIVATE_FILES`
-
-const SharingPrivilegeWriteVolume SharingPrivilege = `WRITE_VOLUME`
-
-// String representation for [fmt.Print]
-func (f *SharingPrivilege) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *SharingPrivilege) Set(v string) error {
-	switch v {
-	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
-		*f = SharingPrivilege(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
-	}
-}
-
-// Type always returns SharingPrivilege to satisfy [pflag.Value] interface
-func (f *SharingPrivilege) Type() string {
-	return "SharingPrivilege"
-}
-
-type SharingPrivilegeAssignment struct {
-	// The principal (user email address or group name).
-	Principal string `json:"principal,omitempty"`
-	// The privileges assigned to the principal.
-	Privileges []SharingPrivilege `json:"privileges,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *SharingPrivilegeAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s SharingPrivilegeAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type UpdatePermissionsResponse struct {

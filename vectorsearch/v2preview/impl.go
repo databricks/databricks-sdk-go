@@ -12,12 +12,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-// unexported type that holds implementations of just VectorSearchEndpointsPreview API methods
-type vectorSearchEndpointsPreviewImpl struct {
+// unexported type that holds implementations of just VectorSearchEndpoints API methods
+type vectorSearchEndpointsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *vectorSearchEndpointsPreviewImpl) CreateEndpoint(ctx context.Context, request CreateEndpoint) (*EndpointInfo, error) {
+func (a *vectorSearchEndpointsImpl) CreateEndpoint(ctx context.Context, request CreateEndpoint) (*EndpointInfo, error) {
 	var endpointInfo EndpointInfo
 	path := "/api/2.0preview/vector-search/endpoints"
 	queryParams := make(map[string]any)
@@ -28,7 +28,7 @@ func (a *vectorSearchEndpointsPreviewImpl) CreateEndpoint(ctx context.Context, r
 	return &endpointInfo, err
 }
 
-func (a *vectorSearchEndpointsPreviewImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error {
+func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error {
 	var deleteEndpointResponse DeleteEndpointResponse
 	path := fmt.Sprintf("/api/2.0preview/vector-search/endpoints/%v", request.EndpointName)
 	queryParams := make(map[string]any)
@@ -37,7 +37,7 @@ func (a *vectorSearchEndpointsPreviewImpl) DeleteEndpoint(ctx context.Context, r
 	return err
 }
 
-func (a *vectorSearchEndpointsPreviewImpl) GetEndpoint(ctx context.Context, request GetEndpointRequest) (*EndpointInfo, error) {
+func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request GetEndpointRequest) (*EndpointInfo, error) {
 	var endpointInfo EndpointInfo
 	path := fmt.Sprintf("/api/2.0preview/vector-search/endpoints/%v", request.EndpointName)
 	queryParams := make(map[string]any)
@@ -48,7 +48,7 @@ func (a *vectorSearchEndpointsPreviewImpl) GetEndpoint(ctx context.Context, requ
 }
 
 // List all endpoints.
-func (a *vectorSearchEndpointsPreviewImpl) ListEndpoints(ctx context.Context, request ListEndpointsRequest) listing.Iterator[EndpointInfo] {
+func (a *vectorSearchEndpointsImpl) ListEndpoints(ctx context.Context, request ListEndpointsRequest) listing.Iterator[EndpointInfo] {
 
 	getNextPage := func(ctx context.Context, req ListEndpointsRequest) (*ListEndpointResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -73,11 +73,11 @@ func (a *vectorSearchEndpointsPreviewImpl) ListEndpoints(ctx context.Context, re
 }
 
 // List all endpoints.
-func (a *vectorSearchEndpointsPreviewImpl) ListEndpointsAll(ctx context.Context, request ListEndpointsRequest) ([]EndpointInfo, error) {
+func (a *vectorSearchEndpointsImpl) ListEndpointsAll(ctx context.Context, request ListEndpointsRequest) ([]EndpointInfo, error) {
 	iterator := a.ListEndpoints(ctx, request)
 	return listing.ToSlice[EndpointInfo](ctx, iterator)
 }
-func (a *vectorSearchEndpointsPreviewImpl) internalListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointResponse, error) {
+func (a *vectorSearchEndpointsImpl) internalListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointResponse, error) {
 	var listEndpointResponse ListEndpointResponse
 	path := "/api/2.0preview/vector-search/endpoints"
 	queryParams := make(map[string]any)
@@ -87,12 +87,12 @@ func (a *vectorSearchEndpointsPreviewImpl) internalListEndpoints(ctx context.Con
 	return &listEndpointResponse, err
 }
 
-// unexported type that holds implementations of just VectorSearchIndexesPreview API methods
-type vectorSearchIndexesPreviewImpl struct {
+// unexported type that holds implementations of just VectorSearchIndexes API methods
+type vectorSearchIndexesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *vectorSearchIndexesPreviewImpl) CreateIndex(ctx context.Context, request CreateVectorIndexRequest) (*CreateVectorIndexResponse, error) {
+func (a *vectorSearchIndexesImpl) CreateIndex(ctx context.Context, request CreateVectorIndexRequest) (*CreateVectorIndexResponse, error) {
 	var createVectorIndexResponse CreateVectorIndexResponse
 	path := "/api/2.0preview/vector-search/indexes"
 	queryParams := make(map[string]any)
@@ -103,7 +103,7 @@ func (a *vectorSearchIndexesPreviewImpl) CreateIndex(ctx context.Context, reques
 	return &createVectorIndexResponse, err
 }
 
-func (a *vectorSearchIndexesPreviewImpl) DeleteDataVectorIndex(ctx context.Context, request DeleteDataVectorIndexRequest) (*DeleteDataVectorIndexResponse, error) {
+func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, request DeleteDataVectorIndexRequest) (*DeleteDataVectorIndexResponse, error) {
 	var deleteDataVectorIndexResponse DeleteDataVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0preview/vector-search/indexes/%v/delete-data", request.IndexName)
 	queryParams := make(map[string]any)
@@ -114,7 +114,7 @@ func (a *vectorSearchIndexesPreviewImpl) DeleteDataVectorIndex(ctx context.Conte
 	return &deleteDataVectorIndexResponse, err
 }
 
-func (a *vectorSearchIndexesPreviewImpl) DeleteIndex(ctx context.Context, request DeleteIndexRequest) error {
+func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request DeleteIndexRequest) error {
 	var deleteIndexResponse DeleteIndexResponse
 	path := fmt.Sprintf("/api/2.0preview/vector-search/indexes/%v", request.IndexName)
 	queryParams := make(map[string]any)
@@ -123,7 +123,7 @@ func (a *vectorSearchIndexesPreviewImpl) DeleteIndex(ctx context.Context, reques
 	return err
 }
 
-func (a *vectorSearchIndexesPreviewImpl) GetIndex(ctx context.Context, request GetIndexRequest) (*VectorIndex, error) {
+func (a *vectorSearchIndexesImpl) GetIndex(ctx context.Context, request GetIndexRequest) (*VectorIndex, error) {
 	var vectorIndex VectorIndex
 	path := fmt.Sprintf("/api/2.0preview/vector-search/indexes/%v", request.IndexName)
 	queryParams := make(map[string]any)
@@ -136,7 +136,7 @@ func (a *vectorSearchIndexesPreviewImpl) GetIndex(ctx context.Context, request G
 // List indexes.
 //
 // List all indexes in the given endpoint.
-func (a *vectorSearchIndexesPreviewImpl) ListIndexes(ctx context.Context, request ListIndexesRequest) listing.Iterator[MiniVectorIndex] {
+func (a *vectorSearchIndexesImpl) ListIndexes(ctx context.Context, request ListIndexesRequest) listing.Iterator[MiniVectorIndex] {
 
 	getNextPage := func(ctx context.Context, req ListIndexesRequest) (*ListVectorIndexesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -163,11 +163,11 @@ func (a *vectorSearchIndexesPreviewImpl) ListIndexes(ctx context.Context, reques
 // List indexes.
 //
 // List all indexes in the given endpoint.
-func (a *vectorSearchIndexesPreviewImpl) ListIndexesAll(ctx context.Context, request ListIndexesRequest) ([]MiniVectorIndex, error) {
+func (a *vectorSearchIndexesImpl) ListIndexesAll(ctx context.Context, request ListIndexesRequest) ([]MiniVectorIndex, error) {
 	iterator := a.ListIndexes(ctx, request)
 	return listing.ToSlice[MiniVectorIndex](ctx, iterator)
 }
-func (a *vectorSearchIndexesPreviewImpl) internalListIndexes(ctx context.Context, request ListIndexesRequest) (*ListVectorIndexesResponse, error) {
+func (a *vectorSearchIndexesImpl) internalListIndexes(ctx context.Context, request ListIndexesRequest) (*ListVectorIndexesResponse, error) {
 	var listVectorIndexesResponse ListVectorIndexesResponse
 	path := "/api/2.0preview/vector-search/indexes"
 	queryParams := make(map[string]any)
@@ -177,7 +177,7 @@ func (a *vectorSearchIndexesPreviewImpl) internalListIndexes(ctx context.Context
 	return &listVectorIndexesResponse, err
 }
 
-func (a *vectorSearchIndexesPreviewImpl) QueryIndex(ctx context.Context, request QueryVectorIndexRequest) (*QueryVectorIndexResponse, error) {
+func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryVectorIndexRequest) (*QueryVectorIndexResponse, error) {
 	var queryVectorIndexResponse QueryVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0preview/vector-search/indexes/%v/query", request.IndexName)
 	queryParams := make(map[string]any)
@@ -188,7 +188,7 @@ func (a *vectorSearchIndexesPreviewImpl) QueryIndex(ctx context.Context, request
 	return &queryVectorIndexResponse, err
 }
 
-func (a *vectorSearchIndexesPreviewImpl) QueryNextPage(ctx context.Context, request QueryVectorIndexNextPageRequest) (*QueryVectorIndexResponse, error) {
+func (a *vectorSearchIndexesImpl) QueryNextPage(ctx context.Context, request QueryVectorIndexNextPageRequest) (*QueryVectorIndexResponse, error) {
 	var queryVectorIndexResponse QueryVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0preview/vector-search/indexes/%v/query-next-page", request.IndexName)
 	queryParams := make(map[string]any)
@@ -199,7 +199,7 @@ func (a *vectorSearchIndexesPreviewImpl) QueryNextPage(ctx context.Context, requ
 	return &queryVectorIndexResponse, err
 }
 
-func (a *vectorSearchIndexesPreviewImpl) ScanIndex(ctx context.Context, request ScanVectorIndexRequest) (*ScanVectorIndexResponse, error) {
+func (a *vectorSearchIndexesImpl) ScanIndex(ctx context.Context, request ScanVectorIndexRequest) (*ScanVectorIndexResponse, error) {
 	var scanVectorIndexResponse ScanVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0preview/vector-search/indexes/%v/scan", request.IndexName)
 	queryParams := make(map[string]any)
@@ -210,7 +210,7 @@ func (a *vectorSearchIndexesPreviewImpl) ScanIndex(ctx context.Context, request 
 	return &scanVectorIndexResponse, err
 }
 
-func (a *vectorSearchIndexesPreviewImpl) SyncIndex(ctx context.Context, request SyncIndexRequest) error {
+func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncIndexRequest) error {
 	var syncIndexResponse SyncIndexResponse
 	path := fmt.Sprintf("/api/2.0preview/vector-search/indexes/%v/sync", request.IndexName)
 	queryParams := make(map[string]any)
@@ -219,7 +219,7 @@ func (a *vectorSearchIndexesPreviewImpl) SyncIndex(ctx context.Context, request 
 	return err
 }
 
-func (a *vectorSearchIndexesPreviewImpl) UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error) {
+func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error) {
 	var upsertDataVectorIndexResponse UpsertDataVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0preview/vector-search/indexes/%v/upsert-data", request.IndexName)
 	queryParams := make(map[string]any)

@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
-type AppsPreviewInterface interface {
+type AppsInterface interface {
 
 	// Create an app.
 	//
@@ -138,9 +138,9 @@ type AppsPreviewInterface interface {
 	UpdatePermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error)
 }
 
-func NewAppsPreview(client *client.DatabricksClient) *AppsPreviewAPI {
-	return &AppsPreviewAPI{
-		appsPreviewImpl: appsPreviewImpl{
+func NewApps(client *client.DatabricksClient) *AppsAPI {
+	return &AppsAPI{
+		appsImpl: appsImpl{
 			client: client,
 		},
 	}
@@ -149,15 +149,15 @@ func NewAppsPreview(client *client.DatabricksClient) *AppsPreviewAPI {
 // Apps run directly on a customer’s Databricks instance, integrate with their
 // data, use and extend Databricks services, and enable users to interact
 // through single sign-on.
-type AppsPreviewAPI struct {
-	appsPreviewImpl
+type AppsAPI struct {
+	appsImpl
 }
 
 // Delete an app.
 //
 // Deletes an app.
-func (a *AppsPreviewAPI) DeleteByName(ctx context.Context, name string) (*App, error) {
-	return a.appsPreviewImpl.Delete(ctx, DeleteAppRequest{
+func (a *AppsAPI) DeleteByName(ctx context.Context, name string) (*App, error) {
+	return a.appsImpl.Delete(ctx, DeleteAppRequest{
 		Name: name,
 	})
 }
@@ -165,8 +165,8 @@ func (a *AppsPreviewAPI) DeleteByName(ctx context.Context, name string) (*App, e
 // Get an app.
 //
 // Retrieves information for the app with the supplied name.
-func (a *AppsPreviewAPI) GetByName(ctx context.Context, name string) (*App, error) {
-	return a.appsPreviewImpl.Get(ctx, GetAppRequest{
+func (a *AppsAPI) GetByName(ctx context.Context, name string) (*App, error) {
+	return a.appsImpl.Get(ctx, GetAppRequest{
 		Name: name,
 	})
 }
@@ -175,8 +175,8 @@ func (a *AppsPreviewAPI) GetByName(ctx context.Context, name string) (*App, erro
 //
 // Retrieves information for the app deployment with the supplied name and
 // deployment id.
-func (a *AppsPreviewAPI) GetDeploymentByAppNameAndDeploymentId(ctx context.Context, appName string, deploymentId string) (*AppDeployment, error) {
-	return a.appsPreviewImpl.GetDeployment(ctx, GetAppDeploymentRequest{
+func (a *AppsAPI) GetDeploymentByAppNameAndDeploymentId(ctx context.Context, appName string, deploymentId string) (*AppDeployment, error) {
+	return a.appsImpl.GetDeployment(ctx, GetAppDeploymentRequest{
 		AppName:      appName,
 		DeploymentId: deploymentId,
 	})
@@ -185,8 +185,8 @@ func (a *AppsPreviewAPI) GetDeploymentByAppNameAndDeploymentId(ctx context.Conte
 // Get app permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *AppsPreviewAPI) GetPermissionLevelsByAppName(ctx context.Context, appName string) (*GetAppPermissionLevelsResponse, error) {
-	return a.appsPreviewImpl.GetPermissionLevels(ctx, GetAppPermissionLevelsRequest{
+func (a *AppsAPI) GetPermissionLevelsByAppName(ctx context.Context, appName string) (*GetAppPermissionLevelsResponse, error) {
+	return a.appsImpl.GetPermissionLevels(ctx, GetAppPermissionLevelsRequest{
 		AppName: appName,
 	})
 }
@@ -195,8 +195,8 @@ func (a *AppsPreviewAPI) GetPermissionLevelsByAppName(ctx context.Context, appNa
 //
 // Gets the permissions of an app. Apps can inherit permissions from their root
 // object.
-func (a *AppsPreviewAPI) GetPermissionsByAppName(ctx context.Context, appName string) (*AppPermissions, error) {
-	return a.appsPreviewImpl.GetPermissions(ctx, GetAppPermissionsRequest{
+func (a *AppsAPI) GetPermissionsByAppName(ctx context.Context, appName string) (*AppPermissions, error) {
+	return a.appsImpl.GetPermissions(ctx, GetAppPermissionsRequest{
 		AppName: appName,
 	})
 }
@@ -204,8 +204,8 @@ func (a *AppsPreviewAPI) GetPermissionsByAppName(ctx context.Context, appName st
 // List app deployments.
 //
 // Lists all app deployments for the app with the supplied name.
-func (a *AppsPreviewAPI) ListDeploymentsByAppName(ctx context.Context, appName string) (*ListAppDeploymentsResponse, error) {
-	return a.appsPreviewImpl.internalListDeployments(ctx, ListAppDeploymentsRequest{
+func (a *AppsAPI) ListDeploymentsByAppName(ctx context.Context, appName string) (*ListAppDeploymentsResponse, error) {
+	return a.appsImpl.internalListDeployments(ctx, ListAppDeploymentsRequest{
 		AppName: appName,
 	})
 }

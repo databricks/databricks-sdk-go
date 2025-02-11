@@ -12,15 +12,15 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-// unexported type that holds implementations of just ConsumerFulfillmentsPreview API methods
-type consumerFulfillmentsPreviewImpl struct {
+// unexported type that holds implementations of just ConsumerFulfillments API methods
+type consumerFulfillmentsImpl struct {
 	client *client.DatabricksClient
 }
 
 // Get listing content metadata.
 //
 // Get a high level preview of the metadata of listing installable content.
-func (a *consumerFulfillmentsPreviewImpl) Get(ctx context.Context, request GetListingContentMetadataRequest) listing.Iterator[SharedDataObject] {
+func (a *consumerFulfillmentsImpl) Get(ctx context.Context, request GetListingContentMetadataRequest) listing.Iterator[SharedDataObject] {
 
 	getNextPage := func(ctx context.Context, req GetListingContentMetadataRequest) (*GetListingContentMetadataResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -47,11 +47,11 @@ func (a *consumerFulfillmentsPreviewImpl) Get(ctx context.Context, request GetLi
 // Get listing content metadata.
 //
 // Get a high level preview of the metadata of listing installable content.
-func (a *consumerFulfillmentsPreviewImpl) GetAll(ctx context.Context, request GetListingContentMetadataRequest) ([]SharedDataObject, error) {
+func (a *consumerFulfillmentsImpl) GetAll(ctx context.Context, request GetListingContentMetadataRequest) ([]SharedDataObject, error) {
 	iterator := a.Get(ctx, request)
 	return listing.ToSlice[SharedDataObject](ctx, iterator)
 }
-func (a *consumerFulfillmentsPreviewImpl) internalGet(ctx context.Context, request GetListingContentMetadataRequest) (*GetListingContentMetadataResponse, error) {
+func (a *consumerFulfillmentsImpl) internalGet(ctx context.Context, request GetListingContentMetadataRequest) (*GetListingContentMetadataResponse, error) {
 	var getListingContentMetadataResponse GetListingContentMetadataResponse
 	path := fmt.Sprintf("/api/2.1preview/marketplace-consumer/listings/%v/content", request.ListingId)
 	queryParams := make(map[string]any)
@@ -68,7 +68,7 @@ func (a *consumerFulfillmentsPreviewImpl) internalGet(ctx context.Context, reque
 // attached share or git repo. Only one of these fields will be present.
 // Personalized installations contain metadata about the attached share or git
 // repo, as well as the Delta Sharing recipient type.
-func (a *consumerFulfillmentsPreviewImpl) List(ctx context.Context, request ListFulfillmentsRequest) listing.Iterator[ListingFulfillment] {
+func (a *consumerFulfillmentsImpl) List(ctx context.Context, request ListFulfillmentsRequest) listing.Iterator[ListingFulfillment] {
 
 	getNextPage := func(ctx context.Context, req ListFulfillmentsRequest) (*ListFulfillmentsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -99,11 +99,11 @@ func (a *consumerFulfillmentsPreviewImpl) List(ctx context.Context, request List
 // attached share or git repo. Only one of these fields will be present.
 // Personalized installations contain metadata about the attached share or git
 // repo, as well as the Delta Sharing recipient type.
-func (a *consumerFulfillmentsPreviewImpl) ListAll(ctx context.Context, request ListFulfillmentsRequest) ([]ListingFulfillment, error) {
+func (a *consumerFulfillmentsImpl) ListAll(ctx context.Context, request ListFulfillmentsRequest) ([]ListingFulfillment, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ListingFulfillment](ctx, iterator)
 }
-func (a *consumerFulfillmentsPreviewImpl) internalList(ctx context.Context, request ListFulfillmentsRequest) (*ListFulfillmentsResponse, error) {
+func (a *consumerFulfillmentsImpl) internalList(ctx context.Context, request ListFulfillmentsRequest) (*ListFulfillmentsResponse, error) {
 	var listFulfillmentsResponse ListFulfillmentsResponse
 	path := fmt.Sprintf("/api/2.1preview/marketplace-consumer/listings/%v/fulfillments", request.ListingId)
 	queryParams := make(map[string]any)
@@ -113,12 +113,12 @@ func (a *consumerFulfillmentsPreviewImpl) internalList(ctx context.Context, requ
 	return &listFulfillmentsResponse, err
 }
 
-// unexported type that holds implementations of just ConsumerInstallationsPreview API methods
-type consumerInstallationsPreviewImpl struct {
+// unexported type that holds implementations of just ConsumerInstallations API methods
+type consumerInstallationsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *consumerInstallationsPreviewImpl) Create(ctx context.Context, request CreateInstallationRequest) (*Installation, error) {
+func (a *consumerInstallationsImpl) Create(ctx context.Context, request CreateInstallationRequest) (*Installation, error) {
 	var installation Installation
 	path := fmt.Sprintf("/api/2.1preview/marketplace-consumer/listings/%v/installations", request.ListingId)
 	queryParams := make(map[string]any)
@@ -129,7 +129,7 @@ func (a *consumerInstallationsPreviewImpl) Create(ctx context.Context, request C
 	return &installation, err
 }
 
-func (a *consumerInstallationsPreviewImpl) Delete(ctx context.Context, request DeleteInstallationRequest) error {
+func (a *consumerInstallationsImpl) Delete(ctx context.Context, request DeleteInstallationRequest) error {
 	var deleteInstallationResponse DeleteInstallationResponse
 	path := fmt.Sprintf("/api/2.1preview/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
 	queryParams := make(map[string]any)
@@ -142,7 +142,7 @@ func (a *consumerInstallationsPreviewImpl) Delete(ctx context.Context, request D
 // List all installations.
 //
 // List all installations across all listings.
-func (a *consumerInstallationsPreviewImpl) List(ctx context.Context, request ListAllInstallationsRequest) listing.Iterator[InstallationDetail] {
+func (a *consumerInstallationsImpl) List(ctx context.Context, request ListAllInstallationsRequest) listing.Iterator[InstallationDetail] {
 
 	getNextPage := func(ctx context.Context, req ListAllInstallationsRequest) (*ListAllInstallationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -169,11 +169,11 @@ func (a *consumerInstallationsPreviewImpl) List(ctx context.Context, request Lis
 // List all installations.
 //
 // List all installations across all listings.
-func (a *consumerInstallationsPreviewImpl) ListAll(ctx context.Context, request ListAllInstallationsRequest) ([]InstallationDetail, error) {
+func (a *consumerInstallationsImpl) ListAll(ctx context.Context, request ListAllInstallationsRequest) ([]InstallationDetail, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[InstallationDetail](ctx, iterator)
 }
-func (a *consumerInstallationsPreviewImpl) internalList(ctx context.Context, request ListAllInstallationsRequest) (*ListAllInstallationsResponse, error) {
+func (a *consumerInstallationsImpl) internalList(ctx context.Context, request ListAllInstallationsRequest) (*ListAllInstallationsResponse, error) {
 	var listAllInstallationsResponse ListAllInstallationsResponse
 	path := "/api/2.1preview/marketplace-consumer/installations"
 	queryParams := make(map[string]any)
@@ -186,7 +186,7 @@ func (a *consumerInstallationsPreviewImpl) internalList(ctx context.Context, req
 // List installations for a listing.
 //
 // List all installations for a particular listing.
-func (a *consumerInstallationsPreviewImpl) ListListingInstallations(ctx context.Context, request ListInstallationsRequest) listing.Iterator[InstallationDetail] {
+func (a *consumerInstallationsImpl) ListListingInstallations(ctx context.Context, request ListInstallationsRequest) listing.Iterator[InstallationDetail] {
 
 	getNextPage := func(ctx context.Context, req ListInstallationsRequest) (*ListInstallationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -213,11 +213,11 @@ func (a *consumerInstallationsPreviewImpl) ListListingInstallations(ctx context.
 // List installations for a listing.
 //
 // List all installations for a particular listing.
-func (a *consumerInstallationsPreviewImpl) ListListingInstallationsAll(ctx context.Context, request ListInstallationsRequest) ([]InstallationDetail, error) {
+func (a *consumerInstallationsImpl) ListListingInstallationsAll(ctx context.Context, request ListInstallationsRequest) ([]InstallationDetail, error) {
 	iterator := a.ListListingInstallations(ctx, request)
 	return listing.ToSlice[InstallationDetail](ctx, iterator)
 }
-func (a *consumerInstallationsPreviewImpl) internalListListingInstallations(ctx context.Context, request ListInstallationsRequest) (*ListInstallationsResponse, error) {
+func (a *consumerInstallationsImpl) internalListListingInstallations(ctx context.Context, request ListInstallationsRequest) (*ListInstallationsResponse, error) {
 	var listInstallationsResponse ListInstallationsResponse
 	path := fmt.Sprintf("/api/2.1preview/marketplace-consumer/listings/%v/installations", request.ListingId)
 	queryParams := make(map[string]any)
@@ -227,7 +227,7 @@ func (a *consumerInstallationsPreviewImpl) internalListListingInstallations(ctx 
 	return &listInstallationsResponse, err
 }
 
-func (a *consumerInstallationsPreviewImpl) Update(ctx context.Context, request UpdateInstallationRequest) (*UpdateInstallationResponse, error) {
+func (a *consumerInstallationsImpl) Update(ctx context.Context, request UpdateInstallationRequest) (*UpdateInstallationResponse, error) {
 	var updateInstallationResponse UpdateInstallationResponse
 	path := fmt.Sprintf("/api/2.1preview/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
 	queryParams := make(map[string]any)
@@ -238,12 +238,12 @@ func (a *consumerInstallationsPreviewImpl) Update(ctx context.Context, request U
 	return &updateInstallationResponse, err
 }
 
-// unexported type that holds implementations of just ConsumerListingsPreview API methods
-type consumerListingsPreviewImpl struct {
+// unexported type that holds implementations of just ConsumerListings API methods
+type consumerListingsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *consumerListingsPreviewImpl) BatchGet(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error) {
+func (a *consumerListingsImpl) BatchGet(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error) {
 	var batchGetListingsResponse BatchGetListingsResponse
 	path := "/api/2.1preview/marketplace-consumer/listings:batchGet"
 	queryParams := make(map[string]any)
@@ -253,7 +253,7 @@ func (a *consumerListingsPreviewImpl) BatchGet(ctx context.Context, request Batc
 	return &batchGetListingsResponse, err
 }
 
-func (a *consumerListingsPreviewImpl) Get(ctx context.Context, request GetListingRequest) (*GetListingResponse, error) {
+func (a *consumerListingsImpl) Get(ctx context.Context, request GetListingRequest) (*GetListingResponse, error) {
 	var getListingResponse GetListingResponse
 	path := fmt.Sprintf("/api/2.1preview/marketplace-consumer/listings/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -267,7 +267,7 @@ func (a *consumerListingsPreviewImpl) Get(ctx context.Context, request GetListin
 //
 // List all published listings in the Databricks Marketplace that the consumer
 // has access to.
-func (a *consumerListingsPreviewImpl) List(ctx context.Context, request ListListingsRequest) listing.Iterator[Listing] {
+func (a *consumerListingsImpl) List(ctx context.Context, request ListListingsRequest) listing.Iterator[Listing] {
 
 	getNextPage := func(ctx context.Context, req ListListingsRequest) (*ListListingsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -295,11 +295,11 @@ func (a *consumerListingsPreviewImpl) List(ctx context.Context, request ListList
 //
 // List all published listings in the Databricks Marketplace that the consumer
 // has access to.
-func (a *consumerListingsPreviewImpl) ListAll(ctx context.Context, request ListListingsRequest) ([]Listing, error) {
+func (a *consumerListingsImpl) ListAll(ctx context.Context, request ListListingsRequest) ([]Listing, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[Listing](ctx, iterator)
 }
-func (a *consumerListingsPreviewImpl) internalList(ctx context.Context, request ListListingsRequest) (*ListListingsResponse, error) {
+func (a *consumerListingsImpl) internalList(ctx context.Context, request ListListingsRequest) (*ListListingsResponse, error) {
 	var listListingsResponse ListListingsResponse
 	path := "/api/2.1preview/marketplace-consumer/listings"
 	queryParams := make(map[string]any)
@@ -314,7 +314,7 @@ func (a *consumerListingsPreviewImpl) internalList(ctx context.Context, request 
 // Search published listings in the Databricks Marketplace that the consumer has
 // access to. This query supports a variety of different search parameters and
 // performs fuzzy matching.
-func (a *consumerListingsPreviewImpl) Search(ctx context.Context, request SearchListingsRequest) listing.Iterator[Listing] {
+func (a *consumerListingsImpl) Search(ctx context.Context, request SearchListingsRequest) listing.Iterator[Listing] {
 
 	getNextPage := func(ctx context.Context, req SearchListingsRequest) (*SearchListingsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -343,11 +343,11 @@ func (a *consumerListingsPreviewImpl) Search(ctx context.Context, request Search
 // Search published listings in the Databricks Marketplace that the consumer has
 // access to. This query supports a variety of different search parameters and
 // performs fuzzy matching.
-func (a *consumerListingsPreviewImpl) SearchAll(ctx context.Context, request SearchListingsRequest) ([]Listing, error) {
+func (a *consumerListingsImpl) SearchAll(ctx context.Context, request SearchListingsRequest) ([]Listing, error) {
 	iterator := a.Search(ctx, request)
 	return listing.ToSlice[Listing](ctx, iterator)
 }
-func (a *consumerListingsPreviewImpl) internalSearch(ctx context.Context, request SearchListingsRequest) (*SearchListingsResponse, error) {
+func (a *consumerListingsImpl) internalSearch(ctx context.Context, request SearchListingsRequest) (*SearchListingsResponse, error) {
 	var searchListingsResponse SearchListingsResponse
 	path := "/api/2.1preview/marketplace-consumer/search-listings"
 	queryParams := make(map[string]any)
@@ -357,12 +357,12 @@ func (a *consumerListingsPreviewImpl) internalSearch(ctx context.Context, reques
 	return &searchListingsResponse, err
 }
 
-// unexported type that holds implementations of just ConsumerPersonalizationRequestsPreview API methods
-type consumerPersonalizationRequestsPreviewImpl struct {
+// unexported type that holds implementations of just ConsumerPersonalizationRequests API methods
+type consumerPersonalizationRequestsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *consumerPersonalizationRequestsPreviewImpl) Create(ctx context.Context, request CreatePersonalizationRequest) (*CreatePersonalizationRequestResponse, error) {
+func (a *consumerPersonalizationRequestsImpl) Create(ctx context.Context, request CreatePersonalizationRequest) (*CreatePersonalizationRequestResponse, error) {
 	var createPersonalizationRequestResponse CreatePersonalizationRequestResponse
 	path := fmt.Sprintf("/api/2.1preview/marketplace-consumer/listings/%v/personalization-requests", request.ListingId)
 	queryParams := make(map[string]any)
@@ -373,7 +373,7 @@ func (a *consumerPersonalizationRequestsPreviewImpl) Create(ctx context.Context,
 	return &createPersonalizationRequestResponse, err
 }
 
-func (a *consumerPersonalizationRequestsPreviewImpl) Get(ctx context.Context, request GetPersonalizationRequestRequest) (*GetPersonalizationRequestResponse, error) {
+func (a *consumerPersonalizationRequestsImpl) Get(ctx context.Context, request GetPersonalizationRequestRequest) (*GetPersonalizationRequestResponse, error) {
 	var getPersonalizationRequestResponse GetPersonalizationRequestResponse
 	path := fmt.Sprintf("/api/2.1preview/marketplace-consumer/listings/%v/personalization-requests", request.ListingId)
 	queryParams := make(map[string]any)
@@ -386,7 +386,7 @@ func (a *consumerPersonalizationRequestsPreviewImpl) Get(ctx context.Context, re
 // List all personalization requests.
 //
 // List personalization requests for a consumer across all listings.
-func (a *consumerPersonalizationRequestsPreviewImpl) List(ctx context.Context, request ListAllPersonalizationRequestsRequest) listing.Iterator[PersonalizationRequest] {
+func (a *consumerPersonalizationRequestsImpl) List(ctx context.Context, request ListAllPersonalizationRequestsRequest) listing.Iterator[PersonalizationRequest] {
 
 	getNextPage := func(ctx context.Context, req ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -413,11 +413,11 @@ func (a *consumerPersonalizationRequestsPreviewImpl) List(ctx context.Context, r
 // List all personalization requests.
 //
 // List personalization requests for a consumer across all listings.
-func (a *consumerPersonalizationRequestsPreviewImpl) ListAll(ctx context.Context, request ListAllPersonalizationRequestsRequest) ([]PersonalizationRequest, error) {
+func (a *consumerPersonalizationRequestsImpl) ListAll(ctx context.Context, request ListAllPersonalizationRequestsRequest) ([]PersonalizationRequest, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[PersonalizationRequest](ctx, iterator)
 }
-func (a *consumerPersonalizationRequestsPreviewImpl) internalList(ctx context.Context, request ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error) {
+func (a *consumerPersonalizationRequestsImpl) internalList(ctx context.Context, request ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error) {
 	var listAllPersonalizationRequestsResponse ListAllPersonalizationRequestsResponse
 	path := "/api/2.1preview/marketplace-consumer/personalization-requests"
 	queryParams := make(map[string]any)
@@ -427,12 +427,12 @@ func (a *consumerPersonalizationRequestsPreviewImpl) internalList(ctx context.Co
 	return &listAllPersonalizationRequestsResponse, err
 }
 
-// unexported type that holds implementations of just ConsumerProvidersPreview API methods
-type consumerProvidersPreviewImpl struct {
+// unexported type that holds implementations of just ConsumerProviders API methods
+type consumerProvidersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *consumerProvidersPreviewImpl) BatchGet(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error) {
+func (a *consumerProvidersImpl) BatchGet(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error) {
 	var batchGetProvidersResponse BatchGetProvidersResponse
 	path := "/api/2.1preview/marketplace-consumer/providers:batchGet"
 	queryParams := make(map[string]any)
@@ -442,7 +442,7 @@ func (a *consumerProvidersPreviewImpl) BatchGet(ctx context.Context, request Bat
 	return &batchGetProvidersResponse, err
 }
 
-func (a *consumerProvidersPreviewImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
+func (a *consumerProvidersImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
 	var getProviderResponse GetProviderResponse
 	path := fmt.Sprintf("/api/2.1preview/marketplace-consumer/providers/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -456,7 +456,7 @@ func (a *consumerProvidersPreviewImpl) Get(ctx context.Context, request GetProvi
 //
 // List all providers in the Databricks Marketplace with at least one visible
 // listing.
-func (a *consumerProvidersPreviewImpl) List(ctx context.Context, request ListProvidersRequest) listing.Iterator[ProviderInfo] {
+func (a *consumerProvidersImpl) List(ctx context.Context, request ListProvidersRequest) listing.Iterator[ProviderInfo] {
 
 	getNextPage := func(ctx context.Context, req ListProvidersRequest) (*ListProvidersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -484,11 +484,11 @@ func (a *consumerProvidersPreviewImpl) List(ctx context.Context, request ListPro
 //
 // List all providers in the Databricks Marketplace with at least one visible
 // listing.
-func (a *consumerProvidersPreviewImpl) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
+func (a *consumerProvidersImpl) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ProviderInfo](ctx, iterator)
 }
-func (a *consumerProvidersPreviewImpl) internalList(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
+func (a *consumerProvidersImpl) internalList(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
 	var listProvidersResponse ListProvidersResponse
 	path := "/api/2.1preview/marketplace-consumer/providers"
 	queryParams := make(map[string]any)
@@ -498,12 +498,12 @@ func (a *consumerProvidersPreviewImpl) internalList(ctx context.Context, request
 	return &listProvidersResponse, err
 }
 
-// unexported type that holds implementations of just ProviderExchangeFiltersPreview API methods
-type providerExchangeFiltersPreviewImpl struct {
+// unexported type that holds implementations of just ProviderExchangeFilters API methods
+type providerExchangeFiltersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *providerExchangeFiltersPreviewImpl) Create(ctx context.Context, request CreateExchangeFilterRequest) (*CreateExchangeFilterResponse, error) {
+func (a *providerExchangeFiltersImpl) Create(ctx context.Context, request CreateExchangeFilterRequest) (*CreateExchangeFilterResponse, error) {
 	var createExchangeFilterResponse CreateExchangeFilterResponse
 	path := "/api/2.0preview/marketplace-exchange/filters"
 	queryParams := make(map[string]any)
@@ -514,7 +514,7 @@ func (a *providerExchangeFiltersPreviewImpl) Create(ctx context.Context, request
 	return &createExchangeFilterResponse, err
 }
 
-func (a *providerExchangeFiltersPreviewImpl) Delete(ctx context.Context, request DeleteExchangeFilterRequest) error {
+func (a *providerExchangeFiltersImpl) Delete(ctx context.Context, request DeleteExchangeFilterRequest) error {
 	var deleteExchangeFilterResponse DeleteExchangeFilterResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-exchange/filters/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -527,7 +527,7 @@ func (a *providerExchangeFiltersPreviewImpl) Delete(ctx context.Context, request
 // List exchange filters.
 //
 // List exchange filter
-func (a *providerExchangeFiltersPreviewImpl) List(ctx context.Context, request ListExchangeFiltersRequest) listing.Iterator[ExchangeFilter] {
+func (a *providerExchangeFiltersImpl) List(ctx context.Context, request ListExchangeFiltersRequest) listing.Iterator[ExchangeFilter] {
 
 	getNextPage := func(ctx context.Context, req ListExchangeFiltersRequest) (*ListExchangeFiltersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -554,11 +554,11 @@ func (a *providerExchangeFiltersPreviewImpl) List(ctx context.Context, request L
 // List exchange filters.
 //
 // List exchange filter
-func (a *providerExchangeFiltersPreviewImpl) ListAll(ctx context.Context, request ListExchangeFiltersRequest) ([]ExchangeFilter, error) {
+func (a *providerExchangeFiltersImpl) ListAll(ctx context.Context, request ListExchangeFiltersRequest) ([]ExchangeFilter, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ExchangeFilter](ctx, iterator)
 }
-func (a *providerExchangeFiltersPreviewImpl) internalList(ctx context.Context, request ListExchangeFiltersRequest) (*ListExchangeFiltersResponse, error) {
+func (a *providerExchangeFiltersImpl) internalList(ctx context.Context, request ListExchangeFiltersRequest) (*ListExchangeFiltersResponse, error) {
 	var listExchangeFiltersResponse ListExchangeFiltersResponse
 	path := "/api/2.0preview/marketplace-exchange/filters"
 	queryParams := make(map[string]any)
@@ -568,7 +568,7 @@ func (a *providerExchangeFiltersPreviewImpl) internalList(ctx context.Context, r
 	return &listExchangeFiltersResponse, err
 }
 
-func (a *providerExchangeFiltersPreviewImpl) Update(ctx context.Context, request UpdateExchangeFilterRequest) (*UpdateExchangeFilterResponse, error) {
+func (a *providerExchangeFiltersImpl) Update(ctx context.Context, request UpdateExchangeFilterRequest) (*UpdateExchangeFilterResponse, error) {
 	var updateExchangeFilterResponse UpdateExchangeFilterResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-exchange/filters/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -579,12 +579,12 @@ func (a *providerExchangeFiltersPreviewImpl) Update(ctx context.Context, request
 	return &updateExchangeFilterResponse, err
 }
 
-// unexported type that holds implementations of just ProviderExchangesPreview API methods
-type providerExchangesPreviewImpl struct {
+// unexported type that holds implementations of just ProviderExchanges API methods
+type providerExchangesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *providerExchangesPreviewImpl) AddListingToExchange(ctx context.Context, request AddExchangeForListingRequest) (*AddExchangeForListingResponse, error) {
+func (a *providerExchangesImpl) AddListingToExchange(ctx context.Context, request AddExchangeForListingRequest) (*AddExchangeForListingResponse, error) {
 	var addExchangeForListingResponse AddExchangeForListingResponse
 	path := "/api/2.0preview/marketplace-exchange/exchanges-for-listing"
 	queryParams := make(map[string]any)
@@ -595,7 +595,7 @@ func (a *providerExchangesPreviewImpl) AddListingToExchange(ctx context.Context,
 	return &addExchangeForListingResponse, err
 }
 
-func (a *providerExchangesPreviewImpl) Create(ctx context.Context, request CreateExchangeRequest) (*CreateExchangeResponse, error) {
+func (a *providerExchangesImpl) Create(ctx context.Context, request CreateExchangeRequest) (*CreateExchangeResponse, error) {
 	var createExchangeResponse CreateExchangeResponse
 	path := "/api/2.0preview/marketplace-exchange/exchanges"
 	queryParams := make(map[string]any)
@@ -606,7 +606,7 @@ func (a *providerExchangesPreviewImpl) Create(ctx context.Context, request Creat
 	return &createExchangeResponse, err
 }
 
-func (a *providerExchangesPreviewImpl) Delete(ctx context.Context, request DeleteExchangeRequest) error {
+func (a *providerExchangesImpl) Delete(ctx context.Context, request DeleteExchangeRequest) error {
 	var deleteExchangeResponse DeleteExchangeResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-exchange/exchanges/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -616,7 +616,7 @@ func (a *providerExchangesPreviewImpl) Delete(ctx context.Context, request Delet
 	return err
 }
 
-func (a *providerExchangesPreviewImpl) DeleteListingFromExchange(ctx context.Context, request RemoveExchangeForListingRequest) error {
+func (a *providerExchangesImpl) DeleteListingFromExchange(ctx context.Context, request RemoveExchangeForListingRequest) error {
 	var removeExchangeForListingResponse RemoveExchangeForListingResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-exchange/exchanges-for-listing/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -626,7 +626,7 @@ func (a *providerExchangesPreviewImpl) DeleteListingFromExchange(ctx context.Con
 	return err
 }
 
-func (a *providerExchangesPreviewImpl) Get(ctx context.Context, request GetExchangeRequest) (*GetExchangeResponse, error) {
+func (a *providerExchangesImpl) Get(ctx context.Context, request GetExchangeRequest) (*GetExchangeResponse, error) {
 	var getExchangeResponse GetExchangeResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-exchange/exchanges/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -639,7 +639,7 @@ func (a *providerExchangesPreviewImpl) Get(ctx context.Context, request GetExcha
 // List exchanges.
 //
 // List exchanges visible to provider
-func (a *providerExchangesPreviewImpl) List(ctx context.Context, request ListExchangesRequest) listing.Iterator[Exchange] {
+func (a *providerExchangesImpl) List(ctx context.Context, request ListExchangesRequest) listing.Iterator[Exchange] {
 
 	getNextPage := func(ctx context.Context, req ListExchangesRequest) (*ListExchangesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -666,11 +666,11 @@ func (a *providerExchangesPreviewImpl) List(ctx context.Context, request ListExc
 // List exchanges.
 //
 // List exchanges visible to provider
-func (a *providerExchangesPreviewImpl) ListAll(ctx context.Context, request ListExchangesRequest) ([]Exchange, error) {
+func (a *providerExchangesImpl) ListAll(ctx context.Context, request ListExchangesRequest) ([]Exchange, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[Exchange](ctx, iterator)
 }
-func (a *providerExchangesPreviewImpl) internalList(ctx context.Context, request ListExchangesRequest) (*ListExchangesResponse, error) {
+func (a *providerExchangesImpl) internalList(ctx context.Context, request ListExchangesRequest) (*ListExchangesResponse, error) {
 	var listExchangesResponse ListExchangesResponse
 	path := "/api/2.0preview/marketplace-exchange/exchanges"
 	queryParams := make(map[string]any)
@@ -683,7 +683,7 @@ func (a *providerExchangesPreviewImpl) internalList(ctx context.Context, request
 // List exchanges for listing.
 //
 // List exchanges associated with a listing
-func (a *providerExchangesPreviewImpl) ListExchangesForListing(ctx context.Context, request ListExchangesForListingRequest) listing.Iterator[ExchangeListing] {
+func (a *providerExchangesImpl) ListExchangesForListing(ctx context.Context, request ListExchangesForListingRequest) listing.Iterator[ExchangeListing] {
 
 	getNextPage := func(ctx context.Context, req ListExchangesForListingRequest) (*ListExchangesForListingResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -710,11 +710,11 @@ func (a *providerExchangesPreviewImpl) ListExchangesForListing(ctx context.Conte
 // List exchanges for listing.
 //
 // List exchanges associated with a listing
-func (a *providerExchangesPreviewImpl) ListExchangesForListingAll(ctx context.Context, request ListExchangesForListingRequest) ([]ExchangeListing, error) {
+func (a *providerExchangesImpl) ListExchangesForListingAll(ctx context.Context, request ListExchangesForListingRequest) ([]ExchangeListing, error) {
 	iterator := a.ListExchangesForListing(ctx, request)
 	return listing.ToSlice[ExchangeListing](ctx, iterator)
 }
-func (a *providerExchangesPreviewImpl) internalListExchangesForListing(ctx context.Context, request ListExchangesForListingRequest) (*ListExchangesForListingResponse, error) {
+func (a *providerExchangesImpl) internalListExchangesForListing(ctx context.Context, request ListExchangesForListingRequest) (*ListExchangesForListingResponse, error) {
 	var listExchangesForListingResponse ListExchangesForListingResponse
 	path := "/api/2.0preview/marketplace-exchange/exchanges-for-listing"
 	queryParams := make(map[string]any)
@@ -727,7 +727,7 @@ func (a *providerExchangesPreviewImpl) internalListExchangesForListing(ctx conte
 // List listings for exchange.
 //
 // List listings associated with an exchange
-func (a *providerExchangesPreviewImpl) ListListingsForExchange(ctx context.Context, request ListListingsForExchangeRequest) listing.Iterator[ExchangeListing] {
+func (a *providerExchangesImpl) ListListingsForExchange(ctx context.Context, request ListListingsForExchangeRequest) listing.Iterator[ExchangeListing] {
 
 	getNextPage := func(ctx context.Context, req ListListingsForExchangeRequest) (*ListListingsForExchangeResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -754,11 +754,11 @@ func (a *providerExchangesPreviewImpl) ListListingsForExchange(ctx context.Conte
 // List listings for exchange.
 //
 // List listings associated with an exchange
-func (a *providerExchangesPreviewImpl) ListListingsForExchangeAll(ctx context.Context, request ListListingsForExchangeRequest) ([]ExchangeListing, error) {
+func (a *providerExchangesImpl) ListListingsForExchangeAll(ctx context.Context, request ListListingsForExchangeRequest) ([]ExchangeListing, error) {
 	iterator := a.ListListingsForExchange(ctx, request)
 	return listing.ToSlice[ExchangeListing](ctx, iterator)
 }
-func (a *providerExchangesPreviewImpl) internalListListingsForExchange(ctx context.Context, request ListListingsForExchangeRequest) (*ListListingsForExchangeResponse, error) {
+func (a *providerExchangesImpl) internalListListingsForExchange(ctx context.Context, request ListListingsForExchangeRequest) (*ListListingsForExchangeResponse, error) {
 	var listListingsForExchangeResponse ListListingsForExchangeResponse
 	path := "/api/2.0preview/marketplace-exchange/listings-for-exchange"
 	queryParams := make(map[string]any)
@@ -768,7 +768,7 @@ func (a *providerExchangesPreviewImpl) internalListListingsForExchange(ctx conte
 	return &listListingsForExchangeResponse, err
 }
 
-func (a *providerExchangesPreviewImpl) Update(ctx context.Context, request UpdateExchangeRequest) (*UpdateExchangeResponse, error) {
+func (a *providerExchangesImpl) Update(ctx context.Context, request UpdateExchangeRequest) (*UpdateExchangeResponse, error) {
 	var updateExchangeResponse UpdateExchangeResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-exchange/exchanges/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -779,12 +779,12 @@ func (a *providerExchangesPreviewImpl) Update(ctx context.Context, request Updat
 	return &updateExchangeResponse, err
 }
 
-// unexported type that holds implementations of just ProviderFilesPreview API methods
-type providerFilesPreviewImpl struct {
+// unexported type that holds implementations of just ProviderFiles API methods
+type providerFilesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *providerFilesPreviewImpl) Create(ctx context.Context, request CreateFileRequest) (*CreateFileResponse, error) {
+func (a *providerFilesImpl) Create(ctx context.Context, request CreateFileRequest) (*CreateFileResponse, error) {
 	var createFileResponse CreateFileResponse
 	path := "/api/2.0preview/marketplace-provider/files"
 	queryParams := make(map[string]any)
@@ -795,7 +795,7 @@ func (a *providerFilesPreviewImpl) Create(ctx context.Context, request CreateFil
 	return &createFileResponse, err
 }
 
-func (a *providerFilesPreviewImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
+func (a *providerFilesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
 	var deleteFileResponse DeleteFileResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-provider/files/%v", request.FileId)
 	queryParams := make(map[string]any)
@@ -805,7 +805,7 @@ func (a *providerFilesPreviewImpl) Delete(ctx context.Context, request DeleteFil
 	return err
 }
 
-func (a *providerFilesPreviewImpl) Get(ctx context.Context, request GetFileRequest) (*GetFileResponse, error) {
+func (a *providerFilesImpl) Get(ctx context.Context, request GetFileRequest) (*GetFileResponse, error) {
 	var getFileResponse GetFileResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-provider/files/%v", request.FileId)
 	queryParams := make(map[string]any)
@@ -818,7 +818,7 @@ func (a *providerFilesPreviewImpl) Get(ctx context.Context, request GetFileReque
 // List files.
 //
 // List files attached to a parent entity.
-func (a *providerFilesPreviewImpl) List(ctx context.Context, request ListFilesRequest) listing.Iterator[FileInfo] {
+func (a *providerFilesImpl) List(ctx context.Context, request ListFilesRequest) listing.Iterator[FileInfo] {
 
 	getNextPage := func(ctx context.Context, req ListFilesRequest) (*ListFilesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -845,11 +845,11 @@ func (a *providerFilesPreviewImpl) List(ctx context.Context, request ListFilesRe
 // List files.
 //
 // List files attached to a parent entity.
-func (a *providerFilesPreviewImpl) ListAll(ctx context.Context, request ListFilesRequest) ([]FileInfo, error) {
+func (a *providerFilesImpl) ListAll(ctx context.Context, request ListFilesRequest) ([]FileInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[FileInfo](ctx, iterator)
 }
-func (a *providerFilesPreviewImpl) internalList(ctx context.Context, request ListFilesRequest) (*ListFilesResponse, error) {
+func (a *providerFilesImpl) internalList(ctx context.Context, request ListFilesRequest) (*ListFilesResponse, error) {
 	var listFilesResponse ListFilesResponse
 	path := "/api/2.0preview/marketplace-provider/files"
 	queryParams := make(map[string]any)
@@ -859,12 +859,12 @@ func (a *providerFilesPreviewImpl) internalList(ctx context.Context, request Lis
 	return &listFilesResponse, err
 }
 
-// unexported type that holds implementations of just ProviderListingsPreview API methods
-type providerListingsPreviewImpl struct {
+// unexported type that holds implementations of just ProviderListings API methods
+type providerListingsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *providerListingsPreviewImpl) Create(ctx context.Context, request CreateListingRequest) (*CreateListingResponse, error) {
+func (a *providerListingsImpl) Create(ctx context.Context, request CreateListingRequest) (*CreateListingResponse, error) {
 	var createListingResponse CreateListingResponse
 	path := "/api/2.0preview/marketplace-provider/listing"
 	queryParams := make(map[string]any)
@@ -875,7 +875,7 @@ func (a *providerListingsPreviewImpl) Create(ctx context.Context, request Create
 	return &createListingResponse, err
 }
 
-func (a *providerListingsPreviewImpl) Delete(ctx context.Context, request DeleteListingRequest) error {
+func (a *providerListingsImpl) Delete(ctx context.Context, request DeleteListingRequest) error {
 	var deleteListingResponse DeleteListingResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-provider/listings/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -885,7 +885,7 @@ func (a *providerListingsPreviewImpl) Delete(ctx context.Context, request Delete
 	return err
 }
 
-func (a *providerListingsPreviewImpl) Get(ctx context.Context, request GetListingRequest) (*GetListingResponse, error) {
+func (a *providerListingsImpl) Get(ctx context.Context, request GetListingRequest) (*GetListingResponse, error) {
 	var getListingResponse GetListingResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-provider/listings/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -898,7 +898,7 @@ func (a *providerListingsPreviewImpl) Get(ctx context.Context, request GetListin
 // List listings.
 //
 // List listings owned by this provider
-func (a *providerListingsPreviewImpl) List(ctx context.Context, request GetListingsRequest) listing.Iterator[Listing] {
+func (a *providerListingsImpl) List(ctx context.Context, request GetListingsRequest) listing.Iterator[Listing] {
 
 	getNextPage := func(ctx context.Context, req GetListingsRequest) (*GetListingsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -925,11 +925,11 @@ func (a *providerListingsPreviewImpl) List(ctx context.Context, request GetListi
 // List listings.
 //
 // List listings owned by this provider
-func (a *providerListingsPreviewImpl) ListAll(ctx context.Context, request GetListingsRequest) ([]Listing, error) {
+func (a *providerListingsImpl) ListAll(ctx context.Context, request GetListingsRequest) ([]Listing, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[Listing](ctx, iterator)
 }
-func (a *providerListingsPreviewImpl) internalList(ctx context.Context, request GetListingsRequest) (*GetListingsResponse, error) {
+func (a *providerListingsImpl) internalList(ctx context.Context, request GetListingsRequest) (*GetListingsResponse, error) {
 	var getListingsResponse GetListingsResponse
 	path := "/api/2.0preview/marketplace-provider/listings"
 	queryParams := make(map[string]any)
@@ -939,7 +939,7 @@ func (a *providerListingsPreviewImpl) internalList(ctx context.Context, request 
 	return &getListingsResponse, err
 }
 
-func (a *providerListingsPreviewImpl) Update(ctx context.Context, request UpdateListingRequest) (*UpdateListingResponse, error) {
+func (a *providerListingsImpl) Update(ctx context.Context, request UpdateListingRequest) (*UpdateListingResponse, error) {
 	var updateListingResponse UpdateListingResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-provider/listings/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -950,8 +950,8 @@ func (a *providerListingsPreviewImpl) Update(ctx context.Context, request Update
 	return &updateListingResponse, err
 }
 
-// unexported type that holds implementations of just ProviderPersonalizationRequestsPreview API methods
-type providerPersonalizationRequestsPreviewImpl struct {
+// unexported type that holds implementations of just ProviderPersonalizationRequests API methods
+type providerPersonalizationRequestsImpl struct {
 	client *client.DatabricksClient
 }
 
@@ -959,7 +959,7 @@ type providerPersonalizationRequestsPreviewImpl struct {
 //
 // List personalization requests to this provider. This will return all
 // personalization requests, regardless of which listing they are for.
-func (a *providerPersonalizationRequestsPreviewImpl) List(ctx context.Context, request ListAllPersonalizationRequestsRequest) listing.Iterator[PersonalizationRequest] {
+func (a *providerPersonalizationRequestsImpl) List(ctx context.Context, request ListAllPersonalizationRequestsRequest) listing.Iterator[PersonalizationRequest] {
 
 	getNextPage := func(ctx context.Context, req ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -987,11 +987,11 @@ func (a *providerPersonalizationRequestsPreviewImpl) List(ctx context.Context, r
 //
 // List personalization requests to this provider. This will return all
 // personalization requests, regardless of which listing they are for.
-func (a *providerPersonalizationRequestsPreviewImpl) ListAll(ctx context.Context, request ListAllPersonalizationRequestsRequest) ([]PersonalizationRequest, error) {
+func (a *providerPersonalizationRequestsImpl) ListAll(ctx context.Context, request ListAllPersonalizationRequestsRequest) ([]PersonalizationRequest, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[PersonalizationRequest](ctx, iterator)
 }
-func (a *providerPersonalizationRequestsPreviewImpl) internalList(ctx context.Context, request ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error) {
+func (a *providerPersonalizationRequestsImpl) internalList(ctx context.Context, request ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error) {
 	var listAllPersonalizationRequestsResponse ListAllPersonalizationRequestsResponse
 	path := "/api/2.0preview/marketplace-provider/personalization-requests"
 	queryParams := make(map[string]any)
@@ -1001,7 +1001,7 @@ func (a *providerPersonalizationRequestsPreviewImpl) internalList(ctx context.Co
 	return &listAllPersonalizationRequestsResponse, err
 }
 
-func (a *providerPersonalizationRequestsPreviewImpl) Update(ctx context.Context, request UpdatePersonalizationRequestRequest) (*UpdatePersonalizationRequestResponse, error) {
+func (a *providerPersonalizationRequestsImpl) Update(ctx context.Context, request UpdatePersonalizationRequestRequest) (*UpdatePersonalizationRequestResponse, error) {
 	var updatePersonalizationRequestResponse UpdatePersonalizationRequestResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-provider/listings/%v/personalization-requests/%v/request-status", request.ListingId, request.RequestId)
 	queryParams := make(map[string]any)
@@ -1012,12 +1012,12 @@ func (a *providerPersonalizationRequestsPreviewImpl) Update(ctx context.Context,
 	return &updatePersonalizationRequestResponse, err
 }
 
-// unexported type that holds implementations of just ProviderProviderAnalyticsDashboardsPreview API methods
-type providerProviderAnalyticsDashboardsPreviewImpl struct {
+// unexported type that holds implementations of just ProviderProviderAnalyticsDashboards API methods
+type providerProviderAnalyticsDashboardsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *providerProviderAnalyticsDashboardsPreviewImpl) Create(ctx context.Context) (*ProviderAnalyticsDashboard, error) {
+func (a *providerProviderAnalyticsDashboardsImpl) Create(ctx context.Context) (*ProviderAnalyticsDashboard, error) {
 	var providerAnalyticsDashboard ProviderAnalyticsDashboard
 	path := "/api/2.0preview/marketplace-provider/analytics_dashboard"
 
@@ -1027,7 +1027,7 @@ func (a *providerProviderAnalyticsDashboardsPreviewImpl) Create(ctx context.Cont
 	return &providerAnalyticsDashboard, err
 }
 
-func (a *providerProviderAnalyticsDashboardsPreviewImpl) Get(ctx context.Context) (*ListProviderAnalyticsDashboardResponse, error) {
+func (a *providerProviderAnalyticsDashboardsImpl) Get(ctx context.Context) (*ListProviderAnalyticsDashboardResponse, error) {
 	var listProviderAnalyticsDashboardResponse ListProviderAnalyticsDashboardResponse
 	path := "/api/2.0preview/marketplace-provider/analytics_dashboard"
 
@@ -1037,7 +1037,7 @@ func (a *providerProviderAnalyticsDashboardsPreviewImpl) Get(ctx context.Context
 	return &listProviderAnalyticsDashboardResponse, err
 }
 
-func (a *providerProviderAnalyticsDashboardsPreviewImpl) GetLatestVersion(ctx context.Context) (*GetLatestVersionProviderAnalyticsDashboardResponse, error) {
+func (a *providerProviderAnalyticsDashboardsImpl) GetLatestVersion(ctx context.Context) (*GetLatestVersionProviderAnalyticsDashboardResponse, error) {
 	var getLatestVersionProviderAnalyticsDashboardResponse GetLatestVersionProviderAnalyticsDashboardResponse
 	path := "/api/2.0preview/marketplace-provider/analytics_dashboard/latest"
 
@@ -1047,7 +1047,7 @@ func (a *providerProviderAnalyticsDashboardsPreviewImpl) GetLatestVersion(ctx co
 	return &getLatestVersionProviderAnalyticsDashboardResponse, err
 }
 
-func (a *providerProviderAnalyticsDashboardsPreviewImpl) Update(ctx context.Context, request UpdateProviderAnalyticsDashboardRequest) (*UpdateProviderAnalyticsDashboardResponse, error) {
+func (a *providerProviderAnalyticsDashboardsImpl) Update(ctx context.Context, request UpdateProviderAnalyticsDashboardRequest) (*UpdateProviderAnalyticsDashboardResponse, error) {
 	var updateProviderAnalyticsDashboardResponse UpdateProviderAnalyticsDashboardResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-provider/analytics_dashboard/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -1058,12 +1058,12 @@ func (a *providerProviderAnalyticsDashboardsPreviewImpl) Update(ctx context.Cont
 	return &updateProviderAnalyticsDashboardResponse, err
 }
 
-// unexported type that holds implementations of just ProviderProvidersPreview API methods
-type providerProvidersPreviewImpl struct {
+// unexported type that holds implementations of just ProviderProviders API methods
+type providerProvidersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *providerProvidersPreviewImpl) Create(ctx context.Context, request CreateProviderRequest) (*CreateProviderResponse, error) {
+func (a *providerProvidersImpl) Create(ctx context.Context, request CreateProviderRequest) (*CreateProviderResponse, error) {
 	var createProviderResponse CreateProviderResponse
 	path := "/api/2.0preview/marketplace-provider/provider"
 	queryParams := make(map[string]any)
@@ -1074,7 +1074,7 @@ func (a *providerProvidersPreviewImpl) Create(ctx context.Context, request Creat
 	return &createProviderResponse, err
 }
 
-func (a *providerProvidersPreviewImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
+func (a *providerProvidersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
 	var deleteProviderResponse DeleteProviderResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-provider/providers/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -1084,7 +1084,7 @@ func (a *providerProvidersPreviewImpl) Delete(ctx context.Context, request Delet
 	return err
 }
 
-func (a *providerProvidersPreviewImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
+func (a *providerProvidersImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
 	var getProviderResponse GetProviderResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-provider/providers/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -1097,7 +1097,7 @@ func (a *providerProvidersPreviewImpl) Get(ctx context.Context, request GetProvi
 // List providers.
 //
 // List provider profiles for account.
-func (a *providerProvidersPreviewImpl) List(ctx context.Context, request ListProvidersRequest) listing.Iterator[ProviderInfo] {
+func (a *providerProvidersImpl) List(ctx context.Context, request ListProvidersRequest) listing.Iterator[ProviderInfo] {
 
 	getNextPage := func(ctx context.Context, req ListProvidersRequest) (*ListProvidersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -1124,11 +1124,11 @@ func (a *providerProvidersPreviewImpl) List(ctx context.Context, request ListPro
 // List providers.
 //
 // List provider profiles for account.
-func (a *providerProvidersPreviewImpl) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
+func (a *providerProvidersImpl) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ProviderInfo](ctx, iterator)
 }
-func (a *providerProvidersPreviewImpl) internalList(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
+func (a *providerProvidersImpl) internalList(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
 	var listProvidersResponse ListProvidersResponse
 	path := "/api/2.0preview/marketplace-provider/providers"
 	queryParams := make(map[string]any)
@@ -1138,7 +1138,7 @@ func (a *providerProvidersPreviewImpl) internalList(ctx context.Context, request
 	return &listProvidersResponse, err
 }
 
-func (a *providerProvidersPreviewImpl) Update(ctx context.Context, request UpdateProviderRequest) (*UpdateProviderResponse, error) {
+func (a *providerProvidersImpl) Update(ctx context.Context, request UpdateProviderRequest) (*UpdateProviderResponse, error) {
 	var updateProviderResponse UpdateProviderResponse
 	path := fmt.Sprintf("/api/2.0preview/marketplace-provider/providers/%v", request.Id)
 	queryParams := make(map[string]any)

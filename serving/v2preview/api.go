@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Serving Endpoints, Serving Endpoints Data Plane Preview, Serving Endpoints Preview, etc.
+// These APIs allow you to manage Serving Endpoints, Serving Endpoints Data Plane, etc.
 package servingpreview
 
 import (
@@ -11,54 +11,6 @@ import (
 )
 
 type ServingEndpointsInterface interface {
-}
-
-func NewServingEndpoints(client *client.DatabricksClient) *ServingEndpointsAPI {
-	return &ServingEndpointsAPI{
-		servingEndpointsImpl: servingEndpointsImpl{
-			client: client,
-		},
-	}
-}
-
-// The Serving Endpoints API allows you to create, update, and delete model
-// serving endpoints.
-//
-// You can use a serving endpoint to serve models from the Databricks Model
-// Registry or from Unity Catalog. Endpoints expose the underlying models as
-// scalable REST API endpoints using serverless compute. This means the
-// endpoints and associated compute resources are fully managed by Databricks
-// and will not appear in your cloud account. A serving endpoint can consist of
-// one or more MLflow models from the Databricks Model Registry, called served
-// entities. A serving endpoint can have at most ten served entities. You can
-// configure traffic settings to define how requests should be routed to your
-// served entities behind an endpoint. Additionally, you can configure the scale
-// of resources that should be applied to each served entity.
-type ServingEndpointsAPI struct {
-	servingEndpointsImpl
-}
-
-type ServingEndpointsDataPlanePreviewInterface interface {
-
-	// Query a serving endpoint.
-	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
-}
-
-func NewServingEndpointsDataPlanePreview(client *client.DatabricksClient) *ServingEndpointsDataPlanePreviewAPI {
-	return &ServingEndpointsDataPlanePreviewAPI{
-		servingEndpointsDataPlanePreviewImpl: servingEndpointsDataPlanePreviewImpl{
-			client: client,
-		},
-	}
-}
-
-// Serving endpoints DataPlane provides a set of operations to interact with
-// data plane endpoints for Serving endpoints service.
-type ServingEndpointsDataPlanePreviewAPI struct {
-	servingEndpointsDataPlanePreviewImpl
-}
-
-type ServingEndpointsPreviewInterface interface {
 
 	// Get build logs for a served model.
 	//
@@ -204,9 +156,9 @@ type ServingEndpointsPreviewInterface interface {
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 }
 
-func NewServingEndpointsPreview(client *client.DatabricksClient) *ServingEndpointsPreviewAPI {
-	return &ServingEndpointsPreviewAPI{
-		servingEndpointsPreviewImpl: servingEndpointsPreviewImpl{
+func NewServingEndpoints(client *client.DatabricksClient) *ServingEndpointsAPI {
+	return &ServingEndpointsAPI{
+		servingEndpointsImpl: servingEndpointsImpl{
 			client: client,
 		},
 	}
@@ -225,23 +177,23 @@ func NewServingEndpointsPreview(client *client.DatabricksClient) *ServingEndpoin
 // configure traffic settings to define how requests should be routed to your
 // served entities behind an endpoint. Additionally, you can configure the scale
 // of resources that should be applied to each served entity.
-type ServingEndpointsPreviewAPI struct {
-	servingEndpointsPreviewImpl
+type ServingEndpointsAPI struct {
+	servingEndpointsImpl
 }
 
 // Get build logs for a served model.
 //
 // Retrieves the build logs associated with the provided served model.
-func (a *ServingEndpointsPreviewAPI) BuildLogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*BuildLogsResponse, error) {
-	return a.servingEndpointsPreviewImpl.BuildLogs(ctx, BuildLogsRequest{
+func (a *ServingEndpointsAPI) BuildLogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*BuildLogsResponse, error) {
+	return a.servingEndpointsImpl.BuildLogs(ctx, BuildLogsRequest{
 		Name:            name,
 		ServedModelName: servedModelName,
 	})
 }
 
 // Delete a serving endpoint.
-func (a *ServingEndpointsPreviewAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.servingEndpointsPreviewImpl.Delete(ctx, DeleteServingEndpointRequest{
+func (a *ServingEndpointsAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.servingEndpointsImpl.Delete(ctx, DeleteServingEndpointRequest{
 		Name: name,
 	})
 }
@@ -250,8 +202,8 @@ func (a *ServingEndpointsPreviewAPI) DeleteByName(ctx context.Context, name stri
 //
 // Retrieves the metrics associated with the provided serving endpoint in either
 // Prometheus or OpenMetrics exposition format.
-func (a *ServingEndpointsPreviewAPI) ExportMetricsByName(ctx context.Context, name string) (*ExportMetricsResponse, error) {
-	return a.servingEndpointsPreviewImpl.ExportMetrics(ctx, ExportMetricsRequest{
+func (a *ServingEndpointsAPI) ExportMetricsByName(ctx context.Context, name string) (*ExportMetricsResponse, error) {
+	return a.servingEndpointsImpl.ExportMetrics(ctx, ExportMetricsRequest{
 		Name: name,
 	})
 }
@@ -259,8 +211,8 @@ func (a *ServingEndpointsPreviewAPI) ExportMetricsByName(ctx context.Context, na
 // Get a single serving endpoint.
 //
 // Retrieves the details for a single serving endpoint.
-func (a *ServingEndpointsPreviewAPI) GetByName(ctx context.Context, name string) (*ServingEndpointDetailed, error) {
-	return a.servingEndpointsPreviewImpl.Get(ctx, GetServingEndpointRequest{
+func (a *ServingEndpointsAPI) GetByName(ctx context.Context, name string) (*ServingEndpointDetailed, error) {
+	return a.servingEndpointsImpl.Get(ctx, GetServingEndpointRequest{
 		Name: name,
 	})
 }
@@ -270,8 +222,8 @@ func (a *ServingEndpointsPreviewAPI) GetByName(ctx context.Context, name string)
 // Get the query schema of the serving endpoint in OpenAPI format. The schema
 // contains information for the supported paths, input and output format and
 // datatypes.
-func (a *ServingEndpointsPreviewAPI) GetOpenApiByName(ctx context.Context, name string) (*GetOpenApiResponse, error) {
-	return a.servingEndpointsPreviewImpl.GetOpenApi(ctx, GetOpenApiRequest{
+func (a *ServingEndpointsAPI) GetOpenApiByName(ctx context.Context, name string) (*GetOpenApiResponse, error) {
+	return a.servingEndpointsImpl.GetOpenApi(ctx, GetOpenApiRequest{
 		Name: name,
 	})
 }
@@ -279,8 +231,8 @@ func (a *ServingEndpointsPreviewAPI) GetOpenApiByName(ctx context.Context, name 
 // Get serving endpoint permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ServingEndpointsPreviewAPI) GetPermissionLevelsByServingEndpointId(ctx context.Context, servingEndpointId string) (*GetServingEndpointPermissionLevelsResponse, error) {
-	return a.servingEndpointsPreviewImpl.GetPermissionLevels(ctx, GetServingEndpointPermissionLevelsRequest{
+func (a *ServingEndpointsAPI) GetPermissionLevelsByServingEndpointId(ctx context.Context, servingEndpointId string) (*GetServingEndpointPermissionLevelsResponse, error) {
+	return a.servingEndpointsImpl.GetPermissionLevels(ctx, GetServingEndpointPermissionLevelsRequest{
 		ServingEndpointId: servingEndpointId,
 	})
 }
@@ -289,8 +241,8 @@ func (a *ServingEndpointsPreviewAPI) GetPermissionLevelsByServingEndpointId(ctx 
 //
 // Gets the permissions of a serving endpoint. Serving endpoints can inherit
 // permissions from their root object.
-func (a *ServingEndpointsPreviewAPI) GetPermissionsByServingEndpointId(ctx context.Context, servingEndpointId string) (*ServingEndpointPermissions, error) {
-	return a.servingEndpointsPreviewImpl.GetPermissions(ctx, GetServingEndpointPermissionsRequest{
+func (a *ServingEndpointsAPI) GetPermissionsByServingEndpointId(ctx context.Context, servingEndpointId string) (*ServingEndpointPermissions, error) {
+	return a.servingEndpointsImpl.GetPermissions(ctx, GetServingEndpointPermissionsRequest{
 		ServingEndpointId: servingEndpointId,
 	})
 }
@@ -298,9 +250,29 @@ func (a *ServingEndpointsPreviewAPI) GetPermissionsByServingEndpointId(ctx conte
 // Get the latest logs for a served model.
 //
 // Retrieves the service logs associated with the provided served model.
-func (a *ServingEndpointsPreviewAPI) LogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*ServerLogsResponse, error) {
-	return a.servingEndpointsPreviewImpl.Logs(ctx, LogsRequest{
+func (a *ServingEndpointsAPI) LogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*ServerLogsResponse, error) {
+	return a.servingEndpointsImpl.Logs(ctx, LogsRequest{
 		Name:            name,
 		ServedModelName: servedModelName,
 	})
+}
+
+type ServingEndpointsDataPlaneInterface interface {
+
+	// Query a serving endpoint.
+	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
+}
+
+func NewServingEndpointsDataPlane(client *client.DatabricksClient) *ServingEndpointsDataPlaneAPI {
+	return &ServingEndpointsDataPlaneAPI{
+		servingEndpointsDataPlaneImpl: servingEndpointsDataPlaneImpl{
+			client: client,
+		},
+	}
+}
+
+// Serving endpoints DataPlane provides a set of operations to interact with
+// data plane endpoints for Serving endpoints service.
+type ServingEndpointsDataPlaneAPI struct {
+	servingEndpointsDataPlaneImpl
 }

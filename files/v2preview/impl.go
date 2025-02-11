@@ -14,12 +14,12 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// unexported type that holds implementations of just DbfsPreview API methods
-type dbfsPreviewImpl struct {
+// unexported type that holds implementations of just Dbfs API methods
+type dbfsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *dbfsPreviewImpl) AddBlock(ctx context.Context, request AddBlock) error {
+func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) error {
 	var addBlockResponse AddBlockResponse
 	path := "/api/2.0preview/dbfs/add-block"
 	queryParams := make(map[string]any)
@@ -30,7 +30,7 @@ func (a *dbfsPreviewImpl) AddBlock(ctx context.Context, request AddBlock) error 
 	return err
 }
 
-func (a *dbfsPreviewImpl) Close(ctx context.Context, request Close) error {
+func (a *dbfsImpl) Close(ctx context.Context, request Close) error {
 	var closeResponse CloseResponse
 	path := "/api/2.0preview/dbfs/close"
 	queryParams := make(map[string]any)
@@ -41,7 +41,7 @@ func (a *dbfsPreviewImpl) Close(ctx context.Context, request Close) error {
 	return err
 }
 
-func (a *dbfsPreviewImpl) Create(ctx context.Context, request Create) (*CreateResponse, error) {
+func (a *dbfsImpl) Create(ctx context.Context, request Create) (*CreateResponse, error) {
 	var createResponse CreateResponse
 	path := "/api/2.0preview/dbfs/create"
 	queryParams := make(map[string]any)
@@ -52,7 +52,7 @@ func (a *dbfsPreviewImpl) Create(ctx context.Context, request Create) (*CreateRe
 	return &createResponse, err
 }
 
-func (a *dbfsPreviewImpl) Delete(ctx context.Context, request Delete) error {
+func (a *dbfsImpl) Delete(ctx context.Context, request Delete) error {
 	var deleteResponse DeleteResponse
 	path := "/api/2.0preview/dbfs/delete"
 	queryParams := make(map[string]any)
@@ -63,7 +63,7 @@ func (a *dbfsPreviewImpl) Delete(ctx context.Context, request Delete) error {
 	return err
 }
 
-func (a *dbfsPreviewImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error) {
+func (a *dbfsImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error) {
 	var fileInfo FileInfo
 	path := "/api/2.0preview/dbfs/get-status"
 	queryParams := make(map[string]any)
@@ -86,7 +86,7 @@ func (a *dbfsPreviewImpl) GetStatus(ctx context.Context, request GetStatusReques
 // you perform such operations in the context of a cluster, using the [File
 // system utility (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs),
 // which provides the same functionality without timing out.
-func (a *dbfsPreviewImpl) List(ctx context.Context, request ListDbfsRequest) listing.Iterator[FileInfo] {
+func (a *dbfsImpl) List(ctx context.Context, request ListDbfsRequest) listing.Iterator[FileInfo] {
 
 	getNextPage := func(ctx context.Context, req ListDbfsRequest) (*ListStatusResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -117,11 +117,11 @@ func (a *dbfsPreviewImpl) List(ctx context.Context, request ListDbfsRequest) lis
 // you perform such operations in the context of a cluster, using the [File
 // system utility (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs),
 // which provides the same functionality without timing out.
-func (a *dbfsPreviewImpl) ListAll(ctx context.Context, request ListDbfsRequest) ([]FileInfo, error) {
+func (a *dbfsImpl) ListAll(ctx context.Context, request ListDbfsRequest) ([]FileInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[FileInfo](ctx, iterator)
 }
-func (a *dbfsPreviewImpl) internalList(ctx context.Context, request ListDbfsRequest) (*ListStatusResponse, error) {
+func (a *dbfsImpl) internalList(ctx context.Context, request ListDbfsRequest) (*ListStatusResponse, error) {
 	var listStatusResponse ListStatusResponse
 	path := "/api/2.0preview/dbfs/list"
 	queryParams := make(map[string]any)
@@ -131,7 +131,7 @@ func (a *dbfsPreviewImpl) internalList(ctx context.Context, request ListDbfsRequ
 	return &listStatusResponse, err
 }
 
-func (a *dbfsPreviewImpl) Mkdirs(ctx context.Context, request MkDirs) error {
+func (a *dbfsImpl) Mkdirs(ctx context.Context, request MkDirs) error {
 	var mkDirsResponse MkDirsResponse
 	path := "/api/2.0preview/dbfs/mkdirs"
 	queryParams := make(map[string]any)
@@ -142,7 +142,7 @@ func (a *dbfsPreviewImpl) Mkdirs(ctx context.Context, request MkDirs) error {
 	return err
 }
 
-func (a *dbfsPreviewImpl) Move(ctx context.Context, request Move) error {
+func (a *dbfsImpl) Move(ctx context.Context, request Move) error {
 	var moveResponse MoveResponse
 	path := "/api/2.0preview/dbfs/move"
 	queryParams := make(map[string]any)
@@ -153,7 +153,7 @@ func (a *dbfsPreviewImpl) Move(ctx context.Context, request Move) error {
 	return err
 }
 
-func (a *dbfsPreviewImpl) Put(ctx context.Context, request Put) error {
+func (a *dbfsImpl) Put(ctx context.Context, request Put) error {
 	var putResponse PutResponse
 	path := "/api/2.0preview/dbfs/put"
 	queryParams := make(map[string]any)
@@ -164,7 +164,7 @@ func (a *dbfsPreviewImpl) Put(ctx context.Context, request Put) error {
 	return err
 }
 
-func (a *dbfsPreviewImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error) {
+func (a *dbfsImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error) {
 	var readResponse ReadResponse
 	path := "/api/2.0preview/dbfs/read"
 	queryParams := make(map[string]any)
@@ -174,12 +174,12 @@ func (a *dbfsPreviewImpl) Read(ctx context.Context, request ReadDbfsRequest) (*R
 	return &readResponse, err
 }
 
-// unexported type that holds implementations of just FilesPreview API methods
-type filesPreviewImpl struct {
+// unexported type that holds implementations of just Files API methods
+type filesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *filesPreviewImpl) CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error {
+func (a *filesImpl) CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error {
 	var createDirectoryResponse CreateDirectoryResponse
 	path := fmt.Sprintf("/api/2.0preview/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	queryParams := make(map[string]any)
@@ -188,7 +188,7 @@ func (a *filesPreviewImpl) CreateDirectory(ctx context.Context, request CreateDi
 	return err
 }
 
-func (a *filesPreviewImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
+func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0preview/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	queryParams := make(map[string]any)
@@ -197,7 +197,7 @@ func (a *filesPreviewImpl) Delete(ctx context.Context, request DeleteFileRequest
 	return err
 }
 
-func (a *filesPreviewImpl) DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error {
+func (a *filesImpl) DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error {
 	var deleteDirectoryResponse DeleteDirectoryResponse
 	path := fmt.Sprintf("/api/2.0preview/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	queryParams := make(map[string]any)
@@ -206,7 +206,7 @@ func (a *filesPreviewImpl) DeleteDirectory(ctx context.Context, request DeleteDi
 	return err
 }
 
-func (a *filesPreviewImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
+func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
 	var downloadResponse DownloadResponse
 	path := fmt.Sprintf("/api/2.0preview/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	queryParams := make(map[string]any)
@@ -216,7 +216,7 @@ func (a *filesPreviewImpl) Download(ctx context.Context, request DownloadRequest
 	return &downloadResponse, err
 }
 
-func (a *filesPreviewImpl) GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error {
+func (a *filesImpl) GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error {
 	var getDirectoryMetadataResponse GetDirectoryMetadataResponse
 	path := fmt.Sprintf("/api/2.0preview/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	queryParams := make(map[string]any)
@@ -225,7 +225,7 @@ func (a *filesPreviewImpl) GetDirectoryMetadata(ctx context.Context, request Get
 	return err
 }
 
-func (a *filesPreviewImpl) GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error) {
+func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error) {
 	var getMetadataResponse GetMetadataResponse
 	path := fmt.Sprintf("/api/2.0preview/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	queryParams := make(map[string]any)
@@ -238,7 +238,7 @@ func (a *filesPreviewImpl) GetMetadata(ctx context.Context, request GetMetadataR
 //
 // Returns the contents of a directory. If there is no directory at the
 // specified path, the API returns a HTTP 404 error.
-func (a *filesPreviewImpl) ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) listing.Iterator[DirectoryEntry] {
+func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) listing.Iterator[DirectoryEntry] {
 
 	getNextPage := func(ctx context.Context, req ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -266,12 +266,12 @@ func (a *filesPreviewImpl) ListDirectoryContents(ctx context.Context, request Li
 //
 // Returns the contents of a directory. If there is no directory at the
 // specified path, the API returns a HTTP 404 error.
-func (a *filesPreviewImpl) ListDirectoryContentsAll(ctx context.Context, request ListDirectoryContentsRequest) ([]DirectoryEntry, error) {
+func (a *filesImpl) ListDirectoryContentsAll(ctx context.Context, request ListDirectoryContentsRequest) ([]DirectoryEntry, error) {
 	iterator := a.ListDirectoryContents(ctx, request)
 	return listing.ToSliceN[DirectoryEntry, int64](ctx, iterator, request.PageSize)
 
 }
-func (a *filesPreviewImpl) internalListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
+func (a *filesImpl) internalListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
 	var listDirectoryResponse ListDirectoryResponse
 	path := fmt.Sprintf("/api/2.0preview/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	queryParams := make(map[string]any)
@@ -281,7 +281,7 @@ func (a *filesPreviewImpl) internalListDirectoryContents(ctx context.Context, re
 	return &listDirectoryResponse, err
 }
 
-func (a *filesPreviewImpl) Upload(ctx context.Context, request UploadRequest) error {
+func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
 	var uploadResponse UploadResponse
 	path := fmt.Sprintf("/api/2.0preview/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	queryParams := make(map[string]any)

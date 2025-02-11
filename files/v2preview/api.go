@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Dbfs Preview, Files Preview, etc.
+// These APIs allow you to manage Dbfs, Files, etc.
 package filespreview
 
 import (
@@ -10,7 +10,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
-type DbfsPreviewInterface interface {
+type DbfsInterface interface {
+	dbfsAPIUtilities
 
 	// Append data block.
 	//
@@ -187,9 +188,9 @@ type DbfsPreviewInterface interface {
 	Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error)
 }
 
-func NewDbfsPreview(client *client.DatabricksClient) *DbfsPreviewAPI {
-	return &DbfsPreviewAPI{
-		dbfsPreviewImpl: dbfsPreviewImpl{
+func NewDbfs(client *client.DatabricksClient) *DbfsAPI {
+	return &DbfsAPI{
+		dbfsImpl: dbfsImpl{
 			client: client,
 		},
 	}
@@ -197,16 +198,16 @@ func NewDbfsPreview(client *client.DatabricksClient) *DbfsPreviewAPI {
 
 // DBFS API makes it simple to interact with various data sources without having
 // to include a users credentials every time to read a file.
-type DbfsPreviewAPI struct {
-	dbfsPreviewImpl
+type DbfsAPI struct {
+	dbfsImpl
 }
 
 // Close the stream.
 //
 // Closes the stream specified by the input handle. If the handle does not
 // exist, this call throws an exception with “RESOURCE_DOES_NOT_EXIST“.
-func (a *DbfsPreviewAPI) CloseByHandle(ctx context.Context, handle int64) error {
-	return a.dbfsPreviewImpl.Close(ctx, Close{
+func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) error {
+	return a.dbfsImpl.Close(ctx, Close{
 		Handle: handle,
 	})
 }
@@ -215,8 +216,8 @@ func (a *DbfsPreviewAPI) CloseByHandle(ctx context.Context, handle int64) error 
 //
 // Gets the file information for a file or directory. If the file or directory
 // does not exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
-func (a *DbfsPreviewAPI) GetStatusByPath(ctx context.Context, path string) (*FileInfo, error) {
-	return a.dbfsPreviewImpl.GetStatus(ctx, GetStatusRequest{
+func (a *DbfsAPI) GetStatusByPath(ctx context.Context, path string) (*FileInfo, error) {
+	return a.dbfsImpl.GetStatus(ctx, GetStatusRequest{
 		Path: path,
 	})
 }
@@ -234,8 +235,8 @@ func (a *DbfsPreviewAPI) GetStatusByPath(ctx context.Context, path string) (*Fil
 // you perform such operations in the context of a cluster, using the [File
 // system utility (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs),
 // which provides the same functionality without timing out.
-func (a *DbfsPreviewAPI) ListByPath(ctx context.Context, path string) (*ListStatusResponse, error) {
-	return a.dbfsPreviewImpl.internalList(ctx, ListDbfsRequest{
+func (a *DbfsAPI) ListByPath(ctx context.Context, path string) (*ListStatusResponse, error) {
+	return a.dbfsImpl.internalList(ctx, ListDbfsRequest{
 		Path: path,
 	})
 }
@@ -247,13 +248,13 @@ func (a *DbfsPreviewAPI) ListByPath(ctx context.Context, path string) (*ListStat
 // this call throws an exception with `RESOURCE_ALREADY_EXISTS`. **Note**: If
 // this operation fails, it might have succeeded in creating some of the
 // necessary parent directories.
-func (a *DbfsPreviewAPI) MkdirsByPath(ctx context.Context, path string) error {
-	return a.dbfsPreviewImpl.Mkdirs(ctx, MkDirs{
+func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) error {
+	return a.dbfsImpl.Mkdirs(ctx, MkDirs{
 		Path: path,
 	})
 }
 
-type FilesPreviewInterface interface {
+type FilesInterface interface {
 
 	// Create a directory.
 	//
@@ -375,9 +376,9 @@ type FilesPreviewInterface interface {
 	Upload(ctx context.Context, request UploadRequest) error
 }
 
-func NewFilesPreview(client *client.DatabricksClient) *FilesPreviewAPI {
-	return &FilesPreviewAPI{
-		filesPreviewImpl: filesPreviewImpl{
+func NewFiles(client *client.DatabricksClient) *FilesAPI {
+	return &FilesAPI{
+		filesImpl: filesImpl{
 			client: client,
 		},
 	}
@@ -404,15 +405,15 @@ func NewFilesPreview(client *client.DatabricksClient) *FilesPreviewAPI {
 // `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
 //
 // [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
-type FilesPreviewAPI struct {
-	filesPreviewImpl
+type FilesAPI struct {
+	filesImpl
 }
 
 // Delete a file.
 //
 // Deletes a file. If the request is successful, there is no response body.
-func (a *FilesPreviewAPI) DeleteByFilePath(ctx context.Context, filePath string) error {
-	return a.filesPreviewImpl.Delete(ctx, DeleteFileRequest{
+func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) error {
+	return a.filesImpl.Delete(ctx, DeleteFileRequest{
 		FilePath: filePath,
 	})
 }
@@ -424,8 +425,8 @@ func (a *FilesPreviewAPI) DeleteByFilePath(ctx context.Context, filePath string)
 // To delete a non-empty directory, first delete all of its contents. This can
 // be done by listing the directory contents and deleting each file and
 // subdirectory recursively.
-func (a *FilesPreviewAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) error {
-	return a.filesPreviewImpl.DeleteDirectory(ctx, DeleteDirectoryRequest{
+func (a *FilesAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) error {
+	return a.filesImpl.DeleteDirectory(ctx, DeleteDirectoryRequest{
 		DirectoryPath: directoryPath,
 	})
 }
@@ -435,8 +436,8 @@ func (a *FilesPreviewAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, di
 // Downloads a file. The file contents are the response body. This is a standard
 // HTTP file download, not a JSON RPC. It supports the Range and
 // If-Unmodified-Since HTTP headers.
-func (a *FilesPreviewAPI) DownloadByFilePath(ctx context.Context, filePath string) (*DownloadResponse, error) {
-	return a.filesPreviewImpl.Download(ctx, DownloadRequest{
+func (a *FilesAPI) DownloadByFilePath(ctx context.Context, filePath string) (*DownloadResponse, error) {
+	return a.filesImpl.Download(ctx, DownloadRequest{
 		FilePath: filePath,
 	})
 }
@@ -452,8 +453,8 @@ func (a *FilesPreviewAPI) DownloadByFilePath(ctx context.Context, filePath strin
 // If you wish to ensure the directory exists, you can instead use `PUT`, which
 // will create the directory if it does not exist, and is idempotent (it will
 // succeed if the directory already exists).
-func (a *FilesPreviewAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) error {
-	return a.filesPreviewImpl.GetDirectoryMetadata(ctx, GetDirectoryMetadataRequest{
+func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) error {
+	return a.filesImpl.GetDirectoryMetadata(ctx, GetDirectoryMetadataRequest{
 		DirectoryPath: directoryPath,
 	})
 }
@@ -462,8 +463,8 @@ func (a *FilesPreviewAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Contex
 //
 // Get the metadata of a file. The response HTTP headers contain the metadata.
 // There is no response body.
-func (a *FilesPreviewAPI) GetMetadataByFilePath(ctx context.Context, filePath string) (*GetMetadataResponse, error) {
-	return a.filesPreviewImpl.GetMetadata(ctx, GetMetadataRequest{
+func (a *FilesAPI) GetMetadataByFilePath(ctx context.Context, filePath string) (*GetMetadataResponse, error) {
+	return a.filesImpl.GetMetadata(ctx, GetMetadataRequest{
 		FilePath: filePath,
 	})
 }
@@ -472,8 +473,8 @@ func (a *FilesPreviewAPI) GetMetadataByFilePath(ctx context.Context, filePath st
 //
 // Returns the contents of a directory. If there is no directory at the
 // specified path, the API returns a HTTP 404 error.
-func (a *FilesPreviewAPI) ListDirectoryContentsByDirectoryPath(ctx context.Context, directoryPath string) (*ListDirectoryResponse, error) {
-	return a.filesPreviewImpl.internalListDirectoryContents(ctx, ListDirectoryContentsRequest{
+func (a *FilesAPI) ListDirectoryContentsByDirectoryPath(ctx context.Context, directoryPath string) (*ListDirectoryResponse, error) {
+	return a.filesImpl.internalListDirectoryContents(ctx, ListDirectoryContentsRequest{
 		DirectoryPath: directoryPath,
 	})
 }

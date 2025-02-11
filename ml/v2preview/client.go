@@ -10,13 +10,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type ExperimentsPreviewClient struct {
-	ExperimentsPreviewInterface
+type ExperimentsClient struct {
+	ExperimentsInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewExperimentsPreviewClient(cfg *config.Config) (*ExperimentsPreviewClient, error) {
+func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -37,20 +37,20 @@ func NewExperimentsPreviewClient(cfg *config.Config) (*ExperimentsPreviewClient,
 		return nil, err
 	}
 
-	return &ExperimentsPreviewClient{
-		Config:                      cfg,
-		apiClient:                   apiClient,
-		ExperimentsPreviewInterface: NewExperimentsPreview(databricksClient),
+	return &ExperimentsClient{
+		Config:               cfg,
+		apiClient:            apiClient,
+		ExperimentsInterface: NewExperiments(databricksClient),
 	}, nil
 }
 
-type ModelRegistryPreviewClient struct {
-	ModelRegistryPreviewInterface
+type ModelRegistryClient struct {
+	ModelRegistryInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewModelRegistryPreviewClient(cfg *config.Config) (*ModelRegistryPreviewClient, error) {
+func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -71,9 +71,9 @@ func NewModelRegistryPreviewClient(cfg *config.Config) (*ModelRegistryPreviewCli
 		return nil, err
 	}
 
-	return &ModelRegistryPreviewClient{
-		Config:                        cfg,
-		apiClient:                     apiClient,
-		ModelRegistryPreviewInterface: NewModelRegistryPreview(databricksClient),
+	return &ModelRegistryClient{
+		Config:                 cfg,
+		apiClient:              apiClient,
+		ModelRegistryInterface: NewModelRegistry(databricksClient),
 	}, nil
 }

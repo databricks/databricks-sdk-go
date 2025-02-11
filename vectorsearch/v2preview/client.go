@@ -10,13 +10,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
-type VectorSearchEndpointsPreviewClient struct {
-	VectorSearchEndpointsPreviewInterface
+type VectorSearchEndpointsClient struct {
+	VectorSearchEndpointsInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewVectorSearchEndpointsPreviewClient(cfg *config.Config) (*VectorSearchEndpointsPreviewClient, error) {
+func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -37,20 +37,20 @@ func NewVectorSearchEndpointsPreviewClient(cfg *config.Config) (*VectorSearchEnd
 		return nil, err
 	}
 
-	return &VectorSearchEndpointsPreviewClient{
-		Config:                                cfg,
-		apiClient:                             apiClient,
-		VectorSearchEndpointsPreviewInterface: NewVectorSearchEndpointsPreview(databricksClient),
+	return &VectorSearchEndpointsClient{
+		Config:                         cfg,
+		apiClient:                      apiClient,
+		VectorSearchEndpointsInterface: NewVectorSearchEndpoints(databricksClient),
 	}, nil
 }
 
-type VectorSearchIndexesPreviewClient struct {
-	VectorSearchIndexesPreviewInterface
+type VectorSearchIndexesClient struct {
+	VectorSearchIndexesInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewVectorSearchIndexesPreviewClient(cfg *config.Config) (*VectorSearchIndexesPreviewClient, error) {
+func NewVectorSearchIndexesClient(cfg *config.Config) (*VectorSearchIndexesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -71,9 +71,9 @@ func NewVectorSearchIndexesPreviewClient(cfg *config.Config) (*VectorSearchIndex
 		return nil, err
 	}
 
-	return &VectorSearchIndexesPreviewClient{
-		Config:                              cfg,
-		apiClient:                           apiClient,
-		VectorSearchIndexesPreviewInterface: NewVectorSearchIndexesPreview(databricksClient),
+	return &VectorSearchIndexesClient{
+		Config:                       cfg,
+		apiClient:                    apiClient,
+		VectorSearchIndexesInterface: NewVectorSearchIndexes(databricksClient),
 	}, nil
 }

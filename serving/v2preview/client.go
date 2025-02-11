@@ -44,13 +44,13 @@ func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, err
 	}, nil
 }
 
-type ServingEndpointsDataPlanePreviewClient struct {
-	ServingEndpointsDataPlanePreviewInterface
+type ServingEndpointsDataPlaneClient struct {
+	ServingEndpointsDataPlaneInterface
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
-func NewServingEndpointsDataPlanePreviewClient(cfg *config.Config) (*ServingEndpointsDataPlanePreviewClient, error) {
+func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDataPlaneClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -71,43 +71,9 @@ func NewServingEndpointsDataPlanePreviewClient(cfg *config.Config) (*ServingEndp
 		return nil, err
 	}
 
-	return &ServingEndpointsDataPlanePreviewClient{
-		Config:    cfg,
-		apiClient: apiClient,
-		ServingEndpointsDataPlanePreviewInterface: NewServingEndpointsDataPlanePreview(databricksClient),
-	}, nil
-}
-
-type ServingEndpointsPreviewClient struct {
-	ServingEndpointsPreviewInterface
-	Config    *config.Config
-	apiClient *httpclient.ApiClient
-}
-
-func NewServingEndpointsPreviewClient(cfg *config.Config) (*ServingEndpointsPreviewClient, error) {
-	if cfg == nil {
-		cfg = &config.Config{}
-	}
-
-	err := cfg.EnsureResolved()
-	if err != nil {
-		return nil, err
-	}
-	if cfg.IsAccountClient() {
-		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
-	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
-	if err != nil {
-		return nil, err
-	}
-
-	return &ServingEndpointsPreviewClient{
-		Config:                           cfg,
-		apiClient:                        apiClient,
-		ServingEndpointsPreviewInterface: NewServingEndpointsPreview(databricksClient),
+	return &ServingEndpointsDataPlaneClient{
+		Config:                             cfg,
+		apiClient:                          apiClient,
+		ServingEndpointsDataPlaneInterface: NewServingEndpointsDataPlane(databricksClient),
 	}, nil
 }

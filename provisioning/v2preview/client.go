@@ -9,13 +9,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/config"
 )
 
-type CredentialsPreviewClient struct {
-	CredentialsPreviewInterface
+type CredentialsClient struct {
+	CredentialsInterface
 
 	Config *config.Config
 }
 
-func NewCredentialsPreviewClient(cfg *config.Config) (*CredentialsPreviewClient, error) {
+func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -33,19 +33,19 @@ func NewCredentialsPreviewClient(cfg *config.Config) (*CredentialsPreviewClient,
 		return nil, err
 	}
 
-	return &CredentialsPreviewClient{
-		Config:                      cfg,
-		CredentialsPreviewInterface: NewCredentialsPreview(apiClient),
+	return &CredentialsClient{
+		Config:               cfg,
+		CredentialsInterface: NewCredentials(apiClient),
 	}, nil
 }
 
-type EncryptionKeysPreviewClient struct {
-	EncryptionKeysPreviewInterface
+type EncryptionKeysClient struct {
+	EncryptionKeysInterface
 
 	Config *config.Config
 }
 
-func NewEncryptionKeysPreviewClient(cfg *config.Config) (*EncryptionKeysPreviewClient, error) {
+func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -63,109 +63,19 @@ func NewEncryptionKeysPreviewClient(cfg *config.Config) (*EncryptionKeysPreviewC
 		return nil, err
 	}
 
-	return &EncryptionKeysPreviewClient{
-		Config:                         cfg,
-		EncryptionKeysPreviewInterface: NewEncryptionKeysPreview(apiClient),
-	}, nil
-}
-
-type NetworksPreviewClient struct {
-	NetworksPreviewInterface
-
-	Config *config.Config
-}
-
-func NewNetworksPreviewClient(cfg *config.Config) (*NetworksPreviewClient, error) {
-	if cfg == nil {
-		cfg = &config.Config{}
-	}
-
-	err := cfg.EnsureResolved()
-	if err != nil {
-		return nil, err
-	}
-
-	if cfg.AccountID == "" || !cfg.IsAccountClient() {
-		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
-	}
-	apiClient, err := client.New(cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	return &NetworksPreviewClient{
-		Config:                   cfg,
-		NetworksPreviewInterface: NewNetworksPreview(apiClient),
-	}, nil
-}
-
-type PrivateAccessPreviewClient struct {
-	PrivateAccessPreviewInterface
-
-	Config *config.Config
-}
-
-func NewPrivateAccessPreviewClient(cfg *config.Config) (*PrivateAccessPreviewClient, error) {
-	if cfg == nil {
-		cfg = &config.Config{}
-	}
-
-	err := cfg.EnsureResolved()
-	if err != nil {
-		return nil, err
-	}
-
-	if cfg.AccountID == "" || !cfg.IsAccountClient() {
-		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
-	}
-	apiClient, err := client.New(cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	return &PrivateAccessPreviewClient{
-		Config:                        cfg,
-		PrivateAccessPreviewInterface: NewPrivateAccessPreview(apiClient),
-	}, nil
-}
-
-type StoragePreviewClient struct {
-	StoragePreviewInterface
-
-	Config *config.Config
-}
-
-func NewStoragePreviewClient(cfg *config.Config) (*StoragePreviewClient, error) {
-	if cfg == nil {
-		cfg = &config.Config{}
-	}
-
-	err := cfg.EnsureResolved()
-	if err != nil {
-		return nil, err
-	}
-
-	if cfg.AccountID == "" || !cfg.IsAccountClient() {
-		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
-	}
-	apiClient, err := client.New(cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	return &StoragePreviewClient{
+	return &EncryptionKeysClient{
 		Config:                  cfg,
-		StoragePreviewInterface: NewStoragePreview(apiClient),
+		EncryptionKeysInterface: NewEncryptionKeys(apiClient),
 	}, nil
 }
 
-type VpcEndpointsPreviewClient struct {
-	VpcEndpointsPreviewInterface
+type NetworksClient struct {
+	NetworksInterface
 
 	Config *config.Config
 }
 
-func NewVpcEndpointsPreviewClient(cfg *config.Config) (*VpcEndpointsPreviewClient, error) {
+func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -183,19 +93,19 @@ func NewVpcEndpointsPreviewClient(cfg *config.Config) (*VpcEndpointsPreviewClien
 		return nil, err
 	}
 
-	return &VpcEndpointsPreviewClient{
-		Config:                       cfg,
-		VpcEndpointsPreviewInterface: NewVpcEndpointsPreview(apiClient),
+	return &NetworksClient{
+		Config:            cfg,
+		NetworksInterface: NewNetworks(apiClient),
 	}, nil
 }
 
-type WorkspacesPreviewClient struct {
-	WorkspacesPreviewInterface
+type PrivateAccessClient struct {
+	PrivateAccessInterface
 
 	Config *config.Config
 }
 
-func NewWorkspacesPreviewClient(cfg *config.Config) (*WorkspacesPreviewClient, error) {
+func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
@@ -213,8 +123,98 @@ func NewWorkspacesPreviewClient(cfg *config.Config) (*WorkspacesPreviewClient, e
 		return nil, err
 	}
 
-	return &WorkspacesPreviewClient{
-		Config:                     cfg,
-		WorkspacesPreviewInterface: NewWorkspacesPreview(apiClient),
+	return &PrivateAccessClient{
+		Config:                 cfg,
+		PrivateAccessInterface: NewPrivateAccess(apiClient),
+	}, nil
+}
+
+type StorageClient struct {
+	StorageInterface
+
+	Config *config.Config
+}
+
+func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
+	if cfg == nil {
+		cfg = &config.Config{}
+	}
+
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+
+	if cfg.AccountID == "" || !cfg.IsAccountClient() {
+		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
+	}
+	apiClient, err := client.New(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &StorageClient{
+		Config:           cfg,
+		StorageInterface: NewStorage(apiClient),
+	}, nil
+}
+
+type VpcEndpointsClient struct {
+	VpcEndpointsInterface
+
+	Config *config.Config
+}
+
+func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
+	if cfg == nil {
+		cfg = &config.Config{}
+	}
+
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+
+	if cfg.AccountID == "" || !cfg.IsAccountClient() {
+		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
+	}
+	apiClient, err := client.New(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &VpcEndpointsClient{
+		Config:                cfg,
+		VpcEndpointsInterface: NewVpcEndpoints(apiClient),
+	}, nil
+}
+
+type WorkspacesClient struct {
+	WorkspacesInterface
+
+	Config *config.Config
+}
+
+func NewWorkspacesClient(cfg *config.Config) (*WorkspacesClient, error) {
+	if cfg == nil {
+		cfg = &config.Config{}
+	}
+
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+
+	if cfg.AccountID == "" || !cfg.IsAccountClient() {
+		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
+	}
+	apiClient, err := client.New(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &WorkspacesClient{
+		Config:              cfg,
+		WorkspacesInterface: NewWorkspaces(apiClient),
 	}, nil
 }
