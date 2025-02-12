@@ -36,7 +36,7 @@ type AddInstanceProfile struct {
 	// forcibly add the instance profile.
 	SkipValidation bool `json:"skip_validation,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AddInstanceProfile) UnmarshalJSON(b []byte) error {
@@ -66,7 +66,7 @@ type AutoScale struct {
 	// have after creation.
 	MinWorkers int `json:"min_workers,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AutoScale) UnmarshalJSON(b []byte) error {
@@ -162,7 +162,7 @@ type AwsAttributes struct {
 	// as the default value can be found by using the `List Zones` method.
 	ZoneId string `json:"zone_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AwsAttributes) UnmarshalJSON(b []byte) error {
@@ -232,7 +232,7 @@ type AzureAttributes struct {
 	// availability. Further, the value should > 0 or -1.
 	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AzureAttributes) UnmarshalJSON(b []byte) error {
@@ -282,7 +282,7 @@ type CancelCommand struct {
 
 	ContextId string `json:"contextId,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CancelCommand) UnmarshalJSON(b []byte) error {
@@ -312,7 +312,7 @@ type ClientsTypes struct {
 	// With notebooks set, this cluster can be used for notebooks
 	Notebooks bool `json:"notebooks,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClientsTypes) UnmarshalJSON(b []byte) error {
@@ -369,7 +369,7 @@ type ClusterAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -392,7 +392,7 @@ type ClusterAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -562,7 +562,7 @@ type ClusterAttributes struct {
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterAttributes) UnmarshalJSON(b []byte) error {
@@ -585,7 +585,7 @@ type ClusterCompliance struct {
 	// policy validation error.
 	Violations map[string]string `json:"violations,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterCompliance) UnmarshalJSON(b []byte) error {
@@ -838,7 +838,7 @@ type ClusterDetails struct {
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterDetails) UnmarshalJSON(b []byte) error {
@@ -863,7 +863,7 @@ type ClusterEvent struct {
 
 	Type EventType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterEvent) UnmarshalJSON(b []byte) error {
@@ -880,7 +880,7 @@ type ClusterLibraryStatuses struct {
 	// Status of all libraries on the cluster.
 	LibraryStatuses []LibraryFullStatus `json:"library_statuses,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterLibraryStatuses) UnmarshalJSON(b []byte) error {
@@ -913,7 +913,7 @@ type ClusterPermission struct {
 	// Permission level
 	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterPermission) UnmarshalJSON(b []byte) error {
@@ -961,7 +961,7 @@ type ClusterPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterPermissions) UnmarshalJSON(b []byte) error {
@@ -977,7 +977,7 @@ type ClusterPermissionsDescription struct {
 	// Permission level
 	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -1004,7 +1004,7 @@ type ClusterPolicyAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterPolicyAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -1027,7 +1027,7 @@ type ClusterPolicyAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterPolicyAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -1045,7 +1045,7 @@ type ClusterPolicyPermission struct {
 	// Permission level
 	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterPolicyPermission) UnmarshalJSON(b []byte) error {
@@ -1089,7 +1089,7 @@ type ClusterPolicyPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterPolicyPermissions) UnmarshalJSON(b []byte) error {
@@ -1105,7 +1105,7 @@ type ClusterPolicyPermissionsDescription struct {
 	// Permission level
 	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterPolicyPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -1138,7 +1138,7 @@ type ClusterSettingsChange struct {
 	// reading the settings field in the API response.
 	PreviousValue string `json:"previous_value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterSettingsChange) UnmarshalJSON(b []byte) error {
@@ -1166,7 +1166,7 @@ type ClusterSize struct {
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterSize) UnmarshalJSON(b []byte) error {
@@ -1395,7 +1395,7 @@ type ClusterSpec struct {
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterSpec) UnmarshalJSON(b []byte) error {
@@ -1422,7 +1422,7 @@ type Command struct {
 
 	Language Language `json:"language,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Command) UnmarshalJSON(b []byte) error {
@@ -1484,7 +1484,7 @@ type CommandStatusResponse struct {
 
 	Status CommandStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CommandStatusResponse) UnmarshalJSON(b []byte) error {
@@ -1536,7 +1536,7 @@ type ContextStatusResponse struct {
 
 	Status ContextStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ContextStatusResponse) UnmarshalJSON(b []byte) error {
@@ -1728,7 +1728,7 @@ type CreateCluster struct {
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateCluster) UnmarshalJSON(b []byte) error {
@@ -1742,7 +1742,7 @@ func (s CreateCluster) MarshalJSON() ([]byte, error) {
 type CreateClusterResponse struct {
 	ClusterId string `json:"cluster_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateClusterResponse) UnmarshalJSON(b []byte) error {
@@ -1759,7 +1759,7 @@ type CreateContext struct {
 
 	Language Language `json:"language,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateContext) UnmarshalJSON(b []byte) error {
@@ -1826,7 +1826,7 @@ type CreateInstancePool struct {
 	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateInstancePool) UnmarshalJSON(b []byte) error {
@@ -1841,7 +1841,7 @@ type CreateInstancePoolResponse struct {
 	// The ID of the created instance pool.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateInstancePoolResponse) UnmarshalJSON(b []byte) error {
@@ -1887,7 +1887,7 @@ type CreatePolicy struct {
 	// definition.
 	PolicyFamilyId string `json:"policy_family_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreatePolicy) UnmarshalJSON(b []byte) error {
@@ -1902,7 +1902,7 @@ type CreatePolicyResponse struct {
 	// Canonical unique identifier for the cluster policy.
 	PolicyId string `json:"policy_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreatePolicyResponse) UnmarshalJSON(b []byte) error {
@@ -1917,7 +1917,7 @@ type CreateResponse struct {
 	// The global init script ID.
 	ScriptId string `json:"script_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateResponse) UnmarshalJSON(b []byte) error {
@@ -1931,7 +1931,7 @@ func (s CreateResponse) MarshalJSON() ([]byte, error) {
 type Created struct {
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Created) UnmarshalJSON(b []byte) error {
@@ -1958,7 +1958,7 @@ type CustomPolicyTag struct {
 	// (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L24)
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CustomPolicyTag) UnmarshalJSON(b []byte) error {
@@ -1979,7 +1979,7 @@ type DataPlaneEventDetails struct {
 	// <needs content added>
 	Timestamp int64 `json:"timestamp,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DataPlaneEventDetails) UnmarshalJSON(b []byte) error {
@@ -2190,7 +2190,7 @@ type DiskSpec struct {
 	// The type of disks that will be launched with this cluster.
 	DiskType *DiskType `json:"disk_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DiskSpec) UnmarshalJSON(b []byte) error {
@@ -2267,7 +2267,7 @@ type DockerBasicAuth struct {
 	// Name of the user
 	Username string `json:"username,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DockerBasicAuth) UnmarshalJSON(b []byte) error {
@@ -2283,7 +2283,7 @@ type DockerImage struct {
 	// URL of the docker image.
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DockerImage) UnmarshalJSON(b []byte) error {
@@ -2502,7 +2502,7 @@ type EditCluster struct {
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EditCluster) UnmarshalJSON(b []byte) error {
@@ -2549,7 +2549,7 @@ type EditInstancePool struct {
 	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EditInstancePool) UnmarshalJSON(b []byte) error {
@@ -2600,7 +2600,7 @@ type EditPolicy struct {
 	// The ID of the policy to update.
 	PolicyId string `json:"policy_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EditPolicy) UnmarshalJSON(b []byte) error {
@@ -2624,7 +2624,7 @@ type EnforceClusterComplianceRequest struct {
 	// compliance but does not update the cluster.
 	ValidateOnly bool `json:"validate_only,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnforceClusterComplianceRequest) UnmarshalJSON(b []byte) error {
@@ -2643,7 +2643,7 @@ type EnforceClusterComplianceResponse struct {
 	// cluster to become compliant with its policy.
 	HasChanges bool `json:"has_changes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnforceClusterComplianceResponse) UnmarshalJSON(b []byte) error {
@@ -2722,7 +2722,7 @@ type EventDetails struct {
 	// control plane.)
 	User string `json:"user,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EventDetails) UnmarshalJSON(b []byte) error {
@@ -2879,7 +2879,7 @@ type GcpAttributes struct {
 	// https://cloud.google.com/compute/docs/regions-zones.
 	ZoneId string `json:"zone_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GcpAttributes) UnmarshalJSON(b []byte) error {
@@ -2944,7 +2944,7 @@ type GetClusterComplianceResponse struct {
 	// policy validation error.
 	Violations map[string]string `json:"violations,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetClusterComplianceResponse) UnmarshalJSON(b []byte) error {
@@ -3023,7 +3023,7 @@ type GetEvents struct {
 	// from the beginning of time.
 	StartTime int64 `json:"start_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetEvents) UnmarshalJSON(b []byte) error {
@@ -3072,7 +3072,7 @@ type GetEventsResponse struct {
 	// event_types.
 	TotalCount int64 `json:"total_count,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetEventsResponse) UnmarshalJSON(b []byte) error {
@@ -3164,7 +3164,7 @@ type GetInstancePool struct {
 	// Status of failed pending instances in the pool.
 	Status *InstancePoolStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetInstancePool) UnmarshalJSON(b []byte) error {
@@ -3206,7 +3206,7 @@ type GetPolicyFamilyRequest struct {
 	// version.
 	Version int64 `json:"-" url:"version,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetPolicyFamilyRequest) UnmarshalJSON(b []byte) error {
@@ -3242,7 +3242,7 @@ type GlobalInitScriptCreateRequest struct {
 	// The Base64-encoded content of the script.
 	Script string `json:"script"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GlobalInitScriptCreateRequest) UnmarshalJSON(b []byte) error {
@@ -3274,7 +3274,7 @@ type GlobalInitScriptDetails struct {
 	// The username of the user who last updated the script
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GlobalInitScriptDetails) UnmarshalJSON(b []byte) error {
@@ -3308,7 +3308,7 @@ type GlobalInitScriptDetailsWithContent struct {
 	// The username of the user who last updated the script
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GlobalInitScriptDetailsWithContent) UnmarshalJSON(b []byte) error {
@@ -3342,7 +3342,7 @@ type GlobalInitScriptUpdateRequest struct {
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GlobalInitScriptUpdateRequest) UnmarshalJSON(b []byte) error {
@@ -3361,7 +3361,7 @@ type InitScriptEventDetails struct {
 	// The private ip address of the node where the init scripts were run.
 	ReportedForNode string `json:"reported_for_node,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InitScriptEventDetails) UnmarshalJSON(b []byte) error {
@@ -3380,7 +3380,7 @@ type InitScriptExecutionDetails struct {
 	// The current status of the script
 	Status InitScriptExecutionDetailsStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InitScriptExecutionDetails) UnmarshalJSON(b []byte) error {
@@ -3482,7 +3482,7 @@ type InstancePoolAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstancePoolAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -3505,7 +3505,7 @@ type InstancePoolAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstancePoolAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -3591,7 +3591,7 @@ type InstancePoolAndStats struct {
 	// Status of failed pending instances in the pool.
 	Status *InstancePoolStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstancePoolAndStats) UnmarshalJSON(b []byte) error {
@@ -3633,7 +3633,7 @@ type InstancePoolAwsAttributes struct {
 	// can be found by using the `List Zones` method.
 	ZoneId string `json:"zone_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstancePoolAwsAttributes) UnmarshalJSON(b []byte) error {
@@ -3685,7 +3685,7 @@ type InstancePoolAzureAttributes struct {
 	// CommonConf.defaultSpotBidMaxPrice.
 	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstancePoolAzureAttributes) UnmarshalJSON(b []byte) error {
@@ -3757,7 +3757,7 @@ type InstancePoolGcpAttributes struct {
 	// on.
 	ZoneId string `json:"zone_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstancePoolGcpAttributes) UnmarshalJSON(b []byte) error {
@@ -3775,7 +3775,7 @@ type InstancePoolPermission struct {
 	// Permission level
 	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstancePoolPermission) UnmarshalJSON(b []byte) error {
@@ -3821,7 +3821,7 @@ type InstancePoolPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstancePoolPermissions) UnmarshalJSON(b []byte) error {
@@ -3837,7 +3837,7 @@ type InstancePoolPermissionsDescription struct {
 	// Permission level
 	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstancePoolPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -3894,7 +3894,7 @@ type InstancePoolStats struct {
 	// Number of active instances in the pool that are part of a cluster.
 	UsedCount int `json:"used_count,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstancePoolStats) UnmarshalJSON(b []byte) error {
@@ -3933,7 +3933,7 @@ type InstanceProfile struct {
 	// is optional, the default value is `false`.
 	IsMetaInstanceProfile bool `json:"is_meta_instance_profile,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstanceProfile) UnmarshalJSON(b []byte) error {
@@ -4040,7 +4040,7 @@ type Library struct {
 	// cluster with an IAM role to access the S3 URI.
 	Whl string `json:"whl,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Library) UnmarshalJSON(b []byte) error {
@@ -4064,7 +4064,7 @@ type LibraryFullStatus struct {
 	// Status of installing the library on the cluster.
 	Status LibraryInstallStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LibraryFullStatus) UnmarshalJSON(b []byte) error {
@@ -4127,7 +4127,7 @@ type ListAvailableZonesResponse struct {
 	// The list of available zones (e.g., ['us-west-2c', 'us-east-2']).
 	Zones []string `json:"zones,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAvailableZonesResponse) UnmarshalJSON(b []byte) error {
@@ -4150,7 +4150,7 @@ type ListClusterCompliancesRequest struct {
 	// Canonical unique identifier for the cluster policy.
 	PolicyId string `json:"-" url:"policy_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListClusterCompliancesRequest) UnmarshalJSON(b []byte) error {
@@ -4172,7 +4172,7 @@ type ListClusterCompliancesResponse struct {
 	// request.
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListClusterCompliancesResponse) UnmarshalJSON(b []byte) error {
@@ -4204,7 +4204,7 @@ type ListClustersFilterBy struct {
 	// The ID of the cluster policy used to create the cluster if applicable.
 	PolicyId string `json:"policy_id,omitempty" url:"policy_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListClustersFilterBy) UnmarshalJSON(b []byte) error {
@@ -4229,7 +4229,7 @@ type ListClustersRequest struct {
 	// Sort the list of clusters by a specific criteria.
 	SortBy *ListClustersSortBy `json:"-" url:"sort_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListClustersRequest) UnmarshalJSON(b []byte) error {
@@ -4251,7 +4251,7 @@ type ListClustersResponse struct {
 	// request.
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListClustersResponse) UnmarshalJSON(b []byte) error {
@@ -4359,7 +4359,7 @@ type ListPolicyFamiliesRequest struct {
 	// A token that can be used to get the next page of results.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListPolicyFamiliesRequest) UnmarshalJSON(b []byte) error {
@@ -4377,7 +4377,7 @@ type ListPolicyFamiliesResponse struct {
 	// List of policy families.
 	PolicyFamilies []PolicyFamily `json:"policy_families,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListPolicyFamiliesResponse) UnmarshalJSON(b []byte) error {
@@ -4454,7 +4454,7 @@ type LogAnalyticsInfo struct {
 	// <needs content added>
 	LogAnalyticsWorkspaceId string `json:"log_analytics_workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LogAnalyticsInfo) UnmarshalJSON(b []byte) error {
@@ -4473,7 +4473,7 @@ type LogSyncStatus struct {
 	// the response) if there is no exception in last attempted.
 	LastException string `json:"last_exception,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LogSyncStatus) UnmarshalJSON(b []byte) error {
@@ -4497,7 +4497,7 @@ type MavenLibrary struct {
 	// Central Repository and Spark Packages are searched.
 	Repo string `json:"repo,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MavenLibrary) UnmarshalJSON(b []byte) error {
@@ -4519,7 +4519,7 @@ type NodeInstanceType struct {
 
 	LocalNvmeDisks int `json:"local_nvme_disks,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NodeInstanceType) UnmarshalJSON(b []byte) error {
@@ -4579,7 +4579,7 @@ type NodeType struct {
 	// with elastic disk enabled. This is true for most node types.
 	SupportsElasticDisk bool `json:"supports_elastic_disk,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NodeType) UnmarshalJSON(b []byte) error {
@@ -4595,7 +4595,7 @@ type PendingInstanceError struct {
 
 	Message string `json:"message,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PendingInstanceError) UnmarshalJSON(b []byte) error {
@@ -4670,7 +4670,7 @@ type Policy struct {
 	// Canonical unique identifier for the Cluster Policy.
 	PolicyId string `json:"policy_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Policy) UnmarshalJSON(b []byte) error {
@@ -4694,7 +4694,7 @@ type PolicyFamily struct {
 	// Unique identifier for the policy family.
 	PolicyFamilyId string `json:"policy_family_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PolicyFamily) UnmarshalJSON(b []byte) error {
@@ -4714,7 +4714,7 @@ type PythonPyPiLibrary struct {
 	// default pip index is used.
 	Repo string `json:"repo,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PythonPyPiLibrary) UnmarshalJSON(b []byte) error {
@@ -4732,7 +4732,7 @@ type RCranLibrary struct {
 	// default CRAN repo is used.
 	Repo string `json:"repo,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RCranLibrary) UnmarshalJSON(b []byte) error {
@@ -4770,7 +4770,7 @@ type ResizeCluster struct {
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResizeCluster) UnmarshalJSON(b []byte) error {
@@ -4790,7 +4790,7 @@ type RestartCluster struct {
 	// <needs content added>
 	RestartUser string `json:"restart_user,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RestartCluster) UnmarshalJSON(b []byte) error {
@@ -4860,7 +4860,7 @@ type Results struct {
 	// true if partial results are returned.
 	Truncated bool `json:"truncated,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Results) UnmarshalJSON(b []byte) error {
@@ -4940,7 +4940,7 @@ type S3StorageInfo struct {
 	// If both are set, endpoint will be used.
 	Region string `json:"region,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *S3StorageInfo) UnmarshalJSON(b []byte) error {
@@ -4978,7 +4978,7 @@ type SparkNode struct {
 	// creation timestamp in the database.
 	StartTimestamp int64 `json:"start_timestamp,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SparkNode) UnmarshalJSON(b []byte) error {
@@ -4993,7 +4993,7 @@ type SparkNodeAwsAttributes struct {
 	// Whether this node is on an Amazon spot instance.
 	IsSpot bool `json:"is_spot,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SparkNodeAwsAttributes) UnmarshalJSON(b []byte) error {
@@ -5014,7 +5014,7 @@ type SparkVersion struct {
 	// A descriptive name for this Spark version, for example "Spark 2.1".
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SparkVersion) UnmarshalJSON(b []byte) error {
@@ -5502,7 +5502,7 @@ type UpdateClusterResource struct {
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateClusterResource) UnmarshalJSON(b []byte) error {

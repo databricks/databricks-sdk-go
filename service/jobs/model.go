@@ -34,7 +34,7 @@ type BaseJob struct {
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *BaseJob) UnmarshalJSON(b []byte) error {
@@ -192,7 +192,7 @@ type BaseRun struct {
 	// Additional details about what triggered the run
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *BaseRun) UnmarshalJSON(b []byte) error {
@@ -210,7 +210,7 @@ type CancelAllRuns struct {
 	// The canonical identifier of the job to cancel all runs of.
 	JobId int64 `json:"job_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CancelAllRuns) UnmarshalJSON(b []byte) error {
@@ -350,7 +350,7 @@ type CleanRoomsNotebookTask struct {
 	// Name of the notebook being run.
 	NotebookName string `json:"notebook_name"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomsNotebookTask) UnmarshalJSON(b []byte) error {
@@ -390,7 +390,7 @@ type ClusterInstance struct {
 	// available yet.
 	SparkContextId string `json:"spark_context_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterInstance) UnmarshalJSON(b []byte) error {
@@ -417,7 +417,7 @@ type ClusterSpec struct {
 	// run.
 	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterSpec) UnmarshalJSON(b []byte) error {
@@ -638,7 +638,7 @@ type CreateJob struct {
 	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateJob) UnmarshalJSON(b []byte) error {
@@ -654,7 +654,7 @@ type CreateResponse struct {
 	// The canonical identifier for the newly created job.
 	JobId int64 `json:"job_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateResponse) UnmarshalJSON(b []byte) error {
@@ -689,7 +689,7 @@ type DbtOutput struct {
 	// after the run has finished.
 	ArtifactsLink string `json:"artifacts_link,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DbtOutput) UnmarshalJSON(b []byte) error {
@@ -736,7 +736,7 @@ type DbtTask struct {
 	// line argument.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DbtTask) UnmarshalJSON(b []byte) error {
@@ -780,7 +780,7 @@ type EnforcePolicyComplianceForJobResponseJobClusterSettingsChange struct {
 	// reading the settings field in the API response.
 	PreviousValue string `json:"previous_value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnforcePolicyComplianceForJobResponseJobClusterSettingsChange) UnmarshalJSON(b []byte) error {
@@ -798,7 +798,7 @@ type EnforcePolicyComplianceRequest struct {
 	// does not update the job.
 	ValidateOnly bool `json:"validate_only,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnforcePolicyComplianceRequest) UnmarshalJSON(b []byte) error {
@@ -825,7 +825,7 @@ type EnforcePolicyComplianceResponse struct {
 	// requirements.
 	Settings *JobSettings `json:"settings,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnforcePolicyComplianceResponse) UnmarshalJSON(b []byte) error {
@@ -868,7 +868,7 @@ type FileArrivalTriggerConfiguration struct {
 	// allowed value is 60 seconds.
 	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FileArrivalTriggerConfiguration) UnmarshalJSON(b []byte) error {
@@ -897,7 +897,7 @@ type ForEachTask struct {
 	// Configuration for the task that will be run for each element in the array
 	Task Task `json:"task"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ForEachTask) UnmarshalJSON(b []byte) error {
@@ -917,7 +917,7 @@ type ForEachTaskErrorMessageStats struct {
 	// Describes the termination reason for the error message.
 	TerminationCategory string `json:"termination_category,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ForEachTaskErrorMessageStats) UnmarshalJSON(b []byte) error {
@@ -943,7 +943,7 @@ type ForEachTaskTaskRunStats struct {
 	// Describes the length of the list of items to iterate over.
 	TotalIterations int `json:"total_iterations,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ForEachTaskTaskRunStats) UnmarshalJSON(b []byte) error {
@@ -1007,7 +1007,7 @@ type GetJobRequest struct {
 	// next page of the job's sub-resources.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetJobRequest) UnmarshalJSON(b []byte) error {
@@ -1037,7 +1037,7 @@ type GetPolicyComplianceResponse struct {
 	// validation error.
 	Violations map[string]string `json:"violations,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetPolicyComplianceResponse) UnmarshalJSON(b []byte) error {
@@ -1067,7 +1067,7 @@ type GetRunRequest struct {
 	// This field is required.
 	RunId int64 `json:"-" url:"run_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetRunRequest) UnmarshalJSON(b []byte) error {
@@ -1125,7 +1125,7 @@ type GitSnapshot struct {
 	// was specified, this points to the commit the tag points to.
 	UsedCommit string `json:"used_commit,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GitSnapshot) UnmarshalJSON(b []byte) error {
@@ -1168,7 +1168,7 @@ type GitSource struct {
 	// is source controlled.
 	JobSource *JobSource `json:"job_source,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GitSource) UnmarshalJSON(b []byte) error {
@@ -1215,7 +1215,7 @@ type Job struct {
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Job) UnmarshalJSON(b []byte) error {
@@ -1236,7 +1236,7 @@ type JobAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -1259,7 +1259,7 @@ type JobAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -1291,7 +1291,7 @@ type JobCompliance struct {
 	// validation error.
 	Violations map[string]string `json:"violations,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobCompliance) UnmarshalJSON(b []byte) error {
@@ -1310,7 +1310,7 @@ type JobDeployment struct {
 	// Path of the file that contains deployment metadata.
 	MetadataFilePath string `json:"metadata_file_path,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobDeployment) UnmarshalJSON(b []byte) error {
@@ -1416,7 +1416,7 @@ type JobEmailNotifications struct {
 	// notifications are not sent.
 	OnSuccess []string `json:"on_success,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobEmailNotifications) UnmarshalJSON(b []byte) error {
@@ -1444,7 +1444,7 @@ type JobNotificationSettings struct {
 	// `on_failure` if the run is skipped.
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobNotificationSettings) UnmarshalJSON(b []byte) error {
@@ -1463,7 +1463,7 @@ type JobParameter struct {
 	// The value used in the run
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobParameter) UnmarshalJSON(b []byte) error {
@@ -1489,7 +1489,7 @@ type JobPermission struct {
 	// Permission level
 	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobPermission) UnmarshalJSON(b []byte) error {
@@ -1539,7 +1539,7 @@ type JobPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobPermissions) UnmarshalJSON(b []byte) error {
@@ -1555,7 +1555,7 @@ type JobPermissionsDescription struct {
 	// Permission level
 	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -1585,7 +1585,7 @@ type JobRunAs struct {
 	// field to their own email.
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobRunAs) UnmarshalJSON(b []byte) error {
@@ -1706,7 +1706,7 @@ type JobSettings struct {
 	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobSettings) UnmarshalJSON(b []byte) error {
@@ -1896,7 +1896,7 @@ type ListJobComplianceForPolicyResponse struct {
 	// results for the request.
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListJobComplianceForPolicyResponse) UnmarshalJSON(b []byte) error {
@@ -1919,7 +1919,7 @@ type ListJobComplianceRequest struct {
 	// Canonical unique identifier for the cluster policy.
 	PolicyId string `json:"-" url:"policy_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListJobComplianceRequest) UnmarshalJSON(b []byte) error {
@@ -1949,7 +1949,7 @@ type ListJobsRequest struct {
 	// request to list the next or previous page of jobs respectively.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListJobsRequest) UnmarshalJSON(b []byte) error {
@@ -1974,7 +1974,7 @@ type ListJobsResponse struct {
 	// applicable).
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListJobsResponse) UnmarshalJSON(b []byte) error {
@@ -2026,7 +2026,7 @@ type ListRunsRequest struct {
 	// filter by a time range.
 	StartTimeTo int64 `json:"-" url:"start_time_to,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRunsRequest) UnmarshalJSON(b []byte) error {
@@ -2051,7 +2051,7 @@ type ListRunsResponse struct {
 	// response if there are runs to list.
 	Runs []BaseRun `json:"runs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRunsResponse) UnmarshalJSON(b []byte) error {
@@ -2073,7 +2073,7 @@ type NotebookOutput struct {
 	// Whether or not the result was truncated.
 	Truncated bool `json:"truncated,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NotebookOutput) UnmarshalJSON(b []byte) error {
@@ -2124,7 +2124,7 @@ type NotebookTask struct {
 	// non-SQL cells, the run will fail.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NotebookTask) UnmarshalJSON(b []byte) error {
@@ -2145,7 +2145,7 @@ type OutputSchemaInfo struct {
 
 	SchemaName string `json:"schema_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *OutputSchemaInfo) UnmarshalJSON(b []byte) error {
@@ -2254,7 +2254,7 @@ type PipelineParams struct {
 	// If true, triggers a full refresh on the delta live table.
 	FullRefresh bool `json:"full_refresh,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineParams) UnmarshalJSON(b []byte) error {
@@ -2271,7 +2271,7 @@ type PipelineTask struct {
 	// The full name of the pipeline task to execute.
 	PipelineId string `json:"pipeline_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineTask) UnmarshalJSON(b []byte) error {
@@ -2310,7 +2310,7 @@ type QueueDetails struct {
 	// unstructured, and its exact format is subject to change.
 	Message string `json:"message,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueueDetails) UnmarshalJSON(b []byte) error {
@@ -2383,7 +2383,7 @@ type RepairHistoryItem struct {
 	// or a repair run.
 	Type RepairHistoryItemType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepairHistoryItem) UnmarshalJSON(b []byte) error {
@@ -2525,7 +2525,7 @@ type RepairRun struct {
 	// does not support custom parameters.
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepairRun) UnmarshalJSON(b []byte) error {
@@ -2542,7 +2542,7 @@ type RepairRunResponse struct {
 	// `latest_repair_id` field to ensure sequential repairs.
 	RepairId int64 `json:"repair_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepairRunResponse) UnmarshalJSON(b []byte) error {
@@ -2572,7 +2572,7 @@ type ResolvedConditionTaskValues struct {
 
 	Right string `json:"right,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResolvedConditionTaskValues) UnmarshalJSON(b []byte) error {
@@ -2786,7 +2786,7 @@ type Run struct {
 	// Additional details about what triggered the run
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Run) UnmarshalJSON(b []byte) error {
@@ -2819,7 +2819,7 @@ type RunConditionTask struct {
 	// a job state or parameter reference.
 	Right string `json:"right"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunConditionTask) UnmarshalJSON(b []byte) error {
@@ -2844,7 +2844,7 @@ type RunForEachTask struct {
 	// Configuration for the task that will be run for each element in the array
 	Task Task `json:"task"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunForEachTask) UnmarshalJSON(b []byte) error {
@@ -2910,7 +2910,7 @@ type RunJobOutput struct {
 	// The run id of the triggered job run
 	RunId int64 `json:"run_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunJobOutput) UnmarshalJSON(b []byte) error {
@@ -3230,7 +3230,7 @@ type RunNow struct {
 	// does not support custom parameters.
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunNow) UnmarshalJSON(b []byte) error {
@@ -3249,7 +3249,7 @@ type RunNowResponse struct {
 	// The globally unique ID of the newly triggered run.
 	RunId int64 `json:"run_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunNowResponse) UnmarshalJSON(b []byte) error {
@@ -3301,7 +3301,7 @@ type RunOutput struct {
 	// The output of a SQL task, if available.
 	SqlOutput *SqlOutput `json:"sql_output,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunOutput) UnmarshalJSON(b []byte) error {
@@ -3480,7 +3480,7 @@ type RunState struct {
 	// the scheduler because the run timed out.
 	UserCancelledOrTimedout bool `json:"user_cancelled_or_timedout,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunState) UnmarshalJSON(b []byte) error {
@@ -3683,7 +3683,7 @@ type RunTask struct {
 	// Task webhooks respect the task notification settings.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunTask) UnmarshalJSON(b []byte) error {
@@ -3791,7 +3791,7 @@ type SparkJarTask struct {
 	// Deprecated. A value of `false` is no longer supported.
 	RunAsRepl bool `json:"run_as_repl,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SparkJarTask) UnmarshalJSON(b []byte) error {
@@ -3855,7 +3855,7 @@ type SqlAlertOutput struct {
 	// The canonical identifier of the SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlAlertOutput) UnmarshalJSON(b []byte) error {
@@ -3906,7 +3906,7 @@ type SqlDashboardOutput struct {
 	// Widgets executed in the run. Only SQL query based widgets are listed.
 	Widgets []SqlDashboardWidgetOutput `json:"widgets,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlDashboardOutput) UnmarshalJSON(b []byte) error {
@@ -3933,7 +3933,7 @@ type SqlDashboardWidgetOutput struct {
 	// The title of the SQL widget.
 	WidgetTitle string `json:"widget_title,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlDashboardWidgetOutput) UnmarshalJSON(b []byte) error {
@@ -3990,7 +3990,7 @@ type SqlOutputError struct {
 	// The error message when execution fails.
 	Message string `json:"message,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlOutputError) UnmarshalJSON(b []byte) error {
@@ -4013,7 +4013,7 @@ type SqlQueryOutput struct {
 	// The canonical identifier of the SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlQueryOutput) UnmarshalJSON(b []byte) error {
@@ -4028,7 +4028,7 @@ type SqlStatementOutput struct {
 	// A key that can be used to look up query details.
 	LookupKey string `json:"lookup_key,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlStatementOutput) UnmarshalJSON(b []byte) error {
@@ -4067,7 +4067,7 @@ type SqlTaskAlert struct {
 	// If specified, alert notifications are sent to subscribers.
 	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlTaskAlert) UnmarshalJSON(b []byte) error {
@@ -4089,7 +4089,7 @@ type SqlTaskDashboard struct {
 	// If specified, dashboard snapshots are sent to subscriptions.
 	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlTaskDashboard) UnmarshalJSON(b []byte) error {
@@ -4131,7 +4131,7 @@ type SqlTaskSubscription struct {
 	// destination_id and user_name for subscription notifications.
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlTaskSubscription) UnmarshalJSON(b []byte) error {
@@ -4203,7 +4203,7 @@ type SubmitRun struct {
 	// completes.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SubmitRun) UnmarshalJSON(b []byte) error {
@@ -4219,7 +4219,7 @@ type SubmitRunResponse struct {
 	// The canonical identifier for the newly submitted run.
 	RunId int64 `json:"run_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SubmitRunResponse) UnmarshalJSON(b []byte) error {
@@ -4334,7 +4334,7 @@ type SubmitTask struct {
 	// Task webhooks respect the task notification settings.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SubmitTask) UnmarshalJSON(b []byte) error {
@@ -4361,7 +4361,7 @@ type TableUpdateTriggerConfiguration struct {
 	// seconds.
 	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TableUpdateTriggerConfiguration) UnmarshalJSON(b []byte) error {
@@ -4499,7 +4499,7 @@ type Task struct {
 	// notifications.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Task) UnmarshalJSON(b []byte) error {
@@ -4517,7 +4517,7 @@ type TaskDependency struct {
 	// The name of the task this task depends on.
 	TaskKey string `json:"task_key"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TaskDependency) UnmarshalJSON(b []byte) error {
@@ -4563,7 +4563,7 @@ type TaskEmailNotifications struct {
 	// notifications are not sent.
 	OnSuccess []string `json:"on_success,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TaskEmailNotifications) UnmarshalJSON(b []byte) error {
@@ -4586,7 +4586,7 @@ type TaskNotificationSettings struct {
 	// `on_failure` if the run is skipped.
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TaskNotificationSettings) UnmarshalJSON(b []byte) error {
@@ -4815,7 +4815,7 @@ type TerminationDetails struct {
 	// [status page]: https://status.databricks.com/
 	Type TerminationTypeType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TerminationDetails) UnmarshalJSON(b []byte) error {
@@ -4878,7 +4878,7 @@ type TriggerInfo struct {
 	// The run id of the Run Job task run
 	RunId int64 `json:"run_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TriggerInfo) UnmarshalJSON(b []byte) error {
@@ -4991,7 +4991,7 @@ type ViewItem struct {
 	// Type of the view item.
 	Type ViewType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ViewItem) UnmarshalJSON(b []byte) error {

@@ -33,7 +33,7 @@ type Create struct {
 	// The path of the new file. The path should be the absolute DBFS path.
 	Path string `json:"path"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Create) UnmarshalJSON(b []byte) error {
@@ -58,7 +58,7 @@ type CreateResponse struct {
 	// calls when writing to a file through a stream.
 	Handle int64 `json:"handle,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateResponse) UnmarshalJSON(b []byte) error {
@@ -77,7 +77,7 @@ type Delete struct {
 	// empty directories can be done without providing the recursive flag.
 	Recursive bool `json:"recursive,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Delete) UnmarshalJSON(b []byte) error {
@@ -119,7 +119,7 @@ type DirectoryEntry struct {
 	// The absolute path of the file or directory.
 	Path string `json:"path,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DirectoryEntry) UnmarshalJSON(b []byte) error {
@@ -145,7 +145,7 @@ type DownloadResponse struct {
 
 	LastModified string `json:"-" url:"-" header:"last-modified,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DownloadResponse) UnmarshalJSON(b []byte) error {
@@ -166,7 +166,7 @@ type FileInfo struct {
 	// The absolute path of the file or directory.
 	Path string `json:"path,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FileInfo) UnmarshalJSON(b []byte) error {
@@ -199,7 +199,7 @@ type GetMetadataResponse struct {
 
 	LastModified string `json:"-" url:"-" header:"last-modified,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetMetadataResponse) UnmarshalJSON(b []byte) error {
@@ -249,7 +249,7 @@ type ListDirectoryContentsRequest struct {
 	// must not be used to determine when the listing is complete.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListDirectoryContentsRequest) UnmarshalJSON(b []byte) error {
@@ -266,7 +266,7 @@ type ListDirectoryResponse struct {
 	// A token, which can be sent as `page_token` to retrieve the next page.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListDirectoryResponse) UnmarshalJSON(b []byte) error {
@@ -311,7 +311,7 @@ type Put struct {
 	// The path of the new file. The path should be the absolute DBFS path.
 	Path string `json:"path"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Put) UnmarshalJSON(b []byte) error {
@@ -335,7 +335,7 @@ type ReadDbfsRequest struct {
 	// The path of the file to read. The path should be the absolute DBFS path.
 	Path string `json:"-" url:"path"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ReadDbfsRequest) UnmarshalJSON(b []byte) error {
@@ -354,7 +354,7 @@ type ReadResponse struct {
 	// The base64-encoded contents of the file read.
 	Data string `json:"data,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ReadResponse) UnmarshalJSON(b []byte) error {
@@ -373,7 +373,7 @@ type UploadRequest struct {
 	// If true, an existing file will be overwritten.
 	Overwrite bool `json:"-" url:"overwrite,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UploadRequest) UnmarshalJSON(b []byte) error {

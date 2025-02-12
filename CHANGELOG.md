@@ -1,5 +1,11 @@
 # Version changelog
 
+## [Release] Release v0.58.1
+
+### Internal Changes
+
+* Do not send ForceSendFields as query parameters.
+
 ## [Release] Release v0.58.0
 
 ### New Features and Improvements
