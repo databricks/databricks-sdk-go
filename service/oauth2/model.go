@@ -14,7 +14,7 @@ type CreateAccountFederationPolicyRequest struct {
 	// unspecified, the id will be assigned by Databricks.
 	PolicyId string `json:"-" url:"policy_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
@@ -43,7 +43,7 @@ type CreateCustomAppIntegration struct {
 	// minted. Must be a subset of scopes.
 	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateCustomAppIntegration) UnmarshalJSON(b []byte) error {
@@ -63,7 +63,7 @@ type CreateCustomAppIntegrationOutput struct {
 	// Unique integration id for the custom OAuth app
 	IntegrationId string `json:"integration_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateCustomAppIntegrationOutput) UnmarshalJSON(b []byte) error {
@@ -81,7 +81,7 @@ type CreatePublishedAppIntegration struct {
 	// Token access policy
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreatePublishedAppIntegration) UnmarshalJSON(b []byte) error {
@@ -96,7 +96,7 @@ type CreatePublishedAppIntegrationOutput struct {
 	// Unique integration id for the published OAuth app
 	IntegrationId string `json:"integration_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreatePublishedAppIntegrationOutput) UnmarshalJSON(b []byte) error {
@@ -117,7 +117,7 @@ type CreateServicePrincipalFederationPolicyRequest struct {
 	// The service principal id for the federation policy.
 	ServicePrincipalId int64 `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {
@@ -148,7 +148,7 @@ type CreateServicePrincipalSecretResponse struct {
 	// UTC time when the secret was updated
 	UpdateTime string `json:"update_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateServicePrincipalSecretResponse) UnmarshalJSON(b []byte) error {
@@ -221,7 +221,7 @@ type FederationPolicy struct {
 	// Last update time of the federation policy.
 	UpdateTime string `json:"update_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FederationPolicy) UnmarshalJSON(b []byte) error {
@@ -265,7 +265,7 @@ type GetCustomAppIntegrationOutput struct {
 	// minted. Must be a subset of scopes.
 	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetCustomAppIntegrationOutput) UnmarshalJSON(b []byte) error {
@@ -288,7 +288,7 @@ type GetCustomAppIntegrationsOutput struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetCustomAppIntegrationsOutput) UnmarshalJSON(b []byte) error {
@@ -313,7 +313,7 @@ type GetPublishedAppIntegrationOutput struct {
 	// Token access policy
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetPublishedAppIntegrationOutput) UnmarshalJSON(b []byte) error {
@@ -335,7 +335,7 @@ type GetPublishedAppIntegrationsOutput struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetPublishedAppIntegrationsOutput) UnmarshalJSON(b []byte) error {
@@ -353,7 +353,7 @@ type GetPublishedAppsOutput struct {
 	// there are no more results to show.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetPublishedAppsOutput) UnmarshalJSON(b []byte) error {
@@ -378,7 +378,7 @@ type ListAccountFederationPoliciesRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAccountFederationPoliciesRequest) UnmarshalJSON(b []byte) error {
@@ -397,7 +397,7 @@ type ListCustomAppIntegrationsRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCustomAppIntegrationsRequest) UnmarshalJSON(b []byte) error {
@@ -413,7 +413,7 @@ type ListFederationPoliciesResponse struct {
 
 	Policies []FederationPolicy `json:"policies,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListFederationPoliciesResponse) UnmarshalJSON(b []byte) error {
@@ -431,7 +431,7 @@ type ListOAuthPublishedAppsRequest struct {
 	// A token that can be used to get the next page of results.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListOAuthPublishedAppsRequest) UnmarshalJSON(b []byte) error {
@@ -448,7 +448,7 @@ type ListPublishedAppIntegrationsRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListPublishedAppIntegrationsRequest) UnmarshalJSON(b []byte) error {
@@ -467,7 +467,7 @@ type ListServicePrincipalFederationPoliciesRequest struct {
 	// The service principal id for the federation policy.
 	ServicePrincipalId int64 `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListServicePrincipalFederationPoliciesRequest) UnmarshalJSON(b []byte) error {
@@ -493,7 +493,7 @@ type ListServicePrincipalSecretsRequest struct {
 	// The service principal ID.
 	ServicePrincipalId int64 `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListServicePrincipalSecretsRequest) UnmarshalJSON(b []byte) error {
@@ -510,7 +510,7 @@ type ListServicePrincipalSecretsResponse struct {
 	// List of the secrets
 	Secrets []SecretInfo `json:"secrets,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListServicePrincipalSecretsResponse) UnmarshalJSON(b []byte) error {
@@ -548,7 +548,7 @@ type OidcFederationPolicy struct {
 	// default value is 'sub'.
 	SubjectClaim string `json:"subject_claim,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *OidcFederationPolicy) UnmarshalJSON(b []byte) error {
@@ -577,7 +577,7 @@ type PublishedAppOutput struct {
 	// Required scopes for the published OAuth app.
 	Scopes []string `json:"scopes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PublishedAppOutput) UnmarshalJSON(b []byte) error {
@@ -600,7 +600,7 @@ type SecretInfo struct {
 	// UTC time when the secret was updated
 	UpdateTime string `json:"update_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SecretInfo) UnmarshalJSON(b []byte) error {
@@ -617,7 +617,7 @@ type TokenAccessPolicy struct {
 	// refresh token time to live in minutes
 	RefreshTokenTtlInMinutes int `json:"refresh_token_ttl_in_minutes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenAccessPolicy) UnmarshalJSON(b []byte) error {
@@ -641,7 +641,7 @@ type UpdateAccountFederationPolicyRequest struct {
 	// the existing policy. Example value: 'description,oidc_policy.audiences'.
 	UpdateMask string `json:"-" url:"update_mask,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
@@ -696,7 +696,7 @@ type UpdateServicePrincipalFederationPolicyRequest struct {
 	// the existing policy. Example value: 'description,oidc_policy.audiences'.
 	UpdateMask string `json:"-" url:"update_mask,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {

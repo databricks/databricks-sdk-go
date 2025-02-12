@@ -25,7 +25,7 @@ type AccountIpAccessEnable struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AccountIpAccessEnable) UnmarshalJSON(b []byte) error {
@@ -86,7 +86,7 @@ type AibiDashboardEmbeddingAccessPolicySetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AibiDashboardEmbeddingAccessPolicySetting) UnmarshalJSON(b []byte) error {
@@ -118,7 +118,7 @@ type AibiDashboardEmbeddingApprovedDomainsSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AibiDashboardEmbeddingApprovedDomainsSetting) UnmarshalJSON(b []byte) error {
@@ -146,7 +146,7 @@ type AutomaticClusterUpdateSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AutomaticClusterUpdateSetting) UnmarshalJSON(b []byte) error {
@@ -160,7 +160,7 @@ func (s AutomaticClusterUpdateSetting) MarshalJSON() ([]byte, error) {
 type BooleanMessage struct {
 	Value bool `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *BooleanMessage) UnmarshalJSON(b []byte) error {
@@ -187,7 +187,7 @@ type ClusterAutoRestartMessage struct {
 
 	RestartEvenIfNoUpdatesAvailable bool `json:"restart_even_if_no_updates_available,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterAutoRestartMessage) UnmarshalJSON(b []byte) error {
@@ -213,7 +213,7 @@ type ClusterAutoRestartMessageEnablementDetails struct {
 	// The feature is unavailable if the customer doesn't have enterprise tier
 	UnavailableForNonEnterpriseTier bool `json:"unavailable_for_non_enterprise_tier,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterAutoRestartMessageEnablementDetails) UnmarshalJSON(b []byte) error {
@@ -315,7 +315,7 @@ type ClusterAutoRestartMessageMaintenanceWindowWindowStartTime struct {
 
 	Minutes int `json:"minutes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) UnmarshalJSON(b []byte) error {
@@ -333,7 +333,7 @@ type ComplianceSecurityProfile struct {
 
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
@@ -362,7 +362,7 @@ type ComplianceSecurityProfileSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ComplianceSecurityProfileSetting) UnmarshalJSON(b []byte) error {
@@ -472,7 +472,7 @@ type CreateNotificationDestinationRequest struct {
 	// The display name for the notification destination.
 	DisplayName string `json:"display_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
@@ -492,7 +492,7 @@ type CreateOboTokenRequest struct {
 	// The number of seconds before the token expires.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateOboTokenRequest) UnmarshalJSON(b []byte) error {
@@ -509,7 +509,7 @@ type CreateOboTokenResponse struct {
 	// Value of the token.
 	TokenValue string `json:"token_value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateOboTokenResponse) UnmarshalJSON(b []byte) error {
@@ -573,7 +573,7 @@ type CreateTokenRequest struct {
 	// If the lifetime is not specified, this token remains valid indefinitely.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateTokenRequest) UnmarshalJSON(b []byte) error {
@@ -590,7 +590,7 @@ type CreateTokenResponse struct {
 	// The value of the new token.
 	TokenValue string `json:"token_value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateTokenResponse) UnmarshalJSON(b []byte) error {
@@ -609,7 +609,7 @@ type CspEnablementAccount struct {
 	// Enforced = it cannot be overriden at workspace level.
 	IsEnforced bool `json:"is_enforced,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CspEnablementAccount) UnmarshalJSON(b []byte) error {
@@ -638,7 +638,7 @@ type CspEnablementAccountSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CspEnablementAccountSetting) UnmarshalJSON(b []byte) error {
@@ -676,7 +676,7 @@ type DefaultNamespaceSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DefaultNamespaceSetting) UnmarshalJSON(b []byte) error {
@@ -698,7 +698,7 @@ type DeleteAccountIpAccessEnableRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
@@ -738,7 +738,7 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
@@ -772,7 +772,7 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
@@ -806,7 +806,7 @@ type DeleteDefaultNamespaceSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
@@ -840,7 +840,7 @@ type DeleteDisableLegacyAccessRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
@@ -874,7 +874,7 @@ type DeleteDisableLegacyDbfsRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
@@ -908,7 +908,7 @@ type DeleteDisableLegacyFeaturesRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
@@ -962,7 +962,7 @@ type DeletePersonalComputeSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeletePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1007,7 +1007,7 @@ type DeleteRestrictWorkspaceAdminsSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1086,7 +1086,7 @@ type DisableLegacyAccess struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DisableLegacyAccess) UnmarshalJSON(b []byte) error {
@@ -1114,7 +1114,7 @@ type DisableLegacyDbfs struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DisableLegacyDbfs) UnmarshalJSON(b []byte) error {
@@ -1142,7 +1142,7 @@ type DisableLegacyFeatures struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DisableLegacyFeatures) UnmarshalJSON(b []byte) error {
@@ -1192,7 +1192,7 @@ type EgressNetworkPolicyInternetAccessPolicyInternetDestination struct {
 
 	Type EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EgressNetworkPolicyInternetAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
@@ -1372,7 +1372,7 @@ type EgressNetworkPolicyInternetAccessPolicyStorageDestination struct {
 
 	Type EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EgressNetworkPolicyInternetAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
@@ -1426,7 +1426,7 @@ type Empty struct {
 type EnhancedSecurityMonitoring struct {
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnhancedSecurityMonitoring) UnmarshalJSON(b []byte) error {
@@ -1455,7 +1455,7 @@ type EnhancedSecurityMonitoringSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnhancedSecurityMonitoringSetting) UnmarshalJSON(b []byte) error {
@@ -1470,7 +1470,7 @@ func (s EnhancedSecurityMonitoringSetting) MarshalJSON() ([]byte, error) {
 type EsmEnablementAccount struct {
 	IsEnforced bool `json:"is_enforced,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EsmEnablementAccount) UnmarshalJSON(b []byte) error {
@@ -1499,7 +1499,7 @@ type EsmEnablementAccountSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EsmEnablementAccountSetting) UnmarshalJSON(b []byte) error {
@@ -1524,7 +1524,7 @@ type ExchangeToken struct {
 	// The type of this exchange token
 	TokenType TokenType `json:"tokenType,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExchangeToken) UnmarshalJSON(b []byte) error {
@@ -1570,7 +1570,7 @@ type GenericWebhookConfig struct {
 	// [Output-Only] Whether username is set.
 	UsernameSet bool `json:"username_set,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GenericWebhookConfig) UnmarshalJSON(b []byte) error {
@@ -1592,7 +1592,7 @@ type GetAccountIpAccessEnableRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
@@ -1620,7 +1620,7 @@ type GetAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
@@ -1642,7 +1642,7 @@ type GetAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1664,7 +1664,7 @@ type GetAutomaticClusterUpdateSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetAutomaticClusterUpdateSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1686,7 +1686,7 @@ type GetComplianceSecurityProfileSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetComplianceSecurityProfileSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1708,7 +1708,7 @@ type GetCspEnablementAccountSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1730,7 +1730,7 @@ type GetDefaultNamespaceSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1752,7 +1752,7 @@ type GetDisableLegacyAccessRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
@@ -1774,7 +1774,7 @@ type GetDisableLegacyDbfsRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
@@ -1796,7 +1796,7 @@ type GetDisableLegacyFeaturesRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
@@ -1818,7 +1818,7 @@ type GetEnhancedSecurityMonitoringSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetEnhancedSecurityMonitoringSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1840,7 +1840,7 @@ type GetEsmEnablementAccountSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1889,7 +1889,7 @@ type GetPersonalComputeSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetPersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1919,7 +1919,7 @@ type GetRestrictWorkspaceAdminsSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1979,7 +1979,7 @@ type IpAccessListInfo struct {
 	// User ID of the user who updated this list.
 	UpdatedBy int64 `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *IpAccessListInfo) UnmarshalJSON(b []byte) error {
@@ -2001,7 +2001,7 @@ type ListNccAzurePrivateEndpointRulesResponse struct {
 	// are no more results to show.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNccAzurePrivateEndpointRulesResponse) UnmarshalJSON(b []byte) error {
@@ -2017,7 +2017,7 @@ type ListNetworkConnectivityConfigurationsRequest struct {
 	// Pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNetworkConnectivityConfigurationsRequest) UnmarshalJSON(b []byte) error {
@@ -2034,7 +2034,7 @@ type ListNetworkConnectivityConfigurationsResponse struct {
 	// are no more results to show.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNetworkConnectivityConfigurationsResponse) UnmarshalJSON(b []byte) error {
@@ -2051,7 +2051,7 @@ type ListNotificationDestinationsRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNotificationDestinationsRequest) UnmarshalJSON(b []byte) error {
@@ -2068,7 +2068,7 @@ type ListNotificationDestinationsResponse struct {
 
 	Results []ListNotificationDestinationsResult `json:"results,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNotificationDestinationsResponse) UnmarshalJSON(b []byte) error {
@@ -2088,7 +2088,7 @@ type ListNotificationDestinationsResult struct {
 	// UUID identifying notification destination.
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNotificationDestinationsResult) UnmarshalJSON(b []byte) error {
@@ -2106,7 +2106,7 @@ type ListPrivateEndpointRulesRequest struct {
 	// Pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListPrivateEndpointRulesRequest) UnmarshalJSON(b []byte) error {
@@ -2129,7 +2129,7 @@ type ListTokenManagementRequest struct {
 	// Username of the user that created the token.
 	CreatedByUsername string `json:"-" url:"created_by_username,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListTokenManagementRequest) UnmarshalJSON(b []byte) error {
@@ -2187,7 +2187,7 @@ type MicrosoftTeamsConfig struct {
 	// [Output-Only] Whether URL is set.
 	UrlSet bool `json:"url_set,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MicrosoftTeamsConfig) UnmarshalJSON(b []byte) error {
@@ -2243,7 +2243,7 @@ type NccAzurePrivateEndpointRule struct {
 	// Time in epoch milliseconds when this object was updated.
 	UpdatedTime int64 `json:"updated_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NccAzurePrivateEndpointRule) UnmarshalJSON(b []byte) error {
@@ -2345,7 +2345,7 @@ type NccAzureServiceEndpointRule struct {
 	// The Azure services to which this service endpoint rule applies to.
 	TargetServices []string `json:"target_services,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NccAzureServiceEndpointRule) UnmarshalJSON(b []byte) error {
@@ -2410,7 +2410,7 @@ type NetworkConnectivityConfiguration struct {
 	// Time in epoch milliseconds when this object was updated.
 	UpdatedTime int64 `json:"updated_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NetworkConnectivityConfiguration) UnmarshalJSON(b []byte) error {
@@ -2434,7 +2434,7 @@ type NotificationDestination struct {
 	// UUID identifying notification destination.
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NotificationDestination) UnmarshalJSON(b []byte) error {
@@ -2451,7 +2451,7 @@ type PagerdutyConfig struct {
 	// [Output-Only] Whether integration key is set.
 	IntegrationKeySet bool `json:"integration_key_set,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PagerdutyConfig) UnmarshalJSON(b []byte) error {
@@ -2467,7 +2467,7 @@ type PartitionId struct {
 	// The ID of the workspace.
 	WorkspaceId int64 `json:"workspaceId,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PartitionId) UnmarshalJSON(b []byte) error {
@@ -2540,7 +2540,7 @@ type PersonalComputeSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PersonalComputeSetting) UnmarshalJSON(b []byte) error {
@@ -2562,7 +2562,7 @@ type PublicTokenInfo struct {
 	// The ID of this token.
 	TokenId string `json:"token_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PublicTokenInfo) UnmarshalJSON(b []byte) error {
@@ -2644,7 +2644,7 @@ type RestrictWorkspaceAdminsSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RestrictWorkspaceAdminsSetting) UnmarshalJSON(b []byte) error {
@@ -2672,7 +2672,7 @@ type SlackConfig struct {
 	// [Output-Only] Whether URL is set.
 	UrlSet bool `json:"url_set,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SlackConfig) UnmarshalJSON(b []byte) error {
@@ -2687,7 +2687,7 @@ type StringMessage struct {
 	// Represents a generic string value.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *StringMessage) UnmarshalJSON(b []byte) error {
@@ -2708,7 +2708,7 @@ type TokenAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -2731,7 +2731,7 @@ type TokenAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -2764,7 +2764,7 @@ type TokenInfo struct {
 	// If applicable, the ID of the workspace that the token was created in.
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenInfo) UnmarshalJSON(b []byte) error {
@@ -2782,7 +2782,7 @@ type TokenPermission struct {
 	// Permission level
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenPermission) UnmarshalJSON(b []byte) error {
@@ -2826,7 +2826,7 @@ type TokenPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenPermissions) UnmarshalJSON(b []byte) error {
@@ -2842,7 +2842,7 @@ type TokenPermissionsDescription struct {
 	// Permission level
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -3166,7 +3166,7 @@ type UpdateIpAccessList struct {
 	// excluded even if they are included in an allow list.
 	ListType ListType `json:"list_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateIpAccessList) UnmarshalJSON(b []byte) error {
@@ -3186,7 +3186,7 @@ type UpdateNotificationDestinationRequest struct {
 	// UUID identifying notification destination.
 	Id string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {

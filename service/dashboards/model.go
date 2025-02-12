@@ -106,7 +106,7 @@ type Dashboard struct {
 	// The warehouse ID used to run the dashboard.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Dashboard) UnmarshalJSON(b []byte) error {
@@ -209,7 +209,7 @@ type DeleteScheduleRequest struct {
 	// UUID identifying the schedule.
 	ScheduleId string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteScheduleRequest) UnmarshalJSON(b []byte) error {
@@ -235,7 +235,7 @@ type DeleteSubscriptionRequest struct {
 	// UUID identifying the subscription.
 	SubscriptionId string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteSubscriptionRequest) UnmarshalJSON(b []byte) error {
@@ -269,7 +269,7 @@ type ExecutePublishedDashboardQueryRequest struct {
 	// processing the published dashboard queries
 	OverrideWarehouseId string `json:"override_warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExecutePublishedDashboardQueryRequest) UnmarshalJSON(b []byte) error {
@@ -304,7 +304,7 @@ type GenieConversation struct {
 	// ID of the user who created the conversation
 	UserId int `json:"user_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GenieConversation) UnmarshalJSON(b []byte) error {
@@ -415,7 +415,7 @@ type GenieMessage struct {
 	// ID of the user who created the message
 	UserId int64 `json:"user_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GenieMessage) UnmarshalJSON(b []byte) error {
@@ -523,7 +523,7 @@ type ListDashboardsRequest struct {
 	// `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
 	View DashboardView `json:"-" url:"view,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
@@ -540,7 +540,7 @@ type ListDashboardsResponse struct {
 	// this field is omitted, there are no subsequent dashboards.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListDashboardsResponse) UnmarshalJSON(b []byte) error {
@@ -561,7 +561,7 @@ type ListSchedulesRequest struct {
 	// retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSchedulesRequest) UnmarshalJSON(b []byte) error {
@@ -580,7 +580,7 @@ type ListSchedulesResponse struct {
 
 	Schedules []Schedule `json:"schedules,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSchedulesResponse) UnmarshalJSON(b []byte) error {
@@ -603,7 +603,7 @@ type ListSubscriptionsRequest struct {
 	// UUID identifying the schedule which the subscriptions belongs.
 	ScheduleId string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSubscriptionsRequest) UnmarshalJSON(b []byte) error {
@@ -622,7 +622,7 @@ type ListSubscriptionsResponse struct {
 
 	Subscriptions []Subscription `json:"subscriptions,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSubscriptionsResponse) UnmarshalJSON(b []byte) error {
@@ -638,7 +638,7 @@ type MessageError struct {
 
 	Type MessageErrorType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MessageError) UnmarshalJSON(b []byte) error {
@@ -843,7 +843,7 @@ type MigrateDashboardRequest struct {
 	// dashboard.
 	UpdateParameterSyntax bool `json:"update_parameter_syntax,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MigrateDashboardRequest) UnmarshalJSON(b []byte) error {
@@ -889,7 +889,7 @@ type PublishRequest struct {
 	// was set in the draft.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PublishRequest) UnmarshalJSON(b []byte) error {
@@ -910,7 +910,7 @@ type PublishedDashboard struct {
 	// The warehouse ID used to run the published dashboard.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PublishedDashboard) UnmarshalJSON(b []byte) error {
@@ -942,7 +942,7 @@ type QueryAttachment struct {
 	// Name of the query
 	Title string `json:"title,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryAttachment) UnmarshalJSON(b []byte) error {
@@ -970,7 +970,7 @@ type QueryResponseStatus struct {
 
 	Success *SuccessStatus `json:"success,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryResponseStatus) UnmarshalJSON(b []byte) error {
@@ -988,7 +988,7 @@ type QuerySchema struct {
 	// re-executed.
 	StatementId string `json:"statement_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QuerySchema) UnmarshalJSON(b []byte) error {
@@ -1019,7 +1019,7 @@ type Result struct {
 	// full result data.
 	StatementId string `json:"statement_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Result) UnmarshalJSON(b []byte) error {
@@ -1053,7 +1053,7 @@ type Schedule struct {
 	// The warehouse id to run the dashboard with for the schedule.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Schedule) UnmarshalJSON(b []byte) error {
@@ -1122,7 +1122,7 @@ type Subscription struct {
 	// A timestamp indicating when the subscription was last updated.
 	UpdateTime string `json:"update_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Subscription) UnmarshalJSON(b []byte) error {
@@ -1151,7 +1151,7 @@ type SuccessStatus struct {
 	// Whether the query result is truncated (either by byte limit or row limit)
 	Truncated bool `json:"truncated,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SuccessStatus) UnmarshalJSON(b []byte) error {
@@ -1168,7 +1168,7 @@ type TextAttachment struct {
 
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TextAttachment) UnmarshalJSON(b []byte) error {

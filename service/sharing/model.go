@@ -48,7 +48,7 @@ type CreateProvider struct {
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateProvider) UnmarshalJSON(b []byte) error {
@@ -86,7 +86,7 @@ type CreateRecipient struct {
 	// only present when the __authentication_type__ is **DATABRICKS**.
 	SharingCode string `json:"sharing_code,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateRecipient) UnmarshalJSON(b []byte) error {
@@ -105,7 +105,7 @@ type CreateShare struct {
 	// Storage root URL for the share.
 	StorageRoot string `json:"storage_root,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateShare) UnmarshalJSON(b []byte) error {
@@ -166,7 +166,7 @@ type GetRecipientSharePermissionsResponse struct {
 	// An array of data share permissions for a recipient.
 	PermissionsOut []ShareToPrivilegeAssignment `json:"permissions_out,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetRecipientSharePermissionsResponse) UnmarshalJSON(b []byte) error {
@@ -184,7 +184,7 @@ type GetShareRequest struct {
 	// The name of the share.
 	Name string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetShareRequest) UnmarshalJSON(b []byte) error {
@@ -208,7 +208,7 @@ type ListProviderSharesResponse struct {
 	// An array of provider shares.
 	Shares []ProviderShare `json:"shares,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProviderSharesResponse) UnmarshalJSON(b []byte) error {
@@ -237,7 +237,7 @@ type ListProvidersRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProvidersRequest) UnmarshalJSON(b []byte) error {
@@ -256,7 +256,7 @@ type ListProvidersResponse struct {
 	// An array of provider information objects.
 	Providers []ProviderInfo `json:"providers,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProvidersResponse) UnmarshalJSON(b []byte) error {
@@ -285,7 +285,7 @@ type ListRecipientsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRecipientsRequest) UnmarshalJSON(b []byte) error {
@@ -304,7 +304,7 @@ type ListRecipientsResponse struct {
 	// An array of recipient information objects.
 	Recipients []RecipientInfo `json:"recipients,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRecipientsResponse) UnmarshalJSON(b []byte) error {
@@ -332,7 +332,7 @@ type ListSharesRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSharesRequest) UnmarshalJSON(b []byte) error {
@@ -351,7 +351,7 @@ type ListSharesResponse struct {
 	// An array of data share information objects.
 	Shares []ShareInfo `json:"shares,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSharesResponse) UnmarshalJSON(b []byte) error {
@@ -386,7 +386,7 @@ type PartitionValue struct {
 	// not be set.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PartitionValue) UnmarshalJSON(b []byte) error {
@@ -543,7 +543,7 @@ type PrivilegeAssignment struct {
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
@@ -591,7 +591,7 @@ type ProviderInfo struct {
 	// Username of user who last modified Provider.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ProviderInfo) UnmarshalJSON(b []byte) error {
@@ -606,7 +606,7 @@ type ProviderShare struct {
 	// The name of the Provider Share.
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ProviderShare) UnmarshalJSON(b []byte) error {
@@ -669,7 +669,7 @@ type RecipientInfo struct {
 	// Username of recipient updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RecipientInfo) UnmarshalJSON(b []byte) error {
@@ -688,7 +688,7 @@ type RecipientProfile struct {
 	// The version number of the recipient's credentials on a share.
 	ShareCredentialsVersion int `json:"share_credentials_version,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RecipientProfile) UnmarshalJSON(b []byte) error {
@@ -716,7 +716,7 @@ type RecipientTokenInfo struct {
 	// Username of recipient token updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RecipientTokenInfo) UnmarshalJSON(b []byte) error {
@@ -743,7 +743,7 @@ type RetrieveTokenResponse struct {
 	// These field names must follow the delta sharing protocol.
 	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RetrieveTokenResponse) UnmarshalJSON(b []byte) error {
@@ -793,7 +793,7 @@ type ShareInfo struct {
 	// Username of share updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ShareInfo) UnmarshalJSON(b []byte) error {
@@ -821,7 +821,7 @@ type SharePermissionsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SharePermissionsRequest) UnmarshalJSON(b []byte) error {
@@ -838,7 +838,7 @@ type ShareToPrivilegeAssignment struct {
 	// The share name.
 	ShareName string `json:"share_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ShareToPrivilegeAssignment) UnmarshalJSON(b []byte) error {
@@ -898,7 +898,7 @@ type SharedDataObject struct {
 	// file name.
 	StringSharedAs string `json:"string_shared_as,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SharedDataObject) UnmarshalJSON(b []byte) error {
@@ -1061,7 +1061,7 @@ type UpdateProvider struct {
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateProvider) UnmarshalJSON(b []byte) error {
@@ -1091,7 +1091,7 @@ type UpdateRecipient struct {
 	// read-modify-write.
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateRecipient) UnmarshalJSON(b []byte) error {
@@ -1116,7 +1116,7 @@ type UpdateShare struct {
 	// Array of shared data object updates.
 	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateShare) UnmarshalJSON(b []byte) error {
@@ -1145,7 +1145,7 @@ type UpdateSharePermissions struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateSharePermissions) UnmarshalJSON(b []byte) error {
