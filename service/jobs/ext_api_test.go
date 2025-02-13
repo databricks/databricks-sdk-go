@@ -29,7 +29,6 @@ func TestGetRun(t *testing.T) {
 							TaskKey: "task2",
 						},
 					},
-					NextPageToken: "",
 				},
 			},
 			{
@@ -175,7 +174,7 @@ func TestGetRun(t *testing.T) {
 		assert.Equal(t, expected, run.Tasks)
 	})
 
-	t.Run("clusters array is not increased when paginated", func(t *testing.T) {
+	t.Run("clusters array is also paginated", func(t *testing.T) {
 		var requestMocks qa.HTTPFixtures = []qa.HTTPFixture{
 			{
 				Method:       "GET",
@@ -199,6 +198,16 @@ func TestGetRun(t *testing.T) {
 							JobClusterKey: "cluster2",
 						},
 					},
+					JobParameters: []JobParameter{
+						{
+							Name:  "key1",
+							Value: "value1",
+						},
+						{
+							Name:  "key2",
+							Value: "value2",
+						},
+					},
 					NextPageToken: "token1",
 				},
 			},
@@ -218,10 +227,17 @@ func TestGetRun(t *testing.T) {
 					},
 					JobClusters: []JobCluster{
 						{
-							JobClusterKey: "cluster1",
+							JobClusterKey: "cluster3",
+						},
+					},
+					JobParameters: []JobParameter{
+						{
+							Name:  "key3",
+							Value: "value3",
 						},
 						{
-							JobClusterKey: "cluster2",
+							Name:  "key4",
+							Value: "value4",
 						},
 					},
 				},
@@ -253,6 +269,27 @@ func TestGetRun(t *testing.T) {
 						{
 							JobClusterKey: "cluster2",
 						},
+						{
+							JobClusterKey: "cluster3",
+						},
+					},
+					JobParameters: []JobParameter{
+						{
+							Name:  "key1",
+							Value: "value1",
+						},
+						{
+							Name:  "key2",
+							Value: "value2",
+						},
+						{
+							Name:  "key3",
+							Value: "value3",
+						},
+						{
+							Name:  "key4",
+							Value: "value4",
+						},
 					},
 				},
 			},
@@ -269,9 +306,16 @@ func TestGetRun(t *testing.T) {
 		run, err := api.GetRun(ctx, request)
 
 		assert.NoError(t, err)
-		assert.Equal(t, 2, len(run.JobClusters))
+		assert.Equal(t, 4, len(run.Tasks))
+		assert.Equal(t, 3, len(run.JobClusters))
+		assert.Equal(t, 4, len(run.JobParameters))
 		assert.Equal(t, "cluster1", run.JobClusters[0].JobClusterKey)
 		assert.Equal(t, "cluster2", run.JobClusters[1].JobClusterKey)
+		assert.Equal(t, "cluster3", run.JobClusters[2].JobClusterKey)
+		assert.Equal(t, "key1", run.JobParameters[0].Name)
+		assert.Equal(t, "value1", run.JobParameters[0].Value)
+		assert.Equal(t, "key4", run.JobParameters[3].Name)
+		assert.Equal(t, "value4", run.JobParameters[3].Value)
 	})
 
 	t.Run("run with two iterations pages", func(t *testing.T) {
