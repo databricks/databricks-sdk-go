@@ -413,3 +413,258 @@ func TestGetRun(t *testing.T) {
 		assert.EqualValues(t, 999, run.Tasks[0].RunId)
 	})
 }
+
+func TestGetJob(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("job with no pagination", func(t *testing.T) {
+		var requestMocks qa.HTTPFixtures = []qa.HTTPFixture{
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/get?job_id=514594995218126",
+				Response: Job{
+					Settings: &JobSettings{
+						Tasks: []Task{
+							{
+								TaskKey: "task1",
+							},
+							{
+								TaskKey: "task2",
+							},
+							{
+								TaskKey: "task3",
+							},
+							{
+								TaskKey: "task4",
+							},
+						},
+					},
+				},
+			},
+			{
+				Method:       "GET",
+				ReuseRequest: true,
+				Resource:     "/api/2.1/jobs/get?job_id=514594995218126",
+				Response: Job{
+					Settings: &JobSettings{
+						Tasks: []Task{
+							{
+								TaskKey: "task1",
+							},
+							{
+								TaskKey: "task2",
+							},
+							{
+								TaskKey: "task3",
+							},
+							{
+								TaskKey: "task4",
+							},
+						},
+					},
+				},
+			},
+		}
+		client, server := requestMocks.Client(t)
+		defer server.Close()
+
+		mockJobsImpl := &jobsImpl{
+			client: client,
+		}
+		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+
+		request := GetJobRequest{JobId: 514594995218126}
+		job, err := api.Get(ctx, request)
+
+		assert.NoError(t, err)
+		assert.Equal(t, 4, len(job.Settings.Tasks))
+		assert.EqualValues(t, "task1", job.Settings.Tasks[0].TaskKey)
+		assert.EqualValues(t, "task4", job.Settings.Tasks[3].TaskKey)
+	})
+
+	t.Run("job with multiple pages", func(t *testing.T) {
+		var requestMocks qa.HTTPFixtures = []qa.HTTPFixture{
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/get?job_id=514594995218126",
+				Response: Job{
+					Settings: &JobSettings{
+						Tasks: []Task{
+							{
+								TaskKey: "task1",
+							},
+							{
+								TaskKey: "task2",
+							},
+						},
+						JobClusters: []JobCluster{
+							{
+								JobClusterKey: "cluster1",
+							},
+							{
+								JobClusterKey: "cluster2",
+							},
+						},
+						Parameters: []JobParameterDefinition{
+							{
+								Name:    "param1",
+								Default: "default1",
+							},
+							{
+								Name:    "param2",
+								Default: "default2",
+							},
+						},
+						Environments: []JobEnvironment{
+							{
+								EnvironmentKey: "env1",
+							},
+						},
+					},
+					NextPageToken: "token1",
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/get?job_id=514594995218126&page_token=token1",
+				Response: Job{
+					Settings: &JobSettings{
+						Tasks: []Task{
+							{
+								TaskKey: "task3",
+							},
+							{
+								TaskKey: "task4",
+							},
+						},
+						JobClusters: []JobCluster{
+							{
+								JobClusterKey: "cluster3",
+							},
+							{
+								JobClusterKey: "cluster4",
+							},
+						},
+						Parameters: []JobParameterDefinition{
+							{
+								Name:    "param3",
+								Default: "default3",
+							},
+						},
+						Environments: []JobEnvironment{
+							{
+								EnvironmentKey: "env2",
+							},
+						},
+					},
+					NextPageToken: "token2",
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/get?job_id=514594995218126&page_token=token2",
+				Response: Job{
+					Settings: &JobSettings{
+						Tasks: []Task{
+							{
+								TaskKey: "task5",
+							},
+						},
+						Environments: []JobEnvironment{
+							{
+								EnvironmentKey: "env3",
+							},
+						},
+					},
+				},
+			},
+			{
+				Method:       "GET",
+				ReuseRequest: true,
+				Resource:     "/api/2.1/jobs/get?job_id=514594995218126",
+				Response: Job{
+					Settings: &JobSettings{
+						Tasks: []Task{
+							{
+								TaskKey: "task1",
+							},
+							{
+								TaskKey: "task2",
+							},
+							{
+								TaskKey: "task3",
+							},
+							{
+								TaskKey: "task4",
+							},
+							{
+								TaskKey: "task5",
+							},
+						},
+						JobClusters: []JobCluster{
+							{
+								JobClusterKey: "cluster1",
+							},
+							{
+								JobClusterKey: "cluster2",
+							},
+							{
+								JobClusterKey: "cluster3",
+							},
+							{
+								JobClusterKey: "cluster4",
+							},
+						},
+						Parameters: []JobParameterDefinition{
+							{
+								Name:    "param1",
+								Default: "default1",
+							},
+							{
+								Name:    "param2",
+								Default: "default2",
+							},
+							{
+								Name:    "param3",
+								Default: "default3",
+							},
+						},
+						Environments: []JobEnvironment{
+							{
+								EnvironmentKey: "env1",
+							},
+							{
+								EnvironmentKey: "env2",
+							},
+							{
+								EnvironmentKey: "env3",
+							},
+						},
+					},
+				},
+			},
+		}
+		client, server := requestMocks.Client(t)
+		defer server.Close()
+
+		mockJobsImpl := &jobsImpl{
+			client: client,
+		}
+		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+
+		request := GetJobRequest{JobId: 514594995218126}
+		job, err := api.Get(ctx, request)
+
+		assert.NoError(t, err)
+		assert.Equal(t, 5, len(job.Settings.Tasks))
+		assert.Equal(t, 4, len(job.Settings.JobClusters))
+		assert.Equal(t, 3, len(job.Settings.Parameters))
+		assert.Equal(t, 3, len(job.Settings.Environments))
+		assert.EqualValues(t, "task1", job.Settings.Tasks[0].TaskKey)
+		assert.EqualValues(t, "task4", job.Settings.Tasks[3].TaskKey)
+		assert.EqualValues(t, "task5", job.Settings.Tasks[4].TaskKey)
+		assert.EqualValues(t, "cluster3", job.Settings.JobClusters[2].JobClusterKey)
+		assert.EqualValues(t, "param3", job.Settings.Parameters[2].Name)
+		assert.EqualValues(t, "env3", job.Settings.Environments[2].EnvironmentKey)
+	})
+}
