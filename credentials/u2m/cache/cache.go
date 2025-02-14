@@ -21,6 +21,7 @@ import (
 // TokenCache is an interface for storing and looking up OAuth tokens.
 type TokenCache interface {
 	// Store stores the token with the given key, replacing any existing token.
+	// If t is nil, it deletes the token.
 	Store(key string, t *oauth2.Token) error
 
 	// Lookup looks up the token with the given key. If the token is not found, it

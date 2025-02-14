@@ -59,7 +59,7 @@ type fileTokenCache struct {
 	fileLocation string
 
 	// locker protects the token cache file from concurrent reads and writes.
-	locker sync.Locker
+	locker sync.Mutex
 }
 
 // NewFileTokenCache creates a new FileTokenCache. By default, the cache is
@@ -94,7 +94,11 @@ func (c *fileTokenCache) Store(key string, t *oauth2.Token) error {
 	if f.Tokens == nil {
 		f.Tokens = map[string]*oauth2.Token{}
 	}
-	f.Tokens[key] = t
+	if t == nil {
+		delete(f.Tokens, key)
+	} else {
+		f.Tokens[key] = t
+	}
 	raw, err := json.MarshalIndent(f, "", "  ")
 	if err != nil {
 		return fmt.Errorf("marshal: %w", err)
@@ -151,8 +155,6 @@ func (c *fileTokenCache) init() error {
 			return fmt.Errorf("write: %w", err)
 		}
 	}
-	// Initialize the locker.
-	c.locker = &sync.Mutex{}
 	return nil
 }
 
