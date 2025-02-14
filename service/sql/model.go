@@ -16,7 +16,7 @@ type AccessControl struct {
 
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AccessControl) UnmarshalJSON(b []byte) error {
@@ -72,7 +72,7 @@ type Alert struct {
 	// The timestamp indicating when the alert was updated.
 	UpdateTime string `json:"update_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Alert) UnmarshalJSON(b []byte) error {
@@ -106,7 +106,7 @@ type AlertConditionThreshold struct {
 type AlertOperandColumn struct {
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AlertOperandColumn) UnmarshalJSON(b []byte) error {
@@ -124,7 +124,7 @@ type AlertOperandValue struct {
 
 	StringValue string `json:"string_value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AlertOperandValue) UnmarshalJSON(b []byte) error {
@@ -199,7 +199,7 @@ type AlertOptions struct {
 	// strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true).
 	Value any `json:"value"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AlertOptions) UnmarshalJSON(b []byte) error {
@@ -281,7 +281,7 @@ type AlertQuery struct {
 	// The ID of the user who owns the query.
 	UserId int `json:"user_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AlertQuery) UnmarshalJSON(b []byte) error {
@@ -335,7 +335,7 @@ type BaseChunkInfo struct {
 	// The starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *BaseChunkInfo) UnmarshalJSON(b []byte) error {
@@ -363,7 +363,7 @@ type Channel struct {
 
 	Name ChannelName `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Channel) UnmarshalJSON(b []byte) error {
@@ -381,7 +381,7 @@ type ChannelInfo struct {
 	// Name of the channel
 	Name ChannelName `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ChannelInfo) UnmarshalJSON(b []byte) error {
@@ -423,6 +423,38 @@ func (f *ChannelName) Type() string {
 	return "ChannelName"
 }
 
+type ClientConfig struct {
+	AllowCustomJsVisualizations bool `json:"allow_custom_js_visualizations,omitempty"`
+
+	AllowDownloads bool `json:"allow_downloads,omitempty"`
+
+	AllowExternalShares bool `json:"allow_external_shares,omitempty"`
+
+	AllowSubscriptions bool `json:"allow_subscriptions,omitempty"`
+
+	DateFormat string `json:"date_format,omitempty"`
+
+	DateTimeFormat string `json:"date_time_format,omitempty"`
+
+	DisablePublish bool `json:"disable_publish,omitempty"`
+
+	EnableLegacyAutodetectTypes bool `json:"enable_legacy_autodetect_types,omitempty"`
+
+	FeatureShowPermissionsControl bool `json:"feature_show_permissions_control,omitempty"`
+
+	HidePlotlyModeBar bool `json:"hide_plotly_mode_bar,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ClientConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClientConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ColumnInfo struct {
 	// The name of the column.
 	Name string `json:"name,omitempty"`
@@ -442,7 +474,7 @@ type ColumnInfo struct {
 	// The full SQL type specification.
 	TypeText string `json:"type_text,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
@@ -530,7 +562,7 @@ type CreateAlert struct {
 	// again.
 	Rearm int `json:"rearm,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateAlert) UnmarshalJSON(b []byte) error {
@@ -572,7 +604,7 @@ type CreateAlertRequestAlert struct {
 	// the alert will not be triggered again.
 	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateAlertRequestAlert) UnmarshalJSON(b []byte) error {
@@ -613,7 +645,7 @@ type CreateQueryRequestQuery struct {
 	// ID of the SQL warehouse attached to the query.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateQueryRequestQuery) UnmarshalJSON(b []byte) error {
@@ -641,7 +673,7 @@ type CreateQueryVisualizationsLegacyRequest struct {
 	// The type of visualization: chart, table, pivot table, and so on.
 	Type string `json:"type"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateQueryVisualizationsLegacyRequest) UnmarshalJSON(b []byte) error {
@@ -672,7 +704,7 @@ type CreateVisualizationRequestVisualization struct {
 	// The type of visualization: counter, table, funnel, and so on.
 	Type string `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateVisualizationRequestVisualization) UnmarshalJSON(b []byte) error {
@@ -746,7 +778,7 @@ type CreateWarehouseRequest struct {
 	// `enable_serverless_compute` to `true`.
 	WarehouseType CreateWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateWarehouseRequest) UnmarshalJSON(b []byte) error {
@@ -793,7 +825,7 @@ type CreateWarehouseResponse struct {
 	// Id for the SQL warehouse. This value is unique across all SQL warehouses.
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateWarehouseResponse) UnmarshalJSON(b []byte) error {
@@ -820,7 +852,7 @@ type CreateWidget struct {
 	// Width of a widget
 	Width int `json:"width"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateWidget) UnmarshalJSON(b []byte) error {
@@ -879,7 +911,7 @@ type Dashboard struct {
 
 	Widgets []Widget `json:"widgets,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Dashboard) UnmarshalJSON(b []byte) error {
@@ -902,7 +934,7 @@ type DashboardEditContent struct {
 
 	Tags []string `json:"tags,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DashboardEditContent) UnmarshalJSON(b []byte) error {
@@ -919,7 +951,7 @@ type DashboardOptions struct {
 	// thirty days.
 	MovedToTrashAt string `json:"moved_to_trash_at,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DashboardOptions) UnmarshalJSON(b []byte) error {
@@ -948,7 +980,7 @@ type DashboardPostContent struct {
 
 	Tags []string `json:"tags,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DashboardPostContent) UnmarshalJSON(b []byte) error {
@@ -986,7 +1018,7 @@ type DataSource struct {
 	// a SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DataSource) UnmarshalJSON(b []byte) error {
@@ -1043,7 +1075,7 @@ type DateRangeValue struct {
 
 	StartDayOfWeek int `json:"start_day_of_week,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DateRangeValue) UnmarshalJSON(b []byte) error {
@@ -1120,7 +1152,7 @@ type DateValue struct {
 	// Defaults to DAY_PRECISION (YYYY-MM-DD).
 	Precision DatePrecision `json:"precision,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DateValue) UnmarshalJSON(b []byte) error {
@@ -1242,7 +1274,7 @@ type EditAlert struct {
 	// again.
 	Rearm int `json:"rearm,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EditAlert) UnmarshalJSON(b []byte) error {
@@ -1316,7 +1348,7 @@ type EditWarehouseRequest struct {
 	// `enable_serverless_compute` to `true`.
 	WarehouseType EditWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EditWarehouseRequest) UnmarshalJSON(b []byte) error {
@@ -1372,7 +1404,7 @@ type EndpointConfPair struct {
 
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EndpointConfPair) UnmarshalJSON(b []byte) error {
@@ -1397,7 +1429,7 @@ type EndpointHealth struct {
 	// warehouses.
 	Summary string `json:"summary,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EndpointHealth) UnmarshalJSON(b []byte) error {
@@ -1484,7 +1516,7 @@ type EndpointInfo struct {
 	// `enable_serverless_compute` to `true`.
 	WarehouseType EndpointInfoWarehouseType `json:"warehouse_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EndpointInfo) UnmarshalJSON(b []byte) error {
@@ -1532,7 +1564,7 @@ type EndpointTagPair struct {
 
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EndpointTagPair) UnmarshalJSON(b []byte) error {
@@ -1555,7 +1587,7 @@ type EnumValue struct {
 	// List of selected query parameter values.
 	Values []string `json:"values,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnumValue) UnmarshalJSON(b []byte) error {
@@ -1691,7 +1723,7 @@ type ExecuteStatementRequest struct {
 	// [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html
 	WarehouseId string `json:"warehouse_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExecuteStatementRequest) UnmarshalJSON(b []byte) error {
@@ -1768,7 +1800,7 @@ type ExternalLink struct {
 	// The starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExternalLink) UnmarshalJSON(b []byte) error {
@@ -1848,7 +1880,7 @@ type GetResponse struct {
 	// A singular noun object type.
 	ObjectType ObjectType `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetResponse) UnmarshalJSON(b []byte) error {
@@ -1973,7 +2005,7 @@ type GetWarehouseResponse struct {
 	// `enable_serverless_compute` to `true`.
 	WarehouseType GetWarehouseResponseWarehouseType `json:"warehouse_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetWarehouseResponse) UnmarshalJSON(b []byte) error {
@@ -2043,7 +2075,7 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	// SQL configuration parameters
 	SqlConfigurationParameters *RepeatedEndpointConfPairs `json:"sql_configuration_parameters,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetWorkspaceWarehouseConfigResponse) UnmarshalJSON(b []byte) error {
@@ -2112,7 +2144,7 @@ type LegacyAlert struct {
 
 	User *User `json:"user,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LegacyAlert) UnmarshalJSON(b []byte) error {
@@ -2225,7 +2257,7 @@ type LegacyQuery struct {
 
 	Visualizations []LegacyVisualization `json:"visualizations,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LegacyQuery) UnmarshalJSON(b []byte) error {
@@ -2262,7 +2294,7 @@ type LegacyVisualization struct {
 
 	UpdatedAt string `json:"updated_at,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LegacyVisualization) UnmarshalJSON(b []byte) error {
@@ -2306,7 +2338,7 @@ type ListAlertsRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAlertsRequest) UnmarshalJSON(b []byte) error {
@@ -2322,7 +2354,7 @@ type ListAlertsResponse struct {
 
 	Results []ListAlertsResponseAlert `json:"results,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAlertsResponse) UnmarshalJSON(b []byte) error {
@@ -2376,7 +2408,7 @@ type ListAlertsResponseAlert struct {
 	// The timestamp indicating when the alert was updated.
 	UpdateTime string `json:"update_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAlertsResponseAlert) UnmarshalJSON(b []byte) error {
@@ -2398,7 +2430,7 @@ type ListDashboardsRequest struct {
 	// Full text search term.
 	Q string `json:"-" url:"q,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
@@ -2460,7 +2492,7 @@ type ListQueriesLegacyRequest struct {
 	// Full text search term
 	Q string `json:"-" url:"q,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListQueriesLegacyRequest) UnmarshalJSON(b []byte) error {
@@ -2477,7 +2509,7 @@ type ListQueriesRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListQueriesRequest) UnmarshalJSON(b []byte) error {
@@ -2496,7 +2528,7 @@ type ListQueriesResponse struct {
 
 	Res []QueryInfo `json:"res,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListQueriesResponse) UnmarshalJSON(b []byte) error {
@@ -2523,7 +2555,7 @@ type ListQueryHistoryRequest struct {
 	// optional.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListQueryHistoryRequest) UnmarshalJSON(b []byte) error {
@@ -2539,7 +2571,7 @@ type ListQueryObjectsResponse struct {
 
 	Results []ListQueryObjectsResponseQuery `json:"results,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListQueryObjectsResponse) UnmarshalJSON(b []byte) error {
@@ -2586,7 +2618,7 @@ type ListQueryObjectsResponseQuery struct {
 	// ID of the SQL warehouse attached to the query.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListQueryObjectsResponseQuery) UnmarshalJSON(b []byte) error {
@@ -2607,7 +2639,7 @@ type ListResponse struct {
 	// List of dashboards returned.
 	Results []Dashboard `json:"results,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListResponse) UnmarshalJSON(b []byte) error {
@@ -2626,7 +2658,7 @@ type ListVisualizationsForQueryRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListVisualizationsForQueryRequest) UnmarshalJSON(b []byte) error {
@@ -2642,7 +2674,7 @@ type ListVisualizationsForQueryResponse struct {
 
 	Results []Visualization `json:"results,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListVisualizationsForQueryResponse) UnmarshalJSON(b []byte) error {
@@ -2659,7 +2691,7 @@ type ListWarehousesRequest struct {
 	// not specified, the user from the session header is used.
 	RunAsUserId int `json:"-" url:"run_as_user_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListWarehousesRequest) UnmarshalJSON(b []byte) error {
@@ -2684,7 +2716,7 @@ type MultiValuesOptions struct {
 	// Character that suffixes each selected parameter value.
 	Suffix string `json:"suffix,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MultiValuesOptions) UnmarshalJSON(b []byte) error {
@@ -2698,7 +2730,7 @@ func (s MultiValuesOptions) MarshalJSON() ([]byte, error) {
 type NumericValue struct {
 	Value float64 `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NumericValue) UnmarshalJSON(b []byte) error {
@@ -2782,7 +2814,7 @@ type OdbcParams struct {
 
 	Protocol string `json:"protocol,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *OdbcParams) UnmarshalJSON(b []byte) error {
@@ -2843,7 +2875,7 @@ type Parameter struct {
 	// The default value for this parameter.
 	Value any `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Parameter) UnmarshalJSON(b []byte) error {
@@ -2999,7 +3031,7 @@ type Query struct {
 	// ID of the SQL warehouse attached to the query.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Query) UnmarshalJSON(b []byte) error {
@@ -3018,7 +3050,7 @@ type QueryBackedValue struct {
 	// List of selected query parameter values.
 	Values []string `json:"values,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryBackedValue) UnmarshalJSON(b []byte) error {
@@ -3056,7 +3088,7 @@ type QueryEditContent struct {
 
 	Tags []string `json:"tags,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryEditContent) UnmarshalJSON(b []byte) error {
@@ -3132,7 +3164,7 @@ type QueryInfo struct {
 	// Warehouse ID.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryInfo) UnmarshalJSON(b []byte) error {
@@ -3153,7 +3185,7 @@ type QueryList struct {
 	// List of queries returned.
 	Results []LegacyQuery `json:"results,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryList) UnmarshalJSON(b []byte) error {
@@ -3224,7 +3256,7 @@ type QueryMetrics struct {
 	// tenant, in bytes.
 	WriteRemoteBytes int64 `json:"write_remote_bytes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryMetrics) UnmarshalJSON(b []byte) error {
@@ -3247,7 +3279,7 @@ type QueryOptions struct {
 	// The name of the schema to execute this query in.
 	Schema string `json:"schema,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryOptions) UnmarshalJSON(b []byte) error {
@@ -3279,7 +3311,7 @@ type QueryParameter struct {
 	// Text displayed in the user-facing parameter widget in the UI.
 	Title string `json:"title,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryParameter) UnmarshalJSON(b []byte) error {
@@ -3317,7 +3349,7 @@ type QueryPostContent struct {
 
 	Tags []string `json:"tags,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryPostContent) UnmarshalJSON(b []byte) error {
@@ -3481,7 +3513,7 @@ type ResultData struct {
 	// The starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResultData) UnmarshalJSON(b []byte) error {
@@ -3511,7 +3543,7 @@ type ResultManifest struct {
 	// `byte_limit`.
 	Truncated bool `json:"truncated,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResultManifest) UnmarshalJSON(b []byte) error {
@@ -3528,7 +3560,7 @@ type ResultSchema struct {
 
 	Columns []ColumnInfo `json:"columns,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResultSchema) UnmarshalJSON(b []byte) error {
@@ -3601,7 +3633,7 @@ type ServiceError struct {
 	// A brief summary of the error condition.
 	Message string `json:"message,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServiceError) UnmarshalJSON(b []byte) error {
@@ -3680,7 +3712,7 @@ type SetResponse struct {
 	// A singular noun object type.
 	ObjectType ObjectType `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SetResponse) UnmarshalJSON(b []byte) error {
@@ -3718,7 +3750,7 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	// SQL configuration parameters
 	SqlConfigurationParameters *RepeatedEndpointConfPairs `json:"sql_configuration_parameters,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SetWorkspaceWarehouseConfigRequest) UnmarshalJSON(b []byte) error {
@@ -3852,7 +3884,7 @@ type StatementParameterListItem struct {
 	// is interpreted as NULL.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *StatementParameterListItem) UnmarshalJSON(b []byte) error {
@@ -3875,7 +3907,7 @@ type StatementResponse struct {
 	// information.
 	Status *StatementStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *StatementResponse) UnmarshalJSON(b []byte) error {
@@ -4246,7 +4278,7 @@ func (f *TerminationReasonType) Type() string {
 type TextValue struct {
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TextValue) UnmarshalJSON(b []byte) error {
@@ -4263,7 +4295,7 @@ type TimeRange struct {
 	// The start time in milliseconds.
 	StartTimeMs int64 `json:"start_time_ms,omitempty" url:"start_time_ms,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TimeRange) UnmarshalJSON(b []byte) error {
@@ -4278,7 +4310,7 @@ type TransferOwnershipObjectId struct {
 	// Email address for the new owner, who must exist in the workspace.
 	NewOwner string `json:"new_owner,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TransferOwnershipObjectId) UnmarshalJSON(b []byte) error {
@@ -4298,7 +4330,7 @@ type TransferOwnershipRequest struct {
 	// The type of object on which to change ownership.
 	ObjectType OwnableObjectType `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TransferOwnershipRequest) UnmarshalJSON(b []byte) error {
@@ -4323,10 +4355,17 @@ type UpdateAlertRequest struct {
 	Alert *UpdateAlertRequestAlert `json:"alert,omitempty"`
 
 	Id string `json:"-" url:"-"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	UpdateMask string `json:"update_mask"`
 }
 
@@ -4358,7 +4397,7 @@ type UpdateAlertRequestAlert struct {
 	// the alert will not be triggered again.
 	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateAlertRequestAlert) UnmarshalJSON(b []byte) error {
@@ -4373,10 +4412,17 @@ type UpdateQueryRequest struct {
 	Id string `json:"-" url:"-"`
 
 	Query *UpdateQueryRequestQuery `json:"query,omitempty"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	UpdateMask string `json:"update_mask"`
 }
 
@@ -4406,7 +4452,7 @@ type UpdateQueryRequestQuery struct {
 	// ID of the SQL warehouse attached to the query.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateQueryRequestQuery) UnmarshalJSON(b []byte) error {
@@ -4422,10 +4468,17 @@ type UpdateResponse struct {
 
 type UpdateVisualizationRequest struct {
 	Id string `json:"-" url:"-"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	UpdateMask string `json:"update_mask"`
 
 	Visualization *UpdateVisualizationRequestVisualization `json:"visualization,omitempty"`
@@ -4445,7 +4498,7 @@ type UpdateVisualizationRequestVisualization struct {
 	// The type of visualization: counter, table, funnel, and so on.
 	Type string `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateVisualizationRequestVisualization) UnmarshalJSON(b []byte) error {
@@ -4463,7 +4516,7 @@ type User struct {
 
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *User) UnmarshalJSON(b []byte) error {
@@ -4496,7 +4549,7 @@ type Visualization struct {
 	// The timestamp indicating when the visualization was updated.
 	UpdateTime string `json:"update_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Visualization) UnmarshalJSON(b []byte) error {
@@ -4517,7 +4570,7 @@ type WarehouseAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WarehouseAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -4540,7 +4593,7 @@ type WarehouseAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WarehouseAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -4558,7 +4611,7 @@ type WarehousePermission struct {
 	// Permission level
 	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WarehousePermission) UnmarshalJSON(b []byte) error {
@@ -4608,7 +4661,7 @@ type WarehousePermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WarehousePermissions) UnmarshalJSON(b []byte) error {
@@ -4624,7 +4677,7 @@ type WarehousePermissionsDescription struct {
 	// Permission level
 	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WarehousePermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -4648,7 +4701,7 @@ type WarehouseTypePair struct {
 	// Warehouse type: `PRO` or `CLASSIC`.
 	WarehouseType WarehouseTypePairWarehouseType `json:"warehouse_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WarehouseTypePair) UnmarshalJSON(b []byte) error {
@@ -4703,7 +4756,7 @@ type Widget struct {
 	// Unused field.
 	Width int `json:"width,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Widget) UnmarshalJSON(b []byte) error {
@@ -4733,7 +4786,7 @@ type WidgetOptions struct {
 	// Timestamp of the last time this object was updated.
 	UpdatedAt string `json:"updated_at,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WidgetOptions) UnmarshalJSON(b []byte) error {
@@ -4758,7 +4811,7 @@ type WidgetPosition struct {
 	// height of the widget measured in dashboard grid cells
 	SizeY int `json:"sizeY,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WidgetPosition) UnmarshalJSON(b []byte) error {

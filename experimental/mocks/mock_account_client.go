@@ -32,6 +32,7 @@ func NewMockAccountClient(t interface {
 
 			AccessControl:                    iam.NewMockAccountAccessControlInterface(t),
 			BillableUsage:                    billing.NewMockBillableUsageInterface(t),
+			BudgetPolicy:                     billing.NewMockBudgetPolicyInterface(t),
 			Credentials:                      provisioning.NewMockCredentialsInterface(t),
 			CustomAppIntegration:             oauth2.NewMockCustomAppIntegrationInterface(t),
 			EncryptionKeys:                   provisioning.NewMockEncryptionKeysInterface(t),
@@ -69,6 +70,9 @@ func NewMockAccountClient(t interface {
 	mockDisableLegacyFeatures := settings.NewMockDisableLegacyFeaturesInterface(t)
 	mockAccountSettingsAPI.On("DisableLegacyFeatures").Return(mockDisableLegacyFeatures).Maybe()
 
+	mockEnableIpAccessLists := settings.NewMockEnableIpAccessListsInterface(t)
+	mockAccountSettingsAPI.On("EnableIpAccessLists").Return(mockEnableIpAccessLists).Maybe()
+
 	mockEsmEnablementAccount := settings.NewMockEsmEnablementAccountInterface(t)
 	mockAccountSettingsAPI.On("EsmEnablementAccount").Return(mockEsmEnablementAccount).Maybe()
 
@@ -90,6 +94,14 @@ func (m *MockAccountClient) GetMockDisableLegacyFeaturesAPI() *settings.MockDisa
 	api, ok := m.GetMockAccountSettingsAPI().DisableLegacyFeatures().(*settings.MockDisableLegacyFeaturesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DisableLegacyFeatures to be *settings.MockDisableLegacyFeaturesInterface, actual was %T", m.GetMockAccountSettingsAPI().DisableLegacyFeatures()))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockEnableIpAccessListsAPI() *settings.MockEnableIpAccessListsInterface {
+	api, ok := m.GetMockAccountSettingsAPI().EnableIpAccessLists().(*settings.MockEnableIpAccessListsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected EnableIpAccessLists to be *settings.MockEnableIpAccessListsInterface, actual was %T", m.GetMockAccountSettingsAPI().EnableIpAccessLists()))
 	}
 	return api
 }
@@ -122,6 +134,14 @@ func (m *MockAccountClient) GetMockBillableUsageAPI() *billing.MockBillableUsage
 	api, ok := m.AccountClient.BillableUsage.(*billing.MockBillableUsageInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected BillableUsage to be *billing.MockBillableUsageInterface, actual was %T", m.AccountClient.BillableUsage))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockBudgetPolicyAPI() *billing.MockBudgetPolicyInterface {
+	api, ok := m.AccountClient.BudgetPolicy.(*billing.MockBudgetPolicyInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected BudgetPolicy to be *billing.MockBudgetPolicyInterface, actual was %T", m.AccountClient.BudgetPolicy))
 	}
 	return api
 }

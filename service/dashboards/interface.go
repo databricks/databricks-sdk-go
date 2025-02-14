@@ -37,6 +37,13 @@ type GenieService interface {
 	// status is `EXECUTING_QUERY`.
 	GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
+	// Get conversation message SQL query result by attachment id.
+	//
+	// Get the result of SQL query by attachment id This is only available if a
+	// message has a query attachment and the message status is
+	// `EXECUTING_QUERY`.
+	GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error)
+
 	// Start conversation.
 	//
 	// Start a new conversation.
@@ -123,4 +130,26 @@ type LakeviewService interface {
 
 	// Update dashboard schedule.
 	UpdateSchedule(ctx context.Context, request UpdateScheduleRequest) (*Schedule, error)
+}
+
+// Token-based Lakeview APIs for embedding dashboards in external applications.
+type LakeviewEmbeddedService interface {
+
+	// Read a published dashboard in an embedded ui.
+	//
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
+}
+
+// Query execution APIs for AI / BI Dashboards
+type QueryExecutionService interface {
+
+	// Cancel the results for the a query for a published, embedded dashboard.
+	CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error)
+
+	// Execute a query for a published dashboard.
+	ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error
+
+	// Poll the results for the a query for a published, embedded dashboard.
+	PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error)
 }

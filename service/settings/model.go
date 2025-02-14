@@ -8,6 +8,34 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+type AccountIpAccessEnable struct {
+	AcctIpAclEnable BooleanMessage `json:"acct_ip_acl_enable"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AccountIpAccessEnable) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccountIpAccessEnable) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AibiDashboardEmbeddingAccessPolicy struct {
 	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType `json:"access_policy_type"`
 }
@@ -58,7 +86,7 @@ type AibiDashboardEmbeddingAccessPolicySetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AibiDashboardEmbeddingAccessPolicySetting) UnmarshalJSON(b []byte) error {
@@ -90,7 +118,7 @@ type AibiDashboardEmbeddingApprovedDomainsSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AibiDashboardEmbeddingApprovedDomainsSetting) UnmarshalJSON(b []byte) error {
@@ -118,7 +146,7 @@ type AutomaticClusterUpdateSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AutomaticClusterUpdateSetting) UnmarshalJSON(b []byte) error {
@@ -132,7 +160,7 @@ func (s AutomaticClusterUpdateSetting) MarshalJSON() ([]byte, error) {
 type BooleanMessage struct {
 	Value bool `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *BooleanMessage) UnmarshalJSON(b []byte) error {
@@ -159,7 +187,7 @@ type ClusterAutoRestartMessage struct {
 
 	RestartEvenIfNoUpdatesAvailable bool `json:"restart_even_if_no_updates_available,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterAutoRestartMessage) UnmarshalJSON(b []byte) error {
@@ -185,7 +213,7 @@ type ClusterAutoRestartMessageEnablementDetails struct {
 	// The feature is unavailable if the customer doesn't have enterprise tier
 	UnavailableForNonEnterpriseTier bool `json:"unavailable_for_non_enterprise_tier,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterAutoRestartMessageEnablementDetails) UnmarshalJSON(b []byte) error {
@@ -287,7 +315,7 @@ type ClusterAutoRestartMessageMaintenanceWindowWindowStartTime struct {
 
 	Minutes int `json:"minutes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) UnmarshalJSON(b []byte) error {
@@ -305,7 +333,7 @@ type ComplianceSecurityProfile struct {
 
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
@@ -334,7 +362,7 @@ type ComplianceSecurityProfileSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ComplianceSecurityProfileSetting) UnmarshalJSON(b []byte) error {
@@ -360,7 +388,11 @@ const ComplianceStandardFedrampModerate ComplianceStandard = `FEDRAMP_MODERATE`
 
 const ComplianceStandardHipaa ComplianceStandard = `HIPAA`
 
+const ComplianceStandardHitrust ComplianceStandard = `HITRUST`
+
 const ComplianceStandardIrapProtected ComplianceStandard = `IRAP_PROTECTED`
+
+const ComplianceStandardIsmap ComplianceStandard = `ISMAP`
 
 const ComplianceStandardItarEar ComplianceStandard = `ITAR_EAR`
 
@@ -376,11 +408,11 @@ func (f *ComplianceStandard) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ComplianceStandard) Set(v string) error {
 	switch v {
-	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `HIPAA`, `IRAP_PROTECTED`, `ITAR_EAR`, `NONE`, `PCI_DSS`:
+	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `HIPAA`, `HITRUST`, `IRAP_PROTECTED`, `ISMAP`, `ITAR_EAR`, `NONE`, `PCI_DSS`:
 		*f = ComplianceStandard(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "HIPAA", "IRAP_PROTECTED", "ITAR_EAR", "NONE", "PCI_DSS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "HIPAA", "HITRUST", "IRAP_PROTECTED", "ISMAP", "ITAR_EAR", "NONE", "PCI_DSS"`, v)
 	}
 }
 
@@ -440,7 +472,7 @@ type CreateNotificationDestinationRequest struct {
 	// The display name for the notification destination.
 	DisplayName string `json:"display_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
@@ -460,7 +492,7 @@ type CreateOboTokenRequest struct {
 	// The number of seconds before the token expires.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateOboTokenRequest) UnmarshalJSON(b []byte) error {
@@ -477,7 +509,7 @@ type CreateOboTokenResponse struct {
 	// Value of the token.
 	TokenValue string `json:"token_value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateOboTokenResponse) UnmarshalJSON(b []byte) error {
@@ -541,7 +573,7 @@ type CreateTokenRequest struct {
 	// If the lifetime is not specified, this token remains valid indefinitely.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateTokenRequest) UnmarshalJSON(b []byte) error {
@@ -558,7 +590,7 @@ type CreateTokenResponse struct {
 	// The value of the new token.
 	TokenValue string `json:"token_value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateTokenResponse) UnmarshalJSON(b []byte) error {
@@ -577,7 +609,7 @@ type CspEnablementAccount struct {
 	// Enforced = it cannot be overriden at workspace level.
 	IsEnforced bool `json:"is_enforced,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CspEnablementAccount) UnmarshalJSON(b []byte) error {
@@ -606,7 +638,7 @@ type CspEnablementAccountSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CspEnablementAccountSetting) UnmarshalJSON(b []byte) error {
@@ -644,7 +676,7 @@ type DefaultNamespaceSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DefaultNamespaceSetting) UnmarshalJSON(b []byte) error {
@@ -653,6 +685,40 @@ func (s *DefaultNamespaceSetting) UnmarshalJSON(b []byte) error {
 
 func (s DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Delete the account IP access toggle setting
+type DeleteAccountIpAccessEnableRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteAccountIpAccessEnableResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
 }
 
 // Delete access list
@@ -672,7 +738,7 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
@@ -706,7 +772,7 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
@@ -740,7 +806,7 @@ type DeleteDefaultNamespaceSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
@@ -774,7 +840,7 @@ type DeleteDisableLegacyAccessRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
@@ -808,7 +874,7 @@ type DeleteDisableLegacyDbfsRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
@@ -842,7 +908,7 @@ type DeleteDisableLegacyFeaturesRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
@@ -896,7 +962,7 @@ type DeletePersonalComputeSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeletePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
@@ -941,7 +1007,7 @@ type DeleteRestrictWorkspaceAdminsSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1020,7 +1086,7 @@ type DisableLegacyAccess struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DisableLegacyAccess) UnmarshalJSON(b []byte) error {
@@ -1048,7 +1114,7 @@ type DisableLegacyDbfs struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DisableLegacyDbfs) UnmarshalJSON(b []byte) error {
@@ -1076,7 +1142,7 @@ type DisableLegacyFeatures struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DisableLegacyFeatures) UnmarshalJSON(b []byte) error {
@@ -1126,7 +1192,7 @@ type EgressNetworkPolicyInternetAccessPolicyInternetDestination struct {
 
 	Type EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EgressNetworkPolicyInternetAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
@@ -1306,7 +1372,7 @@ type EgressNetworkPolicyInternetAccessPolicyStorageDestination struct {
 
 	Type EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EgressNetworkPolicyInternetAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
@@ -1360,7 +1426,7 @@ type Empty struct {
 type EnhancedSecurityMonitoring struct {
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnhancedSecurityMonitoring) UnmarshalJSON(b []byte) error {
@@ -1389,7 +1455,7 @@ type EnhancedSecurityMonitoringSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnhancedSecurityMonitoringSetting) UnmarshalJSON(b []byte) error {
@@ -1404,7 +1470,7 @@ func (s EnhancedSecurityMonitoringSetting) MarshalJSON() ([]byte, error) {
 type EsmEnablementAccount struct {
 	IsEnforced bool `json:"is_enforced,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EsmEnablementAccount) UnmarshalJSON(b []byte) error {
@@ -1433,7 +1499,7 @@ type EsmEnablementAccountSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EsmEnablementAccountSetting) UnmarshalJSON(b []byte) error {
@@ -1458,7 +1524,7 @@ type ExchangeToken struct {
 	// The type of this exchange token
 	TokenType TokenType `json:"tokenType,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExchangeToken) UnmarshalJSON(b []byte) error {
@@ -1504,7 +1570,7 @@ type GenericWebhookConfig struct {
 	// [Output-Only] Whether username is set.
 	UsernameSet bool `json:"username_set,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GenericWebhookConfig) UnmarshalJSON(b []byte) error {
@@ -1512,6 +1578,28 @@ func (s *GenericWebhookConfig) UnmarshalJSON(b []byte) error {
 }
 
 func (s GenericWebhookConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get the account IP access toggle setting
+type GetAccountIpAccessEnableRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1532,7 +1620,7 @@ type GetAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
@@ -1554,7 +1642,7 @@ type GetAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1576,7 +1664,7 @@ type GetAutomaticClusterUpdateSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetAutomaticClusterUpdateSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1598,7 +1686,7 @@ type GetComplianceSecurityProfileSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetComplianceSecurityProfileSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1620,7 +1708,7 @@ type GetCspEnablementAccountSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1642,7 +1730,7 @@ type GetDefaultNamespaceSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1664,7 +1752,7 @@ type GetDisableLegacyAccessRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
@@ -1686,7 +1774,7 @@ type GetDisableLegacyDbfsRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
@@ -1708,7 +1796,7 @@ type GetDisableLegacyFeaturesRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
@@ -1730,7 +1818,7 @@ type GetEnhancedSecurityMonitoringSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetEnhancedSecurityMonitoringSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1752,7 +1840,7 @@ type GetEsmEnablementAccountSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1801,7 +1889,7 @@ type GetPersonalComputeSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetPersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1831,7 +1919,7 @@ type GetRestrictWorkspaceAdminsSettingRequest struct {
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
@@ -1891,7 +1979,7 @@ type IpAccessListInfo struct {
 	// User ID of the user who updated this list.
 	UpdatedBy int64 `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *IpAccessListInfo) UnmarshalJSON(b []byte) error {
@@ -1913,7 +2001,7 @@ type ListNccAzurePrivateEndpointRulesResponse struct {
 	// are no more results to show.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNccAzurePrivateEndpointRulesResponse) UnmarshalJSON(b []byte) error {
@@ -1929,7 +2017,7 @@ type ListNetworkConnectivityConfigurationsRequest struct {
 	// Pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNetworkConnectivityConfigurationsRequest) UnmarshalJSON(b []byte) error {
@@ -1946,7 +2034,7 @@ type ListNetworkConnectivityConfigurationsResponse struct {
 	// are no more results to show.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNetworkConnectivityConfigurationsResponse) UnmarshalJSON(b []byte) error {
@@ -1963,7 +2051,7 @@ type ListNotificationDestinationsRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNotificationDestinationsRequest) UnmarshalJSON(b []byte) error {
@@ -1980,7 +2068,7 @@ type ListNotificationDestinationsResponse struct {
 
 	Results []ListNotificationDestinationsResult `json:"results,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNotificationDestinationsResponse) UnmarshalJSON(b []byte) error {
@@ -2000,7 +2088,7 @@ type ListNotificationDestinationsResult struct {
 	// UUID identifying notification destination.
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListNotificationDestinationsResult) UnmarshalJSON(b []byte) error {
@@ -2018,7 +2106,7 @@ type ListPrivateEndpointRulesRequest struct {
 	// Pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListPrivateEndpointRulesRequest) UnmarshalJSON(b []byte) error {
@@ -2041,7 +2129,7 @@ type ListTokenManagementRequest struct {
 	// Username of the user that created the token.
 	CreatedByUsername string `json:"-" url:"created_by_username,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListTokenManagementRequest) UnmarshalJSON(b []byte) error {
@@ -2099,7 +2187,7 @@ type MicrosoftTeamsConfig struct {
 	// [Output-Only] Whether URL is set.
 	UrlSet bool `json:"url_set,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MicrosoftTeamsConfig) UnmarshalJSON(b []byte) error {
@@ -2155,7 +2243,7 @@ type NccAzurePrivateEndpointRule struct {
 	// Time in epoch milliseconds when this object was updated.
 	UpdatedTime int64 `json:"updated_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NccAzurePrivateEndpointRule) UnmarshalJSON(b []byte) error {
@@ -2257,7 +2345,7 @@ type NccAzureServiceEndpointRule struct {
 	// The Azure services to which this service endpoint rule applies to.
 	TargetServices []string `json:"target_services,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NccAzureServiceEndpointRule) UnmarshalJSON(b []byte) error {
@@ -2322,7 +2410,7 @@ type NetworkConnectivityConfiguration struct {
 	// Time in epoch milliseconds when this object was updated.
 	UpdatedTime int64 `json:"updated_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NetworkConnectivityConfiguration) UnmarshalJSON(b []byte) error {
@@ -2346,7 +2434,7 @@ type NotificationDestination struct {
 	// UUID identifying notification destination.
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NotificationDestination) UnmarshalJSON(b []byte) error {
@@ -2363,7 +2451,7 @@ type PagerdutyConfig struct {
 	// [Output-Only] Whether integration key is set.
 	IntegrationKeySet bool `json:"integration_key_set,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PagerdutyConfig) UnmarshalJSON(b []byte) error {
@@ -2379,7 +2467,7 @@ type PartitionId struct {
 	// The ID of the workspace.
 	WorkspaceId int64 `json:"workspaceId,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PartitionId) UnmarshalJSON(b []byte) error {
@@ -2452,7 +2540,7 @@ type PersonalComputeSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PersonalComputeSetting) UnmarshalJSON(b []byte) error {
@@ -2474,7 +2562,7 @@ type PublicTokenInfo struct {
 	// The ID of this token.
 	TokenId string `json:"token_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PublicTokenInfo) UnmarshalJSON(b []byte) error {
@@ -2556,7 +2644,7 @@ type RestrictWorkspaceAdminsSetting struct {
 	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RestrictWorkspaceAdminsSetting) UnmarshalJSON(b []byte) error {
@@ -2584,7 +2672,7 @@ type SlackConfig struct {
 	// [Output-Only] Whether URL is set.
 	UrlSet bool `json:"url_set,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SlackConfig) UnmarshalJSON(b []byte) error {
@@ -2599,7 +2687,7 @@ type StringMessage struct {
 	// Represents a generic string value.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *StringMessage) UnmarshalJSON(b []byte) error {
@@ -2620,7 +2708,7 @@ type TokenAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -2643,7 +2731,7 @@ type TokenAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -2676,7 +2764,7 @@ type TokenInfo struct {
 	// If applicable, the ID of the workspace that the token was created in.
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenInfo) UnmarshalJSON(b []byte) error {
@@ -2694,7 +2782,7 @@ type TokenPermission struct {
 	// Permission level
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenPermission) UnmarshalJSON(b []byte) error {
@@ -2738,7 +2826,7 @@ type TokenPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenPermissions) UnmarshalJSON(b []byte) error {
@@ -2754,7 +2842,7 @@ type TokenPermissionsDescription struct {
 	// Permission level
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -2775,6 +2863,8 @@ type TokenType string
 
 const TokenTypeArclightAzureExchangeToken TokenType = `ARCLIGHT_AZURE_EXCHANGE_TOKEN`
 
+const TokenTypeArclightAzureExchangeTokenWithUserDelegationKey TokenType = `ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY`
+
 const TokenTypeAzureActiveDirectoryToken TokenType = `AZURE_ACTIVE_DIRECTORY_TOKEN`
 
 // String representation for [fmt.Print]
@@ -2785,11 +2875,11 @@ func (f *TokenType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TokenType) Set(v string) error {
 	switch v {
-	case `ARCLIGHT_AZURE_EXCHANGE_TOKEN`, `AZURE_ACTIVE_DIRECTORY_TOKEN`:
+	case `ARCLIGHT_AZURE_EXCHANGE_TOKEN`, `ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY`, `AZURE_ACTIVE_DIRECTORY_TOKEN`:
 		*f = TokenType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ARCLIGHT_AZURE_EXCHANGE_TOKEN", "AZURE_ACTIVE_DIRECTORY_TOKEN"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ARCLIGHT_AZURE_EXCHANGE_TOKEN", "ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY", "AZURE_ACTIVE_DIRECTORY_TOKEN"`, v)
 	}
 }
 
@@ -2799,14 +2889,42 @@ func (f *TokenType) Type() string {
 }
 
 // Details required to update a setting.
+type UpdateAccountIpAccessEnableRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	FieldMask string `json:"field_mask"`
+
+	Setting AccountIpAccessEnable `json:"setting"`
+}
+
+// Details required to update a setting.
 type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting AibiDashboardEmbeddingAccessPolicySetting `json:"setting"`
@@ -2817,10 +2935,17 @@ type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting AibiDashboardEmbeddingApprovedDomainsSetting `json:"setting"`
@@ -2831,10 +2956,17 @@ type UpdateAutomaticClusterUpdateSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting AutomaticClusterUpdateSetting `json:"setting"`
@@ -2845,10 +2977,17 @@ type UpdateComplianceSecurityProfileSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting ComplianceSecurityProfileSetting `json:"setting"`
@@ -2859,10 +2998,17 @@ type UpdateCspEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting CspEnablementAccountSetting `json:"setting"`
@@ -2873,10 +3019,17 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 	// This represents the setting configuration for the default namespace in
 	// the Databricks workspace. Setting the default catalog for the workspace
@@ -2895,10 +3048,17 @@ type UpdateDisableLegacyAccessRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting DisableLegacyAccess `json:"setting"`
@@ -2909,10 +3069,17 @@ type UpdateDisableLegacyDbfsRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting DisableLegacyDbfs `json:"setting"`
@@ -2923,10 +3090,17 @@ type UpdateDisableLegacyFeaturesRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting DisableLegacyFeatures `json:"setting"`
@@ -2937,10 +3111,17 @@ type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting EnhancedSecurityMonitoringSetting `json:"setting"`
@@ -2951,10 +3132,17 @@ type UpdateEsmEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting EsmEnablementAccountSetting `json:"setting"`
@@ -2978,7 +3166,7 @@ type UpdateIpAccessList struct {
 	// excluded even if they are included in an allow list.
 	ListType ListType `json:"list_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateIpAccessList) UnmarshalJSON(b []byte) error {
@@ -2998,7 +3186,7 @@ type UpdateNotificationDestinationRequest struct {
 	// UUID identifying notification destination.
 	Id string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
@@ -3014,10 +3202,17 @@ type UpdatePersonalComputeSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting PersonalComputeSetting `json:"setting"`
@@ -3031,10 +3226,17 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
-	// Field mask is required to be passed into the PATCH request. Field mask
-	// specifies which fields of the setting payload will be updated. The field
-	// mask needs to be supplied as single string. To specify multiple fields in
-	// the field mask, use comma as the separator (no space).
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	FieldMask string `json:"field_mask"`
 
 	Setting RestrictWorkspaceAdminsSetting `json:"setting"`

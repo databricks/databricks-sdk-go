@@ -44,11 +44,11 @@ type CreateProvider struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the Provider.
 	Name string `json:"name"`
-	// This field is required when the __authentication_type__ is **TOKEN** or
-	// not provided.
+	// This field is required when the __authentication_type__ is **TOKEN**,
+	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateProvider) UnmarshalJSON(b []byte) error {
@@ -65,7 +65,7 @@ type CreateRecipient struct {
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
 	// The global Unity Catalog metastore id provided by the data recipient.
-	// This field is required when the __authentication_type__ is
+	// This field is only present when the __authentication_type__ is
 	// **DATABRICKS**. The identifier is of format
 	// __cloud__:__region__:__metastore-uuid__.
 	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
@@ -77,13 +77,16 @@ type CreateRecipient struct {
 	Name string `json:"name"`
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
-	// Recipient properties as map of string key-value pairs.
+	// Recipient properties as map of string key-value pairs. When provided in
+	// update request, the specified properties will override the existing
+	// properties. To add and remove properties, one would need to perform a
+	// read-modify-write.
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
-	// required when the __authentication_type__ is **DATABRICKS**.
+	// only present when the __authentication_type__ is **DATABRICKS**.
 	SharingCode string `json:"sharing_code,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateRecipient) UnmarshalJSON(b []byte) error {
@@ -102,7 +105,7 @@ type CreateShare struct {
 	// Storage root URL for the share.
 	StorageRoot string `json:"storage_root,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateShare) UnmarshalJSON(b []byte) error {
@@ -163,7 +166,7 @@ type GetRecipientSharePermissionsResponse struct {
 	// An array of data share permissions for a recipient.
 	PermissionsOut []ShareToPrivilegeAssignment `json:"permissions_out,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetRecipientSharePermissionsResponse) UnmarshalJSON(b []byte) error {
@@ -181,7 +184,7 @@ type GetShareRequest struct {
 	// The name of the share.
 	Name string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetShareRequest) UnmarshalJSON(b []byte) error {
@@ -205,7 +208,7 @@ type ListProviderSharesResponse struct {
 	// An array of provider shares.
 	Shares []ProviderShare `json:"shares,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProviderSharesResponse) UnmarshalJSON(b []byte) error {
@@ -234,7 +237,7 @@ type ListProvidersRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProvidersRequest) UnmarshalJSON(b []byte) error {
@@ -253,7 +256,7 @@ type ListProvidersResponse struct {
 	// An array of provider information objects.
 	Providers []ProviderInfo `json:"providers,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProvidersResponse) UnmarshalJSON(b []byte) error {
@@ -282,7 +285,7 @@ type ListRecipientsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRecipientsRequest) UnmarshalJSON(b []byte) error {
@@ -301,7 +304,7 @@ type ListRecipientsResponse struct {
 	// An array of recipient information objects.
 	Recipients []RecipientInfo `json:"recipients,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRecipientsResponse) UnmarshalJSON(b []byte) error {
@@ -329,7 +332,7 @@ type ListSharesRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSharesRequest) UnmarshalJSON(b []byte) error {
@@ -348,7 +351,7 @@ type ListSharesResponse struct {
 	// An array of data share information objects.
 	Shares []ShareInfo `json:"shares,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSharesResponse) UnmarshalJSON(b []byte) error {
@@ -383,7 +386,7 @@ type PartitionValue struct {
 	// not be set.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PartitionValue) UnmarshalJSON(b []byte) error {
@@ -540,7 +543,7 @@ type PrivilegeAssignment struct {
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
@@ -565,7 +568,7 @@ type ProviderInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// The global UC metastore id of the data provider. This field is only
 	// present when the __authentication_type__ is **DATABRICKS**. The
-	// identifier is of format <cloud>:<region>:<metastore-uuid>.
+	// identifier is of format __cloud__:__region__:__metastore-uuid__.
 	DataProviderGlobalMetastoreId string `json:"data_provider_global_metastore_id,omitempty"`
 	// UUID of the provider's UC metastore. This field is only present when the
 	// __authentication_type__ is **DATABRICKS**.
@@ -575,20 +578,20 @@ type ProviderInfo struct {
 	// Username of Provider owner.
 	Owner string `json:"owner,omitempty"`
 	// The recipient profile. This field is only present when the
-	// authentication_type is `TOKEN`.
+	// authentication_type is `TOKEN` or `OAUTH_CLIENT_CREDENTIALS`.
 	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
-	// This field is only present when the authentication_type is `TOKEN` or not
-	// provided.
+	// This field is required when the __authentication_type__ is **TOKEN**,
+	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 	// Cloud region of the provider's UC metastore. This field is only present
 	// when the __authentication_type__ is **DATABRICKS**.
 	Region string `json:"region,omitempty"`
 	// Time at which this Provider was created, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of user who last modified Share.
+	// Username of user who last modified Provider.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ProviderInfo) UnmarshalJSON(b []byte) error {
@@ -603,7 +606,7 @@ type ProviderShare struct {
 	// The name of the Provider Share.
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ProviderShare) UnmarshalJSON(b []byte) error {
@@ -623,8 +626,8 @@ type RecipientInfo struct {
 	ActivationUrl string `json:"activation_url,omitempty"`
 	// The delta sharing authentication type.
 	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
-	// Cloud vendor of the recipient's Unity Catalog Metstore. This field is
-	// only present when the __authentication_type__ is **DATABRICKS**`.
+	// Cloud vendor of the recipient's Unity Catalog Metastore. This field is
+	// only present when the __authentication_type__ is **DATABRICKS**.
 	Cloud string `json:"cloud,omitempty"`
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
@@ -637,18 +640,23 @@ type RecipientInfo struct {
 	// **DATABRICKS**. The identifier is of format
 	// __cloud__:__region__:__metastore-uuid__.
 	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
+	// Expiration timestamp of the token, in epoch milliseconds.
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
-	// Unique identifier of recipient's Unity Catalog metastore. This field is
-	// only present when the __authentication_type__ is **DATABRICKS**
+	// Unique identifier of recipient's Unity Catalog Metastore. This field is
+	// only present when the __authentication_type__ is **DATABRICKS**.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of Recipient.
 	Name string `json:"name,omitempty"`
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
-	// Recipient properties as map of string key-value pairs.
+	// Recipient properties as map of string key-value pairs. When provided in
+	// update request, the specified properties will override the existing
+	// properties. To add and remove properties, one would need to perform a
+	// read-modify-write.
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
-	// Cloud region of the recipient's Unity Catalog Metstore. This field is
+	// Cloud region of the recipient's Unity Catalog Metastore. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
 	Region string `json:"region,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
@@ -661,7 +669,7 @@ type RecipientInfo struct {
 	// Username of recipient updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RecipientInfo) UnmarshalJSON(b []byte) error {
@@ -680,7 +688,7 @@ type RecipientProfile struct {
 	// The version number of the recipient's credentials on a share.
 	ShareCredentialsVersion int `json:"share_credentials_version,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RecipientProfile) UnmarshalJSON(b []byte) error {
@@ -695,7 +703,7 @@ type RecipientTokenInfo struct {
 	// Full activation URL to retrieve the access token. It will be empty if the
 	// token is already retrieved.
 	ActivationUrl string `json:"activation_url,omitempty"`
-	// Time at which this recipient Token was created, in epoch milliseconds.
+	// Time at which this recipient token was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of recipient token creator.
 	CreatedBy string `json:"created_by,omitempty"`
@@ -703,12 +711,12 @@ type RecipientTokenInfo struct {
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
 	// Unique ID of the recipient token.
 	Id string `json:"id,omitempty"`
-	// Time at which this recipient Token was updated, in epoch milliseconds.
+	// Time at which this recipient token was updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of recipient Token updater.
+	// Username of recipient token updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RecipientTokenInfo) UnmarshalJSON(b []byte) error {
@@ -735,7 +743,7 @@ type RetrieveTokenResponse struct {
 	// These field names must follow the delta sharing protocol.
 	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RetrieveTokenResponse) UnmarshalJSON(b []byte) error {
@@ -752,7 +760,7 @@ type RotateRecipientToken struct {
 	// cannot extend the expiration_time. Use 0 to expire the existing token
 	// immediately, negative number will return an error.
 	ExistingTokenExpireInSeconds int64 `json:"existing_token_expire_in_seconds"`
-	// The name of the recipient.
+	// The name of the Recipient.
 	Name string `json:"-" url:"-"`
 }
 
@@ -762,9 +770,6 @@ type SecurablePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties"`
 }
-
-// A map of key-value properties attached to the securable.
-type SecurablePropertiesMap map[string]string
 
 type ShareInfo struct {
 	// User-provided free-form text description.
@@ -788,7 +793,7 @@ type ShareInfo struct {
 	// Username of share updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ShareInfo) UnmarshalJSON(b []byte) error {
@@ -816,7 +821,7 @@ type SharePermissionsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SharePermissionsRequest) UnmarshalJSON(b []byte) error {
@@ -833,7 +838,7 @@ type ShareToPrivilegeAssignment struct {
 	// The share name.
 	ShareName string `json:"share_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ShareToPrivilegeAssignment) UnmarshalJSON(b []byte) error {
@@ -893,7 +898,7 @@ type SharedDataObject struct {
 	// file name.
 	StringSharedAs string `json:"string_shared_as,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SharedDataObject) UnmarshalJSON(b []byte) error {
@@ -1052,11 +1057,11 @@ type UpdateProvider struct {
 	NewName string `json:"new_name,omitempty"`
 	// Username of Provider owner.
 	Owner string `json:"owner,omitempty"`
-	// This field is required when the __authentication_type__ is **TOKEN** or
-	// not provided.
+	// This field is required when the __authentication_type__ is **TOKEN**,
+	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateProvider) UnmarshalJSON(b []byte) error {
@@ -1076,7 +1081,7 @@ type UpdateRecipient struct {
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Name of the recipient.
 	Name string `json:"-" url:"-"`
-	// New name for the recipient.
+	// New name for the recipient. .
 	NewName string `json:"new_name,omitempty"`
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
@@ -1086,7 +1091,7 @@ type UpdateRecipient struct {
 	// read-modify-write.
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateRecipient) UnmarshalJSON(b []byte) error {
@@ -1095,9 +1100,6 @@ func (s *UpdateRecipient) UnmarshalJSON(b []byte) error {
 
 func (s UpdateRecipient) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateResponse struct {
 }
 
 type UpdateShare struct {
@@ -1114,7 +1116,7 @@ type UpdateShare struct {
 	// Array of shared data object updates.
 	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateShare) UnmarshalJSON(b []byte) error {
@@ -1143,7 +1145,7 @@ type UpdateSharePermissions struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateSharePermissions) UnmarshalJSON(b []byte) error {

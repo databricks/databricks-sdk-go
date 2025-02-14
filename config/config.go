@@ -15,6 +15,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -221,22 +223,36 @@ func (c *Config) Authenticate(r *http.Request) error {
 	return c.credentialsProvider.SetHeaders(r)
 }
 
-// Authenticate returns an OAuth token for the current configuration.
-// It will return an error if the CredentialsStrategy does not support OAuth tokens.
+// Authenticate returns an OAuth token for the current configuration. It will
+// return an error if the CredentialsStrategy does not support OAuth tokens.
+//
+// Deprecated: Use GetTokenSource instead.
 func (c *Config) GetToken() (*oauth2.Token, error) {
-	err := c.EnsureResolved()
-	if err != nil {
-		return nil, err
+	ts := c.GetTokenSource()
+	return ts.Token(context.Background())
+}
+
+// GetTokenSource returns an OAuth token source for the current configuration.
+// It will return an error if the CredentialsStrategy does not support OAuth
+// tokens.
+func (c *Config) GetTokenSource() auth.TokenSource {
+	if err := c.EnsureResolved(); err != nil {
+		return errorTokenSource(err)
 	}
-	err = c.authenticateIfNeeded()
-	if err != nil {
-		return nil, err
+	if err := c.authenticateIfNeeded(); err != nil {
+		return errorTokenSource(err)
 	}
 	if h, ok := c.credentialsProvider.(credentials.OAuthCredentialsProvider); ok {
-		return h.Token()
+		return authconv.AuthTokenSource(h)
 	} else {
-		return nil, fmt.Errorf("OAuth Token not supported for current auth type %s", c.AuthType)
+		return errorTokenSource(fmt.Errorf("OAuth Token not supported for current auth type %s", c.AuthType))
 	}
+}
+
+func errorTokenSource(err error) auth.TokenSource {
+	return auth.TokenSourceFn(func(context.Context) (*oauth2.Token, error) {
+		return nil, err
+	})
 }
 
 // IsAzure returns if the client is configured for Azure Databricks.

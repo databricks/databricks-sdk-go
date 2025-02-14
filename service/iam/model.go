@@ -18,7 +18,7 @@ type AccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -41,7 +41,7 @@ type AccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -49,6 +49,57 @@ func (s *AccessControlResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s AccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// represents an identity trying to access a resource - user or a service
+// principal group can be a principal of a permission set assignment but an
+// actor is always a user or a service principal
+type Actor struct {
+	ActorId int64 `json:"actor_id,omitempty" url:"actor_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Actor) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Actor) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Check access policy to a resource
+type CheckPolicyRequest struct {
+	Actor Actor `json:"-" url:"actor"`
+
+	AuthzIdentity RequestAuthzIdentity `json:"-" url:"authz_identity"`
+
+	ConsistencyToken ConsistencyToken `json:"-" url:"consistency_token"`
+
+	Permission string `json:"-" url:"permission"`
+	// Ex: (servicePrincipal/use,
+	// accounts/<account-id>/servicePrincipals/<sp-id>) Ex:
+	// (servicePrincipal.ruleSet/update,
+	// accounts/<account-id>/servicePrincipals/<sp-id>/ruleSets/default)
+	Resource string `json:"-" url:"resource"`
+
+	ResourceInfo *ResourceInfo `json:"-" url:"resource_info,omitempty"`
+}
+
+type CheckPolicyResponse struct {
+	ConsistencyToken ConsistencyToken `json:"consistency_token"`
+
+	IsPermitted bool `json:"is_permitted,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CheckPolicyResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CheckPolicyResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -63,7 +114,7 @@ type ComplexValue struct {
 
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ComplexValue) UnmarshalJSON(b []byte) error {
@@ -72,6 +123,10 @@ func (s *ComplexValue) UnmarshalJSON(b []byte) error {
 
 func (s ComplexValue) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ConsistencyToken struct {
+	Value string `json:"value"`
 }
 
 // Delete a group
@@ -162,7 +217,7 @@ type GetAccountUserRequest struct {
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetAccountUserRequest) UnmarshalJSON(b []byte) error {
@@ -293,7 +348,7 @@ type GetUserRequest struct {
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetUserRequest) UnmarshalJSON(b []byte) error {
@@ -340,7 +395,7 @@ type Group struct {
 	// The schema of the group.
 	Schemas []GroupSchema `json:"schemas,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Group) UnmarshalJSON(b []byte) error {
@@ -399,7 +454,7 @@ type ListAccountGroupsRequest struct {
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAccountGroupsRequest) UnmarshalJSON(b []byte) error {
@@ -433,7 +488,7 @@ type ListAccountServicePrincipalsRequest struct {
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAccountServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
@@ -468,7 +523,7 @@ type ListAccountUsersRequest struct {
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAccountUsersRequest) UnmarshalJSON(b []byte) error {
@@ -502,7 +557,7 @@ type ListGroupsRequest struct {
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListGroupsRequest) UnmarshalJSON(b []byte) error {
@@ -526,7 +581,7 @@ type ListGroupsResponse struct {
 	// Total results that match the request filters.
 	TotalResults int64 `json:"totalResults,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListGroupsResponse) UnmarshalJSON(b []byte) error {
@@ -575,7 +630,7 @@ type ListServicePrincipalResponse struct {
 	// Total results that match the request filters.
 	TotalResults int64 `json:"totalResults,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListServicePrincipalResponse) UnmarshalJSON(b []byte) error {
@@ -609,7 +664,7 @@ type ListServicePrincipalsRequest struct {
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
@@ -671,7 +726,7 @@ type ListUsersRequest struct {
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListUsersRequest) UnmarshalJSON(b []byte) error {
@@ -695,7 +750,7 @@ type ListUsersResponse struct {
 	// Total results that match the request filters.
 	TotalResults int64 `json:"totalResults,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListUsersResponse) UnmarshalJSON(b []byte) error {
@@ -723,7 +778,7 @@ type MigratePermissionsRequest struct {
 	// will occur.
 	WorkspaceId int64 `json:"workspace_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MigratePermissionsRequest) UnmarshalJSON(b []byte) error {
@@ -738,7 +793,7 @@ type MigratePermissionsResponse struct {
 	// Number of permissions migrated.
 	PermissionsMigrated int `json:"permissions_migrated,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MigratePermissionsResponse) UnmarshalJSON(b []byte) error {
@@ -755,7 +810,7 @@ type Name struct {
 	// Given name of the Databricks user.
 	GivenName string `json:"givenName,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Name) UnmarshalJSON(b []byte) error {
@@ -773,7 +828,7 @@ type ObjectPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ObjectPermissions) UnmarshalJSON(b []byte) error {
@@ -804,7 +859,7 @@ type PasswordAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PasswordAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -827,7 +882,7 @@ type PasswordAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PasswordAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -845,7 +900,7 @@ type PasswordPermission struct {
 	// Permission level
 	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PasswordPermission) UnmarshalJSON(b []byte) error {
@@ -889,7 +944,7 @@ type PasswordPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PasswordPermissions) UnmarshalJSON(b []byte) error {
@@ -905,7 +960,7 @@ type PasswordPermissionsDescription struct {
 	// Permission level
 	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PasswordPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -928,7 +983,7 @@ type Patch struct {
 	// Value to modify
 	Value any `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Patch) UnmarshalJSON(b []byte) error {
@@ -1004,7 +1059,7 @@ type Permission struct {
 	// Permission level
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Permission) UnmarshalJSON(b []byte) error {
@@ -1025,7 +1080,7 @@ type PermissionAssignment struct {
 	// Information about the principal assigned to the workspace.
 	Principal *PrincipalOutput `json:"principal,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PermissionAssignment) UnmarshalJSON(b []byte) error {
@@ -1105,7 +1160,7 @@ type PermissionOutput struct {
 
 	PermissionLevel WorkspacePermission `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PermissionOutput) UnmarshalJSON(b []byte) error {
@@ -1121,7 +1176,7 @@ type PermissionsDescription struct {
 	// Permission level
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -1158,7 +1213,7 @@ type PrincipalOutput struct {
 	// The username of the user. Present only if the principal is a user.
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PrincipalOutput) UnmarshalJSON(b []byte) error {
@@ -1169,12 +1224,61 @@ func (s PrincipalOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Defines the identity to be used for authZ of the request on the server side.
+// See one pager for for more information: http://go/acl/service-identity
+type RequestAuthzIdentity string
+
+const RequestAuthzIdentityRequestAuthzIdentityServiceIdentity RequestAuthzIdentity = `REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY`
+
+const RequestAuthzIdentityRequestAuthzIdentityUserContext RequestAuthzIdentity = `REQUEST_AUTHZ_IDENTITY_USER_CONTEXT`
+
+// String representation for [fmt.Print]
+func (f *RequestAuthzIdentity) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RequestAuthzIdentity) Set(v string) error {
+	switch v {
+	case `REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY`, `REQUEST_AUTHZ_IDENTITY_USER_CONTEXT`:
+		*f = RequestAuthzIdentity(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY", "REQUEST_AUTHZ_IDENTITY_USER_CONTEXT"`, v)
+	}
+}
+
+// Type always returns RequestAuthzIdentity to satisfy [pflag.Value] interface
+func (f *RequestAuthzIdentity) Type() string {
+	return "RequestAuthzIdentity"
+}
+
+type ResourceInfo struct {
+	// Id of the current resource.
+	Id string `json:"id" url:"id"`
+	// The legacy acl path of the current resource.
+	LegacyAclPath string `json:"legacy_acl_path,omitempty" url:"legacy_acl_path,omitempty"`
+	// Parent resource info for the current resource. The parent may have
+	// another parent.
+	ParentResourceInfo *ResourceInfo `json:"parent_resource_info,omitempty" url:"parent_resource_info,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ResourceInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ResourceInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ResourceMeta struct {
 	// Identifier for group type. Can be local workspace group
 	// (`WorkspaceGroup`) or account group (`Group`).
 	ResourceType string `json:"resourceType,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResourceMeta) UnmarshalJSON(b []byte) error {
@@ -1198,7 +1302,7 @@ type RuleSetResponse struct {
 	// Name of the rule set.
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RuleSetResponse) UnmarshalJSON(b []byte) error {
@@ -1243,7 +1347,7 @@ type ServicePrincipal struct {
 	// The schema of the List response.
 	Schemas []ServicePrincipalSchema `json:"schemas,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServicePrincipal) UnmarshalJSON(b []byte) error {
@@ -1336,7 +1440,7 @@ type User struct {
 	// Email address of the Databricks user.
 	UserName string `json:"userName,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *User) UnmarshalJSON(b []byte) error {

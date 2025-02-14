@@ -153,7 +153,7 @@ type ContactInfo struct {
 
 	LastName string `json:"last_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ContactInfo) UnmarshalJSON(b []byte) error {
@@ -198,7 +198,7 @@ type CreateExchangeFilterRequest struct {
 type CreateExchangeFilterResponse struct {
 	FilterId string `json:"filter_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateExchangeFilterResponse) UnmarshalJSON(b []byte) error {
@@ -216,7 +216,7 @@ type CreateExchangeRequest struct {
 type CreateExchangeResponse struct {
 	ExchangeId string `json:"exchange_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateExchangeResponse) UnmarshalJSON(b []byte) error {
@@ -236,7 +236,7 @@ type CreateFileRequest struct {
 
 	MimeType string `json:"mime_type"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateFileRequest) UnmarshalJSON(b []byte) error {
@@ -252,7 +252,7 @@ type CreateFileResponse struct {
 	// Pre-signed POST URL to blob storage
 	UploadUrl string `json:"upload_url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateFileResponse) UnmarshalJSON(b []byte) error {
@@ -276,7 +276,7 @@ type CreateInstallationRequest struct {
 
 	ShareName string `json:"share_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateInstallationRequest) UnmarshalJSON(b []byte) error {
@@ -294,7 +294,7 @@ type CreateListingRequest struct {
 type CreateListingResponse struct {
 	ListingId string `json:"listing_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateListingResponse) UnmarshalJSON(b []byte) error {
@@ -325,7 +325,7 @@ type CreatePersonalizationRequest struct {
 
 	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreatePersonalizationRequest) UnmarshalJSON(b []byte) error {
@@ -339,7 +339,7 @@ func (s CreatePersonalizationRequest) MarshalJSON() ([]byte, error) {
 type CreatePersonalizationRequestResponse struct {
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreatePersonalizationRequestResponse) UnmarshalJSON(b []byte) error {
@@ -357,7 +357,7 @@ type CreateProviderRequest struct {
 type CreateProviderResponse struct {
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateProviderResponse) UnmarshalJSON(b []byte) error {
@@ -511,7 +511,7 @@ type Exchange struct {
 
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Exchange) UnmarshalJSON(b []byte) error {
@@ -541,7 +541,7 @@ type ExchangeFilter struct {
 
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExchangeFilter) UnmarshalJSON(b []byte) error {
@@ -592,7 +592,7 @@ type ExchangeListing struct {
 
 	ListingName string `json:"listing_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExchangeListing) UnmarshalJSON(b []byte) error {
@@ -625,7 +625,7 @@ type FileInfo struct {
 
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FileInfo) UnmarshalJSON(b []byte) error {
@@ -641,7 +641,7 @@ type FileParent struct {
 	// TODO make the following fields required
 	ParentId string `json:"parent_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FileParent) UnmarshalJSON(b []byte) error {
@@ -759,7 +759,7 @@ type GetLatestVersionProviderAnalyticsDashboardResponse struct {
 	// version here is latest logical version of the dashboard template
 	Version int64 `json:"version,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetLatestVersionProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
@@ -778,7 +778,7 @@ type GetListingContentMetadataRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetListingContentMetadataRequest) UnmarshalJSON(b []byte) error {
@@ -794,7 +794,7 @@ type GetListingContentMetadataResponse struct {
 
 	SharedDataObjects []SharedDataObject `json:"shared_data_objects,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetListingContentMetadataResponse) UnmarshalJSON(b []byte) error {
@@ -820,7 +820,7 @@ type GetListingsRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetListingsRequest) UnmarshalJSON(b []byte) error {
@@ -836,7 +836,7 @@ type GetListingsResponse struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetListingsResponse) UnmarshalJSON(b []byte) error {
@@ -896,7 +896,7 @@ type InstallationDetail struct {
 
 	Tokens []TokenInfo `json:"tokens,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *InstallationDetail) UnmarshalJSON(b []byte) error {
@@ -940,7 +940,7 @@ type ListAllInstallationsRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAllInstallationsRequest) UnmarshalJSON(b []byte) error {
@@ -956,7 +956,7 @@ type ListAllInstallationsResponse struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAllInstallationsResponse) UnmarshalJSON(b []byte) error {
@@ -973,7 +973,7 @@ type ListAllPersonalizationRequestsRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAllPersonalizationRequestsRequest) UnmarshalJSON(b []byte) error {
@@ -989,7 +989,7 @@ type ListAllPersonalizationRequestsResponse struct {
 
 	PersonalizationRequests []PersonalizationRequest `json:"personalization_requests,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAllPersonalizationRequestsResponse) UnmarshalJSON(b []byte) error {
@@ -1008,7 +1008,7 @@ type ListExchangeFiltersRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListExchangeFiltersRequest) UnmarshalJSON(b []byte) error {
@@ -1024,7 +1024,7 @@ type ListExchangeFiltersResponse struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListExchangeFiltersResponse) UnmarshalJSON(b []byte) error {
@@ -1043,7 +1043,7 @@ type ListExchangesForListingRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListExchangesForListingRequest) UnmarshalJSON(b []byte) error {
@@ -1059,7 +1059,7 @@ type ListExchangesForListingResponse struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListExchangesForListingResponse) UnmarshalJSON(b []byte) error {
@@ -1076,7 +1076,7 @@ type ListExchangesRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListExchangesRequest) UnmarshalJSON(b []byte) error {
@@ -1092,7 +1092,7 @@ type ListExchangesResponse struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListExchangesResponse) UnmarshalJSON(b []byte) error {
@@ -1111,7 +1111,7 @@ type ListFilesRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListFilesRequest) UnmarshalJSON(b []byte) error {
@@ -1127,7 +1127,7 @@ type ListFilesResponse struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListFilesResponse) UnmarshalJSON(b []byte) error {
@@ -1146,7 +1146,7 @@ type ListFulfillmentsRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListFulfillmentsRequest) UnmarshalJSON(b []byte) error {
@@ -1162,7 +1162,7 @@ type ListFulfillmentsResponse struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListFulfillmentsResponse) UnmarshalJSON(b []byte) error {
@@ -1181,7 +1181,7 @@ type ListInstallationsRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListInstallationsRequest) UnmarshalJSON(b []byte) error {
@@ -1197,7 +1197,7 @@ type ListInstallationsResponse struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListInstallationsResponse) UnmarshalJSON(b []byte) error {
@@ -1216,7 +1216,7 @@ type ListListingsForExchangeRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListListingsForExchangeRequest) UnmarshalJSON(b []byte) error {
@@ -1232,7 +1232,7 @@ type ListListingsForExchangeResponse struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListListingsForExchangeResponse) UnmarshalJSON(b []byte) error {
@@ -1264,7 +1264,7 @@ type ListListingsRequest struct {
 	// Matches any of the following tags
 	Tags []ListingTag `json:"-" url:"tags,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListListingsRequest) UnmarshalJSON(b []byte) error {
@@ -1280,7 +1280,7 @@ type ListListingsResponse struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListListingsResponse) UnmarshalJSON(b []byte) error {
@@ -1299,7 +1299,7 @@ type ListProviderAnalyticsDashboardResponse struct {
 
 	Version int64 `json:"version,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
@@ -1318,7 +1318,7 @@ type ListProvidersRequest struct {
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProvidersRequest) UnmarshalJSON(b []byte) error {
@@ -1334,7 +1334,7 @@ type ListProvidersResponse struct {
 
 	Providers []ProviderInfo `json:"providers,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProvidersResponse) UnmarshalJSON(b []byte) error {
@@ -1352,7 +1352,7 @@ type Listing struct {
 	// Next Number: 26
 	Summary ListingSummary `json:"summary"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Listing) UnmarshalJSON(b []byte) error {
@@ -1413,7 +1413,7 @@ type ListingDetail struct {
 	// How often data is updated
 	UpdateFrequency *DataRefreshInfo `json:"update_frequency,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListingDetail) UnmarshalJSON(b []byte) error {
@@ -1540,7 +1540,7 @@ type ListingSummary struct {
 
 	UpdatedById int64 `json:"updated_by_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListingSummary) UnmarshalJSON(b []byte) error {
@@ -1674,7 +1674,7 @@ type PersonalizationRequest struct {
 
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PersonalizationRequest) UnmarshalJSON(b []byte) error {
@@ -1749,7 +1749,7 @@ type ProviderInfo struct {
 
 	TermOfServiceLink string `json:"term_of_service_link"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ProviderInfo) UnmarshalJSON(b []byte) error {
@@ -1765,7 +1765,7 @@ type RegionInfo struct {
 
 	Region string `json:"region,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RegionInfo) UnmarshalJSON(b []byte) error {
@@ -1817,7 +1817,7 @@ type SearchListingsRequest struct {
 	// Fuzzy matches query
 	Query string `json:"-" url:"query"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SearchListingsRequest) UnmarshalJSON(b []byte) error {
@@ -1833,7 +1833,7 @@ type SearchListingsResponse struct {
 
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SearchListingsResponse) UnmarshalJSON(b []byte) error {
@@ -1857,7 +1857,7 @@ type SharedDataObject struct {
 	// Name of the shared object
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SharedDataObject) UnmarshalJSON(b []byte) error {
@@ -1879,7 +1879,7 @@ type TokenDetail struct {
 	// managed-catalog/api/messages/recipient.proto
 	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenDetail) UnmarshalJSON(b []byte) error {
@@ -1907,7 +1907,7 @@ type TokenInfo struct {
 	// Username of Recipient Token updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TokenInfo) UnmarshalJSON(b []byte) error {
@@ -1947,7 +1947,7 @@ type UpdateInstallationRequest struct {
 
 	RotateToken bool `json:"rotate_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateInstallationRequest) UnmarshalJSON(b []byte) error {
@@ -1983,7 +1983,7 @@ type UpdatePersonalizationRequestRequest struct {
 
 	Status PersonalizationRequestStatus `json:"status"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdatePersonalizationRequestRequest) UnmarshalJSON(b []byte) error {
@@ -2006,7 +2006,7 @@ type UpdateProviderAnalyticsDashboardRequest struct {
 	// the dashboard template
 	Version int64 `json:"version,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateProviderAnalyticsDashboardRequest) UnmarshalJSON(b []byte) error {
@@ -2025,7 +2025,7 @@ type UpdateProviderAnalyticsDashboardResponse struct {
 
 	Version int64 `json:"version,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {

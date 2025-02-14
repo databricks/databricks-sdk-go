@@ -1,5 +1,7 @@
 // Databricks SDK for Go APIs
 //
+// - [iam.AccessControlAPI]: Rule based Access Control for Databricks Resources.
+//
 // - [iam.AccountAccessControlAPI]: These APIs manage access rules on resources in an account.
 //
 // - [iam.AccountAccessControlProxyAPI]: These APIs manage access rules on resources in an account.
@@ -19,6 +21,8 @@
 // - [settings.AutomaticClusterUpdateAPI]: Controls whether automatic cluster update is enabled for the current workspace.
 //
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
+//
+// - [billing.BudgetPolicyAPI]: A service serves REST API about Budget policies.
 //
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
@@ -48,9 +52,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
-//
 // - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
+//
+// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -77,6 +81,8 @@
 // - [settings.DisableLegacyDbfsAPI]: When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new mounts).
 //
 // - [settings.DisableLegacyFeaturesAPI]: Disable legacy features for new Databricks workspaces.
+//
+// - [settings.EnableIpAccessListsAPI]: Controls the enforcement of IP access lists for accessing the account console.
 //
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
@@ -117,6 +123,8 @@
 // - [jobs.JobsAPI]: The Jobs API allows you to create, edit, and delete jobs.
 //
 // - [dashboards.LakeviewAPI]: These APIs provide specific management operations for Lakeview dashboards.
+//
+// - [dashboards.LakeviewEmbeddedAPI]: Token-based Lakeview APIs for embedding dashboards in external applications.
 //
 // - [compute.LibrariesAPI]: The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster.
 //
@@ -182,6 +190,8 @@
 //
 // - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
 //
+// - [dashboards.QueryExecutionAPI]: Query execution APIs for AI / BI Dashboards.
+//
 // - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute.
 //
 // - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of visualizations from existing queries in the Databricks Workspace.
@@ -191,6 +201,8 @@
 // - [sharing.RecipientActivationAPI]: The Recipient Activation API is only applicable in the open sharing model where the recipient object has the authentication type of `TOKEN`.
 //
 // - [sharing.RecipientsAPI]: A recipient is an object you create using :method:recipients/create to represent an organization which you want to allow access shares.
+//
+// - [sql.RedashConfigAPI]: Redash V2 service for workspace configurations (internal).
 //
 // - [catalog.RegisteredModelsAPI]: Databricks provides a hosted version of MLflow Model Registry in Unity Catalog.
 //
@@ -299,6 +311,7 @@ import (
 // https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service
 // See: https://pkg.go.dev/golang.org/x/tools/internal/imports#ImportPathToAssumedName
 var (
+	_ *iam.AccessControlAPI                               = nil
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
 	_ *settings.AibiDashboardEmbeddingAccessPolicyAPI     = nil
@@ -309,6 +322,7 @@ var (
 	_ *catalog.ArtifactAllowlistsAPI                      = nil
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil
+	_ *billing.BudgetPolicyAPI                            = nil
 	_ *catalog.CatalogsAPI                                = nil
 	_ *cleanrooms.CleanRoomAssetsAPI                      = nil
 	_ *cleanrooms.CleanRoomTaskRunsAPI                    = nil
@@ -323,8 +337,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *provisioning.CredentialsAPI                        = nil
 	_ *catalog.CredentialsAPI                             = nil
+	_ *provisioning.CredentialsAPI                        = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
@@ -338,6 +352,7 @@ var (
 	_ *settings.DisableLegacyAccessAPI                    = nil
 	_ *settings.DisableLegacyDbfsAPI                      = nil
 	_ *settings.DisableLegacyFeaturesAPI                  = nil
+	_ *settings.EnableIpAccessListsAPI                    = nil
 	_ *provisioning.EncryptionKeysAPI                     = nil
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil
@@ -358,6 +373,7 @@ var (
 	_ *settings.AccountIpAccessListsAPI                   = nil
 	_ *jobs.JobsAPI                                       = nil
 	_ *dashboards.LakeviewAPI                             = nil
+	_ *dashboards.LakeviewEmbeddedAPI                     = nil
 	_ *compute.LibrariesAPI                               = nil
 	_ *billing.LogDeliveryAPI                             = nil
 	_ *catalog.AccountMetastoreAssignmentsAPI             = nil
@@ -390,11 +406,13 @@ var (
 	_ *catalog.QualityMonitorsAPI                         = nil
 	_ *sql.QueriesAPI                                     = nil
 	_ *sql.QueriesLegacyAPI                               = nil
+	_ *dashboards.QueryExecutionAPI                       = nil
 	_ *sql.QueryHistoryAPI                                = nil
 	_ *sql.QueryVisualizationsAPI                         = nil
 	_ *sql.QueryVisualizationsLegacyAPI                   = nil
 	_ *sharing.RecipientActivationAPI                     = nil
 	_ *sharing.RecipientsAPI                              = nil
+	_ *sql.RedashConfigAPI                                = nil
 	_ *catalog.RegisteredModelsAPI                        = nil
 	_ *workspace.ReposAPI                                 = nil
 	_ *catalog.ResourceQuotasAPI                          = nil

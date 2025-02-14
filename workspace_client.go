@@ -32,6 +32,9 @@ type WorkspaceClient struct {
 	Config    *config.Config
 	apiClient *httpclient.ApiClient
 
+	// Rule based Access Control for Databricks Resources.
+	AccessControl iam.AccessControlInterface
+
 	// These APIs manage access rules on resources in an account. Currently,
 	// only grant rules are supported. A grant rule specifies a role assigned to
 	// a set of principals. A list of rules attached to a resource is called a
@@ -293,9 +296,14 @@ type WorkspaceClient struct {
 	//
 	// The Files API has two distinct endpoints, one for working with files
 	// (`/fs/files`) and another one for working with directories
-	// (`/fs/directories`). Both endpoints, use the standard HTTP methods GET,
+	// (`/fs/directories`). Both endpoints use the standard HTTP methods GET,
 	// HEAD, PUT, and DELETE to manage files and directories specified using
 	// their URI path. The path is always absolute.
+	//
+	// Some Files API client features are currently experimental. To enable
+	// them, set `enable_experimental_files_api_client = True` in your
+	// configuration profile or use the environment variable
+	// `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
 	//
 	// [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 	Files files.FilesInterface
@@ -434,6 +442,10 @@ type WorkspaceClient struct {
 	// dashboards. Generic resource management can be done with Workspace API
 	// (import, export, get-status, list, delete).
 	Lakeview dashboards.LakeviewInterface
+
+	// Token-based Lakeview APIs for embedding dashboards in external
+	// applications.
+	LakeviewEmbedded dashboards.LakeviewEmbeddedInterface
 
 	// The Libraries API allows you to install and uninstall libraries and get
 	// the status of libraries on a cluster.
@@ -679,6 +691,9 @@ type WorkspaceClient struct {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueriesLegacy sql.QueriesLegacyInterface
 
+	// Query execution APIs for AI / BI Dashboards
+	QueryExecution dashboards.QueryExecutionInterface
+
 	// A service responsible for storing and retrieving the list of queries run
 	// against SQL endpoints and serverless compute.
 	QueryHistory sql.QueryHistoryInterface
@@ -728,6 +743,9 @@ type WorkspaceClient struct {
 	// uses the credential file to establish a secure connection to receive the
 	// shared data. This sharing mode is called **open sharing**.
 	Recipients sharing.RecipientsInterface
+
+	// Redash V2 service for workspace configurations (internal)
+	RedashConfig sql.RedashConfigInterface
 
 	// Databricks provides a hosted version of MLflow Model Registry in Unity
 	// Catalog. Models in Unity Catalog provide centralized access control,
@@ -1150,6 +1168,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Config:    cfg,
 		apiClient: apiClient,
 
+		AccessControl:                       iam.NewAccessControl(databricksClient),
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
 		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),
@@ -1190,6 +1209,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		IpAccessLists:                       settings.NewIpAccessLists(databricksClient),
 		Jobs:                                jobs.NewJobs(databricksClient),
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
+		LakeviewEmbedded:                    dashboards.NewLakeviewEmbedded(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),
 		Metastores:                          catalog.NewMetastores(databricksClient),
 		ModelRegistry:                       ml.NewModelRegistry(databricksClient),
@@ -1213,11 +1233,13 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
 		QueriesLegacy:                       sql.NewQueriesLegacy(databricksClient),
+		QueryExecution:                      dashboards.NewQueryExecution(databricksClient),
 		QueryHistory:                        sql.NewQueryHistory(databricksClient),
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
 		QueryVisualizationsLegacy:           sql.NewQueryVisualizationsLegacy(databricksClient),
 		RecipientActivation:                 sharing.NewRecipientActivation(databricksClient),
 		Recipients:                          sharing.NewRecipients(databricksClient),
+		RedashConfig:                        sql.NewRedashConfig(databricksClient),
 		RegisteredModels:                    catalog.NewRegisteredModels(databricksClient),
 		Repos:                               workspace.NewRepos(databricksClient),
 		ResourceQuotas:                      catalog.NewResourceQuotas(databricksClient),

@@ -67,6 +67,24 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 	require.EqualError(t, err, `Get "/a/b?c=d": nope`)
 }
 
+func TestQueryParameters(t *testing.T) {
+	c := NewApiClient(ClientConfig{
+		RetryTimeout: 1 * time.Millisecond,
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			require.Equal(t, "POST", r.Method)
+			require.Equal(t, "/a/b", r.URL.Path)
+			require.Equal(t, "c=d&e=1", r.URL.RawQuery)
+			return nil, fmt.Errorf("nope")
+		}),
+	})
+	err := c.Do(context.Background(), "POST", "/a/b",
+		WithQueryParameters(map[string]any{
+			"c": "d",
+			"e": 1,
+		}))
+	require.EqualError(t, err, `Post "/a/b?c=d&e=1": nope`)
+}
+
 func TestSimpleRequestFailsAPIError(t *testing.T) {
 	c := NewApiClient(ClientConfig{
 		Transport: hc(func(r *http.Request) (*http.Response, error) {

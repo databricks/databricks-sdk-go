@@ -114,6 +114,53 @@ func (_c *MockAccountSettingsInterface_DisableLegacyFeatures_Call) RunAndReturn(
 	return _c
 }
 
+// EnableIpAccessLists provides a mock function with given fields:
+func (_m *MockAccountSettingsInterface) EnableIpAccessLists() settings.EnableIpAccessListsInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for EnableIpAccessLists")
+	}
+
+	var r0 settings.EnableIpAccessListsInterface
+	if rf, ok := ret.Get(0).(func() settings.EnableIpAccessListsInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.EnableIpAccessListsInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockAccountSettingsInterface_EnableIpAccessLists_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EnableIpAccessLists'
+type MockAccountSettingsInterface_EnableIpAccessLists_Call struct {
+	*mock.Call
+}
+
+// EnableIpAccessLists is a helper method to define mock.On call
+func (_e *MockAccountSettingsInterface_Expecter) EnableIpAccessLists() *MockAccountSettingsInterface_EnableIpAccessLists_Call {
+	return &MockAccountSettingsInterface_EnableIpAccessLists_Call{Call: _e.mock.On("EnableIpAccessLists")}
+}
+
+func (_c *MockAccountSettingsInterface_EnableIpAccessLists_Call) Run(run func()) *MockAccountSettingsInterface_EnableIpAccessLists_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_EnableIpAccessLists_Call) Return(_a0 settings.EnableIpAccessListsInterface) *MockAccountSettingsInterface_EnableIpAccessLists_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_EnableIpAccessLists_Call) RunAndReturn(run func() settings.EnableIpAccessListsInterface) *MockAccountSettingsInterface_EnableIpAccessLists_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // EsmEnablementAccount provides a mock function with given fields:
 func (_m *MockAccountSettingsInterface) EsmEnablementAccount() settings.EsmEnablementAccountInterface {
 	ret := _m.Called()

@@ -44,7 +44,7 @@ type CleanRoom struct {
 	// When the clean room was last updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoom) UnmarshalJSON(b []byte) error {
@@ -125,7 +125,7 @@ type CleanRoomAsset struct {
 	// if and only if **asset_type** is **VOLUME**
 	VolumeLocalDetails *CleanRoomAssetVolumeLocalDetails `json:"volume_local_details,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAsset) UnmarshalJSON(b []byte) error {
@@ -179,7 +179,7 @@ type CleanRoomAssetForeignTableLocalDetails struct {
 	// metastore, in the format of *catalog*.*schema*.*foreign_table_name*
 	LocalName string `json:"local_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAssetForeignTableLocalDetails) UnmarshalJSON(b []byte) error {
@@ -197,7 +197,7 @@ type CleanRoomAssetNotebook struct {
 	// as returned by :method:workspace/export with the format of **HTML**.
 	NotebookContent string `json:"notebook_content,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAssetNotebook) UnmarshalJSON(b []byte) error {
@@ -212,6 +212,8 @@ type CleanRoomAssetStatusEnum string
 
 const CleanRoomAssetStatusEnumActive CleanRoomAssetStatusEnum = `ACTIVE`
 
+const CleanRoomAssetStatusEnumPending CleanRoomAssetStatusEnum = `PENDING`
+
 const CleanRoomAssetStatusEnumPermissionDenied CleanRoomAssetStatusEnum = `PERMISSION_DENIED`
 
 // String representation for [fmt.Print]
@@ -222,11 +224,11 @@ func (f *CleanRoomAssetStatusEnum) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CleanRoomAssetStatusEnum) Set(v string) error {
 	switch v {
-	case `ACTIVE`, `PERMISSION_DENIED`:
+	case `ACTIVE`, `PENDING`, `PERMISSION_DENIED`:
 		*f = CleanRoomAssetStatusEnum(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "PERMISSION_DENIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "PENDING", "PERMISSION_DENIED"`, v)
 	}
 }
 
@@ -247,7 +249,7 @@ type CleanRoomAssetTableLocalDetails struct {
 	// Partition filtering specification for a shared table.
 	Partitions []sharing.PartitionSpecificationPartition `json:"partitions,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAssetTableLocalDetails) UnmarshalJSON(b []byte) error {
@@ -268,7 +270,7 @@ type CleanRoomAssetViewLocalDetails struct {
 	// the format of *catalog*.*schema*.*view_name*
 	LocalName string `json:"local_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAssetViewLocalDetails) UnmarshalJSON(b []byte) error {
@@ -284,7 +286,7 @@ type CleanRoomAssetVolumeLocalDetails struct {
 	// the format of *catalog*.*schema*.*volume_name*
 	LocalName string `json:"local_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAssetVolumeLocalDetails) UnmarshalJSON(b []byte) error {
@@ -304,7 +306,7 @@ type CleanRoomCollaborator struct {
 	// requirements].
 	//
 	// [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
-	CollaboratorAlias string `json:"collaborator_alias,omitempty"`
+	CollaboratorAlias string `json:"collaborator_alias"`
 	// Generated display name for the collaborator. In the case of a single
 	// metastore clean room, it is the clean room name. For x-metastore clean
 	// rooms, it is the organization name of the metastore. It is not restricted
@@ -327,7 +329,7 @@ type CleanRoomCollaborator struct {
 	// configured in the metastore
 	OrganizationName string `json:"organization_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomCollaborator) UnmarshalJSON(b []byte) error {
@@ -360,7 +362,7 @@ type CleanRoomNotebookTaskRun struct {
 	// When the task run started, in epoch milliseconds.
 	StartTime int64 `json:"start_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomNotebookTaskRun) UnmarshalJSON(b []byte) error {
@@ -380,7 +382,7 @@ type CleanRoomOutputCatalog struct {
 
 	Status CleanRoomOutputCatalogOutputCatalogStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomOutputCatalog) UnmarshalJSON(b []byte) error {
@@ -444,7 +446,7 @@ type CleanRoomRemoteDetail struct {
 	// Region of the central clean room.
 	Region string `json:"region,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomRemoteDetail) UnmarshalJSON(b []byte) error {
@@ -498,7 +500,7 @@ type CollaboratorJobRunInfo struct {
 	// ID of the collaborator's workspace that triggered the task run.
 	CollaboratorWorkspaceId int64 `json:"collaborator_workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CollaboratorJobRunInfo) UnmarshalJSON(b []byte) error {
@@ -518,7 +520,7 @@ type ComplianceSecurityProfile struct {
 	// Whether the compliance security profile is enabled.
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
@@ -602,7 +604,7 @@ type ListCleanRoomAssetsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomAssetsRequest) UnmarshalJSON(b []byte) error {
@@ -621,7 +623,7 @@ type ListCleanRoomAssetsResponse struct {
 	// (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomAssetsResponse) UnmarshalJSON(b []byte) error {
@@ -643,7 +645,7 @@ type ListCleanRoomNotebookTaskRunsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomNotebookTaskRunsRequest) UnmarshalJSON(b []byte) error {
@@ -662,7 +664,7 @@ type ListCleanRoomNotebookTaskRunsResponse struct {
 	// Name of the clean room.
 	Runs []CleanRoomNotebookTaskRun `json:"runs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomNotebookTaskRunsResponse) UnmarshalJSON(b []byte) error {
@@ -681,7 +683,7 @@ type ListCleanRoomsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomsRequest) UnmarshalJSON(b []byte) error {
@@ -699,7 +701,7 @@ type ListCleanRoomsResponse struct {
 	// (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomsResponse) UnmarshalJSON(b []byte) error {

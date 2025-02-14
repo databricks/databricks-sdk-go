@@ -78,7 +78,7 @@ type CreatePipeline struct {
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreatePipeline) UnmarshalJSON(b []byte) error {
@@ -96,7 +96,7 @@ type CreatePipelineResponse struct {
 	// dry_run is false.
 	PipelineId string `json:"pipeline_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreatePipelineResponse) UnmarshalJSON(b []byte) error {
@@ -112,7 +112,7 @@ type CronTrigger struct {
 
 	TimezoneId string `json:"timezone_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CronTrigger) UnmarshalJSON(b []byte) error {
@@ -129,7 +129,7 @@ type DataPlaneId struct {
 	// A sequence number, unique and increasing within the data plane instance.
 	SeqNo int `json:"seq_no,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DataPlaneId) UnmarshalJSON(b []byte) error {
@@ -138,6 +138,46 @@ func (s *DataPlaneId) UnmarshalJSON(b []byte) error {
 
 func (s DataPlaneId) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Days of week in which the restart is allowed to happen (within a five-hour
+// window starting at start_hour). If not specified all days of the week will be
+// used.
+type DayOfWeek string
+
+const DayOfWeekFriday DayOfWeek = `FRIDAY`
+
+const DayOfWeekMonday DayOfWeek = `MONDAY`
+
+const DayOfWeekSaturday DayOfWeek = `SATURDAY`
+
+const DayOfWeekSunday DayOfWeek = `SUNDAY`
+
+const DayOfWeekThursday DayOfWeek = `THURSDAY`
+
+const DayOfWeekTuesday DayOfWeek = `TUESDAY`
+
+const DayOfWeekWednesday DayOfWeek = `WEDNESDAY`
+
+// String representation for [fmt.Print]
+func (f *DayOfWeek) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DayOfWeek) Set(v string) error {
+	switch v {
+	case `FRIDAY`, `MONDAY`, `SATURDAY`, `SUNDAY`, `THURSDAY`, `TUESDAY`, `WEDNESDAY`:
+		*f = DayOfWeek(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FRIDAY", "MONDAY", "SATURDAY", "SUNDAY", "THURSDAY", "TUESDAY", "WEDNESDAY"`, v)
+	}
+}
+
+// Type always returns DayOfWeek to satisfy [pflag.Value] interface
+func (f *DayOfWeek) Type() string {
+	return "DayOfWeek"
 }
 
 // Delete a pipeline
@@ -248,7 +288,7 @@ type EditPipeline struct {
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EditPipeline) UnmarshalJSON(b []byte) error {
@@ -268,7 +308,7 @@ type ErrorDetail struct {
 	// Whether this error is considered fatal, that is, unrecoverable.
 	Fatal bool `json:"fatal,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ErrorDetail) UnmarshalJSON(b []byte) error {
@@ -315,7 +355,7 @@ type FileLibrary struct {
 	// The absolute path of the file.
 	Path string `json:"path,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FileLibrary) UnmarshalJSON(b []byte) error {
@@ -383,7 +423,7 @@ type GetPipelineResponse struct {
 	// The pipeline state.
 	State PipelineState `json:"state,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetPipelineResponse) UnmarshalJSON(b []byte) error {
@@ -464,7 +504,7 @@ type IngestionGatewayPipelineDefinition struct {
 	// storage location.
 	GatewayStorageSchema string `json:"gateway_storage_schema,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *IngestionGatewayPipelineDefinition) UnmarshalJSON(b []byte) error {
@@ -491,7 +531,7 @@ type IngestionPipelineDefinition struct {
 	// are applied to all tables in the pipeline.
 	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *IngestionPipelineDefinition) UnmarshalJSON(b []byte) error {
@@ -528,7 +568,7 @@ type ListPipelineEventsRequest struct {
 
 	PipelineId string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListPipelineEventsRequest) UnmarshalJSON(b []byte) error {
@@ -547,7 +587,7 @@ type ListPipelineEventsResponse struct {
 	// If present, a token to fetch the previous page of events.
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListPipelineEventsResponse) UnmarshalJSON(b []byte) error {
@@ -582,7 +622,7 @@ type ListPipelinesRequest struct {
 	// Page token returned by previous call
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListPipelinesRequest) UnmarshalJSON(b []byte) error {
@@ -599,7 +639,7 @@ type ListPipelinesResponse struct {
 	// The list of events matching the request criteria.
 	Statuses []PipelineStateInfo `json:"statuses,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListPipelinesResponse) UnmarshalJSON(b []byte) error {
@@ -621,7 +661,7 @@ type ListUpdatesRequest struct {
 	// If present, returns updates until and including this update_id.
 	UntilUpdateId string `json:"-" url:"until_update_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListUpdatesRequest) UnmarshalJSON(b []byte) error {
@@ -642,7 +682,7 @@ type ListUpdatesResponse struct {
 
 	Updates []UpdateInfo `json:"updates,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListUpdatesResponse) UnmarshalJSON(b []byte) error {
@@ -690,7 +730,7 @@ type NotebookLibrary struct {
 	// The absolute path of the notebook.
 	Path string `json:"path,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NotebookLibrary) UnmarshalJSON(b []byte) error {
@@ -751,7 +791,7 @@ type Origin struct {
 	// The id of an execution. Globally unique.
 	UpdateId string `json:"update_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Origin) UnmarshalJSON(b []byte) error {
@@ -772,7 +812,7 @@ type PipelineAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -795,7 +835,7 @@ type PipelineAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -902,7 +942,7 @@ type PipelineCluster struct {
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineCluster) UnmarshalJSON(b []byte) error {
@@ -967,7 +1007,7 @@ type PipelineDeployment struct {
 	// The path to the file containing metadata about the deployment.
 	MetadataFilePath string `json:"metadata_file_path,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineDeployment) UnmarshalJSON(b []byte) error {
@@ -998,7 +1038,7 @@ type PipelineEvent struct {
 	// The time of the event.
 	Timestamp string `json:"timestamp,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineEvent) UnmarshalJSON(b []byte) error {
@@ -1023,7 +1063,7 @@ type PipelineLibrary struct {
 	// URI of the whl to be installed.
 	Whl string `json:"whl,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineLibrary) UnmarshalJSON(b []byte) error {
@@ -1041,7 +1081,7 @@ type PipelinePermission struct {
 	// Permission level
 	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelinePermission) UnmarshalJSON(b []byte) error {
@@ -1091,7 +1131,7 @@ type PipelinePermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelinePermissions) UnmarshalJSON(b []byte) error {
@@ -1107,7 +1147,7 @@ type PipelinePermissionsDescription struct {
 	// Permission level
 	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelinePermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -1181,7 +1221,7 @@ type PipelineSpec struct {
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineSpec) UnmarshalJSON(b []byte) error {
@@ -1254,7 +1294,7 @@ type PipelineStateInfo struct {
 	// The pipeline state.
 	State PipelineState `json:"state,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineStateInfo) UnmarshalJSON(b []byte) error {
@@ -1314,7 +1354,7 @@ type ReportSpec struct {
 	// IngestionPipelineDefinition object.
 	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ReportSpec) UnmarshalJSON(b []byte) error {
@@ -1329,7 +1369,7 @@ type RestartWindow struct {
 	// Days of week in which the restart is allowed to happen (within a
 	// five-hour window starting at start_hour). If not specified all days of
 	// the week will be used.
-	DaysOfWeek []RestartWindowDaysOfWeek `json:"days_of_week,omitempty"`
+	DaysOfWeek []DayOfWeek `json:"days_of_week,omitempty"`
 	// An integer between 0 and 23 denoting the start hour for the restart
 	// window in the 24-hour day. Continuous pipeline restart is triggered only
 	// within a five-hour window starting at this hour.
@@ -1339,7 +1379,7 @@ type RestartWindow struct {
 	// for details. If not specified, UTC will be used.
 	TimeZoneId string `json:"time_zone_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RestartWindow) UnmarshalJSON(b []byte) error {
@@ -1348,46 +1388,6 @@ func (s *RestartWindow) UnmarshalJSON(b []byte) error {
 
 func (s RestartWindow) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-// Days of week in which the restart is allowed to happen (within a five-hour
-// window starting at start_hour). If not specified all days of the week will be
-// used.
-type RestartWindowDaysOfWeek string
-
-const RestartWindowDaysOfWeekFriday RestartWindowDaysOfWeek = `FRIDAY`
-
-const RestartWindowDaysOfWeekMonday RestartWindowDaysOfWeek = `MONDAY`
-
-const RestartWindowDaysOfWeekSaturday RestartWindowDaysOfWeek = `SATURDAY`
-
-const RestartWindowDaysOfWeekSunday RestartWindowDaysOfWeek = `SUNDAY`
-
-const RestartWindowDaysOfWeekThursday RestartWindowDaysOfWeek = `THURSDAY`
-
-const RestartWindowDaysOfWeekTuesday RestartWindowDaysOfWeek = `TUESDAY`
-
-const RestartWindowDaysOfWeekWednesday RestartWindowDaysOfWeek = `WEDNESDAY`
-
-// String representation for [fmt.Print]
-func (f *RestartWindowDaysOfWeek) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *RestartWindowDaysOfWeek) Set(v string) error {
-	switch v {
-	case `FRIDAY`, `MONDAY`, `SATURDAY`, `SUNDAY`, `THURSDAY`, `TUESDAY`, `WEDNESDAY`:
-		*f = RestartWindowDaysOfWeek(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "FRIDAY", "MONDAY", "SATURDAY", "SUNDAY", "THURSDAY", "TUESDAY", "WEDNESDAY"`, v)
-	}
-}
-
-// Type always returns RestartWindowDaysOfWeek to satisfy [pflag.Value] interface
-func (f *RestartWindowDaysOfWeek) Type() string {
-	return "RestartWindowDaysOfWeek"
 }
 
 // Write-only setting, available only in Create/Update calls. Specifies the user
@@ -1404,7 +1404,7 @@ type RunAs struct {
 	// their own email.
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunAs) UnmarshalJSON(b []byte) error {
@@ -1432,7 +1432,7 @@ type SchemaSpec struct {
 	// table_configuration defined in the IngestionPipelineDefinition object.
 	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SchemaSpec) UnmarshalJSON(b []byte) error {
@@ -1449,7 +1449,7 @@ type Sequencing struct {
 	// the ID assigned by the data plane.
 	DataPlaneId *DataPlaneId `json:"data_plane_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Sequencing) UnmarshalJSON(b []byte) error {
@@ -1468,7 +1468,7 @@ type SerializedException struct {
 	// Stack trace consisting of a list of stack frames
 	Stack []StackFrame `json:"stack,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SerializedException) UnmarshalJSON(b []byte) error {
@@ -1489,7 +1489,7 @@ type StackFrame struct {
 	// Name of the method which was called
 	MethodName string `json:"method_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *StackFrame) UnmarshalJSON(b []byte) error {
@@ -1520,7 +1520,7 @@ type StartUpdate struct {
 	// code but does not materialize or publish any datasets.
 	ValidateOnly bool `json:"validate_only,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *StartUpdate) UnmarshalJSON(b []byte) error {
@@ -1569,7 +1569,7 @@ func (f *StartUpdateCause) Type() string {
 type StartUpdateResponse struct {
 	UpdateId string `json:"update_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *StartUpdateResponse) UnmarshalJSON(b []byte) error {
@@ -1608,7 +1608,7 @@ type TableSpec struct {
 	// IngestionPipelineDefinition object and the SchemaSpec.
 	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TableSpec) UnmarshalJSON(b []byte) error {
@@ -1632,7 +1632,7 @@ type TableSpecificConfig struct {
 	// arrive out of order.
 	SequenceBy []string `json:"sequence_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TableSpecificConfig) UnmarshalJSON(b []byte) error {
@@ -1703,7 +1703,7 @@ type UpdateInfo struct {
 	// code but does not materialize or publish any datasets.
 	ValidateOnly bool `json:"validate_only,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateInfo) UnmarshalJSON(b []byte) error {
@@ -1803,7 +1803,7 @@ type UpdateStateInfo struct {
 
 	UpdateId string `json:"update_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateStateInfo) UnmarshalJSON(b []byte) error {

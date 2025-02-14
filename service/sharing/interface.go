@@ -49,7 +49,7 @@ type ProvidersService interface {
 	//
 	// * the caller is a metastore admin, or * the caller is the owner.
 	//
-	// Use ListSharesAll() to get all ProviderShare instances
+	// Use ListSharesAll() to get all ProviderShare instances, which will iterate over every result page.
 	ListShares(ctx context.Context, request ListSharesRequest) (*ListProviderSharesResponse, error)
 
 	// Update a provider.
@@ -107,7 +107,7 @@ type RecipientsService interface {
 	// Create a share recipient.
 	//
 	// Creates a new recipient with the delta sharing authentication type in the
-	// metastore. The caller must be a metastore admin or has the
+	// metastore. The caller must be a metastore admin or have the
 	// **CREATE_RECIPIENT** privilege on the metastore.
 	Create(ctx context.Context, request CreateRecipient) (*RecipientInfo, error)
 
@@ -154,7 +154,7 @@ type RecipientsService interface {
 	// metastore admin or the owner of the recipient. If the recipient name will
 	// be updated, the user must be both a metastore admin and the owner of the
 	// recipient.
-	Update(ctx context.Context, request UpdateRecipient) error
+	Update(ctx context.Context, request UpdateRecipient) (*RecipientInfo, error)
 }
 
 // A share is a container instantiated with :method:shares/create. Once created

@@ -479,6 +479,13 @@ type QueryVisualizationsLegacyService interface {
 	Update(ctx context.Context, request LegacyVisualization) (*LegacyVisualization, error)
 }
 
+// Redash V2 service for workspace configurations (internal)
+type RedashConfigService interface {
+
+	// Read workspace configuration for Redash-v2.
+	GetConfig(ctx context.Context) (*ClientConfig, error)
+}
+
 // The Databricks SQL Statement Execution API can be used to execute SQL
 // statements on a SQL warehouse and fetch the result.
 //

@@ -73,6 +73,18 @@ func WithRequestData(body any) DoOption {
 	}
 }
 
+// WithQueryParameters takes a map and sends it as query string for non GET/DELETE/HEAD calls.
+// This is ignored for GET/DELETE/HEAD calls, as the query parameters are serialized from the body instead.
+//
+// Experimental: this method may eventually be split into more granular options.
+func WithQueryParameters(queryParams map[string]any) DoOption {
+	// refactor this, so that we split JSON/query string serialization and make
+	// separate request visitors internally.
+	return DoOption{
+		queryParams: queryParams,
+	}
+}
+
 // WithUrlEncodedData takes either a struct instance, map, string, bytes, or io.Reader plus
 // a content type, and sends it either as query string for GET and DELETE calls, or as request body
 // for POST, PUT, and PATCH calls. The content type is set to "application/x-www-form-urlencoded"
@@ -148,24 +160,41 @@ func EncodeMultiSegmentPathParameter(p string) string {
 	return b.String()
 }
 
-func makeRequestBody(method string, requestURL *string, data interface{}, contentType string) (common.RequestBody, error) {
-	if data == nil {
+// We used to not send any query parameters for non GET/DELETE/HEAD requests.
+// Moreover, serialization for query paramters in GET/DELETE/HEAD requests depends on the `url` tag.
+// This tag is wrongly generated and fixing it will have an unknown inpact on the SDK.
+// So:
+// * GET/DELETE/HEAD requests are sent with query parameters serialized from data using the `url` tag as before (no change).
+// * The rest of the requests are sent with query parameters serialized from explicitQueryParams, which does not use the `url` tag.
+// TODO: For SDK-Mod, refactor this and remove the `url` tag completely.
+func makeRequestBody(method string, requestURL *string, data interface{}, contentType string, explicitQueryParams map[string]any) (common.RequestBody, error) {
+	if data == nil && len(explicitQueryParams) == 0 {
 		return common.RequestBody{}, nil
 	}
-	if method == "GET" || method == "DELETE" || method == "HEAD" {
-		qs, err := makeQueryString(data)
+	if data != nil {
+		if method == "GET" || method == "DELETE" || method == "HEAD" {
+			qs, err := makeQueryString(data)
+			if err != nil {
+				return common.RequestBody{}, err
+			}
+			*requestURL += "?" + qs
+			return common.NewRequestBody([]byte{})
+		}
+		if contentType == UrlEncodedContentType {
+			qs, err := makeQueryString(data)
+			if err != nil {
+				return common.RequestBody{}, err
+			}
+			return common.NewRequestBody(qs)
+		}
+	}
+	if len(explicitQueryParams) > 0 {
+		qs, err := makeQueryString(explicitQueryParams)
 		if err != nil {
 			return common.RequestBody{}, err
 		}
 		*requestURL += "?" + qs
-		return common.NewRequestBody([]byte{})
-	}
-	if contentType == UrlEncodedContentType {
-		qs, err := makeQueryString(data)
-		if err != nil {
-			return common.RequestBody{}, err
-		}
-		return common.NewRequestBody(qs)
+		return common.NewRequestBody(data)
 	}
 	return common.NewRequestBody(data)
 }
