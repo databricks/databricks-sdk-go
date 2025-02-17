@@ -2,6 +2,7 @@ package u2m_test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -34,7 +35,7 @@ func (m *tokenCacheMock) Lookup(key string) (*oauth2.Token, error) {
 	return m.lookup(key)
 }
 
-func TestLoad(t *testing.T) {
+func TestToken(t *testing.T) {
 	cache := &tokenCacheMock{
 		lookup: func(key string) (*oauth2.Token, error) {
 			assert.Equal(t, "https://abc/oidc/accounts/xyz", key)
@@ -71,7 +72,7 @@ func (m MockOAuthEndpointSupplier) GetWorkspaceOAuthEndpoints(ctx context.Contex
 	}, nil
 }
 
-func TestLoadRefresh(t *testing.T) {
+func TestToken_RefreshesExpiredAccessToken(t *testing.T) {
 	ctx := context.Background()
 	expectedKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
 	cache := &tokenCacheMock{
@@ -115,6 +116,81 @@ func TestLoadRefresh(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "refreshed", tok.AccessToken)
 	assert.Equal(t, "", tok.RefreshToken)
+}
+
+func TestToken_ReturnsError(t *testing.T) {
+	ctx := context.Background()
+	cache := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			assert.Equal(t, "https://accounts.cloud.databricks.com/oidc/accounts/xyz", key)
+			return &oauth2.Token{
+				AccessToken:  "expired",
+				RefreshToken: "cde",
+				Expiry:       time.Now().Add(-1 * time.Minute),
+			}, nil
+		},
+	}
+	arg, err := u2m.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	assert.NoError(t, err)
+	p, err := u2m.NewPersistentAuth(
+		ctx,
+		u2m.WithTokenCache(cache),
+		u2m.WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/accounts/xyz/v1/token",
+					Response: `{"error": "invalid_grant", "error_description": "Invalid Client"}`,
+					Status:   401,
+				},
+			},
+		}),
+		u2m.WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		u2m.WithOAuthArgument(arg),
+	)
+	require.NoError(t, err)
+	defer p.Close()
+	tok, err := p.Token()
+	assert.Nil(t, tok)
+	assert.ErrorContains(t, err, "Invalid Client (error code: invalid_grant)")
+}
+
+func TestToken_ReturnsInvalidRefreshTokenError(t *testing.T) {
+	ctx := context.Background()
+	cache := &tokenCacheMock{
+		lookup: func(key string) (*oauth2.Token, error) {
+			assert.Equal(t, "https://accounts.cloud.databricks.com/oidc/accounts/xyz", key)
+			return &oauth2.Token{
+				AccessToken:  "expired",
+				RefreshToken: "cde",
+				Expiry:       time.Now().Add(-1 * time.Minute),
+			}, nil
+		},
+	}
+	arg, err := u2m.NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
+	assert.NoError(t, err)
+	p, err := u2m.NewPersistentAuth(
+		ctx,
+		u2m.WithTokenCache(cache),
+		u2m.WithHttpClient(&http.Client{
+			Transport: fixtures.SliceTransport{
+				{
+					Method:   "POST",
+					Resource: "/oidc/accounts/xyz/v1/token",
+					Response: `{"error": "invalid_grant", "error_description": "Refresh token is invalid"}`,
+					Status:   401,
+				},
+			},
+		}),
+		u2m.WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+		u2m.WithOAuthArgument(arg),
+	)
+	require.NoError(t, err)
+	defer p.Close()
+	tok, err := p.Token()
+	assert.Nil(t, tok)
+	target := &u2m.InvalidRefreshTokenError{}
+	assert.True(t, errors.As(err, &target))
 }
 
 func TestChallenge(t *testing.T) {
@@ -181,7 +257,7 @@ func TestChallenge(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestChallengeFailed(t *testing.T) {
+func TestChallenge_ReturnsErrorOnFailure(t *testing.T) {
 	ctx := context.Background()
 	browserOpened := make(chan string)
 	browser := func(redirect string) error {

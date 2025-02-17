@@ -10,36 +10,24 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m/cache"
-	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 )
 
-type MockOAuthEndpointSupplier struct {
-	GetAccountOAuthEndpointsFn   func(ctx context.Context, accountHost string, accountId string) (*u2m.OAuthAuthorizationServer, error)
-	GetWorkspaceOAuthEndpointsFn func(ctx context.Context, workspaceHost string) (*u2m.OAuthAuthorizationServer, error)
+type mockU2mTokenSource struct {
+	token *oauth2.Token
+	err   error
 }
 
-func (m MockOAuthEndpointSupplier) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*u2m.OAuthAuthorizationServer, error) {
-	return m.GetAccountOAuthEndpointsFn(ctx, accountHost, accountId)
-}
-
-func (m MockOAuthEndpointSupplier) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*u2m.OAuthAuthorizationServer, error) {
-	return m.GetWorkspaceOAuthEndpointsFn(ctx, workspaceHost)
-}
-
-func must[T any](c T, err error) T {
-	if err != nil {
-		panic(err)
-	}
-	return c
+func (m mockU2mTokenSource) Token() (*oauth2.Token, error) {
+	return m.token, m.err
 }
 
 func TestU2MCredentials(t *testing.T) {
 	tests := []struct {
 		name       string
 		cfg        *Config
-		auth       *u2m.PersistentAuth
+		auth       oauth2.TokenSource
 		expectErr  string
 		expectAuth string
 	}{
@@ -48,20 +36,12 @@ func TestU2MCredentials(t *testing.T) {
 			cfg: &Config{
 				Host: "https://myworkspace.cloud.databricks.com",
 			},
-			auth: must(
-				u2m.NewPersistentAuth(
-					context.Background(),
-					u2m.WithTokenCache(&InMemoryTokenCache{
-						Tokens: map[string]*oauth2.Token{
-							"https://myworkspace.cloud.databricks.com": {
-								AccessToken: "dummy_access_token",
-								Expiry:      time.Now().Add(1 * time.Hour),
-							},
-						},
-					}),
-					u2m.WithOAuthArgument(must(u2m.NewBasicWorkspaceOAuthArgument("https://myworkspace.cloud.databricks.com"))),
-				),
-			),
+			auth: mockU2mTokenSource{
+				token: &oauth2.Token{
+					AccessToken: "dummy_access_token",
+					Expiry:      time.Now().Add(1 * time.Hour),
+				},
+			},
 			expectAuth: "Bearer dummy_access_token",
 		},
 		{
@@ -69,39 +49,9 @@ func TestU2MCredentials(t *testing.T) {
 			cfg: &Config{
 				Host: "https://myworkspace.cloud.databricks.com",
 			},
-			auth: must(
-				u2m.NewPersistentAuth(
-					context.Background(),
-					u2m.WithTokenCache(&InMemoryTokenCache{
-						Tokens: map[string]*oauth2.Token{
-							"https://myworkspace.cloud.databricks.com": {
-								AccessToken:  "dummy_access_token",
-								RefreshToken: "dummy_refresh_token",
-								Expiry:       time.Now().Add(-1 * time.Hour),
-							},
-						},
-					}),
-					u2m.WithHttpClient(&http.Client{
-						Transport: fixtures.SliceTransport{
-							{
-								Method:   "POST",
-								Resource: "/oidc/v1/token",
-								Status:   401,
-								Response: `{"error":"invalid_refresh_token","error_description":"Refresh token is invalid"}`,
-							},
-						},
-					}),
-					u2m.WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{
-						GetWorkspaceOAuthEndpointsFn: func(ctx context.Context, workspaceHost string) (*u2m.OAuthAuthorizationServer, error) {
-							return &u2m.OAuthAuthorizationServer{
-								TokenEndpoint:         "https://myworkspace.cloud.databricks.com/oidc/v1/token",
-								AuthorizationEndpoint: "https://myworkspace.cloud.databricks.com/oidc/v1/authorize",
-							}, nil
-						},
-					}),
-					u2m.WithOAuthArgument(must(u2m.NewBasicWorkspaceOAuthArgument("https://myworkspace.cloud.databricks.com"))),
-				),
-			),
+			auth: mockU2mTokenSource{
+				err: &u2m.InvalidRefreshTokenError{},
+			},
 			expectErr: `a new access token could not be retrieved because the refresh token is invalid. If using the CLI, run the following command to reauthenticate:
 
   $ databricks auth login --host https://myworkspace.cloud.databricks.com`,
