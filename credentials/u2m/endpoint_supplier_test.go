@@ -10,7 +10,7 @@ import (
 )
 
 func TestBasicOAuthClient_GetAccountOAuthEndpoints(t *testing.T) {
-	c := &BasicOAuthClient{}
+	c := &BasicOAuthEndpointSupplier{}
 	s, err := c.GetAccountOAuthEndpoints(context.Background(), "https://abc", "xyz")
 	assert.NoError(t, err)
 	assert.Equal(t, "https://abc/oidc/accounts/xyz/v1/authorize", s.AuthorizationEndpoint)
@@ -29,7 +29,7 @@ func TestGetWorkspaceOAuthEndpoints(t *testing.T) {
 			},
 		},
 	})
-	c := &BasicOAuthClient{Client: p}
+	c := &BasicOAuthEndpointSupplier{Client: p}
 	endpoints, err := c.GetWorkspaceOAuthEndpoints(context.Background(), "https://abc")
 	assert.NoError(t, err)
 	assert.Equal(t, "a", endpoints.AuthorizationEndpoint)

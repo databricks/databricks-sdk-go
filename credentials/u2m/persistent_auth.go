@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"net/http"
 	"time"
 
 	cache "github.com/databricks/databricks-sdk-go/credentials/u2m/cache"
@@ -43,7 +44,9 @@ type PersistentAuth struct {
 	// cache is the token cache to store and lookup tokens.
 	cache cache.TokenCache
 	// client is the HTTP client to use for OAuth2 requests.
-	client OAuthClient
+	client *http.Client
+	// endpointSupplier is the HTTP endpointSupplier to use for OAuth2 requests.
+	endpointSupplier OAuthEndpointSupplier
 	// oAuthArgument defines the workspace or account to authenticate to and the
 	// cache key for the token.
 	oAuthArgument OAuthArgument
@@ -65,13 +68,22 @@ func WithTokenCache(c cache.TokenCache) PersistentAuthOption {
 	}
 }
 
-// WithApiClient sets the HTTP client for the PersistentAuth.
-func WithOAuthClient(c OAuthClient) PersistentAuthOption {
+// WithHttpClient sets the HTTP client for the PersistentAuth.
+func WithHttpClient(c *http.Client) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.client = c
 	}
 }
 
+// WithOAuthEndpointSupplier sets the OAuth endpoint supplier for the
+// PersistentAuth.
+func WithOAuthEndpointSupplier(c OAuthEndpointSupplier) PersistentAuthOption {
+	return func(a *PersistentAuth) {
+		a.endpointSupplier = c
+	}
+}
+
+// WithOAuthArgument sets the OAuthArgument for the PersistentAuth.
 func WithOAuthArgument(arg OAuthArgument) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.oAuthArgument = arg
@@ -91,9 +103,22 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 	for _, opt := range opts {
 		opt(p)
 	}
+	// By default, PersistentAuth uses the default ApiClient to make HTTP
+	// requests. Furthermore, if the endpointSupplier is not provided, it uses
+	// this same client to fetch the OAuth endpoints. If the HTTP client is
+	// provided but the endpointSupplier is not, we construct a default
+	// ApiClient for use with BasicOAuthClient.
+	var apiClient *httpclient.ApiClient
 	if p.client == nil {
-		p.client = &BasicOAuthClient{
-			Client: httpclient.NewApiClient(httpclient.ClientConfig{}),
+		apiClient = httpclient.NewApiClient(httpclient.ClientConfig{})
+		p.client = apiClient.ToHttpClient()
+	}
+	if p.endpointSupplier == nil {
+		if apiClient == nil {
+			apiClient = httpclient.NewApiClient(httpclient.ClientConfig{})
+		}
+		p.endpointSupplier = &BasicOAuthEndpointSupplier{
+			Client: apiClient,
 		}
 	}
 	if p.cache == nil {
@@ -202,12 +227,11 @@ func (a *PersistentAuth) refresh(oldToken *oauth2.Token) (*oauth2.Token, error) 
 // OAuth2 flow is started by opening the browser to the OAuth2 authorization
 // URL. The user is redirected to the callback server on appRedirectAddr. The
 // callback server listens for the redirect from the identity provider and
-// exchanges the authorization code for an access token. It returns the OAuth2
-// token on success.
-func (a *PersistentAuth) Challenge() (*oauth2.Token, error) {
+// exchanges the authorization code for an access token.
+func (a *PersistentAuth) Challenge() error {
 	err := a.startListener(a.ctx)
 	if err != nil {
-		return nil, fmt.Errorf("starting listener: %w", err)
+		return fmt.Errorf("starting listener: %w", err)
 	}
 	// The listener will be closed by the callback server automatically, but if
 	// the callback server is not created, we need to close the listener manually.
@@ -215,31 +239,31 @@ func (a *PersistentAuth) Challenge() (*oauth2.Token, error) {
 
 	cfg, err := a.oauth2Config()
 	if err != nil {
-		return nil, fmt.Errorf("fetching oauth config: %w", err)
+		return fmt.Errorf("fetching oauth config: %w", err)
 	}
 	cb, err := a.newCallbackServer()
 	if err != nil {
-		return nil, fmt.Errorf("callback server: %w", err)
+		return fmt.Errorf("callback server: %w", err)
 	}
 	defer cb.Close()
 
 	state, pkce, err := a.stateAndPKCE()
 	if err != nil {
-		return nil, fmt.Errorf("state and pkce: %w", err)
+		return fmt.Errorf("state and pkce: %w", err)
 	}
 	// make OAuth2 library use our client
 	ctx := a.setOAuthContext(a.ctx)
 	ts := authhandler.TokenSourceWithPKCE(ctx, cfg, state, cb.Handler, pkce)
 	t, err := ts.Token()
 	if err != nil {
-		return nil, fmt.Errorf("authorize: %w", err)
+		return fmt.Errorf("authorize: %w", err)
 	}
 	// cache token identified by host (and possibly the account id)
 	err = a.cache.Store(a.oAuthArgument.GetCacheKey(), t)
 	if err != nil {
-		return nil, fmt.Errorf("store: %w", err)
+		return fmt.Errorf("store: %w", err)
 	}
-	return t, nil
+	return nil
 }
 
 // startListener starts a listener on appRedirectAddr, retrying if the address
@@ -290,9 +314,9 @@ func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
 	var err error
 	switch argg := a.oAuthArgument.(type) {
 	case WorkspaceOAuthArgument:
-		endpoints, err = a.client.GetWorkspaceOAuthEndpoints(a.ctx, argg.GetWorkspaceHost())
+		endpoints, err = a.endpointSupplier.GetWorkspaceOAuthEndpoints(a.ctx, argg.GetWorkspaceHost())
 	case AccountOAuthArgument:
-		endpoints, err = a.client.GetAccountOAuthEndpoints(
+		endpoints, err = a.endpointSupplier.GetAccountOAuthEndpoints(
 			a.ctx, argg.GetAccountHost(), argg.GetAccountId())
 	default:
 		return nil, fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument or AccountOAuthArgument interface", a.oAuthArgument)
@@ -341,7 +365,7 @@ func (a *PersistentAuth) randomString(size int) (string, error) {
 }
 
 func (a *PersistentAuth) setOAuthContext(ctx context.Context) context.Context {
-	return context.WithValue(ctx, oauth2.HTTPClient, a.client.GetHttpClient(ctx))
+	return context.WithValue(ctx, oauth2.HTTPClient, a.client)
 }
 
 var _ oauth2.TokenSource = (*PersistentAuth)(nil)

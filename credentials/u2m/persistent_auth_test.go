@@ -102,7 +102,7 @@ func TestLoadRefresh(t *testing.T) {
 	p, err := u2m.NewPersistentAuth(
 		ctx,
 		u2m.WithTokenCache(cache),
-		u2m.WithOAuthClient(&MockOAuthClient{
+		u2m.WithOAuthEndpointSupplier(&MockOAuthClient{
 			Transport: fixtures.SliceTransport{
 				{
 					Method:   "POST",
@@ -126,7 +126,6 @@ func TestLoadRefresh(t *testing.T) {
 
 func TestChallenge(t *testing.T) {
 	ctx := context.Background()
-	expectedKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"
 
 	browserOpened := make(chan string)
 	browser := func(redirect string) error {
@@ -142,7 +141,8 @@ func TestChallenge(t *testing.T) {
 	}
 	cache := &tokenCacheMock{
 		store: func(key string, tok *oauth2.Token) error {
-			assert.Equal(t, expectedKey, key)
+			assert.Equal(t, "https://accounts.cloud.databricks.com/oidc/accounts/xyz", key)
+			assert.Equal(t, "__THAT__", tok.AccessToken)
 			assert.Equal(t, "__SOMETHING__", tok.RefreshToken)
 			return nil
 		},
@@ -153,7 +153,7 @@ func TestChallenge(t *testing.T) {
 		ctx,
 		u2m.WithTokenCache(cache),
 		u2m.WithBrowser(browser),
-		u2m.WithOAuthClient(&MockOAuthClient{
+		u2m.WithOAuthEndpointSupplier(&MockOAuthClient{
 			Transport: fixtures.SliceTransport{
 				{
 					Method:   "POST",
@@ -170,14 +170,11 @@ func TestChallenge(t *testing.T) {
 	require.NoError(t, err)
 	defer p.Close()
 
-	tokenc := make(chan *oauth2.Token)
 	errc := make(chan error)
 	go func() {
-		token, err := p.Challenge()
+		err := p.Challenge()
 		errc <- err
 		close(errc)
-		tokenc <- token
-		close(tokenc)
 	}()
 
 	state := <-browserOpened
@@ -188,7 +185,6 @@ func TestChallenge(t *testing.T) {
 
 	err = <-errc
 	assert.NoError(t, err)
-	assert.Equal(t, "__THAT__", (<-tokenc).AccessToken)
 }
 
 func TestChallengeFailed(t *testing.T) {
@@ -211,14 +207,11 @@ func TestChallengeFailed(t *testing.T) {
 	require.NoError(t, err)
 	defer p.Close()
 
-	tokenc := make(chan *oauth2.Token)
 	errc := make(chan error)
 	go func() {
-		token, err := p.Challenge()
+		err := p.Challenge()
 		errc <- err
 		close(errc)
-		tokenc <- token
-		close(tokenc)
 	}()
 
 	<-browserOpened
@@ -230,5 +223,4 @@ func TestChallengeFailed(t *testing.T) {
 
 	err = <-errc
 	assert.EqualError(t, err, "authorize: access_denied: Policy evaluation failed for this request")
-	assert.Nil(t, <-tokenc)
 }

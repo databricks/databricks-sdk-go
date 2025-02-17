@@ -88,7 +88,7 @@ func TestU2MCredentials(t *testing.T) {
 							},
 						},
 					}),
-					u2m.WithOAuthClient(MockOAuthClient{
+					u2m.WithOAuthEndpointSupplier(MockOAuthClient{
 						Transport: fixtures.SliceTransport{
 							{
 								Method:   "POST",
@@ -117,7 +117,7 @@ func TestU2MCredentials(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := context.Background()
 			strat := u2mCredentials{
-				auth: tt.auth,
+				ts: tt.auth,
 			}
 			provider, err := strat.Configure(ctx, tt.cfg)
 			if tt.expectErr != "" {

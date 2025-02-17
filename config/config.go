@@ -455,7 +455,7 @@ func (c *Config) refreshTokenErrorMapper(ctx context.Context, resp common.Respon
 // getOidcEndpoints returns the OAuth endpoints for the current configuration.
 func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
 	c.EnsureResolved()
-	oauthClient := &u2m.BasicOAuthClient{
+	oauthClient := &u2m.BasicOAuthEndpointSupplier{
 		Client: c.refreshClient,
 	}
 	if c.IsAccountClient() {

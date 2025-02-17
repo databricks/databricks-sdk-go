@@ -4,17 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/httpclient"
 )
 
-// OAuthClient provides the http functionality needed for interacting with the
+// OAuthEndpointSupplier provides the http functionality needed for interacting with the
 // Databricks OAuth APIs.
-type OAuthClient interface {
-	// GetHttpClient returns an HTTP client for OAuth2 requests.
-	GetHttpClient(context.Context) *http.Client
-
+type OAuthEndpointSupplier interface {
 	// GetWorkspaceOAuthEndpoints returns the OAuth2 endpoints for the workspace.
 	GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*OAuthAuthorizationServer, error)
 
@@ -22,20 +18,16 @@ type OAuthClient interface {
 	GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*OAuthAuthorizationServer, error)
 }
 
-// BasicOAuthClient is an implementation of the OAuthClient interface.
-type BasicOAuthClient struct {
+// BasicOAuthEndpointSupplier is an implementation of the OAuthEndpointSupplier interface.
+type BasicOAuthEndpointSupplier struct {
 	// Client is the ApiClient to use for making HTTP requests.
 	Client *httpclient.ApiClient
-}
-
-func (c *BasicOAuthClient) GetHttpClient(_ context.Context) *http.Client {
-	return c.Client.ToHttpClient()
 }
 
 // GetWorkspaceOAuthEndpoints returns the OAuth endpoints for the given workspace.
 // It queries the OIDC discovery endpoint to get the OAuth endpoints using the
 // provided ApiClient.
-func (c *BasicOAuthClient) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*OAuthAuthorizationServer, error) {
+func (c *BasicOAuthEndpointSupplier) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*OAuthAuthorizationServer, error) {
 	oidc := fmt.Sprintf("%s/oidc/.well-known/oauth-authorization-server", workspaceHost)
 	var oauthEndpoints OAuthAuthorizationServer
 	if err := c.Client.Do(ctx, "GET", oidc, httpclient.WithResponseUnmarshal(&oauthEndpoints)); err != nil {
@@ -46,7 +38,7 @@ func (c *BasicOAuthClient) GetWorkspaceOAuthEndpoints(ctx context.Context, works
 
 // GetAccountOAuthEndpoints returns the OAuth2 endpoints for the account. The
 // account-level OAuth endpoints are fixed based on the account ID and host.
-func (c *BasicOAuthClient) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*OAuthAuthorizationServer, error) {
+func (c *BasicOAuthEndpointSupplier) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*OAuthAuthorizationServer, error) {
 	return &OAuthAuthorizationServer{
 		AuthorizationEndpoint: fmt.Sprintf("%s/oidc/accounts/%s/v1/authorize", accountHost, accountId),
 		TokenEndpoint:         fmt.Sprintf("%s/oidc/accounts/%s/v1/token", accountHost, accountId),

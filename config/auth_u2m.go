@@ -21,8 +21,8 @@ import (
 // If they have but their access and refresh tokens are both invalid, it returns
 // a special error message that instructs the user how to reauthenticate.
 type u2mCredentials struct {
-	// auth is the persistent auth object that manages the token cache.
-	auth *u2m.PersistentAuth
+	// ts supplies the token source for the U2M OAuth flow.
+	ts oauth2.TokenSource
 }
 
 // Name implements CredentialsStrategy.
@@ -43,20 +43,20 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, fmt.Errorf("oidc: %w", err)
 	}
 
-	if u.auth == nil {
+	if u.ts == nil {
 		auth, err := u2m.NewPersistentAuth(ctx, u2m.WithOAuthArgument(arg))
 		if err != nil {
 			logger.Debugf(ctx, "failed to create persistent auth: %v, continuing", err)
 			return nil, nil
 		}
-		u.auth = auth
+		u.ts = auth
 	}
 
 	// Construct the visitor, and try to load the credential from the token
 	// cache. If absent, fall back to the next credentials strategy. If a token
 	// is present but cannot be loaded (e.g. expired), return an error.
 	// Otherwise, fall back to the next credentials strategy.
-	visitor := u.makeVisitor(u.auth)
+	visitor := u.makeVisitor(u.ts)
 	r, err := http.NewRequestWithContext(ctx, http.MethodGet, "", nil)
 	if err != nil {
 		return nil, fmt.Errorf("http request: %w", err)
@@ -65,7 +65,7 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, u.errorHandler(ctx, cfg, arg, err)
 	}
 
-	return credentials.NewOAuthCredentialsProvider(visitor, u.auth.Token), nil
+	return credentials.NewOAuthCredentialsProvider(visitor, u.ts.Token), nil
 }
 
 func (u u2mCredentials) makeVisitor(auth oauth2.TokenSource) func(*http.Request) error {
