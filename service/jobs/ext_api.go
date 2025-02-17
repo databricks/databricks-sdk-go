@@ -1,6 +1,57 @@
 package jobs
 
-import "context"
+import (
+	"context"
+	"github.com/databricks/databricks-sdk-go/listing"
+)
+
+func (a *JobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) listing.Iterator[BaseRun] {
+	runsList := a.jobsImpl.ListRuns(ctx, request)
+
+	if !request.ExpandTasks {
+		return runsList
+	}
+
+	return &expandedRunsIterator{
+		originalIterator: runsList,
+		service:          a,
+	}
+}
+
+// expandedRunsIterator is a custom iterator that expands run tasks.
+type expandedRunsIterator struct {
+	originalIterator listing.Iterator[BaseRun]
+	service          *JobsAPI
+}
+
+func (e *expandedRunsIterator) HasNext(ctx context.Context) bool {
+	return e.originalIterator.HasNext(ctx)
+}
+
+func (e *expandedRunsIterator) Next(ctx context.Context) (BaseRun, error) {
+	run, err := e.originalIterator.Next(ctx)
+	if err != nil {
+		return BaseRun{}, err
+	}
+	if !run.HasMore {
+		return run, nil
+	}
+
+	// Fully fetch all top level arrays for the job run.
+	getRunRequest := GetRunRequest{RunId: run.RunId}
+	fullRun, err := e.service.GetRun(ctx, getRunRequest)
+	if err != nil {
+		return BaseRun{}, err
+	}
+
+	run.Tasks = fullRun.Tasks
+	run.JobClusters = fullRun.JobClusters
+	run.JobParameters = fullRun.JobParameters
+	run.RepairHistory = fullRun.RepairHistory
+	run.HasMore = false
+
+	return run, nil
+}
 
 // GetRun retrieves a run based on the provided request.
 // It handles pagination if the run contains multiple iterations or tasks.

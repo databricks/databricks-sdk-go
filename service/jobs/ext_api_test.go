@@ -668,3 +668,300 @@ func TestGetJob(t *testing.T) {
 		assert.EqualValues(t, "env3", job.Settings.Environments[2].EnvironmentKey)
 	})
 }
+
+func TestListRuns(t *testing.T) {
+	t.Run("runs list with no task expansion", func(t *testing.T) {
+		ctx := context.Background()
+
+		var requestMocks qa.HTTPFixtures = []qa.HTTPFixture{
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/runs/list?",
+				Response: ListRunsResponse{
+					Runs: []BaseRun{
+						{
+							RunId:   100,
+							RunName: "run100",
+						},
+						{
+							RunId:   200,
+							RunName: "run200",
+							JobParameters: []JobParameter{
+								{
+									Name:    "param1",
+									Default: "default1",
+								},
+								{
+									Name:    "param2",
+									Default: "default2",
+								},
+							},
+						},
+						{
+							RunId:   300,
+							RunName: "run300",
+						},
+					},
+					NextPageToken: "tokenToSecondPage",
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/runs/list?page_token=tokenToSecondPage",
+				Response: ListRunsResponse{
+					Runs: []BaseRun{
+						{
+							RunId:   400,
+							RunName: "run400",
+							RepairHistory: []RepairHistoryItem{
+								{
+									Id: 410,
+								},
+								{
+									Id: 411,
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/api/2.1/jobs/runs/list?",
+				Response: ListRunsResponse{
+					Runs: []BaseRun{
+						{
+							RunId:   100,
+							RunName: "run100",
+						},
+						{
+							RunId:   200,
+							RunName: "run200",
+							JobParameters: []JobParameter{
+								{
+									Name:    "param1",
+									Default: "default1",
+								},
+								{
+									Name:    "param2",
+									Default: "default2",
+								},
+							},
+						},
+						{
+							RunId:   300,
+							RunName: "run300",
+						},
+					},
+					NextPageToken: "tokenToSecondPage",
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/api/2.1/jobs/runs/list?page_token=tokenToSecondPage",
+				Response: ListRunsResponse{
+					Runs: []BaseRun{
+						{
+							RunId:   400,
+							RunName: "run400",
+							RepairHistory: []RepairHistoryItem{
+								{
+									Id: 410,
+								},
+								{
+									Id: 411,
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		client, server := requestMocks.Client(t)
+		defer server.Close()
+
+		mockJobsImpl := &jobsImpl{
+			client: client,
+		}
+		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+
+		runsList := api.ListRuns(ctx, ListRunsRequest{})
+		var allRuns []BaseRun
+		for runsList.HasNext(ctx) {
+			run, err := runsList.Next(ctx)
+			assert.NoError(t, err)
+			assert.NotEmpty(t, run.RunId)
+			assert.Empty(t, run.HasMore)
+			allRuns = append(allRuns, run)
+		}
+
+		assert.EqualValues(t, len(allRuns), 4)
+		assert.EqualValues(t, allRuns[0].RunId, 100)
+		assert.EqualValues(t, allRuns[2].RunId, 300)
+		assert.EqualValues(t, allRuns[3].RunId, 400)
+		assert.EqualValues(t, allRuns[3].RunName, "run400")
+	})
+
+	t.Run("runs list with with task expansion", func(t *testing.T) {
+		ctx := context.Background()
+
+		var requestMocks qa.HTTPFixtures = []qa.HTTPFixture{
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/runs/list?expand_tasks=true",
+				Response: ListRunsResponse{
+					Runs: []BaseRun{
+						{
+							RunId: 100,
+							Tasks: []RunTask{
+								{TaskKey: "taskkey101"},
+								{TaskKey: "taskkey102"},
+							},
+							HasMore: true,
+						},
+						{
+							RunId: 200,
+							Tasks: []RunTask{
+								{TaskKey: "taskkey201"},
+							},
+						},
+						{
+							RunId: 300,
+							Tasks: []RunTask{
+								{TaskKey: "taskkey301"},
+							},
+						},
+					},
+					NextPageToken: "tokenToSecondPage",
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/runs/list?expand_tasks=true&page_token=tokenToSecondPage",
+				Response: ListRunsResponse{
+					Runs: []BaseRun{
+						{
+							RunId: 400,
+							Tasks: []RunTask{
+								{TaskKey: "taskkey401"},
+								{TaskKey: "taskkey402"},
+							},
+							HasMore: true,
+						},
+					},
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/runs/get?run_id=100",
+				Response: Run{
+					RunId: 100,
+					Tasks: []RunTask{
+						{TaskKey: "taskkey101"},
+						{TaskKey: "taskkey102"},
+					},
+					NextPageToken: "tokenToSecondPage_100",
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/runs/get?page_token=tokenToSecondPage_100&run_id=100",
+				Response: Run{
+					RunId: 100,
+					Tasks: []RunTask{
+						{TaskKey: "taskkey103"},
+					},
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/runs/get?run_id=400",
+				Response: Run{
+					RunId: 400,
+					Tasks: []RunTask{
+						{TaskKey: "taskkey401"},
+						{TaskKey: "taskkey403"},
+					},
+					NextPageToken: "tokenToSecondPage_400",
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/api/2.2/jobs/runs/get?page_token=tokenToSecondPage_400&run_id=400",
+				Response: Run{
+					RunId: 400,
+					Tasks: []RunTask{
+						{TaskKey: "taskkey402"},
+						{TaskKey: "taskkey404"},
+					},
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/api/2.1/jobs/runs/list?expand_tasks=true",
+				Response: ListRunsResponse{
+					Runs: []BaseRun{
+						{
+							RunId: 100,
+							Tasks: []RunTask{
+								{TaskKey: "taskkey101"},
+								{TaskKey: "taskkey102"},
+								{TaskKey: "taskkey103"},
+							},
+						},
+						{
+							RunId: 200,
+							Tasks: []RunTask{
+								{TaskKey: "taskkey201"},
+							},
+						},
+						{
+							RunId: 300,
+							Tasks: []RunTask{
+								{TaskKey: "taskkey301"},
+							},
+						},
+						{
+							RunId: 400,
+							Tasks: []RunTask{
+								{TaskKey: "taskkey401"},
+								{TaskKey: "taskkey403"},
+								{TaskKey: "taskkey402"},
+								{TaskKey: "taskkey404"},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		client, server := requestMocks.Client(t)
+		defer server.Close()
+
+		mockJobsImpl := &jobsImpl{
+			client: client,
+		}
+		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+
+		runsList := api.ListRuns(ctx, ListRunsRequest{ExpandTasks: true})
+		var allRuns []BaseRun
+		for runsList.HasNext(ctx) {
+			run, err := runsList.Next(ctx)
+			assert.NoError(t, err)
+			assert.NotEmpty(t, run.RunId)
+			assert.Empty(t, run.HasMore)
+			allRuns = append(allRuns, run)
+		}
+
+		assert.EqualValues(t, 4, len(allRuns))
+		assert.EqualValues(t, 100, allRuns[0].RunId)
+		assert.EqualValues(t, 300, allRuns[2].RunId)
+		assert.EqualValues(t, 400, allRuns[3].RunId)
+		assert.Equal(t, 3, len(allRuns[0].Tasks))
+		assert.EqualValues(t, "taskkey401", allRuns[3].Tasks[0].TaskKey)
+		assert.EqualValues(t, "taskkey403", allRuns[3].Tasks[1].TaskKey)
+		assert.EqualValues(t, "taskkey402", allRuns[3].Tasks[2].TaskKey)
+		assert.EqualValues(t, "taskkey404", allRuns[3].Tasks[3].TaskKey)
+	})
+}
