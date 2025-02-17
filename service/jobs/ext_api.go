@@ -1,6 +1,59 @@
 package jobs
 
-import "context"
+import (
+	"context"
+
+	"github.com/databricks/databricks-sdk-go/listing"
+)
+
+func (a *JobsAPI) List(ctx context.Context, request ListJobsRequest) listing.Iterator[BaseJob] {
+	// Fetch jobs with limited elements in top level arrays
+	jobsList := a.jobsImpl.List(ctx, request)
+
+	if !request.ExpandTasks {
+		return jobsList
+	}
+
+	return &expandedJobsIterator{
+		originalIterator: jobsList,
+		service:          a,
+	}
+}
+
+// expandedJobsIterator is a custom iterator that expands job tasks.
+type expandedJobsIterator struct {
+	originalIterator listing.Iterator[BaseJob]
+	service          *JobsAPI
+}
+
+func (e *expandedJobsIterator) HasNext(ctx context.Context) bool {
+	return e.originalIterator.HasNext(ctx)
+}
+
+func (e *expandedJobsIterator) Next(ctx context.Context) (BaseJob, error) {
+	job, err := e.originalIterator.Next(ctx)
+	if err != nil {
+		return BaseJob{}, err
+	}
+	if !job.HasMore {
+		return job, nil
+	}
+
+	// Fully fetch all top level arrays for the job
+	getJobRequest := GetJobRequest{JobId: job.JobId}
+	fullJob, err := e.service.Get(ctx, getJobRequest)
+	if err != nil {
+		return BaseJob{}, err
+	}
+
+	job.Settings.Tasks = fullJob.Settings.Tasks
+	job.Settings.JobClusters = fullJob.Settings.JobClusters
+	job.Settings.Parameters = fullJob.Settings.Parameters
+	job.Settings.Environments = fullJob.Settings.Environments
+	job.HasMore = false
+
+	return job, nil
+}
 
 // GetRun retrieves a run based on the provided request.
 // It handles pagination if the run contains multiple iterations or tasks.
