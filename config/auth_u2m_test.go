@@ -15,23 +15,16 @@ import (
 	"golang.org/x/oauth2"
 )
 
-type MockOAuthClient struct {
-	Transport                    http.RoundTripper
+type MockOAuthEndpointSupplier struct {
 	GetAccountOAuthEndpointsFn   func(ctx context.Context, accountHost string, accountId string) (*u2m.OAuthAuthorizationServer, error)
 	GetWorkspaceOAuthEndpointsFn func(ctx context.Context, workspaceHost string) (*u2m.OAuthAuthorizationServer, error)
 }
 
-func (m MockOAuthClient) GetHttpClient(_ context.Context) *http.Client {
-	return &http.Client{
-		Transport: m.Transport,
-	}
-}
-
-func (m MockOAuthClient) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*u2m.OAuthAuthorizationServer, error) {
+func (m MockOAuthEndpointSupplier) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*u2m.OAuthAuthorizationServer, error) {
 	return m.GetAccountOAuthEndpointsFn(ctx, accountHost, accountId)
 }
 
-func (m MockOAuthClient) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*u2m.OAuthAuthorizationServer, error) {
+func (m MockOAuthEndpointSupplier) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*u2m.OAuthAuthorizationServer, error) {
 	return m.GetWorkspaceOAuthEndpointsFn(ctx, workspaceHost)
 }
 
@@ -88,7 +81,7 @@ func TestU2MCredentials(t *testing.T) {
 							},
 						},
 					}),
-					u2m.WithOAuthEndpointSupplier(MockOAuthClient{
+					u2m.WithHttpClient(&http.Client{
 						Transport: fixtures.SliceTransport{
 							{
 								Method:   "POST",
@@ -97,6 +90,8 @@ func TestU2MCredentials(t *testing.T) {
 								Response: `{"error":"invalid_refresh_token","error_description":"Refresh token is invalid"}`,
 							},
 						},
+					}),
+					u2m.WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{
 						GetWorkspaceOAuthEndpointsFn: func(ctx context.Context, workspaceHost string) (*u2m.OAuthAuthorizationServer, error) {
 							return &u2m.OAuthAuthorizationServer{
 								TokenEndpoint:         "https://myworkspace.cloud.databricks.com/oidc/v1/token",

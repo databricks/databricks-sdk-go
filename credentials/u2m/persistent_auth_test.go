@@ -55,24 +55,16 @@ func TestLoad(t *testing.T) {
 	assert.Equal(t, "", tok.RefreshToken)
 }
 
-type MockOAuthClient struct {
-	Transport http.RoundTripper
-}
+type MockOAuthEndpointSupplier struct{}
 
-func (m MockOAuthClient) GetHttpClient(_ context.Context) *http.Client {
-	return &http.Client{
-		Transport: m.Transport,
-	}
-}
-
-func (m MockOAuthClient) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*u2m.OAuthAuthorizationServer, error) {
+func (m MockOAuthEndpointSupplier) GetAccountOAuthEndpoints(ctx context.Context, accountHost string, accountId string) (*u2m.OAuthAuthorizationServer, error) {
 	return &u2m.OAuthAuthorizationServer{
 		AuthorizationEndpoint: fmt.Sprintf("%s/oidc/accounts/%s/v1/authorize", accountHost, accountId),
 		TokenEndpoint:         fmt.Sprintf("%s/oidc/accounts/%s/v1/token", accountHost, accountId),
 	}, nil
 }
 
-func (m MockOAuthClient) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*u2m.OAuthAuthorizationServer, error) {
+func (m MockOAuthEndpointSupplier) GetWorkspaceOAuthEndpoints(ctx context.Context, workspaceHost string) (*u2m.OAuthAuthorizationServer, error) {
 	return &u2m.OAuthAuthorizationServer{
 		AuthorizationEndpoint: fmt.Sprintf("%s/oidc/v1/authorize", workspaceHost),
 		TokenEndpoint:         fmt.Sprintf("%s/oidc/v1/token", workspaceHost),
@@ -102,7 +94,7 @@ func TestLoadRefresh(t *testing.T) {
 	p, err := u2m.NewPersistentAuth(
 		ctx,
 		u2m.WithTokenCache(cache),
-		u2m.WithOAuthEndpointSupplier(&MockOAuthClient{
+		u2m.WithHttpClient(&http.Client{
 			Transport: fixtures.SliceTransport{
 				{
 					Method:   "POST",
@@ -114,6 +106,7 @@ func TestLoadRefresh(t *testing.T) {
 				},
 			},
 		}),
+		u2m.WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
 		u2m.WithOAuthArgument(arg),
 	)
 	require.NoError(t, err)
@@ -153,7 +146,7 @@ func TestChallenge(t *testing.T) {
 		ctx,
 		u2m.WithTokenCache(cache),
 		u2m.WithBrowser(browser),
-		u2m.WithOAuthEndpointSupplier(&MockOAuthClient{
+		u2m.WithHttpClient(&http.Client{
 			Transport: fixtures.SliceTransport{
 				{
 					Method:   "POST",
@@ -165,6 +158,7 @@ func TestChallenge(t *testing.T) {
 				},
 			},
 		}),
+		u2m.WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
 		u2m.WithOAuthArgument(arg),
 	)
 	require.NoError(t, err)
