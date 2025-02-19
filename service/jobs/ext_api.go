@@ -6,6 +6,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/listing"
 )
 
+// ListRuns fetches a list of job runs.
+// If expand_tasks is true, the response will include the full list of tasks and job_clusters for each run.
+// This function handles pagination two ways: paginates all the runs in the list and paginates all the tasks and job_clusters for each run.
 func (a *JobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) listing.Iterator[BaseRun] {
 	runsList := a.jobsImpl.ListRuns(ctx, request)
 
@@ -19,7 +22,7 @@ func (a *JobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) listing
 	}
 }
 
-// expandedRunsIterator is a custom iterator that expands run tasks.
+// expandedRunsIterator is a custom iterator that for each run calls runs/get in order to fetch full list of tasks and job_clusters.
 type expandedRunsIterator struct {
 	originalIterator listing.Iterator[BaseRun]
 	service          *JobsAPI
