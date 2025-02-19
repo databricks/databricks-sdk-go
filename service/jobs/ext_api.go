@@ -6,6 +6,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/listing"
 )
 
+// List fetches a list of jobs.
+// If expand_tasks is true, the response will include the full list of tasks and job_clusters for each job.
+// This function handles pagination two ways: paginates all the jobs in the list and paginates all the tasks and job_clusters for each job.
 func (a *JobsAPI) List(ctx context.Context, request ListJobsRequest) listing.Iterator[BaseJob] {
 	// Fetch jobs with limited elements in top level arrays
 	jobsList := a.jobsImpl.List(ctx, request)
@@ -20,7 +23,7 @@ func (a *JobsAPI) List(ctx context.Context, request ListJobsRequest) listing.Ite
 	}
 }
 
-// expandedJobsIterator is a custom iterator that expands job tasks.
+// expandedJobsIterator is a custom iterator that for each job calls job/get in order to fetch full list of tasks and job_clusters.
 type expandedJobsIterator struct {
 	originalIterator listing.Iterator[BaseJob]
 	service          *JobsAPI
