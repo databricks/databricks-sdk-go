@@ -32,7 +32,14 @@ type APIError struct {
 	ErrorCode  string
 	Message    string
 	StatusCode int
-	Details    []ErrorDetail
+
+	// Details is the sublist of error details that can be unmarshalled into
+	// the ErrorDetail type.
+	Details []ErrorDetail
+
+	// RawDetails is the list of all error details.
+	RawDetails []json.RawMessage
+
 	// If non-nil, the underlying error that should be returned by calling
 	// errors.Unwrap on this error.
 	unwrap error
@@ -194,10 +201,10 @@ func parseErrorFromResponse(ctx context.Context, resp *http.Response, requestBod
 func standardErrorParser(ctx context.Context, resp *http.Response, responseBody []byte) *APIError {
 	// Anonymous struct used to unmarshal JSON Databricks API error responses.
 	var errorBody struct {
-		ErrorCode  any           `json:"error_code,omitempty"` // int or string
-		Message    string        `json:"message,omitempty"`
-		Details    []ErrorDetail `json:"details,omitempty"`
-		API12Error string        `json:"error,omitempty"`
+		ErrorCode  any               `json:"error_code,omitempty"` // int or string
+		Message    string            `json:"message,omitempty"`
+		API12Error string            `json:"error,omitempty"`
+		RawDetails []json.RawMessage `json:"details,omitempty"`
 
 		// The following fields are for scim api only. See RFC7644 section 3.7.3
 		// https://tools.ietf.org/html/rfc7644#section-3.7.3
@@ -228,12 +235,22 @@ func standardErrorParser(ctx context.Context, resp *http.Response, responseBody 
 		errorBody.ErrorCode = fmt.Sprintf("SCIM_%s", errorBody.ScimStatus)
 	}
 
-	return &APIError{
+	apierr := &APIError{
 		Message:    errorBody.Message,
 		ErrorCode:  fmt.Sprintf("%v", errorBody.ErrorCode),
 		StatusCode: resp.StatusCode,
-		Details:    errorBody.Details,
+		RawDetails: errorBody.RawDetails,
 	}
+
+	// Preserve behavior while being robust to potential unmarshalling errors.
+	for _, rd := range errorBody.RawDetails {
+		var detail ErrorDetail
+		if json.Unmarshal(rd, &detail) == nil { // ignore errors
+			apierr.Details = append(apierr.Details, detail)
+		}
+	}
+
+	return apierr
 }
 
 var stringErrorRegex = regexp.MustCompile(`^([A-Z_]+): (.*)$`)
