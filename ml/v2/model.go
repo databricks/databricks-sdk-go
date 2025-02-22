@@ -63,7 +63,7 @@ type Activity struct {
 	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Activity) UnmarshalJSON(b []byte) error {
@@ -191,7 +191,7 @@ type ApproveTransitionRequest struct {
 	// Version of the model.
 	Version string `json:"version"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ApproveTransitionRequest) UnmarshalJSON(b []byte) error {
@@ -255,7 +255,7 @@ type CommentObject struct {
 	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CommentObject) UnmarshalJSON(b []byte) error {
@@ -293,7 +293,7 @@ type CreateExperiment struct {
 	// guaranteed to support up to 20 tags per request.
 	Tags []ExperimentTag `json:"tags,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateExperiment) UnmarshalJSON(b []byte) error {
@@ -308,7 +308,7 @@ type CreateExperimentResponse struct {
 	// Unique identifier for the experiment.
 	ExperimentId string `json:"experiment_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateExperimentResponse) UnmarshalJSON(b []byte) error {
@@ -327,7 +327,7 @@ type CreateModelRequest struct {
 	// Additional metadata for registered model.
 	Tags []ModelTag `json:"tags,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateModelRequest) UnmarshalJSON(b []byte) error {
@@ -358,7 +358,7 @@ type CreateModelVersionRequest struct {
 	// Additional metadata for model version.
 	Tags []ModelVersionTag `json:"tags,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateModelVersionRequest) UnmarshalJSON(b []byte) error {
@@ -427,7 +427,7 @@ type CreateRegistryWebhook struct {
 	// not triggered on a real event.
 	Status RegistryWebhookStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateRegistryWebhook) UnmarshalJSON(b []byte) error {
@@ -441,6 +441,8 @@ func (s CreateRegistryWebhook) MarshalJSON() ([]byte, error) {
 type CreateRun struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"experiment_id,omitempty"`
+	// The name of the run.
+	RunName string `json:"run_name,omitempty"`
 	// Unix timestamp in milliseconds of when the run started.
 	StartTime int64 `json:"start_time,omitempty"`
 	// Additional metadata for run.
@@ -450,7 +452,7 @@ type CreateRun struct {
 	// tag instead.
 	UserId string `json:"user_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateRun) UnmarshalJSON(b []byte) error {
@@ -484,7 +486,7 @@ type CreateTransitionRequest struct {
 	// Version of the model.
 	Version string `json:"version"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateTransitionRequest) UnmarshalJSON(b []byte) error {
@@ -504,13 +506,15 @@ type CreateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
 }
 
+// Dataset. Represents a reference to data used for training, testing, or
+// evaluation during the model development process.
 type Dataset struct {
 	// Dataset digest, e.g. an md5 hash of the dataset that uniquely identifies
 	// it within datasets of the same name.
-	Digest string `json:"digest,omitempty"`
+	Digest string `json:"digest"`
 	// The name of the dataset. E.g. “my.uc.table@2” “nyc-taxi-dataset”,
 	// “fantastic-elk-3”
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The profile of the dataset. Summary statistics for the dataset, such as
 	// the number of rows in a table, the mean / std / mode of each column in a
 	// table, or the number of elements in an array.
@@ -518,15 +522,15 @@ type Dataset struct {
 	// The schema of the dataset. E.g., MLflow ColSpec JSON for a dataframe,
 	// MLflow TensorSpec JSON for an ndarray, or another schema format.
 	Schema string `json:"schema,omitempty"`
-	// The type of the dataset source, e.g. ‘databricks-uc-table’,
-	// ‘DBFS’, ‘S3’, ...
-	Source string `json:"source,omitempty"`
 	// Source information for the dataset. Note that the source may not exactly
 	// reproduce the dataset if it was transformed / modified before use with
 	// MLflow.
-	SourceType string `json:"source_type,omitempty"`
+	Source string `json:"source"`
+	// The type of the dataset source, e.g. ‘databricks-uc-table’,
+	// ‘DBFS’, ‘S3’, ...
+	SourceType string `json:"source_type"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Dataset) UnmarshalJSON(b []byte) error {
@@ -537,9 +541,10 @@ func (s Dataset) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// DatasetInput. Represents a dataset and input tags.
 type DatasetInput struct {
 	// The dataset being used as a Run input.
-	Dataset *Dataset `json:"dataset,omitempty"`
+	Dataset Dataset `json:"dataset"`
 	// A list of tags for the dataset input, e.g. a “context” tag with value
 	// “training”
 	Tags []InputTag `json:"tags,omitempty"`
@@ -626,7 +631,7 @@ type DeleteRuns struct {
 	// deleted.
 	MaxTimestampMillis int64 `json:"max_timestamp_millis"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteRuns) UnmarshalJSON(b []byte) error {
@@ -641,7 +646,7 @@ type DeleteRunsResponse struct {
 	// The number of runs deleted.
 	RunsDeleted int `json:"runs_deleted,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteRunsResponse) UnmarshalJSON(b []byte) error {
@@ -685,7 +690,7 @@ type DeleteTransitionRequestRequest struct {
 	// Version of the model.
 	Version string `json:"-" url:"version"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteTransitionRequestRequest) UnmarshalJSON(b []byte) error {
@@ -735,7 +740,7 @@ type DeleteWebhookRequest struct {
 	// Webhook ID required to delete a registry webhook.
 	Id string `json:"-" url:"id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteWebhookRequest) UnmarshalJSON(b []byte) error {
@@ -749,6 +754,7 @@ func (s DeleteWebhookRequest) MarshalJSON() ([]byte, error) {
 type DeleteWebhookResponse struct {
 }
 
+// An experiment and its metadata.
 type Experiment struct {
 	// Location where artifacts for the experiment are stored.
 	ArtifactLocation string `json:"artifact_location,omitempty"`
@@ -766,7 +772,7 @@ type Experiment struct {
 	// Tags: Additional metadata key-value pairs.
 	Tags []ExperimentTag `json:"tags,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Experiment) UnmarshalJSON(b []byte) error {
@@ -787,7 +793,7 @@ type ExperimentAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExperimentAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -810,7 +816,7 @@ type ExperimentAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExperimentAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -828,7 +834,7 @@ type ExperimentPermission struct {
 	// Permission level
 	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExperimentPermission) UnmarshalJSON(b []byte) error {
@@ -876,7 +882,7 @@ type ExperimentPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExperimentPermissions) UnmarshalJSON(b []byte) error {
@@ -892,7 +898,7 @@ type ExperimentPermissionsDescription struct {
 	// Permission level
 	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExperimentPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -909,13 +915,14 @@ type ExperimentPermissionsRequest struct {
 	ExperimentId string `json:"-" url:"-"`
 }
 
+// A tag for an experiment.
 type ExperimentTag struct {
 	// The tag key.
 	Key string `json:"key,omitempty"`
 	// The tag value.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExperimentTag) UnmarshalJSON(b []byte) error {
@@ -926,6 +933,7 @@ func (s ExperimentTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Metadata of a single artifact file or directory.
 type FileInfo struct {
 	// Size in bytes. Unset for directories.
 	FileSize int64 `json:"file_size,omitempty"`
@@ -934,7 +942,7 @@ type FileInfo struct {
 	// Path relative to the root artifact directory run.
 	Path string `json:"path,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FileInfo) UnmarshalJSON(b []byte) error {
@@ -945,10 +953,15 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get metadata
+// Get an experiment by name
 type GetByNameRequest struct {
 	// Name of the associated experiment.
 	ExperimentName string `json:"-" url:"experiment_name"`
+}
+
+type GetExperimentByNameResponse struct {
+	// Experiment details.
+	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
 // Get experiment permission levels
@@ -979,7 +992,7 @@ type GetExperimentResponse struct {
 	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
-// Get history of a given metric within a run
+// Get metric history for a run
 type GetHistoryRequest struct {
 	// Maximum number of Metric records to return per paginated request. Default
 	// is set to 25,000. If set higher than 25,000, a request Exception will be
@@ -991,11 +1004,11 @@ type GetHistoryRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// ID of the run from which to fetch metric values. Must be provided.
 	RunId string `json:"-" url:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run from which to fetch metric
-	// values. This field will be removed in a future MLflow version.
+	// [Deprecated, use `run_id` instead] ID of the run from which to fetch
+	// metric values. This field will be removed in a future MLflow version.
 	RunUuid string `json:"-" url:"run_uuid,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetHistoryRequest) UnmarshalJSON(b []byte) error {
@@ -1021,13 +1034,17 @@ type GetLatestVersionsResponse struct {
 }
 
 type GetMetricHistoryResponse struct {
-	// All logged values for this metric.
+	// All logged values for this metric if `max_results` is not specified in
+	// the request or if the total count of metrics returned is less than the
+	// service level pagination threshold. Otherwise, this is one page of
+	// results.
 	Metrics []Metric `json:"metrics,omitempty"`
-	// Token that can be used to retrieve the next page of metric history
-	// results
+	// A token that can be used to issue a query for the next page of metric
+	// history values. A missing token indicates that no additional metrics are
+	// available to fetch.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetMetricHistoryResponse) UnmarshalJSON(b []byte) error {
@@ -1060,7 +1077,7 @@ type GetModelVersionDownloadUriResponse struct {
 	// URI corresponding to where artifacts for this model version are stored.
 	ArtifactUri string `json:"artifact_uri,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetModelVersionDownloadUriResponse) UnmarshalJSON(b []byte) error {
@@ -1104,11 +1121,11 @@ type GetRegisteredModelPermissionsRequest struct {
 type GetRunRequest struct {
 	// ID of the run to fetch. Must be provided.
 	RunId string `json:"-" url:"run_id"`
-	// [Deprecated, use run_id instead] ID of the run to fetch. This field will
-	// be removed in a future MLflow version.
+	// [Deprecated, use `run_id` instead] ID of the run to fetch. This field
+	// will be removed in a future MLflow version.
 	RunUuid string `json:"-" url:"run_uuid,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetRunRequest) UnmarshalJSON(b []byte) error {
@@ -1146,7 +1163,7 @@ type HttpUrlSpec struct {
 	// External HTTPS URL called on event trigger (by using a POST request).
 	Url string `json:"url"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *HttpUrlSpec) UnmarshalJSON(b []byte) error {
@@ -1169,7 +1186,7 @@ type HttpUrlSpecWithoutSecret struct {
 	// External HTTPS URL called on event trigger (by using a POST request).
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *HttpUrlSpecWithoutSecret) UnmarshalJSON(b []byte) error {
@@ -1180,21 +1197,12 @@ func (s HttpUrlSpecWithoutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Tag for a dataset input.
 type InputTag struct {
 	// The tag key.
-	Key string `json:"key,omitempty"`
+	Key string `json:"key"`
 	// The tag value.
-	Value string `json:"value,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *InputTag) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s InputTag) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	Value string `json:"value"`
 }
 
 type JobSpec struct {
@@ -1207,7 +1215,7 @@ type JobSpec struct {
 	// workspace where the webhook is created.
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobSpec) UnmarshalJSON(b []byte) error {
@@ -1226,7 +1234,7 @@ type JobSpecWithoutSecret struct {
 	// the job’s workspace is assumed to be the same as the webhook’s.
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobSpecWithoutSecret) UnmarshalJSON(b []byte) error {
@@ -1237,7 +1245,7 @@ func (s JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get all artifacts
+// List artifacts for a run
 type ListArtifactsRequest struct {
 	// Token indicating the page of artifact results to fetch. `page_token` is
 	// not supported when listing artifacts in UC Volumes. A maximum of 1000
@@ -1251,11 +1259,11 @@ type ListArtifactsRequest struct {
 	Path string `json:"-" url:"path,omitempty"`
 	// ID of the run whose artifacts to list. Must be provided.
 	RunId string `json:"-" url:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run whose artifacts to list.
+	// [Deprecated, use `run_id` instead] ID of the run whose artifacts to list.
 	// This field will be removed in a future MLflow version.
 	RunUuid string `json:"-" url:"run_uuid,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListArtifactsRequest) UnmarshalJSON(b []byte) error {
@@ -1274,7 +1282,7 @@ type ListArtifactsResponse struct {
 	// Root artifact directory for the run.
 	RootUri string `json:"root_uri,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListArtifactsResponse) UnmarshalJSON(b []byte) error {
@@ -1292,14 +1300,14 @@ type ListExperimentsRequest struct {
 	// automatically capped at 1000. Callers of this endpoint are encouraged to
 	// pass max_results explicitly and leverage page_token to iterate through
 	// experiments.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int64 `json:"-" url:"max_results,omitempty"`
 	// Token indicating the page of experiments to fetch
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// Qualifier for type of experiments to be returned. If unspecified, return
 	// only active experiments.
-	ViewType string `json:"-" url:"view_type,omitempty"`
+	ViewType ViewType `json:"-" url:"view_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListExperimentsRequest) UnmarshalJSON(b []byte) error {
@@ -1318,7 +1326,7 @@ type ListExperimentsResponse struct {
 	// token means no more experiment is available for retrieval.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListExperimentsResponse) UnmarshalJSON(b []byte) error {
@@ -1336,7 +1344,7 @@ type ListModelsRequest struct {
 	// Pagination token to go to the next page based on a previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListModelsRequest) UnmarshalJSON(b []byte) error {
@@ -1353,7 +1361,7 @@ type ListModelsResponse struct {
 
 	RegisteredModels []Model `json:"registered_models,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListModelsResponse) UnmarshalJSON(b []byte) error {
@@ -1370,7 +1378,7 @@ type ListRegistryWebhooks struct {
 	// Array of registry webhooks.
 	Webhooks []RegistryWebhook `json:"webhooks,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRegistryWebhooks) UnmarshalJSON(b []byte) error {
@@ -1406,7 +1414,7 @@ type ListWebhooksRequest struct {
 	// Token indicating the page of artifact results to fetch
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListWebhooksRequest) UnmarshalJSON(b []byte) error {
@@ -1430,7 +1438,7 @@ type LogBatch struct {
 	// metrics, params, and tags in total.
 	Tags []RunTag `json:"tags,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LogBatch) UnmarshalJSON(b []byte) error {
@@ -1448,17 +1456,7 @@ type LogInputs struct {
 	// Dataset inputs
 	Datasets []DatasetInput `json:"datasets,omitempty"`
 	// ID of the run to log under
-	RunId string `json:"run_id,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *LogInputs) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s LogInputs) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	RunId string `json:"run_id"`
 }
 
 type LogInputsResponse struct {
@@ -1469,7 +1467,7 @@ type LogMetric struct {
 	Key string `json:"key"`
 	// ID of the run under which to log the metric. Must be provided.
 	RunId string `json:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run under which to log the
+	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// metric. This field will be removed in a future MLflow version.
 	RunUuid string `json:"run_uuid,omitempty"`
 	// Step at which to log the metric
@@ -1479,7 +1477,7 @@ type LogMetric struct {
 	// Double value of the metric being logged.
 	Value float64 `json:"value"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LogMetric) UnmarshalJSON(b []byte) error {
@@ -1499,7 +1497,7 @@ type LogModel struct {
 	// ID of the run to log under
 	RunId string `json:"run_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LogModel) UnmarshalJSON(b []byte) error {
@@ -1518,13 +1516,13 @@ type LogParam struct {
 	Key string `json:"key"`
 	// ID of the run under which to log the param. Must be provided.
 	RunId string `json:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run under which to log the
+	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// param. This field will be removed in a future MLflow version.
 	RunUuid string `json:"run_uuid,omitempty"`
 	// String value of the param being logged. Maximum size is 500 bytes.
 	Value string `json:"value"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LogParam) UnmarshalJSON(b []byte) error {
@@ -1538,6 +1536,7 @@ func (s LogParam) MarshalJSON() ([]byte, error) {
 type LogParamResponse struct {
 }
 
+// Metric associated with a run, represented as a key-value pair.
 type Metric struct {
 	// Key identifying this metric.
 	Key string `json:"key,omitempty"`
@@ -1548,7 +1547,7 @@ type Metric struct {
 	// Value associated with this metric.
 	Value float64 `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Metric) UnmarshalJSON(b []byte) error {
@@ -1577,7 +1576,7 @@ type Model struct {
 	// User that created this `registered_model`
 	UserId string `json:"user_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Model) UnmarshalJSON(b []byte) error {
@@ -1609,7 +1608,7 @@ type ModelDatabricks struct {
 	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ModelDatabricks) UnmarshalJSON(b []byte) error {
@@ -1626,7 +1625,7 @@ type ModelTag struct {
 	// The tag value.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ModelTag) UnmarshalJSON(b []byte) error {
@@ -1668,7 +1667,7 @@ type ModelVersion struct {
 	// Model's version number.
 	Version string `json:"version,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ModelVersion) UnmarshalJSON(b []byte) error {
@@ -1729,7 +1728,7 @@ type ModelVersionDatabricks struct {
 	// Version of the model.
 	Version string `json:"version,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ModelVersionDatabricks) UnmarshalJSON(b []byte) error {
@@ -1776,7 +1775,7 @@ type ModelVersionTag struct {
 	// The tag value.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ModelVersionTag) UnmarshalJSON(b []byte) error {
@@ -1787,13 +1786,14 @@ func (s ModelVersionTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Param associated with a run.
 type Param struct {
 	// Key identifying this param.
 	Key string `json:"key,omitempty"`
 	// Value associated with this param.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Param) UnmarshalJSON(b []byte) error {
@@ -1849,7 +1849,7 @@ type RegisteredModelAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RegisteredModelAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -1872,7 +1872,7 @@ type RegisteredModelAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RegisteredModelAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -1890,7 +1890,7 @@ type RegisteredModelPermission struct {
 	// Permission level
 	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RegisteredModelPermission) UnmarshalJSON(b []byte) error {
@@ -1942,7 +1942,7 @@ type RegisteredModelPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RegisteredModelPermissions) UnmarshalJSON(b []byte) error {
@@ -1958,7 +1958,7 @@ type RegisteredModelPermissionsDescription struct {
 	// Permission level
 	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RegisteredModelPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -2034,7 +2034,7 @@ type RegistryWebhook struct {
 	// not triggered on a real event.
 	Status RegistryWebhookStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RegistryWebhook) UnmarshalJSON(b []byte) error {
@@ -2151,7 +2151,7 @@ type RejectTransitionRequest struct {
 	// Version of the model.
 	Version string `json:"version"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RejectTransitionRequest) UnmarshalJSON(b []byte) error {
@@ -2173,7 +2173,7 @@ type RenameModelRequest struct {
 	// If provided, updates the name for this `registered_model`.
 	NewName string `json:"new_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RenameModelRequest) UnmarshalJSON(b []byte) error {
@@ -2215,7 +2215,7 @@ type RestoreRuns struct {
 	// restored.
 	MinTimestampMillis int64 `json:"min_timestamp_millis"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RestoreRuns) UnmarshalJSON(b []byte) error {
@@ -2230,7 +2230,7 @@ type RestoreRunsResponse struct {
 	// The number of runs restored.
 	RunsRestored int `json:"runs_restored,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RestoreRunsResponse) UnmarshalJSON(b []byte) error {
@@ -2241,6 +2241,7 @@ func (s RestoreRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A single run.
 type Run struct {
 	// Run data.
 	Data *RunData `json:"data,omitempty"`
@@ -2250,6 +2251,7 @@ type Run struct {
 	Inputs *RunInputs `json:"inputs,omitempty"`
 }
 
+// Run data (metrics, params, and tags).
 type RunData struct {
 	// Run metrics.
 	Metrics []Metric `json:"metrics,omitempty"`
@@ -2259,11 +2261,12 @@ type RunData struct {
 	Tags []RunTag `json:"tags,omitempty"`
 }
 
+// Metadata of a single run.
 type RunInfo struct {
 	// URI of the directory where artifacts should be uploaded. This can be a
 	// local path (starting with "/"), or a distributed file system (DFS) path,
-	// like `s3://bucket/directory` or `dbfs:/my/directory`. If not set, the
-	// local `./mlruns` directory is chosen.
+	// like ``s3://bucket/directory`` or ``dbfs:/my/directory``. If not set, the
+	// local ``./mlruns`` directory is chosen.
 	ArtifactUri string `json:"artifact_uri,omitempty"`
 	// Unix timestamp of when the run ended in milliseconds.
 	EndTime int64 `json:"end_time,omitempty"`
@@ -2273,6 +2276,8 @@ type RunInfo struct {
 	LifecycleStage string `json:"lifecycle_stage,omitempty"`
 	// Unique identifier for the run.
 	RunId string `json:"run_id,omitempty"`
+	// The name of the run.
+	RunName string `json:"run_name,omitempty"`
 	// [Deprecated, use run_id instead] Unique identifier for the run. This
 	// field will be removed in a future MLflow version.
 	RunUuid string `json:"run_uuid,omitempty"`
@@ -2285,7 +2290,7 @@ type RunInfo struct {
 	// instead.
 	UserId string `json:"user_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunInfo) UnmarshalJSON(b []byte) error {
@@ -2296,7 +2301,7 @@ func (s RunInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Current status of the run.
+// Status of a run.
 type RunInfoStatus string
 
 const RunInfoStatusFailed RunInfoStatus = `FAILED`
@@ -2330,18 +2335,20 @@ func (f *RunInfoStatus) Type() string {
 	return "RunInfoStatus"
 }
 
+// Run inputs.
 type RunInputs struct {
 	// Run metrics.
 	DatasetInputs []DatasetInput `json:"dataset_inputs,omitempty"`
 }
 
+// Tag for a run.
 type RunTag struct {
 	// The tag key.
 	Key string `json:"key,omitempty"`
 	// The tag value.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunTag) UnmarshalJSON(b []byte) error {
@@ -2367,9 +2374,9 @@ type SearchExperiments struct {
 	PageToken string `json:"page_token,omitempty"`
 	// Qualifier for type of experiments to be returned. If unspecified, return
 	// only active experiments.
-	ViewType SearchExperimentsViewType `json:"view_type,omitempty"`
+	ViewType ViewType `json:"view_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SearchExperiments) UnmarshalJSON(b []byte) error {
@@ -2387,7 +2394,7 @@ type SearchExperimentsResponse struct {
 	// token means that no more experiments are available for retrieval.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SearchExperimentsResponse) UnmarshalJSON(b []byte) error {
@@ -2396,37 +2403,6 @@ func (s *SearchExperimentsResponse) UnmarshalJSON(b []byte) error {
 
 func (s SearchExperimentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-// Qualifier for type of experiments to be returned. If unspecified, return only
-// active experiments.
-type SearchExperimentsViewType string
-
-const SearchExperimentsViewTypeActiveOnly SearchExperimentsViewType = `ACTIVE_ONLY`
-
-const SearchExperimentsViewTypeAll SearchExperimentsViewType = `ALL`
-
-const SearchExperimentsViewTypeDeletedOnly SearchExperimentsViewType = `DELETED_ONLY`
-
-// String representation for [fmt.Print]
-func (f *SearchExperimentsViewType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *SearchExperimentsViewType) Set(v string) error {
-	switch v {
-	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
-		*f = SearchExperimentsViewType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE_ONLY", "ALL", "DELETED_ONLY"`, v)
-	}
-}
-
-// Type always returns SearchExperimentsViewType to satisfy [pflag.Value] interface
-func (f *SearchExperimentsViewType) Type() string {
-	return "SearchExperimentsViewType"
 }
 
 // Searches model versions
@@ -2444,7 +2420,7 @@ type SearchModelVersionsRequest struct {
 	// Pagination token to go to next page based on previous search query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SearchModelVersionsRequest) UnmarshalJSON(b []byte) error {
@@ -2462,7 +2438,7 @@ type SearchModelVersionsResponse struct {
 	// query.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SearchModelVersionsResponse) UnmarshalJSON(b []byte) error {
@@ -2488,7 +2464,7 @@ type SearchModelsRequest struct {
 	// Pagination token to go to the next page based on a previous search query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SearchModelsRequest) UnmarshalJSON(b []byte) error {
@@ -2505,7 +2481,7 @@ type SearchModelsResponse struct {
 	// Registered Models that match the search criteria.
 	RegisteredModels []Model `json:"registered_models,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SearchModelsResponse) UnmarshalJSON(b []byte) error {
@@ -2535,19 +2511,19 @@ type SearchRuns struct {
 	// Maximum number of runs desired. Max threshold is 50000
 	MaxResults int `json:"max_results,omitempty"`
 	// List of columns to be ordered by, including attributes, params, metrics,
-	// and tags with an optional "DESC" or "ASC" annotation, where "ASC" is the
-	// default. Example: ["params.input DESC", "metrics.alpha ASC",
-	// "metrics.rmse"] Tiebreaks are done by start_time DESC followed by run_id
-	// for runs with the same start time (and this is the default ordering
-	// criterion if order_by is not provided).
+	// and tags with an optional `"DESC"` or `"ASC"` annotation, where `"ASC"`
+	// is the default. Example: `["params.input DESC", "metrics.alpha ASC",
+	// "metrics.rmse"]`. Tiebreaks are done by start_time `DESC` followed by
+	// `run_id` for runs with the same start time (and this is the default
+	// ordering criterion if order_by is not provided).
 	OrderBy []string `json:"order_by,omitempty"`
 	// Token for the current page of runs.
 	PageToken string `json:"page_token,omitempty"`
 	// Whether to display only active, only deleted, or all runs. Defaults to
 	// only active runs.
-	RunViewType SearchRunsRunViewType `json:"run_view_type,omitempty"`
+	RunViewType ViewType `json:"run_view_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SearchRuns) UnmarshalJSON(b []byte) error {
@@ -2564,7 +2540,7 @@ type SearchRunsResponse struct {
 	// Runs that match the search criteria.
 	Runs []Run `json:"runs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SearchRunsResponse) UnmarshalJSON(b []byte) error {
@@ -2575,46 +2551,13 @@ func (s SearchRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Whether to display only active, only deleted, or all runs. Defaults to only
-// active runs.
-type SearchRunsRunViewType string
-
-const SearchRunsRunViewTypeActiveOnly SearchRunsRunViewType = `ACTIVE_ONLY`
-
-const SearchRunsRunViewTypeAll SearchRunsRunViewType = `ALL`
-
-const SearchRunsRunViewTypeDeletedOnly SearchRunsRunViewType = `DELETED_ONLY`
-
-// String representation for [fmt.Print]
-func (f *SearchRunsRunViewType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *SearchRunsRunViewType) Set(v string) error {
-	switch v {
-	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
-		*f = SearchRunsRunViewType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE_ONLY", "ALL", "DELETED_ONLY"`, v)
-	}
-}
-
-// Type always returns SearchRunsRunViewType to satisfy [pflag.Value] interface
-func (f *SearchRunsRunViewType) Type() string {
-	return "SearchRunsRunViewType"
-}
-
 type SetExperimentTag struct {
 	// ID of the experiment under which to log the tag. Must be provided.
 	ExperimentId string `json:"experiment_id"`
-	// Name of the tag. Maximum size depends on storage backend. All storage
-	// backends are guaranteed to support key values up to 250 bytes in size.
+	// Name of the tag. Keys up to 250 bytes in size are supported.
 	Key string `json:"key"`
-	// String value of the tag being logged. Maximum size depends on storage
-	// backend. All storage backends are guaranteed to support key values up to
-	// 5000 bytes in size.
+	// String value of the tag being logged. Values up to 64KB in size are
+	// supported.
 	Value string `json:"value"`
 }
 
@@ -2658,20 +2601,18 @@ type SetModelVersionTagResponse struct {
 }
 
 type SetTag struct {
-	// Name of the tag. Maximum size depends on storage backend. All storage
-	// backends are guaranteed to support key values up to 250 bytes in size.
+	// Name of the tag. Keys up to 250 bytes in size are supported.
 	Key string `json:"key"`
 	// ID of the run under which to log the tag. Must be provided.
 	RunId string `json:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run under which to log the
+	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// tag. This field will be removed in a future MLflow version.
 	RunUuid string `json:"run_uuid,omitempty"`
-	// String value of the tag being logged. Maximum size depends on storage
-	// backend. All storage backends are guaranteed to support key values up to
-	// 5000 bytes in size.
+	// String value of the tag being logged. Values up to 64KB in size are
+	// supported.
 	Value string `json:"value"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SetTag) UnmarshalJSON(b []byte) error {
@@ -2776,7 +2717,7 @@ type TestRegistryWebhook struct {
 	// Status code returned by the webhook URL
 	StatusCode int `json:"status_code,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TestRegistryWebhook) UnmarshalJSON(b []byte) error {
@@ -2822,7 +2763,7 @@ type TransitionModelVersionStageDatabricks struct {
 	// Version of the model.
 	Version string `json:"version"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TransitionModelVersionStageDatabricks) UnmarshalJSON(b []byte) error {
@@ -2855,7 +2796,7 @@ type TransitionRequest struct {
 	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TransitionRequest) UnmarshalJSON(b []byte) error {
@@ -2889,7 +2830,7 @@ type UpdateExperiment struct {
 	// name must be unique.
 	NewName string `json:"new_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateExperiment) UnmarshalJSON(b []byte) error {
@@ -2909,7 +2850,7 @@ type UpdateModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"name"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateModelRequest) UnmarshalJSON(b []byte) error {
@@ -2931,7 +2872,7 @@ type UpdateModelVersionRequest struct {
 	// Model version number
 	Version string `json:"version"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateModelVersionRequest) UnmarshalJSON(b []byte) error {
@@ -2998,7 +2939,7 @@ type UpdateRegistryWebhook struct {
 	// not triggered on a real event.
 	Status RegistryWebhookStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateRegistryWebhook) UnmarshalJSON(b []byte) error {
@@ -3014,13 +2955,15 @@ type UpdateRun struct {
 	EndTime int64 `json:"end_time,omitempty"`
 	// ID of the run to update. Must be provided.
 	RunId string `json:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run to update.. This field
+	// Updated name of the run.
+	RunName string `json:"run_name,omitempty"`
+	// [Deprecated, use `run_id` instead] ID of the run to update. This field
 	// will be removed in a future MLflow version.
 	RunUuid string `json:"run_uuid,omitempty"`
 	// Updated status of the run.
 	Status UpdateRunStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateRun) UnmarshalJSON(b []byte) error {
@@ -3036,7 +2979,7 @@ type UpdateRunResponse struct {
 	RunInfo *RunInfo `json:"run_info,omitempty"`
 }
 
-// Updated status of the run.
+// Status of a run.
 type UpdateRunStatus string
 
 const UpdateRunStatusFailed UpdateRunStatus = `FAILED`
@@ -3071,4 +3014,34 @@ func (f *UpdateRunStatus) Type() string {
 }
 
 type UpdateWebhookResponse struct {
+}
+
+// Qualifier for the view type.
+type ViewType string
+
+const ViewTypeActiveOnly ViewType = `ACTIVE_ONLY`
+
+const ViewTypeAll ViewType = `ALL`
+
+const ViewTypeDeletedOnly ViewType = `DELETED_ONLY`
+
+// String representation for [fmt.Print]
+func (f *ViewType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ViewType) Set(v string) error {
+	switch v {
+	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
+		*f = ViewType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE_ONLY", "ALL", "DELETED_ONLY"`, v)
+	}
+}
+
+// Type always returns ViewType to satisfy [pflag.Value] interface
+func (f *ViewType) Type() string {
+	return "ViewType"
 }

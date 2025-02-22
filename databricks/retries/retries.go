@@ -11,31 +11,33 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/log"
 )
 
-// Deprecated: use return types from non-*AndWait methods
-type Info[T any] struct {
-	Info    *T
-	Timeout time.Duration
-}
+// Removed code that is deprecated from the SDK v0
 
-// Deprecated: use return types from non-*AndWait methods
-type Option[T any] func(*Info[T])
+// // Deprecated: use return types from non-*AndWait methods
+// type Info[T any] struct {
+// 	Info    *T
+// 	Timeout time.Duration
+// }
 
-// Deprecated: use return types from non-*AndWait methods
-func Timeout[T any](dur time.Duration) Option[T] {
-	return func(i *Info[T]) {
-		i.Timeout = dur
-	}
-}
+// // Deprecated: use return types from non-*AndWait methods
+// type Option[T any] func(*Info[T])
 
-// Deprecated: use return types from non-*AndWait methods
-func OnPoll[T any](callback func(*T)) Option[T] {
-	return func(i *Info[T]) {
-		if i.Info == nil {
-			return
-		}
-		callback(i.Info)
-	}
-}
+// // Deprecated: use return types from non-*AndWait methods
+// func Timeout[T any](dur time.Duration) Option[T] {
+// 	return func(i *Info[T]) {
+// 		i.Timeout = dur
+// 	}
+// }
+
+// // Deprecated: use return types from non-*AndWait methods
+// func OnPoll[T any](callback func(*T)) Option[T] {
+// 	return func(i *Info[T]) {
+// 		if i.Info == nil {
+// 			return
+// 		}
+// 		callback(i.Info)
+// 	}
+// }
 
 type Err struct {
 	Err  error

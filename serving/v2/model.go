@@ -21,7 +21,7 @@ type Ai21LabsConfig struct {
 	// `ai21labs_api_key` or `ai21labs_api_key_plaintext`.
 	Ai21labsApiKeyPlaintext string `json:"ai21labs_api_key_plaintext,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Ai21LabsConfig) UnmarshalJSON(b []byte) error {
@@ -60,7 +60,7 @@ type AiGatewayGuardrailParameters struct {
 	// the request if its topic is not in the allowed topics.
 	ValidTopics []string `json:"valid_topics,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AiGatewayGuardrailParameters) UnmarshalJSON(b []byte) error {
@@ -125,7 +125,7 @@ type AiGatewayInferenceTableConfig struct {
 	// disable inference table first in order to change the prefix name.
 	TableNamePrefix string `json:"table_name_prefix,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AiGatewayInferenceTableConfig) UnmarshalJSON(b []byte) error {
@@ -204,7 +204,7 @@ type AiGatewayUsageTrackingConfig struct {
 	// Whether to enable usage tracking.
 	Enabled bool `json:"enabled,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AiGatewayUsageTrackingConfig) UnmarshalJSON(b []byte) error {
@@ -247,8 +247,14 @@ type AmazonBedrockConfig struct {
 	// The underlying provider in Amazon Bedrock. Supported values (case
 	// insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
 	BedrockProvider AmazonBedrockConfigBedrockProvider `json:"bedrock_provider"`
+	// ARN of the instance profile that the external model will use to access
+	// AWS resources. You must authenticate using an instance profile or access
+	// keys. If you prefer to authenticate using access keys, see
+	// `aws_access_key_id`, `aws_access_key_id_plaintext`,
+	// `aws_secret_access_key` and `aws_secret_access_key_plaintext`.
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AmazonBedrockConfig) UnmarshalJSON(b []byte) error {
@@ -302,7 +308,7 @@ type AnthropicConfig struct {
 	// `anthropic_api_key` or `anthropic_api_key_plaintext`.
 	AnthropicApiKeyPlaintext string `json:"anthropic_api_key_plaintext,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AnthropicConfig) UnmarshalJSON(b []byte) error {
@@ -326,7 +332,7 @@ type AutoCaptureConfigInput struct {
 	// change the prefix name if the inference table is already enabled.
 	TableNamePrefix string `json:"table_name_prefix,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AutoCaptureConfigInput) UnmarshalJSON(b []byte) error {
@@ -352,7 +358,7 @@ type AutoCaptureConfigOutput struct {
 	// change the prefix name if the inference table is already enabled.
 	TableNamePrefix string `json:"table_name_prefix,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AutoCaptureConfigOutput) UnmarshalJSON(b []byte) error {
@@ -388,7 +394,7 @@ type ChatMessage struct {
 	// The role of the message. One of [system, user, assistant].
 	Role ChatMessageRole `json:"role,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ChatMessage) UnmarshalJSON(b []byte) error {
@@ -444,7 +450,7 @@ type CohereConfig struct {
 	// `cohere_api_key` or `cohere_api_key_plaintext`.
 	CohereApiKeyPlaintext string `json:"cohere_api_key_plaintext,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CohereConfig) UnmarshalJSON(b []byte) error {
@@ -475,7 +481,7 @@ type CreateServingEndpoint struct {
 	// to billing logs.
 	Tags []EndpointTag `json:"tags,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateServingEndpoint) UnmarshalJSON(b []byte) error {
@@ -493,7 +499,7 @@ type DataPlaneInfo struct {
 	// The URL of the endpoint for this operation in the dataplane.
 	EndpointUrl string `json:"endpoint_url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DataPlaneInfo) UnmarshalJSON(b []byte) error {
@@ -523,7 +529,7 @@ type DatabricksModelServingConfig struct {
 	// pointed to by this external model.
 	DatabricksWorkspaceUrl string `json:"databricks_workspace_url"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DatabricksModelServingConfig) UnmarshalJSON(b []byte) error {
@@ -557,7 +563,7 @@ type EmbeddingsV1ResponseEmbeddingElement struct {
 	// This will always be 'embedding'.
 	Object EmbeddingsV1ResponseEmbeddingElementObject `json:"object,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EmbeddingsV1ResponseEmbeddingElement) UnmarshalJSON(b []byte) error {
@@ -629,7 +635,7 @@ type EndpointCoreConfigOutput struct {
 	// The traffic configuration associated with the serving endpoint config.
 	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EndpointCoreConfigOutput) UnmarshalJSON(b []byte) error {
@@ -669,7 +675,7 @@ type EndpointPendingConfig struct {
 	// should be routed.
 	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EndpointPendingConfig) UnmarshalJSON(b []byte) error {
@@ -758,7 +764,7 @@ type EndpointTag struct {
 	// Optional value field for a serving endpoint tag.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EndpointTag) UnmarshalJSON(b []byte) error {
@@ -801,7 +807,7 @@ type ExternalFunctionRequest struct {
 	// The relative path for the API endpoint. This is required.
 	Path string `json:"path"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExternalFunctionRequest) UnmarshalJSON(b []byte) error {
@@ -922,7 +928,7 @@ type ExternalModelUsageElement struct {
 	// The total number of tokens in the prompt and response.
 	TotalTokens int `json:"total_tokens,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExternalModelUsageElement) UnmarshalJSON(b []byte) error {
@@ -944,7 +950,7 @@ type FoundationModel struct {
 
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FoundationModel) UnmarshalJSON(b []byte) error {
@@ -1021,7 +1027,7 @@ type GoogleCloudVertexAiConfig struct {
 	// https://cloud.google.com/vertex-ai/docs/general/locations
 	Region string `json:"region"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GoogleCloudVertexAiConfig) UnmarshalJSON(b []byte) error {
@@ -1112,7 +1118,7 @@ type OpenAiConfig struct {
 	// OpenAI.
 	OpenaiOrganization string `json:"openai_organization,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *OpenAiConfig) UnmarshalJSON(b []byte) error {
@@ -1135,7 +1141,7 @@ type PaLmConfig struct {
 	// `palm_api_key_plaintext`.
 	PalmApiKeyPlaintext string `json:"palm_api_key_plaintext,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PaLmConfig) UnmarshalJSON(b []byte) error {
@@ -1163,7 +1169,7 @@ type PayloadTable struct {
 
 	StatusMessage string `json:"status_message,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PayloadTable) UnmarshalJSON(b []byte) error {
@@ -1273,7 +1279,7 @@ type QueryEndpointInput struct {
 	// query fields.
 	Temperature float64 `json:"temperature,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryEndpointInput) UnmarshalJSON(b []byte) error {
@@ -1314,7 +1320,7 @@ type QueryEndpointResponse struct {
 	// tokens used in the prompt and response.
 	Usage *ExternalModelUsageElement `json:"usage,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryEndpointResponse) UnmarshalJSON(b []byte) error {
@@ -1487,7 +1493,7 @@ type ServedEntityInput struct {
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
 	WorkloadType ServingModelWorkloadType `json:"workload_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServedEntityInput) UnmarshalJSON(b []byte) error {
@@ -1564,7 +1570,7 @@ type ServedEntityOutput struct {
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
 	WorkloadType ServingModelWorkloadType `json:"workload_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServedEntityOutput) UnmarshalJSON(b []byte) error {
@@ -1587,7 +1593,7 @@ type ServedEntitySpec struct {
 
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServedEntitySpec) UnmarshalJSON(b []byte) error {
@@ -1643,7 +1649,7 @@ type ServedModelInput struct {
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
 	WorkloadType ServedModelInputWorkloadType `json:"workload_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServedModelInput) UnmarshalJSON(b []byte) error {
@@ -1762,7 +1768,7 @@ type ServedModelOutput struct {
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
 	WorkloadType ServingModelWorkloadType `json:"workload_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServedModelOutput) UnmarshalJSON(b []byte) error {
@@ -1781,7 +1787,7 @@ type ServedModelSpec struct {
 
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServedModelSpec) UnmarshalJSON(b []byte) error {
@@ -1797,7 +1803,7 @@ type ServedModelState struct {
 
 	DeploymentStateMessage string `json:"deployment_state_message,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServedModelState) UnmarshalJSON(b []byte) error {
@@ -1872,7 +1878,7 @@ type ServingEndpoint struct {
 	// The task type of the serving endpoint.
 	Task string `json:"task,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServingEndpoint) UnmarshalJSON(b []byte) error {
@@ -1893,7 +1899,7 @@ type ServingEndpointAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServingEndpointAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -1916,7 +1922,7 @@ type ServingEndpointAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServingEndpointAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -1963,7 +1969,7 @@ type ServingEndpointDetailed struct {
 	// The task type of the serving endpoint.
 	Task string `json:"task,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServingEndpointDetailed) UnmarshalJSON(b []byte) error {
@@ -2010,7 +2016,7 @@ type ServingEndpointPermission struct {
 	// Permission level
 	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServingEndpointPermission) UnmarshalJSON(b []byte) error {
@@ -2058,7 +2064,7 @@ type ServingEndpointPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServingEndpointPermissions) UnmarshalJSON(b []byte) error {
@@ -2074,7 +2080,7 @@ type ServingEndpointPermissionsDescription struct {
 	// Permission level
 	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServingEndpointPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -2141,7 +2147,7 @@ type V1ResponseChoiceElement struct {
 	// The text response from the __completions__ endpoint.
 	Text string `json:"text,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *V1ResponseChoiceElement) UnmarshalJSON(b []byte) error {
