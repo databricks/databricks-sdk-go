@@ -71,7 +71,7 @@ type ArtifactAllowlistInfo struct {
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ArtifactAllowlistInfo) UnmarshalJSON(b []byte) error {
@@ -136,7 +136,7 @@ type AwsCredentials struct {
 	// credentials.
 	SessionToken string `json:"session_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AwsCredentials) UnmarshalJSON(b []byte) error {
@@ -159,7 +159,7 @@ type AwsIamRole struct {
 	// This is the identity that is going to assume the AWS IAM role.
 	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AwsIamRole) UnmarshalJSON(b []byte) error {
@@ -185,7 +185,7 @@ type AwsIamRoleResponse struct {
 	// This is the identity that is going to assume the AWS IAM role.
 	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AwsIamRoleResponse) UnmarshalJSON(b []byte) error {
@@ -204,7 +204,7 @@ type AzureActiveDirectoryToken struct {
 	// Directory to access cloud services.
 	AadToken string `json:"aad_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AzureActiveDirectoryToken) UnmarshalJSON(b []byte) error {
@@ -234,7 +234,7 @@ type AzureManagedIdentity struct {
 	// using the system-assigned identity.
 	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AzureManagedIdentity) UnmarshalJSON(b []byte) error {
@@ -258,7 +258,7 @@ type AzureManagedIdentityRequest struct {
 	// for a system-assigned identity.
 	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AzureManagedIdentityRequest) UnmarshalJSON(b []byte) error {
@@ -284,7 +284,7 @@ type AzureManagedIdentityResponse struct {
 	// for a system-assigned identity.
 	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AzureManagedIdentityResponse) UnmarshalJSON(b []byte) error {
@@ -314,7 +314,7 @@ type AzureUserDelegationSas struct {
 	// The signed URI (SAS Token) used to access blob services for a given path
 	SasToken string `json:"sas_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AzureUserDelegationSas) UnmarshalJSON(b []byte) error {
@@ -391,7 +391,7 @@ type CatalogInfo struct {
 	// Username of user who last modified catalog.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CatalogInfo) UnmarshalJSON(b []byte) error {
@@ -496,7 +496,7 @@ type ColumnInfo struct {
 	// Full data type specification as SQL/catalogString text.
 	TypeText string `json:"type_text,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
@@ -516,7 +516,7 @@ type ColumnMask struct {
 	// match the types of columns in 'using_column_names'.
 	UsingColumnNames []string `json:"using_column_names,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ColumnMask) UnmarshalJSON(b []byte) error {
@@ -633,7 +633,7 @@ type ConnectionInfo struct {
 	// URL of the remote data source, extracted from options.
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ConnectionInfo) UnmarshalJSON(b []byte) error {
@@ -659,6 +659,8 @@ const ConnectionTypeHttp ConnectionType = `HTTP`
 
 const ConnectionTypeMysql ConnectionType = `MYSQL`
 
+const ConnectionTypeOracle ConnectionType = `ORACLE`
+
 const ConnectionTypePostgresql ConnectionType = `POSTGRESQL`
 
 const ConnectionTypeRedshift ConnectionType = `REDSHIFT`
@@ -669,6 +671,8 @@ const ConnectionTypeSqldw ConnectionType = `SQLDW`
 
 const ConnectionTypeSqlserver ConnectionType = `SQLSERVER`
 
+const ConnectionTypeTeradata ConnectionType = `TERADATA`
+
 // String representation for [fmt.Print]
 func (f *ConnectionType) String() string {
 	return string(*f)
@@ -677,11 +681,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `DATABRICKS`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
+	case `BIGQUERY`, `DATABRICKS`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `MYSQL`, `ORACLE`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "GLUE", "HIVE_METASTORE", "HTTP", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "GLUE", "HIVE_METASTORE", "HTTP", "MYSQL", "ORACLE", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA"`, v)
 	}
 }
 
@@ -703,7 +707,7 @@ type ContinuousUpdateStatus struct {
 	// table to the online table.
 	Timestamp string `json:"timestamp,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ContinuousUpdateStatus) UnmarshalJSON(b []byte) error {
@@ -735,7 +739,7 @@ type CreateCatalog struct {
 	// Storage root URL for managed tables within catalog.
 	StorageRoot string `json:"storage_root,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateCatalog) UnmarshalJSON(b []byte) error {
@@ -761,7 +765,7 @@ type CreateConnection struct {
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateConnection) UnmarshalJSON(b []byte) error {
@@ -797,7 +801,7 @@ type CreateCredentialRequest struct {
 	// set of credentials.
 	SkipValidation bool `json:"skip_validation,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateCredentialRequest) UnmarshalJSON(b []byte) error {
@@ -831,7 +835,7 @@ type CreateExternalLocation struct {
 	// Path URL of the external location.
 	Url string `json:"url"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateExternalLocation) UnmarshalJSON(b []byte) error {
@@ -890,7 +894,7 @@ type CreateFunction struct {
 	// List of schemes whose objects can be referenced without qualification.
 	SqlPath string `json:"sql_path,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateFunction) UnmarshalJSON(b []byte) error {
@@ -1030,7 +1034,7 @@ type CreateMetastore struct {
 	// The storage root URL for metastore
 	StorageRoot string `json:"storage_root,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateMetastore) UnmarshalJSON(b []byte) error {
@@ -1092,7 +1096,7 @@ type CreateMonitor struct {
 	// specified, the first running warehouse will be used.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateMonitor) UnmarshalJSON(b []byte) error {
@@ -1122,7 +1126,7 @@ type CreateRegisteredModelRequest struct {
 	// are stored
 	StorageLocation string `json:"storage_location,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
@@ -1148,7 +1152,7 @@ type CreateSchema struct {
 	// Storage root URL for managed tables within schema.
 	StorageRoot string `json:"storage_root,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateSchema) UnmarshalJSON(b []byte) error {
@@ -1180,7 +1184,7 @@ type CreateStorageCredential struct {
 	// credential.
 	SkipValidation bool `json:"skip_validation,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateStorageCredential) UnmarshalJSON(b []byte) error {
@@ -1214,7 +1218,7 @@ type CreateVolumeRequestContent struct {
 
 	VolumeType VolumeType `json:"volume_type"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateVolumeRequestContent) UnmarshalJSON(b []byte) error {
@@ -1269,7 +1273,7 @@ type CredentialInfo struct {
 	// credential. Only applicable when purpose is **STORAGE**.
 	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CredentialInfo) UnmarshalJSON(b []byte) error {
@@ -1341,7 +1345,7 @@ type CredentialValidationResult struct {
 	// The results of the tested operation.
 	Result ValidateCredentialResult `json:"result,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CredentialValidationResult) UnmarshalJSON(b []byte) error {
@@ -1441,7 +1445,7 @@ type DatabricksGcpServiceAccount struct {
 	// The ID that represents the private key for this Service Account
 	PrivateKeyId string `json:"private_key_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DatabricksGcpServiceAccount) UnmarshalJSON(b []byte) error {
@@ -1462,7 +1466,7 @@ type DatabricksGcpServiceAccountResponse struct {
 	// The email of the service account. This is an output-only field.
 	Email string `json:"email,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DatabricksGcpServiceAccountResponse) UnmarshalJSON(b []byte) error {
@@ -1488,7 +1492,7 @@ type DeleteAccountMetastoreRequest struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteAccountMetastoreRequest) UnmarshalJSON(b []byte) error {
@@ -1509,7 +1513,7 @@ type DeleteAccountStorageCredentialRequest struct {
 	// Name of the storage credential.
 	StorageCredentialName string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteAccountStorageCredentialRequest) UnmarshalJSON(b []byte) error {
@@ -1538,7 +1542,7 @@ type DeleteCatalogRequest struct {
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteCatalogRequest) UnmarshalJSON(b []byte) error {
@@ -1564,7 +1568,7 @@ type DeleteCredentialRequest struct {
 	// Name of the credential.
 	NameArg string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteCredentialRequest) UnmarshalJSON(b []byte) error {
@@ -1585,7 +1589,7 @@ type DeleteExternalLocationRequest struct {
 	// Name of the external location.
 	Name string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteExternalLocationRequest) UnmarshalJSON(b []byte) error {
@@ -1604,7 +1608,7 @@ type DeleteFunctionRequest struct {
 	// __catalog_name__.__schema_name__.__function__name__).
 	Name string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteFunctionRequest) UnmarshalJSON(b []byte) error {
@@ -1622,7 +1626,7 @@ type DeleteMetastoreRequest struct {
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteMetastoreRequest) UnmarshalJSON(b []byte) error {
@@ -1669,7 +1673,7 @@ type DeleteSchemaRequest struct {
 	// Full name of the schema.
 	FullName string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteSchemaRequest) UnmarshalJSON(b []byte) error {
@@ -1688,7 +1692,7 @@ type DeleteStorageCredentialRequest struct {
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteStorageCredentialRequest) UnmarshalJSON(b []byte) error {
@@ -1774,7 +1778,7 @@ type EffectivePredictiveOptimizationFlag struct {
 	// objects under it.
 	Value EnablePredictiveOptimization `json:"value"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EffectivePredictiveOptimizationFlag) UnmarshalJSON(b []byte) error {
@@ -1826,7 +1830,7 @@ type EffectivePrivilege struct {
 	// The privilege assigned to the principal.
 	Privilege Privilege `json:"privilege,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EffectivePrivilege) UnmarshalJSON(b []byte) error {
@@ -1844,7 +1848,7 @@ type EffectivePrivilegeAssignment struct {
 	// inheritance).
 	Privileges []EffectivePrivilege `json:"privileges,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EffectivePrivilegeAssignment) UnmarshalJSON(b []byte) error {
@@ -1950,7 +1954,7 @@ type ExternalLocationInfo struct {
 	// Path URL of the external location.
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExternalLocationInfo) UnmarshalJSON(b []byte) error {
@@ -1974,7 +1978,7 @@ type FailedStatus struct {
 	// and available for serving.
 	Timestamp string `json:"timestamp,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FailedStatus) UnmarshalJSON(b []byte) error {
@@ -2072,7 +2076,7 @@ type FunctionInfo struct {
 	// Username of user who last modified function.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FunctionInfo) UnmarshalJSON(b []byte) error {
@@ -2222,7 +2226,7 @@ type FunctionParameterInfo struct {
 	// Full data type spec, SQL/catalogString text.
 	TypeText string `json:"type_text"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FunctionParameterInfo) UnmarshalJSON(b []byte) error {
@@ -2298,7 +2302,7 @@ func (f *FunctionParameterType) Type() string {
 type GcpOauthToken struct {
 	OauthToken string `json:"oauth_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GcpOauthToken) UnmarshalJSON(b []byte) error {
@@ -2343,7 +2347,7 @@ type GenerateTemporaryTableCredentialRequest struct {
 	// UUID of the table to read or write.
 	TableId string `json:"table_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GenerateTemporaryTableCredentialRequest) UnmarshalJSON(b []byte) error {
@@ -2377,7 +2381,7 @@ type GenerateTemporaryTableCredentialResponse struct {
 	// The URL of the storage path accessible by the temporary credential.
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GenerateTemporaryTableCredentialResponse) UnmarshalJSON(b []byte) error {
@@ -2430,7 +2434,7 @@ type GetBindingsRequest struct {
 	// The type of the securable to bind to a workspace.
 	SecurableType GetBindingsSecurableType `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetBindingsRequest) UnmarshalJSON(b []byte) error {
@@ -2482,7 +2486,7 @@ type GetByAliasRequest struct {
 	// response
 	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetByAliasRequest) UnmarshalJSON(b []byte) error {
@@ -2501,7 +2505,7 @@ type GetCatalogRequest struct {
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetCatalogRequest) UnmarshalJSON(b []byte) error {
@@ -2534,7 +2538,7 @@ type GetEffectiveRequest struct {
 	// Type of securable.
 	SecurableType SecurableType `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetEffectiveRequest) UnmarshalJSON(b []byte) error {
@@ -2553,7 +2557,7 @@ type GetExternalLocationRequest struct {
 	// Name of the external location.
 	Name string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetExternalLocationRequest) UnmarshalJSON(b []byte) error {
@@ -2573,7 +2577,7 @@ type GetFunctionRequest struct {
 	// __catalog_name__.__schema_name__.__function__name__).
 	Name string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetFunctionRequest) UnmarshalJSON(b []byte) error {
@@ -2594,7 +2598,7 @@ type GetGrantRequest struct {
 	// Type of securable.
 	SecurableType SecurableType `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetGrantRequest) UnmarshalJSON(b []byte) error {
@@ -2655,7 +2659,7 @@ type GetMetastoreSummaryResponse struct {
 	// Username of user who last modified the metastore.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetMetastoreSummaryResponse) UnmarshalJSON(b []byte) error {
@@ -2707,7 +2711,7 @@ type GetModelVersionRequest struct {
 	// The integer version number of the model version
 	Version int `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetModelVersionRequest) UnmarshalJSON(b []byte) error {
@@ -2765,7 +2769,7 @@ type GetRegisteredModelRequest struct {
 	// principal can only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetRegisteredModelRequest) UnmarshalJSON(b []byte) error {
@@ -2784,7 +2788,7 @@ type GetSchemaRequest struct {
 	// only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetSchemaRequest) UnmarshalJSON(b []byte) error {
@@ -2813,7 +2817,7 @@ type GetTableRequest struct {
 	// Whether to include a manifest containing capabilities the table has.
 	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetTableRequest) UnmarshalJSON(b []byte) error {
@@ -2897,7 +2901,7 @@ type ListCatalogsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCatalogsRequest) UnmarshalJSON(b []byte) error {
@@ -2916,7 +2920,7 @@ type ListCatalogsResponse struct {
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCatalogsResponse) UnmarshalJSON(b []byte) error {
@@ -2939,7 +2943,7 @@ type ListConnectionsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListConnectionsRequest) UnmarshalJSON(b []byte) error {
@@ -2958,7 +2962,7 @@ type ListConnectionsResponse struct {
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListConnectionsResponse) UnmarshalJSON(b []byte) error {
@@ -2982,7 +2986,7 @@ type ListCredentialsRequest struct {
 	// Return only credentials for the specified purpose.
 	Purpose CredentialPurpose `json:"-" url:"purpose,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCredentialsRequest) UnmarshalJSON(b []byte) error {
@@ -3000,7 +3004,7 @@ type ListCredentialsResponse struct {
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCredentialsResponse) UnmarshalJSON(b []byte) error {
@@ -3026,7 +3030,7 @@ type ListExternalLocationsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListExternalLocationsRequest) UnmarshalJSON(b []byte) error {
@@ -3045,7 +3049,7 @@ type ListExternalLocationsResponse struct {
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListExternalLocationsResponse) UnmarshalJSON(b []byte) error {
@@ -3075,7 +3079,7 @@ type ListFunctionsRequest struct {
 	// Parent schema of functions.
 	SchemaName string `json:"-" url:"schema_name"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListFunctionsRequest) UnmarshalJSON(b []byte) error {
@@ -3094,7 +3098,7 @@ type ListFunctionsResponse struct {
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListFunctionsResponse) UnmarshalJSON(b []byte) error {
@@ -3129,7 +3133,7 @@ type ListModelVersionsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListModelVersionsRequest) UnmarshalJSON(b []byte) error {
@@ -3147,7 +3151,7 @@ type ListModelVersionsResponse struct {
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListModelVersionsResponse) UnmarshalJSON(b []byte) error {
@@ -3165,7 +3169,7 @@ type ListQuotasRequest struct {
 	// Opaque token for the next page of results.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListQuotasRequest) UnmarshalJSON(b []byte) error {
@@ -3184,7 +3188,7 @@ type ListQuotasResponse struct {
 	// An array of returned QuotaInfos.
 	Quotas []QuotaInfo `json:"quotas,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListQuotasResponse) UnmarshalJSON(b []byte) error {
@@ -3233,7 +3237,7 @@ type ListRegisteredModelsRequest struct {
 	// specified, catalog_name must be specified.
 	SchemaName string `json:"-" url:"schema_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRegisteredModelsRequest) UnmarshalJSON(b []byte) error {
@@ -3251,7 +3255,7 @@ type ListRegisteredModelsResponse struct {
 
 	RegisteredModels []RegisteredModelInfo `json:"registered_models,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRegisteredModelsResponse) UnmarshalJSON(b []byte) error {
@@ -3279,7 +3283,7 @@ type ListSchemasRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSchemasRequest) UnmarshalJSON(b []byte) error {
@@ -3298,7 +3302,7 @@ type ListSchemasResponse struct {
 	// An array of schema information objects.
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSchemasResponse) UnmarshalJSON(b []byte) error {
@@ -3321,7 +3325,7 @@ type ListStorageCredentialsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListStorageCredentialsRequest) UnmarshalJSON(b []byte) error {
@@ -3340,7 +3344,7 @@ type ListStorageCredentialsResponse struct {
 
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListStorageCredentialsResponse) UnmarshalJSON(b []byte) error {
@@ -3374,7 +3378,7 @@ type ListSummariesRequest struct {
 	// if not set or empty.
 	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSummariesRequest) UnmarshalJSON(b []byte) error {
@@ -3399,7 +3403,7 @@ type ListSystemSchemasRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSystemSchemasRequest) UnmarshalJSON(b []byte) error {
@@ -3418,7 +3422,7 @@ type ListSystemSchemasResponse struct {
 	// An array of system schema information objects.
 	Schemas []SystemSchemaInfo `json:"schemas,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSystemSchemasResponse) UnmarshalJSON(b []byte) error {
@@ -3437,7 +3441,7 @@ type ListTableSummariesResponse struct {
 	// List of table summaries.
 	Tables []TableSummary `json:"tables,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListTableSummariesResponse) UnmarshalJSON(b []byte) error {
@@ -3478,7 +3482,7 @@ type ListTablesRequest struct {
 	// Parent schema of tables.
 	SchemaName string `json:"-" url:"schema_name"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListTablesRequest) UnmarshalJSON(b []byte) error {
@@ -3497,7 +3501,7 @@ type ListTablesResponse struct {
 	// An array of table information objects.
 	Tables []TableInfo `json:"tables,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListTablesResponse) UnmarshalJSON(b []byte) error {
@@ -3534,7 +3538,7 @@ type ListVolumesRequest struct {
 	// The identifier of the schema
 	SchemaName string `json:"-" url:"schema_name"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListVolumesRequest) UnmarshalJSON(b []byte) error {
@@ -3553,7 +3557,7 @@ type ListVolumesResponseContent struct {
 
 	Volumes []VolumeInfo `json:"volumes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListVolumesResponseContent) UnmarshalJSON(b []byte) error {
@@ -3598,7 +3602,7 @@ type MetastoreAssignment struct {
 	// The unique ID of the Databricks workspace.
 	WorkspaceId int64 `json:"workspace_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MetastoreAssignment) UnmarshalJSON(b []byte) error {
@@ -3653,7 +3657,7 @@ type MetastoreInfo struct {
 	// Username of user who last modified the metastore.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MetastoreInfo) UnmarshalJSON(b []byte) error {
@@ -3744,7 +3748,7 @@ type ModelVersionInfo struct {
 	// requests.
 	Version int `json:"version,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ModelVersionInfo) UnmarshalJSON(b []byte) error {
@@ -3832,7 +3836,7 @@ type MonitorDataClassificationConfig struct {
 	// Whether data classification is enabled.
 	Enabled bool `json:"enabled,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MonitorDataClassificationConfig) UnmarshalJSON(b []byte) error {
@@ -3879,7 +3883,7 @@ type MonitorInferenceLog struct {
 	// [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html
 	TimestampCol string `json:"timestamp_col"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MonitorInferenceLog) UnmarshalJSON(b []byte) error {
@@ -3970,7 +3974,7 @@ type MonitorInfo struct {
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MonitorInfo) UnmarshalJSON(b []byte) error {
@@ -4106,7 +4110,7 @@ type MonitorRefreshInfo struct {
 	// The method by which the refresh was triggered.
 	Trigger MonitorRefreshInfoTrigger `json:"trigger,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MonitorRefreshInfo) UnmarshalJSON(b []byte) error {
@@ -4223,7 +4227,7 @@ type OnlineTable struct {
 	// runs asynchronously).
 	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *OnlineTable) UnmarshalJSON(b []byte) error {
@@ -4260,7 +4264,7 @@ type OnlineTableSpec struct {
 	// key.
 	TimeseriesKey string `json:"timeseries_key,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *OnlineTableSpec) UnmarshalJSON(b []byte) error {
@@ -4343,7 +4347,7 @@ type OnlineTableStatus struct {
 	// ONLINE_TRIGGERED_UPDATE or the ONLINE_NO_PENDING_UPDATE state.
 	TriggeredUpdateStatus *TriggeredUpdateStatus `json:"triggered_update_status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *OnlineTableStatus) UnmarshalJSON(b []byte) error {
@@ -4362,7 +4366,7 @@ type PermissionsChange struct {
 	// The set of privileges to remove.
 	Remove []Privilege `json:"remove,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PermissionsChange) UnmarshalJSON(b []byte) error {
@@ -4393,7 +4397,7 @@ type PipelineProgress struct {
 	// number may be an estimate.
 	TotalRowCount int64 `json:"total_row_count,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineProgress) UnmarshalJSON(b []byte) error {
@@ -4530,7 +4534,7 @@ type PrivilegeAssignment struct {
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
@@ -4607,7 +4611,7 @@ type QuotaInfo struct {
 	// The name of the quota.
 	QuotaName string `json:"quota_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QuotaInfo) UnmarshalJSON(b []byte) error {
@@ -4628,7 +4632,7 @@ type R2Credentials struct {
 	// The generated JWT that users must pass to use the temporary credentials.
 	SessionToken string `json:"session_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *R2Credentials) UnmarshalJSON(b []byte) error {
@@ -4647,7 +4651,7 @@ type ReadVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
 	Name string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ReadVolumeRequest) UnmarshalJSON(b []byte) error {
@@ -4665,7 +4669,7 @@ type RegenerateDashboardRequest struct {
 	// not specified, the first running warehouse will be used.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RegenerateDashboardRequest) UnmarshalJSON(b []byte) error {
@@ -4682,7 +4686,7 @@ type RegenerateDashboardResponse struct {
 	// The directory where the regenerated dashboard is stored.
 	ParentFolder string `json:"parent_folder,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RegenerateDashboardResponse) UnmarshalJSON(b []byte) error {
@@ -4700,7 +4704,7 @@ type RegisteredModelAlias struct {
 	// Integer version number of the model version to which this alias points.
 	VersionNum int `json:"version_num,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RegisteredModelAlias) UnmarshalJSON(b []byte) error {
@@ -4746,7 +4750,7 @@ type RegisteredModelInfo struct {
 	// The identifier of the user who updated the registered model last time
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RegisteredModelInfo) UnmarshalJSON(b []byte) error {
@@ -4804,7 +4808,7 @@ type SchemaInfo struct {
 	// Username of user who last modified schema.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SchemaInfo) UnmarshalJSON(b []byte) error {
@@ -4899,7 +4903,7 @@ type SseEncryptionDetails struct {
 	// key to use.
 	AwsKmsKeyArn string `json:"aws_kms_key_arn,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SseEncryptionDetails) UnmarshalJSON(b []byte) error {
@@ -4977,7 +4981,7 @@ type StorageCredentialInfo struct {
 	// credential.
 	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *StorageCredentialInfo) UnmarshalJSON(b []byte) error {
@@ -4995,7 +4999,7 @@ type SystemSchemaInfo struct {
 	// means the system schema is available and ready for opt-in.
 	State SystemSchemaInfoState `json:"state,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SystemSchemaInfo) UnmarshalJSON(b []byte) error {
@@ -5063,7 +5067,7 @@ type TableExistsResponse struct {
 	// Whether the table exists or not.
 	TableExists bool `json:"table_exists,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TableExistsResponse) UnmarshalJSON(b []byte) error {
@@ -5153,7 +5157,7 @@ type TableInfo struct {
 	// dependencies are provided and recorded.
 	ViewDependencies *DependencyList `json:"view_dependencies,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TableInfo) UnmarshalJSON(b []byte) error {
@@ -5206,7 +5210,7 @@ type TableSummary struct {
 
 	TableType TableType `json:"table_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TableSummary) UnmarshalJSON(b []byte) error {
@@ -5271,7 +5275,7 @@ type TemporaryCredentials struct {
 	// https://developers.google.com/identity/protocols/oauth2/service-account
 	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TemporaryCredentials) UnmarshalJSON(b []byte) error {
@@ -5295,7 +5299,7 @@ type TriggeredUpdateStatus struct {
 	// Progress of the active data synchronization pipeline.
 	TriggeredUpdateProgress *PipelineProgress `json:"triggered_update_progress,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TriggeredUpdateStatus) UnmarshalJSON(b []byte) error {
@@ -5371,7 +5375,7 @@ type UpdateCatalog struct {
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateCatalog) UnmarshalJSON(b []byte) error {
@@ -5392,7 +5396,7 @@ type UpdateConnection struct {
 	// Username of current owner of the connection.
 	Owner string `json:"owner,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateConnection) UnmarshalJSON(b []byte) error {
@@ -5436,7 +5440,7 @@ type UpdateCredentialRequest struct {
 	// credential.
 	SkipValidation bool `json:"skip_validation,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateCredentialRequest) UnmarshalJSON(b []byte) error {
@@ -5479,7 +5483,7 @@ type UpdateExternalLocation struct {
 	// Path URL of the external location.
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateExternalLocation) UnmarshalJSON(b []byte) error {
@@ -5497,7 +5501,7 @@ type UpdateFunction struct {
 	// Username of current owner of function.
 	Owner string `json:"owner,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateFunction) UnmarshalJSON(b []byte) error {
@@ -5528,7 +5532,7 @@ type UpdateMetastore struct {
 	// UUID of storage credential to access the metastore storage_root.
 	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateMetastore) UnmarshalJSON(b []byte) error {
@@ -5549,7 +5553,7 @@ type UpdateMetastoreAssignment struct {
 	// A workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateMetastoreAssignment) UnmarshalJSON(b []byte) error {
@@ -5596,7 +5600,7 @@ type UpdateModelVersionRequest struct {
 	// The integer version number of the model version
 	Version int `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateModelVersionRequest) UnmarshalJSON(b []byte) error {
@@ -5642,7 +5646,7 @@ type UpdateMonitor struct {
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateMonitor) UnmarshalJSON(b []byte) error {
@@ -5672,7 +5676,7 @@ type UpdateRegisteredModelRequest struct {
 	// The identifier of the user who owns the registered model
 	Owner string `json:"owner,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
@@ -5701,7 +5705,7 @@ type UpdateSchema struct {
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateSchema) UnmarshalJSON(b []byte) error {
@@ -5742,7 +5746,7 @@ type UpdateStorageCredential struct {
 	// credential.
 	SkipValidation bool `json:"skip_validation,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateStorageCredential) UnmarshalJSON(b []byte) error {
@@ -5760,7 +5764,7 @@ type UpdateTableRequest struct {
 
 	Owner string `json:"owner,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateTableRequest) UnmarshalJSON(b []byte) error {
@@ -5781,7 +5785,7 @@ type UpdateVolumeRequestContent struct {
 	// The identifier of the user who owns the volume
 	Owner string `json:"owner,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateVolumeRequestContent) UnmarshalJSON(b []byte) error {
@@ -5833,7 +5837,7 @@ type ValidateCredentialRequest struct {
 	// **STORAGE**.
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ValidateCredentialRequest) UnmarshalJSON(b []byte) error {
@@ -5851,7 +5855,7 @@ type ValidateCredentialResponse struct {
 	// The results of the validation check.
 	Results []CredentialValidationResult `json:"results,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ValidateCredentialResponse) UnmarshalJSON(b []byte) error {
@@ -5912,7 +5916,7 @@ type ValidateStorageCredential struct {
 	// The external location url to validate.
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ValidateStorageCredential) UnmarshalJSON(b []byte) error {
@@ -5929,7 +5933,7 @@ type ValidateStorageCredentialResponse struct {
 	// The results of the validation check.
 	Results []ValidationResult `json:"results,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ValidateStorageCredentialResponse) UnmarshalJSON(b []byte) error {
@@ -5948,7 +5952,7 @@ type ValidationResult struct {
 	// The results of the tested operation.
 	Result ValidationResultResult `json:"result,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ValidationResult) UnmarshalJSON(b []byte) error {
@@ -6061,7 +6065,7 @@ type VolumeInfo struct {
 
 	VolumeType VolumeType `json:"volume_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *VolumeInfo) UnmarshalJSON(b []byte) error {
@@ -6104,7 +6108,7 @@ type WorkspaceBinding struct {
 
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WorkspaceBinding) UnmarshalJSON(b []byte) error {
@@ -6151,7 +6155,7 @@ type WorkspaceBindingsResponse struct {
 	// request (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {

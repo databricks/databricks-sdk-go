@@ -8,6 +8,231 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/marshal"
 )
 
+type Adlsgen2Info struct {
+	// abfss destination, e.g.
+	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`.
+	Destination string `json:"destination"`
+}
+
+type AutoScale struct {
+	// The maximum number of workers to which the cluster can scale up when
+	// overloaded. Note that `max_workers` must be strictly greater than
+	// `min_workers`.
+	MaxWorkers int `json:"max_workers,omitempty"`
+	// The minimum number of workers to which the cluster can scale down when
+	// underutilized. It is also the initial number of workers the cluster will
+	// have after creation.
+	MinWorkers int `json:"min_workers,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AutoScale) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AutoScale) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AwsAttributes struct {
+	// Availability type used for all subsequent nodes past the
+	// `first_on_demand` ones.
+	//
+	// Note: If `first_on_demand` is zero, this availability type will be used
+	// for the entire cluster.
+	Availability AwsAvailability `json:"availability,omitempty"`
+	// The number of volumes launched for each instance. Users can choose up to
+	// 10 volumes. This feature is only enabled for supported node types. Legacy
+	// node types cannot specify custom EBS volumes. For node types with no
+	// instance store, at least one EBS volume needs to be specified; otherwise,
+	// cluster creation will fail.
+	//
+	// These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance
+	// store volumes will be mounted at `/local_disk0`, `/local_disk1`, and etc.
+	//
+	// If EBS volumes are attached, Databricks will configure Spark to use only
+	// the EBS volumes for scratch storage because heterogenously sized scratch
+	// devices can lead to inefficient disk utilization. If no EBS volumes are
+	// attached, Databricks will configure Spark to use instance store volumes.
+	//
+	// Please note that if EBS volumes are specified, then the Spark
+	// configuration `spark.local.dir` will be overridden.
+	EbsVolumeCount int `json:"ebs_volume_count,omitempty"`
+	// If using gp3 volumes, what IOPS to use for the disk. If this is not set,
+	// the maximum performance of a gp2 volume with the same volume size will be
+	// used.
+	EbsVolumeIops int `json:"ebs_volume_iops,omitempty"`
+	// The size of each EBS volume (in GiB) launched for each instance. For
+	// general purpose SSD, this value must be within the range 100 - 4096. For
+	// throughput optimized HDD, this value must be within the range 500 - 4096.
+	EbsVolumeSize int `json:"ebs_volume_size,omitempty"`
+	// If using gp3 volumes, what throughput to use for the disk. If this is not
+	// set, the maximum performance of a gp2 volume with the same volume size
+	// will be used.
+	EbsVolumeThroughput int `json:"ebs_volume_throughput,omitempty"`
+	// The type of EBS volumes that will be launched with this cluster.
+	EbsVolumeType EbsVolumeType `json:"ebs_volume_type,omitempty"`
+	// The first `first_on_demand` nodes of the cluster will be placed on
+	// on-demand instances. If this value is greater than 0, the cluster driver
+	// node in particular will be placed on an on-demand instance. If this value
+	// is greater than or equal to the current cluster size, all nodes will be
+	// placed on on-demand instances. If this value is less than the current
+	// cluster size, `first_on_demand` nodes will be placed on on-demand
+	// instances and the remainder will be placed on `availability` instances.
+	// Note that this value does not affect cluster size and cannot currently be
+	// mutated over the lifetime of a cluster.
+	FirstOnDemand int `json:"first_on_demand,omitempty"`
+	// Nodes for this cluster will only be placed on AWS instances with this
+	// instance profile. If ommitted, nodes will be placed on instances without
+	// an IAM instance profile. The instance profile must have previously been
+	// added to the Databricks environment by an account administrator.
+	//
+	// This feature may only be available to certain customer plans.
+	//
+	// If this field is ommitted, we will pull in the default from the conf if
+	// it exists.
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The bid price for AWS spot instances, as a percentage of the
+	// corresponding instance type's on-demand price. For example, if this field
+	// is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then
+	// the bid price is half of the price of on-demand `r3.xlarge` instances.
+	// Similarly, if this field is set to 200, the bid price is twice the price
+	// of on-demand `r3.xlarge` instances. If not specified, the default value
+	// is 100. When spot instances are requested for this cluster, only spot
+	// instances whose bid price percentage matches this field will be
+	// considered. Note that, for safety, we enforce this field to be no more
+	// than 10000.
+	//
+	// The default value and documentation here should be kept consistent with
+	// CommonConf.defaultSpotBidPricePercent and
+	// CommonConf.maxSpotBidPricePercent.
+	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
+	// Identifier for the availability zone/datacenter in which the cluster
+	// resides. This string will be of a form like "us-west-2a". The provided
+	// availability zone must be in the same region as the Databricks
+	// deployment. For example, "us-west-2a" is not a valid zone id if the
+	// Databricks deployment resides in the "us-east-1" region. This is an
+	// optional field at cluster creation, and if not specified, a default zone
+	// will be used. If the zone specified is "auto", will try to place cluster
+	// in a zone with high availability, and will retry placement in a different
+	// AZ if there is not enough capacity. The list of available zones as well
+	// as the default value can be found by using the `List Zones` method.
+	ZoneId string `json:"zone_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AwsAttributes) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AwsAttributes) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Availability type used for all subsequent nodes past the `first_on_demand`
+// ones.
+//
+// Note: If `first_on_demand` is zero, this availability type will be used for
+// the entire cluster.
+type AwsAvailability string
+
+const AwsAvailabilityOnDemand AwsAvailability = `ON_DEMAND`
+
+const AwsAvailabilitySpot AwsAvailability = `SPOT`
+
+const AwsAvailabilitySpotWithFallback AwsAvailability = `SPOT_WITH_FALLBACK`
+
+// String representation for [fmt.Print]
+func (f *AwsAvailability) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AwsAvailability) Set(v string) error {
+	switch v {
+	case `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
+		*f = AwsAvailability(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT", "SPOT_WITH_FALLBACK"`, v)
+	}
+}
+
+// Type always returns AwsAvailability to satisfy [pflag.Value] interface
+func (f *AwsAvailability) Type() string {
+	return "AwsAvailability"
+}
+
+type AzureAttributes struct {
+	// Availability type used for all subsequent nodes past the
+	// `first_on_demand` ones. Note: If `first_on_demand` is zero (which only
+	// happens on pool clusters), this availability type will be used for the
+	// entire cluster.
+	Availability AzureAvailability `json:"availability,omitempty"`
+	// The first `first_on_demand` nodes of the cluster will be placed on
+	// on-demand instances. This value should be greater than 0, to make sure
+	// the cluster driver node is placed on an on-demand instance. If this value
+	// is greater than or equal to the current cluster size, all nodes will be
+	// placed on on-demand instances. If this value is less than the current
+	// cluster size, `first_on_demand` nodes will be placed on on-demand
+	// instances and the remainder will be placed on `availability` instances.
+	// Note that this value does not affect cluster size and cannot currently be
+	// mutated over the lifetime of a cluster.
+	FirstOnDemand int `json:"first_on_demand,omitempty"`
+	// Defines values necessary to configure and run Azure Log Analytics agent
+	LogAnalyticsInfo *LogAnalyticsInfo `json:"log_analytics_info,omitempty"`
+	// The max bid price to be used for Azure spot instances. The Max price for
+	// the bid cannot be higher than the on-demand price of the instance. If not
+	// specified, the default value is -1, which specifies that the instance
+	// cannot be evicted on the basis of price, and only on the basis of
+	// availability. Further, the value should > 0 or -1.
+	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AzureAttributes) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AzureAttributes) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Availability type used for all subsequent nodes past the `first_on_demand`
+// ones. Note: If `first_on_demand` is zero (which only happens on pool
+// clusters), this availability type will be used for the entire cluster.
+type AzureAvailability string
+
+const AzureAvailabilityOnDemandAzure AzureAvailability = `ON_DEMAND_AZURE`
+
+const AzureAvailabilitySpotAzure AzureAvailability = `SPOT_AZURE`
+
+const AzureAvailabilitySpotWithFallbackAzure AzureAvailability = `SPOT_WITH_FALLBACK_AZURE`
+
+// String representation for [fmt.Print]
+func (f *AzureAvailability) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AzureAvailability) Set(v string) error {
+	switch v {
+	case `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
+		*f = AzureAvailability(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE", "SPOT_WITH_FALLBACK_AZURE"`, v)
+	}
+}
+
+// Type always returns AzureAvailability to satisfy [pflag.Value] interface
+func (f *AzureAvailability) Type() string {
+	return "AzureAvailability"
+}
+
 type BaseJob struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
@@ -33,7 +258,7 @@ type BaseJob struct {
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *BaseJob) UnmarshalJSON(b []byte) error {
@@ -191,7 +416,7 @@ type BaseRun struct {
 	// Additional details about what triggered the run
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *BaseRun) UnmarshalJSON(b []byte) error {
@@ -209,7 +434,7 @@ type CancelAllRuns struct {
 	// The canonical identifier of the job to cancel all runs of.
 	JobId int64 `json:"job_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CancelAllRuns) UnmarshalJSON(b []byte) error {
@@ -349,7 +574,7 @@ type CleanRoomsNotebookTask struct {
 	// Name of the notebook being run.
 	NotebookName string `json:"notebook_name"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomsNotebookTask) UnmarshalJSON(b []byte) error {
@@ -367,6 +592,23 @@ type CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput struct {
 	NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
 	// Information on how to access the output schema for the clean room run
 	OutputSchemaInfo *OutputSchemaInfo `json:"output_schema_info,omitempty"`
+}
+
+type ClientsTypes struct {
+	// With jobs set, the cluster can be used for jobs
+	Jobs bool `json:"jobs,omitempty"`
+	// With notebooks set, this cluster can be used for notebooks
+	Notebooks bool `json:"notebooks,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ClientsTypes) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClientsTypes) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ClusterInstance struct {
@@ -389,7 +631,7 @@ type ClusterInstance struct {
 	// available yet.
 	SparkContextId string `json:"spark_context_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterInstance) UnmarshalJSON(b []byte) error {
@@ -398,6 +640,21 @@ func (s *ClusterInstance) UnmarshalJSON(b []byte) error {
 
 func (s ClusterInstance) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ClusterLogConf struct {
+	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
+	// "dbfs:/home/cluster_log" } }`
+	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
+	// destination and either the region or endpoint need to be provided. e.g.
+	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
+	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
+	// the cluster iam role in `instance_profile_arn` has permission to write
+	// data to the s3 destination.
+	S3 *S3StorageInfo `json:"s3,omitempty"`
+	// destination needs to be provided. e.g. `{ "volumes" : { "destination" :
+	// "/Volumes/catalog/schema/volume/cluster_log" } }`
+	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 }
 
 type ClusterSpec struct {
@@ -416,7 +673,7 @@ type ClusterSpec struct {
 	// run.
 	NewCluster *ClusterSpec `json:"new_cluster,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ClusterSpec) UnmarshalJSON(b []byte) error {
@@ -424,6 +681,26 @@ func (s *ClusterSpec) UnmarshalJSON(b []byte) error {
 }
 
 func (s ClusterSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Next field: 4
+type ComputeConfig struct {
+	// IDof the GPU pool to use.
+	GpuNodePoolId string `json:"gpu_node_pool_id"`
+	// GPU type.
+	GpuType string `json:"gpu_type,omitempty"`
+	// Number of GPUs.
+	NumGpus int `json:"num_gpus"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ComputeConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ComputeConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -637,7 +914,7 @@ type CreateJob struct {
 	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateJob) UnmarshalJSON(b []byte) error {
@@ -653,7 +930,7 @@ type CreateResponse struct {
 	// The canonical identifier for the newly created job.
 	JobId int64 `json:"job_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateResponse) UnmarshalJSON(b []byte) error {
@@ -679,6 +956,102 @@ type CronSchedule struct {
 	TimezoneId string `json:"timezone_id"`
 }
 
+// Data security mode decides what data governance model to use when accessing
+// data from a cluster.
+//
+// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
+// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access
+// mode depending on your compute configuration. *
+// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
+// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+//
+// The following modes can be used regardless of `kind`. * `NONE`: No security
+// isolation for multiple users sharing the cluster. Data governance features
+// are not available in this mode. * `SINGLE_USER`: A secure cluster that can
+// only be exclusively used by a single user specified in `single_user_name`.
+// Most programming languages, cluster features and data governance features are
+// available in this mode. * `USER_ISOLATION`: A secure cluster that can be
+// shared by multiple users. Cluster users are fully isolated so that they
+// cannot see each other's data and credentials. Most data governance features
+// are supported in this mode. But programming languages and cluster features
+// might be limited.
+//
+// The following modes are deprecated starting with Databricks Runtime 15.0 and
+// will be removed for future Databricks Runtime versions:
+//
+// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL
+// clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from
+// legacy Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This
+// mode is for users migrating from legacy Passthrough on standard clusters. *
+// `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have
+// UC nor passthrough enabled.
+type DataSecurityMode string
+
+// <Databricks> will choose the most appropriate access mode depending on your
+// compute configuration.
+const DataSecurityModeDataSecurityModeAuto DataSecurityMode = `DATA_SECURITY_MODE_AUTO`
+
+// Alias for `SINGLE_USER`.
+const DataSecurityModeDataSecurityModeDedicated DataSecurityMode = `DATA_SECURITY_MODE_DEDICATED`
+
+// Alias for `USER_ISOLATION`.
+const DataSecurityModeDataSecurityModeStandard DataSecurityMode = `DATA_SECURITY_MODE_STANDARD`
+
+// This mode is for users migrating from legacy Passthrough on high concurrency
+// clusters.
+const DataSecurityModeLegacyPassthrough DataSecurityMode = `LEGACY_PASSTHROUGH`
+
+// This mode is for users migrating from legacy Passthrough on standard
+// clusters.
+const DataSecurityModeLegacySingleUser DataSecurityMode = `LEGACY_SINGLE_USER`
+
+// This mode provides a way that doesn’t have UC nor passthrough enabled.
+const DataSecurityModeLegacySingleUserStandard DataSecurityMode = `LEGACY_SINGLE_USER_STANDARD`
+
+// This mode is for users migrating from legacy Table ACL clusters.
+const DataSecurityModeLegacyTableAcl DataSecurityMode = `LEGACY_TABLE_ACL`
+
+// No security isolation for multiple users sharing the cluster. Data governance
+// features are not available in this mode.
+const DataSecurityModeNone DataSecurityMode = `NONE`
+
+// A secure cluster that can only be exclusively used by a single user specified
+// in `single_user_name`. Most programming languages, cluster features and data
+// governance features are available in this mode.
+const DataSecurityModeSingleUser DataSecurityMode = `SINGLE_USER`
+
+// A secure cluster that can be shared by multiple users. Cluster users are
+// fully isolated so that they cannot see each other's data and credentials.
+// Most data governance features are supported in this mode. But programming
+// languages and cluster features might be limited.
+const DataSecurityModeUserIsolation DataSecurityMode = `USER_ISOLATION`
+
+// String representation for [fmt.Print]
+func (f *DataSecurityMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DataSecurityMode) Set(v string) error {
+	switch v {
+	case `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, `DATA_SECURITY_MODE_STANDARD`, `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_SINGLE_USER_STANDARD`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
+		*f = DataSecurityMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DATA_SECURITY_MODE_AUTO", "DATA_SECURITY_MODE_DEDICATED", "DATA_SECURITY_MODE_STANDARD", "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_SINGLE_USER_STANDARD", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
+	}
+}
+
+// Type always returns DataSecurityMode to satisfy [pflag.Value] interface
+func (f *DataSecurityMode) Type() string {
+	return "DataSecurityMode"
+}
+
+type DbfsStorageInfo struct {
+	// dbfs destination, e.g. `dbfs:/my/path`
+	Destination string `json:"destination"`
+}
+
 type DbtOutput struct {
 	// An optional map of headers to send when retrieving the artifact from the
 	// `artifacts_link`.
@@ -688,7 +1061,7 @@ type DbtOutput struct {
 	// after the run has finished.
 	ArtifactsLink string `json:"artifacts_link,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DbtOutput) UnmarshalJSON(b []byte) error {
@@ -735,7 +1108,7 @@ type DbtTask struct {
 	// line argument.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DbtTask) UnmarshalJSON(b []byte) error {
@@ -762,6 +1135,67 @@ type DeleteRun struct {
 type DeleteRunResponse struct {
 }
 
+type DockerBasicAuth struct {
+	// Password of the user
+	Password string `json:"password,omitempty"`
+	// Name of the user
+	Username string `json:"username,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DockerBasicAuth) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DockerBasicAuth) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DockerImage struct {
+	BasicAuth *DockerBasicAuth `json:"basic_auth,omitempty"`
+	// URL of the docker image.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DockerImage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DockerImage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The type of EBS volumes that will be launched with this cluster.
+type EbsVolumeType string
+
+const EbsVolumeTypeGeneralPurposeSsd EbsVolumeType = `GENERAL_PURPOSE_SSD`
+
+const EbsVolumeTypeThroughputOptimizedHdd EbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
+
+// String representation for [fmt.Print]
+func (f *EbsVolumeType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EbsVolumeType) Set(v string) error {
+	switch v {
+	case `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
+		*f = EbsVolumeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GENERAL_PURPOSE_SSD", "THROUGHPUT_OPTIMIZED_HDD"`, v)
+	}
+}
+
+// Type always returns EbsVolumeType to satisfy [pflag.Value] interface
+func (f *EbsVolumeType) Type() string {
+	return "EbsVolumeType"
+}
+
 // Represents a change to the job cluster's settings that would be required for
 // the job clusters to become compliant with their policies.
 type EnforcePolicyComplianceForJobResponseJobClusterSettingsChange struct {
@@ -779,7 +1213,7 @@ type EnforcePolicyComplianceForJobResponseJobClusterSettingsChange struct {
 	// reading the settings field in the API response.
 	PreviousValue string `json:"previous_value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnforcePolicyComplianceForJobResponseJobClusterSettingsChange) UnmarshalJSON(b []byte) error {
@@ -797,7 +1231,7 @@ type EnforcePolicyComplianceRequest struct {
 	// does not update the job.
 	ValidateOnly bool `json:"validate_only,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnforcePolicyComplianceRequest) UnmarshalJSON(b []byte) error {
@@ -824,7 +1258,7 @@ type EnforcePolicyComplianceResponse struct {
 	// requirements.
 	Settings *JobSettings `json:"settings,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EnforcePolicyComplianceResponse) UnmarshalJSON(b []byte) error {
@@ -885,7 +1319,7 @@ type FileArrivalTriggerConfiguration struct {
 	// allowed value is 60 seconds.
 	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *FileArrivalTriggerConfiguration) UnmarshalJSON(b []byte) error {
@@ -914,7 +1348,7 @@ type ForEachTask struct {
 	// Configuration for the task that will be run for each element in the array
 	Task Task `json:"task"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ForEachTask) UnmarshalJSON(b []byte) error {
@@ -934,7 +1368,7 @@ type ForEachTaskErrorMessageStats struct {
 	// Describes the termination reason for the error message.
 	TerminationCategory string `json:"termination_category,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ForEachTaskErrorMessageStats) UnmarshalJSON(b []byte) error {
@@ -960,7 +1394,7 @@ type ForEachTaskTaskRunStats struct {
 	// Describes the length of the list of items to iterate over.
 	TotalIterations int `json:"total_iterations,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ForEachTaskTaskRunStats) UnmarshalJSON(b []byte) error {
@@ -998,6 +1432,132 @@ func (f *Format) Type() string {
 	return "Format"
 }
 
+type GcpAttributes struct {
+	// This field determines whether the instance pool will contain preemptible
+	// VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs
+	// if the former is unavailable.
+	Availability GcpAvailability `json:"availability,omitempty"`
+	// boot disk size in GB
+	BootDiskSize int `json:"boot_disk_size,omitempty"`
+	// If provided, the cluster will impersonate the google service account when
+	// accessing gcloud services (like GCS). The google service account must
+	// have previously been added to the Databricks environment by an account
+	// administrator.
+	GoogleServiceAccount string `json:"google_service_account,omitempty"`
+	// If provided, each node (workers and driver) in the cluster will have this
+	// number of local SSDs attached. Each local SSD is 375GB in size. Refer to
+	// [GCP documentation] for the supported number of local SSDs for each
+	// instance type.
+	//
+	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
+	LocalSsdCount int `json:"local_ssd_count,omitempty"`
+	// This field determines whether the spark executors will be scheduled to
+	// run on preemptible VMs (when set to true) versus standard compute engine
+	// VMs (when set to false; default). Note: Soon to be deprecated, use the
+	// availability field instead.
+	UsePreemptibleExecutors bool `json:"use_preemptible_executors,omitempty"`
+	// Identifier for the availability zone in which the cluster resides. This
+	// can be one of the following: - "HA" => High availability, spread nodes
+	// across availability zones for a Databricks deployment region [default] -
+	// "AUTO" => Databricks picks an availability zone to schedule the cluster
+	// on. - A GCP availability zone => Pick One of the available zones for
+	// (machine type + region) from
+	// https://cloud.google.com/compute/docs/regions-zones.
+	ZoneId string `json:"zone_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GcpAttributes) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GcpAttributes) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// This field determines whether the instance pool will contain preemptible VMs,
+// on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the
+// former is unavailable.
+type GcpAvailability string
+
+const GcpAvailabilityOnDemandGcp GcpAvailability = `ON_DEMAND_GCP`
+
+const GcpAvailabilityPreemptibleGcp GcpAvailability = `PREEMPTIBLE_GCP`
+
+const GcpAvailabilityPreemptibleWithFallbackGcp GcpAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
+
+// String representation for [fmt.Print]
+func (f *GcpAvailability) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *GcpAvailability) Set(v string) error {
+	switch v {
+	case `ON_DEMAND_GCP`, `PREEMPTIBLE_GCP`, `PREEMPTIBLE_WITH_FALLBACK_GCP`:
+		*f = GcpAvailability(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_GCP", "PREEMPTIBLE_GCP", "PREEMPTIBLE_WITH_FALLBACK_GCP"`, v)
+	}
+}
+
+// Type always returns GcpAvailability to satisfy [pflag.Value] interface
+func (f *GcpAvailability) Type() string {
+	return "GcpAvailability"
+}
+
+type GcsStorageInfo struct {
+	// GCS destination/URI, e.g. `gs://my-bucket/some-prefix`
+	Destination string `json:"destination"`
+}
+
+// Next field: 9
+type GenAiComputeTask struct {
+	// Command launcher to run the actual script, e.g. bash, python etc.
+	Command string `json:"command,omitempty"`
+	// Next field: 4
+	Compute *ComputeConfig `json:"compute,omitempty"`
+	// Runtime image
+	DlRuntimeImage string `json:"dl_runtime_image"`
+	// Optional string containing the name of the MLflow experiment to log the
+	// run to. If name is not found, backend will create the mlflow experiment
+	// using the name.
+	MlflowExperimentName string `json:"mlflow_experiment_name,omitempty"`
+	// Optional location type of the training script. When set to `WORKSPACE`,
+	// the script will be retrieved from the local Databricks workspace. When
+	// set to `GIT`, the script will be retrieved from a Git repository defined
+	// in `git_source`. If the value is empty, the task will use `GIT` if
+	// `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script
+	// is located in Databricks workspace. * `GIT`: Script is located in cloud
+	// Git provider.
+	Source Source `json:"source,omitempty"`
+	// The training script file path to be executed. Cloud file URIs (such as
+	// dbfs:/, s3:/, adls:/, gcs:/) and workspace paths are supported. For
+	// python files stored in the Databricks workspace, the path must be
+	// absolute and begin with `/`. For files stored in a remote repository, the
+	// path must be relative. This field is required.
+	TrainingScriptPath string `json:"training_script_path,omitempty"`
+	// Optional string containing model parameters passed to the training script
+	// in yaml format. If present, then the content in yaml_parameters_file_path
+	// will be ignored.
+	YamlParameters string `json:"yaml_parameters,omitempty"`
+	// Optional path to a YAML file containing model parameters passed to the
+	// training script.
+	YamlParametersFilePath string `json:"yaml_parameters_file_path,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenAiComputeTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenAiComputeTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get job permission levels
 type GetJobPermissionLevelsRequest struct {
 	// The job for which to get or manage permissions.
@@ -1024,7 +1584,7 @@ type GetJobRequest struct {
 	// next page of the job's sub-resources.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetJobRequest) UnmarshalJSON(b []byte) error {
@@ -1054,7 +1614,7 @@ type GetPolicyComplianceResponse struct {
 	// validation error.
 	Violations map[string]string `json:"violations,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetPolicyComplianceResponse) UnmarshalJSON(b []byte) error {
@@ -1084,7 +1644,7 @@ type GetRunRequest struct {
 	// This field is required.
 	RunId int64 `json:"-" url:"run_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetRunRequest) UnmarshalJSON(b []byte) error {
@@ -1142,7 +1702,7 @@ type GitSnapshot struct {
 	// was specified, this points to the commit the tag points to.
 	UsedCommit string `json:"used_commit,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GitSnapshot) UnmarshalJSON(b []byte) error {
@@ -1185,7 +1745,7 @@ type GitSource struct {
 	// is source controlled.
 	JobSource *JobSource `json:"job_source,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GitSource) UnmarshalJSON(b []byte) error {
@@ -1194,6 +1754,34 @@ func (s *GitSource) UnmarshalJSON(b []byte) error {
 
 func (s GitSource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type InitScriptInfo struct {
+	// destination needs to be provided. e.g. `{ "abfss" : { "destination" :
+	// "abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>"
+	// } }
+	Abfss *Adlsgen2Info `json:"abfss,omitempty"`
+	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
+	// "dbfs:/home/cluster_log" } }`
+	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
+	// destination needs to be provided. e.g. `{ "file" : { "destination" :
+	// "file:/my/local/file.sh" } }`
+	File *LocalFileInfo `json:"file,omitempty"`
+	// destination needs to be provided. e.g. `{ "gcs": { "destination":
+	// "gs://my-bucket/file.sh" } }`
+	Gcs *GcsStorageInfo `json:"gcs,omitempty"`
+	// destination and either the region or endpoint need to be provided. e.g.
+	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
+	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
+	// the cluster iam role in `instance_profile_arn` has permission to write
+	// data to the s3 destination.
+	S3 *S3StorageInfo `json:"s3,omitempty"`
+	// destination needs to be provided. e.g. `{ "volumes" : { "destination" :
+	// "/Volumes/my-init.sh" } }`
+	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
+	// destination needs to be provided. e.g. `{ "workspace" : { "destination" :
+	// "/Users/user1@databricks.com/my-init.sh" } }`
+	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
 }
 
 // Job was retrieved successfully.
@@ -1232,7 +1820,7 @@ type Job struct {
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Job) UnmarshalJSON(b []byte) error {
@@ -1253,7 +1841,7 @@ type JobAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -1276,7 +1864,7 @@ type JobAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -1293,7 +1881,7 @@ type JobCluster struct {
 	// determine which cluster to launch for the task execution.
 	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
-	NewCluster ClusterSpec `json:"new_cluster"`
+	NewCluster JobsClusterSpec `json:"new_cluster"`
 }
 
 type JobCompliance struct {
@@ -1308,7 +1896,7 @@ type JobCompliance struct {
 	// validation error.
 	Violations map[string]string `json:"violations,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobCompliance) UnmarshalJSON(b []byte) error {
@@ -1327,7 +1915,7 @@ type JobDeployment struct {
 	// Path of the file that contains deployment metadata.
 	MetadataFilePath string `json:"metadata_file_path,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobDeployment) UnmarshalJSON(b []byte) error {
@@ -1433,7 +2021,7 @@ type JobEmailNotifications struct {
 	// notifications are not sent.
 	OnSuccess []string `json:"on_success,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobEmailNotifications) UnmarshalJSON(b []byte) error {
@@ -1461,7 +2049,7 @@ type JobNotificationSettings struct {
 	// `on_failure` if the run is skipped.
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobNotificationSettings) UnmarshalJSON(b []byte) error {
@@ -1480,7 +2068,7 @@ type JobParameter struct {
 	// The value used in the run
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobParameter) UnmarshalJSON(b []byte) error {
@@ -1506,7 +2094,7 @@ type JobPermission struct {
 	// Permission level
 	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobPermission) UnmarshalJSON(b []byte) error {
@@ -1556,7 +2144,7 @@ type JobPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobPermissions) UnmarshalJSON(b []byte) error {
@@ -1572,7 +2160,7 @@ type JobPermissionsDescription struct {
 	// Permission level
 	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -1602,7 +2190,7 @@ type JobRunAs struct {
 	// field to their own email.
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobRunAs) UnmarshalJSON(b []byte) error {
@@ -1723,7 +2311,7 @@ type JobSettings struct {
 	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *JobSettings) UnmarshalJSON(b []byte) error {
@@ -1791,6 +2379,205 @@ func (f *JobSourceDirtyState) Set(v string) error {
 // Type always returns JobSourceDirtyState to satisfy [pflag.Value] interface
 func (f *JobSourceDirtyState) Type() string {
 	return "JobSourceDirtyState"
+}
+
+type JobsClusterSpec struct {
+	// When set to true, fixed and default values from the policy will be used
+	// for fields that are omitted. When set to false, only fixed values from
+	// the policy will be applied.
+	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
+	// Parameters needed in order to automatically scale clusters up and down
+	// based on load. Note: autoscaling works best with DB runtime versions 3.0
+	// or later.
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
+	// Automatically terminates the cluster after it is inactive for this time
+	// in minutes. If not set, this cluster will not be automatically
+	// terminated. If specified, the threshold must be between 10 and 10000
+	// minutes. Users can also set this value to 0 to explicitly disable
+	// automatic termination.
+	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
+	// Attributes related to clusters running on Amazon Web Services. If not
+	// specified at cluster creation, a set of default values will be used.
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
+	// Attributes related to clusters running on Microsoft Azure. If not
+	// specified at cluster creation, a set of default values will be used.
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
+	// The configuration for delivering spark logs to a long-term storage
+	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
+	// volumes) are supported. Only one destination can be specified for one
+	// cluster. If the conf is given, the logs will be delivered to the
+	// destination every `5 mins`. The destination of driver logs is
+	// `$destination/$clusterId/driver`, while the destination of executor logs
+	// is `$destination/$clusterId/executor`.
+	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
+	// Cluster name requested by the user. This doesn't have to be unique. If
+	// not specified at creation, the cluster name will be an empty string.
+	ClusterName string `json:"cluster_name,omitempty"`
+	// Additional tags for cluster resources. Databricks will tag all cluster
+	// resources (e.g., AWS instances and EBS volumes) with these tags in
+	// addition to `default_tags`. Notes:
+	//
+	// - Currently, Databricks allows at most 45 custom tags
+	//
+	// - Clusters can only reuse cloud resources if the resources' tags are a
+	// subset of the cluster tags
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
+	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
+	// access mode depending on your compute configuration. *
+	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
+	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+	//
+	// The following modes can be used regardless of `kind`. * `NONE`: No
+	// security isolation for multiple users sharing the cluster. Data
+	// governance features are not available in this mode. * `SINGLE_USER`: A
+	// secure cluster that can only be exclusively used by a single user
+	// specified in `single_user_name`. Most programming languages, cluster
+	// features and data governance features are available in this mode. *
+	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
+	// Cluster users are fully isolated so that they cannot see each other's
+	// data and credentials. Most data governance features are supported in this
+	// mode. But programming languages and cluster features might be limited.
+	//
+	// The following modes are deprecated starting with Databricks Runtime 15.0
+	// and will be removed for future Databricks Runtime versions:
+	//
+	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
+	// mode provides a way that doesn’t have UC nor passthrough enabled.
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
+	// The optional ID of the instance pool for the driver of the cluster
+	// belongs. The pool cluster uses the instance pool with id
+	// (instance_pool_id) if the driver pool is not assigned.
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
+	// The node type of the Spark driver. Note that this field is optional; if
+	// unset, the driver node type will be set as the same value as
+	// `node_type_id` defined above.
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
+	// Autoscaling Local Storage: when enabled, this cluster will dynamically
+	// acquire additional disk space when its Spark workers are running low on
+	// disk space. This feature requires specific AWS permissions to function
+	// correctly - refer to the User Guide for more details.
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
+	// Whether to enable LUKS on cluster VMs' local disks
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
+	// Attributes related to clusters running on Google Cloud Platform. If not
+	// specified at cluster creation, a set of default values will be used.
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
+	// The configuration for storing init scripts. Any number of destinations
+	// can be specified. The scripts are executed sequentially in the order
+	// provided. If `cluster_log_conf` is specified, init script logs are sent
+	// to `<destination>/<cluster-ID>/init_scripts`.
+	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
+	// The optional ID of the instance pool to which the cluster belongs.
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
+	//
+	// When set to true, Databricks will automatically set single node related
+	// `custom_tags`, `spark_conf`, and `num_workers`
+	IsSingleNode bool `json:"is_single_node,omitempty"`
+	// The kind of compute described by this compute specification.
+	//
+	// Depending on `kind`, different validations and default values will be
+	// applied.
+	//
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. *
+	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
+	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
+	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
+	// `DATA_SECURITY_MODE_STANDARD`
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	Kind Kind `json:"kind,omitempty"`
+	// This field encodes, through a single value, the resources available to
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
+	// list of available node types can be retrieved by using the
+	// :method:clusters/listNodeTypes API call.
+	NodeTypeId string `json:"node_type_id,omitempty"`
+	// Number of worker nodes that this cluster should have. A cluster has one
+	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
+	// Spark nodes.
+	//
+	// Note: When reading the properties of a cluster, this field reflects the
+	// desired number of workers rather than the actual current number of
+	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
+	// field will immediately be updated to reflect the target size of 10
+	// workers, whereas the workers listed in `spark_info` will gradually
+	// increase from 5 to 10 as the new nodes are provisioned.
+	NumWorkers int `json:"num_workers,omitempty"`
+	// The ID of the cluster policy used to create the cluster if applicable.
+	PolicyId string `json:"policy_id,omitempty"`
+	// Determines the cluster's runtime engine, either standard or Photon.
+	//
+	// This field is not compatible with legacy `spark_version` values that
+	// contain `-photon-`. Remove `-photon-` from the `spark_version` and set
+	// `runtime_engine` to `PHOTON`.
+	//
+	// If left unspecified, the runtime engine defaults to standard unless the
+	// spark_version contains -photon-, in which case Photon will be used.
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
+	// Single user name if data_security_mode is `SINGLE_USER`
+	SingleUserName string `json:"single_user_name,omitempty"`
+	// An object containing a set of optional, user-specified Spark
+	// configuration key-value pairs. Users can also pass in a string of extra
+	// JVM options to the driver and the executors via
+	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
+	// respectively.
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
+	// An object containing a set of optional, user-specified environment
+	// variable key-value pairs. Please note that key-value pair of the form
+	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
+	// driver and workers.
+	//
+	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
+	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
+	// example below. This ensures that all default databricks managed
+	// environmental variables are included as well.
+	//
+	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
+	// available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
+	SparkVersion string `json:"spark_version,omitempty"`
+	// SSH public key contents that will be added to each Spark node in this
+	// cluster. The corresponding private keys can be used to login with the
+	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
+	//
+	// `effective_spark_version` is determined by `spark_version` (DBR release),
+	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
+	// not.
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
+
+	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *JobsClusterSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobsClusterSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Specifies the health metric that is being evaluated for a particular health
@@ -1901,6 +2688,48 @@ type JobsHealthRules struct {
 	Rules []JobsHealthRule `json:"rules,omitempty"`
 }
 
+// The kind of compute described by this compute specification.
+//
+// Depending on `kind`, different validations and default values will be
+// applied.
+//
+// Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas
+// clusters with no specified `kind` do not. *
+// [is_single_node](/api/workspace/clusters/create#is_single_node) *
+// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+// [data_security_mode](/api/workspace/clusters/create#data_security_mode) set
+// to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
+// `DATA_SECURITY_MODE_STANDARD`
+//
+// By using the [simple form], your clusters are automatically using `kind =
+// CLASSIC_PREVIEW`.
+//
+// [simple form]: https://docs.databricks.com/compute/simple-form.html
+type Kind string
+
+const KindClassicPreview Kind = `CLASSIC_PREVIEW`
+
+// String representation for [fmt.Print]
+func (f *Kind) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *Kind) Set(v string) error {
+	switch v {
+	case `CLASSIC_PREVIEW`:
+		*f = Kind(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC_PREVIEW"`, v)
+	}
+}
+
+// Type always returns Kind to satisfy [pflag.Value] interface
+func (f *Kind) Type() string {
+	return "Kind"
+}
+
 type Library struct {
 	// Specification of a CRAN library to be installed as part of the library
 	Cran *RCranLibrary `json:"cran,omitempty"`
@@ -1936,7 +2765,7 @@ type Library struct {
 	// cluster with an IAM role to access the S3 URI.
 	Whl string `json:"whl,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Library) UnmarshalJSON(b []byte) error {
@@ -1959,7 +2788,7 @@ type ListJobComplianceForPolicyResponse struct {
 	// results for the request.
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListJobComplianceForPolicyResponse) UnmarshalJSON(b []byte) error {
@@ -1982,7 +2811,7 @@ type ListJobComplianceRequest struct {
 	// Canonical unique identifier for the cluster policy.
 	PolicyId string `json:"-" url:"policy_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListJobComplianceRequest) UnmarshalJSON(b []byte) error {
@@ -2012,7 +2841,7 @@ type ListJobsRequest struct {
 	// request to list the next or previous page of jobs respectively.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListJobsRequest) UnmarshalJSON(b []byte) error {
@@ -2037,7 +2866,7 @@ type ListJobsResponse struct {
 	// applicable).
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListJobsResponse) UnmarshalJSON(b []byte) error {
@@ -2089,7 +2918,7 @@ type ListRunsRequest struct {
 	// filter by a time range.
 	StartTimeTo int64 `json:"-" url:"start_time_to,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRunsRequest) UnmarshalJSON(b []byte) error {
@@ -2114,7 +2943,7 @@ type ListRunsResponse struct {
 	// response if there are runs to list.
 	Runs []BaseRun `json:"runs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRunsResponse) UnmarshalJSON(b []byte) error {
@@ -2122,6 +2951,28 @@ func (s *ListRunsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListRunsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type LocalFileInfo struct {
+	// local file destination, e.g. `file:/my/local/file.sh`
+	Destination string `json:"destination"`
+}
+
+type LogAnalyticsInfo struct {
+	// <needs content added>
+	LogAnalyticsPrimaryKey string `json:"log_analytics_primary_key,omitempty"`
+	// <needs content added>
+	LogAnalyticsWorkspaceId string `json:"log_analytics_workspace_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LogAnalyticsInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LogAnalyticsInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2138,7 +2989,7 @@ type MavenLibrary struct {
 	// Central Repository and Spark Packages are searched.
 	Repo string `json:"repo,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MavenLibrary) UnmarshalJSON(b []byte) error {
@@ -2160,7 +3011,7 @@ type NotebookOutput struct {
 	// Whether or not the result was truncated.
 	Truncated bool `json:"truncated,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NotebookOutput) UnmarshalJSON(b []byte) error {
@@ -2211,7 +3062,7 @@ type NotebookTask struct {
 	// non-SQL cells, the run will fail.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NotebookTask) UnmarshalJSON(b []byte) error {
@@ -2232,7 +3083,7 @@ type OutputSchemaInfo struct {
 
 	SchemaName string `json:"schema_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *OutputSchemaInfo) UnmarshalJSON(b []byte) error {
@@ -2341,7 +3192,7 @@ type PipelineParams struct {
 	// If true, triggers a full refresh on the delta live table.
 	FullRefresh bool `json:"full_refresh,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineParams) UnmarshalJSON(b []byte) error {
@@ -2358,7 +3209,7 @@ type PipelineTask struct {
 	// The full name of the pipeline task to execute.
 	PipelineId string `json:"pipeline_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PipelineTask) UnmarshalJSON(b []byte) error {
@@ -2378,7 +3229,7 @@ type PythonPyPiLibrary struct {
 	// default pip index is used.
 	Repo string `json:"repo,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PythonPyPiLibrary) UnmarshalJSON(b []byte) error {
@@ -2417,7 +3268,7 @@ type QueueDetails struct {
 	// unstructured, and its exact format is subject to change.
 	Message string `json:"message,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueueDetails) UnmarshalJSON(b []byte) error {
@@ -2478,7 +3329,7 @@ type RCranLibrary struct {
 	// default CRAN repo is used.
 	Repo string `json:"repo,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RCranLibrary) UnmarshalJSON(b []byte) error {
@@ -2508,7 +3359,7 @@ type RepairHistoryItem struct {
 	// or a repair run.
 	Type RepairHistoryItemType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepairHistoryItem) UnmarshalJSON(b []byte) error {
@@ -2650,7 +3501,7 @@ type RepairRun struct {
 	// does not support custom parameters.
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepairRun) UnmarshalJSON(b []byte) error {
@@ -2667,7 +3518,7 @@ type RepairRunResponse struct {
 	// `latest_repair_id` field to ensure sequential repairs.
 	RepairId int64 `json:"repair_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepairRunResponse) UnmarshalJSON(b []byte) error {
@@ -2697,7 +3548,7 @@ type ResolvedConditionTaskValues struct {
 
 	Right string `json:"right,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResolvedConditionTaskValues) UnmarshalJSON(b []byte) error {
@@ -2911,7 +3762,7 @@ type Run struct {
 	// Additional details about what triggered the run
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Run) UnmarshalJSON(b []byte) error {
@@ -2944,7 +3795,7 @@ type RunConditionTask struct {
 	// a job state or parameter reference.
 	Right string `json:"right"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunConditionTask) UnmarshalJSON(b []byte) error {
@@ -2969,7 +3820,7 @@ type RunForEachTask struct {
 	// Configuration for the task that will be run for each element in the array
 	Task Task `json:"task"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunForEachTask) UnmarshalJSON(b []byte) error {
@@ -3035,7 +3886,7 @@ type RunJobOutput struct {
 	// The run id of the triggered job run
 	RunId int64 `json:"run_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunJobOutput) UnmarshalJSON(b []byte) error {
@@ -3355,7 +4206,7 @@ type RunNow struct {
 	// does not support custom parameters.
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunNow) UnmarshalJSON(b []byte) error {
@@ -3374,7 +4225,7 @@ type RunNowResponse struct {
 	// The globally unique ID of the newly triggered run.
 	RunId int64 `json:"run_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunNowResponse) UnmarshalJSON(b []byte) error {
@@ -3426,7 +4277,7 @@ type RunOutput struct {
 	// The output of a SQL task, if available.
 	SqlOutput *SqlOutput `json:"sql_output,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunOutput) UnmarshalJSON(b []byte) error {
@@ -3605,7 +4456,7 @@ type RunState struct {
 	// the scheduler because the run timed out.
 	UserCancelledOrTimedout bool `json:"user_cancelled_or_timedout,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunState) UnmarshalJSON(b []byte) error {
@@ -3703,6 +4554,8 @@ type RunTask struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *RunForEachTask `json:"for_each_task,omitempty"`
+	// Next field: 9
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks. If `git_source` is set,
@@ -3808,7 +4661,7 @@ type RunTask struct {
 	// Task webhooks respect the task notification settings.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RunTask) UnmarshalJSON(b []byte) error {
@@ -3857,6 +4710,86 @@ func (f *RunType) Set(v string) error {
 // Type always returns RunType to satisfy [pflag.Value] interface
 func (f *RunType) Type() string {
 	return "RunType"
+}
+
+// Determines the cluster's runtime engine, either standard or Photon.
+//
+// This field is not compatible with legacy `spark_version` values that contain
+// `-photon-`. Remove `-photon-` from the `spark_version` and set
+// `runtime_engine` to `PHOTON`.
+//
+// If left unspecified, the runtime engine defaults to standard unless the
+// spark_version contains -photon-, in which case Photon will be used.
+type RuntimeEngine string
+
+const RuntimeEngineNull RuntimeEngine = `NULL`
+
+const RuntimeEnginePhoton RuntimeEngine = `PHOTON`
+
+const RuntimeEngineStandard RuntimeEngine = `STANDARD`
+
+// String representation for [fmt.Print]
+func (f *RuntimeEngine) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RuntimeEngine) Set(v string) error {
+	switch v {
+	case `NULL`, `PHOTON`, `STANDARD`:
+		*f = RuntimeEngine(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "NULL", "PHOTON", "STANDARD"`, v)
+	}
+}
+
+// Type always returns RuntimeEngine to satisfy [pflag.Value] interface
+func (f *RuntimeEngine) Type() string {
+	return "RuntimeEngine"
+}
+
+type S3StorageInfo struct {
+	// (Optional) Set canned access control list for the logs, e.g.
+	// `bucket-owner-full-control`. If `canned_cal` is set, please make sure the
+	// cluster iam role has `s3:PutObjectAcl` permission on the destination
+	// bucket and prefix. The full list of possible canned acl can be found at
+	// http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl.
+	// Please also note that by default only the object owner gets full
+	// controls. If you are using cross account role for writing data, you may
+	// want to set `bucket-owner-full-control` to make bucket owner able to read
+	// the logs.
+	CannedAcl string `json:"canned_acl,omitempty"`
+	// S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be
+	// delivered using cluster iam role, please make sure you set cluster iam
+	// role and the role has write access to the destination. Please also note
+	// that you cannot use AWS keys to deliver logs.
+	Destination string `json:"destination"`
+	// (Optional) Flag to enable server side encryption, `false` by default.
+	EnableEncryption bool `json:"enable_encryption,omitempty"`
+	// (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It
+	// will be used only when encryption is enabled and the default type is
+	// `sse-s3`.
+	EncryptionType string `json:"encryption_type,omitempty"`
+	// S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or
+	// endpoint needs to be set. If both are set, endpoint will be used.
+	Endpoint string `json:"endpoint,omitempty"`
+	// (Optional) Kms key which will be used if encryption is enabled and
+	// encryption type is set to `sse-kms`.
+	KmsKey string `json:"kms_key,omitempty"`
+	// S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set.
+	// If both are set, endpoint will be used.
+	Region string `json:"region,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *S3StorageInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s S3StorageInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Optional location type of the SQL file. When set to `WORKSPACE`, the SQL file
@@ -3916,7 +4849,7 @@ type SparkJarTask struct {
 	// Deprecated. A value of `false` is no longer supported.
 	RunAsRepl bool `json:"run_as_repl,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SparkJarTask) UnmarshalJSON(b []byte) error {
@@ -3980,7 +4913,7 @@ type SqlAlertOutput struct {
 	// The canonical identifier of the SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlAlertOutput) UnmarshalJSON(b []byte) error {
@@ -4031,7 +4964,7 @@ type SqlDashboardOutput struct {
 	// Widgets executed in the run. Only SQL query based widgets are listed.
 	Widgets []SqlDashboardWidgetOutput `json:"widgets,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlDashboardOutput) UnmarshalJSON(b []byte) error {
@@ -4058,7 +4991,7 @@ type SqlDashboardWidgetOutput struct {
 	// The title of the SQL widget.
 	WidgetTitle string `json:"widget_title,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlDashboardWidgetOutput) UnmarshalJSON(b []byte) error {
@@ -4115,7 +5048,7 @@ type SqlOutputError struct {
 	// The error message when execution fails.
 	Message string `json:"message,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlOutputError) UnmarshalJSON(b []byte) error {
@@ -4138,7 +5071,7 @@ type SqlQueryOutput struct {
 	// The canonical identifier of the SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlQueryOutput) UnmarshalJSON(b []byte) error {
@@ -4153,7 +5086,7 @@ type SqlStatementOutput struct {
 	// A key that can be used to look up query details.
 	LookupKey string `json:"lookup_key,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlStatementOutput) UnmarshalJSON(b []byte) error {
@@ -4192,7 +5125,7 @@ type SqlTaskAlert struct {
 	// If specified, alert notifications are sent to subscribers.
 	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlTaskAlert) UnmarshalJSON(b []byte) error {
@@ -4214,7 +5147,7 @@ type SqlTaskDashboard struct {
 	// If specified, dashboard snapshots are sent to subscriptions.
 	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlTaskDashboard) UnmarshalJSON(b []byte) error {
@@ -4256,7 +5189,7 @@ type SqlTaskSubscription struct {
 	// destination_id and user_name for subscription notifications.
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SqlTaskSubscription) UnmarshalJSON(b []byte) error {
@@ -4328,7 +5261,7 @@ type SubmitRun struct {
 	// completes.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SubmitRun) UnmarshalJSON(b []byte) error {
@@ -4344,7 +5277,7 @@ type SubmitRunResponse struct {
 	// The canonical identifier for the newly submitted run.
 	RunId int64 `json:"run_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SubmitRunResponse) UnmarshalJSON(b []byte) error {
@@ -4392,6 +5325,8 @@ type SubmitTask struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
+	// Next field: 9
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// An optional list of libraries to be installed on the cluster. The default
@@ -4459,7 +5394,7 @@ type SubmitTask struct {
 	// Task webhooks respect the task notification settings.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SubmitTask) UnmarshalJSON(b []byte) error {
@@ -4486,7 +5421,7 @@ type TableUpdateTriggerConfiguration struct {
 	// seconds.
 	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TableUpdateTriggerConfiguration) UnmarshalJSON(b []byte) error {
@@ -4537,6 +5472,8 @@ type Task struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
+	// Next field: 9
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// If job_cluster_key, this task is executed reusing the cluster specified
@@ -4556,7 +5493,7 @@ type Task struct {
 	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
-	NewCluster *ClusterSpec `json:"new_cluster,omitempty"`
+	NewCluster *JobsClusterSpec `json:"new_cluster,omitempty"`
 	// The task runs a notebook when the `notebook_task` field is present.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
@@ -4624,7 +5561,7 @@ type Task struct {
 	// notifications.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Task) UnmarshalJSON(b []byte) error {
@@ -4642,7 +5579,7 @@ type TaskDependency struct {
 	// The name of the task this task depends on.
 	TaskKey string `json:"task_key"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TaskDependency) UnmarshalJSON(b []byte) error {
@@ -4688,7 +5625,7 @@ type TaskEmailNotifications struct {
 	// notifications are not sent.
 	OnSuccess []string `json:"on_success,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TaskEmailNotifications) UnmarshalJSON(b []byte) error {
@@ -4711,7 +5648,7 @@ type TaskNotificationSettings struct {
 	// `on_failure` if the run is skipped.
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TaskNotificationSettings) UnmarshalJSON(b []byte) error {
@@ -4940,7 +5877,7 @@ type TerminationDetails struct {
 	// [status page]: https://status.databricks.com/
 	Type TerminationTypeType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TerminationDetails) UnmarshalJSON(b []byte) error {
@@ -5003,7 +5940,7 @@ type TriggerInfo struct {
 	// The run id of the Run Job task run
 	RunId int64 `json:"run_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TriggerInfo) UnmarshalJSON(b []byte) error {
@@ -5116,7 +6053,7 @@ type ViewItem struct {
 	// Type of the view item.
 	Type ViewType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ViewItem) UnmarshalJSON(b []byte) error {
@@ -5191,6 +6128,12 @@ func (f *ViewsToExport) Type() string {
 	return "ViewsToExport"
 }
 
+type VolumesStorageInfo struct {
+	// Unity Catalog volumes file destination, e.g.
+	// `/Volumes/catalog/schema/volume/dir/file`
+	Destination string `json:"destination"`
+}
+
 type Webhook struct {
 	Id string `json:"id"`
 }
@@ -5220,4 +6163,15 @@ type WebhookNotifications struct {
 	// completes successfully. A maximum of 3 destinations can be specified for
 	// the `on_success` property.
 	OnSuccess []Webhook `json:"on_success,omitempty"`
+}
+
+type WorkloadType struct {
+	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
+	Clients ClientsTypes `json:"clients"`
+}
+
+type WorkspaceStorageInfo struct {
+	// workspace files destination, e.g.
+	// `/Users/user1@databricks.com/my-init.sh`
+	Destination string `json:"destination"`
 }

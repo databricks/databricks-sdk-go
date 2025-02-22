@@ -15,6 +15,8 @@ type App struct {
 
 	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
 
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+
 	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
 	// The creation time of the app. Formatted timestamp in ISO 6801.
 	CreateTime string `json:"create_time,omitempty"`
@@ -26,6 +28,8 @@ type App struct {
 	DefaultSourceCodePath string `json:"default_source_code_path,omitempty"`
 	// The description of the app.
 	Description string `json:"description,omitempty"`
+
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The unique identifier of the app.
 	Id string `json:"id,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
@@ -49,7 +53,7 @@ type App struct {
 	// The URL of the app once it is deployed.
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *App) UnmarshalJSON(b []byte) error {
@@ -70,7 +74,7 @@ type AppAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AppAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -93,7 +97,7 @@ type AppAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AppAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -128,7 +132,7 @@ type AppDeployment struct {
 	// The update time of the deployment. Formatted timestamp in ISO 6801.
 	UpdateTime string `json:"update_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AppDeployment) UnmarshalJSON(b []byte) error {
@@ -144,7 +148,7 @@ type AppDeploymentArtifacts struct {
 	// the deployed app.
 	SourceCodePath string `json:"source_code_path,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AppDeploymentArtifacts) UnmarshalJSON(b []byte) error {
@@ -219,7 +223,7 @@ type AppDeploymentStatus struct {
 	// State of the deployment.
 	State AppDeploymentState `json:"state,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AppDeploymentStatus) UnmarshalJSON(b []byte) error {
@@ -237,7 +241,7 @@ type AppPermission struct {
 	// Permission level
 	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AppPermission) UnmarshalJSON(b []byte) error {
@@ -283,7 +287,7 @@ type AppPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AppPermissions) UnmarshalJSON(b []byte) error {
@@ -299,7 +303,7 @@ type AppPermissionsDescription struct {
 	// Permission level
 	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AppPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -330,7 +334,7 @@ type AppResource struct {
 
 	SqlWarehouse *AppResourceSqlWarehouse `json:"sql_warehouse,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AppResource) UnmarshalJSON(b []byte) error {
@@ -532,7 +536,7 @@ type ApplicationStatus struct {
 	// State of the application.
 	State ApplicationState `json:"state,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ApplicationStatus) UnmarshalJSON(b []byte) error {
@@ -586,7 +590,7 @@ type ComputeStatus struct {
 	// State of the app compute.
 	State ComputeState `json:"state,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ComputeStatus) UnmarshalJSON(b []byte) error {
@@ -610,7 +614,7 @@ type CreateAppRequest struct {
 	// If true, the app will not be started after creation.
 	NoCompute bool `json:"-" url:"no_compute,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateAppRequest) UnmarshalJSON(b []byte) error {
@@ -668,7 +672,7 @@ type ListAppDeploymentsRequest struct {
 	// absent.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAppDeploymentsRequest) UnmarshalJSON(b []byte) error {
@@ -685,7 +689,7 @@ type ListAppDeploymentsResponse struct {
 	// Pagination token to request the next page of apps.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAppDeploymentsResponse) UnmarshalJSON(b []byte) error {
@@ -704,7 +708,7 @@ type ListAppsRequest struct {
 	// absent.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAppsRequest) UnmarshalJSON(b []byte) error {
@@ -720,7 +724,7 @@ type ListAppsResponse struct {
 	// Pagination token to request the next page of apps.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListAppsResponse) UnmarshalJSON(b []byte) error {

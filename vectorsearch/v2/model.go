@@ -12,7 +12,7 @@ type ColumnInfo struct {
 	// Name of the column.
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
@@ -64,7 +64,7 @@ type DeleteDataResult struct {
 	// Count of successfully processed rows.
 	SuccessRowCount int64 `json:"success_row_count,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteDataResult) UnmarshalJSON(b []byte) error {
@@ -167,7 +167,7 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	// The name of the source table.
 	SourceTable string `json:"source_table,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeltaSyncVectorIndexSpecRequest) UnmarshalJSON(b []byte) error {
@@ -200,7 +200,7 @@ type DeltaSyncVectorIndexSpecResponse struct {
 	// The name of the source table.
 	SourceTable string `json:"source_table,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeltaSyncVectorIndexSpecResponse) UnmarshalJSON(b []byte) error {
@@ -224,7 +224,7 @@ type DirectAccessVectorIndexSpec struct {
 	// Supported types for vector column: `array<float>`, `array<double>`,`.
 	SchemaJson string `json:"schema_json,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DirectAccessVectorIndexSpec) UnmarshalJSON(b []byte) error {
@@ -241,7 +241,7 @@ type EmbeddingSourceColumn struct {
 	// Name of the column
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EmbeddingSourceColumn) UnmarshalJSON(b []byte) error {
@@ -258,7 +258,7 @@ type EmbeddingVectorColumn struct {
 	// Name of the column
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EmbeddingVectorColumn) UnmarshalJSON(b []byte) error {
@@ -289,7 +289,7 @@ type EndpointInfo struct {
 	// Number of indexes on the endpoint
 	NumIndexes int `json:"num_indexes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EndpointInfo) UnmarshalJSON(b []byte) error {
@@ -307,7 +307,7 @@ type EndpointStatus struct {
 	// Current state of the endpoint
 	State EndpointStatusState `json:"state,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EndpointStatus) UnmarshalJSON(b []byte) error {
@@ -393,7 +393,7 @@ type ListEndpointResponse struct {
 	// there are no more results to show.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListEndpointResponse) UnmarshalJSON(b []byte) error {
@@ -409,7 +409,7 @@ type ListEndpointsRequest struct {
 	// Token for pagination
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListEndpointsRequest) UnmarshalJSON(b []byte) error {
@@ -427,7 +427,7 @@ type ListIndexesRequest struct {
 	// Token for pagination
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListIndexesRequest) UnmarshalJSON(b []byte) error {
@@ -449,7 +449,7 @@ type ListVectorIndexesResponse struct {
 
 	VectorIndexes []MiniVectorIndex `json:"vector_indexes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListVectorIndexesResponse) UnmarshalJSON(b []byte) error {
@@ -467,7 +467,7 @@ type MapStringValueEntry struct {
 	// Column value, nullable.
 	Value *Value `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MapStringValueEntry) UnmarshalJSON(b []byte) error {
@@ -496,7 +496,7 @@ type MiniVectorIndex struct {
 	// Primary key of the index
 	PrimaryKey string `json:"primary_key,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MiniVectorIndex) UnmarshalJSON(b []byte) error {
@@ -558,7 +558,7 @@ type QueryVectorIndexNextPageRequest struct {
 	// `QueryVectorIndexNextPage` API.
 	PageToken string `json:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryVectorIndexNextPageRequest) UnmarshalJSON(b []byte) error {
@@ -572,6 +572,8 @@ func (s QueryVectorIndexNextPageRequest) MarshalJSON() ([]byte, error) {
 type QueryVectorIndexRequest struct {
 	// List of column names to include in the response.
 	Columns []string `json:"columns"`
+	// Column names used to retrieve data to send to the reranker.
+	ColumnsToRerank []string `json:"columns_to_rerank,omitempty"`
 	// JSON string representing query filters.
 	//
 	// Example filters: - `{"id <": 5}`: Filter for id less than 5. - `{"id >":
@@ -593,7 +595,7 @@ type QueryVectorIndexRequest struct {
 	// Threshold for the approximate nearest neighbor search. Defaults to 0.0.
 	ScoreThreshold float64 `json:"score_threshold,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryVectorIndexRequest) UnmarshalJSON(b []byte) error {
@@ -614,7 +616,7 @@ type QueryVectorIndexResponse struct {
 	// Data returned in the query result.
 	Result *ResultData `json:"result,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryVectorIndexResponse) UnmarshalJSON(b []byte) error {
@@ -632,7 +634,7 @@ type ResultData struct {
 	// Number of rows in the result set.
 	RowCount int `json:"row_count,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResultData) UnmarshalJSON(b []byte) error {
@@ -650,7 +652,7 @@ type ResultManifest struct {
 	// Information about each column in the result set.
 	Columns []ColumnInfo `json:"columns,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResultManifest) UnmarshalJSON(b []byte) error {
@@ -670,7 +672,7 @@ type ScanVectorIndexRequest struct {
 	// Number of results to return. Defaults to 10.
 	NumResults int `json:"num_results,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ScanVectorIndexRequest) UnmarshalJSON(b []byte) error {
@@ -688,7 +690,7 @@ type ScanVectorIndexResponse struct {
 	// Primary key of the last entry.
 	LastPrimaryKey string `json:"last_primary_key,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ScanVectorIndexResponse) UnmarshalJSON(b []byte) error {
@@ -720,7 +722,7 @@ type UpsertDataResult struct {
 	// Count of successfully processed rows.
 	SuccessRowCount int64 `json:"success_row_count,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpsertDataResult) UnmarshalJSON(b []byte) error {
@@ -791,7 +793,7 @@ type Value struct {
 
 	StructValue *Struct `json:"struct_value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Value) UnmarshalJSON(b []byte) error {
@@ -826,7 +828,7 @@ type VectorIndex struct {
 
 	Status *VectorIndexStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *VectorIndex) UnmarshalJSON(b []byte) error {
@@ -847,7 +849,7 @@ type VectorIndexStatus struct {
 	// Whether the index is ready for search
 	Ready bool `json:"ready,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *VectorIndexStatus) UnmarshalJSON(b []byte) error {

@@ -22,7 +22,7 @@ type BaseChunkInfo struct {
 	// The starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *BaseChunkInfo) UnmarshalJSON(b []byte) error {
@@ -78,7 +78,7 @@ type ColumnInfo struct {
 	// The full SQL type specification.
 	TypeText string `json:"type_text,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
@@ -223,7 +223,7 @@ type Dashboard struct {
 	// The warehouse ID used to run the dashboard.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Dashboard) UnmarshalJSON(b []byte) error {
@@ -259,63 +259,6 @@ func (f *DashboardView) Type() string {
 	return "DashboardView"
 }
 
-type DataType string
-
-const DataTypeDataTypeArray DataType = `DATA_TYPE_ARRAY`
-
-const DataTypeDataTypeBigInt DataType = `DATA_TYPE_BIG_INT`
-
-const DataTypeDataTypeBinary DataType = `DATA_TYPE_BINARY`
-
-const DataTypeDataTypeBoolean DataType = `DATA_TYPE_BOOLEAN`
-
-const DataTypeDataTypeDate DataType = `DATA_TYPE_DATE`
-
-const DataTypeDataTypeDecimal DataType = `DATA_TYPE_DECIMAL`
-
-const DataTypeDataTypeDouble DataType = `DATA_TYPE_DOUBLE`
-
-const DataTypeDataTypeFloat DataType = `DATA_TYPE_FLOAT`
-
-const DataTypeDataTypeInt DataType = `DATA_TYPE_INT`
-
-const DataTypeDataTypeInterval DataType = `DATA_TYPE_INTERVAL`
-
-const DataTypeDataTypeMap DataType = `DATA_TYPE_MAP`
-
-const DataTypeDataTypeSmallInt DataType = `DATA_TYPE_SMALL_INT`
-
-const DataTypeDataTypeString DataType = `DATA_TYPE_STRING`
-
-const DataTypeDataTypeStruct DataType = `DATA_TYPE_STRUCT`
-
-const DataTypeDataTypeTimestamp DataType = `DATA_TYPE_TIMESTAMP`
-
-const DataTypeDataTypeTinyInt DataType = `DATA_TYPE_TINY_INT`
-
-const DataTypeDataTypeVoid DataType = `DATA_TYPE_VOID`
-
-// String representation for [fmt.Print]
-func (f *DataType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *DataType) Set(v string) error {
-	switch v {
-	case `DATA_TYPE_ARRAY`, `DATA_TYPE_BIG_INT`, `DATA_TYPE_BINARY`, `DATA_TYPE_BOOLEAN`, `DATA_TYPE_DATE`, `DATA_TYPE_DECIMAL`, `DATA_TYPE_DOUBLE`, `DATA_TYPE_FLOAT`, `DATA_TYPE_INT`, `DATA_TYPE_INTERVAL`, `DATA_TYPE_MAP`, `DATA_TYPE_SMALL_INT`, `DATA_TYPE_STRING`, `DATA_TYPE_STRUCT`, `DATA_TYPE_TIMESTAMP`, `DATA_TYPE_TINY_INT`, `DATA_TYPE_VOID`:
-		*f = DataType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "DATA_TYPE_ARRAY", "DATA_TYPE_BIG_INT", "DATA_TYPE_BINARY", "DATA_TYPE_BOOLEAN", "DATA_TYPE_DATE", "DATA_TYPE_DECIMAL", "DATA_TYPE_DOUBLE", "DATA_TYPE_FLOAT", "DATA_TYPE_INT", "DATA_TYPE_INTERVAL", "DATA_TYPE_MAP", "DATA_TYPE_SMALL_INT", "DATA_TYPE_STRING", "DATA_TYPE_STRUCT", "DATA_TYPE_TIMESTAMP", "DATA_TYPE_TINY_INT", "DATA_TYPE_VOID"`, v)
-	}
-}
-
-// Type always returns DataType to satisfy [pflag.Value] interface
-func (f *DataType) Type() string {
-	return "DataType"
-}
-
 // Delete dashboard schedule
 type DeleteScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
@@ -326,7 +269,7 @@ type DeleteScheduleRequest struct {
 	// UUID identifying the schedule.
 	ScheduleId string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteScheduleRequest) UnmarshalJSON(b []byte) error {
@@ -352,7 +295,7 @@ type DeleteSubscriptionRequest struct {
 	// UUID identifying the subscription.
 	SubscriptionId string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DeleteSubscriptionRequest) UnmarshalJSON(b []byte) error {
@@ -386,7 +329,7 @@ type ExecutePublishedDashboardQueryRequest struct {
 	// processing the published dashboard queries
 	OverrideWarehouseId string `json:"override_warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExecutePublishedDashboardQueryRequest) UnmarshalJSON(b []byte) error {
@@ -432,7 +375,7 @@ type ExternalLink struct {
 	// The starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExternalLink) UnmarshalJSON(b []byte) error {
@@ -474,15 +417,30 @@ func (f *Format) Type() string {
 
 // Genie AI Response
 type GenieAttachment struct {
-	Query *QueryAttachment `json:"query,omitempty"`
-
+	// Attachment ID
+	AttachmentId string `json:"attachment_id,omitempty"`
+	// Query Attachment if Genie responds with a SQL query
+	Query *GenieQueryAttachment `json:"query,omitempty"`
+	// Text Attachment if Genie responds with text
 	Text *TextAttachment `json:"text,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieAttachment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieAttachment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GenieConversation struct {
+	// Conversation ID
+	ConversationId string `json:"conversation_id"`
 	// Timestamp when the message was created
 	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
-	// Conversation ID
+	// Conversation ID. Legacy identifier, use conversation_id instead
 	Id string `json:"id"`
 	// Timestamp when the message was last updated
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
@@ -493,7 +451,7 @@ type GenieConversation struct {
 	// ID of the user who created the conversation
 	UserId int `json:"user_id"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GenieConversation) UnmarshalJSON(b []byte) error {
@@ -535,7 +493,7 @@ type GenieGetConversationMessageRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
-// Get conversation message SQL query result
+// [Deprecated] Get conversation message SQL query result
 type GenieGetMessageQueryResultRequest struct {
 	// Conversation ID
 	ConversationId string `json:"-" url:"-"`
@@ -551,7 +509,7 @@ type GenieGetMessageQueryResultResponse struct {
 	StatementResponse *StatementResponse `json:"statement_response,omitempty"`
 }
 
-// Get conversation message SQL query result by attachment id
+// Get conversation message SQL query result
 type GenieGetQueryResultByAttachmentRequest struct {
 	// Attachment ID
 	AttachmentId string `json:"-" url:"-"`
@@ -564,7 +522,7 @@ type GenieGetQueryResultByAttachmentRequest struct {
 }
 
 type GenieMessage struct {
-	// AI produced response to the message
+	// AI generated response to the message
 	Attachments []GenieAttachment `json:"attachments,omitempty"`
 	// User message content
 	Content string `json:"content"`
@@ -574,10 +532,12 @@ type GenieMessage struct {
 	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
 	// Error message if AI failed to respond to the message
 	Error *MessageError `json:"error,omitempty"`
-	// Message ID
+	// Message ID. Legacy identifier, use message_id instead
 	Id string `json:"id"`
 	// Timestamp when the message was last updated
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+	// Message ID
+	MessageId string `json:"message_id"`
 	// The result of SQL query if the message has a query attachment
 	QueryResult *Result `json:"query_result,omitempty"`
 	// Genie space ID
@@ -589,10 +549,7 @@ type GenieMessage struct {
 	// for warehouse before the SQL query can start executing. *
 	// `EXECUTING_QUERY`: Executing AI provided SQL query. Get the SQL query
 	// result by calling
-	// [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
-	// **Important: The message status will stay in the `EXECUTING_QUERY` until
-	// a client calls
-	// [getMessageQueryResult](:method:genie/getMessageQueryResult)**. *
+	// [getMessageQueryResult](:method:genie/getMessageQueryResult) API. *
 	// `FAILED`: Generating a response or the executing the query failed. Please
 	// see `error` field. * `COMPLETED`: Message processing is completed.
 	// Results are in the `attachments` field. Get the SQL query result by
@@ -604,7 +561,7 @@ type GenieMessage struct {
 	// ID of the user who created the message
 	UserId int64 `json:"user_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GenieMessage) UnmarshalJSON(b []byte) error {
@@ -612,6 +569,29 @@ func (s *GenieMessage) UnmarshalJSON(b []byte) error {
 }
 
 func (s GenieMessage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieQueryAttachment struct {
+	// Description of the query
+	Description string `json:"description,omitempty"`
+
+	Id string `json:"id,omitempty"`
+	// Time when the user updated the query last
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+	// AI generated SQL query
+	Query string `json:"query,omitempty"`
+	// Name of the query
+	Title string `json:"title,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieQueryAttachment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieQueryAttachment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -712,7 +692,7 @@ type ListDashboardsRequest struct {
 	// `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
 	View DashboardView `json:"-" url:"view,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
@@ -729,7 +709,7 @@ type ListDashboardsResponse struct {
 	// this field is omitted, there are no subsequent dashboards.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListDashboardsResponse) UnmarshalJSON(b []byte) error {
@@ -750,7 +730,7 @@ type ListSchedulesRequest struct {
 	// retrieve the subsequent page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSchedulesRequest) UnmarshalJSON(b []byte) error {
@@ -769,7 +749,7 @@ type ListSchedulesResponse struct {
 
 	Schedules []Schedule `json:"schedules,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSchedulesResponse) UnmarshalJSON(b []byte) error {
@@ -792,7 +772,7 @@ type ListSubscriptionsRequest struct {
 	// UUID identifying the schedule which the subscriptions belongs.
 	ScheduleId string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSubscriptionsRequest) UnmarshalJSON(b []byte) error {
@@ -811,7 +791,7 @@ type ListSubscriptionsResponse struct {
 
 	Subscriptions []Subscription `json:"subscriptions,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSubscriptionsResponse) UnmarshalJSON(b []byte) error {
@@ -827,7 +807,7 @@ type MessageError struct {
 
 	Type MessageErrorType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MessageError) UnmarshalJSON(b []byte) error {
@@ -861,6 +841,8 @@ const MessageErrorTypeFunctionsNotAvailableException MessageErrorType = `FUNCTIO
 const MessageErrorTypeFunctionArgumentsInvalidException MessageErrorType = `FUNCTION_ARGUMENTS_INVALID_EXCEPTION`
 
 const MessageErrorTypeFunctionArgumentsInvalidJsonException MessageErrorType = `FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION`
+
+const MessageErrorTypeFunctionArgumentsInvalidTypeException MessageErrorType = `FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION`
 
 const MessageErrorTypeFunctionCallMissingParameterException MessageErrorType = `FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION`
 
@@ -930,11 +912,11 @@ func (f *MessageErrorType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MessageErrorType) Set(v string) error {
 	switch v {
-	case `BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION`, `CHAT_COMPLETION_CLIENT_EXCEPTION`, `CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION`, `CHAT_COMPLETION_NETWORK_EXCEPTION`, `CONTENT_FILTER_EXCEPTION`, `CONTEXT_EXCEEDED_EXCEPTION`, `COULD_NOT_GET_UC_SCHEMA_EXCEPTION`, `DEPLOYMENT_NOT_FOUND_EXCEPTION`, `FUNCTIONS_NOT_AVAILABLE_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION`, `FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION`, `GENERIC_CHAT_COMPLETION_EXCEPTION`, `GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION`, `GENERIC_SQL_EXEC_API_CALL_EXCEPTION`, `ILLEGAL_PARAMETER_DEFINITION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION`, `INVALID_CHAT_COMPLETION_JSON_EXCEPTION`, `INVALID_COMPLETION_REQUEST_EXCEPTION`, `INVALID_FUNCTION_CALL_EXCEPTION`, `INVALID_TABLE_IDENTIFIER_EXCEPTION`, `LOCAL_CONTEXT_EXCEEDED_EXCEPTION`, `MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION`, `NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE`, `NO_QUERY_TO_VISUALIZE_EXCEPTION`, `NO_TABLES_TO_QUERY_EXCEPTION`, `RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION`, `RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION`, `REPLY_PROCESS_TIMEOUT_EXCEPTION`, `RETRYABLE_PROCESSING_EXCEPTION`, `SQL_EXECUTION_EXCEPTION`, `STOP_PROCESS_DUE_TO_AUTO_REGENERATE`, `TABLES_MISSING_EXCEPTION`, `TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION`, `TOO_MANY_TABLES_EXCEPTION`, `UNEXPECTED_REPLY_PROCESS_EXCEPTION`, `UNKNOWN_AI_MODEL`, `WAREHOUSE_ACCESS_MISSING_EXCEPTION`, `WAREHOUSE_NOT_FOUND_EXCEPTION`:
+	case `BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION`, `CHAT_COMPLETION_CLIENT_EXCEPTION`, `CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION`, `CHAT_COMPLETION_NETWORK_EXCEPTION`, `CONTENT_FILTER_EXCEPTION`, `CONTEXT_EXCEEDED_EXCEPTION`, `COULD_NOT_GET_UC_SCHEMA_EXCEPTION`, `DEPLOYMENT_NOT_FOUND_EXCEPTION`, `FUNCTIONS_NOT_AVAILABLE_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION`, `FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION`, `GENERIC_CHAT_COMPLETION_EXCEPTION`, `GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION`, `GENERIC_SQL_EXEC_API_CALL_EXCEPTION`, `ILLEGAL_PARAMETER_DEFINITION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION`, `INVALID_CHAT_COMPLETION_JSON_EXCEPTION`, `INVALID_COMPLETION_REQUEST_EXCEPTION`, `INVALID_FUNCTION_CALL_EXCEPTION`, `INVALID_TABLE_IDENTIFIER_EXCEPTION`, `LOCAL_CONTEXT_EXCEEDED_EXCEPTION`, `MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION`, `NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE`, `NO_QUERY_TO_VISUALIZE_EXCEPTION`, `NO_TABLES_TO_QUERY_EXCEPTION`, `RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION`, `RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION`, `REPLY_PROCESS_TIMEOUT_EXCEPTION`, `RETRYABLE_PROCESSING_EXCEPTION`, `SQL_EXECUTION_EXCEPTION`, `STOP_PROCESS_DUE_TO_AUTO_REGENERATE`, `TABLES_MISSING_EXCEPTION`, `TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION`, `TOO_MANY_TABLES_EXCEPTION`, `UNEXPECTED_REPLY_PROCESS_EXCEPTION`, `UNKNOWN_AI_MODEL`, `WAREHOUSE_ACCESS_MISSING_EXCEPTION`, `WAREHOUSE_NOT_FOUND_EXCEPTION`:
 		*f = MessageErrorType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION", "CHAT_COMPLETION_CLIENT_EXCEPTION", "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION", "CHAT_COMPLETION_NETWORK_EXCEPTION", "CONTENT_FILTER_EXCEPTION", "CONTEXT_EXCEEDED_EXCEPTION", "COULD_NOT_GET_UC_SCHEMA_EXCEPTION", "DEPLOYMENT_NOT_FOUND_EXCEPTION", "FUNCTIONS_NOT_AVAILABLE_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION", "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION", "GENERIC_CHAT_COMPLETION_EXCEPTION", "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION", "GENERIC_SQL_EXEC_API_CALL_EXCEPTION", "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION", "INVALID_CHAT_COMPLETION_JSON_EXCEPTION", "INVALID_COMPLETION_REQUEST_EXCEPTION", "INVALID_FUNCTION_CALL_EXCEPTION", "INVALID_TABLE_IDENTIFIER_EXCEPTION", "LOCAL_CONTEXT_EXCEEDED_EXCEPTION", "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION", "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE", "NO_QUERY_TO_VISUALIZE_EXCEPTION", "NO_TABLES_TO_QUERY_EXCEPTION", "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION", "RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION", "REPLY_PROCESS_TIMEOUT_EXCEPTION", "RETRYABLE_PROCESSING_EXCEPTION", "SQL_EXECUTION_EXCEPTION", "STOP_PROCESS_DUE_TO_AUTO_REGENERATE", "TABLES_MISSING_EXCEPTION", "TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION", "TOO_MANY_TABLES_EXCEPTION", "UNEXPECTED_REPLY_PROCESS_EXCEPTION", "UNKNOWN_AI_MODEL", "WAREHOUSE_ACCESS_MISSING_EXCEPTION", "WAREHOUSE_NOT_FOUND_EXCEPTION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION", "CHAT_COMPLETION_CLIENT_EXCEPTION", "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION", "CHAT_COMPLETION_NETWORK_EXCEPTION", "CONTENT_FILTER_EXCEPTION", "CONTEXT_EXCEEDED_EXCEPTION", "COULD_NOT_GET_UC_SCHEMA_EXCEPTION", "DEPLOYMENT_NOT_FOUND_EXCEPTION", "FUNCTIONS_NOT_AVAILABLE_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION", "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION", "GENERIC_CHAT_COMPLETION_EXCEPTION", "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION", "GENERIC_SQL_EXEC_API_CALL_EXCEPTION", "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION", "INVALID_CHAT_COMPLETION_JSON_EXCEPTION", "INVALID_COMPLETION_REQUEST_EXCEPTION", "INVALID_FUNCTION_CALL_EXCEPTION", "INVALID_TABLE_IDENTIFIER_EXCEPTION", "LOCAL_CONTEXT_EXCEEDED_EXCEPTION", "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION", "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE", "NO_QUERY_TO_VISUALIZE_EXCEPTION", "NO_TABLES_TO_QUERY_EXCEPTION", "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION", "RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION", "REPLY_PROCESS_TIMEOUT_EXCEPTION", "RETRYABLE_PROCESSING_EXCEPTION", "SQL_EXECUTION_EXCEPTION", "STOP_PROCESS_DUE_TO_AUTO_REGENERATE", "TABLES_MISSING_EXCEPTION", "TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION", "TOO_MANY_TABLES_EXCEPTION", "UNEXPECTED_REPLY_PROCESS_EXCEPTION", "UNKNOWN_AI_MODEL", "WAREHOUSE_ACCESS_MISSING_EXCEPTION", "WAREHOUSE_NOT_FOUND_EXCEPTION"`, v)
 	}
 }
 
@@ -949,12 +931,10 @@ func (f *MessageErrorType) Type() string {
 // respond to the users question. * `PENDING_WAREHOUSE`: Waiting for warehouse
 // before the SQL query can start executing. * `EXECUTING_QUERY`: Executing AI
 // provided SQL query. Get the SQL query result by calling
-// [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
-// **Important: The message status will stay in the `EXECUTING_QUERY` until a
-// client calls [getMessageQueryResult](:method:genie/getMessageQueryResult)**.
-// * `FAILED`: Generating a response or the executing the query failed. Please
-// see `error` field. * `COMPLETED`: Message processing is completed. Results
-// are in the `attachments` field. Get the SQL query result by calling
+// [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`:
+// Generating a response or the executing the query failed. Please see `error`
+// field. * `COMPLETED`: Message processing is completed. Results are in the
+// `attachments` field. Get the SQL query result by calling
 // [getMessageQueryResult](:method:genie/getMessageQueryResult) API. *
 // `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result
 // is not available anymore. The user needs to execute the query again. *
@@ -974,8 +954,6 @@ const MessageStatusCompleted MessageStatus = `COMPLETED`
 
 // Executing AI provided SQL query. Get the SQL query result by calling
 // [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
-// **Important: The message status will stay in the `EXECUTING_QUERY` until a
-// client calls [getMessageQueryResult](:method:genie/getMessageQueryResult)**.
 const MessageStatusExecutingQuery MessageStatus = `EXECUTING_QUERY`
 
 // Generating a response or the executing the query failed. Please see `error`
@@ -1032,7 +1010,7 @@ type MigrateDashboardRequest struct {
 	// dashboard.
 	UpdateParameterSyntax bool `json:"update_parameter_syntax,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *MigrateDashboardRequest) UnmarshalJSON(b []byte) error {
@@ -1078,7 +1056,7 @@ type PublishRequest struct {
 	// was set in the draft.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PublishRequest) UnmarshalJSON(b []byte) error {
@@ -1099,7 +1077,7 @@ type PublishedDashboard struct {
 	// The warehouse ID used to run the published dashboard.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PublishedDashboard) UnmarshalJSON(b []byte) error {
@@ -1107,38 +1085,6 @@ func (s *PublishedDashboard) UnmarshalJSON(b []byte) error {
 }
 
 func (s PublishedDashboard) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type QueryAttachment struct {
-	CachedQuerySchema *QuerySchema `json:"cached_query_schema,omitempty"`
-	// Description of the query
-	Description string `json:"description,omitempty"`
-
-	Id string `json:"id,omitempty"`
-	// If the query was created on an instruction (trusted asset) we link to the
-	// id
-	InstructionId string `json:"instruction_id,omitempty"`
-	// Always store the title next to the id in case the original instruction
-	// title changes or the instruction is deleted.
-	InstructionTitle string `json:"instruction_title,omitempty"`
-	// Time when the user updated the query last
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-	// AI generated SQL query
-	Query string `json:"query,omitempty"`
-
-	StatementId string `json:"statement_id,omitempty"`
-	// Name of the query
-	Title string `json:"title,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *QueryAttachment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s QueryAttachment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1159,7 +1105,7 @@ type QueryResponseStatus struct {
 
 	Success *SuccessStatus `json:"success,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *QueryResponseStatus) UnmarshalJSON(b []byte) error {
@@ -1168,34 +1114,6 @@ func (s *QueryResponseStatus) UnmarshalJSON(b []byte) error {
 
 func (s QueryResponseStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type QuerySchema struct {
-	Columns []QuerySchemaColumn `json:"columns,omitempty"`
-	// Used to determine if the stored query schema is compatible with the
-	// latest run. The service should always clear the schema when the query is
-	// re-executed.
-	StatementId string `json:"statement_id,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *QuerySchema) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s QuerySchema) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type QuerySchemaColumn struct {
-	// Populated from
-	// https://docs.databricks.com/sql/language-manual/sql-ref-datatypes.html
-	DataType DataType `json:"data_type"`
-
-	Name string `json:"name"`
-	// Corresponds to type desc
-	TypeText string `json:"type_text"`
 }
 
 type Result struct {
@@ -1208,7 +1126,7 @@ type Result struct {
 	// full result data.
 	StatementId string `json:"statement_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Result) UnmarshalJSON(b []byte) error {
@@ -1245,7 +1163,7 @@ type ResultData struct {
 	// The starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResultData) UnmarshalJSON(b []byte) error {
@@ -1275,7 +1193,7 @@ type ResultManifest struct {
 	// `byte_limit`.
 	Truncated bool `json:"truncated,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResultManifest) UnmarshalJSON(b []byte) error {
@@ -1292,7 +1210,7 @@ type ResultSchema struct {
 
 	Columns []ColumnInfo `json:"columns,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ResultSchema) UnmarshalJSON(b []byte) error {
@@ -1326,7 +1244,7 @@ type Schedule struct {
 	// The warehouse id to run the dashboard with for the schedule.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Schedule) UnmarshalJSON(b []byte) error {
@@ -1369,7 +1287,7 @@ type ServiceError struct {
 	// A brief summary of the error condition.
 	Message string `json:"message,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ServiceError) UnmarshalJSON(b []byte) error {
@@ -1443,7 +1361,7 @@ type StatementResponse struct {
 	// information.
 	Status *StatementStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *StatementResponse) UnmarshalJSON(b []byte) error {
@@ -1548,7 +1466,7 @@ type Subscription struct {
 	// A timestamp indicating when the subscription was last updated.
 	UpdateTime string `json:"update_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Subscription) UnmarshalJSON(b []byte) error {
@@ -1577,7 +1495,7 @@ type SuccessStatus struct {
 	// Whether the query result is truncated (either by byte limit or row limit)
 	Truncated bool `json:"truncated,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SuccessStatus) UnmarshalJSON(b []byte) error {
@@ -1594,7 +1512,7 @@ type TextAttachment struct {
 
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *TextAttachment) UnmarshalJSON(b []byte) error {
