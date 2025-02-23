@@ -151,7 +151,7 @@ func TestGetAPIError(t *testing.T) {
 			},
 		},
 		{
-			name: "all valid error details type",
+			name: "all error details type",
 			resp: makeTestReponseWrapper(http.StatusNotFound, `{
 				"error_code": "RESOURCE_DOES_NOT_EXIST", 
 				"message": "Cluster abc does not exist", 
@@ -198,10 +198,6 @@ func TestGetAPIError(t *testing.T) {
 					{
 						"@type": "type.googleapis.com/google.rpc.Help",
 						"links": [{"description": "description", "url": "url"}]
-					},
-					{
-						"@type": "foo", 
-						"reason": "reason"
 					}
 				]
 			}`),
@@ -243,10 +239,6 @@ func TestGetAPIError(t *testing.T) {
 					{
 						Type: "type.googleapis.com/google.rpc.Help",
 					},
-					{
-						Type:   "foo",
-						Reason: "reason",
-					},
 				},
 				errorDetails: ErrorDetails{
 					ErrorInfo: &ErrorInfo{
@@ -283,26 +275,18 @@ func TestGetAPIError(t *testing.T) {
 					Help: &Help{
 						Links: []HelpLink{{Description: "description", URL: "url"}},
 					},
-					UnknownDetails: []any{map[string]interface{}{
-						"@type":  "foo",
-						"reason": "reason",
-					}},
 				},
 			},
 		},
 		{
-			name: "only keep the last error details of a type",
+			name: "unknown error details type",
 			resp: makeTestReponseWrapper(http.StatusNotFound, `{
 				"error_code": "RESOURCE_DOES_NOT_EXIST", 
 				"message": "Cluster abc does not exist", 
 				"details": [
 					{
-						"@type": "type.googleapis.com/google.rpc.ErrorInfo",
-						"reason": "first"
-					},
-					{
-						"@type": "type.googleapis.com/google.rpc.ErrorInfo",
-						"reason": "second"
+						"@type": "foo", 
+						"reason": "reason"
 					}
 				]
 			}`),
@@ -312,28 +296,28 @@ func TestGetAPIError(t *testing.T) {
 				StatusCode: http.StatusNotFound,
 				Details: []ErrorDetail{
 					{
-						Type:   "type.googleapis.com/google.rpc.ErrorInfo",
-						Reason: "first",
-					},
-					{
-						Type:   "type.googleapis.com/google.rpc.ErrorInfo",
-						Reason: "second",
+						Type:   "foo",
+						Reason: "reason",
 					},
 				},
 				errorDetails: ErrorDetails{
-					ErrorInfo: &ErrorInfo{
-						Reason: "second",
+					UnknownDetails: []any{
+						map[string]interface{}{
+							"@type":  "foo",
+							"reason": "reason",
+						},
 					},
 				},
 			},
 		},
 		{
-			name: "silently drop invalid error details",
+			name: "invalid error details",
 			resp: makeTestReponseWrapper(http.StatusNotFound, `{
 				"error_code": "RESOURCE_DOES_NOT_EXIST", 
 				"message": "Cluster abc does not exist", 
 				"details": [
 					42, 
+					"foobar",
 					{
 						"@type": "type.googleapis.com/google.rpc.ErrorInfo",
 						"reason": 0
@@ -376,6 +360,97 @@ func TestGetAPIError(t *testing.T) {
 				ErrorCode:  "RESOURCE_DOES_NOT_EXIST",
 				Message:    "Cluster abc does not exist",
 				StatusCode: http.StatusNotFound,
+				Details: []ErrorDetail{
+					// No ErrorInfo because it fails to unmarshal in an
+					// ErrorDetail.
+					{Type: "type.googleapis.com/google.rpc.RequestInfo"},
+					{Type: "type.googleapis.com/google.rpc.RetryInfo"},
+					{Type: "type.googleapis.com/google.rpc.DebugInfo"},
+					{Type: "type.googleapis.com/google.rpc.QuotaFailure"},
+					{Type: "type.googleapis.com/google.rpc.PreconditionFailure"},
+					{Type: "type.googleapis.com/google.rpc.BadRequest"},
+					{Type: "type.googleapis.com/google.rpc.ResourceInfo"},
+					{Type: "type.googleapis.com/google.rpc.Help"},
+				},
+				errorDetails: ErrorDetails{
+					UnknownDetails: []any{
+						42.0,
+						"foobar",
+						map[string]interface{}{
+							"@type":  "type.googleapis.com/google.rpc.ErrorInfo",
+							"reason": 0.0,
+						},
+						map[string]interface{}{
+							"@type":      "type.googleapis.com/google.rpc.RequestInfo",
+							"request_id": 0.0,
+						},
+						map[string]interface{}{
+							"@type":       "type.googleapis.com/google.rpc.RetryInfo",
+							"retry_delay": 0.0,
+						},
+						map[string]interface{}{
+							"@type":         "type.googleapis.com/google.rpc.DebugInfo",
+							"stack_entries": 0.0,
+						},
+						map[string]interface{}{
+							"@type":      "type.googleapis.com/google.rpc.QuotaFailure",
+							"violations": 0.0,
+						},
+						map[string]interface{}{
+							"@type":      "type.googleapis.com/google.rpc.PreconditionFailure",
+							"violations": 0.0,
+						},
+						map[string]interface{}{
+							"@type":            "type.googleapis.com/google.rpc.BadRequest",
+							"field_violations": 0.0,
+						},
+						map[string]interface{}{
+							"@type":         "type.googleapis.com/google.rpc.ResourceInfo",
+							"resource_type": 0.0,
+						},
+						map[string]interface{}{
+							"@type": "type.googleapis.com/google.rpc.Help",
+							"links": 0.0,
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "only keep the last error details of a type",
+			resp: makeTestReponseWrapper(http.StatusNotFound, `{
+				"error_code": "RESOURCE_DOES_NOT_EXIST", 
+				"message": "Cluster abc does not exist", 
+				"details": [
+					{
+						"@type": "type.googleapis.com/google.rpc.ErrorInfo",
+						"reason": "first"
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.ErrorInfo",
+						"reason": "second"
+					}
+				]
+			}`),
+			want: &APIError{
+				ErrorCode:  "RESOURCE_DOES_NOT_EXIST",
+				Message:    "Cluster abc does not exist",
+				StatusCode: http.StatusNotFound,
+				Details: []ErrorDetail{
+					{
+						Type:   "type.googleapis.com/google.rpc.ErrorInfo",
+						Reason: "first",
+					},
+					{
+						Type:   "type.googleapis.com/google.rpc.ErrorInfo",
+						Reason: "second",
+					},
+				},
+				errorDetails: ErrorDetails{
+					ErrorInfo: &ErrorInfo{
+						Reason: "second",
+					},
+				},
 			},
 		},
 	}

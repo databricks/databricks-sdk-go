@@ -246,24 +246,18 @@ func standardErrorParser(ctx context.Context, resp *http.Response, responseBody 
 	}
 
 	// Parse the error details, dropping any that fail to unmarshal.
-	validDetails := []any{}
+	details := []any{}
 	for _, rd := range errorBody.RawDetails {
-		vd, err := unmarshalDetails(rd)
-		if err != nil {
-			logger.Warnf(ctx, "Failed to unmarshal error details: %s", err)
-			continue
-		}
-		validDetails = append(validDetails, vd)
+		details = append(details, unmarshalDetails(rd))
 
 		// Deprecated: unmarshal ErrorDetail type for backwards compatibility
 		// with the previous behavior.
 		ed := ErrorDetail{}
-		if json.Unmarshal(rd, &ed) == nil {
+		if json.Unmarshal(rd, &ed) == nil { // ignore errors
 			apierr.Details = append(apierr.Details, ed)
 		}
-
 	}
-	apierr.errorDetails = parseErrorDetails(validDetails)
+	apierr.errorDetails = parseErrorDetails(details)
 
 	return apierr
 }

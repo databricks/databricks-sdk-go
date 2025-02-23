@@ -301,87 +301,99 @@ func parseErrorDetails(details []any) ErrorDetails {
 	return ed
 }
 
-func unmarshalDetails(details json.RawMessage) (any, error) {
-	var a map[string]any
-	if err := json.Unmarshal(details, &a); err != nil {
-		return nil, err
+// unmarshalDetails attempts to unmarshal the given slice of bytes into a known
+// error details type. It works as follows:
+//
+//   - If the message is a known type, it unmarshals the message into that type.
+//   - If the message is not a known type, it returns the results of calling
+//     [json.Unmarshal] on the raw message.
+//   - If [json.Unmarshal] fails, it returns the input as is.
+func unmarshalDetails(d []byte) any {
+	var a any
+	if err := json.Unmarshal(d, &a); err != nil {
+		return d // not a valid JSON message
+	}
+	m, ok := a.(map[string]any)
+	if !ok {
+		return a // not a JSON object
+	}
+	t, ok := m["@type"].(string)
+	if !ok {
+		return a // JSON object with no @type field
 	}
 
-	if t, ok := a["@type"].(string); ok {
-		switch t {
-		case errorInfoType:
-			var pb errorInfoPb
-			if err := json.Unmarshal(details, &pb); err != nil {
-				return nil, err
-			}
-			return ErrorInfo(pb), nil
-		case requestInfoType:
-			var pb requestInfoPb
-			if err := json.Unmarshal(details, &pb); err != nil {
-				return nil, err
-			}
-			return RequestInfo(pb), nil
-		case retryInfoType:
-			var r retryInfoPb
-			if err := json.Unmarshal(details, &r); err != nil {
-				return nil, err
-			}
-			return RetryInfo{RetryDelay: time.Duration(r.RetryDelay.Seconds)*time.Second + time.Duration(r.RetryDelay.Nanos)*time.Nanosecond}, nil
-		case debugInfoType:
-			var pb debugInfoPb
-			if err := json.Unmarshal(details, &pb); err != nil {
-				return nil, err
-			}
-			return DebugInfo(pb), nil
-		case quotaFailureType:
-			var pb quotaFailurePb
-			if err := json.Unmarshal(details, &pb); err != nil {
-				return nil, err
-			}
-			qf := QuotaFailure{}
-			for _, v := range pb.Violations {
-				qf.Violations = append(qf.Violations, QuotaFailureViolation(v))
-			}
-			return qf, nil
-		case preconditionFailureType:
-			var pb preconditionFailurePb
-			if err := json.Unmarshal(details, &pb); err != nil {
-				return nil, err
-			}
-			pf := PreconditionFailure{}
-			for _, v := range pb.Violations {
-				pf.Violations = append(pf.Violations, PreconditionFailureViolation(v))
-			}
-			return pf, nil
-		case badRequestType:
-			var pb badRequestPb
-			if err := json.Unmarshal(details, &pb); err != nil {
-				return nil, err
-			}
-			br := BadRequest{}
-			for _, v := range pb.FieldViolations {
-				br.FieldViolations = append(br.FieldViolations, BadRequestFieldViolation(v))
-			}
-			return br, nil
-		case resourceInfoType:
-			var pb resourceInfoPb
-			if err := json.Unmarshal(details, &pb); err != nil {
-				return nil, err
-			}
-			return ResourceInfo(pb), nil
-		case helpType:
-			var pb helpPb
-			if err := json.Unmarshal(details, &pb); err != nil {
-				return nil, err
-			}
-			h := Help{}
-			for _, l := range pb.Links {
-				h.Links = append(h.Links, HelpLink(l))
-			}
-			return h, nil
+	switch t {
+	case errorInfoType:
+		var pb errorInfoPb
+		if err := json.Unmarshal(d, &pb); err != nil {
+			return m // not a valid known type
 		}
+		return ErrorInfo(pb)
+	case requestInfoType:
+		var pb requestInfoPb
+		if err := json.Unmarshal(d, &pb); err != nil {
+			return m // not a valid known type
+		}
+		return RequestInfo(pb)
+	case retryInfoType:
+		var pb retryInfoPb
+		if err := json.Unmarshal(d, &pb); err != nil {
+			return m // not a valid known type
+		}
+		return RetryInfo{RetryDelay: time.Duration(pb.RetryDelay.Seconds)*time.Second + time.Duration(pb.RetryDelay.Nanos)*time.Nanosecond}
+	case debugInfoType:
+		var pb debugInfoPb
+		if err := json.Unmarshal(d, &pb); err != nil {
+			return m // not a valid known type
+		}
+		return DebugInfo(pb)
+	case quotaFailureType:
+		var pb quotaFailurePb
+		if err := json.Unmarshal(d, &pb); err != nil {
+			return m // not a valid known type
+		}
+		qf := QuotaFailure{}
+		for _, v := range pb.Violations {
+			qf.Violations = append(qf.Violations, QuotaFailureViolation(v))
+		}
+		return qf
+	case preconditionFailureType:
+		var pb preconditionFailurePb
+		if err := json.Unmarshal(d, &pb); err != nil {
+			return m // not a valid known type
+		}
+		pf := PreconditionFailure{}
+		for _, v := range pb.Violations {
+			pf.Violations = append(pf.Violations, PreconditionFailureViolation(v))
+		}
+		return pf
+	case badRequestType:
+		var pb badRequestPb
+		if err := json.Unmarshal(d, &pb); err != nil {
+			return m // not a valid known type
+		}
+		br := BadRequest{}
+		for _, v := range pb.FieldViolations {
+			br.FieldViolations = append(br.FieldViolations, BadRequestFieldViolation(v))
+		}
+		return br
+	case resourceInfoType:
+		var pb resourceInfoPb
+		if err := json.Unmarshal(d, &pb); err != nil {
+			return m // not a valid known type
+		}
+		return ResourceInfo(pb)
+	case helpType:
+		var pb helpPb
+		if err := json.Unmarshal(d, &pb); err != nil {
+			return m // not a valid known type
+		}
+		h := Help{}
+		for _, l := range pb.Links {
+			h.Links = append(h.Links, HelpLink(l))
+		}
+		return h
+	default:
+		return m // unknown type
 	}
-
-	// If the type is not known, simply return it as is.
-	return a, nil
 }
