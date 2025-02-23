@@ -332,7 +332,45 @@ func TestGetAPIError(t *testing.T) {
 			resp: makeTestReponseWrapper(http.StatusNotFound, `{
 				"error_code": "RESOURCE_DOES_NOT_EXIST", 
 				"message": "Cluster abc does not exist", 
-				"details": [42]
+				"details": [
+					42, 
+					{
+						"@type": "type.googleapis.com/google.rpc.ErrorInfo",
+						"reason": 0
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.RequestInfo",
+						"request_id": 0
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.RetryInfo",
+						"retry_delay": 0
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.DebugInfo",
+						"stack_entries": 0
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.QuotaFailure",
+						"violations": 0
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.PreconditionFailure",
+						"violations": 0
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.BadRequest",
+						"field_violations": 0
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.ResourceInfo",
+						"resource_type": 0
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.Help",
+						"links": 0
+					}
+				]
 			}`),
 			want: &APIError{
 				ErrorCode:  "RESOURCE_DOES_NOT_EXIST",
