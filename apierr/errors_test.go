@@ -16,7 +16,7 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
-func TestAPIError_transientRegexMatches(t *testing.T) {
+func TestAPIError_IsRetriable_transientRegexMatches(t *testing.T) {
 	err := APIError{
 		Message: "worker env WorkerEnvId(workerenv-XXXXX) not found",
 	}
@@ -43,7 +43,7 @@ func makeTestReponseWrapper(statusCode int, resp string) common.ResponseWrapper 
 	}
 }
 
-func TestAPIError_GetAPIError(t *testing.T) {
+func TestGetAPIError(t *testing.T) {
 	testCases := []struct {
 		name        string
 		resp        common.ResponseWrapper
