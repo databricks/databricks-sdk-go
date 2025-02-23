@@ -3,13 +3,13 @@ package apierr
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"testing"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/google/go-cmp/cmp"
@@ -63,71 +63,13 @@ func TestAPIError_GetAPIError(t *testing.T) {
 		{
 			name: "happy path",
 			resp: makeTestReponseWrapper(http.StatusNotFound, `{
-				"error_code": "RESOURCE_DOES_NOT_EXIST", 
+				"error_code": "RESOURCE_DOES_NOT_EXIST",
 				"message": "Cluster abc does not exist"
 			}`),
 			want: &APIError{
 				ErrorCode:  "RESOURCE_DOES_NOT_EXIST",
 				Message:    "Cluster abc does not exist",
 				StatusCode: http.StatusNotFound,
-			},
-			wantErrorIs: ErrResourceDoesNotExist,
-		},
-		{
-			name: "supported details",
-			resp: makeTestReponseWrapper(http.StatusNotFound, `{
-				"error_code": "RESOURCE_DOES_NOT_EXIST", 
-				"message": "Cluster abc does not exist", 
-				"details": [{"@type": "type", "reason": "reason", "domain": "domain", "metadata": {"key": "value"}}]
-			}`),
-			want: &APIError{
-				ErrorCode:  "RESOURCE_DOES_NOT_EXIST",
-				Message:    "Cluster abc does not exist",
-				StatusCode: http.StatusNotFound,
-				Details: []ErrorDetail{{
-					Type:     "type",
-					Reason:   "reason",
-					Domain:   "domain",
-					Metadata: map[string]string{"key": "value"},
-				}},
-				RawDetails: []json.RawMessage{[]byte(`{"@type": "type", "reason": "reason", "domain": "domain", "metadata": {"key": "value"}}`)},
-			},
-			wantErrorIs: ErrResourceDoesNotExist,
-		},
-		{
-			name: "unsupported details",
-			resp: makeTestReponseWrapper(http.StatusNotFound, `{
-				"error_code": "RESOURCE_DOES_NOT_EXIST", 
-				"message": "Cluster abc does not exist", 
-				"details": [{"@type": "type", "reason": 5}]
-			}`),
-			want: &APIError{
-				ErrorCode:  "RESOURCE_DOES_NOT_EXIST",
-				Message:    "Cluster abc does not exist",
-				StatusCode: http.StatusNotFound,
-				RawDetails: []json.RawMessage{[]byte(`{"@type": "type", "reason": 5}`)},
-			},
-			wantErrorIs: ErrResourceDoesNotExist,
-		},
-		{
-			name: "supported and unsupported details",
-			resp: makeTestReponseWrapper(http.StatusNotFound, `{
-				"error_code": "RESOURCE_DOES_NOT_EXIST", 
-				"message": "Cluster abc does not exist", 
-				"details": [{"@type": "type", "reason": 5}, {"@type": "type", "reason": "foo"}]
-			}`),
-			want: &APIError{
-				ErrorCode:  "RESOURCE_DOES_NOT_EXIST",
-				Message:    "Cluster abc does not exist",
-				StatusCode: http.StatusNotFound,
-				Details: []ErrorDetail{{
-					Type:   "type",
-					Reason: "foo",
-				}},
-				RawDetails: []json.RawMessage{
-					[]byte(`{"@type": "type", "reason": 5}`),
-					[]byte(`{"@type": "type", "reason": "foo"}`),
-				},
 			},
 			wantErrorIs: ErrResourceDoesNotExist,
 		},
@@ -144,7 +86,7 @@ func TestAPIError_GetAPIError(t *testing.T) {
 		{
 			name: "numeric error code",
 			resp: makeTestReponseWrapper(http.StatusBadRequest, `{
-				"error_code": 500, 
+				"error_code": 500,
 				"message": "Cluster abc does not exist"}
 			`),
 			want: &APIError{
@@ -188,7 +130,7 @@ func TestAPIError_GetAPIError(t *testing.T) {
 				},
 				DebugBytes: []byte{},
 				ReadCloser: io.NopCloser(bytes.NewReader([]byte(`{
-					"error_code": "INVALID_PARAMETER_VALUE", 
+					"error_code": "INVALID_PARAMETER_VALUE",
 					"message": "Cluster abc does not exist"}
 				`))),
 			},
@@ -206,6 +148,128 @@ func TestAPIError_GetAPIError(t *testing.T) {
 				ErrorCode:  "INTERNAL_SERVER_ERROR",
 				Message:    "unable to parse response. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\n```\nGET /api/2.0/myservice\n> * Host: \n<  500 Internal Server Error\n< unparsable error message\n```",
 				StatusCode: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "all valid error details type",
+			resp: makeTestReponseWrapper(http.StatusNotFound, `{
+				"error_code": "RESOURCE_DOES_NOT_EXIST", 
+				"message": "Cluster abc does not exist", 
+				"details": [
+					{
+						"@type": "type.googleapis.com/google.rpc.ErrorInfo",
+						"reason": "reason",
+						"domain": "domain",
+						"metadata": {"k1": "v1", "k2": "v2"}
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.RequestInfo",
+						"request_id": "req42",
+						"serving_data": "data"
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.RetryInfo",
+						"retry_delay": {"seconds": 1, "nanos": 1}
+					},
+					{
+						"@type": "foo", 
+						"reason": "reason"
+					}
+				]
+			}`),
+			want: &APIError{
+				ErrorCode:  "RESOURCE_DOES_NOT_EXIST",
+				Message:    "Cluster abc does not exist",
+				StatusCode: http.StatusNotFound,
+				Details: []ErrorDetail{
+					{
+						Type:   "type.googleapis.com/google.rpc.ErrorInfo",
+						Reason: "reason",
+						Domain: "domain",
+						Metadata: map[string]string{
+							"k1": "v1",
+							"k2": "v2",
+						},
+					},
+					{
+						Type: "type.googleapis.com/google.rpc.RequestInfo",
+					},
+					{
+						Type: "type.googleapis.com/google.rpc.RetryInfo",
+					},
+					{
+						Type:   "foo",
+						Reason: "reason",
+					},
+				},
+				errorDetails: ErrorDetails{
+					ErrorInfo: &ErrorInfo{
+						Reason:   "reason",
+						Domain:   "domain",
+						Metadata: map[string]string{"k1": "v1", "k2": "v2"},
+					},
+					RequestInfo: &RequestInfo{
+						RequestID:   "req42",
+						ServingData: "data",
+					},
+					RetryInfo: &RetryInfo{
+						RetryDelay: time.Second + time.Nanosecond,
+					},
+					UnknownDetails: []any{map[string]interface{}{
+						"@type":  "foo",
+						"reason": "reason",
+					}},
+				},
+			},
+		},
+		{
+			name: "only keep the last error details of a type",
+			resp: makeTestReponseWrapper(http.StatusNotFound, `{
+				"error_code": "RESOURCE_DOES_NOT_EXIST", 
+				"message": "Cluster abc does not exist", 
+				"details": [
+					{
+						"@type": "type.googleapis.com/google.rpc.ErrorInfo",
+						"reason": "first"
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.ErrorInfo",
+						"reason": "second"
+					}
+				]
+			}`),
+			want: &APIError{
+				ErrorCode:  "RESOURCE_DOES_NOT_EXIST",
+				Message:    "Cluster abc does not exist",
+				StatusCode: http.StatusNotFound,
+				Details: []ErrorDetail{
+					{
+						Type:   "type.googleapis.com/google.rpc.ErrorInfo",
+						Reason: "first",
+					},
+					{
+						Type:   "type.googleapis.com/google.rpc.ErrorInfo",
+						Reason: "second",
+					},
+				},
+				errorDetails: ErrorDetails{
+					ErrorInfo: &ErrorInfo{
+						Reason: "second",
+					},
+				},
+			},
+		},
+		{
+			name: "silently drop invalid error details",
+			resp: makeTestReponseWrapper(http.StatusNotFound, `{
+				"error_code": "RESOURCE_DOES_NOT_EXIST", 
+				"message": "Cluster abc does not exist", 
+				"details": [42]
+			}`),
+			want: &APIError{
+				ErrorCode:  "RESOURCE_DOES_NOT_EXIST",
+				Message:    "Cluster abc does not exist",
+				StatusCode: http.StatusNotFound,
 			},
 		},
 	}

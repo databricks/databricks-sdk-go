@@ -16,10 +16,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger/httplog"
 )
 
-const (
-	errorInfoType string = "type.googleapis.com/google.rpc.ErrorInfo"
-)
-
+// Deprecated: Use [ErrorDetails] instead.
 type ErrorDetail struct {
 	Type     string            `json:"@type,omitempty"`
 	Reason   string            `json:"reason,omitempty"`
@@ -33,16 +30,22 @@ type APIError struct {
 	Message    string
 	StatusCode int
 
-	// Details is the sublist of error details that can be unmarshalled into
-	// the ErrorDetail type.
-	Details []ErrorDetail
-
-	// RawDetails is the list of all error details.
-	RawDetails []json.RawMessage
+	errorDetails ErrorDetails
 
 	// If non-nil, the underlying error that should be returned by calling
 	// errors.Unwrap on this error.
 	unwrap error
+
+	// Details is the sublist of error details that can be unmarshalled into
+	// the [ErrorDetail] type.
+	//
+	// Deprecated: Use [APIError.ErrorDetails] instead.
+	Details []ErrorDetail
+}
+
+// ErrorDetails returns the error details of the APIError.
+func (apiErr *APIError) ErrorDetails() ErrorDetails {
+	return apiErr.errorDetails
 }
 
 // Error returns the error message string.
@@ -55,19 +58,19 @@ func IsMissing(err error) bool {
 	return errors.Is(err, ErrNotFound)
 }
 
-// GetErrorInfo returns all entries in the list of error details of type `ErrorInfo`.
+// GetErrorInfo returns all entries in the list of error details of type
+// `ErrorInfo`.
+//
+// Deprecated: Use [APIError.ErrorDetails] instead.
 func GetErrorInfo(err error) []ErrorDetail {
-	return getDetailsByType(err, errorInfoType)
-}
-
-func getDetailsByType(err error, errorDetailType string) []ErrorDetail {
 	var apiError *APIError
 	if !errors.As(err, &apiError) {
 		return nil
 	}
+
 	filteredDetails := []ErrorDetail{}
 	for _, detail := range apiError.Details {
-		if errorDetailType == detail.Type {
+		if errorInfoType == detail.Type {
 			filteredDetails = append(filteredDetails, detail)
 		}
 	}
@@ -239,16 +242,27 @@ func standardErrorParser(ctx context.Context, resp *http.Response, responseBody 
 		Message:    errorBody.Message,
 		ErrorCode:  fmt.Sprintf("%v", errorBody.ErrorCode),
 		StatusCode: resp.StatusCode,
-		RawDetails: errorBody.RawDetails,
 	}
 
-	// Preserve behavior while being robust to potential unmarshalling errors.
+	// Parse the error details, dropping any that fail to unmarshal.
+	validDetails := []any{}
 	for _, rd := range errorBody.RawDetails {
-		var detail ErrorDetail
-		if json.Unmarshal(rd, &detail) == nil { // ignore errors
-			apierr.Details = append(apierr.Details, detail)
+		vd, err := unmarshalDetails(rd)
+		if err != nil {
+			logger.Warnf(ctx, "Failed to unmarshal error details: %s", err)
+			continue
 		}
+		validDetails = append(validDetails, vd)
+
+		// Deprecated: unmarshal ErrorDetail type for backwards compatibility
+		// with the previous behavior.
+		ed := ErrorDetail{}
+		if json.Unmarshal(rd, &ed) == nil {
+			apierr.Details = append(apierr.Details, ed)
+		}
+
 	}
+	apierr.errorDetails = parseErrorDetails(validDetails)
 
 	return apierr
 }
