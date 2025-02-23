@@ -43,6 +43,20 @@ func makeTestReponseWrapper(statusCode int, resp string) common.ResponseWrapper 
 	}
 }
 
+func TestGetAPIError_ErrorDetails(t *testing.T) {
+	want := ErrorDetails{ErrorInfo: &ErrorInfo{
+		Reason: "reason",
+		Domain: "domain",
+	}}
+	APIError := &APIError{errorDetails: want}
+
+	got := APIError.ErrorDetails()
+
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("unexpected error details (-want +got):\n%s", diff)
+	}
+}
+
 func TestGetAPIError(t *testing.T) {
 	testCases := []struct {
 		name        string
@@ -319,6 +333,9 @@ func TestGetAPIError(t *testing.T) {
 					42, 
 					"foobar",
 					{
+						"foo": "bar"
+					},
+					{
 						"@type": "type.googleapis.com/google.rpc.ErrorInfo",
 						"reason": 0
 					},
@@ -361,8 +378,8 @@ func TestGetAPIError(t *testing.T) {
 				Message:    "Cluster abc does not exist",
 				StatusCode: http.StatusNotFound,
 				Details: []ErrorDetail{
-					// No ErrorInfo because it fails to unmarshal in an
-					// ErrorDetail.
+					{},
+					// No ErrorInfo because it fails to unmarshal.
 					{Type: "type.googleapis.com/google.rpc.RequestInfo"},
 					{Type: "type.googleapis.com/google.rpc.RetryInfo"},
 					{Type: "type.googleapis.com/google.rpc.DebugInfo"},
@@ -376,6 +393,9 @@ func TestGetAPIError(t *testing.T) {
 					UnknownDetails: []any{
 						42.0,
 						"foobar",
+						map[string]interface{}{
+							"foo": "bar",
+						},
 						map[string]interface{}{
 							"@type":  "type.googleapis.com/google.rpc.ErrorInfo",
 							"reason": 0.0,
