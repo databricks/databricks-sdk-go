@@ -173,7 +173,17 @@ type HelpLink struct {
 	URL string
 }
 
-const errorInfoType string = "type.googleapis.com/google.rpc.ErrorInfo"
+const (
+	errorInfoType           string = "type.googleapis.com/google.rpc.ErrorInfo"
+	requestInfoType         string = "type.googleapis.com/google.rpc.RequestInfo"
+	retryInfoType           string = "type.googleapis.com/google.rpc.RetryInfo"
+	debugInfoType           string = "type.googleapis.com/google.rpc.DebugInfo"
+	quotaFailureType        string = "type.googleapis.com/google.rpc.QuotaFailure"
+	preconditionFailureType string = "type.googleapis.com/google.rpc.PreconditionFailure"
+	badRequestType          string = "type.googleapis.com/google.rpc.BadRequest"
+	resourceInfoType        string = "type.googleapis.com/google.rpc.ResourceInfo"
+	helpType                string = "type.googleapis.com/google.rpc.Help"
+)
 
 // errorInfoPb is the wire-format representation of ErrorInfo. It is used
 // internally to unmarshal ErrorInfo from JSON.
@@ -183,16 +193,12 @@ type errorInfoPb struct {
 	Metadata map[string]string `json:"metadata"`
 }
 
-const requestInfoType string = "type.googleapis.com/google.rpc.RequestInfo"
-
 // requestInfoPb is the wire-format representation of RequestInfo. It is used
 // internally to unmarshal RequestInfo from JSON.
 type requestInfoPb struct {
 	RequestID   string `json:"request_id"`
 	ServingData string `json:"serving_data"`
 }
-
-const retryInfoType string = "type.googleapis.com/google.rpc.RetryInfo"
 
 // retryInfoPb is the wire-format representation of RetryInfo. It is used
 // internally to unmarshal RetryInfo from JSON.
@@ -205,16 +211,12 @@ type durationPb struct {
 	Nanos   int64 `json:"nanos"`
 }
 
-const debugInfoType string = "type.googleapis.com/google.rpc.DebugInfo"
-
 // debugInfoPb is the wire-format representation of DebugInfo. It is used
 // internally to unmarshal DebugInfo from JSON.
 type debugInfoPb struct {
 	StackEntries []string `json:"stack_entries"`
 	Detail       string   `json:"detail"`
 }
-
-const quotaFailureType string = "type.googleapis.com/google.rpc.QuotaFailure"
 
 // quotaFailurePb is the wire-format representation of QuotaFailure. It is used
 // internally to unmarshal QuotaFailure from JSON.
@@ -226,8 +228,6 @@ type quotaFailureViolationPb struct {
 	Subject     string `json:"subject"`
 	Description string `json:"description"`
 }
-
-const preconditionFailureType string = "type.googleapis.com/google.rpc.PreconditionFailure"
 
 // preconditionFailurePb is the wire-format representation of PreconditionFailure.
 // It is used internally to unmarshal PreconditionFailure from JSON.
@@ -241,8 +241,6 @@ type preconditionFailureViolationPb struct {
 	Description string `json:"description"`
 }
 
-const badRequestType string = "type.googleapis.com/google.rpc.BadRequest"
-
 // badRequestPb is the wire-format representation of BadRequest. It is used
 // internally to unmarshal BadRequest from JSON.
 type badRequestPb struct {
@@ -254,8 +252,6 @@ type badRequestFieldViolationPb struct {
 	Description string `json:"description"`
 }
 
-const resourceInfoType string = "type.googleapis.com/google.rpc.ResourceInfo"
-
 // resourceInfoPb is the wire-format representation of ResourceInfo. It is used
 // internally to unmarshal ResourceInfo from JSON.
 type resourceInfoPb struct {
@@ -264,8 +260,6 @@ type resourceInfoPb struct {
 	Owner        string `json:"owner"`
 	Description  string `json:"description"`
 }
-
-const helpType string = "type.googleapis.com/google.rpc.Help"
 
 // helpPb is the wire-format representation of Help. It is used internally to
 // unmarshal Help from JSON.
