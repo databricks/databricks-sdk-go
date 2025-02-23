@@ -172,6 +172,34 @@ func TestGetAPIError(t *testing.T) {
 						"retry_delay": {"seconds": 1, "nanos": 1}
 					},
 					{
+						"@type": "type.googleapis.com/google.rpc.DebugInfo",
+						"stack_entries": ["entry1", "entry2"],
+						"detail": "detail"
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.QuotaFailure",
+						"violations": [{"subject": "subject", "description": "description"}]
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.PreconditionFailure",
+						"violations": [{"type": "type", "subject": "subject", "description": "description"}]
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.BadRequest",
+						"field_violations": [{"field": "field", "description": "description"}]
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.ResourceInfo",
+						"resource_type": "resource_type",
+						"resource_name": "resource_name",
+						"owner": "owner",
+						"description": "description"
+					},
+					{
+						"@type": "type.googleapis.com/google.rpc.Help",
+						"links": [{"description": "description", "url": "url"}]
+					},
+					{
 						"@type": "foo", 
 						"reason": "reason"
 					}
@@ -198,6 +226,24 @@ func TestGetAPIError(t *testing.T) {
 						Type: "type.googleapis.com/google.rpc.RetryInfo",
 					},
 					{
+						Type: "type.googleapis.com/google.rpc.DebugInfo",
+					},
+					{
+						Type: "type.googleapis.com/google.rpc.QuotaFailure",
+					},
+					{
+						Type: "type.googleapis.com/google.rpc.PreconditionFailure",
+					},
+					{
+						Type: "type.googleapis.com/google.rpc.BadRequest",
+					},
+					{
+						Type: "type.googleapis.com/google.rpc.ResourceInfo",
+					},
+					{
+						Type: "type.googleapis.com/google.rpc.Help",
+					},
+					{
 						Type:   "foo",
 						Reason: "reason",
 					},
@@ -214,6 +260,28 @@ func TestGetAPIError(t *testing.T) {
 					},
 					RetryInfo: &RetryInfo{
 						RetryDelay: time.Second + time.Nanosecond,
+					},
+					DebugInfo: &DebugInfo{
+						StackEntries: []string{"entry1", "entry2"},
+						Detail:       "detail",
+					},
+					QuotaFailure: &QuotaFailure{
+						Violations: []QuotaFailureViolation{{Subject: "subject", Description: "description"}},
+					},
+					PreconditionFailure: &PreconditionFailure{
+						Violations: []PreconditionFailureViolation{{Type: "type", Subject: "subject", Description: "description"}},
+					},
+					BadRequest: &BadRequest{
+						FieldViolations: []BadRequestFieldViolation{{Field: "field", Description: "description"}},
+					},
+					ResourceInfo: &ResourceInfo{
+						ResourceType: "resource_type",
+						ResourceName: "resource_name",
+						Owner:        "owner",
+						Description:  "description",
+					},
+					Help: &Help{
+						Links: []HelpLink{{Description: "description", URL: "url"}},
 					},
 					UnknownDetails: []any{map[string]interface{}{
 						"@type":  "foo",
@@ -278,7 +346,11 @@ func TestGetAPIError(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			got := GetAPIError(context.Background(), tc.resp)
 
-			if diff := cmp.Diff(tc.want, got, cmpopts.IgnoreUnexported(APIError{})); diff != "" {
+			opts := cmp.Options{
+				cmp.AllowUnexported(APIError{}),            // to check ErrorDetails
+				cmpopts.IgnoreFields(APIError{}, "unwrap"), // tested via wantErrorIs
+			}
+			if diff := cmp.Diff(tc.want, got, opts); diff != "" {
 				t.Errorf("unexpected error (-want +got):\n%s", diff)
 			}
 			if tc.wantErrorIs != nil && !errors.Is(got, tc.wantErrorIs) {

@@ -24,7 +24,7 @@ type ErrorDetail struct {
 	Metadata map[string]string `json:"metadata,omitempty"`
 }
 
-// APIError is a generic struct for an api error on databricks
+// APIError represents a standard Databricks API error.
 type APIError struct {
 	ErrorCode  string
 	Message    string
@@ -77,17 +77,17 @@ func GetErrorInfo(err error) []ErrorDetail {
 	return filteredDetails
 }
 
-// IsMissing tells if it is missing resource
+// IsMissing tells if it is missing resource.
 func (apiError *APIError) IsMissing() bool {
 	return errors.Is(apiError, ErrNotFound)
 }
 
-// IsTooManyRequests shows rate exceeded limits
+// IsTooManyRequests shows rate exceeded limits.
 func (apiError *APIError) IsTooManyRequests() bool {
 	return errors.Is(apiError, ErrTooManyRequests)
 }
 
-// isRetriable returns true if error is retriable
+// IsRetriable returns true if error is retriable.
 func (apiError *APIError) IsRetriable(ctx context.Context) bool {
 	if apiError.IsTooManyRequests() {
 		return true
@@ -109,7 +109,7 @@ func (apiError *APIError) IsRetriable(ctx context.Context) bool {
 	return false
 }
 
-// NotFound returns properly formatted Not Found error
+// NotFound returns properly formatted Not Found error.
 func NotFound(message string) *APIError {
 	return &APIError{
 		ErrorCode:  "NOT_FOUND",
@@ -142,7 +142,8 @@ func GenericIOError(ue *url.Error) *APIError {
 	}
 }
 
-// GetAPIError inspects HTTP errors from the Databricks API for known transient errors.
+// GetAPIError inspects HTTP errors from the Databricks API for known transient
+// errors.
 func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 	if resp.Response.StatusCode == 429 {
 		return TooManyRequests()

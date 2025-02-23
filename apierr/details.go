@@ -8,9 +8,15 @@ import (
 // ErrorDetails contains the error details of an API error. It is the union of
 // known error details types and unknown details.
 type ErrorDetails struct {
-	ErrorInfo   *ErrorInfo
-	RequestInfo *RequestInfo
-	RetryInfo   *RetryInfo
+	ErrorInfo           *ErrorInfo
+	RequestInfo         *RequestInfo
+	RetryInfo           *RetryInfo
+	DebugInfo           *DebugInfo
+	QuotaFailure        *QuotaFailure
+	PreconditionFailure *PreconditionFailure
+	BadRequest          *BadRequest
+	ResourceInfo        *ResourceInfo
+	Help                *Help
 
 	// UnknownDetails contains error details that cannot be unmarshalled into
 	// one of the known types above.
@@ -61,6 +67,112 @@ type RetryInfo struct {
 	RetryDelay time.Duration
 }
 
+// Describes additional debugging info.
+type DebugInfo struct {
+	// The stack trace entries indicating where the error occurred.
+	StackEntries []string
+
+	// Additional debugging information provided by the server.
+	Detail string
+}
+
+// Describes how a quota check failed.
+//
+// For example if a daily limit was exceeded for the calling project,
+// a service could respond with a QuotaFailure detail containing the project
+// id and the description of the quota limit that was exceeded.  If the
+// calling project hasn't enabled the service in the developer console, then
+// a service could respond with the project id and set `service_disabled`
+// to true.
+//
+// Also see RetryInfo and Help types for other details about handling a
+// quota failure.
+type QuotaFailure struct {
+	// Describes all quota violations.
+	Violations []QuotaFailureViolation
+}
+
+type QuotaFailureViolation struct {
+	// The subject on which the quota check failed.
+	Subject string
+
+	// A description of how the quota check failed. Clients can use this
+	// description to find more about the quota configuration in the service's
+	// public documentation, or find the relevant quota limit to adjust through
+	// developer console.
+	//
+	// For example: "Service disabled" or "Daily Limit for read operations
+	// exceeded".
+	Description string
+}
+
+// Describes what preconditions have failed.
+type PreconditionFailure struct {
+	// Describes all precondition violations.
+	Violations []PreconditionFailureViolation
+}
+
+type PreconditionFailureViolation struct {
+	// The type of PreconditionFailure.
+	Type string
+
+	// The subject, relative to the type, that failed.
+	Subject string
+
+	// A description of how the precondition failed. Developers can use this
+	// description to understand how to fix the failure.
+	//
+	// For example: "Terms of service not accepted".
+	Description string
+}
+
+// Describes violations in a client request. This error type focuses on the
+// syntactic aspects of the request.
+type BadRequest struct {
+	FieldViolations []BadRequestFieldViolation
+}
+
+type BadRequestFieldViolation struct {
+	// A path leading to a field in the request body.
+	Field string
+
+	// A description of why the request element is bad.
+	Description string
+}
+
+// Describes the resource that is being accessed.
+type ResourceInfo struct {
+	// A name for the type of resource being accessed.
+	ResourceType string
+
+	// The name of the resource being accessed.
+	ResourceName string
+
+	// The owner of the resource (optional).
+	Owner string
+
+	// Describes what error is encountered when accessing this resource.
+	Description string
+}
+
+// Provides links to documentation or for performing an out of band action.
+//
+// For example, if a quota check failed with an error indicating the calling
+// project hasn't enabled the accessed service, this can contain a URL pointing
+// directly to the right place in the developer console to flip the bit.
+type Help struct {
+	// URL(s) pointing to additional information on handling the current error.
+	Links []HelpLink
+}
+
+type HelpLink struct {
+	// Describes what the link offers.
+	Description string
+
+	// The URL of the link.
+	URL string
+}
+
 const errorInfoType string = "type.googleapis.com/google.rpc.ErrorInfo"
 
 // errorInfoPb is the wire-format representation of ErrorInfo. It is used
@@ -93,16 +205,101 @@ type durationPb struct {
 	Nanos   int64 `json:"nanos"`
 }
 
+const debugInfoType string = "type.googleapis.com/google.rpc.DebugInfo"
+
+// debugInfoPb is the wire-format representation of DebugInfo. It is used
+// internally to unmarshal DebugInfo from JSON.
+type debugInfoPb struct {
+	StackEntries []string `json:"stack_entries"`
+	Detail       string   `json:"detail"`
+}
+
+const quotaFailureType string = "type.googleapis.com/google.rpc.QuotaFailure"
+
+// quotaFailurePb is the wire-format representation of QuotaFailure. It is used
+// internally to unmarshal QuotaFailure from JSON.
+type quotaFailurePb struct {
+	Violations []quotaFailureViolationPb `json:"violations"`
+}
+
+type quotaFailureViolationPb struct {
+	Subject     string `json:"subject"`
+	Description string `json:"description"`
+}
+
+const preconditionFailureType string = "type.googleapis.com/google.rpc.PreconditionFailure"
+
+// preconditionFailurePb is the wire-format representation of PreconditionFailure.
+// It is used internally to unmarshal PreconditionFailure from JSON.
+type preconditionFailurePb struct {
+	Violations []preconditionFailureViolationPb `json:"violations"`
+}
+
+type preconditionFailureViolationPb struct {
+	Type        string `json:"type"`
+	Subject     string `json:"subject"`
+	Description string `json:"description"`
+}
+
+const badRequestType string = "type.googleapis.com/google.rpc.BadRequest"
+
+// badRequestPb is the wire-format representation of BadRequest. It is used
+// internally to unmarshal BadRequest from JSON.
+type badRequestPb struct {
+	FieldViolations []badRequestFieldViolationPb `json:"field_violations"`
+}
+
+type badRequestFieldViolationPb struct {
+	Field       string `json:"field"`
+	Description string `json:"description"`
+}
+
+const resourceInfoType string = "type.googleapis.com/google.rpc.ResourceInfo"
+
+// resourceInfoPb is the wire-format representation of ResourceInfo. It is used
+// internally to unmarshal ResourceInfo from JSON.
+type resourceInfoPb struct {
+	ResourceType string `json:"resource_type"`
+	ResourceName string `json:"resource_name"`
+	Owner        string `json:"owner"`
+	Description  string `json:"description"`
+}
+
+const helpType string = "type.googleapis.com/google.rpc.Help"
+
+// helpPb is the wire-format representation of Help. It is used internally to
+// unmarshal Help from JSON.
+type helpPb struct {
+	Links []helpLinkPb `json:"links"`
+}
+
+type helpLinkPb struct {
+	Description string `json:"description"`
+	URL         string `json:"url"`
+}
+
 func parseErrorDetails(details []any) ErrorDetails {
 	var ed ErrorDetails
 	for _, d := range details {
 		switch d := d.(type) {
-		case *ErrorInfo:
-			ed.ErrorInfo = d
-		case *RequestInfo:
-			ed.RequestInfo = d
-		case *RetryInfo:
-			ed.RetryInfo = d
+		case ErrorInfo:
+			ed.ErrorInfo = &d
+		case RequestInfo:
+			ed.RequestInfo = &d
+		case RetryInfo:
+			ed.RetryInfo = &d
+		case DebugInfo:
+			ed.DebugInfo = &d
+		case QuotaFailure:
+			ed.QuotaFailure = &d
+		case PreconditionFailure:
+			ed.PreconditionFailure = &d
+		case BadRequest:
+			ed.BadRequest = &d
+		case ResourceInfo:
+			ed.ResourceInfo = &d
+		case Help:
+			ed.Help = &d
 		default:
 			ed.UnknownDetails = append(ed.UnknownDetails, d)
 		}
@@ -136,9 +333,61 @@ func unmarshalDetails(details json.RawMessage) (any, error) {
 				return nil, err
 			}
 			return RetryInfo{RetryDelay: time.Duration(r.RetryDelay.Seconds)*time.Second + time.Duration(r.RetryDelay.Nanos)*time.Nanosecond}, nil
+		case debugInfoType:
+			var pb debugInfoPb
+			if err := json.Unmarshal(details, &pb); err != nil {
+				return nil, err
+			}
+			return DebugInfo(pb), nil
+		case quotaFailureType:
+			var pb quotaFailurePb
+			if err := json.Unmarshal(details, &pb); err != nil {
+				return nil, err
+			}
+			qf := QuotaFailure{}
+			for _, v := range pb.Violations {
+				qf.Violations = append(qf.Violations, QuotaFailureViolation(v))
+			}
+			return qf, nil
+		case preconditionFailureType:
+			var pb preconditionFailurePb
+			if err := json.Unmarshal(details, &pb); err != nil {
+				return nil, err
+			}
+			pf := PreconditionFailure{}
+			for _, v := range pb.Violations {
+				pf.Violations = append(pf.Violations, PreconditionFailureViolation(v))
+			}
+			return pf, nil
+		case badRequestType:
+			var pb badRequestPb
+			if err := json.Unmarshal(details, &pb); err != nil {
+				return nil, err
+			}
+			br := BadRequest{}
+			for _, v := range pb.FieldViolations {
+				br.FieldViolations = append(br.FieldViolations, BadRequestFieldViolation(v))
+			}
+			return br, nil
+		case resourceInfoType:
+			var pb resourceInfoPb
+			if err := json.Unmarshal(details, &pb); err != nil {
+				return nil, err
+			}
+			return ResourceInfo(pb), nil
+		case helpType:
+			var pb helpPb
+			if err := json.Unmarshal(details, &pb); err != nil {
+				return nil, err
+			}
+			h := Help{}
+			for _, l := range pb.Links {
+				h.Links = append(h.Links, HelpLink(l))
+			}
+			return h, nil
 		}
 	}
 
-	// If the type is not known, try to unmarshal it as a map.
+	// If the type is not known, simply return it as is.
 	return a, nil
 }
