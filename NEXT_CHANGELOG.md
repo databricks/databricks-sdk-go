@@ -6,9 +6,13 @@
 
 ### Bug Fixes
 
+* Fix unlikely issue due to conflicting error details in `APIError`.
+
 ### Documentation
 
 ### Internal Changes
+
+* Refactor `APIError` to exposes different types of error details. 
 * Introduce automated tagging ([#1148](https://github.com/databricks/databricks-sdk-go/pull/1148)).
 * Update Jobs GetJob API to support paginated responses  ([#1133](https://github.com/databricks/databricks-sdk-go/pull/1133)).
 * Update Jobs GetRun API to support paginated responses  ([#1132](https://github.com/databricks/databricks-sdk-go/pull/1132)).
