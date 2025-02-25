@@ -3,7 +3,7 @@ package jobs
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
 // List fetches a list of jobs.
