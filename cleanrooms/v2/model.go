@@ -40,7 +40,7 @@ type CleanRoom struct {
 	// When the clean room was last updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoom) UnmarshalJSON(b []byte) error {
@@ -121,7 +121,7 @@ type CleanRoomAsset struct {
 	// if and only if **asset_type** is **VOLUME**
 	VolumeLocalDetails *CleanRoomAssetVolumeLocalDetails `json:"volume_local_details,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAsset) UnmarshalJSON(b []byte) error {
@@ -175,7 +175,7 @@ type CleanRoomAssetForeignTableLocalDetails struct {
 	// metastore, in the format of *catalog*.*schema*.*foreign_table_name*
 	LocalName string `json:"local_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAssetForeignTableLocalDetails) UnmarshalJSON(b []byte) error {
@@ -193,7 +193,7 @@ type CleanRoomAssetNotebook struct {
 	// as returned by :method:workspace/export with the format of **HTML**.
 	NotebookContent string `json:"notebook_content,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAssetNotebook) UnmarshalJSON(b []byte) error {
@@ -245,7 +245,7 @@ type CleanRoomAssetTableLocalDetails struct {
 	// Partition filtering specification for a shared table.
 	Partitions []PartitionSpecificationPartition `json:"partitions,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAssetTableLocalDetails) UnmarshalJSON(b []byte) error {
@@ -266,7 +266,7 @@ type CleanRoomAssetViewLocalDetails struct {
 	// the format of *catalog*.*schema*.*view_name*
 	LocalName string `json:"local_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAssetViewLocalDetails) UnmarshalJSON(b []byte) error {
@@ -282,7 +282,7 @@ type CleanRoomAssetVolumeLocalDetails struct {
 	// the format of *catalog*.*schema*.*volume_name*
 	LocalName string `json:"local_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomAssetVolumeLocalDetails) UnmarshalJSON(b []byte) error {
@@ -325,7 +325,7 @@ type CleanRoomCollaborator struct {
 	// configured in the metastore
 	OrganizationName string `json:"organization_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomCollaborator) UnmarshalJSON(b []byte) error {
@@ -358,7 +358,7 @@ type CleanRoomNotebookTaskRun struct {
 	// When the task run started, in epoch milliseconds.
 	StartTime int64 `json:"start_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomNotebookTaskRun) UnmarshalJSON(b []byte) error {
@@ -378,7 +378,7 @@ type CleanRoomOutputCatalog struct {
 
 	Status CleanRoomOutputCatalogOutputCatalogStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomOutputCatalog) UnmarshalJSON(b []byte) error {
@@ -442,7 +442,7 @@ type CleanRoomRemoteDetail struct {
 	// Region of the central clean room.
 	Region string `json:"region,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CleanRoomRemoteDetail) UnmarshalJSON(b []byte) error {
@@ -602,7 +602,7 @@ type CollaboratorJobRunInfo struct {
 	// ID of the collaborator's workspace that triggered the task run.
 	CollaboratorWorkspaceId int64 `json:"collaborator_workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CollaboratorJobRunInfo) UnmarshalJSON(b []byte) error {
@@ -639,7 +639,7 @@ type ColumnInfo struct {
 	// Full data type specification as SQL/catalogString text.
 	TypeText string `json:"type_text,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
@@ -659,7 +659,7 @@ type ColumnMask struct {
 	// match the types of columns in 'using_column_names'.
 	UsingColumnNames []string `json:"using_column_names,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ColumnMask) UnmarshalJSON(b []byte) error {
@@ -746,7 +746,7 @@ type ComplianceSecurityProfile struct {
 	// Whether the compliance security profile is enabled.
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
@@ -894,7 +894,7 @@ type EgressNetworkPolicyInternetAccessPolicyInternetDestination struct {
 
 	Type EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EgressNetworkPolicyInternetAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
@@ -1074,7 +1074,7 @@ type EgressNetworkPolicyInternetAccessPolicyStorageDestination struct {
 
 	Type EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *EgressNetworkPolicyInternetAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
@@ -1139,7 +1139,7 @@ type ListCleanRoomAssetsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomAssetsRequest) UnmarshalJSON(b []byte) error {
@@ -1158,7 +1158,7 @@ type ListCleanRoomAssetsResponse struct {
 	// (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomAssetsResponse) UnmarshalJSON(b []byte) error {
@@ -1180,7 +1180,7 @@ type ListCleanRoomNotebookTaskRunsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomNotebookTaskRunsRequest) UnmarshalJSON(b []byte) error {
@@ -1199,7 +1199,7 @@ type ListCleanRoomNotebookTaskRunsResponse struct {
 	// Name of the clean room.
 	Runs []CleanRoomNotebookTaskRun `json:"runs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomNotebookTaskRunsResponse) UnmarshalJSON(b []byte) error {
@@ -1218,7 +1218,7 @@ type ListCleanRoomsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomsRequest) UnmarshalJSON(b []byte) error {
@@ -1236,7 +1236,7 @@ type ListCleanRoomsResponse struct {
 	// (for the next page of results).
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListCleanRoomsResponse) UnmarshalJSON(b []byte) error {
@@ -1266,7 +1266,7 @@ type PartitionValue struct {
 	// not be set.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PartitionValue) UnmarshalJSON(b []byte) error {

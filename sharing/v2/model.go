@@ -47,7 +47,7 @@ type CreateProvider struct {
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateProvider) UnmarshalJSON(b []byte) error {
@@ -85,7 +85,7 @@ type CreateRecipient struct {
 	// only present when the __authentication_type__ is **DATABRICKS**.
 	SharingCode string `json:"sharing_code,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateRecipient) UnmarshalJSON(b []byte) error {
@@ -104,7 +104,7 @@ type CreateShare struct {
 	// Storage root URL for the share.
 	StorageRoot string `json:"storage_root,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateShare) UnmarshalJSON(b []byte) error {
@@ -165,7 +165,7 @@ type GetRecipientSharePermissionsResponse struct {
 	// An array of data share permissions for a recipient.
 	PermissionsOut []ShareToPrivilegeAssignment `json:"permissions_out,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetRecipientSharePermissionsResponse) UnmarshalJSON(b []byte) error {
@@ -183,7 +183,7 @@ type GetShareRequest struct {
 	// The name of the share.
 	Name string `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetShareRequest) UnmarshalJSON(b []byte) error {
@@ -207,7 +207,7 @@ type ListProviderSharesResponse struct {
 	// An array of provider shares.
 	Shares []ProviderShare `json:"shares,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProviderSharesResponse) UnmarshalJSON(b []byte) error {
@@ -236,7 +236,7 @@ type ListProvidersRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProvidersRequest) UnmarshalJSON(b []byte) error {
@@ -255,7 +255,7 @@ type ListProvidersResponse struct {
 	// An array of provider information objects.
 	Providers []ProviderInfo `json:"providers,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListProvidersResponse) UnmarshalJSON(b []byte) error {
@@ -284,7 +284,7 @@ type ListRecipientsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRecipientsRequest) UnmarshalJSON(b []byte) error {
@@ -303,7 +303,7 @@ type ListRecipientsResponse struct {
 	// An array of recipient information objects.
 	Recipients []RecipientInfo `json:"recipients,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListRecipientsResponse) UnmarshalJSON(b []byte) error {
@@ -331,7 +331,7 @@ type ListSharesRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSharesRequest) UnmarshalJSON(b []byte) error {
@@ -350,7 +350,7 @@ type ListSharesResponse struct {
 	// An array of data share information objects.
 	Shares []ShareInfo `json:"shares,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListSharesResponse) UnmarshalJSON(b []byte) error {
@@ -380,7 +380,7 @@ type PartitionValue struct {
 	// not be set.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PartitionValue) UnmarshalJSON(b []byte) error {
@@ -420,13 +420,13 @@ func (f *PartitionValueOp) Type() string {
 
 type PermissionsChange struct {
 	// The set of privileges to add.
-	Add []Privilege `json:"add,omitempty"`
+	Add []SharingPrivilege `json:"add,omitempty"`
 	// The principal whose privileges we are changing.
 	Principal string `json:"principal,omitempty"`
 	// The set of privileges to remove.
-	Remove []Privilege `json:"remove,omitempty"`
+	Remove []SharingPrivilege `json:"remove,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PermissionsChange) UnmarshalJSON(b []byte) error {
@@ -439,7 +439,7 @@ func (s PermissionsChange) MarshalJSON() ([]byte, error) {
 
 type PermissionsList struct {
 	// The privileges assigned to each principal
-	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+	PrivilegeAssignments []SharingPrivilegeAssignment `json:"privilege_assignments,omitempty"`
 }
 
 type Privilege string
@@ -561,7 +561,7 @@ type PrivilegeAssignment struct {
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
@@ -609,7 +609,7 @@ type ProviderInfo struct {
 	// Username of user who last modified Provider.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ProviderInfo) UnmarshalJSON(b []byte) error {
@@ -624,7 +624,7 @@ type ProviderShare struct {
 	// The name of the Provider Share.
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ProviderShare) UnmarshalJSON(b []byte) error {
@@ -687,7 +687,7 @@ type RecipientInfo struct {
 	// Username of recipient updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RecipientInfo) UnmarshalJSON(b []byte) error {
@@ -706,7 +706,7 @@ type RecipientProfile struct {
 	// The version number of the recipient's credentials on a share.
 	ShareCredentialsVersion int `json:"share_credentials_version,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RecipientProfile) UnmarshalJSON(b []byte) error {
@@ -734,7 +734,7 @@ type RecipientTokenInfo struct {
 	// Username of recipient token updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RecipientTokenInfo) UnmarshalJSON(b []byte) error {
@@ -761,7 +761,7 @@ type RetrieveTokenResponse struct {
 	// These field names must follow the delta sharing protocol.
 	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RetrieveTokenResponse) UnmarshalJSON(b []byte) error {
@@ -811,7 +811,7 @@ type ShareInfo struct {
 	// Username of share updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ShareInfo) UnmarshalJSON(b []byte) error {
@@ -839,7 +839,7 @@ type SharePermissionsRequest struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SharePermissionsRequest) UnmarshalJSON(b []byte) error {
@@ -856,7 +856,7 @@ type ShareToPrivilegeAssignment struct {
 	// The share name.
 	ShareName string `json:"share_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ShareToPrivilegeAssignment) UnmarshalJSON(b []byte) error {
@@ -916,7 +916,7 @@ type SharedDataObject struct {
 	// file name.
 	StringSharedAs string `json:"string_shared_as,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SharedDataObject) UnmarshalJSON(b []byte) error {
@@ -1063,6 +1063,136 @@ func (f *SharedDataObjectUpdateAction) Type() string {
 	return "SharedDataObjectUpdateAction"
 }
 
+type SharingPrivilege string
+
+const SharingPrivilegeAccess SharingPrivilege = `ACCESS`
+
+const SharingPrivilegeAllPrivileges SharingPrivilege = `ALL_PRIVILEGES`
+
+const SharingPrivilegeApplyTag SharingPrivilege = `APPLY_TAG`
+
+const SharingPrivilegeCreate SharingPrivilege = `CREATE`
+
+const SharingPrivilegeCreateCatalog SharingPrivilege = `CREATE_CATALOG`
+
+const SharingPrivilegeCreateConnection SharingPrivilege = `CREATE_CONNECTION`
+
+const SharingPrivilegeCreateExternalLocation SharingPrivilege = `CREATE_EXTERNAL_LOCATION`
+
+const SharingPrivilegeCreateExternalTable SharingPrivilege = `CREATE_EXTERNAL_TABLE`
+
+const SharingPrivilegeCreateExternalVolume SharingPrivilege = `CREATE_EXTERNAL_VOLUME`
+
+const SharingPrivilegeCreateForeignCatalog SharingPrivilege = `CREATE_FOREIGN_CATALOG`
+
+const SharingPrivilegeCreateForeignSecurable SharingPrivilege = `CREATE_FOREIGN_SECURABLE`
+
+const SharingPrivilegeCreateFunction SharingPrivilege = `CREATE_FUNCTION`
+
+const SharingPrivilegeCreateManagedStorage SharingPrivilege = `CREATE_MANAGED_STORAGE`
+
+const SharingPrivilegeCreateMaterializedView SharingPrivilege = `CREATE_MATERIALIZED_VIEW`
+
+const SharingPrivilegeCreateModel SharingPrivilege = `CREATE_MODEL`
+
+const SharingPrivilegeCreateProvider SharingPrivilege = `CREATE_PROVIDER`
+
+const SharingPrivilegeCreateRecipient SharingPrivilege = `CREATE_RECIPIENT`
+
+const SharingPrivilegeCreateSchema SharingPrivilege = `CREATE_SCHEMA`
+
+const SharingPrivilegeCreateServiceCredential SharingPrivilege = `CREATE_SERVICE_CREDENTIAL`
+
+const SharingPrivilegeCreateShare SharingPrivilege = `CREATE_SHARE`
+
+const SharingPrivilegeCreateStorageCredential SharingPrivilege = `CREATE_STORAGE_CREDENTIAL`
+
+const SharingPrivilegeCreateTable SharingPrivilege = `CREATE_TABLE`
+
+const SharingPrivilegeCreateView SharingPrivilege = `CREATE_VIEW`
+
+const SharingPrivilegeCreateVolume SharingPrivilege = `CREATE_VOLUME`
+
+const SharingPrivilegeExecute SharingPrivilege = `EXECUTE`
+
+const SharingPrivilegeManage SharingPrivilege = `MANAGE`
+
+const SharingPrivilegeManageAllowlist SharingPrivilege = `MANAGE_ALLOWLIST`
+
+const SharingPrivilegeModify SharingPrivilege = `MODIFY`
+
+const SharingPrivilegeReadFiles SharingPrivilege = `READ_FILES`
+
+const SharingPrivilegeReadPrivateFiles SharingPrivilege = `READ_PRIVATE_FILES`
+
+const SharingPrivilegeReadVolume SharingPrivilege = `READ_VOLUME`
+
+const SharingPrivilegeRefresh SharingPrivilege = `REFRESH`
+
+const SharingPrivilegeSelect SharingPrivilege = `SELECT`
+
+const SharingPrivilegeSetSharePermission SharingPrivilege = `SET_SHARE_PERMISSION`
+
+const SharingPrivilegeUsage SharingPrivilege = `USAGE`
+
+const SharingPrivilegeUseCatalog SharingPrivilege = `USE_CATALOG`
+
+const SharingPrivilegeUseConnection SharingPrivilege = `USE_CONNECTION`
+
+const SharingPrivilegeUseMarketplaceAssets SharingPrivilege = `USE_MARKETPLACE_ASSETS`
+
+const SharingPrivilegeUseProvider SharingPrivilege = `USE_PROVIDER`
+
+const SharingPrivilegeUseRecipient SharingPrivilege = `USE_RECIPIENT`
+
+const SharingPrivilegeUseSchema SharingPrivilege = `USE_SCHEMA`
+
+const SharingPrivilegeUseShare SharingPrivilege = `USE_SHARE`
+
+const SharingPrivilegeWriteFiles SharingPrivilege = `WRITE_FILES`
+
+const SharingPrivilegeWritePrivateFiles SharingPrivilege = `WRITE_PRIVATE_FILES`
+
+const SharingPrivilegeWriteVolume SharingPrivilege = `WRITE_VOLUME`
+
+// String representation for [fmt.Print]
+func (f *SharingPrivilege) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SharingPrivilege) Set(v string) error {
+	switch v {
+	case `ACCESS`, `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FOREIGN_SECURABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SERVICE_CREDENTIAL`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
+		*f = SharingPrivilege(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+	}
+}
+
+// Type always returns SharingPrivilege to satisfy [pflag.Value] interface
+func (f *SharingPrivilege) Type() string {
+	return "SharingPrivilege"
+}
+
+type SharingPrivilegeAssignment struct {
+	// The principal (user email address or group name).
+	Principal string `json:"principal,omitempty"`
+	// The privileges assigned to the principal.
+	Privileges []SharingPrivilege `json:"privileges,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SharingPrivilegeAssignment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SharingPrivilegeAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpdatePermissionsResponse struct {
 }
 
@@ -1079,7 +1209,7 @@ type UpdateProvider struct {
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateProvider) UnmarshalJSON(b []byte) error {
@@ -1109,7 +1239,7 @@ type UpdateRecipient struct {
 	// read-modify-write.
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateRecipient) UnmarshalJSON(b []byte) error {
@@ -1134,7 +1264,7 @@ type UpdateShare struct {
 	// Array of shared data object updates.
 	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateShare) UnmarshalJSON(b []byte) error {
@@ -1163,7 +1293,7 @@ type UpdateSharePermissions struct {
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateSharePermissions) UnmarshalJSON(b []byte) error {

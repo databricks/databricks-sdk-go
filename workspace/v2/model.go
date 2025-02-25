@@ -73,7 +73,7 @@ type CreateCredentialsRequest struct {
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateCredentialsRequest) UnmarshalJSON(b []byte) error {
@@ -93,7 +93,7 @@ type CreateCredentialsResponse struct {
 	// associated with the credential.
 	GitUsername string `json:"git_username,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateCredentialsResponse) UnmarshalJSON(b []byte) error {
@@ -120,7 +120,7 @@ type CreateRepoRequest struct {
 	// URL of the Git repository to be linked.
 	Url string `json:"url"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateRepoRequest) UnmarshalJSON(b []byte) error {
@@ -148,7 +148,7 @@ type CreateRepoResponse struct {
 	// URL of the linked Git repository.
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateRepoResponse) UnmarshalJSON(b []byte) error {
@@ -171,7 +171,7 @@ type CreateScope struct {
 	// default to `DATABRICKS`
 	ScopeBackendType ScopeBackendType `json:"scope_backend_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateScope) UnmarshalJSON(b []byte) error {
@@ -194,7 +194,7 @@ type CredentialInfo struct {
 	// associated with the credential.
 	GitUsername string `json:"git_username,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CredentialInfo) UnmarshalJSON(b []byte) error {
@@ -214,7 +214,7 @@ type Delete struct {
 	// deleted and cannot be undone.
 	Recursive bool `json:"recursive,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Delete) UnmarshalJSON(b []byte) error {
@@ -338,7 +338,7 @@ type ExportResponse struct {
 	// The file type of the exported file.
 	FileType string `json:"file_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExportResponse) UnmarshalJSON(b []byte) error {
@@ -372,7 +372,7 @@ type GetCredentialsResponse struct {
 	// associated with the credential.
 	GitUsername string `json:"git_username,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetCredentialsResponse) UnmarshalJSON(b []byte) error {
@@ -422,7 +422,7 @@ type GetRepoResponse struct {
 	// URL of the linked Git repository.
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetRepoResponse) UnmarshalJSON(b []byte) error {
@@ -447,7 +447,7 @@ type GetSecretResponse struct {
 	// The value of the secret in its byte representation.
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetSecretResponse) UnmarshalJSON(b []byte) error {
@@ -517,7 +517,7 @@ type Import struct {
 	// only supported for the `DBC` and `SOURCE` formats.
 	Path string `json:"path"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Import) UnmarshalJSON(b []byte) error {
@@ -647,7 +647,7 @@ type ListReposRequest struct {
 	// `/Workspace`) Git folders (repos) from `/Workspace/Repos` will be served.
 	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListReposRequest) UnmarshalJSON(b []byte) error {
@@ -665,7 +665,7 @@ type ListReposResponse struct {
 	// List of Git folders (repos).
 	Repos []RepoInfo `json:"repos,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListReposResponse) UnmarshalJSON(b []byte) error {
@@ -704,7 +704,7 @@ type ListWorkspaceRequest struct {
 	// The absolute path of the notebook or directory.
 	Path string `json:"-" url:"path"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListWorkspaceRequest) UnmarshalJSON(b []byte) error {
@@ -749,7 +749,7 @@ type ObjectInfo struct {
 	// Only applicable to files. The file size in bytes can be returned.
 	Size int64 `json:"size,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ObjectInfo) UnmarshalJSON(b []byte) error {
@@ -828,7 +828,7 @@ type PutSecret struct {
 	// If specified, note that the value will be stored in UTF-8 (MB4) form.
 	StringValue string `json:"string_value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PutSecret) UnmarshalJSON(b []byte) error {
@@ -852,7 +852,7 @@ type RepoAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepoAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -875,7 +875,7 @@ type RepoAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepoAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -903,7 +903,7 @@ type RepoInfo struct {
 	// URL of the remote git repository.
 	Url string `json:"url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepoInfo) UnmarshalJSON(b []byte) error {
@@ -921,7 +921,7 @@ type RepoPermission struct {
 	// Permission level
 	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepoPermission) UnmarshalJSON(b []byte) error {
@@ -971,7 +971,7 @@ type RepoPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepoPermissions) UnmarshalJSON(b []byte) error {
@@ -987,7 +987,7 @@ type RepoPermissionsDescription struct {
 	// Permission level
 	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RepoPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -1037,7 +1037,7 @@ type SecretMetadata struct {
 	// The last updated timestamp (in milliseconds) for the secret.
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SecretMetadata) UnmarshalJSON(b []byte) error {
@@ -1056,7 +1056,7 @@ type SecretScope struct {
 	// A unique name to identify the secret scope.
 	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SecretScope) UnmarshalJSON(b []byte) error {
@@ -1108,7 +1108,7 @@ type UpdateCredentialsRequest struct {
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateCredentialsRequest) UnmarshalJSON(b []byte) error {
@@ -1136,7 +1136,7 @@ type UpdateRepoRequest struct {
 	// HEAD.
 	Tag string `json:"tag,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateRepoRequest) UnmarshalJSON(b []byte) error {
@@ -1160,7 +1160,7 @@ type WorkspaceObjectAccessControlRequest struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WorkspaceObjectAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -1183,7 +1183,7 @@ type WorkspaceObjectAccessControlResponse struct {
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WorkspaceObjectAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -1201,7 +1201,7 @@ type WorkspaceObjectPermission struct {
 	// Permission level
 	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WorkspaceObjectPermission) UnmarshalJSON(b []byte) error {
@@ -1251,7 +1251,7 @@ type WorkspaceObjectPermissions struct {
 
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WorkspaceObjectPermissions) UnmarshalJSON(b []byte) error {
@@ -1267,7 +1267,7 @@ type WorkspaceObjectPermissionsDescription struct {
 	// Permission level
 	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *WorkspaceObjectPermissionsDescription) UnmarshalJSON(b []byte) error {

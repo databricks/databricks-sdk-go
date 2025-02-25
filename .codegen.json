@@ -1,6 +1,6 @@
 {
   "mode": "go_mod",
-  "changelog_config": ".codegen/changelog_config.yml",
+  "api_changelog": true,
   "version": {
     "version/version.go": "const Version = \"$VERSION\""
   },

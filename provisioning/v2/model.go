@@ -25,7 +25,7 @@ type AwsKeyInfo struct {
 	// EBS volumes, set to `false`.
 	ReuseKeyForClusterVolumes bool `json:"reuse_key_for_cluster_volumes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AwsKeyInfo) UnmarshalJSON(b []byte) error {
@@ -42,7 +42,7 @@ type AzureWorkspaceInfo struct {
 	// Azure Subscription ID
 	SubscriptionId string `json:"subscription_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AzureWorkspaceInfo) UnmarshalJSON(b []byte) error {
@@ -71,7 +71,7 @@ type CreateAwsKeyInfo struct {
 	// set this to `false`.
 	ReuseKeyForClusterVolumes bool `json:"reuse_key_for_cluster_volumes,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateAwsKeyInfo) UnmarshalJSON(b []byte) error {
@@ -96,7 +96,7 @@ type CreateCredentialStsRole struct {
 	// The Amazon Resource Name (ARN) of the cross account role.
 	RoleArn string `json:"role_arn,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateCredentialStsRole) UnmarshalJSON(b []byte) error {
@@ -141,7 +141,7 @@ type CreateNetworkRequest struct {
 	// multiple network configurations.
 	VpcId string `json:"vpc_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateNetworkRequest) UnmarshalJSON(b []byte) error {
@@ -170,7 +170,7 @@ type CreateVpcEndpointRequest struct {
 	// The human-readable name of the storage configuration.
 	VpcEndpointName string `json:"vpc_endpoint_name"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateVpcEndpointRequest) UnmarshalJSON(b []byte) error {
@@ -293,7 +293,7 @@ type CreateWorkspaceRequest struct {
 	// The workspace's human-readable name.
 	WorkspaceName string `json:"workspace_name"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateWorkspaceRequest) UnmarshalJSON(b []byte) error {
@@ -316,7 +316,7 @@ type Credential struct {
 	// The human-readable name of the credential configuration object.
 	CredentialsName string `json:"credentials_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Credential) UnmarshalJSON(b []byte) error {
@@ -339,7 +339,7 @@ type CustomerFacingGcpCloudResourceContainer struct {
 	// cloud resources for your workspace.
 	ProjectId string `json:"project_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CustomerFacingGcpCloudResourceContainer) UnmarshalJSON(b []byte) error {
@@ -364,7 +364,7 @@ type CustomerManagedKey struct {
 	// The cases that the key can be used for.
 	UseCases []KeyUseCase `json:"use_cases,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CustomerManagedKey) UnmarshalJSON(b []byte) error {
@@ -494,7 +494,7 @@ type ExternalCustomerInfo struct {
 	// The legal entity name for the external workspace
 	CustomerName string `json:"customer_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ExternalCustomerInfo) UnmarshalJSON(b []byte) error {
@@ -544,7 +544,7 @@ type GcpManagedNetworkConfig struct {
 	// `/9` and no smaller than `/29`.
 	SubnetCidr string `json:"subnet_cidr,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GcpManagedNetworkConfig) UnmarshalJSON(b []byte) error {
@@ -593,7 +593,7 @@ type GcpVpcEndpointInfo struct {
 	// The service attachment this PSC connection connects to.
 	ServiceAttachmentId string `json:"service_attachment_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GcpVpcEndpointInfo) UnmarshalJSON(b []byte) error {
@@ -663,7 +663,7 @@ type GkeConfig struct {
 	// It must be exactly as big as `/28`.
 	MasterIpRange string `json:"master_ip_range,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GkeConfig) UnmarshalJSON(b []byte) error {
@@ -777,7 +777,7 @@ type Network struct {
 	// Workspace ID associated with this network configuration.
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Network) UnmarshalJSON(b []byte) error {
@@ -795,7 +795,7 @@ type NetworkHealth struct {
 	// security group, or network ACL.
 	ErrorType ErrorType `json:"error_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NetworkHealth) UnmarshalJSON(b []byte) error {
@@ -826,7 +826,7 @@ type NetworkWarning struct {
 	// group.
 	WarningType WarningType `json:"warning_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *NetworkWarning) UnmarshalJSON(b []byte) error {
@@ -935,7 +935,7 @@ type PrivateAccessSettings struct {
 	// object.
 	Region string `json:"region,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *PrivateAccessSettings) UnmarshalJSON(b []byte) error {
@@ -954,7 +954,7 @@ type RootBucketInfo struct {
 	// The name of the S3 bucket.
 	BucketName string `json:"bucket_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *RootBucketInfo) UnmarshalJSON(b []byte) error {
@@ -977,7 +977,7 @@ type StorageConfiguration struct {
 	// The human-readable name of the storage configuration.
 	StorageConfigurationName string `json:"storage_configuration_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *StorageConfiguration) UnmarshalJSON(b []byte) error {
@@ -995,7 +995,7 @@ type StsRole struct {
 	// The Amazon Resource Name (ARN) of the cross account role.
 	RoleArn string `json:"role_arn,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *StsRole) UnmarshalJSON(b []byte) error {
@@ -1043,7 +1043,7 @@ type UpdateWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateWorkspaceRequest) UnmarshalJSON(b []byte) error {
@@ -1091,7 +1091,7 @@ type UpsertPrivateAccessSettingsRequest struct {
 	// settings object.
 	Region string `json:"region"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpsertPrivateAccessSettingsRequest) UnmarshalJSON(b []byte) error {
@@ -1139,7 +1139,7 @@ type VpcEndpoint struct {
 	// The human-readable name of the storage configuration.
 	VpcEndpointName string `json:"vpc_endpoint_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *VpcEndpoint) UnmarshalJSON(b []byte) error {
@@ -1315,7 +1315,7 @@ type Workspace struct {
 	// Message describing the current workspace status.
 	WorkspaceStatusMessage string `json:"workspace_status_message,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Workspace) UnmarshalJSON(b []byte) error {
