@@ -11,11 +11,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
-	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
 	"github.com/databricks/databricks-sdk-go/databricks/common"
 	"github.com/databricks/databricks-sdk-go/databricks/common/environment"
 	"github.com/databricks/databricks-sdk-go/databricks/config/credentials"
+	"github.com/databricks/databricks-sdk-go/databricks/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/databricks/config/experimental/auth/authconv"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/log"
 	"golang.org/x/oauth2"
