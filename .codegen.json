@@ -1,5 +1,5 @@
 {
-  "mode": "go_v0",
+  "mode": "go_mod",
   "api_changelog": true,
   "version": {
     "version/version.go": "const Version = \"$VERSION\""

@@ -17,7 +17,7 @@ type ActionConfiguration struct {
 	// Target for the action. For example, an email address.
 	Target string `json:"target,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ActionConfiguration) UnmarshalJSON(b []byte) error {
@@ -71,7 +71,7 @@ type AlertConfiguration struct {
 	// triggered state.
 	TriggerType AlertConfigurationTriggerType `json:"trigger_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *AlertConfiguration) UnmarshalJSON(b []byte) error {
@@ -177,7 +177,7 @@ type BudgetConfiguration struct {
 	// Update time of this budget configuration.
 	UpdateTime int64 `json:"update_time,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *BudgetConfiguration) UnmarshalJSON(b []byte) error {
@@ -233,7 +233,7 @@ type BudgetConfigurationFilterTagClause struct {
 
 	Value *BudgetConfigurationFilterClause `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *BudgetConfigurationFilterTagClause) UnmarshalJSON(b []byte) error {
@@ -262,7 +262,7 @@ type BudgetPolicy struct {
 	// contain only characters from the ISO 8859-1 (latin1) set.
 	PolicyName string `json:"policy_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *BudgetPolicy) UnmarshalJSON(b []byte) error {
@@ -282,7 +282,7 @@ type CreateBillingUsageDashboardRequest struct {
 	// created.
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
@@ -297,7 +297,7 @@ type CreateBillingUsageDashboardResponse struct {
 	// The unique id of the usage dashboard.
 	DashboardId string `json:"dashboard_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
@@ -322,7 +322,7 @@ type CreateBudgetConfigurationBudget struct {
 	// matched for usage to be included.
 	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
@@ -339,7 +339,7 @@ type CreateBudgetConfigurationBudgetActionConfigurations struct {
 	// Target for the action. For example, an email address.
 	Target string `json:"target,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateBudgetConfigurationBudgetActionConfigurations) UnmarshalJSON(b []byte) error {
@@ -366,7 +366,7 @@ type CreateBudgetConfigurationBudgetAlertConfigurations struct {
 	// triggered state.
 	TriggerType AlertConfigurationTriggerType `json:"trigger_type,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateBudgetConfigurationBudgetAlertConfigurations) UnmarshalJSON(b []byte) error {
@@ -401,7 +401,7 @@ type CreateBudgetPolicyRequest struct {
 	// `request_id` is provided.
 	RequestId string `json:"request_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
@@ -483,7 +483,7 @@ type CreateLogDeliveryConfigurationParams struct {
 	// unnecessary.
 	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CreateLogDeliveryConfigurationParams) UnmarshalJSON(b []byte) error {
@@ -510,7 +510,7 @@ type CustomPolicyTag struct {
 	// (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L24)
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *CustomPolicyTag) UnmarshalJSON(b []byte) error {
@@ -602,7 +602,7 @@ type DownloadRequest struct {
 	// field is required.
 	StartMonth string `json:"-" url:"start_month"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *DownloadRequest) UnmarshalJSON(b []byte) error {
@@ -630,7 +630,7 @@ type Filter struct {
 	// policies will be returned.
 	PolicyName string `json:"policy_name,omitempty" url:"policy_name,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *Filter) UnmarshalJSON(b []byte) error {
@@ -651,7 +651,7 @@ type GetBillingUsageDashboardRequest struct {
 	// created.
 	WorkspaceId int64 `json:"-" url:"workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
@@ -668,7 +668,7 @@ type GetBillingUsageDashboardResponse struct {
 	// The URL of the usage dashboard.
 	DashboardUrl string `json:"dashboard_url,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *GetBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
@@ -713,7 +713,7 @@ type ListBudgetConfigurationsRequest struct {
 	// page if absent.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListBudgetConfigurationsRequest) UnmarshalJSON(b []byte) error {
@@ -730,7 +730,7 @@ type ListBudgetConfigurationsResponse struct {
 	// results. If this field is omitted, there are no subsequent budgets.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListBudgetConfigurationsResponse) UnmarshalJSON(b []byte) error {
@@ -760,7 +760,7 @@ type ListBudgetPoliciesRequest struct {
 	// The sort specification.
 	SortSpec *SortSpec `json:"-" url:"sort_spec,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListBudgetPoliciesRequest) UnmarshalJSON(b []byte) error {
@@ -782,7 +782,7 @@ type ListBudgetPoliciesResponse struct {
 	// In this field is omitted, there are no previous pages.
 	PreviousPageToken string `json:"previous_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListBudgetPoliciesResponse) UnmarshalJSON(b []byte) error {
@@ -802,7 +802,7 @@ type ListLogDeliveryRequest struct {
 	// Filter by storage configuration ID.
 	StorageConfigurationId string `json:"-" url:"storage_configuration_id,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *ListLogDeliveryRequest) UnmarshalJSON(b []byte) error {
@@ -928,7 +928,7 @@ type LogDeliveryConfiguration struct {
 	// unnecessary.
 	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
@@ -961,7 +961,7 @@ type LogDeliveryStatus struct {
 	// the account.
 	Status DeliveryStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *LogDeliveryStatus) UnmarshalJSON(b []byte) error {
@@ -1057,7 +1057,7 @@ type SortSpec struct {
 	// The filed to sort by
 	Field SortSpecField `json:"field,omitempty" url:"field,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *SortSpec) UnmarshalJSON(b []byte) error {
@@ -1109,7 +1109,7 @@ type UpdateBudgetConfigurationBudget struct {
 	// matched for usage to be included.
 	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
 
-	ForceSendFields []string `json:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
 func (s *UpdateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {

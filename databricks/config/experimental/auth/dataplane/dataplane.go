@@ -6,7 +6,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/databricks/config/experimental/auth"
 	"golang.org/x/oauth2"
 )
 
