@@ -117,6 +117,7 @@ type DoOption struct {
 // Do sends an HTTP request against path.
 func (c *ApiClient) Do(ctx context.Context, method, path string, opts ...DoOption) error {
 	var authVisitor RequestVisitor
+	var explicitQueryParams map[string]any
 	visitors := c.config.Visitors[:]
 	var explicitQueryParams map[string]any
 	for _, o := range opts {
