@@ -16,10 +16,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger/httplog"
 )
 
-const (
-	errorInfoType string = "type.googleapis.com/google.rpc.ErrorInfo"
-)
-
+// Deprecated: Use [ErrorDetails] instead.
 type ErrorDetail struct {
 	Type     string            `json:"@type,omitempty"`
 	Reason   string            `json:"reason,omitempty"`
@@ -27,15 +24,28 @@ type ErrorDetail struct {
 	Metadata map[string]string `json:"metadata,omitempty"`
 }
 
-// APIError is a generic struct for an api error on databricks
+// APIError represents a standard Databricks API error.
 type APIError struct {
 	ErrorCode  string
 	Message    string
 	StatusCode int
-	Details    []ErrorDetail
+
+	errorDetails ErrorDetails
+
 	// If non-nil, the underlying error that should be returned by calling
 	// errors.Unwrap on this error.
 	unwrap error
+
+	// Details is the sublist of error details that can be unmarshalled into
+	// the [ErrorDetail] type.
+	//
+	// Deprecated: Use [APIError.ErrorDetails] instead.
+	Details []ErrorDetail
+}
+
+// ErrorDetails returns the error details of the APIError.
+func (apiErr *APIError) ErrorDetails() ErrorDetails {
+	return apiErr.errorDetails
 }
 
 // Error returns the error message string.
@@ -48,36 +58,36 @@ func IsMissing(err error) bool {
 	return errors.Is(err, ErrNotFound)
 }
 
-// GetErrorInfo returns all entries in the list of error details of type `ErrorInfo`.
+// GetErrorInfo returns all entries in the list of error details of type
+// `ErrorInfo`.
+//
+// Deprecated: Use [APIError.ErrorDetails] instead.
 func GetErrorInfo(err error) []ErrorDetail {
-	return getDetailsByType(err, errorInfoType)
-}
-
-func getDetailsByType(err error, errorDetailType string) []ErrorDetail {
 	var apiError *APIError
 	if !errors.As(err, &apiError) {
 		return nil
 	}
+
 	filteredDetails := []ErrorDetail{}
 	for _, detail := range apiError.Details {
-		if errorDetailType == detail.Type {
+		if errorInfoType == detail.Type {
 			filteredDetails = append(filteredDetails, detail)
 		}
 	}
 	return filteredDetails
 }
 
-// IsMissing tells if it is missing resource
+// IsMissing tells if it is missing resource.
 func (apiError *APIError) IsMissing() bool {
 	return errors.Is(apiError, ErrNotFound)
 }
 
-// IsTooManyRequests shows rate exceeded limits
+// IsTooManyRequests shows rate exceeded limits.
 func (apiError *APIError) IsTooManyRequests() bool {
 	return errors.Is(apiError, ErrTooManyRequests)
 }
 
-// isRetriable returns true if error is retriable
+// IsRetriable returns true if error is retriable.
 func (apiError *APIError) IsRetriable(ctx context.Context) bool {
 	if apiError.IsTooManyRequests() {
 		return true
@@ -99,7 +109,7 @@ func (apiError *APIError) IsRetriable(ctx context.Context) bool {
 	return false
 }
 
-// NotFound returns properly formatted Not Found error
+// NotFound returns properly formatted Not Found error.
 func NotFound(message string) *APIError {
 	return &APIError{
 		ErrorCode:  "NOT_FOUND",
@@ -132,7 +142,8 @@ func GenericIOError(ue *url.Error) *APIError {
 	}
 }
 
-// GetAPIError inspects HTTP errors from the Databricks API for known transient errors.
+// GetAPIError inspects HTTP errors from the Databricks API for known transient
+// errors.
 func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 	if resp.Response.StatusCode == 429 {
 		return TooManyRequests()
@@ -194,10 +205,10 @@ func parseErrorFromResponse(ctx context.Context, resp *http.Response, requestBod
 func standardErrorParser(ctx context.Context, resp *http.Response, responseBody []byte) *APIError {
 	// Anonymous struct used to unmarshal JSON Databricks API error responses.
 	var errorBody struct {
-		ErrorCode  any           `json:"error_code,omitempty"` // int or string
-		Message    string        `json:"message,omitempty"`
-		Details    []ErrorDetail `json:"details,omitempty"`
-		API12Error string        `json:"error,omitempty"`
+		ErrorCode  any               `json:"error_code,omitempty"` // int or string
+		Message    string            `json:"message,omitempty"`
+		API12Error string            `json:"error,omitempty"`
+		RawDetails []json.RawMessage `json:"details,omitempty"`
 
 		// The following fields are for scim api only. See RFC7644 section 3.7.3
 		// https://tools.ietf.org/html/rfc7644#section-3.7.3
@@ -228,12 +239,27 @@ func standardErrorParser(ctx context.Context, resp *http.Response, responseBody 
 		errorBody.ErrorCode = fmt.Sprintf("SCIM_%s", errorBody.ScimStatus)
 	}
 
-	return &APIError{
+	apierr := &APIError{
 		Message:    errorBody.Message,
 		ErrorCode:  fmt.Sprintf("%v", errorBody.ErrorCode),
 		StatusCode: resp.StatusCode,
-		Details:    errorBody.Details,
 	}
+
+	// Parse the error details, dropping any that fail to unmarshal.
+	details := []any{}
+	for _, rd := range errorBody.RawDetails {
+		details = append(details, unmarshalDetails(rd))
+
+		// Deprecated: unmarshal ErrorDetail type for backwards compatibility
+		// with the previous behavior.
+		ed := ErrorDetail{}
+		if json.Unmarshal(rd, &ed) == nil { // ignore errors
+			apierr.Details = append(apierr.Details, ed)
+		}
+	}
+	apierr.errorDetails = parseErrorDetails(details)
+
+	return apierr
 }
 
 var stringErrorRegex = regexp.MustCompile(`^([A-Z_]+): (.*)$`)
