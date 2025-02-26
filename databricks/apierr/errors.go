@@ -27,6 +27,17 @@ type APIError struct {
 	// If non-nil, the underlying error that should be returned by calling
 	// errors.Unwrap on this error.
 	unwrap error
+
+	// Details is the sublist of error details that can be unmarshalled into
+	// the [ErrorDetail] type.
+	//
+	// Deprecated: Use [APIError.ErrorDetails] instead.
+	Details []ErrorDetail
+}
+
+// ErrorDetails returns the error details of the APIError.
+func (apiErr *APIError) ErrorDetails() ErrorDetails {
+	return apiErr.errorDetails
 }
 
 // Details returns the error details of the APIError.
