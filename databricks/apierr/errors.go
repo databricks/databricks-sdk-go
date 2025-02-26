@@ -16,36 +16,22 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/log"
 )
 
-// Deprecated: Use [ErrorDetails] instead.
-type ErrorDetail struct {
-	Type     string            `json:"@type,omitempty"`
-	Reason   string            `json:"reason,omitempty"`
-	Domain   string            `json:"domain,omitempty"`
-	Metadata map[string]string `json:"metadata,omitempty"`
-}
-
 // APIError represents a standard Databricks API error.
 type APIError struct {
 	ErrorCode  string
 	Message    string
 	StatusCode int
 
-	errorDetails ErrorDetails
+	details ErrorDetails
 
 	// If non-nil, the underlying error that should be returned by calling
 	// errors.Unwrap on this error.
 	unwrap error
-
-	// Details is the sublist of error details that can be unmarshalled into
-	// the [ErrorDetail] type.
-	//
-	// Deprecated: Use [APIError.ErrorDetails] instead.
-	Details []ErrorDetail
 }
 
-// ErrorDetails returns the error details of the APIError.
-func (apiErr *APIError) ErrorDetails() ErrorDetails {
-	return apiErr.errorDetails
+// Details returns the error details of the APIError.
+func (apiErr *APIError) Details() ErrorDetails {
+	return apiErr.details
 }
 
 // Error returns the error message string.
@@ -56,25 +42,6 @@ func (apiError *APIError) Error() string {
 // IsMissing tells if error is about missing resource
 func IsMissing(err error) bool {
 	return errors.Is(err, ErrNotFound)
-}
-
-// GetErrorInfo returns all entries in the list of error details of type
-// `ErrorInfo`.
-//
-// Deprecated: Use [APIError.ErrorDetails] instead.
-func GetErrorInfo(err error) []ErrorDetail {
-	var apiError *APIError
-	if !errors.As(err, &apiError) {
-		return nil
-	}
-
-	filteredDetails := []ErrorDetail{}
-	for _, detail := range apiError.Details {
-		if errorInfoType == detail.Type {
-			filteredDetails = append(filteredDetails, detail)
-		}
-	}
-	return filteredDetails
 }
 
 // IsMissing tells if it is missing resource.
@@ -249,15 +216,8 @@ func standardErrorParser(ctx context.Context, resp *http.Response, responseBody 
 	details := []any{}
 	for _, rd := range errorBody.RawDetails {
 		details = append(details, unmarshalDetails(rd))
-
-		// Deprecated: unmarshal ErrorDetail type for backwards compatibility
-		// with the previous behavior.
-		ed := ErrorDetail{}
-		if json.Unmarshal(rd, &ed) == nil { // ignore errors
-			apierr.Details = append(apierr.Details, ed)
-		}
 	}
-	apierr.errorDetails = parseErrorDetails(details)
+	apierr.details = parseErrorDetails(details)
 
 	return apierr
 }

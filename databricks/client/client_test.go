@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -16,6 +17,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/env"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 	"github.com/databricks/databricks-sdk-go/databricks/version"
+	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -132,14 +134,33 @@ func TestETag(t *testing.T) {
 		map[string]string{"c": "d"},
 		nil,
 	)
-	details := apierr.GetErrorInfo(err)
-	require.Equal(t, 1, len(details))
-	errorDetails := details[0]
-	require.Equal(t, reason, errorDetails.Reason)
-	require.Equal(t, domain, errorDetails.Domain)
-	require.Equal(t, map[string]string{
-		"etag": eTag,
-	}, errorDetails.Metadata)
+
+	apiErr := &apierr.APIError{}
+	errors.As(err, &apiErr)
+
+	wantDetails := apierr.ErrorDetails{
+		ErrorInfo: &apierr.ErrorInfo{
+			Reason: reason,
+			Domain: domain,
+			Metadata: map[string]string{
+				"etag": eTag,
+			},
+		},
+		UnknownDetails: []any{
+			map[string]any{
+				"@type":  "anotherType",
+				"reason": "",
+				"domain": "",
+				"metadata": map[string]any{
+					"etag": "anotherTag",
+				},
+			},
+		},
+	}
+
+	if diff := cmp.Diff(apiErr.Details(), wantDetails); diff != "" {
+		t.Errorf("unexpected error details: %s", diff)
+	}
 }
 
 func TestSimpleRequestSucceeds(t *testing.T) {
