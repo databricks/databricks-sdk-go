@@ -4,6 +4,8 @@
 
 ### New Features and Improvements
 
+* Support user-to-machine authentication in the SDK ([#1108](https://github.com/databricks/databricks-sdk-go/pull/1108)).
+
 ### Bug Fixes
 
 * Fix unlikely issue due to conflicting error details in `APIError`.

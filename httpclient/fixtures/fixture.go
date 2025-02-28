@@ -24,6 +24,7 @@ type HTTPFixture struct {
 
 	Response        any
 	Status          int
+	ResponseHeaders map[string][]string
 	ExpectedRequest any
 	ExpectedHeaders map[string]string
 	PassFile        string
@@ -106,6 +107,7 @@ func (f HTTPFixture) replyWith(req *http.Request, body string) (*http.Response, 
 		StatusCode: f.Status,
 		Status:     http.StatusText(f.Status),
 		Body:       io.NopCloser(strings.NewReader(body)),
+		Header:     f.ResponseHeaders,
 	}, nil
 }
 
