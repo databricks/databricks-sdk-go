@@ -13,6 +13,7 @@
 ### Internal Changes
 
 * Update Jobs ListRuns API to support paginated responses ([#1151](https://github.com/databricks/databricks-sdk-go/pull/1151))
+* Add `poll.SimpleError` to mock waiter objects returning errors  ([#1155](https://github.com/databricks/databricks-sdk-go/pull/1155))
 * Refactor `APIError` to expose different types of error details ([#1153](https://github.com/databricks/databricks-sdk-go/pull/1153)). 
 * Update Jobs ListJobs API to support paginated responses ([#1150](https://github.com/databricks/databricks-sdk-go/pull/1150))
 * Introduce automated tagging ([#1148](https://github.com/databricks/databricks-sdk-go/pull/1148)).
