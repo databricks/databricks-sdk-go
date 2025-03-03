@@ -83,14 +83,14 @@ func (a *experimentsImpl) DeleteTag(ctx context.Context, request DeleteTag) erro
 	return err
 }
 
-func (a *experimentsImpl) GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentResponse, error) {
-	var getExperimentResponse GetExperimentResponse
+func (a *experimentsImpl) GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error) {
+	var getExperimentByNameResponse GetExperimentByNameResponse
 	path := "/api/2.0/mlflow/experiments/get-by-name"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getExperimentResponse)
-	return &getExperimentResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getExperimentByNameResponse)
+	return &getExperimentByNameResponse, err
 }
 
 func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error) {
@@ -103,7 +103,7 @@ func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperime
 	return &getExperimentResponse, err
 }
 
-// Get history of a given metric within a run.
+// Get metric history for a run.
 //
 // Gets a list of all values for the specified metric for a given run.
 func (a *experimentsImpl) GetHistory(ctx context.Context, request GetHistoryRequest) listing.Iterator[Metric] {
@@ -130,13 +130,12 @@ func (a *experimentsImpl) GetHistory(ctx context.Context, request GetHistoryRequ
 	return iterator
 }
 
-// Get history of a given metric within a run.
+// Get metric history for a run.
 //
 // Gets a list of all values for the specified metric for a given run.
 func (a *experimentsImpl) GetHistoryAll(ctx context.Context, request GetHistoryRequest) ([]Metric, error) {
 	iterator := a.GetHistory(ctx, request)
-	return listing.ToSliceN[Metric, int](ctx, iterator, request.MaxResults)
-
+	return listing.ToSlice[Metric](ctx, iterator)
 }
 
 func (a *experimentsImpl) internalGetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {
@@ -179,11 +178,10 @@ func (a *experimentsImpl) GetRun(ctx context.Context, request GetRunRequest) (*G
 	return &getRunResponse, err
 }
 
-// Get all artifacts.
+// List artifacts.
 //
-// List artifacts for a run. Takes an optional `artifact_path` prefix. If it is
-// specified, the response contains only artifacts with the specified prefix.
-// This API does not support pagination when listing artifacts in UC Volumes. A
+// List artifacts for a run. Takes an optional `artifact_path` prefix which if
+// specified, the response contains only artifacts with the specified prefix. A
 // maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
 // `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC
 // Volumes, which supports pagination. See [List directory contents | Files
@@ -212,11 +210,10 @@ func (a *experimentsImpl) ListArtifacts(ctx context.Context, request ListArtifac
 	return iterator
 }
 
-// Get all artifacts.
+// List artifacts.
 //
-// List artifacts for a run. Takes an optional `artifact_path` prefix. If it is
-// specified, the response contains only artifacts with the specified prefix.
-// This API does not support pagination when listing artifacts in UC Volumes. A
+// List artifacts for a run. Takes an optional `artifact_path` prefix which if
+// specified, the response contains only artifacts with the specified prefix. A
 // maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
 // `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC
 // Volumes, which supports pagination. See [List directory contents | Files
@@ -268,8 +265,7 @@ func (a *experimentsImpl) ListExperiments(ctx context.Context, request ListExper
 // Gets a list of all experiments.
 func (a *experimentsImpl) ListExperimentsAll(ctx context.Context, request ListExperimentsRequest) ([]Experiment, error) {
 	iterator := a.ListExperiments(ctx, request)
-	return listing.ToSliceN[Experiment, int](ctx, iterator, request.MaxResults)
-
+	return listing.ToSlice[Experiment](ctx, iterator)
 }
 
 func (a *experimentsImpl) internalListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error) {
@@ -420,7 +416,7 @@ func (a *experimentsImpl) internalSearchExperiments(ctx context.Context, request
 //
 // Searches for runs that satisfy expressions.
 //
-// Search expressions can use `mlflowMetric` and `mlflowParam` keys.",
+// Search expressions can use `mlflowMetric` and `mlflowParam` keys.
 func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) listing.Iterator[Run] {
 
 	getNextPage := func(ctx context.Context, req SearchRuns) (*SearchRunsResponse, error) {
@@ -449,7 +445,7 @@ func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) li
 //
 // Searches for runs that satisfy expressions.
 //
-// Search expressions can use `mlflowMetric` and `mlflowParam` keys.",
+// Search expressions can use `mlflowMetric` and `mlflowParam` keys.
 func (a *experimentsImpl) SearchRunsAll(ctx context.Context, request SearchRuns) ([]Run, error) {
 	iterator := a.SearchRuns(ctx, request)
 	return listing.ToSlice[Run](ctx, iterator)
