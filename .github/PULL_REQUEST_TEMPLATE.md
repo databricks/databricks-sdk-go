@@ -1,6 +1,5 @@
 ## What changes are proposed in this pull request?
-<!--
-Provide the readers and reviewers with the information they need to understand
+<!-- Provide the readers and reviewers with the information they need to understand
 this PR in a comprehensive manner. 
 
 Specifically, try to answer the two following questions:
