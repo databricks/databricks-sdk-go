@@ -1,5 +1,5 @@
 ## What changes are proposed in this pull request?
-
+<!--
 Provide the readers and reviewers with the information they need to understand
 this PR in a comprehensive manner. 
 
@@ -16,13 +16,15 @@ The “why part” is the most important of the two as it usually cannot be
 inferred from the code itself. A well-written PR description will help future
 developers (including your future self) to know how to interact and update your
 code.
+-->
+
 
 ## How is this tested?
-
-Describe any tests you have done; especially if test tests are not part of
+<!-- Describe any tests you have done; especially if test tests are not part of
 the unit tests (e.g. local tests).
 
 **ALWAYS ANSWER THIS QUESTION:** Answer with "N/A" if tests are not applicable
 to your PR (e.g. if the PR only modifies comments). Do not be afraid of 
 answering "Not tested" if the PR has not been tested. Being clear about what 
 has been done and not done provides important context to the reviewers. 
+-->
