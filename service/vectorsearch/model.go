@@ -572,6 +572,8 @@ func (s QueryVectorIndexNextPageRequest) MarshalJSON() ([]byte, error) {
 type QueryVectorIndexRequest struct {
 	// List of column names to include in the response.
 	Columns []string `json:"columns"`
+	// Column names used to retrieve data to send to the reranker.
+	ColumnsToRerank []string `json:"columns_to_rerank,omitempty"`
 	// JSON string representing query filters.
 	//
 	// Example filters: - `{"id <": 5}`: Filter for id less than 5. - `{"id >":
