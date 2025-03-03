@@ -73,10 +73,9 @@ type BaseRun struct {
 	// Description of the run
 	Description string `json:"description,omitempty"`
 	// effective_performance_target is the actual performance target used by the
-	// run during execution. effective_performance_target can differ from
-	// performance_target depending on if the job was eligible to be
-	// cost-optimized (e.g. contains at least 1 serverless task) or if we
-	// specifically override the value for the run (ex. RunNow).
+	// run during execution. effective_performance_target can differ from the
+	// client-set performance_target depending on if the job was eligible to be
+	// cost-optimized.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
@@ -425,6 +424,26 @@ func (s *ClusterSpec) UnmarshalJSON(b []byte) error {
 }
 
 func (s ClusterSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Next field: 4
+type ComputeConfig struct {
+	// IDof the GPU pool to use.
+	GpuNodePoolId string `json:"gpu_node_pool_id"`
+	// GPU type.
+	GpuType string `json:"gpu_type,omitempty"`
+	// Number of GPUs.
+	NumGpus int `json:"num_gpus"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ComputeConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ComputeConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -979,6 +998,51 @@ func (f *Format) Set(v string) error {
 // Type always returns Format to satisfy [pflag.Value] interface
 func (f *Format) Type() string {
 	return "Format"
+}
+
+// Next field: 9
+type GenAiComputeTask struct {
+	// Command launcher to run the actual script, e.g. bash, python etc.
+	Command string `json:"command,omitempty"`
+	// Next field: 4
+	Compute *ComputeConfig `json:"compute,omitempty"`
+	// Runtime image
+	DlRuntimeImage string `json:"dl_runtime_image"`
+	// Optional string containing the name of the MLflow experiment to log the
+	// run to. If name is not found, backend will create the mlflow experiment
+	// using the name.
+	MlflowExperimentName string `json:"mlflow_experiment_name,omitempty"`
+	// Optional location type of the training script. When set to `WORKSPACE`,
+	// the script will be retrieved from the local Databricks workspace. When
+	// set to `GIT`, the script will be retrieved from a Git repository defined
+	// in `git_source`. If the value is empty, the task will use `GIT` if
+	// `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script
+	// is located in Databricks workspace. * `GIT`: Script is located in cloud
+	// Git provider.
+	Source Source `json:"source,omitempty"`
+	// The training script file path to be executed. Cloud file URIs (such as
+	// dbfs:/, s3:/, adls:/, gcs:/) and workspace paths are supported. For
+	// python files stored in the Databricks workspace, the path must be
+	// absolute and begin with `/`. For files stored in a remote repository, the
+	// path must be relative. This field is required.
+	TrainingScriptPath string `json:"training_script_path,omitempty"`
+	// Optional string containing model parameters passed to the training script
+	// in yaml format. If present, then the content in yaml_parameters_file_path
+	// will be ignored.
+	YamlParameters string `json:"yaml_parameters,omitempty"`
+	// Optional path to a YAML file containing model parameters passed to the
+	// training script.
+	YamlParametersFilePath string `json:"yaml_parameters_file_path,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenAiComputeTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenAiComputeTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get job permission levels
@@ -2662,10 +2726,9 @@ type Run struct {
 	// Description of the run
 	Description string `json:"description,omitempty"`
 	// effective_performance_target is the actual performance target used by the
-	// run during execution. effective_performance_target can differ from
-	// performance_target depending on if the job was eligible to be
-	// cost-optimized (e.g. contains at least 1 serverless task) or if we
-	// specifically override the value for the run (ex. RunNow).
+	// run during execution. effective_performance_target can differ from the
+	// client-set performance_target depending on if the job was eligible to be
+	// cost-optimized.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
@@ -3096,6 +3159,8 @@ const RunLifecycleStateV2StateTerminated RunLifecycleStateV2State = `TERMINATED`
 
 const RunLifecycleStateV2StateTerminating RunLifecycleStateV2State = `TERMINATING`
 
+const RunLifecycleStateV2StateWaiting RunLifecycleStateV2State = `WAITING`
+
 // String representation for [fmt.Print]
 func (f *RunLifecycleStateV2State) String() string {
 	return string(*f)
@@ -3104,11 +3169,11 @@ func (f *RunLifecycleStateV2State) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunLifecycleStateV2State) Set(v string) error {
 	switch v {
-	case `BLOCKED`, `PENDING`, `QUEUED`, `RUNNING`, `TERMINATED`, `TERMINATING`:
+	case `BLOCKED`, `PENDING`, `QUEUED`, `RUNNING`, `TERMINATED`, `TERMINATING`, `WAITING`:
 		*f = RunLifecycleStateV2State(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "PENDING", "QUEUED", "RUNNING", "TERMINATED", "TERMINATING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "PENDING", "QUEUED", "RUNNING", "TERMINATED", "TERMINATING", "WAITING"`, v)
 	}
 }
 
@@ -3179,8 +3244,8 @@ type RunNow struct {
 	// provided, all tasks in the job will be run.
 	Only []string `json:"only,omitempty"`
 	// PerformanceTarget defines how performant or cost efficient the execution
-	// of run on serverless compute should be. For RunNow request, the run will
-	// execute with this settings instead of ones defined in job.
+	// of run on serverless compute should be. For RunNow, this performance
+	// target will override the target defined on the job-level.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -3547,10 +3612,9 @@ type RunTask struct {
 	// do not execute and are immediately skipped as soon as they are unblocked.
 	Disabled bool `json:"disabled,omitempty"`
 	// effective_performance_target is the actual performance target used by the
-	// run during execution. effective_performance_target can differ from
-	// performance_target depending on if the job was eligible to be
-	// cost-optimized (e.g. contains at least 1 serverless task) or if an
-	// override was provided for the run (ex. RunNow).
+	// run during execution. effective_performance_target can differ from the
+	// client-set performance_target depending on if the job was eligible to be
+	// cost-optimized.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
@@ -3578,6 +3642,8 @@ type RunTask struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *RunForEachTask `json:"for_each_task,omitempty"`
+	// Next field: 9
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks. If `git_source` is set,
@@ -4267,6 +4333,8 @@ type SubmitTask struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
+	// Next field: 9
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// An optional list of libraries to be installed on the cluster. The default
@@ -4412,6 +4480,8 @@ type Task struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
+	// Next field: 9
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// If job_cluster_key, this task is executed reusing the cluster specified

@@ -10,9 +10,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
-	"golang.org/x/exp/slices"
-
-	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
 // unexported type that holds implementations of just Providers API methods
@@ -102,6 +99,16 @@ func (a *providersImpl) internalList(ctx context.Context, request ListProvidersR
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProvidersResponse)
 	return &listProvidersResponse, err
+}
+
+func (a *providersImpl) ListProviderShareAssets(ctx context.Context, request ListProviderShareAssetsRequest) (*ListProviderShareAssetsResponse, error) {
+	var listProviderShareAssetsResponse ListProviderShareAssetsResponse
+	path := fmt.Sprintf("/api/2.1/data-sharing/providers/%v/shares/%v", request.ProviderName, request.ShareName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProviderShareAssetsResponse)
+	return &listProviderShareAssetsResponse, err
 }
 
 // List shares by Provider.
@@ -399,14 +406,14 @@ func (a *sharesImpl) internalList(ctx context.Context, request ListSharesRequest
 	return &listSharesResponse, err
 }
 
-func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*catalog.PermissionsList, error) {
-	var permissionsList catalog.PermissionsList
+func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetSharePermissionsResponse, error) {
+	var getSharePermissionsResponse GetSharePermissionsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &permissionsList)
-	return &permissionsList, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getSharePermissionsResponse)
+	return &getSharePermissionsResponse, err
 }
 
 func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInfo, error) {
@@ -420,19 +427,13 @@ func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInf
 	return &shareInfo, err
 }
 
-func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error {
-	var updatePermissionsResponse UpdatePermissionsResponse
+func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateSharePermissions) (*UpdateSharePermissionsResponse, error) {
+	var updateSharePermissionsResponse UpdateSharePermissionsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
 	queryParams := make(map[string]any)
-	if request.MaxResults != 0 || slices.Contains(request.ForceSendFields, "MaxResults") {
-		queryParams["max_results"] = request.MaxResults
-	}
-	if request.PageToken != "" || slices.Contains(request.ForceSendFields, "PageToken") {
-		queryParams["page_token"] = request.PageToken
-	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updatePermissionsResponse)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateSharePermissionsResponse)
+	return &updateSharePermissionsResponse, err
 }

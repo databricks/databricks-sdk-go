@@ -128,15 +128,30 @@ func (s CreateServicePrincipalFederationPolicyRequest) MarshalJSON() ([]byte, er
 	return marshal.Marshal(s)
 }
 
-// Create service principal secret
 type CreateServicePrincipalSecretRequest struct {
+	// The lifetime of the secret in seconds. If this parameter is not provided,
+	// the secret will have a default lifetime of 730 days (63072000s).
+	Lifetime string `json:"lifetime,omitempty"`
 	// The service principal ID.
 	ServicePrincipalId int64 `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateServicePrincipalSecretRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateServicePrincipalSecretRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateServicePrincipalSecretResponse struct {
 	// UTC time when the secret was created
 	CreateTime string `json:"create_time,omitempty"`
+	// UTC time when the secret will expire. If the field is not present, the
+	// secret does not expire.
+	ExpireTime string `json:"expire_time,omitempty"`
 	// ID of the secret
 	Id string `json:"id,omitempty"`
 	// Secret Value
@@ -591,6 +606,9 @@ func (s PublishedAppOutput) MarshalJSON() ([]byte, error) {
 type SecretInfo struct {
 	// UTC time when the secret was created
 	CreateTime string `json:"create_time,omitempty"`
+	// UTC time when the secret will expire. If the field is not present, the
+	// secret does not expire.
+	ExpireTime string `json:"expire_time,omitempty"`
 	// ID of the secret
 	Id string `json:"id,omitempty"`
 	// Secret Hash

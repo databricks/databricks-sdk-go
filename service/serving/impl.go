@@ -4,15 +4,16 @@ package serving
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
+	"strings"
+	"sync"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/dataplane"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
-	goauth "golang.org/x/oauth2"
 )
 
 // unexported type that holds implementations of just ServingEndpoints API methods
@@ -237,39 +238,41 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 
 // unexported type that holds implementations of just ServingEndpointsDataPlane API methods
 type servingEndpointsDataPlaneImpl struct {
-	dataPlaneService DataPlaneService
-	controlPlane     *ServingEndpointsAPI
-	client           *client.DatabricksClient
+	client       *client.DatabricksClient
+	controlPlane *ServingEndpointsAPI
+	dpts         dataplane.EndpointTokenSource
+	infos        sync.Map
 }
 
-func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
-	getRequest := GetServingEndpointRequest{
-		Name: request.Name,
-	}
-	token, err := a.client.Config.GetToken()
-	if err != nil {
-		return nil, err
-	}
-	infoGetter := func() (*DataPlaneInfo, error) {
-		response, err := a.controlPlane.Get(ctx, getRequest)
+func (a *servingEndpointsDataPlaneImpl) dataPlaneInfoQuery(ctx context.Context, request QueryEndpointInput) (*DataPlaneInfo, error) {
+	key := "Query/" + strings.Join([]string{
+		fmt.Sprintf("%v", request.Name),
+	}, "/")
+
+	info, ok := a.infos.Load(key)
+	if !ok {
+		response, err := a.controlPlane.Get(ctx, GetServingEndpointRequest{
+			Name: request.Name,
+		})
 		if err != nil {
 			return nil, err
 		}
-		if response.DataPlaneInfo == nil {
-			return nil, errors.New("resource does not support direct Data Plane access")
-		}
-		return response.DataPlaneInfo.QueryInfo, nil
+		info = response.DataPlaneInfo.QueryInfo
+		a.infos.Store(key, info)
 	}
-	refresh := func(info *DataPlaneInfo) (*goauth.Token, error) {
-		return a.client.GetOAuthToken(ctx, info.AuthorizationDetails, token)
-	}
-	getParams := []string{
-		request.Name,
-	}
-	endpointUrl, dataPlaneToken, err := a.dataPlaneService.GetDataPlaneDetails("Query", getParams, refresh, infoGetter)
+	return info.(*DataPlaneInfo), nil
+}
+
+func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
+	dpi, err := a.dataPlaneInfoQuery(ctx, request)
 	if err != nil {
 		return nil, err
 	}
+	dpt, err := a.dpts.Token(ctx, dpi.EndpointUrl, dpi.AuthorizationDetails)
+	if err != nil {
+		return nil, err
+	}
+
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -281,7 +284,7 @@ func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request Query
 	var queryEndpointResponse QueryEndpointResponse
 	opts = append(opts, httpclient.WithRequestData(request))
 	opts = append(opts, httpclient.WithResponseUnmarshal(&queryEndpointResponse))
-	opts = append(opts, httpclient.WithToken(dataPlaneToken))
-	err = a.client.ApiClient().Do(ctx, http.MethodPost, endpointUrl, opts...)
+	opts = append(opts, httpclient.WithToken(dpt))
+	err = a.client.ApiClient().Do(ctx, http.MethodPost, dpi.EndpointUrl, opts...)
 	return &queryEndpointResponse, err
 }
