@@ -13,6 +13,7 @@ var authProviders = []CredentialsStrategy{
 	PatCredentials{},
 	BasicCredentials{},
 	M2mCredentials{},
+	DatabricksOIDCCredentials{},
 	DatabricksCliCredentials{},
 	MetadataServiceCredentials{},
 
