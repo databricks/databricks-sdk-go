@@ -22,8 +22,9 @@ type GenieInterface interface {
 
 	// Create conversation message.
 	//
-	// Create new message in [conversation](:method:genie/startconversation). The AI
-	// response uses all previously created messages in the conversation to respond.
+	// Create new message in a [conversation](:method:genie/startconversation). The
+	// AI response uses all previously created messages in the conversation to
+	// respond.
 	CreateMessage(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieMessage], error)
 
 	// Calls [GenieAPIInterface.CreateMessage] and waits to reach COMPLETED state
@@ -49,31 +50,43 @@ type GenieInterface interface {
 	// Get message from conversation.
 	GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error)
 
-	// Get conversation message SQL query result.
+	// [Deprecated] Get conversation message SQL query result.
 	//
 	// Get the result of SQL query if the message has a query attachment. This is
 	// only available if a message has a query attachment and the message status is
 	// `EXECUTING_QUERY`.
 	GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get conversation message SQL query result.
+	// [Deprecated] Get conversation message SQL query result.
 	//
 	// Get the result of SQL query if the message has a query attachment. This is
 	// only available if a message has a query attachment and the message status is
 	// `EXECUTING_QUERY`.
 	GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get conversation message SQL query result by attachment id.
+	// Get conversation message SQL query result.
 	//
-	// Get the result of SQL query by attachment id This is only available if a
-	// message has a query attachment and the message status is `EXECUTING_QUERY`.
+	// Get the result of SQL query if the message has a query attachment. This is
+	// only available if a message has a query attachment and the message status is
+	// `EXECUTING_QUERY` OR `COMPLETED`.
 	GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get conversation message SQL query result by attachment id.
+	// Get conversation message SQL query result.
 	//
-	// Get the result of SQL query by attachment id This is only available if a
-	// message has a query attachment and the message status is `EXECUTING_QUERY`.
+	// Get the result of SQL query if the message has a query attachment. This is
+	// only available if a message has a query attachment and the message status is
+	// `EXECUTING_QUERY` OR `COMPLETED`.
 	GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
+
+	// Get details of a Genie Space.
+	//
+	// Get a Genie Space.
+	GetSpace(ctx context.Context, request GenieGetSpaceRequest) (*GenieSpace, error)
+
+	// Get details of a Genie Space.
+	//
+	// Get a Genie Space.
+	GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error)
 
 	// Start conversation.
 	//
@@ -166,8 +179,9 @@ func (w *WaitGetMessageGenieCompleted[R]) GetWithTimeout(timeout time.Duration) 
 
 // Create conversation message.
 //
-// Create new message in [conversation](:method:genie/startconversation). The AI
-// response uses all previously created messages in the conversation to respond.
+// Create new message in a [conversation](:method:genie/startconversation). The
+// AI response uses all previously created messages in the conversation to
+// respond.
 func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieMessage], error) {
 	genieMessage, err := a.genieImpl.CreateMessage(ctx, genieCreateConversationMessageRequest)
 	if err != nil {
@@ -224,7 +238,7 @@ func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.
 	})
 }
 
-// Get conversation message SQL query result.
+// [Deprecated] Get conversation message SQL query result.
 //
 // Get the result of SQL query if the message has a query attachment. This is
 // only available if a message has a query attachment and the message status is
@@ -237,16 +251,26 @@ func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(c
 	})
 }
 
-// Get conversation message SQL query result by attachment id.
+// Get conversation message SQL query result.
 //
-// Get the result of SQL query by attachment id This is only available if a
-// message has a query attachment and the message status is `EXECUTING_QUERY`.
+// Get the result of SQL query if the message has a query attachment. This is
+// only available if a message has a query attachment and the message status is
+// `EXECUTING_QUERY` OR `COMPLETED`.
 func (a *GenieAPI) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
 	return a.genieImpl.GetMessageQueryResultByAttachment(ctx, GenieGetQueryResultByAttachmentRequest{
 		SpaceId:        spaceId,
 		ConversationId: conversationId,
 		MessageId:      messageId,
 		AttachmentId:   attachmentId,
+	})
+}
+
+// Get details of a Genie Space.
+//
+// Get a Genie Space.
+func (a *GenieAPI) GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error) {
+	return a.genieImpl.GetSpace(ctx, GenieGetSpaceRequest{
+		SpaceId: spaceId,
 	})
 }
 

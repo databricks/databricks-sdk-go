@@ -579,6 +579,124 @@ func (_c *MockGenieInterface_GetMessageQueryResultBySpaceIdAndConversationIdAndM
 	return _c
 }
 
+// GetSpace provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) GetSpace(ctx context.Context, request dashboards.GenieGetSpaceRequest) (*dashboards.GenieSpace, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSpace")
+	}
+
+	var r0 *dashboards.GenieSpace
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieGetSpaceRequest) (*dashboards.GenieSpace, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieGetSpaceRequest) *dashboards.GenieSpace); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieSpace)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieGetSpaceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_GetSpace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSpace'
+type MockGenieInterface_GetSpace_Call struct {
+	*mock.Call
+}
+
+// GetSpace is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieGetSpaceRequest
+func (_e *MockGenieInterface_Expecter) GetSpace(ctx interface{}, request interface{}) *MockGenieInterface_GetSpace_Call {
+	return &MockGenieInterface_GetSpace_Call{Call: _e.mock.On("GetSpace", ctx, request)}
+}
+
+func (_c *MockGenieInterface_GetSpace_Call) Run(run func(ctx context.Context, request dashboards.GenieGetSpaceRequest)) *MockGenieInterface_GetSpace_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieGetSpaceRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_GetSpace_Call) Return(_a0 *dashboards.GenieSpace, _a1 error) *MockGenieInterface_GetSpace_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_GetSpace_Call) RunAndReturn(run func(context.Context, dashboards.GenieGetSpaceRequest) (*dashboards.GenieSpace, error)) *MockGenieInterface_GetSpace_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetSpaceBySpaceId provides a mock function with given fields: ctx, spaceId
+func (_m *MockGenieInterface) GetSpaceBySpaceId(ctx context.Context, spaceId string) (*dashboards.GenieSpace, error) {
+	ret := _m.Called(ctx, spaceId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSpaceBySpaceId")
+	}
+
+	var r0 *dashboards.GenieSpace
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*dashboards.GenieSpace, error)); ok {
+		return rf(ctx, spaceId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *dashboards.GenieSpace); ok {
+		r0 = rf(ctx, spaceId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieSpace)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, spaceId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_GetSpaceBySpaceId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSpaceBySpaceId'
+type MockGenieInterface_GetSpaceBySpaceId_Call struct {
+	*mock.Call
+}
+
+// GetSpaceBySpaceId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - spaceId string
+func (_e *MockGenieInterface_Expecter) GetSpaceBySpaceId(ctx interface{}, spaceId interface{}) *MockGenieInterface_GetSpaceBySpaceId_Call {
+	return &MockGenieInterface_GetSpaceBySpaceId_Call{Call: _e.mock.On("GetSpaceBySpaceId", ctx, spaceId)}
+}
+
+func (_c *MockGenieInterface_GetSpaceBySpaceId_Call) Run(run func(ctx context.Context, spaceId string)) *MockGenieInterface_GetSpaceBySpaceId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_GetSpaceBySpaceId_Call) Return(_a0 *dashboards.GenieSpace, _a1 error) *MockGenieInterface_GetSpaceBySpaceId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_GetSpaceBySpaceId_Call) RunAndReturn(run func(context.Context, string) (*dashboards.GenieSpace, error)) *MockGenieInterface_GetSpaceBySpaceId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // StartConversation provides a mock function with given fields: ctx, genieStartConversationMessageRequest
 func (_m *MockGenieInterface) StartConversation(ctx context.Context, genieStartConversationMessageRequest dashboards.GenieStartConversationMessageRequest) (*dashboards.WaitGetMessageGenieCompleted[dashboards.GenieStartConversationResponse], error) {
 	ret := _m.Called(ctx, genieStartConversationMessageRequest)
