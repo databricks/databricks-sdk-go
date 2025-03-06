@@ -35,6 +35,11 @@ type GenieInterface interface {
 	// Deprecated: use [GenieAPIInterface.CreateMessage].Get() or [GenieAPIInterface.WaitGetMessageGenieCompleted]
 	CreateMessageAndWait(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest, options ...retries.Option[GenieMessage]) (*GenieMessage, error)
 
+	// Execute message attachment SQL query.
+	//
+	// Execute the SQL for a message query attachment.
+	ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error)
+
 	// Execute SQL query in a conversation message.
 	//
 	// Execute the SQL query in the message.
@@ -50,6 +55,20 @@ type GenieInterface interface {
 	// Get message from conversation.
 	GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error)
 
+	// Get message attachment SQL query result.
+	//
+	// Get the result of SQL query if the message has a query attachment. This is
+	// only available if a message has a query attachment and the message status is
+	// `EXECUTING_QUERY` OR `COMPLETED`.
+	GetMessageAttachmentQueryResult(ctx context.Context, request GenieGetMessageAttachmentQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
+
+	// Get message attachment SQL query result.
+	//
+	// Get the result of SQL query if the message has a query attachment. This is
+	// only available if a message has a query attachment and the message status is
+	// `EXECUTING_QUERY` OR `COMPLETED`.
+	GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
+
 	// [Deprecated] Get conversation message SQL query result.
 	//
 	// Get the result of SQL query if the message has a query attachment. This is
@@ -64,14 +83,14 @@ type GenieInterface interface {
 	// `EXECUTING_QUERY`.
 	GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get conversation message SQL query result.
+	// [deprecated] Get conversation message SQL query result.
 	//
 	// Get the result of SQL query if the message has a query attachment. This is
 	// only available if a message has a query attachment and the message status is
 	// `EXECUTING_QUERY` OR `COMPLETED`.
 	GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get conversation message SQL query result.
+	// [deprecated] Get conversation message SQL query result.
 	//
 	// Get the result of SQL query if the message has a query attachment. This is
 	// only available if a message has a query attachment and the message status is
@@ -238,6 +257,20 @@ func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.
 	})
 }
 
+// Get message attachment SQL query result.
+//
+// Get the result of SQL query if the message has a query attachment. This is
+// only available if a message has a query attachment and the message status is
+// `EXECUTING_QUERY` OR `COMPLETED`.
+func (a *GenieAPI) GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
+	return a.genieImpl.GetMessageAttachmentQueryResult(ctx, GenieGetMessageAttachmentQueryResultRequest{
+		SpaceId:        spaceId,
+		ConversationId: conversationId,
+		MessageId:      messageId,
+		AttachmentId:   attachmentId,
+	})
+}
+
 // [Deprecated] Get conversation message SQL query result.
 //
 // Get the result of SQL query if the message has a query attachment. This is
@@ -251,7 +284,7 @@ func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(c
 	})
 }
 
-// Get conversation message SQL query result.
+// [deprecated] Get conversation message SQL query result.
 //
 // Get the result of SQL query if the message has a query attachment. This is
 // only available if a message has a query attachment and the message status is

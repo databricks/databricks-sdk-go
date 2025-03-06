@@ -20,6 +20,11 @@ type GenieService interface {
 	// to respond.
 	CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error)
 
+	// Execute message attachment SQL query.
+	//
+	// Execute the SQL for a message query attachment.
+	ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error)
+
 	// Execute SQL query in a conversation message.
 	//
 	// Execute the SQL query in the message.
@@ -30,6 +35,13 @@ type GenieService interface {
 	// Get message from conversation.
 	GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error)
 
+	// Get message attachment SQL query result.
+	//
+	// Get the result of SQL query if the message has a query attachment. This
+	// is only available if a message has a query attachment and the message
+	// status is `EXECUTING_QUERY` OR `COMPLETED`.
+	GetMessageAttachmentQueryResult(ctx context.Context, request GenieGetMessageAttachmentQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
+
 	// [Deprecated] Get conversation message SQL query result.
 	//
 	// Get the result of SQL query if the message has a query attachment. This
@@ -37,7 +49,7 @@ type GenieService interface {
 	// status is `EXECUTING_QUERY`.
 	GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get conversation message SQL query result.
+	// [deprecated] Get conversation message SQL query result.
 	//
 	// Get the result of SQL query if the message has a query attachment. This
 	// is only available if a message has a query attachment and the message

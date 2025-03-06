@@ -28,6 +28,16 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 	return &genieMessage, err
 }
 
+func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
+	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponse)
+	return &genieGetMessageQueryResultResponse, err
+}
+
 func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId)
@@ -46,6 +56,16 @@ func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversation
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieMessage)
 	return &genieMessage, err
+}
+
+func (a *genieImpl) GetMessageAttachmentQueryResult(ctx context.Context, request GenieGetMessageAttachmentQueryResultRequest) (*GenieGetMessageQueryResultResponse, error) {
+	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/query-result", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
+	return &genieGetMessageQueryResultResponse, err
 }
 
 func (a *genieImpl) GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error) {
