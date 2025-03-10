@@ -139,6 +139,7 @@ func NewMockWorkspaceClient(t interface {
 			Workspace:                           workspace.NewMockWorkspaceInterface(t),
 			WorkspaceBindings:                   catalog.NewMockWorkspaceBindingsInterface(t),
 			WorkspaceConf:                       settings.NewMockWorkspaceConfInterface(t),
+			forecasting:                         ml.NewMockForecastingInterface(t),
 		},
 	}
 
@@ -1026,6 +1027,14 @@ func (m *MockWorkspaceClient) GetMockWorkspaceConfAPI() *settings.MockWorkspaceC
 	api, ok := m.WorkspaceClient.WorkspaceConf.(*settings.MockWorkspaceConfInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected WorkspaceConf to be *settings.MockWorkspaceConfInterface, actual was %T", m.WorkspaceClient.WorkspaceConf))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockforecastingAPI() *ml.MockForecastingInterface {
+	api, ok := m.WorkspaceClient.forecasting.(*ml.MockForecastingInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected forecasting to be *ml.MockForecastingInterface, actual was %T", m.WorkspaceClient.forecasting))
 	}
 	return api
 }

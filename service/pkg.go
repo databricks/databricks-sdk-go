@@ -52,9 +52,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
-//
 // - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
+//
+// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -281,6 +281,8 @@
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
 //
 // - [billing.BudgetsAPI]: These APIs manage budget configurations for this account.
+//
+// - [ml.ForecastingAPI]: The Forecasting API allows you to create and get serverless forecasting experiments.
 package service
 
 import (
@@ -452,4 +454,5 @@ var (
 	_ *settings.WorkspaceConfAPI                          = nil
 	_ *provisioning.WorkspacesAPI                         = nil
 	_ *billing.BudgetsAPI                                 = nil
+	_ *ml.ForecastingAPI                                  = nil
 )

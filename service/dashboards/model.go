@@ -282,7 +282,19 @@ type GenieCreateConversationMessageRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
-// Execute SQL query in a conversation message
+// Execute message attachment SQL query
+type GenieExecuteMessageAttachmentQueryRequest struct {
+	// Attachment ID
+	AttachmentId string `json:"-" url:"-"`
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+}
+
+// [Deprecated] Execute SQL query in a conversation message
 type GenieExecuteMessageQueryRequest struct {
 	// Conversation ID
 	ConversationId string `json:"-" url:"-"`
@@ -304,6 +316,18 @@ type GenieGetConversationMessageRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+// Get message attachment SQL query result
+type GenieGetMessageAttachmentQueryResultRequest struct {
+	// Attachment ID
+	AttachmentId string `json:"-" url:"-"`
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+}
+
 // [Deprecated] Get conversation message SQL query result
 type GenieGetMessageQueryResultRequest struct {
 	// Conversation ID
@@ -320,7 +344,7 @@ type GenieGetMessageQueryResultResponse struct {
 	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
-// Get conversation message SQL query result
+// [Deprecated] Get conversation message SQL query result
 type GenieGetQueryResultByAttachmentRequest struct {
 	// Attachment ID
 	AttachmentId string `json:"-" url:"-"`
@@ -332,7 +356,7 @@ type GenieGetQueryResultByAttachmentRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
-// Get details of a Genie Space
+// Get Genie Space
 type GenieGetSpaceRequest struct {
 	// The ID associated with the Genie space
 	SpaceId string `json:"-" url:"-"`
@@ -368,14 +392,16 @@ type GenieMessage struct {
 	// for warehouse before the SQL query can start executing. *
 	// `EXECUTING_QUERY`: Executing a generated SQL query. Get the SQL query
 	// result by calling
-	// [getMessageQueryResult](:method:genie/getMessageQueryResult) API. *
-	// `FAILED`: The response generation or query execution failed. See `error`
-	// field. * `COMPLETED`: Message processing is completed. Results are in the
-	// `attachments` field. Get the SQL query result by calling
-	// [getMessageQueryResult](:method:genie/getMessageQueryResult) API. *
-	// `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL
-	// result is not available anymore. The user needs to rerun the query. *
-	// `CANCELLED`: Message has been cancelled.
+	// [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
+	// API. * `FAILED`: The response generation or query execution failed. See
+	// `error` field. * `COMPLETED`: Message processing is completed. Results
+	// are in the `attachments` field. Get the SQL query result by calling
+	// [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
+	// API. * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`:
+	// SQL result is not available anymore. The user needs to rerun the query.
+	// Rerun the SQL query result by calling
+	// [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery)
+	// API. * `CANCELLED`: Message has been cancelled.
 	Status MessageStatus `json:"status,omitempty"`
 	// ID of the user who created the message
 	UserId int64 `json:"user_id,omitempty"`
@@ -402,6 +428,10 @@ type GenieQueryAttachment struct {
 	Query string `json:"query,omitempty"`
 	// Metadata associated with the query result.
 	QueryResultMetadata *GenieResultMetadata `json:"query_result_metadata,omitempty"`
+	// Statement Execution API statement id. Use [Get status, manifest, and
+	// result first chunk](:method:statementexecution/getstatement) to get the
+	// full result data.
+	StatementId string `json:"statement_id,omitempty"`
 	// Name of the query
 	Title string `json:"title,omitempty"`
 
@@ -689,6 +719,8 @@ const MessageErrorTypeContentFilterException MessageErrorType = `CONTENT_FILTER_
 
 const MessageErrorTypeContextExceededException MessageErrorType = `CONTEXT_EXCEEDED_EXCEPTION`
 
+const MessageErrorTypeCouldNotGetModelDeploymentsException MessageErrorType = `COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION`
+
 const MessageErrorTypeCouldNotGetUcSchemaException MessageErrorType = `COULD_NOT_GET_UC_SCHEMA_EXCEPTION`
 
 const MessageErrorTypeDeploymentNotFoundException MessageErrorType = `DEPLOYMENT_NOT_FOUND_EXCEPTION`
@@ -771,11 +803,11 @@ func (f *MessageErrorType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MessageErrorType) Set(v string) error {
 	switch v {
-	case `BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION`, `CHAT_COMPLETION_CLIENT_EXCEPTION`, `CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION`, `CHAT_COMPLETION_NETWORK_EXCEPTION`, `CONTENT_FILTER_EXCEPTION`, `CONTEXT_EXCEEDED_EXCEPTION`, `COULD_NOT_GET_UC_SCHEMA_EXCEPTION`, `DEPLOYMENT_NOT_FOUND_EXCEPTION`, `FUNCTIONS_NOT_AVAILABLE_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION`, `FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION`, `GENERIC_CHAT_COMPLETION_EXCEPTION`, `GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION`, `GENERIC_SQL_EXEC_API_CALL_EXCEPTION`, `ILLEGAL_PARAMETER_DEFINITION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION`, `INVALID_CHAT_COMPLETION_JSON_EXCEPTION`, `INVALID_COMPLETION_REQUEST_EXCEPTION`, `INVALID_FUNCTION_CALL_EXCEPTION`, `INVALID_TABLE_IDENTIFIER_EXCEPTION`, `LOCAL_CONTEXT_EXCEEDED_EXCEPTION`, `MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION`, `NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE`, `NO_QUERY_TO_VISUALIZE_EXCEPTION`, `NO_TABLES_TO_QUERY_EXCEPTION`, `RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION`, `RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION`, `REPLY_PROCESS_TIMEOUT_EXCEPTION`, `RETRYABLE_PROCESSING_EXCEPTION`, `SQL_EXECUTION_EXCEPTION`, `STOP_PROCESS_DUE_TO_AUTO_REGENERATE`, `TABLES_MISSING_EXCEPTION`, `TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION`, `TOO_MANY_TABLES_EXCEPTION`, `UNEXPECTED_REPLY_PROCESS_EXCEPTION`, `UNKNOWN_AI_MODEL`, `WAREHOUSE_ACCESS_MISSING_EXCEPTION`, `WAREHOUSE_NOT_FOUND_EXCEPTION`:
+	case `BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION`, `CHAT_COMPLETION_CLIENT_EXCEPTION`, `CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION`, `CHAT_COMPLETION_NETWORK_EXCEPTION`, `CONTENT_FILTER_EXCEPTION`, `CONTEXT_EXCEEDED_EXCEPTION`, `COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION`, `COULD_NOT_GET_UC_SCHEMA_EXCEPTION`, `DEPLOYMENT_NOT_FOUND_EXCEPTION`, `FUNCTIONS_NOT_AVAILABLE_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION`, `FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION`, `GENERIC_CHAT_COMPLETION_EXCEPTION`, `GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION`, `GENERIC_SQL_EXEC_API_CALL_EXCEPTION`, `ILLEGAL_PARAMETER_DEFINITION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION`, `INVALID_CHAT_COMPLETION_JSON_EXCEPTION`, `INVALID_COMPLETION_REQUEST_EXCEPTION`, `INVALID_FUNCTION_CALL_EXCEPTION`, `INVALID_TABLE_IDENTIFIER_EXCEPTION`, `LOCAL_CONTEXT_EXCEEDED_EXCEPTION`, `MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION`, `NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE`, `NO_QUERY_TO_VISUALIZE_EXCEPTION`, `NO_TABLES_TO_QUERY_EXCEPTION`, `RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION`, `RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION`, `REPLY_PROCESS_TIMEOUT_EXCEPTION`, `RETRYABLE_PROCESSING_EXCEPTION`, `SQL_EXECUTION_EXCEPTION`, `STOP_PROCESS_DUE_TO_AUTO_REGENERATE`, `TABLES_MISSING_EXCEPTION`, `TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION`, `TOO_MANY_TABLES_EXCEPTION`, `UNEXPECTED_REPLY_PROCESS_EXCEPTION`, `UNKNOWN_AI_MODEL`, `WAREHOUSE_ACCESS_MISSING_EXCEPTION`, `WAREHOUSE_NOT_FOUND_EXCEPTION`:
 		*f = MessageErrorType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION", "CHAT_COMPLETION_CLIENT_EXCEPTION", "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION", "CHAT_COMPLETION_NETWORK_EXCEPTION", "CONTENT_FILTER_EXCEPTION", "CONTEXT_EXCEEDED_EXCEPTION", "COULD_NOT_GET_UC_SCHEMA_EXCEPTION", "DEPLOYMENT_NOT_FOUND_EXCEPTION", "FUNCTIONS_NOT_AVAILABLE_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION", "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION", "GENERIC_CHAT_COMPLETION_EXCEPTION", "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION", "GENERIC_SQL_EXEC_API_CALL_EXCEPTION", "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION", "INVALID_CHAT_COMPLETION_JSON_EXCEPTION", "INVALID_COMPLETION_REQUEST_EXCEPTION", "INVALID_FUNCTION_CALL_EXCEPTION", "INVALID_TABLE_IDENTIFIER_EXCEPTION", "LOCAL_CONTEXT_EXCEEDED_EXCEPTION", "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION", "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE", "NO_QUERY_TO_VISUALIZE_EXCEPTION", "NO_TABLES_TO_QUERY_EXCEPTION", "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION", "RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION", "REPLY_PROCESS_TIMEOUT_EXCEPTION", "RETRYABLE_PROCESSING_EXCEPTION", "SQL_EXECUTION_EXCEPTION", "STOP_PROCESS_DUE_TO_AUTO_REGENERATE", "TABLES_MISSING_EXCEPTION", "TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION", "TOO_MANY_TABLES_EXCEPTION", "UNEXPECTED_REPLY_PROCESS_EXCEPTION", "UNKNOWN_AI_MODEL", "WAREHOUSE_ACCESS_MISSING_EXCEPTION", "WAREHOUSE_NOT_FOUND_EXCEPTION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION", "CHAT_COMPLETION_CLIENT_EXCEPTION", "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION", "CHAT_COMPLETION_NETWORK_EXCEPTION", "CONTENT_FILTER_EXCEPTION", "CONTEXT_EXCEEDED_EXCEPTION", "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION", "COULD_NOT_GET_UC_SCHEMA_EXCEPTION", "DEPLOYMENT_NOT_FOUND_EXCEPTION", "FUNCTIONS_NOT_AVAILABLE_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION", "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION", "GENERIC_CHAT_COMPLETION_EXCEPTION", "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION", "GENERIC_SQL_EXEC_API_CALL_EXCEPTION", "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION", "INVALID_CHAT_COMPLETION_JSON_EXCEPTION", "INVALID_COMPLETION_REQUEST_EXCEPTION", "INVALID_FUNCTION_CALL_EXCEPTION", "INVALID_TABLE_IDENTIFIER_EXCEPTION", "LOCAL_CONTEXT_EXCEEDED_EXCEPTION", "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION", "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE", "NO_QUERY_TO_VISUALIZE_EXCEPTION", "NO_TABLES_TO_QUERY_EXCEPTION", "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION", "RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION", "REPLY_PROCESS_TIMEOUT_EXCEPTION", "RETRYABLE_PROCESSING_EXCEPTION", "SQL_EXECUTION_EXCEPTION", "STOP_PROCESS_DUE_TO_AUTO_REGENERATE", "TABLES_MISSING_EXCEPTION", "TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION", "TOO_MANY_TABLES_EXCEPTION", "UNEXPECTED_REPLY_PROCESS_EXCEPTION", "UNKNOWN_AI_MODEL", "WAREHOUSE_ACCESS_MISSING_EXCEPTION", "WAREHOUSE_NOT_FOUND_EXCEPTION"`, v)
 	}
 }
 
@@ -790,14 +822,16 @@ func (f *MessageErrorType) Type() string {
 // respond to the user's question. * `PENDING_WAREHOUSE`: Waiting for warehouse
 // before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a
 // generated SQL query. Get the SQL query result by calling
-// [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`:
-// The response generation or query execution failed. See `error` field. *
-// `COMPLETED`: Message processing is completed. Results are in the
-// `attachments` field. Get the SQL query result by calling
-// [getMessageQueryResult](:method:genie/getMessageQueryResult) API. *
-// `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result
-// is not available anymore. The user needs to rerun the query. * `CANCELLED`:
-// Message has been cancelled.
+// [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
+// API. * `FAILED`: The response generation or query execution failed. See
+// `error` field. * `COMPLETED`: Message processing is completed. Results are in
+// the `attachments` field. Get the SQL query result by calling
+// [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
+// API. * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL
+// result is not available anymore. The user needs to rerun the query. Rerun the
+// SQL query result by calling
+// [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery)
+// API. * `CANCELLED`: Message has been cancelled.
 type MessageStatus string
 
 // Waiting for the LLM to respond to the user's question.
@@ -808,11 +842,13 @@ const MessageStatusCancelled MessageStatus = `CANCELLED`
 
 // Message processing is completed. Results are in the `attachments` field. Get
 // the SQL query result by calling
-// [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
+// [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
+// API.
 const MessageStatusCompleted MessageStatus = `COMPLETED`
 
 // Executing a generated SQL query. Get the SQL query result by calling
-// [getMessageQueryResult](:method:genie/getMessageQueryResult) API.
+// [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
+// API.
 const MessageStatusExecutingQuery MessageStatus = `EXECUTING_QUERY`
 
 // The response generation or query execution failed. See `error` field.
@@ -827,7 +863,10 @@ const MessageStatusFilteringContext MessageStatus = `FILTERING_CONTEXT`
 // Waiting for warehouse before the SQL query can start executing.
 const MessageStatusPendingWarehouse MessageStatus = `PENDING_WAREHOUSE`
 
-// SQL result is not available anymore. The user needs to rerun the query.
+// SQL result is not available anymore. The user needs to rerun the query. Rerun
+// the SQL query result by calling
+// [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery)
+// API.
 const MessageStatusQueryResultExpired MessageStatus = `QUERY_RESULT_EXPIRED`
 
 // Message has been submitted.
