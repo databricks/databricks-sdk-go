@@ -1,13 +1,17 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Experiments, Model Registry, etc.
+// These APIs allow you to manage Experiments, Forecasting, Model Registry, etc.
 package ml
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 type ExperimentsInterface interface {
@@ -363,6 +367,159 @@ func (a *ExperimentsAPI) GetPermissionLevelsByExperimentId(ctx context.Context, 
 // from their root object.
 func (a *ExperimentsAPI) GetPermissionsByExperimentId(ctx context.Context, experimentId string) (*ExperimentPermissions, error) {
 	return a.experimentsImpl.GetPermissions(ctx, GetExperimentPermissionsRequest{
+		ExperimentId: experimentId,
+	})
+}
+
+type ForecastingInterface interface {
+
+	// WaitGetExperimentForecastingSucceeded repeatedly calls [ForecastingAPI.GetExperiment] and waits to reach SUCCEEDED state
+	WaitGetExperimentForecastingSucceeded(ctx context.Context, experimentId string,
+		timeout time.Duration, callback func(*ForecastingExperiment)) (*ForecastingExperiment, error)
+
+	// Create a forecasting experiment.
+	//
+	// Creates a serverless forecasting experiment. Returns the experiment ID.
+	CreateExperiment(ctx context.Context, createForecastingExperimentRequest CreateForecastingExperimentRequest) (*WaitGetExperimentForecastingSucceeded[CreateForecastingExperimentResponse], error)
+
+	// Calls [ForecastingAPIInterface.CreateExperiment] and waits to reach SUCCEEDED state
+	//
+	// You can override the default timeout of 120 minutes by calling adding
+	// retries.Timeout[ForecastingExperiment](60*time.Minute) functional option.
+	//
+	// Deprecated: use [ForecastingAPIInterface.CreateExperiment].Get() or [ForecastingAPIInterface.WaitGetExperimentForecastingSucceeded]
+	CreateExperimentAndWait(ctx context.Context, createForecastingExperimentRequest CreateForecastingExperimentRequest, options ...retries.Option[ForecastingExperiment]) (*ForecastingExperiment, error)
+
+	// Get a forecasting experiment.
+	//
+	// Public RPC to get forecasting experiment
+	GetExperiment(ctx context.Context, request GetForecastingExperimentRequest) (*ForecastingExperiment, error)
+
+	// Get a forecasting experiment.
+	//
+	// Public RPC to get forecasting experiment
+	GetExperimentByExperimentId(ctx context.Context, experimentId string) (*ForecastingExperiment, error)
+}
+
+func NewForecasting(client *client.DatabricksClient) *ForecastingAPI {
+	return &ForecastingAPI{
+		forecastingImpl: forecastingImpl{
+			client: client,
+		},
+	}
+}
+
+// The Forecasting API allows you to create and get serverless forecasting
+// experiments
+type ForecastingAPI struct {
+	forecastingImpl
+}
+
+// WaitGetExperimentForecastingSucceeded repeatedly calls [ForecastingAPI.GetExperiment] and waits to reach SUCCEEDED state
+func (a *ForecastingAPI) WaitGetExperimentForecastingSucceeded(ctx context.Context, experimentId string,
+	timeout time.Duration, callback func(*ForecastingExperiment)) (*ForecastingExperiment, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[ForecastingExperiment](ctx, timeout, func() (*ForecastingExperiment, *retries.Err) {
+		forecastingExperiment, err := a.GetExperiment(ctx, GetForecastingExperimentRequest{
+			ExperimentId: experimentId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(forecastingExperiment)
+		}
+		status := forecastingExperiment.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case ForecastingExperimentStateSucceeded: // target state
+			return forecastingExperiment, nil
+		case ForecastingExperimentStateFailed, ForecastingExperimentStateCancelled:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ForecastingExperimentStateSucceeded, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetExperimentForecastingSucceeded is a wrapper that calls [ForecastingAPI.WaitGetExperimentForecastingSucceeded] and waits to reach SUCCEEDED state.
+type WaitGetExperimentForecastingSucceeded[R any] struct {
+	Response     *R
+	ExperimentId string `json:"experiment_id"`
+	Poll         func(time.Duration, func(*ForecastingExperiment)) (*ForecastingExperiment, error)
+	callback     func(*ForecastingExperiment)
+	timeout      time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetExperimentForecastingSucceeded[R]) OnProgress(callback func(*ForecastingExperiment)) *WaitGetExperimentForecastingSucceeded[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the ForecastingExperiment with the default timeout of 120 minutes.
+func (w *WaitGetExperimentForecastingSucceeded[R]) Get() (*ForecastingExperiment, error) {
+	return w.Poll(w.timeout, w.callback)
+}
+
+// Get the ForecastingExperiment with custom timeout.
+func (w *WaitGetExperimentForecastingSucceeded[R]) GetWithTimeout(timeout time.Duration) (*ForecastingExperiment, error) {
+	return w.Poll(timeout, w.callback)
+}
+
+// Create a forecasting experiment.
+//
+// Creates a serverless forecasting experiment. Returns the experiment ID.
+func (a *ForecastingAPI) CreateExperiment(ctx context.Context, createForecastingExperimentRequest CreateForecastingExperimentRequest) (*WaitGetExperimentForecastingSucceeded[CreateForecastingExperimentResponse], error) {
+	createForecastingExperimentResponse, err := a.forecastingImpl.CreateExperiment(ctx, createForecastingExperimentRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetExperimentForecastingSucceeded[CreateForecastingExperimentResponse]{
+		Response:     createForecastingExperimentResponse,
+		ExperimentId: createForecastingExperimentResponse.ExperimentId,
+		Poll: func(timeout time.Duration, callback func(*ForecastingExperiment)) (*ForecastingExperiment, error) {
+			return a.WaitGetExperimentForecastingSucceeded(ctx, createForecastingExperimentResponse.ExperimentId, timeout, callback)
+		},
+		timeout:  120 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [ForecastingAPI.CreateExperiment] and waits to reach SUCCEEDED state
+//
+// You can override the default timeout of 120 minutes by calling adding
+// retries.Timeout[ForecastingExperiment](60*time.Minute) functional option.
+//
+// Deprecated: use [ForecastingAPI.CreateExperiment].Get() or [ForecastingAPI.WaitGetExperimentForecastingSucceeded]
+func (a *ForecastingAPI) CreateExperimentAndWait(ctx context.Context, createForecastingExperimentRequest CreateForecastingExperimentRequest, options ...retries.Option[ForecastingExperiment]) (*ForecastingExperiment, error) {
+	wait, err := a.CreateExperiment(ctx, createForecastingExperimentRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[ForecastingExperiment]{Timeout: 120 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *ForecastingExperiment) {
+		for _, o := range options {
+			o(&retries.Info[ForecastingExperiment]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
+}
+
+// Get a forecasting experiment.
+//
+// Public RPC to get forecasting experiment
+func (a *ForecastingAPI) GetExperimentByExperimentId(ctx context.Context, experimentId string) (*ForecastingExperiment, error) {
+	return a.forecastingImpl.GetExperiment(ctx, GetForecastingExperimentRequest{
 		ExperimentId: experimentId,
 	})
 }

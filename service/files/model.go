@@ -137,12 +137,13 @@ type DownloadRequest struct {
 }
 
 type DownloadResponse struct {
+	// The length of the HTTP response body in bytes.
 	ContentLength int64 `json:"-" url:"-" header:"content-length,omitempty"`
 
 	ContentType string `json:"-" url:"-" header:"content-type,omitempty"`
 
 	Contents io.ReadCloser `json:"-"`
-
+	// The last modified time of the file in HTTP-date (RFC 7231) format.
 	LastModified string `json:"-" url:"-" header:"last-modified,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -193,10 +194,11 @@ type GetMetadataRequest struct {
 }
 
 type GetMetadataResponse struct {
+	// The length of the HTTP response body in bytes.
 	ContentLength int64 `json:"-" url:"-" header:"content-length,omitempty"`
 
 	ContentType string `json:"-" url:"-" header:"content-type,omitempty"`
-
+	// The last modified time of the file in HTTP-date (RFC 7231) format.
 	LastModified string `json:"-" url:"-" header:"last-modified,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

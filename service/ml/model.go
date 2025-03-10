@@ -319,6 +319,96 @@ func (s CreateExperimentResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateForecastingExperimentRequest struct {
+	// Name of the column in the input training table used to customize the
+	// weight for each time series to calculate weighted metrics.
+	CustomWeightsColumn string `json:"custom_weights_column,omitempty"`
+	// The quantity of the input data granularity. Together with
+	// data_granularity_unit field, this defines the time interval between
+	// consecutive rows in the time series data. For now, only 1 second,
+	// 1/5/10/15/30 minutes, 1 hour, 1 day, 1 week, 1 month, 1 quarter, 1 year
+	// are supported.
+	DataGranularityQuantity int64 `json:"data_granularity_quantity,omitempty"`
+	// The time unit of the input data granularity. Together with
+	// data_granularity_quantity field, this defines the time interval between
+	// consecutive rows in the time series data. Possible values: * 'W' (weeks)
+	// * 'D' / 'days' / 'day' * 'hours' / 'hour' / 'hr' / 'h' * 'm' / 'minute' /
+	// 'min' / 'minutes' / 'T' * 'S' / 'seconds' / 'sec' / 'second' * 'M' /
+	// 'month' / 'months' * 'Q' / 'quarter' / 'quarters' * 'Y' / 'year' /
+	// 'years'
+	DataGranularityUnit string `json:"data_granularity_unit"`
+	// The path to the created experiment. This is the path where the experiment
+	// will be stored in the workspace.
+	ExperimentPath string `json:"experiment_path,omitempty"`
+	// The number of time steps into the future for which predictions should be
+	// made. This value represents a multiple of data_granularity_unit and
+	// data_granularity_quantity determining how far ahead the model will
+	// forecast.
+	ForecastHorizon int64 `json:"forecast_horizon"`
+	// Region code(s) to consider when automatically adding holiday features.
+	// When empty, no holiday features are added. Only supports 1 holiday region
+	// for now.
+	HolidayRegions []string `json:"holiday_regions,omitempty"`
+	// The maximum duration in minutes for which the experiment is allowed to
+	// run. If the experiment exceeds this time limit it will be stopped
+	// automatically.
+	MaxRuntime int64 `json:"max_runtime,omitempty"`
+	// The three-level (fully qualified) path to a unity catalog table. This
+	// table path serves to store the predictions.
+	PredictionDataPath string `json:"prediction_data_path,omitempty"`
+	// The evaluation metric used to optimize the forecasting model.
+	PrimaryMetric string `json:"primary_metric,omitempty"`
+	// The three-level (fully qualified) path to a unity catalog model. This
+	// model path serves to store the best model.
+	RegisterTo string `json:"register_to,omitempty"`
+	// Name of the column in the input training table used for custom data
+	// splits. The values in this column must be "train", "validate", or "test"
+	// to indicate which split each row belongs to.
+	SplitColumn string `json:"split_column,omitempty"`
+	// Name of the column in the input training table that serves as the
+	// prediction target. The values in this column will be used as the ground
+	// truth for model training.
+	TargetColumn string `json:"target_column"`
+	// Name of the column in the input training table that represents the
+	// timestamp of each row.
+	TimeColumn string `json:"time_column"`
+	// Name of the column in the input training table used to group the dataset
+	// to predict individual time series
+	TimeseriesIdentifierColumns []string `json:"timeseries_identifier_columns,omitempty"`
+	// The three-level (fully qualified) name of a unity catalog table. This
+	// table serves as the training data for the forecasting model.
+	TrainDataPath string `json:"train_data_path"`
+	// The list of frameworks to include for model tuning. Possible values:
+	// 'Prophet', 'ARIMA', 'DeepAR'. An empty list will include all supported
+	// frameworks.
+	TrainingFrameworks []string `json:"training_frameworks,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateForecastingExperimentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateForecastingExperimentRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateForecastingExperimentResponse struct {
+	// The unique ID of the created forecasting experiment
+	ExperimentId string `json:"experiment_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateForecastingExperimentResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateForecastingExperimentResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateModelRequest struct {
 	// Optional description for registered model.
 	Description string `json:"description,omitempty"`
@@ -953,6 +1043,60 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Represents a forecasting experiment with its unique identifier, URL, and
+// state.
+type ForecastingExperiment struct {
+	// The unique ID for the forecasting experiment.
+	ExperimentId string `json:"experiment_id,omitempty"`
+	// The URL to the forecasting experiment page.
+	ExperimentPageUrl string `json:"experiment_page_url,omitempty"`
+	// The current state of the forecasting experiment.
+	State ForecastingExperimentState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ForecastingExperiment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ForecastingExperiment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ForecastingExperimentState string
+
+const ForecastingExperimentStateCancelled ForecastingExperimentState = `CANCELLED`
+
+const ForecastingExperimentStateFailed ForecastingExperimentState = `FAILED`
+
+const ForecastingExperimentStatePending ForecastingExperimentState = `PENDING`
+
+const ForecastingExperimentStateRunning ForecastingExperimentState = `RUNNING`
+
+const ForecastingExperimentStateSucceeded ForecastingExperimentState = `SUCCEEDED`
+
+// String representation for [fmt.Print]
+func (f *ForecastingExperimentState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ForecastingExperimentState) Set(v string) error {
+	switch v {
+	case `CANCELLED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCEEDED`:
+		*f = ForecastingExperimentState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "PENDING", "RUNNING", "SUCCEEDED"`, v)
+	}
+}
+
+// Type always returns ForecastingExperimentState to satisfy [pflag.Value] interface
+func (f *ForecastingExperimentState) Type() string {
+	return "ForecastingExperimentState"
+}
+
 // Get an experiment by name
 type GetByNameRequest struct {
 	// Name of the associated experiment.
@@ -990,6 +1134,12 @@ type GetExperimentRequest struct {
 type GetExperimentResponse struct {
 	// Experiment details.
 	Experiment *Experiment `json:"experiment,omitempty"`
+}
+
+// Get a forecasting experiment
+type GetForecastingExperimentRequest struct {
+	// The unique ID of a forecasting experiment
+	ExperimentId string `json:"-" url:"-"`
 }
 
 // Get metric history for a run

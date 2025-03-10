@@ -19,10 +19,9 @@ type jobsImpl struct {
 
 func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {
 	var cancelAllRunsResponse CancelAllRunsResponse
-	path := "/api/2.1/jobs/runs/cancel-all"
+	path := "/api/2.2/jobs/runs/cancel-all"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &cancelAllRunsResponse)
 	return err
@@ -30,10 +29,9 @@ func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) err
 
 func (a *jobsImpl) CancelRun(ctx context.Context, request CancelRun) error {
 	var cancelRunResponse CancelRunResponse
-	path := "/api/2.1/jobs/runs/cancel"
+	path := "/api/2.2/jobs/runs/cancel"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &cancelRunResponse)
 	return err
@@ -41,7 +39,7 @@ func (a *jobsImpl) CancelRun(ctx context.Context, request CancelRun) error {
 
 func (a *jobsImpl) Create(ctx context.Context, request CreateJob) (*CreateResponse, error) {
 	var createResponse CreateResponse
-	path := "/api/2.1/jobs/create"
+	path := "/api/2.2/jobs/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -52,10 +50,9 @@ func (a *jobsImpl) Create(ctx context.Context, request CreateJob) (*CreateRespon
 
 func (a *jobsImpl) Delete(ctx context.Context, request DeleteJob) error {
 	var deleteResponse DeleteResponse
-	path := "/api/2.1/jobs/delete"
+	path := "/api/2.2/jobs/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteResponse)
 	return err
@@ -63,10 +60,9 @@ func (a *jobsImpl) Delete(ctx context.Context, request DeleteJob) error {
 
 func (a *jobsImpl) DeleteRun(ctx context.Context, request DeleteRun) error {
 	var deleteRunResponse DeleteRunResponse
-	path := "/api/2.1/jobs/runs/delete"
+	path := "/api/2.2/jobs/runs/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteRunResponse)
 	return err
@@ -74,7 +70,7 @@ func (a *jobsImpl) DeleteRun(ctx context.Context, request DeleteRun) error {
 
 func (a *jobsImpl) ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error) {
 	var exportRunOutput ExportRunOutput
-	path := "/api/2.1/jobs/runs/export"
+	path := "/api/2.2/jobs/runs/export"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -84,7 +80,7 @@ func (a *jobsImpl) ExportRun(ctx context.Context, request ExportRunRequest) (*Ex
 
 func (a *jobsImpl) Get(ctx context.Context, request GetJobRequest) (*Job, error) {
 	var job Job
-	path := "/api/2.1/jobs/get"
+	path := "/api/2.2/jobs/get"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -114,7 +110,7 @@ func (a *jobsImpl) GetPermissions(ctx context.Context, request GetJobPermissions
 
 func (a *jobsImpl) GetRun(ctx context.Context, request GetRunRequest) (*Run, error) {
 	var run Run
-	path := "/api/2.1/jobs/runs/get"
+	path := "/api/2.2/jobs/runs/get"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -124,7 +120,7 @@ func (a *jobsImpl) GetRun(ctx context.Context, request GetRunRequest) (*Run, err
 
 func (a *jobsImpl) GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error) {
 	var runOutput RunOutput
-	path := "/api/2.1/jobs/runs/get-output"
+	path := "/api/2.2/jobs/runs/get-output"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -169,7 +165,7 @@ func (a *jobsImpl) ListAll(ctx context.Context, request ListJobsRequest) ([]Base
 
 func (a *jobsImpl) internalList(ctx context.Context, request ListJobsRequest) (*ListJobsResponse, error) {
 	var listJobsResponse ListJobsResponse
-	path := "/api/2.1/jobs/list"
+	path := "/api/2.2/jobs/list"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -214,7 +210,7 @@ func (a *jobsImpl) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]
 
 func (a *jobsImpl) internalListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error) {
 	var listRunsResponse ListRunsResponse
-	path := "/api/2.1/jobs/runs/list"
+	path := "/api/2.2/jobs/runs/list"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -224,7 +220,7 @@ func (a *jobsImpl) internalListRuns(ctx context.Context, request ListRunsRequest
 
 func (a *jobsImpl) RepairRun(ctx context.Context, request RepairRun) (*RepairRunResponse, error) {
 	var repairRunResponse RepairRunResponse
-	path := "/api/2.1/jobs/runs/repair"
+	path := "/api/2.2/jobs/runs/repair"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -235,10 +231,9 @@ func (a *jobsImpl) RepairRun(ctx context.Context, request RepairRun) (*RepairRun
 
 func (a *jobsImpl) Reset(ctx context.Context, request ResetJob) error {
 	var resetResponse ResetResponse
-	path := "/api/2.1/jobs/reset"
+	path := "/api/2.2/jobs/reset"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &resetResponse)
 	return err
@@ -246,7 +241,7 @@ func (a *jobsImpl) Reset(ctx context.Context, request ResetJob) error {
 
 func (a *jobsImpl) RunNow(ctx context.Context, request RunNow) (*RunNowResponse, error) {
 	var runNowResponse RunNowResponse
-	path := "/api/2.1/jobs/run-now"
+	path := "/api/2.2/jobs/run-now"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -268,7 +263,7 @@ func (a *jobsImpl) SetPermissions(ctx context.Context, request JobPermissionsReq
 
 func (a *jobsImpl) Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error) {
 	var submitRunResponse SubmitRunResponse
-	path := "/api/2.1/jobs/runs/submit"
+	path := "/api/2.2/jobs/runs/submit"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -279,10 +274,9 @@ func (a *jobsImpl) Submit(ctx context.Context, request SubmitRun) (*SubmitRunRes
 
 func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) error {
 	var updateResponse UpdateResponse
-	path := "/api/2.1/jobs/update"
+	path := "/api/2.2/jobs/update"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &updateResponse)
 	return err

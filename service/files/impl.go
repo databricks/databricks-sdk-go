@@ -269,8 +269,7 @@ func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirec
 // specified path, the API returns a HTTP 404 error.
 func (a *filesImpl) ListDirectoryContentsAll(ctx context.Context, request ListDirectoryContentsRequest) ([]DirectoryEntry, error) {
 	iterator := a.ListDirectoryContents(ctx, request)
-	return listing.ToSliceN[DirectoryEntry, int64](ctx, iterator, request.PageSize)
-
+	return listing.ToSlice[DirectoryEntry](ctx, iterator)
 }
 
 func (a *filesImpl) internalListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {

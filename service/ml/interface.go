@@ -289,6 +289,21 @@ type ExperimentsService interface {
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
 }
 
+// The Forecasting API allows you to create and get serverless forecasting
+// experiments
+type ForecastingService interface {
+
+	// Create a forecasting experiment.
+	//
+	// Creates a serverless forecasting experiment. Returns the experiment ID.
+	CreateExperiment(ctx context.Context, request CreateForecastingExperimentRequest) (*CreateForecastingExperimentResponse, error)
+
+	// Get a forecasting experiment.
+	//
+	// Public RPC to get forecasting experiment
+	GetExperiment(ctx context.Context, request GetForecastingExperimentRequest) (*ForecastingExperiment, error)
+}
+
 // Note: This API reference documents APIs for the Workspace Model Registry.
 // Databricks recommends using [Models in Unity
 // Catalog](/api/workspace/registeredmodels) instead. Models in Unity Catalog

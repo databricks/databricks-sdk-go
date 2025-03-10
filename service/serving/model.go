@@ -466,6 +466,8 @@ type CreateServingEndpoint struct {
 	// external model and provisioned throughput endpoints are currently
 	// supported.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// The budget policy to be applied to the serving endpoint.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The core config of the serving endpoint.
 	Config *EndpointCoreConfigInput `json:"config,omitempty"`
 	// The name of the serving endpoint. This field is required and must be
@@ -1858,6 +1860,8 @@ type ServingEndpoint struct {
 	// external model and provisioned throughput endpoints are currently
 	// supported.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// The budget policy associated with the endpoint.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The config that is currently being served by the endpoint.
 	Config *EndpointCoreConfigSummary `json:"config,omitempty"`
 	// The timestamp when the endpoint was created in Unix time.
@@ -1938,6 +1942,8 @@ type ServingEndpointDetailed struct {
 	// external model and provisioned throughput endpoints are currently
 	// supported.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// The budget policy associated with the endpoint.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The config that is currently being served by the endpoint.
 	Config *EndpointCoreConfigOutput `json:"config,omitempty"`
 	// The timestamp when the endpoint was created in Unix time.

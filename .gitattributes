@@ -80,6 +80,7 @@ experimental/mocks/service/marketplace/mock_provider_personalization_requests_in
 experimental/mocks/service/marketplace/mock_provider_provider_analytics_dashboards_interface.go linguist-generated=true
 experimental/mocks/service/marketplace/mock_provider_providers_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_experiments_interface.go linguist-generated=true
+experimental/mocks/service/ml/mock_forecasting_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_model_registry_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_account_federation_policy_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_custom_app_integration_interface.go linguist-generated=true

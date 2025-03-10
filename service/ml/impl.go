@@ -528,6 +528,32 @@ func (a *experimentsImpl) UpdateRun(ctx context.Context, request UpdateRun) (*Up
 	return &updateRunResponse, err
 }
 
+// unexported type that holds implementations of just forecasting API methods
+type forecastingImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *forecastingImpl) CreateExperiment(ctx context.Context, request CreateForecastingExperimentRequest) (*CreateForecastingExperimentResponse, error) {
+	var createForecastingExperimentResponse CreateForecastingExperimentResponse
+	path := "/api/2.0/automl/create-forecasting-experiment"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createForecastingExperimentResponse)
+	return &createForecastingExperimentResponse, err
+}
+
+func (a *forecastingImpl) GetExperiment(ctx context.Context, request GetForecastingExperimentRequest) (*ForecastingExperiment, error) {
+	var forecastingExperiment ForecastingExperiment
+	path := fmt.Sprintf("/api/2.0/automl/get-forecasting-experiment/%v", request.ExperimentId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &forecastingExperiment)
+	return &forecastingExperiment, err
+}
+
 // unexported type that holds implementations of just ModelRegistry API methods
 type modelRegistryImpl struct {
 	client *client.DatabricksClient

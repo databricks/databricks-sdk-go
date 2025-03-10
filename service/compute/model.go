@@ -2196,6 +2196,10 @@ type DestroyContext struct {
 type DestroyResponse struct {
 }
 
+// Describes the disks that are launched for each instance in the spark cluster.
+// For example, if the cluster has 3 instances, each instance is configured to
+// launch 2 disks, 100 GiB each, then Databricks will launch a total of 6 disks,
+// 100 GiB each, for this cluster.
 type DiskSpec struct {
 	// The number of disks launched for each instance: - This feature is only
 	// enabled for supported node types. - Users can choose up to the limit of
@@ -2241,12 +2245,18 @@ func (s DiskSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Describes the disk type.
 type DiskType struct {
+	// All Azure Disk types that Databricks supports. See
+	// https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks
 	AzureDiskVolumeType DiskTypeAzureDiskVolumeType `json:"azure_disk_volume_type,omitempty"`
-
+	// All EBS volume types that Databricks supports. See
+	// https://aws.amazon.com/ebs/details/ for details.
 	EbsVolumeType DiskTypeEbsVolumeType `json:"ebs_volume_type,omitempty"`
 }
 
+// All Azure Disk types that Databricks supports. See
+// https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks
 type DiskTypeAzureDiskVolumeType string
 
 const DiskTypeAzureDiskVolumeTypePremiumLrs DiskTypeAzureDiskVolumeType = `PREMIUM_LRS`
@@ -2274,6 +2284,8 @@ func (f *DiskTypeAzureDiskVolumeType) Type() string {
 	return "DiskTypeAzureDiskVolumeType"
 }
 
+// All EBS volume types that Databricks supports. See
+// https://aws.amazon.com/ebs/details/ for details.
 type DiskTypeEbsVolumeType string
 
 const DiskTypeEbsVolumeTypeGeneralPurposeSsd DiskTypeEbsVolumeType = `GENERAL_PURPOSE_SSD`
@@ -2319,6 +2331,7 @@ func (s DockerBasicAuth) MarshalJSON() ([]byte, error) {
 }
 
 type DockerImage struct {
+	// Basic auth with username and password
 	BasicAuth *DockerBasicAuth `json:"basic_auth,omitempty"`
 	// URL of the docker image.
 	Url string `json:"url,omitempty"`
@@ -3152,7 +3165,7 @@ type GetInstancePool struct {
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any `custom_tags`,
+	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including:
 	//
 	// - Vendor: Databricks
@@ -3579,7 +3592,7 @@ type InstancePoolAndStats struct {
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any `custom_tags`,
+	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including:
 	//
 	// - Vendor: Databricks
@@ -3652,11 +3665,10 @@ func (s InstancePoolAndStats) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Attributes set during instance pool creation which are related to Amazon Web
+// Services.
 type InstancePoolAwsAttributes struct {
 	// Availability type used for the spot nodes.
-	//
-	// The default value is defined by
-	// InstancePoolConf.instancePoolDefaultAwsAvailability
 	Availability InstancePoolAwsAttributesAvailability `json:"availability,omitempty"`
 	// Calculates the bid price for AWS spot instances, as a percentage of the
 	// corresponding instance type's on-demand price. For example, if this field
@@ -3668,10 +3680,6 @@ type InstancePoolAwsAttributes struct {
 	// instances whose bid price percentage matches this field will be
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
-	//
-	// The default value and documentation here should be kept consistent with
-	// CommonConf.defaultSpotBidPricePercent and
-	// CommonConf.maxSpotBidPricePercent.
 	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west-2a". The provided
@@ -3694,10 +3702,8 @@ func (s InstancePoolAwsAttributes) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Availability type used for the spot nodes.
-//
-// The default value is defined by
-// InstancePoolConf.instancePoolDefaultAwsAvailability
+// The set of AWS availability types supported when setting up nodes for a
+// cluster.
 type InstancePoolAwsAttributesAvailability string
 
 const InstancePoolAwsAttributesAvailabilityOnDemand InstancePoolAwsAttributesAvailability = `ON_DEMAND`
@@ -3725,14 +3731,16 @@ func (f *InstancePoolAwsAttributesAvailability) Type() string {
 	return "InstancePoolAwsAttributesAvailability"
 }
 
+// Attributes set during instance pool creation which are related to Azure.
 type InstancePoolAzureAttributes struct {
-	// Shows the Availability type used for the spot nodes.
-	//
-	// The default value is defined by
-	// InstancePoolConf.instancePoolDefaultAzureAvailability
+	// Availability type used for the spot nodes.
 	Availability InstancePoolAzureAttributesAvailability `json:"availability,omitempty"`
-	// The default value and documentation here should be kept consistent with
-	// CommonConf.defaultSpotBidMaxPrice.
+	// With variable pricing, you have option to set a max price, in US dollars
+	// (USD) For example, the value 2 would be a max price of $2.00 USD per
+	// hour. If you set the max price to be -1, the VM won't be evicted based on
+	// price. The price for the VM will be the current price for spot or the
+	// price for a standard VM, which ever is less, as long as there is capacity
+	// and quota available.
 	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3746,10 +3754,8 @@ func (s InstancePoolAzureAttributes) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Shows the Availability type used for the spot nodes.
-//
-// The default value is defined by
-// InstancePoolConf.instancePoolDefaultAzureAvailability
+// The set of Azure availability types supported when setting up nodes for a
+// cluster.
 type InstancePoolAzureAttributesAvailability string
 
 const InstancePoolAzureAttributesAvailabilityOnDemandAzure InstancePoolAzureAttributesAvailability = `ON_DEMAND_AZURE`
@@ -3777,6 +3783,7 @@ func (f *InstancePoolAzureAttributesAvailability) Type() string {
 	return "InstancePoolAzureAttributesAvailability"
 }
 
+// Attributes set during instance pool creation which are related to GCP.
 type InstancePoolGcpAttributes struct {
 	// This field determines whether the instance pool will contain preemptible
 	// VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs
@@ -3904,7 +3911,11 @@ type InstancePoolPermissionsRequest struct {
 	InstancePoolId string `json:"-" url:"-"`
 }
 
-// Current state of the instance pool.
+// The state of a Cluster. The current allowable state transitions are as
+// follows:
+//
+// - “ACTIVE“ -> “STOPPED“ - “ACTIVE“ -> “DELETED“ - “STOPPED“ ->
+// “ACTIVE“ - “STOPPED“ -> “DELETED“
 type InstancePoolState string
 
 const InstancePoolStateActive InstancePoolState = `ACTIVE`
@@ -4650,6 +4661,7 @@ func (s NodeType) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Error message of a failed pending instances
 type PendingInstanceError struct {
 	InstanceId string `json:"instance_id,omitempty"`
 
