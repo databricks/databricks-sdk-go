@@ -4,6 +4,8 @@ go 1.18
 
 replace github.com/databricks/databricks-sdk-go/databricks => ../databricks
 
+replace github.com/databricks/databricks-sdk-go/auth => ../auth
+
 replace github.com/databricks/databricks-sdk-go/compute => ../compute
 
 replace github.com/databricks/databricks-sdk-go/jobs => ../jobs

@@ -4,6 +4,8 @@ go 1.18
 
 replace github.com/databricks/databricks-sdk-go/databricks => ../databricks
 
+replace github.com/databricks/databricks-sdk-go/auth => ../auth
+
 replace github.com/databricks/databricks-sdk-go/jobs => ../jobs
 
 replace github.com/databricks/databricks-sdk-go/apps => ../apps
@@ -66,6 +68,7 @@ require (
 	cloud.google.com/go/auth v0.4.2 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.2 // indirect
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
+	github.com/databricks/databricks-sdk-go/auth v0.0.0-00010101000000-000000000000 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
