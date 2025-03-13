@@ -6,7 +6,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/databricks/databricks-sdk-go/databricks/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/auth"
+	"github.com/databricks/databricks-sdk-go/auth/cache"
 	"golang.org/x/oauth2"
 )
 
@@ -26,9 +27,9 @@ type EndpointTokenSource interface {
 func NewEndpointTokenSource(c OAuthClient, cpts auth.TokenSource) *dataPlaneTokenSource {
 	return &dataPlaneTokenSource{
 		client: c,
-		cpts: auth.NewCachedTokenSource(
+		cpts: cache.NewCachedTokenSource(
 			cpts,
-			auth.WithAsyncRefresh(false), // TODO: Enable async refreshes once the feature is stable.
+			cache.WithAsyncRefresh(false), // TODO: Enable async refreshes once the feature is stable.
 		),
 	}
 }
@@ -59,13 +60,13 @@ func (dpts *dataPlaneTokenSource) Token(ctx context.Context, endpoint string, au
 		return a.(auth.TokenSource).Token(ctx)
 	}
 
-	ts := auth.NewCachedTokenSource(
+	ts := cache.NewCachedTokenSource(
 		&tokenSource{
 			client:      dpts.client,
 			cpts:        dpts.cpts,
 			authDetails: authDetails,
 		},
-		auth.WithAsyncRefresh(false), // TODO: Enable async refresh once the feature is stable.
+		cache.WithAsyncRefresh(false), // TODO: Enable async refresh once the feature is stable.
 	)
 	dpts.sources.Store(key, ts)
 

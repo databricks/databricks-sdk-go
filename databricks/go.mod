@@ -2,14 +2,17 @@ module github.com/databricks/databricks-sdk-go/databricks
 
 go 1.18
 
+replace github.com/databricks/databricks-sdk-go/auth => ../auth
+
 require (
+	github.com/databricks/databricks-sdk-go/auth v0.0.0-00010101000000-000000000000
 	github.com/google/go-cmp v0.6.0
 	github.com/google/go-querystring v1.1.0
 	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225
 	golang.org/x/mod v0.17.0
-	golang.org/x/oauth2 v0.20.0
+	golang.org/x/oauth2 v0.24.0
 	golang.org/x/time v0.5.0
 	google.golang.org/api v0.182.0
 	gopkg.in/ini.v1 v1.67.0

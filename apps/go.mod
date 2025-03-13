@@ -2,7 +2,7 @@ module github.com/databricks/databricks-sdk-go/apps
 
 go 1.18
 
-replace github.com/databricks/databricks-sdk-go/databricks => ../databricks
+replace github.com/databricks/databricks-sdk-go/ => ../
 
 require (
 	github.com/databricks/databricks-sdk-go/databricks v0.0.0-00010101000000-000000000000

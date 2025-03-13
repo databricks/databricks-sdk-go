@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks/config/experimental/auth"
-	"github.com/databricks/databricks-sdk-go/databricks/config/experimental/auth/authconv"
+	"github.com/databricks/databricks-sdk-go/auth/authconv"
+	"github.com/databricks/databricks-sdk-go/auth/cache"
 	"golang.org/x/oauth2"
 )
 
@@ -15,8 +15,8 @@ import (
 // to the token from the auth token sourcevand the provided secondary header to
 // the token from the secondary token source.
 func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHeader string) func(r *http.Request) error {
-	refreshableAuth := auth.NewCachedTokenSource(authconv.AuthTokenSource(primary))
-	refreshableSecondary := auth.NewCachedTokenSource(authconv.AuthTokenSource(secondary))
+	refreshableAuth := cache.NewCachedTokenSource(authconv.AuthTokenSource(primary))
+	refreshableSecondary := cache.NewCachedTokenSource(authconv.AuthTokenSource(secondary))
 	return func(r *http.Request) error {
 		inner, err := refreshableAuth.Token(context.Background())
 		if err != nil {
@@ -35,7 +35,7 @@ func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHea
 
 // The same as serviceToServiceVisitor, but without a secondary token source.
 func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
-	cts := auth.NewCachedTokenSource(authconv.AuthTokenSource(inner))
+	cts := cache.NewCachedTokenSource(authconv.AuthTokenSource(inner))
 	return func(r *http.Request) error {
 		inner, err := cts.Token(context.Background())
 		if err != nil {
@@ -65,9 +65,9 @@ func azureReuseTokenSource(t *oauth2.Token, ts oauth2.TokenSource) oauth2.TokenS
 		return t
 	})
 
-	return authconv.OAuth2TokenSource(auth.NewCachedTokenSource(
+	return authconv.OAuth2TokenSource(cache.NewCachedTokenSource(
 		authconv.AuthTokenSource(early),
-		auth.WithCachedToken(t),
+		cache.WithCachedToken(t),
 	))
 }
 

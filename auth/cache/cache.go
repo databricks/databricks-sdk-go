@@ -1,14 +1,11 @@
-// Package auth is an internal package that provides authentication utilities.
-//
-// IMPORTANT: This package is not meant to be used directly by consumers of the
-// SDK and is subject to change without notice.
-package auth
+package cache
 
 import (
 	"context"
 	"sync"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/auth"
 	"golang.org/x/oauth2"
 )
 
@@ -17,27 +14,6 @@ const (
 	// and might be changed in the future.
 	defaultStaleDuration = 3 * time.Minute
 )
-
-// A TokenSource is anything that can return a token.
-type TokenSource interface {
-	// Token returns a token or an error. Token must be safe for concurrent use
-	// by multiple goroutines. The returned Token must not be modified.
-	Token(context.Context) (*oauth2.Token, error)
-}
-
-// TokenSourceFn is an adapter to allow the use of ordinary functions as
-// TokenSource.
-//
-// Example:
-//
-//	   ts := TokenSourceFn(func(ctx context.Context) (*oauth2.Token, error) {
-//			return &oauth2.Token{}, nil
-//	   })
-type TokenSourceFn func(context.Context) (*oauth2.Token, error)
-
-func (fn TokenSourceFn) Token(ctx context.Context) (*oauth2.Token, error) {
-	return fn(ctx)
-}
 
 type Option func(*cachedTokenSource)
 
@@ -68,7 +44,7 @@ func WithAsyncRefresh(b bool) Option {
 //
 // If the TokenSource is already a cached token source (obtained by calling this
 // function), it is returned as is.
-func NewCachedTokenSource(ts TokenSource, opts ...Option) TokenSource {
+func NewCachedTokenSource(ts auth.TokenSource, opts ...Option) auth.TokenSource {
 	// This is meant as a niche optimization to avoid double caching of the
 	// token source in situations where the user calls needs caching guarantees
 	// but does not know if the token source is already cached.
@@ -91,7 +67,7 @@ func NewCachedTokenSource(ts TokenSource, opts ...Option) TokenSource {
 
 type cachedTokenSource struct {
 	// The token source to obtain tokens from.
-	tokenSource TokenSource
+	tokenSource auth.TokenSource
 
 	// If true, only refresh the token with a blocking call when it is expired.
 	disableAsync bool
