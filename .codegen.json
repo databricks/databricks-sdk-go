@@ -10,7 +10,7 @@
     ],
     "post_generate": [
       "make fmt",
-      "go run github.com/vektra/mockery/v2@0229bd4bb4357cd09af7ac15ecab85022d296b12"
+      "go run github.com/vektra/mockery/v2@bfd46e35b15c2689ced221299bdcdeeff8aa0be3"
     ]
   }
 }
