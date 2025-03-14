@@ -3,7 +3,7 @@ package authconv
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/auth"
 	"golang.org/x/oauth2"
 )
 

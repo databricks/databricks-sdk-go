@@ -1,4 +1,4 @@
-package auth
+package cache
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/auth"
 	"golang.org/x/oauth2"
 )
 
@@ -21,7 +22,7 @@ func TestNewCachedTokenSource_noCaching(t *testing.T) {
 }
 
 func TestNewCachedTokenSource_default(t *testing.T) {
-	ts := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+	ts := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
 		return nil, nil
 	})
 
@@ -42,7 +43,7 @@ func TestNewCachedTokenSource_default(t *testing.T) {
 }
 
 func TestNewCachedTokenSource_options(t *testing.T) {
-	ts := TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+	ts := auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
 		return nil, nil
 	})
 
@@ -242,7 +243,7 @@ func TestCachedTokenSource_Token(t *testing.T) {
 				staleDuration: 10 * time.Minute,
 				cachedToken:   tc.cachedToken,
 				timeNow:       func() time.Time { return now },
-				tokenSource: TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+				tokenSource: auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
 					atomic.AddInt32(&gotCalls, 1)
 					time.Sleep(10 * time.Millisecond)
 					return tc.returnedToken, tc.returnedError
