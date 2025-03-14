@@ -659,6 +659,8 @@ const ConnectionTypeHttp ConnectionType = `HTTP`
 
 const ConnectionTypeMysql ConnectionType = `MYSQL`
 
+const ConnectionTypeOracle ConnectionType = `ORACLE`
+
 const ConnectionTypePostgresql ConnectionType = `POSTGRESQL`
 
 const ConnectionTypeRedshift ConnectionType = `REDSHIFT`
@@ -669,6 +671,8 @@ const ConnectionTypeSqldw ConnectionType = `SQLDW`
 
 const ConnectionTypeSqlserver ConnectionType = `SQLSERVER`
 
+const ConnectionTypeTeradata ConnectionType = `TERADATA`
+
 // String representation for [fmt.Print]
 func (f *ConnectionType) String() string {
 	return string(*f)
@@ -677,11 +681,11 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `DATABRICKS`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
+	case `BIGQUERY`, `DATABRICKS`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `MYSQL`, `ORACLE`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "GLUE", "HIVE_METASTORE", "HTTP", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "GLUE", "HIVE_METASTORE", "HTTP", "MYSQL", "ORACLE", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA"`, v)
 	}
 }
 
@@ -5820,6 +5824,9 @@ type ValidateCredentialRequest struct {
 	// Required. The name of an existing credential or long-lived cloud
 	// credential to validate.
 	CredentialName string `json:"credential_name,omitempty"`
+	// GCP long-lived credential. Databricks-created Google Cloud Storage
+	// service account.
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate. Only applicable
 	// for storage credentials (purpose is **STORAGE**.)
 	ExternalLocationName string `json:"external_location_name,omitempty"`

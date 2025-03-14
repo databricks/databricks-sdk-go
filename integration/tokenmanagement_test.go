@@ -3,6 +3,7 @@ package integration
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/iam/v2"
 	"github.com/databricks/databricks-sdk-go/settings/v2"
 	"github.com/stretchr/testify/assert"
@@ -11,9 +12,10 @@ import (
 
 func TestAccCreateOboTokenOnAws(t *testing.T) {
 	ctx := workspaceTest(t)
-	GroupsAPI, err := iam.NewGroupsClient(nil)
+	cfg := &config.Config{}
+	GroupsAPI, err := iam.NewGroupsClient(cfg)
 	require.NoError(t, err)
-	if !GroupsAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		t.Skip("works only on aws")
 	}
 	groups, err := GroupsAPI.GroupDisplayNameToIdMap(ctx, iam.ListGroupsRequest{})

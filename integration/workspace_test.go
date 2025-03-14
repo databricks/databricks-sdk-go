@@ -100,9 +100,10 @@ func TestGetOAuthToken(t *testing.T) {
 
 func TestAccWorkspaceIntegration(t *testing.T) {
 	ctx := workspaceTest(t)
-	WorkspaceAPI, err := workspace.NewWorkspaceClient(nil)
+	cfg := &config.Config{}
+	WorkspaceAPI, err := workspace.NewWorkspaceClient(cfg)
 	require.NoError(t, err)
-	notebook := myNotebookPath(t, WorkspaceAPI.Config)
+	notebook := myNotebookPath(t, cfg)
 
 	// Import the test notebook
 	err = WorkspaceAPI.Import(ctx, workspace.Import{
@@ -146,10 +147,10 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 func TestAccWorkspaceUploadNotebookWithFileExtensionNoTranspile(t *testing.T) {
 	// TODO: remove NoTranspile suffix once other languages get Upload/Donwload features
 	ctx := workspaceTest(t)
-
+	cfg := &config.Config{}
 	WorkspaceAPI, err := workspace.NewWorkspaceClient(nil)
 	require.NoError(t, err)
-	notebookPath := filepath.Join("/Users", me(t, WorkspaceAPI.Config).UserName, RandomName("notebook-")+".py")
+	notebookPath := filepath.Join("/Users", me(t, cfg).UserName, RandomName("notebook-")+".py")
 
 	err = WorkspaceAPI.Upload(ctx, notebookPath, strings.NewReader("print(1)"))
 	assert.NoError(t, err)
@@ -174,10 +175,10 @@ func TestAccWorkspaceUploadNotebookWithFileExtensionNoTranspile(t *testing.T) {
 func TestAccWorkspaceUploadNotebookWithFileNoExtensionNoTranspile(t *testing.T) {
 	// TODO: remove NoTranspile suffix once other languages get Upload/Donwload features
 	ctx := workspaceTest(t)
-
+	cfg := &config.Config{}
 	WorkspaceAPI, err := workspace.NewWorkspaceClient(nil)
 	require.NoError(t, err)
-	notebookPath := filepath.Join("/Users", me(t, WorkspaceAPI.Config).UserName, RandomName("notebook-"))
+	notebookPath := filepath.Join("/Users", me(t, cfg).UserName, RandomName("notebook-"))
 
 	err = WorkspaceAPI.Upload(ctx, notebookPath, strings.NewReader("print(1)"),
 		workspace.UploadLanguage(workspace.LanguagePython))
@@ -203,10 +204,10 @@ func TestAccWorkspaceUploadNotebookWithFileNoExtensionNoTranspile(t *testing.T) 
 func TestAccWorkspaceUploadFileNoTranspile(t *testing.T) {
 	// TODO: remove NoTranspile suffix once other languages get Upload/Donwload features
 	ctx := workspaceTest(t)
-
-	WorkspaceAPI, err := workspace.NewWorkspaceClient(nil)
+	cfg := &config.Config{}
+	WorkspaceAPI, err := workspace.NewWorkspaceClient(cfg)
 	require.NoError(t, err)
-	txtPath := filepath.Join("/Users", me(t, WorkspaceAPI.Config).UserName, RandomName("txt-"))
+	txtPath := filepath.Join("/Users", me(t, cfg).UserName, RandomName("txt-"))
 
 	err = WorkspaceAPI.Upload(ctx, txtPath, strings.NewReader("print(1)"),
 		workspace.UploadFormat(workspace.ImportFormatAuto))
@@ -230,16 +231,17 @@ func TestAccWorkspaceUploadFileNoTranspile(t *testing.T) {
 
 func TestAccWorkspaceRecursiveListNoTranspile(t *testing.T) {
 	ctx := workspaceTest(t)
-	WorkspaceAPI, err := workspace.NewWorkspaceClient(nil)
+	cfg := &config.Config{}
+	WorkspaceAPI, err := workspace.NewWorkspaceClient(cfg)
 	require.NoError(t, err)
-	notebook := myNotebookPath(t, WorkspaceAPI.Config)
+	notebook := myNotebookPath(t, cfg)
 
 	// Import the test notebook
 	err = WorkspaceAPI.Upload(ctx, notebook+".py", strings.NewReader("print(1)"),
 		workspace.UploadOverwrite())
 	require.NoError(t, err)
 
-	allMyNotebooks, err := WorkspaceAPI.RecursiveList(ctx, filepath.Join("/Users", me(t, WorkspaceAPI.Config).UserName, ".sdk"))
+	allMyNotebooks, err := WorkspaceAPI.RecursiveList(ctx, filepath.Join("/Users", me(t, cfg).UserName, ".sdk"))
 	require.NoError(t, err)
 	assert.True(t, len(allMyNotebooks) >= 1)
 }

@@ -243,7 +243,7 @@ type CleanRoomAssetTableLocalDetails struct {
 	// the format of *catalog*.*schema*.*table_name*
 	LocalName string `json:"local_name,omitempty"`
 	// Partition filtering specification for a shared table.
-	Partitions []PartitionSpecificationPartition `json:"partitions,omitempty"`
+	Partitions []Partition `json:"partitions,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1175,7 +1175,8 @@ type ListCleanRoomNotebookTaskRunsRequest struct {
 	CleanRoomName string `json:"-" url:"-"`
 	// Notebook name
 	NotebookName string `json:"-" url:"notebook_name,omitempty"`
-	// The maximum number of task runs to return
+	// The maximum number of task runs to return. Currently ignored - all runs
+	// will be returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -1247,7 +1248,7 @@ func (s ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type PartitionSpecificationPartition struct {
+type Partition struct {
 	// An array of partition values.
 	Values []PartitionValue `json:"values,omitempty"`
 }

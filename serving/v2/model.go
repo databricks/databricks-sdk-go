@@ -33,6 +33,10 @@ func (s Ai21LabsConfig) MarshalJSON() ([]byte, error) {
 }
 
 type AiGatewayConfig struct {
+	// Configuration for traffic fallback which auto fallbacks to other served
+	// entities if the request to a served entity fails with certain error
+	// codes, to increase availability.
+	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
 	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
@@ -247,6 +251,12 @@ type AmazonBedrockConfig struct {
 	// The underlying provider in Amazon Bedrock. Supported values (case
 	// insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
 	BedrockProvider AmazonBedrockConfigBedrockProvider `json:"bedrock_provider"`
+	// ARN of the instance profile that the external model will use to access
+	// AWS resources. You must authenticate using an instance profile or access
+	// keys. If you prefer to authenticate using access keys, see
+	// `aws_access_key_id`, `aws_access_key_id_plaintext`,
+	// `aws_secret_access_key` and `aws_secret_access_key_plaintext`.
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -460,6 +470,8 @@ type CreateServingEndpoint struct {
 	// external model and provisioned throughput endpoints are currently
 	// supported.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// The budget policy to be applied to the serving endpoint.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The core config of the serving endpoint.
 	Config *EndpointCoreConfigInput `json:"config,omitempty"`
 	// The name of the serving endpoint. This field is required and must be
@@ -933,6 +945,16 @@ func (s ExternalModelUsageElement) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type FallbackConfig struct {
+	// Whether to enable traffic fallback. When a served entity in the serving
+	// endpoint returns specific error codes (e.g. 500), the request will
+	// automatically be round-robin attempted with other served entities in the
+	// same endpoint, following the order of served entity list, until a
+	// successful response is returned. If all attempts fail, return the last
+	// response with the error code.
+	Enabled bool `json:"enabled"`
+}
+
 // All fields are not sensitive as they are hard-coded in the system and made
 // available to customers.
 type FoundationModel struct {
@@ -1175,6 +1197,10 @@ func (s PayloadTable) MarshalJSON() ([]byte, error) {
 }
 
 type PutAiGatewayRequest struct {
+	// Configuration for traffic fallback which auto fallbacks to other served
+	// entities if the request to a served entity fails with certain error
+	// codes, to increase availability.
+	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
 	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
@@ -1194,6 +1220,10 @@ type PutAiGatewayRequest struct {
 }
 
 type PutAiGatewayResponse struct {
+	// Configuration for traffic fallback which auto fallbacks to other served
+	// entities if the request to a served entity fails with certain error
+	// codes, to increase availability.
+	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
 	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
@@ -1852,6 +1882,8 @@ type ServingEndpoint struct {
 	// external model and provisioned throughput endpoints are currently
 	// supported.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// The budget policy associated with the endpoint.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The config that is currently being served by the endpoint.
 	Config *EndpointCoreConfigSummary `json:"config,omitempty"`
 	// The timestamp when the endpoint was created in Unix time.
@@ -1932,6 +1964,8 @@ type ServingEndpointDetailed struct {
 	// external model and provisioned throughput endpoints are currently
 	// supported.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// The budget policy associated with the endpoint.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The config that is currently being served by the endpoint.
 	Config *EndpointCoreConfigOutput `json:"config,omitempty"`
 	// The timestamp when the endpoint was created in Unix time.
