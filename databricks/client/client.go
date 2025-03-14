@@ -20,13 +20,13 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	client, err := cfg.NewApiClient()
+	clientCfg, err := config.HTTPClientConfigFromConfig(cfg)
 	if err != nil {
 		return nil, err
 	}
 	return &DatabricksClient{
 		accountID: cfg.AccountID,
-		client:    client,
+		client:    httpclient.NewApiClient(clientCfg),
 	}, nil
 }
 
