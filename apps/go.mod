@@ -1,8 +1,6 @@
 module github.com/databricks/databricks-sdk-go/apps
 
-go 1.23.0
-
-toolchain go1.24.1
+go 1.18
 
 replace github.com/databricks/databricks-sdk-go/databricks => ../databricks
 
