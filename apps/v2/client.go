@@ -27,17 +27,13 @@ func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &AppsClient{
-		apiClient:     apiClient,
+		apiClient:     databricksClient.ApiClient(),
 		AppsInterface: NewApps(databricksClient),
 	}, nil
 }

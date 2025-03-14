@@ -10,6 +10,11 @@ import (
 	"golang.org/x/oauth2"
 )
 
+type DatabricksClient struct {
+	accountID string
+	client    *httpclient.ApiClient
+}
+
 func New(cfg *config.Config) (*DatabricksClient, error) {
 	err := cfg.EnsureResolved()
 	if err != nil {
@@ -25,22 +30,6 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 	}, nil
 }
 
-func NewWithClient(cfg *config.Config, client *httpclient.ApiClient) (*DatabricksClient, error) {
-	err := cfg.EnsureResolved()
-	if err != nil {
-		return nil, err
-	}
-	return &DatabricksClient{
-		accountID: cfg.AccountID,
-		client:    client,
-	}, nil
-}
-
-type DatabricksClient struct {
-	accountID string
-	client    *httpclient.ApiClient
-}
-
 // ConfiguredAccountID returns Databricks Account ID if it's provided in config,
 // empty string otherwise
 func (c *DatabricksClient) ConfiguredAccountID() string {
@@ -53,9 +42,16 @@ func (c *DatabricksClient) ApiClient() *httpclient.ApiClient {
 }
 
 // Do sends an HTTP request against path.
-func (c *DatabricksClient) Do(ctx context.Context, method, path string,
-	headers map[string]string, queryParams map[string]any, request, response any,
-	visitors ...func(*http.Request) error) error {
+func (c *DatabricksClient) Do(
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
 	opts := []httpclient.DoOption{}
 	for _, v := range visitors {
 		opts = append(opts, httpclient.WithRequestVisitor(v))
@@ -64,11 +60,13 @@ func (c *DatabricksClient) Do(ctx context.Context, method, path string,
 	opts = append(opts, httpclient.WithRequestHeaders(headers))
 	opts = append(opts, httpclient.WithRequestData(request))
 	opts = append(opts, httpclient.WithResponseUnmarshal(response))
-	// Remove extra `/` from path for files API.
-	// Once the OpenAPI spec doesn't include the extra slash, we can remove this
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
 	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
+
 	return c.client.Do(ctx, method, path, opts...)
 }
 

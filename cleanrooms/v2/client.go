@@ -27,17 +27,13 @@ func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &CleanRoomAssetsClient{
-		apiClient:                apiClient,
+		apiClient:                databricksClient.ApiClient(),
 		CleanRoomAssetsInterface: NewCleanRoomAssets(databricksClient),
 	}, nil
 }
@@ -59,17 +55,13 @@ func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, e
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &CleanRoomTaskRunsClient{
-		apiClient:                  apiClient,
+		apiClient:                  databricksClient.ApiClient(),
 		CleanRoomTaskRunsInterface: NewCleanRoomTaskRuns(databricksClient),
 	}, nil
 }
@@ -91,17 +83,13 @@ func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &CleanRoomsClient{
-		apiClient:           apiClient,
+		apiClient:           databricksClient.ApiClient(),
 		CleanRoomsInterface: NewCleanRooms(databricksClient),
 	}, nil
 }

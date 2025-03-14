@@ -81,17 +81,13 @@ func NewAibiDashboardEmbeddingAccessPolicyClient(cfg *config.Config) (*AibiDashb
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &AibiDashboardEmbeddingAccessPolicyClient{
-		apiClient: apiClient,
+		apiClient: databricksClient.ApiClient(),
 		AibiDashboardEmbeddingAccessPolicyInterface: NewAibiDashboardEmbeddingAccessPolicy(databricksClient),
 	}, nil
 }
@@ -113,17 +109,13 @@ func NewAibiDashboardEmbeddingApprovedDomainsClient(cfg *config.Config) (*AibiDa
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &AibiDashboardEmbeddingApprovedDomainsClient{
-		apiClient: apiClient,
+		apiClient: databricksClient.ApiClient(),
 		AibiDashboardEmbeddingApprovedDomainsInterface: NewAibiDashboardEmbeddingApprovedDomains(databricksClient),
 	}, nil
 }
@@ -145,17 +137,13 @@ func NewAutomaticClusterUpdateClient(cfg *config.Config) (*AutomaticClusterUpdat
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &AutomaticClusterUpdateClient{
-		apiClient:                       apiClient,
+		apiClient:                       databricksClient.ApiClient(),
 		AutomaticClusterUpdateInterface: NewAutomaticClusterUpdate(databricksClient),
 	}, nil
 }
@@ -177,17 +165,13 @@ func NewComplianceSecurityProfileClient(cfg *config.Config) (*ComplianceSecurity
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ComplianceSecurityProfileClient{
-		apiClient:                          apiClient,
+		apiClient:                          databricksClient.ApiClient(),
 		ComplianceSecurityProfileInterface: NewComplianceSecurityProfile(databricksClient),
 	}, nil
 }
@@ -209,17 +193,13 @@ func NewCredentialsManagerClient(cfg *config.Config) (*CredentialsManagerClient,
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &CredentialsManagerClient{
-		apiClient:                   apiClient,
+		apiClient:                   databricksClient.ApiClient(),
 		CredentialsManagerInterface: NewCredentialsManager(databricksClient),
 	}, nil
 }
@@ -268,17 +248,13 @@ func NewDefaultNamespaceClient(cfg *config.Config) (*DefaultNamespaceClient, err
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &DefaultNamespaceClient{
-		apiClient:                 apiClient,
+		apiClient:                 databricksClient.ApiClient(),
 		DefaultNamespaceInterface: NewDefaultNamespace(databricksClient),
 	}, nil
 }
@@ -300,17 +276,13 @@ func NewDisableLegacyAccessClient(cfg *config.Config) (*DisableLegacyAccessClien
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &DisableLegacyAccessClient{
-		apiClient:                    apiClient,
+		apiClient:                    databricksClient.ApiClient(),
 		DisableLegacyAccessInterface: NewDisableLegacyAccess(databricksClient),
 	}, nil
 }
@@ -332,17 +304,13 @@ func NewDisableLegacyDbfsClient(cfg *config.Config) (*DisableLegacyDbfsClient, e
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &DisableLegacyDbfsClient{
-		apiClient:                  apiClient,
+		apiClient:                  databricksClient.ApiClient(),
 		DisableLegacyDbfsInterface: NewDisableLegacyDbfs(databricksClient),
 	}, nil
 }
@@ -418,17 +386,13 @@ func NewEnhancedSecurityMonitoringClient(cfg *config.Config) (*EnhancedSecurityM
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &EnhancedSecurityMonitoringClient{
-		apiClient:                           apiClient,
+		apiClient:                           databricksClient.ApiClient(),
 		EnhancedSecurityMonitoringInterface: NewEnhancedSecurityMonitoring(databricksClient),
 	}, nil
 }
@@ -477,17 +441,13 @@ func NewIpAccessListsClient(cfg *config.Config) (*IpAccessListsClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &IpAccessListsClient{
-		apiClient:              apiClient,
+		apiClient:              databricksClient.ApiClient(),
 		IpAccessListsInterface: NewIpAccessLists(databricksClient),
 	}, nil
 }
@@ -536,17 +496,13 @@ func NewNotificationDestinationsClient(cfg *config.Config) (*NotificationDestina
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &NotificationDestinationsClient{
-		apiClient:                         apiClient,
+		apiClient:                         databricksClient.ApiClient(),
 		NotificationDestinationsInterface: NewNotificationDestinations(databricksClient),
 	}, nil
 }
@@ -595,17 +551,13 @@ func NewRestrictWorkspaceAdminsClient(cfg *config.Config) (*RestrictWorkspaceAdm
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &RestrictWorkspaceAdminsClient{
-		apiClient:                        apiClient,
+		apiClient:                        databricksClient.ApiClient(),
 		RestrictWorkspaceAdminsInterface: NewRestrictWorkspaceAdmins(databricksClient),
 	}, nil
 }
@@ -627,17 +579,13 @@ func NewSettingsClient(cfg *config.Config) (*SettingsClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &SettingsClient{
-		apiClient:         apiClient,
+		apiClient:         databricksClient.ApiClient(),
 		SettingsInterface: NewSettings(databricksClient),
 	}, nil
 }
@@ -659,17 +607,13 @@ func NewTokenManagementClient(cfg *config.Config) (*TokenManagementClient, error
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &TokenManagementClient{
-		apiClient:                apiClient,
+		apiClient:                databricksClient.ApiClient(),
 		TokenManagementInterface: NewTokenManagement(databricksClient),
 	}, nil
 }
@@ -691,17 +635,13 @@ func NewTokensClient(cfg *config.Config) (*TokensClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &TokensClient{
-		apiClient:       apiClient,
+		apiClient:       databricksClient.ApiClient(),
 		TokensInterface: NewTokens(databricksClient),
 	}, nil
 }
@@ -723,17 +663,13 @@ func NewWorkspaceConfClient(cfg *config.Config) (*WorkspaceConfClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &WorkspaceConfClient{
-		apiClient:              apiClient,
+		apiClient:              databricksClient.ApiClient(),
 		WorkspaceConfInterface: NewWorkspaceConf(databricksClient),
 	}, nil
 }
