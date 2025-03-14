@@ -11,8 +11,6 @@ import (
 
 type BillableUsageClient struct {
 	BillableUsageInterface
-
-	Config *config.Config
 }
 
 func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
@@ -34,15 +32,12 @@ func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
 	}
 
 	return &BillableUsageClient{
-		Config:                 cfg,
 		BillableUsageInterface: NewBillableUsage(apiClient),
 	}, nil
 }
 
 type BudgetPolicyClient struct {
 	BudgetPolicyInterface
-
-	Config *config.Config
 }
 
 func NewBudgetPolicyClient(cfg *config.Config) (*BudgetPolicyClient, error) {
@@ -64,15 +59,12 @@ func NewBudgetPolicyClient(cfg *config.Config) (*BudgetPolicyClient, error) {
 	}
 
 	return &BudgetPolicyClient{
-		Config:                cfg,
 		BudgetPolicyInterface: NewBudgetPolicy(apiClient),
 	}, nil
 }
 
 type BudgetsClient struct {
 	BudgetsInterface
-
-	Config *config.Config
 }
 
 func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
@@ -94,15 +86,12 @@ func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
 	}
 
 	return &BudgetsClient{
-		Config:           cfg,
 		BudgetsInterface: NewBudgets(apiClient),
 	}, nil
 }
 
 type LogDeliveryClient struct {
 	LogDeliveryInterface
-
-	Config *config.Config
 }
 
 func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
@@ -124,15 +113,12 @@ func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
 	}
 
 	return &LogDeliveryClient{
-		Config:               cfg,
 		LogDeliveryInterface: NewLogDelivery(apiClient),
 	}, nil
 }
 
 type UsageDashboardsClient struct {
 	UsageDashboardsInterface
-
-	Config *config.Config
 }
 
 func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error) {
@@ -154,7 +140,6 @@ func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error
 	}
 
 	return &UsageDashboardsClient{
-		Config:                   cfg,
 		UsageDashboardsInterface: NewUsageDashboards(apiClient),
 	}, nil
 }

@@ -137,9 +137,10 @@ func TestUcAccFilesGetDirectoryMetadata(t *testing.T) {
 
 func TestAccDbfsOpen(t *testing.T) {
 	ctx := workspaceTest(t)
-	DbfsAPI, err := files.NewDbfsClient(nil)
+	cfg := &config.Config{}
+	DbfsAPI, err := files.NewDbfsClient(cfg)
 	require.NoError(t, err)
-	if DbfsAPI.Config.IsGcp() {
+	if cfg.IsGcp() {
 		t.Skip("dbfs not available on gcp")
 	}
 
@@ -217,9 +218,10 @@ func TestAccDbfsOpen(t *testing.T) {
 
 func TestAccDbfsOpenDirectory(t *testing.T) {
 	ctx := workspaceTest(t)
-	DbfsAPI, err := files.NewDbfsClient(nil)
+	cfg := &config.Config{}
+	DbfsAPI, err := files.NewDbfsClient(cfg)
 	require.NoError(t, err)
-	if DbfsAPI.Config.IsGcp() {
+	if cfg.IsGcp() {
 		t.Skip("dbfs not available on gcp")
 	}
 
@@ -248,9 +250,10 @@ func TestAccDbfsOpenDirectory(t *testing.T) {
 
 func TestAccDbfsReadFileWriteFile(t *testing.T) {
 	ctx := workspaceTest(t)
-	DbfsAPI, err := files.NewDbfsClient(nil)
+	cfg := &config.Config{}
+	DbfsAPI, err := files.NewDbfsClient(cfg)
 	require.NoError(t, err)
-	if DbfsAPI.Config.IsGcp() {
+	if cfg.IsGcp() {
 		t.Skip("dbfs not available on gcp")
 	}
 
@@ -286,9 +289,10 @@ func TestAccDbfsReadFileWriteFile(t *testing.T) {
 
 func TestAccListDbfsIntegration(t *testing.T) {
 	ctx := workspaceTest(t)
-	DbfsAPI, err := files.NewDbfsClient(nil)
+	cfg := &config.Config{}
+	DbfsAPI, err := files.NewDbfsClient(cfg)
 	require.NoError(t, err)
-	if DbfsAPI.Config.IsGcp() {
+	if cfg.IsGcp() {
 		t.Skip("dbfs not available on gcp")
 	}
 
@@ -391,8 +395,8 @@ func TestAccListDbfsIntegration(t *testing.T) {
 
 func setupUCVolume(t *testing.T) (context.Context, *config.Config, *catalog.VolumeInfo) {
 	ctx := ucwsTest(t)
-
-	SchemasAPI, err := catalog.NewSchemasClient(nil)
+	cfg := &config.Config{}
+	SchemasAPI, err := catalog.NewSchemasClient(cfg)
 	require.NoError(t, err)
 	schema, err := SchemasAPI.Create(ctx, catalog.CreateSchema{
 		CatalogName: "main",
@@ -420,7 +424,7 @@ func setupUCVolume(t *testing.T) (context.Context, *config.Config, *catalog.Volu
 		})
 	})
 
-	return ctx, VolumesAPI.Config, volume
+	return ctx, cfg, volume
 }
 
 // createDirectory creates a directory with the given contents and registers a cleanup function to delete it.

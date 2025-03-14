@@ -274,6 +274,7 @@ type DeleteSecret struct {
 type DeleteSecretResponse struct {
 }
 
+// The format for workspace import and export.
 type ExportFormat string
 
 const ExportFormatAuto ExportFormat = `AUTO`
@@ -283,6 +284,8 @@ const ExportFormatDbc ExportFormat = `DBC`
 const ExportFormatHtml ExportFormat = `HTML`
 
 const ExportFormatJupyter ExportFormat = `JUPYTER`
+
+const ExportFormatRaw ExportFormat = `RAW`
 
 const ExportFormatRMarkdown ExportFormat = `R_MARKDOWN`
 
@@ -296,11 +299,11 @@ func (f *ExportFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ExportFormat) Set(v string) error {
 	switch v {
-	case `AUTO`, `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
+	case `AUTO`, `DBC`, `HTML`, `JUPYTER`, `RAW`, `R_MARKDOWN`, `SOURCE`:
 		*f = ExportFormat(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AUTO", "DBC", "HTML", "JUPYTER", "R_MARKDOWN", "SOURCE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AUTO", "DBC", "HTML", "JUPYTER", "RAW", "R_MARKDOWN", "SOURCE"`, v)
 	}
 }
 
@@ -331,6 +334,8 @@ type ExportRequest struct {
 	Path string `json:"-" url:"path"`
 }
 
+// The request field `direct_download` determines whether a JSON response or
+// binary contents are returned by this endpoint.
 type ExportResponse struct {
 	// The base64-encoded content. If the limit (10MB) is exceeded, exception
 	// with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
@@ -528,39 +533,21 @@ func (s Import) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// This specifies the format of the file to be imported.
-//
-// The value is case sensitive.
-//
-// - `AUTO`: The item is imported depending on an analysis of the item's
-// extension and the header content provided in the request. If the item is
-// imported as a notebook, then the item's extension is automatically removed. -
-// `SOURCE`: The notebook or directory is imported as source code. - `HTML`: The
-// notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported
-// as a Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in
-// Databricks archive format. Required for directories. - `R_MARKDOWN`: The
-// notebook is imported from R Markdown format.
+// The format for workspace import and export.
 type ImportFormat string
 
-// The item is imported depending on an analysis of the item's extension and
 const ImportFormatAuto ImportFormat = `AUTO`
 
-// The notebook is imported in <Databricks> archive format. Required for
-// directories.
 const ImportFormatDbc ImportFormat = `DBC`
 
-// The notebook is imported as an HTML file.
 const ImportFormatHtml ImportFormat = `HTML`
 
-// The notebook is imported as a Jupyter/IPython Notebook file.
 const ImportFormatJupyter ImportFormat = `JUPYTER`
 
 const ImportFormatRaw ImportFormat = `RAW`
 
-// The notebook is imported from R Markdown format.
 const ImportFormatRMarkdown ImportFormat = `R_MARKDOWN`
 
-// The notebook or directory is imported as source code.
 const ImportFormatSource ImportFormat = `SOURCE`
 
 // String representation for [fmt.Print]
@@ -587,8 +574,7 @@ func (f *ImportFormat) Type() string {
 type ImportResponse struct {
 }
 
-// The language of the object. This value is set only if the object type is
-// `NOTEBOOK`.
+// The language of notebook.
 type Language string
 
 const LanguagePython Language = `PYTHON`
@@ -700,7 +686,7 @@ type ListSecretsResponse struct {
 // List contents
 type ListWorkspaceRequest struct {
 	// UTC timestamp in milliseconds
-	NotebooksModifiedAfter int `json:"-" url:"notebooks_modified_after,omitempty"`
+	NotebooksModifiedAfter int64 `json:"-" url:"notebooks_modified_after,omitempty"`
 	// The absolute path of the notebook or directory.
 	Path string `json:"-" url:"path"`
 
@@ -725,11 +711,13 @@ type Mkdirs struct {
 type MkdirsResponse struct {
 }
 
+// The information of the object in workspace. It will be returned by “list“
+// and “get-status“.
 type ObjectInfo struct {
 	// Only applicable to files. The creation UTC timestamp.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The language of the object. This value is set only if the object type is
-	// `NOTEBOOK`.
+	// ``NOTEBOOK``.
 	Language Language `json:"language,omitempty"`
 	// Only applicable to files, the last modified UTC timestamp.
 	ModifiedAt int64 `json:"modified_at,omitempty"`
@@ -761,28 +749,18 @@ func (s ObjectInfo) MarshalJSON() ([]byte, error) {
 }
 
 // The type of the object in workspace.
-//
-// - `NOTEBOOK`: document that contains runnable code, visualizations, and
-// explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`:
-// file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard
 type ObjectType string
 
-// Lakeview dashboard
 const ObjectTypeDashboard ObjectType = `DASHBOARD`
 
-// directory
 const ObjectTypeDirectory ObjectType = `DIRECTORY`
 
-// file
 const ObjectTypeFile ObjectType = `FILE`
 
-// library
 const ObjectTypeLibrary ObjectType = `LIBRARY`
 
-// document that contains runnable code, visualizations, and explanatory text.
 const ObjectTypeNotebook ObjectType = `NOTEBOOK`
 
-// repository
 const ObjectTypeRepo ObjectType = `REPO`
 
 // String representation for [fmt.Print]

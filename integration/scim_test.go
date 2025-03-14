@@ -178,10 +178,10 @@ func TestAccGroups(t *testing.T) {
 
 func TestAccServicePrincipalsOnAWS(t *testing.T) {
 	ctx := workspaceTest(t)
-
+	cfg := &config.Config{}
 	ServicePrincipalsAPI, err := iam.NewServicePrincipalsClient(nil)
 	require.NoError(t, err)
-	if !ServicePrincipalsAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		t.Skip("test only for aws")
 	}
 

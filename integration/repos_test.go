@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/settings/v2"
 	"github.com/databricks/databricks-sdk-go/workspace/v2"
 	"github.com/stretchr/testify/assert"
@@ -12,9 +13,10 @@ import (
 
 func TestAccRepos(t *testing.T) {
 	ctx := workspaceTest(t)
+	cfg := &config.Config{}
 
 	// Skip this test if "Files in Repos" is not enabled.
-	WorkspaceConfAPI, err := settings.NewWorkspaceConfClient(nil)
+	WorkspaceConfAPI, err := settings.NewWorkspaceConfClient(cfg)
 	require.NoError(t, err)
 	conf, err := WorkspaceConfAPI.GetStatus(ctx, settings.GetStatusRequest{
 		Keys: "enableWorkspaceFilesystem",
@@ -25,7 +27,7 @@ func TestAccRepos(t *testing.T) {
 	}
 
 	// Synthesize unique path for this checkout in this user's home.
-	root := RandomName(fmt.Sprintf("/Repos/%s/tf-", me(t, WorkspaceConfAPI.Config).UserName))
+	root := RandomName(fmt.Sprintf("/Repos/%s/tf-", me(t, cfg).UserName))
 	ReposAPI, err := workspace.NewReposClient(nil)
 	require.NoError(t, err)
 	ri, err := ReposAPI.Create(ctx, workspace.CreateRepoRequest{
