@@ -15,6 +15,8 @@ type App struct {
 
 	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
 
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+
 	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
 	// The creation time of the app. Formatted timestamp in ISO 6801.
 	CreateTime string `json:"create_time,omitempty"`
@@ -26,6 +28,8 @@ type App struct {
 	DefaultSourceCodePath string `json:"default_source_code_path,omitempty"`
 	// The description of the app.
 	Description string `json:"description,omitempty"`
+
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The unique identifier of the app.
 	Id string `json:"id,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric

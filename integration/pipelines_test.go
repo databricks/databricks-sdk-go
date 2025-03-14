@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/pipelines/v2"
 	"github.com/databricks/databricks-sdk-go/workspace/v2"
 	"github.com/stretchr/testify/assert"
@@ -12,9 +13,10 @@ import (
 
 func TestAccPipelines(t *testing.T) {
 	ctx := workspaceTest(t)
+	cfg := &config.Config{}
 	WorkspaceAPI, err := workspace.NewWorkspaceClient(nil)
 	require.NoError(t, err)
-	notebookPath := myNotebookPath(t, WorkspaceAPI.Config)
+	notebookPath := myNotebookPath(t, cfg)
 
 	err = WorkspaceAPI.Import(ctx, workspace.Import{
 		Content:   base64.StdEncoding.EncodeToString([]byte(dltNotebook())),

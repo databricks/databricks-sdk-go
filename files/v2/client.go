@@ -12,7 +12,6 @@ import (
 
 type DbfsClient struct {
 	DbfsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -28,25 +27,19 @@ func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &DbfsClient{
-		Config:        cfg,
-		apiClient:     apiClient,
+		apiClient:     databricksClient.ApiClient(),
 		DbfsInterface: NewDbfs(databricksClient),
 	}, nil
 }
 
 type FilesClient struct {
 	FilesInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -62,18 +55,13 @@ func NewFilesClient(cfg *config.Config) (*FilesClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &FilesClient{
-		Config:         cfg,
-		apiClient:      apiClient,
+		apiClient:      databricksClient.ApiClient(),
 		FilesInterface: NewFiles(databricksClient),
 	}, nil
 }

@@ -12,7 +12,6 @@ import (
 
 type ExperimentsClient struct {
 	ExperimentsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -28,25 +27,47 @@ func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ExperimentsClient{
-		Config:               cfg,
-		apiClient:            apiClient,
+		apiClient:            databricksClient.ApiClient(),
 		ExperimentsInterface: NewExperiments(databricksClient),
+	}, nil
+}
+
+type ForecastingClient struct {
+	ForecastingInterface
+	apiClient *httpclient.ApiClient
+}
+
+func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
+	if cfg == nil {
+		cfg = &config.Config{}
+	}
+
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	if cfg.IsAccountClient() {
+		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
+	}
+	databricksClient, err := client.New(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ForecastingClient{
+		apiClient:            databricksClient.ApiClient(),
+		ForecastingInterface: NewForecasting(databricksClient),
 	}, nil
 }
 
 type ModelRegistryClient struct {
 	ModelRegistryInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -62,18 +83,13 @@ func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ModelRegistryClient{
-		Config:                 cfg,
-		apiClient:              apiClient,
+		apiClient:              databricksClient.ApiClient(),
 		ModelRegistryInterface: NewModelRegistry(databricksClient),
 	}, nil
 }

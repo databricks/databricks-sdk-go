@@ -538,6 +538,7 @@ func (a *globalInitScriptsImpl) Delete(ctx context.Context, request DeleteGlobal
 	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
@@ -602,6 +603,7 @@ func (a *globalInitScriptsImpl) Update(ctx context.Context, request GlobalInitSc
 	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateResponse)
 	return err
