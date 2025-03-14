@@ -12,7 +12,6 @@ import (
 
 type AccessControlClient struct {
 	AccessControlInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -38,7 +37,6 @@ func NewAccessControlClient(cfg *config.Config) (*AccessControlClient, error) {
 	}
 
 	return &AccessControlClient{
-		Config:                 cfg,
 		apiClient:              apiClient,
 		AccessControlInterface: NewAccessControl(databricksClient),
 	}, nil
@@ -46,8 +44,6 @@ func NewAccessControlClient(cfg *config.Config) (*AccessControlClient, error) {
 
 type AccountAccessControlClient struct {
 	AccountAccessControlInterface
-
-	Config *config.Config
 }
 
 func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlClient, error) {
@@ -69,14 +65,12 @@ func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlCli
 	}
 
 	return &AccountAccessControlClient{
-		Config:                        cfg,
 		AccountAccessControlInterface: NewAccountAccessControl(apiClient),
 	}, nil
 }
 
 type AccountAccessControlProxyClient struct {
 	AccountAccessControlProxyInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -102,7 +96,6 @@ func NewAccountAccessControlProxyClient(cfg *config.Config) (*AccountAccessContr
 	}
 
 	return &AccountAccessControlProxyClient{
-		Config:                             cfg,
 		apiClient:                          apiClient,
 		AccountAccessControlProxyInterface: NewAccountAccessControlProxy(databricksClient),
 	}, nil
@@ -110,8 +103,6 @@ func NewAccountAccessControlProxyClient(cfg *config.Config) (*AccountAccessContr
 
 type AccountGroupsClient struct {
 	AccountGroupsInterface
-
-	Config *config.Config
 }
 
 func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
@@ -133,15 +124,12 @@ func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
 	}
 
 	return &AccountGroupsClient{
-		Config:                 cfg,
 		AccountGroupsInterface: NewAccountGroups(apiClient),
 	}, nil
 }
 
 type AccountServicePrincipalsClient struct {
 	AccountServicePrincipalsInterface
-
-	Config *config.Config
 }
 
 func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrincipalsClient, error) {
@@ -163,15 +151,12 @@ func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrinc
 	}
 
 	return &AccountServicePrincipalsClient{
-		Config:                            cfg,
 		AccountServicePrincipalsInterface: NewAccountServicePrincipals(apiClient),
 	}, nil
 }
 
 type AccountUsersClient struct {
 	AccountUsersInterface
-
-	Config *config.Config
 }
 
 func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
@@ -193,14 +178,12 @@ func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
 	}
 
 	return &AccountUsersClient{
-		Config:                cfg,
 		AccountUsersInterface: NewAccountUsers(apiClient),
 	}, nil
 }
 
 type CurrentUserClient struct {
 	CurrentUserInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -226,7 +209,6 @@ func NewCurrentUserClient(cfg *config.Config) (*CurrentUserClient, error) {
 	}
 
 	return &CurrentUserClient{
-		Config:               cfg,
 		apiClient:            apiClient,
 		CurrentUserInterface: NewCurrentUser(databricksClient),
 	}, nil
@@ -234,7 +216,6 @@ func NewCurrentUserClient(cfg *config.Config) (*CurrentUserClient, error) {
 
 type GroupsClient struct {
 	GroupsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -260,7 +241,6 @@ func NewGroupsClient(cfg *config.Config) (*GroupsClient, error) {
 	}
 
 	return &GroupsClient{
-		Config:          cfg,
 		apiClient:       apiClient,
 		GroupsInterface: NewGroups(databricksClient),
 	}, nil
@@ -268,7 +248,6 @@ func NewGroupsClient(cfg *config.Config) (*GroupsClient, error) {
 
 type PermissionMigrationClient struct {
 	PermissionMigrationInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -294,7 +273,6 @@ func NewPermissionMigrationClient(cfg *config.Config) (*PermissionMigrationClien
 	}
 
 	return &PermissionMigrationClient{
-		Config:                       cfg,
 		apiClient:                    apiClient,
 		PermissionMigrationInterface: NewPermissionMigration(databricksClient),
 	}, nil
@@ -302,7 +280,6 @@ func NewPermissionMigrationClient(cfg *config.Config) (*PermissionMigrationClien
 
 type PermissionsClient struct {
 	PermissionsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -328,7 +305,6 @@ func NewPermissionsClient(cfg *config.Config) (*PermissionsClient, error) {
 	}
 
 	return &PermissionsClient{
-		Config:               cfg,
 		apiClient:            apiClient,
 		PermissionsInterface: NewPermissions(databricksClient),
 	}, nil
@@ -336,7 +312,6 @@ func NewPermissionsClient(cfg *config.Config) (*PermissionsClient, error) {
 
 type ServicePrincipalsClient struct {
 	ServicePrincipalsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -362,7 +337,6 @@ func NewServicePrincipalsClient(cfg *config.Config) (*ServicePrincipalsClient, e
 	}
 
 	return &ServicePrincipalsClient{
-		Config:                     cfg,
 		apiClient:                  apiClient,
 		ServicePrincipalsInterface: NewServicePrincipals(databricksClient),
 	}, nil
@@ -370,7 +344,6 @@ func NewServicePrincipalsClient(cfg *config.Config) (*ServicePrincipalsClient, e
 
 type UsersClient struct {
 	UsersInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -396,7 +369,6 @@ func NewUsersClient(cfg *config.Config) (*UsersClient, error) {
 	}
 
 	return &UsersClient{
-		Config:         cfg,
 		apiClient:      apiClient,
 		UsersInterface: NewUsers(databricksClient),
 	}, nil
@@ -404,8 +376,6 @@ func NewUsersClient(cfg *config.Config) (*UsersClient, error) {
 
 type WorkspaceAssignmentClient struct {
 	WorkspaceAssignmentInterface
-
-	Config *config.Config
 }
 
 func NewWorkspaceAssignmentClient(cfg *config.Config) (*WorkspaceAssignmentClient, error) {
@@ -427,7 +397,6 @@ func NewWorkspaceAssignmentClient(cfg *config.Config) (*WorkspaceAssignmentClien
 	}
 
 	return &WorkspaceAssignmentClient{
-		Config:                       cfg,
 		WorkspaceAssignmentInterface: NewWorkspaceAssignment(apiClient),
 	}, nil
 }

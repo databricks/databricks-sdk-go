@@ -43,7 +43,6 @@ func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServing
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }

@@ -297,10 +297,9 @@ type BaseRun struct {
 	// Description of the run
 	Description string `json:"description,omitempty"`
 	// effective_performance_target is the actual performance target used by the
-	// run during execution. effective_performance_target can differ from
-	// performance_target depending on if the job was eligible to be
-	// cost-optimized (e.g. contains at least 1 serverless task) or if we
-	// specifically override the value for the run (ex. RunNow).
+	// run during execution. effective_performance_target can differ from the
+	// client-set performance_target depending on if the job was eligible to be
+	// cost-optimized.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
@@ -684,6 +683,26 @@ func (s ClusterSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Next field: 4
+type ComputeConfig struct {
+	// IDof the GPU pool to use.
+	GpuNodePoolId string `json:"gpu_node_pool_id"`
+	// GPU type.
+	GpuType string `json:"gpu_type,omitempty"`
+	// Number of GPUs.
+	NumGpus int `json:"num_gpus"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ComputeConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ComputeConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type Condition string
 
 const ConditionAllUpdated Condition = `ALL_UPDATED`
@@ -939,7 +958,7 @@ type CronSchedule struct {
 // Data security mode decides what data governance model to use when accessing
 // data from a cluster.
 //
-// The following modes can only be used with `kind`. *
+// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
 // `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access
 // mode depending on your compute configuration. *
 // `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
@@ -1133,6 +1152,7 @@ func (s DockerBasicAuth) MarshalJSON() ([]byte, error) {
 }
 
 type DockerImage struct {
+	// Basic auth with username and password
 	BasicAuth *DockerBasicAuth `json:"basic_auth,omitempty"`
 	// URL of the docker image.
 	Url string `json:"url,omitempty"`
@@ -1491,6 +1511,51 @@ func (f *GcpAvailability) Type() string {
 type GcsStorageInfo struct {
 	// GCS destination/URI, e.g. `gs://my-bucket/some-prefix`
 	Destination string `json:"destination"`
+}
+
+// Next field: 9
+type GenAiComputeTask struct {
+	// Command launcher to run the actual script, e.g. bash, python etc.
+	Command string `json:"command,omitempty"`
+	// Next field: 4
+	Compute *ComputeConfig `json:"compute,omitempty"`
+	// Runtime image
+	DlRuntimeImage string `json:"dl_runtime_image"`
+	// Optional string containing the name of the MLflow experiment to log the
+	// run to. If name is not found, backend will create the mlflow experiment
+	// using the name.
+	MlflowExperimentName string `json:"mlflow_experiment_name,omitempty"`
+	// Optional location type of the training script. When set to `WORKSPACE`,
+	// the script will be retrieved from the local Databricks workspace. When
+	// set to `GIT`, the script will be retrieved from a Git repository defined
+	// in `git_source`. If the value is empty, the task will use `GIT` if
+	// `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script
+	// is located in Databricks workspace. * `GIT`: Script is located in cloud
+	// Git provider.
+	Source Source `json:"source,omitempty"`
+	// The training script file path to be executed. Cloud file URIs (such as
+	// dbfs:/, s3:/, adls:/, gcs:/) and workspace paths are supported. For
+	// python files stored in the Databricks workspace, the path must be
+	// absolute and begin with `/`. For files stored in a remote repository, the
+	// path must be relative. This field is required.
+	TrainingScriptPath string `json:"training_script_path,omitempty"`
+	// Optional string containing model parameters passed to the training script
+	// in yaml format. If present, then the content in yaml_parameters_file_path
+	// will be ignored.
+	YamlParameters string `json:"yaml_parameters,omitempty"`
+	// Optional path to a YAML file containing model parameters passed to the
+	// training script.
+	YamlParametersFilePath string `json:"yaml_parameters_file_path,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenAiComputeTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenAiComputeTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get job permission levels
@@ -2360,7 +2425,7 @@ type JobsClusterSpec struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// The following modes can only be used with `kind`. *
+	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
 	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
 	// access mode depending on your compute configuration. *
 	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
@@ -2414,7 +2479,7 @@ type JobsClusterSpec struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
@@ -2424,8 +2489,18 @@ type JobsClusterSpec struct {
 	// Depending on `kind`, different validations and default values will be
 	// applied.
 	//
-	// The first usage of this value is for the simple cluster form where it
-	// sets `kind = CLASSIC_PREVIEW`.
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. *
+	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
+	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
+	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
+	// `DATA_SECURITY_MODE_STANDARD`
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -2485,7 +2560,7 @@ type JobsClusterSpec struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
@@ -2618,8 +2693,18 @@ type JobsHealthRules struct {
 // Depending on `kind`, different validations and default values will be
 // applied.
 //
-// The first usage of this value is for the simple cluster form where it sets
-// `kind = CLASSIC_PREVIEW`.
+// Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas
+// clusters with no specified `kind` do not. *
+// [is_single_node](/api/workspace/clusters/create#is_single_node) *
+// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+// [data_security_mode](/api/workspace/clusters/create#data_security_mode) set
+// to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
+// `DATA_SECURITY_MODE_STANDARD`
+//
+// By using the [simple form], your clusters are automatically using `kind =
+// CLASSIC_PREVIEW`.
+//
+// [simple form]: https://docs.databricks.com/compute/simple-form.html
 type Kind string
 
 const KindClassicPreview Kind = `CLASSIC_PREVIEW`
@@ -3553,10 +3638,9 @@ type Run struct {
 	// Description of the run
 	Description string `json:"description,omitempty"`
 	// effective_performance_target is the actual performance target used by the
-	// run during execution. effective_performance_target can differ from
-	// performance_target depending on if the job was eligible to be
-	// cost-optimized (e.g. contains at least 1 serverless task) or if we
-	// specifically override the value for the run (ex. RunNow).
+	// run during execution. effective_performance_target can differ from the
+	// client-set performance_target depending on if the job was eligible to be
+	// cost-optimized.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
@@ -3987,6 +4071,8 @@ const RunLifecycleStateV2StateTerminated RunLifecycleStateV2State = `TERMINATED`
 
 const RunLifecycleStateV2StateTerminating RunLifecycleStateV2State = `TERMINATING`
 
+const RunLifecycleStateV2StateWaiting RunLifecycleStateV2State = `WAITING`
+
 // String representation for [fmt.Print]
 func (f *RunLifecycleStateV2State) String() string {
 	return string(*f)
@@ -3995,11 +4081,11 @@ func (f *RunLifecycleStateV2State) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunLifecycleStateV2State) Set(v string) error {
 	switch v {
-	case `BLOCKED`, `PENDING`, `QUEUED`, `RUNNING`, `TERMINATED`, `TERMINATING`:
+	case `BLOCKED`, `PENDING`, `QUEUED`, `RUNNING`, `TERMINATED`, `TERMINATING`, `WAITING`:
 		*f = RunLifecycleStateV2State(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "PENDING", "QUEUED", "RUNNING", "TERMINATED", "TERMINATING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "PENDING", "QUEUED", "RUNNING", "TERMINATED", "TERMINATING", "WAITING"`, v)
 	}
 }
 
@@ -4070,8 +4156,8 @@ type RunNow struct {
 	// provided, all tasks in the job will be run.
 	Only []string `json:"only,omitempty"`
 	// PerformanceTarget defines how performant or cost efficient the execution
-	// of run on serverless compute should be. For RunNow request, the run will
-	// execute with this settings instead of ones defined in job.
+	// of run on serverless compute should be. For RunNow, this performance
+	// target will override the target defined on the job-level.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -4438,10 +4524,9 @@ type RunTask struct {
 	// do not execute and are immediately skipped as soon as they are unblocked.
 	Disabled bool `json:"disabled,omitempty"`
 	// effective_performance_target is the actual performance target used by the
-	// run during execution. effective_performance_target can differ from
-	// performance_target depending on if the job was eligible to be
-	// cost-optimized (e.g. contains at least 1 serverless task) or if an
-	// override was provided for the run (ex. RunNow).
+	// run during execution. effective_performance_target can differ from the
+	// client-set performance_target depending on if the job was eligible to be
+	// cost-optimized.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
@@ -4469,6 +4554,8 @@ type RunTask struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *RunForEachTask `json:"for_each_task,omitempty"`
+	// Next field: 9
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks. If `git_source` is set,
@@ -5238,6 +5325,8 @@ type SubmitTask struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
+	// Next field: 9
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// An optional list of libraries to be installed on the cluster. The default
@@ -5383,6 +5472,8 @@ type Task struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
+	// Next field: 9
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// If job_cluster_key, this task is executed reusing the cluster specified

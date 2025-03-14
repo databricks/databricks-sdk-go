@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/ml/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -12,8 +13,8 @@ import (
 
 func TestAccExperiments(t *testing.T) {
 	ctx := workspaceTest(t)
-
-	ExperimentsAPI, err := ml.NewExperimentsClient(nil)
+	cfg := &config.Config{}
+	ExperimentsAPI, err := ml.NewExperimentsClient(cfg)
 	require.NoError(t, err)
 	experiment, err := ExperimentsAPI.CreateExperiment(ctx, ml.CreateExperiment{
 		Name: RandomName("/tmp/go-sdk-"),
@@ -121,14 +122,14 @@ func deleteModel(t *testing.T, ModelRegistryAPI *ml.ModelRegistryClient, ctx con
 
 func TestAccRegistryWebhooks(t *testing.T) {
 	ctx := workspaceTest(t)
-
-	ModelRegistryAPI, err := ml.NewModelRegistryClient(nil)
+	cfg := &config.Config{}
+	ModelRegistryAPI, err := ml.NewModelRegistryClient(cfg)
 	require.NoError(t, err)
 	created, err := ModelRegistryAPI.CreateWebhook(ctx, ml.CreateRegistryWebhook{
 		Description: RandomName("comment "),
 		Events:      []ml.RegistryWebhookEvent{ml.RegistryWebhookEventModelVersionCreated},
 		HttpUrlSpec: &ml.HttpUrlSpec{
-			Url: ModelRegistryAPI.Config.CanonicalHostName(),
+			Url: cfg.CanonicalHostName(),
 		},
 	})
 	require.NoError(t, err)

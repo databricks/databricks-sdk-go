@@ -12,7 +12,6 @@ import (
 
 type ProvidersClient struct {
 	ProvidersInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -38,7 +37,6 @@ func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
 	}
 
 	return &ProvidersClient{
-		Config:             cfg,
 		apiClient:          apiClient,
 		ProvidersInterface: NewProviders(databricksClient),
 	}, nil
@@ -46,7 +44,6 @@ func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
 
 type RecipientActivationClient struct {
 	RecipientActivationInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -72,7 +69,6 @@ func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClien
 	}
 
 	return &RecipientActivationClient{
-		Config:                       cfg,
 		apiClient:                    apiClient,
 		RecipientActivationInterface: NewRecipientActivation(databricksClient),
 	}, nil
@@ -80,7 +76,6 @@ func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClien
 
 type RecipientsClient struct {
 	RecipientsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -106,7 +101,6 @@ func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
 	}
 
 	return &RecipientsClient{
-		Config:              cfg,
 		apiClient:           apiClient,
 		RecipientsInterface: NewRecipients(databricksClient),
 	}, nil
@@ -114,7 +108,6 @@ func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
 
 type SharesClient struct {
 	SharesInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -140,7 +133,6 @@ func NewSharesClient(cfg *config.Config) (*SharesClient, error) {
 	}
 
 	return &SharesClient{
-		Config:          cfg,
 		apiClient:       apiClient,
 		SharesInterface: NewShares(databricksClient),
 	}, nil

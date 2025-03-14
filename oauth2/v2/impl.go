@@ -445,7 +445,8 @@ func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request Create
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &createServicePrincipalSecretResponse)
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createServicePrincipalSecretResponse)
 	return &createServicePrincipalSecretResponse, err
 }
 

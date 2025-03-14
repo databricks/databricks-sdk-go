@@ -319,6 +319,96 @@ func (s CreateExperimentResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateForecastingExperimentRequest struct {
+	// Name of the column in the input training table used to customize the
+	// weight for each time series to calculate weighted metrics.
+	CustomWeightsColumn string `json:"custom_weights_column,omitempty"`
+	// The quantity of the input data granularity. Together with
+	// data_granularity_unit field, this defines the time interval between
+	// consecutive rows in the time series data. For now, only 1 second,
+	// 1/5/10/15/30 minutes, 1 hour, 1 day, 1 week, 1 month, 1 quarter, 1 year
+	// are supported.
+	DataGranularityQuantity int64 `json:"data_granularity_quantity,omitempty"`
+	// The time unit of the input data granularity. Together with
+	// data_granularity_quantity field, this defines the time interval between
+	// consecutive rows in the time series data. Possible values: * 'W' (weeks)
+	// * 'D' / 'days' / 'day' * 'hours' / 'hour' / 'hr' / 'h' * 'm' / 'minute' /
+	// 'min' / 'minutes' / 'T' * 'S' / 'seconds' / 'sec' / 'second' * 'M' /
+	// 'month' / 'months' * 'Q' / 'quarter' / 'quarters' * 'Y' / 'year' /
+	// 'years'
+	DataGranularityUnit string `json:"data_granularity_unit"`
+	// The path to the created experiment. This is the path where the experiment
+	// will be stored in the workspace.
+	ExperimentPath string `json:"experiment_path,omitempty"`
+	// The number of time steps into the future for which predictions should be
+	// made. This value represents a multiple of data_granularity_unit and
+	// data_granularity_quantity determining how far ahead the model will
+	// forecast.
+	ForecastHorizon int64 `json:"forecast_horizon"`
+	// Region code(s) to consider when automatically adding holiday features.
+	// When empty, no holiday features are added. Only supports 1 holiday region
+	// for now.
+	HolidayRegions []string `json:"holiday_regions,omitempty"`
+	// The maximum duration in minutes for which the experiment is allowed to
+	// run. If the experiment exceeds this time limit it will be stopped
+	// automatically.
+	MaxRuntime int64 `json:"max_runtime,omitempty"`
+	// The three-level (fully qualified) path to a unity catalog table. This
+	// table path serves to store the predictions.
+	PredictionDataPath string `json:"prediction_data_path,omitempty"`
+	// The evaluation metric used to optimize the forecasting model.
+	PrimaryMetric string `json:"primary_metric,omitempty"`
+	// The three-level (fully qualified) path to a unity catalog model. This
+	// model path serves to store the best model.
+	RegisterTo string `json:"register_to,omitempty"`
+	// Name of the column in the input training table used for custom data
+	// splits. The values in this column must be "train", "validate", or "test"
+	// to indicate which split each row belongs to.
+	SplitColumn string `json:"split_column,omitempty"`
+	// Name of the column in the input training table that serves as the
+	// prediction target. The values in this column will be used as the ground
+	// truth for model training.
+	TargetColumn string `json:"target_column"`
+	// Name of the column in the input training table that represents the
+	// timestamp of each row.
+	TimeColumn string `json:"time_column"`
+	// Name of the column in the input training table used to group the dataset
+	// to predict individual time series
+	TimeseriesIdentifierColumns []string `json:"timeseries_identifier_columns,omitempty"`
+	// The three-level (fully qualified) name of a unity catalog table. This
+	// table serves as the training data for the forecasting model.
+	TrainDataPath string `json:"train_data_path"`
+	// The list of frameworks to include for model tuning. Possible values:
+	// 'Prophet', 'ARIMA', 'DeepAR'. An empty list will include all supported
+	// frameworks.
+	TrainingFrameworks []string `json:"training_frameworks,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateForecastingExperimentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateForecastingExperimentRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateForecastingExperimentResponse struct {
+	// The unique ID of the created forecasting experiment
+	ExperimentId string `json:"experiment_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateForecastingExperimentResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateForecastingExperimentResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateModelRequest struct {
 	// Optional description for registered model.
 	Description string `json:"description,omitempty"`
@@ -441,6 +531,8 @@ func (s CreateRegistryWebhook) MarshalJSON() ([]byte, error) {
 type CreateRun struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"experiment_id,omitempty"`
+	// The name of the run.
+	RunName string `json:"run_name,omitempty"`
 	// Unix timestamp in milliseconds of when the run started.
 	StartTime int64 `json:"start_time,omitempty"`
 	// Additional metadata for run.
@@ -504,13 +596,15 @@ type CreateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
 }
 
+// Dataset. Represents a reference to data used for training, testing, or
+// evaluation during the model development process.
 type Dataset struct {
 	// Dataset digest, e.g. an md5 hash of the dataset that uniquely identifies
 	// it within datasets of the same name.
-	Digest string `json:"digest,omitempty"`
+	Digest string `json:"digest"`
 	// The name of the dataset. E.g. “my.uc.table@2” “nyc-taxi-dataset”,
 	// “fantastic-elk-3”
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The profile of the dataset. Summary statistics for the dataset, such as
 	// the number of rows in a table, the mean / std / mode of each column in a
 	// table, or the number of elements in an array.
@@ -518,13 +612,13 @@ type Dataset struct {
 	// The schema of the dataset. E.g., MLflow ColSpec JSON for a dataframe,
 	// MLflow TensorSpec JSON for an ndarray, or another schema format.
 	Schema string `json:"schema,omitempty"`
-	// The type of the dataset source, e.g. ‘databricks-uc-table’,
-	// ‘DBFS’, ‘S3’, ...
-	Source string `json:"source,omitempty"`
 	// Source information for the dataset. Note that the source may not exactly
 	// reproduce the dataset if it was transformed / modified before use with
 	// MLflow.
-	SourceType string `json:"source_type,omitempty"`
+	Source string `json:"source"`
+	// The type of the dataset source, e.g. ‘databricks-uc-table’,
+	// ‘DBFS’, ‘S3’, ...
+	SourceType string `json:"source_type"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -537,9 +631,10 @@ func (s Dataset) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// DatasetInput. Represents a dataset and input tags.
 type DatasetInput struct {
 	// The dataset being used as a Run input.
-	Dataset *Dataset `json:"dataset,omitempty"`
+	Dataset Dataset `json:"dataset"`
 	// A list of tags for the dataset input, e.g. a “context” tag with value
 	// “training”
 	Tags []InputTag `json:"tags,omitempty"`
@@ -749,6 +844,7 @@ func (s DeleteWebhookRequest) MarshalJSON() ([]byte, error) {
 type DeleteWebhookResponse struct {
 }
 
+// An experiment and its metadata.
 type Experiment struct {
 	// Location where artifacts for the experiment are stored.
 	ArtifactLocation string `json:"artifact_location,omitempty"`
@@ -909,6 +1005,7 @@ type ExperimentPermissionsRequest struct {
 	ExperimentId string `json:"-" url:"-"`
 }
 
+// A tag for an experiment.
 type ExperimentTag struct {
 	// The tag key.
 	Key string `json:"key,omitempty"`
@@ -926,6 +1023,7 @@ func (s ExperimentTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Metadata of a single artifact file or directory.
 type FileInfo struct {
 	// Size in bytes. Unset for directories.
 	FileSize int64 `json:"file_size,omitempty"`
@@ -945,10 +1043,69 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get metadata
+// Represents a forecasting experiment with its unique identifier, URL, and
+// state.
+type ForecastingExperiment struct {
+	// The unique ID for the forecasting experiment.
+	ExperimentId string `json:"experiment_id,omitempty"`
+	// The URL to the forecasting experiment page.
+	ExperimentPageUrl string `json:"experiment_page_url,omitempty"`
+	// The current state of the forecasting experiment.
+	State ForecastingExperimentState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ForecastingExperiment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ForecastingExperiment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ForecastingExperimentState string
+
+const ForecastingExperimentStateCancelled ForecastingExperimentState = `CANCELLED`
+
+const ForecastingExperimentStateFailed ForecastingExperimentState = `FAILED`
+
+const ForecastingExperimentStatePending ForecastingExperimentState = `PENDING`
+
+const ForecastingExperimentStateRunning ForecastingExperimentState = `RUNNING`
+
+const ForecastingExperimentStateSucceeded ForecastingExperimentState = `SUCCEEDED`
+
+// String representation for [fmt.Print]
+func (f *ForecastingExperimentState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ForecastingExperimentState) Set(v string) error {
+	switch v {
+	case `CANCELLED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCEEDED`:
+		*f = ForecastingExperimentState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "PENDING", "RUNNING", "SUCCEEDED"`, v)
+	}
+}
+
+// Type always returns ForecastingExperimentState to satisfy [pflag.Value] interface
+func (f *ForecastingExperimentState) Type() string {
+	return "ForecastingExperimentState"
+}
+
+// Get an experiment by name
 type GetByNameRequest struct {
 	// Name of the associated experiment.
 	ExperimentName string `json:"-" url:"experiment_name"`
+}
+
+type GetExperimentByNameResponse struct {
+	// Experiment details.
+	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
 // Get experiment permission levels
@@ -979,7 +1136,13 @@ type GetExperimentResponse struct {
 	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
-// Get history of a given metric within a run
+// Get a forecasting experiment
+type GetForecastingExperimentRequest struct {
+	// The unique ID of a forecasting experiment
+	ExperimentId string `json:"-" url:"-"`
+}
+
+// Get metric history for a run
 type GetHistoryRequest struct {
 	// Maximum number of Metric records to return per paginated request. Default
 	// is set to 25,000. If set higher than 25,000, a request Exception will be
@@ -991,8 +1154,8 @@ type GetHistoryRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// ID of the run from which to fetch metric values. Must be provided.
 	RunId string `json:"-" url:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run from which to fetch metric
-	// values. This field will be removed in a future MLflow version.
+	// [Deprecated, use `run_id` instead] ID of the run from which to fetch
+	// metric values. This field will be removed in a future MLflow version.
 	RunUuid string `json:"-" url:"run_uuid,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1021,10 +1184,14 @@ type GetLatestVersionsResponse struct {
 }
 
 type GetMetricHistoryResponse struct {
-	// All logged values for this metric.
+	// All logged values for this metric if `max_results` is not specified in
+	// the request or if the total count of metrics returned is less than the
+	// service level pagination threshold. Otherwise, this is one page of
+	// results.
 	Metrics []Metric `json:"metrics,omitempty"`
-	// Token that can be used to retrieve the next page of metric history
-	// results
+	// A token that can be used to issue a query for the next page of metric
+	// history values. A missing token indicates that no additional metrics are
+	// available to fetch.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1104,8 +1271,8 @@ type GetRegisteredModelPermissionsRequest struct {
 type GetRunRequest struct {
 	// ID of the run to fetch. Must be provided.
 	RunId string `json:"-" url:"run_id"`
-	// [Deprecated, use run_id instead] ID of the run to fetch. This field will
-	// be removed in a future MLflow version.
+	// [Deprecated, use `run_id` instead] ID of the run to fetch. This field
+	// will be removed in a future MLflow version.
 	RunUuid string `json:"-" url:"run_uuid,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1180,21 +1347,12 @@ func (s HttpUrlSpecWithoutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Tag for a dataset input.
 type InputTag struct {
 	// The tag key.
-	Key string `json:"key,omitempty"`
+	Key string `json:"key"`
 	// The tag value.
-	Value string `json:"value,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *InputTag) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s InputTag) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	Value string `json:"value"`
 }
 
 type JobSpec struct {
@@ -1237,7 +1395,7 @@ func (s JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get all artifacts
+// List artifacts
 type ListArtifactsRequest struct {
 	// Token indicating the page of artifact results to fetch. `page_token` is
 	// not supported when listing artifacts in UC Volumes. A maximum of 1000
@@ -1251,7 +1409,7 @@ type ListArtifactsRequest struct {
 	Path string `json:"-" url:"path,omitempty"`
 	// ID of the run whose artifacts to list. Must be provided.
 	RunId string `json:"-" url:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run whose artifacts to list.
+	// [Deprecated, use `run_id` instead] ID of the run whose artifacts to list.
 	// This field will be removed in a future MLflow version.
 	RunUuid string `json:"-" url:"run_uuid,omitempty"`
 
@@ -1292,12 +1450,12 @@ type ListExperimentsRequest struct {
 	// automatically capped at 1000. Callers of this endpoint are encouraged to
 	// pass max_results explicitly and leverage page_token to iterate through
 	// experiments.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int64 `json:"-" url:"max_results,omitempty"`
 	// Token indicating the page of experiments to fetch
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// Qualifier for type of experiments to be returned. If unspecified, return
 	// only active experiments.
-	ViewType string `json:"-" url:"view_type,omitempty"`
+	ViewType ViewType `json:"-" url:"view_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1448,17 +1606,7 @@ type LogInputs struct {
 	// Dataset inputs
 	Datasets []DatasetInput `json:"datasets,omitempty"`
 	// ID of the run to log under
-	RunId string `json:"run_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *LogInputs) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s LogInputs) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	RunId string `json:"run_id"`
 }
 
 type LogInputsResponse struct {
@@ -1469,7 +1617,7 @@ type LogMetric struct {
 	Key string `json:"key"`
 	// ID of the run under which to log the metric. Must be provided.
 	RunId string `json:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run under which to log the
+	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// metric. This field will be removed in a future MLflow version.
 	RunUuid string `json:"run_uuid,omitempty"`
 	// Step at which to log the metric
@@ -1518,7 +1666,7 @@ type LogParam struct {
 	Key string `json:"key"`
 	// ID of the run under which to log the param. Must be provided.
 	RunId string `json:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run under which to log the
+	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// param. This field will be removed in a future MLflow version.
 	RunUuid string `json:"run_uuid,omitempty"`
 	// String value of the param being logged. Maximum size is 500 bytes.
@@ -1538,6 +1686,7 @@ func (s LogParam) MarshalJSON() ([]byte, error) {
 type LogParamResponse struct {
 }
 
+// Metric associated with a run, represented as a key-value pair.
 type Metric struct {
 	// Key identifying this metric.
 	Key string `json:"key,omitempty"`
@@ -1787,6 +1936,7 @@ func (s ModelVersionTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Param associated with a run.
 type Param struct {
 	// Key identifying this param.
 	Key string `json:"key,omitempty"`
@@ -2241,6 +2391,7 @@ func (s RestoreRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A single run.
 type Run struct {
 	// Run data.
 	Data *RunData `json:"data,omitempty"`
@@ -2250,6 +2401,7 @@ type Run struct {
 	Inputs *RunInputs `json:"inputs,omitempty"`
 }
 
+// Run data (metrics, params, and tags).
 type RunData struct {
 	// Run metrics.
 	Metrics []Metric `json:"metrics,omitempty"`
@@ -2259,11 +2411,12 @@ type RunData struct {
 	Tags []RunTag `json:"tags,omitempty"`
 }
 
+// Metadata of a single run.
 type RunInfo struct {
 	// URI of the directory where artifacts should be uploaded. This can be a
 	// local path (starting with "/"), or a distributed file system (DFS) path,
-	// like `s3://bucket/directory` or `dbfs:/my/directory`. If not set, the
-	// local `./mlruns` directory is chosen.
+	// like ``s3://bucket/directory`` or ``dbfs:/my/directory``. If not set, the
+	// local ``./mlruns`` directory is chosen.
 	ArtifactUri string `json:"artifact_uri,omitempty"`
 	// Unix timestamp of when the run ended in milliseconds.
 	EndTime int64 `json:"end_time,omitempty"`
@@ -2273,6 +2426,8 @@ type RunInfo struct {
 	LifecycleStage string `json:"lifecycle_stage,omitempty"`
 	// Unique identifier for the run.
 	RunId string `json:"run_id,omitempty"`
+	// The name of the run.
+	RunName string `json:"run_name,omitempty"`
 	// [Deprecated, use run_id instead] Unique identifier for the run. This
 	// field will be removed in a future MLflow version.
 	RunUuid string `json:"run_uuid,omitempty"`
@@ -2296,7 +2451,7 @@ func (s RunInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Current status of the run.
+// Status of a run.
 type RunInfoStatus string
 
 const RunInfoStatusFailed RunInfoStatus = `FAILED`
@@ -2330,11 +2485,13 @@ func (f *RunInfoStatus) Type() string {
 	return "RunInfoStatus"
 }
 
+// Run inputs.
 type RunInputs struct {
 	// Run metrics.
 	DatasetInputs []DatasetInput `json:"dataset_inputs,omitempty"`
 }
 
+// Tag for a run.
 type RunTag struct {
 	// The tag key.
 	Key string `json:"key,omitempty"`
@@ -2367,7 +2524,7 @@ type SearchExperiments struct {
 	PageToken string `json:"page_token,omitempty"`
 	// Qualifier for type of experiments to be returned. If unspecified, return
 	// only active experiments.
-	ViewType SearchExperimentsViewType `json:"view_type,omitempty"`
+	ViewType ViewType `json:"view_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2396,37 +2553,6 @@ func (s *SearchExperimentsResponse) UnmarshalJSON(b []byte) error {
 
 func (s SearchExperimentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-// Qualifier for type of experiments to be returned. If unspecified, return only
-// active experiments.
-type SearchExperimentsViewType string
-
-const SearchExperimentsViewTypeActiveOnly SearchExperimentsViewType = `ACTIVE_ONLY`
-
-const SearchExperimentsViewTypeAll SearchExperimentsViewType = `ALL`
-
-const SearchExperimentsViewTypeDeletedOnly SearchExperimentsViewType = `DELETED_ONLY`
-
-// String representation for [fmt.Print]
-func (f *SearchExperimentsViewType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *SearchExperimentsViewType) Set(v string) error {
-	switch v {
-	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
-		*f = SearchExperimentsViewType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE_ONLY", "ALL", "DELETED_ONLY"`, v)
-	}
-}
-
-// Type always returns SearchExperimentsViewType to satisfy [pflag.Value] interface
-func (f *SearchExperimentsViewType) Type() string {
-	return "SearchExperimentsViewType"
 }
 
 // Searches model versions
@@ -2535,17 +2661,17 @@ type SearchRuns struct {
 	// Maximum number of runs desired. Max threshold is 50000
 	MaxResults int `json:"max_results,omitempty"`
 	// List of columns to be ordered by, including attributes, params, metrics,
-	// and tags with an optional "DESC" or "ASC" annotation, where "ASC" is the
-	// default. Example: ["params.input DESC", "metrics.alpha ASC",
-	// "metrics.rmse"] Tiebreaks are done by start_time DESC followed by run_id
-	// for runs with the same start time (and this is the default ordering
-	// criterion if order_by is not provided).
+	// and tags with an optional `"DESC"` or `"ASC"` annotation, where `"ASC"`
+	// is the default. Example: `["params.input DESC", "metrics.alpha ASC",
+	// "metrics.rmse"]`. Tiebreaks are done by start_time `DESC` followed by
+	// `run_id` for runs with the same start time (and this is the default
+	// ordering criterion if order_by is not provided).
 	OrderBy []string `json:"order_by,omitempty"`
 	// Token for the current page of runs.
 	PageToken string `json:"page_token,omitempty"`
 	// Whether to display only active, only deleted, or all runs. Defaults to
 	// only active runs.
-	RunViewType SearchRunsRunViewType `json:"run_view_type,omitempty"`
+	RunViewType ViewType `json:"run_view_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2575,46 +2701,13 @@ func (s SearchRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Whether to display only active, only deleted, or all runs. Defaults to only
-// active runs.
-type SearchRunsRunViewType string
-
-const SearchRunsRunViewTypeActiveOnly SearchRunsRunViewType = `ACTIVE_ONLY`
-
-const SearchRunsRunViewTypeAll SearchRunsRunViewType = `ALL`
-
-const SearchRunsRunViewTypeDeletedOnly SearchRunsRunViewType = `DELETED_ONLY`
-
-// String representation for [fmt.Print]
-func (f *SearchRunsRunViewType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *SearchRunsRunViewType) Set(v string) error {
-	switch v {
-	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
-		*f = SearchRunsRunViewType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE_ONLY", "ALL", "DELETED_ONLY"`, v)
-	}
-}
-
-// Type always returns SearchRunsRunViewType to satisfy [pflag.Value] interface
-func (f *SearchRunsRunViewType) Type() string {
-	return "SearchRunsRunViewType"
-}
-
 type SetExperimentTag struct {
 	// ID of the experiment under which to log the tag. Must be provided.
 	ExperimentId string `json:"experiment_id"`
-	// Name of the tag. Maximum size depends on storage backend. All storage
-	// backends are guaranteed to support key values up to 250 bytes in size.
+	// Name of the tag. Keys up to 250 bytes in size are supported.
 	Key string `json:"key"`
-	// String value of the tag being logged. Maximum size depends on storage
-	// backend. All storage backends are guaranteed to support key values up to
-	// 5000 bytes in size.
+	// String value of the tag being logged. Values up to 64KB in size are
+	// supported.
 	Value string `json:"value"`
 }
 
@@ -2658,17 +2751,15 @@ type SetModelVersionTagResponse struct {
 }
 
 type SetTag struct {
-	// Name of the tag. Maximum size depends on storage backend. All storage
-	// backends are guaranteed to support key values up to 250 bytes in size.
+	// Name of the tag. Keys up to 250 bytes in size are supported.
 	Key string `json:"key"`
 	// ID of the run under which to log the tag. Must be provided.
 	RunId string `json:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run under which to log the
+	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// tag. This field will be removed in a future MLflow version.
 	RunUuid string `json:"run_uuid,omitempty"`
-	// String value of the tag being logged. Maximum size depends on storage
-	// backend. All storage backends are guaranteed to support key values up to
-	// 5000 bytes in size.
+	// String value of the tag being logged. Values up to 64KB in size are
+	// supported.
 	Value string `json:"value"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3014,7 +3105,9 @@ type UpdateRun struct {
 	EndTime int64 `json:"end_time,omitempty"`
 	// ID of the run to update. Must be provided.
 	RunId string `json:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run to update.. This field
+	// Updated name of the run.
+	RunName string `json:"run_name,omitempty"`
+	// [Deprecated, use `run_id` instead] ID of the run to update. This field
 	// will be removed in a future MLflow version.
 	RunUuid string `json:"run_uuid,omitempty"`
 	// Updated status of the run.
@@ -3036,7 +3129,7 @@ type UpdateRunResponse struct {
 	RunInfo *RunInfo `json:"run_info,omitempty"`
 }
 
-// Updated status of the run.
+// Status of a run.
 type UpdateRunStatus string
 
 const UpdateRunStatusFailed UpdateRunStatus = `FAILED`
@@ -3071,4 +3164,34 @@ func (f *UpdateRunStatus) Type() string {
 }
 
 type UpdateWebhookResponse struct {
+}
+
+// Qualifier for the view type.
+type ViewType string
+
+const ViewTypeActiveOnly ViewType = `ACTIVE_ONLY`
+
+const ViewTypeAll ViewType = `ALL`
+
+const ViewTypeDeletedOnly ViewType = `DELETED_ONLY`
+
+// String representation for [fmt.Print]
+func (f *ViewType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ViewType) Set(v string) error {
+	switch v {
+	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
+		*f = ViewType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE_ONLY", "ALL", "DELETED_ONLY"`, v)
+	}
+}
+
+// Type always returns ViewType to satisfy [pflag.Value] interface
+func (f *ViewType) Type() string {
+	return "ViewType"
 }
