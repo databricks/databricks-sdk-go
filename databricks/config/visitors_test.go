@@ -11,11 +11,8 @@ import (
 )
 
 func TestAuthInUserAgentVisitorDefault(t *testing.T) {
-	c := &Config{
-		AuthType: "PAT",
-	}
 	request := &http.Request{}
-	err := authInUserAgentVisitor(c)(request)
+	err := authInUserAgentVisitor("PAT")(request)
 	assert.NoError(t, err)
 	// tests may be developed and run on different versions of different things
 	uac := strings.Split(useragent.FromContext(request.Context()), " ")
@@ -23,14 +20,11 @@ func TestAuthInUserAgentVisitorDefault(t *testing.T) {
 }
 
 func TestAuthInUserAgentVisitorCustom(t *testing.T) {
-	c := &Config{
-		AuthType: "PAT",
-	}
 	request := &http.Request{}
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, AuthType{}, "oath")
 	request = request.WithContext(ctx)
-	err := authInUserAgentVisitor(c)(request)
+	err := authInUserAgentVisitor("PAT")(request)
 	assert.NoError(t, err)
 	// tests may be developed and run on different versions of different things
 	uac := strings.Split(useragent.FromContext(request.Context()), " ")

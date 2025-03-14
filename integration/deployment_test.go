@@ -13,7 +13,7 @@ func TestMwsAccStorage(t *testing.T) {
 
 	StorageAPI, err := provisioning.NewStorageClient(cfg)
 	require.NoError(t, err)
-	if !StorageAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		t.SkipNow()
 	}
 
@@ -47,7 +47,7 @@ func TestMwsAccNetworks(t *testing.T) {
 
 	NetworksAPI, err := provisioning.NewNetworksClient(cfg)
 	require.NoError(t, err)
-	if !NetworksAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		t.SkipNow()
 	}
 	netw, err := NetworksAPI.Create(ctx, provisioning.CreateNetworkRequest{
@@ -78,7 +78,7 @@ func TestMwsAccCredentials(t *testing.T) {
 	ctx, cfg := accountTest(t)
 	CredentialsAPI, err := provisioning.NewCredentialsClient(cfg)
 	require.NoError(t, err)
-	if !CredentialsAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		t.SkipNow()
 	}
 	role, err := CredentialsAPI.Create(ctx, provisioning.CreateCredentialRequest{
@@ -112,7 +112,7 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 	ctx, cfg := accountTest(t)
 	EncryptionKeysAPI, err := provisioning.NewEncryptionKeysClient(cfg)
 	require.NoError(t, err)
-	if !EncryptionKeysAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		t.SkipNow()
 	}
 
@@ -143,7 +143,7 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 	ctx, cfg := accountTest(t)
 	PrivateAccessAPI, err := provisioning.NewPrivateAccessClient(cfg)
 	require.NoError(t, err)
-	if !PrivateAccessAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		t.SkipNow()
 	}
 
@@ -184,7 +184,7 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 	ctx, cfg := accountTest(t)
 	VpcEndpointsAPI, err := provisioning.NewVpcEndpointsClient(cfg)
 	require.NoError(t, err)
-	if !VpcEndpointsAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		t.SkipNow()
 	}
 

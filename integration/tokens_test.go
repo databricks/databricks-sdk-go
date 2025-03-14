@@ -12,8 +12,8 @@ import (
 
 func TestAccTokens(t *testing.T) {
 	ctx := workspaceTest(t)
-
-	TokensAPI, err := settings.NewTokensClient(nil)
+	cfg := &config.Config{}
+	TokensAPI, err := settings.NewTokensClient(cfg)
 	require.NoError(t, err)
 	token, err := TokensAPI.Create(ctx, settings.CreateTokenRequest{
 		Comment:         RandomName("go-sdk-"),
@@ -34,12 +34,12 @@ func TestAccTokens(t *testing.T) {
 	assert.Equal(t, token.TokenInfo.TokenId, byName.TokenId)
 
 	CurrentUserAPIInner, err := iam.NewCurrentUserClient(&config.Config{
-		Host:     TokensAPI.Config.Host,
+		Host:     cfg.Host,
 		Token:    token.TokenValue,
 		AuthType: "pat",
 	})
 	require.NoError(t, err)
 	me2, err := CurrentUserAPIInner.Me(ctx)
 	require.NoError(t, err)
-	assert.Equal(t, me2.UserName, me(t, TokensAPI.Config).UserName)
+	assert.Equal(t, me2.UserName, me(t, cfg).UserName)
 }

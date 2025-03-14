@@ -7,13 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 type PipelinesClient struct {
 	PipelinesInterface
-	Config    *config.Config
-	apiClient *httpclient.ApiClient
 }
 
 func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
@@ -28,18 +25,12 @@ func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &PipelinesClient{
-		Config:             cfg,
-		apiClient:          apiClient,
 		PipelinesInterface: NewPipelines(databricksClient),
 	}, nil
 }
