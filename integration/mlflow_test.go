@@ -123,7 +123,7 @@ func deleteModel(t *testing.T, ModelRegistryAPI *ml.ModelRegistryClient, ctx con
 func TestAccRegistryWebhooks(t *testing.T) {
 	ctx := workspaceTest(t)
 	cfg := &config.Config{}
-	ModelRegistryAPI, err := ml.NewModelRegistryClient(nil)
+	ModelRegistryAPI, err := ml.NewModelRegistryClient(cfg)
 	require.NoError(t, err)
 	created, err := ModelRegistryAPI.CreateWebhook(ctx, ml.CreateRegistryWebhook{
 		Description: RandomName("comment "),
