@@ -7,12 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 type AlertsClient struct {
 	AlertsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewAlertsClient(cfg *config.Config) (*AlertsClient, error) {
@@ -33,14 +31,12 @@ func NewAlertsClient(cfg *config.Config) (*AlertsClient, error) {
 	}
 
 	return &AlertsClient{
-		apiClient:       databricksClient.ApiClient(),
 		AlertsInterface: NewAlerts(databricksClient),
 	}, nil
 }
 
 type AlertsLegacyClient struct {
 	AlertsLegacyInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewAlertsLegacyClient(cfg *config.Config) (*AlertsLegacyClient, error) {
@@ -61,14 +57,12 @@ func NewAlertsLegacyClient(cfg *config.Config) (*AlertsLegacyClient, error) {
 	}
 
 	return &AlertsLegacyClient{
-		apiClient:             databricksClient.ApiClient(),
 		AlertsLegacyInterface: NewAlertsLegacy(databricksClient),
 	}, nil
 }
 
 type DashboardWidgetsClient struct {
 	DashboardWidgetsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewDashboardWidgetsClient(cfg *config.Config) (*DashboardWidgetsClient, error) {
@@ -89,14 +83,12 @@ func NewDashboardWidgetsClient(cfg *config.Config) (*DashboardWidgetsClient, err
 	}
 
 	return &DashboardWidgetsClient{
-		apiClient:                 databricksClient.ApiClient(),
 		DashboardWidgetsInterface: NewDashboardWidgets(databricksClient),
 	}, nil
 }
 
 type DashboardsClient struct {
 	DashboardsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewDashboardsClient(cfg *config.Config) (*DashboardsClient, error) {
@@ -117,14 +109,12 @@ func NewDashboardsClient(cfg *config.Config) (*DashboardsClient, error) {
 	}
 
 	return &DashboardsClient{
-		apiClient:           databricksClient.ApiClient(),
 		DashboardsInterface: NewDashboards(databricksClient),
 	}, nil
 }
 
 type DataSourcesClient struct {
 	DataSourcesInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewDataSourcesClient(cfg *config.Config) (*DataSourcesClient, error) {
@@ -145,14 +135,12 @@ func NewDataSourcesClient(cfg *config.Config) (*DataSourcesClient, error) {
 	}
 
 	return &DataSourcesClient{
-		apiClient:            databricksClient.ApiClient(),
 		DataSourcesInterface: NewDataSources(databricksClient),
 	}, nil
 }
 
 type DbsqlPermissionsClient struct {
 	DbsqlPermissionsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewDbsqlPermissionsClient(cfg *config.Config) (*DbsqlPermissionsClient, error) {
@@ -173,14 +161,12 @@ func NewDbsqlPermissionsClient(cfg *config.Config) (*DbsqlPermissionsClient, err
 	}
 
 	return &DbsqlPermissionsClient{
-		apiClient:                 databricksClient.ApiClient(),
 		DbsqlPermissionsInterface: NewDbsqlPermissions(databricksClient),
 	}, nil
 }
 
 type QueriesClient struct {
 	QueriesInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewQueriesClient(cfg *config.Config) (*QueriesClient, error) {
@@ -201,14 +187,12 @@ func NewQueriesClient(cfg *config.Config) (*QueriesClient, error) {
 	}
 
 	return &QueriesClient{
-		apiClient:        databricksClient.ApiClient(),
 		QueriesInterface: NewQueries(databricksClient),
 	}, nil
 }
 
 type QueriesLegacyClient struct {
 	QueriesLegacyInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewQueriesLegacyClient(cfg *config.Config) (*QueriesLegacyClient, error) {
@@ -229,14 +213,12 @@ func NewQueriesLegacyClient(cfg *config.Config) (*QueriesLegacyClient, error) {
 	}
 
 	return &QueriesLegacyClient{
-		apiClient:              databricksClient.ApiClient(),
 		QueriesLegacyInterface: NewQueriesLegacy(databricksClient),
 	}, nil
 }
 
 type QueryHistoryClient struct {
 	QueryHistoryInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewQueryHistoryClient(cfg *config.Config) (*QueryHistoryClient, error) {
@@ -257,14 +239,12 @@ func NewQueryHistoryClient(cfg *config.Config) (*QueryHistoryClient, error) {
 	}
 
 	return &QueryHistoryClient{
-		apiClient:             databricksClient.ApiClient(),
 		QueryHistoryInterface: NewQueryHistory(databricksClient),
 	}, nil
 }
 
 type QueryVisualizationsClient struct {
 	QueryVisualizationsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewQueryVisualizationsClient(cfg *config.Config) (*QueryVisualizationsClient, error) {
@@ -285,14 +265,12 @@ func NewQueryVisualizationsClient(cfg *config.Config) (*QueryVisualizationsClien
 	}
 
 	return &QueryVisualizationsClient{
-		apiClient:                    databricksClient.ApiClient(),
 		QueryVisualizationsInterface: NewQueryVisualizations(databricksClient),
 	}, nil
 }
 
 type QueryVisualizationsLegacyClient struct {
 	QueryVisualizationsLegacyInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewQueryVisualizationsLegacyClient(cfg *config.Config) (*QueryVisualizationsLegacyClient, error) {
@@ -313,14 +291,12 @@ func NewQueryVisualizationsLegacyClient(cfg *config.Config) (*QueryVisualization
 	}
 
 	return &QueryVisualizationsLegacyClient{
-		apiClient:                          databricksClient.ApiClient(),
 		QueryVisualizationsLegacyInterface: NewQueryVisualizationsLegacy(databricksClient),
 	}, nil
 }
 
 type RedashConfigClient struct {
 	RedashConfigInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewRedashConfigClient(cfg *config.Config) (*RedashConfigClient, error) {
@@ -341,14 +317,12 @@ func NewRedashConfigClient(cfg *config.Config) (*RedashConfigClient, error) {
 	}
 
 	return &RedashConfigClient{
-		apiClient:             databricksClient.ApiClient(),
 		RedashConfigInterface: NewRedashConfig(databricksClient),
 	}, nil
 }
 
 type StatementExecutionClient struct {
 	StatementExecutionInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewStatementExecutionClient(cfg *config.Config) (*StatementExecutionClient, error) {
@@ -369,14 +343,12 @@ func NewStatementExecutionClient(cfg *config.Config) (*StatementExecutionClient,
 	}
 
 	return &StatementExecutionClient{
-		apiClient:                   databricksClient.ApiClient(),
 		StatementExecutionInterface: NewStatementExecution(databricksClient),
 	}, nil
 }
 
 type WarehousesClient struct {
 	WarehousesInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewWarehousesClient(cfg *config.Config) (*WarehousesClient, error) {
@@ -397,7 +369,6 @@ func NewWarehousesClient(cfg *config.Config) (*WarehousesClient, error) {
 	}
 
 	return &WarehousesClient{
-		apiClient:           databricksClient.ApiClient(),
 		WarehousesInterface: NewWarehouses(databricksClient),
 	}, nil
 }

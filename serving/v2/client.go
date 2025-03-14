@@ -7,12 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 type ServingEndpointsClient struct {
 	ServingEndpointsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, error) {
@@ -33,14 +31,12 @@ func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, err
 	}
 
 	return &ServingEndpointsClient{
-		apiClient:                 databricksClient.ApiClient(),
 		ServingEndpointsInterface: NewServingEndpoints(databricksClient),
 	}, nil
 }
 
 type ServingEndpointsDataPlaneClient struct {
 	ServingEndpointsDataPlaneInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDataPlaneClient, error) {
@@ -61,7 +57,6 @@ func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDa
 	}
 
 	return &ServingEndpointsDataPlaneClient{
-		apiClient:                          databricksClient.ApiClient(),
 		ServingEndpointsDataPlaneInterface: NewServingEndpointsDataPlane(databricksClient),
 	}, nil
 }

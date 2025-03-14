@@ -7,12 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 type DbfsClient struct {
 	DbfsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
@@ -33,14 +31,12 @@ func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
 	}
 
 	return &DbfsClient{
-		apiClient:     databricksClient.ApiClient(),
 		DbfsInterface: NewDbfs(databricksClient),
 	}, nil
 }
 
 type FilesClient struct {
 	FilesInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewFilesClient(cfg *config.Config) (*FilesClient, error) {
@@ -61,7 +57,6 @@ func NewFilesClient(cfg *config.Config) (*FilesClient, error) {
 	}
 
 	return &FilesClient{
-		apiClient:      databricksClient.ApiClient(),
 		FilesInterface: NewFiles(databricksClient),
 	}, nil
 }

@@ -7,12 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 type ProvidersClient struct {
 	ProvidersInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
@@ -33,14 +31,12 @@ func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
 	}
 
 	return &ProvidersClient{
-		apiClient:          databricksClient.ApiClient(),
 		ProvidersInterface: NewProviders(databricksClient),
 	}, nil
 }
 
 type RecipientActivationClient struct {
 	RecipientActivationInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClient, error) {
@@ -61,14 +57,12 @@ func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClien
 	}
 
 	return &RecipientActivationClient{
-		apiClient:                    databricksClient.ApiClient(),
 		RecipientActivationInterface: NewRecipientActivation(databricksClient),
 	}, nil
 }
 
 type RecipientsClient struct {
 	RecipientsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
@@ -89,14 +83,12 @@ func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
 	}
 
 	return &RecipientsClient{
-		apiClient:           databricksClient.ApiClient(),
 		RecipientsInterface: NewRecipients(databricksClient),
 	}, nil
 }
 
 type SharesClient struct {
 	SharesInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewSharesClient(cfg *config.Config) (*SharesClient, error) {
@@ -117,7 +109,6 @@ func NewSharesClient(cfg *config.Config) (*SharesClient, error) {
 	}
 
 	return &SharesClient{
-		apiClient:       databricksClient.ApiClient(),
 		SharesInterface: NewShares(databricksClient),
 	}, nil
 }

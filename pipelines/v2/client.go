@@ -7,12 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 type PipelinesClient struct {
 	PipelinesInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
@@ -33,7 +31,6 @@ func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
 	}
 
 	return &PipelinesClient{
-		apiClient:          databricksClient.ApiClient(),
 		PipelinesInterface: NewPipelines(databricksClient),
 	}, nil
 }
