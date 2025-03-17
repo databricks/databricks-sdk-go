@@ -17,21 +17,22 @@ func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &JobsClient{
-		JobsInterface: NewJobs(databricksClient),
+		JobsInterface: NewJobs(apiClient),
 	}, nil
 }
 
@@ -43,20 +44,21 @@ func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJ
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &PolicyComplianceForJobsClient{
-		PolicyComplianceForJobsInterface: NewPolicyComplianceForJobs(databricksClient),
+		PolicyComplianceForJobsInterface: NewPolicyComplianceForJobs(apiClient),
 	}, nil
 }

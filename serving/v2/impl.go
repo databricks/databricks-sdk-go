@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -23,7 +25,7 @@ func (a *servingEndpointsImpl) BuildLogs(ctx context.Context, request BuildLogsR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &buildLogsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &buildLogsResponse)
 	return &buildLogsResponse, err
 }
 
@@ -34,7 +36,7 @@ func (a *servingEndpointsImpl) Create(ctx context.Context, request CreateServing
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &servingEndpointDetailed)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
 }
 
@@ -43,7 +45,7 @@ func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServing
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
 
@@ -53,7 +55,7 @@ func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request Export
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &exportMetricsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &exportMetricsResponse)
 	return &exportMetricsResponse, err
 }
 
@@ -63,7 +65,7 @@ func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpoi
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &servingEndpointDetailed)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
 }
 
@@ -73,7 +75,7 @@ func (a *servingEndpointsImpl) GetOpenApi(ctx context.Context, request GetOpenAp
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getOpenApiResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getOpenApiResponse)
 	return &getOpenApiResponse, err
 }
 
@@ -83,7 +85,7 @@ func (a *servingEndpointsImpl) GetPermissionLevels(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getServingEndpointPermissionLevelsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getServingEndpointPermissionLevelsResponse)
 	return &getServingEndpointPermissionLevelsResponse, err
 }
 
@@ -93,7 +95,7 @@ func (a *servingEndpointsImpl) GetPermissions(ctx context.Context, request GetSe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &servingEndpointPermissions)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &servingEndpointPermissions)
 	return &servingEndpointPermissions, err
 }
 
@@ -104,7 +106,7 @@ func (a *servingEndpointsImpl) HttpRequest(ctx context.Context, request External
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &httpRequestResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &httpRequestResponse)
 	return &httpRequestResponse, err
 }
 
@@ -139,7 +141,7 @@ func (a *servingEndpointsImpl) internalList(ctx context.Context) (*ListEndpoints
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listEndpointsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &listEndpointsResponse)
 	return &listEndpointsResponse, err
 }
 
@@ -149,7 +151,7 @@ func (a *servingEndpointsImpl) Logs(ctx context.Context, request LogsRequest) (*
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &serverLogsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &serverLogsResponse)
 	return &serverLogsResponse, err
 }
 
@@ -160,7 +162,7 @@ func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEn
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &endpointTags)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &endpointTags)
 	return &endpointTags, err
 }
 
@@ -171,7 +173,7 @@ func (a *servingEndpointsImpl) Put(ctx context.Context, request PutRequest) (*Pu
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &putResponse)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &putResponse)
 	return &putResponse, err
 }
 
@@ -182,7 +184,7 @@ func (a *servingEndpointsImpl) PutAiGateway(ctx context.Context, request PutAiGa
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &putAiGatewayResponse)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &putAiGatewayResponse)
 	return &putAiGatewayResponse, err
 }
 
@@ -193,7 +195,7 @@ func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryEndpointI
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &queryEndpointResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &queryEndpointResponse)
 	return &queryEndpointResponse, err
 }
 
@@ -204,7 +206,7 @@ func (a *servingEndpointsImpl) SetPermissions(ctx context.Context, request Servi
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &servingEndpointPermissions)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &servingEndpointPermissions)
 	return &servingEndpointPermissions, err
 }
 
@@ -215,7 +217,7 @@ func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request Endpoin
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &servingEndpointDetailed)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
 }
 
@@ -226,7 +228,7 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &servingEndpointPermissions)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &servingEndpointPermissions)
 	return &servingEndpointPermissions, err
 }
 
@@ -242,6 +244,35 @@ func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request Query
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &queryEndpointResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &queryEndpointResponse)
 	return &queryEndpointResponse, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

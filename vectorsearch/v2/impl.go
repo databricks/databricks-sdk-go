@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -24,7 +26,7 @@ func (a *vectorSearchEndpointsImpl) CreateEndpoint(ctx context.Context, request 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &endpointInfo)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &endpointInfo)
 	return &endpointInfo, err
 }
 
@@ -33,7 +35,7 @@ func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request 
 	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", request.EndpointName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteEndpointResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteEndpointResponse)
 	return err
 }
 
@@ -43,7 +45,7 @@ func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request Get
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &endpointInfo)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &endpointInfo)
 	return &endpointInfo, err
 }
 
@@ -83,7 +85,7 @@ func (a *vectorSearchEndpointsImpl) internalListEndpoints(ctx context.Context, r
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listEndpointResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listEndpointResponse)
 	return &listEndpointResponse, err
 }
 
@@ -99,7 +101,7 @@ func (a *vectorSearchIndexesImpl) CreateIndex(ctx context.Context, request Creat
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createVectorIndexResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createVectorIndexResponse)
 	return &createVectorIndexResponse, err
 }
 
@@ -110,7 +112,7 @@ func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, req
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteDataVectorIndexResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteDataVectorIndexResponse)
 	return &deleteDataVectorIndexResponse, err
 }
 
@@ -119,7 +121,7 @@ func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request Delet
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v", request.IndexName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteIndexResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteIndexResponse)
 	return err
 }
 
@@ -129,7 +131,7 @@ func (a *vectorSearchIndexesImpl) GetIndex(ctx context.Context, request GetIndex
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &vectorIndex)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &vectorIndex)
 	return &vectorIndex, err
 }
 
@@ -173,7 +175,7 @@ func (a *vectorSearchIndexesImpl) internalListIndexes(ctx context.Context, reque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listVectorIndexesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listVectorIndexesResponse)
 	return &listVectorIndexesResponse, err
 }
 
@@ -184,7 +186,7 @@ func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryV
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &queryVectorIndexResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &queryVectorIndexResponse)
 	return &queryVectorIndexResponse, err
 }
 
@@ -195,7 +197,7 @@ func (a *vectorSearchIndexesImpl) QueryNextPage(ctx context.Context, request Que
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &queryVectorIndexResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &queryVectorIndexResponse)
 	return &queryVectorIndexResponse, err
 }
 
@@ -206,7 +208,7 @@ func (a *vectorSearchIndexesImpl) ScanIndex(ctx context.Context, request ScanVec
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &scanVectorIndexResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &scanVectorIndexResponse)
 	return &scanVectorIndexResponse, err
 }
 
@@ -215,7 +217,7 @@ func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncInd
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/sync", request.IndexName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &syncIndexResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, nil, &syncIndexResponse)
 	return err
 }
 
@@ -226,6 +228,35 @@ func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, req
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &upsertDataVectorIndexResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &upsertDataVectorIndexResponse)
 	return &upsertDataVectorIndexResponse, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }
