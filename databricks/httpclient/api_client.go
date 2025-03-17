@@ -76,7 +76,7 @@ func setDefaults(cfg *ClientConfig) {
 		cfg.HTTPTimeout = defaultHTTPTimeout
 	}
 	if cfg.RetryTimeout == 0 {
-		cfg.RetryTimeout = defaultHTTPTimeout
+		cfg.RetryTimeout = defaultRetryTimeout
 	}
 	if cfg.DebugTruncateBytes == 0 {
 		cfg.DebugTruncateBytes = defaultDebugTruncateBytes
