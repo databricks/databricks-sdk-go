@@ -9,3 +9,9 @@ func Simple[R any](r R) PollFunc[R] {
 		return &r, nil
 	}
 }
+
+func SimpleError[R any](err error) PollFunc[R] {
+	return func(_ time.Duration, _ func(*R)) (*R, error) {
+		return nil, err
+	}
+}

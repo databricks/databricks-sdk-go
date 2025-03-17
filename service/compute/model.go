@@ -439,7 +439,7 @@ type ClusterAttributes struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// The following modes can only be used with `kind`. *
+	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
 	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
 	// access mode depending on your compute configuration. *
 	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
@@ -493,7 +493,7 @@ type ClusterAttributes struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
@@ -503,8 +503,18 @@ type ClusterAttributes struct {
 	// Depending on `kind`, different validations and default values will be
 	// applied.
 	//
-	// The first usage of this value is for the simple cluster form where it
-	// sets `kind = CLASSIC_PREVIEW`.
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. *
+	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
+	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
+	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
+	// `DATA_SECURITY_MODE_STANDARD`
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -553,7 +563,7 @@ type ClusterAttributes struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
@@ -654,7 +664,7 @@ type ClusterDetails struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// The following modes can only be used with `kind`. *
+	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
 	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
 	// access mode depending on your compute configuration. *
 	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
@@ -727,7 +737,7 @@ type ClusterDetails struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
@@ -740,8 +750,18 @@ type ClusterDetails struct {
 	// Depending on `kind`, different validations and default values will be
 	// applied.
 	//
-	// The first usage of this value is for the simple cluster form where it
-	// sets `kind = CLASSIC_PREVIEW`.
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. *
+	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
+	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
+	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
+	// `DATA_SECURITY_MODE_STANDARD`
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
 	Kind Kind `json:"kind,omitempty"`
 	// the timestamp that the cluster was started/restarted
 	LastRestartedTime int64 `json:"last_restarted_time,omitempty"`
@@ -829,7 +849,7 @@ type ClusterDetails struct {
 	// Information about why the cluster was terminated. This field only appears
 	// when the cluster is in a `TERMINATING` or `TERMINATED` state.
 	TerminationReason *TerminationReason `json:"termination_reason,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
@@ -1261,7 +1281,7 @@ type ClusterSpec struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// The following modes can only be used with `kind`. *
+	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
 	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
 	// access mode depending on your compute configuration. *
 	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
@@ -1315,7 +1335,7 @@ type ClusterSpec struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
@@ -1325,8 +1345,18 @@ type ClusterSpec struct {
 	// Depending on `kind`, different validations and default values will be
 	// applied.
 	//
-	// The first usage of this value is for the simple cluster form where it
-	// sets `kind = CLASSIC_PREVIEW`.
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. *
+	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
+	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
+	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
+	// `DATA_SECURITY_MODE_STANDARD`
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -1386,7 +1416,7 @@ type ClusterSpec struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
@@ -1594,7 +1624,7 @@ type CreateCluster struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// The following modes can only be used with `kind`. *
+	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
 	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
 	// access mode depending on your compute configuration. *
 	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
@@ -1648,7 +1678,7 @@ type CreateCluster struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
@@ -1658,8 +1688,18 @@ type CreateCluster struct {
 	// Depending on `kind`, different validations and default values will be
 	// applied.
 	//
-	// The first usage of this value is for the simple cluster form where it
-	// sets `kind = CLASSIC_PREVIEW`.
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. *
+	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
+	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
+	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
+	// `DATA_SECURITY_MODE_STANDARD`
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -1719,7 +1759,7 @@ type CreateCluster struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
@@ -2021,7 +2061,7 @@ func (f *DataPlaneEventDetailsEventType) Type() string {
 // Data security mode decides what data governance model to use when accessing
 // data from a cluster.
 //
-// The following modes can only be used with `kind`. *
+// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
 // `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access
 // mode depending on your compute configuration. *
 // `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
@@ -2156,6 +2196,10 @@ type DestroyContext struct {
 type DestroyResponse struct {
 }
 
+// Describes the disks that are launched for each instance in the spark cluster.
+// For example, if the cluster has 3 instances, each instance is configured to
+// launch 2 disks, 100 GiB each, then Databricks will launch a total of 6 disks,
+// 100 GiB each, for this cluster.
 type DiskSpec struct {
 	// The number of disks launched for each instance: - This feature is only
 	// enabled for supported node types. - Users can choose up to the limit of
@@ -2201,12 +2245,18 @@ func (s DiskSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Describes the disk type.
 type DiskType struct {
+	// All Azure Disk types that Databricks supports. See
+	// https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks
 	AzureDiskVolumeType DiskTypeAzureDiskVolumeType `json:"azure_disk_volume_type,omitempty"`
-
+	// All EBS volume types that Databricks supports. See
+	// https://aws.amazon.com/ebs/details/ for details.
 	EbsVolumeType DiskTypeEbsVolumeType `json:"ebs_volume_type,omitempty"`
 }
 
+// All Azure Disk types that Databricks supports. See
+// https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks
 type DiskTypeAzureDiskVolumeType string
 
 const DiskTypeAzureDiskVolumeTypePremiumLrs DiskTypeAzureDiskVolumeType = `PREMIUM_LRS`
@@ -2234,6 +2284,8 @@ func (f *DiskTypeAzureDiskVolumeType) Type() string {
 	return "DiskTypeAzureDiskVolumeType"
 }
 
+// All EBS volume types that Databricks supports. See
+// https://aws.amazon.com/ebs/details/ for details.
 type DiskTypeEbsVolumeType string
 
 const DiskTypeEbsVolumeTypeGeneralPurposeSsd DiskTypeEbsVolumeType = `GENERAL_PURPOSE_SSD`
@@ -2279,6 +2331,7 @@ func (s DockerBasicAuth) MarshalJSON() ([]byte, error) {
 }
 
 type DockerImage struct {
+	// Basic auth with username and password
 	BasicAuth *DockerBasicAuth `json:"basic_auth,omitempty"`
 	// URL of the docker image.
 	Url string `json:"url,omitempty"`
@@ -2368,7 +2421,7 @@ type EditCluster struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// The following modes can only be used with `kind`. *
+	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
 	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
 	// access mode depending on your compute configuration. *
 	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
@@ -2422,7 +2475,7 @@ type EditCluster struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
@@ -2432,8 +2485,18 @@ type EditCluster struct {
 	// Depending on `kind`, different validations and default values will be
 	// applied.
 	//
-	// The first usage of this value is for the simple cluster form where it
-	// sets `kind = CLASSIC_PREVIEW`.
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. *
+	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
+	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
+	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
+	// `DATA_SECURITY_MODE_STANDARD`
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -2493,7 +2556,7 @@ type EditCluster struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
@@ -3102,7 +3165,7 @@ type GetInstancePool struct {
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any `custom_tags`,
+	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including:
 	//
 	// - Vendor: Databricks
@@ -3529,7 +3592,7 @@ type InstancePoolAndStats struct {
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any `custom_tags`,
+	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including:
 	//
 	// - Vendor: Databricks
@@ -3602,11 +3665,10 @@ func (s InstancePoolAndStats) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Attributes set during instance pool creation which are related to Amazon Web
+// Services.
 type InstancePoolAwsAttributes struct {
 	// Availability type used for the spot nodes.
-	//
-	// The default value is defined by
-	// InstancePoolConf.instancePoolDefaultAwsAvailability
 	Availability InstancePoolAwsAttributesAvailability `json:"availability,omitempty"`
 	// Calculates the bid price for AWS spot instances, as a percentage of the
 	// corresponding instance type's on-demand price. For example, if this field
@@ -3618,10 +3680,6 @@ type InstancePoolAwsAttributes struct {
 	// instances whose bid price percentage matches this field will be
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
-	//
-	// The default value and documentation here should be kept consistent with
-	// CommonConf.defaultSpotBidPricePercent and
-	// CommonConf.maxSpotBidPricePercent.
 	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west-2a". The provided
@@ -3644,10 +3702,8 @@ func (s InstancePoolAwsAttributes) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Availability type used for the spot nodes.
-//
-// The default value is defined by
-// InstancePoolConf.instancePoolDefaultAwsAvailability
+// The set of AWS availability types supported when setting up nodes for a
+// cluster.
 type InstancePoolAwsAttributesAvailability string
 
 const InstancePoolAwsAttributesAvailabilityOnDemand InstancePoolAwsAttributesAvailability = `ON_DEMAND`
@@ -3675,14 +3731,16 @@ func (f *InstancePoolAwsAttributesAvailability) Type() string {
 	return "InstancePoolAwsAttributesAvailability"
 }
 
+// Attributes set during instance pool creation which are related to Azure.
 type InstancePoolAzureAttributes struct {
-	// Shows the Availability type used for the spot nodes.
-	//
-	// The default value is defined by
-	// InstancePoolConf.instancePoolDefaultAzureAvailability
+	// Availability type used for the spot nodes.
 	Availability InstancePoolAzureAttributesAvailability `json:"availability,omitempty"`
-	// The default value and documentation here should be kept consistent with
-	// CommonConf.defaultSpotBidMaxPrice.
+	// With variable pricing, you have option to set a max price, in US dollars
+	// (USD) For example, the value 2 would be a max price of $2.00 USD per
+	// hour. If you set the max price to be -1, the VM won't be evicted based on
+	// price. The price for the VM will be the current price for spot or the
+	// price for a standard VM, which ever is less, as long as there is capacity
+	// and quota available.
 	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3696,10 +3754,8 @@ func (s InstancePoolAzureAttributes) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Shows the Availability type used for the spot nodes.
-//
-// The default value is defined by
-// InstancePoolConf.instancePoolDefaultAzureAvailability
+// The set of Azure availability types supported when setting up nodes for a
+// cluster.
 type InstancePoolAzureAttributesAvailability string
 
 const InstancePoolAzureAttributesAvailabilityOnDemandAzure InstancePoolAzureAttributesAvailability = `ON_DEMAND_AZURE`
@@ -3727,6 +3783,7 @@ func (f *InstancePoolAzureAttributesAvailability) Type() string {
 	return "InstancePoolAzureAttributesAvailability"
 }
 
+// Attributes set during instance pool creation which are related to GCP.
 type InstancePoolGcpAttributes struct {
 	// This field determines whether the instance pool will contain preemptible
 	// VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs
@@ -3854,7 +3911,11 @@ type InstancePoolPermissionsRequest struct {
 	InstancePoolId string `json:"-" url:"-"`
 }
 
-// Current state of the instance pool.
+// The state of a Cluster. The current allowable state transitions are as
+// follows:
+//
+// - “ACTIVE“ -> “STOPPED“ - “ACTIVE“ -> “DELETED“ - “STOPPED“ ->
+// “ACTIVE“ - “STOPPED“ -> “DELETED“
 type InstancePoolState string
 
 const InstancePoolStateActive InstancePoolState = `ACTIVE`
@@ -3949,8 +4010,18 @@ func (s InstanceProfile) MarshalJSON() ([]byte, error) {
 // Depending on `kind`, different validations and default values will be
 // applied.
 //
-// The first usage of this value is for the simple cluster form where it sets
-// `kind = CLASSIC_PREVIEW`.
+// Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas
+// clusters with no specified `kind` do not. *
+// [is_single_node](/api/workspace/clusters/create#is_single_node) *
+// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+// [data_security_mode](/api/workspace/clusters/create#data_security_mode) set
+// to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
+// `DATA_SECURITY_MODE_STANDARD`
+//
+// By using the [simple form], your clusters are automatically using `kind =
+// CLASSIC_PREVIEW`.
+//
+// [simple form]: https://docs.databricks.com/compute/simple-form.html
 type Kind string
 
 const KindClassicPreview Kind = `CLASSIC_PREVIEW`
@@ -4590,6 +4661,7 @@ func (s NodeType) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Error message of a failed pending instances
 type PendingInstanceError struct {
 	InstanceId string `json:"instance_id,omitempty"`
 
@@ -5368,7 +5440,7 @@ type UpdateClusterResource struct {
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
 	//
-	// The following modes can only be used with `kind`. *
+	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
 	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
 	// access mode depending on your compute configuration. *
 	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
@@ -5422,7 +5494,7 @@ type UpdateClusterResource struct {
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
@@ -5432,8 +5504,18 @@ type UpdateClusterResource struct {
 	// Depending on `kind`, different validations and default values will be
 	// applied.
 	//
-	// The first usage of this value is for the simple cluster form where it
-	// sets `kind = CLASSIC_PREVIEW`.
+	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
+	// whereas clusters with no specified `kind` do not. *
+	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
+	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
+	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
+	// `DATA_SECURITY_MODE_STANDARD`
+	//
+	// By using the [simple form], your clusters are automatically using `kind =
+	// CLASSIC_PREVIEW`.
+	//
+	// [simple form]: https://docs.databricks.com/compute/simple-form.html
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -5493,7 +5575,7 @@ type UpdateClusterResource struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-	// This field can only be used with `kind`.
+	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or

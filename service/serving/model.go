@@ -247,6 +247,12 @@ type AmazonBedrockConfig struct {
 	// The underlying provider in Amazon Bedrock. Supported values (case
 	// insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
 	BedrockProvider AmazonBedrockConfigBedrockProvider `json:"bedrock_provider"`
+	// ARN of the instance profile that the external model will use to access
+	// AWS resources. You must authenticate using an instance profile or access
+	// keys. If you prefer to authenticate using access keys, see
+	// `aws_access_key_id`, `aws_access_key_id_plaintext`,
+	// `aws_secret_access_key` and `aws_secret_access_key_plaintext`.
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -460,6 +466,8 @@ type CreateServingEndpoint struct {
 	// external model and provisioned throughput endpoints are currently
 	// supported.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// The budget policy to be applied to the serving endpoint.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The core config of the serving endpoint.
 	Config *EndpointCoreConfigInput `json:"config,omitempty"`
 	// The name of the serving endpoint. This field is required and must be
@@ -1852,6 +1860,8 @@ type ServingEndpoint struct {
 	// external model and provisioned throughput endpoints are currently
 	// supported.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// The budget policy associated with the endpoint.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The config that is currently being served by the endpoint.
 	Config *EndpointCoreConfigSummary `json:"config,omitempty"`
 	// The timestamp when the endpoint was created in Unix time.
@@ -1932,6 +1942,8 @@ type ServingEndpointDetailed struct {
 	// external model and provisioned throughput endpoints are currently
 	// supported.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// The budget policy associated with the endpoint.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The config that is currently being served by the endpoint.
 	Config *EndpointCoreConfigOutput `json:"config,omitempty"`
 	// The timestamp when the endpoint was created in Unix time.

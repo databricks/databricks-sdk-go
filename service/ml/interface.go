@@ -24,7 +24,7 @@ type ExperimentsService interface {
 	// already exist and fails if another experiment with the same name already
 	// exists.
 	//
-	// Throws `RESOURCE_ALREADY_EXISTS` if a experiment with the given name
+	// Throws `RESOURCE_ALREADY_EXISTS` if an experiment with the given name
 	// exists.
 	CreateExperiment(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error)
 
@@ -32,7 +32,7 @@ type ExperimentsService interface {
 	//
 	// Creates a new run within an experiment. A run is usually a single
 	// execution of a machine learning or data ETL pipeline. MLflow uses runs to
-	// track the `mlflowParam`, `mlflowMetric` and `mlflowRunTag` associated
+	// track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag` associated
 	// with a single execution.
 	CreateRun(ctx context.Context, request CreateRun) (*CreateRunResponse, error)
 
@@ -40,7 +40,7 @@ type ExperimentsService interface {
 	//
 	// Marks an experiment and associated metadata, runs, metrics, params, and
 	// tags for deletion. If the experiment uses FileStore, artifacts associated
-	// with experiment are also deleted.
+	// with the experiment are also deleted.
 	DeleteExperiment(ctx context.Context, request DeleteExperiment) error
 
 	// Delete a run.
@@ -54,16 +54,15 @@ type ExperimentsService interface {
 	// specified timestamp. Deletes at most max_runs per request. To call this
 	// API from a Databricks Notebook in Python, you can use the client code
 	// snippet on
-	// https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-delete.
 	DeleteRuns(ctx context.Context, request DeleteRuns) (*DeleteRunsResponse, error)
 
-	// Delete a tag.
+	// Delete a tag on a run.
 	//
 	// Deletes a tag on a run. Tags are run metadata that can be updated during
 	// a run and after a run completes.
 	DeleteTag(ctx context.Context, request DeleteTag) error
 
-	// Get metadata.
+	// Get an experiment by name.
 	//
 	// Gets metadata for an experiment.
 	//
@@ -74,7 +73,7 @@ type ExperimentsService interface {
 	//
 	// Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name
 	// exists.
-	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentResponse, error)
+	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error)
 
 	// Get an experiment.
 	//
@@ -82,7 +81,7 @@ type ExperimentsService interface {
 	// experiments.
 	GetExperiment(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error)
 
-	// Get history of a given metric within a run.
+	// Get metric history for a run.
 	//
 	// Gets a list of all values for the specified metric for a given run.
 	//
@@ -110,12 +109,11 @@ type ExperimentsService interface {
 	// maximum of these values.
 	GetRun(ctx context.Context, request GetRunRequest) (*GetRunResponse, error)
 
-	// Get all artifacts.
+	// List artifacts.
 	//
-	// List artifacts for a run. Takes an optional `artifact_path` prefix. If it
-	// is specified, the response contains only artifacts with the specified
-	// prefix. This API does not support pagination when listing artifacts in UC
-	// Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes.
+	// List artifacts for a run. Takes an optional `artifact_path` prefix which
+	// if specified, the response contains only artifacts with the specified
+	// prefix. A maximum of 1000 artifacts will be retrieved for UC Volumes.
 	// Please call `/api/2.0/fs/directories{directory_path}` for listing
 	// artifacts in UC Volumes, which supports pagination. See [List directory
 	// contents | Files API](/api/workspace/files/listdirectorycontents).
@@ -130,7 +128,7 @@ type ExperimentsService interface {
 	// Use ListExperimentsAll() to get all Experiment instances, which will iterate over every result page.
 	ListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error)
 
-	// Log a batch.
+	// Log a batch of metrics/params/tags for a run.
 	//
 	// Logs a batch of metrics, params, and tags for a run. If any data failed
 	// to be persisted, the server will respond with an error (non-200 status
@@ -163,8 +161,13 @@ type ExperimentsService interface {
 	// Request Limits ------------------------------- A single JSON-serialized
 	// API request may be up to 1 MB in size and contain:
 	//
-	// * No more than 1000 metrics, params, and tags in total * Up to 1000
-	// metrics * Up to 100 params * Up to 100 tags
+	// * No more than 1000 metrics, params, and tags in total
+	//
+	// * Up to 1000 metrics
+	//
+	// * Up to 100 params
+	//
+	// * Up to 100 tags
 	//
 	// For example, a valid request might contain 900 metrics, 50 params, and 50
 	// tags, but logging 900 metrics, 50 params, and 51 tags is invalid.
@@ -173,18 +176,22 @@ type ExperimentsService interface {
 	// values:
 	//
 	// * Metric keys, param keys, and tag keys can be up to 250 characters in
-	// length * Parameter and tag values can be up to 250 characters in length
+	// length
+	//
+	// * Parameter and tag values can be up to 250 characters in length
 	LogBatch(ctx context.Context, request LogBatch) error
 
 	// Log inputs to a run.
 	//
 	// **NOTE:** Experimental: This API may change or be removed in a future
 	// release without warning.
+	//
+	// Logs inputs, such as datasets and models, to an MLflow Run.
 	LogInputs(ctx context.Context, request LogInputs) error
 
-	// Log a metric.
+	// Log a metric for a run.
 	//
-	// Logs a metric for a run. A metric is a key-value pair (string key, float
+	// Log a metric for a run. A metric is a key-value pair (string key, float
 	// value) with an associated timestamp. Examples include the various metrics
 	// that represent ML model accuracy. A metric can be logged multiple times.
 	LogMetric(ctx context.Context, request LogMetric) error
@@ -195,7 +202,7 @@ type ExperimentsService interface {
 	// release without warning.
 	LogModel(ctx context.Context, request LogModel) error
 
-	// Log a param.
+	// Log a param for a run.
 	//
 	// Logs a param used for a run. A param is a key-value pair (string key,
 	// string value). Examples include hyperparameters used for ML model
@@ -203,7 +210,7 @@ type ExperimentsService interface {
 	// can be logged only once for a run.
 	LogParam(ctx context.Context, request LogParam) error
 
-	// Restores an experiment.
+	// Restore an experiment.
 	//
 	// Restore an experiment marked for deletion. This also restores associated
 	// metadata, runs, metrics, params, and tags. If experiment uses FileStore,
@@ -215,7 +222,11 @@ type ExperimentsService interface {
 
 	// Restore a run.
 	//
-	// Restores a deleted run.
+	// Restores a deleted run. This also restores associated metadata, runs,
+	// metrics, params, and tags.
+	//
+	// Throws `RESOURCE_DOES_NOT_EXIST` if the run was never created or was
+	// permanently deleted.
 	RestoreRun(ctx context.Context, request RestoreRun) error
 
 	// Restore runs by deletion time.
@@ -224,7 +235,6 @@ type ExperimentsService interface {
 	// specified timestamp. Restores at most max_runs per request. To call this
 	// API from a Databricks Notebook in Python, you can use the client code
 	// snippet on
-	// https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-restore.
 	RestoreRuns(ctx context.Context, request RestoreRuns) (*RestoreRunsResponse, error)
 
 	// Search experiments.
@@ -238,12 +248,12 @@ type ExperimentsService interface {
 	//
 	// Searches for runs that satisfy expressions.
 	//
-	// Search expressions can use `mlflowMetric` and `mlflowParam` keys.",
+	// Search expressions can use `mlflowMetric` and `mlflowParam` keys.
 	//
 	// Use SearchRunsAll() to get all Run instances, which will iterate over every result page.
 	SearchRuns(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error)
 
-	// Set a tag.
+	// Set a tag for an experiment.
 	//
 	// Sets a tag on an experiment. Experiment tags are metadata that can be
 	// updated.
@@ -256,7 +266,7 @@ type ExperimentsService interface {
 	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error)
 
-	// Set a tag.
+	// Set a tag for a run.
 	//
 	// Sets a tag on a run. Tags are run metadata that can be updated during a
 	// run and after a run completes.
@@ -277,6 +287,21 @@ type ExperimentsService interface {
 	//
 	// Updates run metadata.
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
+}
+
+// The Forecasting API allows you to create and get serverless forecasting
+// experiments
+type ForecastingService interface {
+
+	// Create a forecasting experiment.
+	//
+	// Creates a serverless forecasting experiment. Returns the experiment ID.
+	CreateExperiment(ctx context.Context, request CreateForecastingExperimentRequest) (*CreateForecastingExperimentResponse, error)
+
+	// Get a forecasting experiment.
+	//
+	// Public RPC to get forecasting experiment
+	GetExperiment(ctx context.Context, request GetForecastingExperimentRequest) (*ForecastingExperiment, error)
 }
 
 // Note: This API reference documents APIs for the Workspace Model Registry.

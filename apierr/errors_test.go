@@ -183,7 +183,7 @@ func TestGetAPIError(t *testing.T) {
 					},
 					{
 						"@type": "type.googleapis.com/google.rpc.RetryInfo",
-						"retry_delay": {"seconds": 1, "nanos": 1}
+						"retry_delay": "42.0000000012s"
 					},
 					{
 						"@type": "type.googleapis.com/google.rpc.DebugInfo",
@@ -265,7 +265,7 @@ func TestGetAPIError(t *testing.T) {
 						ServingData: "data",
 					},
 					RetryInfo: &RetryInfo{
-						RetryDelay: time.Second + time.Nanosecond,
+						RetryDelay: 42*time.Second + time.Nanosecond,
 					},
 					DebugInfo: &DebugInfo{
 						StackEntries: []string{"entry1", "entry2"},

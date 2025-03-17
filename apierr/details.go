@@ -203,12 +203,11 @@ type requestInfoPb struct {
 // retryInfoPb is the wire-format representation of RetryInfo. It is used
 // internally to unmarshal RetryInfo from JSON.
 type retryInfoPb struct {
-	RetryDelay durationPb `json:"retry_delay"`
-}
-
-type durationPb struct {
-	Seconds int64 `json:"seconds"`
-	Nanos   int64 `json:"nanos"`
+	// The duration type is encoded as a string rather than an where the string
+	// ends in the suffix "s" (indicating seconds) and is preceded by a decimal
+	// number of seconds. For example, "3.000000001s", represents a duration of
+	// 3 seconds and 1 nanosecond.
+	RetryDelay string `json:"retry_delay"`
 }
 
 // debugInfoPb is the wire-format representation of DebugInfo. It is used
@@ -340,7 +339,11 @@ func unmarshalDetails(d []byte) any {
 		if err := json.Unmarshal(d, &pb); err != nil {
 			return m // not a valid known type
 		}
-		return RetryInfo{RetryDelay: time.Duration(pb.RetryDelay.Seconds)*time.Second + time.Duration(pb.RetryDelay.Nanos)*time.Nanosecond}
+		d, err := time.ParseDuration(pb.RetryDelay)
+		if err != nil {
+			return m // not a valid known type
+		}
+		return RetryInfo{RetryDelay: d}
 	case debugInfoType:
 		var pb debugInfoPb
 		if err := json.Unmarshal(d, &pb); err != nil {
