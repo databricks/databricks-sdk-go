@@ -7,12 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 type AppsClient struct {
 	AppsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
@@ -33,7 +31,6 @@ func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
 	}
 
 	return &AppsClient{
-		apiClient:     databricksClient.ApiClient(),
 		AppsInterface: NewApps(databricksClient),
 	}, nil
 }

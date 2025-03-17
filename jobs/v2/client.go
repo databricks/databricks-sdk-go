@@ -7,12 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 type JobsClient struct {
 	JobsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
@@ -33,14 +31,12 @@ func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
 	}
 
 	return &JobsClient{
-		apiClient:     databricksClient.ApiClient(),
 		JobsInterface: NewJobs(databricksClient),
 	}, nil
 }
 
 type PolicyComplianceForJobsClient struct {
 	PolicyComplianceForJobsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJobsClient, error) {
@@ -61,7 +57,6 @@ func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJ
 	}
 
 	return &PolicyComplianceForJobsClient{
-		apiClient:                        databricksClient.ApiClient(),
 		PolicyComplianceForJobsInterface: NewPolicyComplianceForJobs(databricksClient),
 	}, nil
 }

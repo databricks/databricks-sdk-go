@@ -7,12 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 type ExperimentsClient struct {
 	ExperimentsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
@@ -33,14 +31,12 @@ func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
 	}
 
 	return &ExperimentsClient{
-		apiClient:            databricksClient.ApiClient(),
 		ExperimentsInterface: NewExperiments(databricksClient),
 	}, nil
 }
 
 type ForecastingClient struct {
 	ForecastingInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
@@ -61,14 +57,12 @@ func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
 	}
 
 	return &ForecastingClient{
-		apiClient:            databricksClient.ApiClient(),
 		ForecastingInterface: NewForecasting(databricksClient),
 	}, nil
 }
 
 type ModelRegistryClient struct {
 	ModelRegistryInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
@@ -89,7 +83,6 @@ func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
 	}
 
 	return &ModelRegistryClient{
-		apiClient:              databricksClient.ApiClient(),
 		ModelRegistryInterface: NewModelRegistry(databricksClient),
 	}, nil
 }

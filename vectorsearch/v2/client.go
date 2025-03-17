@@ -7,12 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 type VectorSearchEndpointsClient struct {
 	VectorSearchEndpointsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsClient, error) {
@@ -33,14 +31,12 @@ func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsC
 	}
 
 	return &VectorSearchEndpointsClient{
-		apiClient:                      databricksClient.ApiClient(),
 		VectorSearchEndpointsInterface: NewVectorSearchEndpoints(databricksClient),
 	}, nil
 }
 
 type VectorSearchIndexesClient struct {
 	VectorSearchIndexesInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewVectorSearchIndexesClient(cfg *config.Config) (*VectorSearchIndexesClient, error) {
@@ -61,7 +57,6 @@ func NewVectorSearchIndexesClient(cfg *config.Config) (*VectorSearchIndexesClien
 	}
 
 	return &VectorSearchIndexesClient{
-		apiClient:                    databricksClient.ApiClient(),
 		VectorSearchIndexesInterface: NewVectorSearchIndexes(databricksClient),
 	}, nil
 }

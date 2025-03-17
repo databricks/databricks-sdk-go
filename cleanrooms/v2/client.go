@@ -7,12 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 type CleanRoomAssetsClient struct {
 	CleanRoomAssetsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error) {
@@ -33,14 +31,12 @@ func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error
 	}
 
 	return &CleanRoomAssetsClient{
-		apiClient:                databricksClient.ApiClient(),
 		CleanRoomAssetsInterface: NewCleanRoomAssets(databricksClient),
 	}, nil
 }
 
 type CleanRoomTaskRunsClient struct {
 	CleanRoomTaskRunsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, error) {
@@ -61,14 +57,12 @@ func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, e
 	}
 
 	return &CleanRoomTaskRunsClient{
-		apiClient:                  databricksClient.ApiClient(),
 		CleanRoomTaskRunsInterface: NewCleanRoomTaskRuns(databricksClient),
 	}, nil
 }
 
 type CleanRoomsClient struct {
 	CleanRoomsInterface
-	apiClient *httpclient.ApiClient
 }
 
 func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
@@ -89,7 +83,6 @@ func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
 	}
 
 	return &CleanRoomsClient{
-		apiClient:           databricksClient.ApiClient(),
 		CleanRoomsInterface: NewCleanRooms(databricksClient),
 	}, nil
 }
