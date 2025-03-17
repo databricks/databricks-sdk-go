@@ -8,6 +8,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/catalog/v2"
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/sql/v2"
 	"github.com/stretchr/testify/assert"
@@ -16,9 +17,10 @@ import (
 
 func TestUcAccVolumes(t *testing.T) {
 	ctx := ucwsTest(t)
-	CatalogsAPI, err := catalog.NewCatalogsClient(nil)
+	cfg := &config.Config{}
+	CatalogsAPI, err := catalog.NewCatalogsClient(cfg)
 	require.NoError(t, err)
-	if !CatalogsAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		skipf(t)("not on aws")
 	}
 
@@ -111,9 +113,10 @@ func TestUcAccVolumes(t *testing.T) {
 
 func TestUcAccTables(t *testing.T) {
 	ctx := ucwsTest(t)
-	CatalogsAPI, err := catalog.NewCatalogsClient(nil)
+	cfg := &config.Config{}
+	CatalogsAPI, err := catalog.NewCatalogsClient(cfg)
 	require.NoError(t, err)
-	if CatalogsAPI.Config.IsGcp() {
+	if cfg.IsGcp() {
 		skipf(t)("Statement Execution API not available on GCP, skipping")
 	}
 
@@ -206,9 +209,10 @@ func TestUcAccTables(t *testing.T) {
 
 func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 	ctx := ucwsTest(t)
-	StorageCredentialsAPI, err := catalog.NewStorageCredentialsClient(nil)
+	cfg := &config.Config{}
+	StorageCredentialsAPI, err := catalog.NewStorageCredentialsClient(cfg)
 	require.NoError(t, err)
-	if !StorageCredentialsAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		skipf(t)("not not aws")
 	}
 
@@ -246,9 +250,10 @@ func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 
 func TestUcAccExternalLocationsOnAws(t *testing.T) {
 	ctx := ucwsTest(t)
-	StorageCredentialsAPI, err := catalog.NewStorageCredentialsClient(nil)
+	cfg := &config.Config{}
+	StorageCredentialsAPI, err := catalog.NewStorageCredentialsClient(cfg)
 	require.NoError(t, err)
-	if !StorageCredentialsAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		skipf(t)("not not aws")
 	}
 

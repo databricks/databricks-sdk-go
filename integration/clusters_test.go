@@ -5,6 +5,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/compute/v2"
 	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -69,9 +70,10 @@ func TestAccClustersGetCorrectErrorMessageNoTranspile(t *testing.T) {
 func TestAccAwsInstanceProfiles(t *testing.T) {
 	ctx := workspaceTest(t)
 
-	InstanceProfilesAPI, err := compute.NewInstanceProfilesClient(nil)
+	cfg := &config.Config{}
+	InstanceProfilesAPI, err := compute.NewInstanceProfilesClient(cfg)
 	require.NoError(t, err)
-	if !InstanceProfilesAPI.Config.IsAws() {
+	if !cfg.IsAws() {
 		t.Skipf("runs only on AWS")
 	}
 

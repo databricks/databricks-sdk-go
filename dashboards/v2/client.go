@@ -12,7 +12,6 @@ import (
 
 type GenieClient struct {
 	GenieInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -38,7 +37,6 @@ func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
 	}
 
 	return &GenieClient{
-		Config:         cfg,
 		apiClient:      apiClient,
 		GenieInterface: NewGenie(databricksClient),
 	}, nil
@@ -46,7 +44,6 @@ func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
 
 type LakeviewClient struct {
 	LakeviewInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -72,7 +69,6 @@ func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
 	}
 
 	return &LakeviewClient{
-		Config:            cfg,
 		apiClient:         apiClient,
 		LakeviewInterface: NewLakeview(databricksClient),
 	}, nil
@@ -80,7 +76,6 @@ func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
 
 type LakeviewEmbeddedClient struct {
 	LakeviewEmbeddedInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -106,7 +101,6 @@ func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, err
 	}
 
 	return &LakeviewEmbeddedClient{
-		Config:                    cfg,
 		apiClient:                 apiClient,
 		LakeviewEmbeddedInterface: NewLakeviewEmbedded(databricksClient),
 	}, nil
@@ -114,7 +108,6 @@ func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, err
 
 type QueryExecutionClient struct {
 	QueryExecutionInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -140,7 +133,6 @@ func NewQueryExecutionClient(cfg *config.Config) (*QueryExecutionClient, error) 
 	}
 
 	return &QueryExecutionClient{
-		Config:                  cfg,
 		apiClient:               apiClient,
 		QueryExecutionInterface: NewQueryExecution(databricksClient),
 	}, nil

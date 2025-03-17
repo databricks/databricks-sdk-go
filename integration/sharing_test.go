@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/catalog/v2"
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/sharing/v2"
 	"github.com/databricks/databricks-sdk-go/sql/v2"
 	"github.com/stretchr/testify/assert"
@@ -57,9 +58,10 @@ func TestUcAccProviders(t *testing.T) {
 // TODO: remove NoTranspile
 func TestUcAccRecipientActivationNoTranspile(t *testing.T) {
 	ctx := ucwsTest(t)
-	RecipientsAPI, err := sharing.NewRecipientsClient(nil)
+	cfg := &config.Config{}
+	RecipientsAPI, err := sharing.NewRecipientsClient(cfg)
 	require.NoError(t, err)
-	if RecipientsAPI.Config.IsAzure() {
+	if cfg.IsAzure() {
 		skipf(t)("temporarily skipping this test on Azure until RetrieveToken uses the same host as specified in the activation URL")
 	}
 
@@ -141,9 +143,10 @@ func TestUcAccRecipients(t *testing.T) {
 
 func TestUcAccShares(t *testing.T) {
 	ctx := ucwsTest(t)
-	CatalogsAPI, err := catalog.NewCatalogsClient(nil)
+	cfg := &config.Config{}
+	CatalogsAPI, err := catalog.NewCatalogsClient(cfg)
 	require.NoError(t, err)
-	if CatalogsAPI.Config.IsGcp() {
+	if cfg.IsGcp() {
 		skipf(t)("Statement Execution API not available on GCP, skipping")
 	}
 

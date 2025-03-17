@@ -12,8 +12,6 @@ import (
 
 type AccountIpAccessListsClient struct {
 	AccountIpAccessListsInterface
-
-	Config *config.Config
 }
 
 func NewAccountIpAccessListsClient(cfg *config.Config) (*AccountIpAccessListsClient, error) {
@@ -35,15 +33,12 @@ func NewAccountIpAccessListsClient(cfg *config.Config) (*AccountIpAccessListsCli
 	}
 
 	return &AccountIpAccessListsClient{
-		Config:                        cfg,
 		AccountIpAccessListsInterface: NewAccountIpAccessLists(apiClient),
 	}, nil
 }
 
 type AccountSettingsClient struct {
 	AccountSettingsInterface
-
-	Config *config.Config
 }
 
 func NewAccountSettingsClient(cfg *config.Config) (*AccountSettingsClient, error) {
@@ -65,14 +60,12 @@ func NewAccountSettingsClient(cfg *config.Config) (*AccountSettingsClient, error
 	}
 
 	return &AccountSettingsClient{
-		Config:                   cfg,
 		AccountSettingsInterface: NewAccountSettings(apiClient),
 	}, nil
 }
 
 type AibiDashboardEmbeddingAccessPolicyClient struct {
 	AibiDashboardEmbeddingAccessPolicyInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -98,7 +91,6 @@ func NewAibiDashboardEmbeddingAccessPolicyClient(cfg *config.Config) (*AibiDashb
 	}
 
 	return &AibiDashboardEmbeddingAccessPolicyClient{
-		Config:    cfg,
 		apiClient: apiClient,
 		AibiDashboardEmbeddingAccessPolicyInterface: NewAibiDashboardEmbeddingAccessPolicy(databricksClient),
 	}, nil
@@ -106,7 +98,6 @@ func NewAibiDashboardEmbeddingAccessPolicyClient(cfg *config.Config) (*AibiDashb
 
 type AibiDashboardEmbeddingApprovedDomainsClient struct {
 	AibiDashboardEmbeddingApprovedDomainsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -132,7 +123,6 @@ func NewAibiDashboardEmbeddingApprovedDomainsClient(cfg *config.Config) (*AibiDa
 	}
 
 	return &AibiDashboardEmbeddingApprovedDomainsClient{
-		Config:    cfg,
 		apiClient: apiClient,
 		AibiDashboardEmbeddingApprovedDomainsInterface: NewAibiDashboardEmbeddingApprovedDomains(databricksClient),
 	}, nil
@@ -140,7 +130,6 @@ func NewAibiDashboardEmbeddingApprovedDomainsClient(cfg *config.Config) (*AibiDa
 
 type AutomaticClusterUpdateClient struct {
 	AutomaticClusterUpdateInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -166,7 +155,6 @@ func NewAutomaticClusterUpdateClient(cfg *config.Config) (*AutomaticClusterUpdat
 	}
 
 	return &AutomaticClusterUpdateClient{
-		Config:                          cfg,
 		apiClient:                       apiClient,
 		AutomaticClusterUpdateInterface: NewAutomaticClusterUpdate(databricksClient),
 	}, nil
@@ -174,7 +162,6 @@ func NewAutomaticClusterUpdateClient(cfg *config.Config) (*AutomaticClusterUpdat
 
 type ComplianceSecurityProfileClient struct {
 	ComplianceSecurityProfileInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -200,7 +187,6 @@ func NewComplianceSecurityProfileClient(cfg *config.Config) (*ComplianceSecurity
 	}
 
 	return &ComplianceSecurityProfileClient{
-		Config:                             cfg,
 		apiClient:                          apiClient,
 		ComplianceSecurityProfileInterface: NewComplianceSecurityProfile(databricksClient),
 	}, nil
@@ -208,7 +194,6 @@ func NewComplianceSecurityProfileClient(cfg *config.Config) (*ComplianceSecurity
 
 type CredentialsManagerClient struct {
 	CredentialsManagerInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -234,7 +219,6 @@ func NewCredentialsManagerClient(cfg *config.Config) (*CredentialsManagerClient,
 	}
 
 	return &CredentialsManagerClient{
-		Config:                      cfg,
 		apiClient:                   apiClient,
 		CredentialsManagerInterface: NewCredentialsManager(databricksClient),
 	}, nil
@@ -242,8 +226,6 @@ func NewCredentialsManagerClient(cfg *config.Config) (*CredentialsManagerClient,
 
 type CspEnablementAccountClient struct {
 	CspEnablementAccountInterface
-
-	Config *config.Config
 }
 
 func NewCspEnablementAccountClient(cfg *config.Config) (*CspEnablementAccountClient, error) {
@@ -265,14 +247,12 @@ func NewCspEnablementAccountClient(cfg *config.Config) (*CspEnablementAccountCli
 	}
 
 	return &CspEnablementAccountClient{
-		Config:                        cfg,
 		CspEnablementAccountInterface: NewCspEnablementAccount(apiClient),
 	}, nil
 }
 
 type DefaultNamespaceClient struct {
 	DefaultNamespaceInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -298,7 +278,6 @@ func NewDefaultNamespaceClient(cfg *config.Config) (*DefaultNamespaceClient, err
 	}
 
 	return &DefaultNamespaceClient{
-		Config:                    cfg,
 		apiClient:                 apiClient,
 		DefaultNamespaceInterface: NewDefaultNamespace(databricksClient),
 	}, nil
@@ -306,7 +285,6 @@ func NewDefaultNamespaceClient(cfg *config.Config) (*DefaultNamespaceClient, err
 
 type DisableLegacyAccessClient struct {
 	DisableLegacyAccessInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -332,7 +310,6 @@ func NewDisableLegacyAccessClient(cfg *config.Config) (*DisableLegacyAccessClien
 	}
 
 	return &DisableLegacyAccessClient{
-		Config:                       cfg,
 		apiClient:                    apiClient,
 		DisableLegacyAccessInterface: NewDisableLegacyAccess(databricksClient),
 	}, nil
@@ -340,7 +317,6 @@ func NewDisableLegacyAccessClient(cfg *config.Config) (*DisableLegacyAccessClien
 
 type DisableLegacyDbfsClient struct {
 	DisableLegacyDbfsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -366,7 +342,6 @@ func NewDisableLegacyDbfsClient(cfg *config.Config) (*DisableLegacyDbfsClient, e
 	}
 
 	return &DisableLegacyDbfsClient{
-		Config:                     cfg,
 		apiClient:                  apiClient,
 		DisableLegacyDbfsInterface: NewDisableLegacyDbfs(databricksClient),
 	}, nil
@@ -374,8 +349,6 @@ func NewDisableLegacyDbfsClient(cfg *config.Config) (*DisableLegacyDbfsClient, e
 
 type DisableLegacyFeaturesClient struct {
 	DisableLegacyFeaturesInterface
-
-	Config *config.Config
 }
 
 func NewDisableLegacyFeaturesClient(cfg *config.Config) (*DisableLegacyFeaturesClient, error) {
@@ -397,15 +370,12 @@ func NewDisableLegacyFeaturesClient(cfg *config.Config) (*DisableLegacyFeaturesC
 	}
 
 	return &DisableLegacyFeaturesClient{
-		Config:                         cfg,
 		DisableLegacyFeaturesInterface: NewDisableLegacyFeatures(apiClient),
 	}, nil
 }
 
 type EnableIpAccessListsClient struct {
 	EnableIpAccessListsInterface
-
-	Config *config.Config
 }
 
 func NewEnableIpAccessListsClient(cfg *config.Config) (*EnableIpAccessListsClient, error) {
@@ -427,14 +397,12 @@ func NewEnableIpAccessListsClient(cfg *config.Config) (*EnableIpAccessListsClien
 	}
 
 	return &EnableIpAccessListsClient{
-		Config:                       cfg,
 		EnableIpAccessListsInterface: NewEnableIpAccessLists(apiClient),
 	}, nil
 }
 
 type EnhancedSecurityMonitoringClient struct {
 	EnhancedSecurityMonitoringInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -460,7 +428,6 @@ func NewEnhancedSecurityMonitoringClient(cfg *config.Config) (*EnhancedSecurityM
 	}
 
 	return &EnhancedSecurityMonitoringClient{
-		Config:                              cfg,
 		apiClient:                           apiClient,
 		EnhancedSecurityMonitoringInterface: NewEnhancedSecurityMonitoring(databricksClient),
 	}, nil
@@ -468,8 +435,6 @@ func NewEnhancedSecurityMonitoringClient(cfg *config.Config) (*EnhancedSecurityM
 
 type EsmEnablementAccountClient struct {
 	EsmEnablementAccountInterface
-
-	Config *config.Config
 }
 
 func NewEsmEnablementAccountClient(cfg *config.Config) (*EsmEnablementAccountClient, error) {
@@ -491,14 +456,12 @@ func NewEsmEnablementAccountClient(cfg *config.Config) (*EsmEnablementAccountCli
 	}
 
 	return &EsmEnablementAccountClient{
-		Config:                        cfg,
 		EsmEnablementAccountInterface: NewEsmEnablementAccount(apiClient),
 	}, nil
 }
 
 type IpAccessListsClient struct {
 	IpAccessListsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -524,7 +487,6 @@ func NewIpAccessListsClient(cfg *config.Config) (*IpAccessListsClient, error) {
 	}
 
 	return &IpAccessListsClient{
-		Config:                 cfg,
 		apiClient:              apiClient,
 		IpAccessListsInterface: NewIpAccessLists(databricksClient),
 	}, nil
@@ -532,8 +494,6 @@ func NewIpAccessListsClient(cfg *config.Config) (*IpAccessListsClient, error) {
 
 type NetworkConnectivityClient struct {
 	NetworkConnectivityInterface
-
-	Config *config.Config
 }
 
 func NewNetworkConnectivityClient(cfg *config.Config) (*NetworkConnectivityClient, error) {
@@ -555,14 +515,12 @@ func NewNetworkConnectivityClient(cfg *config.Config) (*NetworkConnectivityClien
 	}
 
 	return &NetworkConnectivityClient{
-		Config:                       cfg,
 		NetworkConnectivityInterface: NewNetworkConnectivity(apiClient),
 	}, nil
 }
 
 type NotificationDestinationsClient struct {
 	NotificationDestinationsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -588,7 +546,6 @@ func NewNotificationDestinationsClient(cfg *config.Config) (*NotificationDestina
 	}
 
 	return &NotificationDestinationsClient{
-		Config:                            cfg,
 		apiClient:                         apiClient,
 		NotificationDestinationsInterface: NewNotificationDestinations(databricksClient),
 	}, nil
@@ -596,8 +553,6 @@ func NewNotificationDestinationsClient(cfg *config.Config) (*NotificationDestina
 
 type PersonalComputeClient struct {
 	PersonalComputeInterface
-
-	Config *config.Config
 }
 
 func NewPersonalComputeClient(cfg *config.Config) (*PersonalComputeClient, error) {
@@ -619,14 +574,12 @@ func NewPersonalComputeClient(cfg *config.Config) (*PersonalComputeClient, error
 	}
 
 	return &PersonalComputeClient{
-		Config:                   cfg,
 		PersonalComputeInterface: NewPersonalCompute(apiClient),
 	}, nil
 }
 
 type RestrictWorkspaceAdminsClient struct {
 	RestrictWorkspaceAdminsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -652,7 +605,6 @@ func NewRestrictWorkspaceAdminsClient(cfg *config.Config) (*RestrictWorkspaceAdm
 	}
 
 	return &RestrictWorkspaceAdminsClient{
-		Config:                           cfg,
 		apiClient:                        apiClient,
 		RestrictWorkspaceAdminsInterface: NewRestrictWorkspaceAdmins(databricksClient),
 	}, nil
@@ -660,7 +612,6 @@ func NewRestrictWorkspaceAdminsClient(cfg *config.Config) (*RestrictWorkspaceAdm
 
 type SettingsClient struct {
 	SettingsInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -686,7 +637,6 @@ func NewSettingsClient(cfg *config.Config) (*SettingsClient, error) {
 	}
 
 	return &SettingsClient{
-		Config:            cfg,
 		apiClient:         apiClient,
 		SettingsInterface: NewSettings(databricksClient),
 	}, nil
@@ -694,7 +644,6 @@ func NewSettingsClient(cfg *config.Config) (*SettingsClient, error) {
 
 type TokenManagementClient struct {
 	TokenManagementInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -720,7 +669,6 @@ func NewTokenManagementClient(cfg *config.Config) (*TokenManagementClient, error
 	}
 
 	return &TokenManagementClient{
-		Config:                   cfg,
 		apiClient:                apiClient,
 		TokenManagementInterface: NewTokenManagement(databricksClient),
 	}, nil
@@ -728,7 +676,6 @@ func NewTokenManagementClient(cfg *config.Config) (*TokenManagementClient, error
 
 type TokensClient struct {
 	TokensInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -754,7 +701,6 @@ func NewTokensClient(cfg *config.Config) (*TokensClient, error) {
 	}
 
 	return &TokensClient{
-		Config:          cfg,
 		apiClient:       apiClient,
 		TokensInterface: NewTokens(databricksClient),
 	}, nil
@@ -762,7 +708,6 @@ func NewTokensClient(cfg *config.Config) (*TokensClient, error) {
 
 type WorkspaceConfClient struct {
 	WorkspaceConfInterface
-	Config    *config.Config
 	apiClient *httpclient.ApiClient
 }
 
@@ -788,7 +733,6 @@ func NewWorkspaceConfClient(cfg *config.Config) (*WorkspaceConfClient, error) {
 	}
 
 	return &WorkspaceConfClient{
-		Config:                 cfg,
 		apiClient:              apiClient,
 		WorkspaceConfInterface: NewWorkspaceConf(databricksClient),
 	}, nil

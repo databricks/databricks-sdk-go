@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/iam/v2"
 	"github.com/databricks/databricks-sdk-go/workspace/v2"
 	"github.com/stretchr/testify/assert"
@@ -13,9 +14,10 @@ import (
 
 func TestAccGenericPermissions(t *testing.T) {
 	ctx := workspaceTest(t)
+	cfg := &config.Config{}
 	WorkspaceAPI, err := workspace.NewWorkspaceClient(nil)
 	require.NoError(t, err)
-	notebookPath := myNotebookPath(t, WorkspaceAPI.Config)
+	notebookPath := myNotebookPath(t, cfg)
 
 	err = WorkspaceAPI.Import(ctx, workspace.Import{
 		Path:      notebookPath,

@@ -20,6 +20,8 @@ type AddExchangeForListingResponse struct {
 
 type AssetType string
 
+const AssetTypeAssetTypeApp AssetType = `ASSET_TYPE_APP`
+
 const AssetTypeAssetTypeDataTable AssetType = `ASSET_TYPE_DATA_TABLE`
 
 const AssetTypeAssetTypeGitRepo AssetType = `ASSET_TYPE_GIT_REPO`
@@ -40,11 +42,11 @@ func (f *AssetType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AssetType) Set(v string) error {
 	switch v {
-	case `ASSET_TYPE_DATA_TABLE`, `ASSET_TYPE_GIT_REPO`, `ASSET_TYPE_MEDIA`, `ASSET_TYPE_MODEL`, `ASSET_TYPE_NOTEBOOK`, `ASSET_TYPE_PARTNER_INTEGRATION`:
+	case `ASSET_TYPE_APP`, `ASSET_TYPE_DATA_TABLE`, `ASSET_TYPE_GIT_REPO`, `ASSET_TYPE_MEDIA`, `ASSET_TYPE_MODEL`, `ASSET_TYPE_NOTEBOOK`, `ASSET_TYPE_PARTNER_INTEGRATION`:
 		*f = AssetType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ASSET_TYPE_DATA_TABLE", "ASSET_TYPE_GIT_REPO", "ASSET_TYPE_MEDIA", "ASSET_TYPE_MODEL", "ASSET_TYPE_NOTEBOOK", "ASSET_TYPE_PARTNER_INTEGRATION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ASSET_TYPE_APP", "ASSET_TYPE_DATA_TABLE", "ASSET_TYPE_GIT_REPO", "ASSET_TYPE_MEDIA", "ASSET_TYPE_MODEL", "ASSET_TYPE_NOTEBOOK", "ASSET_TYPE_PARTNER_INTEGRATION"`, v)
 	}
 }
 
@@ -1615,6 +1617,8 @@ func (f *ListingType) Type() string {
 
 type MarketplaceFileType string
 
+const MarketplaceFileTypeApp MarketplaceFileType = `APP`
+
 const MarketplaceFileTypeEmbeddedNotebook MarketplaceFileType = `EMBEDDED_NOTEBOOK`
 
 const MarketplaceFileTypeProviderIcon MarketplaceFileType = `PROVIDER_ICON`
@@ -1627,11 +1631,11 @@ func (f *MarketplaceFileType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MarketplaceFileType) Set(v string) error {
 	switch v {
-	case `EMBEDDED_NOTEBOOK`, `PROVIDER_ICON`:
+	case `APP`, `EMBEDDED_NOTEBOOK`, `PROVIDER_ICON`:
 		*f = MarketplaceFileType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EMBEDDED_NOTEBOOK", "PROVIDER_ICON"`, v)
+		return fmt.Errorf(`value "%s" is not one of "APP", "EMBEDDED_NOTEBOOK", "PROVIDER_ICON"`, v)
 	}
 }
 

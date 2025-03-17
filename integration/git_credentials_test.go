@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/databricks/qa/lock"
 	"github.com/databricks/databricks-sdk-go/iam/v2"
 	"github.com/databricks/databricks-sdk-go/workspace/v2"
@@ -11,11 +12,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func acquireGitCredentialsLock(ctx context.Context, t *testing.T, CurrentUserAPI *iam.CurrentUserClient) {
+func acquireGitCredentialsLock(ctx context.Context, t *testing.T, host string, CurrentUserAPI *iam.CurrentUserClient) {
 	me, err := CurrentUserAPI.Me(ctx)
 	require.NoError(t, err)
 	lockable := lock.GitCredentials{
-		WorkspaceHost: CurrentUserAPI.Config.Host,
+		WorkspaceHost: host,
 		Username:      me.UserName,
 	}
 	_, err = lock.Acquire(ctx, lockable, lock.InTest(t), lock.WithBackend(&Backend{}))
@@ -24,11 +25,11 @@ func acquireGitCredentialsLock(ctx context.Context, t *testing.T, CurrentUserAPI
 
 func TestAccGitCredentials(t *testing.T) {
 	ctx := workspaceTest(t)
-
-	CurrentUserAPI, err := iam.NewCurrentUserClient(nil)
+	cfg := &config.Config{}
+	CurrentUserAPI, err := iam.NewCurrentUserClient(cfg)
 	require.NoError(t, err)
 	// skip-next-line-roll
-	acquireGitCredentialsLock(ctx, t, CurrentUserAPI)
+	acquireGitCredentialsLock(ctx, t, cfg.Host, CurrentUserAPI)
 
 	GitCredentialsAPI, err := workspace.NewGitCredentialsClient(nil)
 	require.NoError(t, err)

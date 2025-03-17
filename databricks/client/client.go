@@ -20,8 +20,8 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 		return nil, err
 	}
 	return &DatabricksClient{
-		Config: cfg,
-		client: client,
+		accountID: cfg.AccountID,
+		client:    client,
 	}, nil
 }
 
@@ -31,34 +31,25 @@ func NewWithClient(cfg *config.Config, client *httpclient.ApiClient) (*Databrick
 		return nil, err
 	}
 	return &DatabricksClient{
-		Config: cfg,
-		client: client,
+		accountID: cfg.AccountID,
+		client:    client,
 	}, nil
 }
 
 type DatabricksClient struct {
-	Config *config.Config
-	client *httpclient.ApiClient
+	accountID string
+	client    *httpclient.ApiClient
 }
 
 // ConfiguredAccountID returns Databricks Account ID if it's provided in config,
 // empty string otherwise
 func (c *DatabricksClient) ConfiguredAccountID() string {
-	return c.Config.AccountID
+	return c.accountID
 }
 
 // ApiClient returns the inner Api Client.
 func (c *DatabricksClient) ApiClient() *httpclient.ApiClient {
 	return c.client
-}
-
-// GetOAuthToken returns a new OAuth token using the provided token. The token must be a JWT token.
-// The resulting token is scoped to the authorization details provided.
-//
-// **NOTE:** Experimental: This API may change or be removed in a future release
-// without warning.
-func (c *DatabricksClient) GetOAuthToken(ctx context.Context, authDetails string, token *oauth2.Token) (*oauth2.Token, error) {
-	return c.client.GetOAuthToken(ctx, authDetails, token)
 }
 
 // Do sends an HTTP request against path.
@@ -79,4 +70,14 @@ func (c *DatabricksClient) Do(ctx context.Context, method, path string,
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 	return c.client.Do(ctx, method, path, opts...)
+}
+
+// GetOAuthToken returns a new OAuth token using the provided token. The token
+// must be a JWT token. The resulting token is scoped to the authorization
+// details provided.
+//
+// **NOTE:** Experimental: This API may change or be removed in a future release
+// without warning.
+func (c *DatabricksClient) GetOAuthToken(ctx context.Context, authDetails string, token *oauth2.Token) (*oauth2.Token, error) {
+	return c.client.GetOAuthToken(ctx, authDetails, token)
 }
