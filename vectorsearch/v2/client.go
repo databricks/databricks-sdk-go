@@ -27,17 +27,13 @@ func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsC
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &VectorSearchEndpointsClient{
-		apiClient:                      apiClient,
+		apiClient:                      databricksClient.ApiClient(),
 		VectorSearchEndpointsInterface: NewVectorSearchEndpoints(databricksClient),
 	}, nil
 }
@@ -59,17 +55,13 @@ func NewVectorSearchIndexesClient(cfg *config.Config) (*VectorSearchIndexesClien
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	apiClient, err := cfg.NewApiClient()
-	if err != nil {
-		return nil, err
-	}
-	databricksClient, err := client.NewWithClient(cfg, apiClient)
+	databricksClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &VectorSearchIndexesClient{
-		apiClient:                    apiClient,
+		apiClient:                    databricksClient.ApiClient(),
 		VectorSearchIndexesInterface: NewVectorSearchIndexes(databricksClient),
 	}, nil
 }
