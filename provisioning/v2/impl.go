@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 )
 
 // unexported type that holds implementations of just Credentials API methods
@@ -22,18 +24,18 @@ func (a *credentialsImpl) Create(ctx context.Context, request CreateCredentialRe
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &credential)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &credential)
 	return &credential, err
 }
 
-func (a *credentialsImpl) Delete(ctx context.Context, request DeleteCredentialRequest) error {
+func (a *credentialsImpl) Delete(ctx context.Context, request DeleteCredentialRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), request.CredentialsId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *credentialsImpl) Get(ctx context.Context, request GetCredentialRequest) (*Credential, error) {
@@ -42,7 +44,7 @@ func (a *credentialsImpl) Get(ctx context.Context, request GetCredentialRequest)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &credential)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &credential)
 	return &credential, err
 }
 
@@ -52,7 +54,7 @@ func (a *credentialsImpl) List(ctx context.Context) ([]Credential, error) {
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &credentialList)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &credentialList)
 	return credentialList, err
 }
 
@@ -68,18 +70,18 @@ func (a *encryptionKeysImpl) Create(ctx context.Context, request CreateCustomerM
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &customerManagedKey)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &customerManagedKey)
 	return &customerManagedKey, err
 }
 
-func (a *encryptionKeysImpl) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error {
+func (a *encryptionKeysImpl) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), request.CustomerManagedKeyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *encryptionKeysImpl) Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error) {
@@ -88,7 +90,7 @@ func (a *encryptionKeysImpl) Get(ctx context.Context, request GetEncryptionKeyRe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &customerManagedKey)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &customerManagedKey)
 	return &customerManagedKey, err
 }
 
@@ -98,7 +100,7 @@ func (a *encryptionKeysImpl) List(ctx context.Context) ([]CustomerManagedKey, er
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &customerManagedKeyList)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &customerManagedKeyList)
 	return customerManagedKeyList, err
 }
 
@@ -114,18 +116,18 @@ func (a *networksImpl) Create(ctx context.Context, request CreateNetworkRequest)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &network)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &network)
 	return &network, err
 }
 
-func (a *networksImpl) Delete(ctx context.Context, request DeleteNetworkRequest) error {
+func (a *networksImpl) Delete(ctx context.Context, request DeleteNetworkRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), request.NetworkId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *networksImpl) Get(ctx context.Context, request GetNetworkRequest) (*Network, error) {
@@ -134,7 +136,7 @@ func (a *networksImpl) Get(ctx context.Context, request GetNetworkRequest) (*Net
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &network)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &network)
 	return &network, err
 }
 
@@ -144,7 +146,7 @@ func (a *networksImpl) List(ctx context.Context) ([]Network, error) {
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &networkList)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &networkList)
 	return networkList, err
 }
 
@@ -160,18 +162,18 @@ func (a *privateAccessImpl) Create(ctx context.Context, request UpsertPrivateAcc
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &privateAccessSettings)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &privateAccessSettings)
 	return &privateAccessSettings, err
 }
 
-func (a *privateAccessImpl) Delete(ctx context.Context, request DeletePrivateAccesRequest) error {
+func (a *privateAccessImpl) Delete(ctx context.Context, request DeletePrivateAccesRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *privateAccessImpl) Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error) {
@@ -180,7 +182,7 @@ func (a *privateAccessImpl) Get(ctx context.Context, request GetPrivateAccesRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &privateAccessSettings)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &privateAccessSettings)
 	return &privateAccessSettings, err
 }
 
@@ -190,19 +192,19 @@ func (a *privateAccessImpl) List(ctx context.Context) ([]PrivateAccessSettings, 
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &privateAccessSettingsList)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &privateAccessSettingsList)
 	return privateAccessSettingsList, err
 }
 
-func (a *privateAccessImpl) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
+func (a *privateAccessImpl) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*ReplaceResponse, error) {
 	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &replaceResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &replaceResponse)
+	return &replaceResponse, err
 }
 
 // unexported type that holds implementations of just Storage API methods
@@ -217,18 +219,18 @@ func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigura
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &storageConfiguration)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &storageConfiguration)
 	return &storageConfiguration, err
 }
 
-func (a *storageImpl) Delete(ctx context.Context, request DeleteStorageRequest) error {
+func (a *storageImpl) Delete(ctx context.Context, request DeleteStorageRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), request.StorageConfigurationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *storageImpl) Get(ctx context.Context, request GetStorageRequest) (*StorageConfiguration, error) {
@@ -237,7 +239,7 @@ func (a *storageImpl) Get(ctx context.Context, request GetStorageRequest) (*Stor
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &storageConfiguration)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &storageConfiguration)
 	return &storageConfiguration, err
 }
 
@@ -247,7 +249,7 @@ func (a *storageImpl) List(ctx context.Context) ([]StorageConfiguration, error) 
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &storageConfigurationList)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &storageConfigurationList)
 	return storageConfigurationList, err
 }
 
@@ -263,18 +265,18 @@ func (a *vpcEndpointsImpl) Create(ctx context.Context, request CreateVpcEndpoint
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &vpcEndpoint)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &vpcEndpoint)
 	return &vpcEndpoint, err
 }
 
-func (a *vpcEndpointsImpl) Delete(ctx context.Context, request DeleteVpcEndpointRequest) error {
+func (a *vpcEndpointsImpl) Delete(ctx context.Context, request DeleteVpcEndpointRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), request.VpcEndpointId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *vpcEndpointsImpl) Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
@@ -283,7 +285,7 @@ func (a *vpcEndpointsImpl) Get(ctx context.Context, request GetVpcEndpointReques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &vpcEndpoint)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &vpcEndpoint)
 	return &vpcEndpoint, err
 }
 
@@ -293,7 +295,7 @@ func (a *vpcEndpointsImpl) List(ctx context.Context) ([]VpcEndpoint, error) {
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &vpcEndpointList)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &vpcEndpointList)
 	return vpcEndpointList, err
 }
 
@@ -309,18 +311,18 @@ func (a *workspacesImpl) Create(ctx context.Context, request CreateWorkspaceRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &workspace)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &workspace)
 	return &workspace, err
 }
 
-func (a *workspacesImpl) Delete(ctx context.Context, request DeleteWorkspaceRequest) error {
+func (a *workspacesImpl) Delete(ctx context.Context, request DeleteWorkspaceRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *workspacesImpl) Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
@@ -329,7 +331,7 @@ func (a *workspacesImpl) Get(ctx context.Context, request GetWorkspaceRequest) (
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspace)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &workspace)
 	return &workspace, err
 }
 
@@ -339,17 +341,46 @@ func (a *workspacesImpl) List(ctx context.Context) ([]Workspace, error) {
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &workspaceList)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &workspaceList)
 	return workspaceList, err
 }
 
-func (a *workspacesImpl) Update(ctx context.Context, request UpdateWorkspaceRequest) error {
+func (a *workspacesImpl) Update(ctx context.Context, request UpdateWorkspaceRequest) (*UpdateResponse, error) {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updateResponse)
+	return &updateResponse, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

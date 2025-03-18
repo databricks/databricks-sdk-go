@@ -190,16 +190,16 @@ type LakeviewInterface interface {
 	CreateSubscription(ctx context.Context, request CreateSubscriptionRequest) (*Subscription, error)
 
 	// Delete dashboard schedule.
-	DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error
+	DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) (*DeleteScheduleResponse, error)
 
 	// Delete dashboard schedule.
-	DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) error
+	DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*DeleteScheduleResponse, error)
 
 	// Delete schedule subscription.
-	DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error
+	DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) (*DeleteSubscriptionResponse, error)
 
 	// Delete schedule subscription.
-	DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) error
+	DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*DeleteSubscriptionResponse, error)
 
 	// Get dashboard.
 	//
@@ -282,22 +282,22 @@ type LakeviewInterface interface {
 	// Trash dashboard.
 	//
 	// Trash a dashboard.
-	Trash(ctx context.Context, request TrashDashboardRequest) error
+	Trash(ctx context.Context, request TrashDashboardRequest) (*TrashDashboardResponse, error)
 
 	// Trash dashboard.
 	//
 	// Trash a dashboard.
-	TrashByDashboardId(ctx context.Context, dashboardId string) error
+	TrashByDashboardId(ctx context.Context, dashboardId string) (*TrashDashboardResponse, error)
 
 	// Unpublish dashboard.
 	//
 	// Unpublish the dashboard.
-	Unpublish(ctx context.Context, request UnpublishDashboardRequest) error
+	Unpublish(ctx context.Context, request UnpublishDashboardRequest) (*UnpublishDashboardResponse, error)
 
 	// Unpublish dashboard.
 	//
 	// Unpublish the dashboard.
-	UnpublishByDashboardId(ctx context.Context, dashboardId string) error
+	UnpublishByDashboardId(ctx context.Context, dashboardId string) (*UnpublishDashboardResponse, error)
 
 	// Update dashboard.
 	//
@@ -324,7 +324,7 @@ type LakeviewAPI struct {
 }
 
 // Delete dashboard schedule.
-func (a *LakeviewAPI) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) error {
+func (a *LakeviewAPI) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*DeleteScheduleResponse, error) {
 	return a.lakeviewImpl.DeleteSchedule(ctx, DeleteScheduleRequest{
 		DashboardId: dashboardId,
 		ScheduleId:  scheduleId,
@@ -332,7 +332,7 @@ func (a *LakeviewAPI) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Conte
 }
 
 // Delete schedule subscription.
-func (a *LakeviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) error {
+func (a *LakeviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*DeleteSubscriptionResponse, error) {
 	return a.lakeviewImpl.DeleteSubscription(ctx, DeleteSubscriptionRequest{
 		DashboardId:    dashboardId,
 		ScheduleId:     scheduleId,
@@ -393,7 +393,7 @@ func (a *LakeviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Co
 // Trash dashboard.
 //
 // Trash a dashboard.
-func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) error {
+func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) (*TrashDashboardResponse, error) {
 	return a.lakeviewImpl.Trash(ctx, TrashDashboardRequest{
 		DashboardId: dashboardId,
 	})
@@ -402,7 +402,7 @@ func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string
 // Unpublish dashboard.
 //
 // Unpublish the dashboard.
-func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId string) error {
+func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId string) (*UnpublishDashboardResponse, error) {
 	return a.lakeviewImpl.Unpublish(ctx, UnpublishDashboardRequest{
 		DashboardId: dashboardId,
 	})
@@ -413,12 +413,12 @@ type LakeviewEmbeddedInterface interface {
 	// Read a published dashboard in an embedded ui.
 	//
 	// Get the current published dashboard within an embedded context.
-	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
+	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) (*GetPublishedDashboardEmbeddedResponse, error)
 
 	// Read a published dashboard in an embedded ui.
 	//
 	// Get the current published dashboard within an embedded context.
-	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error
+	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) (*GetPublishedDashboardEmbeddedResponse, error)
 }
 
 func NewLakeviewEmbedded(client *client.DatabricksClient) *LakeviewEmbeddedAPI {
@@ -437,7 +437,7 @@ type LakeviewEmbeddedAPI struct {
 // Read a published dashboard in an embedded ui.
 //
 // Get the current published dashboard within an embedded context.
-func (a *LakeviewEmbeddedAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error {
+func (a *LakeviewEmbeddedAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) (*GetPublishedDashboardEmbeddedResponse, error) {
 	return a.lakeviewEmbeddedImpl.GetPublishedDashboardEmbedded(ctx, GetPublishedDashboardEmbeddedRequest{
 		DashboardId: dashboardId,
 	})
@@ -449,7 +449,7 @@ type QueryExecutionInterface interface {
 	CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error)
 
 	// Execute a query for a published dashboard.
-	ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error
+	ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) (*ExecuteQueryResponse, error)
 
 	// Poll the results for the a query for a published, embedded dashboard.
 	PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error)

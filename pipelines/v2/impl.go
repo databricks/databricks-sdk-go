@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -24,18 +26,18 @@ func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*Cr
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createPipelineResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createPipelineResponse)
 	return &createPipelineResponse, err
 }
 
-func (a *pipelinesImpl) Delete(ctx context.Context, request DeletePipelineRequest) error {
+func (a *pipelinesImpl) Delete(ctx context.Context, request DeletePipelineRequest) (*DeletePipelineResponse, error) {
 	var deletePipelineResponse DeletePipelineResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deletePipelineResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deletePipelineResponse)
+	return &deletePipelineResponse, err
 }
 
 func (a *pipelinesImpl) Get(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
@@ -44,7 +46,7 @@ func (a *pipelinesImpl) Get(ctx context.Context, request GetPipelineRequest) (*G
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPipelineResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getPipelineResponse)
 	return &getPipelineResponse, err
 }
 
@@ -54,7 +56,7 @@ func (a *pipelinesImpl) GetPermissionLevels(ctx context.Context, request GetPipe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPipelinePermissionLevelsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getPipelinePermissionLevelsResponse)
 	return &getPipelinePermissionLevelsResponse, err
 }
 
@@ -64,7 +66,7 @@ func (a *pipelinesImpl) GetPermissions(ctx context.Context, request GetPipelineP
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &pipelinePermissions)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &pipelinePermissions)
 	return &pipelinePermissions, err
 }
 
@@ -74,7 +76,7 @@ func (a *pipelinesImpl) GetUpdate(ctx context.Context, request GetUpdateRequest)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getUpdateResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getUpdateResponse)
 	return &getUpdateResponse, err
 }
 
@@ -119,7 +121,7 @@ func (a *pipelinesImpl) internalListPipelineEvents(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listPipelineEventsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listPipelineEventsResponse)
 	return &listPipelineEventsResponse, err
 }
 
@@ -164,7 +166,7 @@ func (a *pipelinesImpl) internalListPipelines(ctx context.Context, request ListP
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listPipelinesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listPipelinesResponse)
 	return &listPipelinesResponse, err
 }
 
@@ -174,7 +176,7 @@ func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listUpdatesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listUpdatesResponse)
 	return &listUpdatesResponse, err
 }
 
@@ -185,7 +187,7 @@ func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePerm
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &pipelinePermissions)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &pipelinePermissions)
 	return &pipelinePermissions, err
 }
 
@@ -196,29 +198,29 @@ func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &startUpdateResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &startUpdateResponse)
 	return &startUpdateResponse, err
 }
 
-func (a *pipelinesImpl) Stop(ctx context.Context, request StopRequest) error {
+func (a *pipelinesImpl) Stop(ctx context.Context, request StopRequest) (*StopPipelineResponse, error) {
 	var stopPipelineResponse StopPipelineResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", request.PipelineId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &stopPipelineResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, nil, &stopPipelineResponse)
+	return &stopPipelineResponse, err
 }
 
-func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error {
+func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) (*EditPipelineResponse, error) {
 	var editPipelineResponse EditPipelineResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &editPipelineResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &editPipelineResponse)
+	return &editPipelineResponse, err
 }
 
 func (a *pipelinesImpl) UpdatePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
@@ -228,6 +230,35 @@ func (a *pipelinesImpl) UpdatePermissions(ctx context.Context, request PipelineP
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &pipelinePermissions)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &pipelinePermissions)
 	return &pipelinePermissions, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

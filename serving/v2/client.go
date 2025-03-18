@@ -17,21 +17,22 @@ func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, err
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ServingEndpointsClient{
-		ServingEndpointsInterface: NewServingEndpoints(databricksClient),
+		ServingEndpointsInterface: NewServingEndpoints(apiClient),
 	}, nil
 }
 
@@ -43,20 +44,21 @@ func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDa
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ServingEndpointsDataPlaneClient{
-		ServingEndpointsDataPlaneInterface: NewServingEndpointsDataPlane(databricksClient),
+		ServingEndpointsDataPlaneInterface: NewServingEndpointsDataPlane(apiClient),
 	}, nil
 }

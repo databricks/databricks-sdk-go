@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 	"golang.org/x/exp/slices"
@@ -28,7 +30,7 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.App, &app)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request.App, &app)
 	return &app, err
 }
 
@@ -38,7 +40,7 @@ func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &app)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &app)
 	return &app, err
 }
 
@@ -49,7 +51,7 @@ func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentReques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.AppDeployment, &appDeployment)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request.AppDeployment, &appDeployment)
 	return &appDeployment, err
 }
 
@@ -59,7 +61,7 @@ func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &app)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &app)
 	return &app, err
 }
 
@@ -69,7 +71,7 @@ func (a *appsImpl) GetDeployment(ctx context.Context, request GetAppDeploymentRe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &appDeployment)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &appDeployment)
 	return &appDeployment, err
 }
 
@@ -79,7 +81,7 @@ func (a *appsImpl) GetPermissionLevels(ctx context.Context, request GetAppPermis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getAppPermissionLevelsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getAppPermissionLevelsResponse)
 	return &getAppPermissionLevelsResponse, err
 }
 
@@ -89,7 +91,7 @@ func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissions
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &appPermissions)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &appPermissions)
 	return &appPermissions, err
 }
 
@@ -133,7 +135,7 @@ func (a *appsImpl) internalList(ctx context.Context, request ListAppsRequest) (*
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAppsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listAppsResponse)
 	return &listAppsResponse, err
 }
 
@@ -177,7 +179,7 @@ func (a *appsImpl) internalListDeployments(ctx context.Context, request ListAppD
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAppDeploymentsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listAppDeploymentsResponse)
 	return &listAppDeploymentsResponse, err
 }
 
@@ -188,7 +190,7 @@ func (a *appsImpl) SetPermissions(ctx context.Context, request AppPermissionsReq
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &appPermissions)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &appPermissions)
 	return &appPermissions, err
 }
 
@@ -199,7 +201,7 @@ func (a *appsImpl) Start(ctx context.Context, request StartAppRequest) (*App, er
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &app)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &app)
 	return &app, err
 }
 
@@ -210,7 +212,7 @@ func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) (*App, erro
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &app)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &app)
 	return &app, err
 }
 
@@ -221,7 +223,7 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.App, &app)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request.App, &app)
 	return &app, err
 }
 
@@ -232,6 +234,35 @@ func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissions
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &appPermissions)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &appPermissions)
 	return &appPermissions, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

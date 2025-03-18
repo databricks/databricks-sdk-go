@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -17,24 +19,24 @@ type jobsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {
+func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) (*CancelAllRunsResponse, error) {
 	var cancelAllRunsResponse CancelAllRunsResponse
 	path := "/api/2.2/jobs/runs/cancel-all"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &cancelAllRunsResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &cancelAllRunsResponse)
+	return &cancelAllRunsResponse, err
 }
 
-func (a *jobsImpl) CancelRun(ctx context.Context, request CancelRun) error {
+func (a *jobsImpl) CancelRun(ctx context.Context, request CancelRun) (*CancelRunResponse, error) {
 	var cancelRunResponse CancelRunResponse
 	path := "/api/2.2/jobs/runs/cancel"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &cancelRunResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &cancelRunResponse)
+	return &cancelRunResponse, err
 }
 
 func (a *jobsImpl) Create(ctx context.Context, request CreateJob) (*CreateResponse, error) {
@@ -44,28 +46,28 @@ func (a *jobsImpl) Create(ctx context.Context, request CreateJob) (*CreateRespon
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createResponse)
 	return &createResponse, err
 }
 
-func (a *jobsImpl) Delete(ctx context.Context, request DeleteJob) error {
+func (a *jobsImpl) Delete(ctx context.Context, request DeleteJob) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := "/api/2.2/jobs/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
-func (a *jobsImpl) DeleteRun(ctx context.Context, request DeleteRun) error {
+func (a *jobsImpl) DeleteRun(ctx context.Context, request DeleteRun) (*DeleteRunResponse, error) {
 	var deleteRunResponse DeleteRunResponse
 	path := "/api/2.2/jobs/runs/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteRunResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteRunResponse)
+	return &deleteRunResponse, err
 }
 
 func (a *jobsImpl) ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error) {
@@ -74,7 +76,7 @@ func (a *jobsImpl) ExportRun(ctx context.Context, request ExportRunRequest) (*Ex
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &exportRunOutput)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &exportRunOutput)
 	return &exportRunOutput, err
 }
 
@@ -84,7 +86,7 @@ func (a *jobsImpl) Get(ctx context.Context, request GetJobRequest) (*Job, error)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &job)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &job)
 	return &job, err
 }
 
@@ -94,7 +96,7 @@ func (a *jobsImpl) GetPermissionLevels(ctx context.Context, request GetJobPermis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getJobPermissionLevelsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getJobPermissionLevelsResponse)
 	return &getJobPermissionLevelsResponse, err
 }
 
@@ -104,7 +106,7 @@ func (a *jobsImpl) GetPermissions(ctx context.Context, request GetJobPermissions
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &jobPermissions)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &jobPermissions)
 	return &jobPermissions, err
 }
 
@@ -114,7 +116,7 @@ func (a *jobsImpl) GetRun(ctx context.Context, request GetRunRequest) (*Run, err
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &run)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &run)
 	return &run, err
 }
 
@@ -124,7 +126,7 @@ func (a *jobsImpl) GetRunOutput(ctx context.Context, request GetRunOutputRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &runOutput)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &runOutput)
 	return &runOutput, err
 }
 
@@ -168,7 +170,7 @@ func (a *jobsImpl) internalList(ctx context.Context, request ListJobsRequest) (*
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listJobsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listJobsResponse)
 	return &listJobsResponse, err
 }
 
@@ -212,7 +214,7 @@ func (a *jobsImpl) internalListRuns(ctx context.Context, request ListRunsRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listRunsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listRunsResponse)
 	return &listRunsResponse, err
 }
 
@@ -223,18 +225,18 @@ func (a *jobsImpl) RepairRun(ctx context.Context, request RepairRun) (*RepairRun
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &repairRunResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &repairRunResponse)
 	return &repairRunResponse, err
 }
 
-func (a *jobsImpl) Reset(ctx context.Context, request ResetJob) error {
+func (a *jobsImpl) Reset(ctx context.Context, request ResetJob) (*ResetResponse, error) {
 	var resetResponse ResetResponse
 	path := "/api/2.2/jobs/reset"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &resetResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &resetResponse)
+	return &resetResponse, err
 }
 
 func (a *jobsImpl) RunNow(ctx context.Context, request RunNow) (*RunNowResponse, error) {
@@ -244,7 +246,7 @@ func (a *jobsImpl) RunNow(ctx context.Context, request RunNow) (*RunNowResponse,
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &runNowResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &runNowResponse)
 	return &runNowResponse, err
 }
 
@@ -255,7 +257,7 @@ func (a *jobsImpl) SetPermissions(ctx context.Context, request JobPermissionsReq
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &jobPermissions)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &jobPermissions)
 	return &jobPermissions, err
 }
 
@@ -266,18 +268,18 @@ func (a *jobsImpl) Submit(ctx context.Context, request SubmitRun) (*SubmitRunRes
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &submitRunResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &submitRunResponse)
 	return &submitRunResponse, err
 }
 
-func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) error {
+func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) (*UpdateResponse, error) {
 	var updateResponse UpdateResponse
 	path := "/api/2.2/jobs/update"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &updateResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &updateResponse)
+	return &updateResponse, err
 }
 
 func (a *jobsImpl) UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
@@ -287,7 +289,7 @@ func (a *jobsImpl) UpdatePermissions(ctx context.Context, request JobPermissions
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &jobPermissions)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &jobPermissions)
 	return &jobPermissions, err
 }
 
@@ -303,7 +305,7 @@ func (a *policyComplianceForJobsImpl) EnforceCompliance(ctx context.Context, req
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &enforcePolicyComplianceResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &enforcePolicyComplianceResponse)
 	return &enforcePolicyComplianceResponse, err
 }
 
@@ -313,7 +315,7 @@ func (a *policyComplianceForJobsImpl) GetCompliance(ctx context.Context, request
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPolicyComplianceResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getPolicyComplianceResponse)
 	return &getPolicyComplianceResponse, err
 }
 
@@ -363,6 +365,35 @@ func (a *policyComplianceForJobsImpl) internalListCompliance(ctx context.Context
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listJobComplianceForPolicyResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listJobComplianceForPolicyResponse)
 	return &listJobComplianceForPolicyResponse, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

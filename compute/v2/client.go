@@ -17,21 +17,22 @@ func NewClusterPoliciesClient(cfg *config.Config) (*ClusterPoliciesClient, error
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ClusterPoliciesClient{
-		ClusterPoliciesInterface: NewClusterPolicies(databricksClient),
+		ClusterPoliciesInterface: NewClusterPolicies(apiClient),
 	}, nil
 }
 
@@ -43,21 +44,22 @@ func NewClustersClient(cfg *config.Config) (*ClustersClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ClustersClient{
-		ClustersInterface: NewClusters(databricksClient),
+		ClustersInterface: NewClusters(apiClient),
 	}, nil
 }
 
@@ -69,21 +71,22 @@ func NewCommandExecutionClient(cfg *config.Config) (*CommandExecutionClient, err
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &CommandExecutionClient{
-		CommandExecutionInterface: NewCommandExecution(databricksClient),
+		CommandExecutionInterface: NewCommandExecution(apiClient),
 	}, nil
 }
 
@@ -95,21 +98,22 @@ func NewGlobalInitScriptsClient(cfg *config.Config) (*GlobalInitScriptsClient, e
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &GlobalInitScriptsClient{
-		GlobalInitScriptsInterface: NewGlobalInitScripts(databricksClient),
+		GlobalInitScriptsInterface: NewGlobalInitScripts(apiClient),
 	}, nil
 }
 
@@ -121,21 +125,22 @@ func NewInstancePoolsClient(cfg *config.Config) (*InstancePoolsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &InstancePoolsClient{
-		InstancePoolsInterface: NewInstancePools(databricksClient),
+		InstancePoolsInterface: NewInstancePools(apiClient),
 	}, nil
 }
 
@@ -147,21 +152,22 @@ func NewInstanceProfilesClient(cfg *config.Config) (*InstanceProfilesClient, err
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &InstanceProfilesClient{
-		InstanceProfilesInterface: NewInstanceProfiles(databricksClient),
+		InstanceProfilesInterface: NewInstanceProfiles(apiClient),
 	}, nil
 }
 
@@ -173,21 +179,22 @@ func NewLibrariesClient(cfg *config.Config) (*LibrariesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &LibrariesClient{
-		LibrariesInterface: NewLibraries(databricksClient),
+		LibrariesInterface: NewLibraries(apiClient),
 	}, nil
 }
 
@@ -199,21 +206,22 @@ func NewPolicyComplianceForClustersClient(cfg *config.Config) (*PolicyCompliance
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &PolicyComplianceForClustersClient{
-		PolicyComplianceForClustersInterface: NewPolicyComplianceForClusters(databricksClient),
+		PolicyComplianceForClustersInterface: NewPolicyComplianceForClusters(apiClient),
 	}, nil
 }
 
@@ -225,20 +233,21 @@ func NewPolicyFamiliesClient(cfg *config.Config) (*PolicyFamiliesClient, error) 
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &PolicyFamiliesClient{
-		PolicyFamiliesInterface: NewPolicyFamilies(databricksClient),
+		PolicyFamiliesInterface: NewPolicyFamilies(apiClient),
 	}, nil
 }

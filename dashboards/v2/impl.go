@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -24,7 +26,7 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieMessage)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &genieMessage)
 	return &genieMessage, err
 }
 
@@ -34,7 +36,7 @@ func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request G
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponse)
 	return &genieGetMessageQueryResultResponse, err
 }
 
@@ -44,7 +46,7 @@ func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecut
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponse)
 	return &genieGetMessageQueryResultResponse, err
 }
 
@@ -54,7 +56,7 @@ func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversation
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieMessage)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &genieMessage)
 	return &genieMessage, err
 }
 
@@ -64,7 +66,7 @@ func (a *genieImpl) GetMessageAttachmentQueryResult(ctx context.Context, request
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
 	return &genieGetMessageQueryResultResponse, err
 }
 
@@ -74,7 +76,7 @@ func (a *genieImpl) GetMessageQueryResult(ctx context.Context, request GenieGetM
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
 	return &genieGetMessageQueryResultResponse, err
 }
 
@@ -84,7 +86,7 @@ func (a *genieImpl) GetMessageQueryResultByAttachment(ctx context.Context, reque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
 	return &genieGetMessageQueryResultResponse, err
 }
 
@@ -94,7 +96,7 @@ func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieSpace)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &genieSpace)
 	return &genieSpace, err
 }
 
@@ -105,7 +107,7 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieStartConversationResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &genieStartConversationResponse)
 	return &genieStartConversationResponse, err
 }
 
@@ -121,7 +123,7 @@ func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardReques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Dashboard, &dashboard)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request.Dashboard, &dashboard)
 	return &dashboard, err
 }
 
@@ -132,7 +134,7 @@ func (a *lakeviewImpl) CreateSchedule(ctx context.Context, request CreateSchedul
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Schedule, &schedule)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request.Schedule, &schedule)
 	return &schedule, err
 }
 
@@ -143,28 +145,28 @@ func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSub
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Subscription, &subscription)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request.Subscription, &subscription)
 	return &subscription, err
 }
 
-func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
+func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) (*DeleteScheduleResponse, error) {
 	var deleteScheduleResponse DeleteScheduleResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteScheduleResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteScheduleResponse)
+	return &deleteScheduleResponse, err
 }
 
-func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error {
+func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) (*DeleteSubscriptionResponse, error) {
 	var deleteSubscriptionResponse DeleteSubscriptionResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", request.DashboardId, request.ScheduleId, request.SubscriptionId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteSubscriptionResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteSubscriptionResponse)
+	return &deleteSubscriptionResponse, err
 }
 
 func (a *lakeviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
@@ -173,7 +175,7 @@ func (a *lakeviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*D
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &dashboard)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &dashboard)
 	return &dashboard, err
 }
 
@@ -183,7 +185,7 @@ func (a *lakeviewImpl) GetPublished(ctx context.Context, request GetPublishedDas
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &publishedDashboard)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &publishedDashboard)
 	return &publishedDashboard, err
 }
 
@@ -193,7 +195,7 @@ func (a *lakeviewImpl) GetSchedule(ctx context.Context, request GetScheduleReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &schedule)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &schedule)
 	return &schedule, err
 }
 
@@ -203,7 +205,7 @@ func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscript
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &subscription)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &subscription)
 	return &subscription, err
 }
 
@@ -243,7 +245,7 @@ func (a *lakeviewImpl) internalList(ctx context.Context, request ListDashboardsR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDashboardsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listDashboardsResponse)
 	return &listDashboardsResponse, err
 }
 
@@ -283,7 +285,7 @@ func (a *lakeviewImpl) internalListSchedules(ctx context.Context, request ListSc
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSchedulesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listSchedulesResponse)
 	return &listSchedulesResponse, err
 }
 
@@ -323,7 +325,7 @@ func (a *lakeviewImpl) internalListSubscriptions(ctx context.Context, request Li
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSubscriptionsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listSubscriptionsResponse)
 	return &listSubscriptionsResponse, err
 }
 
@@ -334,7 +336,7 @@ func (a *lakeviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &dashboard)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &dashboard)
 	return &dashboard, err
 }
 
@@ -345,28 +347,28 @@ func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*Pu
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &publishedDashboard)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &publishedDashboard)
 	return &publishedDashboard, err
 }
 
-func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) error {
+func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) (*TrashDashboardResponse, error) {
 	var trashDashboardResponse TrashDashboardResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &trashDashboardResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &trashDashboardResponse)
+	return &trashDashboardResponse, err
 }
 
-func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboardRequest) error {
+func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboardRequest) (*UnpublishDashboardResponse, error) {
 	var unpublishDashboardResponse UnpublishDashboardResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &unpublishDashboardResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &unpublishDashboardResponse)
+	return &unpublishDashboardResponse, err
 }
 
 func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error) {
@@ -376,7 +378,7 @@ func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardReques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Dashboard, &dashboard)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request.Dashboard, &dashboard)
 	return &dashboard, err
 }
 
@@ -387,7 +389,7 @@ func (a *lakeviewImpl) UpdateSchedule(ctx context.Context, request UpdateSchedul
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.Schedule, &schedule)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request.Schedule, &schedule)
 	return &schedule, err
 }
 
@@ -396,14 +398,14 @@ type lakeviewEmbeddedImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error {
+func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) (*GetPublishedDashboardEmbeddedResponse, error) {
 	var getPublishedDashboardEmbeddedResponse GetPublishedDashboardEmbeddedResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/embedded", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardEmbeddedResponse)
-	return err
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardEmbeddedResponse)
+	return &getPublishedDashboardEmbeddedResponse, err
 }
 
 // unexported type that holds implementations of just QueryExecution API methods
@@ -417,19 +419,19 @@ func (a *queryExecutionImpl) CancelPublishedQueryExecution(ctx context.Context, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &cancelQueryExecutionResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &cancelQueryExecutionResponse)
 	return &cancelQueryExecutionResponse, err
 }
 
-func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error {
+func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) (*ExecuteQueryResponse, error) {
 	var executeQueryResponse ExecuteQueryResponse
 	path := "/api/2.0/lakeview-query/query/published"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &executeQueryResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &executeQueryResponse)
+	return &executeQueryResponse, err
 }
 
 func (a *queryExecutionImpl) PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error) {
@@ -438,6 +440,35 @@ func (a *queryExecutionImpl) PollPublishedQueryStatus(ctx context.Context, reque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &pollQueryStatusResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &pollQueryStatusResponse)
 	return &pollQueryStatusResponse, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

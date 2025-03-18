@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -57,7 +59,7 @@ func (a *consumerFulfillmentsImpl) internalGet(ctx context.Context, request GetL
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getListingContentMetadataResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getListingContentMetadataResponse)
 	return &getListingContentMetadataResponse, err
 }
 
@@ -109,7 +111,7 @@ func (a *consumerFulfillmentsImpl) internalList(ctx context.Context, request Lis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFulfillmentsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listFulfillmentsResponse)
 	return &listFulfillmentsResponse, err
 }
 
@@ -125,18 +127,18 @@ func (a *consumerInstallationsImpl) Create(ctx context.Context, request CreateIn
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &installation)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &installation)
 	return &installation, err
 }
 
-func (a *consumerInstallationsImpl) Delete(ctx context.Context, request DeleteInstallationRequest) error {
+func (a *consumerInstallationsImpl) Delete(ctx context.Context, request DeleteInstallationRequest) (*DeleteInstallationResponse, error) {
 	var deleteInstallationResponse DeleteInstallationResponse
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteInstallationResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteInstallationResponse)
+	return &deleteInstallationResponse, err
 }
 
 // List all installations.
@@ -179,7 +181,7 @@ func (a *consumerInstallationsImpl) internalList(ctx context.Context, request Li
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAllInstallationsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listAllInstallationsResponse)
 	return &listAllInstallationsResponse, err
 }
 
@@ -223,7 +225,7 @@ func (a *consumerInstallationsImpl) internalListListingInstallations(ctx context
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listInstallationsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listInstallationsResponse)
 	return &listInstallationsResponse, err
 }
 
@@ -234,7 +236,7 @@ func (a *consumerInstallationsImpl) Update(ctx context.Context, request UpdateIn
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateInstallationResponse)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &updateInstallationResponse)
 	return &updateInstallationResponse, err
 }
 
@@ -249,7 +251,7 @@ func (a *consumerListingsImpl) BatchGet(ctx context.Context, request BatchGetLis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &batchGetListingsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &batchGetListingsResponse)
 	return &batchGetListingsResponse, err
 }
 
@@ -259,7 +261,7 @@ func (a *consumerListingsImpl) Get(ctx context.Context, request GetListingReques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getListingResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getListingResponse)
 	return &getListingResponse, err
 }
 
@@ -305,7 +307,7 @@ func (a *consumerListingsImpl) internalList(ctx context.Context, request ListLis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listListingsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listListingsResponse)
 	return &listListingsResponse, err
 }
 
@@ -353,7 +355,7 @@ func (a *consumerListingsImpl) internalSearch(ctx context.Context, request Searc
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &searchListingsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &searchListingsResponse)
 	return &searchListingsResponse, err
 }
 
@@ -369,7 +371,7 @@ func (a *consumerPersonalizationRequestsImpl) Create(ctx context.Context, reques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createPersonalizationRequestResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createPersonalizationRequestResponse)
 	return &createPersonalizationRequestResponse, err
 }
 
@@ -379,7 +381,7 @@ func (a *consumerPersonalizationRequestsImpl) Get(ctx context.Context, request G
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPersonalizationRequestResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getPersonalizationRequestResponse)
 	return &getPersonalizationRequestResponse, err
 }
 
@@ -423,7 +425,7 @@ func (a *consumerPersonalizationRequestsImpl) internalList(ctx context.Context, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAllPersonalizationRequestsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listAllPersonalizationRequestsResponse)
 	return &listAllPersonalizationRequestsResponse, err
 }
 
@@ -438,7 +440,7 @@ func (a *consumerProvidersImpl) BatchGet(ctx context.Context, request BatchGetPr
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &batchGetProvidersResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &batchGetProvidersResponse)
 	return &batchGetProvidersResponse, err
 }
 
@@ -448,7 +450,7 @@ func (a *consumerProvidersImpl) Get(ctx context.Context, request GetProviderRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getProviderResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getProviderResponse)
 	return &getProviderResponse, err
 }
 
@@ -494,7 +496,7 @@ func (a *consumerProvidersImpl) internalList(ctx context.Context, request ListPr
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProvidersResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listProvidersResponse)
 	return &listProvidersResponse, err
 }
 
@@ -510,18 +512,18 @@ func (a *providerExchangeFiltersImpl) Create(ctx context.Context, request Create
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createExchangeFilterResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createExchangeFilterResponse)
 	return &createExchangeFilterResponse, err
 }
 
-func (a *providerExchangeFiltersImpl) Delete(ctx context.Context, request DeleteExchangeFilterRequest) error {
+func (a *providerExchangeFiltersImpl) Delete(ctx context.Context, request DeleteExchangeFilterRequest) (*DeleteExchangeFilterResponse, error) {
 	var deleteExchangeFilterResponse DeleteExchangeFilterResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/filters/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteExchangeFilterResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteExchangeFilterResponse)
+	return &deleteExchangeFilterResponse, err
 }
 
 // List exchange filters.
@@ -564,7 +566,7 @@ func (a *providerExchangeFiltersImpl) internalList(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExchangeFiltersResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listExchangeFiltersResponse)
 	return &listExchangeFiltersResponse, err
 }
 
@@ -575,7 +577,7 @@ func (a *providerExchangeFiltersImpl) Update(ctx context.Context, request Update
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateExchangeFilterResponse)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &updateExchangeFilterResponse)
 	return &updateExchangeFilterResponse, err
 }
 
@@ -591,7 +593,7 @@ func (a *providerExchangesImpl) AddListingToExchange(ctx context.Context, reques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &addExchangeForListingResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &addExchangeForListingResponse)
 	return &addExchangeForListingResponse, err
 }
 
@@ -602,28 +604,28 @@ func (a *providerExchangesImpl) Create(ctx context.Context, request CreateExchan
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createExchangeResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createExchangeResponse)
 	return &createExchangeResponse, err
 }
 
-func (a *providerExchangesImpl) Delete(ctx context.Context, request DeleteExchangeRequest) error {
+func (a *providerExchangesImpl) Delete(ctx context.Context, request DeleteExchangeRequest) (*DeleteExchangeResponse, error) {
 	var deleteExchangeResponse DeleteExchangeResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteExchangeResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteExchangeResponse)
+	return &deleteExchangeResponse, err
 }
 
-func (a *providerExchangesImpl) DeleteListingFromExchange(ctx context.Context, request RemoveExchangeForListingRequest) error {
+func (a *providerExchangesImpl) DeleteListingFromExchange(ctx context.Context, request RemoveExchangeForListingRequest) (*RemoveExchangeForListingResponse, error) {
 	var removeExchangeForListingResponse RemoveExchangeForListingResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges-for-listing/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &removeExchangeForListingResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &removeExchangeForListingResponse)
+	return &removeExchangeForListingResponse, err
 }
 
 func (a *providerExchangesImpl) Get(ctx context.Context, request GetExchangeRequest) (*GetExchangeResponse, error) {
@@ -632,7 +634,7 @@ func (a *providerExchangesImpl) Get(ctx context.Context, request GetExchangeRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getExchangeResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getExchangeResponse)
 	return &getExchangeResponse, err
 }
 
@@ -676,7 +678,7 @@ func (a *providerExchangesImpl) internalList(ctx context.Context, request ListEx
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExchangesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listExchangesResponse)
 	return &listExchangesResponse, err
 }
 
@@ -720,7 +722,7 @@ func (a *providerExchangesImpl) internalListExchangesForListing(ctx context.Cont
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExchangesForListingResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listExchangesForListingResponse)
 	return &listExchangesForListingResponse, err
 }
 
@@ -764,7 +766,7 @@ func (a *providerExchangesImpl) internalListListingsForExchange(ctx context.Cont
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listListingsForExchangeResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listListingsForExchangeResponse)
 	return &listListingsForExchangeResponse, err
 }
 
@@ -775,7 +777,7 @@ func (a *providerExchangesImpl) Update(ctx context.Context, request UpdateExchan
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateExchangeResponse)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &updateExchangeResponse)
 	return &updateExchangeResponse, err
 }
 
@@ -791,18 +793,18 @@ func (a *providerFilesImpl) Create(ctx context.Context, request CreateFileReques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createFileResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createFileResponse)
 	return &createFileResponse, err
 }
 
-func (a *providerFilesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
+func (a *providerFilesImpl) Delete(ctx context.Context, request DeleteFileRequest) (*DeleteFileResponse, error) {
 	var deleteFileResponse DeleteFileResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/files/%v", request.FileId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteFileResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteFileResponse)
+	return &deleteFileResponse, err
 }
 
 func (a *providerFilesImpl) Get(ctx context.Context, request GetFileRequest) (*GetFileResponse, error) {
@@ -811,7 +813,7 @@ func (a *providerFilesImpl) Get(ctx context.Context, request GetFileRequest) (*G
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getFileResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getFileResponse)
 	return &getFileResponse, err
 }
 
@@ -855,7 +857,7 @@ func (a *providerFilesImpl) internalList(ctx context.Context, request ListFilesR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFilesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listFilesResponse)
 	return &listFilesResponse, err
 }
 
@@ -871,18 +873,18 @@ func (a *providerListingsImpl) Create(ctx context.Context, request CreateListing
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createListingResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createListingResponse)
 	return &createListingResponse, err
 }
 
-func (a *providerListingsImpl) Delete(ctx context.Context, request DeleteListingRequest) error {
+func (a *providerListingsImpl) Delete(ctx context.Context, request DeleteListingRequest) (*DeleteListingResponse, error) {
 	var deleteListingResponse DeleteListingResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteListingResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteListingResponse)
+	return &deleteListingResponse, err
 }
 
 func (a *providerListingsImpl) Get(ctx context.Context, request GetListingRequest) (*GetListingResponse, error) {
@@ -891,7 +893,7 @@ func (a *providerListingsImpl) Get(ctx context.Context, request GetListingReques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getListingResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getListingResponse)
 	return &getListingResponse, err
 }
 
@@ -935,7 +937,7 @@ func (a *providerListingsImpl) internalList(ctx context.Context, request GetList
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getListingsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getListingsResponse)
 	return &getListingsResponse, err
 }
 
@@ -946,7 +948,7 @@ func (a *providerListingsImpl) Update(ctx context.Context, request UpdateListing
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateListingResponse)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &updateListingResponse)
 	return &updateListingResponse, err
 }
 
@@ -997,7 +999,7 @@ func (a *providerPersonalizationRequestsImpl) internalList(ctx context.Context, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAllPersonalizationRequestsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listAllPersonalizationRequestsResponse)
 	return &listAllPersonalizationRequestsResponse, err
 }
 
@@ -1008,7 +1010,7 @@ func (a *providerPersonalizationRequestsImpl) Update(ctx context.Context, reques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updatePersonalizationRequestResponse)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &updatePersonalizationRequestResponse)
 	return &updatePersonalizationRequestResponse, err
 }
 
@@ -1023,7 +1025,7 @@ func (a *providerProviderAnalyticsDashboardsImpl) Create(ctx context.Context) (*
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil, &providerAnalyticsDashboard)
+	err := do(a.client, ctx, http.MethodPost, path, headers, nil, nil, &providerAnalyticsDashboard)
 	return &providerAnalyticsDashboard, err
 }
 
@@ -1033,7 +1035,7 @@ func (a *providerProviderAnalyticsDashboardsImpl) Get(ctx context.Context) (*Lis
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listProviderAnalyticsDashboardResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &listProviderAnalyticsDashboardResponse)
 	return &listProviderAnalyticsDashboardResponse, err
 }
 
@@ -1043,7 +1045,7 @@ func (a *providerProviderAnalyticsDashboardsImpl) GetLatestVersion(ctx context.C
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getLatestVersionProviderAnalyticsDashboardResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &getLatestVersionProviderAnalyticsDashboardResponse)
 	return &getLatestVersionProviderAnalyticsDashboardResponse, err
 }
 
@@ -1054,7 +1056,7 @@ func (a *providerProviderAnalyticsDashboardsImpl) Update(ctx context.Context, re
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateProviderAnalyticsDashboardResponse)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &updateProviderAnalyticsDashboardResponse)
 	return &updateProviderAnalyticsDashboardResponse, err
 }
 
@@ -1070,18 +1072,18 @@ func (a *providerProvidersImpl) Create(ctx context.Context, request CreateProvid
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createProviderResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createProviderResponse)
 	return &createProviderResponse, err
 }
 
-func (a *providerProvidersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
+func (a *providerProvidersImpl) Delete(ctx context.Context, request DeleteProviderRequest) (*DeleteProviderResponse, error) {
 	var deleteProviderResponse DeleteProviderResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteProviderResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteProviderResponse)
+	return &deleteProviderResponse, err
 }
 
 func (a *providerProvidersImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
@@ -1090,7 +1092,7 @@ func (a *providerProvidersImpl) Get(ctx context.Context, request GetProviderRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getProviderResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getProviderResponse)
 	return &getProviderResponse, err
 }
 
@@ -1134,7 +1136,7 @@ func (a *providerProvidersImpl) internalList(ctx context.Context, request ListPr
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProvidersResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listProvidersResponse)
 	return &listProvidersResponse, err
 }
 
@@ -1145,6 +1147,35 @@ func (a *providerProvidersImpl) Update(ctx context.Context, request UpdateProvid
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateProviderResponse)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &updateProviderResponse)
 	return &updateProviderResponse, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

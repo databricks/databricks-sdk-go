@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -23,7 +25,7 @@ func (a *billableUsageImpl) Download(ctx context.Context, request DownloadReques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &downloadResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &downloadResponse)
 	return &downloadResponse, err
 }
 
@@ -39,18 +41,18 @@ func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolic
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &budgetPolicy)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &budgetPolicy)
 	return &budgetPolicy, err
 }
 
-func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolicyRequest) error {
+func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolicyRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyRequest) (*BudgetPolicy, error) {
@@ -59,7 +61,7 @@ func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &budgetPolicy)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &budgetPolicy)
 	return &budgetPolicy, err
 }
 
@@ -105,7 +107,7 @@ func (a *budgetPolicyImpl) internalList(ctx context.Context, request ListBudgetP
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listBudgetPoliciesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listBudgetPoliciesResponse)
 	return &listBudgetPoliciesResponse, err
 }
 
@@ -119,7 +121,7 @@ func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolic
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &budgetPolicy)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &budgetPolicy)
 	return &budgetPolicy, err
 }
 
@@ -135,18 +137,18 @@ func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurat
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createBudgetConfigurationResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createBudgetConfigurationResponse)
 	return &createBudgetConfigurationResponse, err
 }
 
-func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error {
+func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) (*DeleteBudgetConfigurationResponse, error) {
 	var deleteBudgetConfigurationResponse DeleteBudgetConfigurationResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteBudgetConfigurationResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteBudgetConfigurationResponse)
+	return &deleteBudgetConfigurationResponse, err
 }
 
 func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error) {
@@ -155,7 +157,7 @@ func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationReq
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getBudgetConfigurationResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getBudgetConfigurationResponse)
 	return &getBudgetConfigurationResponse, err
 }
 
@@ -199,7 +201,7 @@ func (a *budgetsImpl) internalList(ctx context.Context, request ListBudgetConfig
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listBudgetConfigurationsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listBudgetConfigurationsResponse)
 	return &listBudgetConfigurationsResponse, err
 }
 
@@ -210,7 +212,7 @@ func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurat
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateBudgetConfigurationResponse)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &updateBudgetConfigurationResponse)
 	return &updateBudgetConfigurationResponse, err
 }
 
@@ -226,7 +228,7 @@ func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDe
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &wrappedLogDeliveryConfiguration)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &wrappedLogDeliveryConfiguration)
 	return &wrappedLogDeliveryConfiguration, err
 }
 
@@ -236,7 +238,7 @@ func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &wrappedLogDeliveryConfiguration)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &wrappedLogDeliveryConfiguration)
 	return &wrappedLogDeliveryConfiguration, err
 }
 
@@ -276,19 +278,19 @@ func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliv
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &wrappedLogDeliveryConfigurations)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &wrappedLogDeliveryConfigurations)
 	return &wrappedLogDeliveryConfigurations, err
 }
 
-func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
+func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) (*PatchStatusResponse, error) {
 	var patchStatusResponse PatchStatusResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &patchStatusResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &patchStatusResponse)
+	return &patchStatusResponse, err
 }
 
 // unexported type that holds implementations of just UsageDashboards API methods
@@ -303,7 +305,7 @@ func (a *usageDashboardsImpl) Create(ctx context.Context, request CreateBillingU
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createBillingUsageDashboardResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createBillingUsageDashboardResponse)
 	return &createBillingUsageDashboardResponse, err
 }
 
@@ -313,6 +315,35 @@ func (a *usageDashboardsImpl) Get(ctx context.Context, request GetBillingUsageDa
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getBillingUsageDashboardResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getBillingUsageDashboardResponse)
 	return &getBillingUsageDashboardResponse, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

@@ -36,14 +36,14 @@ type CredentialsInterface interface {
 	// Deletes a Databricks credential configuration object for an account, both
 	// specified by ID. You cannot delete a credential that is associated with any
 	// workspace.
-	Delete(ctx context.Context, request DeleteCredentialRequest) error
+	Delete(ctx context.Context, request DeleteCredentialRequest) (*DeleteResponse, error)
 
 	// Delete credential configuration.
 	//
 	// Deletes a Databricks credential configuration object for an account, both
 	// specified by ID. You cannot delete a credential that is associated with any
 	// workspace.
-	DeleteByCredentialsId(ctx context.Context, credentialsId string) error
+	DeleteByCredentialsId(ctx context.Context, credentialsId string) (*DeleteResponse, error)
 
 	// Get credential configuration.
 	//
@@ -104,7 +104,7 @@ type CredentialsAPI struct {
 // Deletes a Databricks credential configuration object for an account, both
 // specified by ID. You cannot delete a credential that is associated with any
 // workspace.
-func (a *CredentialsAPI) DeleteByCredentialsId(ctx context.Context, credentialsId string) error {
+func (a *CredentialsAPI) DeleteByCredentialsId(ctx context.Context, credentialsId string) (*DeleteResponse, error) {
 	return a.credentialsImpl.Delete(ctx, DeleteCredentialRequest{
 		CredentialsId: credentialsId,
 	})
@@ -200,13 +200,13 @@ type EncryptionKeysInterface interface {
 	//
 	// Deletes a customer-managed key configuration object for an account. You
 	// cannot delete a configuration that is associated with a running workspace.
-	Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error
+	Delete(ctx context.Context, request DeleteEncryptionKeyRequest) (*DeleteResponse, error)
 
 	// Delete encryption key configuration.
 	//
 	// Deletes a customer-managed key configuration object for an account. You
 	// cannot delete a configuration that is associated with a running workspace.
-	DeleteByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) error
+	DeleteByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) (*DeleteResponse, error)
 
 	// Get encryption key configuration.
 	//
@@ -296,7 +296,7 @@ type EncryptionKeysAPI struct {
 //
 // Deletes a customer-managed key configuration object for an account. You
 // cannot delete a configuration that is associated with a running workspace.
-func (a *EncryptionKeysAPI) DeleteByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) error {
+func (a *EncryptionKeysAPI) DeleteByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) (*DeleteResponse, error) {
 	return a.encryptionKeysImpl.Delete(ctx, DeleteEncryptionKeyRequest{
 		CustomerManagedKeyId: customerManagedKeyId,
 	})
@@ -342,7 +342,7 @@ type NetworksInterface interface {
 	//
 	// This operation is available only if your account is on the E2 version of the
 	// platform.
-	Delete(ctx context.Context, request DeleteNetworkRequest) error
+	Delete(ctx context.Context, request DeleteNetworkRequest) (*DeleteResponse, error)
 
 	// Delete a network configuration.
 	//
@@ -352,7 +352,7 @@ type NetworksInterface interface {
 	//
 	// This operation is available only if your account is on the E2 version of the
 	// platform.
-	DeleteByNetworkId(ctx context.Context, networkId string) error
+	DeleteByNetworkId(ctx context.Context, networkId string) (*DeleteResponse, error)
 
 	// Get a network configuration.
 	//
@@ -417,7 +417,7 @@ type NetworksAPI struct {
 //
 // This operation is available only if your account is on the E2 version of the
 // platform.
-func (a *NetworksAPI) DeleteByNetworkId(ctx context.Context, networkId string) error {
+func (a *NetworksAPI) DeleteByNetworkId(ctx context.Context, networkId string) (*DeleteResponse, error) {
 	return a.networksImpl.Delete(ctx, DeleteNetworkRequest{
 		NetworkId: networkId,
 	})
@@ -517,7 +517,7 @@ type PrivateAccessInterface interface {
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	Delete(ctx context.Context, request DeletePrivateAccesRequest) error
+	Delete(ctx context.Context, request DeletePrivateAccesRequest) (*DeleteResponse, error)
 
 	// Delete a private access settings object.
 	//
@@ -529,7 +529,7 @@ type PrivateAccessInterface interface {
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	DeleteByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) error
+	DeleteByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) (*DeleteResponse, error)
 
 	// Get a private access settings object.
 	//
@@ -602,7 +602,7 @@ type PrivateAccessInterface interface {
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error
+	Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*ReplaceResponse, error)
 }
 
 func NewPrivateAccess(client *client.DatabricksClient) *PrivateAccessAPI {
@@ -628,7 +628,7 @@ type PrivateAccessAPI struct {
 //
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-func (a *PrivateAccessAPI) DeleteByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) error {
+func (a *PrivateAccessAPI) DeleteByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) (*DeleteResponse, error) {
 	return a.privateAccessImpl.Delete(ctx, DeletePrivateAccesRequest{
 		PrivateAccessSettingsId: privateAccessSettingsId,
 	})
@@ -723,13 +723,13 @@ type StorageInterface interface {
 	//
 	// Deletes a Databricks storage configuration. You cannot delete a storage
 	// configuration that is associated with any workspace.
-	Delete(ctx context.Context, request DeleteStorageRequest) error
+	Delete(ctx context.Context, request DeleteStorageRequest) (*DeleteResponse, error)
 
 	// Delete storage configuration.
 	//
 	// Deletes a Databricks storage configuration. You cannot delete a storage
 	// configuration that is associated with any workspace.
-	DeleteByStorageConfigurationId(ctx context.Context, storageConfigurationId string) error
+	DeleteByStorageConfigurationId(ctx context.Context, storageConfigurationId string) (*DeleteResponse, error)
 
 	// Get storage configuration.
 	//
@@ -788,7 +788,7 @@ type StorageAPI struct {
 //
 // Deletes a Databricks storage configuration. You cannot delete a storage
 // configuration that is associated with any workspace.
-func (a *StorageAPI) DeleteByStorageConfigurationId(ctx context.Context, storageConfigurationId string) error {
+func (a *StorageAPI) DeleteByStorageConfigurationId(ctx context.Context, storageConfigurationId string) (*DeleteResponse, error) {
 	return a.storageImpl.Delete(ctx, DeleteStorageRequest{
 		StorageConfigurationId: storageConfigurationId,
 	})
@@ -887,7 +887,7 @@ type VpcEndpointsInterface interface {
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
 	// [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	Delete(ctx context.Context, request DeleteVpcEndpointRequest) error
+	Delete(ctx context.Context, request DeleteVpcEndpointRequest) (*DeleteResponse, error)
 
 	// Delete VPC endpoint configuration.
 	//
@@ -900,7 +900,7 @@ type VpcEndpointsInterface interface {
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
 	// [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	DeleteByVpcEndpointId(ctx context.Context, vpcEndpointId string) error
+	DeleteByVpcEndpointId(ctx context.Context, vpcEndpointId string) (*DeleteResponse, error)
 
 	// Get a VPC endpoint configuration.
 	//
@@ -973,7 +973,7 @@ type VpcEndpointsAPI struct {
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-func (a *VpcEndpointsAPI) DeleteByVpcEndpointId(ctx context.Context, vpcEndpointId string) error {
+func (a *VpcEndpointsAPI) DeleteByVpcEndpointId(ctx context.Context, vpcEndpointId string) (*DeleteResponse, error) {
 	return a.vpcEndpointsImpl.Delete(ctx, DeleteVpcEndpointRequest{
 		VpcEndpointId: vpcEndpointId,
 	})
@@ -1070,7 +1070,7 @@ type WorkspacesInterface interface {
 	// This operation is available only if your account is on the E2 version of the
 	// platform or on a select custom plan that allows multiple workspaces per
 	// account.
-	Delete(ctx context.Context, request DeleteWorkspaceRequest) error
+	Delete(ctx context.Context, request DeleteWorkspaceRequest) (*DeleteResponse, error)
 
 	// Delete a workspace.
 	//
@@ -1082,7 +1082,7 @@ type WorkspacesInterface interface {
 	// This operation is available only if your account is on the E2 version of the
 	// platform or on a select custom plan that allows multiple workspaces per
 	// account.
-	DeleteByWorkspaceId(ctx context.Context, workspaceId int64) error
+	DeleteByWorkspaceId(ctx context.Context, workspaceId int64) (*DeleteResponse, error)
 
 	// Get a workspace.
 	//
@@ -1269,7 +1269,7 @@ type WorkspacesInterface interface {
 	//
 	// [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
 	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-	Update(ctx context.Context, request UpdateWorkspaceRequest) error
+	Update(ctx context.Context, request UpdateWorkspaceRequest) (*UpdateResponse, error)
 }
 
 func NewWorkspaces(client *client.DatabricksClient) *WorkspacesAPI {
@@ -1303,7 +1303,7 @@ type WorkspacesAPI struct {
 // This operation is available only if your account is on the E2 version of the
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
-func (a *WorkspacesAPI) DeleteByWorkspaceId(ctx context.Context, workspaceId int64) error {
+func (a *WorkspacesAPI) DeleteByWorkspaceId(ctx context.Context, workspaceId int64) (*DeleteResponse, error) {
 	return a.workspacesImpl.Delete(ctx, DeleteWorkspaceRequest{
 		WorkspaceId: workspaceId,
 	})

@@ -18,7 +18,7 @@ type commandExecutionAPIUtilities interface {
 }
 
 // Start the command execution context on a cluster and ensure it transitions to a running state
-func (c *CommandExecutorV2) Destroy(ctx context.Context) error {
+func (c *CommandExecutorV2) Destroy(ctx context.Context) (*DestroyResponse, error) {
 	return c.executionAPI.Destroy(ctx, DestroyContext{
 		ClusterId: c.clusterID,
 		ContextId: c.contextID,

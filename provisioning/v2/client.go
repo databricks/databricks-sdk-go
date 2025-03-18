@@ -17,7 +17,6 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -26,6 +25,7 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,6 @@ func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) 
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -53,6 +52,7 @@ func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) 
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -71,7 +71,6 @@ func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -80,6 +79,7 @@ func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,6 @@ func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -107,6 +106,7 @@ func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -125,7 +125,6 @@ func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -134,6 +133,7 @@ func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -152,7 +152,6 @@ func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -161,6 +160,7 @@ func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -179,7 +179,6 @@ func NewWorkspacesClient(cfg *config.Config) (*WorkspacesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -188,6 +187,7 @@ func NewWorkspacesClient(cfg *config.Config) (*WorkspacesClient, error) {
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
