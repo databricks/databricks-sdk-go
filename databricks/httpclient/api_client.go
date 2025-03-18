@@ -2,13 +2,10 @@ package httpclient
 
 import (
 	"context"
-	"crypto/tls"
 	"errors"
 	"fmt"
-	"net"
 	"net/http"
 	"net/url"
-	"runtime"
 	"strings"
 	"time"
 
@@ -42,26 +39,19 @@ type ClientConfig struct {
 	Transport http.RoundTripper
 }
 
-func (cfg ClientConfig) httpTransport() http.RoundTripper {
-	if cfg.Transport != nil {
-		return cfg.Transport
-	}
-	return &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-		DialContext: (&net.Dialer{
-			Timeout:   30 * time.Second,
-			KeepAlive: 30 * time.Second,
-		}).DialContext,
-		ForceAttemptHTTP2:     true,
-		MaxIdleConns:          100,
-		MaxIdleConnsPerHost:   runtime.GOMAXPROCS(0) + 1,
-		IdleConnTimeout:       180 * time.Second,
-		TLSHandshakeTimeout:   30 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: cfg.InsecureSkipVerify,
-		},
-	}
+type DoOption struct {
+	in           RequestVisitor
+	out          func(body *common.ResponseWrapper) error
+	body         any
+	contentType  string
+	isAuthOption bool
+	queryParams  map[string]any
+}
+
+type ApiClient struct {
+	config      ClientConfig
+	rateLimiter *rate.Limiter
+	httpClient  *http.Client
 }
 
 const (
@@ -95,35 +85,26 @@ func setDefaults(cfg *ClientConfig) {
 func NewApiClient(cfg ClientConfig) *ApiClient {
 	setDefaults(&cfg)
 
-	transport := cfg.httpTransport()
+	// It's important to make sure that we re-use the same http.Transport
+	// instance across all clients to avoid leaking connections.
+	httpClient := http.DefaultClient
+	if cfg.Transport != nil {
+		httpClient = &http.Client{
+			Transport: cfg.Transport,
+			// We deal with request timeouts ourselves such that we do not
+			// time out during request or response body reads that make
+			// progress (e.g. on a slower network connection).
+			Timeout: 0,
+		}
+	}
+
 	rateLimit := rate.Limit(cfg.RateLimitPerSecond)
 
 	return &ApiClient{
 		config:      cfg,
 		rateLimiter: rate.NewLimiter(rateLimit, 1),
-		httpClient: &http.Client{
-			// We deal with request timeouts ourselves such that we do not
-			// time out during request or response body reads that make
-			// progress (e.g. on a slower network connection).
-			Timeout:   0,
-			Transport: transport,
-		},
+		httpClient:  httpClient,
 	}
-}
-
-type ApiClient struct {
-	config      ClientConfig
-	rateLimiter *rate.Limiter
-	httpClient  *http.Client
-}
-
-type DoOption struct {
-	in           RequestVisitor
-	out          func(body *common.ResponseWrapper) error
-	body         any
-	contentType  string
-	isAuthOption bool
-	queryParams  map[string]any
 }
 
 // Do sends an HTTP request against path.
