@@ -37,12 +37,12 @@ func TestAccRepos(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = ReposAPI.DeleteByRepoId(ctx, ri.Id)
+		_, err = ReposAPI.DeleteByRepoId(ctx, ri.Id)
 		require.NoError(t, err)
 	})
 
 	assert.Equal(t, "main", ri.Branch)
-	err = ReposAPI.Update(ctx, workspace.UpdateRepoRequest{
+	_, err = ReposAPI.Update(ctx, workspace.UpdateRepoRequest{
 		RepoId: ri.Id,
 		Branch: "foo",
 	})

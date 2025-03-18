@@ -29,7 +29,7 @@ func TestUcAccVolumes(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
+		_, err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
 			Name:  createdCatalog.Name,
 			Force: true,
 		})
@@ -44,7 +44,7 @@ func TestUcAccVolumes(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := SchemasAPI.DeleteByFullName(ctx, createdSchema.FullName)
+		_, err := SchemasAPI.DeleteByFullName(ctx, createdSchema.FullName)
 		require.NoError(t, err)
 	})
 
@@ -59,7 +59,7 @@ func TestUcAccVolumes(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := StorageCredentialsAPI.DeleteByName(ctx, storageCredential.Name)
+		_, err := StorageCredentialsAPI.DeleteByName(ctx, storageCredential.Name)
 		require.NoError(t, err)
 	})
 
@@ -73,7 +73,7 @@ func TestUcAccVolumes(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := ExternalLocationsAPI.DeleteByName(ctx, externalLocation.Name)
+		_, err := ExternalLocationsAPI.DeleteByName(ctx, externalLocation.Name)
 		require.NoError(t, err)
 	})
 
@@ -88,7 +88,7 @@ func TestUcAccVolumes(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = VolumesAPI.DeleteByName(ctx, createdVolume.FullName)
+		_, err = VolumesAPI.DeleteByName(ctx, createdVolume.FullName)
 		require.NoError(t, err)
 	})
 
@@ -125,7 +125,7 @@ func TestUcAccTables(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
+		_, err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
 			Name:  createdCatalog.Name,
 			Force: true,
 		})
@@ -140,7 +140,7 @@ func TestUcAccTables(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := SchemasAPI.DeleteByFullName(ctx, createdSchema.FullName)
+		_, err := SchemasAPI.DeleteByFullName(ctx, createdSchema.FullName)
 		require.NoError(t, err)
 	})
 
@@ -161,7 +161,7 @@ func TestUcAccTables(t *testing.T) {
 	TablesAPI, err := catalog.NewTablesClient(nil)
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = TablesAPI.DeleteByFullName(ctx, tableFullName)
+		_, err = TablesAPI.DeleteByFullName(ctx, tableFullName)
 		require.NoError(t, err)
 	})
 
@@ -226,7 +226,7 @@ func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := StorageCredentialsAPI.DeleteByName(ctx, created.Name)
+		_, err := StorageCredentialsAPI.DeleteByName(ctx, created.Name)
 		require.NoError(t, err)
 	})
 
@@ -265,7 +265,7 @@ func TestUcAccExternalLocationsOnAws(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := StorageCredentialsAPI.DeleteByName(ctx, credential.Name)
+		_, err := StorageCredentialsAPI.DeleteByName(ctx, credential.Name)
 		require.NoError(t, err)
 	})
 
@@ -278,7 +278,7 @@ func TestUcAccExternalLocationsOnAws(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := ExternalLocationsAPI.DeleteByName(ctx, created.Name)
+		_, err := ExternalLocationsAPI.DeleteByName(ctx, created.Name)
 		require.NoError(t, err)
 	})
 
@@ -307,7 +307,7 @@ func TestUcAccMetastores(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := MetastoresAPI.Delete(ctx, catalog.DeleteMetastoreRequest{
+		_, err := MetastoresAPI.Delete(ctx, catalog.DeleteMetastoreRequest{
 			Id:    created.MetastoreId,
 			Force: true,
 		})
@@ -329,7 +329,7 @@ func TestUcAccMetastores(t *testing.T) {
 
 	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "DUMMY_WORKSPACE_ID"))
 
-	err = MetastoresAPI.Assign(ctx, catalog.CreateMetastoreAssignment{
+	_, err = MetastoresAPI.Assign(ctx, catalog.CreateMetastoreAssignment{
 		MetastoreId: created.MetastoreId,
 		WorkspaceId: workspaceId,
 	})
@@ -337,7 +337,7 @@ func TestUcAccMetastores(t *testing.T) {
 
 	// MetastoresAPI.UpdateAssignment can only be done for the current WS
 
-	err = MetastoresAPI.Unassign(ctx, catalog.UnassignRequest{
+	_, err = MetastoresAPI.Unassign(ctx, catalog.UnassignRequest{
 		MetastoreId: created.MetastoreId,
 		WorkspaceId: workspaceId,
 	})
@@ -361,7 +361,7 @@ func TestUcAccCatalogs(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
+		_, err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
 			Name:  created.Name,
 			Force: true,
 		})
@@ -391,7 +391,7 @@ func TestUcAccCatalogWorkspaceBindings(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
+		_, err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
 			Name:  created.Name,
 			Force: true,
 		})
@@ -435,7 +435,7 @@ func TestUcAccSchemas(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
+		_, err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
 			Name:  newCatalog.Name,
 			Force: true,
 		})
@@ -451,7 +451,7 @@ func TestUcAccSchemas(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := SchemasAPI.DeleteByFullName(ctx, created.FullName)
+		_, err := SchemasAPI.DeleteByFullName(ctx, created.FullName)
 		require.NoError(t, err)
 	})
 	_, err = SchemasAPI.Update(ctx, catalog.UpdateSchema{

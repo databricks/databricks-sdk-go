@@ -21,7 +21,7 @@ func TestAccTokens(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = TokensAPI.DeleteByTokenId(ctx, token.TokenInfo.TokenId)
+		_, err = TokensAPI.DeleteByTokenId(ctx, token.TokenInfo.TokenId)
 		require.NoError(t, err)
 	})
 

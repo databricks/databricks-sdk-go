@@ -31,7 +31,7 @@ func TestAccQueries(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = QueriesAPI.DeleteById(ctx, query.Id)
+		_, err = QueriesAPI.DeleteById(ctx, query.Id)
 		require.NoError(t, err)
 	})
 
@@ -156,10 +156,10 @@ func TestAccDashboards(t *testing.T) {
 	assert.Equal(t, created.Id, names[byId.Name])
 	assert.Equal(t, len(all), len(names))
 
-	err = DashboardsAPI.DeleteByDashboardId(ctx, created.Id)
+	_, err = DashboardsAPI.DeleteByDashboardId(ctx, created.Id)
 	require.NoError(t, err)
 
-	err = DashboardsAPI.Restore(ctx, sql.RestoreDashboardRequest{
+	_, err = DashboardsAPI.Restore(ctx, sql.RestoreDashboardRequest{
 		DashboardId: created.Id,
 	})
 	require.NoError(t, err)

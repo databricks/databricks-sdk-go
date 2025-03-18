@@ -19,7 +19,7 @@ func TestAccGenericPermissions(t *testing.T) {
 	require.NoError(t, err)
 	notebookPath := myNotebookPath(t, cfg)
 
-	err = WorkspaceAPI.Import(ctx, workspace.Import{
+	_, err = WorkspaceAPI.Import(ctx, workspace.Import{
 		Path:      notebookPath,
 		Overwrite: true,
 		Format:    workspace.ImportFormatSource,
@@ -47,7 +47,7 @@ func TestAccGenericPermissions(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := GroupsAPI.DeleteById(ctx, group.Id)
+		_, err := GroupsAPI.DeleteById(ctx, group.Id)
 		require.NoError(t, err)
 	})
 
@@ -84,7 +84,7 @@ func TestUcAccWorkspaceAssignmentOnAws(t *testing.T) {
 	})
 	require.NoError(t, err)
 	defer func() {
-		err = ServicePrincipalsAPI.DeleteById(ctx, spn.Id)
+		_, err = ServicePrincipalsAPI.DeleteById(ctx, spn.Id)
 		require.NoError(t, err)
 	}()
 
@@ -101,7 +101,7 @@ func TestUcAccWorkspaceAssignmentOnAws(t *testing.T) {
 	})
 	require.NoError(t, err)
 	defer func() {
-		err = WorkspaceAssignmentAPI.DeleteByWorkspaceIdAndPrincipalId(ctx, workspaceId, spnId)
+		_, err = WorkspaceAssignmentAPI.DeleteByWorkspaceIdAndPrincipalId(ctx, workspaceId, spnId)
 	}()
 
 	all, err := WorkspaceAssignmentAPI.ListByWorkspaceId(ctx, workspaceId)

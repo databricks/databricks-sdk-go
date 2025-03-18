@@ -27,7 +27,7 @@ func TestAccConnections(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := ConnectionsAPI.Delete(ctx, catalog.DeleteConnectionRequest{Name: connCreate.Name})
+		_, err := ConnectionsAPI.Delete(ctx, catalog.DeleteConnectionRequest{Name: connCreate.Name})
 		require.True(t, err == nil || apierr.IsMissing(err))
 	})
 
