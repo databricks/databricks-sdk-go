@@ -2,17 +2,74 @@ package config
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
-	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 )
 
 type DatabricksOIDCCredentials struct{}
+
+type loggingTransport struct {
+	Transport http.RoundTripper
+}
+
+func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	// Log the request
+	dump, err := httputil.DumpRequestOut(req, true)
+	if err == nil {
+		fmt.Println("HTTP Request:")
+		fmt.Println(string(dump))
+	}
+
+	// Send the request
+	resp, err := t.Transport.RoundTrip(req)
+	if err != nil {
+		return nil, err
+	}
+
+	// Log the response
+	dumpResp, err := httputil.DumpResponse(resp, true)
+	if err == nil {
+		fmt.Println("HTTP Response:")
+		fmt.Println(string(dumpResp))
+	}
+
+	return resp, nil
+}
+
+func print(ctx context.Context, token string) {
+
+	parts := strings.Split(token, ".")
+	if len(parts) != 3 {
+		fmt.Println("Invalid JWT format")
+		return
+	}
+	// Decode the payload (second part of the JWT)
+	payload, err := base64.RawURLEncoding.DecodeString(parts[1])
+	if err != nil {
+		logger.Debugf(ctx, "Error decoding JWT payload: %v", err)
+		return
+	}
+
+	// Pretty-print JSON
+	var prettyPayload map[string]interface{}
+	if err := json.Unmarshal(payload, &prettyPayload); err != nil {
+		logger.Debugf(ctx, "Error parsing JSON: %v", err)
+		return
+	}
+
+	prettyJSON, _ := json.MarshalIndent(prettyPayload, "", "  ")
+	logger.Debugf(ctx, string(prettyJSON))
+}
 
 // Configure implements CredentialsStrategy.
 func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
@@ -21,26 +78,32 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 	}
 
 	// Get the OIDC token from the environment.
-	audience := strings.TrimPrefix(cfg.CanonicalHostName(), "https://")
+	audience := cfg.CanonicalHostName()
 	if cfg.IsAccountClient() {
 		audience = cfg.AccountID
 	}
+
+	audience = "https://github.com/databricks-eng"
+
 	supplier := GithubOIDCTokenSupplier{
 		cfg: cfg,
 	}
-	idToken, err := supplier.GetOIDCToken(ctx, audience)
+	token, err := supplier.GetOIDCToken(ctx, audience)
 	if err != nil {
 		return nil, err
 	}
-	if idToken == "" {
-		logger.Debugf(ctx, "No OIDC token found")
-		return nil, nil
+	if token == "" {
+		// 	logger.Debugf(ctx, "No OIDC token found")
+		// 	return nil, nil
+		token = "MyToken"
 	}
+	print(ctx, token)
 
 	endpoints, err := oidcEndpoints(ctx, cfg)
 	if err != nil {
 		return nil, err
 	}
+	logger.Debugf(ctx, "Getting tokken for client %s", cfg.ClientID)
 
 	tsConfig := clientcredentials.Config{
 		ClientID:     cfg.ClientID,
@@ -49,9 +112,20 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 		TokenURL:     endpoints.TokenEndpoint,
 		Scopes:       []string{"all-apis"},
 		EndpointParams: url.Values{
-			"grant_type": {httpclient.JWTGrantType},
-			"assertion":  {idToken},
+			//"grant_type": {httpclient.JWTGrantType},
+			//"assertion":  {idToken},
+			"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
+			"subject_token":      {token},
+			"grant_type":         {"urn:ietf:params:oauth:grant-type:token-exchange"},
 		},
+	}
+	client := &http.Client{Transport: &loggingTransport{Transport: http.DefaultTransport}}
+	ctx = context.WithValue(ctx, oauth2.HTTPClient, client)
+
+	// Request the token
+	_, err = tsConfig.Token(ctx)
+	if err != nil {
+		return nil, err
 	}
 	ts := tsConfig.TokenSource(ctx)
 	visitor := refreshableVisitor(ts)
@@ -60,5 +134,5 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 
 // Name implements CredentialsStrategy.
 func (d DatabricksOIDCCredentials) Name() string {
-	return "inhouse-oidc"
+	return "databricks-wif"
 }
