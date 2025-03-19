@@ -17,21 +17,22 @@ func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ExperimentsClient{
-		ExperimentsInterface: NewExperiments(databricksClient),
+		ExperimentsInterface: NewExperiments(apiClient),
 	}, nil
 }
 
@@ -43,21 +44,22 @@ func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ForecastingClient{
-		ForecastingInterface: NewForecasting(databricksClient),
+		ForecastingInterface: NewForecasting(apiClient),
 	}, nil
 }
 
@@ -69,20 +71,21 @@ func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ModelRegistryClient{
-		ModelRegistryInterface: NewModelRegistry(databricksClient),
+		ModelRegistryInterface: NewModelRegistry(apiClient),
 	}, nil
 }

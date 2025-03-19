@@ -17,21 +17,22 @@ func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &GenieClient{
-		GenieInterface: NewGenie(databricksClient),
+		GenieInterface: NewGenie(apiClient),
 	}, nil
 }
 
@@ -43,21 +44,22 @@ func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &LakeviewClient{
-		LakeviewInterface: NewLakeview(databricksClient),
+		LakeviewInterface: NewLakeview(apiClient),
 	}, nil
 }
 
@@ -69,21 +71,22 @@ func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, err
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &LakeviewEmbeddedClient{
-		LakeviewEmbeddedInterface: NewLakeviewEmbedded(databricksClient),
+		LakeviewEmbeddedInterface: NewLakeviewEmbedded(apiClient),
 	}, nil
 }
 
@@ -95,20 +98,21 @@ func NewQueryExecutionClient(cfg *config.Config) (*QueryExecutionClient, error) 
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &QueryExecutionClient{
-		QueryExecutionInterface: NewQueryExecution(databricksClient),
+		QueryExecutionInterface: NewQueryExecution(apiClient),
 	}, nil
 }

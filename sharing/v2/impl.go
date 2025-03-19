@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -24,7 +26,7 @@ func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*Pr
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &providerInfo)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &providerInfo)
 	return &providerInfo, err
 }
 
@@ -33,7 +35,7 @@ func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderReques
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
 
@@ -43,7 +45,7 @@ func (a *providersImpl) Get(ctx context.Context, request GetProviderRequest) (*P
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &providerInfo)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &providerInfo)
 	return &providerInfo, err
 }
 
@@ -93,7 +95,7 @@ func (a *providersImpl) internalList(ctx context.Context, request ListProvidersR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProvidersResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listProvidersResponse)
 	return &listProvidersResponse, err
 }
 
@@ -103,7 +105,7 @@ func (a *providersImpl) ListProviderShareAssets(ctx context.Context, request Lis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProviderShareAssetsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listProviderShareAssetsResponse)
 	return &listProviderShareAssetsResponse, err
 }
 
@@ -151,7 +153,7 @@ func (a *providersImpl) internalListShares(ctx context.Context, request ListShar
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProviderSharesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listProviderSharesResponse)
 	return &listProviderSharesResponse, err
 }
 
@@ -162,7 +164,7 @@ func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) (*Pr
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &providerInfo)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &providerInfo)
 	return &providerInfo, err
 }
 
@@ -177,7 +179,7 @@ func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, requ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getActivationUrlInfoResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getActivationUrlInfoResponse)
 	return err
 }
 
@@ -187,7 +189,7 @@ func (a *recipientActivationImpl) RetrieveToken(ctx context.Context, request Ret
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &retrieveTokenResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &retrieveTokenResponse)
 	return &retrieveTokenResponse, err
 }
 
@@ -203,7 +205,7 @@ func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &recipientInfo)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &recipientInfo)
 	return &recipientInfo, err
 }
 
@@ -212,7 +214,7 @@ func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequ
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
 
@@ -222,7 +224,7 @@ func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &recipientInfo)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &recipientInfo)
 	return &recipientInfo, err
 }
 
@@ -272,7 +274,7 @@ func (a *recipientsImpl) internalList(ctx context.Context, request ListRecipient
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listRecipientsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listRecipientsResponse)
 	return &listRecipientsResponse, err
 }
 
@@ -283,7 +285,7 @@ func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipien
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &recipientInfo)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &recipientInfo)
 	return &recipientInfo, err
 }
 
@@ -293,7 +295,7 @@ func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePerm
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getRecipientSharePermissionsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getRecipientSharePermissionsResponse)
 	return &getRecipientSharePermissionsResponse, err
 }
 
@@ -304,7 +306,7 @@ func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &recipientInfo)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &recipientInfo)
 	return &recipientInfo, err
 }
 
@@ -320,7 +322,7 @@ func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*ShareInf
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &shareInfo)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &shareInfo)
 	return &shareInfo, err
 }
 
@@ -329,7 +331,7 @@ func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) err
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
 
@@ -339,7 +341,7 @@ func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareIn
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &shareInfo)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &shareInfo)
 	return &shareInfo, err
 }
 
@@ -387,7 +389,7 @@ func (a *sharesImpl) internalList(ctx context.Context, request ListSharesRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSharesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listSharesResponse)
 	return &listSharesResponse, err
 }
 
@@ -397,7 +399,7 @@ func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissi
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getSharePermissionsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getSharePermissionsResponse)
 	return &getSharePermissionsResponse, err
 }
 
@@ -408,7 +410,7 @@ func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInf
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &shareInfo)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &shareInfo)
 	return &shareInfo, err
 }
 
@@ -419,6 +421,35 @@ func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateShareP
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateSharePermissionsResponse)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updateSharePermissionsResponse)
 	return &updateSharePermissionsResponse, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -24,7 +26,7 @@ func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoo
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Asset, &cleanRoomAsset)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request.Asset, &cleanRoomAsset)
 	return &cleanRoomAsset, err
 }
 
@@ -34,7 +36,7 @@ func (a *cleanRoomAssetsImpl) Delete(ctx context.Context, request DeleteCleanRoo
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCleanRoomAssetResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCleanRoomAssetResponse)
 	return err
 }
 
@@ -44,7 +46,7 @@ func (a *cleanRoomAssetsImpl) Get(ctx context.Context, request GetCleanRoomAsset
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoomAsset)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoomAsset)
 	return &cleanRoomAsset, err
 }
 
@@ -84,7 +86,7 @@ func (a *cleanRoomAssetsImpl) internalList(ctx context.Context, request ListClea
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomAssetsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomAssetsResponse)
 	return &listCleanRoomAssetsResponse, err
 }
 
@@ -95,7 +97,7 @@ func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoo
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Asset, &cleanRoomAsset)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request.Asset, &cleanRoomAsset)
 	return &cleanRoomAsset, err
 }
 
@@ -144,7 +146,7 @@ func (a *cleanRoomTaskRunsImpl) internalList(ctx context.Context, request ListCl
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomNotebookTaskRunsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomNotebookTaskRunsResponse)
 	return &listCleanRoomNotebookTaskRunsResponse, err
 }
 
@@ -160,7 +162,7 @@ func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoomRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.CleanRoom, &cleanRoom)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request.CleanRoom, &cleanRoom)
 	return &cleanRoom, err
 }
 
@@ -171,7 +173,7 @@ func (a *cleanRoomsImpl) CreateOutputCatalog(ctx context.Context, request Create
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.OutputCatalog, &createCleanRoomOutputCatalogResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request.OutputCatalog, &createCleanRoomOutputCatalogResponse)
 	return &createCleanRoomOutputCatalogResponse, err
 }
 
@@ -181,7 +183,7 @@ func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
 
@@ -191,7 +193,7 @@ func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoom)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoom)
 	return &cleanRoom, err
 }
 
@@ -237,7 +239,7 @@ func (a *cleanRoomsImpl) internalList(ctx context.Context, request ListCleanRoom
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomsResponse)
 	return &listCleanRoomsResponse, err
 }
 
@@ -248,6 +250,35 @@ func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoomRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &cleanRoom)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &cleanRoom)
 	return &cleanRoom, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

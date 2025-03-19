@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 	"golang.org/x/exp/slices"
@@ -28,7 +30,7 @@ func (a *accountFederationPolicyImpl) Create(ctx context.Context, request Create
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Policy, &federationPolicy)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
 
@@ -38,7 +40,7 @@ func (a *accountFederationPolicyImpl) Delete(ctx context.Context, request Delete
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
 
@@ -48,7 +50,7 @@ func (a *accountFederationPolicyImpl) Get(ctx context.Context, request GetAccoun
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &federationPolicy)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &federationPolicy)
 	return &federationPolicy, err
 }
 
@@ -88,7 +90,7 @@ func (a *accountFederationPolicyImpl) internalList(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFederationPoliciesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listFederationPoliciesResponse)
 	return &listFederationPoliciesResponse, err
 }
 
@@ -102,7 +104,7 @@ func (a *accountFederationPolicyImpl) Update(ctx context.Context, request Update
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &federationPolicy)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
 
@@ -118,7 +120,7 @@ func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCus
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createCustomAppIntegrationOutput)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createCustomAppIntegrationOutput)
 	return &createCustomAppIntegrationOutput, err
 }
 
@@ -128,7 +130,7 @@ func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCus
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCustomAppIntegrationOutput)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCustomAppIntegrationOutput)
 	return err
 }
 
@@ -138,7 +140,7 @@ func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomApp
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCustomAppIntegrationOutput)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getCustomAppIntegrationOutput)
 	return &getCustomAppIntegrationOutput, err
 }
 
@@ -184,7 +186,7 @@ func (a *customAppIntegrationImpl) internalList(ctx context.Context, request Lis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCustomAppIntegrationsOutput)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getCustomAppIntegrationsOutput)
 	return &getCustomAppIntegrationsOutput, err
 }
 
@@ -195,7 +197,7 @@ func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCus
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateCustomAppIntegrationOutput)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updateCustomAppIntegrationOutput)
 	return err
 }
 
@@ -244,7 +246,7 @@ func (a *oAuthPublishedAppsImpl) internalList(ctx context.Context, request ListO
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedAppsOutput)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedAppsOutput)
 	return &getPublishedAppsOutput, err
 }
 
@@ -260,7 +262,7 @@ func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request Create
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createPublishedAppIntegrationOutput)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createPublishedAppIntegrationOutput)
 	return &createPublishedAppIntegrationOutput, err
 }
 
@@ -270,7 +272,7 @@ func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request Delete
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deletePublishedAppIntegrationOutput)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deletePublishedAppIntegrationOutput)
 	return err
 }
 
@@ -280,7 +282,7 @@ func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedAppIntegrationOutput)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedAppIntegrationOutput)
 	return &getPublishedAppIntegrationOutput, err
 }
 
@@ -326,7 +328,7 @@ func (a *publishedAppIntegrationImpl) internalList(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedAppIntegrationsOutput)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedAppIntegrationsOutput)
 	return &getPublishedAppIntegrationsOutput, err
 }
 
@@ -337,7 +339,7 @@ func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request Update
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updatePublishedAppIntegrationOutput)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updatePublishedAppIntegrationOutput)
 	return err
 }
 
@@ -356,7 +358,7 @@ func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, reque
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Policy, &federationPolicy)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
 
@@ -366,7 +368,7 @@ func (a *servicePrincipalFederationPolicyImpl) Delete(ctx context.Context, reque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
 
@@ -376,7 +378,7 @@ func (a *servicePrincipalFederationPolicyImpl) Get(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &federationPolicy)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &federationPolicy)
 	return &federationPolicy, err
 }
 
@@ -416,7 +418,7 @@ func (a *servicePrincipalFederationPolicyImpl) internalList(ctx context.Context,
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFederationPoliciesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listFederationPoliciesResponse)
 	return &listFederationPoliciesResponse, err
 }
 
@@ -430,7 +432,7 @@ func (a *servicePrincipalFederationPolicyImpl) Update(ctx context.Context, reque
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &federationPolicy)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &federationPolicy)
 	return &federationPolicy, err
 }
 
@@ -446,7 +448,7 @@ func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request Create
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createServicePrincipalSecretResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createServicePrincipalSecretResponse)
 	return &createServicePrincipalSecretResponse, err
 }
 
@@ -455,7 +457,7 @@ func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request Delete
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.SecretId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
 
@@ -503,6 +505,35 @@ func (a *servicePrincipalSecretsImpl) internalList(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalSecretsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalSecretsResponse)
 	return &listServicePrincipalSecretsResponse, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

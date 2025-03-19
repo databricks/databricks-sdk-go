@@ -17,20 +17,21 @@ func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &PipelinesClient{
-		PipelinesInterface: NewPipelines(databricksClient),
+		PipelinesInterface: NewPipelines(apiClient),
 	}, nil
 }

@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -24,7 +26,7 @@ func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentia
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createCredentialsResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createCredentialsResponse)
 	return &createCredentialsResponse, err
 }
 
@@ -34,7 +36,7 @@ func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteCredentia
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCredentialsResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCredentialsResponse)
 	return err
 }
 
@@ -44,7 +46,7 @@ func (a *gitCredentialsImpl) Get(ctx context.Context, request GetCredentialsRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCredentialsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getCredentialsResponse)
 	return &getCredentialsResponse, err
 }
 
@@ -85,7 +87,7 @@ func (a *gitCredentialsImpl) internalList(ctx context.Context) (*ListCredentials
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listCredentialsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &listCredentialsResponse)
 	return &listCredentialsResponse, err
 }
 
@@ -96,7 +98,7 @@ func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentia
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateCredentialsResponse)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updateCredentialsResponse)
 	return err
 }
 
@@ -112,7 +114,7 @@ func (a *reposImpl) Create(ctx context.Context, request CreateRepoRequest) (*Cre
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createRepoResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createRepoResponse)
 	return &createRepoResponse, err
 }
 
@@ -122,7 +124,7 @@ func (a *reposImpl) Delete(ctx context.Context, request DeleteRepoRequest) error
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteRepoResponse)
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteRepoResponse)
 	return err
 }
 
@@ -132,7 +134,7 @@ func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*GetRepoRe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getRepoResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getRepoResponse)
 	return &getRepoResponse, err
 }
 
@@ -142,7 +144,7 @@ func (a *reposImpl) GetPermissionLevels(ctx context.Context, request GetRepoPerm
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getRepoPermissionLevelsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getRepoPermissionLevelsResponse)
 	return &getRepoPermissionLevelsResponse, err
 }
 
@@ -152,7 +154,7 @@ func (a *reposImpl) GetPermissions(ctx context.Context, request GetRepoPermissio
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &repoPermissions)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &repoPermissions)
 	return &repoPermissions, err
 }
 
@@ -198,7 +200,7 @@ func (a *reposImpl) internalList(ctx context.Context, request ListReposRequest) 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listReposResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listReposResponse)
 	return &listReposResponse, err
 }
 
@@ -209,7 +211,7 @@ func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsR
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &repoPermissions)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &repoPermissions)
 	return &repoPermissions, err
 }
 
@@ -220,7 +222,7 @@ func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) error
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateRepoResponse)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updateRepoResponse)
 	return err
 }
 
@@ -231,7 +233,7 @@ func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissio
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &repoPermissions)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &repoPermissions)
 	return &repoPermissions, err
 }
 
@@ -247,7 +249,7 @@ func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) erro
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createScopeResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createScopeResponse)
 	return err
 }
 
@@ -258,7 +260,7 @@ func (a *secretsImpl) DeleteAcl(ctx context.Context, request DeleteAcl) error {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteAclResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteAclResponse)
 	return err
 }
 
@@ -269,7 +271,7 @@ func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) erro
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteScopeResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteScopeResponse)
 	return err
 }
 
@@ -280,7 +282,7 @@ func (a *secretsImpl) DeleteSecret(ctx context.Context, request DeleteSecret) er
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteSecretResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteSecretResponse)
 	return err
 }
 
@@ -290,7 +292,7 @@ func (a *secretsImpl) GetAcl(ctx context.Context, request GetAclRequest) (*AclIt
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &aclItem)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &aclItem)
 	return &aclItem, err
 }
 
@@ -300,7 +302,7 @@ func (a *secretsImpl) GetSecret(ctx context.Context, request GetSecretRequest) (
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getSecretResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getSecretResponse)
 	return &getSecretResponse, err
 }
 
@@ -348,7 +350,7 @@ func (a *secretsImpl) internalListAcls(ctx context.Context, request ListAclsRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAclsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listAclsResponse)
 	return &listAclsResponse, err
 }
 
@@ -393,7 +395,7 @@ func (a *secretsImpl) internalListScopes(ctx context.Context) (*ListScopesRespon
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listScopesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &listScopesResponse)
 	return &listScopesResponse, err
 }
 
@@ -445,7 +447,7 @@ func (a *secretsImpl) internalListSecrets(ctx context.Context, request ListSecre
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSecretsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listSecretsResponse)
 	return &listSecretsResponse, err
 }
 
@@ -456,7 +458,7 @@ func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) error {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &putAclResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &putAclResponse)
 	return err
 }
 
@@ -467,7 +469,7 @@ func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) error {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &putSecretResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &putSecretResponse)
 	return err
 }
 
@@ -483,7 +485,7 @@ func (a *workspaceImpl) Delete(ctx context.Context, request Delete) error {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
 
@@ -493,7 +495,7 @@ func (a *workspaceImpl) Export(ctx context.Context, request ExportRequest) (*Exp
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &exportResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &exportResponse)
 	return &exportResponse, err
 }
 
@@ -503,7 +505,7 @@ func (a *workspaceImpl) GetPermissionLevels(ctx context.Context, request GetWork
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getWorkspaceObjectPermissionLevelsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getWorkspaceObjectPermissionLevelsResponse)
 	return &getWorkspaceObjectPermissionLevelsResponse, err
 }
 
@@ -513,7 +515,7 @@ func (a *workspaceImpl) GetPermissions(ctx context.Context, request GetWorkspace
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspaceObjectPermissions)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &workspaceObjectPermissions)
 	return &workspaceObjectPermissions, err
 }
 
@@ -523,7 +525,7 @@ func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatusRequest)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &objectInfo)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &objectInfo)
 	return &objectInfo, err
 }
 
@@ -534,7 +536,7 @@ func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &importResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &importResponse)
 	return err
 }
 
@@ -576,7 +578,7 @@ func (a *workspaceImpl) internalList(ctx context.Context, request ListWorkspaceR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listResponse)
 	return &listResponse, err
 }
 
@@ -587,7 +589,7 @@ func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &mkdirsResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &mkdirsResponse)
 	return err
 }
 
@@ -598,7 +600,7 @@ func (a *workspaceImpl) SetPermissions(ctx context.Context, request WorkspaceObj
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &workspaceObjectPermissions)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &workspaceObjectPermissions)
 	return &workspaceObjectPermissions, err
 }
 
@@ -609,6 +611,35 @@ func (a *workspaceImpl) UpdatePermissions(ctx context.Context, request Workspace
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &workspaceObjectPermissions)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &workspaceObjectPermissions)
 	return &workspaceObjectPermissions, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }
