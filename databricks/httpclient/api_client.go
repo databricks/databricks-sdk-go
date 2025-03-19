@@ -26,6 +26,7 @@ type ClientConfig struct {
 	Visitors    []RequestVisitor
 
 	AccountID string
+	Host      string
 
 	RetryTimeout       time.Duration
 	HTTPTimeout        time.Duration
@@ -56,6 +57,21 @@ type ApiClient struct {
 	httpClient  *http.Client
 }
 
+// IsAccountClient returns true if the client is configured for Accounts API.
+func (apic *ApiClient) IsAccountClient() bool {
+	if apic.config.AccountID == "" {
+		return false
+	}
+	if strings.HasPrefix(apic.config.Host, "https://accounts.") {
+		return true
+	}
+	if strings.HasPrefix(apic.config.Host, "https://accounts-dod.") {
+		return true
+	}
+	return false
+}
+
+// AccountID returns the account ID for the client.
 func (apic *ApiClient) AccountID() string {
 	return apic.config.AccountID
 }
