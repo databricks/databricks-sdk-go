@@ -28,6 +28,8 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 	}
 
 	return httpclient.ClientConfig{
+		AccountID:          cfg.AccountID,
+		Host:               cfg.Host,
 		RetryTimeout:       time.Duration(cfg.RetryTimeoutSeconds) * time.Second,
 		HTTPTimeout:        time.Duration(cfg.HTTPTimeoutSeconds) * time.Second,
 		RateLimitPerSecond: cfg.RateLimitPerSecond,
