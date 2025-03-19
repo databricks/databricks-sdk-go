@@ -55,7 +55,7 @@ func TestAccClusterPolicies(t *testing.T) {
 	assert.Equal(t, len(names), len(all))
 	assert.Equal(t, policy.PolicyId, names[policy.Name])
 
-	err = ClusterPoliciesAPI.Edit(ctx, compute.EditPolicy{
+	_, err = ClusterPoliciesAPI.Edit(ctx, compute.EditPolicy{
 		PolicyId: policy.PolicyId,
 		Name:     policy.Name,
 		Definition: `{

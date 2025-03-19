@@ -116,7 +116,7 @@ func (d *Backend) AcquireLock(ctx context.Context, contents *core.LockState) err
 
 	if !lockState.IsValid() {
 		fmt.Printf("Lock %s is expired, deleting and recreating. Previous lock state: %#v\n", d.lockName, lockState)
-		err = d.lockClient.Delete(ctx, workspace.Delete{Path: d.getLockPath()})
+		_, err = d.lockClient.Delete(ctx, workspace.Delete{Path: d.getLockPath()})
 		if err != nil {
 			return fmt.Errorf("failed to delete lock file: %w", err)
 		}
@@ -165,8 +165,8 @@ func (d *Backend) ReleaseLock(ctx context.Context, leaseId string) error {
 	if lockState.IsValid() && lockState.LeaseId != leaseId {
 		return fmt.Errorf("lock %s is held by %s, not %s", d.lockName, lockState.LeaseId, leaseId)
 	}
-
-	return d.lockClient.Delete(ctx, workspace.Delete{Path: d.getLockPath()})
+	_, err = d.lockClient.Delete(ctx, workspace.Delete{Path: d.getLockPath()})
+	return err
 }
 
 func (d *Backend) RefreshDuration() time.Duration {

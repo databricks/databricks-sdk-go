@@ -22,7 +22,7 @@ func TestAccIpAccessLists(t *testing.T) {
 
 	defer IpAccessListsAPI.DeleteByIpAccessListId(ctx, created.IpAccessList.ListId)
 
-	err = IpAccessListsAPI.Replace(ctx, settings.ReplaceIpAccessList{
+	_, err = IpAccessListsAPI.Replace(ctx, settings.ReplaceIpAccessList{
 		IpAccessListId: created.IpAccessList.ListId,
 		Label:          RandomName("go-sdk-updated-"),
 		IpAddresses:    []string{"1.0.0.0/24"},

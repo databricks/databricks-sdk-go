@@ -24,7 +24,7 @@ func TestAccGlobalInitScripts(t *testing.T) {
 
 	defer GlobalInitScriptsAPI.DeleteByScriptId(ctx, created.ScriptId)
 
-	err = GlobalInitScriptsAPI.Update(ctx, compute.GlobalInitScriptUpdateRequest{
+	_, err = GlobalInitScriptsAPI.Update(ctx, compute.GlobalInitScriptUpdateRequest{
 		ScriptId: created.ScriptId,
 		Name:     RandomName("go-sdk-updated-"),
 		Script:   base64.StdEncoding.EncodeToString([]byte("echo 2")),

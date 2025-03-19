@@ -26,7 +26,7 @@ func TestMwsAccStorage(t *testing.T) {
 	require.NoError(t, err)
 
 	defer func() {
-		err = StorageAPI.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+		_, err = StorageAPI.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 		require.NoError(t, err)
 	}()
 
@@ -58,7 +58,7 @@ func TestMwsAccNetworks(t *testing.T) {
 	})
 	require.NoError(t, err)
 	defer func() {
-		err = NetworksAPI.DeleteByNetworkId(ctx, netw.NetworkId)
+		_, err = NetworksAPI.DeleteByNetworkId(ctx, netw.NetworkId)
 		require.NoError(t, err)
 	}()
 
@@ -92,7 +92,7 @@ func TestMwsAccCredentials(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err = CredentialsAPI.DeleteByCredentialsId(ctx, role.CredentialsId)
+		_, err = CredentialsAPI.DeleteByCredentialsId(ctx, role.CredentialsId)
 		require.NoError(t, err)
 	})
 
@@ -126,7 +126,7 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := EncryptionKeysAPI.DeleteByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
+		_, err := EncryptionKeysAPI.DeleteByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
 		require.NoError(t, err)
 	})
 
@@ -154,10 +154,10 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := PrivateAccessAPI.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
+		_, err := PrivateAccessAPI.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
 		require.NoError(t, err)
 	})
-	err = PrivateAccessAPI.Replace(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
+	_, err = PrivateAccessAPI.Replace(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
 		PrivateAccessSettingsId:   created.PrivateAccessSettingsId,
 		PrivateAccessSettingsName: RandomName("go-sdk-"),
 		Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),
@@ -196,7 +196,7 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := VpcEndpointsAPI.DeleteByVpcEndpointId(ctx, created.VpcEndpointId)
+		_, err := VpcEndpointsAPI.DeleteByVpcEndpointId(ctx, created.VpcEndpointId)
 		require.NoError(t, err)
 	})
 

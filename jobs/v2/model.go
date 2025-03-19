@@ -3127,6 +3127,8 @@ func (f *PauseStatus) Type() string {
 // Cluster Manager (see cluster-common PerformanceTarget).
 type PerformanceTarget string
 
+const PerformanceTargetBalanced PerformanceTarget = `BALANCED`
+
 const PerformanceTargetCostOptimized PerformanceTarget = `COST_OPTIMIZED`
 
 const PerformanceTargetPerformanceOptimized PerformanceTarget = `PERFORMANCE_OPTIMIZED`
@@ -3139,11 +3141,11 @@ func (f *PerformanceTarget) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PerformanceTarget) Set(v string) error {
 	switch v {
-	case `COST_OPTIMIZED`, `PERFORMANCE_OPTIMIZED`:
+	case `BALANCED`, `COST_OPTIMIZED`, `PERFORMANCE_OPTIMIZED`:
 		*f = PerformanceTarget(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "PERFORMANCE_OPTIMIZED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BALANCED", "COST_OPTIMIZED", "PERFORMANCE_OPTIMIZED"`, v)
 	}
 }
 
@@ -5334,7 +5336,7 @@ type SubmitTask struct {
 	Libraries []Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
-	NewCluster *ClusterSpec `json:"new_cluster,omitempty"`
+	NewCluster *JobsClusterSpec `json:"new_cluster,omitempty"`
 	// The task runs a notebook when the `notebook_task` field is present.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications

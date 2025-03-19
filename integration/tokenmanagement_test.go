@@ -33,7 +33,7 @@ func TestAccCreateOboTokenOnAws(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = ServicePrincipalsAPI.DeleteById(ctx, spn.Id)
+		_, err = ServicePrincipalsAPI.DeleteById(ctx, spn.Id)
 		require.NoError(t, err)
 	})
 
@@ -45,7 +45,7 @@ func TestAccCreateOboTokenOnAws(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = TokenManagementAPI.DeleteByTokenId(ctx, obo.TokenInfo.TokenId)
+		_, err = TokenManagementAPI.DeleteByTokenId(ctx, obo.TokenInfo.TokenId)
 		require.NoError(t, err)
 	})
 
