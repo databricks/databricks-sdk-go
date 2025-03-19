@@ -6,14 +6,15 @@ package catalog
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type AccountMetastoreAssignmentsInterface interface {
-
 	// Assigns a workspace to a metastore.
 	//
 	// Creates an assignment to a metastore for a workspace
@@ -123,7 +124,6 @@ func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, 
 }
 
 type AccountMetastoresInterface interface {
-
 	// Create metastore.
 	//
 	// Creates a Unity Catalog metastore.
@@ -202,7 +202,6 @@ func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId
 }
 
 type AccountStorageCredentialsInterface interface {
-
 	// Create a storage credential.
 	//
 	// Creates a new storage credential. The request object is specific to the
@@ -318,7 +317,6 @@ func (a *AccountStorageCredentialsAPI) ListByMetastoreId(ctx context.Context, me
 }
 
 type ArtifactAllowlistsInterface interface {
-
 	// Get an artifact allowlist.
 	//
 	// Get the artifact allowlist of a certain artifact type. The caller must be a
@@ -365,7 +363,6 @@ func (a *ArtifactAllowlistsAPI) GetByArtifactType(ctx context.Context, artifactT
 }
 
 type CatalogsInterface interface {
-
 	// Create a catalog.
 	//
 	// Creates a new catalog instance in the parent metastore if the caller is a
@@ -470,7 +467,6 @@ func (a *CatalogsAPI) GetByName(ctx context.Context, name string) (*CatalogInfo,
 }
 
 type ConnectionsInterface interface {
-
 	// Create a connection.
 	//
 	// Creates a new connection
@@ -596,7 +592,6 @@ func (a *ConnectionsAPI) ConnectionInfoNameToFullNameMap(ctx context.Context, re
 }
 
 type CredentialsInterface interface {
-
 	// Create a credential.
 	//
 	// Creates a new credential. The type of credential to be created is determined
@@ -735,7 +730,6 @@ func (a *CredentialsAPI) GetCredentialByNameArg(ctx context.Context, nameArg str
 }
 
 type ExternalLocationsInterface interface {
-
 	// Create an external location.
 	//
 	// Creates a new external location entry in the metastore. The caller must be a
@@ -846,7 +840,6 @@ func (a *ExternalLocationsAPI) GetByName(ctx context.Context, name string) (*Ext
 }
 
 type FunctionsInterface interface {
-
 	// Create a function.
 	//
 	// **WARNING: This API is experimental and will change in future versions**
@@ -1024,7 +1017,6 @@ func (a *FunctionsAPI) FunctionInfoNameToFullNameMap(ctx context.Context, reques
 }
 
 type GrantsInterface interface {
-
 	// Get permissions.
 	//
 	// Gets the permissions for a securable.
@@ -1095,7 +1087,6 @@ func (a *GrantsAPI) GetEffectiveBySecurableTypeAndFullName(ctx context.Context, 
 }
 
 type MetastoresInterface interface {
-
 	// Create an assignment.
 	//
 	// Creates a new metastore assignment. If an assignment for the same
@@ -1316,7 +1307,6 @@ func (a *MetastoresAPI) UnassignByWorkspaceId(ctx context.Context, workspaceId i
 }
 
 type ModelVersionsInterface interface {
-
 	// Delete a Model Version.
 	//
 	// Deletes a model version from the specified registered model. Any aliases
@@ -1534,11 +1524,10 @@ func (a *ModelVersionsAPI) ListByFullName(ctx context.Context, fullName string) 
 }
 
 type OnlineTablesInterface interface {
-
 	// Create an Online Table.
 	//
 	// Create a new Online Table.
-	Create(ctx context.Context, request CreateOnlineTableRequest) (*OnlineTable, error)
+	Create(ctx context.Context, request CreateOnlineTableRequest) (*OnlineTablesCreateWaiter, error)
 
 	// Delete an Online Table.
 	//
@@ -1579,6 +1568,53 @@ type OnlineTablesAPI struct {
 	onlineTablesImpl
 }
 
+// Create an Online Table.
+//
+// Create a new Online Table.
+func (a *OnlineTablesAPI) Create(ctx context.Context, createOnlineTableRequest CreateOnlineTableRequest) (*OnlineTablesCreateWaiter, error) {
+	onlineTable, err := a.onlineTablesImpl.Create(ctx, createOnlineTableRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &OnlineTablesCreateWaiter{
+		Response: onlineTable,
+		name:     onlineTable.Name,
+	}, nil
+}
+
+type OnlineTablesCreateWaiter struct {
+	Response *OnlineTable
+	service  *OnlineTablesAPI
+
+	name string
+}
+
+func (w *OnlineTablesCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*OnlineTable, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[OnlineTable](ctx, timeout, func() (*OnlineTable, *retries.Err) {
+		onlineTable, err := w.service.Get(ctx, GetOnlineTableRequest{
+			Name: w.name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := onlineTable.UnityCatalogProvisioningState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case ProvisioningInfoStateActive: // target state
+			return onlineTable, nil
+		case ProvisioningInfoStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ProvisioningInfoStateActive, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
 // Delete an Online Table.
 //
 // Delete an online table. Warning: This will delete all the data in the online
@@ -1600,7 +1636,6 @@ func (a *OnlineTablesAPI) GetByName(ctx context.Context, name string) (*OnlineTa
 }
 
 type QualityMonitorsInterface interface {
-
 	// Cancel refresh.
 	//
 	// Cancel an active monitor refresh for the given refresh ID.
@@ -1903,7 +1938,6 @@ func (a *QualityMonitorsAPI) ListRefreshesByTableName(ctx context.Context, table
 }
 
 type RegisteredModelsInterface interface {
-
 	// Create a Registered Model.
 	//
 	// Creates a new registered model in Unity Catalog.
@@ -2199,7 +2233,6 @@ func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*Regi
 }
 
 type ResourceQuotasInterface interface {
-
 	// Get information for a single resource quota.
 	//
 	// The GetQuota API returns usage information for a single resource quota,
@@ -2270,7 +2303,6 @@ func (a *ResourceQuotasAPI) GetQuotaByParentSecurableTypeAndParentFullNameAndQuo
 }
 
 type SchemasInterface interface {
-
 	// Create a schema.
 	//
 	// Creates a new schema for catalog in the Metatastore. The caller must be a
@@ -2446,7 +2478,6 @@ func (a *SchemasAPI) GetByName(ctx context.Context, name string) (*SchemaInfo, e
 }
 
 type StorageCredentialsInterface interface {
-
 	// Create a storage credential.
 	//
 	// Creates a new storage credential.
@@ -2603,7 +2634,6 @@ func (a *StorageCredentialsAPI) StorageCredentialInfoNameToIdMap(ctx context.Con
 }
 
 type SystemSchemasInterface interface {
-
 	// Disable a system schema.
 	//
 	// Disables the system schema and removes it from the system catalog. The caller
@@ -2682,7 +2712,6 @@ func (a *SystemSchemasAPI) ListByMetastoreId(ctx context.Context, metastoreId st
 }
 
 type TableConstraintsInterface interface {
-
 	// Create a table constraint.
 	//
 	// Creates a new table constraint.
@@ -2767,7 +2796,6 @@ func (a *TableConstraintsAPI) DeleteByFullName(ctx context.Context, fullName str
 }
 
 type TablesInterface interface {
-
 	// Delete a table.
 	//
 	// Deletes a table from the specified parent catalog and schema. The caller must
@@ -3038,7 +3066,6 @@ func (a *TablesAPI) GetByName(ctx context.Context, name string) (*TableInfo, err
 }
 
 type TemporaryTableCredentialsInterface interface {
-
 	// Generate a temporary table credential.
 	//
 	// Get a short-lived credential for directly accessing the table data on cloud
@@ -3077,7 +3104,6 @@ type TemporaryTableCredentialsAPI struct {
 }
 
 type VolumesInterface interface {
-
 	// Create a Volume.
 	//
 	// Creates a new volume.
@@ -3308,7 +3334,6 @@ func (a *VolumesAPI) ReadByName(ctx context.Context, name string) (*VolumeInfo, 
 }
 
 type WorkspaceBindingsInterface interface {
-
 	// Get catalog workspace bindings.
 	//
 	// Gets workspace bindings of the catalog. The caller must be a metastore admin

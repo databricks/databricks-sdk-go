@@ -5,17 +5,20 @@ package vectorsearch
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type VectorSearchEndpointsInterface interface {
-
 	// Create an endpoint.
 	//
 	// Create a new endpoint.
-	CreateEndpoint(ctx context.Context, request CreateEndpoint) (*EndpointInfo, error)
+	CreateEndpoint(ctx context.Context, request CreateEndpoint) (*VectorSearchEndpointsCreateEndpointWaiter, error)
 
 	// Delete an endpoint.
 	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (*DeleteEndpointResponse, error)
@@ -53,6 +56,56 @@ type VectorSearchEndpointsAPI struct {
 	vectorSearchEndpointsImpl
 }
 
+// Create an endpoint.
+//
+// Create a new endpoint.
+func (a *VectorSearchEndpointsAPI) CreateEndpoint(ctx context.Context, createEndpoint CreateEndpoint) (*VectorSearchEndpointsCreateEndpointWaiter, error) {
+	endpointInfo, err := a.vectorSearchEndpointsImpl.CreateEndpoint(ctx, createEndpoint)
+	if err != nil {
+		return nil, err
+	}
+	return &VectorSearchEndpointsCreateEndpointWaiter{
+		Response:     endpointInfo,
+		endpointName: endpointInfo.Name,
+	}, nil
+}
+
+type VectorSearchEndpointsCreateEndpointWaiter struct {
+	Response *EndpointInfo
+	service  *VectorSearchEndpointsAPI
+
+	endpointName string
+}
+
+func (w *VectorSearchEndpointsCreateEndpointWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*EndpointInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[EndpointInfo](ctx, timeout, func() (*EndpointInfo, *retries.Err) {
+		endpointInfo, err := w.service.GetEndpoint(ctx, GetEndpointRequest{
+			EndpointName: w.endpointName,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := endpointInfo.EndpointStatus.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if endpointInfo.EndpointStatus != nil {
+			statusMessage = endpointInfo.EndpointStatus.Message
+		}
+		switch status {
+		case EndpointStatusStateOnline: // target state
+			return endpointInfo, nil
+		case EndpointStatusStateOffline:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				EndpointStatusStateOnline, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
 // Delete an endpoint.
 func (a *VectorSearchEndpointsAPI) DeleteEndpointByEndpointName(ctx context.Context, endpointName string) (*DeleteEndpointResponse, error) {
 	return a.vectorSearchEndpointsImpl.DeleteEndpoint(ctx, DeleteEndpointRequest{
@@ -68,7 +121,6 @@ func (a *VectorSearchEndpointsAPI) GetEndpointByEndpointName(ctx context.Context
 }
 
 type VectorSearchIndexesInterface interface {
-
 	// Create an index.
 	//
 	// Create a new index.

@@ -5,13 +5,16 @@ package ml
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type ExperimentsInterface interface {
-
 	// Create experiment.
 	//
 	// Creates an experiment with a name. Returns the ID of the newly created
@@ -368,11 +371,10 @@ func (a *ExperimentsAPI) GetPermissionsByExperimentId(ctx context.Context, exper
 }
 
 type ForecastingInterface interface {
-
 	// Create a forecasting experiment.
 	//
 	// Creates a serverless forecasting experiment. Returns the experiment ID.
-	CreateExperiment(ctx context.Context, request CreateForecastingExperimentRequest) (*CreateForecastingExperimentResponse, error)
+	CreateExperiment(ctx context.Context, request CreateForecastingExperimentRequest) (*ForecastingCreateExperimentWaiter, error)
 
 	// Get a forecasting experiment.
 	//
@@ -399,6 +401,53 @@ type ForecastingAPI struct {
 	forecastingImpl
 }
 
+// Create a forecasting experiment.
+//
+// Creates a serverless forecasting experiment. Returns the experiment ID.
+func (a *ForecastingAPI) CreateExperiment(ctx context.Context, createForecastingExperimentRequest CreateForecastingExperimentRequest) (*ForecastingCreateExperimentWaiter, error) {
+	createForecastingExperimentResponse, err := a.forecastingImpl.CreateExperiment(ctx, createForecastingExperimentRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &ForecastingCreateExperimentWaiter{
+		Response:     createForecastingExperimentResponse,
+		experimentId: createForecastingExperimentResponse.ExperimentId,
+	}, nil
+}
+
+type ForecastingCreateExperimentWaiter struct {
+	Response *CreateForecastingExperimentResponse
+	service  *ForecastingAPI
+
+	experimentId string
+}
+
+func (w *ForecastingCreateExperimentWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ForecastingExperiment, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[ForecastingExperiment](ctx, timeout, func() (*ForecastingExperiment, *retries.Err) {
+		forecastingExperiment, err := w.service.GetExperiment(ctx, GetForecastingExperimentRequest{
+			ExperimentId: w.experimentId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := forecastingExperiment.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case ForecastingExperimentStateSucceeded: // target state
+			return forecastingExperiment, nil
+		case ForecastingExperimentStateFailed, ForecastingExperimentStateCancelled:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ForecastingExperimentStateSucceeded, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
 // Get a forecasting experiment.
 //
 // Public RPC to get forecasting experiment
@@ -409,7 +458,6 @@ func (a *ForecastingAPI) GetExperimentByExperimentId(ctx context.Context, experi
 }
 
 type ModelRegistryInterface interface {
-
 	// Approve transition request.
 	//
 	// Approves a model version stage transition request.

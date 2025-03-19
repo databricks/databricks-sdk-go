@@ -11,7 +11,6 @@ import (
 )
 
 type CleanRoomAssetsInterface interface {
-
 	// Create an asset.
 	//
 	// Create a clean room asset —share an asset like a notebook or table into the
@@ -149,7 +148,6 @@ func (a *CleanRoomTaskRunsAPI) ListByCleanRoomName(ctx context.Context, cleanRoo
 }
 
 type CleanRoomsInterface interface {
-
 	// Create a clean room.
 	//
 	// Create a new clean room with the specified collaborators. This method is

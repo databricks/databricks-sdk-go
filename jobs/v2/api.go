@@ -6,14 +6,15 @@ package jobs
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type JobsInterface interface {
-
 	// Cancel all runs of a job.
 	//
 	// Cancels all active runs of a job. The runs are canceled asynchronously, so it
@@ -24,7 +25,7 @@ type JobsInterface interface {
 	//
 	// Cancels a job run or a task run. The run is canceled asynchronously, so it
 	// may still be running when this request completes.
-	CancelRun(ctx context.Context, request CancelRun) (*CancelRunResponse, error)
+	CancelRun(ctx context.Context, request CancelRun) (*JobsCancelRunWaiter, error)
 
 	// Cancel a run.
 	//
@@ -196,7 +197,7 @@ type JobsInterface interface {
 	// Re-run one or more tasks. Tasks are re-run as part of the original job run.
 	// They use the current job and task settings, and can be viewed in the history
 	// for the original job run.
-	RepairRun(ctx context.Context, request RepairRun) (*RepairRunResponse, error)
+	RepairRun(ctx context.Context, request RepairRun) (*JobsRepairRunWaiter, error)
 
 	// Update all job settings (reset).
 	//
@@ -207,7 +208,7 @@ type JobsInterface interface {
 	// Trigger a new job run.
 	//
 	// Run a job and return the `run_id` of the triggered run.
-	RunNow(ctx context.Context, request RunNow) (*RunNowResponse, error)
+	RunNow(ctx context.Context, request RunNow) (*JobsRunNowWaiter, error)
 
 	// Set job permissions.
 	//
@@ -222,7 +223,7 @@ type JobsInterface interface {
 	// without creating a job. Runs submitted using this endpoint don’t display in
 	// the UI. Use the `jobs/runs/get` API to check the run state after the job is
 	// submitted.
-	Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error)
+	Submit(ctx context.Context, request SubmitRun) (*JobsSubmitWaiter, error)
 
 	// Update job settings partially.
 	//
@@ -265,6 +266,57 @@ func NewJobs(client *client.DatabricksClient) *JobsAPI {
 // [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 type JobsAPI struct {
 	jobsImpl
+}
+
+// Cancel a run.
+//
+// Cancels a job run or a task run. The run is canceled asynchronously, so it
+// may still be running when this request completes.
+func (a *JobsAPI) CancelRun(ctx context.Context, cancelRun CancelRun) (*JobsCancelRunWaiter, error) {
+	cancelRunResponse, err := a.jobsImpl.CancelRun(ctx, cancelRun)
+	if err != nil {
+		return nil, err
+	}
+	return &JobsCancelRunWaiter{
+		Response: cancelRunResponse,
+		runId:    cancelRun.RunId,
+	}, nil
+}
+
+type JobsCancelRunWaiter struct {
+	Response *CancelRunResponse
+	service  *JobsAPI
+
+	runId int64
+}
+
+func (w *JobsCancelRunWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[Run](ctx, timeout, func() (*Run, *retries.Err) {
+		run, err := w.service.GetRun(ctx, GetRunRequest{
+			RunId: w.runId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := run.State.LifeCycleState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
+		switch status {
+		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
+			return run, nil
+		case RunLifeCycleStateInternalError:
+			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
+				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 // Cancel a run.
@@ -400,8 +452,162 @@ func (a *JobsAPI) GetBySettingsName(ctx context.Context, name string) (*BaseJob,
 	return &alternatives[0], nil
 }
 
-type PolicyComplianceForJobsInterface interface {
+// Repair a job run.
+//
+// Re-run one or more tasks. Tasks are re-run as part of the original job run.
+// They use the current job and task settings, and can be viewed in the history
+// for the original job run.
+func (a *JobsAPI) RepairRun(ctx context.Context, repairRun RepairRun) (*JobsRepairRunWaiter, error) {
+	repairRunResponse, err := a.jobsImpl.RepairRun(ctx, repairRun)
+	if err != nil {
+		return nil, err
+	}
+	return &JobsRepairRunWaiter{
+		Response: repairRunResponse,
+		runId:    repairRun.RunId,
+	}, nil
+}
 
+type JobsRepairRunWaiter struct {
+	Response *RepairRunResponse
+	service  *JobsAPI
+
+	runId int64
+}
+
+func (w *JobsRepairRunWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[Run](ctx, timeout, func() (*Run, *retries.Err) {
+		run, err := w.service.GetRun(ctx, GetRunRequest{
+			RunId: w.runId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := run.State.LifeCycleState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
+		switch status {
+		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
+			return run, nil
+		case RunLifeCycleStateInternalError:
+			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
+				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+// Trigger a new job run.
+//
+// Run a job and return the `run_id` of the triggered run.
+func (a *JobsAPI) RunNow(ctx context.Context, runNow RunNow) (*JobsRunNowWaiter, error) {
+	runNowResponse, err := a.jobsImpl.RunNow(ctx, runNow)
+	if err != nil {
+		return nil, err
+	}
+	return &JobsRunNowWaiter{
+		Response: runNowResponse,
+		runId:    runNowResponse.RunId,
+	}, nil
+}
+
+type JobsRunNowWaiter struct {
+	Response *RunNowResponse
+	service  *JobsAPI
+
+	runId int64
+}
+
+func (w *JobsRunNowWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[Run](ctx, timeout, func() (*Run, *retries.Err) {
+		run, err := w.service.GetRun(ctx, GetRunRequest{
+			RunId: w.runId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := run.State.LifeCycleState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
+		switch status {
+		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
+			return run, nil
+		case RunLifeCycleStateInternalError:
+			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
+				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+// Create and trigger a one-time run.
+//
+// Submit a one-time run. This endpoint allows you to submit a workload directly
+// without creating a job. Runs submitted using this endpoint don’t display in
+// the UI. Use the `jobs/runs/get` API to check the run state after the job is
+// submitted.
+func (a *JobsAPI) Submit(ctx context.Context, submitRun SubmitRun) (*JobsSubmitWaiter, error) {
+	submitRunResponse, err := a.jobsImpl.Submit(ctx, submitRun)
+	if err != nil {
+		return nil, err
+	}
+	return &JobsSubmitWaiter{
+		Response: submitRunResponse,
+		runId:    submitRunResponse.RunId,
+	}, nil
+}
+
+type JobsSubmitWaiter struct {
+	Response *SubmitRunResponse
+	service  *JobsAPI
+
+	runId int64
+}
+
+func (w *JobsSubmitWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[Run](ctx, timeout, func() (*Run, *retries.Err) {
+		run, err := w.service.GetRun(ctx, GetRunRequest{
+			RunId: w.runId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := run.State.LifeCycleState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
+		switch status {
+		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
+			return run, nil
+		case RunLifeCycleStateInternalError:
+			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
+				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+type PolicyComplianceForJobsInterface interface {
 	// Enforce job policy compliance.
 	//
 	// Updates a job so the job clusters that are created when running the job

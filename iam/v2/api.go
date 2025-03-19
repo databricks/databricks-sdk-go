@@ -13,7 +13,6 @@ import (
 )
 
 type AccessControlInterface interface {
-
 	// Check access policy to a resource.
 	CheckPolicy(ctx context.Context, request CheckPolicyRequest) (*CheckPolicyResponse, error)
 }
@@ -32,7 +31,6 @@ type AccessControlAPI struct {
 }
 
 type AccountAccessControlInterface interface {
-
 	// Get assignable roles for a resource.
 	//
 	// Gets all the roles that can be granted on an account level resource. A role
@@ -71,7 +69,6 @@ type AccountAccessControlAPI struct {
 }
 
 type AccountAccessControlProxyInterface interface {
-
 	// Get assignable roles for a resource.
 	//
 	// Gets all the roles that can be granted on an account-level resource. A role
@@ -111,7 +108,6 @@ type AccountAccessControlProxyAPI struct {
 }
 
 type AccountGroupsInterface interface {
-
 	// Create a new group.
 	//
 	// Creates a group in the Databricks account with a unique name, using the
@@ -272,7 +268,6 @@ func (a *AccountGroupsAPI) GetByDisplayName(ctx context.Context, name string) (*
 }
 
 type AccountServicePrincipalsInterface interface {
-
 	// Create a service principal.
 	//
 	// Creates a new service principal in the Databricks account.
@@ -437,7 +432,6 @@ func (a *AccountServicePrincipalsAPI) GetByDisplayName(ctx context.Context, name
 }
 
 type AccountUsersInterface interface {
-
 	// Create a new user.
 	//
 	// Creates a new user in the Databricks account. This new user will also be
@@ -606,7 +600,6 @@ func (a *AccountUsersAPI) GetByUserName(ctx context.Context, name string) (*User
 }
 
 type CurrentUserInterface interface {
-
 	// Get current user info.
 	//
 	// Get details about the current method caller's identity.
@@ -628,7 +621,6 @@ type CurrentUserAPI struct {
 }
 
 type GroupsInterface interface {
-
 	// Create a new group.
 	//
 	// Creates a group in the Databricks workspace with a unique name, using the
@@ -789,7 +781,6 @@ func (a *GroupsAPI) GetByDisplayName(ctx context.Context, name string) (*Group, 
 }
 
 type PermissionMigrationInterface interface {
-
 	// Migrate Permissions.
 	MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error)
 }
@@ -809,7 +800,6 @@ type PermissionMigrationAPI struct {
 }
 
 type PermissionsInterface interface {
-
 	// Get object permissions.
 	//
 	// Gets the permissions of an object. Objects can inherit permissions from their
@@ -934,7 +924,6 @@ func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectI
 }
 
 type ServicePrincipalsInterface interface {
-
 	// Create a service principal.
 	//
 	// Creates a new service principal in the Databricks workspace.
@@ -1099,7 +1088,6 @@ func (a *ServicePrincipalsAPI) GetByDisplayName(ctx context.Context, name string
 }
 
 type UsersInterface interface {
-
 	// Create a new user.
 	//
 	// Creates a new user in the Databricks workspace. This new user will also be
@@ -1292,7 +1280,6 @@ func (a *UsersAPI) GetByUserName(ctx context.Context, name string) (*User, error
 }
 
 type WorkspaceAssignmentInterface interface {
-
 	// Delete permissions assignment.
 	//
 	// Deletes the workspace permissions assignment in a given account and workspace

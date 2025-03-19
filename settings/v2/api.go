@@ -13,7 +13,6 @@ import (
 )
 
 type AccountIpAccessListsInterface interface {
-
 	// Create access list.
 	//
 	// Creates an IP access list for the account.
@@ -240,7 +239,6 @@ type AccountSettingsAPI struct {
 }
 
 type AibiDashboardEmbeddingAccessPolicyInterface interface {
-
 	// Delete the AI/BI dashboard embedding access policy.
 	//
 	// Delete the AI/BI dashboard embedding access policy, reverting back to the
@@ -276,7 +274,6 @@ type AibiDashboardEmbeddingAccessPolicyAPI struct {
 }
 
 type AibiDashboardEmbeddingApprovedDomainsInterface interface {
-
 	// Delete AI/BI dashboard embedding approved domains.
 	//
 	// Delete the list of domains approved to host embedded AI/BI dashboards,
@@ -312,7 +309,6 @@ type AibiDashboardEmbeddingApprovedDomainsAPI struct {
 }
 
 type AutomaticClusterUpdateInterface interface {
-
 	// Get the automatic cluster update setting.
 	//
 	// Gets the automatic cluster update setting.
@@ -343,7 +339,6 @@ type AutomaticClusterUpdateAPI struct {
 }
 
 type ComplianceSecurityProfileInterface interface {
-
 	// Get the compliance security profile setting.
 	//
 	// Gets the compliance security profile setting.
@@ -377,7 +372,6 @@ type ComplianceSecurityProfileAPI struct {
 }
 
 type CredentialsManagerInterface interface {
-
 	// Exchange token.
 	//
 	// Exchange tokens with an Identity Provider to get a new access token. It
@@ -400,7 +394,6 @@ type CredentialsManagerAPI struct {
 }
 
 type CspEnablementAccountInterface interface {
-
 	// Get the compliance security profile setting for new workspaces.
 	//
 	// Gets the compliance security profile setting for new workspaces.
@@ -433,7 +426,6 @@ type CspEnablementAccountAPI struct {
 }
 
 type DefaultNamespaceInterface interface {
-
 	// Delete the default namespace setting.
 	//
 	// Deletes the default namespace setting for the workspace. A fresh etag needs
@@ -485,7 +477,6 @@ type DefaultNamespaceAPI struct {
 }
 
 type DisableLegacyAccessInterface interface {
-
 	// Delete Legacy Access Disablement Status.
 	//
 	// Deletes legacy access disablement status.
@@ -522,7 +513,6 @@ type DisableLegacyAccessAPI struct {
 }
 
 type DisableLegacyDbfsInterface interface {
-
 	// Delete the disable legacy DBFS setting.
 	//
 	// Deletes the disable legacy DBFS setting for a workspace, reverting back to
@@ -556,7 +546,6 @@ type DisableLegacyDbfsAPI struct {
 }
 
 type DisableLegacyFeaturesInterface interface {
-
 	// Delete the disable legacy features setting.
 	//
 	// Deletes the disable legacy features setting.
@@ -592,7 +581,6 @@ type DisableLegacyFeaturesAPI struct {
 }
 
 type EnableIpAccessListsInterface interface {
-
 	// Delete the account IP access toggle setting.
 	//
 	// Reverts the value of the account IP access toggle setting to default (ON)
@@ -625,7 +613,6 @@ type EnableIpAccessListsAPI struct {
 }
 
 type EnhancedSecurityMonitoringInterface interface {
-
 	// Get the enhanced security monitoring setting.
 	//
 	// Gets the enhanced security monitoring setting.
@@ -661,7 +648,6 @@ type EnhancedSecurityMonitoringAPI struct {
 }
 
 type EsmEnablementAccountInterface interface {
-
 	// Get the enhanced security monitoring setting for new workspaces.
 	//
 	// Gets the enhanced security monitoring setting for new workspaces.
@@ -692,7 +678,6 @@ type EsmEnablementAccountAPI struct {
 }
 
 type IpAccessListsInterface interface {
-
 	// Create access list.
 	//
 	// Creates an IP access list for this workspace.
@@ -908,7 +893,6 @@ func (a *IpAccessListsAPI) GetByLabel(ctx context.Context, name string) (*IpAcce
 }
 
 type NetworkConnectivityInterface interface {
-
 	// Create a network connectivity configuration.
 	CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error)
 
@@ -1077,7 +1061,6 @@ func (a *NetworkConnectivityAPI) ListPrivateEndpointRulesByNetworkConnectivityCo
 }
 
 type NotificationDestinationsInterface interface {
-
 	// Create a notification destination.
 	//
 	// Creates a notification destination. Requires workspace admin permissions.
@@ -1160,7 +1143,6 @@ func (a *NotificationDestinationsAPI) GetById(ctx context.Context, id string) (*
 }
 
 type PersonalComputeInterface interface {
-
 	// Delete Personal Compute setting.
 	//
 	// Reverts back the Personal Compute setting value to default (ON)
@@ -1199,7 +1181,6 @@ type PersonalComputeAPI struct {
 }
 
 type RestrictWorkspaceAdminsInterface interface {
-
 	// Delete the restrict workspace admins setting.
 	//
 	// Reverts the restrict workspace admins setting status for the workspace. A
@@ -1267,7 +1248,6 @@ type SettingsAPI struct {
 }
 
 type TokenManagementInterface interface {
-
 	// Create on-behalf token.
 	//
 	// Creates a token on behalf of a service principal.
@@ -1437,7 +1417,6 @@ func (a *TokenManagementAPI) GetByComment(ctx context.Context, name string) (*To
 }
 
 type TokensInterface interface {
-
 	// Create a user token.
 	//
 	// Creates and returns a token for a user. If this call is made through token
@@ -1575,7 +1554,6 @@ func (a *TokensAPI) GetByComment(ctx context.Context, name string) (*PublicToken
 }
 
 type WorkspaceConfInterface interface {
-
 	// Check configuration status.
 	//
 	// Gets the configuration status for a workspace.

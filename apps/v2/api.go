@@ -5,17 +5,20 @@ package apps
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type AppsInterface interface {
-
 	// Create an app.
 	//
 	// Creates a new app.
-	Create(ctx context.Context, request CreateAppRequest) (*App, error)
+	Create(ctx context.Context, request CreateAppRequest) (*AppsCreateWaiter, error)
 
 	// Delete an app.
 	//
@@ -30,7 +33,7 @@ type AppsInterface interface {
 	// Create an app deployment.
 	//
 	// Creates an app deployment for the app with the supplied name.
-	Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error)
+	Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppsDeployWaiter, error)
 
 	// Get an app.
 	//
@@ -119,12 +122,12 @@ type AppsInterface interface {
 	// Start an app.
 	//
 	// Start the last active deployment of the app in the workspace.
-	Start(ctx context.Context, request StartAppRequest) (*App, error)
+	Start(ctx context.Context, request StartAppRequest) (*AppsStartWaiter, error)
 
 	// Stop an app.
 	//
 	// Stops the active deployment of the app in the workspace.
-	Stop(ctx context.Context, request StopAppRequest) (*App, error)
+	Stop(ctx context.Context, request StopAppRequest) (*AppsStopWaiter, error)
 
 	// Update an app.
 	//
@@ -153,6 +156,56 @@ type AppsAPI struct {
 	appsImpl
 }
 
+// Create an app.
+//
+// Creates a new app.
+func (a *AppsAPI) Create(ctx context.Context, createAppRequest CreateAppRequest) (*AppsCreateWaiter, error) {
+	app, err := a.appsImpl.Create(ctx, createAppRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &AppsCreateWaiter{
+		Response: app,
+		name:     app.Name,
+	}, nil
+}
+
+type AppsCreateWaiter struct {
+	Response *App
+	service  *AppsAPI
+
+	name string
+}
+
+func (w *AppsCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*App, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[App](ctx, timeout, func() (*App, *retries.Err) {
+		app, err := w.service.Get(ctx, GetAppRequest{
+			Name: w.name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := app.ComputeStatus.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if app.ComputeStatus != nil {
+			statusMessage = app.ComputeStatus.Message
+		}
+		switch status {
+		case ComputeStateActive: // target state
+			return app, nil
+		case ComputeStateError, ComputeStateStopped:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ComputeStateActive, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
 // Delete an app.
 //
 // Deletes an app.
@@ -160,6 +213,59 @@ func (a *AppsAPI) DeleteByName(ctx context.Context, name string) (*App, error) {
 	return a.appsImpl.Delete(ctx, DeleteAppRequest{
 		Name: name,
 	})
+}
+
+// Create an app deployment.
+//
+// Creates an app deployment for the app with the supplied name.
+func (a *AppsAPI) Deploy(ctx context.Context, createAppDeploymentRequest CreateAppDeploymentRequest) (*AppsDeployWaiter, error) {
+	appDeployment, err := a.appsImpl.Deploy(ctx, createAppDeploymentRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &AppsDeployWaiter{
+		Response:     appDeployment,
+		appName:      createAppDeploymentRequest.AppName,
+		deploymentId: appDeployment.DeploymentId,
+	}, nil
+}
+
+type AppsDeployWaiter struct {
+	Response *AppDeployment
+	service  *AppsAPI
+
+	appName      string
+	deploymentId string
+}
+
+func (w *AppsDeployWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*AppDeployment, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[AppDeployment](ctx, timeout, func() (*AppDeployment, *retries.Err) {
+		appDeployment, err := w.service.GetDeployment(ctx, GetAppDeploymentRequest{
+			AppName:      w.appName,
+			DeploymentId: w.deploymentId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := appDeployment.Status.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if appDeployment.Status != nil {
+			statusMessage = appDeployment.Status.Message
+		}
+		switch status {
+		case AppDeploymentStateSucceeded: // target state
+			return appDeployment, nil
+		case AppDeploymentStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				AppDeploymentStateSucceeded, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 // Get an app.
@@ -208,4 +314,104 @@ func (a *AppsAPI) ListDeploymentsByAppName(ctx context.Context, appName string) 
 	return a.appsImpl.internalListDeployments(ctx, ListAppDeploymentsRequest{
 		AppName: appName,
 	})
+}
+
+// Start an app.
+//
+// Start the last active deployment of the app in the workspace.
+func (a *AppsAPI) Start(ctx context.Context, startAppRequest StartAppRequest) (*AppsStartWaiter, error) {
+	app, err := a.appsImpl.Start(ctx, startAppRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &AppsStartWaiter{
+		Response: app,
+		name:     app.Name,
+	}, nil
+}
+
+type AppsStartWaiter struct {
+	Response *App
+	service  *AppsAPI
+
+	name string
+}
+
+func (w *AppsStartWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*App, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[App](ctx, timeout, func() (*App, *retries.Err) {
+		app, err := w.service.Get(ctx, GetAppRequest{
+			Name: w.name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := app.ComputeStatus.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if app.ComputeStatus != nil {
+			statusMessage = app.ComputeStatus.Message
+		}
+		switch status {
+		case ComputeStateActive: // target state
+			return app, nil
+		case ComputeStateError, ComputeStateStopped:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ComputeStateActive, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+// Stop an app.
+//
+// Stops the active deployment of the app in the workspace.
+func (a *AppsAPI) Stop(ctx context.Context, stopAppRequest StopAppRequest) (*AppsStopWaiter, error) {
+	app, err := a.appsImpl.Stop(ctx, stopAppRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &AppsStopWaiter{
+		Response: app,
+		name:     app.Name,
+	}, nil
+}
+
+type AppsStopWaiter struct {
+	Response *App
+	service  *AppsAPI
+
+	name string
+}
+
+func (w *AppsStopWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*App, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[App](ctx, timeout, func() (*App, *retries.Err) {
+		app, err := w.service.Get(ctx, GetAppRequest{
+			Name: w.name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := app.ComputeStatus.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if app.ComputeStatus != nil {
+			statusMessage = app.ComputeStatus.Message
+		}
+		switch status {
+		case ComputeStateStopped: // target state
+			return app, nil
+		case ComputeStateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ComputeStateStopped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }

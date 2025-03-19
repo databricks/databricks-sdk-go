@@ -11,7 +11,6 @@ import (
 )
 
 type AccountFederationPolicyInterface interface {
-
 	// Create account federation policy.
 	Create(ctx context.Context, request CreateAccountFederationPolicyRequest) (*FederationPolicy, error)
 
@@ -118,7 +117,6 @@ func (a *AccountFederationPolicyAPI) GetByPolicyId(ctx context.Context, policyId
 }
 
 type CustomAppIntegrationInterface interface {
-
 	// Create Custom OAuth App Integration.
 	//
 	// Create Custom OAuth App Integration.
@@ -240,7 +238,6 @@ type OAuthPublishedAppsAPI struct {
 }
 
 type PublishedAppIntegrationInterface interface {
-
 	// Create Published OAuth App Integration.
 	//
 	// Create Published OAuth App Integration.
@@ -329,7 +326,6 @@ func (a *PublishedAppIntegrationAPI) GetByIntegrationId(ctx context.Context, int
 }
 
 type ServicePrincipalFederationPolicyInterface interface {
-
 	// Create service principal federation policy.
 	Create(ctx context.Context, request CreateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error)
 
@@ -452,7 +448,6 @@ func (a *ServicePrincipalFederationPolicyAPI) ListByServicePrincipalId(ctx conte
 }
 
 type ServicePrincipalSecretsInterface interface {
-
 	// Create service principal secret.
 	//
 	// Create a secret for the given service principal.

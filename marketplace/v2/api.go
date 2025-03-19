@@ -101,7 +101,6 @@ func (a *ConsumerFulfillmentsAPI) ListByListingId(ctx context.Context, listingId
 }
 
 type ConsumerInstallationsInterface interface {
-
 	// Install from a listing.
 	//
 	// Install payload associated with a Databricks Marketplace listing.
@@ -194,7 +193,6 @@ func (a *ConsumerInstallationsAPI) ListListingInstallationsByListingId(ctx conte
 }
 
 type ConsumerListingsInterface interface {
-
 	// Get one batch of listings. One may specify up to 50 IDs per request.
 	//
 	// Batch get a published listing in the Databricks Marketplace that the consumer
@@ -344,7 +342,6 @@ func (a *ConsumerListingsAPI) GetBySummaryName(ctx context.Context, name string)
 }
 
 type ConsumerPersonalizationRequestsInterface interface {
-
 	// Create a personalization request.
 	//
 	// Create a personalization request for a listing.
@@ -402,7 +399,6 @@ func (a *ConsumerPersonalizationRequestsAPI) GetByListingId(ctx context.Context,
 }
 
 type ConsumerProvidersInterface interface {
-
 	// Get one batch of providers. One may specify up to 50 IDs per request.
 	//
 	// Batch get a provider in the Databricks Marketplace with at least one visible
@@ -533,7 +529,6 @@ func (a *ConsumerProvidersAPI) GetByName(ctx context.Context, name string) (*Pro
 }
 
 type ProviderExchangeFiltersInterface interface {
-
 	// Create a new exchange filter.
 	//
 	// Add an exchange filter.
@@ -663,7 +658,6 @@ func (a *ProviderExchangeFiltersAPI) GetByName(ctx context.Context, name string)
 }
 
 type ProviderExchangesInterface interface {
-
 	// Add an exchange for listing.
 	//
 	// Associate an exchange with a listing
@@ -1007,7 +1001,6 @@ func (a *ProviderExchangesAPI) GetByListingName(ctx context.Context, name string
 }
 
 type ProviderFilesInterface interface {
-
 	// Create a file.
 	//
 	// Create a file. Currently, only provider icons and attached notebooks are
@@ -1153,7 +1146,6 @@ func (a *ProviderFilesAPI) GetByDisplayName(ctx context.Context, name string) (*
 }
 
 type ProviderListingsInterface interface {
-
 	// Create a listing.
 	//
 	// Create a new listing
@@ -1342,7 +1334,6 @@ type ProviderPersonalizationRequestsAPI struct {
 }
 
 type ProviderProviderAnalyticsDashboardsInterface interface {
-
 	// Create provider analytics dashboard.
 	//
 	// Create provider analytics dashboard. Returns Marketplace specific `id`. Not
@@ -1379,7 +1370,6 @@ type ProviderProviderAnalyticsDashboardsAPI struct {
 }
 
 type ProviderProvidersInterface interface {
-
 	// Create a provider.
 	//
 	// Create a provider

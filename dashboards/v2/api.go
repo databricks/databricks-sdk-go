@@ -5,19 +5,22 @@ package dashboards
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type GenieInterface interface {
-
 	// Create conversation message.
 	//
 	// Create new message in a [conversation](:method:genie/startconversation). The
 	// AI response uses all previously created messages in the conversation to
 	// respond.
-	CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error)
+	CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieCreateMessageWaiter, error)
 
 	// Execute message attachment SQL query.
 	//
@@ -95,7 +98,7 @@ type GenieInterface interface {
 	// Start conversation.
 	//
 	// Start a new conversation.
-	StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error)
+	StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationWaiter, error)
 }
 
 func NewGenie(client *client.DatabricksClient) *GenieAPI {
@@ -113,6 +116,61 @@ func NewGenie(client *client.DatabricksClient) *GenieAPI {
 // Databricks Assistant must be enabled.
 type GenieAPI struct {
 	genieImpl
+}
+
+// Create conversation message.
+//
+// Create new message in a [conversation](:method:genie/startconversation). The
+// AI response uses all previously created messages in the conversation to
+// respond.
+func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest) (*GenieCreateMessageWaiter, error) {
+	genieMessage, err := a.genieImpl.CreateMessage(ctx, genieCreateConversationMessageRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &GenieCreateMessageWaiter{
+		Response:       genieMessage,
+		conversationId: genieCreateConversationMessageRequest.ConversationId,
+		messageId:      genieMessage.Id,
+		spaceId:        genieCreateConversationMessageRequest.SpaceId,
+	}, nil
+}
+
+type GenieCreateMessageWaiter struct {
+	Response *GenieMessage
+	service  *GenieAPI
+
+	conversationId string
+	messageId      string
+	spaceId        string
+}
+
+func (w *GenieCreateMessageWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*GenieMessage, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[GenieMessage](ctx, timeout, func() (*GenieMessage, *retries.Err) {
+		genieMessage, err := w.service.GetMessage(ctx, GenieGetConversationMessageRequest{
+			ConversationId: w.conversationId,
+			MessageId:      w.messageId,
+			SpaceId:        w.spaceId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := genieMessage.Status
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case MessageStatusCompleted: // target state
+			return genieMessage, nil
+		case MessageStatusFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				MessageStatusCompleted, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 // Get conversation message.
@@ -176,8 +234,60 @@ func (a *GenieAPI) GetSpaceBySpaceId(ctx context.Context, spaceId string) (*Geni
 	})
 }
 
-type LakeviewInterface interface {
+// Start conversation.
+//
+// Start a new conversation.
+func (a *GenieAPI) StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*GenieStartConversationWaiter, error) {
+	genieStartConversationResponse, err := a.genieImpl.StartConversation(ctx, genieStartConversationMessageRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &GenieStartConversationWaiter{
+		Response:       genieStartConversationResponse,
+		conversationId: genieStartConversationResponse.ConversationId,
+		messageId:      genieStartConversationResponse.MessageId,
+		spaceId:        genieStartConversationMessageRequest.SpaceId,
+	}, nil
+}
 
+type GenieStartConversationWaiter struct {
+	Response *GenieStartConversationResponse
+	service  *GenieAPI
+
+	conversationId string
+	messageId      string
+	spaceId        string
+}
+
+func (w *GenieStartConversationWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*GenieMessage, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[GenieMessage](ctx, timeout, func() (*GenieMessage, *retries.Err) {
+		genieMessage, err := w.service.GetMessage(ctx, GenieGetConversationMessageRequest{
+			ConversationId: w.conversationId,
+			MessageId:      w.messageId,
+			SpaceId:        w.spaceId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := genieMessage.Status
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case MessageStatusCompleted: // target state
+			return genieMessage, nil
+		case MessageStatusFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				MessageStatusCompleted, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+type LakeviewInterface interface {
 	// Create dashboard.
 	//
 	// Create a draft dashboard.
@@ -409,7 +519,6 @@ func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId st
 }
 
 type LakeviewEmbeddedInterface interface {
-
 	// Read a published dashboard in an embedded ui.
 	//
 	// Get the current published dashboard within an embedded context.
@@ -444,7 +553,6 @@ func (a *LakeviewEmbeddedAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx con
 }
 
 type QueryExecutionInterface interface {
-
 	// Cancel the results for the a query for a published, embedded dashboard.
 	CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error)
 

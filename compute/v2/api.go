@@ -6,14 +6,15 @@ package compute
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type ClusterPoliciesInterface interface {
-
 	// Create a new policy.
 	//
 	// Creates a new policy with prescribed settings.
@@ -246,7 +247,6 @@ func (a *ClusterPoliciesAPI) GetByName(ctx context.Context, name string) (*Polic
 
 type ClustersInterface interface {
 	clustersAPIUtilities
-
 	// Change cluster owner.
 	//
 	// Change the owner of the cluster. You must be an admin and the cluster must be
@@ -270,7 +270,7 @@ type ClustersInterface interface {
 	// JSON definition from the UI.
 	//
 	// [create compute UI]: https://docs.databricks.com/compute/configure.html
-	Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error)
+	Create(ctx context.Context, request CreateCluster) (*ClustersCreateWaiter, error)
 
 	// Terminate cluster.
 	//
@@ -278,7 +278,7 @@ type ClustersInterface interface {
 	// asynchronously. Once the termination has completed, the cluster will be in a
 	// `TERMINATED` state. If the cluster is already in a `TERMINATING` or
 	// `TERMINATED` state, nothing will happen.
-	Delete(ctx context.Context, request DeleteCluster) (*DeleteClusterResponse, error)
+	Delete(ctx context.Context, request DeleteCluster) (*ClustersDeleteWaiter, error)
 
 	// Terminate cluster.
 	//
@@ -302,7 +302,7 @@ type ClustersInterface interface {
 	// state will be rejected with an `INVALID_STATE` error code.
 	//
 	// Clusters created by the Databricks Jobs service cannot be edited.
-	Edit(ctx context.Context, request EditCluster) (*EditClusterResponse, error)
+	Edit(ctx context.Context, request EditCluster) (*ClustersEditWaiter, error)
 
 	// List cluster activity events.
 	//
@@ -442,13 +442,13 @@ type ClustersInterface interface {
 	//
 	// Resizes a cluster to have a desired number of workers. This will fail unless
 	// the cluster is in a `RUNNING` state.
-	Resize(ctx context.Context, request ResizeCluster) (*ResizeClusterResponse, error)
+	Resize(ctx context.Context, request ResizeCluster) (*ClustersResizeWaiter, error)
 
 	// Restart cluster.
 	//
 	// Restarts a Spark cluster with the supplied ID. If the cluster is not
 	// currently in a `RUNNING` state, nothing will happen.
-	Restart(ctx context.Context, request RestartCluster) (*RestartClusterResponse, error)
+	Restart(ctx context.Context, request RestartCluster) (*ClustersRestartWaiter, error)
 
 	// Set cluster permissions.
 	//
@@ -473,7 +473,7 @@ type ClustersInterface interface {
 	// autoscaling cluster, the current cluster starts with the minimum number of
 	// nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 	// will happen. * Clusters launched to run a job cannot be started.
-	Start(ctx context.Context, request StartCluster) (*StartClusterResponse, error)
+	Start(ctx context.Context, request StartCluster) (*ClustersStartWaiter, error)
 
 	// Start terminated cluster.
 	//
@@ -513,7 +513,7 @@ type ClustersInterface interface {
 	// using the `clusters/start` API. Attempts to update a cluster in any other
 	// state will be rejected with an `INVALID_STATE` error code. Clusters created
 	// by the Databricks Jobs service cannot be updated.
-	Update(ctx context.Context, request UpdateCluster) (*UpdateClusterResponse, error)
+	Update(ctx context.Context, request UpdateCluster) (*ClustersUpdateWaiter, error)
 
 	// Update cluster permissions.
 	//
@@ -560,6 +560,116 @@ type ClustersAPI struct {
 	clustersImpl
 }
 
+// Create new cluster.
+//
+// Creates a new Spark cluster. This method will acquire new instances from the
+// cloud provider if necessary. Note: Databricks may not be able to acquire some
+// of the requested nodes, due to cloud provider limitations (account limits,
+// spot price, etc.) or transient network issues.
+//
+// If Databricks acquires at least 85% of the requested on-demand nodes, cluster
+// creation will succeed. Otherwise the cluster will terminate with an
+// informative error message.
+//
+// Rather than authoring the cluster's JSON definition from scratch, Databricks
+// recommends filling out the [create compute UI] and then copying the generated
+// JSON definition from the UI.
+//
+// [create compute UI]: https://docs.databricks.com/compute/configure.html
+func (a *ClustersAPI) Create(ctx context.Context, createCluster CreateCluster) (*ClustersCreateWaiter, error) {
+	createClusterResponse, err := a.clustersImpl.Create(ctx, createCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &ClustersCreateWaiter{
+		Response:  createClusterResponse,
+		clusterId: createClusterResponse.ClusterId,
+	}, nil
+}
+
+type ClustersCreateWaiter struct {
+	Response *CreateClusterResponse
+	service  *ClustersAPI
+
+	clusterId string
+}
+
+func (w *ClustersCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
+			ClusterId: w.clusterId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := clusterDetails.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case StateRunning: // target state
+			return clusterDetails, nil
+		case StateError, StateTerminated:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+// Terminate cluster.
+//
+// Terminates the Spark cluster with the specified ID. The cluster is removed
+// asynchronously. Once the termination has completed, the cluster will be in a
+// `TERMINATED` state. If the cluster is already in a `TERMINATING` or
+// `TERMINATED` state, nothing will happen.
+func (a *ClustersAPI) Delete(ctx context.Context, deleteCluster DeleteCluster) (*ClustersDeleteWaiter, error) {
+	deleteClusterResponse, err := a.clustersImpl.Delete(ctx, deleteCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &ClustersDeleteWaiter{
+		Response:  deleteClusterResponse,
+		clusterId: deleteCluster.ClusterId,
+	}, nil
+}
+
+type ClustersDeleteWaiter struct {
+	Response *DeleteClusterResponse
+	service  *ClustersAPI
+
+	clusterId string
+}
+
+func (w *ClustersDeleteWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
+			ClusterId: w.clusterId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := clusterDetails.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case StateTerminated: // target state
+			return clusterDetails, nil
+		case StateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateTerminated, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
 // Terminate cluster.
 //
 // Terminates the Spark cluster with the specified ID. The cluster is removed
@@ -570,6 +680,64 @@ func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) (
 	return a.clustersImpl.Delete(ctx, DeleteCluster{
 		ClusterId: clusterId,
 	})
+}
+
+// Update cluster configuration.
+//
+// Updates the configuration of a cluster to match the provided attributes and
+// size. A cluster can be updated if it is in a `RUNNING` or `TERMINATED` state.
+//
+// If a cluster is updated while in a `RUNNING` state, it will be restarted so
+// that the new attributes can take effect.
+//
+// If a cluster is updated while in a `TERMINATED` state, it will remain
+// `TERMINATED`. The next time it is started using the `clusters/start` API, the
+// new attributes will take effect. Any attempt to update a cluster in any other
+// state will be rejected with an `INVALID_STATE` error code.
+//
+// Clusters created by the Databricks Jobs service cannot be edited.
+func (a *ClustersAPI) Edit(ctx context.Context, editCluster EditCluster) (*ClustersEditWaiter, error) {
+	editClusterResponse, err := a.clustersImpl.Edit(ctx, editCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &ClustersEditWaiter{
+		Response:  editClusterResponse,
+		clusterId: editCluster.ClusterId,
+	}, nil
+}
+
+type ClustersEditWaiter struct {
+	Response *EditClusterResponse
+	service  *ClustersAPI
+
+	clusterId string
+}
+
+func (w *ClustersEditWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
+			ClusterId: w.clusterId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := clusterDetails.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case StateRunning: // target state
+			return clusterDetails, nil
+		case StateError, StateTerminated:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 // Get cluster info.
@@ -679,6 +847,156 @@ func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) (*Pi
 	})
 }
 
+// Resize cluster.
+//
+// Resizes a cluster to have a desired number of workers. This will fail unless
+// the cluster is in a `RUNNING` state.
+func (a *ClustersAPI) Resize(ctx context.Context, resizeCluster ResizeCluster) (*ClustersResizeWaiter, error) {
+	resizeClusterResponse, err := a.clustersImpl.Resize(ctx, resizeCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &ClustersResizeWaiter{
+		Response:  resizeClusterResponse,
+		clusterId: resizeCluster.ClusterId,
+	}, nil
+}
+
+type ClustersResizeWaiter struct {
+	Response *ResizeClusterResponse
+	service  *ClustersAPI
+
+	clusterId string
+}
+
+func (w *ClustersResizeWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
+			ClusterId: w.clusterId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := clusterDetails.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case StateRunning: // target state
+			return clusterDetails, nil
+		case StateError, StateTerminated:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+// Restart cluster.
+//
+// Restarts a Spark cluster with the supplied ID. If the cluster is not
+// currently in a `RUNNING` state, nothing will happen.
+func (a *ClustersAPI) Restart(ctx context.Context, restartCluster RestartCluster) (*ClustersRestartWaiter, error) {
+	restartClusterResponse, err := a.clustersImpl.Restart(ctx, restartCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &ClustersRestartWaiter{
+		Response:  restartClusterResponse,
+		clusterId: restartCluster.ClusterId,
+	}, nil
+}
+
+type ClustersRestartWaiter struct {
+	Response *RestartClusterResponse
+	service  *ClustersAPI
+
+	clusterId string
+}
+
+func (w *ClustersRestartWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
+			ClusterId: w.clusterId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := clusterDetails.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case StateRunning: // target state
+			return clusterDetails, nil
+		case StateError, StateTerminated:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+// Start terminated cluster.
+//
+// Starts a terminated Spark cluster with the supplied ID. This works similar to
+// `createCluster` except:
+//
+// * The previous cluster id and attributes are preserved. * The cluster starts
+// with the last specified cluster size. * If the previous cluster was an
+// autoscaling cluster, the current cluster starts with the minimum number of
+// nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
+// will happen. * Clusters launched to run a job cannot be started.
+func (a *ClustersAPI) Start(ctx context.Context, startCluster StartCluster) (*ClustersStartWaiter, error) {
+	startClusterResponse, err := a.clustersImpl.Start(ctx, startCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &ClustersStartWaiter{
+		Response:  startClusterResponse,
+		clusterId: startCluster.ClusterId,
+	}, nil
+}
+
+type ClustersStartWaiter struct {
+	Response *StartClusterResponse
+	service  *ClustersAPI
+
+	clusterId string
+}
+
+func (w *ClustersStartWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
+			ClusterId: w.clusterId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := clusterDetails.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case StateRunning: // target state
+			return clusterDetails, nil
+		case StateError, StateTerminated:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
 // Start terminated cluster.
 //
 // Starts a terminated Spark cluster with the supplied ID. This works similar to
@@ -706,15 +1024,70 @@ func (a *ClustersAPI) UnpinByClusterId(ctx context.Context, clusterId string) (*
 	})
 }
 
+// Update cluster configuration (partial).
+//
+// Updates the configuration of a cluster to match the partial set of attributes
+// and size. Denote which fields to update using the `update_mask` field in the
+// request body. A cluster can be updated if it is in a `RUNNING` or
+// `TERMINATED` state. If a cluster is updated while in a `RUNNING` state, it
+// will be restarted so that the new attributes can take effect. If a cluster is
+// updated while in a `TERMINATED` state, it will remain `TERMINATED`. The
+// updated attributes will take effect the next time the cluster is started
+// using the `clusters/start` API. Attempts to update a cluster in any other
+// state will be rejected with an `INVALID_STATE` error code. Clusters created
+// by the Databricks Jobs service cannot be updated.
+func (a *ClustersAPI) Update(ctx context.Context, updateCluster UpdateCluster) (*ClustersUpdateWaiter, error) {
+	updateClusterResponse, err := a.clustersImpl.Update(ctx, updateCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &ClustersUpdateWaiter{
+		Response:  updateClusterResponse,
+		clusterId: updateCluster.ClusterId,
+	}, nil
+}
+
+type ClustersUpdateWaiter struct {
+	Response *UpdateClusterResponse
+	service  *ClustersAPI
+
+	clusterId string
+}
+
+func (w *ClustersUpdateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
+			ClusterId: w.clusterId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := clusterDetails.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case StateRunning: // target state
+			return clusterDetails, nil
+		case StateError, StateTerminated:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
 type CommandExecutionInterface interface {
 	commandExecutionAPIUtilities
-
 	// Cancel a command.
 	//
 	// Cancels a currently running command within an execution context.
 	//
 	// The command ID is obtained from a prior successful call to __execute__.
-	Cancel(ctx context.Context, request CancelCommand) (*CancelResponse, error)
+	Cancel(ctx context.Context, request CancelCommand) (*CommandExecutionCancelWaiter, error)
 
 	// Get command info.
 	//
@@ -734,7 +1107,7 @@ type CommandExecutionInterface interface {
 	// Creates an execution context for running cluster commands.
 	//
 	// If successful, this method returns the ID of the new execution context.
-	Create(ctx context.Context, request CreateContext) (*Created, error)
+	Create(ctx context.Context, request CreateContext) (*CommandExecutionCreateWaiter, error)
 
 	// Delete an execution context.
 	//
@@ -748,7 +1121,7 @@ type CommandExecutionInterface interface {
 	//
 	// If successful, it returns an ID for tracking the status of the command's
 	// execution.
-	Execute(ctx context.Context, request Command) (*Created, error)
+	Execute(ctx context.Context, request Command) (*CommandExecutionExecuteWaiter, error)
 }
 
 func NewCommandExecution(client *client.DatabricksClient) *CommandExecutionAPI {
@@ -766,8 +1139,174 @@ type CommandExecutionAPI struct {
 	commandExecutionImpl
 }
 
-type GlobalInitScriptsInterface interface {
+// Cancel a command.
+//
+// Cancels a currently running command within an execution context.
+//
+// The command ID is obtained from a prior successful call to __execute__.
+func (a *CommandExecutionAPI) Cancel(ctx context.Context, cancelCommand CancelCommand) (*CommandExecutionCancelWaiter, error) {
+	cancelResponse, err := a.commandExecutionImpl.Cancel(ctx, cancelCommand)
+	if err != nil {
+		return nil, err
+	}
+	return &CommandExecutionCancelWaiter{
+		Response:  cancelResponse,
+		clusterId: cancelCommand.ClusterId,
+		commandId: cancelCommand.CommandId,
+		contextId: cancelCommand.ContextId,
+	}, nil
+}
 
+type CommandExecutionCancelWaiter struct {
+	Response *CancelResponse
+	service  *CommandExecutionAPI
+
+	clusterId string
+	commandId string
+	contextId string
+}
+
+func (w *CommandExecutionCancelWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*CommandStatusResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[CommandStatusResponse](ctx, timeout, func() (*CommandStatusResponse, *retries.Err) {
+		commandStatusResponse, err := w.service.CommandStatus(ctx, CommandStatusRequest{
+			ClusterId: w.clusterId,
+			CommandId: w.commandId,
+			ContextId: w.contextId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := commandStatusResponse.Status
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if commandStatusResponse.Results != nil {
+			statusMessage = commandStatusResponse.Results.Cause
+		}
+		switch status {
+		case CommandStatusCancelled: // target state
+			return commandStatusResponse, nil
+		case CommandStatusError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				CommandStatusCancelled, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+// Create an execution context.
+//
+// Creates an execution context for running cluster commands.
+//
+// If successful, this method returns the ID of the new execution context.
+func (a *CommandExecutionAPI) Create(ctx context.Context, createContext CreateContext) (*CommandExecutionCreateWaiter, error) {
+	created, err := a.commandExecutionImpl.Create(ctx, createContext)
+	if err != nil {
+		return nil, err
+	}
+	return &CommandExecutionCreateWaiter{
+		Response:  created,
+		clusterId: createContext.ClusterId,
+		contextId: created.Id,
+	}, nil
+}
+
+type CommandExecutionCreateWaiter struct {
+	Response *Created
+	service  *CommandExecutionAPI
+
+	clusterId string
+	contextId string
+}
+
+func (w *CommandExecutionCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ContextStatusResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[ContextStatusResponse](ctx, timeout, func() (*ContextStatusResponse, *retries.Err) {
+		contextStatusResponse, err := w.service.ContextStatus(ctx, ContextStatusRequest{
+			ClusterId: w.clusterId,
+			ContextId: w.contextId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := contextStatusResponse.Status
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case ContextStatusRunning: // target state
+			return contextStatusResponse, nil
+		case ContextStatusError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ContextStatusRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+// Run a command.
+//
+// Runs a cluster command in the given execution context, using the provided
+// language.
+//
+// If successful, it returns an ID for tracking the status of the command's
+// execution.
+func (a *CommandExecutionAPI) Execute(ctx context.Context, command Command) (*CommandExecutionExecuteWaiter, error) {
+	created, err := a.commandExecutionImpl.Execute(ctx, command)
+	if err != nil {
+		return nil, err
+	}
+	return &CommandExecutionExecuteWaiter{
+		Response:  created,
+		clusterId: command.ClusterId,
+		commandId: created.Id,
+		contextId: command.ContextId,
+	}, nil
+}
+
+type CommandExecutionExecuteWaiter struct {
+	Response *Created
+	service  *CommandExecutionAPI
+
+	clusterId string
+	commandId string
+	contextId string
+}
+
+func (w *CommandExecutionExecuteWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*CommandStatusResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[CommandStatusResponse](ctx, timeout, func() (*CommandStatusResponse, *retries.Err) {
+		commandStatusResponse, err := w.service.CommandStatus(ctx, CommandStatusRequest{
+			ClusterId: w.clusterId,
+			CommandId: w.commandId,
+			ContextId: w.contextId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := commandStatusResponse.Status
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case CommandStatusFinished, CommandStatusError: // target state
+			return commandStatusResponse, nil
+		case CommandStatusCancelled, CommandStatusCancelling:
+			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
+				CommandStatusFinished, CommandStatusError, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+type GlobalInitScriptsInterface interface {
 	// Create init script.
 	//
 	// Creates a new global init script in this workspace.
@@ -932,7 +1471,6 @@ func (a *GlobalInitScriptsAPI) GetByName(ctx context.Context, name string) (*Glo
 }
 
 type InstancePoolsInterface interface {
-
 	// Create a new instance pool.
 	//
 	// Creates a new instance pool using idle and ready-to-use cloud instances.
@@ -1155,7 +1693,6 @@ func (a *InstancePoolsAPI) GetByInstancePoolName(ctx context.Context, name strin
 }
 
 type InstanceProfilesInterface interface {
-
 	// Register an instance profile.
 	//
 	// In the UI, you can select the instance profile when launching clusters. This
@@ -1360,7 +1897,6 @@ func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId s
 }
 
 type PolicyComplianceForClustersInterface interface {
-
 	// Enforce cluster policy compliance.
 	//
 	// Updates a cluster to be compliant with the current version of its policy. A
@@ -1442,7 +1978,6 @@ func (a *PolicyComplianceForClustersAPI) GetComplianceByClusterId(ctx context.Co
 }
 
 type PolicyFamiliesInterface interface {
-
 	// Get policy family information.
 	//
 	// Retrieve the information for an policy family based on its identifier and

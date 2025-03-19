@@ -12,7 +12,6 @@ import (
 
 type DbfsInterface interface {
 	dbfsAPIUtilities
-
 	// Append data block.
 	//
 	// Appends a block of data to the stream specified by the input handle. If the
@@ -255,7 +254,6 @@ func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) (*MkDirsRespons
 }
 
 type FilesInterface interface {
-
 	// Create a directory.
 	//
 	// Creates an empty directory. If necessary, also creates any parent directories

@@ -13,7 +13,6 @@ import (
 )
 
 type ProvidersInterface interface {
-
 	// Create an auth provider.
 	//
 	// Creates a new authentication provider minimally based on a name and
@@ -205,7 +204,6 @@ func (a *ProvidersAPI) ListSharesByName(ctx context.Context, name string) (*List
 }
 
 type RecipientActivationInterface interface {
-
 	// Get a share activation URL.
 	//
 	// Gets an activation URL for a share.
@@ -271,7 +269,6 @@ func (a *RecipientActivationAPI) RetrieveTokenByActivationUrl(ctx context.Contex
 }
 
 type RecipientsInterface interface {
-
 	// Create a share recipient.
 	//
 	// Creates a new recipient with the delta sharing authentication type in the
@@ -413,7 +410,6 @@ func (a *RecipientsAPI) SharePermissionsByName(ctx context.Context, name string)
 }
 
 type SharesInterface interface {
-
 	// Create a share.
 	//
 	// Creates a new share for data objects. Data objects can be added after

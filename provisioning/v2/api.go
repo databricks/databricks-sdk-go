@@ -6,13 +6,14 @@ package provisioning
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type CredentialsInterface interface {
-
 	// Create credential configuration.
 	//
 	// Creates a Databricks credential configuration that represents cloud
@@ -174,7 +175,6 @@ func (a *CredentialsAPI) GetByCredentialsName(ctx context.Context, name string) 
 }
 
 type EncryptionKeysInterface interface {
-
 	// Create encryption key configuration.
 	//
 	// Creates a customer-managed key configuration object for an account, specified
@@ -326,7 +326,6 @@ func (a *EncryptionKeysAPI) GetByCustomerManagedKeyId(ctx context.Context, custo
 }
 
 type NetworksInterface interface {
-
 	// Create network configuration.
 	//
 	// Creates a Databricks network configuration that represents an VPC and its
@@ -487,7 +486,6 @@ func (a *NetworksAPI) GetByNetworkName(ctx context.Context, name string) (*Netwo
 }
 
 type PrivateAccessInterface interface {
-
 	// Create private access settings.
 	//
 	// Creates a private access settings object, which specifies how your workspace
@@ -704,7 +702,6 @@ func (a *PrivateAccessAPI) GetByPrivateAccessSettingsName(ctx context.Context, n
 }
 
 type StorageInterface interface {
-
 	// Create new storage configuration.
 	//
 	// Creates new storage configuration for an account, specified by ID. Uploads a
@@ -857,7 +854,6 @@ func (a *StorageAPI) GetByStorageConfigurationName(ctx context.Context, name str
 }
 
 type VpcEndpointsInterface interface {
-
 	// Create VPC endpoint configuration.
 	//
 	// Creates a VPC endpoint configuration, which represents a [VPC endpoint]
@@ -1046,7 +1042,6 @@ func (a *VpcEndpointsAPI) GetByVpcEndpointName(ctx context.Context, name string)
 }
 
 type WorkspacesInterface interface {
-
 	// Create a new workspace.
 	//
 	// Creates a new workspace.
@@ -1058,7 +1053,7 @@ type WorkspacesInterface interface {
 	// (`workspace_id`) field in the response to identify the new workspace and make
 	// repeated `GET` requests with the workspace ID and check its status. The
 	// workspace becomes available when the status changes to `RUNNING`.
-	Create(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error)
+	Create(ctx context.Context, request CreateWorkspaceRequest) (*WorkspacesCreateWaiter, error)
 
 	// Delete a workspace.
 	//
@@ -1269,7 +1264,7 @@ type WorkspacesInterface interface {
 	//
 	// [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
 	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-	Update(ctx context.Context, request UpdateWorkspaceRequest) (*UpdateResponse, error)
+	Update(ctx context.Context, request UpdateWorkspaceRequest) (*WorkspacesUpdateWaiter, error)
 }
 
 func NewWorkspaces(client *client.DatabricksClient) *WorkspacesAPI {
@@ -1291,6 +1286,61 @@ func NewWorkspaces(client *client.DatabricksClient) *WorkspacesAPI {
 // account.
 type WorkspacesAPI struct {
 	workspacesImpl
+}
+
+// Create a new workspace.
+//
+// Creates a new workspace.
+//
+// **Important**: This operation is asynchronous. A response with HTTP status
+// code 200 means the request has been accepted and is in progress, but does not
+// mean that the workspace deployed successfully and is running. The initial
+// workspace status is typically `PROVISIONING`. Use the workspace ID
+// (`workspace_id`) field in the response to identify the new workspace and make
+// repeated `GET` requests with the workspace ID and check its status. The
+// workspace becomes available when the status changes to `RUNNING`.
+func (a *WorkspacesAPI) Create(ctx context.Context, createWorkspaceRequest CreateWorkspaceRequest) (*WorkspacesCreateWaiter, error) {
+	workspace, err := a.workspacesImpl.Create(ctx, createWorkspaceRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WorkspacesCreateWaiter{
+		Response:    workspace,
+		workspaceId: workspace.WorkspaceId,
+	}, nil
+}
+
+type WorkspacesCreateWaiter struct {
+	Response *Workspace
+	service  *WorkspacesAPI
+
+	workspaceId int64
+}
+
+func (w *WorkspacesCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Workspace, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[Workspace](ctx, timeout, func() (*Workspace, *retries.Err) {
+		workspace, err := w.service.Get(ctx, GetWorkspaceRequest{
+			WorkspaceId: w.workspaceId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := workspace.WorkspaceStatus
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case WorkspaceStatusRunning: // target state
+			return workspace, nil
+		case WorkspaceStatusBanned, WorkspaceStatusFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				WorkspaceStatusRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 // Delete a workspace.
@@ -1382,4 +1432,170 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 		return nil, fmt.Errorf("there are %d instances of Workspace named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
+}
+
+// Update workspace configuration.
+//
+// Updates a workspace configuration for either a running workspace or a failed
+// workspace. The elements that can be updated varies between these two use
+// cases.
+//
+// ### Update a failed workspace You can update a Databricks workspace
+// configuration for failed workspace deployment for some fields, but not all
+// fields. For a failed workspace, this request supports updates to the
+// following fields only: - Credential configuration ID - Storage configuration
+// ID - Network configuration ID. Used only to add or change a network
+// configuration for a customer-managed VPC. For a failed workspace only, you
+// can convert a workspace with Databricks-managed VPC to use a customer-managed
+// VPC by adding this ID. You cannot downgrade a workspace with a
+// customer-managed VPC to be a Databricks-managed VPC. You can update the
+// network configuration for a failed or running workspace to add PrivateLink
+// support, though you must also add a private access settings object. - Key
+// configuration ID for managed services (control plane storage, such as
+// notebook source and Databricks SQL queries). Used only if you use
+// customer-managed keys for managed services. - Key configuration ID for
+// workspace storage (root S3 bucket and, optionally, EBS volumes). Used only if
+// you use customer-managed keys for workspace storage. **Important**: If the
+// workspace was ever in the running state, even if briefly before becoming a
+// failed workspace, you cannot add a new key configuration ID for workspace
+// storage. - Private access settings ID to add PrivateLink support. You can add
+// or update the private access settings ID to upgrade a workspace to add
+// support for front-end, back-end, or both types of connectivity. You cannot
+// remove (downgrade) any existing front-end or back-end PrivateLink support on
+// a workspace. - Custom tags. Given you provide an empty custom tags, the
+// update would not be applied. - Network connectivity configuration ID to add
+// serverless stable IP support. You can add or update the network connectivity
+// configuration ID to ensure the workspace uses the same set of stable IP CIDR
+// blocks to access your resources. You cannot remove a network connectivity
+// configuration from the workspace once attached, you can only switch to
+// another one.
+//
+// After calling the `PATCH` operation to update the workspace configuration,
+// make repeated `GET` requests with the workspace ID and check the workspace
+// status. The workspace is successful if the status changes to `RUNNING`.
+//
+// For information about how to create a new workspace with this API **including
+// error handling**, see [Create a new workspace using the Account API].
+//
+// ### Update a running workspace You can update a Databricks workspace
+// configuration for running workspaces for some fields, but not all fields. For
+// a running workspace, this request supports updating the following fields
+// only: - Credential configuration ID - Network configuration ID. Used only if
+// you already use a customer-managed VPC. You cannot convert a running
+// workspace from a Databricks-managed VPC to a customer-managed VPC. You can
+// use a network configuration update in this API for a failed or running
+// workspace to add support for PrivateLink, although you also need to add a
+// private access settings object. - Key configuration ID for managed services
+// (control plane storage, such as notebook source and Databricks SQL queries).
+// Databricks does not directly encrypt the data with the customer-managed key
+// (CMK). Databricks uses both the CMK and the Databricks managed key (DMK) that
+// is unique to your workspace to encrypt the Data Encryption Key (DEK).
+// Databricks uses the DEK to encrypt your workspace's managed services
+// persisted data. If the workspace does not already have a CMK for managed
+// services, adding this ID enables managed services encryption for new or
+// updated data. Existing managed services data that existed before adding the
+// key remains not encrypted with the DEK until it is modified. If the workspace
+// already has customer-managed keys for managed services, this request rotates
+// (changes) the CMK keys and the DEK is re-encrypted with the DMK and the new
+// CMK. - Key configuration ID for workspace storage (root S3 bucket and,
+// optionally, EBS volumes). You can set this only if the workspace does not
+// already have a customer-managed key configuration for workspace storage. -
+// Private access settings ID to add PrivateLink support. You can add or update
+// the private access settings ID to upgrade a workspace to add support for
+// front-end, back-end, or both types of connectivity. You cannot remove
+// (downgrade) any existing front-end or back-end PrivateLink support on a
+// workspace. - Custom tags. Given you provide an empty custom tags, the update
+// would not be applied. - Network connectivity configuration ID to add
+// serverless stable IP support. You can add or update the network connectivity
+// configuration ID to ensure the workspace uses the same set of stable IP CIDR
+// blocks to access your resources. You cannot remove a network connectivity
+// configuration from the workspace once attached, you can only switch to
+// another one.
+//
+// **Important**: To update a running workspace, your workspace must have no
+// running compute resources that run in your workspace's VPC in the Classic
+// data plane. For example, stop all all-purpose clusters, job clusters, pools
+// with running clusters, and Classic SQL warehouses. If you do not terminate
+// all cluster instances in the workspace before calling this API, the request
+// will fail.
+//
+// ### Wait until changes take effect. After calling the `PATCH` operation to
+// update the workspace configuration, make repeated `GET` requests with the
+// workspace ID and check the workspace status and the status of the fields. *
+// For workspaces with a Databricks-managed VPC, the workspace status becomes
+// `PROVISIONING` temporarily (typically under 20 minutes). If the workspace
+// update is successful, the workspace status changes to `RUNNING`. Note that
+// you can also check the workspace status in the [Account Console]. However,
+// you cannot use or create clusters for another 20 minutes after that status
+// change. This results in a total of up to 40 minutes in which you cannot
+// create clusters. If you create or use clusters before this time interval
+// elapses, clusters do not launch successfully, fail, or could cause other
+// unexpected behavior. * For workspaces with a customer-managed VPC, the
+// workspace status stays at status `RUNNING` and the VPC change happens
+// immediately. A change to the storage customer-managed key configuration ID
+// might take a few minutes to update, so continue to check the workspace until
+// you observe that it has been updated. If the update fails, the workspace
+// might revert silently to its original configuration. After the workspace has
+// been updated, you cannot use or create clusters for another 20 minutes. If
+// you create or use clusters before this time interval elapses, clusters do not
+// launch successfully, fail, or could cause other unexpected behavior.
+//
+// If you update the _storage_ customer-managed key configurations, it takes 20
+// minutes for the changes to fully take effect. During the 20 minute wait, it
+// is important that you stop all REST API calls to the DBFS API. If you are
+// modifying _only the managed services key configuration_, you can omit the 20
+// minute wait.
+//
+// **Important**: Customer-managed keys and customer-managed VPCs are supported
+// by only some deployment types and subscription types. If you have questions
+// about availability, contact your Databricks representative.
+//
+// This operation is available only if your account is on the E2 version of the
+// platform or on a select custom plan that allows multiple workspaces per
+// account.
+//
+// [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
+// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
+func (a *WorkspacesAPI) Update(ctx context.Context, updateWorkspaceRequest UpdateWorkspaceRequest) (*WorkspacesUpdateWaiter, error) {
+	updateResponse, err := a.workspacesImpl.Update(ctx, updateWorkspaceRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WorkspacesUpdateWaiter{
+		Response:    updateResponse,
+		workspaceId: updateWorkspaceRequest.WorkspaceId,
+	}, nil
+}
+
+type WorkspacesUpdateWaiter struct {
+	Response *UpdateResponse
+	service  *WorkspacesAPI
+
+	workspaceId int64
+}
+
+func (w *WorkspacesUpdateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Workspace, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[Workspace](ctx, timeout, func() (*Workspace, *retries.Err) {
+		workspace, err := w.service.Get(ctx, GetWorkspaceRequest{
+			WorkspaceId: w.workspaceId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := workspace.WorkspaceStatus
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case WorkspaceStatusRunning: // target state
+			return workspace, nil
+		case WorkspaceStatusBanned, WorkspaceStatusFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				WorkspaceStatusRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }

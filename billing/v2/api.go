@@ -13,7 +13,6 @@ import (
 )
 
 type BillableUsageInterface interface {
-
 	// Return billable usage logs.
 	//
 	// Returns billable usage logs in CSV format for the specified account and date
@@ -44,7 +43,6 @@ type BillableUsageAPI struct {
 }
 
 type BudgetPolicyInterface interface {
-
 	// Create a budget policy.
 	//
 	// Creates a new policy.
@@ -124,7 +122,6 @@ func (a *BudgetPolicyAPI) GetByPolicyId(ctx context.Context, policyId string) (*
 }
 
 type BudgetsInterface interface {
-
 	// Create new budget.
 	//
 	// Create a new budget configuration for an account. For full details, see
@@ -213,7 +210,6 @@ func (a *BudgetsAPI) GetByBudgetId(ctx context.Context, budgetId string) (*GetBu
 }
 
 type LogDeliveryInterface interface {
-
 	// Create a new log delivery configuration.
 	//
 	// Creates a new Databricks log delivery configuration to enable delivery of the
@@ -436,7 +432,6 @@ func (a *LogDeliveryAPI) GetByConfigName(ctx context.Context, name string) (*Log
 }
 
 type UsageDashboardsInterface interface {
-
 	// Create new usage dashboard.
 	//
 	// Create a usage dashboard specified by workspaceId, accountId, and dashboard

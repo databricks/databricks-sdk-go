@@ -13,7 +13,6 @@ import (
 )
 
 type GitCredentialsInterface interface {
-
 	// Create a credential entry.
 	//
 	// Creates a Git credential entry for the user. Only one Git credential per user
@@ -172,7 +171,6 @@ func (a *GitCredentialsAPI) GetByGitProvider(ctx context.Context, name string) (
 }
 
 type ReposInterface interface {
-
 	// Create a repo.
 	//
 	// Creates a repo in the workspace and links it to the remote Git repo
@@ -389,7 +387,6 @@ func (a *ReposAPI) GetByPath(ctx context.Context, name string) (*RepoInfo, error
 }
 
 type SecretsInterface interface {
-
 	// Create a new secret scope.
 	//
 	// The scope name must consist of alphanumeric characters, dashes, underscores,
@@ -677,7 +674,6 @@ func (a *SecretsAPI) ListSecretsByScope(ctx context.Context, scope string) (*Lis
 
 type WorkspaceInterface interface {
 	workspaceAPIUtilities
-
 	// Delete a workspace object.
 	//
 	// Deletes an object or a directory (and optionally recursively deletes all

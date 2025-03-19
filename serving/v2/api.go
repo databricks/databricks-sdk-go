@@ -5,13 +5,16 @@ package serving
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type ServingEndpointsInterface interface {
-
 	// Get build logs for a served model.
 	//
 	// Retrieves the build logs associated with the provided served model.
@@ -23,7 +26,7 @@ type ServingEndpointsInterface interface {
 	BuildLogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*BuildLogsResponse, error)
 
 	// Create a new serving endpoint.
-	Create(ctx context.Context, request CreateServingEndpoint) (*ServingEndpointDetailed, error)
+	Create(ctx context.Context, request CreateServingEndpoint) (*ServingEndpointsCreateWaiter, error)
 
 	// Delete a serving endpoint.
 	Delete(ctx context.Context, request DeleteServingEndpointRequest) (*DeleteResponse, error)
@@ -147,7 +150,7 @@ type ServingEndpointsInterface interface {
 	// compute configuration of those served entities, and the endpoint's traffic
 	// config. An endpoint that already has an update in progress can not be updated
 	// until the current update completes or fails.
-	UpdateConfig(ctx context.Context, request EndpointCoreConfigInput) (*ServingEndpointDetailed, error)
+	UpdateConfig(ctx context.Context, request EndpointCoreConfigInput) (*ServingEndpointsUpdateConfigWaiter, error)
 
 	// Update serving endpoint permissions.
 	//
@@ -189,6 +192,51 @@ func (a *ServingEndpointsAPI) BuildLogsByNameAndServedModelName(ctx context.Cont
 		Name:            name,
 		ServedModelName: servedModelName,
 	})
+}
+
+// Create a new serving endpoint.
+func (a *ServingEndpointsAPI) Create(ctx context.Context, createServingEndpoint CreateServingEndpoint) (*ServingEndpointsCreateWaiter, error) {
+	servingEndpointDetailed, err := a.servingEndpointsImpl.Create(ctx, createServingEndpoint)
+	if err != nil {
+		return nil, err
+	}
+	return &ServingEndpointsCreateWaiter{
+		Response: servingEndpointDetailed,
+		name:     servingEndpointDetailed.Name,
+	}, nil
+}
+
+type ServingEndpointsCreateWaiter struct {
+	Response *ServingEndpointDetailed
+	service  *ServingEndpointsAPI
+
+	name string
+}
+
+func (w *ServingEndpointsCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ServingEndpointDetailed, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[ServingEndpointDetailed](ctx, timeout, func() (*ServingEndpointDetailed, *retries.Err) {
+		servingEndpointDetailed, err := w.service.Get(ctx, GetServingEndpointRequest{
+			Name: w.name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := servingEndpointDetailed.State.ConfigUpdate
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case EndpointStateConfigUpdateNotUpdating: // target state
+			return servingEndpointDetailed, nil
+		case EndpointStateConfigUpdateUpdateFailed, EndpointStateConfigUpdateUpdateCanceled:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				EndpointStateConfigUpdateNotUpdating, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 // Delete a serving endpoint.
@@ -257,8 +305,57 @@ func (a *ServingEndpointsAPI) LogsByNameAndServedModelName(ctx context.Context, 
 	})
 }
 
-type ServingEndpointsDataPlaneInterface interface {
+// Update config of a serving endpoint.
+//
+// Updates any combination of the serving endpoint's served entities, the
+// compute configuration of those served entities, and the endpoint's traffic
+// config. An endpoint that already has an update in progress can not be updated
+// until the current update completes or fails.
+func (a *ServingEndpointsAPI) UpdateConfig(ctx context.Context, endpointCoreConfigInput EndpointCoreConfigInput) (*ServingEndpointsUpdateConfigWaiter, error) {
+	servingEndpointDetailed, err := a.servingEndpointsImpl.UpdateConfig(ctx, endpointCoreConfigInput)
+	if err != nil {
+		return nil, err
+	}
+	return &ServingEndpointsUpdateConfigWaiter{
+		Response: servingEndpointDetailed,
+		name:     servingEndpointDetailed.Name,
+	}, nil
+}
 
+type ServingEndpointsUpdateConfigWaiter struct {
+	Response *ServingEndpointDetailed
+	service  *ServingEndpointsAPI
+
+	name string
+}
+
+func (w *ServingEndpointsUpdateConfigWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ServingEndpointDetailed, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[ServingEndpointDetailed](ctx, timeout, func() (*ServingEndpointDetailed, *retries.Err) {
+		servingEndpointDetailed, err := w.service.Get(ctx, GetServingEndpointRequest{
+			Name: w.name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := servingEndpointDetailed.State.ConfigUpdate
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case EndpointStateConfigUpdateNotUpdating: // target state
+			return servingEndpointDetailed, nil
+		case EndpointStateConfigUpdateUpdateFailed, EndpointStateConfigUpdateUpdateCanceled:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				EndpointStateConfigUpdateNotUpdating, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+type ServingEndpointsDataPlaneInterface interface {
 	// Query a serving endpoint.
 	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 }

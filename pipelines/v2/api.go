@@ -6,14 +6,15 @@ package pipelines
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type PipelinesInterface interface {
-
 	// Create a pipeline.
 	//
 	// Creates a new data processing pipeline based on the requested configuration.
@@ -147,7 +148,7 @@ type PipelinesInterface interface {
 	//
 	// Stops the pipeline by canceling the active update. If there is no active
 	// update for the pipeline, this request is a no-op.
-	Stop(ctx context.Context, request StopRequest) (*StopPipelineResponse, error)
+	Stop(ctx context.Context, request StopRequest) (*PipelinesStopWaiter, error)
 
 	// Edit a pipeline.
 	//
@@ -301,4 +302,52 @@ func (a *PipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId s
 	return a.pipelinesImpl.ListUpdates(ctx, ListUpdatesRequest{
 		PipelineId: pipelineId,
 	})
+}
+
+// Stop a pipeline.
+//
+// Stops the pipeline by canceling the active update. If there is no active
+// update for the pipeline, this request is a no-op.
+func (a *PipelinesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*PipelinesStopWaiter, error) {
+	stopPipelineResponse, err := a.pipelinesImpl.Stop(ctx, stopRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &PipelinesStopWaiter{
+		Response:   stopPipelineResponse,
+		pipelineId: stopRequest.PipelineId,
+	}, nil
+}
+
+type PipelinesStopWaiter struct {
+	Response *StopPipelineResponse
+	service  *PipelinesAPI
+
+	pipelineId string
+}
+
+func (w *PipelinesStopWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*GetPipelineResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	return retries.Poll[GetPipelineResponse](ctx, timeout, func() (*GetPipelineResponse, *retries.Err) {
+		getPipelineResponse, err := w.service.Get(ctx, GetPipelineRequest{
+			PipelineId: w.pipelineId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := getPipelineResponse.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case PipelineStateIdle: // target state
+			return getPipelineResponse, nil
+		case PipelineStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				PipelineStateIdle, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
